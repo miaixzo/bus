@@ -7,6 +7,6 @@ Kettle Online Business Intelligence Platform
 
 开发QQ群：36183333
 
-社区：http://www.uKettle.org(http://www.uKettle.org)
+社区：http://www.uKettle.org
 
-微博：http://weibo.com/ukettle(http://www.uKettle.org)
+微博：http://weibo.com/ukettle
