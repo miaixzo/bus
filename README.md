@@ -1,7 +1,7 @@
-# Kettle
+# Pentaho | China
+
 Kettle Online Business Intelligence Platform
 
-Pentaho | Kettle China
 
 QQ群：227385701
 
