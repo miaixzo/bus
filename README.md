@@ -3,7 +3,9 @@
 Kettle Online Business Intelligence Platform
 
 
-QQ群：227385701
+交流QQ群：227385701
+
+开发QQ群：36183333
 
 社区：http://www.uKettle.org
 
