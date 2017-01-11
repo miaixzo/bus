@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
+	default-lazy-init="true">
+
+	<bean name="iQuartz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+		lazy-init="false" autowire="no">
+		<property name="dataSource" ref="dataSource" />
+		<property name="applicationContextSchedulerContextKey" value="applicationContext" />
+		<property name="startupDelay" value="30" />
+		<property name="overwriteExistingJobs" value="true" />
+		<property name="jobFactory">
+			<bean class="org.ukettle.widget.quartz.service.JobFactoryService" />
+		</property>
+		<property name="quartzProperties">
+			<props>
+			<!-- 属性可为任何值，用在 JDBC JobStore 中来唯一标识实例，但是所有集群节点中必须相同。 -->
+				<prop key="org.quartz.scheduler.instanceName">iQuartz</prop>
+				<!-- 属性为 AUTO即可，基于主机名和时间戳来产生实例 ID,如果ID相同，集群失效 -->
+				<prop key="org.quartz.scheduler.instanceId">AUTO</prop>
+				<prop key="org.quartz.scheduler.wrapJobExecutionInUserTransaction">false</prop>
+				<prop key="org.quartz.scheduler.dbFailureRetryInterval">1500</prop>
+				<prop key="org.quartz.scheduler.rmi.proxy">false</prop>
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<prop key="org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread">true</prop>
+				<prop key="org.quartz.threadPool.threadCount">5</prop>
+				<prop key="org.quartz.threadPool.threadPriority">5</prop>
+				<!-- 属性为 JobStoreTX将任务持久化到数据中。因为集群中节点依赖于数据库来传播 -->
+				<prop key="org.quartz.jobStore.class">org.quartz.impl.jdbcjobstore.JobStoreTX</prop>
+				<!-- 如果数据库没有其他指定的代理，那么就使用代理StdJDBCDelegate -->
+				<prop key="org.quartz.jobStore.driverDelegateClass">org.quartz.impl.jdbcjobstore.StdJDBCDelegate</prop>
+				<prop key="org.quartz.jobStore.dontSetAutoCommitFalse">false</prop>
+				<prop key="org.quartz.jobStore.tablePrefix">Q_</prop>
+				<prop key="org.quartz.jobStore.maxMisfiresToHandleAtATime">20</prop>
+				<prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
+				<!-- 是否集群  负载均衡和容错,这一属性会贯穿于调度框架的始终，用于修改集群环境中操作的默认行为 -->
+				<prop key="org.quartz.jobStore.isClustered">true</prop>
+				<!-- 属性定义实例检入到数据库中的频率(单位：毫秒) -->
+				<prop key="org.quartz.jobStore.clusterCheckinInterval">20000</prop>
+				<prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

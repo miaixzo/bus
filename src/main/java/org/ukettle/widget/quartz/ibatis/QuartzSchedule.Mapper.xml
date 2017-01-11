@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ukettle.widget.quartz.mapper.QuartzScheduleMapper">
+
+	<select id="exists" parameterType="Q_Schedule" resultType="Q_Schedule">
+		<![CDATA[
+			SELECT job_name `name`
+			   , job_group `group`
+			FROM Q_JOB_DETAILS
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="name != null">
+				job_name = #{name}
+		    </if>
+		</trim>
+	</select>
+
+</mapper>

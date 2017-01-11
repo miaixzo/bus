@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!--#log4j中有5级logger ,#FATAL 0 ,#ERROR 3 ,#WARN 4 ,#INFO 6 ,#DEBUG 7 -->
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<!--将级别为DEBUG的信息输出到控制台 -->
+	<appender name="DEBUG" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyy-MM-dd HH:mm:ss} [%-5p] %c {%F:%L} - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="DEBUG" />
+			<param name="LevelMax" value="DEBUG" />
+		</filter>
+	</appender>
+
+	<!--将级别为INFO的信息输出到控制台 -->
+	<appender name="INFO" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyy-MM-dd HH:mm:ss} [%-5p] %c {%F:%L} - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+			<param name="LevelMax" value="INFO" />
+		</filter>
+	</appender>
+
+	<!--将级别为WARN的信息输出到文件 -->
+	<appender name="WARN" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyy-MM-dd HH:mm:ss} [%-5p] %c {%F:%L} - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="WARN" />
+			<param name="LevelMax" value="WARN" />
+		</filter>
+	</appender>
+
+	<!--将级别为ERROR的信息输出到文件 -->
+	<appender name="ERROR" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyy-MM-dd HH:mm:ss} [%-5p] %c {%F:%L} - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="ERROR" />
+			<param name="LevelMax" value="ERROR" />
+		</filter>
+	</appender>
+
+	<!--将级别为FATAL的信息输出到文件 -->
+	<appender name="FATAL" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyy-MM-dd HH:mm:ss} [%-5p] %c {%F:%L} - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="FATAL" />
+			<param name="LevelMax" value="FATAL" />
+		</filter>
+	</appender>
+
+	<logger name="org.springframework">
+		<level value="DEBUG" />
+	</logger>
+	<logger name="org.springframework.web">
+		<level value="DEBUG" />
+	</logger>
+
+	<logger name="com.ibatis">
+		<level value="DEBUG" />
+	</logger>
+	<logger name="java.sql.Connection">
+		<level value="DEBUG" />
+	</logger>
+	<logger name="java.sql.Statement">
+		<level value="DEBUG" />
+	</logger>
+	<logger name="java.sql.ResultSet">
+		<level value="DEBUG" />
+	</logger>
+
+	<root>
+		<priority value="DEBUG" />
+		<level value="DEBUG" />
+		<appender-ref ref="DEBUG" />
+	</root>
+
+</log4j:configuration>

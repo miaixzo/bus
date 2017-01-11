@@ -1,0 +1,141 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><%@ include file="../../Comm/tags.jsp"%>
+<!DOCTYPE html>
+<html>
+<head>
+<title><spring:message code="org.ukettle.Title" /></title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<%@ include file="../../Comm/resource.jsp"%>
+<script src="${ctx}/Html/js/ui.quartz.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="wrapper">
+<header>
+<%@ include file="../../header.jsp"%>
+</header>
+<ul id="mainNav">
+<%@ include file="../../topnav.jsp"%>
+</ul>
+<div id="holder">
+    <div id="container">
+         <div id="sidebar">
+           <ul class="sideNav">
+    		  <li><a href="${ctx}/Widget/Quartz/Insert" class="active"><spring:message code="org.ukettle.Menu.Quartz.Insert" /></a></li>
+    		  <li><a href="${ctx}/Widget/Quartz/List"><spring:message code="org.ukettle.Menu.Quartz.List" /></a></li>
+		   </ul>
+         </div>  
+         <div id="main">
+         <input type="hidden" id="jsons" name="jsons" value='${Entity.params}'/>
+         <input type="hidden" id="id" name="id" value="${id}"/>
+         <input type="hidden" id="dir" name="dir" />
+         <input type="hidden" id="isAsync" name="isAsync" />
+         <input type="hidden" id="type" name="type" />
+         <input type="hidden" id="logging" name="logging" /> 
+         <h3><spring:message code="org.ukettle.Quartz.Info" /></h3>
+     	 <fieldset>
+     	 <div class="left">
+         	<p><label><spring:message code="org.ukettle.Quartz.Group" /></label>
+       		  <select id="group" name="group" disabled>
+				<option style="display: none" value=""><spring:message code="org.ukettle.Quartz.Group.Choose" /></option>
+				<c:forEach var="g" items="${List}">
+					<option id="${g.id}" value="${g.name}" <c:if test="${g.name==Entity.jobDetail.group}">selected</c:if> >${g.name}</option>
+				</c:forEach>
+			  </select>
+         	 </p>
+			 <p><label><spring:message code="org.ukettle.Quartz.Title" /></label>
+			   <input type="text"  class="text-long" id="title" name="title" value="${Entity.jobDetail.name}" style="ime-mode:disabled" pattern="[A-Za-z,0-9]{4,24}" required readOnly/>
+			 </p>
+             <div id="params">
+         	 <p><label><spring:message code="org.ukettle.Quartz.Parameters" /></label>
+         	   <input type="text" class="text-small" id="argKey" readOnly/>
+         	   <input type="text" class="text-long" id="argVal" name="name" readOnly/>
+         	 </p>
+         	 </div>
+         	 <p><label><spring:message code="org.ukettle.Quartz.Trigger" /></label>
+				<input type="radio" id="triggerType" name="triggerType" value="simple" <c:if test="${Entity.triggerType=='simple'}">checked</c:if> onclick="quartz.trigger();" disabled/><spring:message code="org.ukettle.Quartz.Trigger.Simple" />&nbsp;&nbsp;
+				<input type="radio"  id="triggerType" name="triggerType" value="cron"  <c:if test="${Entity.triggerType=='cron'}">checked</c:if> onclick="quartz.trigger();" disabled/><spring:message code="org.ukettle.Quartz.Trigger.Cron" />
+			 </p>
+			 <div id="simpleTrigger">
+			    <c:set var="intervalTime" value="1" /> 
+				<c:if test="${Entity.triggerType=='simple'}">
+					<fmt:formatNumber var="intervalTime" value="${Entity.trigger.repeatInterval/1000/60}" pattern="#" minFractionDigits="0" />
+					<fmt:formatNumber var="repeatCount" value="${Entity.trigger.repeatCount}" pattern="#" minFractionDigits="0" />
+				</c:if>
+         	     <p><label class="inline"><spring:message code="org.ukettle.Quartz.Trigger.Frequency" /></label><input type="number"  max="20" data-error-type="inline" required style="padding-left: 66px;" id="frequency" name="frequency" class="text-long" value="${intervalTime}" readOnly/> <spring:message code="org.ukettle.Quartz.Trigger.Tips.Minute" /></p>
+	         	 <p><label class="inline"><spring:message code="org.ukettle.Quartz.Trigger.Quantity" /></label><input type="number" max="20" data-error-type="inline" required style="padding-left: 66px;" id="quantity" name="quantity" class="text-long" value="<c:out value='${repeatCount}' default='-1' />" readOnly/> <spring:message code="org.ukettle.Quartz.Trigger.Tips.Continuous" /></p>
+         	 </div>
+			 <div id="cronTrigger" style="display: none;">
+			     <c:if test="${Entity.triggerType=='cron'}">
+					<c:set var="cron" value="${Entity.trigger.cronExpression.split(' ')}" />
+				 </c:if>
+	         	 <p><label class="inline"><spring:message code="org.ukettle.Quartz.Trigger.Second" /></label><input type="text" data-error-type="inline" style="padding-left: 66px;" id="second" name="second" class="text-long" value="<c:out value='${cron[0]}' default='*'/>" /></p>
+	         	 <p><label class="inline"><spring:message code="org.ukettle.Quartz.Trigger.Minute" /></label><input type="text" data-error-type="inline" style="padding-left: 66px;" id="minute" name="minute" class="text-long" value="<c:out value='${cron[1]}' default='*'/>" /></p>
+	         	 <p><label class="inline"><spring:message code="org.ukettle.Quartz.Trigger.Hour" /></label><input type="text" data-error-type="inline" style="padding-left: 66px;" id="hour" name="hour" class="text-long" value="<c:out value='${cron[2]}' default='*'/>" /></p>
+	         	 <p><label class="inline"><spring:message code="org.ukettle.Quartz.Trigger.Day" /></label><input type="text" data-error-type="inline" style="padding-left: 66px;" id="day" name="day" class="text-long" value="<c:out value='${cron[3]}' default='*'/>" /></p>
+	         	 <p><label class="inline"><spring:message code="org.ukettle.Quartz.Trigger.Month" /></label><input type="text" data-error-type="inline" style="padding-left: 66px;" id="month" name="month" class="text-long"  value="<c:out value='${cron[4]}' default='*'/>" /></p>
+	         	 <p><label class="inline"><spring:message code="org.ukettle.Quartz.Trigger.Week" /></label><input type="text" data-error-type="inline" style="padding-left: 66px;" id="week" name="week" class="text-long" value="<c:out value='${cron[5]}' default='?'/>" /></p>
+         	 </div>
+         	 <p><label><spring:message code="org.ukettle.Quartz.Description" /></label>
+         	 	<textarea rows="1" cols="1" readOnly>${Entity.jobDetail.description}</textarea>
+         	 </p>
+             <input type="reset" onClick="window.history.go(-1);" value="<spring:message code="org.ukettle.Quartz.Back" />" />
+             </div>
+             <div class="right"><label><b><spring:message code="org.ukettle.Quartz.Tips" /></b></label>
+                <table style="width:100%">
+				    <tr style="text-align:left;">
+						<td><spring:message code="org.ukettle.Quartz.Tips.Name" /></td>
+						<td><spring:message code="org.ukettle.Quartz.Tips.Value" /></td>
+						<td><spring:message code="org.ukettle.Quartz.Tips.Symbol" /></td>
+					</tr>
+					<tr class="odd" >
+						<td><spring:message code="org.ukettle.Quartz.Tips.Quantity" /></td>
+						<td>0-N</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><spring:message code="org.ukettle.Quartz.Tips.Frequency" /></td>
+						<td>0-N</td>
+						<td>-1</td>
+					</tr>
+					<tr class="odd" >
+						<td><spring:message code="org.ukettle.Quartz.Tips.Second" /></td>
+						<td>0-59</td>
+						<td>, - * /</td>
+					</tr>
+					<tr>
+						<td><spring:message code="org.ukettle.Quartz.Tips.Minute" /></td>
+						<td>0-59</td>
+						<td>, - * /</td>
+					</tr>
+					<tr class="odd" >
+						<td><spring:message code="org.ukettle.Quartz.Tips.Hour" /></td>
+						<td>0-23</td>
+						<td>, - * /</td>
+					</tr>
+					<tr>
+						<td><spring:message code="org.ukettle.Quartz.Tips.Day" /></td>
+						<td>0-31</td>
+						<td>, - * ? / L W C</td>
+					</tr>
+					<tr class="odd" >
+						<td><spring:message code="org.ukettle.Quartz.Tips.Month" /></td>
+						<td>1-12 or JAN-DEC</td>
+						<td>, - * /</td>
+					</tr>
+					<tr>
+						<td><spring:message code="org.ukettle.Quartz.Tips.Week" /></td>
+						<td>1-7 or SUN-SAT</td>
+						<td>, - * ? / L C #</td>
+					</tr>
+				 </table>
+             </div>
+         </fieldset>
+         </div>
+         <div class="clear"></div>
+     </div>
+</div>	
+<footer>
+<%@ include file="../../footer.jsp"%>
+</footer>
+</div>
+</body>
+</html>

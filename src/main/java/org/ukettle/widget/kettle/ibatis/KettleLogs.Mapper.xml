@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ukettle.widget.kettle.mapper.KettleLogsMapper">
+
+	<insert id="insert" parameterType="K_Logs">
+		insert into K_LOGS (
+			id
+			, mid
+			, logs
+			, creator
+			, created
+		)
+		values (
+			#{id},
+			#{mid},
+			#{logs},
+			#{creator},
+			#{created}
+		)
+	</insert>
+
+	<delete id="delete" parameterType="K_Logs">
+		delete from K_LOGS where  mid = #{mid}
+	</delete>
+
+	<update id="update" parameterType="K_Logs">
+		update K_LOGS
+		<set>
+			<if test="logs != null and logs != '' ">
+				logs = #{logs},
+			</if>
+			<if test="mid != null and mid != '' ">
+				mid = #{mid},
+			</if>
+			<if test="creator != null and creator != '' ">
+				creator = #{creator},
+        	</if>
+			<if test="created != null and created != '' ">
+				created = #{created}
+        	</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="select" parameterType="K_Logs" resultType="K_Logs">
+		<![CDATA[
+			SELECT id
+			     , mid
+			     , logs
+			     , creator
+			     , created
+			FROM K_LOGS
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				id = #{id}
+		    </if>
+		    <if test="mid != null">
+				mid = #{mid}
+		    </if>
+		</trim>
+	</select>
+
+	<select id="selectByWhere" parameterType="K_Logs" resultType="K_Logs"> 
+		<![CDATA[
+			SELECT id
+				 , mid
+			     , logs
+			     , creator
+			     , created
+			FROM K_LOGS
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				and id = #{id}
+		    </if>
+			<if test="mid != null">
+				and mid = #{mid}
+			</if>
+			<if test="logs != null">
+				and logs = #{logs}
+			</if>
+			<if test="creator != null">
+				and creator = #{creator}
+        	</if>
+			<if test="created != null">
+				and created = #{created}
+        	</if>
+		</trim>
+		order by created desc
+	</select>
+
+</mapper>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ukettle.widget.kettle.mapper.KettleResultMapper">
+
+	<insert id="insert" parameterType="K_Result">
+		insert into K_RESULT (
+			 id
+			, name
+			, `group`
+			, type
+			, status
+			, `read`
+			, written
+			, updated
+			, input
+			, output
+			, deleted
+			, retrieved
+			, rejected
+			, end_time
+			, start_time
+			, error
+			, params
+			, host
+			, again
+			, times
+			, creator
+			, created
+			, modifier
+	        , modified
+		)
+		values (
+			#{id},
+			#{name},
+			#{group},
+			#{type},
+			#{status},
+			#{read},
+			#{written},
+			#{updated},
+			#{input},
+			#{output},
+			#{deleted},
+			#{retrieved},
+			#{rejected},
+			#{endTime},
+			#{startTime},
+			#{error},
+			#{params},
+			#{host},
+			#{again},
+			#{times},
+			#{creator},
+			#{created},
+			#{modifier},
+	        #{modified}
+		)
+	</insert>
+
+	<delete id="delete" parameterType="K_Result">
+		delete from K_RESULT where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="K_Result">
+		update K_RESULT
+		<set>
+			<if test="name != null and name != '' ">
+				name = #{name},
+        	</if>
+			<if test="group != null and group != '' ">
+				`group` = #{group},
+			</if>
+			<if test="type != null and type != '' ">
+				type = #{type},
+        	</if>
+			<if test="status != null and status != '' ">
+				status = #{status},
+        	</if>
+			<if test="read != null and read != '' ">
+				`read` = #{read},
+        	</if>
+			<if test="written != null and written != '' ">
+				written = #{written},
+        	</if>
+			<if test="updated != null and updated != '' ">
+				updated = #{updated},
+        	</if>
+			<if test="input != null and input != '' ">
+				input = #{input},
+        	</if>
+			<if test="output != null and output != '' ">
+				output = #{output},
+        	</if>
+			<if test="deleted != null and deleted != '' ">
+				deleted = #{deleted},
+        	</if>
+			<if test="endTime != null and endTime != '' ">
+				end_time = #{endTime},
+        	</if>
+			<if test="startTime != null and startTime != '' ">
+				start_time = #{startTime},
+        	</if>
+			<if test="error != null and error != '' ">
+				error = #{error},
+        	</if>
+			<if test="params != null and params != '' ">
+				params = #{params},
+        	</if>
+        	<if test="host != null and host != '' ">
+				host = #{host},
+        	</if>
+			<if test="retrieved != null and retrieved != '' ">
+				retrieved = #{retrieved},
+        	</if>
+			<if test="rejected != null and rejected != '' ">
+				rejected = #{rejected},
+        	</if>
+        	<if test="again != null and again != '' ">
+				again = #{again},
+        	</if>
+			<if test="times != null and times != '' ">
+				times = #{times},
+        	</if>
+        	<if test="creator != null and creator != '' ">
+				creator = #{creator},
+        	</if>
+			<if test="created != null and created != '' ">
+				created = #{created},
+        	</if>
+        	<if test="modifier != null and modifier != '' ">
+				modifier = #{modifier},
+        	</if>
+			<if test="modified != null and modified != '' ">
+				modified = #{modified}
+        	</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="select" parameterType="K_Result" resultType="K_Result">
+		<![CDATA[
+			SELECT id
+				, name
+				, `group`
+				, type
+				, status
+				, `read`
+				, written
+				, updated
+				, input
+				, output
+				, deleted
+				, retrieved
+				, rejected
+				, end_time endTime
+				, start_time startTime
+				, error
+				, params
+				, host
+				, again
+				, times
+				, creator
+				, created
+				, modifier
+		        , modified
+			FROM K_RESULT
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				id = #{id}
+		    </if>
+		</trim>
+	</select>
+
+	<select id="selectByWhere" parameterType="K_Result" resultType="K_Result"> 
+		<![CDATA[
+			SELECT id
+				, name
+				, `group`
+				, type
+				, status
+				, `read`
+				, written
+				, updated
+				, input
+				, output
+				, deleted
+				, retrieved
+				, rejected
+				, end_time endTime
+				, start_time startTime
+				, error
+				, params
+				, host
+				, again
+				, times
+				, creator
+				, created
+				, modifier
+		        , modified
+			FROM K_RESULT
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="name != null ">
+				name = #{name}
+        	</if>
+			<if test="group != null">
+				and `group` = #{group}
+			</if>
+			<if test="type != null ">
+				and type = #{type}
+        	</if>
+			<if test="status != null">
+				and status = #{status}
+        	</if>
+			<if test="read != null ">
+				and `read` = #{read}
+        	</if>
+			<if test="written != null ">
+				and written = #{written}
+        	</if>
+			<if test="updated != null ">
+				and updated = #{updated}
+        	</if>
+			<if test="input != null ">
+				and input = #{input}
+        	</if>
+			<if test="output != null ">
+				and output = #{output}
+        	</if>
+			<if test="deleted != null ">
+				and deleted = #{deleted}
+        	</if>
+			<if test="endTime != null ">
+				and end_time = #{endTime}
+        	</if>
+			<if test="startTime != null">
+				and startTime = #{startTime}
+        	</if>
+			<if test="retrieved != null">
+				and retrieved = #{retrieved}
+        	</if>
+			<if test="rejected != null">
+				and rejected = #{rejected}
+        	</if>
+			<if test="error != null ">
+				and error = #{error}
+        	</if>
+			<if test="creator != null ">
+				and creator = #{creator}
+        	</if>
+			<if test="again != null ">
+				and again = #{again}
+        	</if>
+        	<if test="created != null ">
+				and created = #{created}
+        	</if>
+        	<if test="modified != null ">
+				and modified = #{modified}
+        	</if>
+		</trim>
+		order by created desc
+	</select>
+
+</mapper>

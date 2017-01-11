@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ukettle.service.router.mapper.RouterMapper">
+
+	<insert id="insert" parameterType="U_S_Router">
+		insert into U_S_REST (
+			  id
+			, name
+			, type
+			, status
+			, url
+			, source
+			, session
+			, version
+			, format
+			, remark
+			, creator
+			, created
+		)
+		values (
+			#{id}
+			,#{name}
+			,#{type}
+			,#{status}
+			,#{url}
+			,#{source}
+			,#{session}
+			,#{version}
+			,#{format}
+			,#{remark}
+			,#{creator}
+			,#{created}
+		)
+	</insert>
+
+	<delete id="delete" parameterType="U_S_Router">
+		delete from U_S_REST where
+		id = #{id}
+	</delete>
+
+	<update id="update" parameterType="U_S_Router">
+		update M_S_RESTFUL
+		<set>
+			<if test="name != null and name != '' ">
+				name = #{name},
+        	</if>
+			<if test="type != null and type != '' ">
+				type = #{type},
+			</if>
+			<if test="status != null and status != '' ">
+				status = #{status},
+			</if>
+			<if test="url != null">
+				url = #{url},
+			</if>
+			<if test="source != source">
+				source = #{source},
+			</if>
+			<if test="session != session">
+				session = #{session},
+			</if>
+			<if test="version != version">
+				version = #{version},
+			</if>
+			<if test="format != null and format != '' ">
+				format = #{format},
+        	</if>
+			<if test="remark != null">
+				remark = #{remark},
+        	</if>
+			<if test="remark != null">
+				remark = #{remark},
+        	</if>
+			<if test="created != null and created != '' ">
+				created = #{created}
+        	</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="select" parameterType="U_S_Router" resultType="U_S_Router">
+		<![CDATA[
+			SELECT id
+				, name
+				, type
+				, status
+				, url
+				, source
+				, session
+				, version
+				, format
+				, remark
+				, creator
+				, created
+			FROM M_S_REST
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				id = #{id}
+		    </if>
+		</trim>
+	</select>
+
+	<select id="selectByWhere" parameterType="U_S_Router"
+		resultType="U_S_Router"> 
+		<![CDATA[
+			SELECT id
+				, name
+				, type
+				, status
+				, url
+				, source
+				, session
+				, version
+				, format
+				, remark
+				, creator
+				, created
+			FROM U_S_REST
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				id = #{id}
+        	</if>
+			<if test="name != null">
+				and name = #{name}
+        	</if>
+			<if test="type != null">
+				and type = #{type}
+        	</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="source != null">
+				and source = #{source}
+			</if>
+			<if test="format != null">
+				and format = #{format}
+        	</if>
+			<if test="creator != null">
+				and m.creator = #{creator}
+        	</if>
+		</trim>
+		order by created desc
+	</select>
+
+</mapper>
