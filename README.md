@@ -9,4 +9,4 @@ Forum:http://www.uKettle.org
 
 Weibo:http://weibo.com/ukettle
 
-Running: update pom.xml profile to dev
+Running: update pom.xml database info
