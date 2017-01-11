@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!-- 对在此配置文件下的所有cache进行全局性开/关设置 true|false -->
+		<setting name="cacheEnabled" value="true" />
+		<!-- 全局性设置懒加载,如果设为‘关',则所有相关联的都会被初始化加载 -->
+		<setting name="lazyLoadingEnabled" value="false" />
+		<!-- 当设置为‘开’的时候,懒加载的对象可能被任何懒属性全部加载,否则,每个属性都按需加载 -->
+		<setting name="aggressiveLazyLoading" value="true" />
+		<!-- 允许和不允许单条语句返回多个数据集(取决于驱动需求) -->
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<!-- 使用列标签代替列名称。不用的驱动器有不同的作法 -->
+		<setting name="useColumnLabel" value="true" />
+		<!-- 允许JDBC生成主键。需要驱动器支持.如果设为了true,这个设置将强制使用被生成的主键, 有一些驱动器不兼容不过仍然可以执行 -->
+		<setting name="useGeneratedKeys" value="true" />
+		<!-- 指定MyBatis是否并且如何来自动映射数据表字段与对象的属性。PARTIAL将只自动映射简单的,NONE没有嵌套的结果。 FULL将自动映射所有复杂的结果 -->
+		<setting name="autoMappingBehavior" value="PARTIAL" />
+		<!-- 配置和设定执行器,SIMPLE执行器执行其它语句。REUSE执行器可能重复使用preparedstatements语句,BATCH执行器可以重复执行语句和批量更新 -->
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<!-- 设置一个时限,以决定让驱动器等待数据库回应的多长时间为超时. 正整数 -->
+		<setting name="defaultStatementTimeout" value="25000" />
+	</settings>
+
+	<typeAliases>
+		<!-- System Entity Info -->	
+		<typeAlias alias="U_ALL_User" type="com.ukettle.system.entity.User" />
+		<typeAlias alias="U_ALL_Role" type="com.ukettle.system.entity.Role" />
+		<typeAlias alias="U_ALL_Menu" type="com.ukettle.system.entity.Menu" />
+		<typeAlias alias="U_ALL_Rest" type="com.ukettle.system.entity.Rest" />
+		
+		<!-- Router Entity Info -->	
+		<typeAlias alias="U_S_Router" type="com.ukettle.service.router.entity.Router" />
+		
+		<!-- Kettle Entity Info -->	
+		<typeAlias alias="K_Repos" type="com.ukettle.widget.kettle.entity.KettleRepos" />
+		<typeAlias alias="K_Spoon" type="com.ukettle.widget.kettle.entity.KettleSpoon" />
+		<typeAlias alias="K_Result" type="com.ukettle.widget.kettle.entity.KettleResult" />
+		<typeAlias alias="K_Logs" type="com.ukettle.widget.kettle.entity.KettleLogs" />
+		
+		<!-- Quartz Entity Info -->	
+		<typeAlias alias="Q_Group" type="com.ukettle.widget.quartz.entity.QuartzGroup" />
+		<typeAlias alias="Q_Schedule" type="com.ukettle.widget.quartz.entity.QuartzSchedule" />
+
+	</typeAliases>
+
+	<!-- 配置分页查询拦截器,如果屏蔽此插件,所分页将失效 -->
+	<plugins>
+		<plugin interceptor="com.ukettle.basics.page.plugin.PaginationInterceptor">
+			<property name="dialectType" value="MYSQL" />
+			<property name="sqlPattern" value=".*select.*" />
+		</plugin>
+	</plugins>
+	
+</configuration>

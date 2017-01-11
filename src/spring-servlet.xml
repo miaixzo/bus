@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd 
+	http://www.springframework.org/schema/tx  
+	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+	default-lazy-init="false">
+
+	<!-- 只搜索@Controller 标注的类 不搜索其他标注的类 -->
+	<context:component-scan base-package="**.spring"
+		use-default-filters="false">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- 配置注解驱动的Spring MVC Controller 的编程模型.注:此标签只在 Servlet MVC工作! -->
+	<mvc:annotation-driven />
+
+	<!-- 对某些静态资源, 如css, 图片等进行过滤 ,有引用 "/static/**" 的路径引用转到工程的/WEB-INF/iPage/static/目录取资源 -->
+	<mvc:resources mapping="/Html/**" location="/Html/" />
+
+	<!-- 配置视图解析器, 把控制器的逻辑映射为视图 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<property name="contentNegotiationManager">
+			<bean class="org.springframework.web.accept.ContentNegotiationManager">
+				<constructor-arg>
+					<bean
+						class="org.springframework.web.accept.PathExtensionContentNegotiationStrategy">
+						<constructor-arg>
+							<map>
+								<entry key="json" value="application/json;charset=UTF-8" />
+								<entry key="xml" value="application/xml;charset=UTF-8" />
+							</map>
+						</constructor-arg>
+					</bean>
+				</constructor-arg>
+			</bean>
+		</property>
+
+		<property name="defaultViews">
+			<list>
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<constructor-arg>
+						<bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+							<property name="packagesToScan">
+								<list>
+									<value>/*</value>
+								</list>
+							</property>
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/iPage/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<mvc:view-controller path="/" view-name="redirect:/Widget/Kettle/Repos/List" />
+
+	<!--开发期间可以注释掉,上线前启用,发生错误默认会跳转到/Html/Error/error.html -->
+	<bean id="exceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="redirect:/Html/error.html" />
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.io.IOException">redirect:/Html/error.html</prop>
+				<prop key="java.sql.SQLException">redirect:/Html/error.html</prop>
+				<prop key="java.lang.NullPointerException">redirect:/Html/error.html</prop>
+				<prop key="java.lang.RuntimeException">redirect:/Html/error.html</prop>
+				<prop key="org.springframework.transaction.TransactionException">redirect:/Html/error.html</prop>
+				<prop key="org.springframework.dao.DataAccessException">redirect:/Html/error.html</prop>
+				<prop key="org.quartz.SchedulerException">redirect:/Html/error.html</prop>
+				<prop key="org.pentaho.di.core.exception.KettleException">redirect:/Html/error.html</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 用户-国际化配置 -->
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+
+	<!-- 用户-拦截器配置 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+				<property name="paramName" value="locale" />
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- 用户/浏览器国际化配置 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="com.ukettle.www.locale.uKettle" />
+		<property name="useCodeAsDefaultMessage" value="true" />
+	</bean>
+
+	<bean id="messages" class="com.ukettle.www.locale.uLocale">
+		<property name="messages" ref="messageSource" />
+	</bean>
+
+</beans>

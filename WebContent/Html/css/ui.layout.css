@@ -1,0 +1,451 @@
+@charset "utf-8";
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td {
+	margin:0;
+	padding:0;
+	border:0;
+	outline:0;
+	vertical-align:baseline;
+	background:transparent;
+	font-size:100%;
+	line-height:1.25;
+	font-family:'PT Sans',sans-serif;
+}
+body {
+	background:white;
+	font-family:Arial,Helvetica,sans-serif,微软雅黑;
+	font-size:12px;
+	color:#646464;
+	text-align:center;
+	line-height:1;
+}
+header {
+	font-family:"Segoe UI Semilight","Open Sans","Verdana","Arial","Helvetica","sans-serif";
+	width:100%;
+}
+header h1 {
+	margin:0;
+	padding:22px 0 12px 10px;
+	font-size:20px;
+	line-height:29px;
+	color:#00A600;
+	font-weight:100;
+	display:inline-block;
+	font-weight:100;
+}
+header span {
+	font-size:9px;
+	text-transform:uppercase;
+	margin-left:10px;
+}
+header div {
+	text-align:right;
+	padding-right:20px;
+	padding-bottom:3px;
+}
+header div a {
+	margin-left:8px;
+}
+header div a img {
+	-webkit-filter:grayscale(50%);
+}
+header div a:hover img {
+	-webkit-filter:grayscale(0);
+}
+ol,ul {
+	list-style:none;
+}
+blockquote,q {
+	quotes:none;
+}
+:focus {
+	outline:0;
+}
+textarea {
+	resize:none;
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+select {
+	width:150px;
+}
+.clear {
+	clear:both;
+}
+#wrapper {
+	text-align:left;
+	width:1200px;
+	margin:0 auto;
+}
+h1 {
+	margin:15px 0 10px 5px;
+}
+h1 a {
+	display:block;
+	width:225px;
+	height:28px;
+}
+h1 span {
+	display:none;
+}
+h2 {
+	width:938px;
+	float:right;
+	color:#646464;
+	font-size:16px;
+	line-height:16px;
+	font-weight:bold;
+	margin:20px 0 0 0;
+	padding:0 0 10px 0;
+	border-bottom:1px solid #ddd;
+}
+h2 a {
+	color:#646464;
+	text-decoration:none;
+}
+h2 a.active {
+	color:#c66653;
+}
+h2 a:hover {
+	text-decoration:underline;
+}
+h3 {
+	font-size:14px;
+	line-height:14px;
+	font-weight:bold;
+	color:#5494af;
+	padding:0 0 0 10px;
+	margin:15px 0 10px;
+}
+#mainNav {
+	width:1188px;
+	height:37px;
+	padding:6px;
+	background:url(../images/menu-bg.gif) no-repeat left top;
+}
+#mainNav li {
+	float:left;
+	height:37px;
+	border-right:1px solid #ddd;
+}
+#mainNav li a {
+	display:block;
+	float:left;
+	height:37px;
+	font-weight:bold;
+	line-height:37px;
+	text-decoration:none;
+	color:#646464;
+	padding:0 20px;
+}
+#mainNav li.logout {
+	float:right;
+	border-left:1px solid #ddd;
+	border-right:none;
+}
+#mainNav li.info {
+	float:right;
+	border-right:none;
+	line-height:38px;
+	padding:0 8px;
+}
+#mainNav li span.email {
+	font-style:italic;
+	margin:0 4px;
+	font-family:Arial,Helvetica,sans-serif;
+}
+#mainNav li.info i {
+	padding:0 8px;
+	color:#FFA042;
+}
+#mainNav li a:hover {
+	background:#fdfcf6;
+}
+#mainNav li a.active,#mainNav li a.active {
+	background:#f0f0f0 url(../images/menu-item.gif) repeat-x left top;
+	color:#454545;
+}
+#holder {
+	background:#eee;
+	padding:5px;
+	margin-top:8px;
+}
+#container {
+	background:#fff url(../images/content.gif) repeat-y left top;
+	border:1px solid #ddd;
+	width:1188px;
+}
+#sidebar {
+	width:170px;
+	float:left;
+}
+#sidebar .sideNav {
+	width:170px;
+	height:600px;
+}
+#sidebar .sideNav li {
+	border-bottom:1px solid #ddd;
+	width:170px;
+}
+#sidebar .sideNav li a {
+	display:block;
+	color:#646464;
+	background:#f6f6f6;
+	text-decoration:none;
+	height:29px;
+	line-height:29px;
+	padding:0 19px;
+	width:132px;
+}
+#sidebar .sideNav li a:hover {
+	background:#fdfcf6;
+	color:#00A600;
+}
+#sidebar .sideNav li a.odd {
+	background:#f0f7fa;
+	color:#c66653;
+}
+#sidebar .sideNav li a.odd:hover {
+	background:#fdfcf6;
+	color:#00A600;
+}
+#sidebar .sideNav li a:active {
+	background:#fdfcf6;
+	color:#00A600;
+}
+#main {
+	width:82%;
+	float:right;
+	padding:0 19px 0 0;
+}
+#main table {
+	border-top:1px solid #ddd;
+	border-right:1px solid #ddd;
+	border-left:1px solid #ddd;
+	width:976px;
+	margin-bottom:20px;
+}
+#main table tr td {
+	background:#f6f6f6;
+	padding:0px 10px;
+	height:29px;
+	line-height:29px;
+	border-bottom:1px solid #ddd;
+}
+#main table tr.odd td {
+	background:#fbfbfb;
+}
+#main table tr:hover td {
+	background:#fdfcf6;
+}
+#main table tr .action a,#main table tr .action a:visited {
+	margin:0 8px 0 0;
+	text-decoration:none;
+	color:#9b9b9b;
+	cursor:pointer;
+}
+#main table tr .action a:hover {
+	text-decoration:none !important;
+	color:#333 !important;
+}
+#main table tr .action a:hover i {
+	-webkit-transform:scale(1.5);
+}
+#main fieldset {
+	border:1px solid #ddd;
+	padding:19px;
+	margin:0 0 20px 0;
+	background:#fbfbfb;
+}
+#main fieldset p {
+	margin:0 0 14px 0;
+	float:left;
+	width:100%;
+}
+#main fieldset p a {
+	float:left;
+	padding-top:5px;
+	margin:0 10px 0 0;
+	text-decoration:none;
+	color:#9b9b9b;
+	cursor:pointer;
+}
+#main fieldset p a {
+	float:left;
+	padding-top:5px;
+}
+#main fieldset p a:hover {
+	text-decoration:none !important;
+	color:#333 !important;
+}
+#main fieldset p a:hover i {
+	-webkit-transform:scale(1.5);
+}
+#main fieldset label {
+	display:block;
+	margin:0 0 7px 0;
+	line-height:12px;
+}
+#main fieldset .text-long {
+	border:1px solid #ddd;
+	background:#fff url(../images/shaddow.gif) no-repeat left top;
+	font:11px Arial,Helvetica,sans-serif;
+	color:#646464;
+	padding:5px 7px;
+	width:260px;
+	float:left;
+	margin:0 10px 0 0;
+}
+#main fieldset .text-medium {
+	border:1px solid #ddd;
+	background:#fff url(../images/shaddow.gif) no-repeat left top;
+	font:11px Arial,Helvetica,sans-serif;
+	color:#646464;
+	padding:5px 7px;
+	width:130px;
+	float:left;
+	margin:0 10px 0 0;
+}
+#main fieldset .text-small {
+	border:1px solid #ddd;
+	background:#fff url(../images/shaddow.gif) no-repeat left top;
+	font:11px Arial,Helvetica,sans-serif;
+	color:#646464;
+	padding:5px 7px;
+	width:80px;
+	float:left;
+	margin:0 10px 0 0;
+}
+#main fieldset .text-long:focus,#main fieldset .text-medium:focus,#main fieldset .text-small:focus,#main fieldset textarea:focus {
+	background:#fdfcf6 url(../images/shaddow-hover.gif) no-repeat left
+		top;
+}
+#main fieldset textarea {
+	border:1px solid #ddd;
+	background:#fff url(../images/shaddow.gif) no-repeat left top;
+	font:11px Arial,Helvetica,sans-serif;
+	color:#646464;
+	padding:5px 7px;
+	width:365px;
+	float:left;
+	margin:0 10px 0 0;
+	height:60px;
+	overflow:hidden;
+}
+#main fieldset label.inline:not(.error) {
+	color:#969696;
+	position:absolute;
+	margin:8px 5px;
+}
+#main fieldset .left {
+	float:left;
+	width:60%
+}
+#main fieldset .right {
+	float:right;
+	width:40%;
+	line-height:150%
+}
+#footer {
+	margin:15px 0 20px 0;
+	font-size:11px;
+	line-height:11px;
+	color:#9B9B9B;
+	padding:0 0 0 5px;
+}
+#footer a {
+	color:#9B9B9B;
+}
+#footer a:hover {
+	text-decoration:none;
+}
+#box {
+	position:absolute;
+	display:none;
+	padding:10px;
+	border:10px solid #e3e3e3;
+	z-index:2000;
+}
+#mask {
+	position:absolute;
+	display:none;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+	background:#000000;
+	z-index:1500;
+}
+#content {
+	background:#ffffff;
+	font-size:1.1em;
+}
+.tips {
+	display:inline-block;
+	width:14px;
+	height:14px;
+	border-radius:7px;
+	background:#FF3A00;
+	text-align:center;
+	line-height:14px;
+	font-size:10px;
+	color:#fff;
+	position:absolute;
+	top:-6px;
+	left:-14px;
+}
+.dialog-overlay {
+	opacity:0.7;
+	filter:alpha(opacity:50);
+	background:#333;
+}
+.dialog {
+	background:#eee;
+	padding:10px;
+	opacity:0.9;
+	filter:alpha(opacity:70);
+	border-radius:3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	_width:expression('200px');
+}
+.dialog .bar {
+	cursor:move;
+	color:#fff;
+	background:#333;
+	padding:6px;
+	min-height:15px;
+	font-weight:bold;
+	/* 不指定此值，在title和closeText都为空的情况下，可能移动条会消失不见 */
+    _height:expression('20px');
+	/* ie6下不指定高度，标题栏会变得很小 */
+	border-radius:3px 3px 0 0;
+}
+.dialog .bar .title {
+	float:left;
+	margin-right:10px;
+}
+.dialog .bar .close {
+	float:right;
+	cursor:pointer;
+	text-decoration:none;
+}
+.dialog .content {
+	background:#fff;
+	border-radius:0 0 3px 3px;
+}
+.dialog iframe {
+	height:100%;
+	width:100%;
+	border-radius:0 0 3px 3px;
+}
+/* 指定图像最大尺寸，不需要可以删除。 */
+.content img {
+	overflow:auto;
+	max-width:700px;
+	max-height:500px;
+	/* IE6版的max-width和max-height，但是也会有点BUG在图片太小时，也会显示最大值，需要同时指定width和height */
+    _width:expression((document.body.clientWidth > 700) ? '700px':'auto');
+	_height:expression((document.body.clientHeight > 500) ? '500px':'auto');
+}

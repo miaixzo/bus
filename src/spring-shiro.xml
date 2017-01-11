@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/cache 
+    http://www.springframework.org/schema/cache/spring-cache.xsd"
+	default-lazy-init="true">
+
+	<!-- 缓存管理器 使用Ehcache实现 -->
+	<bean id="ehCacheManagerFactory"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:shiro-ehcache.xml" />
+		<property name="shared" value="false" />
+	</bean>
+
+	<!-- spring对ehcache的缓存管理-->
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehCacheManagerFactory" />
+	</bean>
+	
+	<!-- 使用缓存annotation 配置-->
+	<cache:annotation-driven cache-manager="ehCacheManager" />
+	
+	<!-- shiro对ehcache的缓存管理直接使用spring的缓存工厂 -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="ehCacheManagerFactory" />
+	</bean>
+	
+	<!-- 凭证匹配器 -->
+	<bean id="hashedCredentials2Matcher"
+		class="com.ukettle.basics.shiro.extend.authc.HashedCredentials2Matcher">
+		<constructor-arg ref="cacheManager" />
+		<property name="hashAlgorithmName" value="SHA1" />
+		<property name="hashIterations" value="1024" />
+		<property name="storedCredentialsHexEncoded" value="true" />
+	</bean>
+
+	<bean id="authorizing2Realm" class="com.ukettle.basics.shiro.extend.realm.Authorizing2Realm">
+		<property name="credentialsMatcher" ref="hashedCredentials2Matcher" />
+		<property name="cachingEnabled" value="true" />
+		<property name="authenticationCachingEnabled" value="true" />
+		<property name="authenticationCacheName" value="authenticationCache" />
+		<property name="authorizationCachingEnabled" value="true" />
+		<property name="authorizationCacheName" value="authorizationCache" />
+	</bean>
+
+	<!-- 会话ID生成器 -->
+	<bean id="sessionIdGenerator"
+		class="com.ukettle.basics.shiro.extend.session.DefaultSessionIdGenerator" />
+
+	<!-- 会话DAO -->
+	<bean id="sessionDAO"
+		class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+		<property name="activeSessionsCacheName" value="activeSessionsCache" />
+		<property name="sessionIdGenerator" ref="sessionIdGenerator" />
+	</bean>
+	<!-- 会话验证调度器 -->
+	<bean id="sessionValidationScheduler"
+		class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+		<property name="interval" value="150000" />
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+
+	<!-- 会话Cookie模板:JSESSIONID,本系统_SESSION_ID, 问题：JETTY, TOMCAT等容器冲突 -->
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg name="name" value="SESSION_ID" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="180000" />
+	</bean>
+
+	<!-- 会话管理器: 如何创建及管理用户的session生命周期，提供良好的session体验 -->
+	<bean id="sessionManager"
+		class="com.ukettle.basics.shiro.extend.session.DefaultSessionManager">
+		<property name="globalSessionTimeout" value="1800000" />
+		<property name="deleteInvalidSessions" value="true" />
+		<property name="sessionValidationSchedulerEnabled" value="true" />
+		<property name="sessionValidationScheduler" ref="sessionValidationScheduler" />
+		<property name="sessionDAO" ref="sessionDAO" />
+		<property name="sessionIdCookieEnabled" value="true" />
+		<property name="sessionIdCookie" ref="sessionIdCookie" />
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- 单realm应用。如果有多个realm，使用‘realms’属性代替 -->
+		<property name="realm" ref="authorizing2Realm" />
+		<!-- 此属性如果不配置，程序会创建默认Servlet容器会话 
+		<property name="sessionManager" ref="sessionManager" />-->
+		<!-- 此属性也可以配其他第三方缓存，如Memcached。如果不配置，则无法完成分布式集群 -->
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+	<!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod"
+			value="org.apache.shiro.SecurityUtils.setSecurityManager" />
+		<property name="arguments" ref="securityManager" />
+	</bean>
+
+	<!-- Shiro生命周期处理器-->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!-- AOP式方法级权限检查 -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor" />
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+	<!-- 并发登录人数控制,maxSession:人数 
+		exitAfter：是否踢出后来登录的，默认是false；即后者登录的用户踢出前者登录的用户; 
+		exitUrl：被踢出后重定向到的地址 
+		maxSession：同一个用户最大的会话数，默认1；比如2的意思是同一个用户允许最多同时两个人登录;
+		sessionManager：用于根据会话ID，获取会话进行踢出操作的;
+		cacheManager：使用cacheManager获取相应的cache来缓存用户登录的会话；用于保存用户—会话之间的关系的;
+	-->
+	<bean id="accessControl2Filter"
+		class="com.ukettle.basics.shiro.extend.filter.AccessControl2Filter">
+		<property name="forcedAfter" value="false" />
+		<property name="forcedUrl" value="/Index?ForcedExit" />
+		<property name="maxSession" value="3" />
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+
+	<!-- 是用于实现身份认证的拦截器(authc) 
+		1.首先得到请求参数backUrl,即登录成功重定向到的地址;
+		2.然后保存保存请求到会话,并重定向到登录地址(server模块)
+		3.登录成功后,返回地址按照如下顺序获取:backUrl 当前请求地址,defaultBackUrl(successUrl) 
+	-->
+	<bean id="authentication2Filter"
+		class="com.ukettle.basics.shiro.extend.filter.Authentication2Filter" />
+
+	<!-- 基于Form表单的身份验证过滤器 -->
+	<bean id="formAuthentication2Filter"
+		class="com.ukettle.basics.shiro.extend.filter.FormAuthentication2Filter" />
+		
+	<!-- Shiro的Web过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<!-- 可根据项目的URL进行替换 -->
+		<property name="loginUrl" value="/Index" />
+		<property name="successUrl" value="" />
+		<property name="unauthorizedUrl" value="/Index?unauthorized" />
+		<property name="filters">
+			<map>
+				<entry key="authc" value-ref="authentication2Filter" />
+				<entry key="authc" value-ref="formAuthentication2Filter" />
+				<entry key="forced" value-ref="accessControl2Filter" />
+			</map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/Index = authc
+				/logout = logout
+				/Html/** = anon
+				/Widget/Kettle/execute = anon
+				/** = user
+			</value>
+		</property>
+	</bean>
+	
+</beans>

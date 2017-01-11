@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ukettle.widget.quartz.mapper.QuartzGroupMapper">
+
+	<insert id="insert" parameterType="Q_Group">
+		insert into Q_GROUP (
+			id
+			, name
+			, type
+			, status
+			, description
+			, creator
+			, created
+		)
+		values (
+			#{id},
+			#{name},
+			#{type},
+			#{status},
+			#{description},
+			#{creator},
+			#{created}
+		)
+	</insert>
+
+	<delete id="delete" parameterType="Q_Group">
+		delete from Q_GROUP where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="Q_Group">
+		update Q_GROUP
+		<set>
+			<if test="name != null and name != '' ">
+				name = #{name},
+			</if>
+			<if test="type != null and type != '' ">
+				type = #{type},
+			</if>
+			<if test="status != null and status != '' ">
+				status = #{status},
+			</if>
+			<if test="description != null and description != '' ">
+				description = #{description},
+        	</if>
+			<if test="creator != null and creator != '' ">
+				creator = #{creator},
+        	</if>
+			<if test="created != null and created != '' ">
+				created = #{created}
+        	</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="select" parameterType="Q_Group" resultType="Q_Group">
+		<![CDATA[
+			SELECT id
+			     , name
+			     , type
+			     , status
+			     , description
+			     , creator
+			     , created
+			FROM Q_GROUP
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				id = #{id}
+		    </if>
+		</trim>
+	</select>
+
+	<select id="selectByWhere" parameterType="Q_Group" resultType="Q_Group"> 
+		<![CDATA[
+			SELECT id
+			     , name
+			     , type
+			     , status
+			     , description
+			     , creator
+			     , created
+			FROM Q_GROUP
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				id = #{id}
+		    </if>
+			<if test="name != null">
+				and name = #{name}
+			</if>
+			<if test="type != null">
+				and type = #{type}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="description != null">
+				and description = #{description}
+        	</if>
+			<if test="creator != null">
+				and creator = #{creator}
+        	</if>
+			<if test="created != null">
+				and created = #{created}
+        	</if>
+		</trim>
+		order by created desc
+	</select>
+
+</mapper>

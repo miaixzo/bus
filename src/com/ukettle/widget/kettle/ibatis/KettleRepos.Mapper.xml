@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ukettle.widget.kettle.mapper.KettleReposMapper">
+
+	<insert id="insert" parameterType="K_Repos">
+		insert into K_REPOS (
+		id
+		, name
+		, type
+		, status
+		, user
+		, pass
+		, dialect
+		, server
+		, port
+		, access
+		, db
+		, username
+		, password
+		, version
+		, remark
+		)
+		values (
+		#{id},
+		#{name},
+		#{type},
+		#{status},
+		#{user},
+		#{pass},
+		#{dialect},
+		#{server},
+		#{port},
+		#{access},
+		#{db},
+		#{username},
+		#{password},
+		#{version},
+		#{remark},
+		)
+	</insert>
+
+	<delete id="delete" parameterType="K_Repos">
+		delete from K_REPOS where id = #{id}
+	</delete>
+
+	<update id="update" parameterType="K_Repos">
+		update K_REPOS
+		<set>
+			<if test="name != null and name != '' ">
+				name = #{name},
+			</if>
+			<if test="type != null and type != '' ">
+				type = #{type},
+			</if>
+			<if test="status != null and status != '' ">
+				status = #{status},
+			</if>
+			<if test="user != null and user != '' ">
+				user = #{user},
+			</if>
+			<if test="pass != null and pass != '' ">
+				pass = #{pass},
+			</if>
+			<if test="server != null and server != '' ">
+				server = #{server},
+        	</if>
+			<if test="port != null and port != '' ">
+				port = #{port},
+        	</if>
+			<if test="db != null and db != '' ">
+				db = #{db},
+        	</if>
+			<if test="dialect != null and dialect != '' ">
+				dialect = #{dialect},
+        	</if>
+			<if test="username != null and username != '' ">
+				username = #{username},
+        	</if>
+			<if test="password != null and password != '' ">
+				password = #{password},
+        	</if>
+			<if test="access != null and access != '' ">
+				access = #{access},
+        	</if>
+			<if test="version != null and version != '' ">
+				version = #{version},
+        	</if>
+			<if test="remark != null and remark != '' ">
+				remark = #{remark}
+        	</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="select" parameterType="K_Repos" resultType="K_Repos">
+		<![CDATA[
+			SELECT id
+				, name
+				, type
+				, status
+				, user
+				, pass
+				, dialect
+				, server
+				, port
+				, access
+				, db
+				, username
+				, password
+				, version
+				, remark
+			FROM K_REPOS
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				id = #{id}
+		    </if>
+			<if test="name != null">
+				and name = #{name}
+		    </if>
+		</trim>
+	</select>
+	
+	<select id="selectById" parameterType="string" resultType="string">
+		<![CDATA[
+			SELECT name FROM K_REPOS WHERE id = #{id}
+	       ]]>
+	</select>
+
+	<select id="selectByWhere" parameterType="K_Repos" resultType="K_Repos"> 
+		<![CDATA[
+			SELECT id
+				, name
+				, type
+				, status
+				, user
+				, pass
+				, dialect
+				, server
+				, port
+				, access
+				, db
+				, username
+				, password
+				, version
+				, remark
+			FROM K_REPOS
+        ]]>
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="id != null">
+				id = #{id}
+		    </if>
+		    <if test="type != null">
+				and type = #{type}
+		    </if>
+			<if test="status != null">
+				and status = #{status}
+		    </if>
+			<if test="name != null">
+				and name = #{name}
+		     </if>
+			<if test="dialect != null">
+				and dialect = #{dialect}
+		     </if>
+			<if test="version != null">
+				and version = #{version}
+		     </if>
+		</trim>
+		order by id desc
+	</select>
+
+</mapper>
