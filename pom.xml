@@ -7,21 +7,6 @@
     <version>1.0.3.3</version>
     <packaging>war</packaging>
 
-    <name>kettle</name>
-    <url>http://maven.apache.org</url>
-
-    <repositories>
-        <repository>
-            <id>pentaho-kettle</id>
-            <name>pentaho-kettle</name>
-            <url>http://repository.pentaho.org/artifactory/repo/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.src.directory>src/main/java</project.src.directory>
@@ -32,7 +17,6 @@
         <org.codehaus.jackson.version>1.8.10</org.codehaus.jackson.version>
         <com.sun.jersey.version>1.17.1</com.sun.jersey.version>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-
         <shiro.version>1.2.1</shiro.version>
     </properties>
 
@@ -435,17 +419,28 @@
                 <kettle.www.execute>org.ukettle.service.execute</kettle.www.execute>
                 <kettle.www.jdbc.driver>com.mysql.jdbc.Driver</kettle.www.jdbc.driver>
                 <kettle.www.jdbc.url>
-                    <![CDATA[jdbc:mysql://58.215.139.129:3305/kettle?useUnicode=true&characterEncoding=UTF-8]]></kettle.www.jdbc.url>
-                <kettle.www.jdbc.username>leaves</kettle.www.jdbc.username>
-                <kettle.www.jdbc.password>Passw5rd.0</kettle.www.jdbc.password>
-                <kettle.www.mail.smtp>smtp.ukettle.com</kettle.www.mail.smtp>
+                    <![CDATA[jdbc:mysql://127.0.0.1:3306/kettle?useUnicode=true&characterEncoding=UTF-8]]></kettle.www.jdbc.url>
+                <kettle.www.jdbc.username>xxxx</kettle.www.jdbc.username>
+                <kettle.www.jdbc.password>xxxx</kettle.www.jdbc.password>
+                <kettle.www.mail.smtp>xxxx</kettle.www.mail.smtp>
                 <kettle.www.mail.port>25</kettle.www.mail.port>
                 <kettle.www.mail.sender>service</kettle.www.mail.sender>
-                <kettle.www.mail.username>service@ukettle.org</kettle.www.mail.username>
+                <kettle.www.mail.username>xxxx</kettle.www.mail.username>
                 <kettle.www.mail.password>xxx</kettle.www.mail.password>
-                <kettle.www.mail.password>Passw5rd.0</kettle.www.mail.password>
             </properties>
         </profile>
     </profiles>
+
+    <repositories>
+        <repository>
+            <id>pentaho-kettle</id>
+            <name>pentaho-kettle</name>
+            <url>http://repository.pentaho.org/artifactory/repo/</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>
