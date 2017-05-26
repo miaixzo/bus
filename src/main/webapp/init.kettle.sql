@@ -897,6 +897,11 @@ INSERT INTO U_ALL_USER VALUES
   ('51ff0d7d975f475110fe800s', 'service', 'service@ukettle.com', '4f1dc52f136afc2cdff09b823f3de549824c3411', 'e3f80f5780749abf', 'Kettle', 'ENABLED', NULL, NULL, NULL, '2013-07-07 14:26:47');
 
 -- 
+-- Dumping data for table K_REPOS
+--
+INSERT INTO K_REPOS VALUES
+('51ff0d7d975f475110fe009s', 'kettle4db', 'KettleDatabaseRepository', 'ENABLED', 'admin', 'admin', 'MYSQL', '127.0.0.1', '3306', 'Native', 'kettle', 'root', 'root123', NULL, NULL);
+-- 
 -- Enable foreign keys
 -- 
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
