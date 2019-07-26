@@ -1,0 +1,392 @@
+<fieldset class="layui-elem-field layui-field-title">
+    <legend><a name="onnav">{{ d.tagname }}&nbsp;-&nbsp;{{ d.mmeta.summary }}</a></legend>
+    <div class="layui-field-box">
+        <div class="layui-tab layui-tab-brief" lay-filter="apiDefine">
+            <ul class="layui-tab-title api-tab-title">
+                <li class="layui-this">Interface</li>
+                <li>Debug</li>
+            </ul>
+            <div class="layui-tab-content main-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-collapse">
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">Summary</h2>
+                            <div class="layui-colla-content layui-show">
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="180">
+                                        <col>
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <td>Method</td>
+                                        <td><span
+                                                class="api-badge {{ d.dhttpmethod}}">{{ d.dhttpmethod.toUpperCase() }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>URL</td>
+                                        <td>{{ null != d.dpath ? d.dpath : "" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>{{ null != d.mmeta.summary ? d.mmeta.summary : "" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description</td>
+                                        <td>{{ null != d.mmeta.description ? d.mmeta.description : "" }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">Parameters</h2>
+                            <div class="layui-colla-content">
+                                {{# if(d.mmeta.hasOwnProperty("parameters")) {}}
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="120">
+                                        <col width="120">
+                                        <col width="80">
+                                        <col width="80">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Data Type</th>
+                                        <th>Required</th>
+                                        <th>Type</th>
+                                        <th>Default</th>
+                                        <th>Description</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{# layui.each(d.mmeta.parameters, function(i, param){ }}
+                                    <tr>
+                                        <td>{{ param.name }}</td>
+                                        <td>{{ null != param.showtype ? param.showtype : ""}}</td>
+                                        <td><span
+                                                class="api-badge">{{ null != param.required ? param.required : "" }}</span>
+                                        </td>
+                                        <td><span class="api-badge">{{ null != param.in ? param.in : "" }}</span></td>
+                                        <td>{{ null != param.default ? param.default : "" }}</td>
+                                        <td>{{ null != param.description ? param.description : ""}}</td>
+                                    </tr>
+                                    {{# }); }}
+                                    </tbody>
+                                </table>
+                                {{# } else { }}
+                                <span class="data-none">Nothing</span>
+                                {{# } }}
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">Response Body</h2>
+                            <div class="layui-colla-content">
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="120">
+                                        <col width="600">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>Response Code</th>
+                                        <th>Response description</th>
+                                        <th>Response Body</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{# layui.each(d.mmeta.responses, function(status, response){ }}
+                                    <tr>
+                                        <td rowspan="{{ response.hasOwnProperty('headers')?2:1 }}">{{ status }}</td>
+                                        <td>{{ response.description }}</td>
+                                        <td>{{ response.showtype }}</td>
+                                    </tr>
+                                    {{# if(response.hasOwnProperty("headers")){ }}
+                                    <tr class="api-response-header">
+                                        <td colspan="2">
+                                            <fieldset class="layui-elem-field layui-field-title">
+                                                <legend>Response Headers</legend>
+                                            </fieldset>
+                                            <table class="layui-table" lay-skin="nob">
+                                                <colgroup>
+                                                    <col>
+                                                    <col>
+                                                    <col>
+                                                </colgroup>
+                                                <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {{# layui.each(response.headers, function(hname, hmeta){ }}
+                                                <tr>
+                                                    <td>{{ hname }}</td>
+                                                    <td>{{ null != hmeta.showtype ? mmeta.showtype : "" }}</td>
+                                                    <td>{{ null != hmeta.description ? mmeta.description : "" }}</td>
+                                                </tr>
+                                                {{# }); }}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    {{# } }}
+                                    {{# }); }}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {{# if(!layui.jquery.isEmptyObject(d.mmeta.models)){ }}
+                        <div class="layui-colla-item depend-model">
+                            <h2 class="layui-colla-title">Depend Data</h2>
+                            <div class="layui-colla-content">
+                                {{# layui.each(d.mmeta.models, function(name, model){ }}
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="120">
+                                        <col width="200">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th colspan="5" mid="{{ name }}">{{ name }}</th>
+                                    </tr>
+                                    {{# if(model.hasOwnProperty("properties")){ }}
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                    {{# } }}
+                                    </thead>
+                                    <tbody>
+                                    {{# if(model.hasOwnProperty("properties")){ }}
+                                    {{# layui.each(model.properties, function(prop, propmeta){ }}
+                                    <tr>
+                                        <td>{{ prop }}</td>
+                                        <td>{{ null != propmeta.showtype ? propmeta.showtype : "" }}</td>
+                                        <td>{{ null != propmeta.description ? propmeta.description : "" }}</td>
+                                    </tr>
+                                    {{# }); }}
+                                    {{# }else{ }}
+                                    <tr>
+                                        <td colspan="5">Nothing</td>
+                                    </tr>
+                                    {{# } }}
+                                    </tbody>
+                                </table>
+                                {{# }); }}
+                            </div>
+                        </div>
+                        {{# } }}
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <fieldset class="layui-elem-field request-param">
+                        <legend>Parameters</legend>
+                        <div class="layui-field-box">
+                            {{# if(d.mmeta.hasOwnProperty("parameters")) {}}
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="120">
+                                    <col width="100">
+                                    <col width="80">
+                                    <col width="80">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Data Type</th>
+                                    <th>Required</th>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{# layui.each(d.mmeta.parameters, function(i, param){ }}
+                                <tr>
+                                    <td>{{ param.name }}</td>
+                                    <td>{{ param.showtype }}</td>
+                                    <td><span class="api-badge">{{ param.required }}</span></td>
+                                    <td><span class="api-badge">{{ param.in }}</span></td>
+                                    {{# if(param.in == "body" && param.showtype != "string"){ }}
+                                    <td>
+                                        <textarea rows="10" dreq="{{ param.required }}"
+                                                  dtype="{{ param.in.toLowerCase() }}" dprop="{{ param.name }}"
+                                                  class="layui-textarea">{{ layui.nswagger.jsonmock.mock(param.itemtype) }}</textarea>
+                                    </td>
+                                    {{# } else if(param.in == "formData" && param.type == "file") { }}
+                                    <td>
+                                        <button dreq="{{ param.required }}" dtype="{{ param.in.toLowerCase() }}"
+                                                dprop="{{ param.name }}" type="button" class="layui-btn btnUpload"><i
+                                                class="layui-icon">&#xe67c;</i>Upload
+                                        </button>
+                                    </td>
+                                    {{# } else { }}
+                                    <td>
+                                        <input dreq="{{ param.required }}" dtype="{{ param.in.toLowerCase() }}"
+                                               dprop="{{ param.name }}" type="text" name="username" autocomplete="off"
+                                               class="layui-input" value="{{ param.default || '' }}"/>
+                                    </td>
+                                    {{# } }}
+                                </tr>
+                                {{# }); }}
+                                </tbody>
+                            </table>
+                            {{# } else { }}
+                            <span class="data-none">Nothing</span>
+                            {{# } }}
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field request-testing">
+                        <legend>Testing</legend>
+                        <div class="layui-field-box result-box"></div>
+                        <div class="layui-form layui-form-pane">
+                            <div class="layui-form-item" style="padding-top:10px">
+                                <label class="layui-form-label lal-api-url {{ d.dhttpmethod }}">
+                                    {{ d.dhttpmethod.toUpperCase() }}
+                                </label>
+                                <div class="layui-input-inline ipt-api-url">
+                                    <input type="text" autocomplete="off" class="layui-input" value="{{ d.dpath }}"
+                                           disabled/>
+                                </div>
+                                <div class="layui-input-inline">
+                                    <button class="layui-btn send-btn">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field request-console">
+                        <legend>Console</legend>
+                        <div class="layui-field-box result-box"></div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<script>
+
+    var $ = layui.jquery,
+        layer = layui.layer,
+        element = layui.element,
+        upload = layui.upload,
+        mainOffsetTop = $(".main-content").offset().top;
+
+    var formUpload = upload.render({
+        elem: ".btnUpload",
+        auto: false
+    });
+
+    element.on('tab(apiDefine)', function () {
+        scrollToEl(0);
+    });
+
+    function scrollToEl(top) {
+        $(".main-content").scrollTop(top - mainOffsetTop + $(".main-content").scrollTop());
+    }
+
+    function gotoModel(mid) {
+        $(".api-tab-title :first").click();
+        $(".depend-model .layui-colla-content").addClass("layui-show");
+        scrollToEl($("th[mid='" + mid + "'").offset().top);
+    }
+
+    function consoleLog(msg) {
+        $(".request-console .layui-field-box").append("<p>[" + new Date().toLocaleString() + "]" + msg + "</p>");
+        scrollToEl(10000);
+    }
+
+    $(".send-btn").click(function () {
+        try {
+            $(".request-console .layui-field-box").empty();
+            $(".request-console").show();
+
+            var headers = {}, paths = {}, pbody, querys = {};
+            var durl = "{{ d.apidoc.schemes[0] }}" + "://" + "{{ d.apidoc.host + (d.apidoc.basePath.length == 1?'':d.apidoc.basePath) + d.dpath }}";
+            var httpmethod = "{{ d.dhttpmethod.toUpperCase() }}";
+            var checkok = true;
+            var bodydata = null;
+            var fileProp;
+            consoleLog(" Send " + httpmethod + " request");
+            $.each($(".request-param input, .request-param textarea"), function (i, item) {
+                if (!checkok) {
+                    return;
+                }
+                var pval = $(item).val();
+                var dtype = $(item).attr("dtype");
+                var dprop = $(item).attr("dprop");
+                var dreq = $(item).attr("dreq");
+                if ($(item).attr("type") == "file") {
+                    btnFile = $(item).prev();
+                    dtype = $(btnFile).attr("dtype");
+                    dprop = $(btnFile).attr("dprop");
+                    dreq = $(btnFile).attr("dreq");
+                    fileProp = dprop;
+                }
+                if (dreq == "true" && pval == "") {
+                    checkok = false;
+                    layer.msg("required field : " + dprop, {icon: 5});
+                    return;
+                }
+                if (pval && typeof(pval) != "undefined") {
+                    if (dtype == "header") {
+                    } else if (dtype == "path") {
+                        paths[dprop] = pval;
+                    } else if (dtype == "body") {
+                        bodydata = JSON.parse(pval);
+                    } else {
+                        querys[dprop] = pval;
+                    }
+                    $.each(paths, function (pvar, pval) {
+                        durl = durl.replace("{" + pvar + "}", pval);
+                    });
+                }
+            });
+            if (!checkok) {
+                return;
+            }
+            layer.load();
+            if ($(".request-param .layui-upload-file").length <= 0) {
+                var ajaxopt = {
+                    method: "{{ d.dhttpmethod.toUpperCase() }}",
+                    data: bodydata ? JSON.stringify(bodydata) : querys,
+                    headers: headers,
+                    complete: function (result) {
+                        layer.closeAll('loading');
+                        consoleLog(" " + httpmethod + " " + durl + ' ' + result['status'] + " " + result['statusText']);
+                        consoleLog(" Header { " + result.getAllResponseHeaders() + " }");
+                        if (result.hasOwnProperty("responseJSON")) {
+                            consoleLog(" Responses：" + result['responseJSON']);
+                        } else if (result.hasOwnProperty('responseText')) {
+                            consoleLog(" Responses：" + result['responseText']);
+                        }
+                    },
+                    timeout: 30000
+                };
+                bodydata && (ajaxopt.contentType = "application/json; charset=utf-8");
+                $.ajax(durl, ajaxopt);
+            } else {
+                formUpload.config.field = fileProp;
+                formUpload.config.before = function () {
+                    formUpload.config.url = durl;
+                    formUpload.config.data = querys;
+                };
+                formUpload.config.done = function (res) {
+                    layer.closeAll('loading');
+                    consoleLog(" Responses：" + res);
+                };
+                formUpload.upload();
+            }
+        } catch (e) {
+            consoleLog("error：" + e);
+        }
+    });
+</script>

@@ -1,0 +1,122 @@
+package org.aoju.bus.core.date;
+
+import org.aoju.bus.core.consts.Fields;
+import org.aoju.bus.core.utils.DateUtils;
+
+/**
+ * 计时器<br>
+ * 计算某个过程花费的时间，精确到毫秒
+ *
+ * @author aoju.org
+ * @version 3.0.1
+ * @group 839128
+ * @since JDK 1.8
+ */
+public class TimeInterval {
+
+    private long time;
+    private boolean isNano;
+
+    public TimeInterval() {
+        this(false);
+    }
+
+    public TimeInterval(boolean isNano) {
+        this.isNano = isNano;
+        start();
+    }
+
+    /**
+     * @return 开始计时并返回当前时间
+     */
+    public long start() {
+        time = DateUtils.current(isNano);
+        return time;
+    }
+
+    /**
+     * @return 重新计时并返回从开始到当前的持续时间
+     */
+    public long intervalRestart() {
+        long now = DateUtils.current(isNano);
+        long d = now - time;
+        time = now;
+        return d;
+    }
+
+    /**
+     * 重新开始计算时间（重置开始时间）
+     *
+     * @return this
+     * @since 3.0.1
+     */
+    public TimeInterval restart() {
+        time = DateUtils.current(isNano);
+        return this;
+    }
+
+    /**
+     * 从开始到当前的间隔时间（毫秒数）<br>
+     * 如果使用纳秒计时，返回纳秒差，否则返回毫秒差
+     *
+     * @return 从开始到当前的间隔时间（毫秒数）
+     */
+    public long interval() {
+        return DateUtils.current(isNano) - time;
+    }
+
+    /**
+     * 从开始到当前的间隔时间（毫秒数）
+     *
+     * @return 从开始到当前的间隔时间（毫秒数）
+     */
+    public long intervalMs() {
+        return isNano ? interval() / 1000000L : interval();
+    }
+
+    /**
+     * 从开始到当前的间隔秒数，取绝对值
+     *
+     * @return 从开始到当前的间隔秒数，取绝对值
+     */
+    public long intervalSecond() {
+        return intervalMs() / Fields.Unit.SECOND.getMillis();
+    }
+
+    /**
+     * 从开始到当前的间隔分钟数，取绝对值
+     *
+     * @return 从开始到当前的间隔分钟数，取绝对值
+     */
+    public long intervalMinute() {
+        return intervalMs() / Fields.Unit.MINUTE.getMillis();
+    }
+
+    /**
+     * 从开始到当前的间隔小时数，取绝对值
+     *
+     * @return 从开始到当前的间隔小时数，取绝对值
+     */
+    public long intervalHour() {
+        return intervalMs() / Fields.Unit.HOUR.getMillis();
+    }
+
+    /**
+     * 从开始到当前的间隔天数，取绝对值
+     *
+     * @return 从开始到当前的间隔天数，取绝对值
+     */
+    public long intervalDay() {
+        return intervalMs() / Fields.Unit.DAY.getMillis();
+    }
+
+    /**
+     * 从开始到当前的间隔周数，取绝对值
+     *
+     * @return 从开始到当前的间隔周数，取绝对值
+     */
+    public long intervalWeek() {
+        return intervalMs() / Fields.Unit.WEEK.getMillis();
+    }
+
+}

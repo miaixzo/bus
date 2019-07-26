@@ -1,0 +1,294 @@
+package org.aoju.bus.core.io.file;
+
+import org.aoju.bus.core.io.LineHandler;
+import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.utils.CharsetUtils;
+import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.utils.StringUtils;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * 文件读取器
+ *
+ * @author aoju.org
+ * @version 3.0.1
+ * @group 839128
+ * @since JDK 1.8
+ */
+public class FileReader extends FileWrapper {
+
+    /**
+     * 构造
+     *
+     * @param file    文件
+     * @param charset 编码
+     */
+    public FileReader(File file, Charset charset) {
+        super(file, charset);
+        checkFile();
+    }
+
+    /**
+     * 构造
+     *
+     * @param file    文件
+     * @param charset 编码
+     */
+    public FileReader(File file, String charset) {
+        this(file, CharsetUtils.charset(charset));
+    }
+
+    /**
+     * 构造
+     *
+     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param charset  编码
+     */
+    public FileReader(String filePath, Charset charset) {
+        this(FileUtils.file(filePath), charset);
+    }
+
+    /**
+     * 构造
+     *
+     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param charset  编码，使用 {@link CharsetUtils#charset(String)}
+     */
+    public FileReader(String filePath, String charset) {
+        this(FileUtils.file(filePath), CharsetUtils.charset(charset));
+    }
+
+    /**
+     * 构造<br>
+     * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
+     *
+     * @param file 文件
+     */
+    public FileReader(File file) {
+        this(file, DEFAULT_CHARSET);
+    }
+
+    /**
+     * 构造<br>
+     * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
+     *
+     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     */
+    public FileReader(String filePath) {
+        this(filePath, DEFAULT_CHARSET);
+    }
+
+    /**
+     * 创建 FileReader
+     *
+     * @param file    文件
+     * @param charset 编码
+     * @return {@link FileReader}
+     */
+    public static FileReader create(File file, Charset charset) {
+        return new FileReader(file, charset);
+    }
+
+    /**
+     * 创建 FileReader, 编码：{@link FileWrapper#DEFAULT_CHARSET}
+     *
+     * @param file 文件
+     * @return {@link FileReader}
+     */
+    public static FileReader create(File file) {
+        return new FileReader(file);
+    }
+
+    /**
+     * 读取文件所有数据<br>
+     * 文件的长度不能超过 {@link Integer#MAX_VALUE}
+     *
+     * @return 字节码
+     * @throws CommonException IO异常
+     */
+    public byte[] readBytes() throws CommonException {
+        long len = file.length();
+        if (len >= Integer.MAX_VALUE) {
+            throw new CommonException("File is larger then max array size");
+        }
+
+        byte[] bytes = new byte[(int) len];
+        FileInputStream in = null;
+        int readLength;
+        try {
+            in = new FileInputStream(file);
+            readLength = in.read(bytes);
+            if (readLength < len) {
+                throw new IOException(StringUtils.format("File length is [{}] but read [{}]!", len, readLength));
+            }
+        } catch (Exception e) {
+            throw new CommonException(e);
+        } finally {
+            IoUtils.close(in);
+        }
+
+        return bytes;
+    }
+
+    /**
+     * 读取文件内容
+     *
+     * @return 内容
+     * @throws CommonException IO异常
+     */
+    public String readString() throws CommonException {
+        return new String(readBytes(), this.charset);
+    }
+
+    /**
+     * 从文件中读取每一行数据
+     *
+     * @param <T>        集合类型
+     * @param collection 集合
+     * @return 文件中的每行内容的集合
+     * @throws CommonException IO异常
+     */
+    public <T extends Collection<String>> T readLines(T collection) throws CommonException {
+        BufferedReader reader = null;
+        try {
+            reader = FileUtils.getReader(file, charset);
+            String line;
+            while (true) {
+                line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                collection.add(line);
+            }
+            return collection;
+        } catch (IOException e) {
+            throw new CommonException(e);
+        } finally {
+            IoUtils.close(reader);
+        }
+    }
+
+    /**
+     * 按照行处理文件内容
+     *
+     * @param lineHandler 行处理器
+     * @throws CommonException IO异常
+     * @since 3.0.9
+     */
+    public void readLines(LineHandler lineHandler) throws CommonException {
+        BufferedReader reader = null;
+        try {
+            reader = FileUtils.getReader(file, charset);
+            IoUtils.readLines(reader, lineHandler);
+        } finally {
+            IoUtils.close(reader);
+        }
+    }
+
+    /**
+     * 从文件中读取每一行数据
+     *
+     * @return 文件中的每行内容的集合
+     * @throws CommonException IO异常
+     */
+    public List<String> readLines() throws CommonException {
+        return readLines(new ArrayList<String>());
+    }
+
+    /**
+     * 按照给定的readerHandler读取文件中的数据
+     *
+     * @param <T>           读取的结果对象类型
+     * @param readerHandler Reader处理类
+     * @return 从文件中read出的数据
+     * @throws CommonException IO异常
+     */
+    public <T> T read(ReaderHandler<T> readerHandler) throws CommonException {
+        BufferedReader reader = null;
+        T result = null;
+        try {
+            reader = FileUtils.getReader(this.file, charset);
+            result = readerHandler.handle(reader);
+        } catch (IOException e) {
+            throw new CommonException(e);
+        } finally {
+            IoUtils.close(reader);
+        }
+        return result;
+    }
+
+    /**
+     * 获得一个文件读取器
+     *
+     * @return BufferedReader对象
+     * @throws CommonException IO异常
+     */
+    public BufferedReader getReader() throws CommonException {
+        return IoUtils.getReader(getInputStream(), this.charset);
+    }
+
+    /**
+     * 获得输入流
+     *
+     * @return 输入流
+     * @throws CommonException IO异常
+     */
+    public BufferedInputStream getInputStream() throws CommonException {
+        try {
+            return new BufferedInputStream(new FileInputStream(this.file));
+        } catch (IOException e) {
+            throw new CommonException(e);
+        }
+    }
+
+    /**
+     * 将文件写入流中
+     *
+     * @param out 流
+     * @return File
+     * @throws CommonException IO异常
+     */
+    public File writeToStream(OutputStream out) throws CommonException {
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            IoUtils.copy(in, out);
+        } catch (IOException e) {
+            throw new CommonException(e);
+        } finally {
+            IoUtils.close(in);
+        }
+        return this.file;
+    }
+
+    /**
+     * 检查文件
+     *
+     * @throws CommonException IO异常
+     */
+    private void checkFile() throws CommonException {
+        if (false == file.exists()) {
+            throw new CommonException("File not exist: " + file);
+        }
+        if (false == file.isFile()) {
+            throw new CommonException("Not a file:" + file);
+        }
+    }
+
+    /**
+     * Reader处理接口
+     *
+     * @param <T> Reader处理返回结果类型
+     * @author Luxiaolei
+     */
+    public interface ReaderHandler<T> {
+        T handle(BufferedReader reader) throws IOException;
+    }
+
+}

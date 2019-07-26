@@ -1,1 +1,0 @@
-<p id="footer"><spring:message code="org.ukettle.Copyright" /></p>
