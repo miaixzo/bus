@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title id="title">Swagger API</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="webjars/css/swagger-ui.css">
+</head>
+<body>
+<script id="template" type="text/template">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header header">
+            <div class="layui-main">
+                <a class="logo" href="./swagger-ui.html"><img src="webjars/img/logo.png" alt="logo"/></a>
+            </div>
+            <div class="layui-form header-form api-quick">
+                <select lay-search lay-filter="api-quick">
+                    <option value="">Search</option>
+                    {{for tags itemVar="~tag"}}
+                    {{props ~root.paths itemVar="~path"}}
+                    {{props prop}}
+                    {{if prop.tags[0] == ~tag.name}}
+                    <option value="{{:key}}::{{:~path.key}}">{{:~tag.name}} - {{:prop.summary}}({{:~path.key}})</option>
+                    {{/if}}
+                    {{/props}}
+                    {{/props}}
+                    {{/for}}
+                </select>
+            </div>
+            <div class="layui-form header-form api-url">
+                <input hidden="hidden" id="iptApiUrl" type="url"
+                       placeholder="Address：{location.protocol}//{location.host}/v2/api-docs" autocomplete="off"
+                       class="layui-input"/>
+                <i class="layui-icon btn-clearurl">&#x1006;</i>
+                <i class="layui-icon btn-gourl">&#x1002;</i>
+            </div>
+        </div>
+        <div class="layui-side layui-bg-black" id="admin-side">
+            <div class="layui-side-scroll" id="admin-navbar-side"
+                 lay-filter="side">
+                <ul class="layui-nav layui-nav-tree beg-navbar">
+                    <li class="layui-nav-item nav-home"><a class="nav-title" href="javascript:;">Home</a></li>
+                    {{for tags itemVar="~tag"}}
+                    {{if name != "basic-error-controller"}}
+                    <li class="layui-nav-item"><a href="javascript:;">
+                        <i class="fa fa-cogs" aria-hidden="true" data-icon="fa-cogs"></i>
+                        <cite>{{:name}}</cite><span class="layui-nav-more"></span></a>
+                        <dl class="layui-nav-child">
+                            {{!--获取tags下面对应的方法--}}
+                            {{props ~root.paths itemVar="~path"}}
+                            {{!--具体方法--}}
+                            {{props prop}}
+                            {{if prop.tags[0] == ~tag.name}}
+                            <dd title="{{:key}} {{:prop.description}}">
+                                <a href="javascript:;" name="a_path" path="{{:~path.key}}" method="{{:key}}"
+                                   operationId="{{:prop.operationId}}"><i class="fa fa-navicon"
+                                                                          data-icon="fa-navicon"></i><cite class="">{{:~path.key}}</cite><br><cite
+                                        class="{{:key}}_font">{{:prop.summary}}</cite></a>
+                            </dd>
+                            {{/if}}
+                            {{/props}}
+                            {{/props}}
+                        </dl>
+                    </li>
+                    {{/if}}
+                    {{/for}}
+                </ul>
+            </div>
+        </div>
+        <div class="layui-body site-content" id="path-body">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend><a href="javascript:;">Home</a></legend>
+                <div class="layui-field-box field-box">
+                    <div class="layui-tab-content">
+                        <div class="layui-collapse">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">API Summary</h2>
+                                <div class="layui-colla-content layui-show">
+                                    <table class="layui-table">
+                                        <colgroup>
+                                            <col width="180">
+                                            <col>
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <td>Title</td>
+                                            <td>{{:info.title}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Description</td>
+                                            <td>{{:info.description}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>API Version</td>
+                                            <td>{{:info.version}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Contact us</td>
+                                            <td class="api-inner-td">
+                                                <table class="layui-table api-inner-table">
+                                                    <colgroup>
+                                                        <col width="120">
+                                                        <col>
+                                                    </colgroup>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>Name</td>
+                                                        <td>{{:info.contact.name || ""}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Email</td>
+                                                        <td>
+                                                            <a href="mailto:{{:info.contact.email}}">
+                                                                {{:info.contact.email || "" }}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>URL</td>
+                                                        <td>
+                                                            <a href="{{ d.info.contact.url || '' }}" target="_blank">
+                                                                {{:info.contact.url || "" }}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">System Info</h2>
+                                <div class="layui-colla-content layui-show">
+                                    <table class="layui-table">
+                                        <colgroup>
+                                            <col width="180">
+                                            <col>
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <td>Website</td>
+                                            <td>{{:host}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ContextPath</td>
+                                            <td>{{:basePath}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Swagger Version</td>
+                                            <td>{{:swagger}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        {{if info.license}}
+        <div class="layui-footer footer">
+            <div class="layui-main">
+                <a href="{{:info.license.url}}" target="blank">{{:info.license.name}}</a></p>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+</script>
+
+<script id="temp_body" type="text/template">
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend><a name="onnav">{{:tags}}&nbsp;-&nbsp;{{:summary}}</a></legend>
+        <div class="layui-field-box field-box">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">Interface</li>
+                    <li>Debug</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <!--Interface-->
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-collapse">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">Summary</h2>
+                                <div class="layui-colla-content layui-show">
+                                    <table class="layui-table">
+                                        <colgroup>
+                                            <col width="150">
+                                            <col width="150">
+                                            <col width="150">
+                                            <col>
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <th>Method-{{:key}}</th>
+                                            <td colspan="3">
+                                                <span class="method {{:method}}">{{:method.toUpperCase()}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>URL</th>
+                                            <td colspan="3">{{:path}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Summary</th>
+                                            <td colspan="3">{{:summary}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Description</th>
+                                            <td colspan="3">{{:description}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Consumes</th>
+                                            <td id="consumes_{{:operationId}}">{{:consumes}}</td>
+                                            <th>Produces</th>
+                                            <td>{{:produces}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">Parameters</h2>
+                                <div class="layui-colla-content">
+                                    <table class="layui-table">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Parameter Type</th>
+                                            <th>Data Type</th>
+                                            <th>Default</th>
+                                            <th>Required</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {{for parameters}}
+                                        <tr>
+                                            <td>{{:name}}</td>
+                                            <td>{{:in}}</td>
+                                            <td>{{:type}}</td>
+                                            <td>{{:default}}</td>
+                                            {{if required}}
+                                            <td><i class="layui-icon layui-icon-ok red_font"></i></td>
+                                            {{else}}
+                                            <td><i class="layui-icon layui-icon-close"></i></td>
+                                            {{/if}}
+                                            <td>{{:description}}</td>
+                                        </tr>
+                                        {{/for}}
+                                        </tbody>
+                                    </table>
+                                    <div id="path-body-request-model"></div>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">Responses</h2>
+                                <div class="layui-colla-content">
+                                    <table class="layui-table">
+                                        <colgroup>
+                                            <col width="150">
+                                            <col width="230">
+                                            <col>
+                                        </colgroup>
+                                        <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Description</th>
+                                            <th>Body</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {{for responses itemVar="~response"}}
+                                        {{props ~root.responses itemVar="~obj"}}
+                                        <tr>
+                                            <td>{{:~obj.key}}</td>
+                                            <td>{{:prop.description}}</td>
+                                            <td>{{:prop.schema}}</td>
+                                        </tr>
+                                        {{/props}}
+                                        {{/for}}
+                                        </tbody>
+                                    </table>
+                                    <div id="path-body-response-model"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Debug-->
+                    <div class="layui-tab-item">
+                        <fieldset class="layui-elem-field layui-legend-title">
+                            <legend>Parameters</legend>
+                            <div class="method-type">
+                                <lable>Parameter Type :</lable>
+                                <input type="hidden" id="content_type_{{:operationId}}" value="form">
+                                <button id="pt_form_{{:operationId}}" type="form" operationId="{{:operationId}}"
+                                        onclick="changeParameterType(this)"
+                                        class="layui-btn layui-btn-xs layui-btn-normal layui-btn-radius">Form
+                                </button>
+                                <button id="pt_json_{{:operationId}}" type="json" operationId="{{:operationId}}"
+                                        onclick="changeParameterType(this)"
+                                        class="layui-btn layui-btn-xs layui-btn-primary layui-btn-radius">Json
+                                </button>
+                            </div>
+                            <textarea class="layui-textarea hide" rows="10" id="text_tp_{{:operationId}}"></textarea>
+                            <form id="form_{{:operationId}}">
+                                <table class="layui-table" id="table_tp_{{:operationId}}">
+                                    <colgroup>
+                                        <col width="150">
+                                        <col width="130">
+                                        <col width="100">
+                                        <col width="80">
+                                        <col width="80">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Parameter Type</th>
+                                        <th>Data Type</th>
+                                        <th>Required</th>
+                                        <th>Description</th>
+                                        <th>Value</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{for parameters}}
+                                    <tr>
+                                        <td>{{:name}}</td>
+                                        {{if in == 'header'}}
+                                        <td><span class="type get">{{:in}}</span></td>
+                                        {{else}}
+                                        <td><span class="type post">{{:in}}</span></td>
+                                        {{/if}}
+                                        <td>{{:type}}</td>
+                                        {{if required}}
+                                        <td><i class="layui-icon layui-icon-ok red_font"></i></td>
+                                        {{else}}
+                                        <td><i class="layui-icon layui-icon-close"></i></td>
+                                        {{/if}}
+                                        <td>{{:description}}</td>
+                                        <td>
+                                            {{if required}}
+                                            {{if type == 'file'}}
+                                            <input type="file" p_operationId="{{:~root.operationId}}" name="{{:name}}"
+                                                   in="{{:in}}"
+                                                   required="required" value="{{:default}}" placeholder="required">
+                                            {{else}}
+                                            <input type="text" p_operationId="{{:~root.operationId}}" name="{{:name}}"
+                                                   in="{{:in}}"
+                                                   required="required" value="{{:default}}" placeholder="required"
+                                                   autocomplete="off"
+                                                   class="layui-input">
+                                            {{/if}}
+                                            {{else}}
+                                            {{if type == 'file'}}
+                                            <input type="file" p_operationId="{{:~root.operationId}}" name="{{:name}}"
+                                                   in="{{:in}}"
+                                                   value="{{:default}}">
+                                            {{else}}
+                                            <input type="text" p_operationId="{{:~root.operationId}}" name="{{:name}}"
+                                                   in="{{:in}}"
+                                                   autocomplete="off" value="{{:default}}" class="layui-input">
+                                            {{/if}}
+                                            {{/if}}
+                                        </td>
+                                    </tr>
+                                    {{/for}}
+                                    </tbody>
+                                </table>
+                            </form>
+                        </fieldset>
+                        <fieldset class="layui-elem-field layui-legend-title">
+                            <legend>Testing</legend>
+                            <div class="layui-form layui-form-pane">
+                                <div class="layui-form-item" style="padding-top:10px">
+                                    <label class="layui-form-label lal-api-url {{:method}}">
+                                        {{:method.toUpperCase()}}
+                                    </label>
+                                    <div class="layui-input-inline ipt-api-url">
+                                        <input type="text" autocomplete="off" class="layui-input" value="{{:path}}"
+                                               disabled/>
+                                    </div>
+                                    <div class="layui-input-inline">
+                                        <button m_operationId="{{:operationId}}" path="{{:path}}" method="{{:method}}"
+                                                class="layui-btn" name="btn_submit"
+                                                onclick="fetching('{{:operationId}}')">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset class="layui-elem-field layui-legend-title">
+                            <legend>Console</legend>
+                            <div class="responseJson">
+                                <div id="response_get"></div>
+                                <pre id="json-response"></pre>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</script>
+
+<script id="temp_body_ref_model" type="text/template">
+    <table class="layui-table">
+        <colgroup>
+            <col width="150">
+            <col width="300">
+            <col>
+        </colgroup>
+        <thead>
+        <tr class="ref_entity">
+            <td colspan="3" id="ref-{{:domId}}-{{:name}}">{{:name}} :</td>
+        </tr>
+        <tr>
+            <th>Properties</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{props properties}}
+        <tr>
+            <td>{{:key}}</td>
+            <td>{{:prop.type}}</td>
+            <td>{{:prop.description}}</td>
+        </tr>
+        {{/props}}
+        </tbody>
+    </table>
+</script>
+
+<script id="temp_body_type" type="text/template">
+    <blockquote class="layui-elem-quote layui-quote-nm">{{:type}}</blockquote>
+</script>
+
+</body>
+<script src="webjars/js/jquery.min.js"></script>
+<script src="webjars/js/jquery.json.js"></script>
+<script src="webjars/js/jquery.render.js"></script>
+<script src="webjars/layui/layui.js"></script>
+<script src="webjars/js/jquery.swagger.js"></script>
+</html>
