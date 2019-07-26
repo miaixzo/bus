@@ -723,7 +723,7 @@ public class XmlUtils {
 
     /**
      * @param @param  str xml源串
-     * @param @param  field  要获取的字段名  如jbzd --(基本诊断)
+     * @param @param  field  要获取的字段名
      * @param @return 参数	  	返回该字段的值
      * @return String    返回类型
      * @throws* @Title: getFieldByxml

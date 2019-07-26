@@ -109,7 +109,7 @@ public class EscapeCodeValues {
         final Map<CharSequence, CharSequence> APOS_ESCAPE;
         final Map<CharSequence, CharSequence> APOS_UNESCAPE;
 
-        ISO8859_1_ESCAPE_MAP.put("\u00A0", "&nbsp;"); // non-breaking space
+        ISO8859_1_ESCAPE_MAP.put("\u00A0", "&nbsp;");
         ISO8859_1_ESCAPE_MAP.put("\u00A1", "&iexcl;"); // inverted exclamation mark
         ISO8859_1_ESCAPE_MAP.put("\u00A2", "&cent;"); // cent sign
         ISO8859_1_ESCAPE_MAP.put("\u00A3", "&pound;"); // pound sign
@@ -217,220 +217,172 @@ public class EscapeCodeValues {
         UNESCAPE_JAVA_MAP.put("\\'", "'");
         UNESCAPE_JAVA_MAP.put("\\", "");
 
-        // <!-- Latin Extended-B -->
-        HTML40_ESCAPE_MAP.put("\u0192", "&fnof;"); // latin small f with hook = function= florin, U+0192 ISOtech -->
-        // <!-- Greek -->
-        HTML40_ESCAPE_MAP.put("\u0391", "&Alpha;"); // greek capital letter alpha, U+0391 -->
-        HTML40_ESCAPE_MAP.put("\u0392", "&Beta;"); // greek capital letter beta, U+0392 -->
-        HTML40_ESCAPE_MAP.put("\u0393", "&Gamma;"); // greek capital letter gamma,U+0393 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u0394", "&Delta;"); // greek capital letter delta,U+0394 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u0395", "&Epsilon;"); // greek capital letter epsilon, U+0395 -->
-        HTML40_ESCAPE_MAP.put("\u0396", "&Zeta;"); // greek capital letter zeta, U+0396 -->
-        HTML40_ESCAPE_MAP.put("\u0397", "&Eta;"); // greek capital letter eta, U+0397 -->
-        HTML40_ESCAPE_MAP.put("\u0398", "&Theta;"); // greek capital letter theta,U+0398 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u0399", "&Iota;"); // greek capital letter iota, U+0399 -->
-        HTML40_ESCAPE_MAP.put("\u039A", "&Kappa;"); // greek capital letter kappa, U+039A -->
-        HTML40_ESCAPE_MAP.put("\u039B", "&Lambda;"); // greek capital letter lambda,U+039B ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u039C", "&Mu;"); // greek capital letter mu, U+039C -->
-        HTML40_ESCAPE_MAP.put("\u039D", "&Nu;"); // greek capital letter nu, U+039D -->
-        HTML40_ESCAPE_MAP.put("\u039E", "&Xi;"); // greek capital letter xi, U+039E ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u039F", "&Omicron;"); // greek capital letter omicron, U+039F -->
-        HTML40_ESCAPE_MAP.put("\u03A0", "&Pi;"); // greek capital letter pi, U+03A0 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03A1", "&Rho;"); // greek capital letter rho, U+03A1 -->
-        // <!-- there is no Sigmaf, and no U+03A2 character either -->
-        HTML40_ESCAPE_MAP.put("\u03A3", "&Sigma;"); // greek capital letter sigma,U+03A3 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03A4", "&Tau;"); // greek capital letter tau, U+03A4 -->
-        HTML40_ESCAPE_MAP.put("\u03A5", "&Upsilon;"); // greek capital letter upsilon,U+03A5 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03A6", "&Phi;"); // greek capital letter phi,U+03A6 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03A7", "&Chi;"); // greek capital letter chi, U+03A7 -->
-        HTML40_ESCAPE_MAP.put("\u03A8", "&Psi;"); // greek capital letter psi,U+03A8 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03A9", "&Omega;"); // greek capital letter omega,U+03A9 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B1", "&alpha;"); // greek small letter alpha,U+03B1 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B2", "&beta;"); // greek small letter beta, U+03B2 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B3", "&gamma;"); // greek small letter gamma,U+03B3 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B4", "&delta;"); // greek small letter delta,U+03B4 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B5", "&epsilon;"); // greek small letter epsilon,U+03B5 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B6", "&zeta;"); // greek small letter zeta, U+03B6 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B7", "&eta;"); // greek small letter eta, U+03B7 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B8", "&theta;"); // greek small letter theta,U+03B8 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03B9", "&iota;"); // greek small letter iota, U+03B9 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03BA", "&kappa;"); // greek small letter kappa,U+03BA ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03BB", "&lambda;"); // greek small letter lambda,U+03BB ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03BC", "&mu;"); // greek small letter mu, U+03BC ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03BD", "&nu;"); // greek small letter nu, U+03BD ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03BE", "&xi;"); // greek small letter xi, U+03BE ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03BF", "&omicron;"); // greek small letter omicron, U+03BF NEW -->
-        HTML40_ESCAPE_MAP.put("\u03C0", "&pi;"); // greek small letter pi, U+03C0 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C1", "&rho;"); // greek small letter rho, U+03C1 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C2", "&sigmaf;"); // greek small letter final sigma,U+03C2 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C3", "&sigma;"); // greek small letter sigma,U+03C3 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C4", "&tau;"); // greek small letter tau, U+03C4 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C5", "&upsilon;"); // greek small letter upsilon,U+03C5 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C6", "&phi;"); // greek small letter phi, U+03C6 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C7", "&chi;"); // greek small letter chi, U+03C7 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C8", "&psi;"); // greek small letter psi, U+03C8 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03C9", "&omega;"); // greek small letter omega,U+03C9 ISOgrk3 -->
-        HTML40_ESCAPE_MAP.put("\u03D1", "&thetasym;"); // greek small letter theta symbol,U+03D1 NEW -->
-        HTML40_ESCAPE_MAP.put("\u03D2", "&upsih;"); // greek upsilon with hook symbol,U+03D2 NEW -->
-        HTML40_ESCAPE_MAP.put("\u03D6", "&piv;"); // greek pi symbol, U+03D6 ISOgrk3 -->
-        // <!-- General Punctuation -->
-        HTML40_ESCAPE_MAP.put("\u2022", "&bull;"); // bullet = black small circle,U+2022 ISOpub -->
-        // <!-- bullet is NOT the same as bullet operator, U+2219 -->
-        HTML40_ESCAPE_MAP.put("\u2026", "&hellip;"); // horizontal ellipsis = three dot leader,U+2026 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2032", "&prime;"); // prime = minutes = feet, U+2032 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2033", "&Prime;"); // double prime = seconds = inches,U+2033 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u203E", "&oline;"); // overline = spacing overscore,U+203E NEW -->
-        HTML40_ESCAPE_MAP.put("\u2044", "&frasl;"); // fraction slash, U+2044 NEW -->
-        // <!-- Letterlike Symbols -->
-        HTML40_ESCAPE_MAP.put("\u2118", "&weierp;"); // script capital P = power set= Weierstrass p, U+2118 ISOamso -->
-        HTML40_ESCAPE_MAP.put("\u2111", "&image;"); // blackletter capital I = imaginary part,U+2111 ISOamso -->
-        HTML40_ESCAPE_MAP.put("\u211C", "&real;"); // blackletter capital R = real part symbol,U+211C ISOamso -->
-        HTML40_ESCAPE_MAP.put("\u2122", "&trade;"); // trade mark sign, U+2122 ISOnum -->
-        HTML40_ESCAPE_MAP.put("\u2135", "&alefsym;"); // alef symbol = first transfinite cardinal,U+2135 NEW -->
-        // <!-- alef symbol is NOT the same as hebrew letter alef,U+05D0 although the
-        // same glyph could be used to depict both characters -->
-        // <!-- Arrows -->
-        HTML40_ESCAPE_MAP.put("\u2190", "&larr;"); // leftwards arrow, U+2190 ISOnum -->
+        HTML40_ESCAPE_MAP.put("\u0192", "&fnof;"); // latin small f with hook = function= florin, U+0192 ISOtech
+        HTML40_ESCAPE_MAP.put("\u0391", "&Alpha;"); // greek capital letter alpha, U+0391
+        HTML40_ESCAPE_MAP.put("\u0392", "&Beta;"); // greek capital letter beta, U+0392
+        HTML40_ESCAPE_MAP.put("\u0393", "&Gamma;"); // greek capital letter gamma,U+0393 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u0394", "&Delta;"); // greek capital letter delta,U+0394 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u0395", "&Epsilon;"); // greek capital letter epsilon, U+0395
+        HTML40_ESCAPE_MAP.put("\u0396", "&Zeta;"); // greek capital letter zeta, U+0396
+        HTML40_ESCAPE_MAP.put("\u0397", "&Eta;"); // greek capital letter eta, U+0397
+        HTML40_ESCAPE_MAP.put("\u0398", "&Theta;"); // greek capital letter theta,U+0398 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u0399", "&Iota;"); // greek capital letter iota, U+0399
+        HTML40_ESCAPE_MAP.put("\u039A", "&Kappa;"); // greek capital letter kappa, U+039A
+        HTML40_ESCAPE_MAP.put("\u039B", "&Lambda;"); // greek capital letter lambda,U+039B ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u039C", "&Mu;"); // greek capital letter mu, U+039C
+        HTML40_ESCAPE_MAP.put("\u039D", "&Nu;"); // greek capital letter nu, U+039D
+        HTML40_ESCAPE_MAP.put("\u039E", "&Xi;"); // greek capital letter xi, U+039E ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u039F", "&Omicron;"); // greek capital letter omicron, U+039F
+        HTML40_ESCAPE_MAP.put("\u03A0", "&Pi;"); // greek capital letter pi, U+03A0 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03A1", "&Rho;"); // greek capital letter rho, U+03A1
+        HTML40_ESCAPE_MAP.put("\u03A3", "&Sigma;"); // greek capital letter sigma,U+03A3 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03A4", "&Tau;"); // greek capital letter tau, U+03A4
+        HTML40_ESCAPE_MAP.put("\u03A5", "&Upsilon;"); // greek capital letter upsilon,U+03A5 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03A6", "&Phi;"); // greek capital letter phi,U+03A6 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03A7", "&Chi;"); // greek capital letter chi, U+03A7
+        HTML40_ESCAPE_MAP.put("\u03A8", "&Psi;"); // greek capital letter psi,U+03A8 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03A9", "&Omega;"); // greek capital letter omega,U+03A9 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B1", "&alpha;"); // greek small letter alpha,U+03B1 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B2", "&beta;"); // greek small letter beta, U+03B2 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B3", "&gamma;"); // greek small letter gamma,U+03B3 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B4", "&delta;"); // greek small letter delta,U+03B4 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B5", "&epsilon;"); // greek small letter epsilon,U+03B5 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B6", "&zeta;"); // greek small letter zeta, U+03B6 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B7", "&eta;"); // greek small letter eta, U+03B7 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B8", "&theta;"); // greek small letter theta,U+03B8 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03B9", "&iota;"); // greek small letter iota, U+03B9 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03BA", "&kappa;"); // greek small letter kappa,U+03BA ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03BB", "&lambda;"); // greek small letter lambda,U+03BB ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03BC", "&mu;"); // greek small letter mu, U+03BC ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03BD", "&nu;"); // greek small letter nu, U+03BD ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03BE", "&xi;"); // greek small letter xi, U+03BE ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03BF", "&omicron;"); // greek small letter omicron, U+03BF NEW
+        HTML40_ESCAPE_MAP.put("\u03C0", "&pi;"); // greek small letter pi, U+03C0 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C1", "&rho;"); // greek small letter rho, U+03C1 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C2", "&sigmaf;"); // greek small letter final sigma,U+03C2 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C3", "&sigma;"); // greek small letter sigma,U+03C3 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C4", "&tau;"); // greek small letter tau, U+03C4 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C5", "&upsilon;"); // greek small letter upsilon,U+03C5 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C6", "&phi;"); // greek small letter phi, U+03C6 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C7", "&chi;"); // greek small letter chi, U+03C7 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C8", "&psi;"); // greek small letter psi, U+03C8 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03C9", "&omega;"); // greek small letter omega,U+03C9 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u03D1", "&thetasym;"); // greek small letter theta symbol,U+03D1 NEW
+        HTML40_ESCAPE_MAP.put("\u03D2", "&upsih;"); // greek upsilon with hook symbol,U+03D2 NEW
+        HTML40_ESCAPE_MAP.put("\u03D6", "&piv;"); // greek pi symbol, U+03D6 ISOgrk3
+        HTML40_ESCAPE_MAP.put("\u2022", "&bull;"); // bullet = black small circle,U+2022 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2026", "&hellip;"); // horizontal ellipsis = three dot leader,U+2026 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2032", "&prime;"); // prime = minutes = feet, U+2032 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2033", "&Prime;"); // double prime = seconds = inches,U+2033 ISOtech
+        HTML40_ESCAPE_MAP.put("\u203E", "&oline;"); // overline = spacing overscore,U+203E NEW
+        HTML40_ESCAPE_MAP.put("\u2044", "&frasl;"); // fraction slash, U+2044 NEW
+        HTML40_ESCAPE_MAP.put("\u2118", "&weierp;"); // script capital P = power set= Weierstrass p, U+2118 ISOamso
+        HTML40_ESCAPE_MAP.put("\u2111", "&image;"); // blackletter capital I = imaginary part,U+2111 ISOamso
+        HTML40_ESCAPE_MAP.put("\u211C", "&real;"); // blackletter capital R = real part symbol,U+211C ISOamso
+        HTML40_ESCAPE_MAP.put("\u2122", "&trade;"); // trade mark sign, U+2122 ISOnum
+        HTML40_ESCAPE_MAP.put("\u2135", "&alefsym;"); // alef symbol = first transfinite cardinal,U+2135 NEW
+        HTML40_ESCAPE_MAP.put("\u2190", "&larr;"); // leftwards arrow, U+2190 ISOnum
         HTML40_ESCAPE_MAP.put("\u2191", "&uarr;"); // upwards arrow, U+2191 ISOnum-->
-        HTML40_ESCAPE_MAP.put("\u2192", "&rarr;"); // rightwards arrow, U+2192 ISOnum -->
-        HTML40_ESCAPE_MAP.put("\u2193", "&darr;"); // downwards arrow, U+2193 ISOnum -->
-        HTML40_ESCAPE_MAP.put("\u2194", "&harr;"); // left right arrow, U+2194 ISOamsa -->
-        HTML40_ESCAPE_MAP.put("\u21B5", "&crarr;"); // downwards arrow with corner leftwards= carriage return, U+21B5 NEW -->
-        HTML40_ESCAPE_MAP.put("\u21D0", "&lArr;"); // leftwards double arrow, U+21D0 ISOtech -->
-        // <!-- ISO 10646 does not say that lArr is the same as the 'is implied by'
-        // arrow but also does not have any other character for that function.
-        // So ? lArr canbe used for 'is implied by' as ISOtech suggests -->
-        HTML40_ESCAPE_MAP.put("\u21D1", "&uArr;"); // upwards double arrow, U+21D1 ISOamsa -->
-        HTML40_ESCAPE_MAP.put("\u21D2", "&rArr;"); // rightwards double arrow,U+21D2 ISOtech -->
-        // <!-- ISO 10646 does not say this is the 'implies' character but does not
-        // have another character with this function so ?rArr can be used for
-        // 'implies' as ISOtech suggests -->
-        HTML40_ESCAPE_MAP.put("\u21D3", "&dArr;"); // downwards double arrow, U+21D3 ISOamsa -->
-        HTML40_ESCAPE_MAP.put("\u21D4", "&hArr;"); // left right double arrow,U+21D4 ISOamsa -->
-        // <!-- Mathematical Operators -->
-        HTML40_ESCAPE_MAP.put("\u2200", "&forall;"); // for all, U+2200 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2202", "&part;"); // partial differential, U+2202 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2203", "&exist;"); // there exists, U+2203 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2205", "&empty;"); // empty set = null set = diameter,U+2205 ISOamso -->
-        HTML40_ESCAPE_MAP.put("\u2207", "&nabla;"); // nabla = backward difference,U+2207 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2208", "&isin;"); // element of, U+2208 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2209", "&notin;"); // not an element of, U+2209 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u220B", "&ni;"); // contains as member, U+220B ISOtech -->
-        // <!-- should there be a more memorable name than 'ni'? -->
-        HTML40_ESCAPE_MAP.put("\u220F", "&prod;"); // n-ary product = product sign,U+220F ISOamsb -->
-        // <!-- prod is NOT the same character as U+03A0 'greek capital letter pi'
-        // though the same glyph might be used for both -->
-        HTML40_ESCAPE_MAP.put("\u2211", "&sum;"); // n-ary summation, U+2211 ISOamsb -->
-        // <!-- sum is NOT the same character as U+03A3 'greek capital letter sigma'
-        // though the same glyph might be used for both -->
-        HTML40_ESCAPE_MAP.put("\u2212", "&minus;"); // minus sign, U+2212 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2217", "&lowast;"); // asterisk operator, U+2217 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u221A", "&radic;"); // square root = radical sign,U+221A ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u221D", "&prop;"); // proportional to, U+221D ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u221E", "&infin;"); // infinity, U+221E ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2220", "&ang;"); // angle, U+2220 ISOamso -->
-        HTML40_ESCAPE_MAP.put("\u2227", "&and;"); // logical and = wedge, U+2227 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2228", "&or;"); // logical or = vee, U+2228 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2229", "&cap;"); // intersection = cap, U+2229 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u222A", "&cup;"); // union = cup, U+222A ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u222B", "&int;"); // integral, U+222B ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2234", "&there4;"); // therefore, U+2234 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u223C", "&sim;"); // tilde operator = varies with = similar to,U+223C ISOtech -->
-        // <!-- tilde operator is NOT the same character as the tilde, U+007E,although
-        // the same glyph might be used to represent both -->
-        HTML40_ESCAPE_MAP.put("\u2245", "&cong;"); // approximately equal to, U+2245 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2248", "&asymp;"); // almost equal to = asymptotic to,U+2248 ISOamsr -->
-        HTML40_ESCAPE_MAP.put("\u2260", "&ne;"); // not equal to, U+2260 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2261", "&equiv;"); // identical to, U+2261 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2264", "&le;"); // less-than or equal to, U+2264 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2265", "&ge;"); // greater-than or equal to,U+2265 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2282", "&sub;"); // subset of, U+2282 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2283", "&sup;"); // superset of, U+2283 ISOtech -->
-        // <!-- note that nsup, 'not a superset of, U+2283' is not covered by the
-        // Symbol font encoding and is not included. Should it be, for symmetry?
-        // It is in ISOamsn -->,
-        HTML40_ESCAPE_MAP.put("\u2284", "&nsub;"); // not a subset of, U+2284 ISOamsn -->
-        HTML40_ESCAPE_MAP.put("\u2286", "&sube;"); // subset of or equal to, U+2286 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2287", "&supe;"); // superset of or equal to,U+2287 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2295", "&oplus;"); // circled plus = direct sum,U+2295 ISOamsb -->
-        HTML40_ESCAPE_MAP.put("\u2297", "&otimes;"); // circled times = vector product,U+2297 ISOamsb -->
-        HTML40_ESCAPE_MAP.put("\u22A5", "&perp;"); // up tack = orthogonal to = perpendicular,U+22A5 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u22C5", "&sdot;"); // dot operator, U+22C5 ISOamsb -->
-        // <!-- dot operator is NOT the same character as U+00B7 middle dot -->
-        // <!-- Miscellaneous Technical -->
-        HTML40_ESCAPE_MAP.put("\u2308", "&lceil;"); // left ceiling = apl upstile,U+2308 ISOamsc -->
-        HTML40_ESCAPE_MAP.put("\u2309", "&rceil;"); // right ceiling, U+2309 ISOamsc -->
-        HTML40_ESCAPE_MAP.put("\u230A", "&lfloor;"); // left floor = apl downstile,U+230A ISOamsc -->
-        HTML40_ESCAPE_MAP.put("\u230B", "&rfloor;"); // right floor, U+230B ISOamsc -->
-        HTML40_ESCAPE_MAP.put("\u2329", "&lang;"); // left-pointing angle bracket = bra,U+2329 ISOtech -->
-        // <!-- lang is NOT the same character as U+003C 'less than' or U+2039 'single left-pointing angle quotation
-        // mark' -->
-        HTML40_ESCAPE_MAP.put("\u232A", "&rang;"); // right-pointing angle bracket = ket,U+232A ISOtech -->
-        // <!-- rang is NOT the same character as U+003E 'greater than' or U+203A
-        // 'single right-pointing angle quotation mark' -->
-        // <!-- Geometric Shapes -->
-        HTML40_ESCAPE_MAP.put("\u25CA", "&loz;"); // lozenge, U+25CA ISOpub -->
-        // <!-- Miscellaneous Symbols -->
-        HTML40_ESCAPE_MAP.put("\u2660", "&spades;"); // black spade suit, U+2660 ISOpub -->
-        // <!-- black here seems to mean filled as opposed to hollow -->
-        HTML40_ESCAPE_MAP.put("\u2663", "&clubs;"); // black club suit = shamrock,U+2663 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2665", "&hearts;"); // black heart suit = valentine,U+2665 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2666", "&diams;"); // black diamond suit, U+2666 ISOpub -->
-
-        // <!-- Latin Extended-A -->
-        HTML40_ESCAPE_MAP.put("\u0152", "&OElig;"); // -- latin capital ligature OE,U+0152 ISOlat2 -->
-        HTML40_ESCAPE_MAP.put("\u0153", "&oelig;"); // -- latin small ligature oe, U+0153 ISOlat2 -->
-        // <!-- ligature is a misnomer, this is a separate character in some languages -->
-        HTML40_ESCAPE_MAP.put("\u0160", "&Scaron;"); // -- latin capital letter S with caron,U+0160 ISOlat2 -->
-        HTML40_ESCAPE_MAP.put("\u0161", "&scaron;"); // -- latin small letter s with caron,U+0161 ISOlat2 -->
-        HTML40_ESCAPE_MAP.put("\u0178", "&Yuml;"); // -- latin capital letter Y with diaeresis,U+0178 ISOlat2 -->
-        // <!-- Spacing Modifier Letters -->
-        HTML40_ESCAPE_MAP.put("\u02C6", "&circ;"); // -- modifier letter circumflex accent,U+02C6 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u02DC", "&tilde;"); // small tilde, U+02DC ISOdia -->
-        // <!-- General Punctuation -->
-        HTML40_ESCAPE_MAP.put("\u2002", "&ensp;"); // en space, U+2002 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2003", "&emsp;"); // em space, U+2003 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2009", "&thinsp;"); // thin space, U+2009 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u200C", "&zwnj;"); // zero width non-joiner,U+200C NEW RFC 2070 -->
-        HTML40_ESCAPE_MAP.put("\u200D", "&zwj;"); // zero width joiner, U+200D NEW RFC 2070 -->
-        HTML40_ESCAPE_MAP.put("\u200E", "&lrm;"); // left-to-right mark, U+200E NEW RFC 2070 -->
-        HTML40_ESCAPE_MAP.put("\u200F", "&rlm;"); // right-to-left mark, U+200F NEW RFC 2070 -->
-        HTML40_ESCAPE_MAP.put("\u2013", "&ndash;"); // en dash, U+2013 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2014", "&mdash;"); // em dash, U+2014 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2018", "&lsquo;"); // left single quotation mark,U+2018 ISOnum -->
-        HTML40_ESCAPE_MAP.put("\u2019", "&rsquo;"); // right single quotation mark,U+2019 ISOnum -->
-        HTML40_ESCAPE_MAP.put("\u201A", "&sbquo;"); // single low-9 quotation mark, U+201A NEW -->
-        HTML40_ESCAPE_MAP.put("\u201C", "&ldquo;"); // left double quotation mark,U+201C ISOnum -->
-        HTML40_ESCAPE_MAP.put("\u201D", "&rdquo;"); // right double quotation mark,U+201D ISOnum -->
-        HTML40_ESCAPE_MAP.put("\u201E", "&bdquo;"); // double low-9 quotation mark, U+201E NEW -->
-        HTML40_ESCAPE_MAP.put("\u2020", "&dagger;"); // dagger, U+2020 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2021", "&Dagger;"); // double dagger, U+2021 ISOpub -->
-        HTML40_ESCAPE_MAP.put("\u2030", "&permil;"); // per mille sign, U+2030 ISOtech -->
-        HTML40_ESCAPE_MAP.put("\u2039", "&lsaquo;"); // single left-pointing angle quotation mark,U+2039 ISO proposed -->
-        // <!-- lsaquo is proposed but not yet ISO standardized -->
-        HTML40_ESCAPE_MAP.put("\u203A", "&rsaquo;"); // single right-pointing angle quotation mark,U+203A ISO proposed -->
-        // <!-- rsaquo is proposed but not yet ISO standardized -->
-        HTML40_ESCAPE_MAP.put("\u20AC", "&euro;"); // -- euro sign, U+20AC NEW -->
-
+        HTML40_ESCAPE_MAP.put("\u2192", "&rarr;"); // rightwards arrow, U+2192 ISOnum
+        HTML40_ESCAPE_MAP.put("\u2193", "&darr;"); // downwards arrow, U+2193 ISOnum
+        HTML40_ESCAPE_MAP.put("\u2194", "&harr;"); // left right arrow, U+2194 ISOamsa
+        HTML40_ESCAPE_MAP.put("\u21B5", "&crarr;"); // downwards arrow with corner leftwards= carriage return, U+21B5 NEW
+        HTML40_ESCAPE_MAP.put("\u21D0", "&lArr;"); // leftwards double arrow, U+21D0 ISOtech
+        HTML40_ESCAPE_MAP.put("\u21D1", "&uArr;"); // upwards double arrow, U+21D1 ISOamsa
+        HTML40_ESCAPE_MAP.put("\u21D2", "&rArr;"); // rightwards double arrow,U+21D2 ISOtech
+        HTML40_ESCAPE_MAP.put("\u21D3", "&dArr;"); // downwards double arrow, U+21D3 ISOamsa
+        HTML40_ESCAPE_MAP.put("\u21D4", "&hArr;"); // left right double arrow,U+21D4 ISOamsa
+        HTML40_ESCAPE_MAP.put("\u2200", "&forall;"); // for all, U+2200 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2202", "&part;"); // partial differential, U+2202 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2203", "&exist;"); // there exists, U+2203 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2205", "&empty;"); // empty set = null set = diameter,U+2205 ISOamso
+        HTML40_ESCAPE_MAP.put("\u2207", "&nabla;"); // nabla = backward difference,U+2207 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2208", "&isin;"); // element of, U+2208 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2209", "&notin;"); // not an element of, U+2209 ISOtech
+        HTML40_ESCAPE_MAP.put("\u220B", "&ni;"); // contains as member, U+220B ISOtech
+        HTML40_ESCAPE_MAP.put("\u220F", "&prod;"); // n-ary product = product sign,U+220F ISOamsb
+        HTML40_ESCAPE_MAP.put("\u2211", "&sum;"); // n-ary summation, U+2211 ISOamsb
+        HTML40_ESCAPE_MAP.put("\u2212", "&minus;"); // minus sign, U+2212 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2217", "&lowast;"); // asterisk operator, U+2217 ISOtech
+        HTML40_ESCAPE_MAP.put("\u221A", "&radic;"); // square root = radical sign,U+221A ISOtech
+        HTML40_ESCAPE_MAP.put("\u221D", "&prop;"); // proportional to, U+221D ISOtech
+        HTML40_ESCAPE_MAP.put("\u221E", "&infin;"); // infinity, U+221E ISOtech
+        HTML40_ESCAPE_MAP.put("\u2220", "&ang;"); // angle, U+2220 ISOamso
+        HTML40_ESCAPE_MAP.put("\u2227", "&and;"); // logical and = wedge, U+2227 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2228", "&or;"); // logical or = vee, U+2228 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2229", "&cap;"); // intersection = cap, U+2229 ISOtech
+        HTML40_ESCAPE_MAP.put("\u222A", "&cup;"); // union = cup, U+222A ISOtech
+        HTML40_ESCAPE_MAP.put("\u222B", "&int;"); // integral, U+222B ISOtech
+        HTML40_ESCAPE_MAP.put("\u2234", "&there4;"); // therefore, U+2234 ISOtech
+        HTML40_ESCAPE_MAP.put("\u223C", "&sim;"); // tilde operator = varies with = similar to,U+223C ISOtech
+        HTML40_ESCAPE_MAP.put("\u2245", "&cong;"); // approximately equal to, U+2245 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2248", "&asymp;"); // almost equal to = asymptotic to,U+2248 ISOamsr
+        HTML40_ESCAPE_MAP.put("\u2260", "&ne;"); // not equal to, U+2260 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2261", "&equiv;"); // identical to, U+2261 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2264", "&le;"); // less-than or equal to, U+2264 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2265", "&ge;"); // greater-than or equal to,U+2265 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2282", "&sub;"); // subset of, U+2282 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2283", "&sup;"); // superset of, U+2283 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2284", "&nsub;"); // not a subset of, U+2284 ISOamsn
+        HTML40_ESCAPE_MAP.put("\u2286", "&sube;"); // subset of or equal to, U+2286 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2287", "&supe;"); // superset of or equal to,U+2287 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2295", "&oplus;"); // circled plus = direct sum,U+2295 ISOamsb
+        HTML40_ESCAPE_MAP.put("\u2297", "&otimes;"); // circled times = vector product,U+2297 ISOamsb
+        HTML40_ESCAPE_MAP.put("\u22A5", "&perp;"); // up tack = orthogonal to = perpendicular,U+22A5 ISOtech
+        HTML40_ESCAPE_MAP.put("\u22C5", "&sdot;"); // dot operator, U+22C5 ISOamsb
+        HTML40_ESCAPE_MAP.put("\u2308", "&lceil;"); // left ceiling = apl upstile,U+2308 ISOamsc
+        HTML40_ESCAPE_MAP.put("\u2309", "&rceil;"); // right ceiling, U+2309 ISOamsc
+        HTML40_ESCAPE_MAP.put("\u230A", "&lfloor;"); // left floor = apl downstile,U+230A ISOamsc
+        HTML40_ESCAPE_MAP.put("\u230B", "&rfloor;"); // right floor, U+230B ISOamsc
+        HTML40_ESCAPE_MAP.put("\u2329", "&lang;"); // left-pointing angle bracket = bra,U+2329 ISOtech
+        HTML40_ESCAPE_MAP.put("\u232A", "&rang;"); // right-pointing angle bracket = ket,U+232A ISOtech
+        HTML40_ESCAPE_MAP.put("\u25CA", "&loz;"); // lozenge, U+25CA ISOpub
+        HTML40_ESCAPE_MAP.put("\u2660", "&spades;"); // black spade suit, U+2660 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2663", "&clubs;"); // black club suit = shamrock,U+2663 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2665", "&hearts;"); // black heart suit = valentine,U+2665 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2666", "&diams;"); // black diamond suit, U+2666 ISOpub
+        HTML40_ESCAPE_MAP.put("\u0152", "&OElig;"); // latin capital ligature OE,U+0152 ISOlat2
+        HTML40_ESCAPE_MAP.put("\u0153", "&oelig;"); // latin small ligature oe, U+0153 ISOlat2
+        HTML40_ESCAPE_MAP.put("\u0160", "&Scaron;"); // latin capital letter S with caron,U+0160 ISOlat2
+        HTML40_ESCAPE_MAP.put("\u0161", "&scaron;"); // latin small letter s with caron,U+0161 ISOlat2
+        HTML40_ESCAPE_MAP.put("\u0178", "&Yuml;"); // latin capital letter Y with diaeresis,U+0178 ISOlat2
+        HTML40_ESCAPE_MAP.put("\u02C6", "&circ;"); // modifier letter circumflex accent,U+02C6 ISOpub
+        HTML40_ESCAPE_MAP.put("\u02DC", "&tilde;"); // small tilde, U+02DC ISOdia
+        HTML40_ESCAPE_MAP.put("\u2002", "&ensp;"); // en space, U+2002 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2003", "&emsp;"); // em space, U+2003 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2009", "&thinsp;"); // thin space, U+2009 ISOpub
+        HTML40_ESCAPE_MAP.put("\u200C", "&zwnj;"); // zero width non-joiner,U+200C NEW RFC 2070
+        HTML40_ESCAPE_MAP.put("\u200D", "&zwj;"); // zero width joiner, U+200D NEW RFC 2070
+        HTML40_ESCAPE_MAP.put("\u200E", "&lrm;"); // left-to-right mark, U+200E NEW RFC 2070
+        HTML40_ESCAPE_MAP.put("\u200F", "&rlm;"); // right-to-left mark, U+200F NEW RFC 2070
+        HTML40_ESCAPE_MAP.put("\u2013", "&ndash;"); // en dash, U+2013 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2014", "&mdash;"); // em dash, U+2014 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2018", "&lsquo;"); // left single quotation mark,U+2018 ISOnum
+        HTML40_ESCAPE_MAP.put("\u2019", "&rsquo;"); // right single quotation mark,U+2019 ISOnum
+        HTML40_ESCAPE_MAP.put("\u201A", "&sbquo;"); // single low-9 quotation mark, U+201A NEW
+        HTML40_ESCAPE_MAP.put("\u201C", "&ldquo;"); // left double quotation mark,U+201C ISOnum
+        HTML40_ESCAPE_MAP.put("\u201D", "&rdquo;"); // right double quotation mark,U+201D ISOnum
+        HTML40_ESCAPE_MAP.put("\u201E", "&bdquo;"); // double low-9 quotation mark, U+201E NEW
+        HTML40_ESCAPE_MAP.put("\u2020", "&dagger;"); // dagger, U+2020 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2021", "&Dagger;"); // double dagger, U+2021 ISOpub
+        HTML40_ESCAPE_MAP.put("\u2030", "&permil;"); // per mille sign, U+2030 ISOtech
+        HTML40_ESCAPE_MAP.put("\u2039", "&lsaquo;"); // single left-pointing angle quotation mark,U+2039 ISO proposed
+        HTML40_ESCAPE_MAP.put("\u203A", "&rsaquo;"); // single right-pointing angle quotation mark,U+203A ISO proposed
+        HTML40_ESCAPE_MAP.put("\u20AC", "&euro;"); // euro sign, U+20AC NEW
         BASIC_ESCAPE_MAP.put("\"", "&quot;"); // " - double-quote
         BASIC_ESCAPE_MAP.put("&", "&amp;");   // & - ampersand
         BASIC_ESCAPE_MAP.put("<", "&lt;");    // < - less-than
         BASIC_ESCAPE_MAP.put(">", "&gt;");    // > - greater-than
-
         APOS_ESCAPE_MAP.put("'", "&apos;"); // XML apostrophe
-
         ESCAPE_JAVA_MAP.put("\"", "\\\"");
         ESCAPE_JAVA_MAP.put("\\", "\\\\");
-
         ESCAPE_ECMASCRIPT_MAP.put("'", "\\'");
         ESCAPE_ECMASCRIPT_MAP.put("\"", "\\\"");
         ESCAPE_ECMASCRIPT_MAP.put("\\", "\\\\");
         ESCAPE_ECMASCRIPT_MAP.put("/", "\\/");
-
         escapeJsonMap.put("\"", "\\\"");
         escapeJsonMap.put("\\", "\\\\");
         escapeJsonMap.put("/", "\\/");
-
         ESCAPE_XML10_MAP.put("\u0000", Normal.EMPTY);
         ESCAPE_XML10_MAP.put("\u0001", Normal.EMPTY);
         ESCAPE_XML10_MAP.put("\u0002", Normal.EMPTY);
@@ -462,13 +414,11 @@ public class EscapeCodeValues {
         ESCAPE_XML10_MAP.put("\u001f", Normal.EMPTY);
         ESCAPE_XML10_MAP.put("\ufffe", Normal.EMPTY);
         ESCAPE_XML10_MAP.put("\uffff", Normal.EMPTY);
-
         ESCAPE_XML11_MAP.put("\u0000", Normal.EMPTY);
         ESCAPE_XML11_MAP.put("\u000b", "&#11;");
         ESCAPE_XML11_MAP.put("\u000c", "&#12;");
         ESCAPE_XML11_MAP.put("\ufffe", Normal.EMPTY);
         ESCAPE_XML11_MAP.put("\uffff", Normal.EMPTY);
-
         ESCAPE_XSI_MAP.put("|", "\\|");
         ESCAPE_XSI_MAP.put("&", "\\&");
         ESCAPE_XSI_MAP.put(";", "\\;");

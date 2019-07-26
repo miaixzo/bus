@@ -55,8 +55,6 @@ public abstract class StrMatcher {
      */
     private static final StrMatcher NONE_MATCHER = new NoMatcher();
 
-    // -----------------------------------------------------------------------
-
     /**
      * Constructor.
      */

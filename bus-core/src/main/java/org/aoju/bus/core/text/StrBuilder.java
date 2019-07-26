@@ -1818,8 +1818,6 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return replace(matcher, replaceStr, 0, size, -1);
     }
 
-    // -----------------------------------------------------------------------
-
     /**
      * Replaces the first match within the builder with the replace string.
      * <p>
