@@ -68,4 +68,5 @@ public abstract class AbstractDateBasic implements DateBasic, Serializable {
     public String toString() {
         return "FastDatePrinter[" + pattern + "," + locale + "," + timeZone.getID() + "]";
     }
+
 }

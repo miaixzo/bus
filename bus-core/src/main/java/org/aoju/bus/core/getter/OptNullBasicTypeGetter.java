@@ -177,4 +177,5 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     public Date getDate(K key) {
         return this.getDate(key, null);
     }
+
 }

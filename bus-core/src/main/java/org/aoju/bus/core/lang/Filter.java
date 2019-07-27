@@ -9,6 +9,7 @@ package org.aoju.bus.core.lang;
  * @since JDK 1.8
  */
 public interface Filter<T> {
+    
     /**
      * 是否接受对象
      *
@@ -16,4 +17,5 @@ public interface Filter<T> {
      * @return 是否接受对象
      */
     boolean accept(T t);
+
 }

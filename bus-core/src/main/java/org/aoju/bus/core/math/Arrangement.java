@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 排列A(n, m)<br>
- * 排列组合相关类 参考：http://cgs1999.iteye.com/blog/2327664
+ * 排列A(n, m)
+ * 排列组合相关类
  *
  * @author aoju.org
  * @version 3.0.1

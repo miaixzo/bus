@@ -1,6 +1,6 @@
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -58,7 +58,7 @@ public class UrlResource implements Resource {
     @Override
     public InputStream getStream() {
         if (null == this.url) {
-            throw new CommonException("Resource [{}] not exist!", this.url);
+            throw new InstrumentException("Resource [{" + this.url + "}] not exist!");
         }
         return URLUtils.getStream(url);
     }
@@ -75,7 +75,7 @@ public class UrlResource implements Resource {
     }
 
     @Override
-    public String readStr(Charset charset) throws CommonException {
+    public String readStr(Charset charset) throws InstrumentException {
         BufferedReader reader = null;
         try {
             reader = getReader(charset);
@@ -86,12 +86,12 @@ public class UrlResource implements Resource {
     }
 
     @Override
-    public String readUtf8Str() throws CommonException {
+    public String readUtf8Str() throws InstrumentException {
         return readStr(org.aoju.bus.core.consts.Charset.UTF_8);
     }
 
     @Override
-    public byte[] readBytes() throws CommonException {
+    public byte[] readBytes() throws InstrumentException {
         InputStream in = null;
         try {
             in = getStream();

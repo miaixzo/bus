@@ -100,4 +100,5 @@ public interface ArrayTypeGetter {
      * @return 属性值列表
      */
     BigDecimal[] getBigDecimals(String key);
+
 }

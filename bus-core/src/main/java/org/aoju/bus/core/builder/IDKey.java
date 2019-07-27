@@ -13,6 +13,7 @@ package org.aoju.bus.core.builder;
  * @since JDK 1.8
  */
 final class IDKey {
+
     private final Object value;
     private final int id;
 
@@ -58,4 +59,5 @@ final class IDKey {
         // Note that identity equals is used.
         return value == idKey.value;
     }
+
 }

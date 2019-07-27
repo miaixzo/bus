@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
  * @since JDK 1.8
  */
 public interface BufferedSource extends Source, ReadableByteChannel {
+
     /**
      * Returns this source's internal buffer.
      * use getBuffer() instead.
@@ -575,4 +576,5 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      * Returns an input stream that reads from this source.
      */
     InputStream inputStream();
+
 }

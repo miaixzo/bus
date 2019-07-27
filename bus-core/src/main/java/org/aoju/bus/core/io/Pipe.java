@@ -116,7 +116,7 @@ public final class Pipe {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             synchronized (buffer) {
                 sourceClosed = true;
                 buffer.notifyAll(); // Notify the sink that no more bytes are desired.

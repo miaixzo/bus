@@ -144,4 +144,5 @@ public interface FileSystem {
      * not be deleted, or if {@code dir} is not a readable directory.
      */
     void deleteContents(File directory) throws IOException;
+
 }

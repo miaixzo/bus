@@ -16,6 +16,7 @@ package org.aoju.bus.core.lang;
  * @since JDK 1.8
  */
 public interface Editor<T> {
+
     /**
      * 修改过滤后的结果
      *
@@ -23,4 +24,5 @@ public interface Editor<T> {
      * @return 修改后的对象，如果被过滤返回<criteria>null</criteria>
      */
     T edit(T t);
+    
 }

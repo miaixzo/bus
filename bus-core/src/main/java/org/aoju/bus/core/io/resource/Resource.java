@@ -1,6 +1,6 @@
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,25 +55,26 @@ public interface Resource {
      *
      * @param charset 编码
      * @return 读取资源内容
-     * @throws CommonException 包装{@link IOException}
+     * @throws InstrumentException 包装{@link IOException}
      */
-    String readStr(Charset charset) throws CommonException;
+    String readStr(Charset charset) throws InstrumentException;
 
     /**
      * 读取资源内容，读取完毕后会关闭流<br>
      * 关闭流并不影响下一次读取
      *
      * @return 读取资源内容
-     * @throws CommonException 包装IOException
+     * @throws InstrumentException 包装IOException
      */
-    String readUtf8Str() throws CommonException;
+    String readUtf8Str() throws InstrumentException;
 
     /**
      * 读取资源内容，读取完毕后会关闭流<br>
      * 关闭流并不影响下一次读取
      *
      * @return 读取资源内容
-     * @throws CommonException 包装IOException
+     * @throws InstrumentException 包装IOException
      */
-    byte[] readBytes() throws CommonException;
+    byte[] readBytes() throws InstrumentException;
+
 }

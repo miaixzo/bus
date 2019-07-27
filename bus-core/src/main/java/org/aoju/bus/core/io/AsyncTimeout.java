@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
  * @since JDK 1.8
  */
 public class AsyncTimeout extends Timeout {
+
     /**
      * Don't write more than 64 KiB of data at a time, give or take a segment. Otherwise slow
      * connections may suffer timeouts even when they're making (slow) progress. Without this, writing
@@ -378,4 +379,5 @@ public class AsyncTimeout extends Timeout {
             }
         }
     }
+
 }

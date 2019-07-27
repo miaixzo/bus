@@ -20,10 +20,6 @@ import java.util.TreeMap;
  * 总体思路：累加每个元素的权重A(1)-B(3)-C(6)-D(10)，则4个元素的的权重管辖区间分别为[0,1)、[1,3)、[3,6)、[6,10)。<br>
  * 然后随机出一个[0,10)之间的随机数。落在哪个区间，则该区间之后的元素即为按权重命中的元素。<br>
  *
- * <p>
- * 参考博客：https://www.cnblogs.com/waterystone/p/5708063.html
- * <p>
- *
  * @param <T> 权重随机获取的对象类型
  * @author aoju.org
  * @version 3.0.1
@@ -31,6 +27,7 @@ import java.util.TreeMap;
  * @since JDK 1.8
  */
 public class WeightRandom<T> implements Serializable {
+
     private static final long serialVersionUID = -8244697995702786499L;
 
     private TreeMap<Double, T> weightMap;

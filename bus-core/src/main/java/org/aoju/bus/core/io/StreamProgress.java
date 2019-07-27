@@ -26,4 +26,5 @@ public interface StreamProgress {
      * 结束
      */
     void finish();
+
 }

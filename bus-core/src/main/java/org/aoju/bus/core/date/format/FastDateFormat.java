@@ -387,4 +387,5 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
     public String toString() {
         return "FastDateFormat[" + printer.getPattern() + "," + printer.getLocale() + "," + printer.getTimeZone().getID() + "]";
     }
+
 }

@@ -19,71 +19,6 @@ import java.util.regex.Pattern;
 public class Validator {
 
     /**
-     * 英文字母 、数字和下划线
-     */
-    public final static Pattern GENERAL = RegEx.GENERAL;
-    /**
-     * 数字
-     */
-    public final static Pattern NUMBERS = RegEx.NUMBERS;
-    /**
-     * 分组
-     */
-    public final static Pattern GROUP_VAR = RegEx.GROUP_VAR;
-    /**
-     * IP v4
-     */
-    public final static Pattern IPV4 = RegEx.IPV4;
-    /**
-     * 货币
-     */
-    public final static Pattern MONEY = RegEx.MONEY;
-    /**
-     * 邮件
-     */
-    public final static Pattern EMAIL = RegEx.EMAIL;
-    /**
-     * 移动电话
-     */
-    public final static Pattern MOBILE = RegEx.MOBILE;
-    /**
-     * 身份证号码
-     */
-    public final static Pattern CITIZEN_ID = RegEx.CITIZEN_ID;
-    /**
-     * 邮编
-     */
-    public final static Pattern ZIP_CODE = RegEx.ZIP_CODE;
-    /**
-     * 生日
-     */
-    public final static Pattern BIRTHDAY = RegEx.BIRTHDAY;
-    /**
-     * URL
-     */
-    public final static Pattern URL = RegEx.URL;
-    /**
-     * Http URL
-     */
-    public final static Pattern URL_HTTP = RegEx.URL_HTTP;
-    /**
-     * 中文字、英文字母、数字和下划线
-     */
-    public final static Pattern GENERAL_WITH_CHINESE = RegEx.GENERAL_WITH_CHINESE;
-    /**
-     * UUID
-     */
-    public final static Pattern UUID = RegEx.UUID;
-    /**
-     * 不带横线的UUID
-     */
-    public final static Pattern UUID_SIMPLE = RegEx.UUID_SIMPLE;
-    /**
-     * 中国车牌号码
-     */
-    public final static Pattern PLATE_NUMBER = RegEx.PLATE_NUMBER;
-
-    /**
      * 给定值是否为<code>null</code>
      *
      * @param value 值
@@ -270,7 +205,7 @@ public class Validator {
      * @return 是否为英文字母 、数字和下划线
      */
     public static boolean isGeneral(String value) {
-        return isMactchRegex(GENERAL, value);
+        return isMactchRegex(RegEx.GENERAL, value);
     }
 
     /**
@@ -488,7 +423,7 @@ public class Validator {
      * @return 是否为货币
      */
     public static boolean isMoney(String value) {
-        return isMactchRegex(MONEY, value);
+        return isMactchRegex(RegEx.MONEY, value);
     }
 
     /**
@@ -511,7 +446,7 @@ public class Validator {
      * @return 是否为邮政编码（中国）
      */
     public static boolean isZipCode(String value) {
-        return isMactchRegex(ZIP_CODE, value);
+        return isMactchRegex(RegEx.ZIP_CODE, value);
     }
 
     /**
@@ -534,7 +469,7 @@ public class Validator {
      * @return 否为可用邮箱地址
      */
     public static boolean isEmail(String value) {
-        return isMactchRegex(EMAIL, value);
+        return isMactchRegex(RegEx.EMAIL, value);
     }
 
     /**
@@ -557,7 +492,7 @@ public class Validator {
      * @return 是否为手机号码（中国）
      */
     public static boolean isMobile(String value) {
-        return isMactchRegex(MOBILE, value);
+        return isMactchRegex(RegEx.MOBILE, value);
     }
 
     /**
@@ -581,7 +516,7 @@ public class Validator {
      * @return 是否为身份证号码（18位中国）
      */
     public static boolean isCitizenId(String value) {
-        return isMactchRegex(CITIZEN_ID, value);
+        return isMactchRegex(RegEx.CITIZEN_ID, value);
     }
 
     /**
@@ -646,8 +581,8 @@ public class Validator {
      * @return 是否为生日
      */
     public static boolean isBirthday(String value) {
-        if (isMactchRegex(BIRTHDAY, value)) {
-            Matcher matcher = BIRTHDAY.matcher(value);
+        if (isMactchRegex(RegEx.BIRTHDAY, value)) {
+            Matcher matcher = RegEx.BIRTHDAY.matcher(value);
             if (matcher.find()) {
                 int year = Integer.parseInt(matcher.group(1));
                 int month = Integer.parseInt(matcher.group(3));
@@ -678,7 +613,7 @@ public class Validator {
      * @return 是否为IPV4地址
      */
     public static boolean isIpv4(String value) {
-        return isMactchRegex(IPV4, value);
+        return isMactchRegex(RegEx.IPV4, value);
     }
 
     /**
@@ -727,7 +662,7 @@ public class Validator {
      * @since 3.0.6
      */
     public static boolean isPlateNumber(String value) {
-        return isMactchRegex(PLATE_NUMBER, value);
+        return isMactchRegex(RegEx.PLATE_NUMBER, value);
     }
 
     /**
@@ -802,7 +737,7 @@ public class Validator {
      * @return 是否为中文字、英文字母、数字和下划线
      */
     public static boolean isGeneralWithChinese(String value) {
-        return isMactchRegex(GENERAL_WITH_CHINESE, value);
+        return isMactchRegex(RegEx.GENERAL_WITH_CHINESE, value);
     }
 
     /**
@@ -826,7 +761,7 @@ public class Validator {
      * @return 是否为UUID
      */
     public static boolean isUUID(String value) {
-        return isMactchRegex(UUID, value) || isMactchRegex(UUID_SIMPLE, value);
+        return isMactchRegex(RegEx.UUID, value) || isMactchRegex(RegEx.UUID_SIMPLE, value);
     }
 
     /**

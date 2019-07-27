@@ -10,10 +10,12 @@ package org.aoju.bus.core.lang.copier;
  * @since JDK 1.8
  */
 public interface Copier<T> {
+
     /**
      * 执行拷贝
      *
      * @return 拷贝的目标
      */
     T copy();
+
 }

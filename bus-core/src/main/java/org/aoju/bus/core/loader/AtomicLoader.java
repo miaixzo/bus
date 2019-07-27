@@ -50,4 +50,5 @@ public abstract class AtomicLoader<T> implements Loader<T> {
      * @return 被加载的对象
      */
     protected abstract T init();
+
 }

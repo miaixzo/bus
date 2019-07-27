@@ -19,4 +19,5 @@ public interface Replacer<T> {
      * @return 替代后的对象
      */
     T replace(T t);
+
 }

@@ -1,7 +1,7 @@
 package org.aoju.bus.core.consts;
 
-import org.aoju.bus.core.utils.MapUtils;
 import lombok.Data;
+import org.aoju.bus.core.utils.MapUtils;
 
 import java.nio.charset.Charset;
 import java.util.*;
@@ -299,7 +299,7 @@ public class MediaType {
     }
 
     private MediaType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
-        this.mediaType = mediaType;
+        this.mediaType = mediaType == null ? MULTIPART_FORM_DATA : mediaType;
         this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
         this.charset = charset;
@@ -310,9 +310,10 @@ public class MediaType {
                 }
             });
         }
+        params = params == null ? new HashMap<>() : params;
 
         if (charset != null && !charset.isEmpty()) {
-            ((Map) params).put(CHARSET_PARAMETER, charset);
+            params.put(CHARSET_PARAMETER, charset);
         }
         this.parameters = Collections.unmodifiableMap((Map) params);
     }

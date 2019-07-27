@@ -15,4 +15,5 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Inherited
 public @interface Immutable {
+
 }

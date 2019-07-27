@@ -15,6 +15,7 @@ import java.util.Map;
  * @since JDK 1.8
  */
 public enum BeanInfoCache {
+
     INSTANCE;
 
     private SimpleCache<Class<?>, Map<String, PropertyDescriptor>> pdCache = new SimpleCache<>();
@@ -41,4 +42,5 @@ public enum BeanInfoCache {
     public void putPropertyDescriptorMap(Class<?> beanClass, Map<String, PropertyDescriptor> fieldNamePropertyDescriptorMap, boolean ignoreCase) {
         (ignoreCase ? ignoreCasePdCache : pdCache).put(beanClass, fieldNamePropertyDescriptorMap);
     }
+
 }

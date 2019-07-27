@@ -11,6 +11,7 @@ package org.aoju.bus.core.lang;
  * @since JDK 1.8
  */
 public interface Chain<E, T> extends Iterable<E> {
+
     /**
      * 加入责任链
      *
@@ -18,4 +19,5 @@ public interface Chain<E, T> extends Iterable<E> {
      * @return this
      */
     T addChain(E element);
+    
 }

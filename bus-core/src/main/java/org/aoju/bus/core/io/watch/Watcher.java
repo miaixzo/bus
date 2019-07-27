@@ -12,6 +12,7 @@ import java.nio.file.WatchEvent;
  * @since JDK 1.8
  */
 public interface Watcher {
+
     /**
      * 文件创建时执行的方法
      *
@@ -44,4 +45,5 @@ public interface Watcher {
      * @param currentPath 事件发生的当前Path路径
      */
     void onOverflow(WatchEvent<?> event, Path currentPath);
+
 }

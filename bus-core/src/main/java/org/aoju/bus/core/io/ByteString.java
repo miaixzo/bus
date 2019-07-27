@@ -1,5 +1,6 @@
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.utils.IoUtils;
 
 import javax.crypto.Mac;
@@ -264,7 +265,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * Base64</a>.
      */
     public String base64Url() {
-        return Base64.encodeUrl(data);
+        return Base64.encodeUrlSafe(data);
     }
 
     /**

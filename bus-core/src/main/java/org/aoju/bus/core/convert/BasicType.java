@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since JDK 1.8
  */
 public enum BasicType {
+
     BYTE, SHORT, INT, INTEGER, LONG, DOUBLE, FLOAT, BOOLEAN, CHAR, CHARACTER, STRING;
 
     /**
@@ -66,4 +67,5 @@ public enum BasicType {
         Class<?> result = wrapperPrimitiveMap.get(clazz);
         return (null == result) ? clazz : result;
     }
+
 }

@@ -1,6 +1,6 @@
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 
 import java.io.BufferedReader;
@@ -69,17 +69,17 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     @Override
-    public String readStr(Charset charset) throws CommonException {
+    public String readStr(Charset charset) throws InstrumentException {
         return resources.get(cursor).readStr(charset);
     }
 
     @Override
-    public String readUtf8Str() throws CommonException {
+    public String readUtf8Str() throws InstrumentException {
         return resources.get(cursor).readUtf8Str();
     }
 
     @Override
-    public byte[] readBytes() throws CommonException {
+    public byte[] readBytes() throws InstrumentException {
         return resources.get(cursor).readBytes();
     }
 

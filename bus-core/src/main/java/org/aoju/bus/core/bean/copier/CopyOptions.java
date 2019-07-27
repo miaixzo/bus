@@ -17,6 +17,7 @@ import java.util.Map;
  * @since JDK 1.8
  */
 public class CopyOptions {
+
     /**
      * 限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
      */

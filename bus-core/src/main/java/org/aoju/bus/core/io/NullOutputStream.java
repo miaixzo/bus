@@ -13,12 +13,7 @@ import java.io.OutputStream;
  * @since JDK 1.8
  */
 public class NullOutputStream extends OutputStream {
-
-    /**
-     * 单例
-     */
-    public static final NullOutputStream NULL_OUTPUT_STREAM = new NullOutputStream();
-
+ 
     /**
      * 什么也不做，写出到<code>/dev/null</code>.
      *

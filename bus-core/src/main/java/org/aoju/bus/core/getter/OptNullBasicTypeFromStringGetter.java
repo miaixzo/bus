@@ -84,4 +84,5 @@ public abstract class OptNullBasicTypeFromStringGetter<K> extends OptNullBasicTy
     public Date getDate(K key, Date defaultValue) {
         return Convert.toDate(getStr(key), defaultValue);
     }
+
 }

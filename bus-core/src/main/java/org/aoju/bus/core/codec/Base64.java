@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Base64工具类，提供Base64的编码和解码方案<br>
@@ -21,24 +22,75 @@ import java.nio.charset.Charset;
  */
 public class Base64 {
 
-    private static final char[] BASE64 = {
+    /**
+     * 标准编码表
+     */
+    public static final byte[] STANDARD_ENCODE_TABLE = {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
+    /**
+     * URL安全的编码表，将 + 和 / 替换为 - 和 _
+     */
+    public static final byte[] URL_SAFE_ENCODE_TABLE = {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
 
-    private static final byte[] INV_BASE64 = {
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54,
-            55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4,
-            5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-            24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34,
-            35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+    /**
+     * Base64解码表，共128位，-1表示非base64字符，-2表示padding
+     */
+    public static final byte[] DECODE_TABLE = {
+            // 0 1 2 3 4 5 6 7 8 9 A B C D E F
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 00-0f
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 10-1f
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, 62, -1, 63, // 20-2f + - /
+            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -2, -1, -1, // 30-3f 0-9
+            -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, // 40-4f A-O
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, 63, // 50-5f P-Z _
+            -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, // 60-6f a-o
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 // 70-7a p-z
     };
 
-    public static void encode(byte[] src, int srcPos, int srcLen, char[] dest,
+    /**
+     * Base64解码表，共128位，-1表示非base64字符，-2表示padding
+     */
+    public static final byte PADDING = -2;
+
+
+    private static String encode(byte[] in, byte[] map) {
+        int length = (in.length + 2) / 3 * 4;
+        byte[] out = new byte[length];
+        int index = 0, end = in.length - in.length % 3;
+        for (int i = 0; i < end; i += 3) {
+            out[index++] = map[(in[i] & 0xff) >> 2];
+            out[index++] = map[((in[i] & 0x03) << 4) | ((in[i + 1] & 0xff) >> 4)];
+            out[index++] = map[((in[i + 1] & 0x0f) << 2) | ((in[i + 2] & 0xff) >> 6)];
+            out[index++] = map[(in[i + 2] & 0x3f)];
+        }
+        switch (in.length % 3) {
+            case 1:
+                out[index++] = map[(in[end] & 0xff) >> 2];
+                out[index++] = map[(in[end] & 0x03) << 4];
+                out[index++] = '=';
+                out[index++] = '=';
+                break;
+            case 2:
+                out[index++] = map[(in[end] & 0xff) >> 2];
+                out[index++] = map[((in[end] & 0x03) << 4) | ((in[end + 1] & 0xff) >> 4)];
+                out[index++] = map[((in[end + 1] & 0x0f) << 2)];
+                out[index++] = '=';
+                break;
+        }
+        return new String(out, StandardCharsets.US_ASCII);
+    }
+
+
+    public static void encode(byte[] src, int srcPos, int srcLen, byte[] dest,
                               int destPos) {
         if (srcPos < 0 || srcLen < 0 || srcLen > src.length - srcPos)
             throw new IndexOutOfBoundsException();
@@ -49,24 +101,24 @@ public class Base64 {
         int n = srcLen / 3;
         int r = srcLen - 3 * n;
         while (n-- > 0) {
-            dest[destPos++] = BASE64[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-            dest[destPos++] = BASE64[((b1 & 0x03) << 4)
+            dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+            dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)
                     | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
-            dest[destPos++] = BASE64[((b2 & 0x0F) << 2)
+            dest[destPos++] = STANDARD_ENCODE_TABLE[((b2 & 0x0F) << 2)
                     | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
-            dest[destPos++] = BASE64[b3 & 0x3F];
+            dest[destPos++] = STANDARD_ENCODE_TABLE[b3 & 0x3F];
         }
         if (r > 0)
             if (r == 1) {
-                dest[destPos++] = BASE64[((b1 = src[srcPos]) >>> 2) & 0x3F];
-                dest[destPos++] = BASE64[((b1 & 0x03) << 4)];
+                dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 = src[srcPos]) >>> 2) & 0x3F];
+                dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)];
                 dest[destPos++] = '=';
                 dest[destPos++] = '=';
             } else {
-                dest[destPos++] = BASE64[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-                dest[destPos++] = BASE64[((b1 & 0x03) << 4)
+                dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+                dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)
                         | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
-                dest[destPos++] = BASE64[(b2 & 0x0F) << 2];
+                dest[destPos++] = STANDARD_ENCODE_TABLE[(b2 & 0x0F) << 2];
                 dest[destPos++] = '=';
             }
     }
@@ -75,15 +127,15 @@ public class Base64 {
             throws IOException {
         byte b2, b3;
         while ((len -= 2) >= 0) {
-            out.write((byte) ((INV_BASE64[ch[off++]] << 2)
-                    | ((b2 = INV_BASE64[ch[off++]]) >>> 4)));
+            out.write((byte) ((DECODE_TABLE[ch[off++]] << 2)
+                    | ((b2 = DECODE_TABLE[ch[off++]]) >>> 4)));
             if ((len-- == 0) || ch[off] == '=')
                 break;
             out.write((byte) ((b2 << 4)
-                    | ((b3 = INV_BASE64[ch[off++]]) >>> 2)));
+                    | ((b3 = DECODE_TABLE[ch[off++]]) >>> 2)));
             if ((len-- == 0) || ch[off] == '=')
                 break;
-            out.write((byte) ((b3 << 6) | INV_BASE64[ch[off++]]));
+            out.write((byte) ((b3 << 6) | DECODE_TABLE[ch[off++]]));
         }
     }
 
@@ -94,8 +146,8 @@ public class Base64 {
      * @param lineSep 在76个char之后是CRLF还是EOF
      * @return 编码后的bytes
      */
-    public static byte[] encode(byte[] arr, boolean lineSep) {
-        return Base64Encoder.encode(arr, lineSep);
+    public static byte[] encode(byte[] in, boolean lineSep) {
+        return Base64Encoder.encode(in, lineSep);
     }
 
     /**
@@ -106,8 +158,8 @@ public class Base64 {
      * @return 编码后的bytes
      * @since 3.0.6
      */
-    public static byte[] encodeUrlSafe(byte[] arr, boolean lineSep) {
-        return Base64Encoder.encodeUrlSafe(arr, lineSep);
+    public static byte[] encodeUrlSafe(byte[] in, boolean lineSep) {
+        return Base64Encoder.encodeUrlSafe(in, lineSep);
     }
 
     /**
@@ -398,4 +450,5 @@ public class Base64 {
     public static byte[] decode(byte[] in) {
         return Base64Decoder.decode(in);
     }
+
 }

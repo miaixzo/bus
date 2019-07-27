@@ -154,4 +154,5 @@ public interface OptBasicTypeGetter<K> {
      * @return Date类型属性值
      */
     Date getDate(K key, Date defaultValue);
+
 }

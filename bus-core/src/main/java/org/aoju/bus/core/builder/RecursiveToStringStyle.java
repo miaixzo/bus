@@ -83,4 +83,5 @@ public class RecursiveToStringStyle extends ToStringStyle {
     protected boolean accept(final Class<?> clazz) {
         return true;
     }
+
 }

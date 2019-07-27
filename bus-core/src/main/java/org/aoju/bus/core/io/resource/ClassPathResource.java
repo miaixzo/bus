@@ -2,7 +2,7 @@ package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
 /**
@@ -114,7 +114,7 @@ public class ClassPathResource extends UrlResource {
             super.url = ClassLoader.getSystemResource(this.path);
         }
         if (null == super.url) {
-            throw new CommonException("Resource of path [{}] not exist!", this.path);
+            throw new InstrumentException("Resource of path [{}] not exist!", this.path);
         }
     }
 

@@ -10,6 +10,7 @@ package org.aoju.bus.core.lang;
  * @since JDK 1.8
  */
 public interface Matcher<T> {
+    
     /**
      * 给定对象是否匹配
      *
@@ -17,4 +18,5 @@ public interface Matcher<T> {
      * @return 是否匹配
      */
     boolean match(T t);
+
 }

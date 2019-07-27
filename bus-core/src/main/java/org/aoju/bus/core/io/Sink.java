@@ -41,6 +41,7 @@ import java.io.IOException;
  * @since JDK 1.8
  */
 public interface Sink extends Closeable, Flushable {
+
     /**
      * Removes {@code byteCount} bytes from {@code source} and appends them to this.
      */
@@ -64,4 +65,5 @@ public interface Sink extends Closeable, Flushable {
      */
     @Override
     void close() throws IOException;
+    
 }

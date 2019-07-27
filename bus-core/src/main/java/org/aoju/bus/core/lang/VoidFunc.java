@@ -17,4 +17,5 @@ public interface VoidFunc {
      * 执行函数
      */
     void call() throws Exception;
+
 }

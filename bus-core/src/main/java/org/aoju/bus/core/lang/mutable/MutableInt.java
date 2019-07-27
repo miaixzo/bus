@@ -13,6 +13,7 @@ import org.aoju.bus.core.utils.NumberUtils;
  * @since JDK 1.8
  */
 public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {
+
     private static final long serialVersionUID = -7381592836008495052L;
 
     private int value;

@@ -10,10 +10,10 @@ package org.aoju.bus.core.io;
  * @since JDK 1.8
  */
 public final class SegmentPool {
+
     /**
      * The maximum number of bytes to pool.
      */
-    // TODO: Is 64 KiB a good maximum size? Do we ever have that many idle segments?
     static final long MAX_SIZE = 64 * 1024; // 64 KiB.
 
     /**
