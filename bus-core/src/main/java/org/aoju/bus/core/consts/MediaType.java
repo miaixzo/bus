@@ -302,7 +302,7 @@ public class MediaType {
         this.mediaType = mediaType == null ? MULTIPART_FORM_DATA : mediaType;
         this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
-        this.charset = charset;
+        this.charset = charset == null ? org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8 : charset;
         if (MapUtils.isNotEmpty(params)) {
             params = new TreeMap(new Comparator<String>() {
                 public int compare(String o1, String o2) {
@@ -311,7 +311,6 @@ public class MediaType {
             });
         }
         params = params == null ? new HashMap<>() : params;
-
         if (charset != null && !charset.isEmpty()) {
             params.put(CHARSET_PARAMETER, charset);
         }
