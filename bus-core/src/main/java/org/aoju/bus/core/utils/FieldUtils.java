@@ -10,11 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Utilities for working with {@link Field}s by reflection. Adapted and refactored from the dormant [reflect] Commons
- * sandbox component.
- * <p>
- * The ability is provided to break the scoping restrictions coded by the programmer. This can allow fields to be
- * changed that shouldn't be. This facility should be used with care.
+ * 反射处理{@link Field} 的实用程序
  *
  * @author aoju.org
  * @version 3.0.1
@@ -23,23 +19,16 @@ import java.util.List;
  */
 public class FieldUtils {
 
-    /**
-     * {@link FieldUtils} instances should NOT be constructed in standard programming.
-     * <p>
-     * This constructor is {@code public} to permit tools that require a JavaBean instance to operate.
-     * </p>
-     */
     public FieldUtils() {
         super();
     }
 
     /**
-     * Gets an accessible {@link Field} by name respecting scope. Superclasses/interfaces will be considered.
+     * 根据名称获取可访问的{@link Field}范围
      *
      * @param cls       the {@link Class} to reflect, must not be {@code null}
      * @param fieldName the field name to obtain
-     * @return the Field object
-     * @throws IllegalArgumentException if the class is {@code null}, or the field name is blank or empty
+     * @return Field object
      */
     public static Field getField(final Class<?> cls, final String fieldName) {
         final Field field = getField(cls, fieldName, false);
@@ -678,4 +667,5 @@ public class FieldUtils {
         // already forced access above, don't repeat it here:
         writeField(field, target, value, false);
     }
+    
 }

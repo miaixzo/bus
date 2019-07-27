@@ -24,12 +24,6 @@ import java.util.*;
 public class TypeUtils {
 
     /**
-     * A wildcard instance matching {@code ?}.
-     *
-     * @since 3.2
-     */
-    public static final WildcardType WILDCARD_ALL = wildcardType().withUpperBounds(Object.class).build();
-    /**
      * 常见的基础对象类型
      */
     private static final Class[] BASE_TYPE_CLASS = new Class[]{

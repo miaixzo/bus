@@ -596,7 +596,7 @@ public class IoUtils {
         if (in == null) {
             throw new IllegalArgumentException("The InputStream must not be null");
         }
-        ObjectInputStream ois = null;
+        ObjectInputStream ois;
         try {
             ois = new ObjectInputStream(in);
             final T obj = (T) ois.readObject();

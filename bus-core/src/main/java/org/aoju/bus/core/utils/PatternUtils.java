@@ -172,7 +172,7 @@ public class PatternUtils {
             return null;
         }
 
-        HashSet<String> varNums = findAll(RegEx.GROUP_VAR, template, 1, new HashSet<String>());
+        HashSet<String> varNums = findAll(RegEx.GROUP_VAR, template, 1, new HashSet<>());
 
         Matcher matcher = pattern.matcher(content);
         if (matcher.find()) {
@@ -304,7 +304,7 @@ public class PatternUtils {
      * @since 3.0.6
      */
     public static List<String> findAll(String regex, String content, int group) {
-        return findAll(regex, content, group, new ArrayList<String>());
+        return findAll(regex, content, group, new ArrayList<>());
     }
 
     /**
@@ -336,7 +336,7 @@ public class PatternUtils {
      * @since 3.0.6
      */
     public static List<String> findAll(Pattern pattern, String content, int group) {
-        return findAll(pattern, content, group, new ArrayList<String>());
+        return findAll(pattern, content, group, new ArrayList<>());
     }
 
     /**

@@ -29,8 +29,6 @@ public class EscapeUtils {
         super();
     }
 
-    /* Helper functions */
-
     /**
      * Get a {@link Builder}.
      *

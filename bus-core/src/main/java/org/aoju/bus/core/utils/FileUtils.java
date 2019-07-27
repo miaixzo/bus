@@ -40,15 +40,6 @@ import java.util.zip.Checksum;
 public class FileUtils {
 
     /**
-     * 在Jar中的路径jar的扩展名形式
-     */
-    public static final String JAR_PATH_EXT = ".jar!";
-    /**
-     * 当Path为文件形式时, path会加入一个表示文件的前缀
-     */
-    public static final String PATH_FILE_PRE = URLUtils.FILE_URL_PREFIX;
-
-    /**
      * Windows下文件名中的无效字符
      */
     private static Pattern FILE_NAME_INVALID_PATTERN_WIN = Pattern.compile("[\\\\/:*?\"<>|]");
@@ -253,7 +244,7 @@ public class FileUtils {
         }
         List<String> paths = new ArrayList<String>();
 
-        int index = path.lastIndexOf(FileUtils.JAR_PATH_EXT);
+        int index = path.lastIndexOf(FileType.JAR_PATH_EXT);
         if (index == -1) {
             // 普通目录路径
             File[] files = ls(path);

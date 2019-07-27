@@ -89,7 +89,7 @@ public class XmlUtils {
      * @throws IOException IO异常
      * @since 3.2.0
      */
-    public static <T> T readObjectFromXml(InputSource source) throws IOException {
+    public static <T> T readObjectFromXml(InputSource source) {
         Object result = null;
         XMLDecoder xmldec = null;
         try {
@@ -736,7 +736,7 @@ public class XmlUtils {
      * @throws JAXBException
      * @throws UnsupportedEncodingException
      */
-    public String requestModel(Object esbEntry) throws JAXBException, UnsupportedEncodingException {
+    public String requestModel(Object esbEntry) throws JAXBException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         JAXBContext jaxbContext = JAXBContext.newInstance(esbEntry.getClass());
         Marshaller marshaller = jaxbContext.createMarshaller();
