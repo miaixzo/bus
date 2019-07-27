@@ -1,0 +1,145 @@
+package org.aoju.bus.http;
+
+import org.aoju.bus.http.internal.Internal;
+
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
+import java.io.IOException;
+import java.security.Principal;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * A record of a TLS handshake. For HTTPS clients, the client is <i>local</i> and the remote server
+ * is its <i>peer</i>.
+ *
+ * <p>This value object describes a completed handshake. Use {@link ConnectionSpec} to set policy
+ * for new handshakes.
+ *
+ * @author aoju.org
+ * @version 3.0.1
+ * @group 839128
+ * @since JDK 1.8
+ */
+public final class Handshake {
+    private final TlsVersion tlsVersion;
+    private final CipherSuite cipherSuite;
+    private final List<Certificate> peerCertificates;
+    private final List<Certificate> localCertificates;
+
+    private Handshake(TlsVersion tlsVersion, CipherSuite cipherSuite,
+                      List<Certificate> peerCertificates, List<Certificate> localCertificates) {
+        this.tlsVersion = tlsVersion;
+        this.cipherSuite = cipherSuite;
+        this.peerCertificates = peerCertificates;
+        this.localCertificates = localCertificates;
+    }
+
+    public static Handshake get(SSLSession session) throws IOException {
+        String cipherSuiteString = session.getCipherSuite();
+        if (cipherSuiteString == null) throw new IllegalStateException("cipherSuite == null");
+        if ("SSL_NULL_WITH_NULL_NULL".equals(cipherSuiteString)) {
+            throw new IOException("cipherSuite == SSL_NULL_WITH_NULL_NULL");
+        }
+        CipherSuite cipherSuite = CipherSuite.forJavaName(cipherSuiteString);
+
+        String tlsVersionString = session.getProtocol();
+        if (tlsVersionString == null) throw new IllegalStateException("tlsVersion == null");
+        if ("NONE".equals(tlsVersionString)) throw new IOException("tlsVersion == NONE");
+        TlsVersion tlsVersion = TlsVersion.forJavaName(tlsVersionString);
+
+        Certificate[] peerCertificates;
+        try {
+            peerCertificates = session.getPeerCertificates();
+        } catch (SSLPeerUnverifiedException ignored) {
+            peerCertificates = null;
+        }
+        List<Certificate> peerCertificatesList = peerCertificates != null
+                ? Internal.immutableList(peerCertificates)
+                : Collections.<Certificate>emptyList();
+
+        Certificate[] localCertificates = session.getLocalCertificates();
+        List<Certificate> localCertificatesList = localCertificates != null
+                ? Internal.immutableList(localCertificates)
+                : Collections.<Certificate>emptyList();
+
+        return new Handshake(tlsVersion, cipherSuite, peerCertificatesList, localCertificatesList);
+    }
+
+    public static Handshake get(TlsVersion tlsVersion, CipherSuite cipherSuite,
+                                List<Certificate> peerCertificates, List<Certificate> localCertificates) {
+        if (tlsVersion == null) throw new NullPointerException("tlsVersion == null");
+        if (cipherSuite == null) throw new NullPointerException("cipherSuite == null");
+        return new Handshake(tlsVersion, cipherSuite, Internal.immutableList(peerCertificates),
+                Internal.immutableList(localCertificates));
+    }
+
+    /**
+     * Returns the TLS version used for this connection. This value wasn't tracked prior to HttpClient
+     * 3.0. For responses cached by preceding versions this returns {@link TlsVersion#SSL_3_0}.
+     */
+    public TlsVersion tlsVersion() {
+        return tlsVersion;
+    }
+
+    /**
+     * Returns the cipher suite used for the connection.
+     */
+    public CipherSuite cipherSuite() {
+        return cipherSuite;
+    }
+
+    /**
+     * Returns a possibly-empty list of certificates that identify the remote peer.
+     */
+    public List<Certificate> peerCertificates() {
+        return peerCertificates;
+    }
+
+    /**
+     * Returns the remote peer's principle, or null if that peer is anonymous.
+     */
+    public Principal peerPrincipal() {
+        return !peerCertificates.isEmpty()
+                ? ((X509Certificate) peerCertificates.get(0)).getSubjectX500Principal()
+                : null;
+    }
+
+    /**
+     * Returns a possibly-empty list of certificates that identify this peer.
+     */
+    public List<Certificate> localCertificates() {
+        return localCertificates;
+    }
+
+    /**
+     * Returns the local principle, or null if this peer is anonymous.
+     */
+    public Principal localPrincipal() {
+        return !localCertificates.isEmpty()
+                ? ((X509Certificate) localCertificates.get(0)).getSubjectX500Principal()
+                : null;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Handshake)) return false;
+        Handshake that = (Handshake) other;
+        return tlsVersion.equals(that.tlsVersion)
+                && cipherSuite.equals(that.cipherSuite)
+                && peerCertificates.equals(that.peerCertificates)
+                && localCertificates.equals(that.localCertificates);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + tlsVersion.hashCode();
+        result = 31 * result + cipherSuite.hashCode();
+        result = 31 * result + peerCertificates.hashCode();
+        result = 31 * result + localCertificates.hashCode();
+        return result;
+    }
+}

@@ -1,0 +1,147 @@
+package org.aoju.bus.spring.sensitive;
+
+import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.crypto.Mode;
+import org.aoju.bus.sensitive.Builder;
+import org.aoju.bus.sensitive.Provider;
+import org.aoju.bus.sensitive.annotation.JSON;
+import org.aoju.bus.sensitive.annotation.Privacy;
+import org.aoju.bus.sensitive.annotation.Sensitive;
+import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
+import org.apache.ibatis.session.Configuration;
+
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+/**
+ * 数据加密脱敏
+ *
+ * @author aoju.org
+ * @version 3.0.1
+ * @group 839128
+ * @since JDK 1.8
+ */
+@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
+public class SensitiveStatementHandler implements Interceptor {
+
+    private static final String MAPPEDSTATEMENT = "delegate.mappedStatement";
+    private static final String BOUND_SQL = "delegate.boundSql";
+
+    @Override
+    public Object intercept(Invocation invocation) throws Throwable {
+        StatementHandler statementHandler = Provider.realTarget(invocation.getTarget());
+        MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
+        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(MAPPEDSTATEMENT);
+        SqlCommandType commandType = mappedStatement.getSqlCommandType();
+
+        BoundSql boundSql = (BoundSql) metaObject.getValue(BOUND_SQL);
+        Object params = boundSql.getParameterObject();
+        if (params instanceof Map) {
+            return invocation.proceed();
+        }
+        Sensitive enableSensitive = params != null ? params.getClass().getAnnotation(Sensitive.class) : null;
+        if (enableSensitive != null) {
+            handleParameters(mappedStatement.getConfiguration(), boundSql, params, commandType);
+        }
+        return invocation.proceed();
+    }
+
+    private void handleParameters(Configuration configuration, BoundSql boundSql, Object param, SqlCommandType commandType) {
+        Map<String, Object> newValues = new HashMap<>(16);
+        MetaObject metaObject = configuration.newMetaObject(param);
+
+        for (Field field : param.getClass().getDeclaredFields()) {
+            Object value = metaObject.getValue(field.getName());
+            Object newValue = value;
+            if (value instanceof CharSequence) {
+                newValue = handlePrivacy(field, newValue);
+                if (isWriteCommand(commandType) && !Provider.alreadyBeSentisived(newValue)) {
+                    newValue = handleSensitiveField(field, newValue);
+                    newValue = handleSensitiveJSONField(field, newValue);
+                }
+            }
+            if (value != null && newValue != null && !value.equals(newValue)) {
+                newValues.put(field.getName(), newValue);
+            }
+        }
+        for (Map.Entry<String, Object> entry : newValues.entrySet()) {
+            boundSql.setAdditionalParameter(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private boolean isWriteCommand(SqlCommandType commandType) {
+        return SqlCommandType.UPDATE.equals(commandType) || SqlCommandType.INSERT.equals(commandType);
+    }
+
+    private Object handlePrivacy(Field field, Object value) {
+        Privacy Privacy = field.getAnnotation(Privacy.class);
+        Object newValue = value;
+        if (Privacy != null && value != null) {
+            newValue = Base64.encode(CryptoUtils.encrypt(Mode.SHA1withRSA, null, value.toString().getBytes()));
+        }
+        return newValue;
+    }
+
+    private Object handleSensitiveField(Field field, Object value) {
+        org.aoju.bus.sensitive.annotation.Field sensitiveField = field.getAnnotation(org.aoju.bus.sensitive.annotation.Field.class);
+        Object newValue = value;
+        if (sensitiveField != null && value != null) {
+            newValue = Builder.on(value);
+        }
+        return newValue;
+    }
+
+    private Object handleSensitiveJSONField(Field field, Object value) {
+        JSON sensitiveJSONField = field.getAnnotation(JSON.class);
+        Object newValue = value;
+        if (sensitiveJSONField != null && value != null) {
+            newValue = processJsonField(newValue, sensitiveJSONField);
+        }
+        return newValue;
+    }
+
+    /**
+     * 在json中进行脱敏
+     *
+     * @param newValue new
+     * @param json     脱敏的字段
+     * @return json
+     */
+    private Object processJsonField(Object newValue, JSON json) {
+        try {
+            Map<String, Object> map = Provider.parseToObjectMap(newValue.toString());
+            org.aoju.bus.sensitive.annotation.Field[] keys = json.value();
+            for (org.aoju.bus.sensitive.annotation.Field field : keys) {
+                String key = field.key();
+                Object oldData = map.get(key);
+                if (oldData != null) {
+                    String newData = Builder.on(oldData);
+                    map.put(key, newData);
+                }
+            }
+            return Provider.parseMaptoJSONString(map);
+        } catch (Throwable e) {
+            return newValue;
+        }
+    }
+
+    @Override
+    public Object plugin(Object o) {
+        return Plugin.wrap(o, this);
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+    }
+
+}
