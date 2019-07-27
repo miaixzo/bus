@@ -299,7 +299,7 @@ public class MediaType {
     }
 
     private MediaType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
-        this.mediaType = mediaType == null ? MULTIPART_FORM_DATA : mediaType;
+        this.mediaType = mediaType == null ? APPLICATION_FORM_URLENCODED : mediaType;
         this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
         this.charset = charset == null ? org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8 : charset;
