@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Excel2003格式的事件-用户模型方式读取器，在Hutool中，统一将此归类为Sax读取<br>
- * 参考：http://www.cnblogs.com/wshsdlau/p/5643862.html
+ * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取<br>
  *
  * @author aoju.org
  * @version 3.0.1
