@@ -98,4 +98,5 @@ public abstract class AbstractConverter<T> implements Converter<T> {
     public Class<T> getTargetType() {
         return (Class<T>) ClassUtils.getTypeArgument(getClass());
     }
+
 }

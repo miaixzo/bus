@@ -128,4 +128,5 @@ public interface BasicTypeGetter<K> {
      * @return Date类型属性值
      */
     Date getDate(K key);
+
 }

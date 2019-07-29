@@ -69,4 +69,5 @@ public interface DateParser extends DateBasic {
      * @see java.text.DateFormat#parseObject(String, ParsePosition)
      */
     Object parseObject(String source, ParsePosition pos);
+
 }

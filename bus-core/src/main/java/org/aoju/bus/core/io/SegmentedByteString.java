@@ -39,6 +39,7 @@ import java.util.Arrays;
  * @since JDK 1.8
  */
 final class SegmentedByteString extends ByteString {
+
     final transient byte[][] segments;
     final transient int[] directory;
 
@@ -316,4 +317,5 @@ final class SegmentedByteString extends ByteString {
     private Object writeReplace() {
         return toByteString();
     }
+
 }

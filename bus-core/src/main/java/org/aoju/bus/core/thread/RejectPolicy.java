@@ -47,4 +47,5 @@ public enum RejectPolicy {
     public RejectedExecutionHandler getValue() {
         return this.value;
     }
+
 }

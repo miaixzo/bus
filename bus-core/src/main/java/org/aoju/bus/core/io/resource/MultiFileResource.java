@@ -64,4 +64,5 @@ public class MultiFileResource extends MultiResource {
     public MultiFileResource add(Resource resource) {
         return (MultiFileResource) super.add(resource);
     }
+
 }

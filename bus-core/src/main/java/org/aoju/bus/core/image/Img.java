@@ -664,8 +664,8 @@ public class Img implements Serializable {
         if (this.positionBaseCentre) {
             // 修正图片位置从背景的中心计算
             rectangle.setLocation(//
-                    rectangle.x + (int) (Math.abs(baseWidth - rectangle.width) / 2), //
-                    rectangle.y + (int) (Math.abs(baseHeight - rectangle.height) / 2)//
+                    rectangle.x + (Math.abs(baseWidth - rectangle.width) / 2),
+                    rectangle.y + (Math.abs(baseHeight - rectangle.height) / 2)
             );
         }
         return rectangle;

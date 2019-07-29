@@ -2,6 +2,7 @@ package org.aoju.bus.core.io.watch;
 
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
 import java.io.Closeable;
@@ -278,7 +279,7 @@ public class WatchMonitor extends Thread implements Closeable {
         try {
             return createAll(Paths.get(url.toURI()), watcher);
         } catch (URISyntaxException e) {
-            throw new WatchException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -325,9 +326,9 @@ public class WatchMonitor extends Thread implements Closeable {
      * 2、创建{@link WatchService} 对象
      * </pre>
      *
-     * @throws WatchException 监听异常，IO异常时抛出此异常
+     * @throws InstrumentException 监听异常，IO异常时抛出此异常
      */
-    public void init() throws WatchException {
+    public void init() throws InstrumentException {
         //获取目录或文件路径
         if (false == Files.exists(this.path, LinkOption.NOFOLLOW_LINKS)) {
             final Path lastPathEle = FileUtils.getLastPathEle(this.path);
@@ -355,7 +356,7 @@ public class WatchMonitor extends Thread implements Closeable {
         try {
             watchService = FileSystems.getDefault().newWatchService();
         } catch (IOException e) {
-            throw new WatchException(e);
+            throw new InstrumentException(e);
         }
 
         isClosed = false;
@@ -388,21 +389,19 @@ public class WatchMonitor extends Thread implements Closeable {
      * 开始监听事件，阻塞当前进程
      *
      * @param watcher 监听
-     * @throws WatchException 监听异常，如果监听关闭抛出此异常
+     * @throws InstrumentException 监听异常，如果监听关闭抛出此异常
      */
-    public void watch(Watcher watcher) throws WatchException {
+    public void watch(Watcher watcher) throws InstrumentException {
         if (isClosed) {
-            throw new WatchException("Watch Monitor is closed !");
+            throw new InstrumentException("Watch Monitor is closed !");
         }
         registerPath();
-//		log.debug("Start watching path: [{}]", this.path);
 
         while (false == isClosed) {
             WatchKey wk;
             try {
                 wk = watchService.take();
             } catch (InterruptedException e) {
-//				log.warn(e);
                 return;
             }
 
@@ -411,7 +410,6 @@ public class WatchMonitor extends Thread implements Closeable {
             for (WatchEvent<?> event : wk.pollEvents()) {
                 kind = event.kind();
                 if (null != this.filePath && false == this.filePath.endsWith(event.context().toString())) {
-//					log.debug("[{}] is not fit for [{}], pass it.", event.context(), this.filePath.getFileName());
                     continue;
                 }
 
@@ -490,7 +488,7 @@ public class WatchMonitor extends Thread implements Closeable {
                 //对于禁止访问的目录，跳过监听
                 return;
             }
-            throw new WatchException(e);
+            throw new InstrumentException(e);
         }
     }
 

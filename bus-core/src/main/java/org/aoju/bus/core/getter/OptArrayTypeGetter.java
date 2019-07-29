@@ -113,4 +113,5 @@ public interface OptArrayTypeGetter {
      * @return 属性值列表
      */
     BigDecimal[] getBigDecimals(String key, BigDecimal[] defaultValue);
+
 }

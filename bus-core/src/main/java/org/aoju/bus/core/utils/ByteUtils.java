@@ -8,11 +8,6 @@ package org.aoju.bus.core.utils;
  */
 public class ByteUtils {
 
-    public static final byte[] EMPTY_BYTES = {};
-    public static final int[] EMPTY_INTS = {};
-    public static final float[] EMPTY_FLOATS = {};
-    public static final double[] EMPTY_DOUBLES = {};
-
     public static int bytesToVR(byte[] bytes, int off) {
         return bytesToUShortBE(bytes, off);
     }
@@ -331,4 +326,5 @@ public class ByteUtils {
         }
         return ret;
     }
+    
 }

@@ -14,7 +14,7 @@ import java.util.*;
  * <li>[]表达式，可以获取集合等对象中对应index的值</li>
  * </ol>
  * <p>
- * 表达式栗子：
+ * 表达式：
  *
  * <pre>
  * persion

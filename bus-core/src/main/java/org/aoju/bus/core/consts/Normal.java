@@ -15,10 +15,13 @@ public class Normal {
      */
     public static final String NUMBER = "0123456789";
     /**
-     * 字符串: 字母
+     * 字符串: 小字母
      */
     public static final String LETTER = "abcdefghijklmnopqrstuvwxyz";
-
+    /**
+     * 字符串: 大小字母
+     */
+    public static final String LETTER_LOWER_UPPER = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
     /**
      * 简体中文形式
      **/
@@ -45,8 +48,7 @@ public class Normal {
             "SEVENTY", "EIGHTY", "NINETY"};
     public static final String[] NUMBER_MORE = new String[]{"", "THOUSAND", "MILLION", "BILLION"};
 
-    public static final char[] HEX_DIGITS =
-            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    public static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
     /**
      * 字符串: 字母和数字
      */

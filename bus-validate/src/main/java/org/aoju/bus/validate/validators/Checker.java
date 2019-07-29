@@ -66,21 +66,21 @@ public class Checker {
                     Annotation[] annotations = field.getDeclaredAnnotations();
 
                     String[] xFields = validated.getContext().getField();
-                    String[] xSkip = validated.getContext().getSkip();
-                    validated.getContext().setInside(false);
+                    String[] xSkip = validated.getContext().getSkip() == null ? null : validated.getContext().getSkip();
 
-                    if (ArrayUtils.isNotEmpty(xFields)) {
-                        // 当前存在被激活的属性,过滤当前需跳过的属性
-                        if (Arrays.asList(xFields).contains(field.getName())
-                                && !Arrays.asList(xSkip).contains(field.getName())) {
-                            validated = new Validated(value, annotations, validated.getContext(), field.getName());
-                        }
-                    } else {
-                        // 当前不存在被激活的属性，且过滤当前需跳过的属性
-                        if (!Arrays.asList(xSkip).contains(field.getName())) {
-                            validated = new Validated(value, annotations, validated.getContext(), field.getName());
-                        }
+                    // 过滤当前需跳过的属性
+                    if (ArrayUtils.isNotEmpty(xSkip)
+                            && Arrays.asList(xSkip).contains(field.getName())) {
+                        continue;
                     }
+                    // 过滤当前需要校验的属性
+                    if (ArrayUtils.isNotEmpty(xFields)
+                            && !Arrays.asList(xFields).contains(field.getName())) {
+                        continue;
+                    }
+                    // 属性校验开始
+                    validated.getContext().setInside(false);
+                    validated = new Validated(value, annotations, validated.getContext(), field.getName());
 
                     if (value != null && Provider.isCollection(value)
                             && hasInside(annotations)) {

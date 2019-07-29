@@ -147,4 +147,5 @@ public class Console {
     public static String input() {
         return scanner().next();
     }
+    
 }

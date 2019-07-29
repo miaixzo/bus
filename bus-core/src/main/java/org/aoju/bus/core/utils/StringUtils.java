@@ -3244,6 +3244,51 @@ public class StringUtils extends TextUtils {
     }
 
     /**
+     * 检查指定字符串中是否只包含给定的字符
+     *
+     * @param str       字符串
+     * @param testChars 检查的字符
+     * @return 字符串含有非检查的字符，返回false
+     * @since 4.4.1
+     */
+    public static boolean containsOnly(CharSequence str, char... testChars) {
+        if (false == isEmpty(str)) {
+            int len = str.length();
+            for (int i = 0; i < len; i++) {
+                if (false == ArrayUtils.contains(testChars, str.charAt(i))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 给定字符串是否包含空白符（空白符包括空格、制表符、全角空格和不间断空格）<br>
+     * 如果给定字符串为null或者""，则返回false
+     *
+     * @param str 字符串
+     * @return 是否包含空白符
+     * @since 4.0.8
+     */
+    public static boolean containsBlank(CharSequence str) {
+        if (null == str) {
+            return false;
+        }
+        final int length = str.length();
+        if (0 == length) {
+            return false;
+        }
+
+        for (int i = 0; i < length; i += 1) {
+            if (CharUtils.isBlankChar(str.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 查找指定字符串是否包含指定字符串列表中的任意一个字符串，如果包含返回找到的第一个字符串
      *
      * @param str      指定字符串

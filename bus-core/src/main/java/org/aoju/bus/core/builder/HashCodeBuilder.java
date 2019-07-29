@@ -88,6 +88,7 @@ import java.util.Set;
  * @since JDK 1.8
  */
 public class HashCodeBuilder implements Builder<Integer> {
+
     /**
      * The default initial value to use in reflection hash code building.
      */

@@ -13,6 +13,7 @@ import org.aoju.bus.core.lang.SimpleCache;
  * @since JDK 1.8
  */
 public enum BeanDescCache {
+
     INSTANCE;
 
     private SimpleCache<Class<?>, BeanDesc> bdCache = new SimpleCache<>();
@@ -36,4 +37,5 @@ public enum BeanDescCache {
     public void putBeanDesc(Class<?> beanClass, BeanDesc BeanDesc) {
         bdCache.put(beanClass, BeanDesc);
     }
+
 }

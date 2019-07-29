@@ -11,8 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 身份证相关工具类<br>
- * see https://www.oschina.net/code/snippet_1611_2881
+ * 身份证相关工具类
  *
  * @author aoju.org
  * @version 3.0.1
@@ -110,7 +109,6 @@ public class IdcardUtils {
         twFirstCode.put("I", 34);
         twFirstCode.put("O", 35);
 
-        //来自http://shenfenzheng.bajiu.cn/?rid=40
         hkFirstCode.put("A", 1);// 持证人拥有香港居留权
         hkFirstCode.put("B", 2);// 持证人所报称的出生日期或地点自首次登记以后，曾作出更改
         hkFirstCode.put("C", 3);// 持证人登记领证时在香港的居留受到入境事务处处长的限制

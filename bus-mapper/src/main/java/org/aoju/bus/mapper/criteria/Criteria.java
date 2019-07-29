@@ -1,0 +1,423 @@
+package org.aoju.bus.mapper.criteria;
+
+import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.mapper.entity.EntityColumn;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class Criteria {
+
+    protected List<Criterion> criteria;
+    //字段是否必须存在
+    protected boolean exists;
+    //值是否不能为空
+    protected boolean notNull;
+    //连接条件
+    protected String andOr;
+    //属性和列对应
+    protected Map<String, EntityColumn> propertyMap;
+
+    public Criteria(Map<String, EntityColumn> propertyMap, boolean exists, boolean notNull) {
+        this.exists = exists;
+        this.notNull = notNull;
+        criteria = new ArrayList<>();
+        this.propertyMap = propertyMap;
+    }
+
+    private String column(String property) {
+        if (propertyMap.containsKey(property)) {
+            return propertyMap.get(property).getColumn();
+        } else if (exists) {
+            throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+        } else {
+            return null;
+        }
+    }
+
+    private String property(String property) {
+        if (propertyMap.containsKey(property)) {
+            return property;
+        } else if (exists) {
+            throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+        } else {
+            return null;
+        }
+    }
+
+    public void addCriterion(String condition) {
+        if (condition == null) {
+            throw new MapperException("Value for condition cannot be null");
+        }
+        if (condition.startsWith("null")) {
+            return;
+        }
+        criteria.add(new Criterion(condition));
+    }
+
+    public void addCriterion(String condition, Object value, String property) {
+        if (value == null) {
+            if (notNull) {
+                throw new MapperException("Value for " + property + " cannot be null");
+            } else {
+                return;
+            }
+        }
+        if (property == null) {
+            return;
+        }
+        criteria.add(new Criterion(condition, value));
+    }
+
+    public void addCriterion(String condition, Object value1, Object value2, String property) {
+        if (value1 == null || value2 == null) {
+            if (notNull) {
+                throw new MapperException("Between values for " + property + " cannot be null");
+            } else {
+                return;
+            }
+        }
+        if (property == null) {
+            return;
+        }
+        criteria.add(new Criterion(condition, value1, value2));
+    }
+
+    public void addOrCriterion(String condition) {
+        if (condition == null) {
+            throw new MapperException("Value for condition cannot be null");
+        }
+        if (condition.startsWith("null")) {
+            return;
+        }
+        criteria.add(new Criterion(condition, true));
+    }
+
+    public void addOrCriterion(String condition, Object value, String property) {
+        if (value == null) {
+            if (notNull) {
+                throw new MapperException("Value for " + property + " cannot be null");
+            } else {
+                return;
+            }
+        }
+        if (property == null) {
+            return;
+        }
+        criteria.add(new Criterion(condition, value, true));
+    }
+
+    public void addOrCriterion(String condition, Object value1, Object value2, String property) {
+        if (value1 == null || value2 == null) {
+            if (notNull) {
+                throw new MapperException("Between values for " + property + " cannot be null");
+            } else {
+                return;
+            }
+        }
+        if (property == null) {
+            return;
+        }
+        criteria.add(new Criterion(condition, value1, value2, true));
+    }
+
+    public Criteria andIsNull(String property) {
+        addCriterion(column(property) + " is null");
+        return this;
+    }
+
+    public Criteria andIsNotNull(String property) {
+        addCriterion(column(property) + " is not null");
+        return this;
+    }
+
+    public Criteria andEqualTo(String property, Object value) {
+        addCriterion(column(property) + " =", value, property(property));
+        return this;
+    }
+
+    public Criteria andNotEqualTo(String property, Object value) {
+        addCriterion(column(property) + " <>", value, property(property));
+        return this;
+    }
+
+    public Criteria andGreaterThan(String property, Object value) {
+        addCriterion(column(property) + " >", value, property(property));
+        return this;
+    }
+
+    public Criteria andGreaterThanOrEqualTo(String property, Object value) {
+        addCriterion(column(property) + " >=", value, property(property));
+        return this;
+    }
+
+    public Criteria andLessThan(String property, Object value) {
+        addCriterion(column(property) + " <", value, property(property));
+        return this;
+    }
+
+    public Criteria andLessThanOrEqualTo(String property, Object value) {
+        addCriterion(column(property) + " <=", value, property(property));
+        return this;
+    }
+
+    public Criteria andIn(String property, Iterable values) {
+        addCriterion(column(property) + " in", values, property(property));
+        return this;
+    }
+
+    public Criteria andNotIn(String property, Iterable values) {
+        addCriterion(column(property) + " not in", values, property(property));
+        return this;
+    }
+
+    public Criteria andBetween(String property, Object value1, Object value2) {
+        addCriterion(column(property) + " between", value1, value2, property(property));
+        return this;
+    }
+
+    public Criteria andNotBetween(String property, Object value1, Object value2) {
+        addCriterion(column(property) + " not between", value1, value2, property(property));
+        return this;
+    }
+
+    public Criteria andLike(String property, String value) {
+        addCriterion(column(property) + "  like", value, property(property));
+        return this;
+    }
+
+    public Criteria andNotLike(String property, String value) {
+        addCriterion(column(property) + "  not like", value, property(property));
+        return this;
+    }
+
+    /**
+     * 手写条件
+     *
+     * @param condition 例如 "length(countryname)<5"
+     * @return
+     */
+    public Criteria andCondition(String condition) {
+        addCriterion(condition);
+        return this;
+    }
+
+    /**
+     * 手写左边条件，右边用value值
+     *
+     * @param condition 例如 "length(countryname)="
+     * @param value     例如 5
+     * @return
+     */
+    public Criteria andCondition(String condition, Object value) {
+        criteria.add(new Criterion(condition, value));
+        return this;
+    }
+
+    /**
+     * 将此对象的不为空的字段参数作为相等查询条件
+     *
+     * @param param 参数对象
+     * @author Bob {@link}0haizhu0@gmail.com
+     * @Date 2015年7月17日 下午12:48:08
+     */
+    public Criteria andEqualTo(Object param) {
+        MetaObject metaObject = SystemMetaObject.forObject(param);
+        String[] properties = metaObject.getGetterNames();
+        for (String property : properties) {
+            //属性和列对应Map中有此属性
+            if (propertyMap.get(property) != null) {
+                Object value = metaObject.getValue(property);
+                //属性值不为空
+                if (value != null) {
+                    andEqualTo(property, value);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 将此对象的所有字段参数作为相等查询条件，如果字段为 null，则为 is null
+     *
+     * @param param 参数对象
+     */
+    public Criteria andAllEqualTo(Object param) {
+        MetaObject metaObject = SystemMetaObject.forObject(param);
+        String[] properties = metaObject.getGetterNames();
+        for (String property : properties) {
+            //属性和列对应Map中有此属性
+            if (propertyMap.get(property) != null) {
+                Object value = metaObject.getValue(property);
+                //属性值不为空
+                if (value != null) {
+                    andEqualTo(property, value);
+                } else {
+                    andIsNull(property);
+                }
+            }
+        }
+        return this;
+    }
+
+    public Criteria orIsNull(String property) {
+        addOrCriterion(column(property) + " is null");
+        return this;
+    }
+
+    public Criteria orIsNotNull(String property) {
+        addOrCriterion(column(property) + " is not null");
+        return this;
+    }
+
+    public Criteria orEqualTo(String property, Object value) {
+        addOrCriterion(column(property) + " =", value, property(property));
+        return this;
+    }
+
+    public Criteria orNotEqualTo(String property, Object value) {
+        addOrCriterion(column(property) + " <>", value, property(property));
+        return this;
+    }
+
+    public Criteria orGreaterThan(String property, Object value) {
+        addOrCriterion(column(property) + " >", value, property(property));
+        return this;
+    }
+
+    public Criteria orGreaterThanOrEqualTo(String property, Object value) {
+        addOrCriterion(column(property) + " >=", value, property(property));
+        return this;
+    }
+
+    public Criteria orLessThan(String property, Object value) {
+        addOrCriterion(column(property) + " <", value, property(property));
+        return this;
+    }
+
+    public Criteria orLessThanOrEqualTo(String property, Object value) {
+        addOrCriterion(column(property) + " <=", value, property(property));
+        return this;
+    }
+
+    public Criteria orIn(String property, Iterable values) {
+        addOrCriterion(column(property) + " in", values, property(property));
+        return this;
+    }
+
+    public Criteria orNotIn(String property, Iterable values) {
+        addOrCriterion(column(property) + " not in", values, property(property));
+        return this;
+    }
+
+    public Criteria orBetween(String property, Object value1, Object value2) {
+        addOrCriterion(column(property) + " between", value1, value2, property(property));
+        return this;
+    }
+
+    public Criteria orNotBetween(String property, Object value1, Object value2) {
+        addOrCriterion(column(property) + " not between", value1, value2, property(property));
+        return this;
+    }
+
+    public Criteria orLike(String property, String value) {
+        addOrCriterion(column(property) + "  like", value, property(property));
+        return this;
+    }
+
+    public Criteria orNotLike(String property, String value) {
+        addOrCriterion(column(property) + "  not like", value, property(property));
+        return this;
+    }
+
+    /**
+     * 手写条件
+     *
+     * @param condition 例如 "length(countryname)<5"
+     * @return
+     */
+    public Criteria orCondition(String condition) {
+        addOrCriterion(condition);
+        return this;
+    }
+
+    /**
+     * 手写左边条件，右边用value值
+     *
+     * @param condition 例如 "length(countryname)="
+     * @param value     例如 5
+     * @return
+     */
+    public Criteria orCondition(String condition, Object value) {
+        criteria.add(new Criterion(condition, value, true));
+        return this;
+    }
+
+    /**
+     * 将此对象的不为空的字段参数作为相等查询条件
+     *
+     * @param param 参数对象
+     */
+    public Criteria orEqualTo(Object param) {
+        MetaObject metaObject = SystemMetaObject.forObject(param);
+        String[] properties = metaObject.getGetterNames();
+        for (String property : properties) {
+            //属性和列对应Map中有此属性
+            if (propertyMap.get(property) != null) {
+                Object value = metaObject.getValue(property);
+                //属性值不为空
+                if (value != null) {
+                    orEqualTo(property, value);
+                }
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 将此对象的所有字段参数作为相等查询条件，如果字段为 null，则为 is null
+     *
+     * @param param 参数对象
+     */
+    public Criteria orAllEqualTo(Object param) {
+        MetaObject metaObject = SystemMetaObject.forObject(param);
+        String[] properties = metaObject.getGetterNames();
+        for (String property : properties) {
+            //属性和列对应Map中有此属性
+            if (propertyMap.get(property) != null) {
+                Object value = metaObject.getValue(property);
+                //属性值不为空
+                if (value != null) {
+                    orEqualTo(property, value);
+                } else {
+                    orIsNull(property);
+                }
+            }
+        }
+        return this;
+    }
+
+    public List<Criterion> getAllCriteria() {
+        return criteria;
+    }
+
+    public String getAndOr() {
+        return andOr;
+    }
+
+    public void setAndOr(String andOr) {
+        this.andOr = andOr;
+    }
+
+    public List<Criterion> getCriteria() {
+        return criteria;
+    }
+
+    public boolean isValid() {
+        return criteria.size() > 0;
+    }
+
+}

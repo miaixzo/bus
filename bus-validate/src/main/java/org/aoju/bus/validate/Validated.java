@@ -1,5 +1,6 @@
 package org.aoju.bus.validate;
 
+import lombok.Data;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -7,8 +8,6 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.validate.annotation.*;
 import org.aoju.bus.validate.validators.Checker;
 import org.aoju.bus.validate.validators.Property;
-import lombok.Data;
-import org.aoju.bus.validate.annotation.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -158,6 +157,7 @@ public class Validated extends Provider {
             if (annotation instanceof Valid) {
                 context.setInside(((Valid) annotation).inside());
                 context.setField(((Valid) annotation).value());
+                context.setSkip(((Valid) annotation).skip());
             } else if (annotation instanceof Group) {
                 context.addGroups(((Group) annotation).value());
             } else if (annotation instanceof Group) {

@@ -7,8 +7,6 @@ import org.aoju.bus.core.consts.HttpMethod;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
-import org.aoju.bus.extra.servlet.multipart.MultipartFormData;
-import org.aoju.bus.extra.servlet.multipart.UploadSetting;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
@@ -203,40 +201,6 @@ public class ServletUtils {
 
         ip = request.getRemoteAddr();
         return getMultistageReverseProxyIp(ip);
-    }
-
-    /**
-     * 获得MultiPart表单内容，多用于获得上传的文件 在同一次请求中，此方法只能被执行一次！
-     *
-     * @param request {@link ServletRequest}
-     * @return MultipartFormData
-     * @throws InstrumentException IO异常
-     * @since 4.0.2
-     */
-    public static MultipartFormData getMultipart(ServletRequest request) throws InstrumentException {
-        return getMultipart(request, new UploadSetting());
-    }
-
-    /**
-     * 获得multipart/form-data 表单内容<br>
-     * 包括文件和普通表单数据<br>
-     * 在同一次请求中，此方法只能被执行一次！
-     *
-     * @param request       {@link ServletRequest}
-     * @param uploadSetting 上传文件的设定，包括最大文件大小、保存在内存的边界大小、临时目录、扩展名限定等
-     * @return MultiPart表单
-     * @throws InstrumentException IO异常
-     * @since 4.0.2
-     */
-    public static MultipartFormData getMultipart(ServletRequest request, UploadSetting uploadSetting) throws InstrumentException {
-        final MultipartFormData formData = new MultipartFormData(uploadSetting);
-        try {
-            formData.parseRequest(request);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-
-        return formData;
     }
 
     /**

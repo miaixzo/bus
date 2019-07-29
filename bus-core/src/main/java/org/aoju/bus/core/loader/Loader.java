@@ -19,4 +19,5 @@ public interface Loader<T> {
      * @return 加载完毕的对象
      */
     T get();
+
 }

@@ -77,4 +77,5 @@ public interface DatePrinter extends DateBasic {
      * @return the specified string buffer
      */
     <B extends Appendable> B format(Calendar calendar, B buf);
+
 }

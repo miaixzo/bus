@@ -10,10 +10,12 @@ package org.aoju.bus.core.lang;
  * @since JDK 1.8
  */
 public interface Builder<T> {
+
     /**
      * 构建
      *
      * @return 被构建的对象
      */
     T build();
+    
 }

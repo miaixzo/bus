@@ -368,7 +368,7 @@ public class NetUtils {
      * @since 4.5.17
      */
     public static LinkedHashSet<InetAddress> localAddressList(Filter<InetAddress> addressFilter) {
-        Enumeration<NetworkInterface> networkInterfaces = null;
+        Enumeration<NetworkInterface> networkInterfaces;
         try {
             networkInterfaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {

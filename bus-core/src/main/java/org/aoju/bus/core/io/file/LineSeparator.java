@@ -18,6 +18,7 @@ package org.aoju.bus.core.io.file;
  * @since JDK 1.8
  */
 public enum LineSeparator {
+
     /**
      * Mac系统换行符："\r"
      */

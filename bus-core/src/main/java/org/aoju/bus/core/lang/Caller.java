@@ -11,6 +11,7 @@ import org.aoju.bus.core.lang.exception.CommonException;
  * @since JDK 1.8
  */
 public class Caller {
+
     private static final ICaller CALLER_INSTANCE;
 
     static {
@@ -209,4 +210,5 @@ public class Caller {
             return false;
         }
     }
+    
 }

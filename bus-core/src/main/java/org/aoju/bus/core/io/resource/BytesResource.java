@@ -1,6 +1,6 @@
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.io.BufferedReader;
@@ -65,17 +65,17 @@ public class BytesResource implements Resource {
     }
 
     @Override
-    public String readStr(Charset charset) throws CommonException {
+    public String readStr(Charset charset) throws InstrumentException {
         return StringUtils.str(this.bytes, charset);
     }
 
     @Override
-    public String readUtf8Str() throws CommonException {
+    public String readUtf8Str() throws InstrumentException {
         return readStr(org.aoju.bus.core.consts.Charset.UTF_8);
     }
 
     @Override
-    public byte[] readBytes() throws CommonException {
+    public byte[] readBytes() throws InstrumentException {
         return this.bytes;
     }
 

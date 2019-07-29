@@ -15,6 +15,7 @@ import java.nio.charset.Charset;
  * @since JDK 1.8
  */
 public interface BufferedSink extends Sink, WritableByteChannel {
+
     /**
      * Returns this sink's internal buffer.
      */
@@ -337,4 +338,5 @@ public interface BufferedSink extends Sink, WritableByteChannel {
      * Returns an output stream that writes to this sink.
      */
     OutputStream outputStream();
+
 }

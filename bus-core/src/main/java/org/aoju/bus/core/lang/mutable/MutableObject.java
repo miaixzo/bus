@@ -12,6 +12,7 @@ import java.io.Serializable;
  * @since JDK 1.8
  */
 public class MutableObject<T> implements Mutable<T>, Serializable {
+
     private static final long serialVersionUID = -464493129773743673L;
 
     private T value;

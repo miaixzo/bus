@@ -21,6 +21,7 @@ package org.aoju.bus.core.io;
  * @since JDK 1.8
  */
 public final class Segment {
+
     /**
      * The size of all segments in bytes.
      */
@@ -182,4 +183,5 @@ public final class Segment {
         sink.limit += byteCount;
         pos += byteCount;
     }
+
 }

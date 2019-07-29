@@ -48,6 +48,7 @@ import java.io.IOException;
  * @since JDK 1.8
  */
 public interface Source extends Closeable {
+
     /**
      * Removes at least 1, and up to {@code byteCount} bytes from this and appends
      * them to {@code sink}. Returns the number of bytes read, or -1 if this
@@ -66,4 +67,5 @@ public interface Source extends Closeable {
      */
     @Override
     void close() throws IOException;
+
 }

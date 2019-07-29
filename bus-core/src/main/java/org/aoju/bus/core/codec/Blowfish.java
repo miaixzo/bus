@@ -690,4 +690,5 @@ public class Blowfish {
 
         return checkpw(rawPassword.toString(), encodedPassword);
     }
+
 }
