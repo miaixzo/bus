@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.aoju.bus.spring.druid.DruidConfiguration
+org.aoju.bus.boot.druid.DruidAutoConfiguration
