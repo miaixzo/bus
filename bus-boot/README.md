@@ -1,5 +1,16 @@
 ## 使用说明
 
+启动类中增加注解或者POM文件中增加dependency即可。
+```
+    @EnableXssFilter
+    @EnableCorsFilter
+    @EnableMapper
+    @EnableDubbo
+    @EnableSwagger
+    @EnableCrypto
+    @EnableValidate
+    @SpringBootApplication(scanBasePackages = "org.aoju.**")
+```
     
 1. 启用Xss 注解形式 `@EnableXssFilter` 或者POM形式：
     ``` 
