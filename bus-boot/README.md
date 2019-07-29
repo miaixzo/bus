@@ -1,6 +1,6 @@
 ## 使用说明
 
-启动类中增加注解或者POM文件中增加dependency即可。
+启动类中增加注解或者POM文件中增加依赖即可。
 ```
     @EnableXssFilter
     @EnableCorsFilter
