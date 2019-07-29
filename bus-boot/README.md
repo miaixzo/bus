@@ -1,7 +1,7 @@
 ## 使用说明
 
     
-1. 启用Xss 注解形式 `@EnableXssFilter`, POM如下：
+1. 启用Xss 注解形式 `@EnableXssFilter` 或者POM形式：
     ``` 
         <dependency>
            <groupId>org.aoju</groupId>
@@ -10,7 +10,7 @@
         </dependency> 
     ```
     
-2. 启用Cors 注解形式 `@EnableCorsFilter`, POM如下：
+2. 启用Cors 注解形式 `@EnableCorsFilter` 或者POM如下：
     ``` 
         <dependency>
             <groupId>org.aoju</groupId>
@@ -18,7 +18,7 @@
             <version>3.0.0</version>
         </dependency> 
     ```
-3. 启用Validate 注解形式 `@EnableValidate`, POM如下：
+3. 启用Validate 注解形式 `@EnableValidate` 或者POM如下：
     ``` 
         <dependency>
             <groupId>org.aoju</groupId>
@@ -26,7 +26,7 @@
             <version>3.0.0</version>
         </dependency>
     ```
-4. 启用Mapper 注解形式 `@EnableMapper` 同时会启用Druid, POM如下：
+4. 启用Mapper 注解形式 `@EnableMapper`(同时会启用Druid) 或者POM如下：
     ``` 
         <dependency>
             <groupId>org.aoju</groupId>
@@ -34,7 +34,7 @@
             <version>3.0.0</version>
         </dependency>
     ```
-5. 启用Swagger 注解形式 `@EnableSwagger`, POM如下：
+5. 启用Swagger 注解形式 `@EnableSwagger` 或者POM如下：
     ``` 
         <dependency>
             <groupId>org.aoju</groupId>
@@ -42,7 +42,7 @@
             <version>3.0.0</version>
         </dependency>
     ```
-6. 启用Druid 注解形式 `@EnableDruid` , POM如下：
+6. 启用Druid 注解形式 `@EnableDruid` 或者POM如下：
     ``` 
         <dependency>
             <groupId>org.aoju</groupId>
@@ -50,7 +50,7 @@
             <version>3.0.0</version>
         </dependency>
     ```
-7. 启用Dubbo 注解形式 `@EnableDubbo`, POM如下：
+7. 启用Dubbo 注解形式 `@EnableDubbo` 或者POM如下：
     ``` 
         <dependency>
             <groupId>org.aoju</groupId>
