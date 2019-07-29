@@ -11,4 +11,5 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(value = CacheConfiguration.class)
 public class CacheAutoConfiguration {
+
 }

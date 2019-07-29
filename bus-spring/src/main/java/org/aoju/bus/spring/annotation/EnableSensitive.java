@@ -1,6 +1,6 @@
 package org.aoju.bus.spring.annotation;
 
-import org.aoju.bus.spring.sensitive.ImportedClassSelector;
+import org.aoju.bus.spring.sensitive.SensitiveConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({ImportedClassSelector.class})
+@Import({SensitiveConfiguration.class})
 public @interface EnableSensitive {
 
 }

@@ -1,6 +1,6 @@
 package org.aoju.bus.spring.annotation;
 
-import org.aoju.bus.spring.validate.ImportedClassSelector;
+import org.aoju.bus.spring.validate.ValidateConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -17,6 +17,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({ImportedClassSelector.class})
+@Import({ValidateConfiguration.class})
 public @interface EnableValidate {
 }

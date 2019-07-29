@@ -14,7 +14,7 @@ import java.util.List;
  * @group 839128
  * @since JDK 1.8
  */
-public class ImportedClassSelector implements ImportSelector {
+public class SensitiveConfiguration implements ImportSelector {
 
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
