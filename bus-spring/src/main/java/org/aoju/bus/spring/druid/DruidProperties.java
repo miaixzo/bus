@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 /**
- * 数据库配置项
+ * Druid 配置项
  *
  * @author aoju.org
  * @version 3.0.1
@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @ConfigurationProperties(prefix = "spring.datasource")
-public class DataSourceProperties {
+public class DruidProperties {
 
     private String key;
     private String name;
@@ -39,6 +39,6 @@ public class DataSourceProperties {
     private String maxOpenPreparedStatements;
     private String privateKey;
 
-    private List<DataSourceProperties> multi;
+    private List<DruidProperties> multi;
 
 }

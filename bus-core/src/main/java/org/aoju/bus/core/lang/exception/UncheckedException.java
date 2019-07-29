@@ -2,11 +2,7 @@ package org.aoju.bus.core.lang.exception;
 
 import lombok.Data;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * 自定义异常: 未受检异常
@@ -19,8 +15,6 @@ import java.util.List;
 @Data
 public class UncheckedException extends RuntimeException {
 
-
-    private List<Throwable> list;
     /**
      * 错误码
      */
@@ -31,7 +25,7 @@ public class UncheckedException extends RuntimeException {
     protected String errmsg;
 
     public UncheckedException() {
-        list = new LinkedList<>();
+        super();
     }
 
     /**
@@ -93,70 +87,6 @@ public class UncheckedException extends RuntimeException {
      */
     public UncheckedException(Throwable e, String fmt, Object... args) {
         super(String.format(fmt, args), e);
-    }
-
-    @Override
-    public Throwable getCause() {
-        return list.isEmpty() ? null : list.get(0);
-    }
-
-    @Override
-    public String getLocalizedMessage() {
-        StringBuilder sb = new StringBuilder();
-        for (Throwable e : list)
-            sb.append(e.getLocalizedMessage()).append('\n');
-        return sb.toString();
-    }
-
-    @Override
-    public String getMessage() {
-        StringBuilder sb = new StringBuilder();
-        for (Throwable e : list)
-            sb.append(e.getMessage()).append('\n');
-        return sb.toString();
-    }
-
-    @Override
-    public StackTraceElement[] getStackTrace() {
-        List<StackTraceElement> eles = new LinkedList<>();
-        for (Throwable e : list)
-            for (StackTraceElement ste : e.getStackTrace())
-                eles.add(ste);
-        return eles.toArray(new StackTraceElement[eles.size()]);
-    }
-
-    @Override
-    public void printStackTrace() {
-        for (Throwable e : list) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void printStackTrace(PrintStream s) {
-        for (Throwable e : list) {
-            e.printStackTrace(s);
-        }
-    }
-
-    @Override
-    public void printStackTrace(PrintWriter s) {
-        for (Throwable e : list) {
-            e.printStackTrace(s);
-        }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Throwable e : list)
-            sb.append(e.toString()).append('\n');
-        return sb.toString();
-    }
-
-    public UncheckedException add(Throwable e) {
-        list.add(e);
-        return this;
     }
 
     /**

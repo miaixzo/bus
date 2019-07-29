@@ -4,7 +4,6 @@ package org.aoju.bus.spring.mapper;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.pager.plugin.PageInterceptor;
-import org.aoju.bus.spring.druid.DataSourceProperties;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -26,7 +25,7 @@ import java.util.Properties;
  * @group 839128
  * @since JDK 1.8
  */
-@EnableConfigurationProperties(value = {MybatisProperties.class, DataSourceProperties.class})
+@EnableConfigurationProperties(value = {MybatisProperties.class})
 public class MybatisConfiguration {
 
     @Autowired

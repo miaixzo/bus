@@ -1,6 +1,6 @@
 package org.aoju.bus.spring.annotation;
 
-import org.aoju.bus.spring.druid.DataSourceConfig;
+import org.aoju.bus.spring.druid.DruidConfiguration;
 import org.aoju.bus.spring.mapper.MapperConfiguration;
 import org.aoju.bus.spring.mapper.MapperFactoryBean;
 import org.aoju.bus.spring.mapper.MybatisConfiguration;
@@ -21,7 +21,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 @Inherited
-@Import(value = {MybatisConfiguration.class, MapperConfiguration.class, DataSourceConfig.class})
+@Import(value = {MybatisConfiguration.class, MapperConfiguration.class, DruidConfiguration.class})
 public @interface EnableMapper {
 
     /**
