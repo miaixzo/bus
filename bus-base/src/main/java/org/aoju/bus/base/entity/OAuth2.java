@@ -41,6 +41,10 @@ public class OAuth2 extends Entity {
     private String x_duty_id;
 
     @Transient
+    @ApiModelProperty("当前用户组织ID")
+    private String x_org_id;
+
+    @Transient
     @ApiModelProperty("可选参数信息")
     private String x_extract;
 
