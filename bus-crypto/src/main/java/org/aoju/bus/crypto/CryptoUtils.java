@@ -18,7 +18,6 @@ import org.aoju.bus.crypto.factory.AesCryptoFactory;
 import org.aoju.bus.crypto.factory.DesCryptoFactory;
 import org.aoju.bus.crypto.factory.RsaCryptoFactory;
 import org.aoju.bus.crypto.symmetric.*;
-import org.aoju.bus.crypto.symmetric.*;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -786,7 +785,7 @@ public final class CryptoUtils {
      * </pre>
      *
      * @param key 密钥
-     * @return {@link SymmetricCrypto}
+     * @return {@link Symmetric}
      */
     public static AES aes(byte[] key) {
         return new AES(key);
@@ -1195,7 +1194,7 @@ public final class CryptoUtils {
      * @return 签名
      * @since 4.0.1
      */
-    public static String signParams(SymmetricCrypto crypto, Map<?, ?> params) {
+    public static String signParams(Symmetric crypto, Map<?, ?> params) {
         return signParams(crypto, params, Normal.EMPTY, Normal.EMPTY, true);
     }
 
@@ -1211,7 +1210,7 @@ public final class CryptoUtils {
      * @return 签名
      * @since 4.0.1
      */
-    public static String signParams(SymmetricCrypto crypto, Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull) {
+    public static String signParams(Symmetric crypto, Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull) {
         if (MapUtils.isEmpty(params)) {
             return null;
         }
@@ -1587,7 +1586,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link SymmetricCrypto}对象或者使用相同KEY<br>
+     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link Symmetric}对象或者使用相同KEY<br>
      * 例：
      *
      * <pre>
@@ -1595,10 +1594,10 @@ public final class CryptoUtils {
      * SM4解密：sm4().decrypt(data)
      * </pre>
      *
-     * @return {@link SymmetricCrypto}
+     * @return {@link Symmetric}
      */
-    public static SymmetricCrypto sm4() {
-        return new SymmetricCrypto(SM4);
+    public static Symmetric sm4() {
+        return new Symmetric(SM4);
     }
 
     /**
@@ -1611,10 +1610,10 @@ public final class CryptoUtils {
      * </pre>
      *
      * @param key 密钥
-     * @return {@link SymmetricCrypto}
+     * @return {@link Symmetric}
      */
-    public static SymmetricCrypto sm4(byte[] key) {
-        return new SymmetricCrypto(SM4, key);
+    public static Symmetric sm4(byte[] key) {
+        return new Symmetric(SM4, key);
     }
 
     /**
@@ -2092,11 +2091,9 @@ public final class CryptoUtils {
     }
 
     private static class LazyCryptoHolder {
-
         private final static CryptoFactory AES_CRYPTO_FACTORY = new AesCryptoFactory();
         private final static CryptoFactory DES_CRYPTO_FACTORY = new DesCryptoFactory();
         private final static CryptoFactory RSA_CRYPTO_FACTORY = new RsaCryptoFactory();
-
     }
 
 }

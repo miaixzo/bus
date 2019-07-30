@@ -5,6 +5,7 @@ import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.crypto.KeyType;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;

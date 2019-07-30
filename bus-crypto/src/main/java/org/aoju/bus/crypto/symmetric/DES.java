@@ -18,7 +18,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @group 839128
  * @since JDK 1.8
  */
-public class DES extends SymmetricCrypto {
+public class DES extends Symmetric {
 
     /**
      * 构造，默认DES/CBC/PKCS5Padding，使用随机密钥

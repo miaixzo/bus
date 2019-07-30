@@ -2,6 +2,7 @@ package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.crypto.KeyType;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
