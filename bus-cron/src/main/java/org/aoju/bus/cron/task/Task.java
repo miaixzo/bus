@@ -13,5 +13,5 @@ public interface Task {
     /**
      * 执行作业
      */
-    public void execute();
+    void execute();
 }

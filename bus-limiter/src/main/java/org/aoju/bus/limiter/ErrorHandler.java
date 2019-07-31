@@ -21,4 +21,5 @@ public interface ErrorHandler {
      * @return
      */
     boolean resolve(Throwable throwable, LimiterExecutionContext executionContext);
+
 }

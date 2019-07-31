@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Http request utility
+ * Http 辅助类
  *
  * @author aoju.org
  * @version 3.0.1

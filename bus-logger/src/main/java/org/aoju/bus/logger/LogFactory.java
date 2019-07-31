@@ -250,4 +250,5 @@ public abstract class LogFactory {
     protected void checkLogExist(Object logClassName) {
         // 不做任何操作
     }
+
 }

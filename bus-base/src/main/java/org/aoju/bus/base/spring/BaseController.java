@@ -1,6 +1,5 @@
 package org.aoju.bus.base.spring;
 
-import org.aoju.bus.base.consts.ResultCode;
 import org.aoju.bus.base.service.BaseService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

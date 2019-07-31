@@ -29,4 +29,5 @@ public class WordUtils {
     public static Word07Writer getWriter(File destFile) {
         return new Word07Writer(destFile);
     }
+
 }
