@@ -10,7 +10,7 @@ import lombok.Getter;
  * @group 839128
  * @since JDK 1.8
  */
-public enum Codes {
+public enum ErrorCode {
 
     EM_SUCCESS(Consts.EM_SUCCESS, "请求成功", ""),
     EM_FAILURE(Consts.EM_FAILURE, "系统繁忙,请稍后重试", ""),
@@ -70,25 +70,25 @@ public enum Codes {
     @Getter
     public String solution;
 
-    Codes(String errcode, String errmsg, String solution) {
+    ErrorCode(String errcode, String errmsg, String solution) {
         this.errcode = errcode;
         this.errmsg = errmsg;
         this.solution = solution;
     }
 
-    public static Codes of(String errcode) {
-        for (Codes codes : Codes.values()) {
-            if (codes.errcode.equalsIgnoreCase(errcode)) {
-                return codes;
+    public static ErrorCode of(String errcode) {
+        for (ErrorCode errorCode : ErrorCode.values()) {
+            if (errorCode.errcode.equalsIgnoreCase(errcode)) {
+                return errorCode;
             }
         }
         return EM_FAILURE;
     }
 
-    public static String of(Codes errcode) {
-        for (Codes codes : Codes.values()) {
-            if (codes.equals(errcode)) {
-                return codes.errcode;
+    public static String of(ErrorCode errcode) {
+        for (ErrorCode errorCode : ErrorCode.values()) {
+            if (errorCode.equals(errcode)) {
+                return errorCode.errcode;
             }
         }
         return "";
