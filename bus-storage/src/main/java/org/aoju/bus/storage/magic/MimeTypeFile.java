@@ -1,5 +1,7 @@
 package org.aoju.bus.storage.magic;
 
+import org.aoju.bus.core.consts.MediaType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,13 +10,13 @@ public class MimeTypeFile {
     private static Map<String, String> maps = new HashMap<>();
 
     static {
-        maps.put("image/jpeg", ".jpg");
-        maps.put("image/gif", ".gif");
-        maps.put("image/png", ".png");
-        maps.put("image/bmp", ".bmp");
-        maps.put("text/plain", ".txt");
-        maps.put("application/zip", ".zip");
-        maps.put("application/x-zip-compressed", ".zip");
+        maps.put(MediaType.IMAGE_JPEG, ".jpg");
+        maps.put(MediaType.IMAGE_GIF, ".gif");
+        maps.put(MediaType.IMAGE_PNG, ".png");
+        maps.put(MediaType.IMAGE_BMP, ".bmp");
+        maps.put(MediaType.TEXT_PLAIN, ".txt");
+        maps.put(MediaType.APPLICATION_ZIP, ".zip");
+        maps.put(MediaType.APPLICATION_ZIP_COMPRESSED, ".zip");
         maps.put("multipart/x-zip", ".zip");
         maps.put("application/x-compressed", ".zip");
         maps.put("audio/mpeg3", ".mp3");

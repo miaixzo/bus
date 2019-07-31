@@ -5,7 +5,7 @@ import java.util.Map;
 
 
 /**
- * DOCUMENT ME!
+ * 探测器
  *
  * @author aoju.org
  * @version 3.0.1
@@ -13,52 +13,41 @@ import java.util.Map;
  * @since JDK 1.8
  */
 public interface MagicDetector {
-    // get the short name of this detector
 
     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public String getName();
-
-    // get the display name of this detector
+    String getName();
 
     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public String getDisplayName();
-
-    // get the version of this plugin
+    String getDisplayName();
 
     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public String getVersion();
-
-    // get a list of types this detector handles
+    String getVersion();
 
     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public String[] getHandledTypes();
-
-    // get a list of file extensions this detector typically deals with
+    String[] getHandledTypes();
 
     /**
      * DOCUMENT ME!
      *
      * @return DOCUMENT ME!
      */
-    public String[] getHandledExtensions();
-
-    // process the stream and return all matching content types
+    String[] getHandledExtensions();
 
     /**
      * DOCUMENT ME!
@@ -72,10 +61,8 @@ public interface MagicDetector {
      * @param params     DOCUMENT ME!
      * @return DOCUMENT ME!
      */
-    public String[] process(byte[] data, int offset, int length, long bitmask, char comparator,
-                            String mimeType, Map<String, String> params);
-
-    // process the file and return all matching content types
+    String[] process(byte[] data, int offset, int length, long bitmask, char comparator,
+                     String mimeType, Map<String, String> params);
 
     /**
      * DOCUMENT ME!
@@ -89,6 +76,7 @@ public interface MagicDetector {
      * @param params     DOCUMENT ME!
      * @return DOCUMENT ME!
      */
-    public String[] process(File file, int offset, int length, long bitmask, char comparator,
-                            String mimeType, Map<String, String> params);
+    String[] process(File file, int offset, int length, long bitmask, char comparator,
+                     String mimeType, Map<String, String> params);
+
 }

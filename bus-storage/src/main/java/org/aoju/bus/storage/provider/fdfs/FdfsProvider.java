@@ -19,7 +19,7 @@ public class FdfsProvider extends AbstractProvider {
     public static final String NAME = "fastDFS";
 
     private String groupName;
-    //private StorageClient1 client;
+    // private StorageClient1 client;
 
     public FdfsProvider(String groupName, Properties props) {
 //		this.groupName = groupName;

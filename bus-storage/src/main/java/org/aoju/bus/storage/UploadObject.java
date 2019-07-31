@@ -1,5 +1,6 @@
 package org.aoju.bus.storage;
 
+import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.storage.magic.Magic;
@@ -19,9 +20,6 @@ import java.util.Map;
  */
 public class UploadObject {
 
-    public static final String HTTP_PREFIX = "http://";
-    public static final String HTTPS_PREFIX = "https://";
-
     private String fileName;
     private String mimeType;
     private String catalog;
@@ -32,7 +30,7 @@ public class UploadObject {
     private Map<String, Object> metadata = new HashMap<String, Object>();
 
     public UploadObject(String filePath) {
-        if (filePath.startsWith(HTTP_PREFIX) || filePath.startsWith(HTTPS_PREFIX)) {
+        if (filePath.startsWith(Httpd.HTTP_PREFIX) || filePath.startsWith(Httpd.HTTPS_PREFIX)) {
             this.url = filePath;
             this.fileName = parseFileName(this.url);
         } else {
@@ -94,9 +92,10 @@ public class UploadObject {
         }
         if (mimeType != null && !fileName.contains(".")) {
             String fileExtension = MimeTypeFile.getFileExtension(mimeType);
-            if (fileExtension != null) fileName = fileName + fileExtension;
+            if (fileExtension != null) {
+                fileName = fileName + fileExtension;
+            }
         }
-
         return fileName;
     }
 

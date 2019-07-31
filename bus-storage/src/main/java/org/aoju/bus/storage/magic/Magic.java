@@ -18,6 +18,7 @@ import java.util.*;
  * @since JDK 1.8
  */
 public class Magic {
+    
     private static boolean initialized = false;
     private static MagicParser magicParser = null;
     private static Map<String, List<MagicMatcher>> hintMap = new HashMap<String, List<MagicMatcher>>();

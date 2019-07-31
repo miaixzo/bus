@@ -1,5 +1,6 @@
 package org.aoju.bus.storage.provider;
 
+import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.storage.StorageProvider;
 
@@ -18,11 +19,7 @@ import java.net.URL;
  */
 public abstract class AbstractProvider implements StorageProvider {
 
-    protected static final String DIR_SPLITER = "/";
-    private static final String HTTP_PREFIX = "http://";
-    private static final String HTTPS_PREFIX = "https://";
     protected String prefix;
-
     protected String bucketName;
 
     public static String downloadFile(String fileURL, String saveDir) {
@@ -80,7 +77,7 @@ public abstract class AbstractProvider implements StorageProvider {
     }
 
     protected String getFullPath(String file) {
-        if (file.startsWith(HTTP_PREFIX) || file.startsWith(HTTPS_PREFIX)) {
+        if (file.startsWith(Httpd.HTTP_PREFIX) || file.startsWith(Httpd.HTTPS_PREFIX)) {
             return file;
         }
         return prefix + file;

@@ -134,6 +134,12 @@ public class MediaType {
     public final static MediaType IMAGE_PNG_TYPE = new MediaType("image", "png");
 
     /**
+     * "image/bmp"
+     */
+    public final static String IMAGE_BMP = "image/bmp";
+    public final static MediaType IMAGE_BMP_TYPE = new MediaType("image", "bmp");
+
+    /**
      * "image/jpeg"
      */
     public final static String IMAGE_JPEG = "image/jpeg";
@@ -210,6 +216,12 @@ public class MediaType {
      */
     public final static String APPLICATION_ZIP = "application/zip";
     public final static MediaType APPLICATION_ZIP_TYPE = new MediaType("application", "zip");
+
+    /**
+     * "application/x-zip-compressed"
+     */
+    public final static String APPLICATION_ZIP_COMPRESSED = "application/x-zip-compressed";
+    public final static MediaType APPLICATION_ZIP_COMPRESSED_TYPE = new MediaType("application", "x-zip-compressed");
 
     /**
      * "multipart/form-data"

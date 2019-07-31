@@ -1,6 +1,9 @@
 package org.aoju.bus.core.consts;
 
-public class HttpMethod {
+public class Httpd {
+
+    public static final String HTTP_PREFIX = "http://";
+    public static final String HTTPS_PREFIX = "https://";
 
     public final static String GET = "GET";
     public final static String HEAD = "HEAD";
