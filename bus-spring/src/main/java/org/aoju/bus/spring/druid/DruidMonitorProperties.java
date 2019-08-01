@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "druid.monitor")
+@ConfigurationProperties(prefix = "spring.druid.monitor")
 public class DruidMonitorProperties {
 
     private String DruidStatView;

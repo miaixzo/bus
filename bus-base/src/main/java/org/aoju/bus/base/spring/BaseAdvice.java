@@ -1,6 +1,7 @@
 package org.aoju.bus.base.spring;
 
 import org.aoju.bus.base.consts.Consts;
+import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.core.lang.exception.*;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.logger.Logger;
@@ -55,7 +56,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = Exception.class)
     public String defaultException(Exception e) {
         Logger.error(getStackTraceMessage(e));
-        return write(ResultCode.EM_FAILURE);
+        return write(ErrorCode.EM_FAILURE);
     }
 
     /**
@@ -65,7 +66,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = CommonException.class)
     public String commonException(CommonException e) {
         Logger.error(getStackTraceMessage(e));
-        return write(ResultCode.EM_100506);
+        return write(ErrorCode.EM_100506);
     }
 
     /**
@@ -75,7 +76,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = InstrumentException.class)
     public String instrumentException(InstrumentException e) {
         Logger.error(getStackTraceMessage(e));
-        return write(ResultCode.EM_100510);
+        return write(ErrorCode.EM_100510);
     }
 
     /**
@@ -86,7 +87,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = BusinessException.class)
     public String businessException(BusinessException e) {
         Logger.error(getStackTraceMessage(e));
-        return write(ResultCode.EM_100513);
+        return write(ErrorCode.EM_100513);
     }
 
     /**
@@ -96,7 +97,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = CrontabException.class)
     public String crontabException(CrontabException e) {
         Logger.error(getStackTraceMessage(e));
-        return write(ResultCode.EM_100514);
+        return write(ErrorCode.EM_100514);
     }
 
     /**
@@ -116,7 +117,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public String httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         Logger.error(getStackTraceMessage(e));
-        return write(ResultCode.EM_100507);
+        return write(ErrorCode.EM_100507);
     }
 
     /**
@@ -126,7 +127,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public String httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         Logger.error(getStackTraceMessage(e));
-        return write(ResultCode.EM_100508);
+        return write(ErrorCode.EM_100508);
     }
 
     /**
@@ -137,7 +138,7 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public String noHandlerFoundException(NoHandlerFoundException e) {
         Logger.error(getStackTraceMessage(e));
-        return write(ResultCode.EM_100509);
+        return write(ErrorCode.EM_100509);
     }
 
     /**

@@ -53,7 +53,7 @@ public class DruidMonitorConfiguration {
         //登录查看信息的账号密码.
         servletRegistrationBean.addInitParameter("loginUsername", properties.getLoginUsername());
         servletRegistrationBean.addInitParameter("loginPassword", properties.getLoginPassword());
-        Logger.info("loginUsername ---> " + properties.getLoginUsername() + "loginPassword ---> " + properties.getLoginPassword());
+        Logger.info("username ---> " + properties.getLoginUsername() + " password ---> " + properties.getLoginPassword());
         //是否能够重置数据.
         servletRegistrationBean.addInitParameter("resetEnable", properties.getResetEnable());
         Logger.info("resetEnable ---> " + properties.getResetEnable());

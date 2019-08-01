@@ -1,7 +1,8 @@
 package org.aoju.bus.base.spring;
 
-import org.aoju.bus.base.service.BaseService;
 import io.swagger.annotations.ApiOperation;
+import org.aoju.bus.base.consts.ErrorCode;
+import org.aoju.bus.base.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +30,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:添加数据", httpMethod = "POST")
     @ResponseBody
     public String add(T entity) {
-        return write(ResultCode.EM_SUCCESS, service.insertSelective(entity));
+        return write(ErrorCode.EM_SUCCESS, service.insertSelective(entity));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
@@ -44,7 +45,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:主键更新", httpMethod = "POST")
     @ResponseBody
     public String update(T entity) {
-        return write(ResultCode.EM_SUCCESS, service.updateSelectiveById(entity));
+        return write(ErrorCode.EM_SUCCESS, service.updateSelectiveById(entity));
     }
 
 
@@ -52,21 +53,21 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:数据主键查询", httpMethod = "GET")
     @ResponseBody
     public String get(T entity) {
-        return write(ResultCode.EM_SUCCESS, service.selectById(entity));
+        return write(ErrorCode.EM_SUCCESS, service.selectById(entity));
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation(value = "通用:数据条件查询", httpMethod = "GET")
     @ResponseBody
     public String list(T entity) {
-        return write(ResultCode.EM_SUCCESS, service.selectList(entity));
+        return write(ErrorCode.EM_SUCCESS, service.selectList(entity));
     }
 
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     @ApiOperation(value = "通用:数据分页查询", httpMethod = "GET")
     @ResponseBody
     public String page(T entity, @RequestParam(value = "pageSize", defaultValue = "20") String pageSize, @RequestParam(value = "pageNo", defaultValue = "1") String pageNo) {
-        return write(ResultCode.EM_SUCCESS, service.page(pageNo, pageSize, entity));
+        return write(ErrorCode.EM_SUCCESS, service.page(pageNo, pageSize, entity));
     }
 
 }
