@@ -63,4 +63,5 @@ public class Vigenere {
         }
         return String.valueOf(clearArray);
     }
+    
 }

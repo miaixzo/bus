@@ -9,6 +9,7 @@ package org.aoju.bus.cron.task;
  * @since JDK 1.8
  */
 public class RunnableTask implements Task {
+
     private Runnable runnable;
 
     public RunnableTask(Runnable runnable) {

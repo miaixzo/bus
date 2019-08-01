@@ -56,4 +56,5 @@ public enum Operation {
     public int getValue() {
         return this.value;
     }
+
 }

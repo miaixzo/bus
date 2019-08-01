@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 基于<a href=“https://github.com/vdurmont/emoji-java”>emoji-java</a>的Emoji表情工具类
- * <p>
- * emoji-java文档以及别名列表见：<a href="https://github.com/vdurmont/emoji-java">https://github.com/vdurmont/emoji-java</a>
+ * 基于emoji-java的Emoji表情工具类
  *
  * @author aoju.org
  * @version 3.0.1

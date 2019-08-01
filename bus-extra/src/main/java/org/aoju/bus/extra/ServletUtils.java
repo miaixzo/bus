@@ -3,7 +3,7 @@ package org.aoju.bus.extra;
 import org.aoju.bus.core.bean.copier.CopyOptions;
 import org.aoju.bus.core.bean.copier.ValueProvider;
 import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.consts.HttpMethod;
+import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
@@ -267,7 +267,7 @@ public class ServletUtils {
      * @return 是否为GET请求
      */
     public static boolean isGetMethod(HttpServletRequest request) {
-        return HttpMethod.GET.equalsIgnoreCase(request.getMethod());
+        return Httpd.GET.equalsIgnoreCase(request.getMethod());
     }
 
     /**
@@ -277,7 +277,7 @@ public class ServletUtils {
      * @return 是否为POST请求
      */
     public static boolean isPostMethod(HttpServletRequest request) {
-        return HttpMethod.POST.equalsIgnoreCase(request.getMethod());
+        return Httpd.POST.equalsIgnoreCase(request.getMethod());
     }
 
     /**

@@ -21,9 +21,7 @@ public class JavaRuntimeInfo {
     private final String JAVA_CLASS_PATH = SystemUtils.get(System.CLASS_PATH, false);
     private final String JAVA_CLASS_VERSION = SystemUtils.get(System.CLASS_VERSION, false);
     private final String JAVA_LIBRARY_PATH = SystemUtils.get(System.LIBRARY_PATH, false);
-
     private final String SUN_BOOT_CLASS_PATH = SystemUtils.get(System.SUN_CLASS_PATH, false);
-
     private final String SUN_ARCH_DATA_MODEL = SystemUtils.get(System.SUN_DATA_MODEL, false);
 
     public final String getSunBoothClassPath() {

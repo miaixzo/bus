@@ -19,7 +19,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @group 839128
  * @since JDK 1.8
  */
-public class DESede extends SymmetricCrypto {
+public class DESede extends Symmetric {
 
     /**
      * 构造，默认DESede/ECB/PKCS5Padding，使用随机密钥

@@ -3,7 +3,7 @@ package org.aoju.bus.crypto;
 import java.security.Provider;
 
 /**
- * 全局单例的 org.bouncycastle.jce.provider.BouncyCastleProvider 对象
+ * 全局单例对象
  *
  * @author aoju.org
  * @version 3.0.1

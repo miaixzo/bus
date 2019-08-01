@@ -21,25 +21,18 @@ public class MagicMatch implements Cloneable {
     private int offset = 0;
     private int length = 0;
 
-    // possible types:
-    //     byte, short, long, string, date, beshort, belong, bedate, leshort,
-    //     lelong, ledate, regex
     private String type = "";
     private long bitmask = 0xFFFFFFFFL;
     private char comparator = '\0';
     private List<MagicMatch> subMatches = new ArrayList<MagicMatch>(0);
     private Map<String, String> properties;
 
-    /**
-     * constructor
-     */
+
     public MagicMatch() {
     }
 
     /**
      * print information about this match
-     *
-     * @return DOCUMENT ME!
      */
     public String print() {
         StringBuffer string = new StringBuffer();
@@ -355,8 +348,7 @@ public class MagicMatch implements Cloneable {
 
         clone.setTest(test);
         clone.setType(type);
-
-        // TODO Auto-generated method stub
         return clone;
     }
+
 }

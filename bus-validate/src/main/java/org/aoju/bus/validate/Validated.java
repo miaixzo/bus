@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 被校验对象
  * <p>
- * 值得注意: 当被校验对象为null时，无法获取到对象的Class，所以不会执行对象的Class上标记的任何校验注解
+ * 注意: 当被校验对象为null时，无法获取到对象的Class，所以不会执行对象的Class上标记的任何校验注解
  * </P>
  *
  * @author aoju.org

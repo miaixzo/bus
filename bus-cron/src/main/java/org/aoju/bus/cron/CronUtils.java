@@ -1,5 +1,6 @@
 package org.aoju.bus.cron;
 
+import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -51,7 +52,7 @@ public final class CronUtils {
      */
     public static void setCronSetting(String cronSettingPath) {
         try {
-            crontabSetting = new Setting(cronSettingPath, Setting.DEFAULT_CHARSET, false);
+            crontabSetting = new Setting(cronSettingPath, Charset.UTF_8, false);
         } catch (CommonException e) {
             // ignore setting file parse error and no config error
         }

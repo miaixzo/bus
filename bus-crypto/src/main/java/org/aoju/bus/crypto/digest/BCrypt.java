@@ -5,10 +5,8 @@ import org.aoju.bus.core.consts.Charset;
 import java.security.SecureRandom;
 
 /**
- * BCrypt加密算法实现。由它加密的文件可在所有支持的操作系统和处理器上进行转移。它的口令必须是8至56个字符，并将在内部被转化为448位的密钥。
- * <p>
- * 此类来自于https://github.com/jeremyh/jBCrypt/
- * <p>
+ * BCrypt加密算法实现。由它加密的文件可在所有支持的操作系统和处理器上进行转移。
+ * 它的口令必须是8至56个字符，并将在内部被转化为448位的密钥。
  * 使用方法如下：
  * <p>
  * <code>

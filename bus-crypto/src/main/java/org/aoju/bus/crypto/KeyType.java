@@ -1,4 +1,4 @@
-package org.aoju.bus.crypto.asymmetric;
+package org.aoju.bus.crypto;
 
 /**
  * 密钥类型

@@ -21,6 +21,7 @@ import java.util.*;
  * @since JDK 1.8
  */
 public class MagicParser extends DefaultHandler implements ContentHandler, ErrorHandler {
+
     // Namespaces feature id (http://xml.org/sax/features/namespaces).
     protected static final String NAMESPACES_FEATURE_ID = "http://xml.org/sax/features/namespaces";
     // Validation feature id (http://xml.org/sax/features/validation).

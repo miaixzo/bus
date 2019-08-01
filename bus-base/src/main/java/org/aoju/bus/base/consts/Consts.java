@@ -14,36 +14,42 @@ import org.aoju.bus.core.consts.Normal;
  */
 public class Consts extends Normal {
 
-    // 代码前缀
+    /**
+     * 默认: 代码前缀
+     */
     public static final String CLASS_NAME_PREFIX = "org.aoju";
-    // 堆栈中调用链的最大深度
+    /**
+     * 默认: 堆栈深度
+     **/
     public static final int CODE_STACK_DEPTH = 20;
-    // 超时时间
+    /**
+     * 默认: 超时时间
+     **/
     public static final int DEFAULT_TIMEOUT = 30000;
-
-    // 删除
+    /**
+     * 状态: 删除
+     **/
     public static final String STATUS_DELETE = "-1";
-    // 禁用
+    /**
+     * 状态: 禁用
+     **/
     public static final String STATUS_DISABLED = "0";
-    // 正常
+    /**
+     * 状态: 正常
+     **/
     public static final String STATUS_ENABLED = "1";
-    // 关闭
+    /**
+     * 状态: 关闭
+     **/
     public static final String STATUS_CLOSED = "2";
-    // 未知
+    /**
+     * 状态: 未知
+     **/
     public static final String STATUS_UNKNOW = "3";
-    // 结束
+    /**
+     * 状态: 结束
+     **/
     public static final String STATUS_FINISHED = "4";
-
-    public static final String TYPE_ZERO = "0";
-    public static final String TYPE_ONE = "1";
-    public static final String TYPE_TWO = "2";
-    public static final String TYPE_THREE = "3";
-    public static final String TYPE_FOUR = "4";
-    public static final String TYPE_FIVE = "5";
-    public static final String TYPE_SIX = "6";
-    public static final String TYPE_SEVEN = "7";
-    public static final String TYPE_EIGHT = "8";
-    public static final String TYPE_NINE = "9";
 
 
     /*************** 返回值状态码-系统默认 ****************/
@@ -94,5 +100,7 @@ public class Consts extends Normal {
     public static final String EM_100510 = "100510";
     public static final String EM_100511 = "100511";
     public static final String EM_100512 = "100512";
+    public static final String EM_100513 = "100513";
+    public static final String EM_100514 = "100514";
 
 }

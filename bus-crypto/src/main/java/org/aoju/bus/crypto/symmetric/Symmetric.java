@@ -29,7 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @group 839128
  * @since JDK 1.8
  */
-public class SymmetricCrypto {
+public class Symmetric {
 
     /**
      * SecretKey 负责保存对称密钥
@@ -50,7 +50,7 @@ public class SymmetricCrypto {
      *
      * @param algorithm {@link Mode}
      */
-    public SymmetricCrypto(Mode algorithm) {
+    public Symmetric(Mode algorithm) {
         this(algorithm, (byte[]) null);
     }
 
@@ -59,7 +59,7 @@ public class SymmetricCrypto {
      *
      * @param algorithm 算法，可以是"algorithm/mode/padding"或者"algorithm"
      */
-    public SymmetricCrypto(String algorithm) {
+    public Symmetric(String algorithm) {
         this(algorithm, (byte[]) null);
     }
 
@@ -69,7 +69,7 @@ public class SymmetricCrypto {
      * @param algorithm 算法 {@link Mode}
      * @param key       自定义KEY
      */
-    public SymmetricCrypto(Mode algorithm, byte[] key) {
+    public Symmetric(Mode algorithm, byte[] key) {
         this(algorithm.getValue(), key);
     }
 
@@ -80,7 +80,7 @@ public class SymmetricCrypto {
      * @param key       自定义KEY
      * @since 3.1.2
      */
-    public SymmetricCrypto(Mode algorithm, SecretKey key) {
+    public Symmetric(Mode algorithm, SecretKey key) {
         this(algorithm.getValue(), key);
     }
 
@@ -90,7 +90,7 @@ public class SymmetricCrypto {
      * @param algorithm 算法
      * @param key       密钥
      */
-    public SymmetricCrypto(String algorithm, byte[] key) {
+    public Symmetric(String algorithm, byte[] key) {
         this(algorithm, CryptoUtils.generateKey(algorithm, key));
     }
 
@@ -101,7 +101,7 @@ public class SymmetricCrypto {
      * @param key       密钥
      * @since 3.1.2
      */
-    public SymmetricCrypto(String algorithm, SecretKey key) {
+    public Symmetric(String algorithm, SecretKey key) {
         this(algorithm, key, null);
     }
 
@@ -113,7 +113,7 @@ public class SymmetricCrypto {
      * @param paramsSpec 算法参数，例如加盐等
      * @since 3.3.0
      */
-    public SymmetricCrypto(String algorithm, SecretKey key, AlgorithmParameterSpec paramsSpec) {
+    public Symmetric(String algorithm, SecretKey key, AlgorithmParameterSpec paramsSpec) {
         init(algorithm, key);
         if (null != paramsSpec) {
             setParams(paramsSpec);
@@ -125,9 +125,9 @@ public class SymmetricCrypto {
      *
      * @param algorithm 算法
      * @param key       密钥，如果为<code>null</code>自动生成一个key
-     * @return {@link SymmetricCrypto}
+     * @return {@link Symmetric}
      */
-    public SymmetricCrypto init(String algorithm, SecretKey key) {
+    public Symmetric init(String algorithm, SecretKey key) {
         this.secretKey = key;
         if (algorithm.startsWith("PBE")) {
             // 对于PBE算法使用随机数加盐
@@ -143,7 +143,7 @@ public class SymmetricCrypto {
      * @param params {@link AlgorithmParameterSpec}
      * @return 自身
      */
-    public SymmetricCrypto setParams(AlgorithmParameterSpec params) {
+    public Symmetric setParams(AlgorithmParameterSpec params) {
         this.params = params;
         return this;
     }

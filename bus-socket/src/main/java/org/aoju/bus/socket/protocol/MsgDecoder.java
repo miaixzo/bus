@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
  * @since JDK 1.8
  */
 public interface MsgDecoder<T> {
+
     /**
      * 对于从Socket流中获取到的数据采用当前MsgDecoder的实现类协议进行解析。
      *
@@ -22,4 +23,5 @@ public interface MsgDecoder<T> {
      * @return 本次解码成功后封装的业务消息对象, 返回null则表示解码未完成
      */
     T decode(AioSession session, ByteBuffer readBuffer);
+
 }

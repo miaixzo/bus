@@ -17,10 +17,15 @@ import java.util.List;
  * @group 839128
  * @since JDK 1.8
  */
-@JsonPropertyOrder({"name", "in", "description", "required", "type", "items", "collectionFormat", "default", "maximum",
-        "exclusiveMaximum", "minimum", "exclusiveMinimum", "maxLength", "minLength", "pattern", "maxItems", "minItems",
-        "uniqueItems", "multipleOf"})
-public abstract class AbstractSerializableParameter<T extends AbstractSerializableParameter<T>> extends AbstractParameter implements SerializableParameter {
+@JsonPropertyOrder({
+        "name", "in", "description", "required", "type",
+        "items", "collectionFormat", "default", "maximum",
+        "exclusiveMaximum", "minimum", "exclusiveMinimum",
+        "maxLength", "minLength", "pattern", "maxItems",
+        "minItems", "uniqueItems", "multipleOf"
+})
+public abstract class AbstractSerializableParameter<T extends AbstractSerializableParameter<T>> extends AbstractParameter
+        implements SerializableParameter {
 
     protected String type;
     protected String format;
@@ -578,5 +583,5 @@ public abstract class AbstractSerializableParameter<T extends AbstractSerializab
         result = prime * result + (allowEmptyValue != null ? allowEmptyValue.hashCode() : 0);
         return result;
     }
-    
+
 }

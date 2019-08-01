@@ -1,5 +1,7 @@
 package org.aoju.bus.storage;
 
+import org.aoju.bus.core.consts.MediaType;
+import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.utils.JSONUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -14,9 +16,6 @@ import java.util.Map;
  */
 public class UploadToken {
 
-    private static final String CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
-    private static final String CONTENT_TYPE_JSON = "application/json";
-    private static final String PATH_SEPARATOR = "/";
     //过期时间（单位秒）
     private long expires = 3600;
     private String bucketName;
@@ -69,10 +68,10 @@ public class UploadToken {
     public void setUploadDir(String uploadDir) {
         this.uploadDir = StringUtils.trimToNull(uploadDir);
         if (uploadDir != null) {
-            if (!this.uploadDir.endsWith(PATH_SEPARATOR)) {
-                this.uploadDir = this.uploadDir.concat(PATH_SEPARATOR);
+            if (!this.uploadDir.endsWith(Symbol.SLASH)) {
+                this.uploadDir = this.uploadDir.concat(Symbol.SLASH);
             }
-            if (this.uploadDir.startsWith(PATH_SEPARATOR)) {
+            if (this.uploadDir.startsWith(Symbol.SLASH)) {
                 this.uploadDir = this.uploadDir.substring(1);
             }
         }
@@ -116,7 +115,7 @@ public class UploadToken {
     }
 
     public String getCallbackBodyType() {
-        return callbackBodyUseJson ? CONTENT_TYPE_JSON : CONTENT_TYPE_FORM_URLENCODED;
+        return callbackBodyUseJson ? MediaType.APPLICATION_JSON : MediaType.APPLICATION_FORM_URLENCODED;
     }
 
     public String getMimeLimit() {

@@ -4016,8 +4016,9 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Removes a substring only if it is at the beginning of a source string,
-     * otherwise returns the source string.</p>
+     * 删除指定字符串，
+     * <p>
+     * 是否在开始位置，否则返回源字符串
      *
      * <p>A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
@@ -4050,9 +4051,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Left pad a String with spaces (' ').</p>
-     *
-     * <p>The String is padded to the size of {@code size}.</p>
+     * 用指定的字符串填充一个字符串
      *
      * <pre>
      * StringUtils.leftPad(null, *)   = null
@@ -4073,9 +4072,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Left pad a String with a specified character.</p>
-     *
-     * <p>Pad to a size of {@code size}.</p>
+     * 用指定的字符串填充一个字符串
      *
      * <pre>
      * StringUtils.leftPad(null, *, *)     = null
@@ -4108,9 +4105,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Left pad a String with a specified String.</p>
-     *
-     * <p>Pad to a size of {@code size}.</p>
+     * 用指定的字符串填充一个字符串
      *
      * <pre>
      * StringUtils.leftPad(null, *, *)      = null

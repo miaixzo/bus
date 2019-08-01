@@ -2,6 +2,7 @@ package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.crypto.KeyType;
 import org.aoju.bus.crypto.Mode;
 
 import java.math.BigInteger;
