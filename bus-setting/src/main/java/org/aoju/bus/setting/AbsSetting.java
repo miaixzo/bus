@@ -3,6 +3,7 @@ package org.aoju.bus.setting;
 import org.aoju.bus.core.bean.copier.CopyOptions;
 import org.aoju.bus.core.bean.copier.ValueProvider;
 import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.OptNullBasicTypeFromStringGetter;
 import org.aoju.bus.core.utils.ClassUtils;
@@ -22,18 +23,13 @@ import java.lang.reflect.Type;
 public abstract class AbsSetting extends OptNullBasicTypeFromStringGetter<String> implements Serializable {
 
     /**
-     * 数组类型值默认分隔符
-     */
-    public final static String DEFAULT_DELIMITER = ",";
-    /**
      * 默认分组
      */
-    public final static String DEFAULT_GROUP = Normal.EMPTY;
     private static final long serialVersionUID = 6200156302595905863L;
 
     @Override
     public String getStr(String key, String defaultValue) {
-        return getStr(key, DEFAULT_GROUP, defaultValue);
+        return getStr(key, Normal.EMPTY, defaultValue);
     }
 
     /**
@@ -116,7 +112,7 @@ public abstract class AbsSetting extends OptNullBasicTypeFromStringGetter<String
      * @return 属性值
      */
     public String[] getStrings(String key, String group) {
-        return getStrings(key, group, DEFAULT_DELIMITER);
+        return getStrings(key, group, Symbol.COMMA);
     }
 
     /**

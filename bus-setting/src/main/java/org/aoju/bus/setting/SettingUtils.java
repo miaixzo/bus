@@ -39,7 +39,7 @@ public class SettingUtils {
                     String filePath = name;
                     String extName = FileUtils.extName(filePath);
                     if (StringUtils.isEmpty(extName)) {
-                        filePath = filePath + "." + Setting.EXT_NAME;
+                        filePath = filePath + ".setting";
                     }
                     setting = new Setting(filePath, true);
                     settingMap.put(name, setting);

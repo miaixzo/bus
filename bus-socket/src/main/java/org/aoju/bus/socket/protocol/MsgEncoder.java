@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
  * @since JDK 1.8
  */
 public interface MsgEncoder<T> {
+
     /**
      * 编码数据用于写出
      *
@@ -22,4 +23,5 @@ public interface MsgEncoder<T> {
      * @param data        写出的数据
      */
     void encode(AioSession session, ByteBuffer writeBuffer, T data);
+
 }

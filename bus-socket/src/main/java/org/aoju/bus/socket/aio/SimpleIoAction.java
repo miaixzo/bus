@@ -21,4 +21,5 @@ public abstract class SimpleIoAction implements IoAction<ByteBuffer> {
     public void failed(Throwable exc, AioSession session) {
 
     }
+
 }

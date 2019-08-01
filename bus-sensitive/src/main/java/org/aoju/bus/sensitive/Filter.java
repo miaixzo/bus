@@ -1,5 +1,6 @@
 package org.aoju.bus.sensitive;
 
+import com.alibaba.fastjson.serializer.BeanContext;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 import org.aoju.bus.sensitive.annotation.Condition;
@@ -7,7 +8,6 @@ import org.aoju.bus.sensitive.annotation.Entry;
 import org.aoju.bus.sensitive.annotation.Field;
 import org.aoju.bus.sensitive.provider.ConditionProvider;
 import org.aoju.bus.sensitive.provider.StrategyProvider;
-import com.alibaba.fastjson.serializer.BeanContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -20,7 +20,7 @@ import java.util.List;
  * <p>
  * {@link Entry} 放在对象时，则不用特殊处理。
  * 只需要处理 集合、数组集合。
- * 注意： 和 {@link Builder#on(Object, , Annotation)} 的区别
+ * 注意： 和 {@link Builder#on(Object)} 的区别
  * 因为 FastJSON 本身的转换问题，如果对象中存储的是集合对象列表，会导致显示不是信息本身。
  *
  * @author aoju.org

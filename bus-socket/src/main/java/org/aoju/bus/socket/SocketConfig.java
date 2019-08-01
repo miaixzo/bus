@@ -129,4 +129,5 @@ public class SocketConfig {
     public void setWriteBufferSize(int writeBufferSize) {
         this.writeBufferSize = writeBufferSize;
     }
+
 }

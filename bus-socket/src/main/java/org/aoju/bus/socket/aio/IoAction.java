@@ -34,4 +34,5 @@ public interface IoAction<T> {
      * @param session Session
      */
     void failed(Throwable exc, AioSession session);
+
 }

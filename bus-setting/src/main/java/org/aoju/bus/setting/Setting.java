@@ -1,5 +1,6 @@
 package org.aoju.bus.setting;
 
+import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.resource.ClassPathResource;
@@ -40,15 +41,9 @@ import java.util.*;
  * @since JDK 1.8
  */
 public class Setting extends AbsSetting implements Map<String, String> {
-    /**
-     * 默认字符集
-     */
-    public final static Charset DEFAULT_CHARSET = org.aoju.bus.core.consts.Charset.UTF_8;
-    /**
-     * 默认配置文件扩展名
-     */
-    public final static String EXT_NAME = "setting";
+
     private static final long serialVersionUID = 3618305164959883393L;
+
     /**
      * 附带分组的键值对存储
      */
@@ -92,7 +87,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param isUseVariable 是否使用变量
      */
     public Setting(String path, boolean isUseVariable) {
-        this(path, DEFAULT_CHARSET, isUseVariable);
+        this(path, org.aoju.bus.core.consts.Charset.UTF_8, isUseVariable);
     }
 
     /**
@@ -495,7 +490,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @since 3.3.1
      */
     public Setting set(String key, String value) {
-        this.groupedMap.put(DEFAULT_GROUP, key, value);
+        this.groupedMap.put(Normal.EMPTY, key, value);
         return this;
     }
 
@@ -512,7 +507,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public boolean containsKey(Object key) {
-        return this.groupedMap.containsKey(DEFAULT_GROUP, Convert.toStr(key));
+        return this.groupedMap.containsKey(Normal.EMPTY, Convert.toStr(key));
     }
 
     /**
@@ -523,7 +518,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public boolean containsValue(Object value) {
-        return this.groupedMap.containsValue(DEFAULT_GROUP, Convert.toStr(value));
+        return this.groupedMap.containsValue(Normal.EMPTY, Convert.toStr(value));
     }
 
     /**
@@ -534,7 +529,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String get(Object key) {
-        return this.groupedMap.get(DEFAULT_GROUP, Convert.toStr(key));
+        return this.groupedMap.get(Normal.EMPTY, Convert.toStr(key));
     }
 
     /**
@@ -546,7 +541,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String put(String key, String value) {
-        return this.groupedMap.put(DEFAULT_GROUP, key, value);
+        return this.groupedMap.put(Normal.EMPTY, key, value);
     }
 
     /**
@@ -557,7 +552,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String remove(Object key) {
-        return this.groupedMap.remove(DEFAULT_GROUP, Convert.toStr(key));
+        return this.groupedMap.remove(Normal.EMPTY, Convert.toStr(key));
     }
 
     /**
@@ -567,7 +562,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public void putAll(Map<? extends String, ? extends String> m) {
-        this.groupedMap.putAll(DEFAULT_GROUP, m);
+        this.groupedMap.putAll(Normal.EMPTY, m);
     }
 
     /**
@@ -575,7 +570,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public void clear() {
-        this.groupedMap.clear(DEFAULT_GROUP);
+        this.groupedMap.clear(Normal.EMPTY);
     }
 
     /**
@@ -585,7 +580,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public Set<String> keySet() {
-        return this.groupedMap.keySet(DEFAULT_GROUP);
+        return this.groupedMap.keySet(Normal.EMPTY);
     }
 
     /**
@@ -595,7 +590,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public Collection<String> values() {
-        return this.groupedMap.values(DEFAULT_GROUP);
+        return this.groupedMap.values(Normal.EMPTY);
     }
 
     /**
@@ -605,7 +600,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public Set<Entry<String, String>> entrySet() {
-        return this.groupedMap.entrySet(DEFAULT_GROUP);
+        return this.groupedMap.entrySet(Normal.EMPTY);
     }
 
     @Override

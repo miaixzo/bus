@@ -27,11 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since JDK 1.8
  */
 public class Profile implements Serializable {
+
+    private static final long serialVersionUID = -4189955219454008744L;
     /**
      * 默认环境
      */
     public static final String DEFAULT_PROFILE = "default";
-    private static final long serialVersionUID = -4189955219454008744L;
     /**
      * 条件
      */
@@ -62,7 +63,7 @@ public class Profile implements Serializable {
      * @param profile 环境
      */
     public Profile(String profile) {
-        this(profile, Setting.DEFAULT_CHARSET, false);
+        this(profile, org.aoju.bus.core.consts.Charset.UTF_8, false);
     }
 
     /**
