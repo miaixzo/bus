@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 public class AioSession {
 
     private static final ReadHandler READ_HANDLER = new ReadHandler();
-
     private AsynchronousSocketChannel channel;
     private IoAction<ByteBuffer> ioAction;
     private ByteBuffer readBuffer;

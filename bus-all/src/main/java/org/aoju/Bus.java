@@ -2,9 +2,7 @@ package org.aoju;
 
 /**
  * 用于识别当前版本号和版权声明! <br/>
- * Bus is Licensed under the Apache License, Bus 2.0 (the "License")
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Bus is Licensed under the MIT License, Bus 3.0 (the "License")
  *
  * @author aoju.org
  * @version 3.0.1

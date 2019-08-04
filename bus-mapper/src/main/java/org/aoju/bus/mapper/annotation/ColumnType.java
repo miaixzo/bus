@@ -20,9 +20,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ColumnType {
+
     String column() default "";
 
     JdbcType jdbcType() default JdbcType.UNDEFINED;
 
     Class<? extends TypeHandler<?>> typeHandler() default UnknownTypeHandler.class;
+
 }

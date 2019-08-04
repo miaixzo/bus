@@ -1,0 +1,37 @@
+language: java
+
+jdk:
+  - openjdk8
+
+notifications:
+  email: false
+
+cache:
+  directories:
+    - '$HOME/.m2'
+
+script:
+  - export TZ=Asia/Shanghai
+  - cd bus-core && mvn install -DskipTests=true
+  - cd bus-loger && mvn install -DskipTests=true
+  - cd bus-cron && mvn install -DskipTests=true
+  - cd bus-setting && mvn install -DskipTests=true
+  - cd bus-crypto && mvn install -DskipTests=true
+  - cd bus-extra && mvn install -DskipTests=true
+  - cd bus-fonts && mvn install -DskipTests=true
+  - cd bus-health && mvn install -DskipTests=true
+  - cd bus-http && mvn install -DskipTests=true
+  - cd bus-limiter && mvn install -DskipTests=true
+  - cd bus-mapper && mvn install -DskipTests=true
+  - cd bus-pager && mvn install -DskipTests=true
+  - cd bus-poi && mvn install -DskipTests=true
+  - cd bus-sensitive && mvn install -DskipTests=true
+  - cd bus-socket && mvn install -DskipTests=true
+  - cd bus-storage && mvn install -DskipTests=true
+  - cd bus-swagger && mvn install -DskipTests=true
+  - cd bus-validate && mvn install -DskipTests=true
+  - cd bus-base && mvn install -DskipTests=true
+  - cd bus-cache && mvn install -DskipTests=true
+  - cd bus-spring && mvn install -DskipTests=true
+  - cd bus-all && mvn install -DskipTests=true
+
