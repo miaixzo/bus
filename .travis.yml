@@ -14,7 +14,7 @@ cache:
 
 script:
   - export TZ=Asia/Shanghai
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
