@@ -13,25 +13,46 @@ cache:
 script:
   - export TZ=Asia/Shanghai
   - cd bus-core && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-loger && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-cron && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-setting && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-crypto && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-extra && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-fonts && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-health && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-http && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-limiter && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-mapper && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-pager && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-poi && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-sensitive && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-socket && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-storage && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-swagger && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-validate && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-base && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-cache && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-spring && mvn install -DskipTests=true && cd ../
+  - pwd
   - cd bus-all && mvn install -DskipTests=true
 
