@@ -12,7 +12,7 @@ cache:
 
 script:
   - export TZ=Asia/Shanghai
-  - cd ../bus-core && mvn install -DskipTests=true
+  - cd bus-core && mvn install -DskipTests=true
   - pwd
   - cd ../bus-logger && mvn install -DskipTests=true
   - pwd
