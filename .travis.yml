@@ -3,8 +3,6 @@ language: java
 jdk:
   - oraclejdk8
 
-install: true
-
 notifications:
   email: false
 
@@ -14,8 +12,5 @@ cache:
 
 script:
   - export TZ=Asia/Shanghai
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - mvn install -DskipTests=true
 
