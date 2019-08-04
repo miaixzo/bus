@@ -1,6 +1,8 @@
 
-[![Build Status](https://travis-ci.org/aoju/bus.svg?branch=master)](https://travis-ci.org/aoju/bus)
-[![Build Status](https://img.shields.io/badge/JDK-1.7+-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
+[![Travis](https://travis-ci.org/aoju/bus.svg?branch=master)](https://travis-ci.org/aoju/bus.git)
+[![JDK](https://img.shields.io/badge/JDK-1.7+-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
+[![MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://www.mit-license.org)
+
 
 ## 项目说明
 Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
