@@ -30,8 +30,8 @@ script:
   - cd ../bus-swagger && mvn install -DskipTests=true
   - cd ../bus-validate && mvn install -DskipTests=true
   - cd ../bus-cache && mvn install -DskipTests=true
-  - cd ../bus-base && mvn install -DskipTests=true
   - cd ../bus-sensitive && mvn install -DskipTests=true
+  - cd ../bus-base && mvn install -DskipTests=true
   - cd ../bus-spring && mvn install -DskipTests=true
   - cd ../bus-all && mvn install -DskipTests=true
 
