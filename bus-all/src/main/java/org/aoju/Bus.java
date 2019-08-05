@@ -28,7 +28,7 @@ public final class Bus {
      * <ul>
      * <li>大版本 - 表示API的版本，如果没有重大变化，基本上同样的大版本号，使用方式是一致的
      * <li>质量号 - alpha内部测试, beta 公测品质,RELEASE 生产品质
-     * <li>小版本 - 每次发布增加 1
+     * <li>小版本 - 每次发布增加1
      * </ul>
      *
      * @return 项目的版本号

@@ -1,7 +1,7 @@
 
 
 [![MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://www.mit-license.org)
-[![JDK](https://img.shields.io/badge/JDK-1.7+-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
+[![JDK](https://img.shields.io/badge/JDK-1.8+-green.svg)](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
 [![Travis](https://travis-ci.org/aoju/bus.svg?branch=master)](https://travis-ci.org/aoju/bus)
 
 
@@ -16,7 +16,7 @@ Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、�
 欢迎大家来 这里 踩踩,生命有限！少写重复代码！给颗星奖励下呗~
 
 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -
-系统监测 的解决方案。
+系统监测的解决方案。
 
 ## 主体规划
 |服务名 | 父级依赖 | 模块说明|

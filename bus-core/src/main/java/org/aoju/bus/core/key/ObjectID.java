@@ -33,6 +33,11 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
 
     private static final long serialVersionUID = -4415279469780082174L;
     private static final int _genmachine;
+    private final int _time;
+    private final int _machine;
+    private final int _inc;
+    private boolean _new;
+
     private static AtomicInteger _nextInc = new AtomicInteger(
             (new Random()).nextInt());
 
@@ -81,11 +86,6 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
             throw new RuntimeException(e);
         }
     }
-
-    final int _time;
-    final int _machine;
-    final int _inc;
-    boolean _new;
 
     public ObjectID(Date time) {
         this(time, _genmachine, _nextInc.getAndIncrement());

@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <bus.spring.version>3.0.0-SNAPSHOT</bus.spring.version>
+        <bus.spring.version>3.0.0</bus.spring.version>
     </properties>
 
     <dependencies>
