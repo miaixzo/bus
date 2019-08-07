@@ -41,5 +41,4 @@ public @interface HRateLimiter {
      */
     long capacity() default 10;
 
-
 }
