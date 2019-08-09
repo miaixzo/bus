@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-sensitive</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -27,12 +27,12 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-mapper</artifactId>
+            <artifactId>bus-logger</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-logger</artifactId>
+            <artifactId>bus-mapper</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -16,7 +16,7 @@
     </parent>
 
     <properties>
-        <bus.version>3.0.0-SNAPSHOT</bus.version>
+        <bus.version>3.0.0</bus.version>
         <!--bus-base-->
         <lombok.version>1.18.8</lombok.version>
         <!--bus-cache-->
@@ -502,5 +502,16 @@
             </properties>
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>

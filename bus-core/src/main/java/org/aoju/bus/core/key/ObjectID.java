@@ -1,3 +1,26 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2017, aoju.org All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+*/
 package org.aoju.bus.core.key;
 
 import java.io.Serializable;
@@ -33,6 +56,11 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
 
     private static final long serialVersionUID = -4415279469780082174L;
     private static final int _genmachine;
+    private final int _time;
+    private final int _machine;
+    private final int _inc;
+    private boolean _new;
+
     private static AtomicInteger _nextInc = new AtomicInteger(
             (new Random()).nextInt());
 
@@ -81,11 +109,6 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
             throw new RuntimeException(e);
         }
     }
-
-    final int _time;
-    final int _machine;
-    final int _inc;
-    boolean _new;
 
     public ObjectID(Date time) {
         this(time, _genmachine, _nextInc.getAndIncrement());
