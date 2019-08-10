@@ -20,12 +20,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.extra.ssh;
 
+import com.jcraft.jsch.Session;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.extra.SSHUtils;
-import com.jcraft.jsch.Session;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,9 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Jsch会话池
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public enum JschSessionPool {

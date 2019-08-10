@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.crypto.factory;
 
 import org.aoju.bus.core.consts.Charset;
@@ -38,9 +38,8 @@ import java.security.spec.InvalidKeySpecException;
 /**
  * 数据加密标准，速度较快，适用于加密大量数据的场合。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class DesCryptoFactory implements CryptoFactory {

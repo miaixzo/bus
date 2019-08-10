@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.resource;
 
 import java.io.File;
@@ -30,9 +30,8 @@ import java.util.Collection;
  * 多文件组合资源<br>
  * 此资源为一个利用游标自循环资源，只有调用{@link #next()} 方法才会获取下一个资源，使用完毕后调用{@link #reset()}方法重置游标
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MultiFileResource extends MultiResource {
@@ -40,7 +39,7 @@ public class MultiFileResource extends MultiResource {
     /**
      * 构造
      *
-     * @param files
+     * @param files 集合
      */
     public MultiFileResource(Collection<File> files) {
         super();
@@ -50,22 +49,22 @@ public class MultiFileResource extends MultiResource {
     /**
      * 构造
      *
-     * @param files
+     * @param file 文件
      */
-    public MultiFileResource(File... files) {
+    public MultiFileResource(File... file) {
         super();
-        add(files);
+        add(file);
     }
 
     /**
      * 增加文件资源
      *
-     * @param files 文件资源
+     * @param file 文件资源
      * @return this
      */
-    public MultiFileResource add(File... files) {
-        for (File file : files) {
-            this.add(new FileResource(file));
+    public MultiFileResource add(File... file) {
+        for (File f : file) {
+            this.add(new FileResource(f));
         }
         return this;
     }

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.poi.excel.sax;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -47,9 +47,8 @@ import java.util.List;
  * Sax方式读取Excel文件<br>
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> implements ContentHandler {

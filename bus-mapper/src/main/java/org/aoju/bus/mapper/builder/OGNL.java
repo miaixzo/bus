@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.mapper.MapperException;
@@ -33,9 +33,8 @@ import org.aoju.bus.mapper.entity.EntityTableName;
 /**
  * OGNL静态方法
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class OGNL {
@@ -43,9 +42,9 @@ public abstract class OGNL {
     /**
      * 校验通用 Condition 的 entityClass 和当前方法是否匹配
      *
-     * @param parameter
-     * @param entityFullName
-     * @return
+     * @param parameter      object
+     * @param entityFullName String
+     * @return the boolean
      */
     public static boolean checkEntityClass(Object parameter, String entityFullName) {
         if (parameter != null && parameter instanceof Condition && Assert.isNotEmpty(entityFullName)) {
@@ -62,8 +61,8 @@ public abstract class OGNL {
     /**
      * 是否包含自定义查询列
      *
-     * @param parameter
-     * @return
+     * @param parameter Object
+     * @return the boolean
      */
     public static boolean hasSelectColumns(Object parameter) {
         if (parameter != null && parameter instanceof Condition) {
@@ -78,8 +77,8 @@ public abstract class OGNL {
     /**
      * 是否包含自定义 Count 列
      *
-     * @param parameter
-     * @return
+     * @param parameter Object
+     * @return the boolean
      */
     public static boolean hasCountColumn(Object parameter) {
         if (parameter != null && parameter instanceof Condition) {
@@ -92,8 +91,8 @@ public abstract class OGNL {
     /**
      * 是否包含 forUpdate
      *
-     * @param parameter
-     * @return
+     * @param parameter Object
+     * @return the boolean
      */
     public static boolean hasForUpdate(Object parameter) {
         if (parameter != null && parameter instanceof Condition) {
@@ -106,8 +105,8 @@ public abstract class OGNL {
     /**
      * 不包含自定义查询列
      *
-     * @param parameter
-     * @return
+     * @param parameter Object
+     * @return the boolean
      */
     public static boolean hasNoSelectColumns(Object parameter) {
         return !hasSelectColumns(parameter);
@@ -116,7 +115,7 @@ public abstract class OGNL {
     /**
      * 判断参数是否支持动态表名
      *
-     * @param parameter
+     * @param parameter Object
      * @return true支持，false不支持
      */
     public static boolean isDynamicParameter(Object parameter) {
@@ -129,7 +128,7 @@ public abstract class OGNL {
     /**
      * 判断参数是否b支持动态表名
      *
-     * @param parameter
+     * @param parameter Object
      * @return true不支持，false支持
      */
     public static boolean isNotDynamicParameter(Object parameter) {
@@ -139,8 +138,8 @@ public abstract class OGNL {
     /**
      * 判断条件是 and 还是 or
      *
-     * @param parameter
-     * @return
+     * @param parameter Object
+     * @return the boolean
      */
     public static String andOr(Object parameter) {
         if (parameter instanceof Criteria) {

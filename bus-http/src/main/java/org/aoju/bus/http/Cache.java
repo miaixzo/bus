@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
@@ -131,9 +131,8 @@ import java.util.*;
  * caching directives. It even offers convenient constants {@link CacheControl#FORCE_NETWORK} and
  * {@link CacheControl#FORCE_CACHE} that address the use cases above.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Cache implements Closeable, Flushable {
@@ -182,9 +181,6 @@ public final class Cache implements Closeable, Flushable {
         }
     };
 
-    /**
-     * Create a cache of at most {@code maxSize} bytes in {@code directory}.
-     */
     public Cache(File directory, long maxSize) {
         this(directory, maxSize, FileSystem.SYSTEM);
     }
@@ -317,6 +313,8 @@ public final class Cache implements Closeable, Flushable {
      *
      * <p>Note that if the application chooses to not call this method to initialize the cache. By
      * default, the HttpClient will perform lazy initialization upon the first usage of the cache.
+     *
+     * @throws IOException if an I/O error occurs
      */
     public void initialize() throws IOException {
         cache.initialize();
@@ -325,6 +323,8 @@ public final class Cache implements Closeable, Flushable {
     /**
      * Closes the cache and deletes all of its stored values. This will delete all files in the cache
      * directory including files that weren't created by the cache.
+     *
+     * @throws IOException if an I/O error occurs
      */
     public void delete() throws IOException {
         cache.delete();
@@ -333,6 +333,8 @@ public final class Cache implements Closeable, Flushable {
     /**
      * Deletes all values stored in the cache. In-flight writes to the cache will complete normally,
      * but the corresponding responses will not be stored.
+     *
+     * @throws IOException if an I/O error occurs
      */
     public void evictAll() throws IOException {
         cache.evictAll();
@@ -346,6 +348,9 @@ public final class Cache implements Closeable, Flushable {
      *
      * <p>The iterator supports {@linkplain Iterator#remove}. Removing a URL from the iterator evicts
      * the corresponding response from the cache. Use this to evict selected responses.
+     *
+     * @return iterator
+     * @throws IOException if an I/O error occurs
      */
     public Iterator<String> urls() throws IOException {
         return new Iterator<String>() {
@@ -405,9 +410,6 @@ public final class Cache implements Closeable, Flushable {
         return cache.size();
     }
 
-    /**
-     * Max size of the cache (in bytes).
-     */
     public long maxSize() {
         return cache.getMaxSize();
     }

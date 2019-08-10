@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.annotation.Element;
@@ -38,9 +38,8 @@ import java.util.Map;
  * 注解工具类<br>
  * 快速获取注解对象、注解值等工具封装
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class AnnoUtils {
@@ -62,6 +61,7 @@ public class AnnoUtils {
      * 获取指定注解
      *
      * @param annotationEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param isCombination boolean
      * @return 注解对象
      */
     public static Annotation[] getAnnotations(AnnotatedElement annotationEle, boolean isCombination) {

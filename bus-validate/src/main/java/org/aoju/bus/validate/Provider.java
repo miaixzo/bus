@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate;
 
 import org.aoju.bus.core.lang.exception.NoSuchException;
@@ -41,9 +41,8 @@ import java.util.stream.Collectors;
 /**
  * 服务提供者
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Provider {
@@ -54,7 +53,9 @@ public class Provider {
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>    对象
      * @param object 原始对象
+     * @return the object
      */
     public static <T> T on(Object object) {
         return (T) new Validated(object).access();
@@ -66,8 +67,10 @@ public class Provider {
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>     对象
      * @param object  原始对象
      * @param context 上下文信息
+     * @return the object
      */
     public static <T> T on(Object object, Context context) {
         return (T) new Validated(object, context).access();
@@ -79,8 +82,10 @@ public class Provider {
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>         对象
      * @param object      原始对象
      * @param annotations 注解信息
+     * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations) {
         return (T) new Validated(object, annotations).access();
@@ -92,9 +97,11 @@ public class Provider {
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>         对象
      * @param object      原始对象
      * @param annotations 注解信息
      * @param context     上下文信息
+     * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context) {
         return (T) new Validated(object, annotations, context).access();
@@ -106,10 +113,12 @@ public class Provider {
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>         对象
      * @param field       当前属性
      * @param object      原始对象
      * @param annotations 注解信息
      * @param context     上下文信息
+     * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context, String field) {
         return (T) new Validated(object, annotations, context, field).access();
@@ -119,6 +128,7 @@ public class Provider {
      * 是否为校验器注解
      *
      * @param annotation 注解
+     * @return the boolean
      */
     public static boolean isAnnotation(Annotation annotation) {
         Class<? extends Annotation> annotationType = annotation.annotationType();

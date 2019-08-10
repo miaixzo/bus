@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.utils.CollUtils;
@@ -44,9 +44,8 @@ import java.util.TreeMap;
  * 然后随机出一个[0,10)之间的随机数。落在哪个区间，则该区间之后的元素即为按权重命中的元素。<br>
  *
  * @param <T> 权重随机获取的对象类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class WeightRandom<T> implements Serializable {
@@ -105,6 +104,7 @@ public class WeightRandom<T> implements Serializable {
     /**
      * 创建权重随机获取器
      *
+     * @param <T> 对象
      * @return {@link WeightRandom}
      */
     public static <T> WeightRandom<T> create() {

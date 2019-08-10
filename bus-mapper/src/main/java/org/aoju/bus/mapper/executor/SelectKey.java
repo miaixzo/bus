@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.executor;
 
 import org.aoju.bus.mapper.entity.EntityColumn;
@@ -45,9 +45,8 @@ import java.util.List;
 /**
  * 主键处理
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SelectKey implements KeyGenerator {
@@ -61,12 +60,6 @@ public class SelectKey implements KeyGenerator {
         this.keyStatement = keyStatement;
     }
 
-    /**
-     * 新建SelectKey节点
-     *
-     * @param ms
-     * @param column
-     */
     public static void newSelectKeyMappedStatement(MappedStatement ms, EntityColumn column, Class<?> entityClass, Boolean executeBefore, String identity) {
         String keyId = ms.getId() + SelectKey.SELECT_KEY_SUFFIX;
         if (ms.getConfiguration().hasKeyGenerator(keyId)) {

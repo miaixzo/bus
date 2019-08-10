@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.limiter.support.rate.redis;
 
 import org.aoju.bus.limiter.support.rate.RateLimiter;
@@ -30,9 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class RedisRatelimiter extends RateLimiter {
@@ -44,8 +43,8 @@ public class RedisRatelimiter extends RateLimiter {
     private RateLimiterRedission ratelimiterRedission;
 
     /**
-     * @param limiterName
-     * @param config
+     * @param limiterName 名称
+     * @param config      配置
      */
     public RedisRatelimiter(String limiterName, Config config) {
         this.limiterName = limiterName;

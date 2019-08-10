@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -62,9 +62,8 @@ import java.util.*;
  * }
  * </pre>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EqualsBuilder implements Builder<Boolean> {
@@ -78,7 +77,9 @@ public class EqualsBuilder implements Builder<Boolean> {
      */
     private static final ThreadLocal<Set<Pair<IDKey, IDKey>>> REGISTRY = new ThreadLocal<>();
 
-    /** 是否equals，此值随着构建会变更，默认true */
+    /**
+     * 是否equals，此值随着构建会变更，默认true
+     */
     private boolean isEquals = true;
     private boolean testTransients = false;
     private boolean testRecursive = false;
@@ -194,9 +195,9 @@ public class EqualsBuilder implements Builder<Boolean> {
     /**
      * <p>反射检查两个对象是否equals，此方法检查对象及其父对象的属性（包括私有属性）是否equals</p>
      *
-     * @param lhs  此对象
-     * @param rhs  另一个对象
-     * @param excludeFields  排除的字段集合，如果有不参与计算equals的字段加入此集合即可
+     * @param lhs           此对象
+     * @param rhs           另一个对象
+     * @param excludeFields 排除的字段集合，如果有不参与计算equals的字段加入此集合即可
      * @return 两个对象是否equals，是返回<code>true</code>
      */
     public static boolean reflectionEquals(final Object lhs, final Object rhs, final Collection<String> excludeFields) {
@@ -206,9 +207,9 @@ public class EqualsBuilder implements Builder<Boolean> {
     /**
      * <p>反射检查两个对象是否equals，此方法检查对象及其父对象的属性（包括私有属性）是否equals</p>
      *
-     * @param lhs  此对象
-     * @param rhs  另一个对象
-     * @param excludeFields  排除的字段集合，如果有不参与计算equals的字段加入此集合即可
+     * @param lhs           此对象
+     * @param rhs           另一个对象
+     * @param excludeFields 排除的字段集合，如果有不参与计算equals的字段加入此集合即可
      * @return 两个对象是否equals，是返回<code>true</code>
      */
     public static boolean reflectionEquals(final Object lhs, final Object rhs, final String... excludeFields) {

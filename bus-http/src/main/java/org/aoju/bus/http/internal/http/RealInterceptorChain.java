@@ -20,14 +20,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.http;
 
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.connection.RealConnection;
 import org.aoju.bus.http.internal.connection.StreamAllocation;
-import org.aoju.bus.http.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,9 +36,8 @@ import java.util.concurrent.TimeUnit;
  * A concrete interceptor chain that carries the entire interceptor chain: all application
  * interceptors, the httpClient core, all network interceptors, and finally the network caller.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class RealInterceptorChain implements Interceptor.Chain {

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cron;
 
 /**
@@ -28,9 +28,8 @@ package org.aoju.bus.cron;
  * 负责检查<strong>TaskTable</strong>是否有匹配到此时运行的Task<br>
  * 检查完毕后启动器结束
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class TaskLauncher implements Runnable {

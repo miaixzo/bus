@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.text;
 
 
@@ -39,7 +39,9 @@ import java.util.Map;
  * For example, it would be possible to implement a lookup that used the
  * key as a primary key, and looked up the value on demand from the database
  *
- * @since 2.2
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
  */
 public abstract class StrLookup<V> {
 

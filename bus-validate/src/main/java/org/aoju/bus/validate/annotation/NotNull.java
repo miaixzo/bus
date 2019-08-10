@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.annotation;
 
 import org.aoju.bus.validate.Builder;
@@ -31,9 +31,8 @@ import java.lang.annotation.*;
 /**
  * 对象不能为null
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented
@@ -44,21 +43,29 @@ public @interface NotNull {
 
     /**
      * 默认使用的异常码
+     *
+     * @return the string
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
      * 默认使用的异常信息
+     *
+     * @return the string
      */
     String errmsg() default "${field}不能为null";
 
     /**
      * 校验器组
+     *
+     * @return the array
      */
     String[] group() default {};
 
     /**
      * 被校验字段名称
+     *
+     * @return the string
      */
     String field() default Builder.DEFAULT_FIELD;
 

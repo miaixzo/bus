@@ -20,13 +20,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.limiter.support.rate.jdk;
 
-import org.aoju.bus.limiter.support.rate.RateLimiter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.aoju.bus.limiter.support.rate.RateLimiter;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -34,9 +34,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * 一个RateLimiter组件
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class JdkRateLimiter extends RateLimiter {
@@ -47,9 +46,9 @@ public class JdkRateLimiter extends RateLimiter {
             cache;
 
     /**
-     * @param rateLimiterName
+     * @param rateLimiterName       名称
      * @param expireAfterAccess     过期时间
-     * @param expireAfterAccessUnit
+     * @param expireAfterAccessUnit 过期数量
      */
     public JdkRateLimiter(String rateLimiterName, long expireAfterAccess, TimeUnit expireAfterAccessUnit) {
         this.rateLimiterName = rateLimiterName;

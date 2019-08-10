@@ -9,6 +9,16 @@
     <version>3.0.0</version>
     <packaging>jar</packaging>
 
+    <name>bus-health</name>
+    <description>Bus Health</description>
+    <url>https://github.com/aoju/bus</url>
+
+    <properties>
+        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.aoju</groupId>
@@ -17,16 +27,69 @@
         </dependency>
     </dependencies>
 
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>https://www.mit-license.org</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git@github.com:aoju/bus.git</connection>
+        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
+        <url>git@github.com:aoju/bus.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>aoju.org</name>
+            <url>https://github.com/aoju/bus.git</url>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/aoju/bus/issues</url>
+    </issueManagement>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>oss</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -48,5 +111,18 @@
             </properties>
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>OSS Snapshots Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>OSS Staging Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>

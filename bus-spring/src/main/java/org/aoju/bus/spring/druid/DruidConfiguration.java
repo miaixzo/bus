@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.druid;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -51,9 +51,8 @@ import java.util.Map;
 /**
  * Druid 配置
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @ConditionalOnClass(DruidDataSource.class)
@@ -63,19 +62,20 @@ public class DruidConfiguration {
 
     private static final ConfigurationPropertyNameAliases aliases;
 
-    private Map<Object, Object> sourceMap = new HashMap<>();
-
-    @Autowired
-    DruidProperties druidProperties;
-
     static {
         aliases = new ConfigurationPropertyNameAliases();
         aliases.addAliases("url", new String[]{"jdbc-url"});
         aliases.addAliases("username", new String[]{"user"});
     }
 
+    @Autowired
+    DruidProperties druidProperties;
+    private Map<Object, Object> sourceMap = new HashMap<>();
+
     /**
      * 初始化数据源/多数据源
+     *
+     * @return 数据源
      */
     @Bean
     @Primary
@@ -103,6 +103,9 @@ public class DruidConfiguration {
 
     /**
      * 事务支持
+     *
+     * @param dataSource 数据源
+     * @return 事务信息
      */
     @Bean
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
@@ -111,6 +114,9 @@ public class DruidConfiguration {
 
     /**
      * 绑定数据源信息
+     *
+     * @param map 数据库信息
+     * @return 数据库连接
      */
     private DataSource bind(Map<String, Object> map) {
         String type = StringUtils.toString(map.get("type"));
@@ -133,6 +139,9 @@ public class DruidConfiguration {
 
     /**
      * 将对象装换为map
+     *
+     * @param bean 对象
+     * @return the object
      */
     private <T> Map<String, Object> beanToMap(T bean) {
         Map<String, Object> map = Maps.newHashMap();

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.proxy;
 
 import org.aoju.bus.pager.IPage;
@@ -35,9 +35,8 @@ import java.util.Properties;
 /**
  * Page 参数信息
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class PageParams {
@@ -58,9 +57,9 @@ public class PageParams {
     /**
      * 获取分页参数
      *
-     * @param parameterObject
-     * @param rowBounds
-     * @return
+     * @param parameterObject 参数
+     * @param rowBounds       rowBounds对象
+     * @return the page
      */
     public Page getPage(Object parameterObject, RowBounds rowBounds) {
         Page page = PageContext.getLocalPage();

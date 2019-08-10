@@ -20,21 +20,22 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.entity;
 
 /**
  * 实现动态表名时，实体类需要实现该接口
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface EntityTableName {
 
     /**
      * 获取动态表名 - 只要有返回值，不是null和''，就会用返回值作为表名
+     *
+     * @return string 表名
      */
     String getDynamicTableName();
 }

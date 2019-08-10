@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.dialect;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -34,9 +34,8 @@ import java.util.Properties;
 /**
  * 数据库方言，针对不同数据库进行实现
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Dialect {
@@ -66,7 +65,7 @@ public interface Dialect {
      * @param ms              MappedStatement
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
-     * @return
+     * @return the boolean
      */
     boolean beforeCount(MappedStatement ms, Object parameterObject, RowBounds rowBounds);
 
@@ -78,7 +77,7 @@ public interface Dialect {
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
      * @param countKey        count 缓存 key
-     * @return
+     * @return the string
      */
     String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey);
 
@@ -96,10 +95,10 @@ public interface Dialect {
      * 处理查询参数对象
      *
      * @param ms              MappedStatement
-     * @param parameterObject
-     * @param boundSql
-     * @param pageKey
-     * @return
+     * @param parameterObject 参数
+     * @param boundSql        sql信息
+     * @param pageKey         分页key
+     * @return the object
      */
     Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey);
 
@@ -109,7 +108,7 @@ public interface Dialect {
      * @param ms              MappedStatement
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
-     * @return
+     * @return the boolean
      */
     boolean beforePage(MappedStatement ms, Object parameterObject, RowBounds rowBounds);
 
@@ -121,7 +120,7 @@ public interface Dialect {
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
      * @param pageKey         分页缓存 key
-     * @return
+     * @return the string
      */
     String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey);
 
@@ -131,7 +130,7 @@ public interface Dialect {
      * @param pageList        分页查询结果
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
-     * @return
+     * @return the object
      */
     Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds);
 

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.socket.nio;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -33,9 +33,8 @@ import java.nio.channels.SocketChannel;
 /**
  * NIO客户端
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class NioClient {
@@ -81,6 +80,7 @@ public class NioClient {
      * 当收到读取准备就绪的信号后，回调此方法，用户可读取从客户端传世来的消息
      *
      * @param buffer 服务端数据存储缓存
+     * @return the object
      */
     public NioClient read(ByteBuffer buffer) {
         try {
@@ -96,6 +96,7 @@ public class NioClient {
      * 当收到写出准备就绪的信号后，回调此方法，用户可向客户端发送消息
      *
      * @param datas 发送的数据
+     * @return the object
      */
     public NioClient write(ByteBuffer... datas) {
         try {

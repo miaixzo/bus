@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.crypto.digest;
 
 import org.aoju.bus.core.consts.Charset;
@@ -33,7 +33,7 @@ import java.security.SecureRandom;
  * 使用方法如下：
  * <p>
  * <code>
- * String pw_hash = BCrypt.hashpw(plain_password, BCrypt.gensalt()); <br />
+ * String pw_hash = BCrypt.hashpw(plain_password, BCrypt.gensalt());
  * </code>
  * <p>
  * 使用checkpw方法检查被加密的字符串是否与原始字符串匹配：
@@ -45,12 +45,13 @@ import java.security.SecureRandom;
  * gensalt方法提供了可选参数 (log_rounds) 来定义加盐多少，也决定了加密的复杂度:
  * <p>
  * <code>
- * String strong_salt = BCrypt.gensalt(10)<br />
- * String stronger_salt = BCrypt.gensalt(12)<br />
+ * String strong_salt = BCrypt.gensalt(10)
+ * String stronger_salt = BCrypt.gensalt(12)
  * </code>
  *
- * @author Damien Miller
- * @since 4.1.1
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
  */
 public class BCrypt {
 

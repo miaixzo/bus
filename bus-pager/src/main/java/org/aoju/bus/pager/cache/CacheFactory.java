@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.cache;
 
 import org.aoju.bus.pager.PageException;
@@ -32,9 +32,8 @@ import java.util.Properties;
 /**
  * CacheFactory
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class CacheFactory {
@@ -42,8 +41,12 @@ public abstract class CacheFactory {
     /**
      * 创建 SQL 缓存
      *
-     * @param sqlCacheClass
-     * @return
+     * @param <K>           对象
+     * @param <V>           对象
+     * @param sqlCacheClass 对象
+     * @param prefix        前缀
+     * @param properties    属性
+     * @return the object
      */
     public static <K, V> Cache<K, V> createCache(String sqlCacheClass, String prefix, Properties properties) {
         if (PageFromObject.isEmpty(sqlCacheClass)) {

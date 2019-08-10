@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.socket.aio;
 
 /**
@@ -28,9 +28,8 @@ package org.aoju.bus.socket.aio;
  * 实现此接口用于处理接收到的消息，发送指定消息
  *
  * @param <T> 经过解码器解码后的数据类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface IoAction<T> {

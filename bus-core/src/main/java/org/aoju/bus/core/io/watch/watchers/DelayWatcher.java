@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.watch.watchers;
 
 import org.aoju.bus.core.io.watch.Watcher;
@@ -40,9 +40,8 @@ import java.util.Set;
  * 在监听目录或文件时，如果这个文件有修改操作，会多次触发modify方法。<br>
  * 此类通过维护一个Set将短时间内相同文件多次modify的事件合并处理触发，从而避免以上问题。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class DelayWatcher implements Watcher {

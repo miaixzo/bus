@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.MapperException;
@@ -35,12 +35,10 @@ import java.util.Set;
 
 /**
  * 通过 ids 字符串的各种操作
- * <p/>
  * ids 如 "1,2,3"
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class IdsProvider extends MapperTemplate {
@@ -52,8 +50,8 @@ public class IdsProvider extends MapperTemplate {
     /**
      * 根据主键字符串进行删除，类中只有存在一个带有@Id注解的字段
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String deleteByIds(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
@@ -74,8 +72,8 @@ public class IdsProvider extends MapperTemplate {
     /**
      * 根据主键字符串进行查询，类中只有存在一个带有@Id注解的字段
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectByIds(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);

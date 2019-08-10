@@ -20,30 +20,25 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import java.io.IOException;
 
 /**
- * A source and a sink that are attached. The sink's output is the source's input. Typically each
- * is accessed by its own thread: a producer thread writes data to the sink and a consumer thread
- * reads data from the source.
+ * 附加的源和接收器。接收器的输出是源的输入。通常每个
+ * 由它自己的线程访问:一个生产者线程将数据写入接收器和一个消费者线程
+ * 从源读取数据。
+ * 这个类使用一个缓冲区来解耦源和接收器。此缓冲区具有用户指定的最大值
+ * 大小。当生产者线程超出其消费者时，缓冲区将被填满并最终写入
+ * 水槽会堵塞，直到消费者赶上为止。对称地说，如果消费者跑得比它快
+ * 生产者读取块，直到有数据要读取。限制等待的时间
+ * 当接收器关闭时，源读取将继续正常完成，直到缓冲区
+ * 此时read将返回-1，表示流的结束。但是,如果
+ * 首先关闭源，对接收器的写入将立即失败，并带有{@link IOException}。
  *
- * <p>This class uses a buffer to decouple source and sink. This buffer has a user-specified maximum
- * size. When a producer thread outruns its consumer the buffer fills up and eventually writes to
- * the sink will block until the consumer has caught up. Symmetrically, if a consumer outruns its
- * producer reads block until there is data to be read. Limits on the amount of time spent waiting
- * for the other party can be configured with {@linkplain Timeout timeouts} on the source and the
- * sink.
- *
- * <p>When the sink is closed, source reads will continue to complete normally until the buffer has
- * been exhausted. At that point reads will return -1, indicating the end of the stream. But if the
- * source is closed first, writes to the sink will immediately fail with an {@link IOException}.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Pipe {

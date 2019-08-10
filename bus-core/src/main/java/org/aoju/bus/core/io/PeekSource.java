@@ -20,24 +20,21 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import java.io.IOException;
 
 /**
- * A {@link Source} which peeks into an upstream {@link BufferedSource} and allows reading and
- * expanding of the buffered data without consuming it. Does this by requesting additional data from
- * the upstream source if needed and copying out of the internal buffer of the upstream source if
- * possible.
+ * 一个{@link Source}，它可以窥视上游的{@link BufferedSource}并允许读取和
+ * 展开缓冲数据而不使用它。这是通过请求额外的数据吗
+ * 如果需要，则复制上游源文件，如果需要，则从上游源文件的内部缓冲区复制
+ * 此源还维护其上游缓冲区的起始位置的快照
+ * 每次读取时验证。如果从上游缓冲区读取，则此源将变为
+ * 无效，在以后的读取中抛出{@link IllegalStateException}。
  *
- * <p>This source also maintains a snapshot of the starting location of the upstream buffer which it
- * validates against on every read. If the upstream buffer is read from, this source will become
- * invalid and throw {@link IllegalStateException} on any future reads.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 final class PeekSource implements Source {

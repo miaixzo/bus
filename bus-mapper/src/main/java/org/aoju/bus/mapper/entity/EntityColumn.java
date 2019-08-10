@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.entity;
 
 import org.aoju.bus.mapper.criteria.Assert;
@@ -30,9 +30,8 @@ import org.apache.ibatis.type.TypeHandler;
 /**
  * 数据库表对应的列
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EntityColumn {
@@ -69,8 +68,8 @@ public class EntityColumn {
     /**
      * 返回格式如:colum = #{age,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
      *
-     * @param entityName
-     * @return
+     * @param entityName 名称
+     * @return string
      */
     public String getColumnEqualsHolder(String entityName) {
         return this.column + " = " + getColumnHolder(entityName);
@@ -79,8 +78,8 @@ public class EntityColumn {
     /**
      * 返回格式如:#{entityName.age,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
      *
-     * @param entityName
-     * @return
+     * @param entityName 名称
+     * @return string
      */
     public String getColumnHolder(String entityName) {
         return getColumnHolder(entityName, null);
@@ -89,9 +88,9 @@ public class EntityColumn {
     /**
      * 返回格式如:#{entityName.age+suffix,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
      *
-     * @param entityName
-     * @param suffix
-     * @return
+     * @param entityName 名称
+     * @param suffix     后缀
+     * @return the string
      */
     public String getColumnHolder(String entityName, String suffix) {
         return getColumnHolder(entityName, null, null);
@@ -100,9 +99,9 @@ public class EntityColumn {
     /**
      * 返回格式如:#{entityName.age+suffix,jdbcType=NUMERIC,typeHandler=MyTypeHandler},
      *
-     * @param entityName
-     * @param suffix
-     * @return
+     * @param entityName 名称
+     * @param suffix     后缀
+     * @return the string
      */
     public String getColumnHolderWithComma(String entityName, String suffix) {
         return getColumnHolder(entityName, suffix, ",");
@@ -111,10 +110,10 @@ public class EntityColumn {
     /**
      * 返回格式如:#{entityName.age+suffix,jdbcType=NUMERIC,typeHandler=MyTypeHandler}+separator
      *
-     * @param entityName
-     * @param suffix
-     * @param separator
-     * @return
+     * @param entityName 名称
+     * @param suffix     后缀
+     * @param separator  分隔符
+     * @return the string
      */
     public String getColumnHolder(String entityName, String suffix, String separator) {
         StringBuffer sb = new StringBuffer("#{");
@@ -190,20 +189,10 @@ public class EntityColumn {
         this.column = column;
     }
 
-    /**
-     * 返回格式如:colum = #{age,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
-     *
-     * @return
-     */
     public String getColumnEqualsHolder() {
         return getColumnEqualsHolder(null);
     }
 
-    /**
-     * 返回格式如:#{age,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
-     *
-     * @return
-     */
     public String getColumnHolder() {
         return getColumnHolder(null);
     }

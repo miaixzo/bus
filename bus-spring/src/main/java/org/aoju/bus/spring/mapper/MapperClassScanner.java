@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.mapper;
 
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -36,9 +36,8 @@ import java.util.Properties;
 /**
  * mapper 注册扫描
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MapperClassScanner extends MapperScannerConfigurer {
@@ -48,7 +47,7 @@ public class MapperClassScanner extends MapperScannerConfigurer {
     /**
      * 注册完成后，对MapperFactoryBean的类进行特殊处理
      *
-     * @param registry
+     * @param registry 注册
      */
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
@@ -88,7 +87,7 @@ public class MapperClassScanner extends MapperScannerConfigurer {
     /**
      * 属性注入
      *
-     * @param properties
+     * @param properties 属性
      */
     public void setProperties(Properties properties) {
         mapperBuilder.setProperties(properties);

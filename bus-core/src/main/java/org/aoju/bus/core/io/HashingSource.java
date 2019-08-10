@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import javax.crypto.Mac;
@@ -31,24 +31,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * A source that computes a hash of the full stream of bytes it has supplied. To use, create an
- * instance with your preferred hash algorithm. Exhaust the source by reading all of its bytes and
- * then call {@link #hash()} to compute the final hash value.
+ * 计算其提供的全部字节流的散列的源。若要使用，请创建
+ * 使用您首选的哈希算法实例。通过读取源文件的所有字节来耗尽源文件
+ * 然后调用{@link #hash()}来计算最终的哈希值
  *
- * <p>In this example we use {@code HashingSource} with a {@link BufferedSource} to make reading
- * from the source easier. <pre>   {@code
- *
- *   HashingSource hashingSource = HashingSource.sha256(rawSource);
- *   BufferedSource bufferedSource = IoUtils.buffer(hashingSource);
- *
- *   ... // Read all of bufferedSource.
- *
- *   ByteString hash = hashingSource.hash();
- * }</pre>
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class HashingSource extends ForwardingSource {
@@ -79,37 +67,22 @@ public final class HashingSource extends ForwardingSource {
         }
     }
 
-    /**
-     * Returns a sink that uses the obsolete MD5 hash algorithm to produce 128-bit hashes.
-     */
     public static HashingSource md5(Source source) {
         return new HashingSource(source, "MD5");
     }
 
-    /**
-     * Returns a sink that uses the obsolete SHA-1 hash algorithm to produce 160-bit hashes.
-     */
     public static HashingSource sha1(Source source) {
         return new HashingSource(source, "SHA-1");
     }
 
-    /**
-     * Returns a sink that uses the SHA-256 hash algorithm to produce 256-bit hashes.
-     */
     public static HashingSource sha256(Source source) {
         return new HashingSource(source, "SHA-256");
     }
 
-    /**
-     * Returns a sink that uses the obsolete SHA-1 HMAC algorithm to produce 160-bit hashes.
-     */
     public static HashingSource hmacSha1(Source source, ByteString key) {
         return new HashingSource(source, key, "HmacSHA1");
     }
 
-    /**
-     * Returns a sink that uses the SHA-256 HMAC algorithm to produce 256-bit hashes.
-     */
     public static HashingSource hmacSha256(Source source, ByteString key) {
         return new HashingSource(source, key, "HmacSHA256");
     }
@@ -146,12 +119,6 @@ public final class HashingSource extends ForwardingSource {
         return result;
     }
 
-    /**
-     * Returns the hash of the bytes supplied thus far and resets the internal state of this source.
-     *
-     * <p><strong>Warning:</strong> This method is not idempotent. Each time this method is called its
-     * internal state is cleared. This starts a new hash with zero bytes supplied.
-     */
     public final ByteString hash() {
         byte[] result = messageDigest != null ? messageDigest.digest() : mac.doFinal();
         return ByteString.of(result);

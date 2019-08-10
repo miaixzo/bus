@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.clone;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -31,9 +31,8 @@ import org.aoju.bus.core.lang.exception.CommonException;
  * </p>
  *
  * @param <T> 继承类的类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Support<T> implements Cloneable<T> {

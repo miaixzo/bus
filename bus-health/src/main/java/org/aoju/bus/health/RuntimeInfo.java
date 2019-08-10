@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.health;
 
 import org.aoju.bus.core.utils.FileUtils;
@@ -28,9 +28,8 @@ import org.aoju.bus.core.utils.FileUtils;
 /**
  * 运行时信息，包括内存总大小、已用大小、可用大小等
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class RuntimeInfo {

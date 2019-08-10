@@ -20,17 +20,22 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.version;
 
 
+/**
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
+ */
 public interface NextVersion<T> {
 
     /**
      * 返回下一个版本
      *
-     * @param current
-     * @return
+     * @param current 对象
+     * @return 结果
      */
     T nextVersion(T current) throws VersionException;
 

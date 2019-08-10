@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.platform;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,9 +31,8 @@ import java.lang.reflect.Modifier;
  * Duck-typing for methods: Represents a method that may or may not be present on an object.
  *
  * @param <T> the type of the object the method might be on, typically an interface or base class
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 class OptionalMethod<T> {

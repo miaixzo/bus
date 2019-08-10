@@ -20,11 +20,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate;
 
-import org.aoju.bus.validate.validators.Property;
 import lombok.Data;
+import org.aoju.bus.validate.validators.Property;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,8 @@ import java.util.List;
 /**
  * 校验结果收集器
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Data

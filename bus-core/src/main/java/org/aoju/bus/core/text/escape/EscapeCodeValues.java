@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.text.escape;
 
 import org.aoju.bus.core.consts.Normal;
@@ -40,9 +40,8 @@ import java.util.Map;
  * <p>
  * ESCAPE信息
  *
- * @author aoju.org
+ * @author Kimi Liu
  * @version 1.0
- * @group 839128
  * @since JDK 1.8
  */
 public class EscapeCodeValues {
@@ -567,8 +566,8 @@ public class EscapeCodeValues {
     /**
      * 用于将转义映射转换为反转义映射。
      *
-     * @param map map<String, String>数组
-     * @return Map<String, String> 倒数组
+     * @param map map数组
+     * @return Map倒数组
      */
     public static Map<CharSequence, CharSequence> invert(final Map<CharSequence, CharSequence> map) {
         final Map<CharSequence, CharSequence> newMap = new HashMap<>();

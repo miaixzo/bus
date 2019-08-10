@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.socket.aio;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -38,9 +38,8 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 /**
  * 基于AIO的Socket服务端实现
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class AioServer {
@@ -50,7 +49,6 @@ public class AioServer {
     protected SocketConfig config;
     private AsynchronousChannelGroup group;
     private AsynchronousServerSocketChannel channel;
-
 
     /**
      * 构造
@@ -111,6 +109,7 @@ public class AioServer {
      * @param <T>   选项泛型
      * @param name  {@link SocketOption} 枚举
      * @param value SocketOption参数
+     * @return the object
      * @throws IOException IO异常
      */
     public <T> AioServer setOption(SocketOption<T> name, T value) throws IOException {

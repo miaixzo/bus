@@ -20,11 +20,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.cache;
 
-import org.aoju.bus.pager.plugin.PageFromObject;
 import com.google.common.cache.CacheBuilder;
+import org.aoju.bus.pager.plugin.PageFromObject;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -32,9 +32,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Simple Guava Cache
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class GuavaCache<K, V> implements Cache<K, V> {

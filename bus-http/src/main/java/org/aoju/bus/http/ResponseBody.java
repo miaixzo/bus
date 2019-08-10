@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
@@ -103,21 +103,17 @@ import java.nio.charset.Charset;
  * {@link #bytes()} or {@link #string()}. Or stream the response with either {@link #source()},
  * {@link #byteStream()}, or {@link #charStream()}.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class ResponseBody implements Closeable {
+
     /**
      * Multiple calls to {@link #charStream()} must return the same instance.
      */
     private Reader reader;
 
-    /**
-     * Returns a new response body that transmits {@code content}. If {@code contentType} is non-null
-     * and lacks a charset, this will use UTF-8.
-     */
     public static ResponseBody create(MediaType contentType, String content) {
         Charset charset = org.aoju.bus.core.consts.Charset.UTF_8;
         if (contentType != null) {
@@ -131,25 +127,16 @@ public abstract class ResponseBody implements Closeable {
         return create(contentType, buffer.size(), buffer);
     }
 
-    /**
-     * Returns a new response body that transmits {@code content}.
-     */
     public static ResponseBody create(final MediaType contentType, byte[] content) {
         Buffer buffer = new Buffer().write(content);
         return create(contentType, content.length, buffer);
     }
 
-    /**
-     * Returns a new response body that transmits {@code content}.
-     */
     public static ResponseBody create(MediaType contentType, ByteString content) {
         Buffer buffer = new Buffer().write(content);
         return create(contentType, content.size(), buffer);
     }
 
-    /**
-     * Returns a new response body that transmits {@code content}.
-     */
     public static ResponseBody create(final MediaType contentType,
                                       final long contentLength, final BufferedSource content) {
         if (content == null) throw new NullPointerException("source == null");
@@ -185,13 +172,6 @@ public abstract class ResponseBody implements Closeable {
 
     public abstract BufferedSource source();
 
-    /**
-     * Returns the response as a byte array.
-     *
-     * <p>This method loads entire response body into memory. If the response body is very large this
-     * may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
-     * possibility for your response.
-     */
     public final byte[] bytes() throws IOException {
         long contentLength = contentLength();
         if (contentLength > Integer.MAX_VALUE) {
@@ -215,27 +195,11 @@ public abstract class ResponseBody implements Closeable {
         return bytes;
     }
 
-    /**
-     * Returns the response as a character stream decoded with the charset of the Content-Type header.
-     * If that header is either absent or lacks a charset, this will attempt to decode the response
-     * body in accordance to <a href="https://en.wikipedia.org/wiki/Byte_order_mark">its BOM</a> or
-     * UTF-8.
-     */
     public final Reader charStream() {
         Reader r = reader;
         return r != null ? r : (reader = new BomAwareReader(source(), charset()));
     }
 
-    /**
-     * Returns the response as a string decoded with the charset of the Content-Type header. If that
-     * header is either absent or lacks a charset, this will attempt to decode the response body in
-     * accordance to <a href="https://en.wikipedia.org/wiki/Byte_order_mark">its BOM</a> or UTF-8.
-     * Closes {@link ResponseBody} automatically.
-     *
-     * <p>This method loads entire response body into memory. If the response body is very large this
-     * may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
-     * possibility for your response.
-     */
     public final String string() throws IOException {
         BufferedSource source = source();
         try {

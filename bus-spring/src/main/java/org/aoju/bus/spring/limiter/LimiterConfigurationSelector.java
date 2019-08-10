@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.limiter;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -33,6 +33,11 @@ import org.springframework.context.annotation.AutoProxyRegistrar;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
+ */
 public class LimiterConfigurationSelector extends AdviceModeImportSelector<EnableLimiter> {
 
     @Override

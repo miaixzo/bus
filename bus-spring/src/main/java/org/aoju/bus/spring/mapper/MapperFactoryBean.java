@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.mapper;
 
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -34,9 +34,8 @@ import static org.aoju.bus.core.lang.Assert.notNull;
 /**
  * 增加mapperBuilder
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MapperFactoryBean<T> extends SqlSessionDaoSupport
@@ -93,6 +92,8 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport
 
     /**
      * 返回MyBatis mapper的mapper接口
+     *
+     * @return the object
      */
     public Class<T> getMapperInterface() {
         return mapperInterface;
@@ -101,7 +102,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport
     /**
      * 设置MyBatis mapper的mapper接口
      *
-     * @param mapperInterface
+     * @param mapperInterface 接口
      */
     public void setMapperInterface(Class<T> mapperInterface) {
         this.mapperInterface = mapperInterface;
@@ -109,9 +110,10 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport
 
     /**
      * 将添加的标志返回到MyBatis配置中。
-     * <p>
      * 如果映射器将被添加到MyBatis，则返回true，
      * 如果它还没有被添加到MyBatis中注册。
+     *
+     * @return the boolean
      */
     public boolean isAddToConfig() {
         return addToConfig;
@@ -119,15 +121,11 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport
 
     /**
      * 如果addToConfig为false，映射器将不会添加到MyBatis。这意味着
-     * <p>
      * 它必须包含在mybatisconfig .xml中
-     * <p>
      * 如果是真的，映射器将被添加到MyBatis中，如果还没有
-     * <p>
      * 注册。默认情况下addToCofig为真。
-     * <p>
      *
-     * @param addToConfig
+     * @param addToConfig 是否添加
      */
     public void setAddToConfig(boolean addToConfig) {
         this.addToConfig = addToConfig;
@@ -136,7 +134,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport
     /**
      * 设置通用 Mapper 配置
      *
-     * @param mapperBuilder
+     * @param mapperBuilder 绑定器
      */
     public void setMapperBuilder(MapperBuilder mapperBuilder) {
         this.mapperBuilder = mapperBuilder;

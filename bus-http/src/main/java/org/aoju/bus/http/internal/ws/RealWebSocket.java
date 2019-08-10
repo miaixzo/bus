@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.ws;
 
 import org.aoju.bus.core.io.BufferedSink;
@@ -30,7 +30,6 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.connection.StreamAllocation;
-import org.aoju.bus.http.*;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -46,9 +45,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.MapperException;
@@ -38,9 +38,8 @@ import java.util.Set;
 /**
  * BaseInsertProvider实现类，基础方法实现类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BaseInsertProvider extends MapperTemplate {
@@ -65,8 +64,8 @@ public class BaseInsertProvider extends MapperTemplate {
      * &lt;/trim&gt;
      * </pre>
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String insert(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -155,8 +154,8 @@ public class BaseInsertProvider extends MapperTemplate {
      * </pre>
      * 这段代码可以注意对countryname的处理
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String insertSelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);

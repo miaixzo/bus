@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.entity;
 
 import org.aoju.bus.mapper.MapperException;
@@ -35,9 +35,8 @@ import java.util.*;
 /**
  * 通用查询对象
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Condition implements EntityTableName {
@@ -75,33 +74,33 @@ public class Condition implements EntityTableName {
     /**
      * 默认exists为true
      *
-     * @param entityClass
+     * @param clazz 对象
      */
-    public Condition(Class<?> entityClass) {
-        this(entityClass, true);
+    public Condition(Class<?> clazz) {
+        this(clazz, true);
     }
 
     /**
      * 带exists参数的构造方法，默认notNull为false，允许为空
      *
-     * @param entityClass
-     * @param exists      - true时，如果字段不存在就抛出异常，false时，如果不存在就不使用该字段的条件
+     * @param clazz  对象
+     * @param exists - true时，如果字段不存在就抛出异常，false时，如果不存在就不使用该字段的条件
      */
-    public Condition(Class<?> entityClass, boolean exists) {
-        this(entityClass, exists, false);
+    public Condition(Class<?> clazz, boolean exists) {
+        this(clazz, exists, false);
     }
 
     /**
      * 带exists参数的构造方法
      *
-     * @param entityClass
+     * @param entityClass 对象
      * @param exists      - true时，如果字段不存在就抛出异常，false时，如果不存在就不使用该字段的条件
      * @param notNull     - true时，如果值为空，就会抛出异常，false时，如果为空就不使用该字段的条件
      */
     public Condition(Class<?> entityClass, boolean exists, boolean notNull) {
         this.exists = exists;
         this.notNull = notNull;
-        oredCriteria = new ArrayList<Criteria>();
+        oredCriteria = new ArrayList<>();
         this.entityClass = entityClass;
         table = EntityBuilder.getEntityTable(entityClass);
         propertyMap = table.getPropertyMap();
@@ -138,12 +137,12 @@ public class Condition implements EntityTableName {
      * 排除查询字段，优先级低于 selectProperties
      *
      * @param properties 属性名的可变参数
-     * @return
+     * @return Condition
      */
     public Condition excludeProperties(String... properties) {
         if (properties != null && properties.length > 0) {
             if (this.excludeColumns == null) {
-                this.excludeColumns = new LinkedHashSet<String>();
+                this.excludeColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
                 if (propertyMap.containsKey(property)) {
@@ -159,13 +158,13 @@ public class Condition implements EntityTableName {
     /**
      * 指定要查询的属性列 - 这里会自动映射到表字段
      *
-     * @param properties
-     * @return
+     * @param properties 属性名的可变参数
+     * @return Condition
      */
     public Condition selectProperties(String... properties) {
         if (properties != null && properties.length > 0) {
             if (this.selectColumns == null) {
-                this.selectColumns = new LinkedHashSet<String>();
+                this.selectColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
                 if (propertyMap.containsKey(property)) {
@@ -252,7 +251,7 @@ public class Condition implements EntityTableName {
             //不需要处理
         } else if (excludeColumns != null && excludeColumns.size() > 0) {
             Collection<EntityColumn> entityColumns = propertyMap.values();
-            selectColumns = new LinkedHashSet<String>(entityColumns.size() - excludeColumns.size());
+            selectColumns = new LinkedHashSet<>(entityColumns.size() - excludeColumns.size());
             for (EntityColumn column : entityColumns) {
                 if (!excludeColumns.contains(column.getColumn())) {
                     selectColumns.add(column.getColumn());
@@ -281,7 +280,7 @@ public class Condition implements EntityTableName {
     /**
      * 指定 count(property) 查询属性
      *
-     * @param property
+     * @param property 属性
      */
     public void setCountProperty(String property) {
         if (propertyMap.containsKey(property)) {
@@ -292,7 +291,7 @@ public class Condition implements EntityTableName {
     /**
      * 设置表名
      *
-     * @param tableName
+     * @param tableName 表名
      */
     public void setTableName(String tableName) {
         this.tableName = tableName;

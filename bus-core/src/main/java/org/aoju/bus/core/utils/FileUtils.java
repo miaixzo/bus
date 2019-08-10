@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.FileType;
@@ -55,9 +55,8 @@ import java.util.zip.Checksum;
 /**
  * 文件工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class FileUtils {
@@ -80,8 +79,8 @@ public class FileUtils {
     /**
      * 读取文件
      *
-     * @param file
-     * @return
+     * @param file 文件
+     * @return 内容
      */
     public static String readFile(File file) {
         BufferedReader reader = null;
@@ -259,7 +258,7 @@ public class FileUtils {
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
      * @return 文件路径列表（如果是jar中的文件，则给定类似.jar!/xxx/xxx的路径）
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static List<String> listFileNames(String path) throws CommonException {
         if (path == null) {
@@ -386,6 +385,7 @@ public class FileUtils {
      * <p>
      * 元素名（多层目录名）
      *
+     * @param names 文件名
      * @return the file 文件
      * @since 4.0.6
      */
@@ -602,7 +602,7 @@ public class FileUtils {
      *
      * @param fullFilePath 文件的全路径，使用POSIX风格
      * @return 文件，若路径为null，返回null
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File touch(String fullFilePath) throws CommonException {
         if (fullFilePath == null) {
@@ -617,7 +617,7 @@ public class FileUtils {
      *
      * @param file 文件对象
      * @return 文件，若路径为null，返回null
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File touch(File file) throws CommonException {
         if (null == file) {
@@ -641,7 +641,7 @@ public class FileUtils {
      * @param parent 父文件对象
      * @param path   文件路径
      * @return File
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File touch(File parent, String path) throws CommonException {
         return touch(file(parent, path));
@@ -654,7 +654,7 @@ public class FileUtils {
      * @param parent 父文件对象
      * @param path   文件路径
      * @return File
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File touch(String parent, String path) throws CommonException {
         return touch(file(parent, path));
@@ -694,7 +694,7 @@ public class FileUtils {
      *
      * @param fullFileOrDirPath 文件或者目录的路径
      * @return 成功与否
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static boolean del(String fullFileOrDirPath) throws CommonException {
         return del(file(fullFileOrDirPath));
@@ -707,7 +707,7 @@ public class FileUtils {
      *
      * @param file 文件对象
      * @return 成功与否
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static boolean del(File file) throws CommonException {
         if (file == null || false == file.exists()) {
@@ -732,7 +732,7 @@ public class FileUtils {
      *
      * @param dirPath 文件夹路径
      * @return 成功与否
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.0.8
      */
     public static boolean clean(String dirPath) throws CommonException {
@@ -746,7 +746,7 @@ public class FileUtils {
      *
      * @param directory 文件夹
      * @return 成功与否
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.0.6
      */
     public static boolean clean(File directory) throws CommonException {
@@ -803,7 +803,7 @@ public class FileUtils {
      *
      * @param dir 临时文件创建的所在目录
      * @return 临时文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File createTempFile(File dir) throws CommonException {
         return createTempFile("create", null, dir, true);
@@ -816,7 +816,7 @@ public class FileUtils {
      * @param dir       临时文件创建的所在目录
      * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
      * @return 临时文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File createTempFile(File dir, boolean isReCreat) throws CommonException {
         return createTempFile("create", null, dir, isReCreat);
@@ -831,7 +831,7 @@ public class FileUtils {
      * @param dir       临时文件创建的所在目录
      * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
      * @return 临时文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File createTempFile(String prefix, String suffix, File dir, boolean isReCreat) throws CommonException {
         int exceptionsCount = 0;
@@ -858,7 +858,7 @@ public class FileUtils {
      * @param dest    目标文件或目录路径，如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return File
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File copyFile(String src, String dest, StandardCopyOption... options) throws CommonException {
         Assert.notBlank(src, "Source File path is blank !");
@@ -873,7 +873,7 @@ public class FileUtils {
      * @param dest    目标文件或目录，如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File copyFile(File src, File dest, StandardCopyOption... options) throws CommonException {
         // check
@@ -895,7 +895,7 @@ public class FileUtils {
      * @param dest    目标文件或目录，如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return Path
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static Path copyFile(Path src, Path dest, StandardCopyOption... options) throws CommonException {
         Assert.notNull(src, "Source File is null !");
@@ -917,7 +917,7 @@ public class FileUtils {
      * @param destPath   目标文件或目录，目标不存在会自动创建（目录、文件都创建）
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File copy(String srcPath, String destPath, boolean isOverride) throws CommonException {
         return copy(file(srcPath), file(destPath), isOverride);
@@ -937,7 +937,7 @@ public class FileUtils {
      * @param dest       目标文件或目录，目标不存在会自动创建（目录、文件都创建）
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File copy(File src, File dest, boolean isOverride) throws CommonException {
         return FileCopier.create(src, dest).setOverride(isOverride).copy();
@@ -957,7 +957,7 @@ public class FileUtils {
      * @param dest       目标文件或目录，目标不存在会自动创建（目录、文件都创建）
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File copyContent(File src, File dest, boolean isOverride) throws CommonException {
         return FileCopier.create(src, dest).setCopyContentIfDir(true).setOverride(isOverride).copy();
@@ -977,7 +977,7 @@ public class FileUtils {
      * @param dest       目标文件或目录，目标不存在会自动创建（目录、文件都创建）
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.1.5
      */
     public static File copyFilesFromDir(File src, File dest, boolean isOverride) throws CommonException {
@@ -990,7 +990,7 @@ public class FileUtils {
      * @param src        源文件或者目录
      * @param dest       目标文件或者目录
      * @param isOverride 是否覆盖目标，只有目标为文件才覆盖
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static void move(File src, File dest, boolean isOverride) throws CommonException {
         // check
@@ -1238,7 +1238,7 @@ public class FileUtils {
      * @param file1 文件1
      * @param file2 文件2
      * @return 是否相同
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @see Files#isSameFile(Path, Path)
      */
     public static boolean equals(File file1, File file2) throws CommonException {
@@ -1264,7 +1264,7 @@ public class FileUtils {
      * @param file1 文件1
      * @param file2 文件2
      * @return 两个文件内容一致返回true，否则false
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.0.6
      */
     public static boolean contentEquals(File file1, File file2) throws CommonException {
@@ -1314,7 +1314,8 @@ public class FileUtils {
      * @param file1   文件1
      * @param file2   文件2
      * @param charset 编码，null表示使用平台默认编码 两个文件内容一致返回true，否则false
-     * @throws CommonException IO异常
+     * @return the boolean
+     * @throws CommonException 异常
      * @since 4.0.6
      */
     public static boolean contentEqualsIgnoreEOL(File file1, File file2, Charset charset) throws CommonException {
@@ -1779,7 +1780,7 @@ public class FileUtils {
      *
      * @param file 文件 {@link File}
      * @return 类型，文件的扩展名，未找到为<code>null</code>
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @see FileType#getType(File)
      */
     public static String getType(File file) throws CommonException {
@@ -1792,7 +1793,7 @@ public class FileUtils {
      * @param path          文件路径{@link Path}
      * @param isFollowLinks 是否跟踪到软链对应的真实路径
      * @return {@link BasicFileAttributes}
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.0
      */
     public static BasicFileAttributes getAttributes(Path path, boolean isFollowLinks) throws CommonException {
@@ -1866,7 +1867,7 @@ public class FileUtils {
      *
      * @param path 文件Path
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.0.0
      */
     public static BufferedReader getUtf8Reader(Path path) throws CommonException {
@@ -1878,7 +1879,7 @@ public class FileUtils {
      *
      * @param file 文件
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedReader getUtf8Reader(File file) throws CommonException {
         return getReader(file, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -1889,7 +1890,7 @@ public class FileUtils {
      *
      * @param path 文件路径
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedReader getUtf8Reader(String path) throws CommonException {
         return getReader(path, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -1901,7 +1902,7 @@ public class FileUtils {
      * @param path    文件Path
      * @param charset 字符集
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.0.0
      */
     public static BufferedReader getReader(Path path, Charset charset) throws CommonException {
@@ -1914,7 +1915,7 @@ public class FileUtils {
      * @param file        文件
      * @param charsetName 字符集
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedReader getReader(File file, String charsetName) throws CommonException {
         return IoUtils.getReader(getInputStream(file), charsetName);
@@ -1926,7 +1927,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedReader getReader(File file, Charset charset) throws CommonException {
         return IoUtils.getReader(getInputStream(file), charset);
@@ -1938,7 +1939,7 @@ public class FileUtils {
      * @param path        绝对路径
      * @param charsetName 字符集
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedReader getReader(String path, String charsetName) throws CommonException {
         return getReader(file(path), charsetName);
@@ -1950,7 +1951,7 @@ public class FileUtils {
      * @param path    绝对路径
      * @param charset 字符集
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedReader getReader(String path, Charset charset) throws CommonException {
         return getReader(file(path), charset);
@@ -1962,7 +1963,7 @@ public class FileUtils {
      *
      * @param file 文件
      * @return 字节码
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static byte[] readBytes(File file) throws CommonException {
         return FileReader.create(file).readBytes();
@@ -1974,7 +1975,7 @@ public class FileUtils {
      *
      * @param filePath 文件路径
      * @return 字节码
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.2.0
      */
     public static byte[] readBytes(String filePath) throws CommonException {
@@ -1986,7 +1987,7 @@ public class FileUtils {
      *
      * @param file 文件
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static String readUtf8String(File file) throws CommonException {
         return readString(file, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -1997,7 +1998,7 @@ public class FileUtils {
      *
      * @param path 文件路径
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static String readUtf8String(String path) throws CommonException {
         return readString(path, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2009,7 +2010,7 @@ public class FileUtils {
      * @param file        文件
      * @param charsetName 字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static String readString(File file, String charsetName) throws CommonException {
         return readString(file, CharsetUtils.charset(charsetName));
@@ -2021,7 +2022,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static String readString(File file, Charset charset) throws CommonException {
         return FileReader.create(file, charset).readString();
@@ -2033,7 +2034,7 @@ public class FileUtils {
      * @param path        文件路径
      * @param charsetName 字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static String readString(String path, String charsetName) throws CommonException {
         return readString(file(path), charsetName);
@@ -2045,7 +2046,7 @@ public class FileUtils {
      * @param path    文件路径
      * @param charset 字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static String readString(String path, Charset charset) throws CommonException {
         return readString(file(path), charset);
@@ -2057,7 +2058,7 @@ public class FileUtils {
      * @param url     文件URL
      * @param charset 字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static String readString(URL url, String charset) throws CommonException {
         if (url == null) {
@@ -2082,7 +2083,7 @@ public class FileUtils {
      * @param path       文件路径
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static <T extends Collection<String>> T readUtf8Lines(String path, T collection) throws CommonException {
@@ -2097,7 +2098,7 @@ public class FileUtils {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T extends Collection<String>> T readLines(String path, String charset, T collection) throws CommonException {
         return readLines(file(path), charset, collection);
@@ -2111,7 +2112,7 @@ public class FileUtils {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T extends Collection<String>> T readLines(String path, Charset charset, T collection) throws CommonException {
         return readLines(file(path), charset, collection);
@@ -2124,7 +2125,7 @@ public class FileUtils {
      * @param file       文件路径
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static <T extends Collection<String>> T readUtf8Lines(File file, T collection) throws CommonException {
@@ -2139,7 +2140,7 @@ public class FileUtils {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T extends Collection<String>> T readLines(File file, String charset, T collection) throws CommonException {
         return FileReader.create(file, CharsetUtils.charset(charset)).readLines(collection);
@@ -2153,7 +2154,7 @@ public class FileUtils {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T extends Collection<String>> T readLines(File file, Charset charset, T collection) throws CommonException {
         return FileReader.create(file, charset).readLines(collection);
@@ -2166,7 +2167,7 @@ public class FileUtils {
      * @param url        文件的URL
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T extends Collection<String>> T readUtf8Lines(URL url, T collection) throws CommonException {
         return readLines(url, org.aoju.bus.core.consts.Charset.UTF_8, collection);
@@ -2180,7 +2181,7 @@ public class FileUtils {
      * @param charsetName 字符集
      * @param collection  集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T extends Collection<String>> T readLines(URL url, String charsetName, T collection) throws CommonException {
         return readLines(url, CharsetUtils.charset(charsetName), collection);
@@ -2194,7 +2195,7 @@ public class FileUtils {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static <T extends Collection<String>> T readLines(URL url, Charset charset, T collection) throws CommonException {
@@ -2214,7 +2215,7 @@ public class FileUtils {
      *
      * @param url 文件的URL
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static List<String> readUtf8Lines(URL url) throws CommonException {
         return readLines(url, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2226,7 +2227,7 @@ public class FileUtils {
      * @param url     文件的URL
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static List<String> readLines(URL url, String charset) throws CommonException {
         return readLines(url, charset, new ArrayList<String>());
@@ -2238,7 +2239,7 @@ public class FileUtils {
      * @param url     文件的URL
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static List<String> readLines(URL url, Charset charset) throws CommonException {
         return readLines(url, charset, new ArrayList<String>());
@@ -2249,7 +2250,7 @@ public class FileUtils {
      *
      * @param path 文件路径
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static List<String> readUtf8Lines(String path) throws CommonException {
@@ -2262,7 +2263,7 @@ public class FileUtils {
      * @param path    文件路径
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static List<String> readLines(String path, String charset) throws CommonException {
         return readLines(path, charset, new ArrayList<String>());
@@ -2274,7 +2275,7 @@ public class FileUtils {
      * @param path    文件路径
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static List<String> readLines(String path, Charset charset) throws CommonException {
@@ -2286,7 +2287,7 @@ public class FileUtils {
      *
      * @param file 文件
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static List<String> readUtf8Lines(File file) throws CommonException {
@@ -2299,7 +2300,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static List<String> readLines(File file, String charset) throws CommonException {
         return readLines(file, charset, new ArrayList<String>());
@@ -2311,7 +2312,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static List<String> readLines(File file, Charset charset) throws CommonException {
         return readLines(file, charset, new ArrayList<String>());
@@ -2322,7 +2323,7 @@ public class FileUtils {
      *
      * @param file        文件
      * @param lineHandler {@link LineHandler}行处理器
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static void readUtf8Lines(File file, LineHandler lineHandler) throws CommonException {
         readLines(file, org.aoju.bus.core.consts.Charset.UTF_8, lineHandler);
@@ -2334,10 +2335,66 @@ public class FileUtils {
      * @param file        文件
      * @param charset     编码
      * @param lineHandler {@link LineHandler}行处理器
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static void readLines(File file, Charset charset, LineHandler lineHandler) throws CommonException {
         FileReader.create(file, charset).readLines(lineHandler);
+    }
+
+    /**
+     * 按行处理文件内容
+     *
+     * @param file        {@link RandomAccessFile}文件
+     * @param charset     编码
+     * @param lineHandler {@link LineHandler}行处理器
+     * @throws InstrumentException 异常
+     * @since 4.5.2
+     */
+    public static void readLines(RandomAccessFile file, Charset charset, LineHandler lineHandler) {
+        String line = null;
+        try {
+            while ((line = file.readLine()) != null) {
+                lineHandler.handle(CharsetUtils.convert(line, org.aoju.bus.core.consts.Charset.ISO_8859_1, charset));
+            }
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 单行处理文件内容
+     *
+     * @param file        {@link RandomAccessFile}文件
+     * @param charset     编码
+     * @param lineHandler {@link LineHandler}行处理器
+     */
+    public static void readLine(RandomAccessFile file, Charset charset, LineHandler lineHandler) {
+        final String line = readLine(file, charset);
+        if (null != line) {
+            lineHandler.handle(line);
+        }
+    }
+
+    /**
+     * 单行处理文件内容
+     *
+     * @param file    {@link RandomAccessFile}文件
+     * @param charset 编码
+     * @return 行内容
+     * @since 4.5.18
+     */
+    public static String readLine(RandomAccessFile file, Charset charset) {
+        String line = null;
+        try {
+            line = file.readLine();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        if (null != line) {
+            return CharsetUtils.convert(line, org.aoju.bus.core.consts.Charset.ISO_8859_1, charset);
+        }
+
+        return null;
     }
 
     /**
@@ -2347,7 +2404,7 @@ public class FileUtils {
      * @param readerHandler Reader处理类
      * @param path          文件的绝对路径
      * @return 从文件中load出的数据
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static <T> T loadUtf8(String path, FileReader.ReaderHandler<T> readerHandler) throws CommonException {
@@ -2362,7 +2419,7 @@ public class FileUtils {
      * @param path          文件的绝对路径
      * @param charset       字符集
      * @return 从文件中load出的数据
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static <T> T load(String path, String charset, FileReader.ReaderHandler<T> readerHandler) throws CommonException {
@@ -2377,7 +2434,7 @@ public class FileUtils {
      * @param path          文件的绝对路径
      * @param charset       字符集
      * @return 从文件中load出的数据
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static <T> T load(String path, Charset charset, FileReader.ReaderHandler<T> readerHandler) throws CommonException {
@@ -2391,7 +2448,7 @@ public class FileUtils {
      * @param readerHandler Reader处理类
      * @param file          文件
      * @return 从文件中load出的数据
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static <T> T loadUtf8(File file, FileReader.ReaderHandler<T> readerHandler) throws CommonException {
@@ -2406,7 +2463,7 @@ public class FileUtils {
      * @param file          文件
      * @param charset       字符集
      * @return 从文件中load出的数据
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.1
      */
     public static <T> T load(File file, Charset charset, FileReader.ReaderHandler<T> readerHandler) throws CommonException {
@@ -2418,7 +2475,7 @@ public class FileUtils {
      *
      * @param file 文件
      * @return 输出流对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedOutputStream getOutputStream(File file) throws CommonException {
         try {
@@ -2433,7 +2490,7 @@ public class FileUtils {
      *
      * @param path 输出到的文件路径，绝对路径
      * @return 输出流对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedOutputStream getOutputStream(String path) throws CommonException {
         return getOutputStream(touch(path));
@@ -2446,7 +2503,7 @@ public class FileUtils {
      * @param charsetName 字符集
      * @param isAppend    是否追加
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedWriter getWriter(String path, String charsetName, boolean isAppend) throws CommonException {
         return getWriter(touch(path), Charset.forName(charsetName), isAppend);
@@ -2459,7 +2516,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedWriter getWriter(String path, Charset charset, boolean isAppend) throws CommonException {
         return getWriter(touch(path), charset, isAppend);
@@ -2472,7 +2529,7 @@ public class FileUtils {
      * @param charsetName 字符集
      * @param isAppend    是否追加
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedWriter getWriter(File file, String charsetName, boolean isAppend) throws CommonException {
         return getWriter(file, Charset.forName(charsetName), isAppend);
@@ -2485,7 +2542,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static BufferedWriter getWriter(File file, Charset charset, boolean isAppend) throws CommonException {
         return FileWriter.create(file, charset).getWriter(isAppend);
@@ -2498,7 +2555,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static PrintWriter getPrintWriter(String path, String charset, boolean isAppend) throws CommonException {
         return new PrintWriter(getWriter(path, charset, isAppend));
@@ -2511,7 +2568,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.1.1
      */
     public static PrintWriter getPrintWriter(String path, Charset charset, boolean isAppend) throws CommonException {
@@ -2525,7 +2582,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static PrintWriter getPrintWriter(File file, String charset, boolean isAppend) throws CommonException {
         return new PrintWriter(getWriter(file, charset, isAppend));
@@ -2553,7 +2610,7 @@ public class FileUtils {
      * @param content 写入的内容
      * @param path    文件路径
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeUtf8String(String content, String path) throws CommonException {
         return writeString(content, path, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2565,7 +2622,7 @@ public class FileUtils {
      * @param content 写入的内容
      * @param file    文件
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeUtf8String(String content, File file) throws CommonException {
         return writeString(content, file, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2578,7 +2635,7 @@ public class FileUtils {
      * @param path    文件路径
      * @param charset 字符集
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeString(String content, String path, String charset) throws CommonException {
         return writeString(content, touch(path), charset);
@@ -2591,7 +2648,7 @@ public class FileUtils {
      * @param path    文件路径
      * @param charset 字符集
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeString(String content, String path, Charset charset) throws CommonException {
         return writeString(content, touch(path), charset);
@@ -2604,7 +2661,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 被写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeString(String content, File file, String charset) throws CommonException {
         return FileWriter.create(file, CharsetUtils.charset(charset)).write(content);
@@ -2617,7 +2674,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 被写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeString(String content, File file, Charset charset) throws CommonException {
         return FileWriter.create(file, charset).write(content);
@@ -2629,7 +2686,7 @@ public class FileUtils {
      * @param content 写入的内容
      * @param path    文件路径
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.2
      */
     public static File appendUtf8String(String content, String path) throws CommonException {
@@ -2643,7 +2700,7 @@ public class FileUtils {
      * @param path    文件路径
      * @param charset 字符集
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File appendString(String content, String path, String charset) throws CommonException {
         return appendString(content, touch(path), charset);
@@ -2656,7 +2713,7 @@ public class FileUtils {
      * @param path    文件路径
      * @param charset 字符集
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File appendString(String content, String path, Charset charset) throws CommonException {
         return appendString(content, touch(path), charset);
@@ -2668,7 +2725,7 @@ public class FileUtils {
      * @param content 写入的内容
      * @param file    文件
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.2
      */
     public static File appendUtf8String(String content, File file) throws CommonException {
@@ -2682,7 +2739,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File appendString(String content, File file, String charset) throws CommonException {
         return FileWriter.create(file, CharsetUtils.charset(charset)).append(content);
@@ -2695,7 +2752,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 写入的文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File appendString(String content, File file, Charset charset) throws CommonException {
         return FileWriter.create(file, charset).append(content);
@@ -2708,7 +2765,7 @@ public class FileUtils {
      * @param list 列表
      * @param path 绝对路径
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.2.0
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws CommonException {
@@ -2722,7 +2779,7 @@ public class FileUtils {
      * @param list 列表
      * @param file 绝对路径
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.2.0
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws CommonException {
@@ -2737,7 +2794,7 @@ public class FileUtils {
      * @param path    绝对路径
      * @param charset 字符集
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T> File writeLines(Collection<T> list, String path, String charset) throws CommonException {
         return writeLines(list, path, charset, false);
@@ -2751,7 +2808,7 @@ public class FileUtils {
      * @param path    绝对路径
      * @param charset 字符集
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T> File writeLines(Collection<T> list, String path, Charset charset) throws CommonException {
         return writeLines(list, path, charset, false);
@@ -2765,7 +2822,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.2.0
      */
     public static <T> File writeLines(Collection<T> list, File file, String charset) throws CommonException {
@@ -2780,7 +2837,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.2.0
      */
     public static <T> File writeLines(Collection<T> list, File file, Charset charset) throws CommonException {
@@ -2794,7 +2851,7 @@ public class FileUtils {
      * @param list 列表
      * @param file 文件
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.2
      */
     public static <T> File appendUtf8Lines(Collection<T> list, File file) throws CommonException {
@@ -2808,7 +2865,7 @@ public class FileUtils {
      * @param list 列表
      * @param path 文件路径
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.2
      */
     public static <T> File appendUtf8Lines(Collection<T> list, String path) throws CommonException {
@@ -2823,7 +2880,7 @@ public class FileUtils {
      * @param path    绝对路径
      * @param charset 字符集
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T> File appendLines(Collection<T> list, String path, String charset) throws CommonException {
         return writeLines(list, path, charset, true);
@@ -2837,7 +2894,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.2
      */
     public static <T> File appendLines(Collection<T> list, File file, String charset) throws CommonException {
@@ -2852,7 +2909,7 @@ public class FileUtils {
      * @param path    绝对路径
      * @param charset 字符集
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T> File appendLines(Collection<T> list, String path, Charset charset) throws CommonException {
         return writeLines(list, path, charset, true);
@@ -2866,7 +2923,7 @@ public class FileUtils {
      * @param file    文件
      * @param charset 字符集
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 3.1.2
      */
     public static <T> File appendLines(Collection<T> list, File file, Charset charset) throws CommonException {
@@ -2882,7 +2939,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T> File writeLines(Collection<T> list, String path, String charset, boolean isAppend) throws CommonException {
         return writeLines(list, file(path), charset, isAppend);
@@ -2897,7 +2954,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T> File writeLines(Collection<T> list, String path, Charset charset, boolean isAppend) throws CommonException {
         return writeLines(list, file(path), charset, isAppend);
@@ -2912,7 +2969,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T> File writeLines(Collection<T> list, File file, String charset, boolean isAppend) throws CommonException {
         return FileWriter.create(file, CharsetUtils.charset(charset)).writeLines(list, isAppend);
@@ -2927,7 +2984,7 @@ public class FileUtils {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static <T> File writeLines(Collection<T> list, File file, Charset charset, boolean isAppend) throws CommonException {
         return FileWriter.create(file, charset).writeLines(list, isAppend);
@@ -2941,7 +2998,7 @@ public class FileUtils {
      * @param kvSeparator 键和值之间的分隔符，如果传入null使用默认分隔符" = "
      * @param isAppend    是否追加
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.0.5
      */
     public static File writeUtf8Map(Map<?, ?> map, File file, String kvSeparator, boolean isAppend) throws CommonException {
@@ -2957,7 +3014,7 @@ public class FileUtils {
      * @param kvSeparator 键和值之间的分隔符，如果传入null使用默认分隔符" = "
      * @param isAppend    是否追加
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.0.5
      */
     public static File writeMap(Map<?, ?> map, File file, Charset charset, String kvSeparator, boolean isAppend) throws CommonException {
@@ -2970,7 +3027,7 @@ public class FileUtils {
      * @param data 数据
      * @param path 目标文件
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeBytes(byte[] data, String path) throws CommonException {
         return writeBytes(data, touch(path));
@@ -2982,7 +3039,7 @@ public class FileUtils {
      * @param dest 目标文件
      * @param data 数据
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeBytes(byte[] data, File dest) throws CommonException {
         return writeBytes(data, dest, 0, data.length, false);
@@ -2997,7 +3054,7 @@ public class FileUtils {
      * @param len      数据长度
      * @param isAppend 是否追加模式
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeBytes(byte[] data, File dest, int off, int len, boolean isAppend) throws CommonException {
         return FileWriter.create(dest).write(data, off, len, isAppend);
@@ -3009,7 +3066,7 @@ public class FileUtils {
      * @param dest 目标文件
      * @param in   输入流
      * @return dest
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeFromStream(InputStream in, File dest) throws CommonException {
         return FileWriter.create(dest).writeFromStream(in);
@@ -3021,7 +3078,7 @@ public class FileUtils {
      * @param in           输入流
      * @param fullFilePath 文件绝对路径
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeFromStream(InputStream in, String fullFilePath) throws CommonException {
         return writeFromStream(in, touch(fullFilePath));
@@ -3033,7 +3090,7 @@ public class FileUtils {
      * @param file 文件
      * @param out  流
      * @return 目标文件
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static File writeToStream(File file, OutputStream out) throws CommonException {
         return FileReader.create(file).writeToStream(out);
@@ -3044,7 +3101,7 @@ public class FileUtils {
      *
      * @param fullFilePath 文件绝对路径
      * @param out          输出流
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      */
     public static void writeToStream(String fullFilePath, OutputStream out) throws CommonException {
         writeToStream(touch(fullFilePath), out);
@@ -3132,7 +3189,7 @@ public class FileUtils {
      *
      * @param file 文件，不能为目录
      * @return CRC32值
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.0.6
      */
     public static long checksumCRC32(File file) throws CommonException {
@@ -3145,7 +3202,7 @@ public class FileUtils {
      * @param file     文件，不能为目录
      * @param checksum {@link Checksum}
      * @return Checksum
-     * @throws CommonException IO异常
+     * @throws CommonException 异常
      * @since 4.0.6
      */
     public static Checksum checksum(File file, Checksum checksum) throws CommonException {
@@ -3179,10 +3236,10 @@ public class FileUtils {
      * 获取指定层级的父路径
      *
      * <pre>
-     * getParent("d:/aaa/bbb/cc/ddd", 0) -> "d:/aaa/bbb/cc/ddd"
-     * getParent("d:/aaa/bbb/cc/ddd", 2) -> "d:/aaa/bbb"
-     * getParent("d:/aaa/bbb/cc/ddd", 4) -> "d:/"
-     * getParent("d:/aaa/bbb/cc/ddd", 5) -> null
+     * getParent("d:/aaa/bbb/cc/ddd", 0) - "d:/aaa/bbb/cc/ddd"
+     * getParent("d:/aaa/bbb/cc/ddd", 2) - "d:/aaa/bbb"
+     * getParent("d:/aaa/bbb/cc/ddd", 4) - "d:/"
+     * getParent("d:/aaa/bbb/cc/ddd", 5) - null
      * </pre>
      *
      * @param filePath 目录或文件路径
@@ -3203,10 +3260,10 @@ public class FileUtils {
      * 获取指定层级的父路径
      *
      * <pre>
-     * getParent(file("d:/aaa/bbb/cc/ddd", 0)) -> "d:/aaa/bbb/cc/ddd"
-     * getParent(file("d:/aaa/bbb/cc/ddd", 2)) -> "d:/aaa/bbb"
-     * getParent(file("d:/aaa/bbb/cc/ddd", 4)) -> "d:/"
-     * getParent(file("d:/aaa/bbb/cc/ddd", 5)) -> null
+     * getParent(file("d:/aaa/bbb/cc/ddd", 0)) - "d:/aaa/bbb/cc/ddd"
+     * getParent(file("d:/aaa/bbb/cc/ddd", 2)) - "d:/aaa/bbb"
+     * getParent(file("d:/aaa/bbb/cc/ddd", 4)) - "d:/"
+     * getParent(file("d:/aaa/bbb/cc/ddd", 5)) - null
      * </pre>
      *
      * @param file  目录或文件

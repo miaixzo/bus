@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.nio.charset.Charset;
@@ -34,12 +34,12 @@ import static java.util.Locale.US;
 /**
  * An RFC 7235 challenge.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Challenge {
+
     private final String scheme;
     private final Map<String, String> authParams;
 
@@ -62,9 +62,6 @@ public final class Challenge {
         this.authParams = Collections.singletonMap("realm", realm);
     }
 
-    /**
-     * Returns a copy of this charset that expects a credential encoded with {@code charset}.
-     */
     public Challenge withCharset(Charset charset) {
         if (charset == null) throw new NullPointerException("charset == null");
         Map<String, String> authParams = new LinkedHashMap<>(this.authParams);
@@ -72,31 +69,18 @@ public final class Challenge {
         return new Challenge(scheme, authParams);
     }
 
-    /**
-     * Returns the authentication scheme, like {@code Basic}.
-     */
     public String scheme() {
         return scheme;
     }
 
-    /**
-     * Returns the auth params, including {@code realm} and {@code charset} if present, but as
-     * strings. The map's keys are lowercase and should be treated case-insensitively.
-     */
     public Map<String, String> authParams() {
         return authParams;
     }
 
-    /**
-     * Returns the protection space.
-     */
     public String realm() {
         return authParams.get("realm");
     }
 
-    /**
-     * Returns the charset that should be used to encode the credentials.
-     */
     public Charset charset() {
         String charset = authParams.get("charset");
         if (charset != null) {

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Symbol;
@@ -29,9 +29,8 @@ import org.aoju.bus.core.consts.Symbol;
  * 字符工具类<br>
  * 部分工具来自于Apache
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class CharUtils {
@@ -335,7 +334,7 @@ public class CharUtils {
      *          如果{@code x == y}返回值{@code 0};
      *          如果{@code x < y}值小于{@code 0};和
      *          如果{@code x > y}
-     * @since 3.4
+     * @return the int
      */
     public static int compare(final char x, final char y) {
         return x - y;

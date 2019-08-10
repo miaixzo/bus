@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.sensitive.annotation;
 
 import java.lang.annotation.*;
@@ -31,9 +31,8 @@ import java.lang.annotation.*;
  * 2. 如果是普通对象，则处理对象中的脱敏信息
  * 3. 如果是普通字段/MAP，则不做处理
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented

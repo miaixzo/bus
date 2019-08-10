@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.Internal;
@@ -41,12 +41,12 @@ import java.util.List;
  *
  * <p>HTTP requests that share the same {@code Address} may also share the same {@link Connection}.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Address {
+
     final HttpUrl url;
     final Dns dns;
     final SocketFactory socketFactory;
@@ -97,7 +97,7 @@ public final class Address {
     }
 
     /**
-     * Returns a URL with the hostname and port of the origin server. The path, query, and fragment of
+     * @return a URL with the hostname and port of the origin server. The path, query, and fragment of
      * this URL are always empty, since they are not significant for planning a route.
      */
     public HttpUrl url() {
@@ -105,28 +105,28 @@ public final class Address {
     }
 
     /**
-     * Returns the service that will be used to resolve IP addresses for hostnames.
+     * @return the service that will be used to resolve IP addresses for hostnames.
      */
     public Dns dns() {
         return dns;
     }
 
     /**
-     * Returns the socket factory for new connections.
+     * @return the socket factory for new connections.
      */
     public SocketFactory socketFactory() {
         return socketFactory;
     }
 
     /**
-     * Returns the client's proxy authenticator.
+     * @return the client's proxy authenticator.
      */
     public Authenticator proxyAuthenticator() {
         return proxyAuthenticator;
     }
 
     /**
-     * Returns the protocols the client supports. This method always returns a non-null list that
+     * @return the protocols the client supports. This method always returns a non-null list that
      * contains minimally {@link Protocol#HTTP_1_1}.
      */
     public List<Protocol> protocols() {
@@ -138,7 +138,7 @@ public final class Address {
     }
 
     /**
-     * Returns this address's proxy selector. Only used if the proxy is null. If none of this
+     * @return this address's proxy selector. Only used if the proxy is null. If none of this
      * selector's proxies are reachable, a direct connection will be attempted.
      */
     public ProxySelector proxySelector() {
@@ -146,7 +146,7 @@ public final class Address {
     }
 
     /**
-     * Returns this address's explicitly-specified HTTP proxy, or null to delegate to the {@linkplain
+     * @return this address's explicitly-specified HTTP proxy, or null to delegate to the {@linkplain
      * #proxySelector proxy selector}.
      */
     public Proxy proxy() {
@@ -154,21 +154,21 @@ public final class Address {
     }
 
     /**
-     * Returns the SSL socket factory, or null if this is not an HTTPS address.
+     * @return the SSL socket factory, or null if this is not an HTTPS address.
      */
     public SSLSocketFactory sslSocketFactory() {
         return sslSocketFactory;
     }
 
     /**
-     * Returns the hostname verifier, or null if this is not an HTTPS address.
+     * @return the hostname verifier, or null if this is not an HTTPS address.
      */
     public HostnameVerifier hostnameVerifier() {
         return hostnameVerifier;
     }
 
     /**
-     * Returns this address's certificate pinner, or null if this is not an HTTPS address.
+     * @return this address's certificate pinner, or null if this is not an HTTPS address.
      */
     public CertificatePinner certificatePinner() {
         return certificatePinner;

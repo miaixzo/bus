@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.consts.Normal;
@@ -35,9 +35,8 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 脱敏规则：
  * 保留前三位，中间隐藏4位。其他正常显示
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EmailStrategy implements StrategyProvider {

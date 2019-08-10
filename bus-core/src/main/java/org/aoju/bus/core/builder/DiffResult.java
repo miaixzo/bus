@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Assert;
@@ -40,7 +40,9 @@ import java.util.List;
  * Use a {@link DiffBuilder} to build a {@code DiffResult} comparing two objects.
  * </p>
  *
- * @since 3.3
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
  */
 public class DiffResult implements Iterable<Diff<?>> {
 

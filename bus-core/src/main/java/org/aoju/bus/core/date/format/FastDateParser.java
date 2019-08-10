@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.date.format;
 
 import java.io.IOException;
@@ -37,9 +37,8 @@ import java.util.regex.Pattern;
 /**
  * {@link java.text.SimpleDateFormat} 的线程安全版本，用于解析日期字符串并转换为 {@link Date} 对象<br>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 class FastDateParser extends AbstractDateBasic implements DateParser {

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.proxy;
 
 import org.aoju.bus.pager.ISelect;
@@ -32,9 +32,8 @@ import java.util.Properties;
 /**
  * 基础分页方法
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class PageMethod {
@@ -45,7 +44,8 @@ public abstract class PageMethod {
     /**
      * 获取 Page 参数
      *
-     * @return
+     * @param <T> 对象
+     * @return 结果
      */
     public static <T> Page<T> getLocalPage() {
         return LOCAL_PAGE.get();
@@ -54,7 +54,7 @@ public abstract class PageMethod {
     /**
      * 设置 Page 参数
      *
-     * @param page
+     * @param page 分页对象
      */
     protected static void setLocalPage(Page page) {
         LOCAL_PAGE.set(page);
@@ -70,8 +70,8 @@ public abstract class PageMethod {
     /**
      * 获取任意查询方法的count总数
      *
-     * @param select
-     * @return
+     * @param select 查询对象
+     * @return the long
      */
     public static long count(ISelect select) {
         Page<?> page = startPage(1, -1, true);
@@ -82,7 +82,9 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
-     * @param params
+     * @param <E>    对象
+     * @param params 参数
+     * @return 结果
      */
     public static <E> Page<E> startPage(Object params) {
         Page<E> page = PageFromObject.getPageFromObject(params, true);
@@ -98,8 +100,10 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
+     * @param <E>      对象
      * @param pageNum  页码
      * @param pageSize 每页显示数量
+     * @return 结果
      */
     public static <E> Page<E> startPage(int pageNum, int pageSize) {
         return startPage(pageNum, pageSize, DEFAULT_COUNT);
@@ -108,9 +112,11 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
+     * @param <E>      对象
      * @param pageNum  页码
      * @param pageSize 每页显示数量
      * @param count    是否进行count查询
+     * @return 结果
      */
     public static <E> Page<E> startPage(int pageNum, int pageSize, boolean count) {
         return startPage(pageNum, pageSize, count, null, null);
@@ -119,9 +125,11 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
+     * @param <E>      对象
      * @param pageNum  页码
      * @param pageSize 每页显示数量
      * @param orderBy  排序
+     * @return 结果
      */
     public static <E> Page<E> startPage(int pageNum, int pageSize, String orderBy) {
         Page<E> page = startPage(pageNum, pageSize);
@@ -132,11 +140,13 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
+     * @param <E>          对象
      * @param pageNum      页码
      * @param pageSize     每页显示数量
      * @param count        是否进行count查询
      * @param reasonable   分页合理化,null时用默认配置
      * @param pageSizeZero true且pageSize=0时返回全部结果，false时分页,null时用默认配置
+     * @return 结果
      */
     public static <E> Page<E> startPage(int pageNum, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) {
         Page<E> page = new Page<E>(pageNum, pageSize, count);
@@ -154,8 +164,10 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
+     * @param <E>    对象
      * @param offset 起始位置，偏移位置
      * @param limit  每页显示数量
+     * @return 结果
      */
     public static <E> Page<E> offsetPage(int offset, int limit) {
         return offsetPage(offset, limit, DEFAULT_COUNT);
@@ -164,9 +176,11 @@ public abstract class PageMethod {
     /**
      * 开始分页
      *
+     * @param <E>    对象
      * @param offset 起始位置，偏移位置
      * @param limit  每页显示数量
      * @param count  是否进行count查询
+     * @return 结果
      */
     public static <E> Page<E> offsetPage(int offset, int limit, boolean count) {
         Page<E> page = new Page<E>(new int[]{offset, limit}, count);
@@ -182,7 +196,7 @@ public abstract class PageMethod {
     /**
      * 排序
      *
-     * @param orderBy
+     * @param orderBy 排序
      */
     public static void orderBy(String orderBy) {
         Page<?> page = getLocalPage();

@@ -20,14 +20,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
@@ -53,9 +52,8 @@ import java.util.zip.Checksum;
  * IO工具类<br>
  * IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class IoUtils {
@@ -115,9 +113,11 @@ public class IoUtils {
     }
 
     /**
-     * Throws {@code t}, even if the declared throws clause doesn't permit it.
-     * This is a terrible – but terribly convenient – hack that makes it easy to
-     * catch and rethrow exceptions after cleanup. See Java Puzzlers #43.
+     * 即使被声明也不允许直接抛出
+     * 这是一种很糟糕的做饭，很容易遭到攻击
+     * 清理后捕获并重新抛出异常。参见Java Puzzlers #43。
+     *
+     * @param t 异常
      */
     public static void sneakyRethrow(Throwable t) {
         IoUtils.<Error>sneakyThrow2(t);
@@ -141,9 +141,9 @@ public class IoUtils {
      * @param reader Reader
      * @param writer Writer
      * @return 拷贝的字节数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(Reader reader, Writer writer) throws CommonException {
+    public static long copy(Reader reader, Writer writer) throws InstrumentException {
         return copy(reader, writer, DEFAULT_BUFFER_SIZE);
     }
 
@@ -154,9 +154,9 @@ public class IoUtils {
      * @param writer     Writer
      * @param bufferSize 缓存大小
      * @return 传输的byte数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize) throws CommonException {
+    public static long copy(Reader reader, Writer writer, int bufferSize) throws InstrumentException {
         return copy(reader, writer, bufferSize, null);
     }
 
@@ -168,9 +168,9 @@ public class IoUtils {
      * @param bufferSize     缓存大小
      * @param streamProgress 进度处理器
      * @return 传输的byte数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, StreamProgress streamProgress) throws CommonException {
+    public static long copy(Reader reader, Writer writer, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
         char[] buffer = new char[bufferSize];
         long size = 0;
         int readSize;
@@ -187,7 +187,7 @@ public class IoUtils {
                 }
             }
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         if (null != streamProgress) {
             streamProgress.finish();
@@ -201,9 +201,9 @@ public class IoUtils {
      * @param in  输入流
      * @param out 输出流
      * @return 传输的byte数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(InputStream in, OutputStream out) throws CommonException {
+    public static long copy(InputStream in, OutputStream out) throws InstrumentException {
         return copy(in, out, DEFAULT_BUFFER_SIZE);
     }
 
@@ -214,9 +214,9 @@ public class IoUtils {
      * @param out        输出流
      * @param bufferSize 缓存大小
      * @return 传输的byte数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize) throws CommonException {
+    public static long copy(InputStream in, OutputStream out, int bufferSize) throws InstrumentException {
         return copy(in, out, bufferSize, null);
     }
 
@@ -228,9 +228,9 @@ public class IoUtils {
      * @param bufferSize     缓存大小
      * @param streamProgress 进度条
      * @return 传输的byte数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws CommonException {
+    public static long copy(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
         if (bufferSize <= 0) {
@@ -252,7 +252,7 @@ public class IoUtils {
                 }
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         if (null != streamProgress) {
             streamProgress.finish();
@@ -269,9 +269,9 @@ public class IoUtils {
      * @param bufferSize     缓存大小
      * @param streamProgress 进度条
      * @return 传输的byte数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copyByNIO(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws CommonException {
+    public static long copyByNIO(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
         return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, streamProgress);
     }
 
@@ -281,9 +281,9 @@ public class IoUtils {
      * @param in  输入
      * @param out 输出
      * @return 拷贝的字节数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(FileInputStream in, FileOutputStream out) throws CommonException {
+    public static long copy(FileInputStream in, FileOutputStream out) throws InstrumentException {
         Assert.notNull(in, "FileInputStream is null!");
         Assert.notNull(out, "FileOutputStream is null!");
 
@@ -293,7 +293,7 @@ public class IoUtils {
         try {
             return inChannel.transferTo(0, inChannel.size(), outChannel);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -305,9 +305,9 @@ public class IoUtils {
      * @param bufferSize     缓冲大小，如果小于等于0，使用默认
      * @param streamProgress {@link StreamProgress}进度处理器
      * @return 拷贝的字节数
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProgress streamProgress) throws CommonException {
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
 
@@ -326,7 +326,7 @@ public class IoUtils {
                 }
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         if (null != streamProgress) {
             streamProgress.finish();
@@ -433,9 +433,9 @@ public class IoUtils {
      * @param in          输入流
      * @param charsetName 字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String read(InputStream in, String charsetName) throws CommonException {
+    public static String read(InputStream in, String charsetName) throws InstrumentException {
         FastByteArrayOutputStream out = read(in);
         return StringUtils.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
     }
@@ -446,9 +446,9 @@ public class IoUtils {
      * @param in      输入流，读取完毕后并不关闭流
      * @param charset 字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String read(InputStream in, Charset charset) throws CommonException {
+    public static String read(InputStream in, Charset charset) throws InstrumentException {
         FastByteArrayOutputStream out = read(in);
         return null == charset ? out.toString() : out.toString(charset);
     }
@@ -458,9 +458,9 @@ public class IoUtils {
      *
      * @param in 输入流
      * @return 输出流
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static FastByteArrayOutputStream read(InputStream in) throws CommonException {
+    public static FastByteArrayOutputStream read(InputStream in) throws InstrumentException {
         final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
         copy(in, out);
         return out;
@@ -471,9 +471,9 @@ public class IoUtils {
      *
      * @param reader Reader
      * @return String
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String read(Reader reader) throws CommonException {
+    public static String read(Reader reader) throws InstrumentException {
         final StringBuilder builder = new StringBuilder();
         final CharBuffer buffer = CharBuffer.allocate(DEFAULT_BUFFER_SIZE);
         try {
@@ -481,7 +481,7 @@ public class IoUtils {
                 builder.append(buffer.flip().toString());
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return builder.toString();
     }
@@ -491,9 +491,9 @@ public class IoUtils {
      *
      * @param fileChannel 文件管道
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String readUtf8(FileChannel fileChannel) throws CommonException {
+    public static String readUtf8(FileChannel fileChannel) throws InstrumentException {
         return read(fileChannel, org.aoju.bus.core.consts.Charset.UTF_8);
     }
 
@@ -503,9 +503,9 @@ public class IoUtils {
      * @param fileChannel 文件管道
      * @param charsetName 字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String read(FileChannel fileChannel, String charsetName) throws CommonException {
+    public static String read(FileChannel fileChannel, String charsetName) throws InstrumentException {
         return read(fileChannel, CharsetUtils.charset(charsetName));
     }
 
@@ -515,14 +515,14 @@ public class IoUtils {
      * @param fileChannel 文件管道
      * @param charset     字符集
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String read(FileChannel fileChannel, Charset charset) throws CommonException {
+    public static String read(FileChannel fileChannel, Charset charset) throws InstrumentException {
         MappedByteBuffer buffer;
         try {
             buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size()).load();
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return StringUtils.str(buffer, charset);
     }
@@ -532,9 +532,9 @@ public class IoUtils {
      *
      * @param in {@link InputStream}
      * @return bytes
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static byte[] readBytes(InputStream in) throws CommonException {
+    public static byte[] readBytes(InputStream in) throws InstrumentException {
         final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
         copy(in, out);
         return out.toByteArray();
@@ -546,9 +546,9 @@ public class IoUtils {
      * @param in     {@link InputStream}，为null返回null
      * @param length 长度，小于等于0返回空byte数组
      * @return bytes
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static byte[] readBytes(InputStream in, int length) throws CommonException {
+    public static byte[] readBytes(InputStream in, int length) throws InstrumentException {
         if (null == in) {
             return null;
         }
@@ -561,7 +561,7 @@ public class IoUtils {
         try {
             readLength = in.read(b);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         if (readLength > 0 && readLength < length) {
             byte[] b2 = new byte[length];
@@ -579,9 +579,9 @@ public class IoUtils {
      * @param length      长度
      * @param toLowerCase true 传换成小写格式 ， false 传换成大写格式
      * @return 16进制字符串
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String readHex(InputStream in, int length, boolean toLowerCase) throws CommonException {
+    public static String readHex(InputStream in, int length, boolean toLowerCase) throws InstrumentException {
         return HexUtils.encodeHexStr(readBytes(in, length), toLowerCase);
     }
 
@@ -590,9 +590,9 @@ public class IoUtils {
      *
      * @param in {@link InputStream}
      * @return 16进制字符串
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String readHex28Upper(InputStream in) throws CommonException {
+    public static String readHex28Upper(InputStream in) throws InstrumentException {
         return readHex(in, 28, false);
     }
 
@@ -601,9 +601,9 @@ public class IoUtils {
      *
      * @param in {@link InputStream}
      * @return 16进制字符串
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static String readHex28Lower(InputStream in) throws CommonException {
+    public static String readHex28Lower(InputStream in) throws InstrumentException {
         return readHex(in, 28, true);
     }
 
@@ -613,9 +613,9 @@ public class IoUtils {
      * @param <T> 读取对象的类型
      * @param in  输入流
      * @return 输出流
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static <T> T readObj(InputStream in) throws CommonException {
+    public static <T> T readObj(InputStream in) throws InstrumentException {
         if (in == null) {
             throw new IllegalArgumentException("The InputStream must not be null");
         }
@@ -625,9 +625,9 @@ public class IoUtils {
             final T obj = (T) ois.readObject();
             return obj;
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } catch (ClassNotFoundException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -638,9 +638,9 @@ public class IoUtils {
      * @param in         输入流
      * @param collection 返回集合
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(InputStream in, T collection) throws CommonException {
+    public static <T extends Collection<String>> T readUtf8Lines(InputStream in, T collection) throws InstrumentException {
         return readLines(in, org.aoju.bus.core.consts.Charset.UTF_8, collection);
     }
 
@@ -652,9 +652,9 @@ public class IoUtils {
      * @param charsetName 字符集
      * @param collection  返回集合
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static <T extends Collection<String>> T readLines(InputStream in, String charsetName, T collection) throws CommonException {
+    public static <T extends Collection<String>> T readLines(InputStream in, String charsetName, T collection) throws InstrumentException {
         return readLines(in, CharsetUtils.charset(charsetName), collection);
     }
 
@@ -666,9 +666,9 @@ public class IoUtils {
      * @param charset    字符集
      * @param collection 返回集合
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static <T extends Collection<String>> T readLines(InputStream in, Charset charset, T collection) throws CommonException {
+    public static <T extends Collection<String>> T readLines(InputStream in, Charset charset, T collection) throws InstrumentException {
         return readLines(getReader(in, charset), collection);
     }
 
@@ -679,9 +679,9 @@ public class IoUtils {
      * @param reader     {@link Reader}
      * @param collection 返回集合
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static <T extends Collection<String>> T readLines(Reader reader, final T collection) throws CommonException {
+    public static <T extends Collection<String>> T readLines(Reader reader, final T collection) throws InstrumentException {
         readLines(reader, new LineHandler() {
             @Override
             public void handle(String line) {
@@ -696,10 +696,10 @@ public class IoUtils {
      *
      * @param in          {@link InputStream}
      * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 3.1.1
      */
-    public static void readUtf8Lines(InputStream in, LineHandler lineHandler) throws CommonException {
+    public static void readUtf8Lines(InputStream in, LineHandler lineHandler) throws InstrumentException {
         readLines(in, org.aoju.bus.core.consts.Charset.UTF_8, lineHandler);
     }
 
@@ -709,10 +709,10 @@ public class IoUtils {
      * @param in          {@link InputStream}
      * @param charset     {@link Charset}编码
      * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 3.0.9
      */
-    public static void readLines(InputStream in, Charset charset, LineHandler lineHandler) throws CommonException {
+    public static void readLines(InputStream in, Charset charset, LineHandler lineHandler) throws InstrumentException {
         readLines(getReader(in, charset), lineHandler);
     }
 
@@ -722,9 +722,9 @@ public class IoUtils {
      *
      * @param reader      {@link Reader}
      * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static void readLines(Reader reader, LineHandler lineHandler) throws CommonException {
+    public static void readLines(Reader reader, LineHandler lineHandler) throws InstrumentException {
         Assert.notNull(reader);
         Assert.notNull(lineHandler);
 
@@ -736,7 +736,7 @@ public class IoUtils {
                 lineHandler.handle(line);
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -789,7 +789,7 @@ public class IoUtils {
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -852,13 +852,13 @@ public class IoUtils {
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param content    写入的内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static void write(OutputStream out, boolean isCloseOut, byte[] content) throws CommonException {
+    public static void write(OutputStream out, boolean isCloseOut, byte[] content) throws InstrumentException {
         try {
             out.write(content);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             if (isCloseOut) {
                 close(out);
@@ -872,10 +872,10 @@ public class IoUtils {
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 3.1.1
      */
-    public static void writeUtf8(OutputStream out, boolean isCloseOut, Object... contents) throws CommonException {
+    public static void writeUtf8(OutputStream out, boolean isCloseOut, Object... contents) throws InstrumentException {
         write(out, org.aoju.bus.core.consts.Charset.UTF_8, isCloseOut, contents);
     }
 
@@ -886,9 +886,9 @@ public class IoUtils {
      * @param charsetName 写出的内容的字符集
      * @param isCloseOut  写入完毕是否关闭输出流
      * @param contents    写入的内容，调用toString()方法，不包括不会自动换行
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static void write(OutputStream out, String charsetName, boolean isCloseOut, Object... contents) throws CommonException {
+    public static void write(OutputStream out, String charsetName, boolean isCloseOut, Object... contents) throws InstrumentException {
         write(out, CharsetUtils.charset(charsetName), isCloseOut, contents);
     }
 
@@ -899,10 +899,10 @@ public class IoUtils {
      * @param charset    写出的内容的字符集
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 3.0.9
      */
-    public static void write(OutputStream out, Charset charset, boolean isCloseOut, Object... contents) throws CommonException {
+    public static void write(OutputStream out, Charset charset, boolean isCloseOut, Object... contents) throws InstrumentException {
         OutputStreamWriter osw = null;
         try {
             osw = getWriter(out, charset);
@@ -913,7 +913,7 @@ public class IoUtils {
                 }
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             if (isCloseOut) {
                 close(osw);
@@ -927,9 +927,9 @@ public class IoUtils {
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public static void writeObjects(OutputStream out, boolean isCloseOut, Serializable... contents) throws CommonException {
+    public static void writeObjects(OutputStream out, boolean isCloseOut, Serializable... contents) throws InstrumentException {
         ObjectOutputStream osw = null;
         try {
             osw = out instanceof ObjectOutputStream ? (ObjectOutputStream) out : new ObjectOutputStream(out);
@@ -940,7 +940,7 @@ public class IoUtils {
                 }
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             if (isCloseOut) {
                 close(osw);
@@ -1001,10 +1001,10 @@ public class IoUtils {
      * @param input1 第一个流
      * @param input2 第二个流
      * @return 两个流的内容一致返回true，否则false
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 4.0.6
      */
-    public static boolean contentEquals(InputStream input1, InputStream input2) throws CommonException {
+    public static boolean contentEquals(InputStream input1, InputStream input2) throws InstrumentException {
         if (false == (input1 instanceof BufferedInputStream)) {
             input1 = new BufferedInputStream(input1);
         }
@@ -1025,7 +1025,7 @@ public class IoUtils {
             int ch2 = input2.read();
             return ch2 == EOF;
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -1036,10 +1036,10 @@ public class IoUtils {
      * @param input1 第一个reader
      * @param input2 第二个reader
      * @return 两个流的内容一致返回true，否则false
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 4.0.6
      */
-    public static boolean contentEquals(Reader input1, Reader input2) throws CommonException {
+    public static boolean contentEquals(Reader input1, Reader input2) throws InstrumentException {
         input1 = getReader(input1);
         input2 = getReader(input2);
 
@@ -1056,7 +1056,7 @@ public class IoUtils {
             int ch2 = input2.read();
             return ch2 == EOF;
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -1067,10 +1067,10 @@ public class IoUtils {
      * @param input1 第一个流
      * @param input2 第二个流
      * @return 两个流的内容一致返回true，否则false
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 4.0.6
      */
-    public static boolean contentEqualsIgnoreEOL(Reader input1, Reader input2) throws CommonException {
+    public static boolean contentEqualsIgnoreEOL(Reader input1, Reader input2) throws InstrumentException {
         final BufferedReader br1 = getReader(input1);
         final BufferedReader br2 = getReader(input2);
 
@@ -1081,9 +1081,9 @@ public class IoUtils {
                 line1 = br1.readLine();
                 line2 = br2.readLine();
             }
-            return line1 == null ? line2 == null ? true : false : line1.equals(line2);
+            return line1 == null ? line2 == null : line1.equals(line2);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -1092,10 +1092,10 @@ public class IoUtils {
      *
      * @param in 文件，不能为目录
      * @return CRC32值
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 4.0.6
      */
-    public static long checksumCRC32(InputStream in) throws CommonException {
+    public static long checksumCRC32(InputStream in) throws InstrumentException {
         return checksum(in, new CRC32()).getValue();
     }
 
@@ -1105,10 +1105,10 @@ public class IoUtils {
      * @param in       流
      * @param checksum {@link Checksum}
      * @return Checksum
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 4.0.10
      */
-    public static Checksum checksum(InputStream in, Checksum checksum) throws CommonException {
+    public static Checksum checksum(InputStream in, Checksum checksum) throws InstrumentException {
         Assert.notNull(in, "InputStream is null !");
         if (null == checksum) {
             checksum = new CRC32();
@@ -1122,27 +1122,14 @@ public class IoUtils {
         return checksum;
     }
 
-    /**
-     * Returns a new source that buffers reads from {@code source}. The returned
-     * source will perform bulk reads into its in-memory buffer. Use this wherever
-     * you read a source to get an ergonomic and efficient access to data.
-     */
     public static BufferedSource buffer(Source source) {
         return new RealBufferedSource(source);
     }
 
-    /**
-     * Returns a new sink that buffers writes to {@code sink}. The returned sink
-     * will batch writes to {@code sink}. Use this wherever you write to a sink to
-     * get an ergonomic and efficient access to data.
-     */
     public static BufferedSink buffer(Sink sink) {
         return new RealBufferedSink(sink);
     }
 
-    /**
-     * Returns a sink that writes to {@code out}.
-     */
     public static Sink sink(OutputStream out) {
         return sink(out, new Timeout());
     }
@@ -1194,11 +1181,6 @@ public class IoUtils {
         };
     }
 
-    /**
-     * Returns a sink that writes to {@code socket}. Prefer this over {@link
-     * #sink(OutputStream)} because this method honors timeouts. When the socket
-     * write times out, the socket is asynchronously closed by a watchdog thread.
-     */
     public static Sink sink(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getOutputStream() == null) throw new IOException("socket's output stream == null");
@@ -1207,9 +1189,6 @@ public class IoUtils {
         return timeout.sink(sink);
     }
 
-    /**
-     * Returns a source that reads from {@code in}.
-     */
     public static Source source(InputStream in) {
         return source(in, new Timeout());
     }
@@ -1255,49 +1234,31 @@ public class IoUtils {
         };
     }
 
-    /**
-     * Returns a source that reads from {@code file}.
-     */
     public static Source source(File file) throws FileNotFoundException {
         if (file == null) throw new IllegalArgumentException("file == null");
         return source(new FileInputStream(file));
     }
 
-    /**
-     * Returns a source that reads from {@code path}.
-     */
     public static Source source(Path path, OpenOption... options) throws IOException {
         if (path == null) throw new IllegalArgumentException("path == null");
         return source(Files.newInputStream(path, options));
     }
 
-    /**
-     * Returns a sink that writes to {@code file}.
-     */
     public static Sink sink(File file) throws FileNotFoundException {
         if (file == null) throw new IllegalArgumentException("file == null");
         return sink(new FileOutputStream(file));
     }
 
-    /**
-     * Returns a sink that appends to {@code file}.
-     */
     public static Sink appendingSink(File file) throws FileNotFoundException {
         if (file == null) throw new IllegalArgumentException("file == null");
         return sink(new FileOutputStream(file, true));
     }
 
-    /**
-     * Returns a sink that writes to {@code path}.
-     */
     public static Sink sink(Path path, OpenOption... options) throws IOException {
         if (path == null) throw new IllegalArgumentException("path == null");
         return sink(Files.newOutputStream(path, options));
     }
 
-    /**
-     * Returns a sink that writes nowhere.
-     */
     public static Sink blackhole() {
         return new Sink() {
             @Override
@@ -1320,11 +1281,6 @@ public class IoUtils {
         };
     }
 
-    /**
-     * Returns a source that reads from {@code socket}. Prefer this over {@link
-     * #source(InputStream)} because this method honors timeouts. When the socket
-     * read times out, the socket is asynchronously closed by a watchdog thread.
-     */
     public static Source source(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getInputStream() == null) throw new IOException("socket's input stream == null");
@@ -1361,10 +1317,6 @@ public class IoUtils {
         };
     }
 
-    /**
-     * Returns true if {@code e} is due to a firmware bug fixed after Android 4.2.2.
-     * https://code.google.com/p/android/issues/detail?id=54072
-     */
     static boolean isAndroidGetsocknameError(AssertionError e) {
         return e.getCause() != null && e.getMessage() != null
                 && e.getMessage().contains("getsockname failed");
@@ -1400,16 +1352,16 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of an <internal>InputStream</internal> as a String
+     * Get the contents of an InputStream as a String
      * using the specified character encoding.
      * <p>
      * Character encoding names can be found at
      * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
      * <p>
      * This method buffers the input internally, so there is no need to use a
-     * <internal>BufferedInputStream</internal>.
+     * BufferedInputStream.
      *
-     * @param input    the <internal>InputStream</internal> to read from
+     * @param input    the InputStream to read from
      * @param encoding the encoding to use, null means platform default
      * @return the requested String
      * @throws NullPointerException if the input is null
@@ -1423,18 +1375,16 @@ public class IoUtils {
     }
 
     /**
-     * Copy bytes from an <internal>InputStream</internal> to chars on a
-     * <internal>Writer</internal> using the default character encoding of the platform.
+     * Copy bytes from an InputStream to chars on a
+     * Writer using the default character encoding of the platform.
      * <p>
      * This method buffers the input internally, so there is no need to use a
-     * <internal>BufferedInputStream</internal>.
+     * BufferedInputStream.
      * <p>
      * This method uses {@link InputStreamReader}.
      *
-     * @param input  the <internal>InputStream</internal> to read from
-     * @param output the <internal>Writer</internal> to write to
-     * @throws NullPointerException if the input or output is null
-     * @throws IOException          if an I/O error occurs
+     * @param input  the InputStream to read from
+     * @param output the Writer to write to
      * @since Commons IO 1.1
      */
     public static void copy(InputStream input, Writer output) {
@@ -1443,19 +1393,19 @@ public class IoUtils {
     }
 
     /**
-     * Copy bytes from an <internal>InputStream</internal> to chars on a
-     * <internal>Writer</internal> using the specified character encoding.
+     * Copy bytes from an InputStream to chars on a
+     * Writer using the specified character encoding.
      * <p>
      * This method buffers the input internally, so there is no need to use a
-     * <internal>BufferedInputStream</internal>.
+     * BufferedInputStream.
      * <p>
      * Character encoding names can be found at
      * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
      * <p>
      * This method uses {@link InputStreamReader}.
      *
-     * @param input    the <internal>InputStream</internal> to read from
-     * @param output   the <internal>Writer</internal> to write to
+     * @param input    the InputStream to read from
+     * @param output   the Writer to write to
      * @param encoding the encoding to use, null means platform default
      * @throws NullPointerException if the input or output is null
      * @throws IOException          if an I/O error occurs
@@ -1472,15 +1422,13 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of a <internal>Reader</internal> as a String.
+     * Get the contents of a Reader as a String.
      * <p>
      * This method buffers the input internally, so there is no need to use a
-     * <internal>BufferedReader</internal>.
+     * BufferedReader.
      *
-     * @param input the <internal>Reader</internal> to read from
+     * @param input the Reader to read from
      * @return the requested String
-     * @throws NullPointerException if the input is null
-     * @throws IOException          if an I/O error occurs
      */
     public static String toString(Reader input) {
         StringWriter sw = new StringWriter();
@@ -1489,20 +1437,18 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of a <internal>byte[]</internal> as a String
+     * Get the contents of a byte[] as a String
      * using the default character encoding of the platform.
      *
      * @param input the byte array to read from
      * @return the requested String
-     * @throws NullPointerException if the input is null
-     * @throws IOException          if an I/O error occurs (never occurs)
      */
     public static String toString(byte[] input) {
         return new String(input);
     }
 
     /**
-     * Get the contents of a <internal>byte[]</internal> as a String
+     * Get the contents of a byte[] as a String
      * using the specified character encoding.
      * <p>
      * Character encoding names can be found at

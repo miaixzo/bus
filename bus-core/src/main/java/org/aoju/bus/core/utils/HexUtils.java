@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import java.awt.*;
@@ -32,9 +32,8 @@ import java.nio.charset.Charset;
  * 像java,c这样的语言为了区分十六进制和十进制数值,会在十六进制数的前面加上 0x,比如0x20是十进制的32,而不是十进制的20<br>
  * <p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class HexUtils {
@@ -50,7 +49,7 @@ public class HexUtils {
 
     /**
      * 判断给定字符串是否为16进制数<br>
-     * 如果是，需要使用对应数字类型对象的<criteria>decode</criteria>方法解码<br>
+     * 如果是，需要使用对应数字类型对象的decode方法解码<br>
      * 例如：{@code Integer.decode}方法解码int类型的16进制数字
      *
      * @param value 值
@@ -86,7 +85,7 @@ public class HexUtils {
      * 将字节数组转换为十六进制字符数组
      *
      * @param data        byte[]
-     * @param toLowerCase <criteria>true</criteria> 传换成小写格式 ， <criteria>false</criteria> 传换成大写格式
+     * @param toLowerCase true 传换成小写格式 ， false 传换成大写格式
      * @return 十六进制char[]
      */
     public static char[] encodeHex(byte[] data, boolean toLowerCase) {
@@ -128,7 +127,7 @@ public class HexUtils {
      * 将字节数组转换为十六进制字符串
      *
      * @param data        byte[]
-     * @param toLowerCase <criteria>true</criteria> 传换成小写格式 ， <criteria>false</criteria> 传换成大写格式
+     * @param toLowerCase true 传换成小写格式 ， false 传换成大写格式
      * @return 十六进制String
      */
     public static String encodeHexStr(byte[] data, boolean toLowerCase) {

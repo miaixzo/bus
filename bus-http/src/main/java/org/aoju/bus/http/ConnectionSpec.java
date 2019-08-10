@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.Internal;
@@ -41,9 +41,8 @@ import java.util.List;
  * <p>Use {@link Builder#allEnabledTlsVersions()} and {@link Builder#allEnabledCipherSuites} to
  * defer all feature selection to the underlying SSL socket.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class ConnectionSpec {
@@ -138,18 +137,10 @@ public final class ConnectionSpec {
         return tls;
     }
 
-    /**
-     * Returns the cipher suites to use for a connection. Returns null if all of the SSL socket's
-     * enabled cipher suites should be used.
-     */
     public List<CipherSuite> cipherSuites() {
         return cipherSuites != null ? CipherSuite.forJavaNames(cipherSuites) : null;
     }
 
-    /**
-     * Returns the TLS versions to use when negotiating a connection. Returns null if all of the SSL
-     * socket's enabled TLS versions should be used.
-     */
     public List<TlsVersion> tlsVersions() {
         return tlsVersions != null ? TlsVersion.forJavaNames(tlsVersions) : null;
     }
@@ -158,9 +149,6 @@ public final class ConnectionSpec {
         return supportsTlsExtensions;
     }
 
-    /**
-     * Applies this spec to {@code sslSocket}.
-     */
     void apply(SSLSocket sslSocket, boolean isFallback) {
         ConnectionSpec specToApply = supportedSpec(sslSocket, isFallback);
 
@@ -172,10 +160,6 @@ public final class ConnectionSpec {
         }
     }
 
-    /**
-     * Returns a copy of this that omits cipher suites and TLS versions not enabled by {@code
-     * sslSocket}.
-     */
     private ConnectionSpec supportedSpec(SSLSocket sslSocket, boolean isFallback) {
         String[] cipherSuitesIntersection = cipherSuites != null
                 ? Internal.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(), cipherSuites)
@@ -200,17 +184,6 @@ public final class ConnectionSpec {
                 .build();
     }
 
-    /**
-     * Returns {@code true} if the socket, as currently configured, supports this connection spec. In
-     * order for a socket to be compatible the enabled cipher suites and protocols must intersect.
-     *
-     * <p>For cipher suites, at least one of the {@link #cipherSuites() required cipher suites} must
-     * match the socket's enabled cipher suites. If there are no required cipher suites the socket
-     * must have at least one cipher suite enabled.
-     *
-     * <p>For protocols, at least one of the {@link #tlsVersions() required protocols} must match the
-     * socket's enabled protocols.
-     */
     public boolean isCompatible(SSLSocket socket) {
         if (!tls) {
             return false;
@@ -355,4 +328,5 @@ public final class ConnectionSpec {
             return new ConnectionSpec(this);
         }
     }
+
 }

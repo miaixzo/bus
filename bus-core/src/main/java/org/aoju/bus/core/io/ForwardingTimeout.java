@@ -20,18 +20,17 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A {@link Timeout} which forwards calls to another. Useful for subclassing.
+ * 将调用转发给另一个调用的 {@link Timeout}.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ForwardingTimeout extends Timeout {
@@ -43,9 +42,6 @@ public class ForwardingTimeout extends Timeout {
         this.delegate = delegate;
     }
 
-    /**
-     * {@link Timeout} instance to which this instance is currently delegating.
-     */
     public final Timeout delegate() {
         return delegate;
     }

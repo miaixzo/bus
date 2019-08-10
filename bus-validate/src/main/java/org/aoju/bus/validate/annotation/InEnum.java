@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.annotation;
 
 
@@ -36,9 +36,8 @@ import java.lang.annotation.*;
  * 默认被校验对象是null时，通过校验
  * </P>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented
@@ -49,32 +48,44 @@ public @interface InEnum {
 
     /**
      * 枚举类型
+     *
+     * @return the object
      */
     @Filler("enumClass")
     Class<? extends Enum> enumClass();
 
     /**
      * 枚举中的方法，将枚举方法的结果与被校验参数进行equals判断校验结果
+     *
+     * @return the string
      */
     String method() default "name";
 
     /**
      * 默认使用的异常码
+     *
+     * @return the string
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
      * 默认使用的异常信息
+     *
+     * @return the string
      */
     String errmsg() default "${field}必须属于指定枚举类型:${enumClass}";
 
     /**
      * 校验器组
+     *
+     * @return the array
      */
     String[] group() default {};
 
     /**
      * 被校验字段名称
+     *
+     * @return the string
      */
     String field() default Builder.DEFAULT_FIELD;
 

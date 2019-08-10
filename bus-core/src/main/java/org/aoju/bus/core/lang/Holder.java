@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.lang.mutable.MutableObject;
@@ -29,13 +29,12 @@ import org.aoju.bus.core.lang.mutable.MutableObject;
  * 为不可变的对象引用提供一个可变的包装，在java中支持引用传递。
  *
  * @param <T> 所持有值类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Holder<T> extends MutableObject<T> {
-    
+
     private static final long serialVersionUID = -3119568580130118011L;
 
     /**

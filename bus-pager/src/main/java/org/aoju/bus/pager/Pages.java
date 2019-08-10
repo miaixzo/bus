@@ -20,20 +20,18 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- * 对Page<E>结果进行包装
- * <p/>
+ * 对Page结果进行包装
  * 新增分页的多项属性
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Pages<T> extends PageSerializable<T> {
@@ -83,7 +81,7 @@ public class Pages<T> extends PageSerializable<T> {
     /**
      * 包装Page对象
      *
-     * @param list
+     * @param list 对象
      */
     public Pages(List<T> list) {
         this(list, 8);
@@ -99,7 +97,7 @@ public class Pages<T> extends PageSerializable<T> {
         super(list);
         if (list instanceof Page) {
             Page page = (Page) list;
-            this.pageNum = page.getPageNum();
+            this.pageNum = page.getPageNo();
             this.pageSize = page.getPageSize();
 
             this.pages = page.getPages();

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.io.IOException;
@@ -31,9 +31,8 @@ import java.util.concurrent.TimeUnit;
  * responses coming back in. Typically interceptors add, remove, or transform headers on the request
  * or response.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Interceptor {
@@ -45,10 +44,6 @@ public interface Interceptor {
 
         Response proceed(Request request) throws IOException;
 
-        /**
-         * Returns the connection the request will be executed on. This is only available in the chains
-         * of network interceptors; for application interceptors this is always null.
-         */
         Connection connection();
 
         Call call();
@@ -65,4 +60,5 @@ public interface Interceptor {
 
         Chain withWriteTimeout(int timeout, TimeUnit unit);
     }
+
 }

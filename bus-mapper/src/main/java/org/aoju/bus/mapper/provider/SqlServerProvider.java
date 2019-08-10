@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -31,9 +31,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 /**
  * SqlServerProvider实现类，特殊方法实现类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SqlServerProvider extends MapperTemplate {
@@ -45,7 +44,8 @@ public class SqlServerProvider extends MapperTemplate {
     /**
      * 插入
      *
-     * @param ms
+     * @param ms MappedStatement
+     * @return the string
      */
     public String insert(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
@@ -60,8 +60,8 @@ public class SqlServerProvider extends MapperTemplate {
     /**
      * 插入不为null的字段
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String insertSelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);

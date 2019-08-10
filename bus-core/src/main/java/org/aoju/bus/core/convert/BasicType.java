@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.convert;
 
 import java.util.Map;
@@ -30,9 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 基本变量类型的枚举<br>
  * 基本类型枚举包括原始类型和包装类型
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public enum BasicType {

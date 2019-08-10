@@ -20,54 +20,24 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Supplies a stream of bytes. Use this interface to read data from wherever
- * it's located: from the network, storage, or a buffer in memory. Sources may
- * be layered to transform supplied data, such as to decompress, decrypt, or
- * remove protocol framing.
- *
- * <p>Most applications shouldn't operate on a source directly, but rather on a
- * {@link BufferedSource} which is both more efficient and more convenient. Use
- *
- * <p>Sources are easy to test: just use a {@link Buffer} in your tests, and
- * fill it with the data your application is to read.
- *
- * <h3>Comparison with InputStream</h3>
- * This interface is functionally equivalent to {@link java.io.InputStream}.
- *
- * <p>{@code InputStream} requires multiple layers when consumed data is
- * heterogeneous: a {@code DataInputStream} for primitive values, a {@code
- * BufferedInputStream} for buffering, and {@code InputStreamReader} for
- * strings. This class uses {@code BufferedSource} for all of the above.
- *
- * <p>Source avoids the impossible-to-implement {@linkplain
- * java.io.InputStream#available available()} method. Instead callers specify
- * how many bytes they {@link BufferedSource#require require}.
- *
- * <p>Source omits the unsafe-to-compose {@linkplain java.io.InputStream#mark
- * mark and reset} state that's tracked by {@code InputStream}; instead, callers
- * just buffer what they need.
- *
- * <p>When implementing a source, you don't need to worry about the {@linkplain
- * java.io.InputStream#read single-byte read} method that is awkward to implement efficiently
- * and returns first of 257 possible values.
- *
- * <p>And source has a stronger {@code skip} method: {@link BufferedSource#skip}
- * won't return prematurely.
+ * 提供一个字节流。使用此接口从任何地方读取数据
+ * 它的位置:来自网络、存储或内存中的缓冲区。来源可能
+ * 分层以转换提供的数据，例如解压、解密或
+ * 移除协议框架。
  *
  * <h3>Interop with InputStream</h3>
  * {@link BufferedSource#inputStream} to adapt a source to an {@code
  * InputStream}.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Source extends Closeable {
@@ -76,17 +46,26 @@ public interface Source extends Closeable {
      * Removes at least 1, and up to {@code byteCount} bytes from this and appends
      * them to {@code sink}. Returns the number of bytes read, or -1 if this
      * source is exhausted.
+     *
+     * @param sink      Buffer
+     * @param byteCount long
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     long read(Buffer sink, long byteCount) throws IOException;
 
     /**
      * Returns the timeout for this source.
+     *
+     * @return the Timeout
      */
     Timeout timeout();
 
     /**
      * Closes this source and releases the resources held by this source. It is an
      * error to read a closed source. It is safe to close a source more than once.
+     *
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     @Override
     void close() throws IOException;

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.annotation;
 
 import org.aoju.bus.validate.Builder;
@@ -34,9 +34,8 @@ import java.lang.annotation.*;
  * 默认被校验对象是null时，通过校验
  * </P>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented
@@ -50,32 +49,38 @@ public @interface Regex {
 
     /**
      * 如果长度为0，判断能否通过校验。
-     * <p>
      * 默认为false
-     * </P>
-     * <p>
      * true：表示长度为零，默认通过校验；false：表示长度为0，仍然要进行正则验证
-     * </P>
+     *
+     * @return the boolean
      */
     boolean zeroAble() default false;
 
     /**
      * 默认使用的异常码
+     *
+     * @return the string
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
      * 默认使用的异常信息
+     *
+     * @return the string
      */
     String errmsg() default "${field}验证失败,请检查数据格式";
 
     /**
      * 校验器组
+     *
+     * @return the array
      */
     String[] group() default {};
 
     /**
      * 被校验字段名称
+     *
+     * @return the string
      */
     String field() default Builder.DEFAULT_FIELD;
 

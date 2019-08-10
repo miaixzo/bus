@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -37,9 +37,8 @@ import javax.crypto.spec.IvParameterSpec;
  * 如果三个 56 位的子元素都相同，则三重 DES 向后兼容 DES。<br>
  * Java中默认实现为：DESede/ECB/PKCS5Padding
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class DESede extends Symmetric {

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.Internal;
@@ -41,12 +41,12 @@ import java.util.List;
  * <p>This value object describes a completed handshake. Use {@link ConnectionSpec} to set policy
  * for new handshakes.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Handshake {
+
     private final TlsVersion tlsVersion;
     private final CipherSuite cipherSuite;
     private final List<Certificate> peerCertificates;
@@ -99,47 +99,28 @@ public final class Handshake {
                 Internal.immutableList(localCertificates));
     }
 
-    /**
-     * Returns the TLS version used for this connection. This value wasn't tracked prior to HttpClient
-     * 3.0. For responses cached by preceding versions this returns {@link TlsVersion#SSL_3_0}.
-     */
     public TlsVersion tlsVersion() {
         return tlsVersion;
     }
 
-    /**
-     * Returns the cipher suite used for the connection.
-     */
     public CipherSuite cipherSuite() {
         return cipherSuite;
     }
 
-    /**
-     * Returns a possibly-empty list of certificates that identify the remote peer.
-     */
     public List<Certificate> peerCertificates() {
         return peerCertificates;
     }
 
-    /**
-     * Returns the remote peer's principle, or null if that peer is anonymous.
-     */
     public Principal peerPrincipal() {
         return !peerCertificates.isEmpty()
                 ? ((X509Certificate) peerCertificates.get(0)).getSubjectX500Principal()
                 : null;
     }
 
-    /**
-     * Returns a possibly-empty list of certificates that identify this peer.
-     */
     public List<Certificate> localCertificates() {
         return localCertificates;
     }
 
-    /**
-     * Returns the local principle, or null if this peer is anonymous.
-     */
     public Principal localPrincipal() {
         return !localCertificates.isEmpty()
                 ? ((X509Certificate) localCertificates.get(0)).getSubjectX500Principal()
@@ -165,4 +146,5 @@ public final class Handshake {
         result = 31 * result + localCertificates.hashCode();
         return result;
     }
+
 }

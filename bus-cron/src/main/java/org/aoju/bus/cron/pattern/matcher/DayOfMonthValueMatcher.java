@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cron.pattern.matcher;
 
 import java.util.List;
@@ -29,9 +29,8 @@ import java.util.List;
  * 每月第几天匹配<br>
  * 考虑每月的天数不同，切存在闰年情况，日匹配单独使用
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {

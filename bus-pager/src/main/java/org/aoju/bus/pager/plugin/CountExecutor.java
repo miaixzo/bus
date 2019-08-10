@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.plugin;
 
 import org.aoju.bus.pager.PageException;
@@ -41,9 +41,8 @@ import java.util.Map;
 /**
  * count 查询
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class CountExecutor {
@@ -62,8 +61,8 @@ public abstract class CountExecutor {
     /**
      * 获取 BoundSql 属性值 additionalParameters
      *
-     * @param boundSql
-     * @return
+     * @param boundSql boundSql
+     * @return the map
      */
     public static Map<String, Object> getAdditionalParameter(BoundSql boundSql) {
         try {
@@ -76,9 +75,9 @@ public abstract class CountExecutor {
     /**
      * 尝试获取已经存在的在 MS，提供对手写count和page的支持
      *
-     * @param configuration
-     * @param msId
-     * @return
+     * @param configuration 配置
+     * @param msId          标识
+     * @return the mappedStatement
      */
     public static MappedStatement getExistedMappedStatement(Configuration configuration, String msId) {
         MappedStatement mappedStatement = null;
@@ -93,13 +92,13 @@ public abstract class CountExecutor {
     /**
      * 执行手动设置的 count 查询，该查询支持的参数必须和被分页的方法相同
      *
-     * @param executor
-     * @param countMs
-     * @param parameter
-     * @param boundSql
-     * @param resultHandler
-     * @return
-     * @throws SQLException
+     * @param executor      执行者
+     * @param countMs       MappedStatement
+     * @param parameter     参数
+     * @param boundSql      BoundSql
+     * @param resultHandler ResultHandler
+     * @return the long
+     * @throws SQLException 异常
      */
     public static Long executeManualCount(Executor executor, MappedStatement countMs,
                                           Object parameter, BoundSql boundSql,
@@ -114,15 +113,15 @@ public abstract class CountExecutor {
     /**
      * 执行自动生成的 count 查询
      *
-     * @param dialect
-     * @param executor
-     * @param countMs
-     * @param parameter
-     * @param boundSql
-     * @param rowBounds
-     * @param resultHandler
-     * @return
-     * @throws SQLException
+     * @param dialect       方言
+     * @param executor      执行者
+     * @param countMs       MappedStatement
+     * @param parameter     参数
+     * @param boundSql      BoundSql
+     * @param rowBounds     RowBounds
+     * @param resultHandler ResultHandler
+     * @return the long
+     * @throws SQLException 异常
      */
     public static Long executeAutoCount(Dialect dialect, Executor executor, MappedStatement countMs,
                                         Object parameter, BoundSql boundSql,
@@ -147,17 +146,17 @@ public abstract class CountExecutor {
     /**
      * 分页查询
      *
-     * @param dialect
-     * @param executor
-     * @param ms
-     * @param parameter
-     * @param rowBounds
-     * @param resultHandler
-     * @param boundSql
-     * @param cacheKey
-     * @param <E>
-     * @return
-     * @throws SQLException
+     * @param dialect       方言
+     * @param executor      执行者
+     * @param ms            MappedStatement
+     * @param parameter     参数
+     * @param rowBounds     RowBounds
+     * @param resultHandler ResultHandler
+     * @param boundSql      BoundSql
+     * @param cacheKey      CacheKey
+     * @param <E>           对象
+     * @return the object
+     * @throws SQLException 异常
      */
     public static <E> List<E> pageQuery(Dialect dialect, Executor executor, MappedStatement ms, Object parameter,
                                         RowBounds rowBounds, ResultHandler resultHandler,

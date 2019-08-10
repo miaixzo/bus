@@ -20,19 +20,18 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.extra;
 
+import com.google.zxing.*;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.consts.FileType;
-import org.aoju.bus.core.image.Img;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ImageUtils;
 import org.aoju.bus.extra.qrcode.BufferedImageLuminanceSource;
 import org.aoju.bus.extra.qrcode.QrConfig;
-import com.google.zxing.*;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.HybridBinarizer;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -45,9 +44,8 @@ import java.util.HashMap;
 /**
  * 基于Zxing的二维码工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class QrCodeUtils {
@@ -189,8 +187,8 @@ public class QrCodeUtils {
     public static BufferedImage generate(String content, BarcodeFormat format, QrConfig config) {
         final BitMatrix bitMatrix = encode(content, format, config);
         final BufferedImage image = toImage(bitMatrix, config.foreColor, config.backColor);
-        final Image logoImg = config.img;
-        if (null != logoImg && BarcodeFormat.QR_CODE == format) {
+        final java.awt.Image logoImage = config.img;
+        if (null != logoImage && BarcodeFormat.QR_CODE == format) {
             // 只有二维码可以贴图
             final int qrWidth = image.getWidth();
             final int qrHeight = image.getHeight();
@@ -199,14 +197,14 @@ public class QrCodeUtils {
             // 按照最短的边做比例缩放
             if (qrWidth < qrHeight) {
                 width = qrWidth / config.ratio;
-                height = logoImg.getHeight(null) * width / logoImg.getWidth(null);
+                height = logoImage.getHeight(null) * width / logoImage.getWidth(null);
             } else {
                 height = qrHeight / config.ratio;
-                width = logoImg.getWidth(null) * height / logoImg.getHeight(null);
+                width = logoImage.getWidth(null) * height / logoImage.getHeight(null);
             }
 
-            Img.from(image).pressImage(//
-                    Img.from(logoImg).round(0.3).getImg(), // 圆角
+            org.aoju.bus.core.image.Image.from(image).pressImage(//
+                    org.aoju.bus.core.image.Image.from(logoImage).round(0.3).getImg(), // 圆角
                     new Rectangle(width, height), //
                     1//
             );
@@ -299,23 +297,23 @@ public class QrCodeUtils {
     /**
      * 将二维码图片解码为文本
      *
-     * @param image {@link Image} 二维码图片
+     * @param image {@link java.awt.Image} 二维码图片
      * @return 解码后的文本
      */
-    public static String decode(Image image) {
+    public static String decode(java.awt.Image image) {
         return decode(image, true, false);
     }
 
     /**
      * 将二维码图片解码为文本
      *
-     * @param image         {@link Image} 二维码图片
+     * @param image         {@link java.awt.Image} 二维码图片
      * @param isTryHarder   是否优化精度
      * @param isPureBarcode 是否使用复杂模式，扫描带logo的二维码设为true
      * @return 解码后的文本
      * @since 4.3.1
      */
-    public static String decode(Image image, boolean isTryHarder, boolean isPureBarcode) {
+    public static String decode(java.awt.Image image, boolean isTryHarder, boolean isPureBarcode) {
         final MultiFormatReader formatReader = new MultiFormatReader();
 
         final LuminanceSource source = new BufferedImageLuminanceSource(ImageUtils.toBufferedImage(image));

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -36,9 +36,8 @@ import javax.crypto.spec.IvParameterSpec;
  * DES全称为Data Encryption Standard，即数据加密标准，是一种使用密钥加密的块算法<br>
  * Java中默认实现为：DES/CBC/PKCS5Padding
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class DES extends Symmetric {

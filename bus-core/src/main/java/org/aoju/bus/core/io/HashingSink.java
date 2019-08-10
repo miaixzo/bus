@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.utils.IoUtils;
@@ -33,24 +33,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * A sink that computes a hash of the full stream of bytes it has accepted. To use, create an
- * instance with your preferred hash algorithm. Write all of the data to the sink and then call
- * {@link #hash()} to compute the final hash value.
+ * 一个接收器，计算它接受的全部字节流的哈希值。若要使用，请创建
+ * 使用您首选的哈希算法实例。将所有数据写入接收器，然后调用
+ * {@link #hash()}来计算最终的哈希值。
  *
- * <p>In this example we use {@code HashingSink} with a {@link BufferedSink} to make writing to the
- * sink easier. <pre>   {@code
- *
- *   HashingSink hashingSink = HashingSink.sha256(s);
- *   BufferedSink bufferedSink = IoUtils.buffer(hashingSink);
- *
- *   ... // Write to bufferedSink and either flush or close it.
- *
- *   ByteString hash = hashingSink.hash();
- * }</pre>
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class HashingSink extends ForwardingSink {
@@ -81,51 +69,30 @@ public final class HashingSink extends ForwardingSink {
         }
     }
 
-    /**
-     * Returns a sink that uses the obsolete MD5 hash algorithm to produce 128-bit hashes.
-     */
     public static HashingSink md5(Sink sink) {
         return new HashingSink(sink, "MD5");
     }
 
-    /**
-     * Returns a sink that uses the obsolete SHA-1 hash algorithm to produce 160-bit hashes.
-     */
     public static HashingSink sha1(Sink sink) {
         return new HashingSink(sink, "SHA-1");
     }
 
-    /**
-     * Returns a sink that uses the SHA-256 hash algorithm to produce 256-bit hashes.
-     */
     public static HashingSink sha256(Sink sink) {
         return new HashingSink(sink, "SHA-256");
     }
 
-    /**
-     * Returns a sink that uses the SHA-512 hash algorithm to produce 512-bit hashes.
-     */
     public static HashingSink sha512(Sink sink) {
         return new HashingSink(sink, "SHA-512");
     }
 
-    /**
-     * Returns a sink that uses the obsolete SHA-1 HMAC algorithm to produce 160-bit hashes.
-     */
     public static HashingSink hmacSha1(Sink sink, ByteString key) {
         return new HashingSink(sink, key, "HmacSHA1");
     }
 
-    /**
-     * Returns a sink that uses the SHA-256 HMAC algorithm to produce 256-bit hashes.
-     */
     public static HashingSink hmacSha256(Sink sink, ByteString key) {
         return new HashingSink(sink, key, "HmacSHA256");
     }
 
-    /**
-     * Returns a sink that uses the SHA-512 HMAC algorithm to produce 512-bit hashes.
-     */
     public static HashingSink hmacSha512(Sink sink, ByteString key) {
         return new HashingSink(sink, key, "HmacSHA512");
     }
@@ -150,12 +117,6 @@ public final class HashingSink extends ForwardingSink {
         super.write(source, byteCount);
     }
 
-    /**
-     * Returns the hash of the bytes accepted thus far and resets the internal state of this sink.
-     *
-     * <p><strong>Warning:</strong> This method is not idempotent. Each time this method is called its
-     * internal state is cleared. This starts a new hash with zero bytes accepted.
-     */
     public final ByteString hash() {
         byte[] result = messageDigest != null ? messageDigest.digest() : mac.doFinal();
         return ByteString.of(result);

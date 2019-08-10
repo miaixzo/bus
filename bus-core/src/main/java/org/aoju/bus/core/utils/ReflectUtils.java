@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 
@@ -41,9 +41,8 @@ import java.util.Set;
  * 反射工具类.
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ReflectUtils {
@@ -66,11 +65,15 @@ public class ReflectUtils {
     /**
      * 调用Getter方法.
      * 支持多级，如：对象名.对象名.方法
+     *
+     * @param obj  对象
+     * @param name 属性名
+     * @return the object
      */
-    public static Object invokeGetter(Object obj, String propertyName) {
+    public static Object invokeGetter(Object obj, String name) {
         Object object = obj;
-        for (String name : StringUtils.split(propertyName, ".")) {
-            String getterMethodName = Normal.GETTER_PREFIX + StringUtils.capitalize(name);
+        for (String method : StringUtils.split(name, ".")) {
+            String getterMethodName = Normal.GETTER_PREFIX + StringUtils.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
         }
         return object;
@@ -79,10 +82,14 @@ public class ReflectUtils {
     /**
      * 调用Setter方法, 仅匹配方法名。
      * 支持多级，如：对象名.对象名.方法
+     *
+     * @param obj   对象
+     * @param name  属性名
+     * @param value 值
      */
-    public static void invokeSetter(Object obj, String propertyName, Object value) {
+    public static void invokeSetter(Object obj, String name, Object value) {
         Object object = obj;
-        String[] names = StringUtils.split(propertyName, ".");
+        String[] names = StringUtils.split(name, ".");
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 String getterMethodName = Normal.GETTER_PREFIX + StringUtils.capitalize(names[i]);
@@ -94,9 +101,9 @@ public class ReflectUtils {
         }
     }
 
-    public static Object convert(Object object, Class<?> type) {
-        if (object instanceof Number) {
-            Number number = (Number) object;
+    public static Object convert(Object obj, Class<?> type) {
+        if (obj instanceof Number) {
+            Number number = (Number) obj;
             if (type.equals(byte.class) || type.equals(Byte.class)) {
                 return number.byteValue();
             }
@@ -117,9 +124,9 @@ public class ReflectUtils {
             }
         }
         if (type.equals(String.class)) {
-            return object == null ? "" : object.toString();
+            return obj == null ? "" : obj.toString();
         }
-        return object;
+        return obj;
     }
 
     public static Object invokeMethod(Method method, Object target) {
@@ -138,12 +145,18 @@ public class ReflectUtils {
      * 直接调用对象方法, 无视private/protected修饰符.
      * 用于一次性调用的情况，否则应使用getAccessibleMethod()函数获得Method后反复调用.
      * 同时匹配方法名+参数类型，
+     *
+     * @param obj   对象
+     * @param name  方法名
+     * @param types 参数类型
+     * @param args  参数
+     * @return the object
      */
-    public static Object invokeMethod(final Object obj, final String methodName, final Class<?>[] parameterTypes,
+    public static Object invokeMethod(final Object obj, final String name, final Class<?>[] types,
                                       final Object[] args) {
-        Method method = getAccessibleMethod(obj, methodName, parameterTypes);
+        Method method = getAccessibleMethod(obj, name, types);
         if (method == null) {
-            throw new IllegalArgumentException("Could not find method [" + methodName + "] on target [" + obj + "]");
+            throw new IllegalArgumentException("Could not find method [" + method + "] on target [" + obj + "]");
         }
 
         try {
@@ -157,11 +170,16 @@ public class ReflectUtils {
      * 直接调用对象方法, 无视private/protected修饰符，
      * 用于一次性调用的情况，否则应使用getAccessibleMethodByName()函数获得Method后反复调用.
      * 只匹配函数名，如果有多个同名函数调用第一个。
+     *
+     * @param obj  对象
+     * @param name 方法
+     * @param args 参数
+     * @return the object
      */
-    public static Object invokeMethodByName(final Object obj, final String methodName, final Object[] args) {
-        Method method = getAccessibleMethodByName(obj, methodName);
+    public static Object invokeMethodByName(final Object obj, final String name, final Object[] args) {
+        Method method = getAccessibleMethodByName(obj, name);
         if (method == null) {
-            throw new IllegalArgumentException("Could not find method [" + methodName + "] on target [" + obj + "]");
+            throw new IllegalArgumentException("Could not find method [" + name + "] on target [" + obj + "]");
         }
 
         try {
@@ -175,11 +193,15 @@ public class ReflectUtils {
      * 循环向上转型, 获取对象的DeclaredField, 并强制设置为可访问.
      * <p>
      * 如向上转型到Object仍无法找到, 返回null.
+     *
+     * @param obj  对象
+     * @param name 列名
+     * @return the object
      */
-    public static Field getAccessibleField(final Object obj, final String fieldName) {
+    public static Field getAccessibleField(final Object obj, final String name) {
         for (Class<?> superClass = obj.getClass(); superClass != Object.class; superClass = superClass.getSuperclass()) {
             try {
-                Field field = superClass.getDeclaredField(fieldName);
+                Field field = superClass.getDeclaredField(name);
                 makeAccessible(field);
                 return field;
             } catch (NoSuchFieldException e) {//NOSONAR
@@ -196,12 +218,17 @@ public class ReflectUtils {
      * 匹配函数名+参数类型。
      * <p>
      * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
+     *
+     * @param obj   对象
+     * @param name  方法名
+     * @param types 参数类型
+     * @return the object
      */
-    public static Method getAccessibleMethod(final Object obj, final String methodName,
-                                             final Class<?>... parameterTypes) {
+    public static Method getAccessibleMethod(final Object obj, final String name,
+                                             final Class<?>... types) {
         for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
             try {
-                Method method = searchType.getDeclaredMethod(methodName, parameterTypes);
+                Method method = searchType.getDeclaredMethod(name, types);
                 makeAccessible(method);
                 return method;
             } catch (NoSuchMethodException e) {
@@ -218,12 +245,16 @@ public class ReflectUtils {
      * 只匹配函数名。
      * <p>
      * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
+     *
+     * @param obj  对象
+     * @param name 方法名
+     * @return the object
      */
-    public static Method getAccessibleMethodByName(final Object obj, final String methodName) {
+    public static Method getAccessibleMethodByName(final Object obj, final String name) {
         for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
             Method[] methods = searchType.getDeclaredMethods();
             for (Method method : methods) {
-                if (method.getName().equals(methodName)) {
+                if (method.getName().equals(name)) {
                     makeAccessible(method);
                     return method;
                 }
@@ -234,6 +265,8 @@ public class ReflectUtils {
 
     /**
      * 改变private/protected的方法为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
+     *
+     * @param method 方法
      */
     public static void makeAccessible(Method method) {
         if ((!Modifier.isPublic(method.getModifiers()) || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
@@ -244,6 +277,8 @@ public class ReflectUtils {
 
     /**
      * 改变private/protected的成员变量为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
+     *
+     * @param field 对象
      */
     public static void makeAccessible(Field field) {
         if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers()) || Modifier
@@ -255,11 +290,10 @@ public class ReflectUtils {
     /**
      * 通过反射, 获得Class定义中声明的泛型参数的类型, 注意泛型必须定义在父类处
      * 如无法找到, 返回Object.class.
-     * eg.
-     * public UserDao extends HibernateDao<User>
      *
-     * @param clazz The class to introspect
-     * @return the first generic declaration, or Object.class if cannot be determined
+     * @param <T>   对象
+     * @param clazz 对象
+     * @return the object
      */
     public static <T> Class<T> getClassGenricType(final Class clazz) {
         return getClassGenricType(clazz, 0);
@@ -268,8 +302,6 @@ public class ReflectUtils {
     /**
      * 通过反射, 获得Class定义中声明的父类的泛型参数的类型.
      * 如无法找到, 返回Object.class.
-     * <p>
-     * 如public UserDao extends HibernateDao<User,Long>
      *
      * @param clazz clazz The class to introspect
      * @param index the Index of the generic ddeclaration,start from 0.
@@ -304,11 +336,13 @@ public class ReflectUtils {
             }
         }
         return clazz;
-
     }
 
     /**
      * 将反射时的checked exception转换为unchecked exception.
+     *
+     * @param e 异常
+     * @return the ex
      */
     public static RuntimeException convertReflectionExceptionToUnchecked(Exception e) {
         if (e instanceof IllegalAccessException || e instanceof IllegalArgumentException
@@ -393,11 +427,11 @@ public class ReflectUtils {
     }
 
     /**
-     * 查找指定类中的所有字段（包括非public字段），也包括父类和Object类的字段， 字段不存在则返回<criteria>null</criteria>
+     * 查找指定类中的所有字段（包括非public字段），也包括父类和Object类的字段， 字段不存在则返回null
      *
      * @param beanClass 被查找字段的类,不能为null
      * @param name      字段名
-     * @return 字段
+     * @return field字段
      * @throws SecurityException 安全异常
      */
     public static Field getField(Class<?> beanClass, String name) throws SecurityException {
@@ -544,7 +578,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 忽略大小写查找指定方法，如果找不到对应的方法则返回<criteria>null</criteria>
+     * 忽略大小写查找指定方法，如果找不到对应的方法则返回null
      *
      * @param clazz      类，如果为{@code null}返回{@code null}
      * @param methodName 方法名，如果为空字符串返回{@code null}
@@ -558,7 +592,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 查找指定方法 如果找不到对应的方法则返回<criteria>null</criteria>
+     * 查找指定方法 如果找不到对应的方法则返回null
      *
      * @param clazz      类，如果为{@code null}返回{@code null}
      * @param methodName 方法名，如果为空字符串返回{@code null}
@@ -571,7 +605,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 查找指定方法 如果找不到对应的方法则返回<criteria>null</criteria>
+     * 查找指定方法 如果找不到对应的方法则返回null
      *
      * @param clazz      类，如果为{@code null}返回{@code null}
      * @param ignoreCase 是否忽略大小写
@@ -824,7 +858,7 @@ public class ReflectUtils {
      * </pre>
      *
      * @param <T>    返回对象类型
-     * @param obj    对象，如果执行静态方法，此值为<criteria>null</criteria>
+     * @param obj    对象，如果执行静态方法，此值为null
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
@@ -851,7 +885,7 @@ public class ReflectUtils {
      * 执行方法
      *
      * @param <T>    返回对象类型
-     * @param obj    对象，如果执行静态方法，此值为<criteria>null</criteria>
+     * @param obj    对象，如果执行静态方法，此值为null
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.mapper.MapperException;
@@ -46,9 +46,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 实体类工具类 - 处理实体和数据库表以及字段
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EntityBuilder {
@@ -61,8 +60,8 @@ public class EntityBuilder {
     /**
      * 获取表对象
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return EntityTable
      */
     public static EntityTable getEntityTable(Class<?> entityClass) {
         EntityTable entityTable = entityTableMap.get(entityClass);
@@ -75,8 +74,8 @@ public class EntityBuilder {
     /**
      * 获取默认的orderby语句
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String getOrderByClause(Class<?> entityClass) {
         EntityTable table = getEntityTable(entityClass);
@@ -99,8 +98,8 @@ public class EntityBuilder {
     /**
      * 获取全部列
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return 对象
      */
     public static Set<EntityColumn> getColumns(Class<?> entityClass) {
         return getEntityTable(entityClass).getEntityClassColumns();
@@ -109,8 +108,8 @@ public class EntityBuilder {
     /**
      * 获取主键信息
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return 对象
      */
     public static Set<EntityColumn> getPKColumns(Class<?> entityClass) {
         return getEntityTable(entityClass).getEntityClassPKColumns();
@@ -119,8 +118,8 @@ public class EntityBuilder {
     /**
      * 获取查询的Select
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return 对象
      */
     public static String getSelectColumns(Class<?> entityClass) {
         EntityTable entityTable = getEntityTable(entityClass);
@@ -150,8 +149,8 @@ public class EntityBuilder {
     /**
      * 初始化实体属性
      *
-     * @param entityClass
-     * @param config
+     * @param entityClass 对象
+     * @param config      配置
      */
     public static synchronized void initEntityNameMap(Class<?> entityClass, Config config) {
         if (entityTableMap.get(entityClass) != null) {
@@ -209,9 +208,9 @@ public class EntityBuilder {
     /**
      * 处理一列
      *
-     * @param entityTable
-     * @param style
-     * @param field
+     * @param entityTable 表信息
+     * @param style       样式
+     * @param field       列信息
      */
     private static void processField(EntityTable entityTable, Style style, EntityField field, String wrapKeyword) {
         //排除字段
@@ -318,9 +317,9 @@ public class EntityBuilder {
     /**
      * 根据指定的样式进行转换
      *
-     * @param str
-     * @param style
-     * @return
+     * @param str   字符串
+     * @param style 样式
+     * @return the string
      */
     private static String convertByStyle(String str, Style style) {
         switch (style) {
@@ -342,6 +341,9 @@ public class EntityBuilder {
 
     /**
      * 将驼峰风格替换为下划线风格
+     *
+     * @param str 字符串
+     * @return the string
      */
     private static String camelhumpToUnderline(String str) {
         final int size;

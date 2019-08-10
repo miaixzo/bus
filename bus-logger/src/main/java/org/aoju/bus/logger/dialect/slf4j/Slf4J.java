@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.logger.dialect.slf4j;
 
 import org.aoju.bus.core.consts.Normal;
@@ -35,9 +35,8 @@ import org.slf4j.spi.LocationAwareLogger;
  * <a href="http://www.slf4j.org/">SLF4J</a> log.<br>
  * 同样无缝支持 <a href="http://logback.qos.ch/">LogBack</a>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Slf4J extends AbstractAware {

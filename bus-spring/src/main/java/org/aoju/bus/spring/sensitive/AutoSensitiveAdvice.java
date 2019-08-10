@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.logger.Logger;
@@ -33,9 +33,8 @@ import java.lang.reflect.Method;
 /**
  * 自动进行参数处理实现类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class AutoSensitiveAdvice {
@@ -45,6 +44,7 @@ public class AutoSensitiveAdvice {
      *
      * @param proxyChain 切面
      * @return 返回执行结果
+     * @throws Throwable 异常
      */
     public Object access(AspectjProxyChain proxyChain) throws Throwable {
         Object[] agruements = proxyChain.getArgs();

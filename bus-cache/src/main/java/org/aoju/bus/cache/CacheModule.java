@@ -20,29 +20,28 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cache;
 
-import org.aoju.bus.cache.provider.BaseProvider;
-import org.aoju.bus.cache.reader.AbstractCacheReader;
-import org.aoju.bus.cache.reader.MultiCacheReader;
-import org.aoju.bus.cache.reader.SingleCacheReader;
-import org.aoju.bus.cache.support.cache.Cache;
-import org.aoju.bus.core.utils.CollUtils;
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.MapBinder;
 import com.google.inject.name.Names;
+import org.aoju.bus.cache.provider.BaseProvider;
+import org.aoju.bus.cache.reader.AbstractCacheReader;
+import org.aoju.bus.cache.reader.MultiCacheReader;
+import org.aoju.bus.cache.reader.SingleCacheReader;
+import org.aoju.bus.cache.support.cache.Cache;
+import org.aoju.bus.core.utils.CollUtils;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class CacheModule extends AbstractModule {

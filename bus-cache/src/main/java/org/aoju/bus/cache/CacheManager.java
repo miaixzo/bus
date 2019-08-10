@@ -20,25 +20,24 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cache;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.aoju.bus.cache.entity.CacheKeys;
 import org.aoju.bus.cache.entity.Pair;
 import org.aoju.bus.cache.support.cache.Cache;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Singleton

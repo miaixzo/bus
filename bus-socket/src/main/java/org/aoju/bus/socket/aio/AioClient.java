@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.socket.aio;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -38,9 +38,8 @@ import java.util.concurrent.ExecutionException;
 /**
  * Aio Socket客户端
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class AioClient {
@@ -115,6 +114,7 @@ public class AioClient {
      * @param <T>   选项泛型
      * @param name  {@link SocketOption} 枚举
      * @param value SocketOption参数
+     * @return the object
      * @throws IOException IO异常
      */
     public <T> AioClient setOption(SocketOption<T> name, T value) throws IOException {
@@ -143,7 +143,7 @@ public class AioClient {
 
     /**
      * 写数据到服务端
-     *
+     * @param data 字节
      * @return this
      */
     public AioClient write(ByteBuffer data) {

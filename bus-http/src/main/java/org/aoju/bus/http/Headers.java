@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -44,9 +44,8 @@ import java.util.*;
  *
  * <p>Instances of this class are immutable. Use {@link Builder} to create instances.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Headers {
@@ -70,10 +69,6 @@ public final class Headers {
         return null;
     }
 
-    /**
-     * Returns headers for the alternating header names and values. There must be an even number of
-     * arguments, and they must alternate between header names and values.
-     */
     public static Headers of(String... namesAndValues) {
         if (namesAndValues == null) throw new NullPointerException("namesAndValues == null");
         if (namesAndValues.length % 2 != 0) {
@@ -98,9 +93,6 @@ public final class Headers {
         return new Headers(namesAndValues);
     }
 
-    /**
-     * Returns headers for the header names and values in the {@link Map}.
-     */
     public static Headers of(Map<String, String> headers) {
         if (headers == null) throw new NullPointerException("headers == null");
 
@@ -146,46 +138,27 @@ public final class Headers {
         }
     }
 
-    /**
-     * Returns the last value corresponding to the specified field, or null.
-     */
     public String get(String name) {
         return get(namesAndValues, name);
     }
 
-    /**
-     * Returns the last value corresponding to the specified field parsed as an HTTP date, or null if
-     * either the field is absent or cannot be parsed as a date.
-     */
     public Date getDate(String name) {
         String value = get(name);
         return value != null ? HttpDate.parse(value) : null;
     }
 
-    /**
-     * Returns the number of field values.
-     */
     public int size() {
         return namesAndValues.length / 2;
     }
 
-    /**
-     * Returns the field at {@code position}.
-     */
     public String name(int index) {
         return namesAndValues[index * 2];
     }
 
-    /**
-     * Returns the value at {@code index}.
-     */
     public String value(int index) {
         return namesAndValues[index * 2 + 1];
     }
 
-    /**
-     * Returns an immutable case-insensitive set of header names.
-     */
     public Set<String> names() {
         TreeSet<String> result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         for (int i = 0, size = size(); i < size; i++) {
@@ -194,9 +167,6 @@ public final class Headers {
         return Collections.unmodifiableSet(result);
     }
 
-    /**
-     * Returns an immutable list of the header values for {@code name}.
-     */
     public List<String> values(String name) {
         List<String> result = null;
         for (int i = 0, size = size(); i < size; i++) {
@@ -210,11 +180,6 @@ public final class Headers {
                 : Collections.<String>emptyList();
     }
 
-    /**
-     * Returns the number of bytes required to encode these headers using HTTP/1.1. This is also the
-     * approximate size of HTTP/2 headers before they are compressed with HPACK. This value is
-     * intended to be used as a metric: smaller headers are more efficient to encode and transmit.
-     */
     public long byteCount() {
         // Each header name has 2 bytes of overhead for ': ' and every header value has 2 bytes of
         // overhead for '\r\n'.
@@ -258,6 +223,8 @@ public final class Headers {
      * <p>
      * Applications that require semantically equal headers should convert them into a canonical form
      * before comparing them for equality.
+     *
+     * @param other Object
      */
     @Override
     public boolean equals(Object other) {
@@ -296,10 +263,6 @@ public final class Headers {
     public static final class Builder {
         final List<String> namesAndValues = new ArrayList<>(20);
 
-        /**
-         * Add a header line without any validate. Only appropriate for headers from the remote peer
-         * or cache.
-         */
         Builder addLenient(String line) {
             int index = line.indexOf(":", 1);
             if (index != -1) {
@@ -313,9 +276,6 @@ public final class Headers {
             }
         }
 
-        /**
-         * Add an header line containing a field name, a literal colon, and a value.
-         */
         public Builder add(String line) {
             int index = line.indexOf(":");
             if (index == -1) {
@@ -324,27 +284,17 @@ public final class Headers {
             return add(line.substring(0, index).trim(), line.substring(index + 1));
         }
 
-        /**
-         * Add a header with the specified name and value. Does validate of header names and values.
-         */
         public Builder add(String name, String value) {
             checkName(name);
             checkValue(value, name);
             return addLenient(name, value);
         }
 
-        /**
-         * Add a header with the specified name and value. Does validate of header names, allowing
-         * non-ASCII values.
-         */
         public Builder addUnsafeNonAscii(String name, String value) {
             checkName(name);
             return addLenient(name, value);
         }
 
-        /**
-         * Adds all headers from an existing collection.
-         */
         public Builder addAll(Headers headers) {
             int size = headers.size();
             for (int i = 0; i < size; i++) {
@@ -354,30 +304,18 @@ public final class Headers {
             return this;
         }
 
-        /**
-         * Add a header with the specified name and formatted Date.
-         * Does validate of header names and values.
-         */
         public Builder add(String name, Date value) {
             if (value == null) throw new NullPointerException("value for name " + name + " == null");
             add(name, HttpDate.format(value));
             return this;
         }
 
-        /**
-         * Set a field with the specified date. If the field is not found, it is added. If the field is
-         * found, the existing values are replaced.
-         */
         public Builder set(String name, Date value) {
             if (value == null) throw new NullPointerException("value for name " + name + " == null");
             set(name, HttpDate.format(value));
             return this;
         }
 
-        /**
-         * Add a field with the specified value without any validate. Only appropriate for headers
-         * from the remote peer or cache.
-         */
         Builder addLenient(String name, String value) {
             namesAndValues.add(name);
             namesAndValues.add(value.trim());
@@ -395,10 +333,6 @@ public final class Headers {
             return this;
         }
 
-        /**
-         * Set a field with the specified value. If the field is not found, it is added. If the field is
-         * found, the existing values are replaced.
-         */
         public Builder set(String name, String value) {
             checkName(name);
             checkValue(value, name);
@@ -407,9 +341,6 @@ public final class Headers {
             return this;
         }
 
-        /**
-         * Equivalent to {@code build().get(name)}, but potentially faster.
-         */
         public String get(String name) {
             for (int i = namesAndValues.size() - 2; i >= 0; i -= 2) {
                 if (name.equalsIgnoreCase(namesAndValues.get(i))) {
@@ -423,4 +354,5 @@ public final class Headers {
             return new Headers(this);
         }
     }
+
 }

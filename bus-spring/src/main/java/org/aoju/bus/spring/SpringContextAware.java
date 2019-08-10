@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring;
 
 import org.springframework.beans.BeansException;
@@ -34,9 +34,8 @@ import java.util.Map;
  * 以静态变量保存Spring ApplicationContext,
  * 可在任何代码任何地方任何时候中取出ApplicaitonContext.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Component
@@ -45,10 +44,23 @@ public class SpringContextAware implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     /**
+     * 检查上下文信息.
+     *
+     * @return true/false
+     */
+    private static void isApplicationContext() {
+        if (applicationContext == null) {
+            throw new IllegalStateException("请配置注解扫描,或者定义SpringContextAware");
+        }
+    }
+
+    /**
      * 取得存储在静态变量中的ApplicationContext.
+     *
+     * @return 上下文信息
      */
     public static ApplicationContext getApplicationContext() {
-        checkApplicationContext();
+        isApplicationContext();
         return applicationContext;
     }
 
@@ -60,18 +72,26 @@ public class SpringContextAware implements ApplicationContextAware {
 
     /**
      * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
+     *
+     * @param <T>  对象
+     * @param name 名称
+     * @return the object
      */
     public static <T> T getBean(String name) {
-        checkApplicationContext();
+        isApplicationContext();
         return (T) applicationContext.getBean(name);
     }
 
     /**
      * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
      * 如果有多个Bean符合Class, 取出第一个.
+     *
+     * @param <T>   对象
+     * @param clazz 对象
+     * @return the object
      */
     public static <T> T getBean(Class<T> clazz) {
-        checkApplicationContext();
+        isApplicationContext();
         Map beanMaps = applicationContext.getBeansOfType(clazz);
         if (beanMaps != null && !beanMaps.isEmpty()) {
             return (T) beanMaps.values().iterator().next();
@@ -80,14 +100,13 @@ public class SpringContextAware implements ApplicationContextAware {
         }
     }
 
-    private static void checkApplicationContext() {
-        if (applicationContext == null) {
-            throw new IllegalStateException("请配置注解扫描,或者定义SpringContextAware");
-        }
-    }
-
     /**
      * 依据类型获取所有子类(key为spring的id，value为对象实例)
+     *
+     * @param <T>          对象
+     * @param requiredType 类型
+     * @return the object
+     * @throws BeansException 异常
      */
     public static <T> Map<String, T> getBeanOfType(Class<T> requiredType) throws BeansException {
         return applicationContext.getBeansOfType(requiredType);

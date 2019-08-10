@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Fields;
@@ -45,9 +45,8 @@ import static org.aoju.bus.core.utils.FileUtils.normalize;
 /**
  * 时间工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class DateUtils extends Fields {
@@ -1117,8 +1116,8 @@ public class DateUtils extends Fields {
      * <pre>
      * 有时候我们计算相差天数的时候需要忽略时分秒。
      * 比如：2016-02-01 23:59:59和2016-02-02 00:00:00相差一秒
-     * 如果isReset为<criteria>false</criteria>相差天数为0。
-     * 如果isReset为<criteria>true</criteria>相差天数将被计算为1
+     * 如果isReset为false相差天数为0。
+     * 如果isReset为true相差天数将被计算为1
      * </pre>
      *
      * @param beginDate 起始日期
@@ -1469,7 +1468,7 @@ public class DateUtils extends Fields {
     /**
      * 转换时间
      *
-     * @param date
+     * @param date 日期
      * @return String 日期
      */
     public static String toString(Date date) {
@@ -1479,7 +1478,7 @@ public class DateUtils extends Fields {
     /**
      * REST API调用方法
      *
-     * @return
+     * @return 日期
      */
     public static String getMillis() {
         Calendar calendar = Calendar.getInstance();
@@ -1489,10 +1488,10 @@ public class DateUtils extends Fields {
     /**
      * 给指定的日期加上(减去)月份
      *
-     * @param date
-     * @param pattern
-     * @param num
-     * @return
+     * @param date    日期
+     * @param pattern 格式
+     * @param num     数量
+     * @return 日期
      */
     public static String addMoth(Date date, String pattern, int num) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -1505,10 +1504,10 @@ public class DateUtils extends Fields {
     /**
      * 给制定的时间加上(减去)天
      *
-     * @param date
-     * @param pattern
-     * @param num
-     * @return
+     * @param date    日期
+     * @param pattern 格式
+     * @param num     数量
+     * @return 日期
      */
     public static String addDay(Date date, String pattern, int num) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -1521,8 +1520,8 @@ public class DateUtils extends Fields {
     /**
      * 两个时间比较
      *
-     * @param
-     * @return
+     * @param date 日期
+     * @return 时间差
      */
     public static int compareDateWithNow(Date date) {
         Date now = new Date();
@@ -1533,8 +1532,8 @@ public class DateUtils extends Fields {
     /**
      * 两个时间比较(时间戳比较)
      *
-     * @param
-     * @return
+     * @param date 日期
+     * @return 时间差
      */
     public static int compareDateWithNow(long date) {
         long now = dateToUnixTimestamp();
@@ -1550,9 +1549,8 @@ public class DateUtils extends Fields {
     /**
      * 两个时间比较(时间戳比较)
      *
-     * @param
-     * @return
-     * @throws ParseException
+     * @param object 字符串日期
+     * @return the boolean
      */
     public static boolean compareWithNow(String object) {
         long expired = dateToUnixTimestamp() - (Long.parseLong(object) * 1000);
@@ -1579,13 +1577,14 @@ public class DateUtils extends Fields {
     /**
      * 将指定的日期转换成Unix时间戳
      *
-     * @param date 需要转换的日期 yyyy-MM-dd
+     * @param date   需要转换的日期
+     * @param format 格式
      * @return long 时间戳
      */
-    public static long dateToUnixTimestamp(String date, String dateFormat) {
+    public static long dateToUnixTimestamp(String date, String format) {
         long timestamp = 0;
         try {
-            timestamp = new SimpleDateFormat(dateFormat).parse(date).getTime();
+            timestamp = new SimpleDateFormat(format).parse(date).getTime();
         } catch (ParseException e) {
             throw new InstrumentException(e);
         }
@@ -1605,11 +1604,12 @@ public class DateUtils extends Fields {
     /**
      * 将指定的日期转换成Unix时间戳
      *
-     * @param date 需要转换的日期 yyyy-MM-dd HHLmm:ss
+     * @param date   需要转换的日期
+     * @param format 格式
      * @return long 时间戳
      */
-    public static String dateFromUnixTimestamp(String date, String dateFormat) {
-        return getTextPat(dateFormat, new Date(Long.parseLong(date)));
+    public static String dateFromUnixTimestamp(String date, String format) {
+        return format(new Date(Long.parseLong(date)), format);
     }
 
     public static String getTodayYMD() {
@@ -1631,10 +1631,11 @@ public class DateUtils extends Fields {
      * 将Unix时间戳转换成日期
      *
      * @param timestamp 时间戳
+     * @param format    格式
      * @return String 日期字符串
      */
-    public static String TimeStamp2Date(long timestamp, String dateFormat) {
-        String date = new SimpleDateFormat(dateFormat).format(new Date(
+    public static String TimeStamp2Date(long timestamp, String format) {
+        String date = new SimpleDateFormat(format).format(new Date(
                 timestamp));
         return date;
     }
@@ -1650,9 +1651,14 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * （日）计算去年同期和上期的起止时间 （日） beginkey、endkey 返回的map key
-     * <p>
-     * begin \ end本期起止日期
+     * 计算去年同期和上期的起止时间
+     *
+     * @param type     计算上期
+     * @param beginkey 开始时间key
+     * @param endkey   截止时间key
+     * @param begin    开始时间
+     * @param end      截止时间
+     * @return the map
      */
     public static Map<String, String> getDayDate(int type, String beginkey,
                                                  String endkey, String begin, String end) {
@@ -1703,12 +1709,12 @@ public class DateUtils extends Fields {
      *
      * @param begin 起始日期
      * @param end   截止日期
-     * @return
+     * @return the list
      */
     public static List<String> getDaysList(String begin, String end) {
         List<String> lDate = new ArrayList<String>();
-        Date date1 = null; // 开始日期
-        Date dEnd = null; // 结束日期
+        Date date1; // 开始日期
+        Date dEnd; // 结束日期
         try {
             date1 = PURE_DATETIME_FORMAT.parse(begin);
             dEnd = PURE_DATETIME_FORMAT.parse(end);
@@ -1737,6 +1743,17 @@ public class DateUtils extends Fields {
      * （周）计算（周） 上期和去年同期的起止日期和起止周 计算上期的起止时间 和去年同期 type 0本期 1上期 2去年同期 起始日期key
      * beginkey endkey 起始日期的起止周key beginWkey endWkey 本期：begin end 本期起止周
      * beginW、endW
+     *
+     * @param type      计算上期
+     * @param beginkey  开始时间key
+     * @param endkey    截止时间key
+     * @param beginWkey 开始周key
+     * @param endWkey   截止周key
+     * @param begin     开始时间
+     * @param end       截止时间
+     * @param beginW    开始周
+     * @param endW      截止周
+     * @return the map
      */
     public static Map<String, String> getWeekDate(int type, String beginkey,
                                                   String endkey, String beginWkey, String endWkey, String begin,
@@ -1813,7 +1830,7 @@ public class DateUtils extends Fields {
      * @param end    时间止
      * @param startw 周起
      * @param endW   周止
-     * @return
+     * @return the list
      */
     public static List<String> getWeeksList(String begin, String end,
                                             String startw, String endW) {
@@ -1862,9 +1879,9 @@ public class DateUtils extends Fields {
     /**
      * （月）得当时间段内的所有月份
      *
-     * @param StartDate
-     * @param endDate
-     * @return
+     * @param StartDate 开始日期
+     * @param endDate   结束日期
+     * @return the list
      */
     public static List<String> getYearMouthBy(String StartDate, String endDate) {
         DateFormat df = new SimpleDateFormat("yyyy-MM");
@@ -1896,6 +1913,13 @@ public class DateUtils extends Fields {
     /**
      * （月）计算本期的上期和去年同期 1 上期 2同期 返回的mapkay beginkey endkey 本期起止：begin end
      * 计算上期的起止时间 和去年同期 type 0本期 1上期 2去年同期
+     *
+     * @param type     计算上期
+     * @param beginkey 开始时间key
+     * @param endkey   截止时间key
+     * @param begin    开始时间
+     * @param end      截止时间
+     * @return the map
      */
     public static Map<String, String> getMonthDate(int type, String beginkey,
                                                    String endkey, String begin, String end) {
@@ -1942,6 +1966,12 @@ public class DateUtils extends Fields {
 
     /**
      * （年）计算本期（年）的上期
+     *
+     * @param beginkey 开始时间key
+     * @param endkey   截止时间key
+     * @param begin    开始时间
+     * @param end      截止时间
+     * @return the map
      */
     public static Map<String, String> getYearDate(String beginkey,
                                                   String endkey, String begin, String end) {
@@ -1976,9 +2006,9 @@ public class DateUtils extends Fields {
     /**
      * 获取年份时间段内的所有年
      *
-     * @param StartDate
-     * @param endDate
-     * @return
+     * @param StartDate 开始时间
+     * @param endDate   截止时间
+     * @return the list
      */
     public static List<String> getYearBy(String StartDate, String endDate) {
         DateFormat df = new SimpleDateFormat("yyyy");
@@ -2009,14 +2039,18 @@ public class DateUtils extends Fields {
 
     /**
      * 获取两个日期段相差的周数
+     *
+     * @param start 日期
+     * @param end   日期
+     * @return the int
      */
-    public static int getWeekCount(Date date1, Date dEnd) {
+    public static int getWeekCount(Date start, Date end) {
         Calendar c_begin = Calendar.getInstance();
         // 使用给定的 Date 设置此 Calendar 的时间
-        c_begin.setTime(date1);
+        c_begin.setTime(start);
         Calendar c_end = Calendar.getInstance();
         // 使用给定的 Date 设置此 Calendar 的时间
-        c_end.setTime(dEnd);
+        c_end.setTime(end);
         int count = 0;
         // c_end.add(Calendar.DAY_OF_YEAR, 1);
         // 结束日期下滚一天是为了包含最后一天
@@ -2035,7 +2069,7 @@ public class DateUtils extends Fields {
      * 返回该年有多少个自然周
      *
      * @param year 最多53 一般52 如果12月月末今天在本年53周（属于第二年第一周） 那么按照当年52周算
-     * @return
+     * @return the int
      */
     public static int getAllWeeks(String year) {
         Calendar calendar = Calendar.getInstance();
@@ -2055,6 +2089,17 @@ public class DateUtils extends Fields {
     /**
      * (季度) 计算本期的上期起止时间和同期的起止时间 返回的mao key 时间起止：beginkey endkey 季度起止： beginWkey
      * endWkey 本期的时间起止：begin end 季度：beginW endW type 0本期 1上期 2去年同期 季度
+     *
+     * @param type      计算上期
+     * @param beginkey  开始时间key
+     * @param endkey    截止时间key
+     * @param beginWkey 开始周key
+     * @param endWkey   截止周key
+     * @param begin     开始时间
+     * @param end       截止时间
+     * @param beginW    开始周
+     * @param endW      截止周
+     * @return the map
      */
     public static Map<String, String> getQuarterDate(int type, String beginkey,
                                                      String endkey, String beginWkey, String endWkey, String begin,
@@ -2117,9 +2162,11 @@ public class DateUtils extends Fields {
     /**
      * （季度）获取季度份时间段内的所有季度
      *
-     * @param StartDate
-     * @param endDate
-     * @return
+     * @param StartDate 开始日期
+     * @param beginQ    开始季度
+     * @param endDate   截止日期
+     * @param endQ      结束季度
+     * @return the list
      */
     public static List<String> getQuarterBy(String StartDate, String beginQ,
                                             String endDate, String endQ) {
@@ -2160,6 +2207,9 @@ public class DateUtils extends Fields {
 
     /**
      * 根据季度返回季度第一月
+     *
+     * @param quarter 季度
+     * @return 月份
      */
     public static int setMonthByQuarter(int quarter) {
         if (quarter == 1) {
@@ -2181,6 +2231,10 @@ public class DateUtils extends Fields {
 
     /**
      * 根据季度返回季度第一月或最后一月 0 起始月 1截止月
+     *
+     * @param type    第一个月份
+     * @param quarter 季度
+     * @return 月份
      */
     public static String setMonthByQuarterToString(int type, int quarter) {
         if (quarter == 1) {
@@ -2214,8 +2268,8 @@ public class DateUtils extends Fields {
     /**
      * 根据月份获取所在季度
      *
-     * @param month
-     * @return
+     * @param month 月份
+     * @return 季度
      */
     public static int getQuarterByMonth(int month) {
         int quarter = 1;
@@ -2237,8 +2291,8 @@ public class DateUtils extends Fields {
     /**
      * 返回文字描述的日期
      *
-     * @param date
-     * @return
+     * @param date 日期
+     * @return 日期
      */
     public static String getTimeFormatText(Date date) {
         if (date == null) {
@@ -2264,8 +2318,8 @@ public class DateUtils extends Fields {
     /**
      * 转换日期
      *
-     * @param date
-     * @return
+     * @param date 日期
+     * @return 日期
      */
     public static String getTimeCN(String date) {
         return NORM_DATE_CN_FORMAT.format(toDate(date));
@@ -2274,8 +2328,8 @@ public class DateUtils extends Fields {
     /**
      * 转换日期
      *
-     * @param date
-     * @return
+     * @param date 日期
+     * @return 日期
      */
     public static String getDayCN(String date) {
         return NORM_MONTH_CN_FORMAT.format(toDate(date));
@@ -2284,8 +2338,8 @@ public class DateUtils extends Fields {
     /**
      * 转换星期
      *
-     * @param date
-     * @return
+     * @param date 日期
+     * @return 日期
      */
     public static String getWeekCN(String date) {
         int w = 0;
@@ -2306,11 +2360,11 @@ public class DateUtils extends Fields {
     /**
      * 比较时间(string类型)大小
      *
-     * @param date1
+     * @param date1 日期
      * @param date2 date1 大于date2 return 1 <br>
      *              date1 小于date2 return -1 <br>
      *              date1 等于date2 return 0 <br>
-     * @return
+     * @return the int
      */
     public static int compareDate(String date1, String date2) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -2330,199 +2384,100 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 返回添加指定分数后的时间
+     * 返回添加指定年后日期
      *
-     * @param date   指定时间
-     * @param minute 添加的分数
-     * @return
-     */
-    public static Date addMinute(Date date, int minute) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.MINUTE, minute);
-        return c.getTime();
-    }
-
-    /**
-     * 返回添加指定月数后的时间-
-     *
-     * @param date
-     * @param minute
-     * @return
-     */
-    public static String addMinute(String date, int minute, String formate) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(toDate(date));
-        c.add(Calendar.MINUTE, minute);
-        return getTextPat(formate, c.getTime());
-    }
-
-    /**
-     * 返回添加指定月数后的时间
-     *
-     * @param date
-     * @param month
-     * @return
-     */
-    public static Date addMonth(Date date, int month) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.MONTH, month);
-        return c.getTime();
-    }
-
-    /**
-     * 以自定义形式返回指定时间
-     *
-     * @param pat eg:yyyy-MM-dd HH:mm:ss
-     * @return 格式化后时间
-     */
-    public static String getTextPat(String pat, Date date) {
-        DateFormat df = new SimpleDateFormat(pat);
-        return df.format(date);
-
-    }
-
-    /**
-     * 将指定格式的时间进行转换
-     *
-     * @param ymd        具体时间
-     * @param dateFormat 请求格式
-     * @return
-     */
-    public static Date getFormatDate(String ymd, String dateFormat) {
-        DateFormat df = new SimpleDateFormat(dateFormat);
-        try {
-            return df.parse(ymd);
-        } catch (ParseException e) {
-            return getYesterday();
-        }
-    }
-
-    /**
-     * 返回昨天的 Date日期
-     *
-     * @return
-     */
-    public static Date getYesterday() {
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_YEAR, -1);
-        return c.getTime();
-    }
-
-    /**
-     * Adds a number of years to a date returning a new object.
-     * The original {@code Date} is unchanged.
-     *
-     * @param date   the date, not null
-     * @param amount the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date   日期
+     * @param amount 年份
+     * @return the date
      */
     public static Date addYears(final Date date, final int amount) {
         return add(date, Calendar.YEAR, amount);
     }
 
     /**
-     * Adds a number of months to a date returning a new object.
-     * The original {@code Date} is unchanged.
+     * 返回添加指定月后的日期
      *
-     * @param date   the date, not null
-     * @param amount the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date   日期
+     * @param amount 月份
+     * @return the date
      */
     public static Date addMonths(final Date date, final int amount) {
         return add(date, Calendar.MONTH, amount);
     }
 
     /**
-     * Adds a number of weeks to a date returning a new object.
-     * The original {@code Date} is unchanged.
+     * 返回添加指定周后的日期
      *
-     * @param date   the date, not null
-     * @param amount the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date   日期
+     * @param amount 周
+     * @return the date
      */
     public static Date addWeeks(final Date date, final int amount) {
         return add(date, Calendar.WEEK_OF_YEAR, amount);
     }
 
     /**
-     * Adds a number of days to a date returning a new object.
-     * The original {@code Date} is unchanged.
+     * 返回添加指定天后的日期
      *
-     * @param date   the date, not null
-     * @param amount the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date   日期
+     * @param amount 天
+     * @return the date
      */
     public static Date addDays(final Date date, final int amount) {
         return add(date, Calendar.DAY_OF_MONTH, amount);
     }
 
     /**
-     * Adds a number of hours to a date returning a new object.
-     * The original {@code Date} is unchanged.
+     * 返回添加指定小时后的日期
      *
-     * @param date   the date, not null
-     * @param amount the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date   日期
+     * @param amount 小时
+     * @return the date
      */
     public static Date addHours(final Date date, final int amount) {
         return add(date, Calendar.HOUR_OF_DAY, amount);
     }
 
     /**
-     * Adds a number of minutes to a date returning a new object.
-     * The original {@code Date} is unchanged.
+     * 返回添加指定时间后的时间
      *
-     * @param date   the date, not null
-     * @param amount the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date   日期
+     * @param amount 分钟
+     * @return the date
      */
     public static Date addMinutes(final Date date, final int amount) {
         return add(date, Calendar.MINUTE, amount);
     }
 
     /**
-     * Adds a number of seconds to a date returning a new object.
-     * The original {@code Date} is unchanged.
+     * 返回添加指定秒后的日期
      *
-     * @param date   the date, not null
-     * @param amount the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date   日期
+     * @param amount 秒
+     * @return the date
      */
     public static Date addSeconds(final Date date, final int amount) {
         return add(date, Calendar.SECOND, amount);
     }
 
     /**
-     * Adds a number of milliseconds to a date returning a new object.
-     * The original {@code Date} is unchanged.
+     * 返回添加指定毫秒后的日期
      *
-     * @param date   the date, not null
-     * @param amount the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date   日期
+     * @param amount 毫秒
+     * @return the date
      */
     public static Date addMilliseconds(final Date date, final int amount) {
         return add(date, Calendar.MILLISECOND, amount);
     }
 
     /**
-     * Adds to a date returning a new object.
-     * The original {@code Date} is unchanged.
+     * 返回添加指定规则后的日期
      *
-     * @param date          the date, not null
-     * @param calendarField the calendar field to add to
-     * @param amount        the amount to add, may be negative
-     * @return the new {@code Date} with the amount added
-     * @throws IllegalArgumentException if the date is null
+     * @param date          日期
+     * @param calendarField 规则
+     * @param amount        数量
+     * @return the date
      */
     private static Date add(final Date date, final int calendarField, final int amount) {
         final Calendar c = Calendar.getInstance();
@@ -2538,8 +2493,6 @@ public class DateUtils extends Fields {
      * @param date   the date, not null
      * @param amount the amount to set
      * @return a new {@code Date} set with the specified value
-     * @throws IllegalArgumentException if the date is null
-     * @since 2.4
      */
     public static Date setYears(final Date date, final int amount) {
         return set(date, Calendar.YEAR, amount);
@@ -2552,8 +2505,6 @@ public class DateUtils extends Fields {
      * @param date   the date, not null
      * @param amount the amount to set
      * @return a new {@code Date} set with the specified value
-     * @throws IllegalArgumentException if the date is null
-     * @since 2.4
      */
     public static Date setMonths(final Date date, final int amount) {
         return set(date, Calendar.MONTH, amount);
@@ -2566,8 +2517,6 @@ public class DateUtils extends Fields {
      * @param date   the date, not null
      * @param amount the amount to set
      * @return a new {@code Date} set with the specified value
-     * @throws IllegalArgumentException if the date is null
-     * @since 2.4
      */
     public static Date setDays(final Date date, final int amount) {
         return set(date, Calendar.DAY_OF_MONTH, amount);
@@ -2581,8 +2530,6 @@ public class DateUtils extends Fields {
      * @param date   the date, not null
      * @param amount the amount to set
      * @return a new {@code Date} set with the specified value
-     * @throws IllegalArgumentException if the date is null
-     * @since 2.4
      */
     public static Date setHours(final Date date, final int amount) {
         return set(date, Calendar.HOUR_OF_DAY, amount);
@@ -2595,8 +2542,6 @@ public class DateUtils extends Fields {
      * @param date   the date, not null
      * @param amount the amount to set
      * @return a new {@code Date} set with the specified value
-     * @throws IllegalArgumentException if the date is null
-     * @since 2.4
      */
     public static Date setMinutes(final Date date, final int amount) {
         return set(date, Calendar.MINUTE, amount);
@@ -2609,8 +2554,6 @@ public class DateUtils extends Fields {
      * @param date   the date, not null
      * @param amount the amount to set
      * @return a new {@code Date} set with the specified value
-     * @throws IllegalArgumentException if the date is null
-     * @since 2.4
      */
     public static Date setSeconds(final Date date, final int amount) {
         return set(date, Calendar.SECOND, amount);
@@ -2623,8 +2566,6 @@ public class DateUtils extends Fields {
      * @param date   the date, not null
      * @param amount the amount to set
      * @return a new {@code Date} set with the specified value
-     * @throws IllegalArgumentException if the date is null
-     * @since 2.4
      */
     public static Date setMilliseconds(final Date date, final int amount) {
         return set(date, Calendar.MILLISECOND, amount);
@@ -2639,8 +2580,6 @@ public class DateUtils extends Fields {
      * @param calendarField the {@code Calendar} field to set the amount to
      * @param amount        the amount to set
      * @return a new {@code Date} set with the specified value
-     * @throws IllegalArgumentException if the date is null
-     * @since 2.4
      */
     private static Date set(final Date date, final int calendarField, final int amount) {
         // getInstance() returns a new object, so this method is thread safe.
@@ -2656,7 +2595,6 @@ public class DateUtils extends Fields {
      *
      * @param date the date to convert to a Calendar
      * @return the created Calendar
-     * @throws NullPointerException if null is passed in
      * @since 3.0
      */
     public static Calendar toCalendar(final Date date) {
@@ -2671,7 +2609,6 @@ public class DateUtils extends Fields {
      * @param date the date to convert to a Calendar
      * @param tz   the time zone of the {@code date}
      * @return the created Calendar
-     * @throws NullPointerException if {@code date} or {@code tz} is null
      */
     public static Calendar toCalendar(final Date date, final TimeZone tz) {
         final Calendar c = Calendar.getInstance(tz);
@@ -2763,6 +2700,12 @@ public class DateUtils extends Fields {
         return result;
     }
 
+    /**
+     * 获取中文星期
+     *
+     * @param date 日期
+     * @return 星期
+     */
     public String getChineseWeek(Calendar date) {
         String[] dayNames = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
         int dayOfWeek = date.get(7);
@@ -2780,11 +2723,11 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获取公共节假日
+     * 获取公共节假日天数
      *
-     * @param d1
-     * @param d2
-     * @return
+     * @param d1 日期
+     * @param d2 日期
+     * @return the int
      */
     public int getHolidays(Calendar d1, Calendar d2) {
         return getDaysBetween(d1, d2) - getWorkingDay(d1, d2);

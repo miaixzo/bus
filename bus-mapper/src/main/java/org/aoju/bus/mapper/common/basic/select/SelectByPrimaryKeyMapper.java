@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.common.basic.select;
 
 import org.aoju.bus.mapper.provider.BaseSelectProvider;
@@ -29,9 +29,8 @@ import org.apache.ibatis.annotations.SelectProvider;
 /**
  * 通用Mapper接口,其他接口继承该接口即可
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface SelectByPrimaryKeyMapper<T> {
@@ -39,8 +38,8 @@ public interface SelectByPrimaryKeyMapper<T> {
     /**
      * 根据主键字段进行查询，方法参数必须包含完整的主键属性，查询条件使用等号
      *
-     * @param key
-     * @return
+     * @param key 对象
+     * @return 对象
      */
     @SelectProvider(type = BaseSelectProvider.class, method = "dynamicSQL")
     T selectByPrimaryKey(Object key);

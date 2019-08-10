@@ -20,17 +20,16 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import java.io.IOException;
 
 /**
- * A {@link Source} which forwards calls to another. Useful for subclassing.
+ * 将调用转发给另一个调用的{@link Source}
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class ForwardingSource implements Source {
@@ -42,9 +41,6 @@ public abstract class ForwardingSource implements Source {
         this.delegate = delegate;
     }
 
-    /**
-     * {@link Source} to which this instance is delegating.
-     */
     public final Source delegate() {
         return delegate;
     }

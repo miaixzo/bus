@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.consts.Fields;
@@ -30,9 +30,8 @@ import org.aoju.bus.core.utils.DateUtils;
  * 计时器<br>
  * 计算某个过程花费的时间，精确到毫秒
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class TimeInterval {

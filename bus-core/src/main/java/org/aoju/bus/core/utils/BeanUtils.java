@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.bean.*;
@@ -45,9 +45,8 @@ import java.util.*;
  * 把一个拥有对属性进行set和get方法的类，我们就可以称之为JavaBean。
  * </p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BeanUtils {
@@ -183,8 +182,8 @@ public class BeanUtils {
      */
     private static Map<String, PropertyDescriptor> internalGetPropertyDescriptorMap(Class<?> clazz, boolean ignoreCase) throws CommonException {
         final PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(clazz);
-        final Map<String, PropertyDescriptor> map = ignoreCase ? new CaseInsensitiveMap<String, PropertyDescriptor>(propertyDescriptors.length, 1)
-                : new HashMap<String, PropertyDescriptor>(propertyDescriptors.length, 1);
+        final Map<String, PropertyDescriptor> map = ignoreCase ? new CaseInsensitiveMap<>(propertyDescriptors.length, 1)
+                : new HashMap<>(propertyDescriptors.length, 1);
 
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             map.put(propertyDescriptor.getName(), propertyDescriptor);
@@ -281,6 +280,7 @@ public class BeanUtils {
      *
      * @param bean       Bean对象，支持Map、List、Collection、Array
      * @param expression 表达式，例如：person.friend[5].name
+     * @param value      值
      * @see BeanPath#get(Object)
      * @since 4.0.6
      */
@@ -405,6 +405,7 @@ public class BeanUtils {
     /**
      * 对象或Map转Bean
      *
+     * @param <T>    Bean类型
      * @param source Bean对象或Map
      * @param clazz  目标的Bean类型
      * @return Bean对象
@@ -613,6 +614,7 @@ public class BeanUtils {
      * @param <T>          Bean类型
      * @param bean         Bean对象
      * @param ignoreFields 不需要trim的Field名称列表（不区分大小写）
+     * @return the object
      */
     public static <T> T trimStrFields(T bean, String... ignoreFields) {
         if (bean == null) {

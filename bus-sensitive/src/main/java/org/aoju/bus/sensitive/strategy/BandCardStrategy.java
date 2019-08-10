@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -32,9 +32,8 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 只留前四位和后四位
  * 6227 0383 3938 3938 393 脱敏结果: 6227 **** **** ***8 393
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BandCardStrategy implements StrategyProvider {

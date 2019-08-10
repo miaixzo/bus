@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -31,9 +31,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 /**
  * BaseUpdateProvider实现类，基础方法实现类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BaseUpdateProvider extends MapperTemplate {
@@ -45,7 +44,8 @@ public class BaseUpdateProvider extends MapperTemplate {
     /**
      * 通过主键更新全部字段
      *
-     * @param ms
+     * @param ms MappedStatement
+     * @return the string
      */
     public String updateByPrimaryKey(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -59,8 +59,8 @@ public class BaseUpdateProvider extends MapperTemplate {
     /**
      * 通过主键更新不为null的字段
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String updateByPrimaryKeySelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);

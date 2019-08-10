@@ -20,13 +20,14 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.bean;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 import org.aoju.bus.core.utils.*;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -45,12 +46,11 @@ import java.util.Map;
  * 4. Setter忽略参数值与字段值不匹配的情况，因此有多个参数类型的重载时，会调用首次匹配的
  * </pre>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
-public class BeanDesc {
+public class BeanDesc implements Serializable {
 
     /**
      * Bean类
@@ -186,7 +186,7 @@ public class BeanDesc {
     private PropDesc createProp(Field field) {
         final String fieldName = field.getName();
         final Class<?> fieldType = field.getType();
-        final boolean isBooeanField = (fieldType == Boolean.class || fieldType == boolean.class);
+        final boolean isBooeanField = BooleanUtils.isBoolean(fieldType);
 
         Method getter = null;
         Method setter = null;
@@ -475,7 +475,6 @@ public class BeanDesc {
             }
             return type;
         }
-
     }
 
 }

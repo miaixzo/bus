@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.extra.mail;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -33,9 +33,8 @@ import java.util.Properties;
 /**
  * 邮件账户对象
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MailAccount implements Serializable {
@@ -258,12 +257,6 @@ public class MailAccount implements Serializable {
 
     /**
      * 设置发送方，遵循RFC-822标准<br>
-     * 发件人可以是以下形式：
-     *
-     * <pre>
-     * 1. user@xxx.xx
-     * 2.  name <user@xxx.xx>
-     * </pre>
      *
      * @param from 发送方，遵循RFC-822标准
      * @return this
@@ -287,6 +280,7 @@ public class MailAccount implements Serializable {
      * 设置是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
      *
      * @param debug 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * @return MailAccount
      * @since 4.0.2
      */
     public MailAccount setDebug(boolean debug) {

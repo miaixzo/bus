@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cron;
 
 import org.aoju.bus.core.consts.Fields;
@@ -30,9 +30,8 @@ import org.aoju.bus.core.utils.ThreadUtils;
  * 定时任务计时器<br>
  * 计时器线程每隔一分钟检查一次任务列表，一旦匹配到执行对应的Task
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class CronTimer extends Thread {

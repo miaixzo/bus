@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.logger;
 
 import org.aoju.bus.core.utils.CallerUtils;
@@ -30,9 +30,8 @@ import org.aoju.bus.logger.level.Level;
 /**
  * 静态日志类，用于在不引入日志对象的情况下打印日志
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Logger {

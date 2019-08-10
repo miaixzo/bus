@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.thread.ExecutorBuilder;
@@ -34,9 +34,8 @@ import java.util.concurrent.*;
 /**
  * 线程池工具
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ThreadUtils {
@@ -411,6 +410,7 @@ public class ThreadUtils {
      *
      * @param prefix   线程名前缀
      * @param isDeamon 是否守护线程
+     * @return the object
      * @since 4.0.0
      */
     public static ThreadFactory newNamedThreadFactory(String prefix, boolean isDeamon) {
@@ -423,6 +423,7 @@ public class ThreadUtils {
      * @param prefix      线程名前缀
      * @param threadGroup 线程组，可以为null
      * @param isDeamon    是否守护线程
+     * @return the object
      * @since 4.0.0
      */
     public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon) {
@@ -436,6 +437,7 @@ public class ThreadUtils {
      * @param threadGroup 线程组，可以为null
      * @param isDeamon    是否守护线程
      * @param handler     未捕获异常处理
+     * @return the object
      * @since 4.0.0
      */
     public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon, UncaughtExceptionHandler handler) {

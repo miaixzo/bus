@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -34,9 +34,8 @@ import java.util.concurrent.CountDownLatch;
  * 在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。<br>
  * 不能保证同时开始
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SyncFinisher {
@@ -92,8 +91,6 @@ public class SyncFinisher {
 
     /**
      * 工作者，为一个线程
-     *
-     * @author xiaoleilu
      */
     public abstract class Worker extends Thread {
 

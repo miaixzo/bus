@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.http.first;
 
 import org.aoju.bus.core.io.*;
@@ -29,8 +29,6 @@ import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.connection.RealConnection;
 import org.aoju.bus.http.internal.connection.StreamAllocation;
-import org.aoju.bus.http.internal.http.*;
-import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.http.*;
 
 import java.io.EOFException;
@@ -58,9 +56,8 @@ import java.util.concurrent.TimeUnit;
  * Exchanges that do not have a response body can call {@link #newFixedLengthSource(long)
  * newFixedLengthSource(0)} and may skip reading and closing that source.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Http1Codec implements HttpCodec {

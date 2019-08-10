@@ -20,24 +20,27 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.io.IOException;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Callback {
+
     /**
      * Called when the request could not be executed due to cancellation, a connectivity problem or
      * timeout. Because networks can fail during an exchange, it is possible that the remote server
      * accepted the request before the failure.
+     *
+     * @param call Call
+     * @param ex   IOException
      */
-    void onFailure(Call call, IOException e);
+    void onFailure(Call call, IOException ex);
 
     /**
      * Called when the HTTP response was successfully returned by the remote server. The callback may
@@ -48,6 +51,10 @@ public interface Callback {
      * <p>Note that transport-layer success (receiving a HTTP response code, headers and body) does
      * not necessarily indicate application-layer success: {@code response} may still indicate an
      * unhappy HTTP response code like 404 or 500.
+     *
+     * @param call     Call
+     * @param response Response
+     * @throws IOException if there is an IO issue.
      */
     void onResponse(Call call, Response response) throws IOException;
 }

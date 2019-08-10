@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang;
 
 /**
@@ -28,14 +28,13 @@ package org.aoju.bus.core.lang;
  * 此编辑器两个作用：
  *
  * <pre>
- * 1、如果返回值为<criteria>null</criteria>，表示此值被抛弃
+ * 1、如果返回值为null，表示此值被抛弃
  * 2、对对象做修改
  * </pre>
  *
  * @param <T> 被编辑对象类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Editor<T> {
@@ -44,8 +43,8 @@ public interface Editor<T> {
      * 修改过滤后的结果
      *
      * @param t 被过滤的对象
-     * @return 修改后的对象，如果被过滤返回<criteria>null</criteria>
+     * @return 修改后的对象，如果被过滤返回null
      */
     T edit(T t);
-    
+
 }

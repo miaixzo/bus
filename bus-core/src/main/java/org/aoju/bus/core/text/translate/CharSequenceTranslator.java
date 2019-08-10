@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.text.translate;
 
 import java.io.IOException;
@@ -34,9 +34,8 @@ import java.util.Locale;
  * Its core use is to escape and unescape text. Because escaping and unescaping
  * is completely contextual, the API does not present two separate signatures.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class CharSequenceTranslator {

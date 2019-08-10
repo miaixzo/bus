@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 
@@ -36,9 +36,8 @@ import java.util.Properties;
 /**
  * Parsing The Configuration File
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class PropertiesUtils {
@@ -49,12 +48,6 @@ public final class PropertiesUtils {
         return ctxPropertiesMap;
     }
 
-    /**
-     * Get a value based on key , if key does not exist , null is returned
-     *
-     * @param key
-     * @return
-     */
     public static String getString(String key) {
         try {
             return ctxPropertiesMap.get(key);
@@ -63,12 +56,6 @@ public final class PropertiesUtils {
         }
     }
 
-    /**
-     * Get a value based on key , if key does not exist , null is returned
-     *
-     * @param key
-     * @return
-     */
     public static String getString(String key, String defaultValue) {
         try {
             String value = ctxPropertiesMap.get(key);
@@ -84,8 +71,8 @@ public final class PropertiesUtils {
     /**
      * 根据key获取值
      *
-     * @param key
-     * @return
+     * @param key 键
+     * @return the int
      */
     public static int getInt(String key) {
         return Integer.parseInt(ctxPropertiesMap.get(key));
@@ -94,9 +81,9 @@ public final class PropertiesUtils {
     /**
      * 根据key获取值
      *
-     * @param key
-     * @param defaultValue
-     * @return
+     * @param key          键
+     * @param defaultValue 值
+     * @return the int
      */
     public static int getInt(String key, int defaultValue) {
         String value = ctxPropertiesMap.get(key);
@@ -109,9 +96,9 @@ public final class PropertiesUtils {
     /**
      * 根据key获取值
      *
-     * @param key
-     * @param defaultValue
-     * @return
+     * @param key          键
+     * @param defaultValue 值
+     * @return the boolean
      */
     public static boolean getBoolean(String key, boolean defaultValue) {
         String value = ctxPropertiesMap.get(key);
@@ -125,7 +112,7 @@ public final class PropertiesUtils {
      * @param className   当前类的全类名
      * @param path        要获取的properties配置文件路径
      * @param propertyKey 配置文件中的key
-     * @return
+     * @return the string
      */
     public static String getString(String className, String path, String propertyKey) {
         Class clazz = null;

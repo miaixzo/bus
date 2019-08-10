@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.mapper.annotation.Version;
@@ -34,9 +34,8 @@ import java.util.Set;
 /**
  * 拼常用SQL的工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SqlSourceBuilder {
@@ -44,9 +43,9 @@ public class SqlSourceBuilder {
     /**
      * 获取表名 - 支持动态表名
      *
-     * @param entityClass
-     * @param tableName
-     * @return
+     * @param entityClass 对象
+     * @param tableName   表
+     * @return the string
      */
     public static String getDynamicTableName(Class<?> entityClass, String tableName) {
         if (EntityTableName.class.isAssignableFrom(entityClass)) {
@@ -69,10 +68,10 @@ public class SqlSourceBuilder {
     /**
      * 获取表名 - 支持动态表名，该方法用于多个入参时，通过parameterName指定入参中实体类的@Param的注解值
      *
-     * @param entityClass
-     * @param tableName
-     * @param parameterName
-     * @return
+     * @param entityClass   对象
+     * @param tableName     表
+     * @param parameterName 参数
+     * @return the string
      */
     public static String getDynamicTableName(Class<?> entityClass, String tableName, String parameterName) {
         if (EntityTableName.class.isAssignableFrom(entityClass)) {
@@ -98,10 +97,8 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * <bind name="pattern" value="'%' + _parameter.getTitle() + '%'" />
-     *
-     * @param column
-     * @return
+     * @param column 列信息
+     * @return the string
      */
     public static String getBindCache(EntityColumn column) {
         StringBuilder sql = new StringBuilder();
@@ -112,10 +109,9 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * <bind name="pattern" value="'%' + _parameter.getTitle() + '%'" />
-     *
-     * @param column
-     * @return
+     * @param column 列信息
+     * @param value  值信息
+     * @return the string
      */
     public static String getBindValue(EntityColumn column, String value) {
         StringBuilder sql = new StringBuilder();
@@ -126,10 +122,9 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * <bind name="pattern" value="'%' + _parameter.getTitle() + '%'" />
-     *
-     * @param column
-     * @return
+     * @param column   列信息
+     * @param contents 内容
+     * @return the string
      */
     public static String getIfCacheNotNull(EntityColumn column, String contents) {
         StringBuilder sql = new StringBuilder();
@@ -142,8 +137,9 @@ public class SqlSourceBuilder {
     /**
      * 如果_cache == null
      *
-     * @param column
-     * @return
+     * @param column   列信息
+     * @param contents 内容
+     * @return the string
      */
     public static String getIfCacheIsNull(EntityColumn column, String contents) {
         StringBuilder sql = new StringBuilder();
@@ -156,10 +152,10 @@ public class SqlSourceBuilder {
     /**
      * 判断自动!=null的条件结构
      *
-     * @param column
-     * @param contents
-     * @param empty
-     * @return
+     * @param column   列信息
+     * @param contents 内容
+     * @param empty    是否empty
+     * @return the string
      */
     public static String getIfNotNull(EntityColumn column, String contents, boolean empty) {
         return getIfNotNull(null, column, contents, empty);
@@ -168,10 +164,10 @@ public class SqlSourceBuilder {
     /**
      * 判断自动==null的条件结构
      *
-     * @param column
-     * @param contents
-     * @param empty
-     * @return
+     * @param column   列信息
+     * @param contents 内容
+     * @param empty    是否empty
+     * @return the string
      */
     public static String getIfIsNull(EntityColumn column, String contents, boolean empty) {
         return getIfIsNull(null, column, contents, empty);
@@ -180,11 +176,11 @@ public class SqlSourceBuilder {
     /**
      * 判断自动!=null的条件结构
      *
-     * @param entityName
-     * @param column
-     * @param contents
-     * @param empty
-     * @return
+     * @param entityName 对象
+     * @param column     列信息
+     * @param contents   内容
+     * @param empty      是否empty
+     * @return the string
      */
     public static String getIfNotNull(String entityName, EntityColumn column, String contents, boolean empty) {
         StringBuilder sql = new StringBuilder();
@@ -209,11 +205,11 @@ public class SqlSourceBuilder {
     /**
      * 判断自动==null的条件结构
      *
-     * @param entityName
-     * @param column
-     * @param contents
-     * @param empty
-     * @return
+     * @param entityName 对象
+     * @param column     列信息
+     * @param contents   内容
+     * @param empty      是否empty
+     * @return the string
      */
     public static String getIfIsNull(String entityName, EntityColumn column, String contents, boolean empty) {
         StringBuilder sql = new StringBuilder();
@@ -238,8 +234,8 @@ public class SqlSourceBuilder {
     /**
      * 获取所有查询列，如id,name,criteria...
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String getAllColumns(Class<?> entityClass) {
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
@@ -253,8 +249,8 @@ public class SqlSourceBuilder {
     /**
      * select xxx,xxx...
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String selectAllColumns(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
@@ -267,8 +263,8 @@ public class SqlSourceBuilder {
     /**
      * select count(x)
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String selectCount(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
@@ -283,10 +279,8 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * select case when count(x) > 0 then 1 else 0 end
-     *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String selectCountExists(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
@@ -304,9 +298,9 @@ public class SqlSourceBuilder {
     /**
      * from tableName - 动态表名
      *
-     * @param entityClass
-     * @param defaultTableName
-     * @return
+     * @param entityClass      对象
+     * @param defaultTableName 表名
+     * @return the string
      */
     public static String fromTable(Class<?> entityClass, String defaultTableName) {
         StringBuilder sql = new StringBuilder();
@@ -319,9 +313,9 @@ public class SqlSourceBuilder {
     /**
      * update tableName - 动态表名
      *
-     * @param entityClass
-     * @param defaultTableName
-     * @return
+     * @param entityClass      对象
+     * @param defaultTableName 表名
+     * @return the string
      */
     public static String updateTable(Class<?> entityClass, String defaultTableName) {
         return updateTable(entityClass, defaultTableName, null);
@@ -330,10 +324,10 @@ public class SqlSourceBuilder {
     /**
      * update tableName - 动态表名
      *
-     * @param entityClass
-     * @param defaultTableName 默认表名
-     * @param entityName       别名
-     * @return
+     * @param entityClass      对象
+     * @param defaultTableName 表名
+     * @param entityName       对象名
+     * @return the string
      */
     public static String updateTable(Class<?> entityClass, String defaultTableName, String entityName) {
         StringBuilder sql = new StringBuilder();
@@ -346,9 +340,9 @@ public class SqlSourceBuilder {
     /**
      * delete tableName - 动态表名
      *
-     * @param entityClass
-     * @param defaultTableName
-     * @return
+     * @param entityClass      对象
+     * @param defaultTableName 表名
+     * @return the string
      */
     public static String deleteFromTable(Class<?> entityClass, String defaultTableName) {
         StringBuilder sql = new StringBuilder();
@@ -361,9 +355,9 @@ public class SqlSourceBuilder {
     /**
      * insert into tableName - 动态表名
      *
-     * @param entityClass
-     * @param defaultTableName
-     * @return
+     * @param entityClass      对象
+     * @param defaultTableName 表名
+     * @return the string
      */
     public static String insertIntoTable(Class<?> entityClass, String defaultTableName) {
         StringBuilder sql = new StringBuilder();
@@ -376,11 +370,11 @@ public class SqlSourceBuilder {
     /**
      * insert table()列
      *
-     * @param entityClass
+     * @param entityClass 对象
      * @param skipId      是否从列中忽略id类型
      * @param notNull     是否判断!=null
      * @param notEmpty    是否判断String类型!=''
-     * @return
+     * @return the string
      */
     public static String insertColumns(Class<?> entityClass, boolean skipId, boolean notNull, boolean notEmpty) {
         StringBuilder sql = new StringBuilder();
@@ -408,11 +402,11 @@ public class SqlSourceBuilder {
     /**
      * insert-values()列
      *
-     * @param entityClass
+     * @param entityClass 对象
      * @param skipId      是否从列中忽略id类型
      * @param notNull     是否判断!=null
      * @param notEmpty    是否判断String类型!=''
-     * @return
+     * @return the string
      */
     public static String insertValuesColumns(Class<?> entityClass, boolean skipId, boolean notNull, boolean notEmpty) {
         StringBuilder sql = new StringBuilder();
@@ -440,11 +434,11 @@ public class SqlSourceBuilder {
     /**
      * update set列
      *
-     * @param entityClass
+     * @param entityClass 对象
      * @param entityName  实体映射名
      * @param notNull     是否判断!=null
      * @param notEmpty    是否判断String类型!=''
-     * @return
+     * @return the string
      */
     public static String updateSetColumns(Class<?> entityClass, String entityName, boolean notNull, boolean notEmpty) {
         StringBuilder sql = new StringBuilder();
@@ -483,8 +477,8 @@ public class SqlSourceBuilder {
     /**
      * where主键条件
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String wherePKColumns(Class<?> entityClass) {
         return wherePKColumns(entityClass, false);
@@ -493,8 +487,8 @@ public class SqlSourceBuilder {
     /**
      * where主键条件
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String wherePKColumns(Class<?> entityClass, boolean useVersion) {
         StringBuilder sql = new StringBuilder();
@@ -515,9 +509,9 @@ public class SqlSourceBuilder {
     /**
      * where所有列的条件，会判断是否!=null
      *
-     * @param entityClass
-     * @param empty
-     * @return
+     * @param entityClass 对象
+     * @param empty       是否为empty
+     * @return the string
      */
     public static String whereAllIfColumns(Class<?> entityClass, boolean empty) {
         return whereAllIfColumns(entityClass, empty, false);
@@ -526,10 +520,10 @@ public class SqlSourceBuilder {
     /**
      * where所有列的条件，会判断是否!=null
      *
-     * @param entityClass
-     * @param empty
-     * @param useVersion
-     * @return
+     * @param entityClass 对象
+     * @param empty       是否为empty
+     * @param useVersion  版本
+     * @return the string
      */
     public static String whereAllIfColumns(Class<?> entityClass, boolean empty, boolean useVersion) {
         StringBuilder sql = new StringBuilder();
@@ -552,8 +546,8 @@ public class SqlSourceBuilder {
     /**
      * 乐观锁字段条件
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String whereVersion(Class<?> entityClass) {
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
@@ -574,8 +568,8 @@ public class SqlSourceBuilder {
     /**
      * 获取默认的orderBy，通过注解设置的
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String orderByDefault(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
@@ -590,7 +584,8 @@ public class SqlSourceBuilder {
     /**
      * 支持查询指定列时
      *
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String selectColumns(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
@@ -611,7 +606,8 @@ public class SqlSourceBuilder {
     /**
      * 支持查询指定列时
      *
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String countColumn(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
@@ -633,7 +629,8 @@ public class SqlSourceBuilder {
     /**
      * 查询中的orderBy条件，会判断默认orderBy
      *
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     public static String orderBy(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
@@ -652,7 +649,7 @@ public class SqlSourceBuilder {
     /**
      * 支持 for update
      *
-     * @return
+     * @return the string
      */
     public static String forUpdate() {
         StringBuilder sql = new StringBuilder();
@@ -665,7 +662,7 @@ public class SqlSourceBuilder {
     /**
      * 支持 for update
      *
-     * @return
+     * @return the string
      */
     public static String check(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
@@ -678,7 +675,7 @@ public class SqlSourceBuilder {
     /**
      * 查询中的where结构，用于只有一个参数时
      *
-     * @return
+     * @return the string
      */
     public static String whereClause() {
         return "<if test=\"_parameter != null\">" +
@@ -716,7 +713,7 @@ public class SqlSourceBuilder {
     /**
      * Update中的where结构，用于多个参数时，带@Param("condition")注解时
      *
-     * @return
+     * @return the string
      */
     public static String updateByWhereClause() {
         return "<where>\n" +

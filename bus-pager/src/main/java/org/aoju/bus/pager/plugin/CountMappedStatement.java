@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.plugin;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -33,9 +33,8 @@ import java.util.List;
 /**
  * 创建新的MappedStatement,主要是Count返回值int
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class CountMappedStatement {
@@ -46,9 +45,9 @@ public class CountMappedStatement {
     /**
      * 新建count查询的MappedStatement
      *
-     * @param ms
-     * @param newMsId
-     * @return
+     * @param ms      MappedStatement
+     * @param newMsId 标识
+     * @return the mappedStatement
      */
     public static MappedStatement newCountMappedStatement(MappedStatement ms, String newMsId) {
         MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), newMsId, ms.getSqlSource(), ms.getSqlCommandType());
@@ -82,8 +81,8 @@ public class CountMappedStatement {
     /**
      * 新建count查询的MappedStatement
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return mappedStatement
      */
     public static MappedStatement newCountMappedStatement(MappedStatement ms) {
         return newCountMappedStatement(ms, ms.getId() + COUNT);

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cron;
 
 import org.aoju.bus.cron.task.Task;
@@ -29,9 +29,8 @@ import org.aoju.bus.cron.task.Task;
  * 作业执行器<br>
  * 执行具体的作业，执行完毕销毁
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class TaskExecutor implements Runnable {

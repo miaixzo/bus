@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.connection;
 
 import org.aoju.bus.http.*;
@@ -28,7 +28,6 @@ import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.http.HttpCodec;
 import org.aoju.bus.http.internal.http.second.ErrorCode;
 import org.aoju.bus.http.internal.http.second.StreamResetException;
-import org.aoju.bus.http.*;
 
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -73,9 +72,8 @@ import java.util.List;
  * but not the other streams sharing its connection. But if the TLS handshake is still in progress
  * then canceling may break the entire connection.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class StreamAllocation {

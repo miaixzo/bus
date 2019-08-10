@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.common.basic.insert;
 
 import org.aoju.bus.mapper.provider.BaseInsertProvider;
@@ -29,9 +29,8 @@ import org.apache.ibatis.annotations.InsertProvider;
 /**
  * 通用Mapper接口,插入
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface InsertSelectiveMapper<T> {
@@ -39,8 +38,8 @@ public interface InsertSelectiveMapper<T> {
     /**
      * 保存一个实体，null的属性不会保存，会使用数据库默认值
      *
-     * @param record
-     * @return
+     * @param record 对象
+     * @return 操作数量
      */
     @InsertProvider(type = BaseInsertProvider.class, method = "dynamicSQL")
     int insertSelective(T record);

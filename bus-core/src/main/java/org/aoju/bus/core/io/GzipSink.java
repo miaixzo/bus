@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.utils.IoUtils;
@@ -32,43 +32,22 @@ import java.util.zip.Deflater;
 import static java.util.zip.Deflater.DEFAULT_COMPRESSION;
 
 /**
- * A sink that uses <a href="http://www.ietf.org/rfc/rfc1952.txt">GZIP</a> to
- * compress written data to another sink.
+ * 这相当于使用{@link Deflater}同步刷新选项。
+ * 该类不提供任何部分刷新机制。为获得最佳性能,
+ * 只在应用程序行为需要时调用{@link #flush}。
  *
- * <h3>Sync flush</h3>
- * Aggressive flushing of this stream may result in reduced compression. Each
- * call to {@link #flush} immediately compresses all currently-buffered data;
- * this early compression may be less effective than compression performed
- * without flushing.
- *
- * <p>This is equivalent to using {@link Deflater} with the sync flush option.
- * This class does not offer any partial flush mechanism. For best performance,
- * only call {@link #flush} when application behavior requires it.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class GzipSink implements Sink {
-    /**
-     * Sink into which the GZIP format is written.
-     */
+
     private final BufferedSink sink;
 
-    /**
-     * The deflater used to compress the body.
-     */
     private final Deflater deflater;
 
-    /**
-     * The deflater sink takes care of moving data between decompressed source and
-     * compressed sink buffers.
-     */
     private final DeflaterSink deflaterSink;
-    /**
-     * Checksum calculated for the compressed body.
-     */
+
     private final CRC32 crc = new CRC32();
     private boolean closed;
 
@@ -133,10 +112,6 @@ public final class GzipSink implements Sink {
         if (thrown != null) IoUtils.sneakyRethrow(thrown);
     }
 
-    /**
-     * Returns the {@link Deflater}.
-     * Use it to access stats, dictionary, compression level, etc.
-     */
     public final Deflater deflater() {
         return deflater;
     }
@@ -157,9 +132,6 @@ public final class GzipSink implements Sink {
         sink.writeIntLe((int) deflater.getBytesRead()); // Length of original data.
     }
 
-    /**
-     * Updates the CRC with the given bytes.
-     */
     private void updateCrc(Buffer buffer, long byteCount) {
         for (Segment head = buffer.head; byteCount > 0; head = head.next) {
             int segmentLength = (int) Math.min(byteCount, head.limit - head.pos);
@@ -167,4 +139,5 @@ public final class GzipSink implements Sink {
             byteCount -= segmentLength;
         }
     }
+
 }

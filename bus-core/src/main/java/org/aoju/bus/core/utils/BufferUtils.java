@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Normal;
@@ -34,9 +34,8 @@ import java.nio.charset.Charset;
  * 此工具来自于 t-io 项目以及其它项目的相关部分收集<br>
  * ByteBuffer的相关介绍见：https://www.cnblogs.com/ruber/p/6857159.html
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BufferUtils {

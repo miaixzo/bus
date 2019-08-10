@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.logger;
 
 import org.aoju.bus.core.utils.CallerUtils;
@@ -40,9 +40,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 日志工厂类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @see Slf4jLogFactory
  * @see Log4j2LogFactory
  * @see Log4jLogFactory

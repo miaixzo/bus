@@ -20,11 +20,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.strategy;
 
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.exception.NoSuchException;
-import org.aoju.bus.core.lang.exception.UncheckedException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
@@ -39,9 +39,8 @@ import java.lang.reflect.Method;
 /**
  * 反射信息校验
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ReflectStrategy implements Complex<Object, Reflect> {
@@ -59,7 +58,7 @@ public class ReflectStrategy implements Complex<Object, Reflect> {
             Object bean = ClassUtils.getClass(clazz);
             result = ReflectUtils.invokeMethod(method, bean);
         } catch (NoSuchMethodException e) {
-            throw new UncheckedException(e.getMessage(), e);
+            throw new InstrumentException(e.getMessage(), e);
         }
 
         for (String name : annotation.validator()) {

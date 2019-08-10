@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.mapper.MapperException;
@@ -39,9 +39,8 @@ import java.util.regex.Pattern;
 /**
  * 类字段工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class FieldSourceBuilder {
@@ -60,8 +59,8 @@ public class FieldSourceBuilder {
     /**
      * 获取全部的Field
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return 结果
      */
     public static List<EntityField> getFields(Class<?> entityClass) {
         return fieldHelper.getFields(entityClass);
@@ -70,8 +69,8 @@ public class FieldSourceBuilder {
     /**
      * 获取全部的属性，通过方法名获取
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return 结果
      */
     public static List<EntityField> getProperties(Class<?> entityClass) {
         return fieldHelper.getProperties(entityClass);
@@ -80,9 +79,8 @@ public class FieldSourceBuilder {
     /**
      * 获取全部的属性，包含字段和方法
      *
-     * @param entityClass
-     * @return
-     * @throws IntrospectionException
+     * @param entityClass 对象
+     * @return 结果
      */
     public static List<EntityField> getAll(Class<?> entityClass) {
         List<EntityField> fields = fieldHelper.getFields(entityClass);
@@ -110,6 +108,9 @@ public class FieldSourceBuilder {
 
     /**
      * 将下划线风格替换为驼峰风格
+     *
+     * @param str 字符串
+     * @return the string
      */
     public static String underlineToCamelhump(String str) {
         Matcher matcher = Pattern.compile("_[a-z]").matcher(str);
@@ -130,16 +131,16 @@ public class FieldSourceBuilder {
         /**
          * 获取全部的Field
          *
-         * @param entityClass
-         * @return
+         * @param entityClass 对象
+         * @return 结果
          */
         List<EntityField> getFields(Class<?> entityClass);
 
         /**
          * 获取全部的属性，通过方法名获取
          *
-         * @param entityClass
-         * @return
+         * @param entityClass 对象
+         * @return 结果
          */
         List<EntityField> getProperties(Class<?> entityClass);
     }
@@ -151,8 +152,8 @@ public class FieldSourceBuilder {
         /**
          * 获取全部的Field
          *
-         * @param entityClass
-         * @return
+         * @param entityClass 对象
+         * @return 结果
          */
         @Override
         public List<EntityField> getFields(Class<?> entityClass) {
@@ -174,10 +175,10 @@ public class FieldSourceBuilder {
         /**
          * 获取全部的Field，仅仅通过Field获取
          *
-         * @param entityClass
+         * @param entityClass 对象
          * @param fieldList
          * @param level
-         * @return
+         * @return 结果
          */
         private List<EntityField> _getFields(Class<?> entityClass, List<EntityField> fieldList, Integer level) {
             if (fieldList == null) {
@@ -218,8 +219,8 @@ public class FieldSourceBuilder {
         /**
          * 通过方法获取属性
          *
-         * @param entityClass
-         * @return
+         * @param entityClass 对象
+         * @return 结果
          */
         @Override
         public List<EntityField> getProperties(Class<?> entityClass) {
@@ -255,8 +256,8 @@ public class FieldSourceBuilder {
         /**
          * 通过方法获取属性
          *
-         * @param entityClass
-         * @return
+         * @param entityClass 对象
+         * @return 结果
          */
         @Override
         public List<EntityField> getProperties(Class<?> entityClass) {
@@ -289,10 +290,10 @@ public class FieldSourceBuilder {
         }
 
         /**
-         * @param entityClass
-         * @param fieldList
-         * @param genericMap
-         * @param level
+         * @param entityClass 对象
+         * @param fieldList   列信息
+         * @param genericMap  map
+         * @param level       等级
          */
         private void _getFields(Class<?> entityClass, List<EntityField> fieldList, Map<String, Class<?>> genericMap, Integer level) {
             if (fieldList == null) {
@@ -344,7 +345,8 @@ public class FieldSourceBuilder {
         /**
          * 获取所有泛型类型映射
          *
-         * @param entityClass
+         * @param entityClass 对象
+         * @return 结果
          */
         private Map<String, Class<?>> _getGenericTypeMap(Class<?> entityClass) {
             Map<String, Class<?>> genericMap = new HashMap<String, Class<?>>();

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.Normal;
@@ -29,20 +29,21 @@ import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.suffix.SuffixDatabase;
 
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.*;
 
 /**
- * <h4>Paths and Queries should decompose</h4>
+ * Paths and Queries should decompose
  *
  * <p>Neither of the built-in URL models offer direct access to path segments or query parameters.
  * Manually using {@code StringBuilder} to assemble these components is cumbersome: do '+'
  * characters get silently replaced with spaces? If a query parameter contains a '&amp;', does that
  * get escaped? By offering methods to read and write individual query parameters directly,
  * application developers are saved from the hassles of encoding and decoding.
- *
- * <h4>Plus a modern API</h4>
  *
  * <p>The URL (JDK1.0) and URI (Java 1.4) classes predate builders and instead use telescoping
  * constructors. For example, there's no API to compose a URI with a custom port without also
@@ -57,9 +58,8 @@ import java.util.*;
  * returns null if the input is an invalid URL. You can even be explicit about whether each
  * component has been encoded already.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class HttpUrl {
@@ -124,10 +124,6 @@ public final class HttpUrl {
         this.url = builder.toString();
     }
 
-    /**
-     * Returns 80 if {@code scheme.equals("http")}, 443 if {@code scheme.equals("https")} and -1
-     * otherwise.
-     */
     public static int defaultPort(String scheme) {
         if (scheme.equals("http")) {
             return 80;
@@ -158,12 +154,6 @@ public final class HttpUrl {
         }
     }
 
-    /**
-     * Cuts {@code encodedQuery} up into alternating parameter names and values. This divides a query
-     * string like {@code subject=math&easy&problem=5-2=3} into the list {@code ["subject", "math",
-     * "easy", null, "problem", "5-2=3"]}. Note that values may be null and may contain '='
-     * characters.
-     */
     static List<String> queryStringToNamesAndValues(String encodedQuery) {
         List<String> result = new ArrayList<>();
         for (int pos = 0; pos <= encodedQuery.length(); ) {
@@ -183,10 +173,6 @@ public final class HttpUrl {
         return result;
     }
 
-    /**
-     * Returns a new {@code HttpUrl} representing {@code url} if it is a well-formed HTTP or HTTPS
-     * URL, or null if it isn't.
-     */
     public static HttpUrl parse(String url) {
         try {
             return get(url);
@@ -195,19 +181,10 @@ public final class HttpUrl {
         }
     }
 
-    /**
-     * Returns a new {@code HttpUrl} representing {@code url}.
-     *
-     * @throws IllegalArgumentException If {@code url} is not a well-formed HTTP or HTTPS URL.
-     */
     public static HttpUrl get(String url) {
         return new Builder().parse(null, url).build();
     }
 
-    /**
-     * Returns an {@link HttpUrl} for {@code url} if its protocol is {@code http} or {@code https}, or
-     * null if it has any other protocol.
-     */
     public static HttpUrl get(URL url) {
         return parse(url.toString());
     }
@@ -279,6 +256,7 @@ public final class HttpUrl {
      * @param plusIsSpace    true to encode '+' as "%2B" if it is not already encoded.
      * @param asciiOnly      true to encode all non-ASCII codepoints.
      * @param charset        which charset to use, null equals UTF-8.
+     * @return string
      */
     static String canonicalize(String input, int pos, int limit, String encodeSet,
                                boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
@@ -360,9 +338,6 @@ public final class HttpUrl {
                 input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly, null);
     }
 
-    /**
-     * Returns this URL as a {@link URL java.net.URL}.
-     */
     public URL url() {
         try {
             return new URL(url);
@@ -371,19 +346,6 @@ public final class HttpUrl {
         }
     }
 
-    /**
-     * Returns this URL as a {@link URI java.net.URI}. Because {@code URI} is more strict than this
-     * class, the returned URI may be semantically different from this URL:
-     *
-     * <ul>
-     * <li>Characters forbidden by URI like {@code [} and {@code |} will be escaped.
-     * <li>Invalid percent-encoded sequences like {@code %xx} will be encoded like {@code %25xx}.
-     * <li>Whitespace and control characters in the fragment will be stripped.
-     * </ul>
-     *
-     * <p>These differences may have a significant consequence when the URI is interpreted by a
-     * webserver. For this reason the {@linkplain URI URI class} and this method should be avoided.
-     */
     public URI uri() {
         String uri = newBuilder().reencodeForUri().toString();
         try {
@@ -399,9 +361,6 @@ public final class HttpUrl {
         }
     }
 
-    /**
-     * Returns either "http" or "https".
-     */
     public String scheme() {
         return scheme;
     }
@@ -410,17 +369,6 @@ public final class HttpUrl {
         return scheme.equals("https");
     }
 
-    /**
-     * Returns the username, or an empty string if none is set.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code encodedUsername()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username@host/}</td><td>{@code "username"}</td></tr>
-     * <tr><td>{@code http://username:password@host/}</td><td>{@code "username"}</td></tr>
-     * <tr><td>{@code http://a%20b:c%20d@host/}</td><td>{@code "a%20b"}</td></tr>
-     * </table>
-     */
     public String encodedUsername() {
         if (username.isEmpty()) return "";
         int usernameStart = scheme.length() + 3; // "://".length() == 3.
@@ -428,32 +376,10 @@ public final class HttpUrl {
         return url.substring(usernameStart, usernameEnd);
     }
 
-    /**
-     * Returns the decoded username, or an empty string if none is present.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code username()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username@host/}</td><td>{@code "username"}</td></tr>
-     * <tr><td>{@code http://username:password@host/}</td><td>{@code "username"}</td></tr>
-     * <tr><td>{@code http://a%20b:c%20d@host/}</td><td>{@code "a b"}</td></tr>
-     * </table>
-     */
     public String username() {
         return username;
     }
 
-    /**
-     * Returns the password, or an empty string if none is set.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code encodedPassword()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username@host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username:password@host/}</td><td>{@code "password"}</td></tr>
-     * <tr><td>{@code http://a%20b:c%20d@host/}</td><td>{@code "c%20d"}</td></tr>
-     * </table>
-     */
     public String encodedPassword() {
         if (password.isEmpty()) return "";
         int passwordStart = url.indexOf(':', scheme.length() + 3) + 1;
@@ -461,103 +387,28 @@ public final class HttpUrl {
         return url.substring(passwordStart, passwordEnd);
     }
 
-    /**
-     * Returns the decoded password, or an empty string if none is present.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code password()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username@host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username:password@host/}</td><td>{@code "password"}</td></tr>
-     * <tr><td>{@code http://a%20b:c%20d@host/}</td><td>{@code "c d"}</td></tr>
-     * </table>
-     */
     public String password() {
         return password;
     }
 
-    /**
-     * Returns the host address suitable for use with {@link InetAddress#getAllByName(String)}. May
-     * be:
-     *
-     * <ul>
-     * <li>A regular host name, like {@code android.com}.
-     * <li>An IPv4 address, like {@code 127.0.0.1}.
-     * <li>An IPv6 address, like {@code ::1}. Note that there are no square braces.
-     * <li>An encoded IDN, like {@code xn--n3h.net}.
-     * </ul>
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code host()}</th></tr>
-     * <tr><td>{@code http://android.com/}</td><td>{@code "android.com"}</td></tr>
-     * <tr><td>{@code http://127.0.0.1/}</td><td>{@code "127.0.0.1"}</td></tr>
-     * <tr><td>{@code http://[::1]/}</td><td>{@code "::1"}</td></tr>
-     * <tr><td>{@code http://xn--n3h.net/}</td><td>{@code "xn--n3h.net"}</td></tr>
-     * </table>
-     */
     public String host() {
         return host;
     }
 
-    /**
-     * Returns the explicitly-specified port if first was provided, or the default port for this URL's
-     * scheme. For example, this returns 8443 for {@code https://square.com:8443/} and 443 for {@code
-     * https://square.com/}. The result is in {@code [1..65535]}.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code port()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code 80}</td></tr>
-     * <tr><td>{@code http://host:8000/}</td><td>{@code 8000}</td></tr>
-     * <tr><td>{@code https://host/}</td><td>{@code 443}</td></tr>
-     * </table>
-     */
     public int port() {
         return port;
     }
 
-    /**
-     * Returns the number of segments in this URL's path. This is also the number of slashes in the
-     * URL's path, like 3 in {@code http://host/a/b/c}. This is always at least 1.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code pathSize()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code 1}</td></tr>
-     * <tr><td>{@code http://host/a/b/c}</td><td>{@code 3}</td></tr>
-     * <tr><td>{@code http://host/a/b/c/}</td><td>{@code 4}</td></tr>
-     * </table>
-     */
     public int pathSize() {
         return pathSegments.size();
     }
 
-    /**
-     * Returns the entire path of this URL encoded for use in HTTP resource resolution. The returned
-     * path will start with {@code "/"}.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code encodedPath()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code "/"}</td></tr>
-     * <tr><td>{@code http://host/a/b/c}</td><td>{@code "/a/b/c"}</td></tr>
-     * <tr><td>{@code http://host/a/b%20c/d}</td><td>{@code "/a/b%20c/d"}</td></tr>
-     * </table>
-     */
     public String encodedPath() {
         int pathStart = url.indexOf('/', scheme.length() + 3); // "://".length() == 3.
         int pathEnd = Internal.delimiterOffset(url, pathStart, url.length(), "?#");
         return url.substring(pathStart, pathEnd);
     }
 
-    /**
-     * Returns a list of encoded path segments like {@code ["a", "b", "c"]} for the URL {@code
-     * http://host/a/b/c}. This list is never empty though it may contain a single empty string.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code encodedPathSegments()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code [""]}</td></tr>
-     * <tr><td>{@code http://host/a/b/c}</td><td>{@code ["a", "b", "c"]}</td></tr>
-     * <tr><td>{@code http://host/a/b%20c/d}</td><td>{@code ["a", "b%20c", "d"]}</td></tr>
-     * </table>
-     */
     public List<String> encodedPathSegments() {
         int pathStart = url.indexOf('/', scheme.length() + 3);
         int pathEnd = Internal.delimiterOffset(url, pathStart, url.length(), "?#");
@@ -571,36 +422,10 @@ public final class HttpUrl {
         return result;
     }
 
-    /**
-     * Returns a list of path segments like {@code ["a", "b", "c"]} for the URL {@code
-     * http://host/a/b/c}. This list is never empty though it may contain a single empty string.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code pathSegments()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code [""]}</td></tr>
-     * <tr><td>{@code http://host/a/b/c"}</td><td>{@code ["a", "b", "c"]}</td></tr>
-     * <tr><td>{@code http://host/a/b%20c/d"}</td><td>{@code ["a", "b c", "d"]}</td></tr>
-     * </table>
-     */
     public List<String> pathSegments() {
         return pathSegments;
     }
 
-    /**
-     * Returns the query of this URL, encoded for use in HTTP resource resolution. The returned string
-     * may be null (for URLs with no query), empty (for URLs with an empty query) or non-empty (all
-     * other URLs).
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code encodedQuery()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code
-     * "a=apple&k=key+lime"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "a=apple&a=apricot"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "a=apple&b"}</td></tr>
-     * </table>
-     */
     public String encodedQuery() {
         if (queryNamesAndValues == null) return null; // No query.
         int queryStart = url.indexOf('?') + 1;
@@ -608,21 +433,6 @@ public final class HttpUrl {
         return url.substring(queryStart, queryEnd);
     }
 
-    /**
-     * Returns this URL's query, like {@code "abc"} for {@code http://host/?abc}. Most callers should
-     * prefer {@link #queryParameterName} and {@link #queryParameterValue} because these methods offer
-     * direct access to individual query parameters.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code query()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code "a=apple&k=key
-     * lime"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "a=apple&a=apricot"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "a=apple&b"}</td></tr>
-     * </table>
-     */
     public String query() {
         if (queryNamesAndValues == null) return null; // No query.
         StringBuilder result = new StringBuilder();
@@ -630,37 +440,10 @@ public final class HttpUrl {
         return result.toString();
     }
 
-    /**
-     * Returns the number of query parameters in this URL, like 2 for {@code
-     * http://host/?a=apple&b=banana}. If this URL has no query this returns 0. Otherwise it returns
-     * first more than the number of {@code "&"} separators in the query.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code querySize()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code 0}</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code 1}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code 2}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code 2}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code 2}</td></tr>
-     * </table>
-     */
     public int querySize() {
         return queryNamesAndValues != null ? queryNamesAndValues.size() / 2 : 0;
     }
 
-    /**
-     * Returns the first query parameter named {@code name} decoded using UTF-8, or null if there is
-     * no such query parameter.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code queryParameter("a")}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code "apple"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "apple"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "apple"}</td></tr>
-     * </table>
-     */
     public String queryParameter(String name) {
         if (queryNamesAndValues == null) return null;
         for (int i = 0, size = queryNamesAndValues.size(); i < size; i += 2) {
@@ -671,19 +454,6 @@ public final class HttpUrl {
         return null;
     }
 
-    /**
-     * Returns the distinct query parameter names in this URL, like {@code ["a", "b"]} for {@code
-     * http://host/?a=apple&b=banana}. If this URL has no query this returns the empty set.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code queryParameterNames()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code []}</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code [""]}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code ["a", "k"]}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code ["a"]}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code ["a", "b"]}</td></tr>
-     * </table>
-     */
     public Set<String> queryParameterNames() {
         if (queryNamesAndValues == null) return Collections.emptySet();
         Set<String> result = new LinkedHashSet<>();
@@ -693,24 +463,6 @@ public final class HttpUrl {
         return Collections.unmodifiableSet(result);
     }
 
-    /**
-     * Returns all values for the query parameter {@code name} ordered by their appearance in this
-     * URL. For example this returns {@code ["banana"]} for {@code queryParameterValue("b")} on {@code
-     * http://host/?a=apple&b=banana}.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code queryParameterValues("a")}</th><th>{@code
-     * queryParameterValues("b")}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code []}</td><td>{@code []}</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code []}</td><td>{@code []}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code ["apple"]}</td><td>{@code
-     * []}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code ["apple",
-     * "apricot"]}</td><td>{@code []}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code ["apple"]}</td><td>{@code
-     * [null]}</td></tr>
-     * </table>
-     */
     public List<String> queryParameterValues(String name) {
         if (queryNamesAndValues == null) return Collections.emptyList();
         List<String> result = new ArrayList<>();
@@ -722,89 +474,26 @@ public final class HttpUrl {
         return Collections.unmodifiableList(result);
     }
 
-    /**
-     * Returns the name of the query parameter at {@code index}. For example this returns {@code "a"}
-     * for {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This throws if
-     * {@code index} is not less than the {@linkplain #querySize query size}.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code queryParameterName(0)}</th><th>{@code
-     * queryParameterName(1)}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>exception</td><td>exception</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code ""}</td><td>exception</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code "a"}</td><td>{@code
-     * "k"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "a"}</td><td>{@code
-     * "a"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "a"}</td><td>{@code "b"}</td></tr>
-     * </table>
-     */
     public String queryParameterName(int index) {
         if (queryNamesAndValues == null) throw new IndexOutOfBoundsException();
         return queryNamesAndValues.get(index * 2);
     }
 
-    /**
-     * Returns the value of the query parameter at {@code index}. For example this returns {@code
-     * "apple"} for {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This
-     * throws if {@code index} is not less than the {@linkplain #querySize query size}.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code queryParameterValue(0)}</th><th>{@code
-     * queryParameterValue(1)}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>exception</td><td>exception</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>null</td><td>exception</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code "apple"}</td><td>{@code
-     * "key lime"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "apple"}</td><td>{@code
-     * "apricot"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "apple"}</td><td>null</td></tr>
-     * </table>
-     */
     public String queryParameterValue(int index) {
         if (queryNamesAndValues == null) throw new IndexOutOfBoundsException();
         return queryNamesAndValues.get(index * 2 + 1);
     }
 
-    /**
-     * Returns this URL's encoded fragment, like {@code "abc"} for {@code http://host/#abc}. This
-     * returns null if the URL has no fragment.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code encodedFragment()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/#}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://host/#abc}</td><td>{@code "abc"}</td></tr>
-     * <tr><td>{@code http://host/#abc|def}</td><td>{@code "abc|def"}</td></tr>
-     * </table>
-     */
     public String encodedFragment() {
         if (fragment == null) return null;
         int fragmentStart = url.indexOf('#') + 1;
         return url.substring(fragmentStart);
     }
 
-    /**
-     * Returns this URL's fragment, like {@code "abc"} for {@code http://host/#abc}. This returns null
-     * if the URL has no fragment.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code fragment()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/#}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://host/#abc}</td><td>{@code "abc"}</td></tr>
-     * <tr><td>{@code http://host/#abc|def}</td><td>{@code "abc|def"}</td></tr>
-     * </table>
-     */
     public String fragment() {
         return fragment;
     }
 
-    /**
-     * Returns a string with containing this URL with its username, password, query, and fragment
-     * stripped, and its path replaced with {@code /...}. For example, redacting {@code
-     * http://username:password@example.com/path} returns {@code http://example.com/...}.
-     */
     public String redact() {
         return newBuilder("/...")
                 .username("")
@@ -813,10 +502,6 @@ public final class HttpUrl {
                 .toString();
     }
 
-    /**
-     * Returns the URL that would be retrieved by following {@code link} from this URL, or null if
-     * the resulting URL is not well-formed.
-     */
     public HttpUrl resolve(String link) {
         Builder builder = newBuilder(link);
         return builder != null ? builder.build() : null;
@@ -837,10 +522,6 @@ public final class HttpUrl {
         return result;
     }
 
-    /**
-     * Returns a builder for the URL that would be retrieved by following {@code link} from this URL,
-     * or null if the resulting URL is not well-formed.
-     */
     public Builder newBuilder(String link) {
         try {
             return new Builder().parse(this, link);
@@ -864,25 +545,6 @@ public final class HttpUrl {
         return url;
     }
 
-    /**
-     * Returns the entity name of this URL's {@link #host()} that is first level beneath the public
-     * suffix by consulting the <a href="https://publicsuffix.org">public suffix list</a>. Returns
-     * null if this URL's {@link #host()} is an IP address or is considered a public suffix by the
-     * public suffix list.
-     *
-     * <p>In general this method <strong>should not</strong> be used to test whether a entity is valid
-     * or routable. Instead, DNS is the recommended source for that information.
-     *
-     * <p><table summary="">
-     * <tr><th>URL</th><th>{@code topPrivateDomain()}</th></tr>
-     * <tr><td>{@code http://google.com}</td><td>{@code "google.com"}</td></tr>
-     * <tr><td>{@code http://adwords.google.co.uk}</td><td>{@code "google.co.uk"}</td></tr>
-     * <tr><td>{@code http://square}</td><td>null</td></tr>
-     * <tr><td>{@code http://co.uk}</td><td>null</td></tr>
-     * <tr><td>{@code http://localhost}</td><td>null</td></tr>
-     * <tr><td>{@code http://127.0.0.1}</td><td>null</td></tr>
-     * </table>
-     */
     public String topPrivateDomain() {
         if (Internal.verifyAsIpAddress(host)) return null;
         return SuffixDatabase.get().getEffectiveTldPlusOne(host);
@@ -913,10 +575,6 @@ public final class HttpUrl {
             encodedPathSegments.add(""); // The default path is '/' which needs a trailing space.
         }
 
-        /**
-         * Returns the index of the ':' in {@code input} that is after scheme characters. Returns -1 if
-         * {@code input} does not have a scheme that starts at {@code pos}.
-         */
         private static int schemeDelimiterOffset(String input, int pos, int limit) {
             if (limit - pos < 2) return -1;
 
@@ -943,9 +601,6 @@ public final class HttpUrl {
             return -1; // No ':'; doesn't start with a scheme.
         }
 
-        /**
-         * Returns the number of '/' and '\' slashes in {@code input}, starting at {@code pos}.
-         */
         private static int slashCount(String input, int pos, int limit) {
             int slashCount = 0;
             while (pos < limit) {
@@ -960,9 +615,6 @@ public final class HttpUrl {
             return slashCount;
         }
 
-        /**
-         * Finds the first ':' in {@code input}, skipping characters between square braces "[...]".
-         */
         private static int portColonOffset(String input, int pos, int limit) {
             for (int i = pos; i < limit; i++) {
                 switch (input.charAt(i)) {
@@ -1036,10 +688,6 @@ public final class HttpUrl {
             return this;
         }
 
-        /**
-         * @param host either a regular hostname, International Domain Name, IPv4 address, or IPv6
-         *             address.
-         */
         public Builder host(String host) {
             if (host == null) throw new NullPointerException("host == null");
             String encoded = canonicalizeHost(host, 0, host.length());
@@ -1064,10 +712,6 @@ public final class HttpUrl {
             return this;
         }
 
-        /**
-         * Adds a set of path segments separated by a slash (either {@code \} or {@code /}). If
-         * {@code pathSegments} starts with a slash, the resulting URL will have empty path segment.
-         */
         public Builder addPathSegments(String pathSegments) {
             if (pathSegments == null) throw new NullPointerException("pathSegments == null");
             return addPathSegments(pathSegments, false);
@@ -1081,11 +725,6 @@ public final class HttpUrl {
             return this;
         }
 
-        /**
-         * Adds a set of encoded path segments separated by a slash (either {@code \} or {@code /}). If
-         * {@code encodedPathSegments} starts with a slash, the resulting URL will have empty path
-         * segment.
-         */
         public Builder addEncodedPathSegments(String encodedPathSegments) {
             if (encodedPathSegments == null) {
                 throw new NullPointerException("encodedPathSegments == null");
@@ -1163,9 +802,6 @@ public final class HttpUrl {
             return this;
         }
 
-        /**
-         * Encodes the query parameter using UTF-8 and adds it to this URL's query string.
-         */
         public Builder addQueryParameter(String name, String value) {
             if (name == null) throw new NullPointerException("name == null");
             if (encodedQueryNamesAndValues == null) encodedQueryNamesAndValues = new ArrayList<>();
@@ -1177,9 +813,6 @@ public final class HttpUrl {
             return this;
         }
 
-        /**
-         * Adds the pre-encoded query parameter to this URL's query string.
-         */
         public Builder addEncodedQueryParameter(String encodedName, String encodedValue) {
             if (encodedName == null) throw new NullPointerException("encodedName == null");
             if (encodedQueryNamesAndValues == null) encodedQueryNamesAndValues = new ArrayList<>();
@@ -1247,10 +880,6 @@ public final class HttpUrl {
             return this;
         }
 
-        /**
-         * Re-encodes the components of this URL so that it satisfies (obsolete) RFC 2396, which is
-         * particularly strict for certain components.
-         */
         Builder reencodeForUri() {
             for (int i = 0, size = encodedPathSegments.size(); i < size; i++) {
                 String pathSegment = encodedPathSegments.get(i);
@@ -1527,16 +1156,6 @@ public final class HttpUrl {
                     || input.equalsIgnoreCase("%2e%2e");
         }
 
-        /**
-         * Removes a path segment. When this method returns the last segment is always "", which means
-         * the encoded path will have a trailing '/'.
-         *
-         * <p>Popping "/a/b/c/" yields "/a/b/". In this case the list of path segments goes from ["a",
-         * "b", "c", ""] to ["a", "b", ""].
-         *
-         * <p>Popping "/a/b/c" also yields "/a/b/". The list of path segments goes from ["a", "b", "c"]
-         * to ["a", "b", ""].
-         */
         private void pop() {
             String removed = encodedPathSegments.remove(encodedPathSegments.size() - 1);
 

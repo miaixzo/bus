@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.ws;
 
 import org.aoju.bus.core.io.Buffer;
@@ -36,9 +36,8 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>This class is not thread safe.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 final class WebSocketReader {
@@ -55,6 +54,7 @@ final class WebSocketReader {
     long frameLength;
     boolean isFinalFrame;
     boolean isControlFrame;
+
     WebSocketReader(boolean isClient, BufferedSource source, FrameCallback frameCallback) {
         if (source == null) throw new NullPointerException("source == null");
         if (frameCallback == null) throw new NullPointerException("frameCallback == null");

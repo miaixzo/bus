@@ -20,14 +20,18 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.date.format;
 
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.TimeZone;
 
-
+/**
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
+ */
 public abstract class AbstractDateBasic implements DateBasic, Serializable {
 
     private static final long serialVersionUID = 6333136319870641818L;

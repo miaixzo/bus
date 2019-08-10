@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.watch;
 
 import org.aoju.bus.core.consts.Symbol;
@@ -45,9 +45,8 @@ import java.util.Map;
  * 如果监听的Path不存在，则递归创建空目录然后监听此空目录<br>
  * 递归监听目录时，并不会监听新创建的目录
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class WatchMonitor extends Thread implements Closeable {

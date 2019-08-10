@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.entity;
 
 import java.beans.PropertyDescriptor;
@@ -31,9 +31,8 @@ import java.lang.reflect.Method;
 /**
  * 封装字段和方法，统一调用某些方法
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EntityField {
@@ -67,7 +66,7 @@ public class EntityField {
     /**
      * 先创建field，然后可以通过该方法获取property等属性
      *
-     * @param other
+     * @param other field
      */
     public void copyFromPropertyDescriptor(EntityField other) {
         this.setter = other.setter;
@@ -79,8 +78,8 @@ public class EntityField {
     /**
      * 是否有该注解
      *
-     * @param annotationClass
-     * @return
+     * @param annotationClass 注解
+     * @return the boolean
      */
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
         boolean result = false;
@@ -96,13 +95,6 @@ public class EntityField {
         return result;
     }
 
-    /**
-     * 获取指定的注解
-     *
-     * @param annotationClass
-     * @param <T>
-     * @return
-     */
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         T result = null;
         if (field != null) {
@@ -133,29 +125,14 @@ public class EntityField {
         return name != null ? name.hashCode() : 0;
     }
 
-    /**
-     * 获取javaType
-     *
-     * @return
-     */
     public Class<?> getJavaType() {
         return javaType;
     }
 
-    /**
-     * 设置javaType
-     *
-     * @param javaType
-     */
     public void setJavaType(Class<?> javaType) {
         this.javaType = javaType;
     }
 
-    /**
-     * 字段属性名
-     *
-     * @return
-     */
     public String getName() {
         return name;
     }

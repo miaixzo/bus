@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.cache;
 
 import org.aoju.bus.core.io.*;
@@ -31,7 +31,6 @@ import org.aoju.bus.http.internal.http.HttpCodec;
 import org.aoju.bus.http.internal.http.HttpHeaders;
 import org.aoju.bus.http.internal.http.HttpMethod;
 import org.aoju.bus.http.internal.http.RealResponseBody;
-import org.aoju.bus.http.*;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -40,9 +39,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Serves requests from the cache and writes responses to the cache.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class CacheInterceptor implements Interceptor {

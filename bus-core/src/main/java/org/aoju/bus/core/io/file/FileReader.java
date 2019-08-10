@@ -20,11 +20,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.io.LineHandler;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CharsetUtils;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
@@ -39,9 +39,8 @@ import java.util.List;
 /**
  * 文件读取器
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class FileReader extends FileWrapper {
@@ -81,7 +80,7 @@ public class FileReader extends FileWrapper {
      * 构造
      *
      * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
-     * @param charset  编码，使用 {@link CharsetUtils#charset(String)}
+     * @param charset  编码
      */
     public FileReader(String filePath, String charset) {
         this(FileUtils.file(filePath), CharsetUtils.charset(charset));
@@ -133,12 +132,12 @@ public class FileReader extends FileWrapper {
      * 文件的长度不能超过 {@link Integer#MAX_VALUE}
      *
      * @return 字节码
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public byte[] readBytes() throws CommonException {
+    public byte[] readBytes() throws InstrumentException {
         long len = file.length();
         if (len >= Integer.MAX_VALUE) {
-            throw new CommonException("File is larger then max array size");
+            throw new InstrumentException("File is larger then max array size");
         }
 
         byte[] bytes = new byte[(int) len];
@@ -151,7 +150,7 @@ public class FileReader extends FileWrapper {
                 throw new IOException(StringUtils.format("File length is [{}] but read [{}]!", len, readLength));
             }
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             IoUtils.close(in);
         }
@@ -163,9 +162,9 @@ public class FileReader extends FileWrapper {
      * 读取文件内容
      *
      * @return 内容
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public String readString() throws CommonException {
+    public String readString() throws InstrumentException {
         return new String(readBytes(), this.charset);
     }
 
@@ -175,9 +174,9 @@ public class FileReader extends FileWrapper {
      * @param <T>        集合类型
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public <T extends Collection<String>> T readLines(T collection) throws CommonException {
+    public <T extends Collection<String>> T readLines(T collection) throws InstrumentException {
         BufferedReader reader = null;
         try {
             reader = FileUtils.getReader(file, charset);
@@ -191,7 +190,7 @@ public class FileReader extends FileWrapper {
             }
             return collection;
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             IoUtils.close(reader);
         }
@@ -201,10 +200,10 @@ public class FileReader extends FileWrapper {
      * 按照行处理文件内容
      *
      * @param lineHandler 行处理器
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      * @since 3.0.9
      */
-    public void readLines(LineHandler lineHandler) throws CommonException {
+    public void readLines(LineHandler lineHandler) throws InstrumentException {
         BufferedReader reader = null;
         try {
             reader = FileUtils.getReader(file, charset);
@@ -218,9 +217,9 @@ public class FileReader extends FileWrapper {
      * 从文件中读取每一行数据
      *
      * @return 文件中的每行内容的集合
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public List<String> readLines() throws CommonException {
+    public List<String> readLines() throws InstrumentException {
         return readLines(new ArrayList<String>());
     }
 
@@ -230,16 +229,16 @@ public class FileReader extends FileWrapper {
      * @param <T>           读取的结果对象类型
      * @param readerHandler Reader处理类
      * @return 从文件中read出的数据
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public <T> T read(ReaderHandler<T> readerHandler) throws CommonException {
+    public <T> T read(ReaderHandler<T> readerHandler) throws InstrumentException {
         BufferedReader reader = null;
         T result = null;
         try {
             reader = FileUtils.getReader(this.file, charset);
             result = readerHandler.handle(reader);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             IoUtils.close(reader);
         }
@@ -250,9 +249,9 @@ public class FileReader extends FileWrapper {
      * 获得一个文件读取器
      *
      * @return BufferedReader对象
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public BufferedReader getReader() throws CommonException {
+    public BufferedReader getReader() throws InstrumentException {
         return IoUtils.getReader(getInputStream(), this.charset);
     }
 
@@ -260,13 +259,13 @@ public class FileReader extends FileWrapper {
      * 获得输入流
      *
      * @return 输入流
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public BufferedInputStream getInputStream() throws CommonException {
+    public BufferedInputStream getInputStream() throws InstrumentException {
         try {
             return new BufferedInputStream(new FileInputStream(this.file));
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -275,15 +274,15 @@ public class FileReader extends FileWrapper {
      *
      * @param out 流
      * @return File
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    public File writeToStream(OutputStream out) throws CommonException {
+    public File writeToStream(OutputStream out) throws InstrumentException {
         FileInputStream in = null;
         try {
             in = new FileInputStream(file);
             IoUtils.copy(in, out);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             IoUtils.close(in);
         }
@@ -293,14 +292,14 @@ public class FileReader extends FileWrapper {
     /**
      * 检查文件
      *
-     * @throws CommonException IO异常
+     * @throws InstrumentException 异常
      */
-    private void checkFile() throws CommonException {
+    private void checkFile() throws InstrumentException {
         if (false == file.exists()) {
-            throw new CommonException("File not exist: " + file);
+            throw new InstrumentException("File not exist: " + file);
         }
         if (false == file.isFile()) {
-            throw new CommonException("Not a file:" + file);
+            throw new InstrumentException("Not a file:" + file);
         }
     }
 
@@ -308,7 +307,6 @@ public class FileReader extends FileWrapper {
      * Reader处理接口
      *
      * @param <T> Reader处理返回结果类型
-     * @author Luxiaolei
      */
     public interface ReaderHandler<T> {
         T handle(BufferedReader reader) throws IOException;

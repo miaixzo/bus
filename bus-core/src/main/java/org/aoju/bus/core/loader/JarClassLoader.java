@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.loader;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -38,9 +38,8 @@ import java.util.List;
 /**
  * 外部Jar的类加载器
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class JarClassLoader extends URLClassLoader {
@@ -185,6 +184,7 @@ public class JarClassLoader extends URLClassLoader {
      * 如果为目录，此目录用于搜索class文件，如果为文件，需为jar文件
      *
      * @param dir 目录
+     * @return the jarClassLoader
      * @since 4.4.2
      */
     public JarClassLoader addURL(File dir) {

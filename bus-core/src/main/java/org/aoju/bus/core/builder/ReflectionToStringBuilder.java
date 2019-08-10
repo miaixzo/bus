@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.consts.Symbol;
@@ -59,10 +59,7 @@ import java.util.List;
  * public String toString() {
  *     return ReflectionToStringBuilder.toString(this);
  * }
- * </pre>
- * <p>
  * You can also use the builder to debug 3rd party objects:
- * </p>
  * </pre>
  * <p>
  * A subclass can control field output by overriding the methods:
@@ -100,9 +97,8 @@ import java.util.List;
  * further traversed. To get "deep" formatting, use an instance of {@link RecursiveToStringStyle}.
  * </p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ReflectionToStringBuilder extends ToStringBuilder {

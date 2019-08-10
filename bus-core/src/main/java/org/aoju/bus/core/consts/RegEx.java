@@ -20,13 +20,20 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.consts;
 
 import org.aoju.bus.core.utils.CollUtils;
 
 import java.util.Set;
 
+/**
+ * 正则表达式
+ *
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
+ */
 public class RegEx {
 
     /**

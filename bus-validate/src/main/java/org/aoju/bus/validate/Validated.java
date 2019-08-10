@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate;
 
 import lombok.Data;
@@ -45,9 +45,8 @@ import java.util.List;
  * 注意: 当被校验对象为null时，无法获取到对象的Class，所以不会执行对象的Class上标记的任何校验注解
  * </P>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Data
@@ -130,6 +129,7 @@ public class Validated extends Provider {
      * @param object      被校验的原始对象
      * @param annotations 被校验对象上的所有注解
      * @param context     父级校验上下文，当前校验环境会继承所有父级上下文信息，除了是否校验对象内部的属性
+     * @param field       属性信息
      */
     public Validated(Object object, Annotation[] annotations, Context context, String field) {
         this.field = field;
@@ -142,6 +142,7 @@ public class Validated extends Provider {
      * 根据对象注解解析校验器
      *
      * @param annotations
+     * @return the object
      */
     private List<Property> resolve(Annotation[] annotations) {
         List<Property> list = new ArrayList<>();
@@ -167,6 +168,7 @@ public class Validated extends Provider {
      *
      * @param context
      * @param annotations
+     * @return the object
      */
     private Context resolve(Context context, Annotation[] annotations) {
         if (ObjectUtils.isNotEmpty(this.object)) {

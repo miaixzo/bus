@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.map;
 
 import java.util.Collection;
@@ -31,14 +31,13 @@ import java.util.Set;
 /**
  * Map代理，提供各种getXXX方法，并提供默认值支持
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MapProxy implements Map<Object, Object> {
 
-    Map map;
+    private Map map;
 
     /**
      * 构造

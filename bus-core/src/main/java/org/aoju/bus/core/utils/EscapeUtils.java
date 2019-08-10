@@ -20,20 +20,19 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.text.escape.EscapeCodeValues;
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 
 /**
- * 转义和反转义工具类Escape / Unescape<br>
- * escape采用ISO Latin字符集对指定的字符串进行编码。<br>
- * Java, Java Script, HTML and XML.</p>
+ * 转义和反转义工具类Escape / Unescape
+ * escape采用ISO Latin字符集对指定的字符串进行编码
+ * Java, Java Script, HTML and XML.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EscapeUtils {

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.sensitive;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -29,7 +29,6 @@ import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.sensitive.annotation.Strategy;
 import org.aoju.bus.sensitive.provider.StrategyProvider;
-import org.aoju.bus.sensitive.strategy.*;
 import org.aoju.bus.sensitive.strategy.*;
 
 import java.lang.annotation.Annotation;
@@ -40,9 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 系统中内置的策略映射
  * 1. 注解和实现之间映射
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Registry {
@@ -86,6 +84,9 @@ public final class Registry {
 
     /**
      * 生成脱敏工具
+     *
+     * @param type 模型
+     * @return the object
      */
     public static StrategyProvider require(Builder.Type type) {
         StrategyProvider sensitiveProvider = STRATEGY_CACHE.get(type);

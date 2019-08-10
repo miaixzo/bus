@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.annotation;
 
 import java.lang.annotation.*;
@@ -33,9 +33,8 @@ import java.lang.annotation.*;
  * 如果是数组或者集合对象，则会对内部元素执行当前所有其他的校验器将， 否则执行对校验对象执行校验器
  * </P>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented

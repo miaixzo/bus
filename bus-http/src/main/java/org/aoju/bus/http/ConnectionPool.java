@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.Internal;
@@ -42,12 +42,12 @@ import java.util.concurrent.TimeUnit;
  * share the same {@link Address} may share a {@link Connection}. This class implements the policy
  * of which connections to keep open for future use.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class ConnectionPool {
+
     /**
      * Background threads are used to cleanup expired connections. There will be at most a single
      * thread running per connection pool. The thread pool executor permits the pool itself to be
@@ -103,9 +103,6 @@ public final class ConnectionPool {
         }
     }
 
-    /**
-     * Returns the number of idle connections in the pool.
-     */
     public synchronized int idleConnectionCount() {
         int total = 0;
         for (RealConnection connection : connections) {
@@ -115,7 +112,7 @@ public final class ConnectionPool {
     }
 
     /**
-     * Returns total number of connections in the pool. Note that prior to HttpClient 2.7 this included
+     * @return total number of connections in the pool. Note that prior to HttpClient 2.7 this included
      * only idle connections and HTTP/2 connections. Since HttpClient 2.7 this includes all connections,
      * both active and inactive. Use {@link #idleConnectionCount()} to count connections not currently
      * in use.
@@ -124,10 +121,6 @@ public final class ConnectionPool {
         return connections.size();
     }
 
-    /**
-     * Returns a recycled connection to {@code address}, or null if no such connection exists. The
-     * route is null if the address has not yet been routed.
-     */
     RealConnection get(Address address, StreamAllocation streamAllocation, Route route) {
         assert (Thread.holdsLock(this));
         for (RealConnection connection : connections) {
@@ -139,10 +132,6 @@ public final class ConnectionPool {
         return null;
     }
 
-    /**
-     * Replaces the connection held by {@code streamAllocation} with a shared connection if possible.
-     * This recovers when multiple multiplexed connections are created concurrently.
-     */
     Socket deduplicate(Address address, StreamAllocation streamAllocation) {
         assert (Thread.holdsLock(this));
         for (RealConnection connection : connections) {
@@ -164,10 +153,6 @@ public final class ConnectionPool {
         connections.add(connection);
     }
 
-    /**
-     * Notify this pool that {@code connection} has become idle. Returns true if the connection has
-     * been removed from the pool and should be closed.
-     */
     boolean connectionBecameIdle(RealConnection connection) {
         assert (Thread.holdsLock(this));
         if (connection.noNewStreams || maxIdleConnections == 0) {
@@ -179,9 +164,6 @@ public final class ConnectionPool {
         }
     }
 
-    /**
-     * Close and remove all idle connections in the pool.
-     */
     public void evictAll() {
         List<RealConnection> evictedConnections = new ArrayList<>();
         synchronized (this) {
@@ -204,7 +186,8 @@ public final class ConnectionPool {
      * Performs maintenance on this pool, evicting the connection that has been idle the longest if
      * either it has exceeded the keep alive limit or the idle connections limit.
      *
-     * <p>Returns the duration in nanos to sleep until the next scheduled call to this method. Returns
+     * @param now long
+     * @return the duration in nanos to sleep until the next scheduled call to this method. Returns
      * -1 if no further cleanups are required.
      */
     long cleanup(long now) {
@@ -258,12 +241,6 @@ public final class ConnectionPool {
         return 0;
     }
 
-    /**
-     * Prunes any leaked allocations and then returns the number of remaining live allocations on
-     * {@code connection}. Allocations are leaked if the connection is tracking them but the
-     * application code has abandoned them. Leak detection is imprecise and relies on garbage
-     * collection.
-     */
     private int pruneAndGetAllocationCount(RealConnection connection, long now) {
         List<Reference<StreamAllocation>> references = connection.allocations;
         for (int i = 0; i < references.size(); ) {
@@ -290,7 +267,7 @@ public final class ConnectionPool {
                 return 0;
             }
         }
-
         return references.size();
     }
+
 }

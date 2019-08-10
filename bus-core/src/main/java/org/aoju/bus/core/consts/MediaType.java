@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.consts;
 
 import lombok.Data;
@@ -33,9 +33,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Data
@@ -354,21 +353,24 @@ public class MediaType {
 
     /**
      * Returns a media type for {@code string}.
+     *
+     * @param text 字符串
+     * @return the mediaType
      */
-    public static MediaType get(String string) {
-        Matcher typeSubtype = TYPE_SUBTYPE.matcher(string);
+    public static MediaType get(String text) {
+        Matcher typeSubtype = TYPE_SUBTYPE.matcher(text);
         if (!typeSubtype.lookingAt()) {
-            throw new IllegalArgumentException("No subtype found for: \"" + string + '"');
+            throw new IllegalArgumentException("No subtype found for: \"" + text + '"');
         }
         String type = typeSubtype.group(1).toLowerCase(Locale.US);
         String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
 
         String charset = null;
-        Matcher parameter = PARAMETER.matcher(string);
-        for (int s = typeSubtype.end(); s < string.length(); s = parameter.end()) {
-            parameter.region(s, string.length());
+        Matcher parameter = PARAMETER.matcher(text);
+        for (int s = typeSubtype.end(); s < text.length(); s = parameter.end()) {
+            parameter.region(s, text.length());
             if (!parameter.lookingAt()) {
-                throw new IllegalArgumentException("Parameter is not formatted correctly: " + string.substring(s) + " for:" + string);
+                throw new IllegalArgumentException("Parameter is not formatted correctly: " + text.substring(s) + " for:" + text);
             }
 
             String name = parameter.group(1);
@@ -383,12 +385,12 @@ public class MediaType {
                 charsetParameter = parameter.group(3);
             }
             if (charset != null && !charsetParameter.equalsIgnoreCase(charset)) {
-                throw new IllegalArgumentException("Multiple charsets defined: " + charset + " and: " + charsetParameter + " for: " + string);
+                throw new IllegalArgumentException("Multiple charsets defined: " + charset + " and: " + charsetParameter + " for: " + text);
             }
             charset = charsetParameter;
         }
 
-        return new MediaType(string, type, subtype, charset);
+        return new MediaType(text, type, subtype, charset);
     }
 
     private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
@@ -424,38 +426,47 @@ public class MediaType {
     }
 
     /**
-     * Returns the encoded media type, like "text/plain; charset=utf-8", appropriate for use in a
-     * Content-Type header.
+     * 返回已编码的媒体类型,如“text/plain;charset=utf-8",适用于内容类型头部.
+     *
+     * @return the string
      */
     public String toString() {
         return mediaType;
     }
 
     /**
-     * Returns the high-level media type, such as "text", "image", "audio", "video", or
-     * "application".
+     * 返回高级媒体类型,如: "text", "image", "audio", "video", or "application".
+     *
+     * @return the string
      */
     public String type() {
         return type;
     }
 
     /**
-     * Returns a specific media subtype, such as "plain" or "png", "mpeg", "mp4" or "xml".
+     * 返回特定的媒体子类型,如： "plain" or "png", "mpeg", "mp4" or "xml".
+     *
+     * @return the string
      */
     public String subtype() {
         return subtype;
     }
 
     /**
-     * Returns the charset of this media type, or null if this media type doesn't specify a charset.
+     * 返回此媒体类型的字符集，如果该媒体类型没有指定字符集，则返回null.
+     *
+     * @return the string
      */
     public Charset charset() {
         return charset(null);
     }
 
     /**
-     * Returns the charset of this media type, or {@code defaultValue} if either this media type
-     * doesn't specify a charset, of it its charset is unsupported by the current runtime.
+     * 返回此媒体类型的字符集，或者{@code defaultValue}，
+     * 如果此媒体类型没有指定字符集，则当前运行时不支持该字符集
+     *
+     * @param defaultValue 字符集
+     * @return the charset
      */
     public Charset charset(Charset defaultValue) {
         try {

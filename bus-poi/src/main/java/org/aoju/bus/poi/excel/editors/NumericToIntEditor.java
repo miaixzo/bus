@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.poi.excel.editors;
 
 import org.aoju.bus.poi.excel.cell.CellEditor;
@@ -29,9 +29,8 @@ import org.apache.poi.ss.usermodel.Cell;
 /**
  * POI中NUMRIC类型的值默认返回的是Double类型，此编辑器用于转换其为int型
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class NumericToIntEditor implements CellEditor {

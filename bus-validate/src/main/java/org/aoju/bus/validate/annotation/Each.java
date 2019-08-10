@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.annotation;
 
 import org.aoju.bus.validate.Builder;
@@ -39,9 +39,8 @@ import java.lang.annotation.*;
  * 如果不是数组或集合、Map，则忽略校验
  * </P>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented
@@ -52,31 +51,43 @@ public @interface Each {
 
     /**
      * 校验器名称数组，优先使用校验器名称中的校验器，并忽略校验器类中的校验器
+     *
+     * @return the array
      */
     String[] value() default {};
 
     /**
      * 校验器类数组， 当校验器名称数组为空时，使用校验器类数组中的校验器
+     *
+     * @return the object
      */
     Class<? extends Complex>[] classes() default {};
 
     /**
      * 默认使用的异常码
+     *
+     * @return the string
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
      * 默认使用的异常信息
+     *
+     * @return the string
      */
     String errmsg() default "${field}参数校验失败";
 
     /**
      * 校验器组
+     *
+     * @return the array
      */
     String[] group() default {};
 
     /**
      * 被校验字段名称
+     *
+     * @return the string
      */
     String field() default Builder.DEFAULT_FIELD;
 

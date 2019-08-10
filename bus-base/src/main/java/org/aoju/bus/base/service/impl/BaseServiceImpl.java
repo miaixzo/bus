@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.base.service.impl;
 
 import org.aoju.bus.base.consts.Consts;
@@ -45,9 +45,8 @@ import java.util.List;
  * BaseService 接口实现
  * </p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>

@@ -20,12 +20,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.lang.exception.HttpUncheckException;
-import org.aoju.bus.core.utils.JSONUtils;
+import org.aoju.bus.core.utils.JsonUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.io.IOException;
@@ -36,9 +36,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Http 辅助类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class HttpUtils {
@@ -119,9 +118,9 @@ public class HttpUtils {
     /**
      * sync processing of POST requests, custom request types
      *
-     * @param url url
-     * @param map map
-     * @param map isByte return a value type
+     * @param url    url
+     * @param map    map
+     * @param isByte isByte return a value type
      * @return The result of the request is output<code>String or byte[]</code>。
      */
     public static Object post(String url, Map<String, Object> map, boolean isByte) {
@@ -185,7 +184,7 @@ public class HttpUtils {
         String data = "";
         if (map != null) {
             if (MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
-                data = JSONUtils.toJson(map);
+                data = JsonUtils.toJson(map);
             } else {
                 data = getParameterMap(map);
             }
@@ -224,7 +223,7 @@ public class HttpUtils {
         String data = "";
         if (map != null) {
             if (MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
-                data = JSONUtils.toJson(map);
+                data = JsonUtils.toJson(map);
             } else {
                 data = getParameterMap(map);
             }

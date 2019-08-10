@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager;
 
 import java.io.Closeable;
@@ -30,9 +30,8 @@ import java.util.List;
 /**
  * Mybatis - 分页对象
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Page<E> extends ArrayList<E> implements Closeable {
@@ -42,7 +41,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 页码，从1开始
      */
-    private int pageNum;
+    private int pageNo;
     /**
      * 页面大小
      */
@@ -92,32 +91,27 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         super();
     }
 
-    public Page(int pageNum, int pageSize) {
-        this(pageNum, pageSize, true, null);
+    public Page(int pageNo, int pageSize) {
+        this(pageNo, pageSize, true, null);
     }
 
-    public Page(int pageNum, int pageSize, boolean count) {
-        this(pageNum, pageSize, count, null);
+    public Page(int pageNo, int pageSize, boolean count) {
+        this(pageNo, pageSize, count, null);
     }
 
-    private Page(int pageNum, int pageSize, boolean count, Boolean reasonable) {
+    private Page(int pageNo, int pageSize, boolean count, Boolean reasonable) {
         super(0);
-        if (pageNum == 1 && pageSize == Integer.MAX_VALUE) {
+        if (pageNo == 1 && pageSize == Integer.MAX_VALUE) {
             pageSizeZero = true;
             pageSize = 0;
         }
-        this.pageNum = pageNum;
+        this.pageNo = pageNo;
         this.pageSize = pageSize;
         this.count = count;
         calculateStartAndEndRow();
         setReasonable(reasonable);
     }
 
-    /**
-     * int[] rowBounds
-     * 0 : offset
-     * 1 : limit
-     */
     public Page(int[] rowBounds, boolean count) {
         super(0);
         if (rowBounds[0] == 0 && rowBounds[1] == Integer.MAX_VALUE) {
@@ -125,7 +119,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
             this.pageSize = 0;
         } else {
             this.pageSize = rowBounds[1];
-            this.pageNum = rowBounds[1] != 0 ? (int) (Math.ceil(((double) rowBounds[0] + rowBounds[1]) / rowBounds[1])) : 0;
+            this.pageNo = rowBounds[1] != 0 ? (int) (Math.ceil(((double) rowBounds[0] + rowBounds[1]) / rowBounds[1])) : 0;
         }
         this.startRow = rowBounds[0];
         this.count = count;
@@ -154,13 +148,13 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return this;
     }
 
-    public int getPageNum() {
-        return pageNum;
+    public int getPageNo() {
+        return pageNo;
     }
 
-    public Page<E> setPageNum(int pageNum) {
+    public Page<E> setPageNo(int pageNo) {
         //分页合理化，针对不合理的页码自动处理
-        this.pageNum = ((reasonable != null && reasonable) && pageNum <= 0) ? 1 : pageNum;
+        this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
 
@@ -198,9 +192,9 @@ public class Page<E> extends ArrayList<E> implements Closeable {
             pages = 0;
         }
         //分页合理化，针对不合理的页码自动处理
-        if ((reasonable != null && reasonable) && pageNum > pages) {
+        if ((reasonable != null && reasonable) && pageNo > pages) {
             if (pages != 0) {
-                pageNum = pages;
+                pageNo = pages;
             }
             calculateStartAndEndRow();
         }
@@ -216,8 +210,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         }
         this.reasonable = reasonable;
         //分页合理化，针对不合理的页码自动处理
-        if (this.reasonable && this.pageNum <= 0) {
-            this.pageNum = 1;
+        if (this.reasonable && this.pageNo <= 0) {
+            this.pageNo = 1;
             calculateStartAndEndRow();
         }
         return this;
@@ -255,8 +249,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * 计算起止行号
      */
     private void calculateStartAndEndRow() {
-        this.startRow = this.pageNum > 0 ? (this.pageNum - 1) * this.pageSize : 0;
-        this.endRow = this.startRow + this.pageSize * (this.pageNum > 0 ? 1 : 0);
+        this.startRow = this.pageNo > 0 ? (this.pageNo - 1) * this.pageSize : 0;
+        this.endRow = this.startRow + this.pageSize * (this.pageNo > 0 ? 1 : 0);
     }
 
     public boolean isCount() {
@@ -271,20 +265,20 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 设置页码
      *
-     * @param pageNum
-     * @return
+     * @param pageNo 页码
+     * @return 结果
      */
-    public Page<E> pageNum(int pageNum) {
+    public Page<E> pageNo(int pageNo) {
         //分页合理化，针对不合理的页码自动处理
-        this.pageNum = ((reasonable != null && reasonable) && pageNum <= 0) ? 1 : pageNum;
+        this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
 
     /**
      * 设置页面大小
      *
-     * @param pageSize
-     * @return
+     * @param pageSize 分页大小
+     * @return 结果
      */
     public Page<E> pageSize(int pageSize) {
         this.pageSize = pageSize;
@@ -295,8 +289,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 是否执行count查询
      *
-     * @param count
-     * @return
+     * @param count 统计
+     * @return 结果
      */
     public Page<E> count(Boolean count) {
         this.count = count;
@@ -306,8 +300,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 设置合理化
      *
-     * @param reasonable
-     * @return
+     * @param reasonable 合理化
+     * @return 结果
      */
     public Page<E> reasonable(Boolean reasonable) {
         setReasonable(reasonable);
@@ -317,8 +311,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
      *
-     * @param pageSizeZero
-     * @return
+     * @param pageSizeZero 分页大小
+     * @return 结果
      */
     public Page<E> pageSizeZero(Boolean pageSizeZero) {
         setPageSizeZero(pageSizeZero);
@@ -328,8 +322,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 指定 count 查询列
      *
-     * @param columnName
-     * @return
+     * @param columnName 列名
+     * @return 结果
      */
     public Page<E> countColumn(String columnName) {
         this.countColumn = columnName;
@@ -380,7 +374,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     public String toString() {
         return "Page{" +
                 "count=" + count +
-                ", pageNum=" + pageNum +
+                ", pageNo=" + pageNo +
                 ", pageSize=" + pageSize +
                 ", startRow=" + startRow +
                 ", endRow=" + endRow +

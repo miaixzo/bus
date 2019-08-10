@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.http;
 
 import org.aoju.bus.core.consts.MediaType;
@@ -29,7 +29,6 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.Version;
-import org.aoju.bus.http.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,9 +38,8 @@ import java.util.List;
  * request. Then it proceeds to call the network. Finally it builds a user response from the network
  * response.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class BridgeInterceptor implements Interceptor {

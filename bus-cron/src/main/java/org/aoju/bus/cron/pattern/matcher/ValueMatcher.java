@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cron.pattern.matcher;
 
 import org.aoju.bus.core.lang.Matcher;
@@ -29,9 +29,8 @@ import org.aoju.bus.core.lang.Matcher;
  * 值匹配器<br>
  * 用于匹配日期位中对应数字是否匹配
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface ValueMatcher extends Matcher<Integer> {

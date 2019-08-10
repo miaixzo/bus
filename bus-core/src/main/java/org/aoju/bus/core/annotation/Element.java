@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.annotation;
 
 import org.aoju.bus.core.utils.CollUtils;
@@ -36,9 +36,8 @@ import java.util.Set;
  * 组合注解 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。<br>
  * 核心实现使用了递归获取指定元素上的注解以及注解的注解，以实现复合注解的获取。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Element implements AnnotatedElement {

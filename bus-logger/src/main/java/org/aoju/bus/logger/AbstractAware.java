@@ -20,16 +20,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.logger;
 
 /**
  * 抽象定位感知日志实现<br>
  * 此抽象类实现了LocationAwareLog接口，从而支持完全限定类名(Fully Qualified Class Name)，用于纠正定位错误行号
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class AbstractAware extends AbstractLog implements LocationAware {

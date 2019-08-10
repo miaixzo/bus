@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.consts.Symbol;
@@ -34,9 +34,8 @@ import java.util.Map;
 /**
  * 莫尔斯电码的编码和解码
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Morse {
@@ -45,17 +44,6 @@ public class Morse {
     private static final Map<Integer, String> alphabets = new HashMap<>();
     // morse -> code point
     private static final Map<String, Integer> dictionaries = new HashMap<>();
-
-    /**
-     * 注册莫尔斯电码表
-     *
-     * @param abc  字母和字符
-     * @param dict 二进制
-     */
-    private static void registerMorse(Character abc, String dict) {
-        alphabets.put(Integer.valueOf(abc), dict);
-        dictionaries.put(dict, Integer.valueOf(abc));
-    }
 
     static {
         // Letters
@@ -139,6 +127,17 @@ public class Morse {
         this.dit = dit;
         this.dah = dah;
         this.split = split;
+    }
+
+    /**
+     * 注册莫尔斯电码表
+     *
+     * @param abc  字母和字符
+     * @param dict 二进制
+     */
+    private static void registerMorse(Character abc, String dict) {
+        alphabets.put(Integer.valueOf(abc), dict);
+        dictionaries.put(dict, Integer.valueOf(abc));
     }
 
     /**

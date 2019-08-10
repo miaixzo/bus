@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.loader;
 
 /**
@@ -28,9 +28,8 @@ package org.aoju.bus.core.loader;
  * 通过实现此接口自定义实现对象的加载方式，例如懒加载机制、多线程加载等
  *
  * @param <T> 对象类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Loader<T> {

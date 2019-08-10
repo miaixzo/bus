@@ -20,18 +20,18 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.storage.provider.aliyun;
 
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSException;
+import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.model.*;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.storage.UploadObject;
 import org.aoju.bus.storage.UploadToken;
 import org.aoju.bus.storage.provider.AbstractProvider;
-import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.OSSException;
-import com.aliyun.oss.common.utils.BinaryUtil;
-import com.aliyun.oss.model.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -43,9 +43,8 @@ import java.util.Map;
 
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class AliyunossProvider extends AbstractProvider {

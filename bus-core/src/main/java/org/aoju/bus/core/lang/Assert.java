@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.utils.ArrayUtils;
@@ -34,9 +34,8 @@ import java.util.Map;
  * 断言<br>
  * 断言某些对象或值是否符合规定，否则抛出异常。经常用于做变量检查
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Assert {
@@ -186,7 +185,6 @@ public class Assert {
      * @param params           参数
      * @return 非空字符串
      * @throws IllegalArgumentException 被检查字符串为空
-     * @see StringUtils#(CharSequence)
      */
     public static String notEmpty(String text, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
         if (StringUtils.isEmpty(text)) {
@@ -205,7 +203,6 @@ public class Assert {
      * @param text 被检查字符串
      * @return 被检查的字符串
      * @throws IllegalArgumentException 被检查字符串为空
-     * @see StringUtils#(CharSequence)
      */
     public static String notEmpty(String text) throws IllegalArgumentException {
         return notEmpty(text, "[Assertion failed] - this String argument must have length; it must not be null or empty");

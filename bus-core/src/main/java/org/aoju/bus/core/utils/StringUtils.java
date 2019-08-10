@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Normal;
@@ -54,9 +54,8 @@ import java.util.zip.GZIPOutputStream;
  * <p>
  * 用于MD5,加解密和字符串编码转换
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class StringUtils extends TextUtils {
@@ -67,33 +66,33 @@ public class StringUtils extends TextUtils {
     /**
      * 分别去空格
      *
-     * @param paramArray
-     * @return
+     * @param array 数组
+     * @return 数组
      */
-    public static final String[] trim(String[] paramArray) {
-        if (ArrayUtils.isEmpty(paramArray)) {
-            return paramArray;
+    public static final String[] trim(String[] array) {
+        if (ArrayUtils.isEmpty(array)) {
+            return array;
         }
-        String[] resultArray = new String[paramArray.length];
-        for (int i = 0; i < paramArray.length; i++) {
-            String param = paramArray[i];
+        String[] resultArray = new String[array.length];
+        for (int i = 0; i < array.length; i++) {
+            String param = array[i];
             resultArray[i] = trim(param);
         }
         return resultArray;
     }
 
     /**
-     * 去空格
+     * 字符串去空格
      *
-     * @param str
-     * @return
+     * @param str 原始字符串
+     * @return 返回字符串
      */
     public static String trim(String str) {
         return str == null ? null : str.trim();
     }
 
     /**
-     * 重写toString方法，处理了空指针问题</br>
+     * 重写toString方法，处理了空指针问题
      * (默认如果对象为null则替换成"")
      *
      * @param obj String类型的Object对象
@@ -119,6 +118,9 @@ public class StringUtils extends TextUtils {
 
     /**
      * 校验对象是不是为null或者内容是""
+     *
+     * @param obj 字符串
+     * @return true/false
      */
     public static boolean isEmpty(Object obj) {
         return obj == null || obj.toString().equals("");
@@ -129,12 +131,12 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 如果对象是字符串是否为空串空的定义如下:<br>
-     * 1、为null <br>
-     * 2、为""<br>
+     * 如果对象是字符串是否为空串空的定义如下:
+     * 1、为null
+     * 2、为""
      *
      * @param obj 对象
-     * @return 如果为字符串是否为空串
+     * @return true/false
      * @since 3.3.0
      */
     public static boolean isEmptyIfStr(Object obj) {
@@ -164,11 +166,10 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将base64字符串处理成String字节<br/>
+     * 将base64字符串处理成String字节
      *
      * @param str base64的字符串
      * @return 原字节数据
-     * @throws IOException
      */
     public static byte[] base64ToByte(String str) {
         try {
@@ -182,12 +183,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将base64字符串处理成String<br/>
+     * 将base64字符串处理成String
      * (用默认的String编码集)
      *
      * @param str base64的字符串
      * @return 可显示的字符串
-     * @throws IOException
      */
     public static String base64ToString(String str) {
         try {
@@ -201,13 +201,12 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将base64字符串处理成String<br/>
+     * 将base64字符串处理成String
      * (用默认的String编码集)
      *
      * @param str     base64的字符串
      * @param charset 编码格式(UTF-8/GBK)
      * @return 可显示的字符串
-     * @throws IOException
      */
     public static String base64ToString(String str, String charset) {
         try {
@@ -221,11 +220,10 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将字节数据处理成base64字符串<br/>
+     * 将字节数据处理成base64字符串
      *
      * @param bts 字节数据
      * @return base64编码后的字符串(用于传输)
-     * @throws IOException
      */
     public static String toBase64(byte[] bts) {
         if (bts == null || bts.length == 0) {
@@ -235,8 +233,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将String处理成base64字符串<br/>
-     * (用默认的String编码集) @param oldStr 原字符串 @return base64编码后的字符串(用于传输) @throws
+     * 将String处理成base64字符串
+     * (用默认的String编码集)
+     *
+     * @param oldStr 原字符串
+     * @return base64编码后的字符串(用于传输)
      */
     public static String toBase64(String oldStr) {
         if (oldStr == null) {
@@ -247,12 +248,12 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将String处理成base64字符串<br/>
+     * 将String处理成base64字符串
      * (用默认的String编码集)
      *
-     * @param oldStr 原字符串
+     * @param oldStr  原字符串
+     * @param charset 字符编码
      * @return base64编码后的字符串(用于传输)
-     * @throws UnsupportedEncodingException
      */
     public static String toBase64(String oldStr, String charset) {
         try {
@@ -269,6 +270,7 @@ public class StringUtils extends TextUtils {
     /**
      * 将字节数组换成16进制的字符串
      *
+     * @param byteArray 字节数组
      * @return string
      */
     public static String byteArrayToHex(byte[] byteArray) {
@@ -290,6 +292,7 @@ public class StringUtils extends TextUtils {
      * bytes字符串转换为Byte值
      * src Byte字符串，每个Byte之间没有分隔符
      *
+     * @param hex 字符串
      * @return byte[]
      */
     public static byte[] hexStringToByte(String hex) {
@@ -307,6 +310,9 @@ public class StringUtils extends TextUtils {
 
     /**
      * 将byte转换为MD5
+     *
+     * @param data byte[]
+     * @return 字符串
      */
     public static String toMD5(byte[] data) {
         try {
@@ -320,6 +326,9 @@ public class StringUtils extends TextUtils {
 
     /**
      * 将字符串转换为MD5
+     *
+     * @param data String
+     * @return 字符串
      */
     public static String toMD5(String data) {
         try {
@@ -334,12 +343,14 @@ public class StringUtils extends TextUtils {
     /**
      * 将字符串转换为MD5
      *
-     * @throws UnsupportedEncodingException
+     * @param data    String
+     * @param charset 字符集
+     * @return 字符串
      */
-    public static String toMD5(String data, String sourceCharset) {
+    public static String toMD5(String data, String charset) {
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(data.getBytes(sourceCharset));
+            digest.update(data.getBytes(charset));
             return byteArrayToHex(digest.digest());
         } catch (Exception e) {
             throw new CommonException(e);
@@ -453,10 +464,11 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * Unicode字符串转为普通字符串<br>
+     * Unicode字符串转为普通字符串
      * Unicode字符串的表现方式为：\\uXXXX
      *
-     * @param unicode Unicode字符串
+     * @param unicode     Unicode字符串
+     * @param isSkipAscii 是跳过Ascii
      * @return 普通字符串
      */
     public static String unicodeToString(String unicode, boolean isSkipAscii) {
@@ -499,6 +511,9 @@ public class StringUtils extends TextUtils {
 
     /**
      * 将字符串转换为url参数形式(中文和特殊字符会以%xx表示)
+     *
+     * @param input 字符串
+     * @return 字符串
      */
     public static String toUrlStr(String input) {
         return toUrlStr(input, "UTF-8");
@@ -506,6 +521,10 @@ public class StringUtils extends TextUtils {
 
     /**
      * 将字符串转换为url参数形式(中文和特殊字符会以%xx表示)
+     *
+     * @param input   字符串
+     * @param charset 编码
+     * @return 字符串
      */
     public static String toUrlStr(String input, String charset) {
         try {
@@ -517,6 +536,9 @@ public class StringUtils extends TextUtils {
 
     /**
      * 将url参数形式的字符串转换为原始字符串(中文和特殊字符会以%xx表示)
+     *
+     * @param input 字符串
+     * @return 字符串
      */
     public static String urlStrToString(String input) {
         return urlStrToString(input, "UTF-8");
@@ -524,6 +546,10 @@ public class StringUtils extends TextUtils {
 
     /**
      * 将url参数形式的字符串转换为原始字符串(中文和特殊字符会以%xx表示)
+     *
+     * @param input   字符串
+     * @param charset 编码
+     * @return 字符串
      */
     public static String urlStrToString(String input, String charset) {
         try {
@@ -758,16 +784,17 @@ public class StringUtils extends TextUtils {
     /**
      * 自定义二级压缩(最终显示为base64后的串)
      *
-     * @param val 原始字符串
+     * @param val     原始字符串
+     * @param charset 字符编码
      * @return 压缩后的字符串
      */
-    public static String compress2(String val, String... valCharset) {
+    public static String compress2(String val, String... charset) {
         if (StringUtils.isEmpty(val)) {
             return val;
         }
         try {
             return compress2(
-                    valCharset != null && valCharset.length > 0 ? val.getBytes(valCharset[0]) : val.getBytes());
+                    charset != null && charset.length > 0 ? val.getBytes(charset[0]) : val.getBytes());
         } catch (UnsupportedEncodingException e) {
             throw new CommonException(e);
         }
@@ -776,10 +803,11 @@ public class StringUtils extends TextUtils {
     /**
      * 自定义二级解压缩
      *
-     * @param val base64后的压缩数据
+     * @param val     base64后的压缩数据
+     * @param charset 字符编码
      * @return 解压后的原数据
      */
-    public static String unCompress2(String val, String... oldCharset) {
+    public static String unCompress2(String val, String... charset) {
         try {
             byte[] bts = StringUtils.base64ToByte(val);
             int size = (bts[0] << 24) + (bts[1] << 16) + (bts[2] << 8) + bts[3];
@@ -806,7 +834,7 @@ public class StringUtils extends TextUtils {
             }
             all.flush();
             bts = all.toByteArray();
-            return oldCharset != null && oldCharset.length > 0 ? new String(bts, oldCharset[0]) : new String(bts);
+            return charset != null && charset.length > 0 ? new String(bts, charset[0]) : new String(bts);
         } catch (Exception e) {
             throw new CommonException(e);
         }
@@ -814,12 +842,15 @@ public class StringUtils extends TextUtils {
 
     /**
      * 系统压缩(返回base64后的压缩数据)
+     *
+     * @param bytes 字节
+     * @return string
      */
-    public static String compress(byte[] bts) {
+    public static String compress(byte[] bytes) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             GZIPOutputStream gzip = new GZIPOutputStream(out);
-            gzip.write(bts);
+            gzip.write(bytes);
             gzip.close();
             return StringUtils.toBase64(out.toByteArray());
         } catch (Exception e) {
@@ -829,13 +860,17 @@ public class StringUtils extends TextUtils {
 
     /**
      * 系统压缩(返回base64后的压缩数据)
+     *
+     * @param val     字符
+     * @param charset 编码
+     * @return string
      */
-    public static String compress(String val, String... valCharset) {
+    public static String compress(String val, String... charset) {
         if (StringUtils.isEmpty(val)) {
             return val;
         }
         try {
-            return compress(valCharset != null && valCharset.length > 0 ? val.getBytes(valCharset[0]) : val.getBytes());
+            return compress(charset != null && charset.length > 0 ? val.getBytes(charset[0]) : val.getBytes());
         } catch (UnsupportedEncodingException e) {
             throw new CommonException(e);
         }
@@ -843,8 +878,12 @@ public class StringUtils extends TextUtils {
 
     /**
      * 系统解压缩
+     *
+     * @param val     字符
+     * @param charset 编码
+     * @return string
      */
-    public static String unCompress(String val, String... oldCharset) {
+    public static String unCompress(String val, String... charset) {
         try {
             if (StringUtils.isEmpty(val)) {
                 return val;
@@ -857,7 +896,7 @@ public class StringUtils extends TextUtils {
             while ((n = gzip.read(buffer)) >= 0) {
                 out.write(buffer, 0, n);
             }
-            return oldCharset != null && oldCharset.length > 0 ? new String(out.toByteArray(), oldCharset[0])
+            return charset != null && charset.length > 0 ? new String(out.toByteArray(), charset[0])
                     : new String(out.toByteArray());
         } catch (Exception e) {
             throw new CommonException(e);
@@ -911,7 +950,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str1 要比较的字符串1
      * @param str2 要比较的字符串2
-     * @return 如果两个字符串相同，或者都是<criteria>null</criteria>，则返回<criteria>true</criteria>
+     * @return 如果两个字符串相同，或者都是null，则返回true
      */
     public static boolean equals(CharSequence str1, CharSequence str2) {
         return equals(str1, str2, false);
@@ -930,7 +969,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str1 要比较的字符串1
      * @param str2 要比较的字符串2
-     * @return 如果两个字符串相同，或者都是<criteria>null</criteria>，则返回<criteria>true</criteria>
+     * @return 如果两个字符串相同，或者都是null，则返回true
      */
     public static boolean equalsIgnoreCase(CharSequence str1, CharSequence str2) {
         return equals(str1, str2, true);
@@ -942,7 +981,7 @@ public class StringUtils extends TextUtils {
      * @param str1       要比较的字符串1
      * @param str2       要比较的字符串2
      * @param ignoreCase 是否忽略大小写
-     * @return 如果两个字符串相同，或者都是<criteria>null</criteria>，则返回<criteria>true</criteria>
+     * @return 如果两个字符串相同，或者都是null，则返回true
      * @since 3.2.0
      */
     public static boolean equals(CharSequence str1, CharSequence str2, boolean ignoreCase) {
@@ -963,13 +1002,13 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 格式化字符串<br>
-     * 此方法只是简单将占位符 {} 按照顺序替换为参数<br>
-     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可<br>
-     * 例：<br>
-     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b<br>
-     * 转义{}： 	format("this is \\{} for {}", "a", "b") =》 this is \{} for a<br>
-     * 转义\：		format("this is \\\\{} for {}", "a", "b") =》 this is \a for b<br>
+     * 格式化字符串
+     * 此方法只是简单将占位符 {} 按照顺序替换为参数
+     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
+     * 例：
+     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b
+     * 转义{}： 	format("this is \\{} for {}", "a", "b") =》 this is \{} for a
+     * 转义\：		format("this is \\\\{} for {}", "a", "b") =》 this is \a for b
      *
      * @param val      字符串模板
      * @param argArray 参数列表
@@ -1024,7 +1063,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将对象转为字符串<br>
+     * 将对象转为字符串
      * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组 2、对象数组会调用Arrays.toString方法
      *
      * @param obj 对象
@@ -1036,7 +1075,7 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * 将对象转为字符串<br>
+     * 将对象转为字符串
      * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组 2、对象数组会调用Arrays.toString方法
      *
      * @param obj         对象
@@ -1048,7 +1087,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将对象转为字符串<br>
+     * 将对象转为字符串
      * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组 2、对象数组会调用Arrays.toString方法
      *
      * @param obj     对象
@@ -1202,13 +1241,13 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 改进JDK subString<br>
-     * index从0开始计算，最后一个字符为-1<br>
-     * 如果from和to位置一样，返回 "" <br>
-     * 如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length<br>
-     * 如果经过修正的index中from大于to，则互换 <br>
-     * abcdefgh 2 3 =》 c <br>
-     * abcdefgh 2 -3 =》 cde <br>
+     * 改进JDK subString
+     * index从0开始计算，最后一个字符为-1
+     * 如果from和to位置一样，返回 ""
+     * 如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length
+     * 如果经过修正的index中from大于to，则互换
+     * abcdefgh 2 3 =》 c
+     * abcdefgh 2 -3 =》 cde
      *
      * @param str       String
      * @param fromIndex 开始的index（包括）
@@ -1497,12 +1536,13 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * @param len 每一个小节的长度
+     * @param text 每字符串
+     * @param len  每一个小节的长度
      * @return 截取后的字符串数组
      */
-    public static String[] splitByLength(String str, int len) {
-        int partCount = str.length() / len;
-        int lastPartCount = str.length() % len;
+    public static String[] splitByLength(String text, int len) {
+        int partCount = text.length() / len;
+        int lastPartCount = text.length() % len;
         int fixPart = 0;
         if (lastPartCount != 0) {
             fixPart = 1;
@@ -1511,9 +1551,9 @@ public class StringUtils extends TextUtils {
         final String[] strs = new String[partCount + fixPart];
         for (int i = 0; i < partCount + fixPart; i++) {
             if (i == partCount + fixPart - 1 && lastPartCount != 0) {
-                strs[i] = str.substring(i * len, i * len + lastPartCount);
+                strs[i] = text.substring(i * len, i * len + lastPartCount);
             } else {
-                strs[i] = str.substring(i * len, i * len + len);
+                strs[i] = text.substring(i * len, i * len + len);
             }
         }
         return strs;
@@ -1580,8 +1620,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串<br>
-     * a#b#c =》 [a,b,c] <br>
+     * 切分字符串
+     * a#b#c =》 [a,b,c]
      * a##b#c =》 [a,"",b,c]
      *
      * @param str       被切分的字符串
@@ -1593,7 +1633,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 使用空白符切分字符串<br>
+     * 使用空白符切分字符串
      * 切分后的字符串两边不包含空白符，空串或空白符串并不做为元素之一
      *
      * @param str   被切分的字符串
@@ -1854,11 +1894,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 除去字符串头尾部的空白符，如果字符串是<criteria>null</criteria>，依然返回<criteria>null</criteria>。
+     * 除去字符串头尾部的空白符，如果字符串是null，依然返回null。
      *
      * @param str  要处理的字符串
-     * @param mode <criteria>-1</criteria>表示trimStart，<criteria>0</criteria>表示trim全部， <criteria>1</criteria>表示trimEnd
-     * @return 除去指定字符后的的字符串，如果原字串为<criteria>null</criteria>，则返回<criteria>null</criteria>
+     * @param mode -1表示trimStart，0表示trim全部， 1表示trimEnd
+     * @return 除去指定字符后的的字符串，如果原字串为null，则返回null
      */
     public static String trim(CharSequence str, int mode) {
         if (str == null) {
@@ -1902,7 +1942,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 是否以指定字符串开头<br>
+     * 是否以指定字符串开头
      * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
      *
      * @param str          被监测字符串
@@ -2017,7 +2057,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写<br>
+     * 指定范围内查找字符串，忽略大小写
      *
      * <pre>
      * StringUtils.indexOfIgnoreCase(null, *, *)          = -1
@@ -2109,7 +2149,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写<br>
+     * 指定范围内查找字符串，忽略大小写
      *
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
@@ -2121,7 +2161,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写<br>
+     * 指定范围内查找字符串，忽略大小写
      *
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
@@ -2134,7 +2174,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 指定范围内查找字符串<br>
+     * 指定范围内查找字符串
      *
      * @param str        字符串
      * @param searchStr  需要查找位置的字符串
@@ -2170,11 +2210,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 返回字符串 searchStr 在字符串 str 中第 ordinal 次出现的位置。<br>
-     * 如果 str=null 或 searchStr=null 或 ordinal<=0 则返回-1<br>
-     * 此方法来自：Apache-Commons-Lang
-     * <p>
-     * 栗子（*代表任意字符）：
+     * 返回字符串 searchStr 在字符串 str 中第 ordinal 次出现的位置。
+     * 如果 str=null 或 searchStr=null 或 ordinal小于等于0 则返回-1
      *
      * <pre>
      * StringUtils.ordinalIndexOf(null, *, *)          = -1
@@ -2216,7 +2253,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取两个字符串的不同部分（长度一致），判断截取的子串是否相同<br>
+     * 截取两个字符串的不同部分（长度一致），判断截取的子串是否相同
      * 任意一个字符串为null返回false
      *
      * @param str1       第一个字符串
@@ -2311,7 +2348,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 反转字符串<br>
+     * 反转字符串
      * 例如：abcd =》dcba
      *
      * @param str 被反转的字符串
@@ -2325,7 +2362,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 编码字符串<br>
+     * 编码字符串
      * 使用系统默认编码
      *
      * @param str 字符串
@@ -2365,7 +2402,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将驼峰式命名的字符串转换为下划线方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。<br>
+     * 将驼峰式命名的字符串转换为下划线方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。
      * 例如：HelloWorld=》hello_world
      *
      * @param camelCaseStr 转换前的驼峰式命名的字符串
@@ -2403,7 +2440,7 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * 去掉首部指定长度的字符串并将剩余字符串首字母小写<br>
+     * 去掉首部指定长度的字符串并将剩余字符串首字母小写
      * 例如：str=setName, preLength=3 =》 return name
      *
      * @param str       被处理的字符串
@@ -2426,7 +2463,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 去掉首部指定长度的字符串并将剩余字符串首字母小写<br>
+     * 去掉首部指定长度的字符串并将剩余字符串首字母小写
      * 例如：str=setName, prefix=set =》 return name
      *
      * @param str    被处理的字符串
@@ -2452,7 +2489,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 大写首字母<br>
+     * 大写首字母
      * 例如：str = name, return Name
      *
      * @param str 字符串
@@ -2472,7 +2509,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 小写首字母<br>
+     * 小写首字母
      * 例如：str = Name, return name
      *
      * @param str 字符串
@@ -2522,8 +2559,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Gets the substring before the last occurrence of a separator.
-     * The separator is not returned.</p>
+     * Gets the substring before the last occurrence of a separator.
+     * The separator is not returned.
      *
      * @param str       the String to get a substring from, may be null
      * @param separator the String to search for, may be null
@@ -2541,8 +2578,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Gets the substring after the last occurrence of a separator.
-     * The separator is not returned.</p>
+     * Gets the substring after the last occurrence of a separator.
+     * The separator is not returned.
      *
      * @param str       the String to get a substring from, may be null
      * @param separator the String to search for, may be null
@@ -2563,7 +2600,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。<br>
+     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。
      * 例如：hello_world=》helloWorld
      *
      * @param name 转换前的下划线大写方式命名的字符串
@@ -2783,7 +2820,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 替换字符字符数组中所有的字符为replacedStr<br>
+     * 替换字符字符数组中所有的字符为replacedStr
      * 提供的chars为所有需要被替换的字符，例如："\r\n"，则"\r"和"\n"都会被替换，哪怕他们单独存在
      *
      * @param str         被检查的字符串
@@ -2853,7 +2890,7 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * 包装指定字符串<br>
+     * 包装指定字符串
      * 当前缀和后缀一致时使用此方法
      *
      * @param str             被包装的字符串
@@ -3019,7 +3056,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 是否以指定字符串结尾<br>
+     * 是否以指定字符串结尾
      * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
      *
      * @param str          被监测字符串
@@ -3287,7 +3324,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 给定字符串是否包含空白符（空白符包括空格、制表符、全角空格和不间断空格）<br>
+     * 给定字符串是否包含空白符（空白符包括空格、制表符、全角空格和不间断空格）
      * 如果给定字符串为null或者""，则返回false
      *
      * @param str 字符串
@@ -3347,7 +3384,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串<br>
+     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
      * 忽略大小写
      *
      * @param str      指定字符串
@@ -3360,7 +3397,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串，如果包含返回找到的第一个字符串<br>
+     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串，如果包含返回找到的第一个字符串
      * 忽略大小写
      *
      * @param str      指定字符串
@@ -3382,8 +3419,8 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * 截取分隔字符串之前的字符串，不包括分隔字符串<br>
-     * 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串<br>
+     * 截取分隔字符串之前的字符串，不包括分隔字符串
+     * 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串
      * 如果分隔字符串为空串""，则返回空串，如果分隔字符串未找到，返回原字符串，举例如下：
      *
      * <pre>
@@ -3424,8 +3461,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取分隔字符串之前的字符串，不包括分隔字符串<br>
-     * 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串<br>
+     * 截取分隔字符串之前的字符串，不包括分隔字符串
+     * 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串
      * 如果分隔字符串未找到，返回原字符串，举例如下：
      *
      * <pre>
@@ -3460,8 +3497,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取分隔字符串之后的字符串，不包括分隔字符串<br>
-     * 如果给定的字符串为空串（null或""），返回原字符串<br>
+     * 截取分隔字符串之后的字符串，不包括分隔字符串
+     * 如果给定的字符串为空串（null或""），返回原字符串
      * 如果分隔字符串为空串（null或""），则返回空串，如果分隔字符串未找到，返回空串，举例如下：
      *
      * <pre>
@@ -3498,8 +3535,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取分隔字符串之后的字符串，不包括分隔字符串<br>
-     * 如果给定的字符串为空串（null或""），返回原字符串<br>
+     * 截取分隔字符串之后的字符串，不包括分隔字符串
+     * 如果给定的字符串为空串（null或""），返回原字符串
      * 如果分隔字符串为空串（null或""），则返回空串，如果分隔字符串未找到，返回空串，举例如下：
      *
      * <pre>
@@ -3530,7 +3567,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取指定字符串中间部分，不包括标识字符串<br>
+     * 截取指定字符串中间部分，不包括标识字符串
      * <p>
      * 栗子：
      *
@@ -3573,7 +3610,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取指定字符串中间部分，不包括标识字符串<br>
+     * 截取指定字符串中间部分，不包括标识字符串
      * <p>
      * 栗子：
      *
@@ -3673,9 +3710,9 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Checks if any of the CharSequences are empty ("") or null or whitespace only.</p>
-     *
-     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
+     * Checks if any of the CharSequences are empty ("") or null or whitespace only.
+     * <p>
+     * Whitespace is defined by {@link Character#isWhitespace(char)}.
      *
      * <pre>
      * StringUtils.isAnyBlank((String) null)    = true
@@ -3708,7 +3745,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Removes control characters (char &lt;= 32) from both
+     * Removes control characters (char &lt;= 32) from both
      * ends of this String returning {@code null} if the String is
      * empty ("") after the trim or if it is {@code null}.
      *
@@ -3731,7 +3768,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Removes control characters (char &lt;= 32) from both
+     * Removes control characters (char &lt;= 32) from both
      * ends of this String returning an empty String ("") if the String
      * is empty ("") after the trim or if it is {@code null}.
      *
@@ -3762,9 +3799,9 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Returns either the passed in String, or if the String is
-     * {@code null}, the value of {@code defaultStr}.</p>
-     * <p>
+     * Returns either the passed in String, or if the String is
+     * {@code null}, the value of {@code defaultStr}.
+     *
      * <pre>
      * StringUtils.defaultString(null, "NULL")  = "NULL"
      * StringUtils.defaultString("", "NULL")    = ""
@@ -3783,7 +3820,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * Check whether the given {@code String} contains actual <em>text</em>.
-     * <p>More specifically, this method returns {@code true} if the
+     * More specifically, this method returns {@code true} if the
      * {@code String} is not {@code null}, its length is greater than 0,
      * and it contains at least one non-whitespace character.
      *
@@ -3808,7 +3845,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * Copy the given {@code Collection} into a {@code String} array.
-     * <p>The {@code Collection} must contain {@code String} elements only.
+     * The {@code Collection} must contain {@code String} elements only.
      *
      * @param collection the {@code Collection} to copy
      * @return the {@code String} array
@@ -3830,7 +3867,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * Check that the given {@code String} is neither {@code null} nor of length 0.
-     * <p>Note: this method returns {@code true} for a {@code String} that
+     * Note: this method returns {@code true} for a {@code String} that
      * purely consists of whitespace.
      *
      * @param str the {@code String} to check (may be {@code null})
@@ -3842,9 +3879,9 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Right pad a String with a specified String.</p>
-     *
-     * <p>The String is padded to the size of {@code size}.</p>
+     * Right pad a String with a specified String.
+     * <p>
+     * The String is padded to the size of {@code size}.
      *
      * <pre>
      * StringUtils.rightPad(null, *, *)      = null
@@ -3897,9 +3934,9 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * <p>Right pad a String with a specified character.</p>
-     *
-     * <p>The String is padded to the size of {@code size}.</p>
+     * Right pad a String with a specified character.
+     * <p>
+     * The String is padded to the size of {@code size}.
      *
      * <pre>
      * StringUtils.rightPad(null, *, *)     = null
@@ -3932,11 +3969,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Gets the leftmost {@code len} characters of a String.</p>
-     *
-     * <p>If {@code len} characters are not available, or the
+     * Gets the leftmost {@code len} characters of a String.
+     * <p>
+     * If {@code len} characters are not available, or the
      * String is {@code null}, the String will be returned without
-     * an exception. An empty String is returned if len is negative.</p>
+     * an exception. An empty String is returned if len is negative.
      *
      * <pre>
      * StringUtils.left(null, *)    = null
@@ -3965,11 +4002,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Gets the rightmost {@code len} characters of a String.</p>
-     *
-     * <p>If {@code len} characters are not available, or the String
+     * Gets the rightmost {@code len} characters of a String.
+     * <p>
+     * If {@code len} characters are not available, or the String
      * is {@code null}, the String will be returned without an
-     * an exception. An empty String is returned if len is negative.</p>
+     * an exception. An empty String is returned if len is negative.
      *
      * <pre>
      * StringUtils.right(null, *)    = null
@@ -3998,13 +4035,13 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Gets {@code len} characters from the middle of a String.</p>
-     *
-     * <p>If {@code len} characters are not available, the remainder
+     * Gets {@code len} characters from the middle of a String.
+     * <p>
+     * If {@code len} characters are not available, the remainder
      * of the String will be returned without an exception. If the
      * String is {@code null}, {@code null} will be returned.
      * An empty String is returned if len is negative or exceeds the
-     * length of {@code str}.</p>
+     * length of {@code str}.
      *
      * <pre>
      * StringUtils.mid(null, *, *)    = null
@@ -4039,13 +4076,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 删除指定字符串，
-     * <p>
+     * 删除指定字符串
      * 是否在开始位置，否则返回源字符串
-     *
-     * <p>A {@code null} source string will return {@code null}.
+     * A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
-     * A {@code null} search string will return the source string.</p>
+     * A {@code null} search string will return the source string.
      *
      * <pre>
      * StringUtils.removeStart(null, *)      = null
@@ -4338,7 +4373,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串<br>
+     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
      * 字符填充于字符串前
      *
      * @param str        被填充的字符串
@@ -4352,7 +4387,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串<br>
+     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
      * 字符填充于字符串后
      *
      * @param str        被填充的字符串
@@ -4473,7 +4508,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 统计指定内容中包含指定字符串的数量<br>
+     * 统计指定内容中包含指定字符串的数量
      * 参数为 {@code null} 或者 "" 返回 {@code 0}.
      *
      * <pre>

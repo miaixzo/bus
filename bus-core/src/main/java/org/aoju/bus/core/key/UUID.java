@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.key;
 
 import org.aoju.bus.core.utils.RandomUtils;
@@ -31,13 +31,9 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 /**
- * 提供通用唯一识别码（universally unique identifier）（UUID）实现，UUID表示一个128位的值。<br>
+ * 提供通用唯一识别码（universally unique identifier）（UUID）实现，UUID表示一个128位的值。
  * 此类拷贝自java.util.UUID，用于生成不带-的UUID字符串
- *
- * <p>
  * 这些通用标识符具有不同的变体。此类的方法用于操作 Leach-Salz 变体，不过构造方法允许创建任何 UUID 变体（将在下面进行描述）。
- * <p>
- * <p>
  * 变体 2 (Leach-Salz) UUID 的布局如下： long 型数据的最高有效位由以下无符号字段组成：
  *
  * <pre>
@@ -46,7 +42,6 @@ import java.util.Random;
  * 0x000000000000F000 version
  * 0x0000000000000FFF time_hi
  * </pre>
- * <p>
  * long 型数据的最低有效位由以下无符号字段组成：
  *
  * <pre>
@@ -54,16 +49,12 @@ import java.util.Random;
  * 0x3FFF000000000000 clock_seq
  * 0x0000FFFFFFFFFFFF node
  * </pre>
- *
- * <p>
- * variant 字段包含一个表示 UUID 布局的值。以上描述的位布局仅在 UUID 的 variant 值为 2（表示 Leach-Salz 变体）时才有效。 *
- * <p>
- * version 字段保存描述此 UUID 类型的值。有 4 种不同的基本 UUID 类型：基于时间的 UUID、DCE 安全 UUID、基于名称的 UUID 和随机生成的 UUID。<br>
+ * variant 字段包含一个表示 UUID 布局的值。以上描述的位布局仅在 UUID 的 variant 值为 2（表示 Leach-Salz 变体）时才有效。
+ * version 字段保存描述此 UUID 类型的值。有 4 种不同的基本 UUID 类型：基于时间的 UUID、DCE 安全 UUID、基于名称的 UUID 和随机生成的 UUID。
  * 这些类型的 version 值分别为 1、2、3 和 4。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -268,13 +259,14 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * 与此 UUID 相关联的时间戳值。
      *
      * <p>
-     * 60 位的时间戳值根据此 {@code UUID} 的 time_low、time_mid 和 time_hi 字段构造。<br>
+     * 60 位的时间戳值根据此 {@code UUID} 的 time_low、time_mid 和 time_hi 字段构造。
      * 所得到的时间戳以 100 毫微秒为单位，从 UTC（通用协调时间） 1582 年 10 月 15 日零时开始。
      *
      * <p>
-     * 时间戳值仅在在基于时间的 UUID（其 version 类型为 1）中才有意义。<br>
+     * 时间戳值仅在在基于时间的 UUID（其 version 类型为 1）中才有意义。
      * 如果此 {@code UUID} 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
      *
+     * @return the long
      * @throws UnsupportedOperationException 如果此 {@code UUID} 不是 version 为 1 的 UUID。
      */
     public long timestamp() throws UnsupportedOperationException {
@@ -306,7 +298,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * <p>
      * 48 位的节点值根据此 UUID 的 node 字段构造。此字段旨在用于保存机器的 IEEE 802 地址，该地址用于生成此 UUID 以保证空间唯一性。
      * <p>
-     * 节点值仅在基于时间的 UUID（其 version 类型为 1）中才有意义。<br>
+     * 节点值仅在基于时间的 UUID（其 version 类型为 1）中才有意义。
      * 如果此 UUID 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
      *
      * @return 此 {@code UUID} 的节点值
@@ -338,8 +330,6 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * }
      * </pre>
      *
-     * </blockquote>
-     *
      * @return 此{@code UUID} 的字符串表现形式
      * @see #toString(boolean)
      */
@@ -366,8 +356,6 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * hexDigit               = [0-9a-fA-F]
      * }
      * </pre>
-     *
-     * </blockquote>
      *
      * @param isSimple 是否简单模式，简单模式为不带'-'的UUID字符串
      * @return 此{@code UUID} 的字符串表现形式

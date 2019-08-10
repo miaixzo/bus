@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.poi.excel;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -40,9 +40,8 @@ import java.io.OutputStream;
 /**
  * Excel工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ExcelUtils {
@@ -550,7 +549,7 @@ public class ExcelUtils {
      * 将Sheet列号变为列名
      *
      * @param index 列号, 从0开始
-     * @return 0->A; 1->B...26->AA
+     * @return the sring
      * @since 4.1.20
      */
     public static String indexToColName(int index) {
@@ -573,7 +572,7 @@ public class ExcelUtils {
      * 根据表元的列名转换为列号
      *
      * @param colName 列名, 从A开始
-     * @return A1->0; B1->1...AA1->26
+     * @return the int
      * @since 4.1.20
      */
     public static int colNameToIndex(String colName) {

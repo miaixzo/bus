@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.file;
 
 /**
@@ -32,9 +32,8 @@ package org.aoju.bus.core.io.file;
  * Windows系统换行符："\r\n"
  * </pre>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS

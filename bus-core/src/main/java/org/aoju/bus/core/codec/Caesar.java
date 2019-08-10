@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.consts.Normal;
@@ -28,9 +28,8 @@ import org.aoju.bus.core.consts.Normal;
 /**
  * 凯撒密码实现
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Caesar {
@@ -59,15 +58,16 @@ public class Caesar {
     /**
      * 传入明文解密到密文
      *
-     * @param ciphertext 密文
+     * @param cipher 密文
+     * @param offset 偏移量
      * @return 解密后的内容
      */
-    public static String decode(String ciphertext, int offset) {
-        final int len = ciphertext.length();
-        final char[] plain = ciphertext.toCharArray();
+    public static String decode(String cipher, int offset) {
+        final int len = cipher.length();
+        final char[] plain = cipher.toCharArray();
         char c;
         for (int i = 0; i < len; i++) {
-            c = ciphertext.charAt(i);
+            c = cipher.charAt(i);
             if (false == Character.isLetter(c)) {
                 continue;
             }
@@ -92,7 +92,8 @@ public class Caesar {
     /**
      * 解密轮盘
      *
-     * @param c 字符
+     * @param c      字符
+     * @param offset 偏移量
      * @return 解密后的字符
      */
     private static char decodeChar(char c, int offset) {

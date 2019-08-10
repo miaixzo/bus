@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Assert;
@@ -65,11 +65,13 @@ import java.util.List;
  * calling {@link DiffResult#toString(ToStringStyle)}.
  * </p>
  *
+ * @author Kimi Liu
+ * @version 3.0.0
  * @see Diffable
  * @see Diff
  * @see DiffResult
  * @see ToStringStyle
- * @since 3.3
+ * @since JDK 1.8
  */
 public class DiffBuilder implements Builder<DiffResult> {
 

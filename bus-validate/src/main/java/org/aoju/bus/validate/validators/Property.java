@@ -20,14 +20,14 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.validators;
 
+import lombok.Data;
 import org.aoju.bus.core.lang.exception.ValidateException;
 import org.aoju.bus.core.text.StrSubstitutor;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.MapUtils;
-import lombok.Data;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -38,9 +38,8 @@ import java.util.Map;
 /**
  * 校验注解所包含的通用属性
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Data
@@ -93,6 +92,8 @@ public class Property {
 
     /**
      * 添加父级校验注解属性
+     *
+     * @param property 属性
      */
     public void addParentProperty(Property property) {
         if (CollUtils.isEmpty(this.list)) {
@@ -119,6 +120,8 @@ public class Property {
 
     /**
      * 获取字符串插值后的验证信息
+     *
+     * @return the string
      */
     public String getFormatted() {
         StrSubstitutor sub = new StrSubstitutor(param);

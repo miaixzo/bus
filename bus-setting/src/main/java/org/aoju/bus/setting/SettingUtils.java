@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.setting;
 
 import org.aoju.bus.core.utils.FileUtils;
@@ -33,9 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Setting工具类<br>
  * 提供静态方法获取配置文件
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SettingUtils {

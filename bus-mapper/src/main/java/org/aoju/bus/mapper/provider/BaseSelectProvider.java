@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -31,9 +31,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 /**
  * BaseSelectProvider实现类，基础方法实现类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BaseSelectProvider extends MapperTemplate {
@@ -45,8 +44,8 @@ public class BaseSelectProvider extends MapperTemplate {
     /**
      * 查询
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectOne(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -62,8 +61,8 @@ public class BaseSelectProvider extends MapperTemplate {
     /**
      * 查询
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String select(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -80,8 +79,8 @@ public class BaseSelectProvider extends MapperTemplate {
     /**
      * 查询
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectByRowBounds(MappedStatement ms) {
         return select(ms);
@@ -90,7 +89,8 @@ public class BaseSelectProvider extends MapperTemplate {
     /**
      * 根据主键进行查询
      *
-     * @param ms
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectByPrimaryKey(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
@@ -106,8 +106,8 @@ public class BaseSelectProvider extends MapperTemplate {
     /**
      * 查询总数
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectCount(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -121,8 +121,8 @@ public class BaseSelectProvider extends MapperTemplate {
     /**
      * 根据主键查询总数
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String existsWithPrimaryKey(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -136,8 +136,8 @@ public class BaseSelectProvider extends MapperTemplate {
     /**
      * 查询全部结果
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectAll(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);

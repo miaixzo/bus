@@ -20,12 +20,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate;
 
 import org.aoju.bus.core.lang.exception.ValidateException;
 import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.validate.strategy.*;
 import org.aoju.bus.validate.strategy.*;
 
 import java.util.Map;
@@ -34,9 +33,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 校验器注册中心
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Registry {
@@ -76,6 +74,8 @@ public class Registry {
 
     /**
      * 单例模型初始化
+     *
+     * @return the object
      */
     public static Registry getInstance() {
         synchronized (Registry.class) {

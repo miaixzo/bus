@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import java.io.IOException;
@@ -29,53 +29,57 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 
 /**
- * A source that keeps a buffer internally so that callers can do small reads without a performance
- * penalty. It also allows clients to read ahead, buffering as much as necessary before consuming
- * input.
+ * 内部保存一个缓冲区，以便调用者可以在没有性能的情况下进行少量读取
+ * 它还允许客户端提前读取，在消费之前进行必要的缓冲输入
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface BufferedSource extends Source, ReadableByteChannel {
 
     /**
-     * Returns this source's internal buffer.
+     * @return this source's internal buffer.
      * use getBuffer() instead.
      */
     Buffer buffer();
 
     /**
-     * This source's internal buffer.
+     * @return This source's internal buffer.
      */
     Buffer getBuffer();
 
     /**
-     * Returns true if there are no more bytes in this source. This will block until there are bytes
+     * @return true if there are no more bytes in this source. This will block until there are bytes
      * to read or the source is definitely exhausted.
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     boolean exhausted() throws IOException;
 
     /**
-     * Returns when the buffer contains at least {@code byteCount} bytes. Throws an
-     * {@link java.io.EOFException} if the source is exhausted before the required bytes can be read.
+     * when the buffer contains at least {@code byteCount} bytes.
+     *
+     * @param byteCount long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     void require(long byteCount) throws IOException;
 
     /**
-     * Returns true when the buffer contains at least {@code byteCount} bytes, expanding it as
+     * @param byteCount long
+     * @return true when the buffer contains at least {@code byteCount} bytes, expanding it as
      * necessary. Returns false if the source is exhausted before the requested bytes can be read.
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     boolean request(long byteCount) throws IOException;
 
     /**
-     * Removes a byte from this source and returns it.
+     * @return Removes a byte from this source and returns it.
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     byte readByte() throws IOException;
 
     /**
-     * Removes two bytes from this source and returns a big-endian short. <pre>{@code
+     * @return two bytes from this source and returns a big-endian short. <pre>{@code
      *
      *   Buffer buffer = new Buffer()
      *       .writeByte(0x7f)
@@ -90,6 +94,7 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(15, buffer.readShort());
      *   assertEquals(0, buffer.size());
      * }</pre>
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     short readShort() throws IOException;
 
@@ -109,83 +114,27 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(15, buffer.readShortLe());
      *   assertEquals(0, buffer.size());
      * }</pre>
+     *
+     * @return the short
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     short readShortLe() throws IOException;
 
     /**
-     * Removes four bytes from this source and returns a big-endian int. <pre>{@code
-     *
-     *   Buffer buffer = new Buffer()
-     *       .writeByte(0x7f)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x0f);
-     *   assertEquals(8, buffer.size());
-     *
-     *   assertEquals(2147483647, buffer.readInt());
-     *   assertEquals(4, buffer.size());
-     *
-     *   assertEquals(15, buffer.readInt());
-     *   assertEquals(0, buffer.size());
-     * }</pre>
+     * @return the int
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     int readInt() throws IOException;
 
     /**
-     * Removes four bytes from this source and returns a little-endian int. <pre>{@code
-     *
-     *   Buffer buffer = new Buffer()
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0x7f)
-     *       .writeByte(0x0f)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00);
-     *   assertEquals(8, buffer.size());
-     *
-     *   assertEquals(2147483647, buffer.readIntLe());
-     *   assertEquals(4, buffer.size());
-     *
-     *   assertEquals(15, buffer.readIntLe());
-     *   assertEquals(0, buffer.size());
-     * }</pre>
+     * @return the int
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     int readIntLe() throws IOException;
 
     /**
-     * Removes eight bytes from this source and returns a big-endian long. <pre>{@code
-     *
-     *   Buffer buffer = new Buffer()
-     *       .writeByte(0x7f)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0xff)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x00)
-     *       .writeByte(0x0f);
-     *   assertEquals(16, buffer.size());
-     *
-     *   assertEquals(9223372036854775807L, buffer.readLong());
-     *   assertEquals(8, buffer.size());
-     *
-     *   assertEquals(15, buffer.readLong());
-     *   assertEquals(0, buffer.size());
-     * }</pre>
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     long readLong() throws IOException;
 
@@ -217,6 +166,9 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(15, buffer.readLongLe());
      *   assertEquals(0, buffer.size());
      * }</pre>
+     *
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     long readLongLe() throws IOException;
 
@@ -234,8 +186,9 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(1L, buffer.readDecimalLong());
      * }</pre>
      *
-     * @throws NumberFormatException if the found digits do not fit into a {@code long} or a decimal
-     *                               number was not present.
+     * @return the long
+     * @throws IOException if the found digits do not fit into a {@code long} or a decimal
+     *                     number was not present.
      */
     long readDecimalLong() throws IOException;
 
@@ -253,25 +206,36 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(0x10L, buffer.readHexadecimalUnsignedLong());
      * }</pre>
      *
-     * @throws NumberFormatException if the found hexadecimal does not fit into a {@code long} or
-     *                               hexadecimal was not found.
+     * @return the long
+     * @throws IOException if the found hexadecimal does not fit into a {@code long} or
+     *                     hexadecimal was not found.
      */
     long readHexadecimalUnsignedLong() throws IOException;
 
     /**
      * Reads and discards {@code byteCount} bytes from this source. Throws an
-     * {@link java.io.EOFException} if the source is exhausted before the
+     * {@link java.io.IOException} if the source is exhausted before the
      * requested bytes can be skipped.
+     *
+     * @param byteCount long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     void skip(long byteCount) throws IOException;
 
     /**
      * Removes all bytes bytes from this and returns them as a byte string.
+     *
+     * @return the    ByteString
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     ByteString readByteString() throws IOException;
 
     /**
      * Removes {@code byteCount} bytes from this and returns them as a byte string.
+     *
+     * @param byteCount long
+     * @return the    ByteString
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     ByteString readByteString(long byteCount) throws IOException;
 
@@ -299,46 +263,78 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(480, buffer.readDecimalLong());
      *   assertEquals('\n', buffer.readByte());
      * }</pre>
+     *
+     * @param options Options
+     * @return the    int
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     int select(Options options) throws IOException;
 
     /**
      * Removes all bytes from this and returns them as a byte array.
+     *
+     * @return the     byte[]
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     byte[] readByteArray() throws IOException;
 
     /**
      * Removes {@code byteCount} bytes from this and returns them as a byte array.
+     *
+     * @param byteCount long
+     * @return the     byte[]
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     byte[] readByteArray(long byteCount) throws IOException;
 
     /**
      * Removes up to {@code sink.length} bytes from this and copies them into {@code sink}. Returns
      * the number of bytes read, or -1 if this source is exhausted.
+     *
+     * @param sink byte[]
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     int read(byte[] sink) throws IOException;
 
     /**
      * Removes exactly {@code sink.length} bytes from this and copies them into {@code sink}. Throws
-     * an {@link java.io.EOFException} if the requested number of bytes cannot be read.
+     * an {@link java.io.IOException} if the requested number of bytes cannot be read.
+     *
+     * @param sink byte[]
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     void readFully(byte[] sink) throws IOException;
 
     /**
      * Removes up to {@code byteCount} bytes from this and copies them into {@code sink} at {@code
      * offset}. Returns the number of bytes read, or -1 if this source is exhausted.
+     *
+     * @param sink      byte[]
+     * @param offset    int
+     * @param byteCount int
+     * @return the int
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     int read(byte[] sink, int offset, int byteCount) throws IOException;
 
     /**
      * Removes exactly {@code byteCount} bytes from this and appends them to {@code sink}. Throws an
-     * {@link java.io.EOFException} if the requested number of bytes cannot be read.
+     * {@link java.io.IOException} if the requested number of bytes cannot be read.
+     *
+     * @param sink      Buffer
+     * @param byteCount long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     void readFully(Buffer sink, long byteCount) throws IOException;
 
     /**
      * Removes all bytes from this and appends them to {@code sink}. Returns the total number of bytes
      * written to {@code sink} which will be 0 if this is exhausted.
+     *
+     * @param sink Sink
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     long readAll(Sink sink) throws IOException;
 
@@ -357,6 +353,9 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals("", buffer.readUtf8());
      *   assertEquals(0, buffer.size());
      * }</pre>
+     *
+     * @return the String
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     String readUtf8() throws IOException;
 
@@ -379,6 +378,10 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(" magic word!", buffer.readUtf8(12));
      *   assertEquals(0, buffer.size());
      * }</pre>
+     *
+     * @param byteCount long
+     * @return the String
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     String readUtf8(long byteCount) throws IOException;
 
@@ -410,6 +413,9 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      * java.io.BufferedReader}. If the source doesn't end with a line break then an implicit line
      * break is assumed. Null is returned once the source is exhausted. Use this for human-generated
      * data, where a trailing line break is optional.
+     *
+     * @return the String
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     String readUtf8Line() throws IOException;
 
@@ -418,9 +424,12 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      * either {@code "\n"} or {@code "\r\n"}; these characters are not included in the result.
      *
      * <p><strong>On the end of the stream this method throws.</strong> Every call must consume either
-     * '\r\n' or '\n'. If these characters are absent in the stream, an {@link java.io.EOFException}
+     * '\r\n' or '\n'. If these characters are absent in the stream, an {@link java.io.IOException}
      * is thrown. Use this for machine-generated data where a missing line break implies truncated
      * input.
+     *
+     * @return the String
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     String readUtf8LineStrict() throws IOException;
 
@@ -431,7 +440,7 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *
      * <p>The returned string will have at most {@code limit} UTF-8 bytes, and the maximum number
      * of bytes scanned is {@code limit + 2}. If {@code limit == 0} this will always throw
-     * an {@code EOFException} because no bytes will be scanned.
+     * an {@code IOException} because no bytes will be scanned.
      *
      * <p>This method is safe. No bytes are discarded if the match fails, and the caller is free
      * to try another match: <pre>{@code
@@ -445,38 +454,53 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   // No bytes have been consumed so the caller can retry.
      *   assertEquals("12345", buffer.readUtf8LineStrict(5));
      * }</pre>
+     *
+     * @param limit long
+     * @return String String
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     String readUtf8LineStrict(long limit) throws IOException;
 
     /**
-     * Removes and returns a single UTF-8 code point, reading between 1 and 4 bytes as necessary.
+     * @return Removes and returns a single UTF-8 code point, reading between 1 and 4 bytes as necessary.
      *
      * <p>If this source is exhausted before a complete code point can be read, this throws an {@link
-     * java.io.EOFException} and consumes no input.
+     * java.io.IOException} and consumes no input.
      *
      * <p>If this source doesn't start with a properly-encoded UTF-8 code point, this method will
      * remove 1 or more non-UTF-8 bytes and return the replacement character ({@code U+FFFD}). This
      * covers encoding problems (the input is not properly-encoded UTF-8), characters out of range
      * (beyond the 0x10ffff limit of Unicode), code points for UTF-16 surrogates (U+d800..U+dfff) and
      * overlong encodings (such as {@code 0xc080} for the NUL character in modified UTF-8).
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     int readUtf8CodePoint() throws IOException;
 
     /**
-     * Removes all bytes from this, decodes them as {@code charset}, and returns the string.
+     * @param charset Charset  Removes all bytes from this, decodes them as {@code charset},
+     * @return the string.
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     String readString(Charset charset) throws IOException;
 
     /**
-     * Removes {@code byteCount} bytes from this, decodes them as {@code charset}, and returns the
-     * string.
+     * Removes {@code byteCount} bytes from this, decodes them as {@code charset},
+     *
+     * @param byteCount byteCount
+     * @param charset   Charset
+     * @return the string.
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     String readString(long byteCount, Charset charset) throws IOException;
 
     /**
      * Equivalent to {@link #indexOf(byte, long) indexOf(b, 0)}.
+     *
+     * @param bytes byte
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
-    long indexOf(byte b) throws IOException;
+    long indexOf(byte bytes) throws IOException;
 
     /**
      * Returns the index of the first {@code b} in the buffer at or after {@code fromIndex}. This
@@ -491,8 +515,13 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(6,  buffer.indexOf(m));
      *   assertEquals(40, buffer.indexOf(m, 12));
      * }</pre>
+     *
+     * @param bytes     byte
+     * @param fromIndex long
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
-    long indexOf(byte b, long fromIndex) throws IOException;
+    long indexOf(byte bytes, long fromIndex) throws IOException;
 
     /**
      * Returns the index of {@code b} if it is found in the range of {@code fromIndex} inclusive
@@ -501,11 +530,21 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *
      * <p>The scan terminates at either {@code toIndex} or the end of the buffer, whichever comes
      * first. The maximum number of bytes scanned is {@code toIndex-fromIndex}.
+     *
+     * @param bytes     byte
+     * @param fromIndex long
+     * @param toIndex   long
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
-    long indexOf(byte b, long fromIndex, long toIndex) throws IOException;
+    long indexOf(byte bytes, long fromIndex, long toIndex) throws IOException;
 
     /**
      * Equivalent to {@link #indexOf(ByteString, long) indexOf(bytes, 0)}.
+     *
+     * @param bytes ByteString
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     long indexOf(ByteString bytes) throws IOException;
 
@@ -523,57 +562,68 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *   assertEquals(6,  buffer.indexOf(MOVE));
      *   assertEquals(40, buffer.indexOf(MOVE, 12));
      * }</pre>
+     *
+     * @param bytes     ByteString
+     * @param fromIndex long
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     long indexOf(ByteString bytes, long fromIndex) throws IOException;
 
     /**
-     * Equivalent to {@link #indexOfElement(ByteString, long) indexOfElement(targetBytes, 0)}.
+     * @param targetBytes ByteString
+     *                    Equivalent to {@link #indexOfElement(ByteString, long) indexOfElement(targetBytes, 0)}.
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     long indexOfElement(ByteString targetBytes) throws IOException;
 
     /**
-     * Returns the first index in this buffer that is at or after {@code fromIndex} and that contains
-     * any of the bytes in {@code targetBytes}. This expands the buffer as necessary until a target
-     * byte is found. This reads an unbounded number of bytes into the buffer. Returns -1 if the
-     * stream is exhausted before the requested byte is found. <pre>{@code
-     *
-     *   ByteString ANY_VOWEL = ByteString.encodeUtf8("AEOIUaeoiu");
-     *
-     *   Buffer buffer = new Buffer();
-     *   buffer.writeUtf8("Dr. Alan Grant");
-     *
-     *   assertEquals(4,  buffer.indexOfElement(ANY_VOWEL));    // 'A' in 'Alan'.
-     *   assertEquals(11, buffer.indexOfElement(ANY_VOWEL, 9)); // 'a' in 'Grant'.
-     * }</pre>
+     * @param fromIndex long
+     * @param bytes     ByteString
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
-    long indexOfElement(ByteString targetBytes, long fromIndex) throws IOException;
+    long indexOfElement(ByteString bytes, long fromIndex) throws IOException;
 
     /**
-     * Returns true if the bytes at {@code offset} in this source equal {@code bytes}. This expands
+     * true if the bytes at {@code offset} in this source equal {@code bytes}. This expands
      * the buffer as necessary until a byte does not match, all bytes are matched, or if the stream
      * is exhausted before enough bytes could determine a match.  <pre>{@code
      *
-     *   ByteString simonSays = ByteString.encodeUtf8("Simon says:");
+     *                 ByteString simonSays = ByteString.encodeUtf8("Simon says:");
      *
-     *   Buffer standOnOneLeg = new Buffer().writeUtf8("Simon says: Stand on first leg.");
-     *   assertTrue(standOnOneLeg.rangeEquals(0, simonSays));
+     *                 Buffer standOnOneLeg = new Buffer().writeUtf8("Simon says: Stand on first leg.");
+     *                 assertTrue(standOnOneLeg.rangeEquals(0, simonSays));
      *
-     *   Buffer payMeMoney = new Buffer().writeUtf8("Pay me $1,000,000.");
-     *   assertFalse(payMeMoney.rangeEquals(0, simonSays));
-     * }</pre>
+     *                 Buffer payMeMoney = new Buffer().writeUtf8("Pay me $1,000,000.");
+     *                 assertFalse(payMeMoney.rangeEquals(0, simonSays));
+     *               }</pre>
+     *
+     * @param offset long
+     * @param bytes  ByteString
+     * @return the long
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     boolean rangeEquals(long offset, ByteString bytes) throws IOException;
 
     /**
-     * Returns true if {@code byteCount} bytes at {@code offset} in this source equal {@code bytes}
-     * at {@code bytesOffset}. This expands the buffer as necessary until a byte does not match, all
-     * bytes are matched, or if the stream is exhausted before enough bytes could determine a match.
+     * if {@code byteCount} bytes at {@code offset} in this source equal {@code bytes}
+     * * at {@code bytesOffset}. This expands the buffer as necessary until a byte does not match, all
+     * * bytes are matched, or if the stream is exhausted before enough bytes could determine a match.
+     *
+     * @param offset      long
+     * @param bytes       ByteString
+     * @param bytesOffset int
+     * @param byteCount   int
+     * @return the true
+     * @throws IOException {@link java.io.IOException} IOException.
      */
     boolean rangeEquals(long offset, ByteString bytes, int bytesOffset, int byteCount)
             throws IOException;
 
     /**
-     * Returns a new {@code BufferedSource} that can read data from this {@code BufferedSource}
+     * a new {@code BufferedSource} that can read data from this {@code BufferedSource}
      * without consuming it. The returned source becomes invalid once this source is next read or
      * closed.
      * <p>
@@ -592,11 +642,15 @@ public interface BufferedSource extends Source, ReadableByteChannel {
      *
      *   buffer.readUtf8(3); // returns "def", buffer contains "ghi"
      * }</pre>
+     *
+     * @return the long
      */
     BufferedSource peek();
 
     /**
-     * Returns an input stream that reads from this source.
+     * an input stream that reads from this source.
+     *
+     * @return the InputStream
      */
     InputStream inputStream();
 

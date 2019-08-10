@@ -20,31 +20,31 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.parser;
 
-import org.aoju.bus.pager.PageException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.aoju.bus.pager.PageException;
 
 import java.util.List;
 
 /**
  * 处理 Order by
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class OrderByParser {
+
     /**
      * convert to order by sql
      *
-     * @param sql
-     * @param orderBy
-     * @return
+     * @param sql     sql
+     * @param orderBy 排序
+     * @return the string
      */
     public static String converToOrderBySql(String sql, String orderBy) {
         //解析SQL
@@ -70,7 +70,8 @@ public class OrderByParser {
     /**
      * extra order by and set default orderby to null
      *
-     * @param selectBody
+     * @param selectBody 获取body
+     * @return 结果
      */
     public static List<OrderByElement> extraOrderBy(SelectBody selectBody) {
         if (selectBody instanceof PlainSelect) {

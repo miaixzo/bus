@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.common.dialect.sqlserver;
 
 import org.aoju.bus.mapper.provider.SqlServerProvider;
@@ -30,9 +30,8 @@ import org.apache.ibatis.annotations.Options;
 /**
  * 通用Mapper接口,插入
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface InsertMapper<T> {
@@ -40,8 +39,8 @@ public interface InsertMapper<T> {
     /**
      * 插入数据库，`null`值也会插入，不会使用列的默认值
      *
-     * @param record
-     * @return
+     * @param record 对象
+     * @return 结果
      */
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @InsertProvider(type = SqlServerProvider.class, method = "dynamicSQL")

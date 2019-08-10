@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.crypto.advice;
 
 import org.aoju.bus.base.spring.BaseAdvice;
@@ -46,9 +46,8 @@ import java.lang.reflect.Type;
  * 请求请求处理类（目前仅仅对requestbody有效）
  * 对加了@Decrypt的方法的数据进行解密密操作
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class RequestBodyAdvice extends BaseAdvice

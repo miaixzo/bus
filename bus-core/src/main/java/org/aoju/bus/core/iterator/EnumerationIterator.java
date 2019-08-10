@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.iterator;
 
 import java.util.Collection;
@@ -31,9 +31,8 @@ import java.util.Iterator;
  * Adapter to make {@link Enumeration Enumeration} instances appear
  * to be {@link Iterator Iterator} instances.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EnumerationIterator<E> implements Iterator<E> {

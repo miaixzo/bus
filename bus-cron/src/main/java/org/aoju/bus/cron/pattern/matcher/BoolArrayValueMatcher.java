@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cron.pattern.matcher;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -31,9 +31,8 @@ import java.util.List;
 /**
  * 将表达式中的数字值列表转换为Boolean数组，匹配时匹配相应数组位
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BoolArrayValueMatcher implements ValueMatcher {

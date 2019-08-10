@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.key;
 
 import java.io.Serializable;
@@ -36,31 +36,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 对象的全局唯一标识符<p>
  * 由12个字节组成，分割如下:
  *
- * <pre>
- * <table border="1">
- * <tr><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
- *     <td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
- * <tr><td colspan="4">time</td><td colspan="3">machine</td>
- *     <td colspan="2">pid</td><td colspan="3">inc</td></tr>
- * </table>
- * </pre>
- *
- * </blockquote>
- *
  * @author objectids
- * @version 3.0.1
- * @group 839128
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ObjectID implements Comparable<ObjectID>, Serializable {
 
     private static final long serialVersionUID = -4415279469780082174L;
     private static final int _genmachine;
-    private final int _time;
-    private final int _machine;
-    private final int _inc;
-    private boolean _new;
-
     private static AtomicInteger _nextInc = new AtomicInteger(
             (new Random()).nextInt());
 
@@ -109,6 +92,11 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
             throw new RuntimeException(e);
         }
     }
+
+    private final int _time;
+    private final int _machine;
+    private final int _inc;
+    private boolean _new;
 
     public ObjectID(Date time) {
         this(time, _genmachine, _nextInc.getAndIncrement());
@@ -189,7 +177,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
     }
 
     /**
-     * Gets a new String id.
+     * 获取ObjectId.
      *
      * @return the new id
      */
@@ -198,7 +186,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
     }
 
     /**
-     * Gets a new object id.
+     * 获取ObjectId
      *
      * @return the new id
      */
@@ -207,20 +195,21 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
     }
 
     /**
-     * Checks if a string could be an <criteria>ObjectId</criteria>.
+     * 检查字符串是否可以是ObjectId
      *
-     * @return whether the string could be an object id
+     * @param text 字符串
+     * @return true/false
      */
-    public static boolean isValid(String s) {
-        if (s == null)
+    public static boolean isValid(String text) {
+        if (text == null)
             return false;
 
-        final int len = s.length();
+        final int len = text.length();
         if (len != 24)
             return false;
 
         for (int i = 0; i < len; i++) {
-            char c = s.charAt(i);
+            char c = text.charAt(i);
             if (c >= '0' && c <= '9')
                 continue;
             if (c >= 'a' && c <= 'f')
@@ -230,18 +219,14 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
 
             return false;
         }
-
         return true;
     }
 
     /**
-     * Turn an object into an <criteria>ObjectId</criteria>, if possible. Strings will
-     * be converted into <criteria>ObjectId</criteria>s, if possible, and
-     * <criteria>ObjectId</criteria>s will be cast and returned. Passing in
-     * <criteria>null</criteria> returns <criteria>null</criteria>.
+     * 将对象转换为ObjectId
      *
-     * @param o the object to convert
-     * @return an <criteria>ObjectId</criteria> if it can be massaged, null otherwise
+     * @param o 要转换的对象
+     * @return objectid/null
      */
     public static ObjectID massageToObjectId(Object o) {
         if (o == null)
@@ -277,15 +262,18 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
     }
 
     /**
-     * Gets the generated machine ID, identifying the machine / process / class
-     * loader
+     * 获取生成的机器ID，标识机器/进程/类 加载程序
+     *
+     * @return the int
      */
     public static int getGenMachineId() {
         return _genmachine;
     }
 
     /**
-     * Gets the current value of the auto increment
+     * 获取自动增量的当前值
+     *
+     * @return the int
      */
     public static int getCurrentInc() {
         return _nextInc.get();
@@ -387,14 +375,18 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
     }
 
     /**
-     * Gets the time of this ID, in milliseconds
+     * 获取此ID的时间(以毫秒为单位)
+     *
+     * @return the long
      */
     public long getTime() {
         return _time * 1000L;
     }
 
     /**
-     * Gets the time of this ID, in seconds
+     * 获取此ID的时间(以秒为单位)
+     *
+     * @return the int
      */
     public int getTimeSecond() {
         return _time;

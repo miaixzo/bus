@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.Internal;
@@ -38,12 +38,12 @@ import java.util.concurrent.TimeUnit;
  * own executor, it should be able to run {@linkplain #getMaxRequests the configured maximum} number
  * of calls concurrently.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Dispatcher {
+
     /**
      * Ready async calls in the order they'll be run.
      */
@@ -83,13 +83,6 @@ public final class Dispatcher {
         return maxRequests;
     }
 
-    /**
-     * Set the maximum number of requests to execute concurrently. Above this requests queue in
-     * memory, waiting for the running calls to complete.
-     *
-     * <p>If more than {@code maxRequests} requests are in flight when this is invoked, those requests
-     * will remain in flight.
-     */
     public void setMaxRequests(int maxRequests) {
         if (maxRequests < 1) {
             throw new IllegalArgumentException("max < 1: " + maxRequests);
@@ -104,17 +97,6 @@ public final class Dispatcher {
         return maxRequestsPerHost;
     }
 
-    /**
-     * Set the maximum number of requests for each host to execute concurrently. This limits requests
-     * by the URL's host name. Note that concurrent requests to a single IP address may still exceed
-     * this limit: multiple hostnames may share an IP address or be routed through the same HTTP
-     * proxy.
-     *
-     * <p>If more than {@code maxRequestsPerHost} requests are in flight when this is invoked, those
-     * requests will remain in flight.
-     *
-     * <p>WebSocket connections to hosts <b>do not</b> count against this limit.
-     */
     public void setMaxRequestsPerHost(int maxRequestsPerHost) {
         if (maxRequestsPerHost < 1) {
             throw new IllegalArgumentException("max < 1: " + maxRequestsPerHost);
@@ -125,18 +107,6 @@ public final class Dispatcher {
         promoteAndExecute();
     }
 
-    /**
-     * Set a callback to be invoked each time the dispatcher becomes idle (when the number of running
-     * calls returns to zero).
-     *
-     * <p>Note: The time at which a {@linkplain Call call} is considered idle is different depending
-     * on whether it was run {@linkplain Call#enqueue(Callback) asynchronously} or
-     * {@linkplain Call#execute() synchronously}. Asynchronous calls become idle after the
-     * {@link Callback#onResponse onResponse} or {@link Callback#onFailure onFailure} callback has
-     * returned. Synchronous calls become idle once {@link Call#execute() execute()} returns. This
-     * means that if you are doing synchronous calls the network layer will not truly be idle until
-     * every returned {@link Response} has been closed.
-     */
     public synchronized void setIdleCallback(Runnable idleCallback) {
         this.idleCallback = idleCallback;
     }
@@ -148,10 +118,6 @@ public final class Dispatcher {
         promoteAndExecute();
     }
 
-    /**
-     * Cancel all calls currently enqueued or executing. Includes calls executed both {@linkplain
-     * Call#execute() synchronously} and {@linkplain Call#enqueue asynchronously}.
-     */
     public synchronized void cancelAll() {
         for (RealCall.AsyncCall call : readyAsyncCalls) {
             call.get().cancel();
@@ -166,13 +132,6 @@ public final class Dispatcher {
         }
     }
 
-    /**
-     * Promotes eligible calls from {@link #readyAsyncCalls} to {@link #runningAsyncCalls} and runs
-     * them on the executor service. Must not be called with synchronization because executing calls
-     * can call into user code.
-     *
-     * @return true if the dispatcher is currently running calls.
-     */
     private boolean promoteAndExecute() {
         assert (!Thread.holdsLock(this));
 
@@ -200,9 +159,6 @@ public final class Dispatcher {
         return isRunning;
     }
 
-    /**
-     * Returns the number of running calls that share a host with {@code call}.
-     */
     private int runningCallsForHost(RealCall.AsyncCall call) {
         int result = 0;
         for (RealCall.AsyncCall c : runningAsyncCalls) {
@@ -212,23 +168,14 @@ public final class Dispatcher {
         return result;
     }
 
-    /**
-     * Used by {@code Call#execute} to signal it is in-flight.
-     */
     synchronized void executed(RealCall call) {
         runningSyncCalls.add(call);
     }
 
-    /**
-     * Used by {@code AsyncCall#run} to signal completion.
-     */
     void finished(RealCall.AsyncCall call) {
         finished(runningAsyncCalls, call);
     }
 
-    /**
-     * Used by {@code Call#execute} to signal completion.
-     */
     void finished(RealCall call) {
         finished(runningSyncCalls, call);
     }
@@ -247,9 +194,6 @@ public final class Dispatcher {
         }
     }
 
-    /**
-     * Returns a snapshot of the calls currently awaiting execution.
-     */
     public synchronized List<Call> queuedCalls() {
         List<Call> result = new ArrayList<>();
         for (RealCall.AsyncCall asyncCall : readyAsyncCalls) {
@@ -258,9 +202,6 @@ public final class Dispatcher {
         return Collections.unmodifiableList(result);
     }
 
-    /**
-     * Returns a snapshot of the calls currently being executed.
-     */
     public synchronized List<Call> runningCalls() {
         List<Call> result = new ArrayList<>();
         result.addAll(runningSyncCalls);

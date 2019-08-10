@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.utils.IoUtils;
@@ -30,64 +30,26 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This timeout uses a background thread to take action exactly when the timeout occurs. Use this to
- * implement timeouts where they aren't supported natively, such as to sockets that are blocked on
- * writing.
+ * 此超时使用后台线程在超时发生时精确地执行操作。用它来
+ * 在本地不支持超时的地方实现超时，例如对阻塞的套接字操作.
  *
- * <p>Subclasses should override {@link #timedOut} to take action when a timeout occurs. This method
- * will be invoked by the shared watchdog thread so it should not do any long-running operations.
- * Otherwise we risk starving other timeouts from being triggered.
- *
- * <p>Use {@link #sink} and {@link #source} to apply this timeout to a stream. The returned value
- * will apply the timeout to each operation on the wrapped stream.
- *
- * <p>Callers should call {@link #enter} before doing work that is subject to timeouts, and {@link
- * #exit} afterwards. The return value of {@link #exit} indicates whether a timeout was triggered.
- * Note that the call to {@link #timedOut} is asynchronous, and may be called after {@link #exit}.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class AsyncTimeout extends Timeout {
 
-    /**
-     * Don't write more than 64 KiB of data at a time, give or take a segment. Otherwise slow
-     * connections may suffer timeouts even when they're making (slow) progress. Without this, writing
-     * a single 1 MiB buffer may never succeed on a sufficiently slow connection.
-     */
     private static final int TIMEOUT_WRITE_SIZE = 64 * 1024;
 
-    /**
-     * Duration for the watchdog thread to be idle before it shuts itself down.
-     */
     private static final long IDLE_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(60);
     private static final long IDLE_TIMEOUT_NANOS = TimeUnit.MILLISECONDS.toNanos(IDLE_TIMEOUT_MILLIS);
 
-    /**
-     * The watchdog thread processes a linked list of pending timeouts, sorted in the order to be
-     * triggered. This class synchronizes on AsyncTimeout.class. This lock guards the queue.
-     *
-     * <p>Head's 'next' points to the first element of the linked list. The first element is the next
-     * node to time out, or null if the queue is empty. The head is null until the watchdog thread is
-     * started and also after being idle for {@link #IDLE_TIMEOUT_MILLIS}.
-     */
     static AsyncTimeout head;
 
-    /**
-     * True if this node is currently in the queue.
-     */
     private boolean inQueue;
 
-    /**
-     * The next node in the linked list.
-     */
     private AsyncTimeout next;
 
-    /**
-     * If scheduled, this is the time that the watchdog should time this out.
-     */
     private long timeoutAt;
 
     private static synchronized void scheduleTimeout(
@@ -125,9 +87,6 @@ public class AsyncTimeout extends Timeout {
         }
     }
 
-    /**
-     * Returns true if the timeout occurred.
-     */
     private static synchronized boolean cancelScheduledTimeout(AsyncTimeout node) {
         // Remove the node from the linked list.
         for (AsyncTimeout prev = head; prev != null; prev = prev.next) {
@@ -142,13 +101,6 @@ public class AsyncTimeout extends Timeout {
         return true;
     }
 
-    /**
-     * Removes and returns the node at the head of the list, waiting for it to time out if necessary.
-     * This returns {@link #head} if there was no node at the head of the list when starting, and
-     * there continues to be no node after waiting {@code IDLE_TIMEOUT_NANOS}. It returns null if a
-     * new node was inserted while waiting. Otherwise this returns the node being waited on that has
-     * been removed.
-     */
     static AsyncTimeout awaitTimeout() throws InterruptedException {
         // Get the next eligible node.
         AsyncTimeout node = head.next;
@@ -191,34 +143,20 @@ public class AsyncTimeout extends Timeout {
         scheduleTimeout(this, timeoutNanos, hasDeadline);
     }
 
-    /**
-     * Returns true if the timeout occurred.
-     */
+
     public final boolean exit() {
         if (!inQueue) return false;
         inQueue = false;
         return cancelScheduledTimeout(this);
     }
 
-    /**
-     * Returns the amount of time left until the time out. This will be negative if the timeout has
-     * elapsed and the timeout should occur immediately.
-     */
     private long remainingNanos(long now) {
         return timeoutAt - now;
     }
 
-    /**
-     * Invoked by the watchdog thread when the time between calls to {@link #enter()} and {@link
-     * #exit()} has exceeded the timeout.
-     */
     protected void timedOut() {
     }
 
-    /**
-     * Returns a new sink that delegates to {@code sink}, using this to implement timeouts. This works
-     * best if {@link #timedOut} is overridden to interrupt {@code sink}'s current operation.
-     */
     public final Sink sink(final Sink sink) {
         return new Sink() {
             @Override
@@ -292,10 +230,6 @@ public class AsyncTimeout extends Timeout {
         };
     }
 
-    /**
-     * Returns a new source that delegates to {@code source}, using this to implement timeouts. This
-     * works best if {@link #timedOut} is overridden to interrupt {@code sink}'s current operation.
-     */
     public final Source source(final Source source) {
         return new Source() {
             @Override
@@ -349,7 +283,8 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * Returns either {@code cause} or an IOException that's caused by {@code cause} if a timeout
+     * @param cause IOException
+     * @return IOException  either {@code cause} or an IOException that's caused by {@code cause} if a timeout
      * occurred. See {@link #newTimeoutException(IOException)} for the type of exception
      * returned.
      */
@@ -359,7 +294,8 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * Returns an {@link IOException} to represent a timeout. By default this method returns {@link
+     * @param cause IOException
+     * @return IOException an {@link IOException} to represent a timeout. By default this method returns {@link
      * InterruptedIOException}. If {@code cause} is non-null it is set as the cause of the
      * returned exception.
      */

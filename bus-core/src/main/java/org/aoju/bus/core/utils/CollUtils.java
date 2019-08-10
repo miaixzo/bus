@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
@@ -46,9 +46,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 /**
  * 集合相关工具类<p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class CollUtils {
@@ -690,6 +689,7 @@ public class CollUtils {
      * 新建{@link BlockingQueue}<br>
      * 在队列为空时，获取元素的线程会等待队列变为非空。当队列满时，存储元素的线程会等待队列可用。
      *
+     * @param <T>      对象
      * @param capacity 容量
      * @param isLinked 是否为链表形式
      * @return {@link BlockingQueue}
@@ -708,7 +708,7 @@ public class CollUtils {
     /**
      * 创建新的集合对象
      *
-     * @param <T>            集合类型
+     * @param <T>            对象
      * @param collectionType 集合类型
      * @return 集合类型对应的实例
      * @since 3.0.8
@@ -1015,6 +1015,7 @@ public class CollUtils {
     /**
      * 去除{@code null} 元素
      *
+     * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
      * @since 3.2.2
@@ -1032,6 +1033,7 @@ public class CollUtils {
     /**
      * 去掉集合中的多个元素
      *
+     * @param <T>         对象
      * @param collection  集合
      * @param elesRemoved 被去掉的元素数组
      * @return 原集合
@@ -1045,6 +1047,7 @@ public class CollUtils {
     /**
      * 去除{@code null}或者"" 元素
      *
+     * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
      * @since 3.2.2
@@ -1061,6 +1064,7 @@ public class CollUtils {
     /**
      * 去除{@code null}或者""或者空白字符串 元素
      *
+     * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
      * @since 3.2.2
@@ -2168,6 +2172,7 @@ public class CollUtils {
     /**
      * Map的键和值互换
      *
+     * @param <T> 对象
      * @param map Map对象，键值类型必须一致
      * @return 互换后的Map
      */
@@ -2226,7 +2231,8 @@ public class CollUtils {
      * 对list的元素按照多个属性名称排序,
      * list元素的属性可以是数字（byte、short、int、long、float、double等，支持正数、负数、0）、char、String、java.util.Date
      *
-     * @param list
+     * @param <E>  对象
+     * @param list 集合
      * @param name list元素的属性名称
      * @param asc  true升序，false降序
      */
@@ -2253,7 +2259,8 @@ public class CollUtils {
     /**
      * 给list的每个属性都指定是升序还是降序
      *
-     * @param list
+     * @param <E>  对象
+     * @param list 集合
      * @param name 参数数组
      * @param type 每个属性对应的升降序数组， true升序，false降序
      */
@@ -2285,8 +2292,8 @@ public class CollUtils {
      *
      * @param name 属性名称
      * @param asc  true升序，false降序
-     * @param a
-     * @param b
+     * @param a    对象
+     * @param b    对象
      * @return
      * @throws Exception
      */
@@ -2319,8 +2326,8 @@ public class CollUtils {
      *
      * @param obj       属性名称所在的对象
      * @param fieldName 属性名称
-     * @return
-     * @throws Exception
+     * @return the object
+     * @throws Exception 异常
      */
     public static Object forceGetFieldValue(Object obj, String fieldName) throws Exception {
         Field field = obj.getClass().getDeclaredField(fieldName);
@@ -2341,11 +2348,11 @@ public class CollUtils {
     /**
      * 设置或增加元素。当index小于List的长度时，替换指定位置的值，否则在尾部追加
      *
+     * @param <T>     对象
      * @param list    List列表
      * @param index   位置
      * @param element 新元素
      * @return 原List
-     * @since 4.1.2
      */
     public static <T> List<T> setOrAppend(List<T> list, int index, T element) {
         if (index < list.size()) {
@@ -2479,7 +2486,7 @@ public class CollUtils {
      * 针对一个参数做相应的操作
      *
      * @param <T> 处理参数类型
-     * @author aoju.org
+     * @author Kimi Liu
      */
     public interface Consumer<T> {
         /**
@@ -2496,7 +2503,7 @@ public class CollUtils {
      *
      * @param <K> KEY类型
      * @param <V> VALUE类型
-     * @author aoju.org
+     * @author Kimi Liu
      */
     public interface KVConsumer<K, V> {
         /**

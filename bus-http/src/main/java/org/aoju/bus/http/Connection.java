@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.net.Socket;
@@ -74,32 +74,32 @@ import java.net.Socket;
  * make bookkeeping easier for the caller: releasing the allocation as soon as the terminal stream
  * has been found. But only complete the stream once its data stream has been exhausted.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Connection {
+
     /**
-     * Returns the route used by this connection.
+     * @return the route used by this connection.
      */
     Route route();
 
     /**
-     * Returns the socket that this connection is using. Returns an {@linkplain
+     * @return the socket that this connection is using. Returns an {@linkplain
      * javax.net.ssl.SSLSocket SSL socket} if this connection is HTTPS. If this is an HTTP/2
      * connection the socket may be shared by multiple concurrent calls.
      */
     Socket socket();
 
     /**
-     * Returns the TLS handshake used to establish this connection, or null if the connection is not
+     * @return the TLS handshake used to establish this connection, or null if the connection is not
      * HTTPS.
      */
     Handshake handshake();
 
     /**
-     * Returns the protocol negotiated by this connection, or {@link Protocol#HTTP_1_1} if no protocol
+     * @return the protocol negotiated by this connection, or {@link Protocol#HTTP_1_1} if no protocol
      * has been negotiated. This method returns {@link Protocol#HTTP_1_1} even if the remote peer is
      * using {@link Protocol#HTTP_1_0}.
      */

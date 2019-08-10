@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Symbol;
@@ -40,21 +40,14 @@ import java.util.*;
 /**
  * 一些通用的函数
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ObjectUtils {
 
     /**
-     * 比较两个对象是否相等。<br>
-     * 相同的条件有两个，满足其一即可：<br>
-     * <ol>
-     * <li>obj1 == null &amp;&amp; obj2 == null</li>
-     * <li>obj1.equals(obj2)</li>
-     * </ol>
-     * 1. obj1 == null &amp;&amp; obj2 == null 2. obj1.equals(obj2)
+     * 比较两个对象是否相等
      *
      * @param obj1 对象1
      * @param obj2 对象2
@@ -65,7 +58,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 比较两个对象是否不相等。<br>
+     * 比较两个对象是否不相等
      *
      * @param obj1 对象1
      * @param obj2 对象2
@@ -77,15 +70,9 @@ public class ObjectUtils {
     }
 
     /**
-     * 计算对象长度，如果是字符串调用其length函数，集合类调用其size函数，数组调用其length属性，其他可遍历对象遍历计算长度<br>
-     * 支持的类型包括：
-     * <ul>
-     * <li>CharSequence</li>
-     * <li>Map</li>
-     * <li>Iterator</li>
-     * <li>Enumeration</li>
-     * <li>Array</li>
-     * </ul>
+     * 计算对象长度,如果是字符串调用其length函数,
+     * 集合类调用其size函数, 数组调用其length属性,
+     * 其他可遍历对象遍历计算长度
      *
      * @param obj 被计算长度的对象
      * @return 长度
@@ -130,16 +117,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 对象中是否包含元素<br>
-     * 支持的对象类型包括：
-     * <ul>
-     * <li>String</li>
-     * <li>Collection</li>
-     * <li>Map</li>
-     * <li>Iterator</li>
-     * <li>Enumeration</li>
-     * <li>Array</li>
-     * </ul>
+     * 对象中是否包含元素
      *
      * @param obj     对象
      * @param element 元素
@@ -195,12 +173,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 检查对象是否为null<br>
-     * 判断标准为：
-     * <pre>
-     * 1. == null
-     * 2. equals(null)
-     * </pre>
+     * 检查对象是否为null
      *
      * @param obj 对象
      * @return 是否为null
@@ -222,18 +195,10 @@ public class ObjectUtils {
     /**
      * 如果给定对象为{@code null}返回默认值
      *
-     * <pre>
-     * ObjectUtils.defaultIfNull(null, null)      = null
-     * ObjectUtils.defaultIfNull(null, "")        = ""
-     * ObjectUtils.defaultIfNull(null, "zz")      = "zz"
-     * ObjectUtils.defaultIfNull("abc", *)        = "abc"
-     * ObjectUtils.defaultIfNull(Boolean.TRUE, *) = Boolean.TRUE
-     * </pre>
-     *
      * @param <T>          对象类型
-     * @param object       被检查对象，可能为{@code null}
-     * @param defaultValue 被检查对象为{@code null}返回的默认值，可以为{@code null}
-     * @return 被检查对象为{@criteria null}返回默认值，否则返回原值
+     * @param object       被检查对象,可能为{@code null}
+     * @param defaultValue 被检查对象为{@code null}返回的默认值,可以为{@code null}
+     * @return 被检查对象为{ null}返回默认值,否则返回原值
      * @since 3.0.7
      */
     public static <T> T defaultIfNull(final T object, final T defaultValue) {
@@ -241,12 +206,12 @@ public class ObjectUtils {
     }
 
     /**
-     * 检查是否为有效的数字<br>
-     * 检查Double和Float是否为无限大，或者Not a Number<br>
+     * 检查是否为有效的数字
+     * 检查Double和Float是否为无限大,或者Not a Number
      * 非数字类型和Null将返回true
      *
      * @param obj 被检查类型
-     * @return 检查结果，非数字类型和Null将返回true
+     * @return 检查结果, 非数字类型和Null将返回true
      */
     public static boolean isValidIfNumber(Object obj) {
         if (obj != null && obj instanceof Number) {
@@ -260,10 +225,10 @@ public class ObjectUtils {
     }
 
     /**
-     * 克隆对象<br>
-     * 如果对象实现Cloneable接口，调用其clone方法<br>
-     * 如果实现Serializable接口，执行深度克隆<br>
-     * 否则返回<criteria>null</criteria>
+     * 克隆对象
+     * 如果对象实现Cloneable接口,调用其clone方法
+     * 如果实现Serializable接口,执行深度克隆
+     * 否则返回null
      *
      * @param <T> 对象类型
      * @param obj 被克隆对象
@@ -282,7 +247,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 序列化后拷贝流的方式克隆<br>
+     * 序列化后拷贝流的方式克隆
      * 对象必须实现Serializable接口
      *
      * @param <T> 对象类型
@@ -308,13 +273,13 @@ public class ObjectUtils {
     }
 
     /**
-     * {@code null}安全的对象比较，{@code null}对象排在末尾
+     * {@code null}安全的对象比较,{@code null}对象排在末尾
      *
      * @param <T> 被比较对象类型
-     * @param c1  对象1，可以为{@code null}
-     * @param c2  对象2，可以为{@code null}
-     * @return 比较结果，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
-     * @see java.util.Comparator#compare(Object, Object)
+     * @param c1  对象1,可以为{@code null}
+     * @param c2  对象2,可以为{@code null}
+     * @return 比较结果, 如果c1 &lt; c2,返回数小于0,c1==c2返回0,c1 &gt; c2 大于0
+     * @see Comparator#compare(Object, Object)
      * @since 3.0.7
      */
     public static <T extends Comparable<? super T>> int compare(T c1, T c2) {
@@ -325,11 +290,11 @@ public class ObjectUtils {
      * {@code null}安全的对象比较
      *
      * @param <T>         被比较对象类型
-     * @param c1          对象1，可以为{@code null}
-     * @param c2          对象2，可以为{@code null}
+     * @param c1          对象1,可以为{@code null}
+     * @param c2          对象2,可以为{@code null}
      * @param nullGreater 当被比较对象为null时是否排在前面
-     * @return 比较结果，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
-     * @see java.util.Comparator#compare(Object, Object)
+     * @return 比较结果, 如果c1 &lt; c2,返回数小于0,c1==c2返回0,c1 &gt; c2 大于0
+     * @see Comparator#compare(Object, Object)
      * @since 3.0.7
      */
     public static <T extends Comparable<? super T>> int compare(T c1, T c2, boolean nullGreater) {
@@ -344,7 +309,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 判断对象是否Empty(null或元素为0)<br>
+     * 判断对象是否Empty(null或元素为0)
      * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
      *
      * @param object 待检查对象
@@ -374,7 +339,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 判断对象是否为NotEmpty(!null或元素>0)<br>
+     * 判断对象是否为NotEmpty(!null或元素大于0)
      * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
      *
      * @param object 待检查对象
@@ -384,20 +349,20 @@ public class ObjectUtils {
         return !isEmpty(object);
     }
 
-
     /**
      * 获取包括父类所有的属性
      *
-     * @param objSource
-     * @return
+     * @param object 对象
+     * @return the field
      */
-    public static Field[] getAllFields(Object objSource) {
-        /*获得当前类的所有属性(private、protected、public)*/
+    public static Field[] getAllFields(Object object) {
         List<Field> fieldList = new ArrayList<Field>();
-        Class tempClass = objSource.getClass();
-        while (tempClass != null && !tempClass.getName().toLowerCase().equals("java.lang.object")) {//当父类为null的时候说明到达了最上层的父类(Object类).
+        Class tempClass = object.getClass();
+        while (tempClass != null && !tempClass.getName().toLowerCase().equals("java.lang.object")) {
+            // 当父类为null的时候说明到达了最上层的父类(Object类).
             fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
-            tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
+            // 得到父类,然后赋给自己
+            tempClass = tempClass.getSuperclass();
         }
         Field[] fields = new Field[fieldList.size()];
         fieldList.toArray(fields);
@@ -423,9 +388,10 @@ public class ObjectUtils {
     }
 
     /**
-     * @param oldBean
-     * @param newBean
-     * @return
+     * @param <T>     对象
+     * @param oldBean 原对象
+     * @param newBean 新对象
+     * @return 对象
      */
     public static <T> T getDiff(T oldBean, T newBean) {
         if (oldBean == null && newBean != null) {
@@ -494,6 +460,7 @@ public class ObjectUtils {
     /**
      * 将base64的序列化数据转换为对象
      *
+     * @param <T>    对象
      * @param base64 经过base64的序列化对象数据
      * @return 原对象
      */
@@ -504,6 +471,7 @@ public class ObjectUtils {
     /**
      * 将序列化数据转换为对象
      *
+     * @param <T> 对象
      * @param bts 序列化后的对象数据
      * @return 原对象
      */
@@ -533,6 +501,7 @@ public class ObjectUtils {
     /**
      * 初始化对象
      *
+     * @param <T>     对象
      * @param clazz   创建的对象的类型
      * @param attrMap 初始对象的属性值
      * @return 创建的对象
@@ -630,7 +599,7 @@ public class ObjectUtils {
             for (Class clazz = bean.getClass(); !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {
-                    // 子类最大，父类值不覆盖子类
+                    // 子类最大,父类值不覆盖子类
                     if (map.containsKey(f.getName())) {
                         continue;
                     }
@@ -670,7 +639,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 获取对象中的非空属性(属性如果是对象，则只会在同一个map中新增，不会出现map嵌套情况)
+     * 获取对象中的非空属性(属性如果是对象,则只会在同一个map中新增,不会出现map嵌套情况)
      *
      * @param bean         对象
      * @param hasInitValue 是否过滤掉初始值(true:过滤掉)
@@ -685,7 +654,7 @@ public class ObjectUtils {
             for (Class clazz = bean.getClass(); !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {
-                    // 子类最大，父类值不覆盖子类
+                    // 子类最大,父类值不覆盖子类
                     if (map.containsKey(f.getName())) {
                         continue;
                     }
@@ -705,7 +674,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 获取对象中的非空属性(属性如果是对象，则只会在同一个map中新增，不会出现map嵌套情况)
+     * 获取对象中的非空属性(属性如果是对象,则只会在同一个map中新增,不会出现map嵌套情况)
      * (不会清空初始值)
      *
      * @param bean 对象
@@ -717,7 +686,7 @@ public class ObjectUtils {
 
 
     /**
-     * 获取对象中的非空属性(属性如果是对象，则只会在同一个map中新增，不会出现map嵌套情况)
+     * 获取对象中的非空属性(属性如果是对象,则只会在同一个map中新增,不会出现map嵌套情况)
      * (不会清空初始值)
      * <p>
      * request param
@@ -730,7 +699,7 @@ public class ObjectUtils {
     }
 
     /**
-     * 获取对象中的非空属性(属性如果是对象，则只会在同一个map中新增，不会出现map嵌套情况)
+     * 获取对象中的非空属性(属性如果是对象,则只会在同一个map中新增,不会出现map嵌套情况)
      *
      * @param bean         对象
      * @param hasInitValue 是否过滤掉初始值(true:过滤掉)
@@ -745,7 +714,7 @@ public class ObjectUtils {
             for (Class clazz = bean.getClass(); !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {
-                    // 子类最大，父类值不覆盖子类
+                    // 子类最大,父类值不覆盖子类
                     if (map.containsKey(f.getName())) {
                         continue;
                     }
@@ -768,18 +737,18 @@ public class ObjectUtils {
 
 
     /**
-     * 获取对象中的非空属性(属性如果是对象，则会嵌套map)
+     * 获取对象中的非空属性(属性如果是对象,则会嵌套map)
      *
      * @param bean 对象
      * @return 非空属性和值(Map[属性名, 属性值])
      */
     public static Map<String, Object> getNotNullFieldsForStructure(Object bean) {
         try {
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<>();
             for (Class clazz = bean.getClass(); !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {
-                    // 子类最大，父类值不覆盖子类
+                    // 子类最大,父类值不覆盖子类
                     if (map.containsKey(f.getName())) {
                         continue;
                     }
@@ -803,7 +772,8 @@ public class ObjectUtils {
     }
 
     /***
-     * 依据类，获取该类的泛型class
+     * 依据类,获取该类的泛型class
+     * @param <T> 对象
      * @param clazz   类对象
      * @return 泛型类型
      */
@@ -823,6 +793,7 @@ public class ObjectUtils {
     /**
      * 将byte字节转换成对象
      *
+     * @param <T> 对象
      * @param bts 字节数据
      * @return 对象
      */
@@ -879,7 +850,8 @@ public class ObjectUtils {
 
     /***
      * 转换类型
-     * @param value    字符串的值
+     * @param <T>     对象
+     * @param value   字符串的值
      * @param type    要转换的类型
      * @return 转换后的值
      */
@@ -960,7 +932,8 @@ public class ObjectUtils {
     /***
      * 克隆有序列化的对象
      * @param <T>	要返回的数据类型
-     * @param bean    所有继承过BaseBean的对象
+     * @param clazz 反射类
+     * @param bean  所有继承过BaseBean的对象
      * @return 克隆后的对象
      */
     public static <T> T CloneObject(Class<T> clazz, Object bean) {
@@ -1015,6 +988,9 @@ public class ObjectUtils {
 
     /**
      * 清空对象中所有属性的初始值
+     *
+     * @param <T>  对象
+     * @param bean 对象
      */
     public static <T> void cleanInitValue(T bean) {
         if (bean == null) {
@@ -1182,7 +1158,7 @@ public class ObjectUtils {
      * @param o2 second Object to compare
      * @return whether the given objects are equal
      * @see Object#equals(Object)
-     * @see java.util.Arrays#equals
+     * @see Arrays#equals
      */
     public static boolean nullSafeEquals(Object o1, Object o2) {
         if (o1 == o2) {
@@ -1208,7 +1184,7 @@ public class ObjectUtils {
      * @param o2 second array to compare
      * @return whether the given objects are equal
      * @see #nullSafeEquals(Object, Object)
-     * @see java.util.Arrays#equals
+     * @see Arrays#equals
      */
     private static boolean arrayEquals(Object o1, Object o2) {
         if (o1 instanceof Object[] && o2 instanceof Object[]) {

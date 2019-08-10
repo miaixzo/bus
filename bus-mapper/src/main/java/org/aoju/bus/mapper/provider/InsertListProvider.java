@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.builder.EntityBuilder;
@@ -34,12 +34,10 @@ import java.util.Set;
 
 /**
  * 批量操作
- * <p/>
  * ids 如 "1,2,3"
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class InsertListProvider extends MapperTemplate {
@@ -51,7 +49,8 @@ public class InsertListProvider extends MapperTemplate {
     /**
      * 批量插入
      *
-     * @param ms
+     * @param ms MappedStatement
+     * @return the string
      */
     public String insertList(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
@@ -78,7 +77,8 @@ public class InsertListProvider extends MapperTemplate {
     /**
      * 批量插入
      *
-     * @param ms
+     * @param ms MappedStatement
+     * @return the string
      */
     public String insertListNoId(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
@@ -105,7 +105,8 @@ public class InsertListProvider extends MapperTemplate {
     /**
      * 插入，主键id，自增
      *
-     * @param ms
+     * @param ms MappedStatement
+     * @return the string
      */
     public String insertUseGeneratedKey(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);

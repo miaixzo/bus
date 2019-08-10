@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.criteria;
 
 import org.aoju.bus.mapper.MapperException;
@@ -34,9 +34,8 @@ import java.util.Set;
 /**
  * 参考 org.apache.ibatis.type.SimpleTypeRegistry
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SimpleType {
@@ -83,7 +82,7 @@ public class SimpleType {
     /**
      * 注册新的类型
      *
-     * @param clazz
+     * @param clazz 对象
      */
     public static void registerSimpleType(Class<?> clazz) {
         SIMPLE_TYPE_SET.add(clazz);
@@ -92,7 +91,7 @@ public class SimpleType {
     /**
      * 注册新的类型
      *
-     * @param classes
+     * @param classes 对象
      */
     public static void registerSimpleType(String classes) {
         if (Assert.isNotEmpty(classes)) {
@@ -110,7 +109,7 @@ public class SimpleType {
     /**
      * 注册新的类型，不存在时不抛出异常
      *
-     * @param clazz
+     * @param clazz 对象
      */
     private static void registerSimpleTypeSilence(String clazz) {
         try {
@@ -120,7 +119,7 @@ public class SimpleType {
         }
     }
 
-    /*
+    /**
      * Tells us if the class passed in is a known common type
      *
      * @param clazz The class to check

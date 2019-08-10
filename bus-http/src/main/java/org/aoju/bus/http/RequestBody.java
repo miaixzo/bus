@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
@@ -35,16 +35,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class RequestBody {
-    /**
-     * Returns a new request body that transmits {@code content}. If {@code contentType} is non-null
-     * and lacks a charset, this will use UTF-8.
-     */
+
     public static RequestBody create(MediaType contentType, String content) {
         Charset charset = org.aoju.bus.core.consts.Charset.UTF_8;
         if (contentType != null) {
@@ -58,9 +54,6 @@ public abstract class RequestBody {
         return create(contentType, bytes);
     }
 
-    /**
-     * Returns a new request body that transmits {@code content}.
-     */
     public static RequestBody create(
             final MediaType contentType, final ByteString content) {
         return new RequestBody() {
@@ -81,16 +74,10 @@ public abstract class RequestBody {
         };
     }
 
-    /**
-     * Returns a new request body that transmits {@code content}.
-     */
     public static RequestBody create(final MediaType contentType, final byte[] content) {
         return create(contentType, content, 0, content.length);
     }
 
-    /**
-     * Returns a new request body that transmits {@code content}.
-     */
     public static RequestBody create(final MediaType contentType, final byte[] content,
                                      final int offset, final int byteCount) {
         if (content == null) throw new NullPointerException("content == null");
@@ -113,9 +100,6 @@ public abstract class RequestBody {
         };
     }
 
-    /**
-     * Returns a new request body that transmits the content of {@code file}.
-     */
     public static RequestBody create(final MediaType contentType, final File file) {
         if (file == null) throw new NullPointerException("file == null");
 
@@ -143,22 +127,12 @@ public abstract class RequestBody {
         };
     }
 
-    /**
-     * Returns the Content-Type header for this body.
-     */
     public abstract MediaType contentType();
 
-    /**
-     * Returns the number of bytes that will be written to {@code sink} in a call to {@link #writeTo},
-     * or -1 if that count is unknown.
-     */
     public long contentLength() throws IOException {
         return -1;
     }
 
-    /**
-     * Writes the content of this request to {@code sink}.
-     */
     public abstract void writeTo(BufferedSink sink) throws IOException;
 
 }

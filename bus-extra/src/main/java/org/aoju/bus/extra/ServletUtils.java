@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.extra;
 
 import org.aoju.bus.core.bean.copier.CopyOptions;
@@ -43,9 +43,8 @@ import java.util.*;
 /**
  * Servlet相关工具类封装
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ServletUtils {
@@ -170,17 +169,13 @@ public class ServletUtils {
 
     /**
      * 获取客户端IP
-     *
-     * <p>
      * 默认检测的Header:
-     *
      * <pre>
      * 1、X-Forwarded-For
      * 2、X-Real-IP
      * 3、Proxy-Client-IP
      * 4、WL-Proxy-Client-IP
      * </pre>
-     * </p>
      *
      * <p>
      * otherHeaderNames参数用于自定义检测的Header<br>

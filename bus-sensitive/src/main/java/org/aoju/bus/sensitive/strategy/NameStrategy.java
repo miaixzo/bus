@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.consts.Normal;
@@ -37,9 +37,8 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 1. 两个字 隐藏姓
  * 2. 三个及其以上 只保留第一个和最后一个 其他用星号代替
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class NameStrategy implements StrategyProvider {

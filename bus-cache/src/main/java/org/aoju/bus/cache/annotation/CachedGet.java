@@ -20,16 +20,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cache.annotation;
 
 
 import java.lang.annotation.*;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented
@@ -38,23 +37,23 @@ import java.lang.annotation.*;
 public @interface CachedGet {
 
     /**
-     * @return Specifies the <b>Used cache implementation</b>,
-     * default the first {@code caches} config in {@code CacheAspect}
+     * @return Specifies the Used cache implementation,
+     * default the first caches config in CacheAspect
      * @since 0.3
      */
     String value() default "";
 
     /**
      * @return Specifies the start keyExp on every key,
-     * if the {@code Method} have non {@code param},
-     * {@code keyExp} is the <b>consts key</b> used by this {@code Method}
+     * if the  Method have non param,
+     * keyExp is the consts key used by this Method
      * @since 0.3
      */
     String prefix() default "";
 
     /**
-     * @return use <b>SpEL</b>,
-     * when this spel is {@code true}, this {@Code Method} will go through by cache
+     * @return the string
+     * when this spel is  true, this Method will go through by cache
      * @since 0.3
      */
     String condition() default "";

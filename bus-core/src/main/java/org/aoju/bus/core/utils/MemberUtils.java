@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Symbol;
@@ -44,9 +44,8 @@ import java.util.Set;
  * 对于精确值计算应该使用 {@link BigDecimal}<br>
  * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 abstract class MemberUtils {
@@ -106,18 +105,6 @@ abstract class MemberUtils {
      */
     public static double add(double v1, double v2) {
         return add(Double.toString(v1), Double.toString(v2)).doubleValue();
-    }
-
-    /**
-     * 提供精确的加法运算
-     *
-     * @param v1 被加数
-     * @param v2 加数
-     * @return 和
-     * @since 3.1.1
-     */
-    public static double add(Double v1, Double v2) {
-        return add((Number) v1, (Number) v2).doubleValue();
     }
 
     /**
@@ -249,17 +236,6 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的减法运算
-     *
-     * @param v1 被减数
-     * @param v2 减数
-     * @return 差
-     */
-    public static double sub(Double v1, Double v2) {
-        return sub((Number) v1, (Number) v2).doubleValue();
-    }
-
-    /**
      * 提供精确的减法运算<br>
      * 如果传入多个值为null或者空，则返回0
      *
@@ -385,18 +361,6 @@ abstract class MemberUtils {
      */
     public static double mul(double v1, double v2) {
         return mul(Double.toString(v1), Double.toString(v2)).doubleValue();
-    }
-
-    /**
-     * 提供精确的乘法运算<br>
-     * 如果传入多个值为null或者空，则返回0
-     *
-     * @param v1 被乘数
-     * @param v2 乘数
-     * @return 积
-     */
-    public static double mul(Double v1, Double v2) {
-        return mul((Number) v1, (Number) v2).doubleValue();
     }
 
     /**
@@ -545,17 +509,6 @@ abstract class MemberUtils {
      * @param v1 被除数
      * @param v2 除数
      * @return 两个参数的商
-     */
-    public static double div(Double v1, Double v2) {
-        return div(v1, v2, DEFAUT_DIV_SCALE);
-    }
-
-    /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况的时候,精确到小数点后10位,后面的四舍五入
-     *
-     * @param v1 被除数
-     * @param v2 除数
-     * @return 两个参数的商
      * @since 3.1.0
      */
     public static BigDecimal div(Number v1, Number v2) {
@@ -618,18 +571,6 @@ abstract class MemberUtils {
      * @return 两个参数的商
      */
     public static double div(double v1, double v2, int scale) {
-        return div(v1, v2, scale, RoundingMode.HALF_UP);
-    }
-
-    /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况时,由scale指定精确度,后面的四舍五入
-     *
-     * @param v1    被除数
-     * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
-     * @return 两个参数的商
-     */
-    public static double div(Double v1, Double v2, int scale) {
         return div(v1, v2, scale, RoundingMode.HALF_UP);
     }
 
@@ -710,18 +651,6 @@ abstract class MemberUtils {
         return div(Double.toString(v1), Double.toString(v2), scale, roundingMode).doubleValue();
     }
 
-    /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况时,由scale指定精确度
-     *
-     * @param v1           被除数
-     * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
-     * @param roundingMode 保留小数的模式 {@link RoundingMode}
-     * @return 两个参数的商
-     */
-    public static double div(Double v1, Double v2, int scale, RoundingMode roundingMode) {
-        return div((Number) v1, (Number) v2, scale, roundingMode).doubleValue();
-    }
 
     /**
      * 提供(相对)精确的除法运算,当发生除不尽的情况时,由scale指定精确度
@@ -1206,10 +1135,7 @@ abstract class MemberUtils {
     public static boolean isDouble(String s) {
         try {
             Double.parseDouble(s);
-            if (s.contains(".")) {
-                return true;
-            }
-            return false;
+            return s.contains(".");
         } catch (NumberFormatException e) {
             return false;
         }
@@ -1916,38 +1842,6 @@ abstract class MemberUtils {
      */
     public static BigDecimal toBigDecimal(String number) {
         return (null == number) ? BigDecimal.ZERO : new BigDecimal(number);
-    }
-
-    /**
-     * 是否空白符<br>
-     * 空白符包括空格、制表符、全角空格和不间断空格<br>
-     *
-     * @param c 字符
-     * @return 是否空白符
-     * @see Character#isWhitespace(int)
-     * @see Character#isSpaceChar(int)
-     * @since 3.0.6
-     * @deprecated 请使用{@link CharUtil#isBlankChar(char)}
-     */
-    @Deprecated
-    public static boolean isBlankChar(char c) {
-        return isBlankChar((int) c);
-    }
-
-    /**
-     * 是否空白符<br>
-     * 空白符包括空格、制表符、全角空格和不间断空格<br>
-     *
-     * @param c 字符
-     * @return 是否空白符
-     * @see Character#isWhitespace(int)
-     * @see Character#isSpaceChar(int)
-     * @since 3.0.6
-     * @deprecated 请使用{@link CharUtil#isBlankChar(int)}
-     */
-    @Deprecated
-    public static boolean isBlankChar(int c) {
-        return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == '\ufeff' || c == '\u202a';
     }
 
     /**

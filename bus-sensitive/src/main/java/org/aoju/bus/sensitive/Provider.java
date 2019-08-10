@@ -20,9 +20,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.sensitive;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.ContextValueFilter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 import org.aoju.bus.sensitive.annotation.Condition;
@@ -32,10 +36,6 @@ import org.aoju.bus.sensitive.annotation.Strategy;
 import org.aoju.bus.sensitive.provider.ConditionProvider;
 import org.aoju.bus.sensitive.provider.StrategyProvider;
 import org.aoju.bus.sensitive.strategy.BuiltInStrategy;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.serializer.ContextValueFilter;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
@@ -49,9 +49,8 @@ import java.util.*;
  * 脱敏接口
  *
  * @param <T> 参数类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Provider<T> {
@@ -82,6 +81,10 @@ public class Provider<T> {
 
     /**
      * 获得真正的处理对象,可能多层代理.
+     *
+     * @param <T>    泛型
+     * @param target 对象
+     * @return the object
      */
     public static <T> T realTarget(Object target) {
         if (Proxy.isProxyClass(target.getClass())) {
@@ -128,7 +131,8 @@ public class Provider<T> {
      * 1. 为什么这么设计？
      * 不能因为脱敏，就导致代码中的对象被改变。否则代码逻辑会出现问题。
      *
-     * @param object 原始对象
+     * @param object     原始对象
+     * @param annotation 注解
      * @return 脱敏后的新对象
      */
     public T on(T object, Annotation annotation) {
@@ -157,7 +161,8 @@ public class Provider<T> {
      * 返回脱敏后的 json
      * 1. 避免 desCopy 造成的对象新建的性能浪费
      *
-     * @param object 对象
+     * @param object     对象
+     * @param annotation 注解
      * @return json
      * @since 0.0.6
      */

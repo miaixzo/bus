@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.logger;
 
 import org.aoju.bus.logger.level.Level;
@@ -29,9 +29,8 @@ import org.aoju.bus.logger.level.Level;
  * 位置感知日志接口，此接口用于通过传入当前全类名的方式来感知日志打印的行号<br>
  * 此方法主要用于在继续封装日志实现的时候行号错误的问题，继续封装时传入封装类的全类名即可解决这个问题
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface LocationAware extends Log {

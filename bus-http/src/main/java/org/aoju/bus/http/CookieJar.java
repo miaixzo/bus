@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.util.Collections;
@@ -39,9 +39,8 @@ import java.util.List;
  * href="https://tools.ietf.org/html/rfc6265#section-5.3">cookie storage model</a> specifies
  * policies for updating and expiring cookies.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface CookieJar {
@@ -59,21 +58,7 @@ public interface CookieJar {
         }
     };
 
-    /**
-     * Saves {@code cookies} from an HTTP response to this store according to this jar's policy.
-     *
-     * <p>Note that this method may be called a second time for a single HTTP response if the response
-     * includes a trailer. For this obscure HTTP feature, {@code cookies} contains only the trailer's
-     * cookies.
-     */
     void saveFromResponse(HttpUrl url, List<Cookie> cookies);
 
-    /**
-     * Load cookies from the jar for an HTTP request to {@code url}. This method returns a possibly
-     * empty list of cookies for the network request.
-     *
-     * <p>Simple implementations will return the accepted cookies that have not yet expired and that
-     * {@linkplain Cookie#matches match} {@code url}.
-     */
     List<Cookie> loadForRequest(HttpUrl url);
 }

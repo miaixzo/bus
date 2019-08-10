@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.socket.protocol;
 
 /**
@@ -31,9 +31,8 @@ package org.aoju.bus.socket.protocol;
  * 所有Socket使用相同协议对象，类成员变量和对象成员变量易造成并发读写问题。
  * </p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Protocol<T> extends MsgEncoder<T>, MsgDecoder<T> {

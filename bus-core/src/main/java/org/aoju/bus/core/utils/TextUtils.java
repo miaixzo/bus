@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Normal;
@@ -33,9 +33,8 @@ import java.util.Arrays;
 /**
  * 可复用的字符串生成器，非线程安全
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class TextUtils implements CharSequence, Appendable, Serializable {
@@ -293,7 +292,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     /**
      * 追加对象，对象会被转换为字符串
      *
-     * @param obj 对象
+     * @param index 位置
+     * @param obj   对象
      * @return this
      */
     public TextUtils insert(int index, Object obj) {

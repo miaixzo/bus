@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.http.HttpHeaders;
@@ -33,12 +33,12 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>See <a href="https://tools.ietf.org/html/rfc7234#section-5.2">RFC 7234, 5.2</a>.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class CacheControl {
+
     /**
      * Cache control request directives that require network validate of responses. Note that such
      * requests may be assisted by the cache via conditional GET requests.
@@ -107,6 +107,9 @@ public final class CacheControl {
     /**
      * Returns the cache directives of {@code headers}. This honors both Cache-Control and Pragma
      * headers if they are present.
+     *
+     * @param headers Headers
+     * @return CacheControl
      */
     public static CacheControl parse(Headers headers) {
         boolean noCache = false;
@@ -215,6 +218,8 @@ public final class CacheControl {
      * returning it. We can do this with a conditional GET.
      *
      * <p>In a request, it means do not use a cache to satisfy the request.
+     *
+     * @return the boolean
      */
     public boolean noCache() {
         return noCache;
@@ -222,6 +227,8 @@ public final class CacheControl {
 
     /**
      * If true, this response should not be cached.
+     *
+     * @return the boolean
      */
     public boolean noStore() {
         return noStore;
@@ -229,6 +236,8 @@ public final class CacheControl {
 
     /**
      * The duration past the response's served date that it can be served without validate.
+     *
+     * @return the int
      */
     public int maxAgeSeconds() {
         return maxAgeSeconds;
@@ -237,6 +246,8 @@ public final class CacheControl {
     /**
      * The "s-maxage" directive is the max age for shared caches. Not to be confused with "max-age"
      * for non-shared caches, As in Firefox and Chrome, this directive is not honored by this cache.
+     *
+     * @return the int
      */
     public int sMaxAgeSeconds() {
         return sMaxAgeSeconds;
@@ -267,6 +278,8 @@ public final class CacheControl {
      * It is set by a client who only wants to make a request if it can be fully satisfied by the
      * cache. Cached responses that would require validate (ie. conditional gets) are not permitted
      * if this header is set.
+     *
+     * @return the boolean
      */
     public boolean onlyIfCached() {
         return onlyIfCached;
@@ -305,9 +318,6 @@ public final class CacheControl {
         return result.toString();
     }
 
-    /**
-     * Builds a {@code Cache-Control} request header.
-     */
     public static final class Builder {
         boolean noCache;
         boolean noStore;
@@ -318,17 +328,12 @@ public final class CacheControl {
         boolean noTransform;
         boolean immutable;
 
-        /**
-         * Don't accept an unvalidated cached response.
-         */
+
         public Builder noCache() {
             this.noCache = true;
             return this;
         }
 
-        /**
-         * Don't store the server's response in any cache.
-         */
         public Builder noStore() {
             this.noStore = true;
             return this;
@@ -338,8 +343,10 @@ public final class CacheControl {
          * Sets the maximum age of a cached response. If the cache response's age exceeds {@code
          * maxAge}, it will not be used and a network request will be made.
          *
-         * @param maxAge a non-negative integer. This is stored and transmitted with {@link
-         *               TimeUnit#SECONDS} precision; finer precision will be lost.
+         * @param maxAge   a non-negative integer. This is stored and transmitted with {@link
+         *                 TimeUnit#SECONDS} precision; finer precision will be lost.
+         * @param timeUnit TimeUnit
+         * @return Builder
          */
         public Builder maxAge(int maxAge, TimeUnit timeUnit) {
             if (maxAge < 0) throw new IllegalArgumentException("maxAge < 0: " + maxAge);
@@ -356,6 +363,8 @@ public final class CacheControl {
          *
          * @param maxStale a non-negative integer. This is stored and transmitted with {@link
          *                 TimeUnit#SECONDS} precision; finer precision will be lost.
+         * @param timeUnit TimeUnit
+         * @return Builder
          */
         public Builder maxStale(int maxStale, TimeUnit timeUnit) {
             if (maxStale < 0) throw new IllegalArgumentException("maxStale < 0: " + maxStale);
@@ -373,6 +382,8 @@ public final class CacheControl {
          *
          * @param minFresh a non-negative integer. This is stored and transmitted with {@link
          *                 TimeUnit#SECONDS} precision; finer precision will be lost.
+         * @param timeUnit TimeUnit
+         * @return Builder
          */
         public Builder minFresh(int minFresh, TimeUnit timeUnit) {
             if (minFresh < 0) throw new IllegalArgumentException("minFresh < 0: " + minFresh);
@@ -386,6 +397,8 @@ public final class CacheControl {
         /**
          * Only accept the response if it is in the cache. If the response isn't cached, a {@code 504
          * Unsatisfiable Request} response will be returned.
+         *
+         * @return Builder
          */
         public Builder onlyIfCached() {
             this.onlyIfCached = true;
@@ -394,6 +407,8 @@ public final class CacheControl {
 
         /**
          * Don't accept a transformed response.
+         *
+         * @return Builder
          */
         public Builder noTransform() {
             this.noTransform = true;

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.annotation;
 
 import java.lang.annotation.*;
@@ -28,9 +28,8 @@ import java.lang.annotation.*;
 /**
  * 标记注解，标明要被拦截的类或方法
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented
@@ -41,16 +40,22 @@ public @interface Valid {
 
     /**
      * 校验属性 {"id","name"}
+     *
+     * @return the array
      */
     String[] value() default {};
 
     /**
      * 忽略属性 {"created","creator"}
+     *
+     * @return the array
      */
     String[] skip() default {};
 
     /**
      * 内部校验:true/false
+     *
+     * @return the boolean
      */
     boolean inside() default true;
 

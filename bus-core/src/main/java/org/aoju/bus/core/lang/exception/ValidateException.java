@@ -20,15 +20,14 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang.exception;
 
 /**
  * 自定义异常: 参数验证失败
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ValidateException extends UncheckedException {
@@ -39,6 +38,10 @@ public class ValidateException extends UncheckedException {
 
     public ValidateException(String msg) {
         super(msg);
+    }
+
+    public ValidateException(String format, Object... args) {
+        super(format, args);
     }
 
     public ValidateException(Throwable e) {

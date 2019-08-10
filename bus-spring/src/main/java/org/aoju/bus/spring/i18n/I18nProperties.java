@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.i18n;
 
 import lombok.Data;
@@ -29,9 +29,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * 国际化资源配置属性
  *
- * @author aoju.org
- * @version 3.0.1
- * @Group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Data

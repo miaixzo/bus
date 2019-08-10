@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.utils.IoUtils;
@@ -32,33 +32,12 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
- * An immutable byte string composed of segments of byte arrays. This class exists to implement
- * efficient snapshots of buffers. It is implemented as an array of segments, plus a directory in
- * two halves that describes how the segments compose this byte string.
+ * 由字节数组段组成的不可变字节字符串。该类的存在是为了实现
+ * 缓冲区的有效快照。它被实现为一个段数组，加上一个目录
+ * 两个半部分，描述段如何组成这个字节字符串。
  *
- * <p>The first half of the directory is the cumulative byte count covered by each segment. The
- * element at {@code directory[0]} contains the number of bytes held in {@code segments[0]}; the
- * element at {@code directory[1]} contains the number of bytes held in {@code segments[0] +
- * segments[1]}, and so on. The element at {@code directory[segments.length - 1]} contains the total
- * size of this byte string. The first half of the directory is always monotonically increasing.
- *
- * <p>The second half of the directory is the offset in {@code segments} of the first content byte.
- * Bytes preceding this offset are unused, as are bytes beyond the segment's effective size.
- *
- * <p>Suppose we have a byte string, {@code [A, B, C, D, E, F, G, H, I, J, K, L, M]} that is stored
- * across three byte arrays: {@code [x, x, x, x, A, B, C, D, E, x, x, x]}, {@code [x, F, G]}, and
- * {@code [H, I, J, K, L, M, x, x, x, x, x, x]}. The three byte arrays would be stored in {@code
- * segments} in order. Since the arrays contribute 5, 2, and 6 elements respectively, the directory
- * starts with {@code [5, 7, 13} to hold the cumulative total at each position. Since the offsets
- * into the arrays are 4, 1, and 0 respectively, the directory ends with {@code 4, 1, 0]}.
- * Concatenating these two halves, the complete directory is {@code [5, 7, 13, 4, 1, 0]}.
- *
- * <p>This structure is chosen so that the segment holding a particular offset can be found by
- * binary search. We use first array rather than two for the directory as a micro-optimization.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 final class SegmentedByteString extends ByteString {

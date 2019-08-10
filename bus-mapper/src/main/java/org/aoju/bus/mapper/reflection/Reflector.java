@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.reflection;
 
 import org.aoju.bus.mapper.MapperException;
@@ -30,9 +30,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 /**
  * 反射工具
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Reflector {
@@ -40,8 +39,8 @@ public class Reflector {
     /**
      * 根据msId获取接口类
      *
-     * @param msId
-     * @return
+     * @param msId 标识
+     * @return 对象
      */
     public static Class<?> getMapperClass(String msId) {
         if (msId.indexOf(".") == -1) {
@@ -75,8 +74,8 @@ public class Reflector {
     /**
      * 获取执行的方法名
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public static String getMethodName(MappedStatement ms) {
         return getMethodName(ms.getId());
@@ -85,8 +84,8 @@ public class Reflector {
     /**
      * 获取执行的方法名
      *
-     * @param msId
-     * @return
+     * @param msId 标识
+     * @return the string
      */
     public static String getMethodName(String msId) {
         return msId.substring(msId.lastIndexOf(".") + 1);

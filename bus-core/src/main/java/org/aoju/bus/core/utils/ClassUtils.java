@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.bean.BeanDesc;
@@ -50,9 +50,8 @@ import java.util.*;
 /**
  * 类工具类 <br>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ClassUtils {
@@ -257,7 +256,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定Public方法 如果找不到对应的方法或方法不为public的则返回<criteria>null</criteria>
+     * 查找指定Public方法 如果找不到对应的方法或方法不为public的则返回null
      *
      * @param clazz      类
      * @param methodName 方法名
@@ -308,7 +307,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定类中的所有方法（包括非public方法），也包括父类和Object类的方法 找不到方法会返回<criteria>null</criteria>
+     * 查找指定类中的所有方法（包括非public方法），也包括父类和Object类的方法 找不到方法会返回null
      *
      * @param clazz          被查找的类
      * @param methodName     方法名
@@ -321,7 +320,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定类中的所有字段（包括非public字段）， 字段不存在则返回<criteria>null</criteria>
+     * 查找指定类中的所有字段（包括非public字段）， 字段不存在则返回null
      *
      * @param clazz     被查找字段的类
      * @param fieldName 字段名
@@ -362,7 +361,7 @@ public class ClassUtils {
     }
 
     /**
-     * 比较判断types1和types2两组类，如果types1中所有的类都与types2对应位置的类相同，或者是其父类或接口，则返回<criteria>true</criteria>
+     * 比较判断types1和types2两组类，如果types1中所有的类都与types2对应位置的类相同，或者是其父类或接口，则返回true
      *
      * @param types1 类组1
      * @param types2 类组2
@@ -484,7 +483,7 @@ public class ClassUtils {
      *
      * @param classArray   目标类型
      * @param toClassArray 原类型
-     * @param autoboxing
+     * @param autoboxing   自动操作
      * @return 是否可转化
      */
     public static boolean isAssignable(Class<?>[] classArray, Class<?>[] toClassArray, final boolean autoboxing) {
@@ -920,6 +919,7 @@ public class ClassUtils {
      * 获取{@link BeanDesc} Bean描述信息
      *
      * @param clazz Bean类
+     * @return the object
      */
     public static BeanDesc getBeanDesc(Class<?> clazz) {
         return new BeanDesc(clazz);
@@ -963,7 +963,6 @@ public class ClassUtils {
      *
      * @param isEncoded 是否编码路径中的中文
      * @return ClassPath
-     * @since 3.2.1
      */
     public static String getClassPath(boolean isEncoded) {
         final URL classPathURL = getClassPathURL();
@@ -1706,7 +1705,7 @@ public class ClassUtils {
                 final Iterator<Class<?>> wrapped = classes.iterator();
 
                 return new Iterator<Class<?>>() {
-                    Iterator<Class<?>> interfaces = Collections.<Class<?>>emptySet().iterator();
+                    Iterator<Class<?>> interfaces = Collections.emptyIterator();
 
                     @Override
                     public boolean hasNext() {

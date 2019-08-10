@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.text.escape;
 
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
@@ -36,9 +36,8 @@ import java.io.Writer;
  * Note that this currently only supports the viable range of octal for Java; namely
  * 1 to 377. This is because parsing Java is the main use case.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class OctalUnescaper extends CharSequenceTranslator {

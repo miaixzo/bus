@@ -20,12 +20,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.annotation;
 
-import org.aoju.bus.spring.dubbo.DubboConfiguration;
 import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
 import com.alibaba.dubbo.config.spring.context.annotation.EnableDubboConfig;
+import org.aoju.bus.spring.dubbo.DubboConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 
@@ -34,9 +34,8 @@ import java.lang.annotation.*;
 /**
  * Dubbo 支持
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Target({ElementType.TYPE})

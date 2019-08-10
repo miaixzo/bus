@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.net.InetAddress;
@@ -36,16 +36,12 @@ import java.util.List;
  *
  * <p>Implementations of this interface must be safe for concurrent use.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Dns {
-    /**
-     * A DNS that uses {@link InetAddress#getAllByName} to ask the underlying operating system to
-     * lookup IP addresses. Most custom {@link Dns} implementations should delegate to this instance.
-     */
+
     Dns SYSTEM = new Dns() {
         @Override
         public List<InetAddress> lookup(String hostname) throws UnknownHostException {
@@ -61,10 +57,5 @@ public interface Dns {
         }
     };
 
-    /**
-     * Returns the IP addresses of {@code hostname}, in the order they will be attempted by HttpClient. If
-     * a connection to an address fails, HttpClient will retry the connection with the next address until
-     * either a connection is made, the set of IP addresses is exhausted, or a limit is exceeded.
-     */
     List<InetAddress> lookup(String hostname) throws UnknownHostException;
 }

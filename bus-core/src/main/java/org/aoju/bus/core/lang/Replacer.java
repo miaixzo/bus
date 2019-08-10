@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang;
 
 /**
@@ -28,9 +28,8 @@ package org.aoju.bus.core.lang;
  * 通过实现此接口完成指定类型对象的替换操作，替换后的目标类型依旧为指定类型
  *
  * @param <T> 被替换操作的类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Replacer<T> {

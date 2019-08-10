@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.dialect;
 
 import org.aoju.bus.pager.Page;
@@ -40,9 +40,8 @@ import java.util.*;
 /**
  * 针对 PageContext 的实现
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class AbstractHelperDialect extends AbstractDialect {
@@ -50,8 +49,8 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
     /**
      * 获取分页参数
      *
-     * @param <T>
-     * @return
+     * @param <T> 对象
+     * @return 结果
      */
     public <T> Page<T> getLocalPage() {
         return PageContext.getLocalPage();
@@ -143,12 +142,12 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
     /**
      * 处理分页参数
      *
-     * @param ms
-     * @param paramMap
-     * @param page
-     * @param boundSql
-     * @param pageKey
-     * @return
+     * @param ms       MappedStatement
+     * @param paramMap Map
+     * @param page     Page
+     * @param boundSql BoundSql
+     * @param pageKey  CacheKey
+     * @return 结果
      */
     public abstract Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey);
 
@@ -180,10 +179,10 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
     /**
      * 单独处理分页部分
      *
-     * @param sql
-     * @param page
-     * @param pageKey
-     * @return
+     * @param sql     sql
+     * @param page    Page
+     * @param pageKey CacheKey
+     * @return the string
      */
     public abstract String getPageSql(String sql, Page page, CacheKey pageKey);
 
@@ -223,4 +222,5 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
             metaObject.setValue("parameterMappings", newParameterMappings);
         }
     }
+
 }

@@ -20,10 +20,10 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.lang.exception.UncheckedException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.validate.Context;
@@ -37,9 +37,8 @@ import java.util.Objects;
 /**
  * int enum 校验
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class InEnumStrategy implements Complex<Object, InEnum> {
@@ -61,7 +60,7 @@ public class InEnumStrategy implements Complex<Object, InEnum> {
             }
             return false;
         } catch (NoSuchMethodException e) {
-            throw new UncheckedException(e.getMessage(), e);
+            throw new InstrumentException(e.getMessage());
         }
     }
 

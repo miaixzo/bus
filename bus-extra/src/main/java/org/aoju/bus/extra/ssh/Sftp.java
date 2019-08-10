@@ -20,20 +20,20 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.extra.ssh;
 
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.ChannelSftp.LsEntry;
+import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.extra.SSHUtils;
 import org.aoju.bus.extra.ftp.AbstractFtp;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.ChannelSftp.LsEntry;
-import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,9 +52,8 @@ import java.util.Vector;
  * 参考：https://www.cnblogs.com/longyg/archive/2012/06/25/2556576.html
  * </p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Sftp extends AbstractFtp {

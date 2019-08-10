@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.ByteString;
@@ -124,14 +124,12 @@ import java.util.*;
  * <p>{@link CertificatePinner} can not be used to pin self-signed certificate if such certificate
  * is not accepted by {@link javax.net.ssl.TrustManager}.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
- * @see <a href="https://www.owasp.org/index.php/Certificate_and_Public_Key_Pinning"> OWASP:
- * Certificate and Public Key Pinning</a>
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class CertificatePinner {
+
     public static final CertificatePinner DEFAULT = new Builder().build();
 
     private final Set<Pin> pins;
@@ -148,6 +146,9 @@ public final class CertificatePinner {
      *
      * <p>In HttpClient 3.1.2 and earlier, this returned a SHA-1 hash of the public key. Both types are
      * supported, but SHA-256 is preferred.
+     *
+     * @param certificate Certificate
+     * @return String
      */
     public static String pin(Certificate certificate) {
         if (!(certificate instanceof X509Certificate)) {
@@ -179,14 +180,6 @@ public final class CertificatePinner {
         return result;
     }
 
-    /**
-     * Confirms that at least one of the certificates pinned for {@code hostname} is in {@code
-     * peerCertificates}. Does nothing if there are no certificates pinned for {@code hostname}.
-     * HttpClient calls this after a successful TLS handshake, but before the connection is used.
-     *
-     * @throws SSLPeerUnverifiedException if {@code peerCertificates} don't match the certificates
-     *                                    pinned for {@code hostname}.
-     */
     public void check(String hostname, List<Certificate> peerCertificates)
             throws SSLPeerUnverifiedException {
         List<Pin> pins = findMatchingPins(hostname);
@@ -234,18 +227,12 @@ public final class CertificatePinner {
         throw new SSLPeerUnverifiedException(message.toString());
     }
 
-    /**
-     * replaced with {@link #check(String, List)}.
-     */
+
     public void check(String hostname, Certificate... peerCertificates)
             throws SSLPeerUnverifiedException {
         check(hostname, Arrays.asList(peerCertificates));
     }
 
-    /**
-     * Returns list of matching certificates' pins for the hostname. Returns an empty list if the
-     * hostname does not have pinned certificates.
-     */
     List<Pin> findMatchingPins(String hostname) {
         List<Pin> result = Collections.emptyList();
         for (Pin pin : pins) {
@@ -257,9 +244,6 @@ public final class CertificatePinner {
         return result;
     }
 
-    /**
-     * Returns a certificate pinner that uses {@code certificateChainCleaner}.
-     */
     CertificatePinner withCertificateChainCleaner(
             CertificateChainCleaner certificateChainCleaner) {
         return Internal.equal(this.certificateChainCleaner, certificateChainCleaner)
@@ -352,6 +336,7 @@ public final class CertificatePinner {
          * @param pattern lower-case host name or wildcard pattern such as {@code *.example.com}.
          * @param pins    SHA-256 or SHA-1 hashes. Each pin is a hash of a certificate's Subject Public Key
          *                Info, base64-encoded and prefixed with either {@code sha256/} or {@code sha1/}.
+         * @return Builder
          */
         public Builder add(String pattern, String... pins) {
             if (pattern == null) throw new NullPointerException("pattern == null");

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.RegEx;
@@ -54,9 +54,8 @@ import java.util.regex.Pattern;
  * 此工具使用w3c dom工具，不需要依赖第三方包。<br>
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class XmlUtils {
@@ -109,7 +108,6 @@ public class XmlUtils {
      * @param <T>    对象类型
      * @param source {@link InputSource}
      * @return 对象
-     * @throws IOException IO异常
      * @since 3.2.0
      */
     public static <T> T readObjectFromXml(InputSource source) {
@@ -430,7 +428,8 @@ public class XmlUtils {
     /**
      * 将Map转换为XML
      *
-     * @param data Map类型数据
+     * @param data     Map类型数据
+     * @param rootName 节点
      * @return XML
      * @since 4.0.9
      */
@@ -532,15 +531,15 @@ public class XmlUtils {
     /**
      * 将字符串装换为对象
      *
-     * @param xmlstr
-     * @return
-     * @throws UnsupportedEncodingException
+     * @param text     字符串
+     * @param javaBean 对象
+     * @return object对象
      */
-    public static Object parseXmlToBean(String xmlstr, Object javaBean) {
+    public static Object parseXmlToBean(String text, Object javaBean) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(javaBean.getClass());
             Unmarshaller um = jaxbContext.createUnmarshaller();
-            return um.unmarshal(new ByteArrayInputStream(xmlstr.getBytes(StandardCharsets.UTF_8)));
+            return um.unmarshal(new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8)));
         } catch (JAXBException e) {
             throw new InstrumentException(e);
         }
@@ -549,15 +548,16 @@ public class XmlUtils {
     /**
      * 将字符串装换为对象
      *
-     * @param xmlstr
-     * @return
-     * @throws UnsupportedEncodingException
+     * @param text     字符串
+     * @param javaBean 对象
+     * @param charset  编码
+     * @return object对象
      */
-    public static Object parseXmlToBean(String xmlstr, Object javaBean, String charset) {
+    public static Object parseXmlToBean(String text, Object javaBean, String charset) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(javaBean.getClass());
             Unmarshaller um = jaxbContext.createUnmarshaller();
-            return um.unmarshal(new ByteArrayInputStream(xmlstr.getBytes(charset)));
+            return um.unmarshal(new ByteArrayInputStream(text.getBytes(charset)));
         } catch (JAXBException | UnsupportedEncodingException e) {
             throw new InstrumentException(e);
         }
@@ -565,13 +565,17 @@ public class XmlUtils {
 
     /**
      * 将String类型的xml转换成对象
+     *
+     * @param xml   字符串
+     * @param clazz 对象
+     * @return object对象
      */
-    public static Object convertXmlStrToObject(String xmlStr, Class clazz) {
+    public static Object convertXmlStrToObject(String xml, Class clazz) {
         try {
             JAXBContext context = JAXBContext.newInstance(clazz);
             // 进行将Xml转成对象的核心接口
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            StringReader sr = new StringReader(xmlStr);
+            StringReader sr = new StringReader(xml);
             return unmarshaller.unmarshal(sr);
         } catch (JAXBException e) {
             throw new InstrumentException(e);
@@ -581,10 +585,12 @@ public class XmlUtils {
     /**
      * 将xml对象根据定义的节点进行拆分,并实现List对象转换
      *
-     * @param xml
-     * @param rel
-     * @param clazz
-     * @return
+     * @param <T>      对象
+     * @param xml      字符串
+     * @param rel      拆分节点
+     * @param clazz    对象信息
+     * @param isSelect 是否拆分
+     * @return list对象
      */
     public static <T> List<T> parseXmlToBeanList(String xml, String rel, Class<T> clazz, boolean isSelect) {
         List<T> list = new ArrayList<>();
@@ -615,10 +621,11 @@ public class XmlUtils {
     /**
      * 将xml对象根据定义的节点进行拆分,并实现List对象转换
      *
-     * @param xml
-     * @param rel
-     * @param clazz
-     * @return
+     * @param <T>   对象
+     * @param xml   字符串
+     * @param rel   拆分节点
+     * @param clazz 对象信息
+     * @return list对象
      */
     public static <T> List<T> parseXmlToBeanList(String xml, String rel, Class<T> clazz) {
         return parseXmlToBeanList(xml, rel, clazz, true);
@@ -627,30 +634,32 @@ public class XmlUtils {
     /**
      * 将对象转换为XML
      *
-     * @param javaBean
-     * @return
-     * @throws Exception
+     * @param object 对象信息
+     * @return string xml
+     * @throws Exception 异常
      */
-    public static String parseBeanToXml(Object javaBean) throws Exception {
-        JAXBContext context = JAXBContext.newInstance(javaBean.getClass());
+    public static String parseBeanToXml(Object object) throws Exception {
+        JAXBContext context = JAXBContext.newInstance(object.getClass());
         Marshaller m = context.createMarshaller();
         StringWriter sw = new StringWriter();
-        m.marshal(javaBean, sw);
+        m.marshal(object, sw);
         return sw.toString();
     }
 
     /**
      * 将对象转换为XML
      *
-     * @param javaBean
-     * @return
-     * @throws Exception
+     * @param object   对象信息
+     * @param map      map
+     * @param listener Listener
+     * @return string xml
+     * @throws Exception 异常
      */
-    public static String parseBeanToXml(Object javaBean, Map<String, Object> marshallerMap, Marshaller.Listener listener) throws Exception {
-        JAXBContext context = JAXBContext.newInstance(javaBean.getClass());
+    public static String parseBeanToXml(Object object, Map<String, Object> map, Marshaller.Listener listener) throws Exception {
+        JAXBContext context = JAXBContext.newInstance(object.getClass());
         Marshaller marshaller = context.createMarshaller();
-        if (MapUtils.isNotEmpty(marshallerMap)) {
-            marshallerMap.forEach((key, value) -> {
+        if (MapUtils.isNotEmpty(map)) {
+            map.forEach((key, value) -> {
                 try {
                     marshaller.setProperty(key, value);
                 } catch (PropertyException e) {
@@ -662,29 +671,32 @@ public class XmlUtils {
             marshaller.setListener(listener);
         }
         StringWriter sw = new StringWriter();
-        marshaller.marshal(javaBean, sw);
+        marshaller.marshal(object, sw);
         return sw.toString();
     }
 
     /**
+     * 替换xml中特殊字符
      *
+     * @param xml 字符串信息
+     * @return 字符串
      */
-    public static String replaceEscapeCharacter(String xmlContent) {
-        return xmlContent.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&quot;", "\"");
+    public static String replaceEscapeCharacter(String xml) {
+        return xml.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&quot;", "\"");
     }
 
     /**
      * 将MAP对象转换为XML格式
      *
-     * @param params
-     * @return
+     * @param map 对象信息
+     * @return xml字符串
      */
-    public static String mapToXmlNosign(Map<String, Object> params) {
+    public static String mapToXmlNosign(Map<String, Object> map) {
         StringBuffer sb = new StringBuffer();
-        Set<String> set = params.keySet();
+        Set<String> set = map.keySet();
         for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
             String key = it.next();
-            Object value = null != params.get(key) ? params.get(key) : " ";
+            Object value = null != map.get(key) ? map.get(key) : " ";
             if (!"sign".equals(key)) {
                 sb.append("<" + key + ">" + value + "</" + key + ">");
             }
@@ -695,20 +707,21 @@ public class XmlUtils {
     /**
      * xml转list
      *
-     * @param xmlstr
-     * @param rel
-     * @param t
-     * @return
+     * @param <T>   对象
+     * @param xml   字符串
+     * @param rel   拆分节点
+     * @param clazz 对象
+     * @return list对象
      */
-    public static <T> List<T> XMLToBeanList(String xmlstr, String rel, Class<T> t) {
+    public static <T> List<T> XMLToBeanList(String xml, String rel, Class<T> clazz) {
         List<T> list = new ArrayList<>();
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(t);
+            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
             Unmarshaller um = jaxbContext.createUnmarshaller();
-            if (xmlstr != null && xmlstr.contains(rel)) {
+            if (xml != null && xml.contains(rel)) {
                 String start_tag = "<" + rel + ">";
                 String end_tag = "</" + rel + ">";
-                String[] entrys = xmlstr.split(end_tag);
+                String[] entrys = xml.split(end_tag);
                 for (String val : entrys) {
                     if (null != val && val.contains(start_tag)) {
                         String once = val.substring(val.indexOf(start_tag)) + end_tag;
@@ -726,39 +739,34 @@ public class XmlUtils {
     /**
      * 将xml节点转小写
      *
-     * @param xmlStr
-     * @return
+     * @param xml 字符串
+     * @return xml字符串
      */
-    public static String xmlToLowerCase(String xmlStr) {
+    public static String xmlToLowerCase(String xml) {
         Pattern pattern = Pattern.compile("<.+?>");
         StringBuilder res = new StringBuilder();
         int lastIdx = 0;
-        Matcher matchr = pattern.matcher(xmlStr);
+        Matcher matchr = pattern.matcher(xml);
         while (matchr.find()) {
             String str = matchr.group();
-            res.append(xmlStr, lastIdx, matchr.start());
+            res.append(xml, lastIdx, matchr.start());
             res.append(str.toLowerCase());
             lastIdx = matchr.end();
         }
-        res.append(xmlStr.substring(lastIdx));
+        res.append(xml.substring(lastIdx));
         return res.toString();
     }
 
     /**
-     * @param @param  str xml源串
-     * @param @param  field  要获取的字段名
-     * @param @return 参数	  	返回该字段的值
-     * @return String    返回类型
-     * @throws* @Title: getFieldByxml
+     * @param xml   字符串
+     * @param field 要获取的字段名
+     * @return 返回该字段的值
      */
-    public static String getFieldByxml(String str, String field) {
-        return new XmlUtils().getfield(str, field);
+    public static String getFieldByxml(String xml, String field) {
+        return new XmlUtils().getfield(xml, field);
     }
 
-    /**
-     * @throws JAXBException
-     * @throws UnsupportedEncodingException
-     */
+
     public String requestModel(Object esbEntry) throws JAXBException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         JAXBContext jaxbContext = JAXBContext.newInstance(esbEntry.getClass());

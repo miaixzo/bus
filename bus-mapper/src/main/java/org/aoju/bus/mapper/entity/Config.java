@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.entity;
 
 import org.aoju.bus.mapper.MapperException;
@@ -36,9 +36,8 @@ import java.util.Properties;
 /**
  * 通用Mapper属性配置
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Config {
@@ -82,7 +81,7 @@ public class Config {
     /**
      * 设置全局的catalog,默认为空，如果设置了值，操作表时的sql会是catalog.tablename
      *
-     * @param catalog
+     * @param catalog string
      */
     public void setCatalog(String catalog) {
         this.catalog = catalog;
@@ -91,7 +90,7 @@ public class Config {
     /**
      * 获取主键自增回写SQL
      *
-     * @return
+     * @return string
      */
     public String getIdentity() {
         if (Assert.isNotEmpty(this.identity)) {
@@ -104,7 +103,7 @@ public class Config {
     /**
      * 主键自增回写方法,默认值MYSQL,详细说明请看文档
      *
-     * @param IDENTITY
+     * @param IDENTITY string
      */
     public void setIdentity(String IDENTITY) {
         Identity identity = Identity.getDatabaseDialect(IDENTITY);
@@ -118,7 +117,7 @@ public class Config {
     /**
      * 获取表前缀，带catalog或schema
      *
-     * @return
+     * @return string
      */
     public String getPrefix() {
         if (Assert.isNotEmpty(this.catalog)) {
@@ -138,7 +137,7 @@ public class Config {
      * 设置全局的schema,默认为空，如果设置了值，操作表时的sql会是schema.tablename
      * <br>如果同时设置了catalog,优先使用catalog.tablename
      *
-     * @param schema
+     * @param schema schema
      */
     public void setSchema(String schema) {
         this.schema = schema;
@@ -147,7 +146,7 @@ public class Config {
     /**
      * 获取序列格式化模板
      *
-     * @return
+     * @return string
      */
     public String getSeqFormat() {
         if (Assert.isNotEmpty(this.seqFormat)) {
@@ -160,7 +159,7 @@ public class Config {
      * 序列的获取规则,使用{num}格式化参数，默认值为{0}.nextval，针对Oracle
      * <br>可选参数一共3个，对应0,1,2,3分别为SequenceName，ColumnName, PropertyName，TableName
      *
-     * @param seqFormat
+     * @param seqFormat sql
      */
     public void setSeqFormat(String seqFormat) {
         this.seqFormat = seqFormat;
@@ -177,7 +176,7 @@ public class Config {
     /**
      * 获取UUID生成规则
      *
-     * @return
+     * @return string
      */
     public String getUUID() {
         if (Assert.isNotEmpty(this.UUID)) {
@@ -191,7 +190,7 @@ public class Config {
      * <br>配置UUID生成策略需要使用OGNL表达式
      * <br>默认值32位长度:@java.util.UUID@randomUUID().toString().replace("-", "")
      *
-     * @param UUID
+     * @param UUID id
      */
     public void setUUID(String UUID) {
         this.UUID = UUID;
@@ -205,11 +204,6 @@ public class Config {
         this.wrapKeyword = wrapKeyword;
     }
 
-    /**
-     * 获取SelectKey的Order
-     *
-     * @return
-     */
     public boolean isBEFORE() {
         return BEFORE;
     }
@@ -261,7 +255,7 @@ public class Config {
     /**
      * 主键自增回写方法执行顺序,默认AFTER,可选值为(BEFORE|AFTER)
      *
-     * @param order
+     * @param order string
      */
     public void setOrder(String order) {
         this.BEFORE = "BEFORE".equalsIgnoreCase(order);
@@ -294,7 +288,7 @@ public class Config {
     /**
      * 配置属性
      *
-     * @param properties
+     * @param properties 属性
      */
     public void setProperties(Properties properties) {
         if (properties == null) {

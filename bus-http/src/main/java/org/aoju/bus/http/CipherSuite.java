@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.util.*;
@@ -43,12 +43,12 @@ import java.util.*;
  * <p>See <a href="https://github.com/google/conscrypt/blob/master/common/src/main/java/org/conscrypt/NativeCrypto.java">NativeCrypto.java</a>
  * from conscrypt, which lists the cipher suites supported by Conscrypt.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class CipherSuite {
+
     /**
      * Compares cipher suites names like "TLS_RSA_WITH_NULL_MD5" and "SSL_RSA_WITH_NULL_MD5", ignoring
      * the "TLS_" or "SSL_" prefix which is not consistent across platforms. In particular some IBM
@@ -423,6 +423,7 @@ public final class CipherSuite {
     /**
      * @param javaName the name used by Java APIs for this cipher suite. Different than the IANA name
      *                 for older cipher suites because the prefix is {@code SSL_} instead of {@code TLS_}.
+     * @return CipherSuite
      */
     public static synchronized CipherSuite forJavaName(String javaName) {
         CipherSuite result = INSTANCES.get(javaName);
@@ -468,12 +469,6 @@ public final class CipherSuite {
         return suite;
     }
 
-    /**
-     * Returns the Java name of this cipher suite. For some older cipher suites the Java name has the
-     * prefix {@code SSL_}, causing the Java name to be different from the instance name which is
-     * always prefixed {@code TLS_}. For example, {@code TLS_RSA_EXPORT_WITH_RC4_40_MD5.javaName()}
-     * is {@code "SSL_RSA_EXPORT_WITH_RC4_40_MD5"}.
-     */
     public String javaName() {
         return javaName;
     }

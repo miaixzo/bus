@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.common.basic.update;
 
 import org.aoju.bus.mapper.provider.BaseUpdateProvider;
@@ -30,9 +30,8 @@ import org.apache.ibatis.annotations.UpdateProvider;
 /**
  * 通用Mapper接口,更新
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface UpdateByPrimaryKeyMapper<T> {
@@ -40,11 +39,11 @@ public interface UpdateByPrimaryKeyMapper<T> {
     /**
      * 根据主键更新实体全部字段，null值会被更新
      *
-     * @param record
-     * @return
+     * @param record 对象
+     * @return 操作数量
      */
     @UpdateProvider(type = BaseUpdateProvider.class, method = "dynamicSQL")
-    @Options(useCache = false, useGeneratedKeys = false)
+    @Options(useCache = false)
     int updateByPrimaryKey(T record);
 
 }

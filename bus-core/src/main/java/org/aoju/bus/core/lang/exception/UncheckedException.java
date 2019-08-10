@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang.exception;
 
 import lombok.Data;
@@ -30,9 +30,8 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * 自定义异常: 未受检异常
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Data
@@ -47,7 +46,7 @@ public class UncheckedException extends RuntimeException {
      */
     protected String errmsg;
 
-    public UncheckedException() {
+    protected UncheckedException() {
         super();
     }
 
@@ -56,7 +55,7 @@ public class UncheckedException extends RuntimeException {
      *
      * @param message 打印信息
      */
-    public UncheckedException(String message) {
+    protected UncheckedException(String message) {
         super(message);
     }
 
@@ -65,7 +64,7 @@ public class UncheckedException extends RuntimeException {
      *
      * @param cause 抛出对象
      */
-    public UncheckedException(Throwable cause) {
+    protected UncheckedException(Throwable cause) {
         super(cause);
     }
 
@@ -75,7 +74,7 @@ public class UncheckedException extends RuntimeException {
      * @param message 打印信息
      * @param cause   抛出对象
      */
-    public UncheckedException(String message, Throwable cause) {
+    protected UncheckedException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -85,7 +84,7 @@ public class UncheckedException extends RuntimeException {
      * @param errcode 错误编码
      * @param errmsg  错误提示
      */
-    public UncheckedException(String errcode, String errmsg) {
+    protected UncheckedException(String errcode, String errmsg) {
         super(errmsg);
         this.errcode = errcode;
         this.errmsg = errmsg;
@@ -97,7 +96,7 @@ public class UncheckedException extends RuntimeException {
      * @param format 格式
      * @param args   参数
      */
-    public UncheckedException(String format, Object... args) {
+    protected UncheckedException(String format, Object... args) {
         super(String.format(format, args));
     }
 
@@ -108,7 +107,7 @@ public class UncheckedException extends RuntimeException {
      * @param fmt  格式
      * @param args 参数
      */
-    public UncheckedException(Throwable e, String fmt, Object... args) {
+    protected UncheckedException(Throwable e, String fmt, Object... args) {
         super(String.format(fmt, args), e);
     }
 
@@ -117,7 +116,7 @@ public class UncheckedException extends RuntimeException {
      *
      * @return 一个未实现的运行时异常
      */
-    public static UncheckedException noImplement() {
+    protected static UncheckedException noImplement() {
         return new UncheckedException("Not implement yet!");
     }
 
@@ -126,11 +125,11 @@ public class UncheckedException extends RuntimeException {
      *
      * @return 一个不可能的运行时异常
      */
-    public static UncheckedException impossible() {
+    protected static UncheckedException impossible() {
         return new UncheckedException("r u kidding me?! It is impossible!");
     }
 
-    public static Throwable unwrapThrow(Throwable e) {
+    protected static Throwable unwrapThrow(Throwable e) {
         if (e == null)
             return null;
         if (e instanceof InvocationTargetException) {
@@ -143,7 +142,7 @@ public class UncheckedException extends RuntimeException {
         return e;
     }
 
-    public static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
+    protected static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
         if (e.getClass() == causeType)
             return true;
         Throwable cause = e.getCause();

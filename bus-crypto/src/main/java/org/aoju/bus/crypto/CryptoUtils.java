@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.crypto;
 
 import org.aoju.bus.core.codec.Base64;
@@ -79,15 +79,14 @@ import java.security.spec.*;
 import java.util.Map;
 
 /**
- * 安全相关工具类<br>
- * 加密分为三种：<br>
- * 1、对称加密（symmetric），例如：AES、DES等<br>
- * 2、非对称加密（asymmetric），例如：RSA、DSA等<br>
- * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等<br>
+ * 安全相关工具类
+ * 加密分为三种：
+ * 1、对称加密（symmetric），例如：AES、DES等
+ * 2、非对称加密（asymmetric），例如：RSA、DSA等
+ * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class CryptoUtils {
@@ -264,8 +263,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成RSA私钥，仅用于非对称加密<br>
-     * 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法<br>
+     * 生成RSA私钥，仅用于非对称加密
+     * 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法
      *
      * @param key 密钥，必须为DER编码存储
      * @return RSA私钥 {@link PrivateKey}
@@ -276,8 +275,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成私钥，仅用于非对称加密<br>
-     * 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法<br>
+     * 生成私钥，仅用于非对称加密
+     * 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法
      *
      * @param mode 算法
      * @param key  密钥，必须为DER编码存储
@@ -291,7 +290,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成私钥，仅用于非对称加密<br>
+     * 生成私钥，仅用于非对称加密
      *
      * @param mode    算法
      * @param keySpec {@link KeySpec}
@@ -327,8 +326,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成RSA公钥，仅用于非对称加密<br>
-     * 采用X509证书规范<br>
+     * 生成RSA公钥，仅用于非对称加密
+     * 采用X509证书规范
      *
      * @param key 密钥，必须为DER编码存储
      * @return 公钥 {@link PublicKey}
@@ -339,8 +338,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成公钥，仅用于非对称加密<br>
-     * 采用X509证书规范<br>
+     * 生成公钥，仅用于非对称加密
+     * 采用X509证书规范
      *
      * @param mode 算法
      * @param key  密钥，必须为DER编码存储
@@ -354,7 +353,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成公钥，仅用于非对称加密<br>
+     * 生成公钥，仅用于非对称加密
      *
      * @param mode    算法
      * @param keySpec {@link KeySpec}
@@ -374,7 +373,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥，仅用于非对称加密<br>
+     * 生成用于非对称加密的公钥和私钥，仅用于非对称加密
      *
      * @param mode 非对称加密算法
      * @return {@link KeyPair}
@@ -384,7 +383,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥<br>
+     * 生成用于非对称加密的公钥和私钥
      *
      * @param mode    非对称加密算法
      * @param keySize 密钥模（modulus ）长度
@@ -395,7 +394,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥<br>
+     * 生成用于非对称加密的公钥和私钥
      *
      * @param mode    非对称加密算法
      * @param keySize 密钥模（modulus ）长度
@@ -413,7 +412,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥<br>
+     * 生成用于非对称加密的公钥和私钥
      *
      * @param mode   非对称加密算法
      * @param params {@link AlgorithmParameterSpec}
@@ -425,7 +424,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥<br>
+     * 生成用于非对称加密的公钥和私钥
      *
      * @param mode  非对称加密算法
      * @param param {@link AlgorithmParameterSpec}
@@ -438,7 +437,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥<br>
+     * 生成用于非对称加密的公钥和私钥
      *
      * @param mode    非对称加密算法
      * @param keySize 密钥模（modulus ）长度
@@ -570,7 +569,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 获取用于密钥生成的算法<br>
+     * 获取用于密钥生成的算法
      * 获取XXXwithXXX算法的后半部分算法，如果为ECDSA或SM2，返回算法为EC
      *
      * @param mode XXXwithXXX算法
@@ -589,8 +588,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 读取密钥库(Java Key Store，JKS) KeyStore文件<br>
-     * KeyStore文件用于数字证书的密钥对保存<br>
+     * 读取密钥库(Java Key Store，JKS) KeyStore文件
+     * KeyStore文件用于数字证书的密钥对保存
      *
      * @param in       {@link InputStream} 如果想从文件读取文件
      * @param password 密码
@@ -601,8 +600,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 读取KeyStore文件<br>
-     * KeyStore文件用于数字证书的密钥对保存<br>
+     * 读取KeyStore文件
+     * KeyStore文件用于数字证书的密钥对保存
      *
      * @param type     类型
      * @param in       {@link InputStream} 如果想从文件读取文件
@@ -657,8 +656,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 读取X.509 Certification文件<br>
-     * Certification为证书文件<br>
+     * 读取X.509 Certification文件
+     * Certification为证书文件
      *
      * @param in       {@link InputStream} 如果想从文件读取.cer文件
      * @param password 密码
@@ -671,8 +670,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 读取X.509 Certification文件中的公钥<br>
-     * Certification为证书文件<br>
+     * 读取X.509 Certification文件中的公钥
+     * Certification为证书文件
      *
      * @param in {@link InputStream} 如果想从文件读取文件
      * @return {@link KeyStore}
@@ -687,8 +686,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 读取X.509 Certification文件<br>
-     * Certification为证书文件<br>
+     * 读取X.509 Certification文件
+     * Certification为证书文件
      *
      * @param in {@link InputStream} 如果想从文件读取文件
      * @return {@link KeyStore}
@@ -699,8 +698,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 读取Certification文件<br>
-     * Certification为证书文件<br>
+     * 读取Certification文件
+     * Certification为证书文件
      *
      * @param type     类型，例如X.509
      * @param in       {@link InputStream} 如果想从文件读取.cer文件
@@ -719,8 +718,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 读取Certification文件<br>
-     * Certification为证书文件<br>
+     * 读取Certification文件
+     * Certification为证书文件
      * see: http://snowolf.iteye.com/blog/391931
      *
      * @param type 类型，例如X.509
@@ -772,6 +771,7 @@ public final class CryptoUtils {
     /**
      * 获取主体算法名，例如RSA/ECB/PKCS1Padding的主体算法是RSA
      *
+     * @param mode 模型
      * @return 主体算法名
      * @since 4.5.2
      */
@@ -784,7 +784,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * AES加密，生成随机KEY。注意解密时必须使用相同 {@link AES}对象或者使用相同KEY<br>
+     * AES加密，生成随机KEY。注意解密时必须使用相同 {@link AES}对象或者使用相同KEY
      * 例：
      *
      * <pre>
@@ -799,7 +799,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * AES加密<br>
+     * AES加密
      * 例：
      *
      * <pre>
@@ -815,7 +815,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * DES加密，生成随机KEY。注意解密时必须使用相同 {@link DES}对象或者使用相同KEY<br>
+     * DES加密，生成随机KEY。注意解密时必须使用相同 {@link DES}对象或者使用相同KEY
      * 例：
      *
      * <pre>
@@ -830,7 +830,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * DES加密<br>
+     * DES加密
      * 例：
      *
      * <pre>
@@ -846,8 +846,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * DESede加密（又名3DES、TripleDES），生成随机KEY。注意解密时必须使用相同 {@link DESede}对象或者使用相同KEY<br>
-     * Java中默认实现为：DESede/ECB/PKCS5Padding<br>
+     * DESede加密（又名3DES、TripleDES），生成随机KEY。注意解密时必须使用相同 {@link DESede}对象或者使用相同KEY
+     * Java中默认实现为：DESede/ECB/PKCS5Padding
      * 例：
      *
      * <pre>
@@ -863,8 +863,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * DESede加密（又名3DES、TripleDES）<br>
-     * Java中默认实现为：DESede/ECB/PKCS5Padding<br>
+     * DESede加密（又名3DES、TripleDES）
+     * Java中默认实现为：DESede/ECB/PKCS5Padding
      * 例：
      *
      * <pre>
@@ -881,7 +881,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * MD5加密<br>
+     * MD5加密
      * 例：
      *
      * <pre>
@@ -896,7 +896,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * MD5加密，生成16进制MD5字符串<br>
+     * MD5加密，生成16进制MD5字符串
      *
      * @param data 数据
      * @return MD5字符串
@@ -906,7 +906,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * MD5加密，生成16进制MD5字符串<br>
+     * MD5加密，生成16进制MD5字符串
      *
      * @param data 数据
      * @return MD5字符串
@@ -916,7 +916,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * MD5加密文件，生成16进制MD5字符串<br>
+     * MD5加密文件，生成16进制MD5字符串
      *
      * @param dataFile 被加密文件
      * @return MD5字符串
@@ -926,10 +926,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * SHA1加密<br>
-     * 例：<br>
-     * SHA1加密：sha1().digest(data)<br>
-     * SHA1加密并转为16进制字符串：sha1().digestHex(data)<br>
+     * SHA1加密
+     * 例：
+     * SHA1加密：sha1().digest(data)
+     * SHA1加密并转为16进制字符串：sha1().digestHex(data)
      *
      * @return {@link Digester}
      */
@@ -938,7 +938,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SHA1加密，生成16进制SHA1字符串<br>
+     * SHA1加密，生成16进制SHA1字符串
      *
      * @param data 数据
      * @return SHA1字符串
@@ -948,7 +948,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SHA1加密，生成16进制SHA1字符串<br>
+     * SHA1加密，生成16进制SHA1字符串
      *
      * @param data 数据
      * @return SHA1字符串
@@ -958,7 +958,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SHA1加密文件，生成16进制SHA1字符串<br>
+     * SHA1加密文件，生成16进制SHA1字符串
      *
      * @param dataFile 被加密文件
      * @return SHA1字符串
@@ -968,10 +968,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * SHA256加密<br>
-     * 例：<br>
-     * SHA256加密：sha256().digest(data)<br>
-     * SHA256加密并转为16进制字符串：sha256().digestHex(data)<br>
+     * SHA256加密
+     * 例：
+     * SHA256加密：sha256().digest(data)
+     * SHA256加密并转为16进制字符串：sha256().digestHex(data)
      *
      * @return {@link Digester}
      * @since 4.3.2
@@ -981,7 +981,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SHA256加密，生成16进制SHA256字符串<br>
+     * SHA256加密，生成16进制SHA256字符串
      *
      * @param data 数据
      * @return SHA256字符串
@@ -992,7 +992,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SHA256加密，生成16进制SHA256字符串<br>
+     * SHA256加密，生成16进制SHA256字符串
      *
      * @param data 数据
      * @return SHA1字符串
@@ -1003,7 +1003,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SHA256加密文件，生成16进制SHA256字符串<br>
+     * SHA256加密文件，生成16进制SHA256字符串
      *
      * @param dataFile 被加密文件
      * @return SHA256字符串
@@ -1050,10 +1050,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * HmacMD5加密器<br>
-     * 例：<br>
-     * HmacMD5加密：hmacMd5(key).digest(data)<br>
-     * HmacMD5加密并转为16进制字符串：hmacMd5(key).digestHex(data)<br>
+     * HmacMD5加密器
+     * 例：
+     * HmacMD5加密：hmacMd5(key).digest(data)
+     * HmacMD5加密并转为16进制字符串：hmacMd5(key).digestHex(data)
      *
      * @param key 加密密钥，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
@@ -1064,10 +1064,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * HmacMD5加密器<br>
-     * 例：<br>
-     * HmacMD5加密：hmacMd5(key).digest(data)<br>
-     * HmacMD5加密并转为16进制字符串：hmacMd5(key).digestHex(data)<br>
+     * HmacMD5加密器
+     * 例：
+     * HmacMD5加密：hmacMd5(key).digest(data)
+     * HmacMD5加密并转为16进制字符串：hmacMd5(key).digestHex(data)
      *
      * @param key 加密密钥，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
@@ -1077,10 +1077,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * HmacMD5加密器，生成随机KEY<br>
-     * 例：<br>
-     * HmacMD5加密：hmacMd5().digest(data)<br>
-     * HmacMD5加密并转为16进制字符串：hmacMd5().digestHex(data)<br>
+     * HmacMD5加密器，生成随机KEY
+     * 例：
+     * HmacMD5加密：hmacMd5().digest(data)
+     * HmacMD5加密并转为16进制字符串：hmacMd5().digestHex(data)
      *
      * @return {@link HMac}
      */
@@ -1089,10 +1089,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * HmacSHA1加密器<br>
-     * 例：<br>
-     * HmacSHA1加密：hmacSha1(key).digest(data)<br>
-     * HmacSHA1加密并转为16进制字符串：hmacSha1(key).digestHex(data)<br>
+     * HmacSHA1加密器
+     * 例：
+     * HmacSHA1加密：hmacSha1(key).digest(data)
+     * HmacSHA1加密并转为16进制字符串：hmacSha1(key).digestHex(data)
      *
      * @param key 加密密钥，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
@@ -1103,10 +1103,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * HmacSHA1加密器<br>
-     * 例：<br>
-     * HmacSHA1加密：hmacSha1(key).digest(data)<br>
-     * HmacSHA1加密并转为16进制字符串：hmacSha1(key).digestHex(data)<br>
+     * HmacSHA1加密器
+     * 例：
+     * HmacSHA1加密：hmacSha1(key).digest(data)
+     * HmacSHA1加密并转为16进制字符串：hmacSha1(key).digestHex(data)
      *
      * @param key 加密密钥，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
@@ -1116,10 +1116,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * HmacSHA1加密器，生成随机KEY<br>
-     * 例：<br>
-     * HmacSHA1加密：hmacSha1().digest(data)<br>
-     * HmacSHA1加密并转为16进制字符串：hmacSha1().digestHex(data)<br>
+     * HmacSHA1加密器，生成随机KEY
+     * 例：
+     * HmacSHA1加密：hmacSha1().digest(data)
+     * HmacSHA1加密并转为16进制字符串：hmacSha1().digestHex(data)
      *
      * @return {@link HMac}
      */
@@ -1128,7 +1128,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建RSA算法对象<br>
+     * 创建RSA算法对象
      * 生成新的私钥公钥对
      *
      * @return {@link RSA}
@@ -1139,8 +1139,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建RSA算法对象<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 创建RSA算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKeyBase64 私钥Base64
@@ -1153,8 +1153,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建RSA算法对象<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 创建RSA算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
@@ -1167,7 +1167,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建签名算法对象<br>
+     * 创建签名算法对象
      * 生成新的私钥公钥对
      *
      * @param mode 签名算法
@@ -1179,11 +1179,11 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建签名算法对象<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 创建签名算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param mode             签名算法
+     * @param mode             算法
      * @param privateKeyBase64 私钥Base64
      * @param publicKeyBase64  公钥Base64
      * @return {@link Sign}
@@ -1194,10 +1194,11 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建Sign算法对象<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 创建Sign算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
+     * @param mode       算法
      * @param privateKey 私钥
      * @param publicKey  公钥
      * @return {@link Sign}
@@ -1208,8 +1209,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 对参数做签名<br>
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串<br>
+     * 对参数做签名
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param crypto 对称加密算法
@@ -1222,7 +1223,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 对参数做签名<br>
+     * 对参数做签名
      * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      *
      * @param crypto            对称加密算法
@@ -1242,8 +1243,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 对参数做md5签名<br>
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串<br>
+     * 对参数做md5签名
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
@@ -1255,8 +1256,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 对参数做Sha1签名<br>
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串<br>
+     * 对参数做Sha1签名
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
@@ -1268,8 +1269,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 对参数做Sha256签名<br>
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串<br>
+     * 对参数做Sha256签名
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
@@ -1281,11 +1282,11 @@ public final class CryptoUtils {
     }
 
     /**
-     * 对参数做签名<br>
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串<br>
+     * 对参数做签名
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
-     * @param Mode   摘要算法
+     * @param Mode   算法
      * @param params 参数
      * @return 签名
      * @since 4.0.1
@@ -1295,10 +1296,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * 对参数做签名<br>
+     * 对参数做签名
      * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      *
-     * @param Mode              摘要算法
+     * @param Mode              算法
      * @param params            参数
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
@@ -1348,6 +1349,7 @@ public final class CryptoUtils {
      * 创建{@link Cipher}
      *
      * @param mode 算法
+     * @return cipher
      * @since 4.5.2
      */
     public static Cipher createCipher(String mode) {
@@ -1367,6 +1369,7 @@ public final class CryptoUtils {
      * 创建{@link MessageDigest}
      *
      * @param mode 算法
+     * @return MessageDigest
      * @since 4.5.2
      */
     public static MessageDigest createMessageDigest(String mode) {
@@ -1418,6 +1421,7 @@ public final class CryptoUtils {
      *
      * @param encode    压缩公钥
      * @param curveName EC曲线名
+     * @return PublicKey
      * @since 4.4.4
      */
     public static PublicKey decodeECPoint(String encode, String curveName) {
@@ -1429,6 +1433,7 @@ public final class CryptoUtils {
      *
      * @param encodeByte 压缩公钥
      * @param curveName  EC曲线名
+     * @return PublicKey
      * @since 4.4.4
      */
     public static PublicKey decodeECPoint(byte[] encodeByte, String curveName) {
@@ -1479,7 +1484,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 从pem文件中读取公钥或私钥<br>
+     * 从pem文件中读取公钥或私钥
      * 根据类型返回{@link PublicKey} 或者 {@link PrivateKey}
      *
      * @param keyStream pem流
@@ -1531,7 +1536,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建SM2算法对象<br>
+     * 创建SM2算法对象
      * 生成新的私钥公钥对
      *
      * @return {@link SM2}
@@ -1541,8 +1546,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建SM2算法对象<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 创建SM2算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKeyStr 私钥Hex或Base64表示
@@ -1554,8 +1559,8 @@ public final class CryptoUtils {
     }
 
     /**
-     * 创建SM2算法对象<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 创建SM2算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
@@ -1567,10 +1572,10 @@ public final class CryptoUtils {
     }
 
     /**
-     * SM3加密<br>
-     * 例：<br>
-     * SM3加密：sm3().digest(data)<br>
-     * SM3加密并转为16进制字符串：sm3().digestHex(data)<br>
+     * SM3加密
+     * 例：
+     * SM3加密：sm3().digest(data)
+     * SM3加密并转为16进制字符串：sm3().digestHex(data)
      *
      * @return {@link Digester}
      */
@@ -1579,7 +1584,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SM3加密，生成16进制SM3字符串<br>
+     * SM3加密，生成16进制SM3字符串
      *
      * @param data 数据
      * @return SM3字符串
@@ -1589,7 +1594,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SM3加密，生成16进制SM3字符串<br>
+     * SM3加密，生成16进制SM3字符串
      *
      * @param data 数据
      * @return SM3字符串
@@ -1599,7 +1604,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SM3加密文件，生成16进制SM3字符串<br>
+     * SM3加密文件，生成16进制SM3字符串
      *
      * @param dataFile 被加密文件
      * @return SM3字符串
@@ -1609,7 +1614,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link Symmetric}对象或者使用相同KEY<br>
+     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link Symmetric}对象或者使用相同KEY
      * 例：
      *
      * <pre>
@@ -1624,7 +1629,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * SM4加密<br>
+     * SM4加密
      * 例：
      *
      * <pre>
@@ -1676,7 +1681,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * BC的SM3withSM2签名得到的结果的rs是asn1格式的，这个方法转化成直接拼接r||s<br>
+     * BC的SM3withSM2签名得到的结果的rs是asn1格式的，这个方法转化成直接拼接r||s
      *
      * @param rsDer rs in asn1 format
      * @return sign result in plain byte array
@@ -1693,7 +1698,7 @@ public final class CryptoUtils {
     }
 
     /**
-     * BC的SM3withSM2验签需要的rs是asn1格式的，这个方法将直接拼接r||s的字节数组转化成asn1格式<br>
+     * BC的SM3withSM2验签需要的rs是asn1格式的，这个方法将直接拼接r||s的字节数组转化成asn1格式
      *
      * @param sign in plain byte array
      * @return rs result in asn1 format
@@ -2012,6 +2017,7 @@ public final class CryptoUtils {
      * 验证密码是否与Bcrypt加密后的密文匹配
      *
      * @param password 明文密码
+     * @param hashed   密文
      * @return 是否匹配
      * @since 4.1.1
      */

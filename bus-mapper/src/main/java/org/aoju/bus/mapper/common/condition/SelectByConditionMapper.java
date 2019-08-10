@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.common.condition;
 
 import org.aoju.bus.mapper.provider.ConditionProvider;
@@ -31,9 +31,8 @@ import java.util.List;
 /**
  * 通用Mapper接口,Condition查询
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface SelectByConditionMapper<T> {
@@ -41,8 +40,8 @@ public interface SelectByConditionMapper<T> {
     /**
      * 根据Condition条件进行查询
      *
-     * @param object
-     * @return
+     * @param object 对象
+     * @return 结果集
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
     List<T> selectByCondition(Object object);
@@ -50,8 +49,8 @@ public interface SelectByConditionMapper<T> {
     /**
      * 根据Condition条件进行查询
      *
-     * @param object
-     * @return
+     * @param object 对象
+     * @return 结果集
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
     List<T> selectByWhere(Object object);
@@ -59,8 +58,8 @@ public interface SelectByConditionMapper<T> {
     /**
      * 根据Condition条件进行查询
      *
-     * @param object
-     * @return
+     * @param object 对象
+     * @return 结果集
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
     T selectOneByWhere(Object object);

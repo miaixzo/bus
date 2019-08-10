@@ -20,16 +20,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 /**
- * A collection of unused segments, necessary to avoid GC churn and zero-fill.
- * This pool is a thread-safe static singleton.
+ * 这是避免GC搅动和零填充所必需的。
+ * 这个池是一个线程安全的静态单例。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class SegmentPool {

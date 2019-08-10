@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -31,9 +31,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 /**
  * BaseDeleteMapper实现类，基础方法实现类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BaseDeleteProvider extends MapperTemplate {
@@ -45,8 +44,8 @@ public class BaseDeleteProvider extends MapperTemplate {
     /**
      * 通过条件删除
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String delete(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -59,7 +58,8 @@ public class BaseDeleteProvider extends MapperTemplate {
     /**
      * 通过主键删除
      *
-     * @param ms
+     * @param ms MappedStatement
+     * @return the string
      */
     public String deleteByPrimaryKey(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);

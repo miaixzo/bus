@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.text.csv.CsvReadConfig;
@@ -35,9 +35,8 @@ import java.nio.charset.Charset;
 /**
  * CSV工具
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class CsvUtils {
@@ -66,6 +65,7 @@ public class CsvUtils {
      *
      * @param filePath File CSV文件路径
      * @param charset  编码
+     * @return {@link CsvWriter}
      */
     public static CsvWriter getWriter(String filePath, Charset charset) {
         return new CsvWriter(filePath, charset);
@@ -76,6 +76,7 @@ public class CsvUtils {
      *
      * @param file    File CSV文件
      * @param charset 编码
+     * @return {@link CsvWriter}
      */
     public static CsvWriter getWriter(File file, Charset charset) {
         return new CsvWriter(file, charset);
@@ -87,6 +88,7 @@ public class CsvUtils {
      * @param filePath File CSV文件路径
      * @param charset  编码
      * @param isAppend 是否追加
+     * @return {@link CsvWriter}
      */
     public static CsvWriter getWriter(String filePath, Charset charset, boolean isAppend) {
         return new CsvWriter(filePath, charset, isAppend);
@@ -98,6 +100,7 @@ public class CsvUtils {
      * @param file     File CSV文件
      * @param charset  编码
      * @param isAppend 是否追加
+     * @return {@link CsvWriter}
      */
     public static CsvWriter getWriter(File file, Charset charset, boolean isAppend) {
         return new CsvWriter(file, charset, isAppend);
@@ -110,6 +113,7 @@ public class CsvUtils {
      * @param charset  编码
      * @param isAppend 是否追加
      * @param config   写出配置，null则使用默认配置
+     * @return {@link CsvWriter}
      */
     public static CsvWriter getWriter(File file, Charset charset, boolean isAppend, CsvWriteConfig config) {
         return new CsvWriter(file, charset, isAppend, config);

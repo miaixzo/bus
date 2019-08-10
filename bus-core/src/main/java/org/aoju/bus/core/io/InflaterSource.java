@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.utils.IoUtils;
@@ -31,11 +31,10 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 /**
- * to decompress data read from another source.
+ * 解压从另一个源读取的数据.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class InflaterSource implements Source {
@@ -43,11 +42,6 @@ public final class InflaterSource implements Source {
     private final BufferedSource source;
     private final Inflater inflater;
 
-    /**
-     * When we call Inflater.setInput(), the inflater keeps our byte array until
-     * it needs input again. This tracks how many bytes the inflater is currently
-     * holding on to.
-     */
     private int bufferBytesHeldByInflater;
     private boolean closed;
 
@@ -55,11 +49,6 @@ public final class InflaterSource implements Source {
         this(IoUtils.buffer(source), inflater);
     }
 
-    /**
-     * This package-private constructor shares a buffer with its trusted caller.
-     * In general we can't share a BufferedSource because the inflater holds input
-     * bytes until they are inflated.
-     */
     InflaterSource(BufferedSource source, Inflater inflater) {
         if (source == null) throw new IllegalArgumentException("source == null");
         if (inflater == null) throw new IllegalArgumentException("inflater == null");
@@ -103,11 +92,6 @@ public final class InflaterSource implements Source {
         }
     }
 
-    /**
-     * Refills the inflater with compressed data if it needs input. (And only if
-     * it needs input). Returns true if the inflater required input but the source
-     * was exhausted.
-     */
     public final boolean refill() throws IOException {
         if (!inflater.needsInput()) return false;
 
@@ -124,9 +108,6 @@ public final class InflaterSource implements Source {
         return false;
     }
 
-    /**
-     * When the inflater has processed compressed data, remove it from the buffer.
-     */
     private void releaseInflatedBytes() throws IOException {
         if (bufferBytesHeldByInflater == 0) return;
         int toRelease = bufferBytesHeldByInflater - inflater.getRemaining();

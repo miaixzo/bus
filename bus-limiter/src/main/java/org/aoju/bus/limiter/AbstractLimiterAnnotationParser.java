@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.limiter;
 
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -31,9 +31,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class AbstractLimiterAnnotationParser<T extends Limiter<?>, V extends Annotation> implements LimiterAnnotationParser<T> {

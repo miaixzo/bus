@@ -20,14 +20,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.http;
 
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.connection.RouteException;
 import org.aoju.bus.http.internal.connection.StreamAllocation;
-import org.aoju.bus.http.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLHandshakeException;
@@ -43,9 +42,8 @@ import java.security.cert.CertificateException;
  * This interceptor recovers from failures and follows redirects as necessary. It may throw an
  * {@link IOException} if the call was canceled.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class RetryAndFollowUpInterceptor implements Interceptor {

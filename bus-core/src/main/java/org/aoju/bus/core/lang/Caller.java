@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -28,9 +28,8 @@ import org.aoju.bus.core.lang.exception.CommonException;
 /**
  * 调用者。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Caller {
@@ -105,7 +104,7 @@ public class Caller {
      * 调用者接口<br>
      * 可以通过此接口的实现类方法获取调用者、多级调用者以及判断是否被调用
      *
-     * @author aoju.org
+     * @author Kimi Liu
      */
     private interface ICaller {
         /**
@@ -149,7 +148,7 @@ public class Caller {
     /**
      * {@link SecurityManager} 方式获取调用者
      *
-     * @author aoju.org
+     * @author Kimi Liu
      */
     private static class SecurityManagerCaller extends SecurityManager implements ICaller {
         private static final int OFFSET = 1;
@@ -188,7 +187,7 @@ public class Caller {
     /**
      * 通过StackTrace方式获取调用者。此方式效率最低，不推荐使用
      *
-     * @author aoju.org
+     * @author Kimi Liu
      */
     private static class StackTraceCaller implements ICaller {
         private static final int OFFSET = 2;
@@ -233,5 +232,5 @@ public class Caller {
             return false;
         }
     }
-    
+
 }

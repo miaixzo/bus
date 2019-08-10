@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.logger.dialect.log4j;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -31,9 +31,8 @@ import org.apache.log4j.Logger;
 /**
  * <a href="http://logging.apache.org/log4j/1.2/index.html">Apache Log4J</a> log.<br>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Log4J extends AbstractAware {

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.poi.excel;
 
 import org.aoju.bus.core.lang.Assert;
@@ -45,9 +45,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 2. 新建一个空的Excel工作簿，完成数据填充后写出（到文件或到流）
  * </pre>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -553,6 +552,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变<br>
      * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
+     * @param firstRow         第一行
+     * @param lastRow          最后一行
+     * @param firstColumn      第一列
      * @param lastColumn       合并到的最后一个列号
      * @param content          合并单元格后的内容
      * @param isSetHeaderStyle 是否为合并后的单元格设置默认标题样式
@@ -770,23 +772,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         final Cell cell = getOrCreateCell(x, y);
         CellUtils.setCellValue(cell, value, this.styleSet, false);
         return this;
-    }
-
-    /**
-     * 为指定单元格创建样式
-     *
-     * @param x X坐标，从0计数，既列号
-     * @param y Y坐标，从0计数，既行号
-     * @return {@link CellStyle}
-     * @since 4.0.9
-     * @deprecated 请使用{@link #getOrCreateCellStyle(int, int)}
-     */
-    @Deprecated
-    public CellStyle createStyleForCell(int x, int y) {
-        final Cell cell = getOrCreateCell(x, y);
-        final CellStyle cellStyle = this.workbook.createCellStyle();
-        cell.setCellStyle(cellStyle);
-        return cellStyle;
     }
 
     /**

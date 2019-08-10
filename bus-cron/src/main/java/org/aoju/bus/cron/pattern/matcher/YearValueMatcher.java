@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cron.pattern.matcher;
 
 import java.util.List;
@@ -29,9 +29,8 @@ import java.util.List;
  * 年匹配<br>
  * 考虑年数字太大，不适合boolean数组，单独使用列表遍历匹配
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class YearValueMatcher implements ValueMatcher {

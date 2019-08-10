@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.base.spring;
 
 import org.aoju.bus.base.consts.Consts;
@@ -41,9 +41,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  * 异常信息拦截处理
  * </p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @ControllerAdvice
@@ -53,7 +52,7 @@ public class BaseAdvice extends Controller {
     /**
      * 应用到所有@RequestMapping注解方法，在其执行之前初始化数据绑定器
      *
-     * @param binder
+     * @param binder 绑定器
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -64,7 +63,7 @@ public class BaseAdvice extends Controller {
      * 把值绑定到Model中，
      * 使全局@RequestMapping可以获取到该值
      *
-     * @param model
+     * @param model 对象
      */
     @ModelAttribute
     public void addAttributes(Model model) {
@@ -74,6 +73,9 @@ public class BaseAdvice extends Controller {
     /**
      * 全局异常拦截
      * 处理全局异常
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
@@ -84,6 +86,9 @@ public class BaseAdvice extends Controller {
 
     /**
      * 通用异常信息
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ExceptionHandler(value = CommonException.class)
@@ -94,6 +99,9 @@ public class BaseAdvice extends Controller {
 
     /**
      * 工具异常拦截
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ExceptionHandler(value = InstrumentException.class)
@@ -105,6 +113,9 @@ public class BaseAdvice extends Controller {
     /**
      * 拦截业务异常
      * 事务回滚处理
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
@@ -115,6 +126,9 @@ public class BaseAdvice extends Controller {
 
     /**
      * 定时任务失败
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ExceptionHandler(value = CrontabException.class)
@@ -125,6 +139,9 @@ public class BaseAdvice extends Controller {
 
     /**
      * 参数验证失败
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ExceptionHandler(value = ValidateException.class)
@@ -135,6 +152,9 @@ public class BaseAdvice extends Controller {
 
     /**
      * 请求方式拦截
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
@@ -145,6 +165,9 @@ public class BaseAdvice extends Controller {
 
     /**
      * 媒体类型拦截
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
@@ -155,6 +178,9 @@ public class BaseAdvice extends Controller {
 
     /**
      * 资源未找到
+     *
+     * @param e 异常信息
+     * @return 异常提示
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -182,7 +208,7 @@ public class BaseAdvice extends Controller {
         if (null != stackTraceElements && stackTraceElements.length > 0) {
             int count = 0;
             for (StackTraceElement currentStackTrace : stackTraceElements) {
-                if (isAoju(currentStackTrace) && count < Consts.CODE_STACK_DEPTH) {
+                if (isStack(currentStackTrace) && count < Consts.CODE_STACK_DEPTH) {
                     String message = String.format("        %s.%s : %s",
                             currentStackTrace.getClassName(),
                             currentStackTrace.getMethodName(),
@@ -197,9 +223,9 @@ public class BaseAdvice extends Controller {
 
     /**
      * @param stackTraceElement 当前堆栈元素
-     * @return Boolean
+     * @return true/false
      */
-    private boolean isAoju(StackTraceElement stackTraceElement) {
+    private boolean isStack(StackTraceElement stackTraceElement) {
         return ObjectUtils.isNotNull(stackTraceElement)
                 ? stackTraceElement.getClassName().startsWith(Consts.CLASS_NAME_PREFIX) : Boolean.FALSE;
     }

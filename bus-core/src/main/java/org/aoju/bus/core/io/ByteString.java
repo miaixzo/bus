@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.codec.Base64;
@@ -40,28 +40,14 @@ import java.util.Arrays;
 import static org.aoju.bus.core.utils.IoUtils.arrayRangeEquals;
 
 /**
- * An immutable sequence of bytes.
+ * 不可变的字节序列.
  *
- * <p>Byte strings compare lexicographically as a sequence of <strong>unsigned</strong> bytes. That
- * is, the byte string {@code ff} sorts after {@code 00}. This is counter to the sort order of the
- * corresponding bytes, where {@code -1} sorts before {@code 0}.
- *
- * <p><strong>Full disclosure:</strong> this class provides untrusted input and output streams with
- * raw access to the underlying byte array. A hostile stream implementation could keep a reference
- * to the mutable byte string, violating the immutable guarantee of this class. For this reason a
- * byte string's immutability guarantee cannot be relied upon for security in applets and other
- * environments that run both trusted and untrusted code in the same process.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ByteString implements Serializable, Comparable<ByteString> {
 
-    /**
-     * A singleton empty {@code ByteString}.
-     */
     public static final ByteString EMPTY = ByteString.of();
     static final char[] HEX_DIGITS =
             {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -74,18 +60,11 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         this.data = data; // Trusted internal constructor doesn't clone data.
     }
 
-    /**
-     * Returns a new byte string containing a clone of the bytes of {@code data}.
-     */
     public static ByteString of(byte... data) {
         if (data == null) throw new IllegalArgumentException("data == null");
         return new ByteString(data.clone());
     }
 
-    /**
-     * Returns a new byte string containing a copy of {@code byteCount} bytes of {@code data} starting
-     * at {@code offset}.
-     */
     public static ByteString of(byte[] data, int offset, int byteCount) {
         if (data == null) throw new IllegalArgumentException("data == null");
         IoUtils.checkOffsetAndCount(data.length, offset, byteCount);
@@ -103,9 +82,6 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         return new ByteString(copy);
     }
 
-    /**
-     * Returns a new byte string containing the {@code UTF-8} bytes of {@code s}.
-     */
     public static ByteString encodeUtf8(String s) {
         if (s == null) throw new IllegalArgumentException("s == null");
         ByteString byteString = new ByteString(s.getBytes(org.aoju.bus.core.consts.Charset.UTF_8));
@@ -113,28 +89,18 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         return byteString;
     }
 
-    /**
-     * Returns a new byte string containing the {@code charset}-encoded bytes of {@code s}.
-     */
     public static ByteString encodeString(String s, Charset charset) {
         if (s == null) throw new IllegalArgumentException("s == null");
         if (charset == null) throw new IllegalArgumentException("charset == null");
         return new ByteString(s.getBytes(charset));
     }
 
-    /**
-     * Decodes the Base64-encoded bytes and returns their value as a byte string.
-     * Returns null if {@code base64} is not a Base64-encoded sequence of bytes.
-     */
     public static ByteString decodeBase64(String base64) {
         if (base64 == null) throw new IllegalArgumentException("base64 == null");
         byte[] decoded = Base64.decode(base64);
         return decoded != null ? new ByteString(decoded) : null;
     }
 
-    /**
-     * Decodes the hex-encoded bytes and returns their value a byte string.
-     */
     public static ByteString decodeHex(String hex) {
         if (hex == null) throw new IllegalArgumentException("hex == null");
         if (hex.length() % 2 != 0) throw new IllegalArgumentException("Unexpected hex string: " + hex);
@@ -155,12 +121,6 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         throw new IllegalArgumentException("Unexpected hex digit: " + c);
     }
 
-    /**
-     * Reads {@code count} bytes from {@code in} and returns the result.
-     *
-     * @throws EOFException if {@code in} has fewer than {@code count}
-     *                      bytes to read.
-     */
     public static ByteString read(InputStream in, int byteCount) throws IOException {
         if (in == null) throw new IllegalArgumentException("in == null");
         if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
@@ -188,56 +148,33 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         return s.length();
     }
 
-    /**
-     * Constructs a new {@code String} by decoding the bytes as {@code UTF-8}.
-     */
     public String utf8() {
         String result = utf8;
         // We don't care if we double-allocate in racy code.
         return result != null ? result : (utf8 = new String(data, org.aoju.bus.core.consts.Charset.UTF_8));
     }
 
-    /**
-     * Constructs a new {@code String} by decoding the bytes using {@code charset}.
-     */
     public String string(Charset charset) {
         if (charset == null) throw new IllegalArgumentException("charset == null");
         return new String(data, charset);
     }
 
-    /**
-     * Returns this byte string encoded as <a
-     * href="http://www.ietf.org/rfc/rfc2045.txt">Base64</a>. In violation of the
-     * RFC, the returned string does not wrap lines at 76 columns.
-     */
     public String base64() {
         return Base64.encode(data);
     }
 
-    /**
-     * Returns the 128-bit MD5 hash of this byte string.
-     */
     public ByteString md5() {
         return digest("MD5");
     }
 
-    /**
-     * Returns the 160-bit SHA-1 hash of this byte string.
-     */
     public ByteString sha1() {
         return digest("SHA-1");
     }
 
-    /**
-     * Returns the 256-bit SHA-256 hash of this byte string.
-     */
     public ByteString sha256() {
         return digest("SHA-256");
     }
 
-    /**
-     * Returns the 512-bit SHA-512 hash of this byte string.
-     */
     public ByteString sha512() {
         return digest("SHA-512");
     }
@@ -250,23 +187,14 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         }
     }
 
-    /**
-     * Returns the 160-bit SHA-1 HMAC of this byte string.
-     */
     public ByteString hmacSha1(ByteString key) {
         return hmac("HmacSHA1", key);
     }
 
-    /**
-     * Returns the 256-bit SHA-256 HMAC of this byte string.
-     */
     public ByteString hmacSha256(ByteString key) {
         return hmac("HmacSHA256", key);
     }
 
-    /**
-     * Returns the 512-bit SHA-512 HMAC of this byte string.
-     */
     public ByteString hmacSha512(ByteString key) {
         return hmac("HmacSHA512", key);
     }
@@ -283,17 +211,10 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         }
     }
 
-    /**
-     * Returns this byte string encoded as <a href="http://www.ietf.org/rfc/rfc4648.txt">URL-safe
-     * Base64</a>.
-     */
     public String base64Url() {
         return Base64.encodeUrlSafe(data);
     }
 
-    /**
-     * Returns this byte string encoded in hexadecimal.
-     */
     public String hex() {
         char[] result = new char[data.length * 2];
         int c = 0;
@@ -304,11 +225,6 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         return new String(result);
     }
 
-    /**
-     * Returns a byte string equal to this byte string, but with the bytes 'A'
-     * through 'Z' replaced with the corresponding byte in 'a' through 'z'.
-     * Returns this byte string if it contains no bytes in 'A' through 'Z'.
-     */
     public ByteString toAsciiLowercase() {
         // Search for an uppercase character. If we don't find first, return this.
         for (int i = 0; i < data.length; i++) {
@@ -329,11 +245,6 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         return this;
     }
 
-    /**
-     * Returns a byte string equal to this byte string, but with the bytes 'a'
-     * through 'z' replaced with the corresponding byte in 'A' through 'Z'.
-     * Returns this byte string if it contains no bytes in 'a' through 'z'.
-     */
     public ByteString toAsciiUppercase() {
         // Search for an lowercase character. If we don't find first, return this.
         for (int i = 0; i < data.length; i++) {
@@ -354,19 +265,10 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         return this;
     }
 
-    /**
-     * Returns a byte string that is a substring of this byte string, beginning at the specified
-     * index until the end of this string. Returns this byte string if {@code beginIndex} is 0.
-     */
     public ByteString substring(int beginIndex) {
         return substring(beginIndex, data.length);
     }
 
-    /**
-     * Returns a byte string that is a substring of this byte string, beginning at the specified
-     * {@code beginIndex} and ends at the specified {@code endIndex}. Returns this byte string if
-     * {@code beginIndex} is 0 and {@code endIndex} is the length of this byte string.
-     */
     public ByteString substring(int beginIndex, int endIndex) {
         if (beginIndex < 0) throw new IllegalArgumentException("beginIndex < 0");
         if (endIndex > data.length) {
@@ -385,70 +287,39 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         return new ByteString(copy);
     }
 
-    /**
-     * Returns the byte at {@code pos}.
-     */
     public byte getByte(int pos) {
         return data[pos];
     }
 
-    /**
-     * Returns the number of bytes in this ByteString.
-     */
     public int size() {
         return data.length;
     }
 
-    /**
-     * Returns a byte array containing a copy of the bytes in this {@code ByteString}.
-     */
     public byte[] toByteArray() {
         return data.clone();
     }
 
-    /**
-     * Returns the bytes of this string without a defensive copy. Do not mutate!
-     */
     byte[] internalArray() {
         return data;
     }
 
-    /**
-     * Returns a {@code ByteBuffer} view of the bytes in this {@code ByteString}.
-     */
     public ByteBuffer asByteBuffer() {
         return ByteBuffer.wrap(data).asReadOnlyBuffer();
     }
 
-    /**
-     * Writes the contents of this byte string to {@code out}.
-     */
     public void write(OutputStream out) throws IOException {
         if (out == null) throw new IllegalArgumentException("out == null");
         out.write(data);
     }
 
-    /**
-     * Writes the contents of this byte string to {@code buffer}.
-     */
     void write(Buffer buffer) {
         buffer.write(data, 0, data.length);
     }
 
-    /**
-     * Returns true if the bytes of this in {@code [offset..offset+byteCount)} equal the bytes of
-     * {@code other} in {@code [otherOffset..otherOffset+byteCount)}. Returns false if either range is
-     * out of bounds.
-     */
     public boolean rangeEquals(int offset, ByteString other, int otherOffset, int byteCount) {
         return other.rangeEquals(otherOffset, this.data, offset, byteCount);
     }
 
-    /**
-     * Returns true if the bytes of this in {@code [offset..offset+byteCount)} equal the bytes of
-     * {@code other} in {@code [otherOffset..otherOffset+byteCount)}. Returns false if either range is
-     * out of bounds.
-     */
     public boolean rangeEquals(int offset, byte[] other, int otherOffset, int byteCount) {
         return offset >= 0 && offset <= data.length - byteCount
                 && otherOffset >= 0 && otherOffset <= other.length - byteCount
@@ -543,10 +414,6 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         return sizeA < sizeB ? -1 : 1;
     }
 
-    /**
-     * Returns a human-readable string that describes the contents of this byte string. Typically this
-     * is a string like {@code [text=Hello]} or {@code [hex=0000ffff]}.
-     */
     @Override
     public String toString() {
         if (data.length == 0) {

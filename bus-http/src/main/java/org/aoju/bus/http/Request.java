@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.Internal;
@@ -36,9 +36,8 @@ import java.util.Map;
  * An HTTP request. Instances of this class are immutable if their {@link #body} is null or itself
  * immutable.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Request {
@@ -83,22 +82,10 @@ public final class Request {
         return body;
     }
 
-    /**
-     * Returns the tag attached with {@code Object.class} as a key, or null if no tag is attached with
-     * that key.
-     *
-     * <p>Prior to HttpClient 3.11, this method never returned null if no tag was attached. Instead it
-     * returned either this request, or the request upon which this request was derived with {@link
-     * #newBuilder()}.
-     */
     public Object tag() {
         return tag(Object.class);
     }
 
-    /**
-     * Returns the tag attached with {@code type} as a key, or null if no tag is attached with that
-     * key.
-     */
     public <T> T tag(Class<? extends T> type) {
         return type.cast(tags.get(type));
     }
@@ -107,10 +94,6 @@ public final class Request {
         return new Builder(this);
     }
 
-    /**
-     * Returns the cache control directives for this response. This is never null, even if this
-     * response contains no {@code Cache-Control} header.
-     */
     public CacheControl cacheControl() {
         CacheControl result = cacheControl;
         return result != null ? result : (cacheControl = CacheControl.parse(headers));
@@ -137,9 +120,6 @@ public final class Request {
         Headers.Builder headers;
         RequestBody body;
 
-        /**
-         * A mutable map of tags, or an immutable empty map if we don't have any.
-         */
         Map<Class<?>, Object> tags = Collections.emptyMap();
 
         public Builder() {
@@ -163,12 +143,6 @@ public final class Request {
             return this;
         }
 
-        /**
-         * Sets the URL target of this request.
-         *
-         * @throws IllegalArgumentException if {@code url} is not a valid HTTP or HTTPS URL. Avoid this
-         *                                  exception by calling {@link HttpUrl#parse}; it returns null for invalid URLs.
-         */
         public Builder url(String url) {
             if (url == null) throw new NullPointerException("url == null");
 
@@ -182,59 +156,31 @@ public final class Request {
             return url(HttpUrl.get(url));
         }
 
-        /**
-         * Sets the URL target of this request.
-         *
-         * @throws IllegalArgumentException if the scheme of {@code url} is not {@code http} or {@code
-         *                                  https}.
-         */
         public Builder url(URL url) {
             if (url == null) throw new NullPointerException("url == null");
             return url(HttpUrl.get(url.toString()));
         }
 
-        /**
-         * Sets the header named {@code name} to {@code value}. If this request already has any headers
-         * with that name, they are all replaced.
-         */
         public Builder header(String name, String value) {
             headers.set(name, value);
             return this;
         }
 
-        /**
-         * Adds a header with {@code name} and {@code value}. Prefer this method for multiply-valued
-         * headers like "Cookie".
-         *
-         * <p>Note that for some headers including {@code Content-Length} and {@code Content-Encoding},
-         * HttpClient may replace {@code value} with a header derived from the request body.
-         */
         public Builder addHeader(String name, String value) {
             headers.add(name, value);
             return this;
         }
 
-        /**
-         * Removes all headers named {@code name} on this builder.
-         */
         public Builder removeHeader(String name) {
             headers.removeAll(name);
             return this;
         }
 
-        /**
-         * Removes all headers on this builder and adds {@code headers}.
-         */
         public Builder headers(Headers headers) {
             this.headers = headers.newBuilder();
             return this;
         }
 
-        /**
-         * Sets this request's {@code Cache-Control} header, replacing any cache control headers already
-         * present. If {@code cacheControl} doesn't define any directives, this clears this request's
-         * cache-control headers.
-         */
         public Builder cacheControl(CacheControl cacheControl) {
             String value = cacheControl.toString();
             if (value.isEmpty()) return removeHeader("Cache-Control");
@@ -283,21 +229,10 @@ public final class Request {
             return this;
         }
 
-        /**
-         * Attaches {@code tag} to the request using {@code Object.class} as a key.
-         */
         public Builder tag(Object tag) {
             return tag(Object.class, tag);
         }
 
-        /**
-         * Attaches {@code tag} to the request using {@code type} as a key. Tags can be read from a
-         * request using {@link Request#tag}. Use null to remove any existing tag assigned for {@code
-         * type}.
-         *
-         * <p>Use this API to attach timing, debugging, or other application data to a request so that
-         * you may read it in interceptors, event listeners, or callbacks.
-         */
         public <T> Builder tag(Class<? super T> type, T tag) {
             if (type == null) throw new NullPointerException("type == null");
 
@@ -316,4 +251,5 @@ public final class Request {
             return new Request(this);
         }
     }
+
 }

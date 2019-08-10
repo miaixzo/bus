@@ -20,10 +20,9 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.parser;
 
-import org.aoju.bus.pager.PageException;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -32,6 +31,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.aoju.bus.pager.PageException;
 
 import java.util.*;
 
@@ -48,12 +48,12 @@ import java.util.*;
  * </ol>
  * 该类设计为一个独立的工具类，依赖jsqlparser,可以独立使用
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SqlServerParser {
+
     //开始行号
     public static final String START_ROW = String.valueOf(Long.MIN_VALUE);
     //结束行号
@@ -83,8 +83,8 @@ public class SqlServerParser {
     /**
      * 转换为分页语句
      *
-     * @param sql
-     * @return
+     * @param sql sql
+     * @return the string
      */
     public String convertToPageSql(String sql) {
         return convertToPageSql(sql, null, null);
@@ -93,10 +93,10 @@ public class SqlServerParser {
     /**
      * 转换为分页语句
      *
-     * @param sql
-     * @param offset
-     * @param limit
-     * @return
+     * @param sql    sql
+     * @param offset 开始位置
+     * @param limit  结束位置
+     * @return the string
      */
     public String convertToPageSql(String sql, Integer offset, Integer limit) {
         //解析SQL
@@ -125,8 +125,8 @@ public class SqlServerParser {
     /**
      * 获取一个外层包装的TOP查询
      *
-     * @param select
-     * @return
+     * @param select Select
+     * @return the select
      */
     protected Select getPageSelect(Select select) {
         SelectBody selectBody = select.getSelectBody();
@@ -194,8 +194,8 @@ public class SqlServerParser {
     /**
      * 包装SetOperationList
      *
-     * @param setOperationList
-     * @return
+     * @param setOperationList SetOperationList
+     * @return the selectBody
      */
     protected SelectBody wrapSetOperationList(SetOperationList setOperationList) {
         //获取最后一个plainSelect
@@ -224,8 +224,8 @@ public class SqlServerParser {
     /**
      * 获取查询列
      *
-     * @param plainSelect
-     * @return
+     * @param plainSelect PlainSelect
+     * @return 结果
      */
     protected List<SelectItem> getSelectItems(PlainSelect plainSelect) {
         //设置selectItems
@@ -298,7 +298,8 @@ public class SqlServerParser {
     /**
      * 处理selectBody去除Order by
      *
-     * @param selectBody
+     * @param selectBody 获取body
+     * @param level      int
      */
     protected void processSelectBody(SelectBody selectBody, int level) {
         if (selectBody instanceof PlainSelect) {
@@ -322,7 +323,8 @@ public class SqlServerParser {
     /**
      * 处理PlainSelect类型的selectBody
      *
-     * @param plainSelect
+     * @param plainSelect 获取body
+     * @param level       int
      */
     protected void processPlainSelect(PlainSelect plainSelect, int level) {
         if (level > 1) {
@@ -348,7 +350,8 @@ public class SqlServerParser {
     /**
      * 处理子查询
      *
-     * @param fromItem
+     * @param fromItem FromItem
+     * @param level    int
      */
     protected void processFromItem(FromItem fromItem, int level) {
         if (fromItem instanceof SubJoin) {
@@ -382,12 +385,6 @@ public class SqlServerParser {
         //Table时不用处理
     }
 
-    /**
-     * List不空
-     *
-     * @param list
-     * @return
-     */
     public boolean isNotEmptyList(List<?> list) {
         if (list == null || list.size() == 0) {
             return false;

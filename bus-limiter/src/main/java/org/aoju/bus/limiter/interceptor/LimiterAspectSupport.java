@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.limiter.interceptor;
 
 import org.aoju.bus.core.utils.CollUtils;
@@ -47,9 +47,8 @@ import java.util.Collection;
  * 实际的advisor
  * 使用beanfactory的一些基础设施
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class LimiterAspectSupport implements BeanFactoryAware, InitializingBean, SmartInitializingSingleton {
@@ -63,12 +62,14 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
     private LimitedResourceMetadataCache limitedResourceMetadataCache;
 
     /**
-     * @param invocation
-     * @param target
-     * @param method
-     * @param args
-     * @return
-     * @throws Throwable
+     * 执行
+     *
+     * @param invocation 反射
+     * @param target     目标
+     * @param method     方法
+     * @param args       参数
+     * @return the object
+     * @throws Throwable 异常
      */
     protected Object execute(final MethodInvocation invocation, Object target, Method method, Object[] args) throws Throwable {
 
@@ -155,4 +156,5 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
     public void afterPropertiesSet() throws Exception {
 
     }
+
 }

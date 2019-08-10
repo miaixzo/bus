@@ -20,14 +20,16 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.file;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * 文件追加器<br>
@@ -35,12 +37,11 @@ import java.util.List;
  * 此类只有在写入文件时打开文件，并在写入结束后关闭之。因此此类不需要关闭<br>
  * 在调用append方法后会缓存于内存，只有超过容量后才会一次性写入文件，因此内存中随时有剩余未写入文件的内容，在最后必须调用flush方法将剩余内容刷入文件
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
-public class FileAppender {
+public class FileAppender implements Serializable {
 
     private FileWriter writer;
     /**

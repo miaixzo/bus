@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.watch.watchers;
 
 import org.aoju.bus.core.io.watch.Watcher;
@@ -36,9 +36,8 @@ import java.util.List;
  * 观察者链<br>
  * 用于加入多个观察者
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {

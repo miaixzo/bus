@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.socket.aio;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -30,9 +30,8 @@ import java.nio.channels.CompletionHandler;
 /**
  * 数据读取完成回调，调用Session中相应方法处理消息，单例使用
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ReadHandler implements CompletionHandler<Integer, AioSession> {

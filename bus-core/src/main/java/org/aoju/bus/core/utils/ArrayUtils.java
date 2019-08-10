@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 
@@ -39,9 +39,8 @@ import java.util.*;
 /**
  * 数组工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ArrayUtils {
@@ -142,7 +141,8 @@ public class ArrayUtils {
     /**
      * 数组或集合转String
      *
-     * @param array 集合或数组对象
+     * @param array        集合或数组对象
+     * @param stringIfNull 是否null
      * @return 数组字符串，与集合转字符串格式相同
      */
     public static String toString(final Object array, final String stringIfNull) {
@@ -156,8 +156,8 @@ public class ArrayUtils {
      * 获得一个数组哈希码，用于正确处理多维数组。
      * 多维基元数组也可以用该方法正确处理。
      *
-     * @param数组数组获取哈希码为，{@code null}返回零
-     * @返回数组的哈希码
+     * @param array 数组
+     * @return 返回数组的哈希码
      */
     public static int hashCode(final Object array) {
         return new HashCodeBuilder().append(array).toHashCode();
@@ -165,7 +165,7 @@ public class ArrayUtils {
 
     /**
      * 将给定数组转换为{@link Map}
-     * 数组的每个元素必须是{@link Map。或数组，其中至少包含两个
+     * 数组的每个元素必须是{@link Map}。或数组，其中至少包含两个
      * 元素，其中第一个元素用作键，第二个元素用作值。
      * <pre>
      * Map colorMap = ArrayUtils.toMap(new String[][] {
@@ -174,9 +174,8 @@ public class ArrayUtils {
      *     {"BLUE", "#0000FF"}});
      * </pre>
      *
-     * @return a {@code Map}
-     * @throws IllegalArgumentException 如果数组中包含其他元素，则抛出IllegalArgumentException
-     * @@param array {@link Map.Entry}
+     * @param array 数组
+     * @return {@link Map}
      */
     public static Map<Object, Object> toMap(final Object[] array) {
         if (array == null) {
@@ -212,12 +211,13 @@ public class ArrayUtils {
      * 注意，此方法只适用于提供相同类型的参数，以便
      * 编译器可以推断数组本身的类型。虽然可以选择
      * 显式输入like in
-     * <code>Number[] array = ArrayUtils. < Number > toArray(Integer.valueOf(42)， Double.valueOf(Math.PI))</code>，
+     * <code>Number[] array = ArrayUtils.toArray(Integer.valueOf(42),Double.valueOf(Math.PI))</code>
      * 与……相比没有什么真正的优势
-     * <code>new Number[]{整数. valueof (42)， Double.valueOf(Math.PI)}</code>。
+     * <code>new Number[]{整数.valueof(42),Double.valueOf(Math.PI)}</code>。
      *
+     * @param <T>   对象
      * @param items 数组
-     * @返回数组，除非传入一个空数组，否则不为空
+     * @return 返回数组，除非传入一个空数组，否则不为空
      */
     public static <T> T[] toArray(final T... items) {
         return items;
@@ -226,6 +226,7 @@ public class ArrayUtils {
     /**
      * 克隆数组
      *
+     * @param <T>   对象
      * @param array 被克隆的数组
      * @return 新数组
      */
@@ -237,13 +238,12 @@ public class ArrayUtils {
     }
 
     /**
-     * 克隆数组，如果非数组返回<criteria>null</criteria>
+     * 克隆数组，如果非数组返回null
      *
      * @param <T> 数组元素类型
      * @param obj 数组对象
      * @return 克隆后的数组对象
      */
-
     public static <T> T clone(T obj) {
         if (null == obj) {
             return null;
@@ -643,6 +643,7 @@ public class ArrayUtils {
      * 生成一个新的数组，其中包含元素开始索引取值至结束位置索引。
      * 开始索引包含，结束索引不包含,空数组输入产生空输出。
      *
+     * @param <T>        对象
      * @param array      对象数组
      * @param startIndex 开始索引
      * @param endIndex   结束索引
@@ -1043,7 +1044,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final Object[] array) {
         if (array == null) {
@@ -1056,7 +1056,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final long[] array) {
         if (array == null) {
@@ -1069,7 +1068,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final int[] array) {
         if (array == null) {
@@ -1082,7 +1080,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final short[] array) {
         if (array == null) {
@@ -1095,7 +1092,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final char[] array) {
         if (array == null) {
@@ -1108,7 +1104,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final byte[] array) {
         if (array == null) {
@@ -1121,7 +1116,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final double[] array) {
         if (array == null) {
@@ -1134,7 +1128,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final float[] array) {
         if (array == null) {
@@ -1147,7 +1140,6 @@ public class ArrayUtils {
      * 反转数组，会变更原数组
      *
      * @param array 数组，会变更
-     * @return 变更后的原数组
      */
     public static void reverse(final boolean[] array) {
         if (array == null) {
@@ -1160,7 +1152,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final boolean[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1184,7 +1175,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final byte[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1208,7 +1198,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final char[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1232,7 +1221,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final double[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1256,7 +1244,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final float[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1280,7 +1267,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final int[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1304,7 +1290,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final long[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1328,7 +1313,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final Object[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1352,7 +1336,6 @@ public class ArrayUtils {
      * @param array      数组，会变更
      * @param startIndex 其实位置（包含）
      * @param endIndex   结束位置（不包含）
-     * @return 变更后的原数组
      */
     public static void reverse(final short[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1377,15 +1360,14 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap(["1", "2", "3"], 0, 2) -&gt; ["3", "2", "1"]</li>
-     * <li>ArrayUtils.swap(["1", "2", "3"], 0, 0) -&gt; ["1", "2", "3"]</li>
-     * <li>ArrayUtils.swap(["1", "2", "3"], 1, 0) -&gt; ["2", "1", "3"]</li>
-     * <li>ArrayUtils.swap(["1", "2", "3"], 0, 5) -&gt; ["1", "2", "3"]</li>
-     * <li>ArrayUtils.swap(["1", "2", "3"], -1, 1) -&gt; ["2", "1", "3"]</li>
-     * </ul>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap(["1", "2", "3"], 0, 2) -&gt; ["3", "2", "1"]</li>
+     *                <li>ArrayUtils.swap(["1", "2", "3"], 0, 0) -&gt; ["1", "2", "3"]</li>
+     *                <li>ArrayUtils.swap(["1", "2", "3"], 1, 0) -&gt; ["2", "1", "3"]</li>
+     *                <li>ArrayUtils.swap(["1", "2", "3"], 0, 5) -&gt; ["1", "2", "3"]</li>
+     *                <li>ArrayUtils.swap(["1", "2", "3"], -1, 1) -&gt; ["2", "1", "3"]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final Object[] array, final int offset1, final int offset2) {
@@ -1401,15 +1383,14 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([true, false, true], 0, 2) -&gt; [true, false, true]</li>
-     * <li>ArrayUtils.swap([true, false, true], 0, 0) -&gt; [true, false, true]</li>
-     * <li>ArrayUtils.swap([true, false, true], 1, 0) -&gt; [false, true, true]</li>
-     * <li>ArrayUtils.swap([true, false, true], 0, 5) -&gt; [true, false, true]</li>
-     * <li>ArrayUtils.swap([true, false, true], -1, 1) -&gt; [false, true, true]</li>
-     * </ul>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([true, false, true], 0, 2) -&gt; [true, false, true]</li>
+     *                <li>ArrayUtils.swap([true, false, true], 0, 0) -&gt; [true, false, true]</li>
+     *                <li>ArrayUtils.swap([true, false, true], 1, 0) -&gt; [false, true, true]</li>
+     *                <li>ArrayUtils.swap([true, false, true], 0, 5) -&gt; [true, false, true]</li>
+     *                <li>ArrayUtils.swap([true, false, true], -1, 1) -&gt; [false, true, true]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final long[] array, final int offset1, final int offset2) {
@@ -1425,15 +1406,15 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final int[] array, final int offset1, final int offset2) {
@@ -1449,15 +1430,15 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final short[] array, final int offset1, final int offset2) {
@@ -1473,15 +1454,15 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final char[] array, final int offset1, final int offset2) {
@@ -1497,15 +1478,15 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final byte[] array, final int offset1, final int offset2) {
@@ -1521,15 +1502,15 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final double[] array, final int offset1, final int offset2) {
@@ -1545,15 +1526,15 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final float[] array, final int offset1, final int offset2) {
@@ -1569,15 +1550,15 @@ public class ArrayUtils {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     * <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final boolean[] array, final int offset1, final int offset2) {
@@ -1594,15 +1575,15 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([true, false, true, false], 0, 2, 1) -&gt; [true, false, true, false]</li>
-     * <li>ArrayUtils.swap([true, false, true, false], 0, 0, 1) -&gt; [true, false, true, false]</li>
-     * <li>ArrayUtils.swap([true, false, true, false], 0, 2, 2) -&gt; [true, false, true, false]</li>
-     * <li>ArrayUtils.swap([true, false, true, false], -3, 2, 2) -&gt; [true, false, true, false]</li>
-     * <li>ArrayUtils.swap([true, false, true, false], 0, 3, 3) -&gt; [false, false, true, true]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([true, false, true, false], 0, 2, 1) -&gt; [true, false, true, false]</li>
+     *                <li>ArrayUtils.swap([true, false, true, false], 0, 0, 1) -&gt; [true, false, true, false]</li>
+     *                <li>ArrayUtils.swap([true, false, true, false], 0, 2, 2) -&gt; [true, false, true, false]</li>
+     *                <li>ArrayUtils.swap([true, false, true, false], -3, 2, 2) -&gt; [true, false, true, false]</li>
+     *                <li>ArrayUtils.swap([true, false, true, false], 0, 3, 3) -&gt; [false, false, true, true]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final boolean[] array, int offset1, int offset2, int len) {
@@ -1630,15 +1611,15 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final byte[] array, int offset1, int offset2, int len) {
@@ -1666,15 +1647,15 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final char[] array, int offset1, int offset2, int len) {
@@ -1702,15 +1683,15 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final double[] array, int offset1, int offset2, int len) {
@@ -1738,15 +1719,15 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final float[] array, int offset1, int offset2, int len) {
@@ -1775,15 +1756,15 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
+     *                </ul>
      */
     public static void swap(final int[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1810,15 +1791,15 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
+     *                </ul>
      */
     public static void swap(final long[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1845,15 +1826,15 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap(["1", "2", "3", "4"], 0, 2, 1) -&gt; ["3", "2", "1", "4"]</li>
-     * <li>ArrayUtils.swap(["1", "2", "3", "4"], 0, 0, 1) -&gt; ["1", "2", "3", "4"]</li>
-     * <li>ArrayUtils.swap(["1", "2", "3", "4"], 2, 0, 2) -&gt; ["3", "4", "1", "2"]</li>
-     * <li>ArrayUtils.swap(["1", "2", "3", "4"], -3, 2, 2) -&gt; ["3", "4", "1", "2"]</li>
-     * <li>ArrayUtils.swap(["1", "2", "3", "4"], 0, 3, 3) -&gt; ["4", "2", "3", "1"]</li>
-     * </ul>
+     *                <p>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap(["1", "2", "3", "4"], 0, 2, 1) -&gt; ["3", "2", "1", "4"]</li>
+     *                <li>ArrayUtils.swap(["1", "2", "3", "4"], 0, 0, 1) -&gt; ["1", "2", "3", "4"]</li>
+     *                <li>ArrayUtils.swap(["1", "2", "3", "4"], 2, 0, 2) -&gt; ["3", "4", "1", "2"]</li>
+     *                <li>ArrayUtils.swap(["1", "2", "3", "4"], -3, 2, 2) -&gt; ["3", "4", "1", "2"]</li>
+     *                <li>ArrayUtils.swap(["1", "2", "3", "4"], 0, 3, 3) -&gt; ["4", "2", "3", "1"]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final Object[] array, int offset1, int offset2, int len) {
@@ -1881,19 +1862,14 @@ public class ArrayUtils {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     * @param array   the array to swap, may be {@code null}
-     * @param offset1 the index of the first element in the series to swap
-     * @param offset2 the index of the second element in the series to swap
-     * @param len     the number of elements to swap starting with the given indices
-     * @return 交换后的数组，与传入数组为同一对象
-     * Examples:
-     * <ul>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     * <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     * </ul>
+     *                Examples:
+     *                <ul>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
+     *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
+     *                </ul>
      * @since 3.5
      */
     public static void swap(final short[] array, int offset1, int offset2, int len) {
@@ -2492,6 +2468,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2535,6 +2512,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2592,7 +2570,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2628,6 +2606,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2676,6 +2655,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2711,6 +2691,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2760,6 +2741,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2795,6 +2777,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2844,6 +2827,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2879,6 +2863,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2927,6 +2912,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -2962,6 +2948,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3008,8 +2995,9 @@ public class ArrayUtils {
     /**
      * 返回数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      *
-     * @param array 数组
-     * @param value 被检查的元素
+     * @param array     数组
+     * @param value     被检查的元素
+     * @param tolerance 容差
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3022,6 +3010,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3043,8 +3032,10 @@ public class ArrayUtils {
     /**
      * 返回数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      *
-     * @param array 数组
-     * @param value 被检查的元素
+     * @param array     数组
+     * @param value     被检查的元素
+     * @param index     索引
+     * @param tolerance 容差
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3080,8 +3071,9 @@ public class ArrayUtils {
     /**
      * 返回数组中指定元素所在最后的位置，未找到返回{@link #INDEX_NOT_FOUND}
      *
-     * @param array 数组
-     * @param value 被检查的元素
+     * @param array     数组
+     * @param value     被检查的元素
+     * @param tolerance 容差
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3094,6 +3086,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3117,8 +3110,10 @@ public class ArrayUtils {
     /**
      * 返回数组中指定元素所在最后的位置，未找到返回{@link #INDEX_NOT_FOUND}
      *
-     * @param array 数组
-     * @param value 被检查的元素
+     * @param array     数组
+     * @param value     被检查的元素
+     * @param index     索引
+     * @param tolerance 容差
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3155,8 +3150,9 @@ public class ArrayUtils {
     /**
      * 返回数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      *
-     * @param array 数组
-     * @param value 被检查的元素
+     * @param array     数组
+     * @param value     被检查的元素
+     * @param tolerance 容差
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3181,6 +3177,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3216,6 +3213,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3264,6 +3262,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3299,6 +3298,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param value 被检查的元素
+     * @param index 索引
      * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
      * @since 3.0.7
      */
@@ -3403,7 +3403,6 @@ public class ArrayUtils {
      *
      * @param array a {@code Long} array, may be {@code null}
      * @return a {@code long} array, {@code null} if null array input
-     * @throws NullPointerException if array content is {@code null}
      */
     public static long[] toPrimitive(final Long[] array) {
         if (array == null) {
@@ -4008,6 +4007,7 @@ public class ArrayUtils {
      * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回true<br>
      * 如果此对象为数组对象，数组长度大于0情况下返回true，否则返回false
      *
+     * @param <T>   对象
      * @param array 数组
      * @return 是否为非空
      */
@@ -7739,7 +7739,7 @@ public class ArrayUtils {
      *
      * @param <T>   数组元素类型
      * @param array 被检查的数组
-     * @return 是否包含{@criteria null}元素
+     * @return 是否包含null元素
      * @since 3.0.7
      */
 

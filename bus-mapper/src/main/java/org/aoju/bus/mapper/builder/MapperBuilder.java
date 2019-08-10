@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.mapper.MapperException;
@@ -42,12 +42,12 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 处理主要逻辑，最关键的一个类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MapperBuilder {
+
     /**
      * 缓存skip结果
      */
@@ -79,11 +79,6 @@ public class MapperBuilder {
     public MapperBuilder() {
     }
 
-    /**
-     * 带配置的构造方法
-     *
-     * @param properties
-     */
     public MapperBuilder(Properties properties) {
         this();
         setProperties(properties);
@@ -92,9 +87,8 @@ public class MapperBuilder {
     /**
      * 通过通用Mapper接口获取对应的MapperTemplate
      *
-     * @param mapperClass
-     * @return
-     * @throws Exception
+     * @param mapperClass 对象
+     * @return 结果
      */
     private MapperTemplate fromMapperClass(Class<?> mapperClass) {
         Method[] methods = mapperClass.getDeclaredMethods();
@@ -148,7 +142,7 @@ public class MapperBuilder {
     /**
      * 注册通用Mapper接口
      *
-     * @param mapperClass
+     * @param mapperClass 对象
      */
     public void registerMapper(Class<?> mapperClass) {
         if (!registerMapper.containsKey(mapperClass)) {
@@ -167,7 +161,7 @@ public class MapperBuilder {
     /**
      * 注册通用Mapper接口
      *
-     * @param mapperClass
+     * @param mapperClass 对象
      */
     public void registerMapper(String mapperClass) {
         try {
@@ -180,8 +174,8 @@ public class MapperBuilder {
     /**
      * 判断当前的接口方法是否需要进行拦截
      *
-     * @param msId
-     * @return
+     * @param msId 方法id
+     * @return the boolean
      */
     public boolean isMapperMethod(String msId) {
         if (msIdSkip.get(msId) != null) {
@@ -201,8 +195,8 @@ public class MapperBuilder {
     /**
      * 判断接口是否包含通用接口
      *
-     * @param mapperInterface
-     * @return
+     * @param mapperInterface 接口
+     * @return the boolean
      */
     public boolean isExtendCommonMapper(Class<?> mapperInterface) {
         for (Class<?> mapperClass : registerClass) {
@@ -226,7 +220,7 @@ public class MapperBuilder {
      * 配置完成后，执行下面的操作
      * <br>处理configuration中全部的MappedStatement
      *
-     * @param configuration
+     * @param configuration 配置
      */
     public void processConfiguration(Configuration configuration) {
         processConfiguration(configuration, null);
@@ -235,8 +229,8 @@ public class MapperBuilder {
     /**
      * 配置指定的接口
      *
-     * @param configuration
-     * @param mapperInterface
+     * @param configuration   配置
+     * @param mapperInterface 接口
      */
     public void processConfiguration(Configuration configuration, Class<?> mapperInterface) {
         String prefix;
@@ -260,7 +254,7 @@ public class MapperBuilder {
     /**
      * 获取通用Mapper配置
      *
-     * @return
+     * @return 配置信息
      */
     public Config getConfig() {
         return config;
@@ -269,7 +263,7 @@ public class MapperBuilder {
     /**
      * 设置通用Mapper配置
      *
-     * @param config
+     * @param config 配置信息
      */
     public void setConfig(Config config) {
         this.config = config;
@@ -283,7 +277,7 @@ public class MapperBuilder {
     /**
      * 配置属性
      *
-     * @param properties
+     * @param properties 属性
      */
     public void setProperties(Properties properties) {
         config.setProperties(properties);
@@ -303,10 +297,9 @@ public class MapperBuilder {
 
     /**
      * 重新设置SqlSource
-     * <p/>
      * 执行该方法前必须使用isMapperMethod判断，否则msIdCache会空
      *
-     * @param ms
+     * @param ms MappedStatement
      */
     public void setSqlSource(MappedStatement ms) {
         MapperTemplate mapperTemplate = msIdCache.get(ms.getId());

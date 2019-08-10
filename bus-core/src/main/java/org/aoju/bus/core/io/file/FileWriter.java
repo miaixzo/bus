@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.lang.Assert;
@@ -39,9 +39,8 @@ import java.util.Map.Entry;
 /**
  * 文件写入器
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class FileWriter extends FileWrapper {
@@ -49,7 +48,8 @@ public class FileWriter extends FileWrapper {
     /**
      * 构造
      *
-     * @param file 文件
+     * @param file    文件
+     * @param charset 编码
      */
     public FileWriter(File file, Charset charset) {
         super(file, charset);
@@ -59,7 +59,8 @@ public class FileWriter extends FileWrapper {
     /**
      * 构造
      *
-     * @param file 文件
+     * @param file    文件
+     * @param charset 编码
      */
     public FileWriter(File file, String charset) {
         this(file, CharsetUtils.charset(charset));
@@ -69,6 +70,7 @@ public class FileWriter extends FileWrapper {
      * 构造
      *
      * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param charset  编码
      */
     public FileWriter(String filePath, Charset charset) {
         this(FileUtils.file(filePath), charset);
@@ -107,7 +109,8 @@ public class FileWriter extends FileWrapper {
     /**
      * 创建 FileWriter
      *
-     * @param file 文件
+     * @param file    文件
+     * @param charset 编码
      * @return {@link FileWriter}
      */
     public static FileWriter create(File file, Charset charset) {

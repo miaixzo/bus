@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 
@@ -31,9 +31,8 @@ import java.util.*;
 /**
  * 枚举工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EnumUtils {
@@ -84,6 +83,7 @@ public class EnumUtils {
      * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序<br>
      * 结果中键为枚举名，值为枚举对象
      *
+     * @param <E>       对象
      * @param enumClass 枚举类
      * @return 枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序
      * @since 4.0.2

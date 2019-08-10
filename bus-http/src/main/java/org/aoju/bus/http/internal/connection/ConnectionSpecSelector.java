@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.connection;
 
 import org.aoju.bus.http.ConnectionSpec;
@@ -40,9 +40,8 @@ import java.util.List;
  * handshake / protocol problem the connection may be retried with different protocols. Instances
  * are stateful and should be created and used for a single connection attempt.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class ConnectionSpecSelector {

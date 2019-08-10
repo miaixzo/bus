@@ -35,9 +35,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @JsonPropertyOrder({
@@ -49,22 +48,6 @@ import java.util.List;
 })
 public abstract class AbstractSerializableParameter<T extends AbstractSerializableParameter<T>> extends AbstractParameter
         implements SerializableParameter {
-
-    protected String type;
-    protected String format;
-    protected String collectionFormat;
-    protected Property items;
-    protected Boolean exclusiveMaximum;
-    protected BigDecimal maximum;
-    protected Boolean exclusiveMinimum;
-    protected BigDecimal minimum;
-    protected String example;
-    private Integer maxItems;
-    private Integer minItems;
-    protected Boolean allowEmptyValue;
-
-    @JsonIgnore
-    protected List<String> _enum;
 
     /**
      * See http://json-schema.org/latest/json-schema-validation.html#anchor26
@@ -86,9 +69,22 @@ public abstract class AbstractSerializableParameter<T extends AbstractSerializab
      * See http://json-schema.org/latest/json-schema-validation.html#anchor14
      */
     public Number multipleOf;
-
+    protected String type;
+    protected String format;
+    protected String collectionFormat;
+    protected Property items;
+    protected Boolean exclusiveMaximum;
+    protected BigDecimal maximum;
+    protected Boolean exclusiveMinimum;
+    protected BigDecimal minimum;
+    protected String example;
+    protected Boolean allowEmptyValue;
+    @JsonIgnore
+    protected List<String> _enum;
     @JsonIgnore
     protected String defaultValue;
+    private Integer maxItems;
+    private Integer minItems;
 
     public T property(Property property) {
         this.setProperty(property);
@@ -446,6 +442,10 @@ public abstract class AbstractSerializableParameter<T extends AbstractSerializab
         return example;
     }
 
+    public void setExample(String example) {
+        this.example = example;
+    }
+
     @Override
     public Integer getMaxLength() {
         return maxLength;
@@ -499,10 +499,6 @@ public abstract class AbstractSerializableParameter<T extends AbstractSerializab
     @Override
     public Boolean isExclusiveMaximum() {
         return exclusiveMaximum;
-    }
-
-    public void setExample(String example) {
-        this.example = example;
     }
 
     @JsonIgnore

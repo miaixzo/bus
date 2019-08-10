@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.storage;
 
 import java.io.Closeable;
@@ -29,9 +29,8 @@ import java.util.Map;
 /**
  * 上传接口
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface StorageProvider extends Closeable {
@@ -41,8 +40,8 @@ public interface StorageProvider extends Closeable {
     /**
      * 文件上传
      *
-     * @param object
-     * @return
+     * @param object 对象
+     * @return the string
      */
     String upload(UploadObject object);
 
@@ -50,18 +49,33 @@ public interface StorageProvider extends Closeable {
      * 获取文件下载地址
      *
      * @param fileKey 文件（全路径或者fileKey）
-     * @return
+     * @return the string
      */
     String getUrl(String fileKey);
 
     /**
      * 删除图片
      *
-     * @return
+     * @param fileKey 文件key
+     * @return the boolean
      */
     boolean delete(String fileKey);
 
+    /**
+     * 删除图片
+     *
+     * @param fileKey      文件key
+     * @param localSaveDir 路径
+     * @return the string
+     */
     String downloadAndSaveAs(String fileKey, String localSaveDir);
 
+    /**
+     * 删除图片
+     *
+     * @param param token
+     * @return the object
+     */
     Map<String, Object> createUploadToken(UploadToken param);
+
 }

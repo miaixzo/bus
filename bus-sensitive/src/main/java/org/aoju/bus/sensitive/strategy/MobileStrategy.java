@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.utils.StringUtils;
@@ -31,9 +31,8 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 手机号脱敏处理类
  * 18233583070 脱敏后: 182****3030
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MobileStrategy implements StrategyProvider {

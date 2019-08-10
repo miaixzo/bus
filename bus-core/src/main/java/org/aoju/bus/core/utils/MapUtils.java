@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
@@ -38,9 +38,8 @@ import java.util.Map.Entry;
 /**
  * Map相关工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MapUtils {
@@ -127,6 +126,8 @@ public class MapUtils {
     /**
      * 新建TreeMap，Key有序的Map
      *
+     * @param <K>        Key类型
+     * @param <V>        Value类型
      * @param comparator Key比较器
      * @return TreeMap
      * @since 3.2.3
@@ -138,6 +139,8 @@ public class MapUtils {
     /**
      * 新建TreeMap，Key有序的Map
      *
+     * @param <K>        Key类型
+     * @param <V>        Value类型
      * @param map        Map
      * @param comparator Key比较器
      * @return TreeMap
@@ -387,6 +390,8 @@ public class MapUtils {
      * 将已知Map转换为key为驼峰风格的Map<br>
      * 如果KEY为非String类型，保留原值
      *
+     * @param <K> Key类型
+     * @param <V> Value类型
      * @param map 原Map
      * @return 驼峰风格Map
      * @since 3.3.1
@@ -398,7 +403,7 @@ public class MapUtils {
     /**
      * 将键值对转换为二维数组，第一维是key，第二纬是value
      *
-     * @param map Map<?, ?> map
+     * @param map Map
      * @return 数组
      * @since 4.1.9
      */
@@ -600,6 +605,8 @@ public class MapUtils {
     /**
      * 排序已有Map，Key有序的Map，使用默认Key排序方式（字母顺序）
      *
+     * @param <K> Key类型
+     * @param <V> Value类型
      * @param map Map
      * @return TreeMap
      * @see #newTreeMap(Map, Comparator)
@@ -612,6 +619,8 @@ public class MapUtils {
     /**
      * 排序已有Map，Key有序的Map
      *
+     * @param <K>        Key类型
+     * @param <V>        Value类型
      * @param map        Map
      * @param comparator Key比较器
      * @return TreeMap
@@ -821,6 +830,28 @@ public class MapUtils {
      */
     public static <T> T get(Map<?, ?> map, Object key, Class<T> type) {
         return null == map ? null : Convert.convert(type, map.get(key));
+    }
+
+    /**
+     * 重命名键
+     * 实现方式为一处然后重新put，当旧的key不存在直接返回
+     * 当新的key存在，抛出{@link IllegalArgumentException} 异常
+     *
+     * @param <K>    Key类型
+     * @param <V>    Value类型
+     * @param map    Map
+     * @param oldKey 原键
+     * @param newKey 新键
+     * @return map
+     */
+    public static <K, V> Map<K, V> renameKey(Map<K, V> map, K oldKey, K newKey) {
+        if (isNotEmpty(map) && map.containsKey(oldKey)) {
+            if (map.containsKey(newKey)) {
+                throw new IllegalArgumentException(StringUtils.format("The key '{}' exist !", newKey));
+            }
+            map.put(newKey, map.remove(oldKey));
+        }
+        return map;
     }
 
 }

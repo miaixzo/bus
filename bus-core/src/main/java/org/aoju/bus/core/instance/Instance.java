@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.instance;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
@@ -30,9 +30,8 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * 1. 使用此类的 class 必须有无参构造器
  * 2. 当前类出于测试阶段。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Instance {

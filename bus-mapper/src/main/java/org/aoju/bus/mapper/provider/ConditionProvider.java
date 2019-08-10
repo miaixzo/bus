@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -31,9 +31,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 /**
  * ConditionProvider实现类，基础方法实现类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class ConditionProvider extends MapperTemplate {
@@ -46,8 +45,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition查询总数
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectCountByCondition(MappedStatement ms) {
         return selectCountByWhere(ms);
@@ -56,8 +55,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition删除
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String deleteByCondition(MappedStatement ms) {
         return deleteByWhere(ms);
@@ -67,8 +66,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition查询
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectByCondition(MappedStatement ms) {
         return selectByWhere(ms);
@@ -77,8 +76,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition查询
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectByConditionAndRowBounds(MappedStatement ms) {
         return selectByWhere(ms);
@@ -87,8 +86,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition更新非null字段
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String updateByConditionSelective(MappedStatement ms) {
         return updateByWhereSelective(ms);
@@ -97,8 +96,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition更新
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String updateByCondition(MappedStatement ms) {
         return updateByWhere(ms);
@@ -108,8 +107,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition查询总数
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectCountByWhere(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -127,8 +126,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition删除
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String deleteByWhere(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -145,8 +144,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition查询
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectByWhere(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -169,8 +168,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition查询
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectByWhereAndRowBounds(MappedStatement ms) {
         return selectByWhere(ms);
@@ -179,8 +178,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition更新非null字段
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String updateByWhereSelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -197,8 +196,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition更新
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String updateByWhere(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
@@ -215,8 +214,8 @@ public class ConditionProvider extends MapperTemplate {
     /**
      * 根据Condition查询一个结果
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the string
      */
     public String selectOneByWhere(MappedStatement ms) {
         return selectByWhere(ms);

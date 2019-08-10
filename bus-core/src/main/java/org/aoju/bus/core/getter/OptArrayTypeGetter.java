@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.getter;
 
 import java.math.BigDecimal;
@@ -31,9 +31,8 @@ import java.math.BigInteger;
  * 提供一个统一的接口定义返回不同类型的值（基本类型）<br>
  * 如果值不存在或获取错误，返回默认值
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface OptArrayTypeGetter {

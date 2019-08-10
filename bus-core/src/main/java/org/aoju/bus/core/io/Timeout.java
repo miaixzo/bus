@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import java.io.IOException;
@@ -28,28 +28,17 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A policy on how much time to spend on a task before giving up. When a task
- * times out, it is left in an unspecified state and should be abandoned. For
- * example, if reading from a source times out, that source should be closed and
- * the read should be retried later. If writing to a sink times out, the same
- * rules apply: close the sink and retry later.
+ * 在放弃一项任务之前要花多少时间的策略。当一个任务
+ * 超时时，它处于未指定的状态，应该被放弃。
+ * 例如，如果从源读取超时，则应关闭该源并
+ * 稍后应重试读取。如果向接收器写入超时，也是一样
+ * 适用规则:关闭洗涤槽，稍后重试。
  *
  * <h3>Timeouts and Deadlines</h3>
  * This class offers two complementary controls to define a timeout policy.
  *
- * <p><strong>Timeouts</strong> specify the maximum time to wait for a single
- * operation to complete. Timeouts are typically used to detect problems like
- * network partitions. For example, if a remote peer doesn't return <i>any</i>
- * data for ten seconds, we may assume that the peer is unavailable.
- *
- * <p><strong>Deadlines</strong> specify the maximum time to spend on a job,
- * composed of first or more operations. Use deadlines to set an upper bound on
- * the time invested on a job. For example, a battery-conscious app may limit
- * how much time it spends pre-loading content.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Timeout {
@@ -86,10 +75,13 @@ public class Timeout {
     }
 
     /**
+     * @param timeout long
+     * @param unit    TimeUnit
+     * @return timeout
+     * <p>
      * Wait at most {@code timeout} time before aborting an operation. Using a
      * per-operation timeout means that as long as forward progress is being made,
      * no sequence of operations will fail.
-     *
      * <p>If {@code timeout == 0}, operations will run indefinitely. (Operating
      * system timeouts may still apply.)
      */
@@ -101,23 +93,23 @@ public class Timeout {
     }
 
     /**
-     * Returns the timeout in nanoseconds, or {@code 0} for no timeout.
+     * @return the timeout in nanoseconds, or {@code 0} for no timeout.
      */
     public long timeoutNanos() {
         return timeoutNanos;
     }
 
     /**
-     * Returns true if a deadline is enabled.
+     * @return hasDeadline true if a deadline is enabled.
      */
     public boolean hasDeadline() {
         return hasDeadline;
     }
 
     /**
+     * @return deadlineNanoTime
      * Returns the {@linkplain System#nanoTime() nano time} when the deadline will
      * be reached.
-     *
      * @throws IllegalStateException if no deadline is set.
      */
     public long deadlineNanoTime() {
@@ -126,6 +118,8 @@ public class Timeout {
     }
 
     /**
+     * @param deadlineNanoTime long
+     * @return timeout
      * Sets the {@linkplain System#nanoTime() nano time} when the deadline will be
      * reached. All operations must complete before this time. Use a deadline to
      * set a maximum bound on the time spent on a sequence of operations.
@@ -137,6 +131,9 @@ public class Timeout {
     }
 
     /**
+     * @param duration long
+     * @param unit     TimeUnit
+     * @return timeout
      * Set a deadline of now plus {@code duration} time.
      */
     public final Timeout deadline(long duration, TimeUnit unit) {
@@ -146,7 +143,7 @@ public class Timeout {
     }
 
     /**
-     * Clears the timeout. Operating system timeouts may still apply.
+     * @return this Clears the timeout. Operating system timeouts may still apply.
      */
     public Timeout clearTimeout() {
         this.timeoutNanos = 0;
@@ -154,7 +151,7 @@ public class Timeout {
     }
 
     /**
-     * Clears the deadline.
+     * @return this Clears the deadline.
      */
     public Timeout clearDeadline() {
         this.hasDeadline = false;
@@ -165,6 +162,8 @@ public class Timeout {
      * Throws an {@link InterruptedIOException} if the deadline has been reached or if the current
      * thread has been interrupted. This method doesn't detect timeouts; that should be implemented to
      * asynchronously abort an in-progress operation.
+     *
+     * @throws IOException 抛出异常
      */
     public void throwIfReached() throws IOException {
         if (Thread.interrupted()) {
@@ -178,9 +177,10 @@ public class Timeout {
     }
 
     /**
-     * Waits on {@code monitor} until it is notified. Throws {@link InterruptedIOException} if either
-     * the thread is interrupted or if this timeout elapses before {@code monitor} is notified. The
-     * caller must be synchronized on {@code monitor}.
+     * @param monitor Waits on {@code monitor} until it is notified. Throws {@link InterruptedIOException} if either
+     *                the thread is interrupted or if this timeout elapses before {@code monitor} is notified. The
+     *                caller must be synchronized on {@code monitor}.
+     * @throws InterruptedIOException 抛出异常
      */
     public final void waitUntilNotified(Object monitor) throws InterruptedIOException {
         try {
@@ -221,5 +221,5 @@ public class Timeout {
             throw new InterruptedIOException("interrupted");
         }
     }
-    
+
 }

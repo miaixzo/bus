@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.utils.FileUtils;
@@ -38,9 +38,8 @@ import java.nio.charset.StandardCharsets;
  * base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符，<br>
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示，长度比原来增加1/3。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Base64 {
@@ -165,7 +164,7 @@ public class Base64 {
     /**
      * 编码为Base64，非URL安全的
      *
-     * @param arr     被编码的数组
+     * @param in      被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
      * @return 编码后的bytes
      */
@@ -176,7 +175,7 @@ public class Base64 {
     /**
      * 编码为Base64，URL安全的
      *
-     * @param arr     被编码的数组
+     * @param in      被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
      * @return 编码后的bytes
      * @since 3.0.6
@@ -365,11 +364,11 @@ public class Base64 {
 
     /**
      * 编码为Base64<br>
-     * 如果isMultiLine为<internal>true</internal>，则每76个字符一个换行符，否则在一行显示
+     * 如果isMultiLine为 true，则每76个字符一个换行符，否则在一行显示
      *
      * @param arr         被编码的数组
      * @param isMultiLine 在76个char之后是CRLF还是EOF
-     * @param isUrlSafe   是否使用URL安全字符，一般为<internal>false</internal>
+     * @param isUrlSafe   是否使用URL安全字符，一般为false
      * @return 编码后的bytes
      */
     public static byte[] encode(byte[] arr, boolean isMultiLine, boolean isUrlSafe) {

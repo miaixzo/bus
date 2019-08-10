@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.storage.magic;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -40,9 +40,8 @@ import java.util.regex.Pattern;
 /**
  * This class represents a single match test
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MagicMatcher implements Cloneable {
@@ -50,24 +49,14 @@ public class MagicMatcher implements Cloneable {
     private List<MagicMatcher> subMatchers = new ArrayList<MagicMatcher>(0);
     private MagicMatch match = null;
 
-    /**
-     * constructor
-     */
     public MagicMatcher() {
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
     public MagicMatch getMatch() {
         return this.match;
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @param match DOCUMENT ME!
      */
     public void setMatch(MagicMatch match) {
@@ -240,7 +229,6 @@ public class MagicMatcher implements Cloneable {
      * @param data          the data that should be used to test the match
      * @param onlyMimeMatch DOCUMENT ME!
      * @return the deepest magic match object that matched
-     * @throws IOException DOCUMENT ME!
      */
     public MagicMatch test(byte[] data, boolean onlyMimeMatch) {
         int offset = match.getOffset();

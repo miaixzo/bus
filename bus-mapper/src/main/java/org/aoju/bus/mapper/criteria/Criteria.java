@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.criteria;
 
 import org.aoju.bus.mapper.MapperException;
@@ -32,6 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
+ */
 public class Criteria {
 
     protected List<Criterion> criteria;
@@ -220,8 +225,8 @@ public class Criteria {
     /**
      * 手写条件
      *
-     * @param condition 例如 "length(countryname)<5"
-     * @return
+     * @param condition 例如 "length(countryname)小于5"
+     * @return the Criteria
      */
     public Criteria andCondition(String condition) {
         addCriterion(condition);
@@ -233,7 +238,7 @@ public class Criteria {
      *
      * @param condition 例如 "length(countryname)="
      * @param value     例如 5
-     * @return
+     * @return the Criteria
      */
     public Criteria andCondition(String condition, Object value) {
         criteria.add(new Criterion(condition, value));
@@ -244,8 +249,7 @@ public class Criteria {
      * 将此对象的不为空的字段参数作为相等查询条件
      *
      * @param param 参数对象
-     * @author Bob {@link}0haizhu0@gmail.com
-     * @Date 2015年7月17日 下午12:48:08
+     * @return the Criteria
      */
     public Criteria andEqualTo(Object param) {
         MetaObject metaObject = SystemMetaObject.forObject(param);
@@ -267,6 +271,7 @@ public class Criteria {
      * 将此对象的所有字段参数作为相等查询条件，如果字段为 null，则为 is null
      *
      * @param param 参数对象
+     * @return the Criteria
      */
     public Criteria andAllEqualTo(Object param) {
         MetaObject metaObject = SystemMetaObject.forObject(param);
@@ -359,8 +364,8 @@ public class Criteria {
     /**
      * 手写条件
      *
-     * @param condition 例如 "length(countryname)<5"
-     * @return
+     * @param condition 例如 "length(countryname)小于5"
+     * @return the Criteria
      */
     public Criteria orCondition(String condition) {
         addOrCriterion(condition);
@@ -372,7 +377,7 @@ public class Criteria {
      *
      * @param condition 例如 "length(countryname)="
      * @param value     例如 5
-     * @return
+     * @return the Criteria
      */
     public Criteria orCondition(String condition, Object value) {
         criteria.add(new Criterion(condition, value, true));
@@ -383,6 +388,7 @@ public class Criteria {
      * 将此对象的不为空的字段参数作为相等查询条件
      *
      * @param param 参数对象
+     * @return the Criteria
      */
     public Criteria orEqualTo(Object param) {
         MetaObject metaObject = SystemMetaObject.forObject(param);
@@ -404,6 +410,7 @@ public class Criteria {
      * 将此对象的所有字段参数作为相等查询条件，如果字段为 null，则为 is null
      *
      * @param param 参数对象
+     * @return the Criteria
      */
     public Criteria orAllEqualTo(Object param) {
         MetaObject metaObject = SystemMetaObject.forObject(param);

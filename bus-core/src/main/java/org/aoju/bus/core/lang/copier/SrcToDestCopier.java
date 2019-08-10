@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.lang.copier;
 
 
@@ -32,9 +32,8 @@ import org.aoju.bus.core.lang.Filter;
  *
  * @param <T> 拷贝的对象
  * @param <C> 本类的类型。用于set方法返回本对象，方便流式编程
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implements Copier<T> {

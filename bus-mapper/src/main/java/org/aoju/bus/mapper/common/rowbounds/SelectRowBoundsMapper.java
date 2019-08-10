@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.common.rowbounds;
 
 import org.aoju.bus.mapper.provider.BaseSelectProvider;
@@ -32,9 +32,8 @@ import java.util.List;
 /**
  * 通用Mapper接口,查询
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface SelectRowBoundsMapper<T> {
@@ -42,9 +41,9 @@ public interface SelectRowBoundsMapper<T> {
     /**
      * 根据实体属性和RowBounds进行分页查询
      *
-     * @param record
-     * @param rowBounds
-     * @return
+     * @param record    对象
+     * @param rowBounds RowBounds信息
+     * @return 结果集
      */
     @SelectProvider(type = BaseSelectProvider.class, method = "dynamicSQL")
     List<T> selectByRowBounds(T record, RowBounds rowBounds);

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Charset;
@@ -30,9 +30,8 @@ import java.io.*;
 import java.net.URL;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class StreamUtils {
@@ -40,18 +39,24 @@ public class StreamUtils {
     private static final int COPY_BUFFER_SIZE = 2048;
 
     private static final int BUF_SIZE = 8192;
+    private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
 
     /**
      * 判断两个输入流是否严格相等
+     *
+     * @param ina 输入流
+     * @param inb 输入流
+     * @return the boolean
+     * @throws IOException 异常
      */
-    public static boolean equals(InputStream sA, InputStream sB) throws IOException {
+    public static boolean equals(InputStream ina, InputStream inb) throws IOException {
         int dA;
-        while ((dA = sA.read()) != -1) {
-            int dB = sB.read();
+        while ((dA = ina.read()) != -1) {
+            int dB = inb.read();
             if (dA != dB)
                 return false;
         }
-        return sB.read() == -1;
+        return inb.read() == -1;
     }
 
     /**
@@ -59,9 +64,9 @@ public class StreamUtils {
      * <p>
      * <b style=color:red>注意</b>，它并不会关闭输出流
      *
-     * @param writer
+     * @param writer 操作器
      * @param cs     文本
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static void write(Writer writer, CharSequence cs) throws IOException {
         if (null != cs && null != writer) {
@@ -96,7 +101,7 @@ public class StreamUtils {
      * @param ops 输出流
      * @param ins 输入流
      * @return 写入的字节数
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static long write(OutputStream ops, InputStream ins) throws IOException {
         return write(ops, ins, BUF_SIZE);
@@ -111,7 +116,7 @@ public class StreamUtils {
      * @param ins        输入流
      * @param bufferSize 缓冲块大小
      * @return 写入的字节数
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static long write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
         if (null == ops || null == ins)
@@ -163,7 +168,8 @@ public class StreamUtils {
      *
      * @param writer 输出流
      * @param reader 输入流
-     * @throws IOException
+     * @return the long
+     * @throws IOException 异常
      */
     public static long write(Writer writer, Reader reader) throws IOException {
         if (null == writer || null == reader)
@@ -188,6 +194,7 @@ public class StreamUtils {
      *
      * @param writer 输出流
      * @param reader 输入流
+     * @return the long
      */
     public static long writeAndClose(Writer writer, Reader reader) {
         try {
@@ -207,7 +214,7 @@ public class StreamUtils {
      *
      * @param ops   输出流
      * @param bytes 字节数组
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static void write(OutputStream ops, byte[] bytes) throws IOException {
         if (null == ops || null == bytes || bytes.length == 0)
@@ -240,7 +247,7 @@ public class StreamUtils {
      *
      * @param reader 文本输出流
      * @return 文本内容
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static StringBuilder read(Reader reader) throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -250,12 +257,9 @@ public class StreamUtils {
 
     /**
      * 从一个文本流中读取全部内容并返回
-     * <p>
-     * <b style=color:red>注意</b>，它会关闭输入流
      *
      * @param reader 文本输入流
      * @return 文本内容
-     * @throws IOException
      */
     public static String readAndClose(Reader reader) {
         try {
@@ -269,13 +273,11 @@ public class StreamUtils {
 
     /**
      * 从一个文本流中读取全部内容并写入缓冲
-     * <p>
-     * <b style=color:red>注意</b>，它并不会关闭输出流
      *
      * @param reader 文本输出流
      * @param sb     输出的文本缓冲
      * @return 读取的字符数量
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static int read(Reader reader, StringBuilder sb) throws IOException {
         char[] cbuf = new char[BUF_SIZE];
@@ -339,7 +341,7 @@ public class StreamUtils {
      *
      * @param ins 输入流，必须支持 available()
      * @return 一个字节数组
-     * @throws IOException
+     * @throws IOException 异常
      */
     public static byte[] readBytes(InputStream ins) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -352,10 +354,9 @@ public class StreamUtils {
      *
      * @param ins 输入流，必须支持 available()
      * @return 一个字节数组
-     * @throws IOException
      */
     public static byte[] readBytesAndClose(InputStream ins) {
-        byte[] bytes = null;
+        byte[] bytes;
         try {
             bytes = readBytes(ins);
         } catch (IOException e) {
@@ -474,10 +475,11 @@ public class StreamUtils {
         return ClassLoader.getSystemResourceAsStream(path);
     }
 
-    private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
-
     /**
      * 判断并移除UTF-8的BOM头
+     *
+     * @param in 输入流
+     * @return 输入流
      */
     public static InputStream utf8filte(InputStream in) {
         try {

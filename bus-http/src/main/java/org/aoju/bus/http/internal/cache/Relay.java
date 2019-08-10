@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.cache;
 
 import org.aoju.bus.core.io.Buffer;
@@ -45,9 +45,8 @@ import java.io.RandomAccessFile;
  * <p>This class also keeps a small buffer of bytes recently read from upstream. This is intended to
  * save a small amount of file I/O and data copying.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 final class Relay {

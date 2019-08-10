@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.limiter;
 
 import org.aoju.bus.limiter.ErrorHandler;
@@ -28,9 +28,12 @@ import org.aoju.bus.limiter.LimitedFallbackResolver;
 import org.aoju.bus.limiter.execute.LimiterExecutionContext;
 import org.aoju.bus.logger.Logger;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+/**
+ * @author Kimi Liu
+ * @version 3.0.0
+ * @since JDK 1.8
+ */
 public class DefaultConfiguration {
 
     @Bean

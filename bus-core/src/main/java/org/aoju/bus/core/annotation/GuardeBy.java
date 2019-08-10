@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.annotation;
 
 import java.lang.annotation.*;
@@ -29,9 +29,8 @@ import java.lang.annotation.*;
  * 用来标识每个需要加锁的状态变量以及保护该变量的锁。
  * 有助于代码的维护与审查，以及一些自动化的分析工具找到潜在的安全性错误。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented

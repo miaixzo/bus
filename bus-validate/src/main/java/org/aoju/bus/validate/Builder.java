@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate;
 
 import org.aoju.bus.core.instance.Instances;
@@ -31,9 +31,8 @@ import java.lang.annotation.Annotation;
 /**
  * 当前框架内预定义的校验器名称
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Builder extends Validator {
@@ -73,11 +72,12 @@ public class Builder extends Validator {
 
     /**
      * 被校验对象
-     * <p>
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>    对象
      * @param object 原始对象
+     * @return the object
      */
     public static <T> T on(Object object) {
         return (T) Instances.singletion(Provider.class).on(object);
@@ -85,12 +85,13 @@ public class Builder extends Validator {
 
     /**
      * 被校验对象
-     * <p>
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>     对象
      * @param object  原始对象
      * @param context 上下文信息
+     * @return the object
      */
     public static <T> T on(Object object, Context context) {
         return (T) Instances.singletion(Provider.class).on(object, context);
@@ -102,8 +103,10 @@ public class Builder extends Validator {
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>         对象
      * @param object      原始对象
      * @param annotations 注解信息
+     * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations) {
         return (T) Instances.singletion(Provider.class).on(object, annotations);
@@ -115,9 +118,11 @@ public class Builder extends Validator {
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>         对象
      * @param object      原始对象
      * @param annotations 注解信息
      * @param context     上下文信息
+     * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context) {
         return (T) Instances.singletion(Provider.class).on(object, annotations, context);
@@ -129,10 +134,12 @@ public class Builder extends Validator {
      * 每次都创建一个新的对象，避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化。
      *
+     * @param <T>         对象
      * @param object      原始对象
      * @param annotations 注解信息
      * @param context     上下文信息
      * @param field       当前属性
+     * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context, String field) {
         return (T) Instances.singletion(Provider.class).on(object, annotations, context, field);

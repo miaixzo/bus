@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.io.IOException;
@@ -102,15 +102,12 @@ import java.io.IOException;
  * <p>Applications may configure httpClient with an authenticator for origin servers, or proxy servers,
  * or both.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Authenticator {
-    /**
-     * An authenticator that knows no credentials and makes no attempt to authenticate.
-     */
+
     Authenticator NONE = new Authenticator() {
         @Override
         public Request authenticate(Route route, Response response) {
@@ -118,13 +115,5 @@ public interface Authenticator {
         }
     };
 
-    /**
-     * Returns a request that includes a credential to satisfy an authentication challenge in {@code
-     * response}. Returns null if the challenge cannot be satisfied.
-     *
-     * <p>The route is best effort, it currently may not always be provided even when logically
-     * available. It may also not be provided when an authenticator is re-used manually in an
-     * application interceptor, such as when implementing client-specific retries.
-     */
     Request authenticate(Route route, Response response) throws IOException;
 }

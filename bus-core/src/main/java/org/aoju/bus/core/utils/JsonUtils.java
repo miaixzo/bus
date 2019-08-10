@@ -20,15 +20,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.JSONLibDataFormatSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -39,12 +39,11 @@ import java.util.Map;
 /**
  * fastjson工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
-public class JSONUtils {
+public class JsonUtils {
 
     private static final SerializeConfig config;
     private static final SerializerFeature[] features = {SerializerFeature.WriteMapNullValue, // 输出空置字段
@@ -73,14 +72,15 @@ public class JSONUtils {
         return JSON.parse(text);
     }
 
+    // 转换为数组
+    public static Object[] toArray(String text) {
+        return toArray(text, null);
+    }
+
     public static <T> T toBean(String text, Class<T> clazz) {
         return JSON.parseObject(text, clazz);
     }
 
-    // 转换为数组
-    public static <T> Object[] toArray(String text) {
-        return toArray(text, null);
-    }
 
     // 转换为数组
     public static <T> Object[] toArray(String text, Class<T> clazz) {
@@ -95,97 +95,76 @@ public class JSONUtils {
     /**
      * 将string转化为序列化的json字符串
      *
-     * @param text
-     * @return
+     * @param text 文本内容
+     * @return json对象
      */
     public static Object textToJson(String text) {
-        Object objectJson = JSON.parse(text);
-        return objectJson;
+        return JSON.parse(text);
     }
 
     /**
      * json字符串转化为map
      *
-     * @param s
-     * @return
+     * @param <K>  反射对象
+     * @param <V>  反射对象
+     * @param text 文本内容
+     * @return json map
      */
-    public static <K, V> Map<K, V> stringToCollect(String s) {
-        Map<K, V> m = (Map<K, V>) JSONObject.parseObject(s);
-        return m;
+    public static <K, V> Map<K, V> stringToCollect(String text) {
+        return (Map<K, V>) JSONObject.parseObject(text);
     }
 
     /**
      * 转换JSON字符串为对象
      *
-     * @param jsonData
-     * @param clazz
-     * @return
+     * @param text  文本内容
+     * @param clazz 对象
+     * @return 对象
      */
-    public static Object convertJsonToObject(String jsonData, Class<?> clazz) {
-        return JSONObject.parseObject(jsonData, clazz);
-    }
-
-    public static Object convertJSONToObject(String content, Class<?> clazz) {
-        return JSONObject.parseObject(content, clazz);
+    public static Object convertJsonToObject(String text, Class<?> clazz) {
+        return JSONObject.parseObject(text, clazz);
     }
 
     /**
      * 将map转化为string
      *
-     * @param m
-     * @return
+     * @param <K> 反射对象
+     * @param <V> 反射对象
+     * @param map 对象
+     * @return 对象
      */
-    public static <K, V> String collectToString(Map<K, V> m) {
-        return JSONObject.toJSONString(m);
-    }
-
-
-    /**
-     * JSON转换为普通对象
-     *
-     * @param st
-     * @param t
-     * @return
-     */
-    public static <T> T toObject(String st, Class<T> t) {
-        if (!st.equals("")) {
-            if (st.contains("{") || st.contains("[")) {
-                return JSON.parseObject(st, t);
-            } else {
-                // 转码
-                return JSON.parseObject(URLDecoder.decode(st), t);
-            }
-        }
-        return null;
+    public static <K, V> String collectToString(Map<K, V> map) {
+        return JSONObject.toJSONString(map);
     }
 
     /**
      * JSON转换为List
      *
-     * @param st
-     * @param t
-     * @return
+     * @param <T>   反射对象
+     * @param text  json字符串
+     * @param clazz 对象
+     * @return the list
      */
-    public static <T> List<T> convertJSONlist(String st, Class<T> t) {
-        List<T> list = new ArrayList<T>();
-        if (!st.equals("")) {
+    public static <T> List<T> convertJsonToList(String text, Class<T> clazz) {
+        List<T> list = new ArrayList<>();
+        if (!text.equals("")) {
 
-            if (st.contains("{") || st.contains("[")) {
-                st = st;
+            if (text.contains("{") || text.contains("[")) {
+                text = text;
             } else {
                 // 转码
                 try {
-                    st = URLDecoder.decode(st, "utf-8");
+                    text = URLDecoder.decode(text, "utf-8");
                 } catch (UnsupportedEncodingException e) {
                     throw new InstrumentException(e);
                 }
             }
-            JSON alljson = (JSON) JSON.parse(st);
+            JSON alljson = (JSON) JSON.parse(text);
             List<JSON> alljsonlist = JSON.toJavaObject(alljson, List.class);
             for (int i = 0; i < alljsonlist.size(); i++) {
                 JSON json = alljsonlist.get(i);
                 try {
-                    list.add(JSON.toJavaObject(json, (Class<T>) t.newInstance().getClass()));
+                    list.add(JSON.toJavaObject(json, (Class<T>) clazz.newInstance().getClass()));
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new InstrumentException(e);
                 }
@@ -197,27 +176,23 @@ public class JSONUtils {
     /**
      * object为可以转换为JSON对象的入参,例如:{'':''}字符串,以及其他普通对象,包含基本类型和封装类型,
      *
-     * @param object
-     * @return
+     * @param object 对象
+     * @return json字符
      */
     public static String toJson(Object object) {
-        String json = "";
         try {
-            json = JSON.toJSON(object).toString();
+            return JSON.toJSON(object).toString();
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
-        return json;
     }
 
     /**
      * object为可以转换为JSON对象的入参,例如:{
      * '':''}字符串,以及其他普通对象,不包含基本类型和封装类型[String除外但要符合JSON规则] 例如
      *
-     * @param object
-     * @return
-     * @author 汪旭辉
-     * @date 2016年5月6日
+     * @param object 对象
+     * @return json字符
      */
     public static JSON toJsonBean(Object object) {
         try {

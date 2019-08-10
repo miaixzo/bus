@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 
@@ -30,22 +30,13 @@ import java.io.IOException;
 import java.util.zip.Deflater;
 
 /**
- * A sink that uses <a href="http://tools.ietf.org/html/rfc1951">DEFLATE</a> to
- * compress data written to another source.
- *
  * <h3>Sync flush</h3>
- * Aggressive flushing of this stream may result in reduced compression. Each
- * call to {@link #flush} immediately compresses all currently-buffered data;
- * this early compression may be less effective than compression performed
- * without flushing.
+ * 这种流体的强冲刷可能导致压缩降低。每一个
+ * 调用{@link #flush}立即压缩所有当前缓存的数据;
+ * 这种早期压缩可能不如执行的压缩有效
  *
- * <p>This is equivalent to using {@link Deflater} with the sync flush option.
- * This class does not offer any partial flush mechanism. For best performance,
- * only call {@link #flush} when application behavior requires it.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class DeflaterSink implements Sink {

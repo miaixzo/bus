@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.bean;
 
 import org.aoju.bus.core.clone.Support;
@@ -38,9 +38,8 @@ import java.util.Map;
  * 动态Bean，通过反射对Bean的相关方法做操作<br>
  * 支持Map和普通Bean
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class DynaBean extends Support<DynaBean> implements Serializable {

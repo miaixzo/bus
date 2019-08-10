@@ -20,14 +20,14 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.swagger;
 
-import org.aoju.bus.core.key.ObjectID;
-import org.aoju.bus.core.utils.StringUtils;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -51,9 +51,8 @@ import java.util.List;
 /**
  * swagger配置项
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Component
@@ -112,7 +111,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     /**
      * 静态资源配置,必须为:/META-INF/resources
      *
-     * @param registry
+     * @param registry 注册
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

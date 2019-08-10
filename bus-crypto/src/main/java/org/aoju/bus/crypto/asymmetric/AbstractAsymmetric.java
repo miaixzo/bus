@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
@@ -36,9 +36,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extends BaseAsymmetric<T> {
@@ -276,6 +275,7 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * 编码为Base64字符串
      *
      * @param data    被加密的字符串
+     * @param charset 字符编码
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Base64字符串
      * @since 4.0.1

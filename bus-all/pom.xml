@@ -16,7 +16,8 @@
     </parent>
 
     <properties>
-        <bus.version>3.0.0</bus.version>
+        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
         <!--bus-base-->
         <lombok.version>1.18.8</lombok.version>
         <!--bus-cache-->
@@ -65,97 +66,97 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-base</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-core</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-cron</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-crypto</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-extra</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-health</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-http</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-limiter</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-logger</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-mapper</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-pager</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-poi</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-sensitive</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-socket</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-setting</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-spring</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-storage</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-swagger</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-validate</artifactId>
-            <version>${bus.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <!--bus-base-->
         <dependency>
@@ -513,6 +514,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -525,6 +527,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -537,6 +540,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
                 <executions>
                     <execution>
                         <id>oss</id>

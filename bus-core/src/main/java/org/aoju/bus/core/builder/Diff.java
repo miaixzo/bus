@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -43,9 +43,8 @@ import java.lang.reflect.Type;
  * @param <T> The type of object contained within this {@code Diff}. Differences
  *            between primitive objects are stored as their Object wrapper
  *            equivalent.
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class Diff<T> extends Pair<T, T> {

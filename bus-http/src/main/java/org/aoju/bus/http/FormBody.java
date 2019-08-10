@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
@@ -35,9 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class FormBody extends RequestBody {
@@ -50,9 +49,6 @@ public final class FormBody extends RequestBody {
         this.encodedValues = Internal.immutableList(encodedValues);
     }
 
-    /**
-     * The number of key-value pairs in this form-encoded body.
-     */
     public int size() {
         return encodedNames.size();
     }
@@ -88,12 +84,6 @@ public final class FormBody extends RequestBody {
         writeOrCountBytes(sink, false);
     }
 
-    /**
-     * Either writes this request to {@code sink} or measures its content length. We have first method
-     * do double-duty to make sure the counting and content are consistent, particularly when it comes
-     * to awkward operations like measuring the encoded length of header strings, or the
-     * length-in-digits of an encoded integer.
-     */
     private long writeOrCountBytes(BufferedSink sink, boolean countBytes) {
         long byteCount = 0L;
 

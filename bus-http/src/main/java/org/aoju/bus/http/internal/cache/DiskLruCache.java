@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http.internal.cache;
 
 import org.aoju.bus.core.io.FileSystem;
@@ -78,9 +78,8 @@ import java.util.regex.Pattern;
  * value, the edit will fail silently. Callers should handle other problems by catching {@code
  * IOException} and responding appropriately.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class DiskLruCache implements Closeable, Flushable {

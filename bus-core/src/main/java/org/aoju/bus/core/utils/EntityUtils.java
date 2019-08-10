@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.key.ObjectID;
@@ -29,20 +29,17 @@ import org.aoju.bus.core.key.ObjectID;
  * 实体类相关工具类
  * 解决问题： 1、快速对实体的常驻字段
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EntityUtils {
 
-    public static <T> void setCreatAndUpdatInfo(T entity) {
-        setCreateInfo(entity);
-        setUpdatedInfo(entity);
-    }
-
     /**
      * 快速将bean的creator、created附上相关值
+     *
+     * @param <T>    对象
+     * @param entity 反射对象
      */
     public static <T> void setCreateInfo(T entity) {
         String id = ObjectID.id();
@@ -54,7 +51,8 @@ public class EntityUtils {
     /**
      * 快速将bean的modifier、modified附上相关值
      *
-     * @param entity 实体bean
+     * @param <T>    对象
+     * @param entity 反射对象
      */
     public static <T> void setUpdatedInfo(T entity) {
         String[] fields = {"modifier", "modified"};
@@ -62,10 +60,16 @@ public class EntityUtils {
         setValue(entity, fields, value);
     }
 
+    public static <T> void setCreatAndUpdatInfo(T entity) {
+        setCreateInfo(entity);
+        setUpdatedInfo(entity);
+    }
+
     /**
      * 依据对象的属性数组和值数组对进行赋值
      *
-     * @param entity 对象
+     * @param <T>    对象
+     * @param entity 反射对象
      * @param fields 属性数组
      * @param value  值数组
      */
@@ -81,7 +85,8 @@ public class EntityUtils {
     /**
      * 依据对象的属性获取对象值
      *
-     * @param entity 对象
+     * @param <T>    对象
+     * @param entity 反射对象
      * @param field  属性数组
      */
     private static <T> Object getValue(T entity, String field) {
@@ -95,8 +100,9 @@ public class EntityUtils {
     /**
      * 根据主键属性，判断主键是否值为空
      *
-     * @param entity
-     * @param field
+     * @param <T>    对象
+     * @param entity 反射对象
+     * @param field  属性
      * @return 主键为空，则返回false；主键有值，返回true
      */
     public static <T> boolean isPKNotNull(T entity, String field) {

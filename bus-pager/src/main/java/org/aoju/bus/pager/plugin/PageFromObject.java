@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.plugin;
 
 import org.aoju.bus.pager.IPage;
@@ -35,9 +35,8 @@ import java.util.Map;
 /**
  * 分页参数对象工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class PageFromObject {
@@ -66,8 +65,10 @@ public abstract class PageFromObject {
     /**
      * 对象中获取分页参数
      *
-     * @param params
-     * @return
+     * @param <T>      对象
+     * @param params   参数
+     * @param required 是否必须
+     * @return 结果
      */
     public static <T> Page<T> getPageFromObject(Object params, boolean required) {
         if (params == null) {
@@ -153,10 +154,10 @@ public abstract class PageFromObject {
     /**
      * 从对象中取参数
      *
-     * @param paramsObject
-     * @param paramName
-     * @param required
-     * @return
+     * @param paramsObject 参数
+     * @param paramName    参数名
+     * @param required     是否必须
+     * @return 结果
      */
     protected static Object getParamValue(org.apache.ibatis.reflection.MetaObject paramsObject, String paramName, boolean required) {
         Object value = null;
@@ -189,16 +190,10 @@ public abstract class PageFromObject {
         }
     }
 
-    /**
-     * 校验对象是不是为null或者内容是""
-     */
     public static boolean isEmpty(Object obj) {
         return obj == null || obj.toString().equals("");
     }
 
-    /**
-     * 校验对象是不是为null或者内容是""
-     */
     public static boolean isNotEmpty(String str) {
         return !isEmpty(str);
     }

@@ -20,15 +20,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cache.support.cache;
 
-import org.aoju.bus.cache.entity.Expire;
-import org.aoju.bus.cache.support.serialize.BaseSerializer;
-import org.aoju.bus.cache.support.serialize.Hessian2Serializer;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.exception.MemcachedException;
+import org.aoju.bus.cache.entity.Expire;
+import org.aoju.bus.cache.support.serialize.BaseSerializer;
+import org.aoju.bus.cache.support.serialize.Hessian2Serializer;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
@@ -38,9 +38,8 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MemcachedCache implements Cache {

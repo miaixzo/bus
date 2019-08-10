@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
@@ -37,9 +37,8 @@ import java.util.UUID;
 /**
  * An <a href="http://www.ietf.org/rfc/rfc2387.txt">RFC 2387</a>-compliant request body.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class MultipartBody extends RequestBody {
@@ -61,16 +60,6 @@ public final class MultipartBody extends RequestBody {
         this.parts = Internal.immutableList(parts);
     }
 
-    /**
-     * Appends a quoted-string to a StringBuilder.
-     *
-     * <p>RFC 2388 is rather vague about how first should escape special characters in form-data
-     * parameters, and as it turns out Firefox and Chrome actually do rather different things, and
-     * both say in their comments that they're not really sure what the right approach is. We go with
-     * Chrome's behavior (which also experimentally seems to match what IE does), but if you actually
-     * want to have a good chance of things working, please avoid double-quotes, newlines, percent
-     * signs, and the like in your field names.
-     */
     static StringBuilder appendQuotedString(StringBuilder target, String key) {
         target.append('"');
         for (int i = 0, len = key.length(); i < len; i++) {
@@ -102,9 +91,6 @@ public final class MultipartBody extends RequestBody {
         return boundary.utf8();
     }
 
-    /**
-     * The number of parts in this multipart body.
-     */
     public int size() {
         return parts.size();
     }
@@ -117,9 +103,6 @@ public final class MultipartBody extends RequestBody {
         return parts.get(index);
     }
 
-    /**
-     * A combination of {@link #type()} and {@link #boundary()}.
-     */
     @Override
     public MediaType contentType() {
         return contentType;
@@ -137,12 +120,6 @@ public final class MultipartBody extends RequestBody {
         writeOrCountBytes(sink, false);
     }
 
-    /**
-     * Either writes this request to {@code sink} or measures its content length. We have first method
-     * do double-duty to make sure the counting and content are consistent, particularly when it comes
-     * to awkward operations like measuring the encoded length of header strings, or the
-     * length-in-digits of an encoded integer.
-     */
     private long writeOrCountBytes(
             BufferedSink sink, boolean countBytes) throws IOException {
         long byteCount = 0L;
@@ -279,14 +256,6 @@ public final class MultipartBody extends RequestBody {
             this.boundary = ByteString.encodeUtf8(boundary);
         }
 
-        /**
-         * Set the MIME type. Expected values for {@code type} are
-         * {@link MediaType#MULTIPART_MIXED_TYPE} (the default),
-         * {@link MediaType#MULTIPART_ALTERNATIVE_TYPE},
-         * {@link MediaType#MULTIPART_DIGEST_TYPE},
-         * {@link MediaType#MULTIPART_PARALLEL_TYPE} and
-         * {@link MediaType#MULTIPART_FORM_DATA_TYPE}.
-         */
         public Builder setType(MediaType type) {
             if (type == null) {
                 throw new NullPointerException("type == null");
@@ -298,46 +267,28 @@ public final class MultipartBody extends RequestBody {
             return this;
         }
 
-        /**
-         * Add a part to the body.
-         */
         public Builder addPart(RequestBody body) {
             return addPart(Part.create(body));
         }
 
-        /**
-         * Add a part to the body.
-         */
         public Builder addPart(Headers headers, RequestBody body) {
             return addPart(Part.create(headers, body));
         }
 
-        /**
-         * Add a form data part to the body.
-         */
         public Builder addFormDataPart(String name, String value) {
             return addPart(Part.createFormData(name, value));
         }
 
-        /**
-         * Add a form data part to the body.
-         */
         public Builder addFormDataPart(String name, String filename, RequestBody body) {
             return addPart(Part.createFormData(name, filename, body));
         }
 
-        /**
-         * Add a part to the body.
-         */
         public Builder addPart(Part part) {
             if (part == null) throw new NullPointerException("part == null");
             parts.add(part);
             return this;
         }
 
-        /**
-         * Assemble the specified parts into a request body.
-         */
         public MultipartBody build() {
             if (parts.isEmpty()) {
                 throw new IllegalStateException("Multipart body must have at least first part.");

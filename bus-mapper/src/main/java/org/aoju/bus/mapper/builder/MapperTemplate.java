@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.mapper.MapperException;
@@ -53,9 +53,8 @@ import static org.aoju.bus.mapper.reflection.Reflector.getMethodName;
 /**
  * 通用Mapper模板类，扩展通用Mapper时需要继承该类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class MapperTemplate {
@@ -74,8 +73,8 @@ public abstract class MapperTemplate {
     /**
      * 该方法仅仅用来初始化ProviderSqlSource
      *
-     * @param record
-     * @return
+     * @param record 对象
+     * @return string
      */
     public String dynamicSQL(Object record) {
         return "dynamicSQL";
@@ -84,8 +83,8 @@ public abstract class MapperTemplate {
     /**
      * 添加映射方法
      *
-     * @param methodName
-     * @param method
+     * @param methodName 方法名称
+     * @param method     方法
      */
     public void addMethodMap(String methodName, Method method) {
         methodMap.put(methodName, method);
@@ -94,8 +93,8 @@ public abstract class MapperTemplate {
     /**
      * 获取Identity值的表达式
      *
-     * @param column
-     * @return
+     * @param column 列信息
+     * @return the string
      */
     public String getIDENTITY(EntityColumn column) {
         return MessageFormat.format(mapperBuilder.getConfig().getIdentity(), column.getSequenceName(), column.getColumn(), column.getProperty(), column.getTable().getName());
@@ -104,8 +103,8 @@ public abstract class MapperTemplate {
     /**
      * 是否支持该通用方法
      *
-     * @param msId
-     * @return
+     * @param msId 方法ID
+     * @return the boolean
      */
     public boolean supportMethod(String msId) {
         Class<?> mapperClass = getMapperClass(msId);
@@ -119,8 +118,8 @@ public abstract class MapperTemplate {
     /**
      * 设置返回值类型 - 为了让typeHandler在select时有效，改为设置resultMap
      *
-     * @param ms
-     * @param entityClass
+     * @param ms          MappedStatement
+     * @param entityClass 对象
      */
     protected void setResultType(MappedStatement ms, Class<?> entityClass) {
         EntityTable entityTable = EntityBuilder.getEntityTable(entityClass);
@@ -133,8 +132,8 @@ public abstract class MapperTemplate {
     /**
      * 重新设置SqlSource
      *
-     * @param ms
-     * @param sqlSource
+     * @param ms        MappedStatement
+     * @param sqlSource SqlSource
      */
     protected void setSqlSource(MappedStatement ms, SqlSource sqlSource) {
         MetaObject msObject = SystemMetaObject.forObject(ms);
@@ -144,9 +143,9 @@ public abstract class MapperTemplate {
     /**
      * 通过xmlSql创建sqlSource
      *
-     * @param ms
-     * @param xmlSql
-     * @return
+     * @param ms     MappedStatement
+     * @param xmlSql String
+     * @return SqlSource
      */
     public SqlSource createSqlSource(MappedStatement ms, String xmlSql) {
         return languageDriver.createSqlSource(ms.getConfiguration(), "<script>\n\t" + xmlSql + "</script>", null);
@@ -155,8 +154,8 @@ public abstract class MapperTemplate {
     /**
      * 获取返回值类型 - 实体类型
      *
-     * @param ms
-     * @return
+     * @param ms MappedStatement
+     * @return the class
      */
     public Class<?> getEntityClass(MappedStatement ms) {
         String msId = ms.getId();
@@ -184,8 +183,8 @@ public abstract class MapperTemplate {
     /**
      * 获取序列下个值的表达式
      *
-     * @param column
-     * @return
+     * @param column 列
+     * @return the string
      */
     protected String getSeqNextVal(EntityColumn column) {
         return MessageFormat.format(mapperBuilder.getConfig().getSeqFormat(), column.getSequenceName(), column.getColumn(), column.getProperty(), column.getTable().getName());
@@ -194,8 +193,8 @@ public abstract class MapperTemplate {
     /**
      * 获取实体类的表名
      *
-     * @param entityClass
-     * @return
+     * @param entityClass 对象
+     * @return the string
      */
     protected String tableName(Class<?> entityClass) {
         EntityTable entityTable = EntityBuilder.getEntityTable(entityClass);
@@ -233,11 +232,9 @@ public abstract class MapperTemplate {
     /**
      * 重新设置SqlSource
      *
-     * @param ms
-     * @throws java.lang.reflect.InvocationTargetException
-     * @throws IllegalAccessException
+     * @param ms MappedStatement
      */
-    public void setSqlSource(MappedStatement ms) throws Exception {
+    public void setSqlSource(MappedStatement ms) {
         if (this.mapperClass == getMapperClass(ms.getId())) {
             throw new MapperException("请不要配置或扫描通用Mapper接口类：" + this.mapperClass);
         }

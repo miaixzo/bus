@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.socket.aio;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -40,9 +40,8 @@ import java.util.concurrent.TimeUnit;
  * AIO会话<br>
  * 每个客户端对应一个会话对象
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class AioSession {
@@ -145,7 +144,7 @@ public class AioSession {
 
     /**
      * 写数据到目标端，并关闭输出
-     *
+     * @param  data 字节
      * @return this
      */
     public AioSession writeAndClose(ByteBuffer data) {
@@ -155,7 +154,7 @@ public class AioSession {
 
     /**
      * 写数据到目标端
-     *
+     *@param  data 字节
      * @return {@link Future}
      */
     public Future<Integer> write(ByteBuffer data) {
@@ -164,7 +163,7 @@ public class AioSession {
 
     /**
      * 写数据到目标端
-     *
+     * @param  data 字节
      * @param handler {@link CompletionHandler}
      * @return this
      */

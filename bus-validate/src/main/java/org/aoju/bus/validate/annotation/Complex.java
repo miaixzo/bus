@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.validate.annotation;
 
 import java.lang.annotation.*;
@@ -32,9 +32,8 @@ import java.lang.annotation.*;
  * 在校验环境
  * </P>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Documented
@@ -44,11 +43,15 @@ public @interface Complex {
 
     /**
      * 校验器名称， 优先使用类型匹配
+     *
+     * @return the string
      */
     String value() default "";
 
     /**
      * 校验器类， 优先使用类型匹配
+     *
+     * @return the object
      */
     Class<? extends org.aoju.bus.validate.validators.Complex> clazz() default org.aoju.bus.validate.validators.Complex.class;
 

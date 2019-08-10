@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.Filter;
@@ -38,9 +38,8 @@ import java.util.*;
 /**
  * 网络相关工具
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class NetUtils {
@@ -65,14 +64,14 @@ public class NetUtils {
     public static String longToIpv4(long longIP) {
         final StringBuilder sb = new StringBuilder();
         // 直接右移24位
-        sb.append(String.valueOf(longIP >>> 24));
+        sb.append((longIP >>> 24));
         sb.append(".");
         // 将高8位置0，然后右移16位
-        sb.append(String.valueOf((longIP & 0x00FFFFFF) >>> 16));
+        sb.append(((longIP & 0x00FFFFFF) >>> 16));
         sb.append(".");
-        sb.append(String.valueOf((longIP & 0x0000FFFF) >>> 8));
+        sb.append(((longIP & 0x0000FFFF) >>> 8));
         sb.append(".");
-        sb.append(String.valueOf(longIP & 0x000000FF));
+        sb.append((longIP & 0x000000FF));
         return sb.toString();
     }
 
@@ -180,10 +179,10 @@ public class NetUtils {
      * 获取多个本地可用端口<br>
      * 来自org.springframework.util.SocketUtils
      *
-     * @param minPort 端口最小值（包含）
-     * @param maxPort 端口最大值（包含）
+     * @param numRequested int
+     * @param minPort      端口最小值（包含）
+     * @param maxPort      端口最大值（包含）
      * @return 可用的端口
-     * @since 4.5.4
      */
     public static TreeSet<Integer> getUsableLocalPorts(int numRequested, int minPort, int maxPort) {
         final TreeSet<Integer> availablePorts = new TreeSet<>();
@@ -246,7 +245,7 @@ public class NetUtils {
      * @return 隐藏部分后的IP
      */
     public static String hideIpPart(String ip) {
-        return new StringBuffer(ip.length()).append(ip.substring(0, ip.lastIndexOf(".") + 1)).append("*").toString();
+        return new StringBuffer(ip.length()).append(ip, 0, ip.lastIndexOf(".") + 1).append("*").toString();
     }
 
     /**
@@ -569,7 +568,7 @@ public class NetUtils {
      * @param host Server主机
      * @param port Server端口
      * @param data 数据
-     * @throws IOException IO异常
+     * @throws InstrumentException 异常
      * @since 3.3.0
      */
     public static void netCat(String host, int port, byte[] data) throws InstrumentException {

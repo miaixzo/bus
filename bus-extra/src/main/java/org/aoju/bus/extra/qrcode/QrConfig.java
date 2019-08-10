@@ -20,13 +20,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.extra.qrcode;
 
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.ImageUtils;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.utils.ImageUtils;
 
 import java.awt.*;
 import java.io.File;
@@ -36,9 +36,8 @@ import java.util.HashMap;
 /**
  * 二维码设置
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class QrConfig {

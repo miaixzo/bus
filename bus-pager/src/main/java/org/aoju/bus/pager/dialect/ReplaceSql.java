@@ -20,15 +20,14 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.dialect;
 
 /**
  * 替换和还原 SQL
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface ReplaceSql {
@@ -36,16 +35,16 @@ public interface ReplaceSql {
     /**
      * 临时替换后用于 jsqlparser 解析
      *
-     * @param sql
-     * @return
+     * @param sql SQL
+     * @return the string
      */
     String replace(String sql);
 
     /**
      * 还原经过解析后的 sql
      *
-     * @param sql
-     * @return
+     * @param sql SQL
+     * @return the string
      */
     String restore(String sql);
 

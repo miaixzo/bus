@@ -1,29 +1,5 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2017, aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
-*/
 package org.aoju.bus.core.map;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,61 +7,21 @@ import java.util.Map;
  *
  * @param <K> 键类型
  * @param <V> 值类型
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
-public abstract class CustomKeyMap<K, V> extends HashMap<K, V> {
-
-    private static final long serialVersionUID = 4043263744224569870L;
+public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
 
     /**
-     * 构造
-     */
-    public CustomKeyMap() {
-        super();
-    }
-
-    /**
-     * 构造
+     * 构造<br>
+     * 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
      *
-     * @param initialCapacity 初始大小
-     * @param loadFactor      加载因子
-     */
-    public CustomKeyMap(int initialCapacity, float loadFactor) {
-        super(initialCapacity, loadFactor);
-    }
-
-    /**
-     * 构造
-     *
-     * @param initialCapacity 初始大小
-     */
-    public CustomKeyMap(int initialCapacity) {
-        this(initialCapacity, 0.75f);
-    }
-
-    /**
-     * 构造
-     *
-     * @param m Map
-     */
-    public CustomKeyMap(Map<? extends K, ? extends V> m) {
-        super((int) (m.size() / 0.75));
-        putAll(m);
-    }
-
-    /**
-     * 构造
-     *
-     * @param loadFactor 加载因子
-     * @param m          Map
+     * @param m Map 被包装的Map
      * @since 3.1.2
      */
-    public CustomKeyMap(float loadFactor, Map<? extends K, ? extends V> m) {
-        super(m.size(), loadFactor);
-        putAll(m);
+    public CustomKeyMap(Map<K, V> m) {
+        super(m);
     }
 
     @Override
@@ -93,6 +29,7 @@ public abstract class CustomKeyMap<K, V> extends HashMap<K, V> {
         return super.get(customKey(key));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public V put(K key, V value) {
         return super.put((K) customKey(key), value);
@@ -100,7 +37,7 @@ public abstract class CustomKeyMap<K, V> extends HashMap<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        for (Entry<? extends K, ? extends V> entry : m.entrySet()) {
+        for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
     }

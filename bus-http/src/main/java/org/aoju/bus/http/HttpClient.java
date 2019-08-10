@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.Internal;
@@ -119,9 +119,8 @@ import java.util.concurrent.TimeUnit;
  * <p>OkHttp also uses daemon threads for HTTP/2 connections. These will exit automatically if they
  * remain idle.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
@@ -314,37 +313,22 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
         }
     }
 
-    /**
-     * Default call timeout (in milliseconds).
-     */
     public int callTimeoutMillis() {
         return callTimeout;
     }
 
-    /**
-     * Default connect timeout (in milliseconds).
-     */
     public int connectTimeoutMillis() {
         return connectTimeout;
     }
 
-    /**
-     * Default read timeout (in milliseconds).
-     */
     public int readTimeoutMillis() {
         return readTimeout;
     }
 
-    /**
-     * Default write timeout (in milliseconds).
-     */
     public int writeTimeoutMillis() {
         return writeTimeout;
     }
 
-    /**
-     * Web socket ping interval (in milliseconds).
-     */
     public int pingIntervalMillis() {
         return pingInterval;
     }
@@ -425,20 +409,10 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
         return connectionSpecs;
     }
 
-    /**
-     * Returns an immutable list of interceptors that observe the full span of each call: from before
-     * the connection is established (if any) until after the response source is selected (either the
-     * origin server, cache, or both).
-     */
     public List<Interceptor> interceptors() {
         return interceptors;
     }
 
-    /**
-     * Returns an immutable list of interceptors that observe a single network request and response.
-     * These interceptors must call {@link Interceptor.Chain#proceed} exactly once: it is an error for
-     * a network interceptor to short-circuit or repeat a network request.
-     */
     public List<Interceptor> networkInterceptors() {
         return networkInterceptors;
     }
@@ -447,17 +421,11 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
         return eventListenerFactory;
     }
 
-    /**
-     * Prepares the {@code request} to be executed at some point in the future.
-     */
     @Override
     public Call newCall(Request request) {
         return RealCall.newRealCall(this, request, false /* for web socket */);
     }
 
-    /**
-     * Uses {@code request} to connect a new web socket.
-     */
     @Override
     public WebSocket newWebSocket(Request request, WebSocketListener listener) {
         RealWebSocket webSocket = new RealWebSocket(request, listener, new Random(), pingInterval);
@@ -557,231 +525,97 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
             this.pingInterval = httpClient.pingInterval;
         }
 
-        /**
-         * Sets the default timeout for complete calls. A value of 0 means no timeout, otherwise values
-         * must be between 1 and {@link Integer#MAX_VALUE} when converted to milliseconds.
-         *
-         * <p>The call timeout spans the entire call: resolving DNS, connecting, writing the request
-         * body, server processing, and reading the response body. If the call requires redirects or
-         * retries all must complete within first timeout period.
-         */
+
         public Builder callTimeout(long timeout, TimeUnit unit) {
             callTimeout = Internal.checkDuration("timeout", timeout, unit);
             return this;
         }
 
-        /**
-         * Sets the default timeout for complete calls. A value of 0 means no timeout, otherwise values
-         * must be between 1 and {@link Integer#MAX_VALUE} when converted to milliseconds.
-         *
-         * <p>The call timeout spans the entire call: resolving DNS, connecting, writing the request
-         * body, server processing, and reading the response body. If the call requires redirects or
-         * retries all must complete within first timeout period.
-         */
         public Builder callTimeout(Duration duration) {
             callTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
-        /**
-         * Sets the default connect timeout for new connections. A value of 0 means no timeout,
-         * otherwise values must be between 1 and {@link Integer#MAX_VALUE} when converted to
-         * milliseconds.
-         *
-         * <p>The connect timeout is applied when connecting a TCP socket to the target host.
-         * The default value is 10 seconds.
-         */
         public Builder connectTimeout(long timeout, TimeUnit unit) {
             connectTimeout = Internal.checkDuration("timeout", timeout, unit);
             return this;
         }
 
-        /**
-         * Sets the default connect timeout for new connections. A value of 0 means no timeout,
-         * otherwise values must be between 1 and {@link Integer#MAX_VALUE} when converted to
-         * milliseconds.
-         *
-         * <p>The connect timeout is applied when connecting a TCP socket to the target host.
-         * The default value is 10 seconds.
-         */
         public Builder connectTimeout(Duration duration) {
             connectTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
-        /**
-         * Sets the default read timeout for new connections. A value of 0 means no timeout, otherwise
-         * values must be between 1 and {@link Integer#MAX_VALUE} when converted to milliseconds.
-         *
-         * <p>The read timeout is applied to both the TCP socket and for individual read IO operations
-         * including on {@link Response}. The default value is 10 seconds.
-         */
         public Builder readTimeout(long timeout, TimeUnit unit) {
             readTimeout = Internal.checkDuration("timeout", timeout, unit);
             return this;
         }
 
-        /**
-         * Sets the default read timeout for new connections. A value of 0 means no timeout, otherwise
-         * values must be between 1 and {@link Integer#MAX_VALUE} when converted to milliseconds.
-         *
-         * <p>The read timeout is applied to both the TCP socket and for individual read IO operations
-         * including on  {@link Response}. The default value is 10 seconds.
-         *
-         * @see Socket#setSoTimeout(int)
-         */
         public Builder readTimeout(Duration duration) {
             readTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
-        /**
-         * Sets the default write timeout for new connections. A value of 0 means no timeout, otherwise
-         * values must be between 1 and {@link Integer#MAX_VALUE} when converted to milliseconds.
-         *
-         * <p>The write timeout is applied for individual write IO operations.
-         * The default value is 10 seconds.
-         */
         public Builder writeTimeout(long timeout, TimeUnit unit) {
             writeTimeout = Internal.checkDuration("timeout", timeout, unit);
             return this;
         }
 
-        /**
-         * Sets the default write timeout for new connections. A value of 0 means no timeout, otherwise
-         * values must be between 1 and {@link Integer#MAX_VALUE} when converted to milliseconds.
-         *
-         * <p>The write timeout is applied for individual write IO operations.
-         * The default value is 10 seconds.
-         */
         public Builder writeTimeout(Duration duration) {
             writeTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
-        /**
-         * Sets the interval between HTTP/2 and web socket pings initiated by this client. Use this to
-         * automatically send ping frames until either the connection fails or it is closed. This keeps
-         * the connection alive and may detect connectivity failures.
-         *
-         * <p>If the server does not respond to each ping with a pong within {@code interval}, this
-         * client will assume that connectivity has been lost. When this happens on a web socket the
-         * connection is canceled and its listener is {@linkplain WebSocketListener#onFailure notified
-         * of the failure}. When it happens on an HTTP/2 connection the connection is closed and any
-         * calls it is carrying {@linkplain java.io.IOException will fail with an IOException}.
-         *
-         * <p>The default value of 0 disables client-initiated pings.
-         */
         public Builder pingInterval(long interval, TimeUnit unit) {
             pingInterval = Internal.checkDuration("interval", interval, unit);
             return this;
         }
 
-        /**
-         * Sets the interval between HTTP/2 and web socket pings initiated by this client. Use this to
-         * automatically send ping frames until either the connection fails or it is closed. This keeps
-         * the connection alive and may detect connectivity failures.
-         *
-         * <p>If the server does not respond to each ping with a pong within {@code interval}, this
-         * client will assume that connectivity has been lost. When this happens on a web socket the
-         * connection is canceled and its listener is {@linkplain WebSocketListener#onFailure notified
-         * of the failure}. When it happens on an HTTP/2 connection the connection is closed and any
-         * calls it is carrying {@linkplain java.io.IOException will fail with an IOException}.
-         *
-         * <p>The default value of 0 disables client-initiated pings.
-         */
         public Builder pingInterval(Duration duration) {
             pingInterval = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
-        /**
-         * Sets the HTTP proxy that will be used by connections created by this client. This takes
-         * precedence over {@link #proxySelector}, which is only honored when this proxy is null (which
-         * it is by default). To disable proxy use completely, call {@code proxy(Proxy.NO_PROXY)}.
-         */
         public Builder proxy(Proxy proxy) {
             this.proxy = proxy;
             return this;
         }
 
-        /**
-         * Sets the proxy selection policy to be used if no {@link #proxy proxy} is specified
-         * explicitly. The proxy selector may return multiple proxies; in that case they will be tried
-         * in sequence until a successful connection is established.
-         *
-         * <p>If unset, the {@link ProxySelector#getDefault() system-wide default} proxy selector will
-         * be used.
-         */
         public Builder proxySelector(ProxySelector proxySelector) {
             if (proxySelector == null) throw new NullPointerException("proxySelector == null");
             this.proxySelector = proxySelector;
             return this;
         }
 
-        /**
-         * Sets the handler that can accept cookies from incoming HTTP responses and provides cookies to
-         * outgoing HTTP requests.
-         *
-         * <p>If unset, {@linkplain CookieJar#NO_COOKIES no cookies} will be accepted nor provided.
-         */
         public Builder cookieJar(CookieJar cookieJar) {
             if (cookieJar == null) throw new NullPointerException("cookieJar == null");
             this.cookieJar = cookieJar;
             return this;
         }
 
-        /**
-         * Sets the response cache to be used to read and write cached responses.
-         */
         void setInternalCache(InternalCache internalCache) {
             this.internalCache = internalCache;
             this.cache = null;
         }
 
-        /**
-         * Sets the response cache to be used to read and write cached responses.
-         */
         public Builder cache(Cache cache) {
             this.cache = cache;
             this.internalCache = null;
             return this;
         }
 
-        /**
-         * Sets the DNS service used to lookup IP addresses for hostnames.
-         *
-         * <p>If unset, the {@link Dns#SYSTEM system-wide default} DNS will be used.
-         */
         public Builder dns(Dns dns) {
             if (dns == null) throw new NullPointerException("dns == null");
             this.dns = dns;
             return this;
         }
 
-        /**
-         * Sets the socket factory used to create connections. OkHttp only uses the parameterless {@link
-         * SocketFactory#createSocket() createSocket()} method to create unconnected sockets. Overriding
-         * this method, e. g., allows the socket to be bound to a specific local address.
-         *
-         * <p>If unset, the {@link SocketFactory#getDefault() system-wide default} socket factory will
-         * be used.
-         */
         public Builder socketFactory(SocketFactory socketFactory) {
             if (socketFactory == null) throw new NullPointerException("socketFactory == null");
             this.socketFactory = socketFactory;
             return this;
         }
 
-        /**
-         * Sets the socket factory used to secure HTTPS connections. If unset, the system default will
-         * be used.
-         * <p>
-         * {@code SSLSocketFactory} does not expose its {@link X509TrustManager}, which is
-         * a field that OkHttp needs to build a clean certificate chain. This method instead must
-         * use reflection to extract the trust manager. Applications should prefer to call {@link
-         * #sslSocketFactory(SSLSocketFactory, X509TrustManager)}, which avoids such reflection.
-         */
         public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory) {
             if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
             this.sslSocketFactory = sslSocketFactory;
@@ -789,36 +623,6 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
             return this;
         }
 
-        /**
-         * Sets the socket factory and trust manager used to secure HTTPS connections. If unset, the
-         * system defaults will be used.
-         *
-         * <p>Most applications should not call this method, and instead use the system defaults. Those
-         * classes include special optimizations that can be lost if the implementations are decorated.
-         *
-         * <p>If necessary, you can create and configure the defaults yourself with the following code:
-         *
-         * <pre>   {@code
-         *
-         *   TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
-         *       TrustManagerFactory.getDefaultAlgorithm());
-         *   trustManagerFactory.init((KeyStore) null);
-         *   TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-         *   if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-         *     throw new IllegalStateException("Unexpected default trust managers:"
-         *         + Arrays.toString(trustManagers));
-         *   }
-         *   X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
-         *
-         *   SSLContext sslContext = SSLContext.getInstance("TLS");
-         *   sslContext.init(null, new TrustManager[] { trustManager }, null);
-         *   SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-         *
-         *   HttpClient client = new HttpClient.Builder()
-         *       .sslSocketFactory(sslSocketFactory, trustManager)
-         *       .build();
-         * }</pre>
-         */
         public Builder sslSocketFactory(
                 SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
             if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
@@ -828,109 +632,51 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
             return this;
         }
 
-        /**
-         * Sets the verifier used to confirm that response certificates apply to requested hostnames for
-         * HTTPS connections.
-         *
-         * <p>If unset, a default hostname verifier will be used.
-         */
         public Builder hostnameVerifier(HostnameVerifier hostnameVerifier) {
             if (hostnameVerifier == null) throw new NullPointerException("hostnameVerifier == null");
             this.hostnameVerifier = hostnameVerifier;
             return this;
         }
 
-        /**
-         * Sets the certificate pinner that constrains which certificates are trusted. By default HTTPS
-         * connections rely on only the {@link #sslSocketFactory SSL socket factory} to establish trust.
-         * Pinning certificates avoids the need to trust certificate authorities.
-         */
         public Builder certificatePinner(CertificatePinner certificatePinner) {
             if (certificatePinner == null) throw new NullPointerException("certificatePinner == null");
             this.certificatePinner = certificatePinner;
             return this;
         }
 
-        /**
-         * Sets the authenticator used to respond to challenges from origin servers. Use {@link
-         * #proxyAuthenticator} to set the authenticator for proxy servers.
-         *
-         * <p>If unset, the {@linkplain Authenticator#NONE no authentication will be attempted}.
-         */
         public Builder authenticator(Authenticator authenticator) {
             if (authenticator == null) throw new NullPointerException("authenticator == null");
             this.authenticator = authenticator;
             return this;
         }
 
-        /**
-         * Sets the authenticator used to respond to challenges from proxy servers. Use {@link
-         * #authenticator} to set the authenticator for origin servers.
-         *
-         * <p>If unset, the {@linkplain Authenticator#NONE no authentication will be attempted}.
-         */
         public Builder proxyAuthenticator(Authenticator proxyAuthenticator) {
             if (proxyAuthenticator == null) throw new NullPointerException("proxyAuthenticator == null");
             this.proxyAuthenticator = proxyAuthenticator;
             return this;
         }
 
-        /**
-         * Sets the connection pool used to recycle HTTP and HTTPS connections.
-         *
-         * <p>If unset, a new connection pool will be used.
-         */
         public Builder connectionPool(ConnectionPool connectionPool) {
             if (connectionPool == null) throw new NullPointerException("connectionPool == null");
             this.connectionPool = connectionPool;
             return this;
         }
 
-        /**
-         * Configure this client to follow redirects from HTTPS to HTTP and from HTTP to HTTPS.
-         *
-         * <p>If unset, protocol redirects will be followed. This is different than the built-in {@code
-         * HttpURLConnection}'s default.
-         */
         public Builder followSslRedirects(boolean followProtocolRedirects) {
             this.followSslRedirects = followProtocolRedirects;
             return this;
         }
 
-        /**
-         * Configure this client to follow redirects. If unset, redirects will be followed.
-         */
         public Builder followRedirects(boolean followRedirects) {
             this.followRedirects = followRedirects;
             return this;
         }
 
-        /**
-         * Configure this client to retry or not when a connectivity problem is encountered. By default,
-         * this client silently recovers from the following problems:
-         *
-         * <ul>
-         * <li><strong>Unreachable IP addresses.</strong> If the URL's host has multiple IP addresses,
-         * failure to reach any individual IP address doesn't fail the overall request. This can
-         * increase availability of multi-homed services.
-         * <li><strong>Stale pooled connections.</strong> The {@link ConnectionPool} reuses sockets
-         * to decrease request latency, but these connections will occasionally time out.
-         * <li><strong>Unreachable proxy servers.</strong> A {@link ProxySelector} can be used to
-         * attempt multiple proxy servers in sequence, eventually falling back to a direct
-         * connection.
-         * </ul>
-         * <p>
-         * Set this to false to avoid retrying requests when doing so is destructive. In this case the
-         * calling application should do its own recovery of connectivity failures.
-         */
         public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
             return this;
         }
 
-        /**
-         * Sets the dispatcher used to set policy and execute asynchronous requests. Must not be null.
-         */
         public Builder dispatcher(Dispatcher dispatcher) {
             if (dispatcher == null) throw new IllegalArgumentException("dispatcher == null");
             this.dispatcher = dispatcher;
@@ -967,6 +713,7 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
          *                  Protocol#H2_PRIOR_KNOWLEDGE} then that must be the only protocol and HTTPS URLs will not
          *                  be supported. Otherwise the list must contain {@link Protocol#HTTP_1_1}. The list must
          *                  not contain null or {@link Protocol#HTTP_1_0}.
+         * @return Builder
          */
         public Builder protocols(List<Protocol> protocols) {
             // Create a private copy of the list.
@@ -1002,11 +749,6 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
             return this;
         }
 
-        /**
-         * Returns a modifiable list of interceptors that observe the full span of each call: from
-         * before the connection is established (if any) until after the response source is selected
-         * (either the origin server, cache, or both).
-         */
         public List<Interceptor> interceptors() {
             return interceptors;
         }
@@ -1017,11 +759,6 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
             return this;
         }
 
-        /**
-         * Returns a modifiable list of interceptors that observe a single network request and response.
-         * These interceptors must call {@link Interceptor.Chain#proceed} exactly once: it is an error
-         * for a network interceptor to short-circuit or repeat a network request.
-         */
         public List<Interceptor> networkInterceptors() {
             return networkInterceptors;
         }
@@ -1032,24 +769,12 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
             return this;
         }
 
-        /**
-         * Configure a single client scoped listener that will receive all analytic events
-         * for this client.
-         *
-         * @see EventListener for semantics and restrictions on listener implementations.
-         */
         public Builder eventListener(EventListener eventListener) {
             if (eventListener == null) throw new NullPointerException("eventListener == null");
             this.eventListenerFactory = EventListener.factory(eventListener);
             return this;
         }
 
-        /**
-         * Configure a factory to provide per-call scoped listeners that will receive analytic events
-         * for this client.
-         *
-         * @see EventListener for semantics and restrictions on listener implementations.
-         */
         public Builder eventListenerFactory(EventListener.Factory eventListenerFactory) {
             if (eventListenerFactory == null) {
                 throw new NullPointerException("eventListenerFactory == null");
@@ -1062,4 +787,5 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
             return new HttpClient(this);
         }
     }
+
 }

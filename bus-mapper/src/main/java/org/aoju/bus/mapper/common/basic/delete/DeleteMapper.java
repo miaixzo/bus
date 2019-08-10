@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.common.basic.delete;
 
 import org.aoju.bus.mapper.provider.BaseDeleteProvider;
@@ -29,9 +29,8 @@ import org.apache.ibatis.annotations.DeleteProvider;
 /**
  * 通用Mapper接口,删除
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface DeleteMapper<T> {
@@ -39,8 +38,8 @@ public interface DeleteMapper<T> {
     /**
      * 根据实体属性作为条件进行删除，查询条件使用等号
      *
-     * @param record
-     * @return
+     * @param record 对象
+     * @return 操作数量
      */
     @DeleteProvider(type = BaseDeleteProvider.class, method = "dynamicSQL")
     int delete(T record);

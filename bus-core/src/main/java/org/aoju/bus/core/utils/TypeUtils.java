@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.builder.Builder;
@@ -39,9 +39,8 @@ import java.util.*;
  * 2. 获取泛型参数类型（包括对象的泛型参数或集合元素的泛型类型）
  * </pre>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class TypeUtils {
@@ -236,7 +235,7 @@ public class TypeUtils {
      */
     public static boolean isWildcardGenericType(final Type type) {
         final Class clazz = type.getClass();
-        return sun.reflect.generics.reflectiveObjects.WildcardTypeImpl.class.equals(clazz);
+        return WildcardTypeImpl.class.equals(clazz);
     }
 
     /**
@@ -2009,7 +2008,7 @@ public class TypeUtils {
             appendAllTo(buf.append('<'), ", ", argumentTypes[i].toString()).append('>');
         }
 
-        final Type[] argumentsFiltered = (Type[]) ArrayUtils.removeAll(argumentTypes, recursiveTypeIndexes);
+        final Type[] argumentsFiltered = ArrayUtils.removeAll(argumentTypes, recursiveTypeIndexes);
 
         if (argumentsFiltered.length > 0) {
             appendAllTo(buf.append('<'), ", ", argumentsFiltered).append('>');

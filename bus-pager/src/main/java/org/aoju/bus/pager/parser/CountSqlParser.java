@@ -20,10 +20,9 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.pager.parser;
 
-import org.aoju.bus.pager.plugin.PageFromObject;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -31,18 +30,19 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.aoju.bus.pager.plugin.PageFromObject;
 
 import java.util.*;
 
 /**
  * sql解析类，提供更智能的count查询sql
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class CountSqlParser {
+
     public static final String KEEP_ORDERBY = "/*keep orderby*/";
     private static final Alias TABLE_ALIAS;
     /**
@@ -142,7 +142,7 @@ public class CountSqlParser {
     /**
      * 添加到聚合函数，可以是逗号隔开的多个函数前缀
      *
-     * @param functions
+     * @param functions 函数
      */
     public static void addAggregateFunctions(String functions) {
         if (PageFromObject.isNotEmpty(functions)) {
@@ -156,8 +156,8 @@ public class CountSqlParser {
     /**
      * 获取智能的countSql
      *
-     * @param sql
-     * @return
+     * @param sql sql
+     * @return the string
      */
     public String getSmartCountSql(String sql) {
         return getSmartCountSql(sql, "0");
@@ -166,9 +166,9 @@ public class CountSqlParser {
     /**
      * 获取智能的countSql
      *
-     * @param sql
+     * @param sql  sql
      * @param name 列名，默认 0
-     * @return
+     * @return the string
      */
     public String getSmartCountSql(String sql, String name) {
         //解析SQL
@@ -213,7 +213,8 @@ public class CountSqlParser {
     /**
      * 获取普通的Count-sql
      *
-     * @param sql 原查询sql
+     * @param sql  原查询sql
+     * @param name 名称
      * @return 返回count查询sql
      */
     public String getSimpleCountSql(final String sql, String name) {
@@ -229,7 +230,8 @@ public class CountSqlParser {
     /**
      * 将sql转换为count查询
      *
-     * @param select
+     * @param select 查询
+     * @param name   名称
      */
     public void sqlToCount(Select select, String name) {
         SelectBody selectBody = select.getSelectBody();
@@ -252,8 +254,8 @@ public class CountSqlParser {
     /**
      * 是否可以用简单的count查询方式
      *
-     * @param select
-     * @return
+     * @param select 查询
+     * @return the boolean
      */
     public boolean isSimpleCount(PlainSelect select) {
         //包含group by的时候不可以
@@ -299,7 +301,7 @@ public class CountSqlParser {
     /**
      * 处理selectBody去除Order by
      *
-     * @param selectBody
+     * @param selectBody 查询信息
      */
     public void processSelectBody(SelectBody selectBody) {
         if (selectBody instanceof PlainSelect) {
@@ -326,7 +328,7 @@ public class CountSqlParser {
     /**
      * 处理PlainSelect类型的selectBody
      *
-     * @param plainSelect
+     * @param plainSelect 计划查询
      */
     public void processPlainSelect(PlainSelect plainSelect) {
         if (!orderByHashParameters(plainSelect.getOrderByElements())) {
@@ -348,7 +350,7 @@ public class CountSqlParser {
     /**
      * 处理WithItem
      *
-     * @param withItemsList
+     * @param withItemsList WithItem
      */
     public void processWithItemsList(List<WithItem> withItemsList) {
         if (withItemsList != null && withItemsList.size() > 0) {
@@ -361,7 +363,7 @@ public class CountSqlParser {
     /**
      * 处理子查询
      *
-     * @param fromItem
+     * @param fromItem FromItem
      */
     public void processFromItem(FromItem fromItem) {
         if (fromItem instanceof SubJoin) {
@@ -398,8 +400,8 @@ public class CountSqlParser {
     /**
      * 判断Orderby是否包含参数，有参数的不能去
      *
-     * @param orderByElements
-     * @return
+     * @param orderByElements OrderByElement
+     * @return the boolean
      */
     public boolean orderByHashParameters(List<OrderByElement> orderByElements) {
         if (orderByElements == null) {

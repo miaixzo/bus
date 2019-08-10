@@ -20,23 +20,20 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju;
 
 /**
- * 用于识别当前版本号和版权声明! <br/>
- * Bus is Licensed under the MIT License, Bus 3.0 (the "License")
+ * 用于识别当前版本号和版权声明!
+ * Bus is Licensed under the MIT License, Bus 3.0.0 (the "License")
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Bus {
 
-    /**
-     * 标示类
-     */
+
     Bus() {
     }
 
@@ -63,6 +60,8 @@ public final class Bus {
 
     /**
      * 主要版本号
+     *
+     * @return 版本号
      */
     public static String major() {
         return "3";
@@ -70,6 +69,8 @@ public final class Bus {
 
     /**
      * 次要版本号
+     *
+     * @return 次要号
      */
     public static String minor() {
         return "0";
@@ -77,6 +78,8 @@ public final class Bus {
 
     /**
      * 阶段版本号
+     *
+     * @return 阶段号
      */
     public static String stage() {
         return "0";
@@ -84,6 +87,8 @@ public final class Bus {
 
     /**
      * 版本质量
+     *
+     * @return 质量
      */
     public static String level() {
         return "RELEASE";

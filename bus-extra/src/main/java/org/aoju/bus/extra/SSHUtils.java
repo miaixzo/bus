@@ -20,9 +20,10 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.extra;
 
+import com.jcraft.jsch.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.NetUtils;
@@ -31,7 +32,6 @@ import org.aoju.bus.extra.ssh.ChannelType;
 import org.aoju.bus.extra.ssh.Connector;
 import org.aoju.bus.extra.ssh.JschSessionPool;
 import org.aoju.bus.extra.ssh.Sftp;
-import com.jcraft.jsch.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +43,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * SSH2工具类<br>
  * 它允许你连接到一个SSH服务器，并且可以使用端口转发，X11转发，文件传输等。<br>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SSHUtils {

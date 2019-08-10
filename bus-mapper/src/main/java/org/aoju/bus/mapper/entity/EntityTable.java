@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.entity;
 
 import org.aoju.bus.mapper.MapperException;
@@ -41,9 +41,8 @@ import java.util.regex.Pattern;
 /**
  * 数据库表
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class EntityTable {
@@ -75,8 +74,8 @@ public class EntityTable {
     /**
      * 生成当前实体的resultMap对象
      *
-     * @param configuration
-     * @return
+     * @param configuration 配置
+     * @return ResultMap
      */
     public ResultMap getResultMap(Configuration configuration) {
         if (this.resultMap != null) {
@@ -116,9 +115,6 @@ public class EntityTable {
         return this.resultMap;
     }
 
-    /**
-     * 初始化 - Condition 会使用
-     */
     public void initPropertyMap() {
         propertyMap = new HashMap<String, EntityColumn>(getEntityClassColumns().size());
         for (EntityColumn column : getEntityClassColumns()) {
@@ -126,13 +122,6 @@ public class EntityTable {
         }
     }
 
-    /**
-     * 实例化TypeHandler
-     *
-     * @param javaTypeClass
-     * @param typeHandlerClass
-     * @return
-     */
     public <T> TypeHandler<T> getInstance(Class<?> javaTypeClass, Class<?> typeHandlerClass) {
         if (javaTypeClass != null) {
             try {

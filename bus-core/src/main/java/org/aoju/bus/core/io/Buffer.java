@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.consts.Symbol;
@@ -40,23 +40,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A collection of bytes in memory.
+ * 内存中字节的集合.
  *
- * <p><strong>Moving data from first buffer to another is fast.</strong> Instead
- * of copying bytes from first place in memory to another, this class just changes
- * ownership of the underlying byte arrays.
- *
- * <p><strong>This buffer grows with your data.</strong> Just like ArrayList,
- * each buffer starts small. It consumes only the memory it needs to.
- *
- * <p><strong>This buffer pools its byte arrays.</strong> When you allocate a
- * byte array in Java, the runtime must zero-fill the requested array before
- * returning it to you. Even if you're going to write over that space anyway.
- * This class avoids zero-fill and GC churn by pooling byte arrays.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Buffer implements BufferedSource, BufferedSink, Cloneable, ByteChannel {
@@ -70,9 +57,6 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     public Buffer() {
     }
 
-    /**
-     * Returns the number of bytes currently in this buffer.
-     */
     public final long size() {
         return size;
     }
@@ -177,6 +161,10 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
     /**
      * Copy the contents of this to {@code out}.
+     *
+     * @param out 输出流
+     * @return Buffer 内容
+     * @throws IOException 抛出异常
      */
     public final Buffer copyTo(OutputStream out) throws IOException {
         return copyTo(out, 0, size);
@@ -185,6 +173,12 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     /**
      * Copy {@code byteCount} bytes from this, starting at {@code offset}, to
      * {@code out}.
+     *
+     * @param out       输出流
+     * @param offset    偏移量
+     * @param byteCount 偏移量
+     * @return Buffer 内容
+     * @throws IOException 抛出异常
      */
     public final Buffer copyTo(OutputStream out, long offset, long byteCount) throws IOException {
         if (out == null) throw new IllegalArgumentException("out == null");
@@ -211,6 +205,11 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
     /**
      * Copy {@code byteCount} bytes from this, starting at {@code offset}, to {@code out}.
+     *
+     * @param out       输出流
+     * @param offset    偏移量
+     * @param byteCount 偏移量
+     * @return Buffer 内容
      */
     public final Buffer copyTo(Buffer out, long offset, long byteCount) {
         if (out == null) throw new IllegalArgumentException("out == null");
@@ -244,6 +243,10 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
     /**
      * Write the contents of this to {@code out}.
+     *
+     * @param out 输出流
+     * @return Buffer 内容
+     * @throws IOException 抛出异常
      */
     public final Buffer writeTo(OutputStream out) throws IOException {
         return writeTo(out, size);
@@ -251,6 +254,11 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
     /**
      * Write {@code byteCount} bytes from this to {@code out}.
+     *
+     * @param out       输出流
+     * @param byteCount 偏移量
+     * @return Buffer 内容
+     * @throws IOException 抛出异常
      */
     public final Buffer writeTo(OutputStream out, long byteCount) throws IOException {
         if (out == null) throw new IllegalArgumentException("out == null");
@@ -277,6 +285,10 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
     /**
      * Read and exhaust bytes from {@code in} to this.
+     *
+     * @param in 输入流
+     * @return Buffer 内容
+     * @throws IOException 抛出异常
      */
     public final Buffer readFrom(InputStream in) throws IOException {
         readFrom(in, Long.MAX_VALUE, true);
@@ -285,6 +297,11 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
     /**
      * Read {@code byteCount} bytes from {@code in} to this.
+     *
+     * @param in        输入流
+     * @param byteCount 偏移量
+     * @return Buffer 内容
+     * @throws IOException 抛出异常
      */
     public final Buffer readFrom(InputStream in, long byteCount) throws IOException {
         if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
@@ -309,7 +326,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     /**
-     * Returns the number of bytes in segments that are not writable. This is the
+     * @return the number of bytes in segments that are not writable. This is the
      * number of bytes that can be flushed immediately to an underlying sink
      * without harming throughput.
      */
@@ -350,6 +367,9 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
     /**
      * Returns the byte at {@code pos}.
+     *
+     * @param pos long
+     * @return byte 内容
      */
     public final byte getByte(long pos) {
         IoUtils.checkOffsetAndCount(size, pos, 1);
@@ -1385,6 +1405,8 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     /**
+     * @param minimumCapacity int
+     * @return segment Segment
      * Returns a tail segment that we can write at least {@code minimumCapacity}
      * bytes to, creating it if necessary.
      */
@@ -1788,9 +1810,6 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
         return Timeout.NONE;
     }
 
-    /**
-     * For testing. This returns the sizes of the segments in this buffer.
-     */
     List<Integer> segmentSizes() {
         if (head == null) return Collections.emptyList();
         List<Integer> result = new ArrayList<>();
@@ -1802,28 +1821,28 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     /**
-     * Returns the 128-bit MD5 hash of this buffer.
+     * @return the 128-bit MD5 hash of this buffer.
      */
     public final ByteString md5() {
         return digest("MD5");
     }
 
     /**
-     * Returns the 160-bit SHA-1 hash of this buffer.
+     * @return the 160-bit SHA-1 hash of this buffer.
      */
     public final ByteString sha1() {
         return digest("SHA-1");
     }
 
     /**
-     * Returns the 256-bit SHA-256 hash of this buffer.
+     * @return the 256-bit SHA-256 hash of this buffer.
      */
     public final ByteString sha256() {
         return digest("SHA-256");
     }
 
     /**
-     * Returns the 512-bit SHA-512 hash of this buffer.
+     * @return the 512-bit SHA-512 hash of this buffer.
      */
     public final ByteString sha512() {
         return digest("SHA-512");
@@ -1845,21 +1864,24 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     /**
-     * Returns the 160-bit SHA-1 HMAC of this buffer.
+     * @param key ByteString
+     * @return the 160-bit SHA-1 HMAC of this buffer.
      */
     public final ByteString hmacSha1(ByteString key) {
         return hmac("HmacSHA1", key);
     }
 
     /**
-     * Returns the 256-bit SHA-256 HMAC of this buffer.
+     * @param key ByteString
+     * @return the 256-bit SHA-256 HMAC of this buffer.
      */
     public final ByteString hmacSha256(ByteString key) {
         return hmac("HmacSHA256", key);
     }
 
     /**
-     * Returns the 512-bit SHA-512 HMAC of this buffer.
+     * @param key ByteString
+     * @return the 512-bit SHA-512 HMAC of this buffer.
      */
     public final ByteString hmacSha512(ByteString key) {
         return hmac("HmacSHA512", key);
@@ -1958,7 +1980,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     /**
-     * Returns an immutable copy of this buffer as a byte string.
+     * @return an immutable copy of this buffer as a byte string.
      */
     public final ByteString snapshot() {
         if (size > Integer.MAX_VALUE) {
@@ -1968,7 +1990,8 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     /**
-     * Returns an immutable copy of the first {@code byteCount} bytes of this buffer as a byte string.
+     * @param byteCount int
+     * @return an immutable copy of the first {@code byteCount} bytes of this buffer as a byte string.
      */
     public final ByteString snapshot(int byteCount) {
         if (byteCount == 0) return ByteString.EMPTY;
@@ -2212,22 +2235,12 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
         public int end = -1;
         private Segment segment;
 
-        /**
-         * Seeks to the next range of bytes, advancing the offset by {@code end - start}. Returns the
-         * size of the readable range (at least 1), or -1 if we have reached the end of the buffer and
-         * there are no more bytes to read.
-         */
         public final int next() {
             if (offset == buffer.size) throw new IllegalStateException();
             if (offset == -1L) return seek(0L);
             return seek(offset + (end - start));
         }
 
-        /**
-         * Reposition the cursor so that the data at {@code offset} is readable at {@code data[start]}.
-         * Returns the number of bytes readable in {@code data} (at least 1), or -1 if there are no data
-         * to read.
-         */
         public final int seek(long offset) {
             if (offset < -1 || offset > buffer.size) {
                 throw new ArrayIndexOutOfBoundsException(
@@ -2315,6 +2328,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
          * in the returned buffers is not zero filled. Buffers may contain dirty pooled segments that
          * hold very sensitive data from other parts of the current process.
          *
+         * @param newSize long
          * @return the previous size of the buffer.
          */
         public final long resizeBuffer(long newSize) {
@@ -2430,7 +2444,6 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
         @Override
         public void close() {
-            // TODO(jwilson): use edit counts or other information to track unexpected changes?
             if (buffer == null) {
                 throw new IllegalStateException("not attached to a buffer");
             }

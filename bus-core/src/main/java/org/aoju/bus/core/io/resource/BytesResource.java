@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -37,9 +37,8 @@ import java.nio.charset.Charset;
  * 基于byte[]的资源获取器<br>
  * 注意：此对象中getUrl方法始终返回null
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class BytesResource implements Resource {

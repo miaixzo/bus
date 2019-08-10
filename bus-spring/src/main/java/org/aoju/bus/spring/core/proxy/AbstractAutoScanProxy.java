@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.core.proxy;
 
 import org.aoju.bus.core.utils.ArrayUtils;
@@ -44,9 +44,8 @@ import java.util.Map;
  * <p>Title: 自动扫描代理</p>
  * <p>Description: </p>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public abstract class AbstractAutoScanProxy extends AbstractAutoProxyCreator {

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cron.task;
 
 import org.aoju.bus.core.lang.exception.CommonException;
@@ -35,9 +35,8 @@ import java.lang.reflect.Method;
  * 通过传入类名#方法名，通过反射执行相应的方法<br>
  * 如果是静态方法直接执行，如果是对象方法，需要类有默认的构造方法。
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class InvokeTask implements Task {

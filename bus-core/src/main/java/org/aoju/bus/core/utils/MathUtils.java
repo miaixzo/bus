@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.math.Arrangement;
@@ -32,9 +32,8 @@ import java.util.List;
  * 数学相关方法工具类<br>
  * 此工具类与{@link NumberUtils}属于一类工具，NumberUtil偏向于简单数学计算的封装，MathUtil偏向复杂数学计算
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class MathUtils {

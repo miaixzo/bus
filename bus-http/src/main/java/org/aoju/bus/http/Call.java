@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.Timeout;
@@ -31,14 +31,14 @@ import java.io.IOException;
  * A call is a request that has been prepared for execution. A call can be canceled. As this object
  * represents a single request/response pair (stream), it cannot be executed twice.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface Call extends Cloneable {
+
     /**
-     * Returns the original request that initiated this call.
+     * @return the original request that initiated this call.
      */
     Request request();
 
@@ -66,10 +66,10 @@ public interface Call extends Cloneable {
      * not necessarily indicate application-layer success: {@code response} may still indicate an
      * unhappy HTTP response code like 404 or 500.
      *
-     * @throws IOException           if the request could not be executed due to cancellation, a connectivity
-     *                               problem or timeout. Because networks can fail during an exchange, it is possible that the
-     *                               remote server accepted the request before the failure.
-     * @throws IllegalStateException when the call has already been executed.
+     * @return Response
+     * @throws IOException if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout. Because networks can fail during an exchange, it is possible that the
+     *                     remote server accepted the request before the failure.
      */
     Response execute() throws IOException;
 
@@ -82,7 +82,7 @@ public interface Call extends Cloneable {
      * <p>This client will later call back {@code responseCallback} with either an HTTP response or a
      * failure exception.
      *
-     * @throws IllegalStateException when the call has already been executed.
+     * @param responseCallback Callback
      */
     void enqueue(Callback responseCallback);
 
@@ -94,6 +94,8 @@ public interface Call extends Cloneable {
     /**
      * Returns true if this call has been either {@linkplain #execute() executed} or {@linkplain
      * #enqueue(Callback) enqueued}. It is an error to execute a call more than once.
+     *
+     * @return the boolean
      */
     boolean isExecuted();
 
@@ -105,12 +107,16 @@ public interface Call extends Cloneable {
      * retries all must complete within one timeout period.
      *
      * <p>Configure the client's default timeout with {@link HttpClient.Builder#callTimeout}.
+     *
+     * @return the Timeout
      */
     Timeout timeout();
 
     /**
      * Create a new, identical call to this one which can be enqueued or executed even if this call
      * has already been.
+     *
+     * @return the Call
      */
     Call clone();
 

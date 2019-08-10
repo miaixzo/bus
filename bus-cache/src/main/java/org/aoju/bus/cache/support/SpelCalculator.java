@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cache.support;
 
 import com.google.common.base.Preconditions;
@@ -33,9 +33,8 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 /**
  * Spel表达式的计算功能(@Cached内的condition、@CacheKey内的spel只是作为一个增值服务, 并不作为核心功能, 只是作为key拼装的一个亮点, 并不是必须功能)
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class SpelCalculator {

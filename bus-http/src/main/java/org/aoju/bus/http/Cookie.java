@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.internal.Internal;
@@ -38,9 +38,8 @@ import java.util.regex.Pattern;
  * href="https://code.google.com/p/chromium/issues/detail?id=232693">Chromium's Priority=HIGH
  * extension</a>.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Cookie {
@@ -123,10 +122,6 @@ public final class Cookie {
         return false;
     }
 
-    /**
-     * Attempt to parse a {@code Set-Cookie} HTTP header value {@code setCookie} as a cookie. Returns
-     * null if {@code setCookie} is not a well-formed cookie.
-     */
     public static Cookie parse(HttpUrl url, String setCookie) {
         return parse(System.currentTimeMillis(), url, setCookie);
     }
@@ -236,9 +231,6 @@ public final class Cookie {
                 hostOnly, persistent);
     }
 
-    /**
-     * Parse a date as specified in RFC 6265, section 5.1.1.
-     */
     private static long parseExpires(String s, int pos, int limit) {
         pos = dateCharacterOffset(s, pos, limit, false);
 
@@ -295,10 +287,6 @@ public final class Cookie {
         return calendar.getTimeInMillis();
     }
 
-    /**
-     * Returns the index of the next date character in {@code input}, or if {@code invert} the index
-     * of the next non-date character in {@code input}.
-     */
     private static int dateCharacterOffset(String input, int pos, int limit, boolean invert) {
         for (int i = pos; i < limit; i++) {
             int c = input.charAt(i);
@@ -312,13 +300,6 @@ public final class Cookie {
         return limit;
     }
 
-    /**
-     * Returns the positive value if {@code attributeValue} is positive, or {@link Long#MIN_VALUE} if
-     * it is either 0 or negative. If the value is positive but out of range, this returns {@link
-     * Long#MAX_VALUE}.
-     *
-     * @throws NumberFormatException if {@code s} is not an integer of any precision.
-     */
     private static long parseMaxAge(String s) {
         try {
             long parsed = Long.parseLong(s);
@@ -332,10 +313,6 @@ public final class Cookie {
         }
     }
 
-    /**
-     * Returns a entity string like {@code example.com} for an input entity like {@code EXAMPLE.COM}
-     * or {@code .example.com}.
-     */
     private static String parseDomain(String s) {
         if (s.endsWith(".")) {
             throw new IllegalArgumentException();
@@ -350,9 +327,6 @@ public final class Cookie {
         return canonicalDomain;
     }
 
-    /**
-     * Returns all of the cookies from a set of HTTP response headers.
-     */
     public static List<Cookie> parseAll(HttpUrl url, Headers headers) {
         List<String> cookieStrings = headers.values("Set-Cookie");
         List<Cookie> cookies = null;
@@ -369,90 +343,42 @@ public final class Cookie {
                 : Collections.<Cookie>emptyList();
     }
 
-    /**
-     * Returns a non-empty string with this cookie's name.
-     */
     public String name() {
         return name;
     }
 
-    /**
-     * Returns a possibly-empty string with this cookie's value.
-     */
     public String value() {
         return value;
     }
 
-    /**
-     * Returns true if this cookie does not expire at the end of the current session.
-     */
     public boolean persistent() {
         return persistent;
     }
 
-    /**
-     * Returns the time that this cookie expires, in the same format as {@link
-     * System#currentTimeMillis()}. This is December 31, 9999 if the cookie is {@linkplain
-     * #persistent() not persistent}, in which case it will expire at the end of the current session.
-     *
-     * <p>This may return a value less than the current time, in which case the cookie is already
-     * expired. Webservers may return expired cookies as a mechanism to delete previously set cookies
-     * that may or may not themselves be expired.
-     */
     public long expiresAt() {
         return expiresAt;
     }
 
-    /**
-     * Returns true if this cookie's entity should be interpreted as a single host name, or false if
-     * it should be interpreted as a pattern. This flag will be false if its {@code Set-Cookie} header
-     * included a {@code entity} attribute.
-     *
-     * <p>For example, suppose the cookie's entity is {@code example.com}. If this flag is true it
-     * matches <strong>only</strong> {@code example.com}. If this flag is false it matches {@code
-     * example.com} and all subdomains including {@code api.example.com}, {@code www.example.com}, and
-     * {@code beta.api.example.com}.
-     */
     public boolean hostOnly() {
         return hostOnly;
     }
 
-    /**
-     * Returns the cookie's entity. If {@link #hostOnly()} returns true this is the only entity that
-     * matches this cookie; otherwise it matches this entity and all subdomains.
-     */
     public String domain() {
         return domain;
     }
 
-    /**
-     * Returns this cookie's path. This cookie matches URLs prefixed with path segments that match
-     * this path's segments. For example, if this path is {@code /foo} this cookie matches requests to
-     * {@code /foo} and {@code /foo/bar}, but not {@code /} or {@code /football}.
-     */
     public String path() {
         return path;
     }
 
-    /**
-     * Returns true if this cookie should be limited to only HTTP APIs. In web browsers this prevents
-     * the cookie from being accessible to scripts.
-     */
     public boolean httpOnly() {
         return httpOnly;
     }
 
-    /**
-     * Returns true if this cookie should be limited to only HTTPS requests.
-     */
     public boolean secure() {
         return secure;
     }
 
-    /**
-     * Returns true if this cookie should be included on a request to {@code url}. In addition to this
-     * check callers should also confirm that this cookie has not expired.
-     */
     public boolean matches(HttpUrl url) {
         boolean domainMatch = hostOnly
                 ? url.host().equals(domain)
@@ -475,6 +401,7 @@ public final class Cookie {
      * @param forObsoleteRfc2965 true to include a leading {@code .} on the entity pattern. This is
      *                           necessary for {@code example.com} to match {@code www.example.com} under RFC 2965. This
      *                           extra dot is ignored by more recent specifications.
+     * @return string
      */
     String toString(boolean forObsoleteRfc2965) {
         StringBuilder result = new StringBuilder();
@@ -581,18 +508,10 @@ public final class Cookie {
             return this;
         }
 
-        /**
-         * Set the entity pattern for this cookie. The cookie will match {@code entity} and all of its
-         * subdomains.
-         */
         public Builder domain(String domain) {
             return domain(domain, false);
         }
 
-        /**
-         * Set the host-only entity for this cookie. The cookie will match {@code entity} but none of
-         * its subdomains.
-         */
         public Builder hostOnlyDomain(String domain) {
             return domain(domain, true);
         }

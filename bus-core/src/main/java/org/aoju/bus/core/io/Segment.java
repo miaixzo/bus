@@ -20,27 +20,22 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.io;
 
 /**
- * A segment of a buffer.
+ * 缓冲区的一段
+ * 缓冲区中的每个段都是一个循环链表节点，它引用以下内容和
+ * 缓冲区中前面的段。
+ * 池中的每个段都是一个单链列表节点，引用池。
+ * 段的底层字节数组可以在缓冲区和字节字符串之间共享。当一个
+ * 段不能回收，也不能改变它的字节数据。
+ * 唯一的例外是允许所有者段附加到段中，写入数据
+ * {@code limit}及以上。每个字节数组都有一个单独的拥有段。的立场,
+ * 限制、prev和next引用不共享。
  *
- * <p>Each segment in a buffer is a circularly-linked list node referencing the following and
- * preceding segments in the buffer.
- *
- * <p>Each segment in the pool is a singly-linked list node referencing the rest of segments in the
- * pool.
- *
- * <p>The underlying byte arrays of segments may be shared between buffers and byte strings. When a
- * segment's byte array is shared the segment may not be recycled, nor may its byte data be changed.
- * The lone exception is that the owner segment is allowed to append to the segment, writing data at
- * {@code limit} and beyond. There is a single owning segment for each byte array. Positions,
- * limits, prev, and next references are not shared.
- *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public final class Segment {
@@ -101,27 +96,15 @@ public final class Segment {
         this.owner = owner;
     }
 
-    /**
-     * Returns a new segment that shares the underlying byte array with this. Adjusting pos and limit
-     * are safe but writes are forbidden. This also marks the current segment as shared, which
-     * prevents it from being pooled.
-     */
     final Segment sharedCopy() {
         shared = true;
         return new Segment(data, pos, limit, true, false);
     }
 
-    /**
-     * Returns a new segment that its own private copy of the underlying byte array.
-     */
     final Segment unsharedCopy() {
         return new Segment(data.clone(), pos, limit, false, true);
     }
 
-    /**
-     * Removes this segment of a circularly-linked list and returns its successor.
-     * Returns null if the list is now empty.
-     */
     public final Segment pop() {
         Segment result = next != this ? next : null;
         prev.next = next;
@@ -131,10 +114,6 @@ public final class Segment {
         return result;
     }
 
-    /**
-     * Appends {@code segment} after this segment in the circularly-linked list.
-     * Returns the pushed segment.
-     */
     public final Segment push(Segment segment) {
         segment.prev = this;
         segment.next = next;
@@ -143,14 +122,6 @@ public final class Segment {
         return segment;
     }
 
-    /**
-     * Splits this head of a circularly-linked list into two segments. The first
-     * segment contains the data in {@code [pos..pos+byteCount)}. The second
-     * segment contains the data in {@code [pos+byteCount..limit)}. This can be
-     * useful when moving partial segments from first buffer to another.
-     *
-     * <p>Returns the new head of the circularly-linked list.
-     */
     public final Segment split(int byteCount) {
         if (byteCount <= 0 || byteCount > limit - pos) throw new IllegalArgumentException();
         Segment prefix;
@@ -173,10 +144,6 @@ public final class Segment {
         return prefix;
     }
 
-    /**
-     * Call this when the tail and its predecessor may both be less than half
-     * full. This will copy data so that segments can be recycled.
-     */
     public final void compact() {
         if (prev == this) throw new IllegalStateException();
         if (!prev.owner) return; // Cannot compact: prev isn't writable.
@@ -188,9 +155,6 @@ public final class Segment {
         SegmentPool.recycle(this);
     }
 
-    /**
-     * Moves {@code byteCount} bytes from this segment to {@code sink}.
-     */
     public final void writeTo(Segment sink, int byteCount) {
         if (!sink.owner) throw new IllegalArgumentException();
         if (sink.limit + byteCount > SIZE) {

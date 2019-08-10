@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.common.condition;
 
 import org.aoju.bus.mapper.provider.ConditionProvider;
@@ -31,9 +31,8 @@ import org.apache.ibatis.annotations.UpdateProvider;
 /**
  * 通用Mapper接口,Condition查询
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public interface UpdateByConditionSelectiveMapper<T> {
@@ -41,22 +40,22 @@ public interface UpdateByConditionSelectiveMapper<T> {
     /**
      * 根据Condition条件更新实体`record`包含的不是null的属性值
      *
-     * @param record
-     * @param object
-     * @return
+     * @param record    对象
+     * @param condition 条件
+     * @return 结果
      */
     @UpdateProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    @Options(useCache = false, useGeneratedKeys = false)
-    int updateByConditionSelective(@Param("record") T record, @Param("condition") Object object);
+    @Options(useCache = false)
+    int updateByConditionSelective(@Param("record") T record, @Param("condition") Object condition);
 
     /**
      * 根据Condition条件更新实体`record`包含的不是null的属性值
      *
-     * @param record
-     * @param object
-     * @return
+     * @param record    对象
+     * @param condition 条件
+     * @return 结果
      */
     @UpdateProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    @Options(useCache = false, useGeneratedKeys = false)
-    int updateByWhereSelective(@Param("record") T record, @Param("condition") Object object);
+    @Options(useCache = false)
+    int updateByWhereSelective(@Param("record") T record, @Param("condition") Object condition);
 }

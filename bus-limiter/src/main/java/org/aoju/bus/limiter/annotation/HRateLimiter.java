@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.limiter.annotation;
 
 import java.lang.annotation.*;
@@ -28,9 +28,8 @@ import java.lang.annotation.*;
 /**
  * 限流
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
@@ -52,7 +51,7 @@ public @interface HRateLimiter {
     /**
      * 限制的频率 默认 1次/秒
      *
-     * @return
+     * @return the double
      */
     double rate() default 10.0d;
 
@@ -60,7 +59,7 @@ public @interface HRateLimiter {
      * 最大可累计的令牌容量
      * 默认为 1 且最小为1
      *
-     * @return
+     * @return the long
      */
     long capacity() default 10;
 

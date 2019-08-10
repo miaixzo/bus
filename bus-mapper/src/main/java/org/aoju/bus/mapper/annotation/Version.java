@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.mapper.annotation;
 
 import org.aoju.bus.mapper.version.DefaultNextVersion;
@@ -34,9 +34,8 @@ import java.lang.annotation.Target;
 /**
  * 版本信息
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 @Target({ElementType.FIELD})
@@ -45,6 +44,8 @@ public @interface Version {
 
     /**
      * 下一个版本号的算法，默认算法支持 Integer 和 Long，在原基础上 +1
+     *
+     * @return 版本信息
      */
     Class<? extends NextVersion> nextVersion() default DefaultNextVersion.class;
 

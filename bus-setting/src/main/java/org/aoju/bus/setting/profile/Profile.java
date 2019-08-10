@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.setting.profile;
 
 import org.aoju.bus.core.consts.Normal;
@@ -44,18 +44,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * <li>production =》 ${classpath}/production/db.setting</li>
  * </ol>
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public class Profile implements Serializable {
 
-    private static final long serialVersionUID = -4189955219454008744L;
     /**
      * 默认环境
      */
     public static final String DEFAULT_PROFILE = "default";
+    private static final long serialVersionUID = -4189955219454008744L;
     /**
      * 条件
      */

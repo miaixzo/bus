@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.http;
 
 import java.io.IOException;
@@ -34,12 +34,12 @@ import java.io.IOException;
  * (http/1.1, spdy/3.1, etc.). HttpClient uses the word <i>protocol</i> to identify how HTTP messages
  * are framed.
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.0
  * @since JDK 1.8
  */
 public enum Protocol {
+
     /**
      * An obsolete plaintext framing that does not use persistent sockets by default.
      */
@@ -97,11 +97,6 @@ public enum Protocol {
         this.protocol = protocol;
     }
 
-    /**
-     * Returns the protocol identified by {@code protocol}.
-     *
-     * @throws IOException if {@code protocol} is unknown.
-     */
     public static Protocol get(String protocol) throws IOException {
         // Unroll the loop over values() to save an allocation.
         if (protocol.equals(HTTP_1_0.protocol)) return HTTP_1_0;
@@ -113,13 +108,6 @@ public enum Protocol {
         throw new IOException("Unexpected protocol: " + protocol);
     }
 
-    /**
-     * Returns the string used to identify this protocol for ALPN, like "http/1.1", "spdy/3.1" or
-     * "h2".
-     *
-     * @see <a href="https://www.iana.org/assignments/tls-extensiontype-values">IANA
-     * tls-extensiontype-values</a>
-     */
     @Override
     public String toString() {
         return protocol;
