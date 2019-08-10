@@ -144,7 +144,8 @@ public class AioSession {
 
     /**
      * 写数据到目标端，并关闭输出
-     * @param  data 字节
+     *
+     * @param data 字节
      * @return this
      */
     public AioSession writeAndClose(ByteBuffer data) {
@@ -154,7 +155,8 @@ public class AioSession {
 
     /**
      * 写数据到目标端
-     *@param  data 字节
+     *
+     * @param data 字节
      * @return {@link Future}
      */
     public Future<Integer> write(ByteBuffer data) {
@@ -163,7 +165,8 @@ public class AioSession {
 
     /**
      * 写数据到目标端
-     * @param  data 字节
+     *
+     * @param data    字节
      * @param handler {@link CompletionHandler}
      * @return this
      */
