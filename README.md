@@ -1,9 +1,9 @@
 <p align="center">
+    <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
+		<img src="https://img.shields.io/badge/maven--central-v3.0.0-blue.svg?label=Maven%20Central" ></img>
+	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
-	</a>
-    <a target="_blank" href="http://maven.apache.org">
-		<img src="https://img.shields.io/badge/Maven-3.5.0-yellowgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">
 		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg">
@@ -22,9 +22,6 @@
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
 		<img src="https://img.shields.io/badge/poi-3.1.7-blue.svg">
-	</a>
-	<a target="_blank" href="http://github.com/aoju/bus.git">
-		<img src="https://img.shields.io/badge/version-3.0.0-brightgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.mit-license.org">
 		<img src="https://img.shields.io/badge/license-MIT-green.svg">
