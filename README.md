@@ -54,7 +54,8 @@ Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、�
 ## 组件信息
 |服务名 | 父级依赖 | 模块说明|
 |----|----|----        |
-|bus-all|无|为微服务提供统一的pom管理，以及通用组件|  
+|bus-all|无|为微服务提供统一的pom管理，以及通用组件| 
+|bus-boot|无|springboot starter| 
 |bus-base|无|基础功能及base相关功能|
 |bus-cache|无|缓存服务及工具等|
 |bus-core|无|核心功能及工具类等|
@@ -76,7 +77,6 @@ Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、�
 |bus-storage|无|存储公用工具类,qiniu,alioss等|
 |bus-swagger|无|API调用及测试|
 |bus-validate|无|参数校验|
-
 
 
 ## 功能概述
