@@ -76,6 +76,7 @@
                 <version>3.1.1</version>
                 <executions>
                     <execution>
+                        <id>attach-javadocs</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
@@ -111,7 +112,7 @@
                             <execution>
                                 <id>attach-sources</id>
                                 <goals>
-                                    <goal>jar</goal>
+                                    <goal>jar-no-fork</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -122,7 +123,7 @@
                         <version>1.6</version>
                         <executions>
                             <execution>
-                                <id>oss</id>
+                                <id>sonatype-nexus-staging</id>
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
@@ -136,7 +137,7 @@
                         <version>1.6.8</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>oss</serverId>
+                            <serverId>sonatype-nexus-staging</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
