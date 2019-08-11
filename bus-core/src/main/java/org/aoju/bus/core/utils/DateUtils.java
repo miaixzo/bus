@@ -200,7 +200,7 @@ public class DateUtils extends Fields {
      * 获得月份
      *
      * @param date 日期
-     * @return {@link Fields.Month}
+     * @return month
      */
     public static Fields.Month monthEnum(Date date) {
         return DateTime.of(date).monthEnum();
@@ -250,7 +250,7 @@ public class DateUtils extends Fields {
      * 获得指定日期是星期几
      *
      * @param date 日期
-     * @return {@link Fields.Week}
+     * @return month
      */
     public static Fields.Week dayOfWeekEnum(Date date) {
         return DateTime.of(date).dayOfWeekEnum();
@@ -333,7 +333,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * @return 当前月份 {@link Fields.Month}
+     * @return 当前月份
      */
     public static Fields.Month thisMonthEnum() {
         return monthEnum(date());
@@ -368,7 +368,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * @return 当前日期是星期几 {@link Fields.Week}
+     * @return 当前日期是星期几
      */
     public static Fields.Week thisDayOfWeekEnum() {
         return dayOfWeekEnum(date());
@@ -1060,7 +1060,7 @@ public class DateUtils extends Fields {
      * 获取指定日期偏移指定时间后的时间
      *
      * @param date      基准日期
-     * @param dateField 偏移的粒度大小（小时、天、月等）{@link Fields.DateField}
+     * @param dateField 偏移的粒度大小（小时、天、月等）
      * @param offset    偏移量，正数为向后偏移，负数为向前偏移
      * @return 偏移后的日期
      */
@@ -2360,9 +2360,9 @@ public class DateUtils extends Fields {
      * 比较时间(string类型)大小
      *
      * @param date1 日期
-     * @param date2 date1 大于date2 return 1 
-     *              date1 小于date2 return -1 
-     *              date1 等于date2 return 0 
+     * @param date2 date1 大于date2 return 1
+     *              date1 小于date2 return -1
+     *              date1 等于date2 return 0
      * @return the int
      */
     public static int compareDate(String date1, String date2) {
