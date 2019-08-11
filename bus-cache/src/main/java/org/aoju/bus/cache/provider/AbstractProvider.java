@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.cache.provider;
 
 import org.aoju.bus.cache.entity.Pair;
@@ -39,9 +39,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public abstract class AbstractProvider implements BaseProvider {
@@ -91,10 +90,10 @@ public abstract class AbstractProvider implements BaseProvider {
     /**
      * convert DB Map Result to DataDO(Stream)
      *
-     * @param mapResults: {@code List<Map<String, Object>>} result from query DB.
-     * @return
+     * @param map result from query DB.
+     * @return the object
      */
-    protected abstract Stream<DataDO> transferResults(List<Map<String, Object>> mapResults);
+    protected abstract Stream<DataDO> transferResults(List<Map<String, Object>> map);
 
     private void dumpToDB(BlockingQueue<Pair<String, Integer>> queue, String column) {
         long times = 0;

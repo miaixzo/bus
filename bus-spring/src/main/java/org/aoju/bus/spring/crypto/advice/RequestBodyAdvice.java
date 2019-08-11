@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.crypto.advice;
 
 import org.aoju.bus.base.spring.BaseAdvice;
@@ -33,22 +33,22 @@ import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.spring.crypto.CryptoProperties;
-import org.aoju.bus.spring.crypto.annotation.CryptoD;
+import org.aoju.bus.spring.crypto.annotation.DecryptBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageConverter;
 
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
  * 请求请求处理类（目前仅仅对requestbody有效）
  * 对加了@Decrypt的方法的数据进行解密密操作
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class RequestBodyAdvice extends BaseAdvice
@@ -71,7 +71,15 @@ public class RequestBodyAdvice extends BaseAdvice
     public boolean supports(MethodParameter parameter,
                             Type type,
                             Class<? extends HttpMessageConverter<?>> converterType) {
-        return true;
+        Annotation[] annotations = parameter.getDeclaringClass().getAnnotations();
+        if (annotations != null && annotations.length > 0) {
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof DecryptBody) {
+                    return true;
+                }
+            }
+        }
+        return parameter.getMethod().isAnnotationPresent(DecryptBody.class);
     }
 
     /**
@@ -91,7 +99,7 @@ public class RequestBodyAdvice extends BaseAdvice
                                                                     Class<? extends HttpMessageConverter<?>> converterType) {
         if (!cryptoProperties.isDebug()) {
             try {
-                final CryptoD decrypt = parameter.getMethod().getAnnotation(CryptoD.class);
+                final DecryptBody decrypt = parameter.getMethod().getAnnotation(DecryptBody.class);
                 if (ObjectUtils.isNotNull(decrypt)) {
                     final String key = StringUtils.defaultString(decrypt.key(), cryptoProperties.getDecrypt().getKey());
                     return new HttpInputMessage(inputMessage, key, decrypt.type(), Charset.DEFAULT_UTF_8);

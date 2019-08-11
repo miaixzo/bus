@@ -1,0 +1,10 @@
+logging:
+  pattern:
+    console: "%boldRed(%d{yyyy-MM-dd HH:mm:ss}) %green([%p]) - %highlight(%C:%L) : - %magenta(%m%n)"
+  file:
+    max-size: 10MB
+
+spring:
+  output:
+    ansi:
+      enabled: always

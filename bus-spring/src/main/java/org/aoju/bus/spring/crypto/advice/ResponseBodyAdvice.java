@@ -20,9 +20,10 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.spring.crypto.advice;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aoju.bus.base.spring.BaseAdvice;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -30,8 +31,7 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.spring.crypto.CryptoProperties;
-import org.aoju.bus.spring.crypto.annotation.CryptoE;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aoju.bus.spring.crypto.annotation.EncryptBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -39,14 +39,15 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 
+import java.lang.annotation.Annotation;
+
 
 /**
  * 请求响应处理类
  * 对加了@Encrypt的方法的数据进行加密操作
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class ResponseBodyAdvice extends BaseAdvice
@@ -58,7 +59,15 @@ public class ResponseBodyAdvice extends BaseAdvice
     @Override
     public boolean supports(MethodParameter returnType,
                             Class<? extends HttpMessageConverter<?>> converterType) {
-        return true;
+        Annotation[] annotations = returnType.getDeclaringClass().getAnnotations();
+        if (annotations != null && annotations.length > 0) {
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof EncryptBody) {
+                    return true;
+                }
+            }
+        }
+        return returnType.getMethod().isAnnotationPresent(EncryptBody.class);
     }
 
     /**
@@ -66,7 +75,7 @@ public class ResponseBodyAdvice extends BaseAdvice
      * its write method is invoked.
      *
      * @param body                  the body to be written
-     * @param returnType            the return type of the controller method
+     * @param parameter             the parameter info
      * @param selectedContentType   the content type selected through content negotiation
      * @param selectedConverterType the converter type selected to write to the response
      * @param request               the current request
@@ -78,7 +87,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!cryptoProperties.isDebug()) {
             try {
-                final CryptoE encrypt = parameter.getMethod().getAnnotation(CryptoE.class);
+                final EncryptBody encrypt = parameter.getMethod().getAnnotation(EncryptBody.class);
                 if (ObjectUtils.isNotNull(encrypt)) {
                     final String key = StringUtils.defaultString(encrypt.key(), cryptoProperties.getDecrypt().getKey());
 

@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.consts;
 
 import org.aoju.bus.core.date.format.FastDateFormat;
@@ -31,9 +31,8 @@ import java.util.TimeZone;
 /**
  * 日期场景属性
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class Fields {
@@ -194,9 +193,8 @@ public class Fields {
      * 日期各个部分的枚举<br>
      * 与Calendar相应值对应
      *
-     * @author aoju.org
-     * @version 3.0.1
-     * @group 839128
+     * @author Kimi Liu
+     * @version 3.0.5
      * @since JDK 1.8
      */
     public enum DateField {
@@ -336,9 +334,8 @@ public class Fields {
     /**
      * 日期时间单位，每个单位都是以毫秒为基数
      *
-     * @author aoju.org
-     * @version 3.0.1
-     * @group 839128
+     * @author Kimi Liu
+     * @version 3.0.5
      * @since JDK 1.8
      */
     public enum Unit {
@@ -386,9 +383,8 @@ public class Fields {
      * 月份枚举<br>
      * 与Calendar中的月份int值对应
      *
-     * @author aoju.org
-     * @version 3.0.1
-     * @group 839128
+     * @author Kimi Liu
+     * @version 3.0.5
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -525,9 +521,8 @@ public class Fields {
     /**
      * 季度枚举
      *
-     * @author aoju.org
-     * @version 3.0.1
-     * @group 839128
+     * @author Kimi Liu
+     * @version 3.0.5
      * @since JDK 1.8
      */
     public enum Quarter {
@@ -589,9 +584,8 @@ public class Fields {
      * 星期枚举<br>
      * 与Calendar中的星期int值对应
      *
-     * @author aoju.org
-     * @version 3.0.1
-     * @group 839128
+     * @author Kimi Liu
+     * @version 3.0.5
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY
@@ -727,6 +721,56 @@ public class Fields {
             }
         }
 
+    }
+
+    /**
+     * 格式化等级枚举
+     */
+    public enum Level {
+
+        /**
+         * 天
+         */
+        DAY("天"),
+        /**
+         * 小时
+         */
+        HOUR("小时"),
+        /**
+         * 分钟
+         */
+        MINUTE("分"),
+        /**
+         * 秒
+         */
+        SECOND("秒"),
+        /**
+         * 毫秒
+         */
+        MILLSECOND("毫秒");
+
+        /**
+         * 级别名称
+         */
+        public String name;
+
+        /**
+         * 构造
+         *
+         * @param name 级别名称
+         */
+        Level(String name) {
+            this.name = name;
+        }
+
+        /**
+         * 获取级别名称
+         *
+         * @return 级别名称
+         */
+        public String getName() {
+            return this.name;
+        }
     }
 
 }

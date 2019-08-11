@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.text;
 
 
@@ -143,7 +143,6 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * 创建字符串构建器
      *
      * @param strs 初始字符串
-     * @return {@link StrBuilder}
      * @since 4.0.1
      */
     public StrBuilder(CharSequence... strs) {

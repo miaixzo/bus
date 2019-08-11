@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.extra;
 
 import com.vdurmont.emoji.Emoji;
@@ -34,9 +34,8 @@ import java.util.Set;
 /**
  * 基于emoji-java的Emoji表情工具类
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class EmojiUtils {
@@ -121,7 +120,8 @@ public class EmojiUtils {
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy|type_6:</code>
      *
-     * @param str 包含Emoji Unicode字符的字符串
+     * @param str               包含Emoji Unicode字符的字符串
+     * @param fitzpatrickAction 修饰符
      * @return 替换后的字符串
      */
     public static String toAlias(String str, FitzpatrickAction fitzpatrickAction) {

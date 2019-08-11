@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.consts.Fields;
@@ -33,9 +33,8 @@ import java.util.Date;
 /**
  * 日期间隔
  *
- * @author aoju.org
- * @version 3.0.1
- * @group 839128
+ * @author Kimi Liu
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class Between {
@@ -110,7 +109,7 @@ public class Between {
      * 判断两个日期相差的时长<br>
      * 返回 给定单位的时长差
      *
-     * @param unit 相差的单位：相差 天{@link Fields.Unit#DAY}、小时{@link Fields.Unit#HOUR} 等
+     * @param unit 相差的单位
      * @return 时长差
      */
     public long between(Fields.Unit unit) {
@@ -174,13 +173,13 @@ public class Between {
      * @param level 级别
      * @return 字符串
      */
-    public String toString(BetweenFormat.Level level) {
+    public String toString(Fields.Level level) {
         return DateUtils.formatBetween(between(Fields.Unit.MS), level);
     }
 
     @Override
     public String toString() {
-        return toString(BetweenFormat.Level.MILLSECOND);
+        return toString(Fields.Level.MILLSECOND);
     }
 
 }
