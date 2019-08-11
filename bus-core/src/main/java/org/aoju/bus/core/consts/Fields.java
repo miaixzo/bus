@@ -723,4 +723,54 @@ public class Fields {
 
     }
 
+    /**
+     * 格式化等级枚举
+     */
+    public enum Level {
+
+        /**
+         * 天
+         */
+        DAY("天"),
+        /**
+         * 小时
+         */
+        HOUR("小时"),
+        /**
+         * 分钟
+         */
+        MINUTE("分"),
+        /**
+         * 秒
+         */
+        SECOND("秒"),
+        /**
+         * 毫秒
+         */
+        MILLSECOND("毫秒");
+
+        /**
+         * 级别名称
+         */
+        public String name;
+
+        /**
+         * 构造
+         *
+         * @param name 级别名称
+         */
+        Level(String name) {
+            this.name = name;
+        }
+
+        /**
+         * 获取级别名称
+         *
+         * @return 级别名称
+         */
+        public String getName() {
+            return this.name;
+        }
+    }
+
 }

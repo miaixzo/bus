@@ -26,7 +26,6 @@ package org.aoju.bus.crypto.factory;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.CryptoFactory;
 import org.aoju.bus.crypto.Mode;
-import sun.misc.BASE64Decoder;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -37,6 +36,7 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 /**
  * RSA 加密解密算法
@@ -84,15 +84,15 @@ public class RsaCryptoFactory implements CryptoFactory {
         }
     }
 
-    private PublicKey getPublicKey(String key) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] keyBytes = (new BASE64Decoder()).decodeBuffer(key);
+    private PublicKey getPublicKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] keyBytes = Base64.getDecoder().decode(key);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(Mode.RSA.getValue());
         return keyFactory.generatePublic(keySpec);
     }
 
-    private PrivateKey getPrivateKey(String key) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        byte[] keyBytes = (new BASE64Decoder()).decodeBuffer(key);
+    private PrivateKey getPrivateKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] keyBytes = Base64.getDecoder().decode(key);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(Mode.RSA.getValue());
         return keyFactory.generatePrivate(keySpec);

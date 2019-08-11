@@ -24,7 +24,6 @@
 package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.consts.Fields;
-import org.aoju.bus.core.date.format.BetweenFormat;
 import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
@@ -241,10 +240,10 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得日期的某个部分<br>
+     * 获得日期的某个部分
      * 例如获得年的部分，则使用 getField(DatePart.YEAR)
      *
-     * @param field 表示日期的哪个部分的枚举 {@link Fields.DateField}
+     * @param field 表示日期的哪个部分的枚举 {@link Fields}
      * @return 某个部分的值
      */
     public int getField(Fields.DateField field) {
@@ -252,7 +251,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得日期的某个部分<br>
+     * 获得日期的某个部分
      * 例如获得年的部分，则使用 getField(Calendar.YEAR)
      *
      * @param field 表示日期的哪个部分的int值 {@link Calendar}
@@ -279,18 +278,18 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得当前日期所属季度，从1开始计数<br>
+     * 获得当前日期所属季度，从1开始计数
      *
-     * @return 第几个季度 {@link Fields.Quarter}
+     * @return 第几个季度 {@link Fields}
      */
     public int quarter() {
         return month() / 3 + 1;
     }
 
     /**
-     * 获得当前日期所属季度<br>
+     * 获得当前日期所属季度
      *
-     * @return 第几个季度 {@link Fields.Quarter}
+     * @return 第几个季度 {@link Fields}
      */
     public Fields.Quarter quarterEnum() {
         return Fields.Quarter.of(quarter());
@@ -306,7 +305,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得月份，从1开始计数<br>
+     * 获得月份，从1开始计数
      * 由于{@link Calendar} 中的月份按照0开始计数，导致某些需求容易误解，因此如果想用1表示一月，2表示二月则调用此方法
      *
      * @return 月份
@@ -318,40 +317,38 @@ public class DateTime extends Date {
     /**
      * 获得月份
      *
-     * @return {@link Fields.Month}
+     * @return {@link Fields}
      */
     public Fields.Month monthEnum() {
         return Fields.Month.of(month());
     }
 
     /**
-     * 获得指定日期是所在年份的第几周<br>
-     * 此方法返回值与一周的第一天有关，比如：<br>
-     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）<br>
+     * 获得指定日期是所在年份的第几周
+     * 此方法返回值与一周的第一天有关，比如：
+     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）
      * 如果一周的第一天为周一，那这天是第一周（返回1）
      *
      * @return 周
-     * @see #setFirstDayOfWeek(Fields.Week)
      */
     public int weekOfYear() {
         return getField(Fields.DateField.WEEK_OF_YEAR);
     }
 
     /**
-     * 获得指定日期是所在月份的第几周<br>
-     * 此方法返回值与一周的第一天有关，比如：<br>
-     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）<br>
+     * 获得指定日期是所在月份的第几周
+     * 此方法返回值与一周的第一天有关，比如：
+     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）
      * 如果一周的第一天为周一，那这天是第一周（返回1）
      *
-     * @return 周
-     * @see #setFirstDayOfWeek(Fields.Week)
+     * @return 周 
      */
     public int weekOfMonth() {
         return getField(Fields.DateField.WEEK_OF_MONTH);
     }
 
     /**
-     * 获得指定日期是这个日期所在月份的第几天<br>
+     * 获得指定日期是这个日期所在月份的第几天
      *
      * @return 天
      */
@@ -380,14 +377,14 @@ public class DateTime extends Date {
     /**
      * 获得指定日期是星期几
      *
-     * @return {@link Fields.Week}
+     * @return week
      */
     public Fields.Week dayOfWeekEnum() {
         return Fields.Week.of(dayOfWeek());
     }
 
     /**
-     * 获得指定日期的小时数部分<br>
+     * 获得指定日期的小时数部分
      *
      * @param is24HourClock 是否24小时制
      * @return 小时数
@@ -397,7 +394,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得指定日期的分钟数部分<br>
+     * 获得指定日期的分钟数部分
      * 例如：10:04:15.250 =》 4
      *
      * @return 分钟数
@@ -407,7 +404,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得指定日期的秒数部分<br>
+     * 获得指定日期的秒数部分
      *
      * @return 秒数
      */
@@ -416,7 +413,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得指定日期的毫秒数部分<br>
+     * 获得指定日期的毫秒数部分
      *
      * @return 毫秒数
      */
@@ -499,7 +496,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转换为 {@link Date}<br>
+     * 转换为 {@link Date}
      * 考虑到很多框架（例如Hibernate）的兼容性，提供此方法返回JDK原生的Date对象
      *
      * @return {@link Date}
@@ -531,7 +528,7 @@ public class DateTime extends Date {
      * 计算相差时长
      *
      * @param date 对比的日期
-     * @return {@link Between}
+     * @return between
      */
     public Between between(Date date) {
         return new Between(this, date);
@@ -541,7 +538,7 @@ public class DateTime extends Date {
      * 计算相差时长
      *
      * @param date 对比的日期
-     * @param unit 单位 {@link Fields.Unit}
+     * @param unit 单位
      * @return 相差时长
      */
     public long between(Date date, Fields.Unit unit) {
@@ -552,16 +549,16 @@ public class DateTime extends Date {
      * 计算相差时长
      *
      * @param date        对比的日期
-     * @param unit        单位 {@link Fields.Unit}
+     * @param unit        单位
      * @param formatLevel 格式化级别
      * @return 相差时长
      */
-    public String between(Date date, Fields.Unit unit, BetweenFormat.Level formatLevel) {
+    public String between(Date date, Fields.Unit unit, Fields.Level formatLevel) {
         return new Between(this, date).toString(formatLevel);
     }
 
     /**
-     * 当前日期是否在日期指定范围内<br>
+     * 当前日期是否在日期指定范围内
      * 起始日期和结束日期可以互换
      *
      * @param beginDate 起始日期
@@ -634,7 +631,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 对象是否可变<br>
+     * 对象是否可变
      * 如果为不可变对象，以下方法将返回新方法：
      * 如果为不可变对象，{@link DateTime#setTime(long)}将抛出异常
      *
@@ -666,8 +663,8 @@ public class DateTime extends Date {
     }
 
     /**
-     * 设置一周的第一天<br>
-     * JDK的Calendar中默认一周的第一天是周日，将此默认值设置为周一<br>
+     * 设置一周的第一天
+     * JDK的Calendar中默认一周的第一天是周日，将此默认值设置为周一
      * 设置一周的第一天主要影响{@link #weekOfMonth()}和{@link #weekOfYear()} 两个方法
      *
      * @param firstDayOfWeek 一周的第一天

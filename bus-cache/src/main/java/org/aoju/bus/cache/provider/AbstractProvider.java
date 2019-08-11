@@ -90,10 +90,10 @@ public abstract class AbstractProvider implements BaseProvider {
     /**
      * convert DB Map Result to DataDO(Stream)
      *
-     * @param mapResults: {@code List<Map<String, Object>>} result from query DB.
+     * @param map result from query DB.
      * @return the object
      */
-    protected abstract Stream<DataDO> transferResults(List<Map<String, Object>> mapResults);
+    protected abstract Stream<DataDO> transferResults(List<Map<String, Object>> map);
 
     private void dumpToDB(BlockingQueue<Pair<String, Integer>> queue, String column) {
         long times = 0;

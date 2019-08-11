@@ -42,7 +42,7 @@ public class BetweenFormat {
     /**
      * 格式化级别
      */
-    private Level level;
+    private Fields.Level level;
     /**
      * 格式化级别的最大个数
      */
@@ -54,7 +54,7 @@ public class BetweenFormat {
      * @param betweenMs 日期间隔
      * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
      */
-    public BetweenFormat(long betweenMs, Level level) {
+    public BetweenFormat(long betweenMs, Fields.Level  level) {
         this(betweenMs, level, 0);
     }
 
@@ -65,7 +65,7 @@ public class BetweenFormat {
      * @param level         级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
      * @param levelMaxCount 格式化级别的最大个数，假如级别个数为1，但是级别到秒，那只显示一个级别
      */
-    public BetweenFormat(long betweenMs, Level level, int levelMaxCount) {
+    public BetweenFormat(long betweenMs, Fields.Level level, int levelMaxCount) {
         this.betweenMs = betweenMs;
         this.level = level;
         this.levelMaxCount = levelMaxCount;
@@ -88,24 +88,24 @@ public class BetweenFormat {
             final int level = this.level.ordinal();
             int levelCount = 0;
 
-            if (isLevelCountValid(levelCount) && 0 != day && level >= Level.DAY.ordinal()) {
-                sb.append(day).append(Level.DAY.name);
+            if (isLevelCountValid(levelCount) && 0 != day && level >= Fields.Level.DAY.ordinal()) {
+                sb.append(day).append(Fields.Level.DAY.name);
                 levelCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != hour && level >= Level.HOUR.ordinal()) {
-                sb.append(hour).append(Level.HOUR.name);
+            if (isLevelCountValid(levelCount) && 0 != hour && level >= Fields.Level.HOUR.ordinal()) {
+                sb.append(hour).append(Fields.Level.HOUR.name);
                 levelCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != minute && level >= Level.MINUTE.ordinal()) {
-                sb.append(minute).append(Level.MINUTE.name);
+            if (isLevelCountValid(levelCount) && 0 != minute && level >= Fields.Level.MINUTE.ordinal()) {
+                sb.append(minute).append(Fields.Level.MINUTE.name);
                 levelCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != second && level >= Level.SECOND.ordinal()) {
-                sb.append(second).append(Level.SECOND.name);
+            if (isLevelCountValid(levelCount) && 0 != second && level >= Fields.Level.SECOND.ordinal()) {
+                sb.append(second).append(Fields.Level.SECOND.name);
                 levelCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != millisecond && level >= Level.MILLSECOND.ordinal()) {
-                sb.append(millisecond).append(Level.MILLSECOND.name);
+            if (isLevelCountValid(levelCount) && 0 != millisecond && level >= Fields.Level.MILLSECOND.ordinal()) {
+                sb.append(millisecond).append(Fields.Level.MILLSECOND.name);
                 levelCount++;
             }
         }
@@ -140,7 +140,7 @@ public class BetweenFormat {
      *
      * @return 格式化级别
      */
-    public Level getLevel() {
+    public Fields.Level getLevel() {
         return level;
     }
 
@@ -149,7 +149,7 @@ public class BetweenFormat {
      *
      * @param level 格式化级别
      */
-    public void setLevel(Level level) {
+    public void setLevel(Fields.Level level) {
         this.level = level;
     }
 
@@ -167,56 +167,6 @@ public class BetweenFormat {
      */
     private boolean isLevelCountValid(int levelCount) {
         return this.levelMaxCount <= 0 || levelCount < this.levelMaxCount;
-    }
-
-    /**
-     * 格式化等级枚举
-     */
-    public enum Level {
-
-        /**
-         * 天
-         */
-        DAY("天"),
-        /**
-         * 小时
-         */
-        HOUR("小时"),
-        /**
-         * 分钟
-         */
-        MINUTE("分"),
-        /**
-         * 秒
-         */
-        SECOND("秒"),
-        /**
-         * 毫秒
-         */
-        MILLSECOND("毫秒");
-
-        /**
-         * 级别名称
-         */
-        private String name;
-
-        /**
-         * 构造
-         *
-         * @param name 级别名称
-         */
-        Level(String name) {
-            this.name = name;
-        }
-
-        /**
-         * 获取级别名称
-         *
-         * @return 级别名称
-         */
-        public String getName() {
-            return this.name;
-        }
     }
 
 }

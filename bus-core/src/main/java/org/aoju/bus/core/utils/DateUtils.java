@@ -40,7 +40,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.aoju.bus.core.utils.FileUtils.normalize;
 
 /**
  * 时间工具类
@@ -75,7 +74,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * Long类型时间转为{@link DateTime}<br>
+     * Long类型时间转为{@link DateTime}
      * 同时支持10位秒级别时间戳和13位毫秒级别时间戳
      *
      * @param date Long类型Date（Unix时间戳）
@@ -201,14 +200,14 @@ public class DateUtils extends Fields {
      * 获得月份
      *
      * @param date 日期
-     * @return {@link Month}
+     * @return {@link Fields.Month}
      */
-    public static Month monthEnum(Date date) {
+    public static Fields.Month monthEnum(Date date) {
         return DateTime.of(date).monthEnum();
     }
 
     /**
-     * 获得指定日期是所在年份的第几周<br>
+     * 获得指定日期是所在年份的第几周
      *
      * @param date 日期
      * @return 周
@@ -218,7 +217,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得指定日期是所在月份的第几周<br>
+     * 获得指定日期是所在月份的第几周
      *
      * @param date 日期
      * @return 周
@@ -228,7 +227,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得指定日期是这个日期所在月份的第几天<br>
+     * 获得指定日期是这个日期所在月份的第几天
      *
      * @param date 日期
      * @return 天
@@ -251,14 +250,14 @@ public class DateUtils extends Fields {
      * 获得指定日期是星期几
      *
      * @param date 日期
-     * @return {@link Week}
+     * @return {@link Fields.Week}
      */
-    public static Week dayOfWeekEnum(Date date) {
+    public static Fields.Week dayOfWeekEnum(Date date) {
         return DateTime.of(date).dayOfWeekEnum();
     }
 
     /**
-     * 获得指定日期的小时数部分<br>
+     * 获得指定日期的小时数部分
      *
      * @param date          日期
      * @param is24HourClock 是否24小时制
@@ -269,7 +268,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得指定日期的分钟数部分<br>
+     * 获得指定日期的分钟数部分
      * 例如：10:04:15.250 =》 4
      *
      * @param date 日期
@@ -280,7 +279,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得指定日期的秒数部分<br>
+     * 获得指定日期的秒数部分
      *
      * @param date 日期
      * @return 秒数
@@ -290,7 +289,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得指定日期的毫秒数部分<br>
+     * 获得指定日期的毫秒数部分
      *
      * @param date 日期
      * @return 毫秒数
@@ -334,9 +333,9 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * @return 当前月份 {@link Month}
+     * @return 当前月份 {@link Fields.Month}
      */
-    public static Month thisMonthEnum() {
+    public static Fields.Month thisMonthEnum() {
         return monthEnum(date());
     }
 
@@ -369,43 +368,43 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * @return 当前日期是星期几 {@link Week}
+     * @return 当前日期是星期几 {@link Fields.Week}
      */
-    public static Week thisDayOfWeekEnum() {
+    public static Fields.Week thisDayOfWeekEnum() {
         return dayOfWeekEnum(date());
     }
 
     /**
      * @param is24HourClock 是否24小时制
-     * @return 当前日期的小时数部分<br>
+     * @return 当前日期的小时数部分
      */
     public static int thisHour(boolean is24HourClock) {
         return hour(date(), is24HourClock);
     }
 
     /**
-     * @return 当前日期的分钟数部分<br>
+     * @return 当前日期的分钟数部分
      */
     public static int thisMinute() {
         return minute(date());
     }
 
     /**
-     * @return 当前日期的秒数部分<br>
+     * @return 当前日期的秒数部分
      */
     public static int thisSecond() {
         return second(date());
     }
 
     /**
-     * @return 当前日期的毫秒数部分<br>
+     * @return 当前日期的毫秒数部分
      */
     public static int thisMillsecond() {
         return millsecond(date());
     }
 
     /**
-     * 获得指定日期年份和季节<br>
+     * 获得指定日期年份和季节
      * 格式：[20131]表示2013年第一季度
      *
      * @param date 日期
@@ -458,7 +457,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 格式化日期时间<br>
+     * 格式化日期时间
      * 格式 yyyy-MM-dd HH:mm:ss
      *
      * @param date 被格式化的日期
@@ -472,7 +471,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 格式化日期部分（不包括时间）<br>
+     * 格式化日期部分（不包括时间）
      * 格式 yyyy-MM-dd
      *
      * @param date 被格式化的日期
@@ -486,7 +485,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 格式化时间<br>
+     * 格式化时间
      * 格式 HH:mm:ss
      *
      * @param date 被格式化的日期
@@ -553,7 +552,7 @@ public class DateUtils extends Fields {
      * @return 日期对象
      */
     public static DateTime parseDateTime(String dateString) {
-        dateString = normalize(dateString);
+        dateString = FileUtils.normalize(dateString);
         return parse(dateString, Fields.NORM_DATETIME_FORMAT);
     }
 
@@ -564,7 +563,7 @@ public class DateUtils extends Fields {
      * @return 日期对象
      */
     public static DateTime parseDate(String dateString) {
-        dateString = normalize(dateString);
+        dateString = FileUtils.normalize(dateString);
         return parse(dateString, Fields.NORM_DATE_FORMAT);
     }
 
@@ -575,7 +574,7 @@ public class DateUtils extends Fields {
      * @return 日期对象
      */
     public static DateTime parseTime(String timeString) {
-        timeString = normalize(timeString);
+        timeString = FileUtils.normalize(timeString);
         return parse(timeString, Fields.NORM_TIME_FORMAT);
     }
 
@@ -603,7 +602,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 将日期字符串转换为{@link DateTime}对象，格式：<br>
+     * 将日期字符串转换为{@link DateTime}对象，格式：
      * <ol>
      * <li>yyyy-MM-dd HH:mm:ss</li>
      * <li>yyyy/MM/dd HH:mm:ss</li>
@@ -658,9 +657,9 @@ public class DateUtils extends Fields {
         } else if (length == Fields.NORM_TIME_PATTERN.length() || length == Fields.NORM_TIME_PATTERN.length() + 1) {
             return parseTimeToday(dateStr);
         } else if (length == Fields.NORM_DATETIME_MINUTE_PATTERN.length() || length == Fields.NORM_DATETIME_MINUTE_PATTERN.length() + 1) {
-            return parse(normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
+            return parse(FileUtils.normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
         } else if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
-            return parse(normalize(dateStr), Fields.NORM_DATETIME_MS_FORMAT);
+            return parse(FileUtils.normalize(dateStr), Fields.NORM_DATETIME_MS_FORMAT);
         }
 
         // 没有更多匹配的时间格式
@@ -1061,11 +1060,11 @@ public class DateUtils extends Fields {
      * 获取指定日期偏移指定时间后的时间
      *
      * @param date      基准日期
-     * @param dateField 偏移的粒度大小（小时、天、月等）{@link DateField}
+     * @param dateField 偏移的粒度大小（小时、天、月等）{@link Fields.DateField}
      * @param offset    偏移量，正数为向后偏移，负数为向前偏移
      * @return 偏移后的日期
      */
-    public static DateTime offset(Date date, DateField dateField, int offset) {
+    public static DateTime offset(Date date, Fields.DateField dateField, int offset) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(dateField.getValue(), offset);
@@ -1077,10 +1076,10 @@ public class DateUtils extends Fields {
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
-     * @param unit      相差的单位：相差 天{@link Unit#DAY}、小时{@link Unit#HOUR} 等
+     * @param unit      相差的单位
      * @return 日期差
      */
-    public static long between(Date beginDate, Date endDate, Unit unit) {
+    public static long between(Date beginDate, Date endDate, Fields.Unit unit) {
         return between(beginDate, endDate, unit, true);
     }
 
@@ -1089,12 +1088,12 @@ public class DateUtils extends Fields {
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
-     * @param unit      相差的单位：相差 天{@link Unit#DAY}、小时{@link Unit#HOUR} 等
+     * @param unit      相差的单位
      * @param isAbs     日期间隔是否只保留绝对值正数
      * @return 日期差
      * @since 3.3.1
      */
-    public static long between(Date beginDate, Date endDate, Unit unit, boolean isAbs) {
+    public static long between(Date beginDate, Date endDate, Fields.Unit unit, boolean isAbs) {
         return new Between(beginDate, endDate, isAbs).between(unit);
     }
 
@@ -1111,7 +1110,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 判断两个日期相差的天数<br>
+     * 判断两个日期相差的天数
      *
      * <pre>
      * 有时候我们计算相差天数的时候需要忽略时分秒。
@@ -1135,7 +1134,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 计算两个日期相差月数<br>
+     * 计算两个日期相差月数
      * 在非重置情况下，如果起始日期的天小于结束日期的天，月数要少算1（不足1个月）
      *
      * @param beginDate 起始日期
@@ -1149,7 +1148,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 计算两个日期相差年数<br>
+     * 计算两个日期相差年数
      * 在非重置情况下，如果起始日期的月小于结束日期的月，年数要少算1（不足1年）
      *
      * @param beginDate 起始日期
@@ -1170,7 +1169,7 @@ public class DateUtils extends Fields {
      * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级
      * @return XX天XX小时XX分XX秒
      */
-    public static String formatBetween(Date beginDate, Date endDate, BetweenFormat.Level level) {
+    public static String formatBetween(Date beginDate, Date endDate, Fields.Level level) {
         return formatBetween(between(beginDate, endDate, Unit.MS), level);
     }
 
@@ -1193,7 +1192,7 @@ public class DateUtils extends Fields {
      * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级
      * @return XX天XX小时XX分XX秒XX毫秒
      */
-    public static String formatBetween(long betweenMs, BetweenFormat.Level level) {
+    public static String formatBetween(long betweenMs, Fields.Level level) {
         return new BetweenFormat(betweenMs, level).format();
     }
 
@@ -1205,11 +1204,11 @@ public class DateUtils extends Fields {
      * @since 3.0.1
      */
     public static String formatBetween(long betweenMs) {
-        return new BetweenFormat(betweenMs, BetweenFormat.Level.MILLSECOND).format();
+        return new BetweenFormat(betweenMs, Fields.Level.MILLSECOND).format();
     }
 
     /**
-     * 当前日期是否在日期指定范围内<br>
+     * 当前日期是否在日期指定范围内
      * 起始日期和结束日期可以互换
      *
      * @param date      被检查的日期
@@ -1282,7 +1281,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 计时器<br>
+     * 计时器
      * 计算某个过程花费的时间，精确到毫秒
      *
      * @return Timer
@@ -1365,7 +1364,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 秒数转为时间格式(HH:mm:ss)<br>
+     * 秒数转为时间格式(HH:mm:ss)
      * 参考：https://github.com/iceroot
      *
      * @param seconds 需要转换的秒数
@@ -1400,7 +1399,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得指定日期年份和季节<br>
+     * 获得指定日期年份和季节
      * 格式：[20131]表示2013年第一季度
      *
      * @param cal 日期
@@ -2361,9 +2360,9 @@ public class DateUtils extends Fields {
      * 比较时间(string类型)大小
      *
      * @param date1 日期
-     * @param date2 date1 大于date2 return 1 <br>
-     *              date1 小于date2 return -1 <br>
-     *              date1 等于date2 return 0 <br>
+     * @param date2 date1 大于date2 return 1 
+     *              date1 小于date2 return -1 
+     *              date1 等于date2 return 0 
      * @return the int
      */
     public static int compareDate(String date1, String date2) {
