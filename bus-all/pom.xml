@@ -71,6 +71,16 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
+            <artifactId>bus-boot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-cache</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
             <artifactId>bus-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -131,12 +141,12 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-socket</artifactId>
+            <artifactId>bus-setting</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-setting</artifactId>
+            <artifactId>bus-socket</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
