@@ -44,7 +44,7 @@ import java.util.Properties;
  * Mybatis - 通用分页拦截器
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 @Intercepts(

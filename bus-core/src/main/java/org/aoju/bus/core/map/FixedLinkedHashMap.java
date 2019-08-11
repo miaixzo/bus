@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {

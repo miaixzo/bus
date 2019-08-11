@@ -27,7 +27,7 @@ package org.aoju.bus.cron.task;
  * 定时作业接口，通过实现execute方法执行具体的任务<br>
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public interface Task {

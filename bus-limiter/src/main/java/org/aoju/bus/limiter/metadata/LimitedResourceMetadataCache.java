@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class LimitedResourceMetadataCache {

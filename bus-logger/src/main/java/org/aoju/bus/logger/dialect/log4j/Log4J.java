@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * <a href="http://logging.apache.org/log4j/1.2/index.html">Apache Log4J</a> log.<br>
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class Log4J extends AbstractAware {

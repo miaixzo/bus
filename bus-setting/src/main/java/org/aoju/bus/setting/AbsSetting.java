@@ -39,7 +39,7 @@ import java.lang.reflect.Type;
  * Setting抽象类
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public abstract class AbsSetting extends OptNullBasicTypeFromStringGetter<String> implements Serializable {

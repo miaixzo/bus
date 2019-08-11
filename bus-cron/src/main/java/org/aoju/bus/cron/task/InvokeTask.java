@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
  * 如果是静态方法直接执行，如果是对象方法，需要类有默认的构造方法。
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class InvokeTask implements Task {

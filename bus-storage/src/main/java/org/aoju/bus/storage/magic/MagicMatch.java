@@ -31,7 +31,7 @@ import java.util.*;
  * This class represents a single match test
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class MagicMatch implements Cloneable {

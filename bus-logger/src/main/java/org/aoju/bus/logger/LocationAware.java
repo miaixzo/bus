@@ -30,7 +30,7 @@ import org.aoju.bus.logger.level.Level;
  * 此方法主要用于在继续封装日志实现的时候行号错误的问题，继续封装时传入封装类的全类名即可解决这个问题
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public interface LocationAware extends Log {

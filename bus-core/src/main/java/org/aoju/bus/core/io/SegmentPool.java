@@ -28,7 +28,7 @@ package org.aoju.bus.core.io;
  * 这个池是一个线程安全的静态单例。
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public final class SegmentPool {

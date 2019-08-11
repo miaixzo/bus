@@ -30,7 +30,7 @@ import java.net.UnknownHostException;
  * 代表当前主机的信息。
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class HostInfo {

@@ -27,7 +27,7 @@ package org.aoju.bus.core.consts;
  * 翻译语言枚举
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public enum Lang {

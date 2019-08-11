@@ -33,7 +33,7 @@ package org.aoju.bus.core.io.file;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS

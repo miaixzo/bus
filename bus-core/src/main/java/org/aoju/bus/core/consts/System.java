@@ -29,7 +29,7 @@ package org.aoju.bus.core.consts;
  * String currentUser = System.getProperty("user.name");
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public final class System {

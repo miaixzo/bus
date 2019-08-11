@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.5</version>
     <packaging>jar</packaging>
 
     <name>bus-boot</name>
@@ -26,6 +26,15 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-logger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

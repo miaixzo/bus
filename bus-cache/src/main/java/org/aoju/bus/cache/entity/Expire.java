@@ -25,7 +25,7 @@ package org.aoju.bus.cache.entity;
 
 /**
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public interface Expire {

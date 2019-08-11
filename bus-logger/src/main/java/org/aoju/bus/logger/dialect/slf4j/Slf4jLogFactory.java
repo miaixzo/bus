@@ -41,7 +41,7 @@ import java.io.UnsupportedEncodingException;
  * 同样无缝支持 <a href="http://logback.qos.ch/">LogBack</a>
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class Slf4jLogFactory extends LogFactory {

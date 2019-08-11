@@ -46,7 +46,7 @@ import java.util.List;
  * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取<br>
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> implements HSSFListener {

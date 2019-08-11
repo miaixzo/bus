@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.CommonException;
  * 简易值转换器。将给定String值转为int
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class SimpleValueParser implements ValueParser {

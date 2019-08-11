@@ -31,7 +31,7 @@ package org.aoju.bus.core.loader;
  *
  * @param <T> 被加载对象类型
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public abstract class LazyLoader<T> implements Loader<T> {

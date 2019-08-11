@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.CommonException;
  * 调用者。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class Caller {

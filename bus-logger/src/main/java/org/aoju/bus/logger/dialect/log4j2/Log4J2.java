@@ -34,7 +34,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
  * <a href="http://logging.apache.org/log4j/2.x/index.html">Apache Log4J 2</a> log.<br>
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class Log4J2 extends AbstractAware {

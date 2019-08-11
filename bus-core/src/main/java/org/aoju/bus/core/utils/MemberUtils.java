@@ -45,7 +45,7 @@ import java.util.Set;
  * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 abstract class MemberUtils {

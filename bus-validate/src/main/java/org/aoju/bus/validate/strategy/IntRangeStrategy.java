@@ -38,7 +38,7 @@ import java.util.Set;
  * INT RANGE 校验
  *
  * @author Kimi Liu
- * @version 3.0.0
+ * @version 3.0.5
  * @since JDK 1.8
  */
 public class IntRangeStrategy implements Complex<Object, IntRange> {
