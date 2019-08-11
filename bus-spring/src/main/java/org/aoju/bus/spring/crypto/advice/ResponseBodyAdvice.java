@@ -31,13 +31,15 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.spring.crypto.CryptoProperties;
-import org.aoju.bus.spring.crypto.annotation.CryptoE;
+import org.aoju.bus.spring.crypto.annotation.EncryptBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+
+import java.lang.annotation.Annotation;
 
 
 /**
@@ -57,7 +59,15 @@ public class ResponseBodyAdvice extends BaseAdvice
     @Override
     public boolean supports(MethodParameter returnType,
                             Class<? extends HttpMessageConverter<?>> converterType) {
-        return true;
+        Annotation[] annotations = returnType.getDeclaringClass().getAnnotations();
+        if (annotations != null && annotations.length > 0) {
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof EncryptBody) {
+                    return true;
+                }
+            }
+        }
+        return returnType.getMethod().isAnnotationPresent(EncryptBody.class);
     }
 
     /**
@@ -77,7 +87,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!cryptoProperties.isDebug()) {
             try {
-                final CryptoE encrypt = parameter.getMethod().getAnnotation(CryptoE.class);
+                final EncryptBody encrypt = parameter.getMethod().getAnnotation(EncryptBody.class);
                 if (ObjectUtils.isNotNull(encrypt)) {
                     final String key = StringUtils.defaultString(encrypt.key(), cryptoProperties.getDecrypt().getKey());
 

@@ -31,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 解密
+ * 加密
  *
  * @author Kimi Liu
  * @version 3.0.0
@@ -39,7 +39,7 @@ import java.lang.annotation.Target;
  */
 @Target(value = {ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CryptoD {
+public @interface EncryptBody {
 
     /**
      * 如果选择的 RSA 加/解密算法，那么 key 为必填项
