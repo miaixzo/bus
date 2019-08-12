@@ -26,6 +26,7 @@ package org.aoju.bus.spring.sensitive;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Sensitive;
+import org.aoju.bus.spring.core.proxy.AspectjProxyChain;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

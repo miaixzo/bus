@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.spring.validate;
 
+import org.aoju.bus.spring.core.proxy.AspectjProxyChain;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

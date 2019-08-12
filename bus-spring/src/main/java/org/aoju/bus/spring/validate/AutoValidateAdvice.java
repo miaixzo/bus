@@ -25,6 +25,7 @@ package org.aoju.bus.spring.validate;
 
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.spring.core.proxy.AspectjProxyChain;
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.Context;
 

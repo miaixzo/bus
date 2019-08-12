@@ -25,24 +25,14 @@
         <project.compiler.version>1.8</project.compiler.version>
         <curator.recipes.version>4.2.0</curator.recipes.version>
         <redisson.version>3.8.1</redisson.version>
-        <guava.version>20.0</guava.version>
+        <guava.version>28.0-jre</guava.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-core</artifactId>
+            <artifactId>bus-cache</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aoju</groupId>
-            <artifactId>bus-logger</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.redisson</groupId>

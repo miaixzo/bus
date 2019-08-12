@@ -19,10 +19,14 @@
         <project.compiler.version>1.8</project.compiler.version>
         <mybatis.version>3.5.0</mybatis.version>
         <jsqlparser.version>1.2</jsqlparser.version>
-        <guava.version>20.0</guava.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-cache</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -32,11 +36,6 @@
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
             <version>${jsqlparser.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 

@@ -67,7 +67,17 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
+            <artifactId>bus-socket</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
             <artifactId>bus-storage</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-tracer</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

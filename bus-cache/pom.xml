@@ -23,7 +23,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <lombok.version>1.18.8</lombok.version>
         <aspectj.version>1.8.10</aspectj.version>
         <guice.version>4.2.0</guice.version>
         <jedis.version>2.9.0</jedis.version>
@@ -31,7 +30,7 @@
         <ehcache.version>3.3.1</ehcache.version>
         <commons.proxy.version>1.0</commons.proxy.version>
         <curator.recipes.version>4.2.0</curator.recipes.version>
-        <guava.version>20.0</guava.version>
+        <guava.version>28.0-jre</guava.version>
         <yaml.version>1.18</yaml.version>
         <kryo.version>4.0.0</kryo.version>
         <hession.version>4.0.38</hession.version>
@@ -42,11 +41,6 @@
             <groupId>org.aoju</groupId>
             <artifactId>bus-logger</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
