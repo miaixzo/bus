@@ -45,7 +45,7 @@ import java.util.List;
 public class ValueMatcherBuilder {
 
     /**
-     * 处理定时任务表达式每个时间字段<br>
+     * 处理定时任务表达式每个时间字段
      * 多个时间使用逗号分隔
      *
      * @param value  某个时间字段
@@ -75,7 +75,7 @@ public class ValueMatcherBuilder {
     }
 
     /**
-     * 处理数组形式表达式<br>
+     * 处理数组形式表达式
      * 处理的形式包括：
      * <ul>
      * <li><strong>a</strong> 或 <strong>*</strong></li>
@@ -97,7 +97,7 @@ public class ValueMatcherBuilder {
     }
 
     /**
-     * 处理间隔形式的表达式<br>
+     * 处理间隔形式的表达式
      * 处理的形式包括：
      * <ul>
      * <li><strong>a</strong> 或 <strong>*</strong></li>
@@ -214,7 +214,7 @@ public class ValueMatcherBuilder {
     }
 
     /**
-     * 是否为全匹配符<br>
+     * 是否为全匹配符
      * 全匹配符指 * 或者 ?
      *
      * @param value 被检查的值

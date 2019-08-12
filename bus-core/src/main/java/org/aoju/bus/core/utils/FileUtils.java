@@ -109,7 +109,7 @@ public class FileUtils {
     }
 
     /**
-     * 列出目录文件<br>
+     * 列出目录文件
      * 给定的绝对路径不能是压缩包中的路径
      *
      * @param path 目录绝对路径或者相对路径
@@ -130,7 +130,7 @@ public class FileUtils {
     }
 
     /**
-     * 文件是否为空<br>
+     * 文件是否为空
      * 目录：里面没有文件时为空 文件：文件大小为0时为空
      *
      * @param file 文件
@@ -187,7 +187,7 @@ public class FileUtils {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件<br>
+     * 递归遍历目录以及子目录中的所有文件
      * 如果提供file为文件，直接返回过滤结果
      *
      * @param path       当前遍历文件或目录的路径
@@ -200,7 +200,7 @@ public class FileUtils {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件<br>
+     * 递归遍历目录以及子目录中的所有文件
      * 如果提供file为文件，直接返回过滤结果
      *
      * @param file       当前遍历文件或目录
@@ -253,7 +253,7 @@ public class FileUtils {
     }
 
     /**
-     * 获得指定目录下所有文件<br>
+     * 获得指定目录下所有文件
      * 不会扫描子目录
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
@@ -330,7 +330,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建File对象<br>
+     * 创建File对象
      * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param parent 父目录
@@ -342,7 +342,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建File对象<br>
+     * 创建File对象
      * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param parent 父文件对象
@@ -357,7 +357,7 @@ public class FileUtils {
     }
 
     /**
-     * 通过多层目录参数创建文件<br>
+     * 通过多层目录参数创建文件
      * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param directory 父目录
@@ -540,8 +540,8 @@ public class FileUtils {
     }
 
     /**
-     * 计算目录或文件的总大小<br>
-     * 当给定对象为文件时，直接调用 {@link File#length()}<br>
+     * 计算目录或文件的总大小
+     * 当给定对象为文件时，直接调用 {@link File#length()}
      * 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回
      *
      * @param file 目录或文件
@@ -597,7 +597,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件<br>
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
      * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param fullFilePath 文件的全路径，使用POSIX风格
@@ -612,7 +612,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件<br>
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
      * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param file 文件对象
@@ -635,7 +635,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件<br>
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
      * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param parent 父文件对象
@@ -648,7 +648,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件<br>
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
      * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param parent 父文件对象
@@ -688,8 +688,8 @@ public class FileUtils {
     }
 
     /**
-     * 删除文件或者文件夹<br>
-     * 路径如果为相对路径，会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹<br>
+     * 删除文件或者文件夹
+     * 路径如果为相对路径，会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param fullFileOrDirPath 文件或者目录的路径
@@ -701,8 +701,8 @@ public class FileUtils {
     }
 
     /**
-     * 删除文件或者文件夹<br>
-     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹<br>
+     * 删除文件或者文件夹
+     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param file 文件对象
@@ -726,8 +726,8 @@ public class FileUtils {
     }
 
     /**
-     * 清空文件夹<br>
-     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹<br>
+     * 清空文件夹
+     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param dirPath 文件夹路径
@@ -740,8 +740,8 @@ public class FileUtils {
     }
 
     /**
-     * 清空文件夹<br>
-     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹<br>
+     * 清空文件夹
+     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param directory 文件夹
@@ -766,7 +766,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件夹，如果存在直接返回此文件夹<br>
+     * 创建文件夹，如果存在直接返回此文件夹
      * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param dirPath 文件夹路径，使用POSIX格式，无论哪个平台
@@ -781,7 +781,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件夹，会递归自动创建其不存在的父文件夹，如果存在直接返回此文件夹<br>
+     * 创建文件夹，会递归自动创建其不存在的父文件夹，如果存在直接返回此文件夹
      * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param dir 目录
@@ -798,7 +798,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建临时文件<br>
+     * 创建临时文件
      * 创建后的文件名为 prefix[Randon].tmp
      *
      * @param dir 临时文件创建的所在目录
@@ -810,7 +810,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建临时文件<br>
+     * 创建临时文件
      * 创建后的文件名为 prefix[Randon].tmp
      *
      * @param dir       临时文件创建的所在目录
@@ -823,7 +823,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建临时文件<br>
+     * 创建临时文件
      * 创建后的文件名为 prefix[Randon].suffix From com.jodd.io.FileUtils
      *
      * @param prefix    前缀，至少3个字符
@@ -910,7 +910,7 @@ public class FileUtils {
     }
 
     /**
-     * 复制文件或目录<br>
+     * 复制文件或目录
      * 如果目标文件为目录，则将源文件以相同文件名拷贝到目标目录
      *
      * @param srcPath    源文件或目录
@@ -924,7 +924,7 @@ public class FileUtils {
     }
 
     /**
-     * 复制文件或目录<br>
+     * 复制文件或目录
      * 情况如下：
      *
      * <pre>
@@ -944,7 +944,7 @@ public class FileUtils {
     }
 
     /**
-     * 复制文件或目录<br>
+     * 复制文件或目录
      * 情况如下：
      *
      * <pre>
@@ -964,7 +964,7 @@ public class FileUtils {
     }
 
     /**
-     * 复制文件或目录<br>
+     * 复制文件或目录
      * 情况如下：
      *
      * <pre>
@@ -1025,8 +1025,8 @@ public class FileUtils {
     }
 
     /**
-     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名<br>
-     * 重命名有两种模式：<br>
+     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名
+     * 重命名有两种模式：
      * 1、isRetainExt为true时，保留原扩展名：
      *
      * <pre>
@@ -1078,7 +1078,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取绝对路径<br>
+     * 获取绝对路径
      * 此方法不会判定给定路径是否有效（文件或目录存在）
      *
      * @param path      相对路径
@@ -1117,8 +1117,8 @@ public class FileUtils {
     }
 
     /**
-     * 获取绝对路径，相对于ClassPath的目录<br>
-     * 如果给定就是绝对路径，则返回原路径，原路径把所有\替换为/<br>
+     * 获取绝对路径，相对于ClassPath的目录
+     * 如果给定就是绝对路径，则返回原路径，原路径把所有\替换为/
      * 兼容Spring风格的路径表示，例如：classpath:config/example.setting也会被识别后转换
      *
      * @param path 相对路径
@@ -1147,7 +1147,7 @@ public class FileUtils {
     }
 
     /**
-     * 给定路径已经是绝对路径<br>
+     * 给定路径已经是绝对路径
      * 此方法并没有针对路径做标准化，建议先执行{@link #normalize(String)}方法标准化路径后判断
      *
      * @param path 需要检查的Path
@@ -1232,7 +1232,7 @@ public class FileUtils {
     }
 
     /**
-     * 检查两个文件是否是同一个文件<br>
+     * 检查两个文件是否是同一个文件
      * 所谓文件相同，是指File对象是否指向同一个文件或文件夹
      *
      * @param file1 文件1
@@ -1257,8 +1257,8 @@ public class FileUtils {
     }
 
     /**
-     * 比较两个文件内容是否相同<br>
-     * 首先比较长度，长度一致再比较内容<br>
+     * 比较两个文件内容是否相同
+     * 首先比较长度，长度一致再比较内容
      * 此方法来自Apache Commons io
      *
      * @param file1 文件1
@@ -1307,8 +1307,8 @@ public class FileUtils {
     }
 
     /**
-     * 比较两个文件内容是否相同<br>
-     * 首先比较长度，长度一致再比较内容，比较内容采用按行读取，每行比较<br>
+     * 比较两个文件内容是否相同
+     * 首先比较长度，长度一致再比较内容，比较内容采用按行读取，每行比较
      * 此方法来自Apache Commons io
      *
      * @param file1   文件1
@@ -1352,7 +1352,7 @@ public class FileUtils {
     }
 
     /**
-     * 文件路径是否相同<br>
+     * 文件路径是否相同
      * 取两个文件的绝对路径比较，在Windows下忽略大小写，在Linux下不忽略。
      *
      * @param file1 文件1
@@ -1408,7 +1408,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断文件是否被改动<br>
+     * 判断文件是否被改动
      * 如果文件对象为 null 或者文件不存在，被视为改动
      *
      * @param file           文件对象
@@ -1423,7 +1423,7 @@ public class FileUtils {
     }
 
     /**
-     * 修复路径<br>
+     * 修复路径
      * 如果原路径尾部有分隔符，则保留为标准分隔符（/），否则不保留
      * <ol>
      * <li>1. 统一用 /</li>
@@ -1764,7 +1764,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断文件路径是否有指定后缀，忽略大小写<br>
+     * 判断文件路径是否有指定后缀，忽略大小写
      * 常用语判断扩展名
      *
      * @param file   文件或目录
@@ -1958,7 +1958,7 @@ public class FileUtils {
     }
 
     /**
-     * 读取文件所有数据<br>
+     * 读取文件所有数据
      * 文件的长度不能超过Integer.MAX_VALUE
      *
      * @param file 文件
@@ -1970,7 +1970,7 @@ public class FileUtils {
     }
 
     /**
-     * 读取文件所有数据<br>
+     * 读取文件所有数据
      * 文件的长度不能超过Integer.MAX_VALUE
      *
      * @param filePath 文件路径
@@ -3061,7 +3061,7 @@ public class FileUtils {
     }
 
     /**
-     * 将流的内容写入文件<br>
+     * 将流的内容写入文件
      *
      * @param dest 目标文件
      * @param in   输入流
@@ -3073,7 +3073,7 @@ public class FileUtils {
     }
 
     /**
-     * 将流的内容写入文件<br>
+     * 将流的内容写入文件
      *
      * @param in           输入流
      * @param fullFilePath 文件绝对路径
@@ -3097,7 +3097,7 @@ public class FileUtils {
     }
 
     /**
-     * 将流的内容写入文件<br>
+     * 将流的内容写入文件
      *
      * @param fullFilePath 文件绝对路径
      * @param out          输出流
@@ -3118,7 +3118,7 @@ public class FileUtils {
     }
 
     /**
-     * 可读的文件大小<br>
+     * 可读的文件大小
      * 参考 http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
      *
      * @param size Long类型大小
@@ -3134,7 +3134,7 @@ public class FileUtils {
     }
 
     /**
-     * 转换文件编码<br>
+     * 转换文件编码
      * 此方法用于转换文件编码，读取的文件实际编码必须与指定的srcCharset编码一致，否则导致乱码
      *
      * @param file        文件
@@ -3148,7 +3148,7 @@ public class FileUtils {
     }
 
     /**
-     * 转换换行符<br>
+     * 转换换行符
      * 将给定文件的换行符转换为指定换行符
      *
      * @param file          文件
@@ -3218,7 +3218,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取Web项目下的web root路径<br>
+     * 获取Web项目下的web root路径
      * 原理是首先获取ClassPath路径，由于在web项目中ClassPath位于 WEB-INF/classes/下，故向上获取两级目录即可。
      *
      * @return web root路径

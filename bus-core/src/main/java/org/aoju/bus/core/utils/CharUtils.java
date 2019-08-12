@@ -26,7 +26,7 @@ package org.aoju.bus.core.utils;
 import org.aoju.bus.core.consts.Symbol;
 
 /**
- * 字符工具类<br>
+ * 字符工具类
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
@@ -93,7 +93,7 @@ public class CharUtils {
     }
 
     /**
-     * 判断是否为字母（包括大写字母和小写字母）<br>
+     * 判断是否为字母（包括大写字母和小写字母）
      * 字母包括A~Z和a~z
      *
      * <pre>
@@ -242,8 +242,8 @@ public class CharUtils {
     }
 
     /**
-     * 是否空白符<br>
-     * 空白符包括空格、制表符、全角空格和不间断空格<br>
+     * 是否空白符
+     * 空白符包括空格、制表符、全角空格和不间断空格
      *
      * @param c 字符
      * @return 是否空白符
@@ -256,8 +256,8 @@ public class CharUtils {
     }
 
     /**
-     * 是否空白符<br>
-     * 空白符包括空格、制表符、全角空格和不间断空格<br>
+     * 是否空白符
+     * 空白符包括空格、制表符、全角空格和不间断空格
      *
      * @param c 字符
      * @return 是否空白符
@@ -270,7 +270,7 @@ public class CharUtils {
     }
 
     /**
-     * 判断是否为emoji表情符<br>
+     * 判断是否为emoji表情符
      *
      * @param c 字符
      * @return 是否为emoji
@@ -303,7 +303,7 @@ public class CharUtils {
     }
 
     /**
-     * 字符转为字符串<br>
+     * 字符转为字符串
      * 如果为ASCII字符，使用缓存
      *
      * @param c 字符
@@ -315,7 +315,7 @@ public class CharUtils {
     }
 
     /**
-     * 是否为Windows或者Linux（Unix）文件分隔符<br>
+     * 是否为Windows或者Linux（Unix）文件分隔符
      * Windows平台下分隔符为\，Linux（Unix）为/
      *
      * @param c 字符

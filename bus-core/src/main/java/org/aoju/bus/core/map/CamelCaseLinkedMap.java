@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 驼峰Key风格的LinkedHashMap<br>
+ * 驼峰Key风格的LinkedHashMap
  * 对KEY转换为驼峰，get("int_value")和get("intValue")获得的值相同，put进入的值也会被覆盖
  *
  * @param <K> 键类型

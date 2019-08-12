@@ -115,7 +115,7 @@ public class ConverterRegistry {
     }
 
     /**
-     * 获得转换器<br>
+     * 获得转换器
      *
      * @param <T>           转换的目标类型
      * @param type          类型
@@ -205,7 +205,7 @@ public class ConverterRegistry {
     }
 
     /**
-     * 转换值为指定类型<br>
+     * 转换值为指定类型
      * 自定义转换器优先
      *
      * @param <T>          转换的目标类型（转换器转换到的类型）
@@ -233,7 +233,7 @@ public class ConverterRegistry {
     }
 
     /**
-     * 特殊类型转换<br>
+     * 特殊类型转换
      * 包括：
      * <pre>
      * Collection

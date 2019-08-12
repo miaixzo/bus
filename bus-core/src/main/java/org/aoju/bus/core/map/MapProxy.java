@@ -49,7 +49,7 @@ public class MapProxy implements Map<Object, Object> {
     }
 
     /**
-     * 创建代理Map<br>
+     * 创建代理Map
      * 此类对Map做一次包装，提供各种getXXX方法
      *
      * @param map 被代理的Map

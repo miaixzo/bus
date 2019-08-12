@@ -112,7 +112,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 给定字符串数组的总长度<br>
+     * 给定字符串数组的总长度
      * null字符长度定义为0
      *
      * @param strs 字符串数组
@@ -318,8 +318,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 指定位置插入数据<br>
-     * 如果插入位置为当前位置，则定义为追加<br>
+     * 指定位置插入数据
+     * 如果插入位置为当前位置，则定义为追加
      * 如果插入位置大于当前位置，则中间部分补充空格
      *
      * @param index 插入位置
@@ -334,8 +334,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 指定位置插入数据<br>
-     * 如果插入位置为当前位置，则定义为追加<br>
+     * 指定位置插入数据
+     * 如果插入位置为当前位置，则定义为追加
      * 如果插入位置大于当前位置，则中间部分补充空格
      *
      * @param index  插入位置
@@ -366,8 +366,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 指定位置插入字符串的某个部分<br>
-     * 如果插入位置为当前位置，则定义为追加<br>
+     * 指定位置插入字符串的某个部分
+     * 如果插入位置为当前位置，则定义为追加
      * 如果插入位置大于当前位置，则中间部分补充空格
      *
      * @param index 位置
@@ -398,8 +398,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 指定位置插入字符串的某个部分<br>
-     * 如果插入位置为当前位置，则定义为追加<br>
+     * 指定位置插入字符串的某个部分
+     * 如果插入位置为当前位置，则定义为追加
      * 如果插入位置大于当前位置，则中间部分补充空格
      *
      * @param index 位置
@@ -501,7 +501,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 删除到指定位置<br>
+     * 删除到指定位置
      * 如果新位置小于等于0，则删除全部
      *
      * @param newPosition 新的位置，不包括这个位置
@@ -648,7 +648,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 扩展容量<br>
+     * 扩展容量
      * 首先对容量进行二倍扩展，如果小于最小容量，则扩展为最小容量
      *
      * @param minimumCapacity 需要扩展的最小容量

@@ -280,7 +280,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 缩放图像（按长宽缩放）<br>
+     * 缩放图像（按长宽缩放）
      * 注意：目标长宽与原图不成比例会变形
      *
      * @param width  目标宽度
@@ -318,7 +318,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 等比缩放图像，此方法按照按照给定的长宽等比缩放图片，按照长宽缩放比最多的一边等比缩放，空白部分填充背景色<br>
+     * 等比缩放图像，此方法按照按照给定的长宽等比缩放图片，按照长宽缩放比最多的一边等比缩放，空白部分填充背景色
      * 缩放后默认为jpeg格式
      *
      * @param width      缩放后的宽度
@@ -475,7 +475,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 给图片添加文字水印<br>
+     * 给图片添加文字水印
      * 此方法并不关闭流
      *
      * @param pressText 水印文字
@@ -546,7 +546,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 旋转图片为指定角度<br>
+     * 旋转图片为指定角度
      * 来自：http://blog.51cto.com/cping1982/130066
      *
      * @param degree 旋转角度

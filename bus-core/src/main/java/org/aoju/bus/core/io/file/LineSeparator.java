@@ -24,7 +24,7 @@
 package org.aoju.bus.core.io.file;
 
 /**
- * 换行符枚举<br>
+ * 换行符枚举
  * 换行符包括：
  * <pre>
  * Mac系统换行符："\r"

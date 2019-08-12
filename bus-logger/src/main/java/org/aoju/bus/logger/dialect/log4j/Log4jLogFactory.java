@@ -27,7 +27,7 @@ import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 
 /**
- * <a href="http://logging.apache.org/log4j/1.2/index.html">Apache Log4J</a> log.<br>
+ * Apache Log4J log.
  *
  * @author Kimi Liu
  * @version 3.0.5
@@ -42,12 +42,12 @@ public class Log4jLogFactory extends LogFactory {
 
     @Override
     public Log createLog(String name) {
-        return new Log4J(name);
+        return new Log4jLog(name);
     }
 
     @Override
     public Log createLog(Class<?> clazz) {
-        return new Log4J(clazz);
+        return new Log4jLog(clazz);
     }
 
 }

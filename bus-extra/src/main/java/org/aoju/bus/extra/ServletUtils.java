@@ -75,7 +75,7 @@ public class ServletUtils {
     }
 
     /**
-     * 获取请求体<br>
+     * 获取请求体
      * 调用该方法后，getParam方法将失效
      *
      * @param request {@link ServletRequest}
@@ -91,7 +91,7 @@ public class ServletUtils {
     }
 
     /**
-     * 获取请求体byte[]<br>
+     * 获取请求体byte[]
      * 调用该方法后，getParam方法将失效
      *
      * @param request {@link ServletRequest}
@@ -178,7 +178,7 @@ public class ServletUtils {
      * </pre>
      *
      * <p>
-     * otherHeaderNames参数用于自定义检测的Header<br>
+     * otherHeaderNames参数用于自定义检测的Header
      * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
      * </p>
      *
@@ -199,7 +199,7 @@ public class ServletUtils {
      * 获取客户端IP
      *
      * <p>
-     * headerNames参数用于自定义检测的Header<br>
+     * headerNames参数用于自定义检测的Header
      * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
      * </p>
      *
@@ -392,8 +392,8 @@ public class ServletUtils {
     }
 
     /**
-     * 设定返回给客户端的Cookie<br>
-     * Path: "/"<br>
+     * 设定返回给客户端的Cookie
+     * Path: "/"
      * No Domain
      *
      * @param response        响应对象{@link HttpServletResponse}
@@ -558,7 +558,7 @@ public class ServletUtils {
     }
 
     /**
-     * 检测给定字符串是否为未知，多用于检测HTTP请求相关<br>
+     * 检测给定字符串是否为未知，多用于检测HTTP请求相关
      *
      * @param checkString 被检测的字符串
      * @return 是否未知

@@ -44,15 +44,15 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 任务调度器<br>
+ * 任务调度器
  * <p>
- * 调度器启动流程：<br>
+ * 调度器启动流程：
  *
  * <pre>
  * 启动Timer =》 启动TaskLauncher =》 启动TaskExecutor
  * </pre>
  * <p>
- * 调度器关闭流程:<br>
+ * 调度器关闭流程:
  *
  * <pre>
  * 关闭Timer =》 关闭所有运行中的TaskLauncher =》 关闭所有运行中的TaskExecutor
@@ -137,7 +137,7 @@ public class Scheduler {
     }
 
     /**
-     * 设置是否为守护线程<br>
+     * 设置是否为守护线程
      * 如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。默认非守护线程
      *
      * @param on <code>true</code>为守护线程，否则非守护线程
@@ -206,7 +206,7 @@ public class Scheduler {
     }
 
     /**
-     * 批量加入配置文件中的定时任务<br>
+     * 批量加入配置文件中的定时任务
      * 配置文件格式为： xxx.xxx.xxx.Class.method = * * * * *
      *
      * @param cronSetting 定时任务设置文件
@@ -417,8 +417,8 @@ public class Scheduler {
     }
 
     /**
-     * 停止定时任务<br>
-     * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。<br>
+     * 停止定时任务
+     * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
      * 此方法并不会清除任务表中的任务，请调用{@link #clear()} 方法清空任务或者使用{@link #stop(boolean)}方法可选是否清空
      *
      * @return this
@@ -428,7 +428,7 @@ public class Scheduler {
     }
 
     /**
-     * 停止定时任务<br>
+     * 停止定时任务
      * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
      *
      * @return this

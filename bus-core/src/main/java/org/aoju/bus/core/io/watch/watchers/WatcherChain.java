@@ -33,7 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 观察者链<br>
+ * 观察者链
  * 用于加入多个观察者
  *
  * @author Kimi Liu

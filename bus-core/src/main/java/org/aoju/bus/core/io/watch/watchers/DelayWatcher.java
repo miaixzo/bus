@@ -35,9 +35,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 延迟观察者<br>
- * 使用此观察者通过定义一定的延迟时间，解决{@link WatchService}多个modify的问题<br>
- * 在监听目录或文件时，如果这个文件有修改操作，会多次触发modify方法。<br>
+ * 延迟观察者
+ * 使用此观察者通过定义一定的延迟时间，解决{@link WatchService}多个modify的问题
+ * 在监听目录或文件时，如果这个文件有修改操作，会多次触发modify方法。
  * 此类通过维护一个Set将短时间内相同文件多次modify的事件合并处理触发，从而避免以上问题。
  *
  * @author Kimi Liu

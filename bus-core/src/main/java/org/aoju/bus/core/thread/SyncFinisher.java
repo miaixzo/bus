@@ -30,8 +30,8 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * 线程同步结束器<br>
- * 在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。<br>
+ * 线程同步结束器
+ * 在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。
  * 不能保证同时开始
  *
  * @author Kimi Liu

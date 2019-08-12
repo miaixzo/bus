@@ -28,7 +28,7 @@ import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.lang.exception.CommonException;
 
 /**
- * 拼音工具类<br>
+ * 拼音工具类
  * 注意：部分拼音并不准确，例如：怡
  *
  * @author Kimi Liu
@@ -97,9 +97,9 @@ public class PinyinUtils {
     }
 
     /**
-     * 获取拼音首字母<br>
-     * 传入汉字，返回拼音首字母<br>
-     * 如果传入为字母，返回其小写形式<br>
+     * 获取拼音首字母
+     * 传入汉字，返回拼音首字母
+     * 如果传入为字母，返回其小写形式
      * 感谢【帝都】宁静 提供方法
      *
      * @param ch 汉字

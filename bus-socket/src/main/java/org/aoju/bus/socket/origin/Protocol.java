@@ -24,7 +24,7 @@
 package org.aoju.bus.socket.origin;
 
 /**
- * 协议接口<br>
+ * 协议接口
  * 通过实现此接口完成消息的编码和解码
  *
  * <p>

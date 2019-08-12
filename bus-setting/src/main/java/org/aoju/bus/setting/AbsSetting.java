@@ -261,7 +261,7 @@ public abstract class AbsSetting extends OptNullBasicTypeFromStringGetter<String
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法<br>
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
      * 只支持基本类型的转换
      *
      * @param group 分组
@@ -285,7 +285,7 @@ public abstract class AbsSetting extends OptNullBasicTypeFromStringGetter<String
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法<br>
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
      * 只支持基本类型的转换
      *
      * @param bean Bean

@@ -190,7 +190,7 @@ public class Fields {
     public final static FastDateFormat UTC_FORMAT = FastDateFormat.getInstance(UTC_PATTERN, TimeZone.getTimeZone("UTC"));
 
     /**
-     * 日期各个部分的枚举<br>
+     * 日期各个部分的枚举
      * 与Calendar相应值对应
      *
      * @author Kimi Liu
@@ -291,7 +291,7 @@ public class Fields {
         }
 
         /**
-         * 将 {@link Calendar}相关值转换为DatePart枚举对象<br>
+         * 将 {@link Calendar}相关值转换为DatePart枚举对象
          *
          * @param calendarPartIntValue Calendar中关于Week的int值
          * @return {@link DateField}
@@ -380,7 +380,7 @@ public class Fields {
     }
 
     /**
-     * 月份枚举<br>
+     * 月份枚举
      * 与Calendar中的月份int值对应
      *
      * @author Kimi Liu
@@ -462,7 +462,7 @@ public class Fields {
         }
 
         /**
-         * 将 {@link Calendar}月份相关值转换为Month枚举对象<br>
+         * 将 {@link Calendar}月份相关值转换为Month枚举对象
          *
          * @param calendarMonthIntValue Calendar中关于Month的int值
          * @return {@link Month}
@@ -551,7 +551,7 @@ public class Fields {
         }
 
         /**
-         * 将 季度int转换为Season枚举对象<br>
+         * 将 季度int转换为Season枚举对象
          *
          * @param intValue 季度int表示
          * @return {@link Quarter}
@@ -581,7 +581,7 @@ public class Fields {
     }
 
     /**
-     * 星期枚举<br>
+     * 星期枚举
      * 与Calendar中的星期int值对应
      *
      * @author Kimi Liu
@@ -641,7 +641,7 @@ public class Fields {
         }
 
         /**
-         * 将 {@link Calendar}星期相关值转换为Week枚举对象<br>
+         * 将 {@link Calendar}星期相关值转换为Week枚举对象
          *
          * @param calendarWeekIntValue Calendar中关于Week的int值
          * @return {@link Week}

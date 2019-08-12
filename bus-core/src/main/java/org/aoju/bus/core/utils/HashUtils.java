@@ -24,7 +24,7 @@
 package org.aoju.bus.core.utils;
 
 /**
- * Hash算法大全<br>
+ * Hash算法大全
  * 推荐使用FNV1算法
  *
  * @author Kimi Liu

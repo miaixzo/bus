@@ -355,7 +355,7 @@ public class EqualsBuilder implements Builder<Boolean> {
      * <p>Set <code>Class</code>es whose instances should be compared by calling their <code>equals</code>
      * although being in recursive mode. So the fields of theses classes will not be compared recursively by reflection.</p>
      *
-     * <p>Here you should name classes having non-transient fields which are cache fields being set lazily.<br>
+     * <p>Here you should name classes having non-transient fields which are cache fields being set lazily.
      * Prominent example being {@link String} class with its hash code cache field. Due to the importance
      * of the <code>String</code> class, it is included in the default bypasses classes. Usually, if you use
      * your own set of classes here, remember to include <code>String</code> class, too.</p>

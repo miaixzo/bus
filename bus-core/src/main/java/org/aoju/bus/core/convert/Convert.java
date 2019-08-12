@@ -46,8 +46,8 @@ import java.util.concurrent.TimeUnit;
 public class Convert {
 
     /**
-     * 转换为字符串<br>
-     * 如果给定的值为null，或者转换失败，返回默认值<br>
+     * 转换为字符串
+     * 如果给定的值为null，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -59,8 +59,8 @@ public class Convert {
     }
 
     /**
-     * 转换为字符串<br>
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为字符串
+     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -82,8 +82,8 @@ public class Convert {
     }
 
     /**
-     * 转换为字符<br>
-     * 如果给定的值为null，或者转换失败，返回默认值<br>
+     * 转换为字符
+     * 如果给定的值为null，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -95,8 +95,8 @@ public class Convert {
     }
 
     /**
-     * 转换为字符<br>
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为字符
+     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -118,8 +118,8 @@ public class Convert {
     }
 
     /**
-     * 转换为byte<br>
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<br>
+     * 转换为byte
+     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -131,8 +131,8 @@ public class Convert {
     }
 
     /**
-     * 转换为byte<br>
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为byte
+     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -154,8 +154,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Short<br>
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<br>
+     * 转换为Short
+     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -167,8 +167,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Short<br>
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为Short
+     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -190,8 +190,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Number<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为Number
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -203,8 +203,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Number<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为Number
+     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -226,8 +226,8 @@ public class Convert {
     }
 
     /**
-     * 转换为int<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为int
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -239,8 +239,8 @@ public class Convert {
     }
 
     /**
-     * 转换为int<br>
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为int
+     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -251,7 +251,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Integer数组<br>
+     * 转换为Integer数组
      *
      * @param value 被转换的值
      * @return 结果
@@ -261,8 +261,8 @@ public class Convert {
     }
 
     /**
-     * 转换为long<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为long
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -274,8 +274,8 @@ public class Convert {
     }
 
     /**
-     * 转换为long<br>
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为long
+     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -286,7 +286,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Long数组<br>
+     * 转换为Long数组
      *
      * @param value 被转换的值
      * @return 结果
@@ -296,8 +296,8 @@ public class Convert {
     }
 
     /**
-     * 转换为double<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为double
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -309,8 +309,8 @@ public class Convert {
     }
 
     /**
-     * 转换为double<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为double
+     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -321,7 +321,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Double数组<br>
+     * 转换为Double数组
      *
      * @param value 被转换的值
      * @return 结果
@@ -331,8 +331,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Float<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为Float
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -344,8 +344,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Float<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为Float
+     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -356,7 +356,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Float数组<br>
+     * 转换为Float数组
      *
      * @param value 被转换的值
      * @return 结果
@@ -366,8 +366,8 @@ public class Convert {
     }
 
     /**
-     * 转换为boolean<br>
-     * String支持的值为：true、false、yes、ok、no，1,0 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为boolean
+     * String支持的值为：true、false、yes、ok、no，1,0 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -379,8 +379,8 @@ public class Convert {
     }
 
     /**
-     * 转换为boolean<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为boolean
+     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -391,7 +391,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Boolean数组<br>
+     * 转换为Boolean数组
      *
      * @param value 被转换的值
      * @return 结果
@@ -401,8 +401,8 @@ public class Convert {
     }
 
     /**
-     * 转换为BigInteger<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为BigInteger
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -414,8 +414,8 @@ public class Convert {
     }
 
     /**
-     * 转换为BigInteger<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为BigInteger
+     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -426,8 +426,8 @@ public class Convert {
     }
 
     /**
-     * 转换为BigDecimal<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为BigDecimal
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -439,8 +439,8 @@ public class Convert {
     }
 
     /**
-     * 转换为BigDecimal<br>
-     * 如果给定的值为空，或者转换失败，返回null<br>
+     * 转换为BigDecimal
+     * 如果给定的值为空，或者转换失败，返回null
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -451,8 +451,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Date<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为Date
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -465,8 +465,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Date<br>
-     * 如果给定的值为空，或者转换失败，返回<code>null</code><br>
+     * 转换为Date
+     * 如果给定的值为空，或者转换失败，返回<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -478,8 +478,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Enum对象<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为Enum对象
+     * 如果给定的值为空，或者转换失败，返回默认值
      *
      * @param <E>          枚举类型
      * @param clazz        Enum的Class
@@ -492,8 +492,8 @@ public class Convert {
     }
 
     /**
-     * 转换为Enum对象<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
+     * 转换为Enum对象
+     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
      *
      * @param <E>   枚举类型
      * @param clazz Enum的Class
@@ -749,7 +749,7 @@ public class Convert {
     }
 
     /**
-     * 给定字符串转换字符编码<br>
+     * 给定字符串转换字符编码
      * 如果参数为空，则返回原字符串，不报错。
      *
      * @param str           被转码的字符串
@@ -920,7 +920,7 @@ public class Convert {
     }
 
     /**
-     * long转byte数组<br>
+     * long转byte数组
      *
      * @param longValue long值
      * @return byte数组
@@ -936,7 +936,7 @@ public class Convert {
     }
 
     /**
-     * byte数组转long<br>
+     * byte数组转long
      *
      * @param bytes byte数组
      * @return long值

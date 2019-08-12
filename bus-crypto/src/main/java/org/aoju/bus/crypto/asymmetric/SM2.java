@@ -39,8 +39,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 /**
- * 国密SM2算法实现，基于BC库<br>
- * SM2算法只支持公钥加密，私钥解密<br>
+ * 国密SM2算法实现，基于BC库
+ * SM2算法只支持公钥加密，私钥解密
  * <p>
  * /**
  *
@@ -70,8 +70,8 @@ public class SM2 extends AbstractAsymmetric<SM2> {
     }
 
     /**
-     * 构造<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKeyStr 私钥Hex或Base64表示
@@ -82,8 +82,8 @@ public class SM2 extends AbstractAsymmetric<SM2> {
     }
 
     /**
-     * 构造 <br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
@@ -97,8 +97,8 @@ public class SM2 extends AbstractAsymmetric<SM2> {
     }
 
     /**
-     * 构造 <br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
@@ -109,8 +109,8 @@ public class SM2 extends AbstractAsymmetric<SM2> {
     }
 
     /**
-     * 初始化<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 初始化
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
      * @param privateKey 私钥

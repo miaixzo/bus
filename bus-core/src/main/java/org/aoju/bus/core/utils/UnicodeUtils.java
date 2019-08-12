@@ -34,7 +34,7 @@ package org.aoju.bus.core.utils;
 public class UnicodeUtils {
 
     /**
-     * Unicode字符串转为普通字符串<br>
+     * Unicode字符串转为普通字符串
      * Unicode字符串的表现方式为：\\uXXXX
      *
      * @param unicode Unicode字符串

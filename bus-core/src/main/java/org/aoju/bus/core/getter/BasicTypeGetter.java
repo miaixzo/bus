@@ -28,8 +28,8 @@ import java.math.BigInteger;
 import java.util.Date;
 
 /**
- * 基本类型的getter接口<br>
- * 提供一个统一的接口定义返回不同类型的值（基本类型）<br>
+ * 基本类型的getter接口
+ * 提供一个统一的接口定义返回不同类型的值（基本类型）
  *
  * @author Kimi Liu
  * @version 3.0.5
@@ -94,7 +94,7 @@ public interface BasicTypeGetter<K> {
     Character getChar(K key);
 
     /**
-     * 获取float型属性值<br>
+     * 获取float型属性值
      *
      * @param key 属性名
      * @return 属性值

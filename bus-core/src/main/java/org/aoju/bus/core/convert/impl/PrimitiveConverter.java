@@ -30,8 +30,8 @@ import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
- * 原始类型转换器<br>
- * 支持类型为：<br>
+ * 原始类型转换器
+ * 支持类型为：
  * <ul>
  * <li><code>byte</code></li>
  * <li><code>short</code></li>
@@ -52,7 +52,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
     private Class<?> targetType;
 
     /**
-     * 构造<br>
+     * 构造
      *
      * @param clazz 需要转换的原始
      * @throws IllegalArgumentException 传入的转换类型非原始类型时抛出

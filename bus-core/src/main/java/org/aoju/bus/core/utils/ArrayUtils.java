@@ -3891,9 +3891,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 数组是否为空<br>
-     * 此方法会匹配单一对象，如果此对象为{@code null}则返回true<br>
-     * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回false<br>
+     * 数组是否为空
+     * 此方法会匹配单一对象，如果此对象为{@code null}则返回true
+     * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回false
      * 如果此对象为数组对象，数组长度大于0情况下返回false，否则返回true
      *
      * @param array 数组
@@ -3909,9 +3909,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 数组是否为空<br>
-     * 此方法会匹配单一对象，如果此对象为{@code null}则返回true<br>
-     * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回false<br>
+     * 数组是否为空
+     * 此方法会匹配单一对象，如果此对象为{@code null}则返回true
+     * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回false
      * 如果此对象为数组对象，数组长度大于0情况下返回false，否则返回true
      *
      * @param array 数组
@@ -4002,9 +4002,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 数组是否为非空<br>
-     * 此方法会匹配单一对象，如果此对象为{@code null}则返回false<br>
-     * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回true<br>
+     * 数组是否为非空
+     * 此方法会匹配单一对象，如果此对象为{@code null}则返回false
+     * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回true
      * 如果此对象为数组对象，数组长度大于0情况下返回true，否则返回false
      *
      * @param <T>   对象
@@ -7069,8 +7069,8 @@ public class ArrayUtils {
     }
 
     /**
-     * 将新元素插入到到已有数组中的某个位置<br>
-     * 添加新元素会生成一个新的数组，不影响原数组<br>
+     * 将新元素插入到到已有数组中的某个位置
+     * 添加新元素会生成一个新的数组，不影响原数组
      * 如果插入位置为为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
      *
      * @param <T>         数组元素类型
@@ -7823,7 +7823,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 根据数组元素类型，获取数组的类型<br>
+     * 根据数组元素类型，获取数组的类型
      * 方法是通过创建一个空数组从而获取其类型
      *
      * @param componentType 数组元素类型
@@ -7835,8 +7835,8 @@ public class ArrayUtils {
     }
 
     /**
-     * 强转数组类型<br>
-     * 强制转换的前提是数组元素类型可被强制转换<br>
+     * 强转数组类型
+     * 强制转换的前提是数组元素类型可被强制转换
      * 强制转换后会生成一个新数组
      *
      * @param type     数组类型或数组元素类型
@@ -7865,7 +7865,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 将新元素添加到已有数组中<br>
+     * 将新元素添加到已有数组中
      * 添加新元素会生成一个新的数组，不影响原数组
      *
      * @param <T>         数组元素类型
@@ -7881,7 +7881,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 将新元素添加到已有数组中<br>
+     * 将新元素添加到已有数组中
      * 添加新元素会生成一个新的数组，不影响原数组
      *
      * @param <T>         数组元素类型
@@ -7916,8 +7916,8 @@ public class ArrayUtils {
     }
 
     /**
-     * 将新元素插入到到已有数组中的某个位置<br>
-     * 添加新元素会生成一个新的数组，不影响原数组<br>
+     * 将新元素插入到到已有数组中的某个位置
+     * 添加新元素会生成一个新的数组，不影响原数组
      * 如果插入位置为为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
      *
      * @param <T>         数组元素类型
@@ -7968,7 +7968,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 生成一个新的重新设置大小的数组<br>
+     * 生成一个新的重新设置大小的数组
      * 调整大小后拷贝原数组到新数组下。扩大则占位前N个位置，缩小则截断
      *
      * @param <T>           数组元素类型
@@ -7986,7 +7986,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 生成一个新的重新设置大小的数组<br>
+     * 生成一个新的重新设置大小的数组
      * 新数组的类型为原数组的类型，调整大小后拷贝原数组到新数组下。扩大则占位前N个位置，缩小则截断
      *
      * @param <T>     数组元素类型
@@ -7999,7 +7999,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 将多个数组合并在一起<br>
+     * 将多个数组合并在一起
      * 忽略null的数组
      *
      * @param <T>    数组元素类型
@@ -8032,7 +8032,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}<br>
+     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
      * 数组复制
      *
      * @param src     源数组
@@ -8049,7 +8049,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}<br>
+     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
      * 数组复制，缘数组和目标数组都是从位置0开始复制
      *
      * @param src    源数组
@@ -8064,7 +8064,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 生成一个从0开始的数字列表<br>
+     * 生成一个从0开始的数字列表
      *
      * @param excludedEnd 结束的数字（不包含）
      * @return 数字列表
@@ -8074,7 +8074,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 生成一个数字列表<br>
+     * 生成一个数字列表
      * 自动判定正序反序
      *
      * @param includedStart 开始的数字（包含）
@@ -8086,7 +8086,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 生成一个数字列表<br>
+     * 生成一个数字列表
      * 自动判定正序反序
      *
      * @param includedStart 开始的数字（包含）
@@ -8642,7 +8642,7 @@ public class ArrayUtils {
 
 
     /**
-     * 获取数组长度<br>
+     * 获取数组长度
      * 如果参数为{@code null}，返回0
      *
      * <pre>
@@ -9301,11 +9301,11 @@ public class ArrayUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）<br>
-     * 例如：<br>
-     * keys = [a,b,c,d]<br>
-     * values = [1,2,3,4]<br>
-     * 则得到的Map是 {a=1, b=2, c=3, d=4}<br>
+     * 映射键值（参考Python的zip()函数）
+     * 例如：
+     * keys = [a,b,c,d]
+     * values = [1,2,3,4]
+     * 则得到的Map是 {a=1, b=2, c=3, d=4}
      * 如果两个数组长度不同，则只对应最短部分
      *
      * @param <K>     Key类型
@@ -9331,7 +9331,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 过滤<br>
+     * 过滤
      * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
      *
      * <pre>
@@ -9357,7 +9357,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 过滤<br>
+     * 过滤
      * 过滤过程通过传入的Filter实现来过滤返回需要的元素内容，这个Editor实现可以实现以下功能：
      *
      * @param <T>    数组元素类型

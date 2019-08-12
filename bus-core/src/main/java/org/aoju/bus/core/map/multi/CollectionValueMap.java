@@ -70,7 +70,7 @@ public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<
     }
 
     /**
-     * 放入Value<br>
+     * 放入Value
      * 如果键对应值列表有值，加入，否则创建一个新列表后加入
      *
      * @param key   键
@@ -98,7 +98,7 @@ public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<
     }
 
     /**
-     * 创建集合<br>
+     * 创建集合
      * 此方法用于创建在putValue后追加值所在的集合，子类实现此方法创建不同类型的集合
      *
      * @return {@link Collection}

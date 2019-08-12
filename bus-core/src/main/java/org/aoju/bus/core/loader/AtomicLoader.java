@@ -26,7 +26,7 @@ package org.aoju.bus.core.loader;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 原子引用加载器<br>
+ * 原子引用加载器
  * 使用{@link AtomicReference} 实懒加载，过程如下
  * <pre>
  * 1. 检查引用中是否有加载好的对象，有则返回
@@ -66,7 +66,7 @@ public abstract class AtomicLoader<T> implements Loader<T> {
     }
 
     /**
-     * 初始化被加载的对象<br>
+     * 初始化被加载的对象
      * 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
      *
      * @return 被加载的对象

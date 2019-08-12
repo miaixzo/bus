@@ -27,7 +27,7 @@ import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.utils.DateUtils;
 
 /**
- * 计时器<br>
+ * 计时器
  * 计算某个过程花费的时间，精确到毫秒
  *
  * @author Kimi Liu
@@ -78,7 +78,7 @@ public class TimeInterval {
     }
 
     /**
-     * 从开始到当前的间隔时间（毫秒数）<br>
+     * 从开始到当前的间隔时间（毫秒数）
      * 如果使用纳秒计时，返回纳秒差，否则返回毫秒差
      *
      * @return 从开始到当前的间隔时间（毫秒数）

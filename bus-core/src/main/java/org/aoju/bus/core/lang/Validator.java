@@ -78,8 +78,8 @@ public class Validator {
     }
 
     /**
-     * 验证是否为空<br>
-     * 对于String类型判定是否为empty(null 或 "")<br>
+     * 验证是否为空
+     * 对于String类型判定是否为empty(null 或 "")
      *
      * @param value 值
      * @return 是否为空
@@ -89,8 +89,8 @@ public class Validator {
     }
 
     /**
-     * 验证是否为空<br>
-     * 对于String类型判定是否为empty(null 或 "")<br>
+     * 验证是否为空
+     * 对于String类型判定是否为empty(null 或 "")
      *
      * @param value 值
      * @return 是否为空
@@ -100,8 +100,8 @@ public class Validator {
     }
 
     /**
-     * 验证是否为空，为空时抛出异常<br>
-     * 对于String类型判定是否为empty(null 或 "")<br>
+     * 验证是否为空，为空时抛出异常
+     * 对于String类型判定是否为empty(null 或 "")
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
@@ -114,7 +114,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否相等<br>
+     * 验证是否相等
      * 当两值都为null返回true
      *
      * @param t1 对象1
@@ -126,7 +126,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否相等，不相等抛出异常<br>
+     * 验证是否相等，不相等抛出异常
      *
      * @param t1       对象1
      * @param t2       对象2
@@ -140,7 +140,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否不等，相等抛出异常<br>
+     * 验证是否不等，相等抛出异常
      *
      * @param t1       对象1
      * @param t2       对象2
@@ -154,8 +154,8 @@ public class Validator {
     }
 
     /**
-     * 验证是否非空且与指定值相等<br>
-     * 当数据为空时抛出验证异常<br>
+     * 验证是否非空且与指定值相等
+     * 当数据为空时抛出验证异常
      * 当两值不等时抛出异常
      *
      * @param t1       对象1
@@ -169,8 +169,8 @@ public class Validator {
     }
 
     /**
-     * 验证是否非空且与指定值相等<br>
-     * 当数据为空时抛出验证异常<br>
+     * 验证是否非空且与指定值相等
+     * 当数据为空时抛出验证异常
      * 当两值相等时抛出异常
      *
      * @param t1       对象1
@@ -195,7 +195,7 @@ public class Validator {
     }
 
     /**
-     * 通过正则表达式验证<br>
+     * 通过正则表达式验证
      * 不符合正则
      *
      * @param regex    正则
@@ -531,7 +531,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为身份证号码（18位中国）<br>
+     * 验证是否为身份证号码（18位中国）
      * 出生日期只支持到到2999年
      *
      * @param value 值
@@ -542,7 +542,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为身份证号码（18位中国）<br>
+     * 验证是否为身份证号码（18位中国）
      * 出生日期只支持到到2999年
      *
      * @param value    值
@@ -556,7 +556,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为生日<br>
+     * 验证是否为生日
      *
      * @param year  年
      * @param month 月
@@ -589,7 +589,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为生日<br>
+     * 验证是否为生日
      * 只支持以下几种格式：
      * <ul>
      * <li>yyyyMMdd</li>
@@ -616,7 +616,7 @@ public class Validator {
     }
 
     /**
-     * 验证验证是否为生日<br>
+     * 验证验证是否为生日
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
@@ -776,7 +776,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为UUID<br>
+     * 验证是否为UUID
      * 包括带横线标准格式和不带横线的简单模式
      *
      * @param value 值
@@ -787,7 +787,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为UUID<br>
+     * 验证是否为UUID
      * 包括带横线标准格式和不带横线的简单模式
      *
      * @param value    值
@@ -801,7 +801,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为UUID<br>
+     * 验证是否为UUID
      * 包括带横线标准格式和不带横线的简单模式
      *
      * @param value 值

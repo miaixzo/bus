@@ -103,7 +103,7 @@ public class AioServer {
     }
 
     /**
-     * 设置 Socket 的 Option 选项<br>
+     * 设置 Socket 的 Option 选项
      * 选项见：{@link java.net.StandardSocketOptions}
      *
      * @param <T>   选项泛型

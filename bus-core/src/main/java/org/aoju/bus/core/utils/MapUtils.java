@@ -155,7 +155,7 @@ public class MapUtils {
     }
 
     /**
-     * 创建Map<br>
+     * 创建Map
      * 传入抽象Map{@link AbstractMap}和{@link Map}类将默认创建{@link HashMap}
      *
      * @param <K>     map键类型
@@ -268,9 +268,9 @@ public class MapUtils {
     }
 
     /**
-     * 行转列，合并相同的键，值合并为列表<br>
-     * 将Map列表中相同key的值组成列表做为Map的value<br>
-     * 是{@link #toMapList(Map)}的逆方法<br>
+     * 行转列，合并相同的键，值合并为列表
+     * 将Map列表中相同key的值组成列表做为Map的value
+     * 是{@link #toMapList(Map)}的逆方法
      * 比如传入数据：
      *
      * <pre>
@@ -324,8 +324,8 @@ public class MapUtils {
     }
 
     /**
-     * 列转行。将Map中值列表分别按照其位置与key组成新的map。<br>
-     * 是{@link #toListMap(Iterable)}的逆方法<br>
+     * 列转行。将Map中值列表分别按照其位置与key组成新的map。
+     * 是{@link #toListMap(Iterable)}的逆方法
      * 比如传入数据：
      *
      * <pre>
@@ -387,7 +387,7 @@ public class MapUtils {
     }
 
     /**
-     * 将已知Map转换为key为驼峰风格的Map<br>
+     * 将已知Map转换为key为驼峰风格的Map
      * 如果KEY为非String类型，保留原值
      *
      * @param <K> Key类型
@@ -482,7 +482,7 @@ public class MapUtils {
     }
 
     /**
-     * 过滤<br>
+     * 过滤
      * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
      *
      * <pre>
@@ -514,7 +514,7 @@ public class MapUtils {
     }
 
     /**
-     * 过滤<br>
+     * 过滤
      * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
      *
      * <pre>
@@ -643,7 +643,7 @@ public class MapUtils {
     }
 
     /**
-     * 创建代理Map<br>
+     * 创建代理Map
      * {@link MapProxy}对Map做一次包装，提供各种getXXX方法
      *
      * @param map 被代理的Map

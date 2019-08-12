@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.logger.dialect.jdk;
 
+import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.AbstractAware;
 
@@ -31,55 +32,48 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
- * <a href="http://java.sun.com/javase/6/docs/technotes/guides/logging/index.html">java.util.logging</a> log.
+ * java.util.logging log.
  *
  * @author Kimi Liu
  * @version 3.0.5
  * @since JDK 1.8
  */
-public class Jdk extends AbstractAware {
-
-    private static final long serialVersionUID = -6843151523380063975L;
-
-    /**
-     * 本类的全限定类名
-     */
-    private static final String FQCN_SELF = Jdk.class.getName();
+public class JdkLog extends AbstractAware {
 
     private final transient Logger logger;
 
-    public Jdk(Logger logger) {
+    public JdkLog(Logger logger) {
         this.logger = logger;
     }
 
-    public Jdk(Class<?> clazz) {
-        this(clazz.getName());
+    public JdkLog(Class<?> clazz) {
+        this((null == clazz) ? Normal.NULL : clazz.getName());
     }
 
-    public Jdk(String name) {
+    public JdkLog(String name) {
         this(Logger.getLogger(name));
     }
 
     /**
      * 传入调用日志类的信息
      *
-     * @param caller 调用者全限定类名
-     * @param record The record to update
+     * @param callerFQCN 调用者全限定类名
+     * @param record     The record to update
      */
-    private static void fillCallerData(String caller, LogRecord record) {
-        StackTraceElement[] steArray = new Throwable().getStackTrace();
+    private static void fillCallerData(String callerFQCN, LogRecord record) {
+        StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
 
         int found = -1;
         String className;
-        for (int i = 0; i < steArray.length; i++) {
+        for (int i = steArray.length - 2; i > -1; i--) {
             className = steArray[i].getClassName();
-            if (className.equals(caller)) {
+            if (callerFQCN.equals(className)) {
                 found = i;
                 break;
             }
         }
 
-        if (found > -1 && found < steArray.length - 1) {
+        if (found > -1) {
             StackTraceElement ste = steArray[found + 1];
             record.setSourceClassName(ste.getClassName());
             record.setSourceMethodName(ste.getMethodName());
@@ -97,13 +91,8 @@ public class Jdk extends AbstractAware {
     }
 
     @Override
-    public void trace(String format, Object... arguments) {
-        logIfEnabled(Level.FINEST, null, format, arguments);
-    }
-
-    @Override
-    public void trace(Throwable t, String format, Object... arguments) {
-        logIfEnabled(Level.FINEST, t, format, arguments);
+    public void trace(String fqcn, Throwable t, String format, Object... arguments) {
+        logIfEnabled(fqcn, Level.FINEST, t, format, arguments);
     }
 
     @Override
@@ -112,13 +101,8 @@ public class Jdk extends AbstractAware {
     }
 
     @Override
-    public void debug(String format, Object... arguments) {
-        logIfEnabled(Level.FINE, null, format, arguments);
-    }
-
-    @Override
-    public void debug(Throwable t, String format, Object... arguments) {
-        logIfEnabled(Level.FINE, t, format, arguments);
+    public void debug(String fqcn, Throwable t, String format, Object... arguments) {
+        logIfEnabled(fqcn, Level.FINE, t, format, arguments);
     }
 
     @Override
@@ -127,13 +111,8 @@ public class Jdk extends AbstractAware {
     }
 
     @Override
-    public void info(String format, Object... arguments) {
-        logIfEnabled(Level.INFO, null, format, arguments);
-    }
-
-    @Override
-    public void info(Throwable t, String format, Object... arguments) {
-        logIfEnabled(Level.INFO, t, format, arguments);
+    public void info(String fqcn, Throwable t, String format, Object... arguments) {
+        logIfEnabled(fqcn, Level.INFO, t, format, arguments);
     }
 
     @Override
@@ -142,13 +121,8 @@ public class Jdk extends AbstractAware {
     }
 
     @Override
-    public void warn(String format, Object... arguments) {
-        logIfEnabled(Level.WARNING, null, format, arguments);
-    }
-
-    @Override
-    public void warn(Throwable t, String format, Object... arguments) {
-        logIfEnabled(Level.WARNING, t, format, arguments);
+    public void warn(String fqcn, Throwable t, String format, Object... arguments) {
+        logIfEnabled(fqcn, Level.WARNING, t, format, arguments);
     }
 
     @Override
@@ -157,23 +131,8 @@ public class Jdk extends AbstractAware {
     }
 
     @Override
-    public void error(String format, Object... arguments) {
-        logIfEnabled(Level.SEVERE, null, format, arguments);
-    }
-
-    @Override
-    public void error(Throwable t, String format, Object... arguments) {
-        logIfEnabled(Level.SEVERE, t, format, arguments);
-    }
-
-    @Override
-    public void log(org.aoju.bus.logger.level.Level level, String format, Object... arguments) {
-        this.log(level, null, format, arguments);
-    }
-
-    @Override
-    public void log(org.aoju.bus.logger.level.Level level, Throwable t, String format, Object... arguments) {
-        this.log(FQCN_SELF, level, t, format, arguments);
+    public void error(String fqcn, Throwable t, String format, Object... arguments) {
+        logIfEnabled(fqcn, Level.SEVERE, t, format, arguments);
     }
 
     @Override
@@ -204,19 +163,7 @@ public class Jdk extends AbstractAware {
     /**
      * 打印对应等级的日志
      *
-     * @param level     等级
-     * @param throwable 异常对象
-     * @param format    消息模板
-     * @param arguments 参数
-     */
-    private void logIfEnabled(Level level, Throwable throwable, String format, Object[] arguments) {
-        this.logIfEnabled(FQCN_SELF, level, throwable, format, arguments);
-    }
-
-    /**
-     * 打印对应等级的日志
-     *
-     * @param callerFQCN
+     * @param callerFQCN 调用者的完全限定类名(Fully Qualified Class Name)
      * @param level      等级
      * @param throwable  异常对象
      * @param format     消息模板

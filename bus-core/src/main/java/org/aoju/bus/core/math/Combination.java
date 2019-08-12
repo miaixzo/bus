@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 组合，即C(n, m)<br>
+ * 组合，即C(n, m)
  * 排列组合相关类
  *
  * @author Kimi Liu
@@ -42,7 +42,7 @@ public class Combination {
     private String[] datas;
 
     /**
-     * 组合，即C(n, m)<br>
+     * 组合，即C(n, m)
      * 排列组合相关类
      *
      * @param datas 用于组合的数据

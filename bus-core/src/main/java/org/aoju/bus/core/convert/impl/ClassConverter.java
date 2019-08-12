@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 
 /**
- * 类转换器<br>
+ * 类转换器
  * 将类名转换为类
  *
  * @author Kimi Liu

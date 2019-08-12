@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.StringUtils;
 import java.util.Map;
 
 /**
- * 抽象转换器，提供通用的转换逻辑，同时通过convertInternal实现对应类型的专属逻辑<br>
+ * 抽象转换器，提供通用的转换逻辑，同时通过convertInternal实现对应类型的专属逻辑
  * 转换器不会抛出转换异常，转换失败时会返回{@code null}
  *
  * @author Kimi Liu
@@ -71,7 +71,7 @@ public abstract class AbstractConverter<T> implements Converter<T> {
     }
 
     /**
-     * 内部转换器，被 {@link AbstractConverter#convert(Object, Object)} 调用，实现基本转换逻辑<br>
+     * 内部转换器，被 {@link AbstractConverter#convert(Object, Object)} 调用，实现基本转换逻辑
      * 内部转换器转换后如果转换失败可以做如下操作，处理结果都为返回默认值：
      *
      * <pre>
@@ -85,7 +85,7 @@ public abstract class AbstractConverter<T> implements Converter<T> {
     protected abstract T convertInternal(Object value);
 
     /**
-     * 值转为String<br>
+     * 值转为String
      * 转换规则为：
      *
      * <pre>

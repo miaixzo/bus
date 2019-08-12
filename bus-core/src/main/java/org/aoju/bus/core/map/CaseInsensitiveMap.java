@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 忽略大小写的Map<br>
+ * 忽略大小写的Map
  * 对KEY忽略大小写，get("Value")和get("value")获得的值相同，put进入的值也会被覆盖
  *
  * @param <K> 键类型

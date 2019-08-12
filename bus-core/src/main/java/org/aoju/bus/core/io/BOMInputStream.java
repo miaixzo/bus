@@ -39,11 +39,11 @@ import java.io.PushbackInputStream;
  * <li>FE FF = UTF-16, big-endian</li>
  * <li>FF FE = UTF-16, little-endian</li>
  * </ul>
- * 使用： <br>
+ * 使用：
  * <code>
- * String enc = "UTF-8"; // or NULL to use systemdefault<br>
- * FileInputStream fis = new FileInputStream(file); <br>
- * BOMInputStream uin = new BOMInputStream(fis, enc); <br>
+ * String enc = "UTF-8"; // or NULL to use systemdefault
+ * FileInputStream fis = new FileInputStream(file);
+ * BOMInputStream uin = new BOMInputStream(fis, enc);
  * enc = uin.getCharset(); // check and skip possible BOM bytes
  * </code>
  *
@@ -96,7 +96,7 @@ public class BOMInputStream extends InputStream {
     }
 
     /**
-     * Read-ahead four bytes and check for BOM marks. <br>
+     * Read-ahead four bytes and check for BOM marks.
      * Extra bytes are unread back to the stream, only BOM bytes are skipped.
      *
      * @throws IOException 读取引起的异常

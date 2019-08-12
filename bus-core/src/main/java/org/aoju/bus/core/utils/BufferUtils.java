@@ -30,8 +30,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 /**
- * {@link ByteBuffer} 工具类<br>
- * 此工具来自于 t-io 项目以及其它项目的相关部分收集<br>
+ * {@link ByteBuffer} 工具类
+ * 此工具来自于 t-io 项目以及其它项目的相关部分收集
  * ByteBuffer的相关介绍见：https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
@@ -91,7 +91,7 @@ public class BufferUtils {
     }
 
     /**
-     * 读取剩余部分bytes<br>
+     * 读取剩余部分bytes
      *
      * @param buffer ByteBuffer
      * @return bytes
@@ -104,7 +104,7 @@ public class BufferUtils {
     }
 
     /**
-     * 读取指定长度的bytes<br>
+     * 读取指定长度的bytes
      * 如果长度不足，则读取剩余部分，此时buffer必须为读模式
      *
      * @param buffer    ByteBuffer
@@ -146,7 +146,7 @@ public class BufferUtils {
     }
 
     /**
-     * 一行的末尾位置，查找位置时位移ByteBuffer到结束位置<br>
+     * 一行的末尾位置，查找位置时位移ByteBuffer到结束位置
      * 支持的换行符如下：
      * <pre>
      * 1. \r\n
@@ -188,7 +188,7 @@ public class BufferUtils {
     }
 
     /**
-     * 读取一行，如果buffer中最后一部分并非完整一行，则返回null<br>
+     * 读取一行，如果buffer中最后一部分并非完整一行，则返回null
      * 支持的换行符如下：
      * <pre>
      * 1. \r\n

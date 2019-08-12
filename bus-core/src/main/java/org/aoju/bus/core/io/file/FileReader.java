@@ -87,7 +87,7 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 构造<br>
+     * 构造
      * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
      *
      * @param file 文件
@@ -97,7 +97,7 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 构造<br>
+     * 构造
      * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
      *
      * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
@@ -128,7 +128,7 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 读取文件所有数据<br>
+     * 读取文件所有数据
      * 文件的长度不能超过 {@link Integer#MAX_VALUE}
      *
      * @return 字节码

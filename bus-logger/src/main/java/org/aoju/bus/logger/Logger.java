@@ -39,10 +39,11 @@ public final class Logger {
     private static final String FQCN = Logger.class.getName();
 
     private Logger() {
+
     }
 
     /**
-     * Trace等级日志，小于debug<br>
+     * Trace等级日志，小于debug
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
      *
      * @param format    格式文本，{} 代表变量
@@ -60,13 +61,11 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void trace(Log log, String format, Object... arguments) {
-        if (false == log(log, Level.TRACE, null, format, arguments)) {
-            log.trace(format, arguments);
-        }
+        log.trace(FQCN, null, format, arguments);
     }
 
     /**
-     * Debug等级日志，小于Info<br>
+     * Debug等级日志，小于Info
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
      *
      * @param format    格式文本，{} 代表变量
@@ -84,13 +83,11 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void debug(Log log, String format, Object... arguments) {
-        if (false == log(log, Level.DEBUG, null, format, arguments)) {
-            log.debug(format, arguments);
-        }
+        log.debug(FQCN, null, format, arguments);
     }
 
     /**
-     * Info等级日志，小于Warn<br>
+     * Info等级日志，小于Warn
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
      *
      * @param format    格式文本，{} 代表变量
@@ -108,13 +105,11 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void info(Log log, String format, Object... arguments) {
-        if (false == log(log, Level.INFO, null, format, arguments)) {
-            log.info(format, arguments);
-        }
+        log.info(FQCN, null, format, arguments);
     }
 
     /**
-     * Warn等级日志，小于Error<br>
+     * Warn等级日志，小于Error
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
      *
      * @param format    格式文本，{} 代表变量
@@ -125,7 +120,7 @@ public final class Logger {
     }
 
     /**
-     * Warn等级日志，小于Error<br>
+     * Warn等级日志，小于Error
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
      *
      * @param e         需在日志中堆栈打印的异常
@@ -156,13 +151,11 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void warn(Log log, Throwable e, String format, Object... arguments) {
-        if (false == log(log, Level.WARN, e, format, arguments)) {
-            log.warn(e, format, arguments);
-        }
+        log.warn(FQCN, e, format, arguments);
     }
 
     /**
-     * Error等级日志<br>
+     * Error等级日志
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
      *
      * @param e 需在日志中堆栈打印的异常
@@ -172,7 +165,7 @@ public final class Logger {
     }
 
     /**
-     * Error等级日志<br>
+     * Error等级日志
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
      *
      * @param format    格式文本，{} 代表变量
@@ -183,7 +176,7 @@ public final class Logger {
     }
 
     /**
-     * Error等级日志<br>
+     * Error等级日志
      * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
      *
      * @param e         需在日志中堆栈打印的异常
@@ -195,7 +188,7 @@ public final class Logger {
     }
 
     /**
-     * Error等级日志<br>
+     * Error等级日志
      *
      * @param log 日志对象
      * @param e   需在日志中堆栈打印的异常
@@ -205,7 +198,7 @@ public final class Logger {
     }
 
     /**
-     * Error等级日志<br>
+     * Error等级日志
      *
      * @param log       日志对象
      * @param format    格式文本，{} 代表变量
@@ -216,7 +209,7 @@ public final class Logger {
     }
 
     /**
-     * Error等级日志<br>
+     * Error等级日志
      *
      * @param log       日志对象
      * @param e         需在日志中堆栈打印的异常
@@ -224,41 +217,19 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void error(Log log, Throwable e, String format, Object... arguments) {
-        if (false == log(log, Level.ERROR, e, format, arguments)) {
-            log.error(e, format, arguments);
-        }
+        log.error(FQCN, e, format, arguments);
     }
 
     /**
-     * 打印日志<br>
+     * 打印日志
      *
      * @param level     日志级别
      * @param t         需在日志中堆栈打印的异常
      * @param format    格式文本，{} 代表变量
      * @param arguments 变量对应的参数
-     * @return 是否为LocationAwareLog日志
      */
-    public static boolean log(Level level, Throwable t, String format, Object... arguments) {
-        return log(LogFactory.get(CallerUtils.getCallers()), level, t, format, arguments);
-    }
-
-    /**
-     * 打印日志<br>
-     *
-     * @param log       日志对象
-     * @param level     日志级别
-     * @param t         需在日志中堆栈打印的异常
-     * @param format    格式文本，{} 代表变量
-     * @param arguments 变量对应的参数
-     * @return 是否为LocationAwareLog日志
-     */
-    public static boolean log(Log log, Level level, Throwable t, String format, Object... arguments) {
-        if (log instanceof LocationAware) {
-            ((LocationAware) log).log(FQCN, level, t, format, arguments);
-            return true;
-        } else {
-            return false;
-        }
+    public static void log(Level level, Throwable t, String format, Object... arguments) {
+        LogFactory.get(CallerUtils.getCallers()).log(FQCN, level, t, format, arguments);
     }
 
     /**

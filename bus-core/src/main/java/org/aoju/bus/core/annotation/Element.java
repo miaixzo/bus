@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 组合注解 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。<br>
+ * 组合注解 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。
  * 核心实现使用了递归获取指定元素上的注解以及注解的注解，以实现复合注解的获取。
  *
  * @author Kimi Liu

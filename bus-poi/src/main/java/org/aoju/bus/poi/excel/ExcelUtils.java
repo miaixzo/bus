@@ -202,7 +202,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容<br>
+     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 默认调用第一个sheet
      *
      * @param bookFilePath Excel文件路径，绝对路径或相对于ClassPath路径
@@ -214,7 +214,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容<br>
+     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 默认调用第一个sheet
      *
      * @param bookFile Excel文件
@@ -271,7 +271,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容<br>
+     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 默认调用第一个sheet，读取结束自动关闭流
      *
      * @param bookStream Excel文件的流
@@ -282,7 +282,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容<br>
+     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 默认调用第一个sheet
      *
      * @param bookStream     Excel文件的流
@@ -299,7 +299,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容<br>
+     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 读取结束自动关闭流
      *
      * @param bookStream Excel文件的流
@@ -332,7 +332,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容<br>
+     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 读取结束自动关闭流
      *
      * @param bookStream Excel文件的流
@@ -364,8 +364,8 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link ExcelWriter}，默认写出到第一个sheet<br>
-     * 不传入写出的Excel文件路径，只能调用{@link ExcelWriter#flush(OutputStream)}方法写出到流<br>
+     * 获得{@link ExcelWriter}，默认写出到第一个sheet
+     * 不传入写出的Excel文件路径，只能调用{@link ExcelWriter#flush(OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
      *
      * @return {@link ExcelWriter}
@@ -380,8 +380,8 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link ExcelWriter}，默认写出到第一个sheet<br>
-     * 不传入写出的Excel文件路径，只能调用{@link ExcelWriter#flush(OutputStream)}方法写出到流<br>
+     * 获得{@link ExcelWriter}，默认写出到第一个sheet
+     * 不传入写出的Excel文件路径，只能调用{@link ExcelWriter#flush(OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
      *
      * @param isXlsx 是否为xlsx格式
@@ -455,8 +455,8 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link BigExcelWriter}，默认写出到第一个sheet<br>
-     * 不传入写出的Excel文件路径，只能调用{@link BigExcelWriter#flush(OutputStream)}方法写出到流<br>
+     * 获得{@link BigExcelWriter}，默认写出到第一个sheet
+     * 不传入写出的Excel文件路径，只能调用{@link BigExcelWriter#flush(OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
      *
      * @return {@link BigExcelWriter}
@@ -471,8 +471,8 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link BigExcelWriter}，默认写出到第一个sheet<br>
-     * 不传入写出的Excel文件路径，只能调用{@link BigExcelWriter#flush(OutputStream)}方法写出到流<br>
+     * 获得{@link BigExcelWriter}，默认写出到第一个sheet
+     * 不传入写出的Excel文件路径，只能调用{@link BigExcelWriter#flush(OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
      *
      * @param rowAccessWindowSize 在内存中的行数

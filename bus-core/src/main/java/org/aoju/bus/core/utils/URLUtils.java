@@ -254,7 +254,7 @@ public class URLUtils {
     }
 
     /**
-     * 编码URL，默认使用UTF-8编码<br>
+     * 编码URL，默认使用UTF-8编码
      * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
      *
      * @param url URL
@@ -267,7 +267,7 @@ public class URLUtils {
     }
 
     /**
-     * 编码URL<br>
+     * 编码URL
      * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
      *
      * @param url     URL
@@ -284,7 +284,7 @@ public class URLUtils {
     }
 
     /**
-     * 解码URL<br>
+     * 解码URL
      * 将%开头的16进制表示的内容解码。
      *
      * @param url URL
@@ -297,7 +297,7 @@ public class URLUtils {
     }
 
     /**
-     * 解码URL<br>
+     * 解码URL
      * 将%开头的16进制表示的内容解码。
      *
      * @param url     URL
@@ -314,7 +314,7 @@ public class URLUtils {
     }
 
     /**
-     * 获得path部分<br>
+     * 获得path部分
      *
      * @param uriStr URI路径
      * @return path
@@ -331,8 +331,8 @@ public class URLUtils {
     }
 
     /**
-     * 从URL对象中获取不被编码的路径Path<br>
-     * 对于本地路径，URL对象的getPath方法对于包含中文或空格时会被编码，导致本读路径读取错误。<br>
+     * 从URL对象中获取不被编码的路径Path
+     * 对于本地路径，URL对象的getPath方法对于包含中文或空格时会被编码，导致本读路径读取错误。
      * 此方法将URL转为URI后获取路径用于解决路径被编码的问题
      *
      * @param url {@link URL}
@@ -388,7 +388,7 @@ public class URLUtils {
     }
 
     /**
-     * 提供的URL是否为文件<br>
+     * 提供的URL是否为文件
      * 文件协议包括"file", "vfsfile" 或 "vfs".
      *
      * @param url {@link URL}

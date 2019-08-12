@@ -256,7 +256,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置发送方，遵循RFC-822标准<br>
+     * 设置发送方，遵循RFC-822标准
      *
      * @param from 发送方，遵循RFC-822标准
      * @return this

@@ -23,10 +23,6 @@
  */
 package org.aoju.bus.logger.dialect.slf4j;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.OutputStreamAppender;
-import ch.qos.logback.core.encoder.Encoder;
-import ch.qos.logback.core.status.Status;
 import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 import org.slf4j.LoggerFactory;
@@ -37,8 +33,8 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
 /**
- * <a href="http://www.slf4j.org/">SLF4J</a> log.<br>
- * 同样无缝支持 <a href="http://logback.qos.ch/">LogBack</a>
+ * SLF4J log.
+ * 无缝支持LogBack
  *
  * @author Kimi Liu
  * @version 3.0.5
@@ -62,8 +58,6 @@ public class Slf4jLogFactory extends LogFactory {
             return;
         }
 
-        // SFL4J writes it error messages to System.err. Capture them so that the user does not see such a message on
-        // the console during automatic detection.
         final StringBuilder buf = new StringBuilder();
         final PrintStream err = System.err;
         try {
@@ -72,84 +66,7 @@ public class Slf4jLogFactory extends LogFactory {
                 public void write(int b) {
                     buf.append((char) b);
                 }
-            }, true, "UTF-8"));
-            OutputStreamAppender s = new OutputStreamAppender();
-            s.setEncoder(new Encoder() {
-                @Override
-                public byte[] headerBytes() {
-                    return new byte[0];
-                }
-
-                @Override
-                public byte[] encode(Object event) {
-                    return new byte[0];
-                }
-
-                @Override
-                public byte[] footerBytes() {
-                    return new byte[0];
-                }
-
-                @Override
-                public Context getContext() {
-                    return null;
-                }
-
-                @Override
-                public void setContext(Context context) {
-
-                }
-
-                @Override
-                public void addStatus(Status status) {
-
-                }
-
-                @Override
-                public void addInfo(String msg) {
-
-                }
-
-                @Override
-                public void addInfo(String msg, Throwable ex) {
-
-                }
-
-                @Override
-                public void addWarn(String msg) {
-
-                }
-
-                @Override
-                public void addWarn(String msg, Throwable ex) {
-
-                }
-
-                @Override
-                public void addError(String msg) {
-
-                }
-
-                @Override
-                public void addError(String msg, Throwable ex) {
-
-                }
-
-                @Override
-                public void start() {
-
-                }
-
-                @Override
-                public void stop() {
-
-                }
-
-                @Override
-                public boolean isStarted() {
-                    return false;
-                }
-            });
+            }, true, "US-ASCII"));
         } catch (UnsupportedEncodingException e) {
             throw new Error(e);
         }
@@ -168,12 +85,12 @@ public class Slf4jLogFactory extends LogFactory {
 
     @Override
     public Log createLog(String name) {
-        return new Slf4J(name);
+        return new Slf4jLog(name);
     }
 
     @Override
     public Log createLog(Class<?> clazz) {
-        return new Slf4J(clazz);
+        return new Slf4jLog(clazz);
     }
 
 }

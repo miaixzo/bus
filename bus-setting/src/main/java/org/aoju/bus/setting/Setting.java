@@ -48,7 +48,7 @@ import java.nio.file.WatchEvent;
 import java.util.*;
 
 /**
- * 设置工具类。 用于支持设置（配置）文件<br>
+ * 设置工具类。 用于支持设置（配置）文件
  * BasicSetting用于替换Properties类，提供功能更加强大的配置文件，同时对Properties文件向下兼容
  *
  * <pre>
@@ -323,7 +323,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置<br>
+     * 持久化当前设置，会覆盖掉之前的设置
      * 持久化不会保留之前的分组
      *
      * @param absolutePath 设置文件的绝对路径
@@ -372,7 +372,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 设置变量的正则<br>
+     * 设置变量的正则
      * 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
      *
      * @param regex 正则

@@ -26,7 +26,7 @@ package org.aoju.bus.cron.pattern.matcher;
 import org.aoju.bus.core.lang.Matcher;
 
 /**
- * 值匹配器<br>
+ * 值匹配器
  * 用于匹配日期位中对应数字是否匹配
  *
  * @author Kimi Liu

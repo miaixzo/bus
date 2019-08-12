@@ -36,7 +36,7 @@ import java.math.BigInteger;
 public interface GroupedTypeGetter {
 
     /**
-     * 获取字符串型属性值<br>
+     * 获取字符串型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -45,7 +45,7 @@ public interface GroupedTypeGetter {
     String getStrByGroup(String key, String group);
 
     /**
-     * 获取int型属性值<br>
+     * 获取int型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -54,7 +54,7 @@ public interface GroupedTypeGetter {
     Integer getIntByGroup(String key, String group);
 
     /**
-     * 获取short型属性值<br>
+     * 获取short型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -63,7 +63,7 @@ public interface GroupedTypeGetter {
     Short getShortByGroup(String key, String group);
 
     /**
-     * 获取boolean型属性值<br>
+     * 获取boolean型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -72,7 +72,7 @@ public interface GroupedTypeGetter {
     Boolean getBoolByGroup(String key, String group);
 
     /**
-     * 获取Long型属性值<br>
+     * 获取Long型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -81,7 +81,7 @@ public interface GroupedTypeGetter {
     Long getLongByGroup(String key, String group);
 
     /**
-     * 获取char型属性值<br>
+     * 获取char型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -90,7 +90,7 @@ public interface GroupedTypeGetter {
     Character getCharByGroup(String key, String group);
 
     /**
-     * 获取double型属性值<br>
+     * 获取double型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -99,7 +99,7 @@ public interface GroupedTypeGetter {
     Double getDoubleByGroup(String key, String group);
 
     /**
-     * 获取byte型属性值<br>
+     * 获取byte型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -108,7 +108,7 @@ public interface GroupedTypeGetter {
     Byte getByteByGroup(String key, String group);
 
     /**
-     * 获取BigDecimal型属性值<br>
+     * 获取BigDecimal型属性值
      *
      * @param key   属性名
      * @param group 分组
@@ -117,7 +117,7 @@ public interface GroupedTypeGetter {
     BigDecimal getBigDecimalByGroup(String key, String group);
 
     /**
-     * 获取BigInteger型属性值<br>
+     * 获取BigInteger型属性值
      *
      * @param key   属性名
      * @param group 分组

@@ -183,7 +183,7 @@ public class FileCopier extends SrcToDestCopier<File, FileCopier> {
     }
 
     /**
-     * 执行拷贝<br>
+     * 执行拷贝
      * 拷贝规则为：
      * <pre>
      * 1、源为文件，目标为已存在目录，则拷贝到目录下，文件名不变
@@ -226,7 +226,7 @@ public class FileCopier extends SrcToDestCopier<File, FileCopier> {
     }
 
     /**
-     * 拷贝目录内容，只用于内部，不做任何安全检查<br>
+     * 拷贝目录内容，只用于内部，不做任何安全检查
      * 拷贝内容的意思为源目录下的所有文件和目录拷贝到另一个目录下，而不拷贝源目录本身
      *
      * @param src  源目录
@@ -262,7 +262,7 @@ public class FileCopier extends SrcToDestCopier<File, FileCopier> {
     }
 
     /**
-     * 拷贝文件，只用于内部，不做任何安全检查<br>
+     * 拷贝文件，只用于内部，不做任何安全检查
      * 情况如下：
      * <pre>
      * 1、如果目标是一个不存在的路径，则目标以文件对待（自动创建父级目录）比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名

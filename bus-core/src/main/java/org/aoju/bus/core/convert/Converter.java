@@ -33,7 +33,7 @@ package org.aoju.bus.core.convert;
 public interface Converter<T> {
 
     /**
-     * 转换为指定类型<br>
+     * 转换为指定类型
      * 如果类型无法确定，将读取默认值的类型做为目标类型
      *
      * @param value        原始值

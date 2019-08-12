@@ -97,7 +97,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对文件或文件目录进行压缩<br>
+     * 对文件或文件目录进行压缩
      * 不包含被打包目录
      *
      * @param srcPath 要压缩的源文件路径。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
@@ -110,7 +110,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对文件或文件目录进行压缩<br>
+     * 对文件或文件目录进行压缩
      *
      * @param srcPath    要压缩的源文件路径。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      * @param zipPath    压缩文件保存的路径，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
@@ -123,7 +123,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对文件或文件目录进行压缩<br>
+     * 对文件或文件目录进行压缩
      *
      * @param srcPath    要压缩的源文件路径。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      * @param zipPath    压缩文件保存的路径，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
@@ -140,7 +140,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对文件或文件目录进行压缩<br>
+     * 对文件或文件目录进行压缩
      * 使用默认UTF-8编码
      *
      * @param zipFile    生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
@@ -203,7 +203,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对流中的数据加入到压缩文件<br>
+     * 对流中的数据加入到压缩文件
      *
      * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
      * @param path    流数据在压缩文件中的路径或文件名
@@ -218,7 +218,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对流中的数据加入到压缩文件<br>
+     * 对流中的数据加入到压缩文件
      * 使用默认编码UTF-8
      *
      * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
@@ -233,7 +233,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对流中的数据加入到压缩文件<br>
+     * 对流中的数据加入到压缩文件
      *
      * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
      * @param path    流数据在压缩文件中的路径或文件名
@@ -248,7 +248,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对流中的数据加入到压缩文件<br>
+     * 对流中的数据加入到压缩文件
      * 路径列表和流列表长度必须一致
      *
      * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
@@ -263,7 +263,7 @@ public class ZipUtils {
     }
 
     /**
-     * 对流中的数据加入到压缩文件<br>
+     * 对流中的数据加入到压缩文件
      * 路径列表和流列表长度必须一致
      *
      * @param zipFile 生成的Zip文件，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
@@ -763,8 +763,8 @@ public class ZipUtils {
     }
 
     /**
-     * 递归压缩文件夹<br>
-     * srcRootDir决定了路径截取的位置，例如：<br>
+     * 递归压缩文件夹
+     * srcRootDir决定了路径截取的位置，例如：
      * file的路径为d:/a/b/c/d.txt，srcRootDir为d:/a/b，则压缩后的文件与目录为结构为c/d.txt
      *
      * @param out        压缩文件存储对象

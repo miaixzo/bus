@@ -96,7 +96,7 @@ public class TaskListenerManager {
     }
 
     /**
-     * 通知所有监听任务启动器结束并失败<br>
+     * 通知所有监听任务启动器结束并失败
      * 无监听将打印堆栈到命令行
      *
      * @param executor  {@link TaskExecutor}

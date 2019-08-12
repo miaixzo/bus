@@ -23,16 +23,145 @@
  */
 package org.aoju.bus.logger;
 
+import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.logger.level.Level;
+
+import java.io.Serializable;
+
 /**
- * 抽象定位感知日志实现<br>
- * 此抽象类实现了LocationAwareLog接口，从而支持完全限定类名(Fully Qualified Class Name)，用于纠正定位错误行号
+ * 抽象日志类
+ * 实现了一些通用的接口
  *
  * @author Kimi Liu
  * @version 3.0.5
  * @since JDK 1.8
  */
-public abstract class AbstractAware extends AbstractLog implements LocationAware {
+public abstract class AbstractAware implements Log, Serializable {
 
-    private static final long serialVersionUID = -5529674971846264145L;
+    private static final String FQCN = AbstractAware.class.getName();
+
+    @Override
+    public boolean isEnabled(Level level) {
+        switch (level) {
+            case TRACE:
+                return isTraceEnabled();
+            case DEBUG:
+                return isDebugEnabled();
+            case INFO:
+                return isInfoEnabled();
+            case WARN:
+                return isWarnEnabled();
+            case ERROR:
+                return isErrorEnabled();
+            default:
+                throw new Error(StringUtils.format("Can not identify level: {}", level));
+        }
+    }
+
+    @Override
+    public void trace(Throwable t) {
+        trace(t, (null == t) ? Normal.NULL : t.getMessage());
+    }
+
+    @Override
+    public void trace(String format, Object... arguments) {
+        trace(null, format, arguments);
+    }
+
+    @Override
+    public void trace(Throwable t, String format, Object... arguments) {
+        trace(FQCN, t, format, arguments);
+    }
+
+    @Override
+    public void debug(Throwable t) {
+        debug(t, (null == t) ? Normal.NULL : t.getMessage());
+    }
+
+    @Override
+    public void debug(String format, Object... arguments) {
+        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
+            debug((Throwable) arguments[0], format);
+        } else {
+            debug(null, format, arguments);
+        }
+    }
+
+    @Override
+    public void debug(Throwable t, String format, Object... arguments) {
+        debug(FQCN, t, format, arguments);
+    }
+
+    @Override
+    public void info(Throwable t) {
+        info(t, (null == t) ? Normal.NULL : t.getMessage());
+    }
+
+    @Override
+    public void info(String format, Object... arguments) {
+        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
+            info((Throwable) arguments[0], format);
+        } else {
+            info(null, format, arguments);
+        }
+    }
+
+    @Override
+    public void info(Throwable t, String format, Object... arguments) {
+        info(FQCN, t, format, arguments);
+    }
+
+    @Override
+    public void warn(Throwable t) {
+        warn(t, (null == t) ? Normal.NULL : t.getMessage());
+    }
+
+    @Override
+    public void warn(String format, Object... arguments) {
+        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
+            warn((Throwable) arguments[0], format);
+        } else {
+            warn(null, format, arguments);
+        }
+    }
+
+    @Override
+    public void warn(Throwable t, String format, Object... arguments) {
+        warn(FQCN, t, format, arguments);
+    }
+
+    @Override
+    public void error(Throwable t) {
+        this.error(t, (null == t) ? Normal.NULL : t.getMessage());
+    }
+
+    @Override
+    public void error(String format, Object... arguments) {
+        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
+            error((Throwable) arguments[0], format);
+        } else {
+            error(null, format, arguments);
+        }
+    }
+
+    @Override
+    public void error(Throwable t, String format, Object... arguments) {
+        error(FQCN, t, format, arguments);
+    }
+
+    @Override
+    public void log(Level level, String format, Object... arguments) {
+        if (null != arguments && 1 == arguments.length && arguments[0] instanceof Throwable) {
+            log(level, (Throwable) arguments[0], format);
+        } else {
+            log(level, null, format, arguments);
+        }
+    }
+
+    @Override
+    public void log(Level level, Throwable t, String format, Object... arguments) {
+        this.log(FQCN, level, t, format, arguments);
+    }
 
 }

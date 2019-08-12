@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 注解工具类<br>
+ * 注解工具类
  * 快速获取注解对象、注解值等工具封装
  *
  * @author Kimi Liu
@@ -81,7 +81,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 获取指定注解默认值<br>
+     * 获取指定注解默认值
      * 如果无指定的属性方法返回null
      *
      * @param <T>            注解值类型
@@ -95,7 +95,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 获取指定注解属性的值<br>
+     * 获取指定注解属性的值
      * 如果无指定的属性方法返回null
      *
      * @param <T>            注解值类型
@@ -119,7 +119,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 获取指定注解中所有属性值<br>
+     * 获取指定注解中所有属性值
      * 如果无指定的属性方法返回null
      *
      * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission

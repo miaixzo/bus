@@ -87,7 +87,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 构造<br>
+     * 构造
      * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
      *
      * @param file 文件
@@ -97,7 +97,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 构造<br>
+     * 构造
      * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
      *
      * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
@@ -324,7 +324,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将流的内容写入文件<br>
+     * 将流的内容写入文件
      * 此方法不会关闭输入流
      *
      * @param in 输入流，不关闭

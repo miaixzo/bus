@@ -40,9 +40,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 路径监听器<br>
- * 监听器可监听目录或文件<br>
- * 如果监听的Path不存在，则递归创建空目录然后监听此空目录<br>
+ * 路径监听器
+ * 监听器可监听目录或文件
+ * 如果监听的Path不存在，则递归创建空目录然后监听此空目录
  * 递归监听目录时，并不会监听新创建的目录
  *
  * @author Kimi Liu
@@ -145,7 +145,7 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 构造<br>
+     * 构造
      * 例如设置：
      * <pre>
      * maxDepth &lt;= 1 表示只监听当前目录
@@ -341,7 +341,7 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 初始化<br>
+     * 初始化
      * 初始化包括：
      * <pre>
      * 1、解析传入的路径，判断其为目录还是文件
@@ -385,7 +385,7 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 设置监听<br>
+     * 设置监听
      *
      * @param watcher 监听
      * @return {@link WatchMonitor}
@@ -450,8 +450,8 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 当监听目录时，监听目录的最大深度<br>
-     * 当设置值为1（或小于1）时，表示不递归监听子目录<br>
+     * 当监听目录时，监听目录的最大深度
+     * 当设置值为1（或小于1）时，表示不递归监听子目录
      * 例如设置：
      * <pre>
      * maxDepth &lt;= 1 表示只监听当前目录

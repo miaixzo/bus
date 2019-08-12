@@ -164,8 +164,8 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 将Excel Workbook刷出到预定义的文件<br>
-     * 如果用户未自定义输出的文件，将抛出{@link NullPointerException}<br>
+     * 将Excel Workbook刷出到预定义的文件
+     * 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
      * 预定义文件可以通过{@link #setDestFile(File)} 方法预定义，或者通过构造定义
      *
      * @return this
@@ -176,7 +176,7 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 将Excel Workbook刷出到文件<br>
+     * 将Excel Workbook刷出到文件
      * 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
      *
      * @param destFile 写出到的文件
@@ -223,7 +223,7 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 关闭Word文档<br>
+     * 关闭Word文档
      * 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
      */
     @Override

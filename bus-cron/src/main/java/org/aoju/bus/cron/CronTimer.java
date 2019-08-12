@@ -27,7 +27,7 @@ import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.utils.ThreadUtils;
 
 /**
- * 定时任务计时器<br>
+ * 定时任务计时器
  * 计时器线程每隔一分钟检查一次任务列表，一旦匹配到执行对应的Task
  *
  * @author Kimi Liu

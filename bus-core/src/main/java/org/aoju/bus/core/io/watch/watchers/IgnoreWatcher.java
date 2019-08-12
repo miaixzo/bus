@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 
 /**
- * 跳过所有事件处理Watcher<br>
+ * 跳过所有事件处理Watcher
  * 用户继承此类后实现需要监听的方法
  *
  * @author Kimi Liu

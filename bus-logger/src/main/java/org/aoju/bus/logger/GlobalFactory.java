@@ -31,7 +31,7 @@ import org.aoju.bus.logger.dialect.log4j2.Log4j2LogFactory;
 import org.aoju.bus.logger.dialect.slf4j.Slf4jLogFactory;
 
 /**
- * 全局日志工厂类<br>
+ * 全局日志工厂类
  * 用于减少日志工厂创建，减少日志库探测
  *
  * @author Kimi Liu
@@ -39,6 +39,7 @@ import org.aoju.bus.logger.dialect.slf4j.Slf4jLogFactory;
  * @since JDK 1.8
  */
 public class GlobalFactory {
+
     private static final Object lock = new Object();
     private static volatile LogFactory currentLogFactory;
 
@@ -95,4 +96,5 @@ public class GlobalFactory {
         currentLogFactory = logFactory;
         return currentLogFactory;
     }
+
 }

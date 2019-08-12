@@ -34,7 +34,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
- * 基于byte[]的资源获取器<br>
+ * 基于byte[]的资源获取器
  * 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu

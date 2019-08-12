@@ -37,7 +37,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
- * AIO会话<br>
+ * AIO会话
  * 每个客户端对应一个会话对象
  *
  * @author Kimi Liu
@@ -176,7 +176,7 @@ public class AioSession {
     }
 
     /**
-     * 会话是否打开状态<br>
+     * 会话是否打开状态
      * 当Socket保持连接时会话始终打开
      *
      * @return 会话是否打开状态

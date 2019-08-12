@@ -47,7 +47,7 @@ public enum BouncyCastleProvider {
     }
 
     /**
-     * 设置是否使用Bouncy Castle库<br>
+     * 设置是否使用Bouncy Castle库
      * 如果设置为false，表示强制关闭Bouncy Castle而使用JDK
      *
      * @param isUseBouncyCastle boolean

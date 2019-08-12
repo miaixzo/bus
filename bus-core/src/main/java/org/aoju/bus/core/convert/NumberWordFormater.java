@@ -27,7 +27,7 @@ import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
- * 将浮点数类型的number转换成英语的表达方式 <br>
+ * 将浮点数类型的number转换成英语的表达方式
  *
  * @author Kimi Liu
  * @version 3.0.5

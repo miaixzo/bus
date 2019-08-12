@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Excel读取器<br>
+ * Excel读取器
  * 读取Excel工作簿
  *
  * @author Kimi Liu
@@ -166,7 +166,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 设置单元格值处理逻辑<br>
+     * 设置单元格值处理逻辑
      * 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
      *
      * @param cellEditor 单元格值处理接口
@@ -274,7 +274,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取Excel为Map的列表，读取所有行，默认第一行做为标题，数据从第二行开始<br>
+     * 读取Excel为Map的列表，读取所有行，默认第一行做为标题，数据从第二行开始
      * Map表示一行，标题为key，单元格内容为value
      *
      * @return Map的列表
@@ -284,7 +284,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取Excel为Map的列表<br>
+     * 读取Excel为Map的列表
      * Map表示一行，标题为key，单元格内容为value
      *
      * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略
@@ -375,7 +375,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取为文本格式<br>
+     * 读取为文本格式
      * 使用{@link ExcelExtractor} 提取Excel内容
      *
      * @param withSheetName 是否附带sheet名
@@ -429,7 +429,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 获取Excel写出器<br>
+     * 获取Excel写出器
      * 在读取Excel并做一定编辑后，获取写出器写出
      *
      * @return {@link ExcelWriter}

@@ -26,7 +26,7 @@ package org.aoju.bus.cron.listener;
 import org.aoju.bus.cron.TaskExecutor;
 
 /**
- * 简单监听实现，不做任何操作<br>
+ * 简单监听实现，不做任何操作
  * 继承此监听后实现需要的方法即可
  *
  * @author Kimi Liu

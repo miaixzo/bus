@@ -30,8 +30,8 @@ import java.math.BigInteger;
 import java.util.Date;
 
 /**
- * 基本类型的getter接口抽象实现，所有类型的值获取都是通过将String转换而来<br>
- * 用户只需实现getStr方法即可，其他类型将会从String结果中转换 在不提供默认值的情况下， 如果值不存在或获取错误，返回null<br>
+ * 基本类型的getter接口抽象实现，所有类型的值获取都是通过将String转换而来
+ * 用户只需实现getStr方法即可，其他类型将会从String结果中转换 在不提供默认值的情况下， 如果值不存在或获取错误，返回null
  *
  * @author Kimi Liu
  * @version 3.0.5

@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * {@link java.text.SimpleDateFormat} 的线程安全版本，用于将 {@link Date} 格式化输出<br>
+ * {@link java.text.SimpleDateFormat} 的线程安全版本，用于将 {@link Date} 格式化输出
  *
  * @author Kimi Liu
  * @version 3.0.5
@@ -54,7 +54,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     private transient int mMaxLengthEstimate;
 
     /**
-     * 构造，内部使用<br>
+     * 构造，内部使用
      *
      * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone 非空时区{@link TimeZone}
@@ -506,7 +506,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * 估算生成的日期字符串长度<br>
+     * 估算生成的日期字符串长度
      * 实际生成的字符串长度小于或等于此值
      *
      * @return 日期字符串长度

@@ -757,7 +757,7 @@ public final class FileType {
     }
 
     /**
-     * 增加文件类型映射<br>
+     * 增加文件类型映射
      * 如果已经存在将覆盖之前的映射
      *
      * @param fileStreamHexHead 文件流头部Hex信息

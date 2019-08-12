@@ -40,7 +40,7 @@ import javax.persistence.Transient;
  */
 @MappedSuperclass
 @Data
-public class BaseEntity extends OAuth2 {
+public class BaseEntity extends Tracer {
 
     private static final long serialVersionUID = -601369123580520198L;
 

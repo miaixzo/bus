@@ -40,8 +40,8 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * 数字工具类<br>
- * 对于精确值计算应该使用 {@link BigDecimal}<br>
+ * 数字工具类
+ * 对于精确值计算应该使用 {@link BigDecimal}
  * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
  * @author Kimi Liu
@@ -108,7 +108,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的加法运算<br>
+     * 提供精确的加法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param v1 被加数
@@ -120,7 +120,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的加法运算<br>
+     * 提供精确的加法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被加值
@@ -144,7 +144,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的加法运算<br>
+     * 提供精确的加法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被加值
@@ -168,7 +168,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的加法运算<br>
+     * 提供精确的加法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被加值
@@ -236,7 +236,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的减法运算<br>
+     * 提供精确的减法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param v1 被减数
@@ -248,7 +248,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的减法运算<br>
+     * 提供精确的减法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被减值
@@ -272,7 +272,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的减法运算<br>
+     * 提供精确的减法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被减值
@@ -296,7 +296,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的减法运算<br>
+     * 提供精确的减法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被减值
@@ -364,7 +364,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的乘法运算<br>
+     * 提供精确的乘法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param v1 被乘数
@@ -376,7 +376,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的乘法运算<br>
+     * 提供精确的乘法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被乘值
@@ -412,7 +412,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的乘法运算<br>
+     * 提供精确的乘法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被乘值
@@ -436,7 +436,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 提供精确的乘法运算<br>
+     * 提供精确的乘法运算
      * 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被乘值
@@ -701,8 +701,8 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}<br>
+     * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =》 123.46
      *
      * @param v     值
@@ -714,8 +714,8 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}<br>
+     * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =》 123.46
      *
      * @param v     值
@@ -727,8 +727,8 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}<br>
+     * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =》 123.46
      *
      * @param numberStr 数字值的字符串表现形式
@@ -740,8 +740,8 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}<br>
+     * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =》 123.46
      *
      * @param number 数字值
@@ -754,8 +754,8 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}<br>
+     * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =》 123.46
      *
      * @param numberStr 数字值的字符串表现形式
@@ -768,7 +768,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
+     * 保留固定位数小数
      * 例如保留四位小数：123.456789 =》 123.4567
      *
      * @param v            值
@@ -781,7 +781,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
+     * 保留固定位数小数
      * 例如保留四位小数：123.456789 =》 123.4567
      *
      * @param v            值
@@ -795,7 +795,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
+     * 保留固定位数小数
      * 例如保留四位小数：123.456789 =》 123.4567
      *
      * @param numberStr    数字值的字符串表现形式
@@ -812,7 +812,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
+     * 保留固定位数小数
      * 例如保留四位小数：123.456789 =》 123.4567
      *
      * @param number       数字值
@@ -835,7 +835,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 保留固定位数小数<br>
+     * 保留固定位数小数
      * 例如保留四位小数：123.456789 =》 123.4567
      *
      * @param numberStr    数字值的字符串表现形式
@@ -921,10 +921,10 @@ abstract class MemberUtils {
     }
 
     /**
-     * 格式化double<br>
-     * 对 {@link DecimalFormat} 做封装<br>
+     * 格式化double
+     * 对 {@link DecimalFormat} 做封装
      *
-     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。<br>
+     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
      *                <ul>
      *                <li>0 =》 取一位整数</li>
      *                <li>0.00 =》 取一位整数和两位小数</li>
@@ -943,10 +943,10 @@ abstract class MemberUtils {
     }
 
     /**
-     * 格式化double<br>
-     * 对 {@link DecimalFormat} 做封装<br>
+     * 格式化double
+     * 对 {@link DecimalFormat} 做封装
      *
-     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。<br>
+     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
      *                <ul>
      *                <li>0 =》 取一位整数</li>
      *                <li>0.00 =》 取一位整数和两位小数</li>
@@ -1094,7 +1094,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 判断String是否是整数<br>
+     * 判断String是否是整数
      * 支持8、10、16进制
      *
      * @param s String
@@ -1110,7 +1110,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 判断字符串是否是Long类型<br>
+     * 判断字符串是否是Long类型
      * 支持8、10、16进制
      *
      * @param s String
@@ -1142,7 +1142,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 是否是质数（素数）<br>
+     * 是否是质数（素数）
      * 质数表的质数又称素数。指整数在一个大于1的自然数中,除了1和此整数自身外,没法被其他自然数整除的数。
      *
      * @param n 数字
@@ -1346,7 +1346,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 平方根算法<br>
+     * 平方根算法
      * 推荐使用 {@link Math#sqrt(double)}
      *
      * @param x 值
@@ -1369,7 +1369,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 可以用于计算双色球、大乐透注数的方法<br>
+     * 可以用于计算双色球、大乐透注数的方法
      * 比如大乐透35选5可以这样调用processMultiple(7,5); 就是数学中的：C75=7*6/2*1
      *
      * @param selectNum 选中小球个数
@@ -1601,8 +1601,8 @@ abstract class MemberUtils {
     }
 
     /**
-     * 比较大小，值相等 返回true<br>
-     * 此方法通过调用{@link BigDecimal#compareTo(BigDecimal)}方法来判断是否相等<br>
+     * 比较大小，值相等 返回true
+     * 此方法通过调用{@link BigDecimal#compareTo(BigDecimal)}方法来判断是否相等
      * 此方法判断值相等时忽略精度的，既0.00 == 0
      *
      * @param bigNum1 数字1
@@ -1778,7 +1778,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 数字转字符串<br>
+     * 数字转字符串
      * 调用{@link Number#toString()}，并去除尾小数点儿后多余的0
      *
      * @param number       A Number
@@ -1791,7 +1791,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 数字转字符串<br>
+     * 数字转字符串
      * 调用{@link Number#toString()}，并去除尾小数点儿后多余的0
      *
      * @param number A Number
@@ -1880,7 +1880,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 创建{@link BigInteger}，支持16进制、10进制和8进制，如果传入空白串返回null<br>
+     * 创建{@link BigInteger}，支持16进制、10进制和8进制，如果传入空白串返回null
      * from Apache Common Lang
      *
      * @param str 数字字符串
@@ -1922,7 +1922,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻<br>
+     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻
      * 判断方法为做差取绝对值判断是否为1
      *
      * @param number1 数字1
@@ -1935,7 +1935,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻<br>
+     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻
      * 判断方法为做差取绝对值判断是否为1
      *
      * @param number1 数字1
@@ -1948,7 +1948,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 把给定的总数平均分成N份，返回每份的个数<br>
+     * 把给定的总数平均分成N份，返回每份的个数
      * 当除以分数有余数时每份+1
      *
      * @param total     总数
@@ -1961,7 +1961,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 把给定的总数平均分成N份，返回每份的个数<br>
+     * 把给定的总数平均分成N份，返回每份的个数
      * 如果isPlusOneWhenHasRem为true，则当除以分数有余数时每份+1，否则丢弃余数部分
      *
      * @param total               总数

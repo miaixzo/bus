@@ -27,8 +27,8 @@ package org.aoju.bus.core.lang.copier;
 import org.aoju.bus.core.lang.Filter;
 
 /**
- * 复制器抽象类<br>
- * 抽象复制器抽象了一个对象复制到另一个对象，通过实现{@link #copy()}方法实现复制逻辑。<br>
+ * 复制器抽象类
+ * 抽象复制器抽象了一个对象复制到另一个对象，通过实现{@link #copy()}方法实现复制逻辑。
  *
  * @param <T> 拷贝的对象
  * @param <C> 本类的类型。用于set方法返回本对象，方便流式编程

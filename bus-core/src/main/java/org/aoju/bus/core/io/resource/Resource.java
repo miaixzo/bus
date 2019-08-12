@@ -32,7 +32,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
- * 资源接口定义<br>
+ * 资源接口定义
  * 资源可以是文件、URL、ClassPath中的文件亦或者jar包中的文件
  *
  * @author Kimi Liu
@@ -72,7 +72,7 @@ public interface Resource {
     BufferedReader getReader(Charset charset);
 
     /**
-     * 读取资源内容，读取完毕后会关闭流<br>
+     * 读取资源内容，读取完毕后会关闭流
      * 关闭流并不影响下一次读取
      *
      * @param charset 编码
@@ -82,7 +82,7 @@ public interface Resource {
     String readStr(Charset charset) throws InstrumentException;
 
     /**
-     * 读取资源内容，读取完毕后会关闭流<br>
+     * 读取资源内容，读取完毕后会关闭流
      * 关闭流并不影响下一次读取
      *
      * @return 读取资源内容
@@ -91,7 +91,7 @@ public interface Resource {
     String readUtf8Str() throws InstrumentException;
 
     /**
-     * 读取资源内容，读取完毕后会关闭流<br>
+     * 读取资源内容，读取完毕后会关闭流
      * 关闭流并不影响下一次读取
      *
      * @return 读取资源内容

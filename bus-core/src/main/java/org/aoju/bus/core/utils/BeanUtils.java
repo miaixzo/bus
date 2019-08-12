@@ -52,7 +52,7 @@ import java.util.*;
 public class BeanUtils {
 
     /**
-     * 判断是否为Bean对象<br>
+     * 判断是否为Bean对象
      * 判定方法是是否存在只有一个参数的setXXX方法
      *
      * @param clazz 待测试类
@@ -218,7 +218,7 @@ public class BeanUtils {
     }
 
     /**
-     * 获得字段值，通过反射直接获得字段值，并不调用getXXX方法<br>
+     * 获得字段值，通过反射直接获得字段值，并不调用getXXX方法
      * 对象同样支持Map类型，fieldNameOrIndex即为key
      *
      * @param bean             Bean对象
@@ -242,7 +242,7 @@ public class BeanUtils {
     }
 
     /**
-     * 设置字段值，，通过反射设置字段值，并不调用setXXX方法<br>
+     * 设置字段值，，通过反射设置字段值，并不调用setXXX方法
      * 对象同样支持Map类型，fieldNameOrIndex即为key
      *
      * @param bean             Bean
@@ -302,7 +302,7 @@ public class BeanUtils {
     }
 
     /**
-     * Map转换为Bean对象<br>
+     * Map转换为Bean对象
      * 忽略大小写
      *
      * @param <T>           Bean类型
@@ -494,7 +494,7 @@ public class BeanUtils {
     }
 
     /**
-     * 对象转Map<br>
+     * 对象转Map
      * 通过实现{@link Editor} 可以自定义字段值，如果这个Editor返回null则忽略这个字段，以便实现：
      *
      * <pre>
@@ -554,7 +554,7 @@ public class BeanUtils {
     }
 
     /**
-     * 复制Bean对象属性<br>
+     * 复制Bean对象属性
      * 限制类用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
      *
      * @param source           源Bean对象
@@ -566,7 +566,7 @@ public class BeanUtils {
     }
 
     /**
-     * 复制Bean对象属性<br>
+     * 复制Bean对象属性
      *
      * @param source     源Bean对象
      * @param target     目标Bean对象
@@ -577,7 +577,7 @@ public class BeanUtils {
     }
 
     /**
-     * 复制Bean对象属性<br>
+     * 复制Bean对象属性
      * 限制类用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
      *
      * @param source      源Bean对象
@@ -592,8 +592,8 @@ public class BeanUtils {
     }
 
     /**
-     * 给定的Bean的类名是否匹配指定类名字符串<br>
-     * 如果isSimple为{@code false}，则只匹配类名而忽略包名<br>
+     * 给定的Bean的类名是否匹配指定类名字符串
+     * 如果isSimple为{@code false}，则只匹配类名而忽略包名
      * 如果isSimple为{@code true}，则匹配包括包名的全类名
      *
      * @param bean          Bean
@@ -662,7 +662,7 @@ public class BeanUtils {
     }
 
     /**
-     * 判断Bean是否包含值为<code>null</code>的属性<br>
+     * 判断Bean是否包含值为<code>null</code>的属性
      * 对象本身为<code>null</code>也返回true
      *
      * @param bean Bean对象

@@ -54,14 +54,14 @@ import org.aoju.bus.core.utils.ClassUtils;
  * </pre>
  *
  * <p>
- * This will produce a toString of the format:<br>
- * <code>Person@7f54[ <br>
- * &nbsp; name=Stephen, <br>
- * &nbsp; age=29, <br>
- * &nbsp; smoker=false, <br>
- * &nbsp; job=Job@43cd2[ <br>
- * &nbsp; &nbsp; title=Manager <br>
- * &nbsp;  ] <br>
+ * This will produce a toString of the format:
+ * <code>Person@7f54[
+ * &nbsp; name=Stephen,
+ * &nbsp; age=29,
+ * &nbsp; smoker=false,
+ * &nbsp; job=Job@43cd2[
+ * &nbsp; &nbsp; title=Manager
+ * &nbsp;  ]
  * ]
  * </code>
  * </p>

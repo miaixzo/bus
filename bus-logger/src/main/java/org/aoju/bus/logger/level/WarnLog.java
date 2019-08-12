@@ -31,6 +31,7 @@ package org.aoju.bus.logger.level;
  * @since JDK 1.8
  */
 public interface WarnLog {
+
     /**
      * @return WARN 等级是否开启
      */
@@ -59,4 +60,15 @@ public interface WarnLog {
      * @param arguments 参数
      */
     void warn(Throwable t, String format, Object... arguments);
+
+    /**
+     * 打印 WARN 等级的日志
+     *
+     * @param fqcn      完全限定类名(Fully Qualified Class Name)，用于定位日志位置
+     * @param t         错误对象
+     * @param format    消息模板
+     * @param arguments 参数
+     */
+    void warn(String fqcn, Throwable t, String format, Object... arguments);
+
 }

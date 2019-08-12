@@ -28,9 +28,9 @@ import java.math.BigInteger;
 import java.util.Date;
 
 /**
- * 基本类型的getter接口抽象实现<br>
- * 提供一个统一的接口定义返回不同类型的值（基本类型）<br>
- * 在不提供默认值的情况下， 如果值不存在或获取错误，返回null<br>
+ * 基本类型的getter接口抽象实现
+ * 提供一个统一的接口定义返回不同类型的值（基本类型）
+ * 在不提供默认值的情况下， 如果值不存在或获取错误，返回null
  *
  * @author Kimi Liu
  * @version 3.0.5
@@ -44,7 +44,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取字符串型属性值<br>
+     * 获取字符串型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -56,7 +56,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取int型属性值<br>
+     * 获取int型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -68,7 +68,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取short型属性值<br>
+     * 获取short型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -80,7 +80,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取boolean型属性值<br>
+     * 获取boolean型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -92,7 +92,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取long型属性值<br>
+     * 获取long型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -104,7 +104,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取char型属性值<br>
+     * 获取char型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -116,7 +116,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取float型属性值<br>
+     * 获取float型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -128,7 +128,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取double型属性值<br>
+     * 获取double型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -140,7 +140,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取byte型属性值<br>
+     * 获取byte型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -152,7 +152,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取BigDecimal型属性值<br>
+     * 获取BigDecimal型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -164,7 +164,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取BigInteger型属性值<br>
+     * 获取BigInteger型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名
@@ -176,7 +176,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取Enum型属性值<br>
+     * 获取Enum型属性值
      * 无值或获取错误返回null
      *
      * @param clazz Enum 的 Class
@@ -189,7 +189,7 @@ public abstract class OptNullBasicTypeGetter<K> implements BasicTypeGetter<K>, O
     }
 
     /**
-     * 获取Date型属性值<br>
+     * 获取Date型属性值
      * 无值或获取错误返回null
      *
      * @param key 属性名

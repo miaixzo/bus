@@ -27,7 +27,7 @@ import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 
 /**
- * <a href="http://logging.apache.org/log4j/2.x/index.html">Apache Log4J 2</a> log.<br>
+ * Apache Log4J 2 log.
  *
  * @author Kimi Liu
  * @version 3.0.5
@@ -35,19 +35,19 @@ import org.aoju.bus.logger.LogFactory;
  */
 public class Log4j2LogFactory extends LogFactory {
 
-    public Log4j2LogFactory() {
-        super("Log4j2");
-        checkLogExist(org.apache.logging.log4j.LogManager.class);
-    }
+	public Log4j2LogFactory() {
+		super("Log4j2");
+		checkLogExist(org.apache.logging.log4j.LogManager.class);
+	}
 
-    @Override
-    public Log createLog(String name) {
-        return new Log4J2(name);
-    }
+	@Override
+	public Log createLog(String name) {
+		return new Log4j2Log(name);
+	}
 
-    @Override
-    public Log createLog(Class<?> clazz) {
-        return new Log4J2(clazz);
-    }
+	@Override
+	public Log createLog(Class<?> clazz) {
+		return new Log4j2Log(clazz);
+	}
 
 }

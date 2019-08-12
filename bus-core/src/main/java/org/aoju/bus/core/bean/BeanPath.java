@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.*;
 import java.util.*;
 
 /**
- * Bean路径表达式，用于获取多层嵌套Bean中的字段值或Bean对象<br>
+ * Bean路径表达式，用于获取多层嵌套Bean中的字段值或Bean对象
  * 根据给定的表达式，查找Bean中对应的属性值对象。 表达式分为两种：
  * <ol>
  * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
@@ -70,8 +70,8 @@ public class BeanPath {
     }
 
     /**
-     * 解析Bean路径表达式为Bean模式<br>
-     * Bean表达式，用于获取多层嵌套Bean中的字段值或Bean对象<br>
+     * 解析Bean路径表达式为Bean模式
+     * Bean表达式，用于获取多层嵌套Bean中的字段值或Bean对象
      * 根据给定的表达式，查找Bean中对应的属性值对象。 表达式分为两种：
      * <ol>
      * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
@@ -166,8 +166,8 @@ public class BeanPath {
     }
 
     /**
-     * 设置表达式指定位置（或filed对应）的值<br>
-     * 若表达式指向一个List则设置其坐标对应位置的值，若指向Map则put对应key的值，Bean则设置字段的值<br>
+     * 设置表达式指定位置（或filed对应）的值
+     * 若表达式指向一个List则设置其坐标对应位置的值，若指向Map则put对应key的值，Bean则设置字段的值
      * 注意：
      *
      * <pre>
@@ -183,8 +183,8 @@ public class BeanPath {
     }
 
     /**
-     * 设置表达式指定位置（或filed对应）的值<br>
-     * 若表达式指向一个List则设置其坐标对应位置的值，若指向Map则put对应key的值，Bean则设置字段的值<br>
+     * 设置表达式指定位置（或filed对应）的值
+     * 若表达式指向一个List则设置其坐标对应位置的值，若指向Map则put对应key的值，Bean则设置字段的值
      * 注意：
      *
      * <pre>

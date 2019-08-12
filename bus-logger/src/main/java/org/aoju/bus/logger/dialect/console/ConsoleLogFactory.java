@@ -27,7 +27,7 @@ import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 
 /**
- * 打印日志
+ * 利用System.out.println()打印日志
  *
  * @author Kimi Liu
  * @version 3.0.5

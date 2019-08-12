@@ -86,7 +86,7 @@ public class CellUtils {
     }
 
     /**
-     * 获取单元格值<br>
+     * 获取单元格值
      * 如果单元格值为数字格式，则判断其格式中是否有小数部分，无则返回Long类型，否则返回Double类型
      *
      * @param cell       {@link Cell}单元格
@@ -129,8 +129,8 @@ public class CellUtils {
     }
 
     /**
-     * 设置单元格值<br>
-     * 根据传入的styleSet自动匹配样式<br>
+     * 设置单元格值
+     * 根据传入的styleSet自动匹配样式
      * 当为头部样式时默认赋值头部样式，但是头部中如果有数字、日期等类型，将按照数字、日期样式设置
      *
      * @param cell     单元格
@@ -270,7 +270,7 @@ public class CellUtils {
     }
 
     /**
-     * 是否为日期格式<br>
+     * 是否为日期格式
      * 判断方式：
      *
      * <pre>

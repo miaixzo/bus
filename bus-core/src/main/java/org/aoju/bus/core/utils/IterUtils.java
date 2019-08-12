@@ -139,12 +139,12 @@ public class IterUtils {
     }
 
     /**
-     * 根据集合返回一个元素计数的 {@link Map}<br>
-     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value<br>
-     * 例如：[a,b,c,c,c] 得到：<br>
-     * a: 1<br>
-     * b: 1<br>
-     * c: 3<br>
+     * 根据集合返回一个元素计数的 {@link Map}
+     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value
+     * 例如：[a,b,c,c,c] 得到：
+     * a: 1
+     * b: 1
+     * c: 3
      *
      * @param <T>  集合元素类型
      * @param iter {@link Iterable}，如果为null返回一个空的Map
@@ -155,12 +155,12 @@ public class IterUtils {
     }
 
     /**
-     * 根据集合返回一个元素计数的 {@link Map}<br>
-     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value<br>
-     * 例如：[a,b,c,c,c] 得到：<br>
-     * a: 1<br>
-     * b: 1<br>
-     * c: 3<br>
+     * 根据集合返回一个元素计数的 {@link Map}
+     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value
+     * 例如：[a,b,c,c,c] 得到：
+     * a: 1
+     * b: 1
+     * c: 3
      *
      * @param <T>  集合元素类型
      * @param iter {@link Iterator}，如果为null返回一个空的Map
@@ -185,7 +185,7 @@ public class IterUtils {
     }
 
     /**
-     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况<br>
+     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况
      * 例如：车牌号 =》车
      *
      * @param <K>       字段名对应值得类型，不确定请使用Object
@@ -200,7 +200,7 @@ public class IterUtils {
     }
 
     /**
-     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况<br>
+     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况
      * 例如：车牌号 =》车
      *
      * @param <K>       字段名对应值得类型，不确定请使用Object
@@ -300,7 +300,7 @@ public class IterUtils {
     }
 
     /**
-     * 以 conjunction 为分隔符将集合转换为字符串<br>
+     * 以 conjunction 为分隔符将集合转换为字符串
      * 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
      *
      * @param <T>         集合元素类型
@@ -313,7 +313,7 @@ public class IterUtils {
     }
 
     /**
-     * 以 conjunction 为分隔符将集合转换为字符串<br>
+     * 以 conjunction 为分隔符将集合转换为字符串
      * 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
      *
      * @param <T>         集合元素类型
@@ -372,8 +372,8 @@ public class IterUtils {
     }
 
     /**
-     * 将键列表和值列表转换为Map<br>
-     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。<br>
+     * 将键列表和值列表转换为Map
+     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。
      * 如果值多于键，忽略多余的值。
      *
      * @param <K>    键类型
@@ -388,8 +388,8 @@ public class IterUtils {
     }
 
     /**
-     * 将键列表和值列表转换为Map<br>
-     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。<br>
+     * 将键列表和值列表转换为Map
+     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。
      * 如果值多于键，忽略多余的值。
      *
      * @param <K>     键类型
@@ -405,8 +405,8 @@ public class IterUtils {
     }
 
     /**
-     * 将键列表和值列表转换为Map<br>
-     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。<br>
+     * 将键列表和值列表转换为Map
+     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。
      * 如果值多于键，忽略多余的值。
      *
      * @param <K>    键类型
@@ -421,8 +421,8 @@ public class IterUtils {
     }
 
     /**
-     * 将键列表和值列表转换为Map<br>
-     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。<br>
+     * 将键列表和值列表转换为Map
+     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。
      * 如果值多于键，忽略多余的值。
      *
      * @param <K>     键类型
@@ -444,7 +444,7 @@ public class IterUtils {
     }
 
     /**
-     * Iterator转List<br>
+     * Iterator转List
      * 不判断，直接生成新的List
      *
      * @param <E>  元素类型
@@ -457,7 +457,7 @@ public class IterUtils {
     }
 
     /**
-     * Iterator转List<br>
+     * Iterator转List
      * 不判断，直接生成新的List
      *
      * @param <E>  元素类型
@@ -518,7 +518,7 @@ public class IterUtils {
     }
 
     /**
-     * 获得{@link Iterable}对象的元素类型（通过第一个非空元素判断）<br>
+     * 获得{@link Iterable}对象的元素类型（通过第一个非空元素判断）
      * 注意，此方法至少会调用多次next方法
      *
      * @param iterable {@link Iterable}
@@ -533,7 +533,7 @@ public class IterUtils {
     }
 
     /**
-     * 获得{@link Iterator}对象的元素类型（通过第一个非空元素判断）<br>
+     * 获得{@link Iterator}对象的元素类型（通过第一个非空元素判断）
      * 注意，此方法至少会调用多次next方法
      *
      * @param iterator {@link Iterator}

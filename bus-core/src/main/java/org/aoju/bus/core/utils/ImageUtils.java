@@ -48,8 +48,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * 图片处理工具类：<br>
- * 功能：缩放图像、切割图像、旋转、图像类型转换、彩色转黑白、文字水印、图片水印等 <br>
+ * 图片处理工具类：
+ * 功能：缩放图像、切割图像、旋转、图像类型转换、彩色转黑白、文字水印、图片水印等
  * 参考：http://blog.csdn.net/zhangzhikaixinya/article/details/8459400
  *
  * @author Kimi Liu
@@ -59,7 +59,7 @@ import java.util.Random;
 public class ImageUtils {
 
     /**
-     * 缩放图像（按比例缩放）<br>
+     * 缩放图像（按比例缩放）
      * 缩放后默认为jpeg格式
      *
      * @param srcImageFile  源图像文件
@@ -71,7 +71,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）<br>
+     * 缩放图像（按比例缩放）
      * 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcStream  源图像来源流
@@ -84,7 +84,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）<br>
+     * 缩放图像（按比例缩放）
      * 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcStream  源图像来源流
@@ -97,7 +97,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）<br>
+     * 缩放图像（按比例缩放）
      * 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcImage 源图像来源流
@@ -111,7 +111,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）<br>
+     * 缩放图像（按比例缩放）
      * 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcImage 源图像来源流
@@ -125,7 +125,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）<br>
+     * 缩放图像（按比例缩放）
      * 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcImage        源图像来源流
@@ -151,7 +151,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按长宽缩放）<br>
+     * 缩放图像（按长宽缩放）
      * 注意：目标长宽与原图不成比例会变形
      *
      * @param srcImage 源图像来源流
@@ -165,7 +165,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）<br>
+     * 缩放图像（按高度和宽度缩放）
      * 缩放后默认为jpeg格式
      *
      * @param srcImageFile  源图像文件地址
@@ -180,7 +180,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）<br>
+     * 缩放图像（按高度和宽度缩放）
      * 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -195,7 +195,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）<br>
+     * 缩放图像（按高度和宽度缩放）
      * 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -210,7 +210,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）<br>
+     * 缩放图像（按高度和宽度缩放）
      * 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcImage        源图像
@@ -225,7 +225,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）<br>
+     * 缩放图像（按高度和宽度缩放）
      * 缩放后默认为jpeg格式
      *
      * @param srcImage   源图像
@@ -502,7 +502,7 @@ public class ImageUtils {
     }
 
     /**
-     * 图像类型转换：GIF=》JPG、GIF=》PNG、PNG=》JPG、PNG=》GIF(X)、BMP=》PNG<br>
+     * 图像类型转换：GIF=》JPG、GIF=》PNG、PNG=》JPG、PNG=》GIF(X)、BMP=》PNG
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -516,7 +516,7 @@ public class ImageUtils {
 
 
     /**
-     * 图像类型转换：GIF=》JPG、GIF=》PNG、PNG=》JPG、PNG=》GIF(X)、BMP=》PNG<br>
+     * 图像类型转换：GIF=》JPG、GIF=》PNG、PNG=》JPG、PNG=》GIF(X)、BMP=》PNG
      * 此方法并不关闭流
      *
      * @param srcImage        源图像流
@@ -544,7 +544,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白<br>
+     * 彩色转为黑白
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -556,7 +556,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白<br>
+     * 彩色转为黑白
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -579,7 +579,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白<br>
+     * 彩色转为黑白
      * 此方法并不关闭流
      *
      * @param srcImage 源图像流
@@ -591,7 +591,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白<br>
+     * 彩色转为黑白
      * 此方法并不关闭流
      *
      * @param srcImage        源图像流
@@ -625,7 +625,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白二值化图片<br>
+     * 彩色转为黑白二值化图片
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -638,7 +638,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白黑白二值化图片<br>
+     * 彩色转为黑白黑白二值化图片
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -662,7 +662,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白二值化图片<br>
+     * 彩色转为黑白二值化图片
      * 此方法并不关闭流，输出JPG格式
      *
      * @param srcImage  源图像流
@@ -675,7 +675,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白二值化图片<br>
+     * 彩色转为黑白二值化图片
      * 此方法并不关闭流，输出JPG格式
      *
      * @param srcImage        源图像流
@@ -716,7 +716,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加文字水印<br>
+     * 给图片添加文字水印
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -733,7 +733,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加文字水印<br>
+     * 给图片添加文字水印
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -750,7 +750,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加文字水印<br>
+     * 给图片添加文字水印
      * 此方法并不关闭流
      *
      * @param srcImage  源图像
@@ -769,7 +769,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加文字水印<br>
+     * 给图片添加文字水印
      * 此方法并不关闭流
      *
      * @param srcImage  源图像
@@ -788,7 +788,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加文字水印<br>
+     * 给图片添加文字水印
      * 此方法并不关闭流
      *
      * @param srcImage        源图像
@@ -806,7 +806,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加文字水印<br>
+     * 给图片添加文字水印
      * 此方法并不关闭流
      *
      * @param srcImage  源图像
@@ -838,7 +838,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加图片水印<br>
+     * 给图片添加图片水印
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -853,7 +853,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加图片水印<br>
+     * 给图片添加图片水印
      * 此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -869,7 +869,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加图片水印<br>
+     * 给图片添加图片水印
      * 此方法并不关闭流
      *
      * @param srcImage   源图像流
@@ -886,7 +886,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加图片水印<br>
+     * 给图片添加图片水印
      * 此方法并不关闭流
      *
      * @param srcImage   源图像流
@@ -903,7 +903,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加图片水印<br>
+     * 给图片添加图片水印
      * 此方法并不关闭流
      *
      * @param srcImage        源图像流
@@ -919,7 +919,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加图片水印<br>
+     * 给图片添加图片水印
      * 此方法并不关闭流
      *
      * @param srcImage   源图像流
@@ -934,7 +934,7 @@ public class ImageUtils {
     }
 
     /**
-     * 给图片添加图片水印<br>
+     * 给图片添加图片水印
      * 此方法并不关闭流
      *
      * @param srcImage   源图像流
@@ -949,7 +949,7 @@ public class ImageUtils {
     }
 
     /**
-     * 旋转图片为指定角度<br>
+     * 旋转图片为指定角度
      * 此方法不会关闭输出流
      *
      * @param imageFile 被旋转图像文件
@@ -963,7 +963,7 @@ public class ImageUtils {
     }
 
     /**
-     * 旋转图片为指定角度<br>
+     * 旋转图片为指定角度
      * 此方法不会关闭输出流
      *
      * @param image   目标图像
@@ -977,7 +977,7 @@ public class ImageUtils {
     }
 
     /**
-     * 旋转图片为指定角度<br>
+     * 旋转图片为指定角度
      * 此方法不会关闭输出流
      *
      * @param image  目标图像
@@ -991,7 +991,7 @@ public class ImageUtils {
     }
 
     /**
-     * 旋转图片为指定角度<br>
+     * 旋转图片为指定角度
      * 此方法不会关闭输出流，输出格式为JPG
      *
      * @param image  目标图像
@@ -1005,7 +1005,7 @@ public class ImageUtils {
     }
 
     /**
-     * 旋转图片为指定角度<br>
+     * 旋转图片为指定角度
      * 来自：http://blog.51cto.com/cping1982/130066
      *
      * @param image  目标图像
@@ -1090,7 +1090,7 @@ public class ImageUtils {
     }
 
     /**
-     * {@link java.awt.Image} 转 {@link RenderedImage}<br>
+     * {@link java.awt.Image} 转 {@link RenderedImage}
      * 首先尝试强转，否则新建一个{@link BufferedImage}后重新绘制
      *
      * @param image {@link java.awt.Image}
@@ -1106,7 +1106,7 @@ public class ImageUtils {
     }
 
     /**
-     * {@link java.awt.Image} 转 {@link BufferedImage}<br>
+     * {@link java.awt.Image} 转 {@link BufferedImage}
      * 首先尝试强转，否则新建一个{@link BufferedImage}后重新绘制
      *
      * @param image {@link java.awt.Image}
@@ -1121,7 +1121,7 @@ public class ImageUtils {
     }
 
     /**
-     * {@link java.awt.Image} 转 {@link BufferedImage}<br>
+     * {@link java.awt.Image} 转 {@link BufferedImage}
      * 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制
      *
      * @param image     {@link java.awt.Image}
@@ -1268,7 +1268,7 @@ public class ImageUtils {
     }
 
     /**
-     * 根据文件创建字体<br>
+     * 根据文件创建字体
      * 首先尝试创建{@link Font#TRUETYPE_FONT}字体，此类字体无效则创建{@link Font#TYPE1_FONT}
      *
      * @param fontFile 字体文件
@@ -1291,7 +1291,7 @@ public class ImageUtils {
     }
 
     /**
-     * 根据文件创建字体<br>
+     * 根据文件创建字体
      * 首先尝试创建{@link Font#TRUETYPE_FONT}字体，此类字体无效则创建{@link Font#TYPE1_FONT}
      *
      * @param fontStream 字体流

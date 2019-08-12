@@ -27,7 +27,7 @@ import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 
 /**
- * <a href="http://www.tinylog.org/">TinyLog</a> log.<br>
+ * TinyLog log.
  *
  * @author Kimi Liu
  * @version 3.0.5
@@ -35,9 +35,6 @@ import org.aoju.bus.logger.LogFactory;
  */
 public class TinyLogFactory extends LogFactory {
 
-    /**
-     * 构造
-     */
     public TinyLogFactory() {
         super("TinyLog");
         checkLogExist(org.pmw.tinylog.Logger.class);

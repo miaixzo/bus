@@ -180,8 +180,8 @@ public class PatternUtils {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串<br>
-     * 例如：<br>
+     * 从content中匹配出多个值并根据template生成新的字符串
+     * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
      * @param pattern  匹配正则
@@ -208,9 +208,9 @@ public class PatternUtils {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串<br>
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）<br>
-     * 例如：<br>
+     * 从content中匹配出多个值并根据template生成新的字符串
+     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
+     * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
      * @param regex    匹配正则字符串
@@ -490,7 +490,7 @@ public class PatternUtils {
     }
 
     /**
-     * 正则替换指定值<br>
+     * 正则替换指定值
      * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
      *
      * @param content             文本
@@ -504,7 +504,7 @@ public class PatternUtils {
     }
 
     /**
-     * 正则替换指定值<br>
+     * 正则替换指定值
      * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
      *
      * @param content             文本

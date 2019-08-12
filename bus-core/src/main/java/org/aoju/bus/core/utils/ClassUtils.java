@@ -48,7 +48,7 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * 类工具类 <br>
+ * 类工具类
  *
  * @author Kimi Liu
  * @version 3.0.5
@@ -110,9 +110,9 @@ public class ClassUtils {
     }
 
     /**
-     * 获取类名<br>
-     * 类名并不包含“.class”这个扩展名<br>
-     * 例如：ClassUtil这个类<br>
+     * 获取类名
+     * 类名并不包含“.class”这个扩展名
+     * 例如：ClassUtil这个类
      *
      * <pre>
      * isSimple为false: "org.aoju.core.utils.ClassUtils"
@@ -168,7 +168,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获得指定类中的Public方法名<br>
+     * 获得指定类中的Public方法名
      * 去重重载的方法
      *
      * @param clazz 类
@@ -273,7 +273,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获得指定类中的Public方法名<br>
+     * 获得指定类中的Public方法名
      * 去重重载的方法
      *
      * @param clazz 类
@@ -419,7 +419,7 @@ public class ClassUtils {
     }
 
     /**
-     * 是否简单值类型或简单值类型的数组<br>
+     * 是否简单值类型或简单值类型的数组
      * 包括：原始类型,、String、other CharSequence, a Number, a Date, a URI, a URL, a Locale or a Class及其数组
      *
      * @param clazz 属性类
@@ -433,7 +433,7 @@ public class ClassUtils {
     }
 
     /**
-     * 是否为简单值类型<br>
+     * 是否为简单值类型
      * 包括：原始类型,、String、other CharSequence, a Number, a Date, a URI, a URL, a Locale or a Class.
      *
      * @param clazz 类
@@ -445,10 +445,10 @@ public class ClassUtils {
     }
 
     /**
-     * 检查目标类是否可以从原类转化<br>
-     * 转化包括：<br>
-     * 1、原类是对象，目标类型是原类型实现的接口<br>
-     * 2、目标类型是原类型的父类<br>
+     * 检查目标类是否可以从原类转化
+     * 转化包括：
+     * 1、原类是对象，目标类型是原类型实现的接口
+     * 2、目标类型是原类型的父类
      * 3、两者是原始类型或者包装类型（相互转换）
      *
      * @param classArray   目标类型
@@ -460,10 +460,10 @@ public class ClassUtils {
     }
 
     /**
-     * 检查目标类是否可以从原类转化<br>
-     * 转化包括：<br>
-     * 1、原类是对象，目标类型是原类型实现的接口<br>
-     * 2、目标类型是原类型的父类<br>
+     * 检查目标类是否可以从原类转化
+     * 转化包括：
+     * 1、原类是对象，目标类型是原类型实现的接口
+     * 2、目标类型是原类型的父类
      * 3、两者是原始类型或者包装类型（相互转换）
      *
      * @param classArray   目标类型
@@ -475,10 +475,10 @@ public class ClassUtils {
     }
 
     /**
-     * 检查目标类是否可以从原类转化<br>
-     * 转化包括：<br>
-     * 1、原类是对象，目标类型是原类型实现的接口<br>
-     * 2、目标类型是原类型的父类<br>
+     * 检查目标类是否可以从原类转化
+     * 转化包括：
+     * 1、原类是对象，目标类型是原类型实现的接口
+     * 2、目标类型是原类型的父类
      * 3、两者是原始类型或者包装类型（相互转换）
      *
      * @param classArray   目标类型
@@ -657,7 +657,7 @@ public class ClassUtils {
     }
 
     /**
-     * 是否为标准的类<br>
+     * 是否为标准的类
      * 这个类必须：
      * <pre>
      * 1、非接口
@@ -719,8 +719,8 @@ public class ClassUtils {
     }
 
     /**
-     * 获得给定类所在包的名称<br>
-     * 例如：<br>
+     * 获得给定类所在包的名称
+     * 例如：
      * ClassUtils =》 org.aoju.bus.core.utils
      *
      * @param clazz 类
@@ -739,8 +739,8 @@ public class ClassUtils {
     }
 
     /**
-     * 获得给定类所在包的路径<br>
-     * 例如：<br>
+     * 获得给定类所在包的路径
+     * 例如：
      *
      * @param clazz 类
      * @return 包名
@@ -750,7 +750,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获取指定类型分的默认值<br>
+     * 获取指定类型分的默认值
      * 默认值规则为：
      * <pre>
      * 1、如果为原始类型，返回0
@@ -801,7 +801,7 @@ public class ClassUtils {
     }
 
     /**
-     * 判断是否为Bean对象<br>
+     * 判断是否为Bean对象
      * 判定方法是是否存在只有一个参数的setXXX方法
      *
      * @param clazz 待测试类
@@ -866,7 +866,7 @@ public class ClassUtils {
     }
 
     /**
-     * 对象转Map<br>
+     * 对象转Map
      * 通过实现{@link Editor} 可以自定义字段值，如果这个Editor返回null则忽略这个字段，以便实现：
      *
      * <pre>
@@ -926,8 +926,8 @@ public class ClassUtils {
     }
 
     /**
-     * 获取{@link ClassLoader}<br>
-     * 获取顺序如下：<br>
+     * 获取{@link ClassLoader}
+     * 获取顺序如下：
      *
      * <pre>
      * 1、获取当前线程的ContextClassLoader
@@ -949,7 +949,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获得ClassPath，将编码后的中文路径解码为原字符<br>
+     * 获得ClassPath，将编码后的中文路径解码为原字符
      * 这个ClassPath路径会文件路径被标准化处理
      *
      * @return ClassPath
@@ -980,7 +980,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获得资源的URL<br>
+     * 获得资源的URL
      * 路径用/分隔，例如:
      *
      * <pre>
@@ -1023,7 +1023,7 @@ public class ClassUtils {
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader并初始化类（调用static模块内容和初始化static属性）<br>
+     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader并初始化类（调用static模块内容和初始化static属性）
      * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
      *
      * <pre>
@@ -1041,7 +1041,7 @@ public class ClassUtils {
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader<br>
+     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader
      * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
      *
      * <pre>
@@ -1060,9 +1060,9 @@ public class ClassUtils {
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名<br>
-     * 此方法支持缓存，第一次被加载的类之后会读取缓存中的类<br>
-     * 加载失败的原因可能是此类不存在或其关联引用类不存在<br>
+     * 加载类，通过传入类的字符串，返回其对应的类名
+     * 此方法支持缓存，第一次被加载的类之后会读取缓存中的类
+     * 加载失败的原因可能是此类不存在或其关联引用类不存在
      * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
      *
      * <pre>
@@ -1169,8 +1169,8 @@ public class ClassUtils {
     }
 
     /**
-     * 指定类是否被提供，使用默认ClassLoader<br>
-     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类，如果加载失败返回false<br>
+     * 指定类是否被提供，使用默认ClassLoader
+     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类，如果加载失败返回false
      * 加载失败的原因可能是此类不存在或其关联引用类不存在
      *
      * @param className 类名
@@ -1181,8 +1181,8 @@ public class ClassUtils {
     }
 
     /**
-     * 指定类是否被提供<br>
-     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类，如果加载失败返回false<br>
+     * 指定类是否被提供
+     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类，如果加载失败返回false
      * 加载失败的原因可能是此类不存在或其关联引用类不存在
      *
      * @param className   类名

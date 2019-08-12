@@ -634,7 +634,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获得指定类中的Public方法名<br>
+     * 获得指定类中的Public方法名
      * 去重重载的方法
      *
      * @param clazz 类
@@ -849,7 +849,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 执行方法<br>
+     * 执行方法
      * 执行前要检查给定参数：
      *
      * <pre>

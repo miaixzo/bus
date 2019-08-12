@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 基本变量类型的枚举<br>
+ * 基本变量类型的枚举
  * 基本类型枚举包括原始类型和包装类型
  *
  * @author Kimi Liu

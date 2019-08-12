@@ -49,7 +49,7 @@ public class Between {
     private Date end;
 
     /**
-     * 构造<br>
+     * 构造
      * 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
      *
      * @param begin 起始时间
@@ -60,7 +60,7 @@ public class Between {
     }
 
     /**
-     * 构造<br>
+     * 构造
      * 在前的日期做为起始时间，在后的做为结束时间
      *
      * @param begin 起始时间
@@ -80,7 +80,7 @@ public class Between {
     }
 
     /**
-     * 创建<br>
+     * 创建
      * 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
      *
      * @param begin 起始时间
@@ -92,7 +92,7 @@ public class Between {
     }
 
     /**
-     * 创建<br>
+     * 创建
      * 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
      *
      * @param begin 起始时间
@@ -106,7 +106,7 @@ public class Between {
     }
 
     /**
-     * 判断两个日期相差的时长<br>
+     * 判断两个日期相差的时长
      * 返回 给定单位的时长差
      *
      * @param unit 相差的单位
@@ -118,7 +118,7 @@ public class Between {
     }
 
     /**
-     * 计算两个日期相差月数<br>
+     * 计算两个日期相差月数
      * 在非重置情况下，如果起始日期的天小于结束日期的天，月数要少算1（不足1个月）
      *
      * @param isReset 是否重置时间为起始时间（重置天时分秒）
@@ -145,7 +145,7 @@ public class Between {
     }
 
     /**
-     * 计算两个日期相差年数<br>
+     * 计算两个日期相差年数
      * 在非重置情况下，如果起始日期的月小于结束日期的月，年数要少算1（不足1年）
      *
      * @param isReset 是否重置时间为起始时间（重置月天时分秒）
@@ -168,7 +168,7 @@ public class Between {
     }
 
     /**
-     * 格式化输出时间差<br>
+     * 格式化输出时间差
      *
      * @param level 级别
      * @return 字符串

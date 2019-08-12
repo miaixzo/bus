@@ -23,34 +23,32 @@
  */
 package org.aoju.bus.logger.dialect.log4j;
 
+import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.AbstractAware;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * <a href="http://logging.apache.org/log4j/1.2/index.html">Apache Log4J</a> log.<br>
+ * Apache Log4J log.
  *
  * @author Kimi Liu
  * @version 3.0.5
  * @since JDK 1.8
  */
-public class Log4J extends AbstractAware {
-
-    private static final long serialVersionUID = -6843151523380063975L;
-    private static final String FQCN = Log4J.class.getName();
+public class Log4jLog extends AbstractAware {
 
     private final Logger logger;
 
-    public Log4J(Logger logger) {
+    public Log4jLog(Logger logger) {
         this.logger = logger;
     }
 
-    public Log4J(Class<?> clazz) {
-        this(Logger.getLogger(clazz));
+    public Log4jLog(Class<?> clazz) {
+        this((null == clazz) ? Normal.NULL : clazz.getName());
     }
 
-    public Log4J(String name) {
+    public Log4jLog(String name) {
         this(Logger.getLogger(name));
     }
 
@@ -65,13 +63,8 @@ public class Log4J extends AbstractAware {
     }
 
     @Override
-    public void trace(String format, Object... arguments) {
-        trace(null, format, arguments);
-    }
-
-    @Override
-    public void trace(Throwable t, String format, Object... arguments) {
-        logger.log(FQCN, Level.TRACE, StringUtils.format(format, arguments), t);
+    public void trace(String fqcn, Throwable t, String format, Object... arguments) {
+        log(fqcn, org.aoju.bus.logger.level.Level.TRACE, t, format, arguments);
     }
 
     @Override
@@ -80,13 +73,8 @@ public class Log4J extends AbstractAware {
     }
 
     @Override
-    public void debug(String format, Object... arguments) {
-        debug(null, format, arguments);
-    }
-
-    @Override
-    public void debug(Throwable t, String format, Object... arguments) {
-        logger.log(FQCN, Level.DEBUG, StringUtils.format(format, arguments), t);
+    public void debug(String fqcn, Throwable t, String format, Object... arguments) {
+        log(fqcn, org.aoju.bus.logger.level.Level.DEBUG, t, format, arguments);
     }
 
     @Override
@@ -95,13 +83,8 @@ public class Log4J extends AbstractAware {
     }
 
     @Override
-    public void info(String format, Object... arguments) {
-        info(null, format, arguments);
-    }
-
-    @Override
-    public void info(Throwable t, String format, Object... arguments) {
-        logger.log(FQCN, Level.INFO, StringUtils.format(format, arguments), t);
+    public void info(String fqcn, Throwable t, String format, Object... arguments) {
+        log(fqcn, org.aoju.bus.logger.level.Level.INFO, t, format, arguments);
     }
 
     @Override
@@ -110,13 +93,8 @@ public class Log4J extends AbstractAware {
     }
 
     @Override
-    public void warn(String format, Object... arguments) {
-        warn(null, format, arguments);
-    }
-
-    @Override
-    public void warn(Throwable t, String format, Object... arguments) {
-        logger.log(FQCN, Level.WARN, StringUtils.format(format, arguments), t);
+    public void warn(String fqcn, Throwable t, String format, Object... arguments) {
+        log(fqcn, org.aoju.bus.logger.level.Level.WARN, t, format, arguments);
     }
 
     @Override
@@ -125,23 +103,8 @@ public class Log4J extends AbstractAware {
     }
 
     @Override
-    public void error(String format, Object... arguments) {
-        error(null, format, arguments);
-    }
-
-    @Override
-    public void error(Throwable t, String format, Object... arguments) {
-        logger.log(FQCN, Level.ERROR, StringUtils.format(format, arguments), t);
-    }
-
-    @Override
-    public void log(org.aoju.bus.logger.level.Level level, String format, Object... arguments) {
-        log(level, null, format, arguments);
-    }
-
-    @Override
-    public void log(org.aoju.bus.logger.level.Level level, Throwable t, String format, Object... arguments) {
-        this.log(FQCN, level, t, format, arguments);
+    public void error(String fqcn, Throwable t, String format, Object... arguments) {
+        log(fqcn, org.aoju.bus.logger.level.Level.ERROR, t, format, arguments);
     }
 
     @Override
@@ -166,7 +129,10 @@ public class Log4J extends AbstractAware {
             default:
                 throw new Error(StringUtils.format("Can not identify level: {}", level));
         }
-        logger.log(fqcn, log4jLevel, StringUtils.format(format, arguments), t);
+
+        if (logger.isEnabledFor(log4jLevel)) {
+            logger.log(fqcn, log4jLevel, StringUtils.format(format, arguments), t);
+        }
     }
 
 }

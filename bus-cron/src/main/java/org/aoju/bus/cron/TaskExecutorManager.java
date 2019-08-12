@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 作业执行管理器<br>
+ * 作业执行管理器
  * 负责管理作业的启动、停止等
  *
  * @author Kimi Liu

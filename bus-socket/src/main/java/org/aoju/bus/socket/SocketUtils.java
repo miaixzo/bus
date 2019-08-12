@@ -40,7 +40,7 @@ import java.nio.channels.ClosedChannelException;
 public class SocketUtils {
 
     /**
-     * 获取远程端的地址信息，包括host和端口<br>
+     * 获取远程端的地址信息，包括host和端口
      * null表示channel为null或者远程主机未连接
      *
      * @param channel {@link AsynchronousSocketChannel}
@@ -58,7 +58,7 @@ public class SocketUtils {
     }
 
     /**
-     * 远程主机是否处于连接状态<br>
+     * 远程主机是否处于连接状态
      * 通过判断远程地址获取成功与否判断
      *
      * @param channel {@link AsynchronousSocketChannel}

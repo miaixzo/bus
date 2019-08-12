@@ -27,7 +27,7 @@ package org.aoju.bus.core.bean;
 import org.aoju.bus.core.lang.SimpleCache;
 
 /**
- * Bean属性缓存<br>
+ * Bean属性缓存
  * 缓存用于防止多次反射造成的性能问题
  *
  * @author Kimi Liu

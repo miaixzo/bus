@@ -24,7 +24,7 @@
 package org.aoju.bus.socket.origin.aio;
 
 /**
- * Socket流处理接口<br>
+ * Socket流处理接口
  * 实现此接口用于处理接收到的消息，发送指定消息
  *
  * @param <T> 经过解码器解码后的数据类型

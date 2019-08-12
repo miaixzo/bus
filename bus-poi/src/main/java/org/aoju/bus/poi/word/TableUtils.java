@@ -141,7 +141,7 @@ public class TableUtils {
     }
 
     /**
-     * 获取或创建新行<br>
+     * 获取或创建新行
      * 存在则直接返回，不存在创建新的行
      *
      * @param table {@link XWPFTable}
@@ -158,7 +158,7 @@ public class TableUtils {
     }
 
     /**
-     * 获取或创建新单元格<br>
+     * 获取或创建新单元格
      * 存在则直接返回，不存在创建新的单元格
      *
      * @param row   {@link XWPFTableRow} 行

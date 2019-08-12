@@ -24,7 +24,7 @@
 package org.aoju.bus.crypto.symmetric;
 
 /**
- * 维吉尼亚密码实现。<br>
+ * 维吉尼亚密码实现。
  * 人们在恺撒移位密码的基础上扩展出多表密码，称为维吉尼亚密码。
  *
  * @author Kimi Liu

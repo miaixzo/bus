@@ -34,8 +34,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Base64工具类，提供Base64的编码和解码方案<br>
- * base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符，<br>
+ * Base64工具类，提供Base64的编码和解码方案
+ * base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符，
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示，长度比原来增加1/3。
  *
  * @author Kimi Liu
@@ -363,7 +363,7 @@ public class Base64 {
     }
 
     /**
-     * 编码为Base64<br>
+     * 编码为Base64
      * 如果isMultiLine为 true，则每76个字符一个换行符，否则在一行显示
      *
      * @param arr         被编码的数组

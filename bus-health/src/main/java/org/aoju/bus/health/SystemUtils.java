@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Java的System类封装工具类。<br>
+ * Java的System类封装工具类。
  * http://blog.csdn.net/zhongweijian/article/details/7619383
  *
  * @author Kimi Liu
@@ -188,7 +188,7 @@ public class SystemUtils {
     }
 
     /**
-     * 返回Java虚拟机编译系统相关属性<br>
+     * 返回Java虚拟机编译系统相关属性
      * 如果没有编译系统，则返回<code>null</code>
      *
      * @return a {@link CompilationMXBean} ，如果没有编译系统，则返回<code>null</code>

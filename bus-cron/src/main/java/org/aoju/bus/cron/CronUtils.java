@@ -37,8 +37,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 定时任务工具类<br>
- * 此工具持有一个全局{@link Scheduler}，所有定时任务在同一个调度器中执行<br>
+ * 定时任务工具类
+ * 此工具持有一个全局{@link Scheduler}，所有定时任务在同一个调度器中执行
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
  *
  * @author Kimi Liu
@@ -81,8 +81,8 @@ public final class CronUtils {
     }
 
     /**
-     * 设置是否支持秒匹配<br>
-     * 此方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分<br>
+     * 设置是否支持秒匹配
+     * 此方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
      *
      * @param isMatchSecond <code>true</code>支持，<code>false</code>不支持
      */
@@ -189,7 +189,7 @@ public final class CronUtils {
     }
 
     /**
-     * 重新启动定时任务<br>
+     * 重新启动定时任务
      * 此方法会清除动态加载的任务，重新启动后，守护线程与否与之前保持一致
      */
     synchronized public static void restart() {

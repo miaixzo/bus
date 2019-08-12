@@ -34,8 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 数字转换器<br>
- * 支持类型为：<br>
+ * 数字转换器
+ * 支持类型为：
  * <ul>
  * <li><code>java.lang.Byte</code></li>
  * <li><code>java.lang.Short</code></li>
@@ -60,7 +60,7 @@ public class NumberConverter extends AbstractConverter<Number> {
     }
 
     /**
-     * 构造<br>
+     * 构造
      *
      * @param clazz 需要转换的数字类型，默认 {@link Number}
      */
@@ -172,8 +172,8 @@ public class NumberConverter extends AbstractConverter<Number> {
     }
 
     /**
-     * 转换为BigDecimal<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为BigDecimal
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -199,8 +199,8 @@ public class NumberConverter extends AbstractConverter<Number> {
     }
 
     /**
-     * 转换为BigInteger<br>
-     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换为BigInteger
+     * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *
      * @param value 被转换的值

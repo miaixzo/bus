@@ -41,8 +41,8 @@ public class BigExcelWriter extends ExcelWriter {
     public static final int DEFAULT_WINDOW_SIZE = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
 
     /**
-     * 构造，默认生成xls格式的Excel文件<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流<br>
+     * 构造，默认生成xls格式的Excel文件
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      */
     public BigExcelWriter() {
@@ -50,8 +50,8 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     /**
-     * 构造<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流<br>
+     * 构造
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
      * 若写出到文件，需要调用{@link #flush(File)} 写出到文件
      *
      * @param rowAccessWindowSize 在内存中的行数
@@ -70,8 +70,8 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     /**
-     * 构造<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流<br>
+     * 构造
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
      * 若写出到文件，需要调用{@link #flush(File)} 写出到文件
      *
      * @param rowAccessWindowSize 在内存中的行数
@@ -113,8 +113,8 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     /**
-     * 构造<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流<br>
+     * 构造
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      *
      * @param workbook  {@link SXSSFWorkbook}
@@ -125,8 +125,8 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     /**
-     * 构造<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流<br>
+     * 构造
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      *
      * @param sheet {@link Sheet}

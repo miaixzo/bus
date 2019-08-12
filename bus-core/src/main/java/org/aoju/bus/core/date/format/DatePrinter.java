@@ -27,7 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 日期格式化输出接口<br>
+ * 日期格式化输出接口
  *
  * @author Kimi Liu
  * @version 3.0.5

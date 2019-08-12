@@ -42,7 +42,7 @@ import java.io.PushbackInputStream;
 public class ExcelFileUtils {
 
     /**
-     * 是否为XLS格式的Excel文件（HSSF）<br>
+     * 是否为XLS格式的Excel文件（HSSF）
      * XLS文件主要用于Excel 97~2003创建
      *
      * @param in excel输入流
@@ -58,7 +58,7 @@ public class ExcelFileUtils {
     }
 
     /**
-     * 是否为XLSX格式的Excel文件（XSSF）<br>
+     * 是否为XLSX格式的Excel文件（XSSF）
      * XLSX文件主要用于Excel 2007+创建
      *
      * @param in excel输入流

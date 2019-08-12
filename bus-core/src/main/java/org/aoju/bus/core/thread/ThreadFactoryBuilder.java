@@ -32,7 +32,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * ThreadFactory创建器<br>
+ * ThreadFactory创建器
  *
  * @author Kimi Liu
  * @version 3.0.5

@@ -44,7 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Sax方式读取Excel文件<br>
+ * Sax方式读取Excel文件
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
@@ -357,7 +357,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     }
 
     /**
-     * 填充空白单元格，如果前一个单元格大于后一个，不需要填充<br>
+     * 填充空白单元格，如果前一个单元格大于后一个，不需要填充
      *
      * @param preCoordinate 前一个单元格坐标
      * @param curCoordinate 当前单元格坐标

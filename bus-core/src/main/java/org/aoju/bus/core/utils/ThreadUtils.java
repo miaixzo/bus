@@ -69,7 +69,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 获得一个新的线程池<br>
+     * 获得一个新的线程池
      * 如果maximumPoolSize =》 corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
      *
      * @param corePoolSize    初始线程池大小
@@ -81,9 +81,9 @@ public class ThreadUtils {
     }
 
     /**
-     * 获得一个新的线程池<br>
-     * 传入阻塞系数，线程池的大小计算公式为：CPU可用核心数 / (1 - 阻塞因子)<br>
-     * Blocking Coefficient(阻塞系数) = 阻塞时间／（阻塞时间+使用CPU的时间）<br>
+     * 获得一个新的线程池
+     * 传入阻塞系数，线程池的大小计算公式为：CPU可用核心数 / (1 - 阻塞因子)
+     * Blocking Coefficient(阻塞系数) = 阻塞时间／（阻塞时间+使用CPU的时间）
      * 计算密集型任务的阻塞系数为0，而IO密集型任务的阻塞系数则接近于1。
      * <p>
      * see: http://blog.csdn.net/partner4java/article/details/9417663
@@ -132,7 +132,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 执行有返回值的异步方法<br>
+     * 执行有返回值的异步方法
      * Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
      *
      * @param <T>  回调对象类型
@@ -144,7 +144,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 执行有返回值的异步方法<br>
+     * 执行有返回值的异步方法
      * Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
      *
      * @param runnable 可运行对象
@@ -156,7 +156,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。<br>
+     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。
      * 若未完成，则会阻塞
      *
      * @param <T> 回调对象类型
@@ -167,7 +167,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。<br>
+     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。
      * 若未完成，则会阻塞
      *
      * @param <T>      回调对象类型
@@ -355,7 +355,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 获取JVM中与当前线程同组的所有线程<br>
+     * 获取JVM中与当前线程同组的所有线程
      *
      * @return 线程对象数组
      */
@@ -364,8 +364,8 @@ public class ThreadUtils {
     }
 
     /**
-     * 获取JVM中与当前线程同组的所有线程<br>
-     * 使用数组二次拷贝方式，防止在线程列表获取过程中线程终止<br>
+     * 获取JVM中与当前线程同组的所有线程
+     * 使用数组二次拷贝方式，防止在线程列表获取过程中线程终止
      * from Voovan
      *
      * @param group 线程组
@@ -380,7 +380,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 获取进程的主线程<br>
+     * 获取进程的主线程
      * from Voovan
      *
      * @return 进程的主线程

@@ -43,7 +43,7 @@ public class ApacheCommonsLogFactory extends LogFactory {
     @Override
     public Log createLog(String name) {
         try {
-            return new ApacheCommonsLog4J(name);
+            return new ApacheCommonsLog4JLog(name);
         } catch (Exception e) {
             return new ApacheCommonsLog(name);
         }
@@ -52,16 +52,16 @@ public class ApacheCommonsLogFactory extends LogFactory {
     @Override
     public Log createLog(Class<?> clazz) {
         try {
-            return new ApacheCommonsLog4J(clazz);
+            return new ApacheCommonsLog4JLog(clazz);
         } catch (Exception e) {
             return new ApacheCommonsLog(clazz);
         }
     }
 
     @Override
-    protected void checkLogExist(Object logClassName) {
+    protected void checkLogExist(Class<?> logClassName) {
         super.checkLogExist(logClassName);
-        //Commons Logging在调用getLog时才检查是否有日志实现，在此提前检查，如果没有实现则跳过之
         getLog(ApacheCommonsLogFactory.class);
     }
+
 }

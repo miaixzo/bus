@@ -3424,14 +3424,14 @@ public class StringUtils extends TextUtils {
      * 如果分隔字符串为空串""，则返回空串，如果分隔字符串未找到，返回原字符串，举例如下：
      *
      * <pre>
-     * StrUtil.subBefore(null, *)      = null
-     * StrUtil.subBefore("", *)        = ""
-     * StrUtil.subBefore("abc", "a")   = ""
-     * StrUtil.subBefore("abcba", "b") = "a"
-     * StrUtil.subBefore("abc", "c")   = "ab"
-     * StrUtil.subBefore("abc", "d")   = "abc"
-     * StrUtil.subBefore("abc", "")    = ""
-     * StrUtil.subBefore("abc", null)  = "abc"
+     * StringUtils.subBefore(null, *)      = null
+     * StringUtils.subBefore("", *)        = ""
+     * StringUtils.subBefore("abc", "a")   = ""
+     * StringUtils.subBefore("abcba", "b") = "a"
+     * StringUtils.subBefore("abc", "c")   = "ab"
+     * StringUtils.subBefore("abc", "d")   = "abc"
+     * StringUtils.subBefore("abc", "")    = ""
+     * StringUtils.subBefore("abc", null)  = "abc"
      * </pre>
      *
      * @param string          被查找的字符串
@@ -3466,12 +3466,12 @@ public class StringUtils extends TextUtils {
      * 如果分隔字符串未找到，返回原字符串，举例如下：
      *
      * <pre>
-     * StrUtil.subBefore(null, *)      = null
-     * StrUtil.subBefore("", *)        = ""
-     * StrUtil.subBefore("abc", 'a')   = ""
-     * StrUtil.subBefore("abcba", 'b') = "a"
-     * StrUtil.subBefore("abc", 'c')   = "ab"
-     * StrUtil.subBefore("abc", 'd')   = "abc"
+     * StringUtils.subBefore(null, *)      = null
+     * StringUtils.subBefore("", *)        = ""
+     * StringUtils.subBefore("abc", 'a')   = ""
+     * StringUtils.subBefore("abcba", 'b') = "a"
+     * StringUtils.subBefore("abc", 'c')   = "ab"
+     * StringUtils.subBefore("abc", 'd')   = "abc"
      * </pre>
      *
      * @param string          被查找的字符串
@@ -3502,14 +3502,14 @@ public class StringUtils extends TextUtils {
      * 如果分隔字符串为空串（null或""），则返回空串，如果分隔字符串未找到，返回空串，举例如下：
      *
      * <pre>
-     * StrUtil.subAfter(null, *)      = null
-     * StrUtil.subAfter("", *)        = ""
-     * StrUtil.subAfter(*, null)      = ""
-     * StrUtil.subAfter("abc", "a")   = "bc"
-     * StrUtil.subAfter("abcba", "b") = "cba"
-     * StrUtil.subAfter("abc", "c")   = ""
-     * StrUtil.subAfter("abc", "d")   = ""
-     * StrUtil.subAfter("abc", "")    = "abc"
+     * StringUtils.subAfter(null, *)      = null
+     * StringUtils.subAfter("", *)        = ""
+     * StringUtils.subAfter(*, null)      = ""
+     * StringUtils.subAfter("abc", "a")   = "bc"
+     * StringUtils.subAfter("abcba", "b") = "cba"
+     * StringUtils.subAfter("abc", "c")   = ""
+     * StringUtils.subAfter("abc", "d")   = ""
+     * StringUtils.subAfter("abc", "")    = "abc"
      * </pre>
      *
      * @param string          被查找的字符串
@@ -3540,12 +3540,12 @@ public class StringUtils extends TextUtils {
      * 如果分隔字符串为空串（null或""），则返回空串，如果分隔字符串未找到，返回空串，举例如下：
      *
      * <pre>
-     * StrUtil.subAfter(null, *)      = null
-     * StrUtil.subAfter("", *)        = ""
-     * StrUtil.subAfter("abc", 'a')   = "bc"
-     * StrUtil.subAfter("abcba", 'b') = "cba"
-     * StrUtil.subAfter("abc", 'c')   = ""
-     * StrUtil.subAfter("abc", 'd')   = ""
+     * StringUtils.subAfter(null, *)      = null
+     * StringUtils.subAfter("", *)        = ""
+     * StringUtils.subAfter("abc", 'a')   = "bc"
+     * StringUtils.subAfter("abcba", 'b') = "cba"
+     * StringUtils.subAfter("abc", 'c')   = ""
+     * StringUtils.subAfter("abc", 'd')   = ""
      * </pre>
      *
      * @param string          被查找的字符串
@@ -3572,16 +3572,16 @@ public class StringUtils extends TextUtils {
      * 栗子：
      *
      * <pre>
-     * StrUtil.subBetween("wx[b]yz", "[", "]") = "b"
-     * StrUtil.subBetween(null, *, *)          = null
-     * StrUtil.subBetween(*, null, *)          = null
-     * StrUtil.subBetween(*, *, null)          = null
-     * StrUtil.subBetween("", "", "")          = ""
-     * StrUtil.subBetween("", "", "]")         = null
-     * StrUtil.subBetween("", "[", "]")        = null
-     * StrUtil.subBetween("yabcz", "", "")     = ""
-     * StrUtil.subBetween("yabcz", "y", "z")   = "abc"
-     * StrUtil.subBetween("yabczyabcz", "y", "z")   = "abc"
+     * StringUtils.subBetween("wx[b]yz", "[", "]") = "b"
+     * StringUtils.subBetween(null, *, *)          = null
+     * StringUtils.subBetween(*, null, *)          = null
+     * StringUtils.subBetween(*, *, null)          = null
+     * StringUtils.subBetween("", "", "")          = ""
+     * StringUtils.subBetween("", "", "]")         = null
+     * StringUtils.subBetween("", "[", "]")        = null
+     * StringUtils.subBetween("yabcz", "", "")     = ""
+     * StringUtils.subBetween("yabcz", "y", "z")   = "abc"
+     * StringUtils.subBetween("yabczyabcz", "y", "z")   = "abc"
      * </pre>
      *
      * @param str    被切割的字符串
@@ -3615,12 +3615,12 @@ public class StringUtils extends TextUtils {
      * 栗子：
      *
      * <pre>
-     * StrUtil.subBetween(null, *)            = null
-     * StrUtil.subBetween("", "")             = ""
-     * StrUtil.subBetween("", "tag")          = null
-     * StrUtil.subBetween("tagabctag", null)  = null
-     * StrUtil.subBetween("tagabctag", "")    = ""
-     * StrUtil.subBetween("tagabctag", "tag") = "abc"
+     * StringUtils.subBetween(null, *)            = null
+     * StringUtils.subBetween("", "")             = ""
+     * StringUtils.subBetween("", "tag")          = null
+     * StringUtils.subBetween("tagabctag", null)  = null
+     * StringUtils.subBetween("tagabctag", "")    = ""
+     * StringUtils.subBetween("tagabctag", "tag") = "abc"
      * </pre>
      *
      * @param str            被切割的字符串
@@ -4343,9 +4343,9 @@ public class StringUtils extends TextUtils {
      * 切换给定字符串中的大小写。大写转小写，小写转大写。
      *
      * <pre>
-     * StrUtil.swapCase(null)                 = null
-     * StrUtil.swapCase("")                   = ""
-     * StrUtil.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
+     * StringUtils.swapCase(null)                 = null
+     * StringUtils.swapCase("")                   = ""
+     * StringUtils.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
      * </pre>
      *
      * @param str 字符串
@@ -4512,13 +4512,13 @@ public class StringUtils extends TextUtils {
      * 参数为 {@code null} 或者 "" 返回 {@code 0}.
      *
      * <pre>
-     * StrUtil.count(null, *)       = 0
-     * StrUtil.count("", *)         = 0
-     * StrUtil.count("abba", null)  = 0
-     * StrUtil.count("abba", "")    = 0
-     * StrUtil.count("abba", "a")   = 2
-     * StrUtil.count("abba", "ab")  = 1
-     * StrUtil.count("abba", "xxx") = 0
+     * StringUtils.count(null, *)       = 0
+     * StringUtils.count("", *)         = 0
+     * StringUtils.count("abba", null)  = 0
+     * StringUtils.count("abba", "")    = 0
+     * StringUtils.count("abba", "a")   = 2
+     * StringUtils.count("abba", "ab")  = 1
+     * StringUtils.count("abba", "xxx") = 0
      * </pre>
      *
      * @param content      被查找的字符串

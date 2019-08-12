@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * 动态Bean，通过反射对Bean的相关方法做操作<br>
+ * 动态Bean，通过反射对Bean的相关方法做操作
  * 支持Map和普通Bean
  *
  * @author Kimi Liu

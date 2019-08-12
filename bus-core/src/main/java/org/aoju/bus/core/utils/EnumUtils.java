@@ -80,7 +80,7 @@ public class EnumUtils {
     }
 
     /**
-     * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序<br>
+     * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序
      * 结果中键为枚举名，值为枚举对象
      *
      * @param <E>       对象
@@ -97,7 +97,7 @@ public class EnumUtils {
     }
 
     /**
-     * 获得枚举名对应指定字段值的Map<br>
+     * 获得枚举名对应指定字段值的Map
      * 键为枚举名，值为字段值
      *
      * @param clazz     枚举类

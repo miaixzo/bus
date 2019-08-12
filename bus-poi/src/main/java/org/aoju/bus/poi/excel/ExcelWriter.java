@@ -37,7 +37,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Excel 写入器<br>
+ * Excel 写入器
  * 此工具用于通过POI将数据写出到Excel，此对象可完成以下两个功能
  *
  * <pre>
@@ -77,8 +77,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     private StyleSet styleSet;
 
     /**
-     * 构造，默认生成xls格式的Excel文件<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流<br>
+     * 构造，默认生成xls格式的Excel文件
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      *
      * @since 3.2.1
@@ -88,8 +88,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 构造<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流<br>
+     * 构造
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件，需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx 是否为xlsx格式
@@ -109,8 +109,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 构造<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流<br>
+     * 构造
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件，需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx    是否为xlsx格式
@@ -152,8 +152,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 构造<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流<br>
+     * 构造
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      *
      * @param workbook  {@link Workbook}
@@ -164,8 +164,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 构造<br>
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流<br>
+     * 构造
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      *
      * @param sheet {@link Sheet}
@@ -231,8 +231,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置所有列为自动宽度，不考虑合并单元格<br>
-     * 此方法必须在指定列数据完全写出后调用才有效。<br>
+     * 设置所有列为自动宽度，不考虑合并单元格
+     * 此方法必须在指定列数据完全写出后调用才有效。
      * 列数计算是通过第一行计算的
      *
      * @return this
@@ -247,7 +247,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置某列为自动宽度，不考虑合并单元格<br>
+     * 设置某列为自动宽度，不考虑合并单元格
      * 此方法必须在指定列数据完全写出后调用才有效。
      *
      * @param columnIndex 第几列，从0计数
@@ -260,7 +260,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置某列为自动宽度<br>
+     * 设置某列为自动宽度
      * 此方法必须在指定列数据完全写出后调用才有效。
      *
      * @param columnIndex    第几列，从0计数
@@ -274,7 +274,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 获取样式集，样式集可以自定义包括：<br>
+     * 获取样式集，样式集可以自定义包括：
      *
      * <pre>
      * 1. 头部样式
@@ -500,7 +500,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 合并当前行的单元格<br>
+     * 合并当前行的单元格
      * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn 合并到的最后一个列号
@@ -511,8 +511,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 合并当前行的单元格，并写入对象到单元格<br>
-     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变<br>
+     * 合并当前行的单元格，并写入对象到单元格
+     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变
      * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn 合并到的最后一个列号
@@ -524,8 +524,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 合并某行的单元格，并写入对象到单元格<br>
-     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变<br>
+     * 合并某行的单元格，并写入对象到单元格
+     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变
      * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn       合并到的最后一个列号
@@ -548,8 +548,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 合并某行的单元格，并写入对象到单元格<br>
-     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变<br>
+     * 合并某行的单元格，并写入对象到单元格
+     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变
      * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param firstRow         第一行
@@ -576,18 +576,18 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件<br>
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加<br>
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式<br>
+     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
+     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      * 默认的，当当前行号为0时，写出标题（如果为Map或Bean），否则不写标题
      *
      * <p>
      * data中元素支持的类型有：
      *
      * <pre>
-     * 1. Iterable，既元素为一个集合，元素被当作一行，data表示多行<br>
-     * 2. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行 <br>
-     * 3. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行 <br>
+     * 1. Iterable，既元素为一个集合，元素被当作一行，data表示多行
+     * 2. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行
+     * 3. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行
      * 4. 其它类型，按照基本类型输出（例如字符串）
      * </pre>
      *
@@ -599,17 +599,17 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件<br>
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加<br>
+     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
      * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * <p>
      * data中元素支持的类型有：
      *
      * <pre>
-     * 1. Iterable，既元素为一个集合，元素被当作一行，data表示多行<br>
-     * 2. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行 <br>
-     * 3. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行 <br>
+     * 1. Iterable，既元素为一个集合，元素被当作一行，data表示多行
+     * 2. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行
+     * 3. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行
      * 4. 其它类型，按照基本类型输出（例如字符串）
      * </pre>
      *
@@ -630,14 +630,14 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件<br>
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加<br>
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式<br>
+     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
+     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      * data中元素支持的类型有：
      *
      * <p>
-     * 1. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行 <br>
-     * 2. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行 <br>
+     * 1. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行
+     * 2. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行
      * </p>
      *
      * @param data       数据
@@ -665,9 +665,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出一行标题数据<br>
-     * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件<br>
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1<br>
+     * 写出一行标题数据
+     * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
      * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param rowData 一行的数据
@@ -721,7 +721,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 将一个Map写入到Excel，isWriteKeyAsHead为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values<br>
+     * 将一个Map写入到Excel，isWriteKeyAsHead为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
      * 如果rowMap为空（包括null），则写出空行
      *
      * @param rowMap           写出的Map，为空（包括null），则写出空行
@@ -745,9 +745,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出一行数据<br>
-     * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件<br>
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1<br>
+     * 写出一行数据
+     * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
      * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * @param rowData 一行的数据
@@ -785,8 +785,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 将Excel Workbook刷出到预定义的文件<br>
-     * 如果用户未自定义输出的文件，将抛出{@link NullPointerException}<br>
+     * 将Excel Workbook刷出到预定义的文件
+     * 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
      * 预定义文件可以通过{@link #setDestFile(File)} 方法预定义，或者通过构造定义
      *
      * @return this
@@ -797,7 +797,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 将Excel Workbook刷出到文件<br>
+     * 将Excel Workbook刷出到文件
      * 如果用户未自定义输出的文件，将抛出{@link InstrumentException}
      *
      * @param destFile 写出到的文件
@@ -846,7 +846,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 关闭工作簿<br>
+     * 关闭工作簿
      * 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
      */
     @Override

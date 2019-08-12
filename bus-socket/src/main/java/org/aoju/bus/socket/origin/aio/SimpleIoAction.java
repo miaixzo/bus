@@ -26,7 +26,7 @@ package org.aoju.bus.socket.origin.aio;
 import java.nio.ByteBuffer;
 
 /**
- * 简易IO信息处理类<br>
+ * 简易IO信息处理类
  * 简单实现了accept和failed事件
  *
  * @author Kimi Liu

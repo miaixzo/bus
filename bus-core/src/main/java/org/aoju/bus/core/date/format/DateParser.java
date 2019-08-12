@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 日期解析接口，用于解析日期字符串为 {@link Date} 对象<br>
+ * 日期解析接口，用于解析日期字符串为 {@link Date} 对象
  * Thanks to Apache Commons Lang 3.5
  *
  * @author Kimi Liu
@@ -39,7 +39,7 @@ import java.util.Date;
 public interface DateParser extends DateBasic {
 
     /**
-     * 将日期字符串解析并转换为  {@link Date} 对象<br>
+     * 将日期字符串解析并转换为  {@link Date} 对象
      * 等价于 {@link java.text.DateFormat#parse(String)}
      *
      * @param source 日期字符串
@@ -49,7 +49,7 @@ public interface DateParser extends DateBasic {
     Date parse(String source) throws ParseException;
 
     /**
-     * 将日期字符串解析并转换为  {@link Date} 对象<br>
+     * 将日期字符串解析并转换为  {@link Date} 对象
      * 等价于 {@link java.text.DateFormat#parse(String, ParsePosition)}
      *
      * @param source 日期字符串
@@ -73,7 +73,7 @@ public interface DateParser extends DateBasic {
     boolean parse(String source, ParsePosition pos, Calendar calendar);
 
     /**
-     * 将日期字符串解析并转换为  {@link Date} 对象<br>
+     * 将日期字符串解析并转换为  {@link Date} 对象
      *
      * @param source A String whose beginning should be parsed.
      * @return a java.utils.Date object
@@ -83,7 +83,7 @@ public interface DateParser extends DateBasic {
     Object parseObject(String source) throws ParseException;
 
     /**
-     * 根据 {@link ParsePosition} 给定将日期字符串解析并转换为  {@link Date} 对象<br>
+     * 根据 {@link ParsePosition} 给定将日期字符串解析并转换为  {@link Date} 对象
      *
      * @param source A String whose beginning should be parsed.
      * @param pos    the parse position

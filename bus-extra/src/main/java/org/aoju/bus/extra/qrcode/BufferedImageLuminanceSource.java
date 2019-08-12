@@ -30,8 +30,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 /**
- * {@link BufferedImage} 图片二维码源<br>
- * 来自：http://blog.csdn.net/yangxin_blog/article/details/50850701<br>
+ * {@link BufferedImage} 图片二维码源
+ * 来自：http://blog.csdn.net/yangxin_blog/article/details/50850701
  * 此类同样在zxing-j2se包中也有提供
  *
  * @author Kimi Liu

@@ -23,10 +23,12 @@
  */
 package org.aoju.bus.logger;
 
+import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.utils.CallerUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.logger.dialect.commons.ApacheCommonsLogFactory;
 import org.aoju.bus.logger.dialect.console.ConsoleLogFactory;
+import org.aoju.bus.logger.dialect.jboss.JbossLogFactory;
 import org.aoju.bus.logger.dialect.jdk.JdkLogFactory;
 import org.aoju.bus.logger.dialect.log4j.Log4jLogFactory;
 import org.aoju.bus.logger.dialect.log4j2.Log4j2LogFactory;
@@ -47,6 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see Log4jLogFactory
  * @see ApacheCommonsLogFactory
  * @see TinyLogFactory
+ * @see JbossLogFactory
  * @see ConsoleLogFactory
  * @see JdkLogFactory
  * @since JDK 1.8
@@ -73,6 +76,79 @@ public abstract class LogFactory {
     }
 
     /**
+     * 决定日志实现
+     * <p>
+     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     *
+     * @return 日志实现类
+     * @see Slf4jLogFactory
+     * @see Log4j2LogFactory
+     * @see Log4jLogFactory
+     * @see ApacheCommonsLogFactory
+     * @see TinyLogFactory
+     * @see JbossLogFactory
+     * @see ConsoleLogFactory
+     * @see JdkLogFactory
+     */
+    public static LogFactory create() {
+        final LogFactory factory = doCreate();
+        factory.getLog(LogFactory.class).debug("Use [{}] Logger As Default.", factory.name);
+        return factory;
+    }
+
+    /**
+     * 决定日志实现
+     * <p>
+     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     *
+     * @return 日志实现类
+     * @see Slf4jLogFactory
+     * @see Log4j2LogFactory
+     * @see Log4jLogFactory
+     * @see ApacheCommonsLogFactory
+     * @see TinyLogFactory
+     * @see JbossLogFactory
+     * @see ConsoleLogFactory
+     * @see JdkLogFactory
+     */
+    private static LogFactory doCreate() {
+        try {
+            return new Slf4jLogFactory(true);
+        } catch (NoClassDefFoundError e) {
+            Console.error(e.getMessage());
+        }
+        try {
+            return new Log4j2LogFactory();
+        } catch (NoClassDefFoundError e) {
+            Console.error(e.getMessage());
+        }
+        try {
+            return new Log4jLogFactory();
+        } catch (NoClassDefFoundError e) {
+            Console.error(e.getMessage());
+        }
+        try {
+            return new ApacheCommonsLogFactory();
+        } catch (NoClassDefFoundError e) {
+            Console.error(e.getMessage());
+        }
+        try {
+            return new TinyLogFactory();
+        } catch (NoClassDefFoundError e) {
+            Console.error(e.getMessage());
+        }
+        try {
+            return new JbossLogFactory();
+        } catch (NoClassDefFoundError e) {
+            Console.error(e.getMessage());
+        }
+
+// 未找到任何可支持的日志库时判断依据：当JDK Logging的配置文件位于classpath中，使用JDK Logging，否则使用Console
+        final URL url = ResourceUtils.getResource("logging.properties");
+        return (null != url) ? new JdkLogFactory() : new ConsoleLogFactory();
+    }
+
+    /**
      * @return 当前使用的日志工厂
      */
     public static LogFactory getCurrentLogFactory() {
@@ -89,6 +165,7 @@ public abstract class LogFactory {
      * @see Log4jLogFactory
      * @see ApacheCommonsLogFactory
      * @see TinyLogFactory
+     * @see JbossLogFactory
      * @see ConsoleLogFactory
      * @see JdkLogFactory
      */
@@ -106,6 +183,7 @@ public abstract class LogFactory {
      * @see Log4jLogFactory
      * @see ApacheCommonsLogFactory
      * @see TinyLogFactory
+     * @see JbossLogFactory
      * @see ConsoleLogFactory
      * @see JdkLogFactory
      */
@@ -138,72 +216,6 @@ public abstract class LogFactory {
      */
     public static Log get() {
         return get(CallerUtils.getCallers());
-    }
-
-    /**
-     * 决定日志实现
-     * <p>
-     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
-     *
-     * @return 日志实现类
-     * @see Slf4jLogFactory
-     * @see Log4j2LogFactory
-     * @see Log4jLogFactory
-     * @see ApacheCommonsLogFactory
-     * @see TinyLogFactory
-     * @see ConsoleLogFactory
-     * @see JdkLogFactory
-     */
-    public static LogFactory create() {
-        final LogFactory factory = doCreate();
-        factory.getLog(LogFactory.class).debug("Use [{}] Logger As Default.", factory.name);
-        return factory;
-    }
-
-    /**
-     * 决定日志实现
-     * <p>
-     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
-     *
-     * @return 日志实现类
-     * @see Slf4jLogFactory
-     * @see Log4j2LogFactory
-     * @see Log4jLogFactory
-     * @see ApacheCommonsLogFactory
-     * @see TinyLogFactory
-     * @see ConsoleLogFactory
-     * @see JdkLogFactory
-     */
-    private static LogFactory doCreate() {
-        try {
-            return new Slf4jLogFactory(true);
-        } catch (NoClassDefFoundError e) {
-            // ignore
-        }
-        try {
-            return new Log4j2LogFactory();
-        } catch (NoClassDefFoundError e) {
-            // ignore
-        }
-        try {
-            return new Log4jLogFactory();
-        } catch (NoClassDefFoundError e) {
-            // ignore
-        }
-        try {
-            return new ApacheCommonsLogFactory();
-        } catch (NoClassDefFoundError e) {
-            // ignore
-        }
-        try {
-            return new TinyLogFactory();
-        } catch (NoClassDefFoundError e) {
-            // ignore
-        }
-
-        // 未找到任何可支持的日志库时判断依据：当JDK Logging的配置文件位于classpath中，使用JDK Logging，否则使用Console
-        final URL url = ResourceUtils.getResource("logging.properties");
-        return (null != url) ? new JdkLogFactory() : new ConsoleLogFactory();
     }
 
     /**
@@ -263,14 +275,14 @@ public abstract class LogFactory {
     public abstract Log createLog(Class<?> clazz);
 
     /**
-     * 检查日志实现是否存在<br>
-     * 此方法仅用于检查所提供的日志相关类是否存在，当传入的日志类类不存在时抛出ClassNotFoundException<br>
+     * 检查日志实现是否存在
+     * 此方法仅用于检查所提供的日志相关类是否存在，当传入的日志类类不存在时抛出ClassNotFoundException
      * 此方法的作用是在detectLogFactory方法自动检测所用日志时，如果实现类不存在，调用此方法会自动抛出异常，从而切换到下一种日志的检测。
      *
      * @param logClassName 日志实现相关类
      */
-    protected void checkLogExist(Object logClassName) {
-        // 不做任何操作
+    protected void checkLogExist(Class<?> logClassName) {
+
     }
 
 }

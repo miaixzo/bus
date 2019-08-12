@@ -44,7 +44,7 @@ import java.util.List;
 public class InternalMail {
 
     /**
-     * 将多个字符串邮件地址转为{@link InternetAddress}列表<br>
+     * 将多个字符串邮件地址转为{@link InternetAddress}列表
      * 单个字符串地址可以是多个地址合并的字符串
      *
      * @param addrStrs 地址数组
@@ -86,7 +86,7 @@ public class InternalMail {
     }
 
     /**
-     * 将一个地址字符串解析为多个地址<br>
+     * 将一个地址字符串解析为多个地址
      * 地址间使用" "、","、";"分隔
      *
      * @param address 地址字符串
@@ -115,7 +115,7 @@ public class InternalMail {
     }
 
     /**
-     * 编码中文字符<br>
+     * 编码中文字符
      * 编码失败返回原字符串
      *
      * @param text    被编码的文本

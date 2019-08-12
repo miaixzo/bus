@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * 日期格式化器缓存<br>
+ * 日期格式化器缓存
  *
  * @author Kimi Liu
  * @version 3.0.5

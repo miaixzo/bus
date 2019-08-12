@@ -19,8 +19,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <!--bus-base-->
-        <lombok.version>1.18.8</lombok.version>
         <!--bus-cache-->
         <curator.recipes.version>4.2.0</curator.recipes.version>
         <commons.proxy.version>1.0</commons.proxy.version>
@@ -32,6 +30,7 @@
         <kryo.version>4.0.0</kryo.version>
         <hession.version>4.0.38</hession.version>
         <!--bus-core-->
+        <lombok.version>1.18.8</lombok.version>
         <fastjson.version>1.2.36</fastjson.version>
         <!--bus-crypto-->
         <bouncycastle.version>1.60</bouncycastle.version>
@@ -166,14 +165,13 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-validate</artifactId>
+            <artifactId>bus-tracer</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--bus-base-->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-validate</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <!--bus-cache-->
         <dependency>
@@ -244,14 +242,14 @@
         </dependency>
         <!--bus-core-->
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.version}</version>
         </dependency>
         <!--bus-crypto-->
         <dependency>
@@ -286,9 +284,9 @@
             <version>${emoji-java.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.3</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
         </dependency>
         <!--bus-logger-->
         <dependency>

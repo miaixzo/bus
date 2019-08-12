@@ -36,7 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述<br>
+ * Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述
  * 查找Getter和Setter方法时会：
  *
  * <pre>
@@ -153,7 +153,7 @@ public class BeanDesc implements Serializable {
     }
 
     /**
-     * 初始化<br>
+     * 初始化
      * 只有与属性关联的相关Getter和Setter方法才会被读取，无关的getXXX和setXXX都被忽略
      *
      * @return this
@@ -169,7 +169,7 @@ public class BeanDesc implements Serializable {
     }
 
     /**
-     * 根据字段创建属性描述<br>
+     * 根据字段创建属性描述
      * 查找Getter和Setter方法时会：
      *
      * <pre>
@@ -220,7 +220,7 @@ public class BeanDesc implements Serializable {
     }
 
     /**
-     * 方法是否为Getter方法<br>
+     * 方法是否为Getter方法
      * 匹配规则如下（忽略大小写）：
      *
      * <pre>
@@ -272,7 +272,7 @@ public class BeanDesc implements Serializable {
     }
 
     /**
-     * 方法是否为Setter方法<br>
+     * 方法是否为Setter方法
      * 匹配规则如下（忽略大小写）：
      *
      * <pre>
@@ -330,7 +330,7 @@ public class BeanDesc implements Serializable {
         private Method setter;
 
         /**
-         * 构造<br>
+         * 构造
          * Getter和Setter方法设置为默认可访问
          *
          * @param field  字段
@@ -362,7 +362,7 @@ public class BeanDesc implements Serializable {
         }
 
         /**
-         * 获得字段类型<br>
+         * 获得字段类型
          * 先获取字段的类型，如果字段不存在，则获取Getter方法的返回类型，否则获取Setter的第一个参数类型
          *
          * @return 字段类型
@@ -375,7 +375,7 @@ public class BeanDesc implements Serializable {
         }
 
         /**
-         * 获得字段类型<br>
+         * 获得字段类型
          * 先获取字段的类型，如果字段不存在，则获取Getter方法的返回类型，否则获取Setter的第一个参数类型
          *
          * @return 字段类型
@@ -406,7 +406,7 @@ public class BeanDesc implements Serializable {
         }
 
         /**
-         * 获取字段值<br>
+         * 获取字段值
          * 首先调用字段对应的Getter方法获取值，如果Getter方法不存在，则判断字段如果为public，则直接获取字段值
          *
          * @param bean Bean对象
@@ -423,7 +423,7 @@ public class BeanDesc implements Serializable {
         }
 
         /**
-         * 设置Bean的字段值<br>
+         * 设置Bean的字段值
          * 首先调用字段对应的Setter方法，如果Setter方法不存在，则判断字段如果为public，则直接赋值字段值
          *
          * @param bean  Bean对象

@@ -34,7 +34,7 @@ import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 
 /**
- * 监听工具类<br>
+ * 监听工具类
  * 主要负责文件监听器的快捷创建
  *
  * @author Kimi Liu

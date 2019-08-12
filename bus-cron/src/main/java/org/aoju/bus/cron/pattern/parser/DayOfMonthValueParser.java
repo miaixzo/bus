@@ -26,7 +26,7 @@ package org.aoju.bus.cron.pattern.parser;
 import org.aoju.bus.core.lang.exception.CommonException;
 
 /**
- * 每月的几号值处理<br>
+ * 每月的几号值处理
  * 每月最多31天，32和“L”都表示最后一天
  *
  * @author Kimi Liu

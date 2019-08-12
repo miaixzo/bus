@@ -37,7 +37,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 
 /**
- * 摘要算法<br>
+ * 摘要算法
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
@@ -134,7 +134,7 @@ public class Digester {
     }
 
     /**
-     * 设置加盐的位置，只有盐值存在时有效<br>
+     * 设置加盐的位置，只有盐值存在时有效
      * 加盐的位置指盐位于数据byte数组中的位置，例如：
      *
      * <pre>
@@ -221,7 +221,7 @@ public class Digester {
     }
 
     /**
-     * 生成文件摘要<br>
+     * 生成文件摘要
      * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
@@ -239,7 +239,7 @@ public class Digester {
     }
 
     /**
-     * 生成文件摘要，并转为16进制字符串<br>
+     * 生成文件摘要，并转为16进制字符串
      * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
@@ -278,7 +278,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，并转为16进制字符串<br>
+     * 生成摘要，并转为16进制字符串
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -298,7 +298,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，并转为16进制字符串<br>
+     * 生成摘要，并转为16进制字符串
      * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param data 被摘要数据
@@ -336,7 +336,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，并转为16进制字符串<br>
+     * 生成摘要，并转为16进制字符串
      * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param data         被摘要数据
@@ -439,7 +439,7 @@ public class Digester {
     }
 
     /**
-     * 重复计算摘要，取决于{@link #digestCount} 值<br>
+     * 重复计算摘要，取决于{@link #digestCount} 值
      * 每次计算摘要前都会重置{@link #digest}
      *
      * @param digestData 第一次摘要过的数据

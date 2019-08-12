@@ -49,7 +49,7 @@ import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
 /**
- * IO工具类<br>
+ * IO工具类
  * IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
  *
  * @author Kimi Liu
@@ -261,7 +261,7 @@ public class IoUtils {
     }
 
     /**
-     * 拷贝流 thanks to: https://github.com/venusdrogon/feilong-io/blob/master/src/main/java/com/feilong/io/IOWriteUtil.java<br>
+     * 拷贝流 thanks to: https://github.com/venusdrogon/feilong-io/blob/master/src/main/java/com/feilong/io/IOWriteUtil.java
      * 本方法不会关闭流
      *
      * @param in             输入流
@@ -369,7 +369,7 @@ public class IoUtils {
     }
 
     /**
-     * 获得{@link BufferedReader}<br>
+     * 获得{@link BufferedReader}
      * 如果是{@link BufferedReader}强转返回，否则新建。如果提供的Reader为null返回null
      *
      * @param reader 普通Reader，如果为null返回null
@@ -385,7 +385,7 @@ public class IoUtils {
     }
 
     /**
-     * 获得{@link PushbackReader}<br>
+     * 获得{@link PushbackReader}
      * 如果是{@link PushbackReader}强转返回，否则新建
      *
      * @param reader       普通Reader
@@ -717,7 +717,7 @@ public class IoUtils {
     }
 
     /**
-     * 按行读取数据，针对每行的数据做处理<br>
+     * 按行读取数据，针对每行的数据做处理
      * {@link Reader}自带编码定义，因此读取数据的编码跟随其编码。
      *
      * @param reader      {@link Reader}
@@ -816,7 +816,7 @@ public class IoUtils {
     }
 
     /**
-     * 将{@link InputStream}转换为支持mark标记的流<br>
+     * 将{@link InputStream}转换为支持mark标记的流
      * 若原流支持mark标记，则返回原流，否则使用{@link BufferedInputStream} 包装之
      *
      * @param in 流
@@ -834,7 +834,7 @@ public class IoUtils {
     }
 
     /**
-     * 转换为{@link PushbackInputStream}<br>
+     * 转换为{@link PushbackInputStream}
      * 如果传入的输入流已经是{@link PushbackInputStream}，强转返回，否则新建一个
      *
      * @param in           {@link InputStream}
@@ -949,7 +949,7 @@ public class IoUtils {
     }
 
     /**
-     * 关闭<br>
+     * 关闭
      * 关闭失败不会抛出异常
      *
      * @param closeable 被关闭的对象
@@ -965,7 +965,7 @@ public class IoUtils {
     }
 
     /**
-     * 关闭<br>
+     * 关闭
      * 关闭失败不会抛出异常
      *
      * @param closeable 被关闭的对象
@@ -981,7 +981,7 @@ public class IoUtils {
     }
 
     /**
-     * 关闭<br>
+     * 关闭
      * 关闭失败不会抛出异常
      *
      * @param sock 被关闭的对象
@@ -995,7 +995,7 @@ public class IoUtils {
     }
 
     /**
-     * 对比两个流内容是否相同<br>
+     * 对比两个流内容是否相同
      * 内部会转换流为 {@link BufferedInputStream}
      *
      * @param input1 第一个流
@@ -1030,7 +1030,7 @@ public class IoUtils {
     }
 
     /**
-     * 对比两个Reader的内容是否一致<br>
+     * 对比两个Reader的内容是否一致
      * 内部会转换流为 {@link BufferedInputStream}
      *
      * @param input1 第一个reader
@@ -1061,7 +1061,7 @@ public class IoUtils {
     }
 
     /**
-     * 对比两个流内容是否相同，忽略EOL字符<br>
+     * 对比两个流内容是否相同，忽略EOL字符
      * 内部会转换流为 {@link BufferedInputStream}
      *
      * @param input1 第一个流

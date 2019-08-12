@@ -28,7 +28,7 @@ import org.aoju.bus.core.utils.StringUtils;
 import java.util.Scanner;
 
 /**
- * 命令行（控制台）工具方法类<br>
+ * 命令行（控制台）工具方法类
  * 此类主要针对{@link System#out} 和 {@link System#err} 做封装。
  *
  * @author Kimi Liu
@@ -45,7 +45,7 @@ public class Console {
     }
 
     /**
-     * 打印控制台日志<br>
+     * 打印控制台日志
      * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
      * @param obj 要打印的对象

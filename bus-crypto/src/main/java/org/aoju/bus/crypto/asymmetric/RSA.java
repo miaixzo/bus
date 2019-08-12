@@ -44,7 +44,7 @@ import java.security.spec.RSAPublicKeySpec;
  * 罗纳德·李维斯特（Ron [R]ivest）、阿迪·萨莫尔（Adi [S]hamir）和伦纳德·阿德曼（Leonard [A]dleman）
  * </p>
  * <p>
- * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密，<br>
+ * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密，
  * 非对称加密算法可以用来对对称加密的密钥加密，这样保证密钥的安全也就保证了数据的安全
  * </p>
  * <p>
@@ -77,8 +77,8 @@ public class RSA extends Asymmetric {
     }
 
     /**
-     * 构造<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKeyStr 私钥Hex或Base64表示
@@ -89,8 +89,8 @@ public class RSA extends Asymmetric {
     }
 
     /**
-     * 构造<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param rsaAlgorithm  自定义RSA算法，例如RSA/ECB/PKCS1Padding
@@ -103,8 +103,8 @@ public class RSA extends Asymmetric {
     }
 
     /**
-     * 构造 <br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
@@ -115,8 +115,8 @@ public class RSA extends Asymmetric {
     }
 
     /**
-     * 构造 <br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param modulus         N特征值
@@ -129,8 +129,8 @@ public class RSA extends Asymmetric {
     }
 
     /**
-     * 构造 <br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
@@ -142,8 +142,8 @@ public class RSA extends Asymmetric {
     }
 
     /**
-     * 构造 <br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param rsaAlgorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding

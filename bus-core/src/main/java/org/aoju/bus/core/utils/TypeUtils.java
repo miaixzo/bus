@@ -31,7 +31,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
- * 针对 {@link Type} 的工具类封装<br>
+ * 针对 {@link Type} 的工具类封装
  * 最主要功能包括：
  *
  * <pre>
@@ -149,7 +149,7 @@ public class TypeUtils {
     }
 
     /**
-     * 是否为标准的类<br>
+     * 是否为标准的类
      * 这个类必须：
      *
      * <pre>
@@ -194,7 +194,7 @@ public class TypeUtils {
     }
 
     /**
-     * 判断是否为Bean对象<br>
+     * 判断是否为Bean对象
      * 判定方法是是否存在只有一个参数的setXXX方法
      *
      * @param clazz 待测试类
@@ -278,7 +278,7 @@ public class TypeUtils {
     }
 
     /**
-     * 获取字段对应的Type类型<br>
+     * 获取字段对应的Type类型
      * 方法优先获取GenericType，获取不到则获取Type
      *
      * @param field 字段
@@ -307,7 +307,7 @@ public class TypeUtils {
     }
 
     /**
-     * 获取方法的第一个参数类型<br>
+     * 获取方法的第一个参数类型
      * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
      *
      * @param method 方法
@@ -330,7 +330,7 @@ public class TypeUtils {
     }
 
     /**
-     * 获取方法的参数类型<br>
+     * 获取方法的参数类型
      * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
      *
      * @param method 方法
@@ -362,7 +362,7 @@ public class TypeUtils {
     }
 
     /**
-     * 获取方法的参数类型列表<br>
+     * 获取方法的参数类型列表
      * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
      *
      * @param method 方法
@@ -375,7 +375,7 @@ public class TypeUtils {
     }
 
     /**
-     * 解析方法的参数类型列表<br>
+     * 解析方法的参数类型列表
      * 依赖jre\lib\rt.jar
      *
      * @param method t方法
@@ -389,7 +389,7 @@ public class TypeUtils {
     }
 
     /**
-     * 获取方法的返回值类型<br>
+     * 获取方法的返回值类型
      * 获取方法的GenericReturnType
      *
      * @param method 方法

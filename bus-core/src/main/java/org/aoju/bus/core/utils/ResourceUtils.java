@@ -109,7 +109,7 @@ public class ResourceUtils {
     }
 
     /**
-     * 获得资源的URL<br>
+     * 获得资源的URL
      * 路径用/分隔，例如:
      *
      * <pre>
@@ -125,7 +125,7 @@ public class ResourceUtils {
     }
 
     /**
-     * 获取指定路径下的资源列表<br>
+     * 获取指定路径下的资源列表
      * 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
@@ -147,7 +147,7 @@ public class ResourceUtils {
     }
 
     /**
-     * 获取指定路径下的资源Iterator<br>
+     * 获取指定路径下的资源Iterator
      * 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
@@ -181,7 +181,7 @@ public class ResourceUtils {
     }
 
     /**
-     * 获取{@link Resource} 资源对象<br>
+     * 获取{@link Resource} 资源对象
      * 如果提供路径为绝对路径，返回{@link FileResource}，否则返回{@link ClassPathResource}
      *
      * @param path 路径，可以是绝对路径，也可以是相对路径
