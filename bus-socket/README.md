@@ -1,3 +1,4 @@
+# Netty
 ## 请求数据格式
 ```json
 {
@@ -113,6 +114,75 @@ public class SendMessageHandler {
     
     public static void send(String topic, String message) {
         MessagePublisher.publish(topic, message);
+    }
+    
+}
+```
+
+
+# Spring
+
+## 介绍
+基于spring-boot_2.1.6.RELEASE，对spring框架的WebSocket扩展，支持细粒度控制
+## StompSubProtocolHandler 阅读源码可以发现spring原生的消息处理类不支持自定义拦截器
+
+## interceptable-websocket
+做这个组件是为了细粒度的动态控制WebSocket的权限，项目对StompSubProtocolHandler类和其他相关的类做了扩展，增加了对自定义拦截器的支持<br/>
+具体实现在extension包，拦截器实现在interceptor包
+### 使用方法
+ 
+```
+配置类：
+```java
+package org.aoju.bus.socket.xxxx;
+
+  // 增加注解
+@EnableMessageBroker
+public class SecurityWebSocketConfig extends AbstractMessageBrokerConfigurer {
+    
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/endpoint")
+                // 建立握手前将httpSession中的信息保存到webSocketSession，本案例将用户登录信息保存在httpSession
+                .addInterceptors(new HttpSessionHandshakeInterceptor())
+                // 如果需要跨域连接webSocket，将这一行注解打开，参数可以指定域名
+                // .setAllowedOrigins("*")
+                .withSockJS();
+        registry.setErrorHandler(stompSubProtocolErrorHandler());
+        // 注册拦截器
+        registry.addFromClientInterceptor(accessDecisionFromClientInterceptor()) // 消息授权决策
+                .addFromClientInterceptor(sessionIdUnRegistryInterceptor()) // sessionId记录
+                .addToClientInterceptor(sessionIdRegistryInterceptor()); // sessionId移除
+    }
+    
+    // 异常处理器
+    @Bean
+    public StompSubProtocolErrorHandler stompSubProtocolErrorHandler() {
+        return new StompSubProtocolErrorHandler();
+    }
+
+    // 授权决策拦截器
+    @Bean
+    public FromClientInterceptor accessDecisionFromClientInterceptor() {
+        // 实现 org.aoju.bus.socket.spring.interceptor.FromClientInterceptor
+        // #preHandle
+        return null;
+    }
+
+    // sessionId登记拦截器
+    @Bean
+    public ToClientInterceptor sessionIdRegistryInterceptor() {
+        // 实现 org.aoju.bus.socket.spring.interceptor.FromClientInterceptor
+        // #postHandle
+        return null;
+    }
+
+    // sessionId移除拦截器
+    @Bean
+    public FromClientInterceptor sessionIdUnRegistryInterceptor() {
+        // 实现 org.aoju.bus.socket.spring.interceptor.FromClientInterceptor
+        // #postHandle
+        return null;
     }
     
 }

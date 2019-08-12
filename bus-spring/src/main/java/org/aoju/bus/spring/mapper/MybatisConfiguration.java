@@ -73,7 +73,7 @@ public class MybatisConfiguration {
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             Interceptor[] plugins = new Interceptor[]{
                     interceptor,
-                    new PerformanceHandler(),
+                    new SQLPerformanceHandler(),
                     new SQLExplainHandler()};
             bean.setPlugins(plugins);
 

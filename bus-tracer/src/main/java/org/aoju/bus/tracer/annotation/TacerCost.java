@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Cost {
+public @interface TacerCost {
 
     //展示语言
     Language LANGUAGE() default Language.EN;

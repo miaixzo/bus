@@ -59,7 +59,7 @@ import java.util.regex.Matcher;
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class})})
-public class PerformanceHandler implements Interceptor {
+public class SQLPerformanceHandler implements Interceptor {
 
     public static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
         Logger.info(sqlId + " :  ==> " + time + " ms");
