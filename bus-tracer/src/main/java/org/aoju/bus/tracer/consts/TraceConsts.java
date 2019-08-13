@@ -7,7 +7,7 @@ package org.aoju.bus.tracer.consts;
  */
 public interface TraceConsts {
 
-    String X_COMMON_TRACE_ID = "X-Ccommon-Trace-Id";
-    String X_COMMON_TRACE_ID_LOG = "X-Ccommon-Trace-Id-Log";
+    String X_TRACE_ID = "X-Trace-Id";
+    String X_TRACE_LOG = "X-Trace-Log";
 
 }

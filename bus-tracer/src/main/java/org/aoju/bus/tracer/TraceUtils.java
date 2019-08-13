@@ -2,8 +2,8 @@ package org.aoju.bus.tracer;
 
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.RpcInvocation;
-import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.consts.DubboType;
+import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.context.TraceContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +28,10 @@ public class TraceUtils {
             case CONSUMER:
                 RpcInvocation rpcInvocation = (RpcInvocation) invocation;
                 traceId = getDefaultContextTraceId();
-                rpcInvocation.setAttachment(TraceConsts.X_COMMON_TRACE_ID, traceId);
+                rpcInvocation.setAttachment(TraceConsts.X_TRACE_ID, traceId);
                 break;
             case PROVIDER:
-                traceId = invocation.getAttachment(TraceConsts.X_COMMON_TRACE_ID);
+                traceId = invocation.getAttachment(TraceConsts.X_TRACE_ID);
                 setDefaultContextTraceId(traceId);
                 break;
             default:
@@ -40,9 +40,9 @@ public class TraceUtils {
     }
 
     public static void trace(HttpServletRequest request, HttpServletResponse response) {
-        String traceId = request.getHeader(TraceConsts.X_COMMON_TRACE_ID);
+        String traceId = request.getHeader(TraceConsts.X_TRACE_ID);
         traceId = setDefaultContextTraceId(traceId);
-        response.setHeader(TraceConsts.X_COMMON_TRACE_ID, traceId);
+        response.setHeader(TraceConsts.X_TRACE_ID, traceId);
     }
 
     public static String getDefaultContextTraceId() {
@@ -62,7 +62,6 @@ public class TraceUtils {
     }
 
     public static String newTraceId() {
-        //getTraceTime new Date(Long.parseLong(Integer.toBinaryString(Integer.parseInt(TraceUtils.newTraceId().substring(0,8), 16)),2)*1000)
         int random = ThreadLocalRandom.current().nextInt();
         long epochSeconds = System.currentTimeMillis() / 1000;
         return Long.toHexString((epochSeconds & 0xffffffffL) << 32 | (random & 0xffffffffL));

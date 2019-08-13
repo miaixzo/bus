@@ -31,6 +31,7 @@ script:
   - cd ../bus-validate && mvn install -DskipTests=true
   - cd ../bus-sensitive && mvn install -DskipTests=true
   - cd ../bus-base && mvn install -DskipTests=true
+  - cd ../bus-tracer && mvn install -DskipTests=true
   - cd ../bus-spring && mvn install -DskipTests=true
   - cd ../bus-boot && mvn install -DskipTests=true
   - cd ../bus-all && mvn install -DskipTests=true

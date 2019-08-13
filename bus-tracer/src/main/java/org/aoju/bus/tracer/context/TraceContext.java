@@ -17,12 +17,12 @@ public final class TraceContext {
     }
 
     public static String getTraceId() {
-        return MDC.get(TraceConsts.X_COMMON_TRACE_ID);
+        return MDC.get(TraceConsts.X_TRACE_ID);
     }
 
     public static void setTraceId(String traceId) {
-        MDC.put(TraceConsts.X_COMMON_TRACE_ID, traceId);
-        MDC.put(TraceConsts.X_COMMON_TRACE_ID_LOG, "-traceId-" + traceId + "-#");
+        MDC.put(TraceConsts.X_TRACE_ID, traceId);
+        MDC.put(TraceConsts.X_TRACE_LOG, "-traceId-" + traceId + "-#");
     }
 
     public static Map<String, String> getContextMap() {
@@ -37,11 +37,12 @@ public final class TraceContext {
     }
 
     public static void clear() {
-        MDC.remove(TraceConsts.X_COMMON_TRACE_ID);
-        MDC.remove(TraceConsts.X_COMMON_TRACE_ID_LOG);
+        MDC.remove(TraceConsts.X_TRACE_ID);
+        MDC.remove(TraceConsts.X_TRACE_LOG);
     }
 
     public static void clearAll() {
         MDC.clear();
     }
+
 }
