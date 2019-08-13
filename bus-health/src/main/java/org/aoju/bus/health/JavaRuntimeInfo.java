@@ -35,16 +35,16 @@ import org.aoju.bus.core.utils.StringUtils;
  */
 public class JavaRuntimeInfo {
 
-    private final String JAVA_RUNTIME_NAME = SystemUtils.get(System.RUNTIME_NAME, false);
-    private final String JAVA_RUNTIME_VERSION = SystemUtils.get(System.RUNTIME_VERSION, false);
-    private final String JAVA_HOME = SystemUtils.get(System.HOME, false);
-    private final String JAVA_EXT_DIRS = SystemUtils.get(System.EXT_DIRS, false);
-    private final String JAVA_ENDORSED_DIRS = SystemUtils.get(System.ENDORSED_DIRS, false);
-    private final String JAVA_CLASS_PATH = SystemUtils.get(System.CLASS_PATH, false);
-    private final String JAVA_CLASS_VERSION = SystemUtils.get(System.CLASS_VERSION, false);
-    private final String JAVA_LIBRARY_PATH = SystemUtils.get(System.LIBRARY_PATH, false);
-    private final String SUN_BOOT_CLASS_PATH = SystemUtils.get(System.SUN_CLASS_PATH, false);
-    private final String SUN_ARCH_DATA_MODEL = SystemUtils.get(System.SUN_DATA_MODEL, false);
+    private final String JAVA_RUNTIME_NAME = HealthUtils.get(System.RUNTIME_NAME, false);
+    private final String JAVA_RUNTIME_VERSION = HealthUtils.get(System.RUNTIME_VERSION, false);
+    private final String JAVA_HOME = HealthUtils.get(System.HOME, false);
+    private final String JAVA_EXT_DIRS = HealthUtils.get(System.EXT_DIRS, false);
+    private final String JAVA_ENDORSED_DIRS = HealthUtils.get(System.ENDORSED_DIRS, false);
+    private final String JAVA_CLASS_PATH = HealthUtils.get(System.CLASS_PATH, false);
+    private final String JAVA_CLASS_VERSION = HealthUtils.get(System.CLASS_VERSION, false);
+    private final String JAVA_LIBRARY_PATH = HealthUtils.get(System.LIBRARY_PATH, false);
+    private final String SUN_BOOT_CLASS_PATH = HealthUtils.get(System.SUN_CLASS_PATH, false);
+    private final String SUN_ARCH_DATA_MODEL = HealthUtils.get(System.SUN_DATA_MODEL, false);
 
     public final String getSunBoothClassPath() {
         return SUN_BOOT_CLASS_PATH;
@@ -154,7 +154,7 @@ public class JavaRuntimeInfo {
      * @since Java 1.1
      */
     public final String[] getClassPathArray() {
-        return StringUtils.split(getClassPath(), SystemUtils.get("path.separator", false));
+        return StringUtils.split(getClassPath(), HealthUtils.get("path.separator", false));
     }
 
     /**
@@ -194,7 +194,7 @@ public class JavaRuntimeInfo {
      * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
      */
     public final String[] getLibraryPathArray() {
-        return StringUtils.split(getLibraryPath(), SystemUtils.get("path.separator", false));
+        return StringUtils.split(getLibraryPath(), HealthUtils.get("path.separator", false));
     }
 
     /**
@@ -207,7 +207,7 @@ public class JavaRuntimeInfo {
      * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
      */
     public final String getProtocolPackages() {
-        return SystemUtils.get("java.protocol.handler.pkgs", true);
+        return HealthUtils.get("java.protocol.handler.pkgs", true);
     }
 
     /**
@@ -218,15 +218,15 @@ public class JavaRuntimeInfo {
     @Override
     public final String toString() {
         StringBuilder builder = new StringBuilder();
-        SystemUtils.append(builder, "Java Runtime Name:      ", getName());
-        SystemUtils.append(builder, "Java Runtime Version:   ", getVersion());
-        SystemUtils.append(builder, "Java Home Dir:          ", getHomeDir());
-        SystemUtils.append(builder, "Java Extension Dirs:    ", getExtDirs());
-        SystemUtils.append(builder, "Java Endorsed Dirs:     ", getEndorsedDirs());
-        SystemUtils.append(builder, "Java Class Path:        ", getClassPath());
-        SystemUtils.append(builder, "Java Class Version:     ", getClassVersion());
-        SystemUtils.append(builder, "Java Library Path:      ", getLibraryPath());
-        SystemUtils.append(builder, "Java Protocol Packages: ", getProtocolPackages());
+        HealthUtils.append(builder, "Java Runtime Name:      ", getName());
+        HealthUtils.append(builder, "Java Runtime Version:   ", getVersion());
+        HealthUtils.append(builder, "Java Home Dir:          ", getHomeDir());
+        HealthUtils.append(builder, "Java Extension Dirs:    ", getExtDirs());
+        HealthUtils.append(builder, "Java Endorsed Dirs:     ", getEndorsedDirs());
+        HealthUtils.append(builder, "Java Class Path:        ", getClassPath());
+        HealthUtils.append(builder, "Java Class Version:     ", getClassVersion());
+        HealthUtils.append(builder, "Java Library Path:      ", getLibraryPath());
+        HealthUtils.append(builder, "Java Protocol Packages: ", getProtocolPackages());
         return builder.toString();
     }
 

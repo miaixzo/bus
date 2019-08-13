@@ -42,7 +42,7 @@ import java.util.Properties;
  * @version 3.0.5
  * @since JDK 1.8
  */
-public class SystemUtils {
+public class HealthUtils {
 
     /**
      * 取得系统属性，如果因为Java安全的限制而失败，则将错误打在Log中，然后返回 <code>null</code>。

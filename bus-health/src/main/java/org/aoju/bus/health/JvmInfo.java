@@ -44,7 +44,7 @@ public class JvmInfo {
      * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
      */
     public final String getName() {
-        return SystemUtils.get(System.VM_NAME, false);
+        return HealthUtils.get(System.VM_NAME, false);
     }
 
     /**
@@ -57,7 +57,7 @@ public class JvmInfo {
      * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
      */
     public final String getVersion() {
-        return SystemUtils.get(System.VM_VERSION, false);
+        return HealthUtils.get(System.VM_VERSION, false);
     }
 
     /**
@@ -70,7 +70,7 @@ public class JvmInfo {
      * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
      */
     public final String getVendor() {
-        return SystemUtils.get(System.VM_VENDOR, false);
+        return HealthUtils.get(System.VM_VENDOR, false);
     }
 
     /**
@@ -83,7 +83,7 @@ public class JvmInfo {
      * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
      */
     public final String getInfo() {
-        return SystemUtils.get(System.VM_INFO, false);
+        return HealthUtils.get(System.VM_INFO, false);
     }
 
     /**
@@ -95,10 +95,10 @@ public class JvmInfo {
     public final String toString() {
         StringBuilder builder = new StringBuilder();
 
-        SystemUtils.append(builder, "JavaVM Name:    ", getName());
-        SystemUtils.append(builder, "JavaVM Version: ", getVersion());
-        SystemUtils.append(builder, "JavaVM Vendor:  ", getVendor());
-        SystemUtils.append(builder, "JavaVM Info:    ", getInfo());
+        HealthUtils.append(builder, "JavaVM Name:    ", getName());
+        HealthUtils.append(builder, "JavaVM Version: ", getVersion());
+        HealthUtils.append(builder, "JavaVM Vendor:  ", getVendor());
+        HealthUtils.append(builder, "JavaVM Info:    ", getInfo());
 
         return builder.toString();
     }

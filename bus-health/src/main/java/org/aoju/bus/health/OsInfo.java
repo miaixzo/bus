@@ -34,9 +34,9 @@ import org.aoju.bus.core.consts.System;
  */
 public class OsInfo {
 
-    private final String OS_VERSION = SystemUtils.get(System.OS_VERSION, false);
-    private final String OS_ARCH = SystemUtils.get(System.OS_ARCH, false);
-    private final String OS_NAME = SystemUtils.get(System.OS_NAME, false);
+    private final String OS_VERSION = HealthUtils.get(System.OS_VERSION, false);
+    private final String OS_ARCH = HealthUtils.get(System.OS_ARCH, false);
+    private final String OS_NAME = HealthUtils.get(System.OS_NAME, false);
     private final boolean IS_OS_AIX = getOSMatches("AIX");
     private final boolean IS_OS_HP_UX = getOSMatches("HP-UX");
     private final boolean IS_OS_IRIX = getOSMatches("Irix");
@@ -60,9 +60,9 @@ public class OsInfo {
     private final boolean IS_OS_WINDOWS_10 = getOSMatches("Windows", "10.0");
 
     // 由于改变file.encoding属性并不会改变系统字符编码，为了保持一致，通过LocaleUtil取系统默认编码。
-    private final String FILE_SEPARATOR = SystemUtils.get(System.FILE_SEPARATOR, false);
-    private final String LINE_SEPARATOR = SystemUtils.get(System.LINE_SEPARATOR, false);
-    private final String PATH_SEPARATOR = SystemUtils.get(System.PATH_SEPARATOR, false);
+    private final String FILE_SEPARATOR = HealthUtils.get(System.FILE_SEPARATOR, false);
+    private final String LINE_SEPARATOR = HealthUtils.get(System.LINE_SEPARATOR, false);
+    private final String PATH_SEPARATOR = HealthUtils.get(System.PATH_SEPARATOR, false);
 
     /**
      * 取得当前OS的架构（取自系统属性：<code>os.arch</code>）。
@@ -445,12 +445,12 @@ public class OsInfo {
     @Override
     public final String toString() {
         StringBuilder builder = new StringBuilder();
-        SystemUtils.append(builder, "OS Arch:        ", getArch());
-        SystemUtils.append(builder, "OS Name:        ", getName());
-        SystemUtils.append(builder, "OS Version:     ", getVersion());
-        SystemUtils.append(builder, "File Separator: ", getFileSeparator());
-        SystemUtils.append(builder, "Line Separator: ", getLineSeparator());
-        SystemUtils.append(builder, "Path Separator: ", getPathSeparator());
+        HealthUtils.append(builder, "OS Arch:        ", getArch());
+        HealthUtils.append(builder, "OS Name:        ", getName());
+        HealthUtils.append(builder, "OS Version:     ", getVersion());
+        HealthUtils.append(builder, "File Separator: ", getFileSeparator());
+        HealthUtils.append(builder, "Line Separator: ", getLineSeparator());
+        HealthUtils.append(builder, "Path Separator: ", getPathSeparator());
         return builder.toString();
     }
 

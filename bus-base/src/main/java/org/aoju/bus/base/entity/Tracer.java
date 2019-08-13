@@ -45,19 +45,19 @@ public class Tracer extends OAuth2 {
     protected String x_trace_id;
 
     @Transient
-    @ApiModelProperty("父ID,即调用者")
-    protected String x_parent_id;
+    @ApiModelProperty("调用者ID")
+    protected String x_span_id;
 
     @Transient
-    @ApiModelProperty("本应用ID")
+    @ApiModelProperty("被调用者ID")
     protected String x_child_Id;
 
     @Transient
     @ApiModelProperty("本地IP")
-    private String x_local_ip;
+    protected String x_local_ip;
 
     @Transient
     @ApiModelProperty("远程IP")
-    private String x_remote_ip;
+    protected String x_remote_ip;
 
 }

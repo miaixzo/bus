@@ -34,13 +34,13 @@ import org.aoju.bus.core.consts.System;
  */
 public class UserInfo {
 
-    private final String USER_NAME = SystemUtils.get(System.USER_NAME, false);
-    private final String USER_HOME = SystemUtils.get(System.USER_HOME, false);
-    private final String USER_DIR = SystemUtils.get(System.USER_DIR, false);
-    private final String USER_LANGUAGE = SystemUtils.get(System.USER_LANGUAGE, false);
-    private final String USER_COUNTRY = ((SystemUtils.get(System.USER_COUNTRY, false) == null)
-            ? SystemUtils.get(System.USER_REGION, false) : SystemUtils.get(System.USER_COUNTRY, false));
-    private final String JAVA_IO_TMPDIR = SystemUtils.get(System.IO_TMPDIR, false);
+    private final String USER_NAME = HealthUtils.get(System.USER_NAME, false);
+    private final String USER_HOME = HealthUtils.get(System.USER_HOME, false);
+    private final String USER_DIR = HealthUtils.get(System.USER_DIR, false);
+    private final String USER_LANGUAGE = HealthUtils.get(System.USER_LANGUAGE, false);
+    private final String USER_COUNTRY = ((HealthUtils.get(System.USER_COUNTRY, false) == null)
+            ? HealthUtils.get(System.USER_REGION, false) : HealthUtils.get(System.USER_COUNTRY, false));
+    private final String JAVA_IO_TMPDIR = HealthUtils.get(System.IO_TMPDIR, false);
 
     /**
      * 取得当前登录用户的名字（取自系统属性：<code>user.name</code>）。
@@ -132,12 +132,12 @@ public class UserInfo {
     @Override
     public final String toString() {
         StringBuilder builder = new StringBuilder();
-        SystemUtils.append(builder, "User Name:        ", getName());
-        SystemUtils.append(builder, "User Home Dir:    ", getHomeDir());
-        SystemUtils.append(builder, "User Current Dir: ", getCurrentDir());
-        SystemUtils.append(builder, "User Temp Dir:    ", getTempDir());
-        SystemUtils.append(builder, "User Language:    ", getLanguage());
-        SystemUtils.append(builder, "User Country:     ", getCountry());
+        HealthUtils.append(builder, "User Name:        ", getName());
+        HealthUtils.append(builder, "User Home Dir:    ", getHomeDir());
+        HealthUtils.append(builder, "User Current Dir: ", getCurrentDir());
+        HealthUtils.append(builder, "User Temp Dir:    ", getTempDir());
+        HealthUtils.append(builder, "User Language:    ", getLanguage());
+        HealthUtils.append(builder, "User Country:     ", getCountry());
         return builder.toString();
     }
 

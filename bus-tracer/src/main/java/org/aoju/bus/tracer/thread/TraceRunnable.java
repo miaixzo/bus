@@ -26,7 +26,7 @@ public class TraceRunnable implements Runnable {
         try {
             delegate.run();
         } finally {
-            TraceContext.clearAll();
+            TraceContext.clear();
         }
     }
 

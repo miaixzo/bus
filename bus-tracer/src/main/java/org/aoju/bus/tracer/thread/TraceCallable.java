@@ -26,7 +26,7 @@ public class TraceCallable<V> implements Callable<V> {
         try {
             return delegate.call();
         } finally {
-            TraceContext.clearAll();
+            TraceContext.clear();
         }
     }
 

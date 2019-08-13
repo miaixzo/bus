@@ -37,7 +37,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Valid {
 
-
     /**
      * 校验属性 {"id","name"}
      *

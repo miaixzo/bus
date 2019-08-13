@@ -34,11 +34,11 @@ import org.aoju.bus.core.consts.System;
  */
 public class JavaInfo {
 
-    private final String JAVA_VERSION = SystemUtils.get(System.VERSION, false);
+    private final String JAVA_VERSION = HealthUtils.get(System.VERSION, false);
     private final float JAVA_VERSION_FLOAT = getJavaVersionAsFloat();
     private final int JAVA_VERSION_INT = getJavaVersionAsInt();
-    private final String JAVA_VENDOR = SystemUtils.get(System.VENDOR, false);
-    private final String JAVA_VENDOR_URL = SystemUtils.get(System.VENDOR_URL, false);
+    private final String JAVA_VENDOR = HealthUtils.get(System.VENDOR, false);
+    private final String JAVA_VENDOR_URL = HealthUtils.get(System.VENDOR_URL, false);
 
     // 1.1--1.3能否识别?
     private final boolean IS_JAVA_1_1 = getJavaVersionMatches("1.1");
@@ -322,9 +322,9 @@ public class JavaInfo {
     public final String toString() {
         StringBuilder builder = new StringBuilder();
 
-        SystemUtils.append(builder, "Java Version:    ", getVersion());
-        SystemUtils.append(builder, "Java Vendor:     ", getVendor());
-        SystemUtils.append(builder, "Java Vendor URL: ", getVendorURL());
+        HealthUtils.append(builder, "Java Version:    ", getVersion());
+        HealthUtils.append(builder, "Java Vendor:     ", getVendor());
+        HealthUtils.append(builder, "Java Vendor URL: ", getVendorURL());
 
         return builder.toString();
     }

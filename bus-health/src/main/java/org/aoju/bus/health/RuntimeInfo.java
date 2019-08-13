@@ -84,10 +84,10 @@ public class RuntimeInfo {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        SystemUtils.append(builder, "Max Memory:    ", FileUtils.readableFileSize(getMaxMemory()));
-        SystemUtils.append(builder, "Total Memory:     ", FileUtils.readableFileSize(getTotalMemory()));
-        SystemUtils.append(builder, "Free Memory:     ", FileUtils.readableFileSize(getFreeMemory()));
-        SystemUtils.append(builder, "Usable Memory:     ", FileUtils.readableFileSize(getUsableMemory()));
+        HealthUtils.append(builder, "Max Memory:    ", FileUtils.readableFileSize(getMaxMemory()));
+        HealthUtils.append(builder, "Total Memory:     ", FileUtils.readableFileSize(getTotalMemory()));
+        HealthUtils.append(builder, "Free Memory:     ", FileUtils.readableFileSize(getFreeMemory()));
+        HealthUtils.append(builder, "Usable Memory:     ", FileUtils.readableFileSize(getUsableMemory()));
         return builder.toString();
     }
 

@@ -24,7 +24,9 @@
 package org.aoju.bus.health;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  * 代表当前主机的信息。
@@ -43,7 +45,7 @@ public class HostInfo {
         String hostAddress;
 
         try {
-            InetAddress localhost = InetAddress.getLocalHost();
+            InetAddress localhost = getLocalAddress();
 
             hostName = localhost.getHostName();
             hostAddress = localhost.getHostAddress();
@@ -83,6 +85,48 @@ public class HostInfo {
     }
 
     /**
+     * 取得当前主机信息。
+     *
+     * @return 主机地址信息
+     * @throws UnknownHostException 异常
+     */
+    public static InetAddress getLocalAddress() throws UnknownHostException {
+        try {
+            InetAddress inetAddress = null;
+            /** 遍历所有的网络接口 */
+            for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
+                NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+                /** 在所有的网络接口下再遍历IP */
+                for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
+                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
+                    if (!inetAddr.isLoopbackAddress()) {// 排除loopback类型地址
+                        if (inetAddr.isSiteLocalAddress()) {
+                            /** 如果是site-local地址，就是它了 */
+                            return inetAddr;
+                        } else if (inetAddress == null) {
+                            /** site-local类型的地址未被发现，先记录候选地址 */
+                            inetAddress = inetAddr;
+                        }
+                    }
+                }
+            }
+            if (inetAddress != null) {
+                return inetAddress;
+            }
+            /**  如果没有发现 non-loopback地址.只能用最次选的方案 */
+            inetAddress = InetAddress.getLocalHost();
+            if (inetAddress == null) {
+                throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
+            }
+            return inetAddress;
+        } catch (Exception e) {
+            UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address: " + e);
+            unknownHostException.initCause(e);
+            throw unknownHostException;
+        }
+    }
+
+    /**
      * 将当前主机的信息转换成字符串。
      *
      * @return 主机信息的字符串表示
@@ -91,8 +135,8 @@ public class HostInfo {
     public final String toString() {
         StringBuilder builder = new StringBuilder();
 
-        SystemUtils.append(builder, "Host Name:    ", getName());
-        SystemUtils.append(builder, "Host Address: ", getAddress());
+        HealthUtils.append(builder, "Host Name:    ", getName());
+        HealthUtils.append(builder, "Host Address: ", getAddress());
 
         return builder.toString();
     }

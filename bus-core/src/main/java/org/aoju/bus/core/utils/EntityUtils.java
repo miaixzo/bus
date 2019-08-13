@@ -44,7 +44,7 @@ public class EntityUtils {
     public static <T> void setCreateInfo(T entity) {
         String id = ObjectID.id();
         String[] fields = {"id", "creator", "created"};
-        Object[] value = new Object[]{id, getValue(entity, "x_user_id"), DateUtils.getTimestamp()};
+        Object[] value = new Object[]{id, getValue(entity, "x_user_id"), DateUtils.timestamp()};
         setValue(entity, fields, value);
     }
 
@@ -56,7 +56,7 @@ public class EntityUtils {
      */
     public static <T> void setUpdatedInfo(T entity) {
         String[] fields = {"modifier", "modified"};
-        Object[] value = new Object[]{getValue(entity, "x_user_id"), DateUtils.getTimestamp()};
+        Object[] value = new Object[]{getValue(entity, "x_user_id"), DateUtils.timestamp()};
         setValue(entity, fields, value);
     }
 

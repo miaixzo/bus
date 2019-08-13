@@ -435,7 +435,7 @@ public class IdcardUtils {
      */
     public static int getAgeByIdCard(String idCard, Date dateToCompare) {
         String birth = getBirthByIdCard(idCard);
-        return DateUtils.age(DateUtils.parse(birth, "yyyyMMdd"), dateToCompare);
+        return DateUtils.getAge(DateUtils.parse(birth, "yyyyMMdd"), dateToCompare);
     }
 
     /**

@@ -44,7 +44,7 @@ public class JavaSpecInfo {
      * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
      */
     public final String getName() {
-        return SystemUtils.get(System.SPECIFICATION_NAME, false);
+        return HealthUtils.get(System.SPECIFICATION_NAME, false);
     }
 
     /**
@@ -58,7 +58,7 @@ public class JavaSpecInfo {
      * @since Java 1.3
      */
     public final String getVersion() {
-        return SystemUtils.get(System.SPECIFICATION_VERSION, false);
+        return HealthUtils.get(System.SPECIFICATION_VERSION, false);
     }
 
     /**
@@ -71,7 +71,7 @@ public class JavaSpecInfo {
      * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
      */
     public final String getVendor() {
-        return SystemUtils.get(System.SPECIFICATION_VENDOR, false);
+        return HealthUtils.get(System.SPECIFICATION_VENDOR, false);
     }
 
     /**
@@ -82,9 +82,9 @@ public class JavaSpecInfo {
     @Override
     public final String toString() {
         StringBuilder builder = new StringBuilder();
-        SystemUtils.append(builder, "Java Spec. Name:    ", getName());
-        SystemUtils.append(builder, "Java Spec. Version: ", getVersion());
-        SystemUtils.append(builder, "Java Spec. Vendor:  ", getVendor());
+        HealthUtils.append(builder, "Java Spec. Name:    ", getName());
+        HealthUtils.append(builder, "Java Spec. Version: ", getVersion());
+        HealthUtils.append(builder, "Java Spec. Vendor:  ", getVendor());
         return builder.toString();
     }
 

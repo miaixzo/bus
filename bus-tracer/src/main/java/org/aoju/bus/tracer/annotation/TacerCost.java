@@ -9,10 +9,10 @@ import java.lang.annotation.*;
 public @interface TacerCost {
 
     //展示语言
-    Language LANGUAGE() default Language.EN;
+    Language language() default Language.EN;
 
     //日志级别
-    Level LEVEL() default Level.DEBUG;
+    Level level() default Level.DEBUG;
 
     //方法名 (覆盖默认方法名)
     String methodName() default "";
@@ -31,4 +31,5 @@ public @interface TacerCost {
     enum Level {
         TRACE, DEBUG, INFO, WARN, ERROR
     }
+
 }
