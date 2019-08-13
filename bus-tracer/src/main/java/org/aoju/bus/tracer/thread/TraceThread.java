@@ -5,6 +5,11 @@ import org.aoju.bus.tracer.context.TraceContext;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Kimi Liu
+ * @version 3.0.5
+ * @since JDK 1.8
+ */
 public class TraceThread {
 
     private static Map<Thread, TraceContext> traceThreadMap = new HashMap<>();
