@@ -106,7 +106,7 @@ public class MethodExecuteCostHandler {
 
                 //打印内容
                 String printContent = null;
-                switch (tacerCostLogger.LANGUAGE()){
+                switch (tacerCostLogger.language()) {
                     case CN:
                         printContent=methodName+ " 耗时 " + cost + " 毫秒 "+remark;
                         break;
@@ -116,7 +116,7 @@ public class MethodExecuteCostHandler {
                 }
 
                 //打印级别
-                switch (tacerCostLogger.LEVEL()){
+                switch (tacerCostLogger.level()) {
                     case TRACE:
                         logger.trace(printContent);
                         break;
