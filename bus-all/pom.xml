@@ -165,7 +165,7 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-tracer</artifactId>
+            <artifactId>bus-trace4j</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
