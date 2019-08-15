@@ -17,20 +17,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <mybatis.version>3.5.0</mybatis.version>
+        <guava.version>28.0-jre</guava.version>
         <jsqlparser.version>1.2</jsqlparser.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-cache</artifactId>
+            <artifactId>bus-mapper</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>${mybatis.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.jsqlparser</groupId>

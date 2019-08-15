@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.aoju</groupId>
-    <artifactId>bus-trace4j</artifactId>
+    <artifactId>bus-tracer</artifactId>
     <version>3.0.5</version>
     <packaging>jar</packaging>
 
-    <name>bus-trace4j</name>
-    <description>Bus Trace4j</description>
+    <name>bus-trace</name>
+    <description>Bus Tracer</description>
     <url>https://github.com/aoju/bus</url>
 
     <parent>
@@ -43,19 +43,7 @@
             <artifactId>bus-health</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- cxf -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-api</artifactId>
-            <version>${cxf.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-bindings-soap</artifactId>
-            <version>${cxf.version}</version>
-            <scope>provided</scope>
-        </dependency>
+
         <!-- httpcomponents -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -69,6 +57,19 @@
             <version>${httpclient5.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- cxf -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-api</artifactId>
+            <version>${cxf.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-bindings-soap</artifactId>
+            <version>${cxf.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- jaxrs2 -->
         <dependency>
             <groupId>javax.ws.rs</groupId>
@@ -80,8 +81,14 @@
         <dependency>
             <groupId>javax.xml.ws</groupId>
             <artifactId>jaxws-api</artifactId>
-            <version>2.2.11</version>
+            <version>2.3.1</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.xml.soap</groupId>
+                    <artifactId>javax.xml.soap-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
