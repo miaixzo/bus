@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.digest;
 
-import org.aoju.bus.crypto.Mode;
+import org.aoju.bus.core.consts.ModeType;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ import java.io.InputStream;
 public class MD5 extends Digester {
 
     public MD5() {
-        super(Mode.MD5);
+        super(ModeType.MD5);
     }
 
     /**

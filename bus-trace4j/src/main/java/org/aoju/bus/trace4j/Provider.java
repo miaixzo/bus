@@ -5,12 +5,12 @@ import org.aoju.bus.trace4j.backend.TraceBackendProvider;
 import java.lang.ref.SoftReference;
 import java.util.*;
 
-public class BackendProviderSet extends AbstractSet<TraceBackendProvider> {
+public class Provider extends AbstractSet<TraceBackendProvider> {
 
     private Set<SoftReference<TraceBackendProvider>> values;
     private boolean valid = true;
 
-    BackendProviderSet(Set<TraceBackendProvider> elements) {
+    Provider(Set<TraceBackendProvider> elements) {
         this.values = new HashSet<>();
         addAllInternal(elements);
     }

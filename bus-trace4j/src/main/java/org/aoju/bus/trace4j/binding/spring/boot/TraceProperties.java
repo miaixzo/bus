@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-@ConfigurationProperties(prefix = "trace")
+@ConfigurationProperties(prefix = "trace4j")
 public class TraceProperties {
 
     private int sessionIdLength = 32;

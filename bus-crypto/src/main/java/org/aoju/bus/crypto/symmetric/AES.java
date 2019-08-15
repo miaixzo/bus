@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.crypto.symmetric;
 
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
 
 import javax.crypto.SecretKey;
@@ -47,7 +47,7 @@ public class AES extends Symmetric {
      * 构造，默认AES/ECB/PKCS5Padding，使用随机密钥
      */
     public AES() {
-        super(Mode.AES);
+        super(ModeType.AES);
     }
 
     /**
@@ -56,66 +56,66 @@ public class AES extends Symmetric {
      * @param key 密钥
      */
     public AES(byte[] key) {
-        super(Mode.AES, key);
+        super(ModeType.AES, key);
     }
 
     /**
      * 构造，使用随机密钥
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      */
-    public AES(Mode mode, Padding padding) {
-        this(mode.name(), padding.name());
+    public AES(String mode, Padding padding) {
+        this(mode, padding.name());
     }
 
     /**
      * 构造
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      * @param key     密钥，支持三种密钥长度：128、192、256位
      */
-    public AES(Mode mode, Padding padding, byte[] key) {
+    public AES(String mode, Padding padding, byte[] key) {
         this(mode, padding, key, null);
     }
 
     /**
      * 构造
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      * @param key     密钥，支持三种密钥长度：128、192、256位
      * @param iv      偏移向量，加盐
      * @since 3.3.0
      */
-    public AES(Mode mode, Padding padding, byte[] key, byte[] iv) {
-        this(mode.name(), padding.name(), key, iv);
+    public AES(String mode, Padding padding, byte[] key, byte[] iv) {
+        this(mode, padding.name(), key, iv);
     }
 
     /**
      * 构造
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      * @param key     密钥，支持三种密钥长度：128、192、256位
      * @since 3.3.0
      */
-    public AES(Mode mode, Padding padding, SecretKey key) {
+    public AES(String mode, Padding padding, SecretKey key) {
         this(mode, padding, key, null);
     }
 
     /**
      * 构造
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      * @param key     密钥，支持三种密钥长度：128、192、256位
      * @param iv      偏移向量，加盐
      * @since 3.3.0
      */
-    public AES(Mode mode, Padding padding, SecretKey key, IvParameterSpec iv) {
-        this(mode.name(), padding.name(), key, iv);
+    public AES(String mode, Padding padding, SecretKey key, IvParameterSpec iv) {
+        this(mode, padding.name(), key, iv);
     }
 
     /**
@@ -148,7 +148,7 @@ public class AES extends Symmetric {
      * @param iv      加盐
      */
     public AES(String mode, String padding, byte[] key, byte[] iv) {
-        this(mode, padding, CryptoUtils.generateKey(Mode.AES.getValue(), key), null == iv ? null : new IvParameterSpec(iv));
+        this(mode, padding, CryptoUtils.generateKey(ModeType.AES, key), null == iv ? null : new IvParameterSpec(iv));
     }
 
     /**

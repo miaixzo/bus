@@ -1,22 +1,21 @@
 package org.aoju.bus.trace4j.backend;
 
-import org.aoju.bus.trace4j.AbstractBackend;
 import org.slf4j.MDC;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-class Slf4JTraceAbstractBackend extends AbstractBackend {
+class Slf4JAbstractBackend extends AbstractBackend {
 
     /**
-     * This set contains all MDC-Keys managed by Trace.
-     * This bookkeeping is required to ensure that operations like {@link Slf4JTraceAbstractBackend#clear()} do not remove
-     * Trace unrelated keys from the MDC.
+     * This set contains all MDC-Keys managed by Builder.
+     * This bookkeeping is required to ensure that operations like {@link Slf4JAbstractBackend#clear()} do not remove
+     * Builder unrelated keys from the MDC.
      */
     protected final ThreadLocal<Set<String>> TraceKeys;
 
-    Slf4JTraceAbstractBackend(ThreadLocal<Set<String>> TraceKeys) {
+    Slf4JAbstractBackend(ThreadLocal<Set<String>> TraceKeys) {
         this.TraceKeys = TraceKeys;
     }
 

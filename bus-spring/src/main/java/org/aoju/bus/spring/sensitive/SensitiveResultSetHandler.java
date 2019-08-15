@@ -26,7 +26,6 @@ package org.aoju.bus.spring.sensitive;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.Privacy;

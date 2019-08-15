@@ -31,5 +31,5 @@ package org.aoju.bus.crypto;
  * @since JDK 1.8
  */
 public enum KeyType {
-    PrivateKey, PublicKey;
+    PrivateKey, PublicKey
 }

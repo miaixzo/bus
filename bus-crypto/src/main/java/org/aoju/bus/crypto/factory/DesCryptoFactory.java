@@ -24,9 +24,9 @@
 package org.aoju.bus.crypto.factory;
 
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.CryptoFactory;
-import org.aoju.bus.crypto.Mode;
 
 import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
@@ -86,8 +86,8 @@ public class DesCryptoFactory implements CryptoFactory {
                 if (encryptCipher == null) {
                     SecureRandom random = new SecureRandom();
                     DESKeySpec desKey = new DESKeySpec(key.getBytes(Charset.UTF_8));
-                    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(Mode.DES.getValue());
-                    Cipher cipher = Cipher.getInstance(Mode.DES.getValue());
+                    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ModeType.DES);
+                    Cipher cipher = Cipher.getInstance(ModeType.DES);
                     cipher.init(Cipher.ENCRYPT_MODE, keyFactory.generateSecret(desKey), random);
                     this.encryptCipher = cipher;
                 }
@@ -102,8 +102,8 @@ public class DesCryptoFactory implements CryptoFactory {
                 if (decryptCipher == null) {
                     SecureRandom random = new SecureRandom();
                     DESKeySpec desKey = new DESKeySpec(key.getBytes(Charset.UTF_8));
-                    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(Mode.DES.getValue());
-                    Cipher cipher = Cipher.getInstance(Mode.DES.getValue());
+                    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ModeType.DES);
+                    Cipher cipher = Cipher.getInstance(ModeType.DES);
                     cipher.init(Cipher.DECRYPT_MODE, keyFactory.generateSecret(desKey), random);
                     this.decryptCipher = cipher;
                 }

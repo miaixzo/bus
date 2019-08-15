@@ -23,11 +23,10 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 
 import java.security.*;
 import java.security.cert.Certificate;
@@ -51,16 +50,7 @@ public class Sign extends BaseAsymmetric<Sign> {
     /**
      * 构造，创建新的私钥公钥对
      *
-     * @param mode {@link Mode}
-     */
-    public Sign(Mode mode) {
-        this(mode, (byte[]) null, (byte[]) null);
-    }
-
-    /**
-     * 构造，创建新的私钥公钥对
-     *
-     * @param mode 算法
+     * @param mode {@link ModeType}
      */
     public Sign(String mode) {
         this(mode, (byte[]) null, (byte[]) null);
@@ -70,59 +60,12 @@ public class Sign extends BaseAsymmetric<Sign> {
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param mode          {@link Mode}
+     * @param mode          {@link ModeType}
      * @param privateKeyStr 私钥Hex或Base64表示
      * @param publicKeyStr  公钥Hex或Base64表示
      */
-    public Sign(Mode mode, String privateKeyStr, String publicKeyStr) {
-        this(mode.getValue(), CryptoUtils.decode(privateKeyStr), CryptoUtils.decode(publicKeyStr));
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param mode       {@link Mode}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     */
-    public Sign(Mode mode, byte[] privateKey, byte[] publicKey) {
-        this(mode.getValue(), privateKey, publicKey);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param mode    {@link Mode}
-     * @param keyPair 密钥对（包括公钥和私钥）
-     */
-    public Sign(Mode mode, KeyPair keyPair) {
-        this(mode.getValue(), keyPair);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param mode       {@link Mode}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     */
-    public Sign(Mode mode, PrivateKey privateKey, PublicKey publicKey) {
-        this(mode.getValue(), privateKey, publicKey);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param mode             非对称加密算法
-     * @param privateKeyBase64 私钥Base64
-     * @param publicKeyBase64  公钥Base64
-     */
-    public Sign(String mode, String privateKeyBase64, String publicKeyBase64) {
-        this(mode, Base64.decode(privateKeyBase64), Base64.decode(publicKeyBase64));
+    public Sign(String mode, String privateKeyStr, String publicKeyStr) {
+        this(mode, CryptoUtils.decode(privateKeyStr), CryptoUtils.decode(publicKeyStr));
     }
 
     /**
@@ -136,9 +79,9 @@ public class Sign extends BaseAsymmetric<Sign> {
      * @param publicKey  公钥
      */
     public Sign(String mode, byte[] privateKey, byte[] publicKey) {
-        this(mode, //
-                CryptoUtils.generatePrivateKey(mode, privateKey), //
-                CryptoUtils.generatePublicKey(mode, publicKey)//
+        this(mode,
+                CryptoUtils.generatePrivateKey(mode, privateKey),
+                CryptoUtils.generatePublicKey(mode, publicKey)
         );
     }
 
@@ -146,7 +89,7 @@ public class Sign extends BaseAsymmetric<Sign> {
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param mode    算法，见{@link Mode}
+     * @param mode    算法，见{@link ModeType}
      * @param keyPair 密钥对（包括公钥和私钥）
      */
     public Sign(String mode, KeyPair keyPair) {

@@ -2,9 +2,8 @@ package org.aoju.bus.trace4j.binding.spring.amqp;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Envelope;
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
-import org.aoju.bus.trace4j.Utilities;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.springframework.amqp.core.MessageProperties;
@@ -16,18 +15,18 @@ import java.util.Map;
 
 public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesConverter {
 
-    private final TraceBackend backend;
+    private final Backend backend;
     private final String profile;
 
     public TraceMessagePropertiesConverter() {
-        this(Trace.getBackend(), TraceConsts.DEFAULT);
+        this(Builder.getBackend(), TraceConsts.DEFAULT);
     }
 
     public TraceMessagePropertiesConverter(String profile) {
-        this(Trace.getBackend(), profile);
+        this(Builder.getBackend(), profile);
     }
 
-    TraceMessagePropertiesConverter(TraceBackend backend, String profile) {
+    TraceMessagePropertiesConverter(Backend backend, String profile) {
         this.backend = backend;
         this.profile = profile;
     }
@@ -44,7 +43,7 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
                 backend.putAll(filterConfiguration.filterDeniedParams(TraceContextMap, TraceFilterConfiguration.Channel.AsyncProcess));
             }
         }
-        Utilities.generateInvocationIdIfNecessary(backend);
+        Builder.generateInvocationIdIfNecessary(backend);
         return messageProperties;
     }
 

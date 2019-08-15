@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.spring.soap;
 
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.transport.SoapHeaderTransport;
@@ -19,10 +19,10 @@ import java.util.Map;
 abstract class AbstractTraceInterceptor {
 
     protected static final SoapHeaderTransport soapHeaderTransport = new SoapHeaderTransport();
-    protected final TraceBackend backend;
+    protected final Backend backend;
     protected final String profile;
 
-    public AbstractTraceInterceptor(final TraceBackend backend, final String profile) {
+    public AbstractTraceInterceptor(final Backend backend, final String profile) {
         this.backend = backend;
         this.profile = profile;
     }

@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.spring.web.config;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.binding.spring.web.TraceInterceptor;
 import org.aoju.bus.trace4j.binding.spring.web.TraceResponseBodyAdvice;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -20,7 +20,7 @@ public class TraceSpringMvcConfiguration {
     public static final String Trace_WEBMVCCONFIGURERADAPTER_INTERNAL = "org.aoju.bus.trace4j.WebMvcConfigurerAdapter_internal";
 
     @Bean
-    TraceInterceptor TraceInterceptor(TraceBackend backend) {
+    TraceInterceptor TraceInterceptor(Backend backend) {
         return new TraceInterceptor(backend);
     }
 

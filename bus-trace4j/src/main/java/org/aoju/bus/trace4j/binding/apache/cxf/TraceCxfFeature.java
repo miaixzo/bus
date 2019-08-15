@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.apache.cxf;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.binding.apache.cxf.interceptor.TraceRequestInInterceptor;
 import org.aoju.bus.trace4j.binding.apache.cxf.interceptor.TraceRequestOutInterceptor;
@@ -14,19 +14,19 @@ import org.apache.cxf.interceptor.InterceptorProvider;
 public class TraceCxfFeature extends AbstractFeature {
 
     private String profile;
-    private TraceBackend backend;
+    private Backend backend;
 
     public TraceCxfFeature() {
-        this(Trace.getBackend(), TraceConsts.DEFAULT);
+        this(Builder.getBackend(), TraceConsts.DEFAULT);
     }
 
-    TraceCxfFeature(TraceBackend backend, String profile) {
+    TraceCxfFeature(Backend backend, String profile) {
         this.backend = backend;
         this.profile = profile;
     }
 
     public TraceCxfFeature(String profile) {
-        this(Trace.getBackend(), profile);
+        this(Builder.getBackend(), profile);
     }
 
     @Override

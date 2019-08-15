@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.annotation;
 
-import org.aoju.bus.crypto.Mode;
+import org.aoju.bus.core.consts.ModeType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -46,7 +46,7 @@ public @interface DecryptBody {
      *
      * @return Mode
      */
-    Mode type() default Mode.AES;
+    String type() default ModeType.AES;
 
     /**
      * 可选，如果未配置则采用全局的key

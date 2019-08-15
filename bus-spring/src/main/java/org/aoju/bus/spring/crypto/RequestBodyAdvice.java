@@ -30,7 +30,6 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.annotation.DecryptBody;
 import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

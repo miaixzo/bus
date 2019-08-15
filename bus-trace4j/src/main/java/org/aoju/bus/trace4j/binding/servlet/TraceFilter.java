@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.servlet;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
@@ -20,15 +20,15 @@ public class TraceFilter implements Filter {
     public static final String PROFILE_INIT_PARAM = "profile";
 
     private static final String HTTP_HEADER_NAME = TraceConsts.TPIC_HEADER;
-    private final TraceBackend backend;
+    private final Backend backend;
     private final HttpHeaderTransport transportSerialization;
     private String profile = TraceConsts.DEFAULT;
 
     public TraceFilter() {
-        this(Trace.getBackend(), new HttpHeaderTransport());
+        this(Builder.getBackend(), new HttpHeaderTransport());
     }
 
-    TraceFilter(TraceBackend backend, HttpHeaderTransport transportSerialization) {
+    TraceFilter(Backend backend, HttpHeaderTransport transportSerialization) {
         this.backend = backend;
         this.transportSerialization = transportSerialization;
     }

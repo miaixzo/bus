@@ -30,7 +30,6 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.RandomUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -70,40 +69,10 @@ public class Symmetric {
     /**
      * 构造，使用随机密钥
      *
-     * @param algorithm {@link Mode}
-     */
-    public Symmetric(Mode algorithm) {
-        this(algorithm, (byte[]) null);
-    }
-
-    /**
-     * 构造，使用随机密钥
-     *
      * @param algorithm 算法，可以是"algorithm/mode/padding"或者"algorithm"
      */
     public Symmetric(String algorithm) {
         this(algorithm, (byte[]) null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param algorithm 算法 {@link Mode}
-     * @param key       自定义KEY
-     */
-    public Symmetric(Mode algorithm, byte[] key) {
-        this(algorithm.getValue(), key);
-    }
-
-    /**
-     * 构造
-     *
-     * @param algorithm 算法 {@link Mode}
-     * @param key       自定义KEY
-     * @since 3.1.2
-     */
-    public Symmetric(Mode algorithm, SecretKey key) {
-        this(algorithm.getValue(), key);
     }
 
     /**

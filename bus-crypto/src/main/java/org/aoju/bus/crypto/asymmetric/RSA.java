@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.crypto.KeyType;
-import org.aoju.bus.crypto.Mode;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -58,7 +58,7 @@ public class RSA extends Asymmetric {
     /**
      * 默认的RSA算法
      */
-    private static final Mode ALGORITHM_RSA = Mode.RSA_ECB_PKCS1;
+    private static final String ALGORITHM_RSA = ModeType.RSA_ECB_PKCS1;
 
     /**
      * 构造，生成新的私钥公钥对
@@ -163,7 +163,7 @@ public class RSA extends Asymmetric {
      * @return {@link PrivateKey}
      */
     public static PrivateKey generatePrivateKey(BigInteger modulus, BigInteger privateExponent) {
-        return CryptoUtils.generatePrivateKey(ALGORITHM_RSA.getValue(), new RSAPrivateKeySpec(modulus, privateExponent));
+        return CryptoUtils.generatePrivateKey(ALGORITHM_RSA, new RSAPrivateKeySpec(modulus, privateExponent));
     }
 
     /**
@@ -174,7 +174,7 @@ public class RSA extends Asymmetric {
      * @return {@link PublicKey}
      */
     public static PublicKey generatePublicKey(BigInteger modulus, BigInteger publicExponent) {
-        return CryptoUtils.generatePublicKey(ALGORITHM_RSA.getValue(), new RSAPublicKeySpec(modulus, publicExponent));
+        return CryptoUtils.generatePublicKey(ALGORITHM_RSA, new RSAPublicKeySpec(modulus, publicExponent));
     }
 
     @Override
@@ -203,7 +203,7 @@ public class RSA extends Asymmetric {
             final Throwable cause = e.getCause();
             if (cause instanceof NoSuchAlgorithmException) {
                 // 在Linux下，未引入BC库可能会导致RSA/ECB/PKCS1Padding算法无法找到，此时使用默认算法
-                this.algorithm = Mode.RSA.getValue();
+                this.algorithm = ModeType.RSA;
                 super.initCipher();
             }
             throw e;

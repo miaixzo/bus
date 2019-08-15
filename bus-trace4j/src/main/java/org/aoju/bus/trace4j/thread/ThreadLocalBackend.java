@@ -1,15 +1,15 @@
 package org.aoju.bus.trace4j.thread;
 
-import org.aoju.bus.trace4j.AbstractBackend;
+import org.aoju.bus.trace4j.backend.AbstractBackend;
 
 import java.util.HashMap;
 import java.util.Map;
 
-class ThreadLocalTraceBackend extends AbstractBackend {
+class ThreadLocalBackend extends AbstractBackend {
 
     private final ThreadLocalMap<String, String> threadLocalMap;
 
-    public ThreadLocalTraceBackend() {
+    public ThreadLocalBackend() {
         this.threadLocalMap = new ThreadLocalMap<>();
     }
 

@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.apache.cxf.interceptor;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
@@ -24,14 +24,14 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTraceOutInterceptor.class);
 
-    protected final TraceBackend backend;
+    protected final Backend backend;
 
     private final HttpHeaderTransport httpSerializer;
     private final TraceFilterConfiguration.Channel channel;
 
     private String profile;
 
-    public AbstractTraceOutInterceptor(String phase, TraceFilterConfiguration.Channel channel, TraceBackend backend, String profile) {
+    public AbstractTraceOutInterceptor(String phase, TraceFilterConfiguration.Channel channel, Backend backend, String profile) {
         super(phase);
         this.channel = channel;
         this.backend = backend;
@@ -61,7 +61,7 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
                         final SoapMessage soapMessage = (SoapMessage) message;
                         addSoapHeader(filteredParams, soapMessage);
                     } catch (NoClassDefFoundError e) {
-                        LOGGER.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to add Trace-Headers: {}", e.getMessage(), e);
+                        LOGGER.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to add Builder-Headers: {}", e.getMessage(), e);
                     }
                 }
             }
@@ -74,7 +74,7 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
                     new JAXBDataBinding(TpicMap.class));
             soapMessage.getHeaders().add(tpicHeader);
         } catch (JAXBException e) {
-            LOGGER.warn("Error occured during Trace soap header creation: {}", e.getMessage());
+            LOGGER.warn("Error occured during Builder soap header creation: {}", e.getMessage());
             LOGGER.debug("Detailed exception", e);
         }
     }

@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.jaxws;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.HandlerResolver;
@@ -16,7 +16,7 @@ public class TraceClientHandlerResolver implements HandlerResolver {
         handlerList.add(new TraceClientHandler());
     }
 
-    TraceClientHandlerResolver(TraceBackend backend) {
+    TraceClientHandlerResolver(Backend backend) {
         handlerList.add(new TraceClientHandler(backend));
     }
 

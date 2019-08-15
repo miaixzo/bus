@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.jaxrs2;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
@@ -18,14 +18,14 @@ import java.util.Map;
 @Provider
 public class TraceClientFilter implements ClientRequestFilter, ClientResponseFilter {
 
-    private final TraceBackend backend;
+    private final Backend backend;
     private final HttpHeaderTransport transportSerialization;
 
     public TraceClientFilter() {
-        this(Trace.getBackend());
+        this(Builder.getBackend());
     }
 
-    TraceClientFilter(TraceBackend backend) {
+    TraceClientFilter(Backend backend) {
         this.backend = backend;
         this.transportSerialization = new HttpHeaderTransport();
     }

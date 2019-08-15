@@ -1,8 +1,8 @@
 package org.aoju.bus.trace4j.binding.jaxws;
 
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.transport.SoapHeaderTransport;
 
@@ -19,11 +19,11 @@ public class TraceClientHandler extends AbstractTraceHandler {
     private final SoapHeaderTransport transportSerialization = new SoapHeaderTransport();
 
     public TraceClientHandler() {
-        this(Trace.getBackend());
+        this(Builder.getBackend());
     }
 
-    public TraceClientHandler(TraceBackend TraceBackend) {
-        super(TraceBackend);
+    public TraceClientHandler(Backend Backend) {
+        super(Backend);
     }
 
     @Override
@@ -34,14 +34,14 @@ public class TraceClientHandler extends AbstractTraceHandler {
     protected final void handleIncoming(final SOAPMessageContext context) {
 
         final SOAPMessage msg = context.getMessage();
-        if (msg != null && TraceBackend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.OutgoingRequest)) {
+        if (msg != null && Backend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.OutgoingRequest)) {
 
             try {
                 final SOAPHeader header = msg.getSOAPHeader();
 
                 if (header != null) {
                     final Map<String, String> parsedContext = transportSerialization.parseSoapHeader(header);
-                    TraceBackend.putAll(TraceBackend.getConfiguration().filterDeniedParams(parsedContext, TraceFilterConfiguration.Channel.OutgoingRequest));
+                    Backend.putAll(Backend.getConfiguration().filterDeniedParams(parsedContext, TraceFilterConfiguration.Channel.OutgoingRequest));
                 }
             } catch (final SOAPException e) {
                 Logger.warn("Error during precessing of inbound soap header: " + e.getMessage());
@@ -53,12 +53,12 @@ public class TraceClientHandler extends AbstractTraceHandler {
     protected final void handleOutgoing(final SOAPMessageContext context) {
 
         final SOAPMessage msg = context.getMessage();
-        if (msg != null && !TraceBackend.isEmpty() && TraceBackend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.IncomingResponse)) {
+        if (msg != null && !Backend.isEmpty() && Backend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.IncomingResponse)) {
 
             try {
                 final SOAPHeader header = getOrCreateHeader(msg);
 
-                final Map<String, String> filteredContext = TraceBackend.getConfiguration().filterDeniedParams(TraceBackend.copyToMap(), TraceFilterConfiguration.Channel.IncomingResponse);
+                final Map<String, String> filteredContext = Backend.getConfiguration().filterDeniedParams(Backend.copyToMap(), TraceFilterConfiguration.Channel.IncomingResponse);
                 transportSerialization.renderSoapHeader(filteredContext, header);
 
                 msg.saveChanges();

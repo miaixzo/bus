@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.spring.soap.config;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.binding.spring.soap.TraceClientInterceptor;
 import org.aoju.bus.trace4j.binding.spring.soap.TracendpointInterceptor;
@@ -25,7 +25,7 @@ import java.util.List;
 public class TraceSpringWsConfiguration {
 
     @Autowired
-    TraceBackend backend;
+    Backend backend;
 
     @Bean
     TracendpointInterceptor TraceEndpointInterceptor() {

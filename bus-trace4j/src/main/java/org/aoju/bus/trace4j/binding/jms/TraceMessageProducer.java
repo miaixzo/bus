@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.jms;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
 
@@ -16,10 +16,10 @@ import static org.aoju.bus.trace4j.config.TraceFilterConfiguration.Channel.Async
 public class TraceMessageProducer implements MessageProducer {
 
     private final MessageProducer delegate;
-    private final TraceBackend backend;
+    private final Backend backend;
     private final HttpHeaderTransport httpHeaderSerialization;
 
-    TraceMessageProducer(MessageProducer delegate, TraceBackend backend) {
+    TraceMessageProducer(MessageProducer delegate, Backend backend) {
         this.delegate = delegate;
         this.backend = backend;
         this.httpHeaderSerialization = new HttpHeaderTransport();
@@ -27,7 +27,7 @@ public class TraceMessageProducer implements MessageProducer {
 
     public TraceMessageProducer(MessageProducer delegate) {
         this.delegate = delegate;
-        this.backend = Trace.getBackend();
+        this.backend = Builder.getBackend();
         this.httpHeaderSerialization = new HttpHeaderTransport();
     }
 

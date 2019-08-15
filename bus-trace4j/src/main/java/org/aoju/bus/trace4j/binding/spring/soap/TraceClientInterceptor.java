@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.spring.soap;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.springframework.ws.client.WebServiceClientException;
@@ -11,14 +11,14 @@ import org.springframework.ws.context.MessageContext;
 public final class TraceClientInterceptor extends AbstractTraceInterceptor implements ClientInterceptor {
 
     public TraceClientInterceptor() {
-        this(Trace.getBackend(), TraceConsts.DEFAULT);
+        this(Builder.getBackend(), TraceConsts.DEFAULT);
     }
 
     public TraceClientInterceptor(final String profile) {
-        this(Trace.getBackend(), profile);
+        this(Builder.getBackend(), profile);
     }
 
-    public TraceClientInterceptor(final TraceBackend backend, final String profile) {
+    public TraceClientInterceptor(final Backend backend, final String profile) {
         super(backend, profile);
     }
 

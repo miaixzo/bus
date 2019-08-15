@@ -1,9 +1,9 @@
 package org.aoju.bus.trace4j.backend;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 
 public interface TraceBackendProvider {
 
-    TraceBackend provideBackend();
+    Backend provideBackend();
 
 }

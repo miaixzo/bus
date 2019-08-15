@@ -1,8 +1,7 @@
 package org.aoju.bus.trace4j.binding.spring.soap;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
-import org.aoju.bus.trace4j.Utilities;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.springframework.ws.context.MessageContext;
@@ -12,14 +11,14 @@ import org.springframework.ws.server.EndpointInterceptor;
 public final class TracendpointInterceptor extends AbstractTraceInterceptor implements EndpointInterceptor {
 
     public TracendpointInterceptor() {
-        this(Trace.getBackend(), TraceConsts.DEFAULT);
+        this(Builder.getBackend(), TraceConsts.DEFAULT);
     }
 
     public TracendpointInterceptor(final String profile) {
-        this(Trace.getBackend(), profile);
+        this(Builder.getBackend(), profile);
     }
 
-    public TracendpointInterceptor(final TraceBackend backend, final String profile) {
+    public TracendpointInterceptor(final Backend backend, final String profile) {
         super(backend, profile);
     }
 
@@ -27,7 +26,7 @@ public final class TracendpointInterceptor extends AbstractTraceInterceptor impl
     public boolean handleRequest(MessageContext messageContext, Object o) {
         parseContextFromSoapHeader(messageContext.getRequest(), TraceFilterConfiguration.Channel.IncomingRequest);
 
-        Utilities.generateInvocationIdIfNecessary(backend);
+        Builder.generateInvocationIdIfNecessary(backend);
         return true;
     }
 

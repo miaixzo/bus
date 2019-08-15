@@ -1,9 +1,8 @@
 package org.aoju.bus.trace4j.binding.quartz;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
-import org.aoju.bus.trace4j.Utilities;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -14,26 +13,26 @@ import java.util.Map;
 
 public class TraceJobListener extends JobListenerSupport {
 
-    private final TraceBackend backend;
+    private final Backend backend;
 
     private final String profile;
 
     public TraceJobListener() {
-        this(Trace.getBackend(), TraceConsts.DEFAULT);
+        this(Builder.getBackend(), TraceConsts.DEFAULT);
     }
 
     public TraceJobListener(final String profile) {
-        this(Trace.getBackend(), profile);
+        this(Builder.getBackend(), profile);
     }
 
-    TraceJobListener(final TraceBackend backend, final String profile) {
+    TraceJobListener(final Backend backend, final String profile) {
         this.backend = backend;
         this.profile = profile;
     }
 
     @Override
     public String getName() {
-        return "Trace job listener";
+        return "Builder job listener";
     }
 
     @Override
@@ -49,7 +48,7 @@ public class TraceJobListener extends JobListenerSupport {
             }
         }
 
-        Utilities.generateInvocationIdIfNecessary(backend);
+        Builder.generateInvocationIdIfNecessary(backend);
     }
 
     @Override

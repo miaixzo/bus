@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.spring.http;
 
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
 import org.springframework.beans.BeansException;
@@ -17,8 +17,8 @@ public class TraceSpringWebConfiguration {
 
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
-    TraceClientHttpRequestInterceptor TraceClientHttpRequestInterceptor(TraceBackend TraceBackend) {
-        return new TraceClientHttpRequestInterceptor(TraceBackend, new HttpHeaderTransport(), TraceConsts.DEFAULT);
+    TraceClientHttpRequestInterceptor TraceClientHttpRequestInterceptor(Backend Backend) {
+        return new TraceClientHttpRequestInterceptor(Backend, new HttpHeaderTransport(), TraceConsts.DEFAULT);
     }
 
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)

@@ -1,9 +1,8 @@
 package org.aoju.bus.trace4j.binding.servlet;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
-import org.aoju.bus.trace4j.Utilities;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
 
@@ -20,24 +19,24 @@ import java.util.Map;
 import static org.aoju.bus.trace4j.config.TraceFilterConfiguration.Channel.IncomingRequest;
 
 /**
- * Manages the Trace lifecycle.
+ * Manages the Builder lifecycle.
  */
-@WebListener("TraceServletRequestListener to read incoming TPICs into Trace backend")
+@WebListener("TraceServletRequestListener to read incoming TPICs into Builder backend")
 public final class TraceServletRequestListener implements ServletRequestListener {
 
     private static final String HTTP_HEADER_NAME = TraceConsts.TPIC_HEADER;
 
-    private final TraceBackend backend;
+    private final Backend backend;
 
     private final HttpHeaderTransport transportSerialization;
 
-    protected TraceServletRequestListener(TraceBackend backend, HttpHeaderTransport transportSerialization) {
+    protected TraceServletRequestListener(Backend backend, HttpHeaderTransport transportSerialization) {
         this.backend = backend;
         this.transportSerialization = transportSerialization;
     }
 
     public TraceServletRequestListener() {
-        this(Trace.getBackend(), new HttpHeaderTransport());
+        this(Builder.getBackend(), new HttpHeaderTransport());
     }
 
     @Override
@@ -65,11 +64,11 @@ public final class TraceServletRequestListener implements ServletRequestListener
             }
         }
 
-        Utilities.generateInvocationIdIfNecessary(backend);
+        Builder.generateInvocationIdIfNecessary(backend);
 
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            Utilities.generateSessionIdIfNecessary(backend, session.getId());
+            Builder.generateSessionIdIfNecessary(backend, session.getId());
         }
     }
 }

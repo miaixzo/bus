@@ -1,14 +1,14 @@
 package org.aoju.bus.trace4j.thread;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.backend.TraceBackendProvider;
 
 public class ThreadLocalTraceBackendProvider implements TraceBackendProvider {
 
-    private final ThreadLocalTraceBackend backend = new ThreadLocalTraceBackend();
+    private final ThreadLocalBackend backend = new ThreadLocalBackend();
 
     @Override
-    public final TraceBackend provideBackend() {
+    public final Backend provideBackend() {
         return backend;
     }
 

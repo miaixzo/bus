@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.quartz;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.quartz.JobDataMap;
@@ -10,19 +10,19 @@ import org.quartz.Trigger;
 
 public class TraceContextInjector {
 
-    private final TraceBackend backend;
+    private final Backend backend;
 
     private final String profile;
 
     public TraceContextInjector() {
-        this(Trace.getBackend(), TraceConsts.DEFAULT);
+        this(Builder.getBackend(), TraceConsts.DEFAULT);
     }
 
     public TraceContextInjector(final String profile) {
-        this(Trace.getBackend(), profile);
+        this(Builder.getBackend(), profile);
     }
 
-    TraceContextInjector(final TraceBackend backend, final String profile) {
+    TraceContextInjector(final Backend backend, final String profile) {
         this.backend = backend;
         this.profile = profile;
     }

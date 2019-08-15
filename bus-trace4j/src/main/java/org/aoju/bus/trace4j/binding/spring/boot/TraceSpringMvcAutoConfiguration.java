@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.spring.boot;
 
-import org.aoju.bus.trace4j.Trace;
+import org.aoju.bus.trace4j.Builder;
 import org.aoju.bus.trace4j.binding.spring.web.config.TraceSpringMvcConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @ConditionalOnWebApplication
-@ConditionalOnClass(Trace.class)
+@ConditionalOnClass(Builder.class)
 @AutoConfigureBefore(TraceContextAutoConfiguration.class)
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
 @Import(TraceSpringMvcConfiguration.class)

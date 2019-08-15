@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 后端应该是线程安全的(读写被委托给线程本地状态).
  */
-public interface TraceBackend {
+public interface Backend {
 
     TraceFilterConfiguration getConfiguration(String profileName);
 

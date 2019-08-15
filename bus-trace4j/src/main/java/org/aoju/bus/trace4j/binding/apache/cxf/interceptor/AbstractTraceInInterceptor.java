@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.apache.cxf.interceptor;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
@@ -20,13 +20,13 @@ import java.util.Map;
 abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Message> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTraceInInterceptor.class);
-    protected final TraceBackend backend;
+    protected final Backend backend;
     private final HttpHeaderTransport httpJsonSerializer;
     private final SoapHeaderTransport httpSoapSerializer;
     private final TraceFilterConfiguration.Channel channel;
     private String profile;
 
-    public AbstractTraceInInterceptor(String phase, TraceFilterConfiguration.Channel channel, TraceBackend backend,
+    public AbstractTraceInInterceptor(String phase, TraceFilterConfiguration.Channel channel, Backend backend,
                                       String profile) {
         super(phase);
         this.channel = channel;
@@ -51,7 +51,7 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
                     try {
                         handleSoapMessage((SoapMessage) message, filterConfiguration);
                     } catch (NoClassDefFoundError e) {
-                        LOGGER.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to parse Trace-Headers: {}", e.getMessage(), e);
+                        LOGGER.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to parse Builder-Headers: {}", e.getMessage(), e);
                     }
                 }
             }

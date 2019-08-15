@@ -6,19 +6,18 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
 
-public class BackendProviderResolver {
+public class Resolver {
 
     private static volatile Map<ClassLoader, Set<TraceBackendProvider>> providersPerClassloader = new WeakHashMap<>();
 
     public Set<TraceBackendProvider> getBackendProviders() {
         final Map<ClassLoader, Set<TraceBackendProvider>> cacheCopy = providersPerClassloader;
-
         final Set<TraceBackendProvider> providerFromContextClassLoader = getTraceProviderFromClassloader(cacheCopy,
                 GetClassLoader.fromContext());
         if (!providerFromContextClassLoader.isEmpty()) {
             return providerFromContextClassLoader;
         } else {
-            return getTraceProviderFromClassloader(cacheCopy, GetClassLoader.fromClass(BackendProviderResolver.class));
+            return getTraceProviderFromClassloader(cacheCopy, GetClassLoader.fromClass(Resolver.class));
         }
     }
 
@@ -42,7 +41,6 @@ public class BackendProviderResolver {
             classLoaderProviders = loadProviders(classLoader);
             updatedCache(classLoader, classLoaderProviders);
         }
-
         return classLoaderProviders;
     }
 
@@ -53,7 +51,7 @@ public class BackendProviderResolver {
     private void updatedCache(final ClassLoader classLoader, final Set<TraceBackendProvider> provider) {
         final Map<ClassLoader, Set<TraceBackendProvider>> copyOnWriteMap = new WeakHashMap<>(providersPerClassloader);
         if (!provider.isEmpty()) {
-            copyOnWriteMap.put(classLoader, new BackendProviderSet(provider));
+            copyOnWriteMap.put(classLoader, new Provider(provider));
         } else {
             copyOnWriteMap.put(classLoader, new EmptyBackendProviderSet());
         }
@@ -74,12 +72,12 @@ public class BackendProviderResolver {
     }
 
     static final class GetClassLoader implements PrivilegedAction<ClassLoader> {
+
         private final Class<?> clazz;
 
         private GetClassLoader(final Class<?> clazz) {
             this.clazz = clazz;
         }
-
         public static ClassLoader fromContext() {
             return doPrivileged(new GetClassLoader(null));
         }
@@ -106,6 +104,7 @@ public class BackendProviderResolver {
                 return Thread.currentThread().getContextClassLoader();
             }
         }
+
     }
 
     static final class EmptyBackendProviderSet extends AbstractSet<TraceBackendProvider> {
@@ -119,6 +118,7 @@ public class BackendProviderResolver {
         public int size() {
             return 0;
         }
+
     }
     
 }

@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.apache.httpclient;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
 
-    private final TraceBackend backend;
+    private final Backend backend;
     private final HttpHeaderTransport transportSerialization;
     private final String profile;
 
@@ -25,10 +25,10 @@ public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
     }
 
     public TraceHttpResponseInterceptor(String profile) {
-        this(Trace.getBackend(), profile);
+        this(Builder.getBackend(), profile);
     }
 
-    TraceHttpResponseInterceptor(TraceBackend backend, String profile) {
+    TraceHttpResponseInterceptor(Backend backend, String profile) {
         this.backend = backend;
         this.profile = profile;
         transportSerialization = new HttpHeaderTransport();

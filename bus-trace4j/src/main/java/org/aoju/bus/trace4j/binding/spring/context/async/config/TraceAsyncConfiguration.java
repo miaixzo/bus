@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.spring.context.async.config;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.binding.spring.context.async.PostTpicAsyncBeanPostProcessor;
 import org.aoju.bus.trace4j.binding.spring.context.async.PreTpicAsyncBeanPostProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -15,12 +15,12 @@ import org.springframework.core.task.AsyncTaskExecutor;
 public class TraceAsyncConfiguration {
 
     @Bean
-    public PreTpicAsyncBeanPostProcessor preTpicAsyncBeanPostProcessor(AsyncTaskExecutor executor, TraceBackend backend) {
+    public PreTpicAsyncBeanPostProcessor preTpicAsyncBeanPostProcessor(AsyncTaskExecutor executor, Backend backend) {
         return new PreTpicAsyncBeanPostProcessor(executor, backend);
     }
 
     @Bean
-    public PostTpicAsyncBeanPostProcessor postTpicAsyncBeanPostProcessor(AsyncTaskExecutor executor, TraceBackend backend) {
+    public PostTpicAsyncBeanPostProcessor postTpicAsyncBeanPostProcessor(AsyncTaskExecutor executor, Backend backend) {
         return new PostTpicAsyncBeanPostProcessor(executor, backend);
     }
 

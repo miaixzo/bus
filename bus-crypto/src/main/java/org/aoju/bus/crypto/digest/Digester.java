@@ -27,7 +27,6 @@ import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.utils.*;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,28 +64,8 @@ public class Digester {
      *
      * @param algorithm 算法枚举
      */
-    public Digester(Mode algorithm) {
-        this(algorithm.getValue());
-    }
-
-    /**
-     * 构造
-     *
-     * @param algorithm 算法枚举
-     */
     public Digester(String algorithm) {
         this(algorithm, null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param algorithm 算法
-     * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
-     * @since 4.5.1
-     */
-    public Digester(Mode algorithm, Provider provider) {
-        init(algorithm.getValue(), provider);
     }
 
     /**

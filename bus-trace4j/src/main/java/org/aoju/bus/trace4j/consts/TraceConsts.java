@@ -1,5 +1,7 @@
 package org.aoju.bus.trace4j.consts;
 
+import org.aoju.bus.core.consts.Normal;
+
 import javax.xml.namespace.QName;
 
 public final class TraceConsts {
@@ -12,6 +14,7 @@ public final class TraceConsts {
 
     public static final String SESSION_ID_KEY = "TPIC.sessionId";
     public static final String INVOCATION_ID_KEY = "TPIC.invocationId";
+    public static final char[] ALPHANUMERICS = Normal.LETTER_UPPER_NO.toCharArray();
 
     public static final String DEFAULT = "default";
     public static final String HIDE_INBOUND = "HideInbound";

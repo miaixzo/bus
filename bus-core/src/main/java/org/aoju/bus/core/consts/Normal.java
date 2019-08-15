@@ -52,6 +52,22 @@ public class Normal {
      * 字符串: 大小字母
      */
     public static final String LETTER_LOWER_UPPER = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
+
+    /**
+     * 字符串: 小字母数字
+     */
+    public static final String LETTER_LOWER_NO = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+    /**
+     * 字符串: 大字母数字
+     */
+    public static final String LETTER_UPPER_NO = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    /**
+     * 字符串: 大小字母数字
+     */
+    public static final String LETTER_LOWER_UPPER_NO = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789";
+
     /**
      * 简体中文形式
      **/

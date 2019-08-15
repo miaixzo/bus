@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.jaxws;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 
 import javax.xml.namespace.QName;
@@ -19,10 +19,10 @@ abstract class AbstractTraceHandler implements SOAPHandler<SOAPMessageContext> {
     private static final Set<QName> HANDLED_HEADERS = Collections.unmodifiableSet(
             new HashSet<>(Collections.singleton(TraceConsts.SOAP_HEADER_QNAME)));
 
-    protected final TraceBackend TraceBackend;
+    protected final Backend Backend;
 
-    public AbstractTraceHandler(TraceBackend TraceBackend) {
-        this.TraceBackend = TraceBackend;
+    public AbstractTraceHandler(Backend Backend) {
+        this.Backend = Backend;
     }
 
     @Override

@@ -24,13 +24,13 @@
 package org.aoju.bus.crypto.digest;
 
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -59,30 +59,30 @@ public class HMac {
     /**
      * 构造，自动生成密钥
      *
-     * @param algorithm 算法 {@link Mode}
+     * @param algorithm 算法 {@link ModeType}
      */
-    public HMac(Mode algorithm) {
+    public HMac(String algorithm) {
         this(algorithm, (SecretKey) null);
     }
 
     /**
      * 构造
      *
-     * @param algorithm 算法 {@link Mode}
+     * @param algorithm 算法 {@link ModeType}
      * @param key       密钥
      */
-    public HMac(Mode algorithm, byte[] key) {
-        init(algorithm.getValue(), key);
+    public HMac(String algorithm, byte[] key) {
+        init(algorithm, key);
     }
 
     /**
      * 构造
      *
-     * @param algorithm 算法 {@link Mode}
+     * @param algorithm 算法 {@link ModeType}
      * @param key       密钥
      */
-    public HMac(Mode algorithm, SecretKey key) {
-        init(algorithm.getValue(), key);
+    public HMac(String algorithm, SecretKey key) {
+        init(algorithm, key);
     }
 
     /**

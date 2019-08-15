@@ -1,9 +1,8 @@
 package org.aoju.bus.trace4j.binding.jms;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
-import org.aoju.bus.trace4j.Utilities;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
 
 import javax.interceptor.AroundInvoke;
@@ -18,16 +17,16 @@ import static org.aoju.bus.trace4j.config.TraceFilterConfiguration.Channel.Async
 
 public final class TraceMessageListener {
 
-    private final TraceBackend backend;
+    private final Backend backend;
     private final HttpHeaderTransport httpHeaderSerialization;
 
-    TraceMessageListener(TraceBackend backend) {
+    TraceMessageListener(Backend backend) {
         this.backend = backend;
         this.httpHeaderSerialization = new HttpHeaderTransport();
     }
 
     public TraceMessageListener() {
-        this(Trace.getBackend());
+        this(Builder.getBackend());
     }
 
     @AroundInvoke
@@ -53,7 +52,7 @@ public final class TraceMessageListener {
                 backend.putAll(backend.getConfiguration().filterDeniedParams(contextFromMessage, AsyncProcess));
             }
         }
-        Utilities.generateInvocationIdIfNecessary(backend);
+        Builder.generateInvocationIdIfNecessary(backend);
     }
 
     void cleanUp() {

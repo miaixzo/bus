@@ -1,9 +1,8 @@
 package org.aoju.bus.trace4j.binding.jaxrs2;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
-import org.aoju.bus.trace4j.Utilities;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
 
 import javax.ws.rs.container.ContainerRequestContext;
@@ -20,14 +19,14 @@ import static org.aoju.bus.trace4j.config.TraceFilterConfiguration.Channel.Outgo
 @Provider
 public class TraceContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
-    private final TraceBackend backend;
+    private final Backend backend;
     private final HttpHeaderTransport transportSerialization;
 
     public TraceContainerFilter() {
-        this(Trace.getBackend());
+        this(Builder.getBackend());
     }
 
-    TraceContainerFilter(TraceBackend backend) {
+    TraceContainerFilter(Backend backend) {
         this.backend = backend;
         this.transportSerialization = new HttpHeaderTransport();
     }
@@ -43,7 +42,7 @@ public class TraceContainerFilter implements ContainerRequestFilter, ContainerRe
             }
         }
 
-        Utilities.generateInvocationIdIfNecessary(backend);
+        Builder.generateInvocationIdIfNecessary(backend);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.config;
 
-import org.aoju.bus.trace4j.Utilities;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import java.util.regex.PatternSyntaxException;
  */
 public final class PropertiesBasedTraceFilterConfiguration implements TraceFilterConfiguration {
 
-    static final String Trace_CONFIG_PREFIX = "Trace.";
+    static final String Trace_CONFIG_PREFIX = "Builder.";
     static final String PROFILED_PREFIX = Trace_CONFIG_PREFIX + "profile.";
     static final String Trace_DEFAULT_PROFILE_PREFIX = Trace_CONFIG_PREFIX + TraceConsts.DEFAULT + ".";
     static final String GENERATE_INVOCATION_ID = "invocationIdLength";
@@ -42,8 +42,8 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
      * Loads a layered property chain based on:
      * <ol>
      * <li>System properties</li>
-     * <li>merged entries from all {@code /META-INF/Trace.properties} files on the classpath (loaded in undefined order)</li>
-     * <li>merged entries from all {@code /META-INF/Trace.default.properties} files on the classpath (loaded in undefined order)</li>
+     * <li>merged entries from all {@code /META-INF/Builder.properties} files on the classpath (loaded in undefined order)</li>
+     * <li>merged entries from all {@code /META-INF/Builder.default.properties} files on the classpath (loaded in undefined order)</li>
      * </ol>
      *
      * @return the propertyChain
@@ -77,7 +77,7 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
     @Override
     public boolean shouldProcessContext(final Channel channel) {
         final String messageTypePropertyValue = getProfiledOrDefaultProperty(channel.name());
-        return !Utilities.isNullOrEmptyString(messageTypePropertyValue);
+        return !StringUtils.isEmpty(messageTypePropertyValue);
     }
 
     @Override

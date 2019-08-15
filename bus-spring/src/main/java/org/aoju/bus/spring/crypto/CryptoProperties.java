@@ -25,7 +25,6 @@ package org.aoju.bus.spring.crypto;
 
 import lombok.Data;
 import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.crypto.Mode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 

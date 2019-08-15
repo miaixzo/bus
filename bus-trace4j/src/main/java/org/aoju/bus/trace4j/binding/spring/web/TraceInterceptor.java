@@ -1,8 +1,7 @@
 package org.aoju.bus.trace4j.binding.spring.web;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
-import org.aoju.bus.trace4j.Utilities;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aoju.bus.trace4j.transport.HttpHeaderTransport;
@@ -18,17 +17,17 @@ import java.util.Map;
 
 public final class TraceInterceptor implements HandlerInterceptor {
 
-    private final TraceBackend backend;
+    private final Backend backend;
     private final HttpHeaderTransport httpHeaderSerialization;
     private String outgoingHeaderName = TraceConsts.TPIC_HEADER;
     private String incomingHeaderName = TraceConsts.TPIC_HEADER;
     private String profileName;
 
     public TraceInterceptor() {
-        this(Trace.getBackend());
+        this(Builder.getBackend());
     }
 
-    public TraceInterceptor(TraceBackend backend) {
+    public TraceInterceptor(Backend backend) {
         this.backend = backend;
         httpHeaderSerialization = new HttpHeaderTransport();
     }
@@ -46,11 +45,11 @@ public final class TraceInterceptor implements HandlerInterceptor {
             }
         }
 
-        Utilities.generateInvocationIdIfNecessary(backend);
+        Builder.generateInvocationIdIfNecessary(backend);
 
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            Utilities.generateSessionIdIfNecessary(backend, session.getId());
+            Builder.generateSessionIdIfNecessary(backend, session.getId());
         }
 
         writeHeaderIfUncommitted(response);

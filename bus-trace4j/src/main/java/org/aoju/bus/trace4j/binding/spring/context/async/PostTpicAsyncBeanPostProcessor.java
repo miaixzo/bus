@@ -1,6 +1,6 @@
 package org.aoju.bus.trace4j.binding.spring.context.async;
 
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.consts.TraceConsts;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInvocation;
@@ -16,7 +16,7 @@ import java.util.concurrent.Executor;
 public class PostTpicAsyncBeanPostProcessor extends AbstractAdvisingBeanPostProcessor {
 
     @Autowired
-    public PostTpicAsyncBeanPostProcessor(Executor executor, TraceBackend backend) {
+    public PostTpicAsyncBeanPostProcessor(Executor executor, Backend backend) {
         advisor = new TpicPostAdvisor(executor, backend);
     }
 
@@ -28,9 +28,9 @@ public class PostTpicAsyncBeanPostProcessor extends AbstractAdvisingBeanPostProc
     static class TpicPostAdvisor extends AsyncAnnotationAdvisor {
 
         private final Executor executor;
-        private final TraceBackend backend;
+        private final Backend backend;
 
-        public TpicPostAdvisor(Executor executor, TraceBackend backend) {
+        public TpicPostAdvisor(Executor executor, Backend backend) {
             super();
             this.executor = executor;
             this.backend = backend;
@@ -44,9 +44,9 @@ public class PostTpicAsyncBeanPostProcessor extends AbstractAdvisingBeanPostProc
 
     static class DelegateTpicToThreadInterceptor extends AnnotationAsyncExecutionInterceptor {
 
-        private final TraceBackend backend;
+        private final Backend backend;
 
-        DelegateTpicToThreadInterceptor(Executor defaultExecutor, TraceBackend backend) {
+        DelegateTpicToThreadInterceptor(Executor defaultExecutor, Backend backend) {
             super(defaultExecutor);
             this.backend = backend;
         }

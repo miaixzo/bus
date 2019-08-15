@@ -1,6 +1,7 @@
-package org.aoju.bus.trace4j;
+package org.aoju.bus.trace4j.backend;
 
 
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.config.PropertiesBasedTraceFilterConfiguration;
 import org.aoju.bus.trace4j.config.PropertyChain;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
@@ -10,10 +11,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public abstract class AbstractBackend implements TraceBackend {
+public abstract class AbstractBackend implements Backend {
 
-    private PropertyChain _lazyPropertyChain = null;
-
+    private PropertyChain _lazyPropertyChain;
     private Map<String, TraceFilterConfiguration> configurationCache = new ConcurrentHashMap<>();
 
     @Override
@@ -24,7 +24,6 @@ public abstract class AbstractBackend implements TraceBackend {
     @Override
     public final TraceFilterConfiguration getConfiguration(String profileName) {
         final String lookupProfile = profileName == null ? TraceConsts.DEFAULT : profileName;
-
         TraceFilterConfiguration filterConfiguration = configurationCache.get(lookupProfile);
         if (filterConfiguration == null) {
             filterConfiguration = new PropertiesBasedTraceFilterConfiguration(getPropertyChain(), lookupProfile);

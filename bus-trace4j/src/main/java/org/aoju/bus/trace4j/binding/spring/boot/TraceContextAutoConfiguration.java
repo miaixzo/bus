@@ -1,7 +1,7 @@
 package org.aoju.bus.trace4j.binding.spring.boot;
 
-import org.aoju.bus.trace4j.Trace;
-import org.aoju.bus.trace4j.TraceBackend;
+import org.aoju.bus.trace4j.Builder;
+import org.aoju.bus.trace4j.Backend;
 import org.aoju.bus.trace4j.config.TraceFilterConfiguration;
 import org.aoju.bus.trace4j.binding.spring.context.config.TraceContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 
 @Configuration
-@ConditionalOnClass(Trace.class)
+@ConditionalOnClass(Builder.class)
 @EnableConfigurationProperties(TraceProperties.class)
 public class TraceContextAutoConfiguration {
 
@@ -22,7 +22,7 @@ public class TraceContextAutoConfiguration {
     TraceProperties TraceProperties;
 
     @Configuration
-    @ConditionalOnMissingBean(TraceBackend.class)
+    @ConditionalOnMissingBean(Backend.class)
     public static class TraceBackendAutoConfiguration extends TraceContextConfiguration {
     }
 
