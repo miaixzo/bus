@@ -21,20 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.spring.tracer;
+package org.aoju.bus.spring.trace4j;
 
-import org.aoju.bus.tracer.annotation.TacerCost;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import java.lang.reflect.Method;
 
 /**
  * 方法执行耗时统计
@@ -46,10 +36,8 @@ import java.lang.reflect.Method;
 @Component
 @Aspect
 public class MethodExecuteCostHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(MethodExecuteCostHandler.class);
-
-    @Around("@annotation(org.aoju.bus.tracer.annotation.TacerCost)")
+ /*
+    @Around("@annotation(org.aoju.bus.trace4j.annotation.TacerCost)")
     public Object costLogger(ProceedingJoinPoint pjp) throws Throwable {
         Signature sig = pjp.getSignature();
         MethodSignature msig;
@@ -148,5 +136,5 @@ public class MethodExecuteCostHandler {
         }
         return obj;
     }
-
+*/
 }

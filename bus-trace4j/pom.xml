@@ -48,20 +48,20 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-api</artifactId>
             <version>${cxf.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-bindings-soap</artifactId>
             <version>${cxf.version}</version>
             <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
         <!-- httpcomponents -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
@@ -114,11 +114,8 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
+            <scope>provided</scope>
         </dependency>
-
-
-
-
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>

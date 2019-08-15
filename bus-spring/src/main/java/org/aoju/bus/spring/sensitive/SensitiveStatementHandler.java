@@ -24,6 +24,7 @@
 package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
@@ -108,7 +109,7 @@ public class SensitiveStatementHandler implements Interceptor {
         Privacy Privacy = field.getAnnotation(Privacy.class);
         Object newValue = value;
         if (Privacy != null && value != null) {
-            newValue = Base64.encode(CryptoUtils.encrypt(Mode.SHA1withRSA, null, value.toString().getBytes()));
+            newValue = Base64.encode(CryptoUtils.encrypt(ModeType.SHA1withRSA, null, value.toString().getBytes()));
         }
         return newValue;
     }

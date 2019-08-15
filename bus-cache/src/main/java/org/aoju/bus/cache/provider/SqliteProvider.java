@@ -57,7 +57,7 @@ public class SqliteProvider extends AbstractProvider {
             dataSource.setUrl(String.format("jdbc:sqlite:%s", dbPath));
 
             JdbcTemplate template = new JdbcTemplate(dataSource);
-            template.execute("CREATE TABLE IF NOT EXISTS hi_hit_rate(" +
+            template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +
                     "id BIGINT     IDENTITY PRIMARY KEY," +
                     "pattern       VARCHAR(64) NOT NULL UNIQUE," +
                     "hit_count     BIGINT      NOT NULL     DEFAULT 0," +

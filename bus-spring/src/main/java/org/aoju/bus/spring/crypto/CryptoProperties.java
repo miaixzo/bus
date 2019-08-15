@@ -52,7 +52,7 @@ public class CryptoProperties {
     public class Encrypt {
 
         private String key;
-        private Mode type;
+        private String type;
     }
 
     @Data
@@ -60,7 +60,7 @@ public class CryptoProperties {
     public class Decrypt {
 
         private String key;
-        private Mode type;
+        private String type;
     }
 
 }

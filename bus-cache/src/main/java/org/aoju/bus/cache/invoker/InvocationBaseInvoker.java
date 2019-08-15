@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cache.invoker;
 
-import org.apache.commons.proxy.Invocation;
+import org.aoju.bus.proxy.Invocation;
 
 /**
  * @author Kimi Liu

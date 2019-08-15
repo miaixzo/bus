@@ -155,7 +155,7 @@ public class RequestBodyAdvice extends BaseAdvice
 
         public HttpInputMessage(org.springframework.http.HttpInputMessage inputMessage,
                                 String key,
-                                Mode mode,
+                                String mode,
                                 String charset) throws Exception {
             if (StringUtils.isEmpty(key)) {
                 throw new NullPointerException("请配置spring.decrypt.key参数");

@@ -26,6 +26,7 @@ package org.aoju.bus.spring.druid;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.Maps;
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
@@ -153,13 +154,13 @@ public class DruidConfiguration {
                 Object value = beanMap.get(key);
                 if (StringUtils.isNotEmpty(this.druidProperties.getPrivateKey())) {
                     if ("url".equals(key)) {
-                        value = CryptoUtils.decrypt(Mode.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = CryptoUtils.decrypt(ModeType.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("url", value);
                     } else if ("username".equals(key)) {
-                        value = CryptoUtils.decrypt(Mode.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = CryptoUtils.decrypt(ModeType.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("username", value);
                     } else if ("password".equals(key)) {
-                        value = CryptoUtils.decrypt(Mode.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = CryptoUtils.decrypt(ModeType.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("password", value);
                     }
                 }

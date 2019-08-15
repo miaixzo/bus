@@ -26,7 +26,7 @@
         <memcached.version>2.0.0</memcached.version>
         <ehcache.version>3.3.1</ehcache.version>
         <commons.proxy.version>1.0</commons.proxy.version>
-        <yaml.version>1.18</yaml.version>
+        <yaml.version>1.23</yaml.version>
         <kryo.version>4.0.0</kryo.version>
         <hession.version>4.0.38</hession.version>
         <!--bus-core-->
@@ -136,6 +136,11 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-sensitive</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-proxy</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

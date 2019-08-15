@@ -25,6 +25,7 @@ package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
@@ -88,7 +89,7 @@ public class SensitiveResultSetHandler implements Interceptor {
                 String property = entry.getKey();
                 String value = (String) objMetaObject.getValue(property);
                 if (value != null) {
-                    String decryptValue = new String(CryptoUtils.decrypt(Mode.SHA1withRSA, null, Base64.decode(value)), Charset.DEFAULT_UTF_8);
+                    String decryptValue = new String(CryptoUtils.decrypt(ModeType.SHA1withRSA, null, Base64.decode(value)), Charset.DEFAULT_UTF_8);
                     objMetaObject.setValue(property, decryptValue);
                 }
             }
