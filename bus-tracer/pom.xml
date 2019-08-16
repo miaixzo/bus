@@ -35,12 +35,12 @@
     <dependencies>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-base</artifactId>
+            <artifactId>bus-health</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-health</artifactId>
+            <artifactId>bus-logger</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

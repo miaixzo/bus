@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.boot.env;
 
-import org.aoju.Bus;
+import org.aoju.bus.Version;
 import org.aoju.bus.boot.consts.BusConsts;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -50,7 +50,7 @@ public class BusEnvironment implements EnvironmentPostProcessor {
                                        SpringApplication application) {
 
         /**
-         * Get Bus version properties
+         * Get Version version properties
          */
         Properties properties = getProperties();
 
@@ -79,12 +79,12 @@ public class BusEnvironment implements EnvironmentPostProcessor {
     }
 
     /**
-     * Get Bus Version string.
+     * Get Version Version string.
      *
      * @return version
      */
     protected String getVersion() {
-        return Bus.version() == null ? "" : Bus.version();
+        return Version.version() == null ? "" : Version.version();
     }
 
 }
