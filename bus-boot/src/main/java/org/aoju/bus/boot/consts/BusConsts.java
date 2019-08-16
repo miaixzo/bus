@@ -36,8 +36,12 @@ public class BusConsts {
     /***
      * 应用名: 备注 @Value("${spring.application.name:@null}")
      */
-    public static final String BUS_APP_NAME = "spring.application.name";
+    public static final String BUS_VERSION = "version";
 
+    /***
+     * 应用名: 备注 @Value("${spring.application.name:@null}")
+     */
+    public static final String BUS_APP_NAME = "spring.application.name";
     /***
      * 应用版本号
      */

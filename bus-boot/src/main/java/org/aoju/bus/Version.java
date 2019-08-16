@@ -21,24 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju;
+package org.aoju.bus;
 
 /**
  * 用于识别当前版本号和版权声明!
- * Bus is Licensed under the MIT License, Bus 3.0.0 (the "License")
+ * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
  * @version 3.0.6
  * @since JDK 1.8
  */
-public final class Bus {
-
-
-    Bus() {
-    }
+public class Version {
 
     /**
-     * 获取 Bus 的版本号，版本号的命名规范
+     * 获取 Version 的版本号，版本号的命名规范
      *
      * <pre>
      * [大版本].[小版本].[发布流水号]
@@ -82,7 +78,7 @@ public final class Bus {
      * @return 阶段号
      */
     public static String stage() {
-        return "5";
+        return "8";
     }
 
     /**

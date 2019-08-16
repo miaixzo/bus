@@ -6,8 +6,12 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>3.0.6</version>
+    <version>3.0.8</version>
     <packaging>jar</packaging>
+
+    <name>bus-all</name>
+    <description>Bus All</description>
+    <url>https://github.com/aoju/bus</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -124,11 +128,11 @@
             <artifactId>bus-http</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--        <dependency>
+        <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-limiter</artifactId>
             <version>${project.version}</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-logger</artifactId>
