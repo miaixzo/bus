@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-spring</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.6</version>
     <packaging>jar</packaging>
 
     <name>bus-spring</name>
@@ -61,6 +61,11 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
+            <artifactId>bus-proxy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
             <artifactId>bus-sensitive</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -76,7 +81,7 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-trace4j</artifactId>
+            <artifactId>bus-tracer</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

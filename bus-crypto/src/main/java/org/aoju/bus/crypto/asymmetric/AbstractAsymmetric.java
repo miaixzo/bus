@@ -37,7 +37,7 @@ import java.security.PublicKey;
 
 /**
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extends BaseAsymmetric<T> {

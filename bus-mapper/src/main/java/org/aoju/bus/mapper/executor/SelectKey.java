@@ -46,7 +46,7 @@ import java.util.List;
  * 主键处理
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class SelectKey implements KeyGenerator {

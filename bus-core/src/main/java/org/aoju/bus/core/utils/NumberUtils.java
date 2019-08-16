@@ -52,7 +52,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class NumberUtils {
@@ -825,7 +825,7 @@ public class NumberUtils {
      *                </ul>
      * @param value   值
      * @return 格式化后的值
-     * @since 3.0.5
+     * @since 3.0.6
      */
     public static String decimalFormat(String pattern, long value) {
         return new DecimalFormat(pattern).format(value);

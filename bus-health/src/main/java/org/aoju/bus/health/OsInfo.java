@@ -29,7 +29,7 @@ import org.aoju.bus.core.consts.System;
  * 代表当前OS的信息。
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class OsInfo {

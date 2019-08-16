@@ -31,7 +31,7 @@ package org.aoju.bus.core.lang.tuple;
  * @param <M> the middle element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class MutableTriple<L, M, R> extends Triple<L, M, R> {

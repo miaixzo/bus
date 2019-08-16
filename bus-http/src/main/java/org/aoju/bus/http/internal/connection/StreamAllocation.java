@@ -73,7 +73,7 @@ import java.util.List;
  * then canceling may break the entire connection.
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public final class StreamAllocation {

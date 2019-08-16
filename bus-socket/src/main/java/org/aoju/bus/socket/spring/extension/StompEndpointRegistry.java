@@ -2,8 +2,8 @@ package org.aoju.bus.socket.spring.extension;
 
 import org.aoju.bus.core.lang.exception.SocketException;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.socket.spring.interceptor.FromClientInterceptor;
-import org.aoju.bus.socket.spring.interceptor.ToClientInterceptor;
+import org.aoju.bus.socket.spring.intercept.FromClientInterceptor;
+import org.aoju.bus.socket.spring.intercept.ToClientInterceptor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
@@ -31,7 +31,7 @@ import java.util.Map;
  * 代替{@link WebMvcStompEndpointRegistry}
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class StompEndpointRegistry extends WebMvcStompEndpointRegistry {

@@ -1,6 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.aoju.bus.trace4j.binding.spring.boot.TraceContextAutoConfiguration,\
-  org.aoju.bus.trace4j.binding.spring.boot.TraceSpringAsyncAutoConfiguration,\
-  org.aoju.bus.trace4j.binding.spring.boot.TraceSpringMvcAutoConfiguration,\
-  org.aoju.bus.trace4j.binding.spring.boot.TraceSpringWebAutoConfiguration,\
-  org.aoju.bus.trace4j.binding.spring.boot.TraceSpringWsAutoConfiguration
+  org.aoju.bus.tracer.binding.spring.boot.TraceContextAutoConfiguration,\
+  org.aoju.bus.tracer.binding.spring.boot.TraceSpringAsyncAutoConfiguration,\
+  org.aoju.bus.tracer.binding.spring.boot.TraceSpringMvcAutoConfiguration,\
+  org.aoju.bus.tracer.binding.spring.boot.TraceSpringWebAutoConfiguration,\
+  org.aoju.bus.tracer.binding.spring.boot.TraceSpringWsAutoConfiguration

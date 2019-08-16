@@ -6,10 +6,10 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-tracer</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.6</version>
     <packaging>jar</packaging>
 
-    <name>bus-trace</name>
+    <name>bus-tracer</name>
     <description>Bus Tracer</description>
     <url>https://github.com/aoju/bus</url>
 
@@ -43,8 +43,6 @@
             <artifactId>bus-health</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!-- httpcomponents -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -57,7 +55,6 @@
             <version>${httpclient5.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- cxf -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-api</artifactId>
@@ -70,14 +67,12 @@
             <version>${cxf.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- jaxrs2 -->
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
-        <!-- jaxws -->
         <dependency>
             <groupId>javax.xml.ws</groupId>
             <artifactId>jaxws-api</artifactId>
@@ -96,7 +91,6 @@
             <version>2.0.1</version>
             <scope>provided</scope>
         </dependency>
-        <!-- jms -->
         <dependency>
             <groupId>javax.ejb</groupId>
             <artifactId>ejb-api</artifactId>
@@ -109,14 +103,12 @@
             <version>1.1-rev-1</version>
             <scope>provided</scope>
         </dependency>
-        <!-- quartz -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * interceptors, the httpClient core, all network interceptors, and finally the network caller.
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public final class RealInterceptorChain implements Interceptor.Chain {

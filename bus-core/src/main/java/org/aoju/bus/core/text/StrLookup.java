@@ -40,7 +40,7 @@ import java.util.Map;
  * key as a primary key, and looked up the value on demand from the database
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public abstract class StrLookup<V> {

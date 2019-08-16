@@ -31,7 +31,7 @@ import java.io.Writer;
  * will replace up to one character at a time.
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public abstract class CodePointTranslator extends CharSequenceTranslator {

@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class ThreadUtils {
@@ -149,7 +149,7 @@ public class ThreadUtils {
      *
      * @param runnable 可运行对象
      * @return {@link Future}
-     * @since 3.0.5
+     * @since 3.0.6
      */
     public static Future<?> execAsync(Runnable runnable) {
         return GlobalThreadPool.submit(runnable);

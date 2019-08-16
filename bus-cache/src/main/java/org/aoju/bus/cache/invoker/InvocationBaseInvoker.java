@@ -27,7 +27,7 @@ import org.aoju.bus.proxy.Invocation;
 
 /**
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class InvocationBaseInvoker implements BaseInvoker {

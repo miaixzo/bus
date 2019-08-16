@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-socket</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.6</version>
     <packaging>jar</packaging>
 
     <name>bus-socket</name>
@@ -24,14 +24,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <netty.version>4.1.36.Final</netty.version>
-        <guava.version>28.0-jre</guava.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-logger</artifactId>
-            <version>3.0.5</version>
+            <version>3.0.6</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>

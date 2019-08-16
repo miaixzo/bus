@@ -1,10 +1,10 @@
 package org.aoju.bus.socket.spring.extension;
 
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.socket.spring.interceptor.FromClientExecutionChain;
-import org.aoju.bus.socket.spring.interceptor.FromClientInterceptor;
-import org.aoju.bus.socket.spring.interceptor.ToClientExecutionChain;
-import org.aoju.bus.socket.spring.interceptor.ToClientInterceptor;
+import org.aoju.bus.socket.spring.intercept.FromClientExecutionChain;
+import org.aoju.bus.socket.spring.intercept.FromClientInterceptor;
+import org.aoju.bus.socket.spring.intercept.ToClientExecutionChain;
+import org.aoju.bus.socket.spring.intercept.ToClientInterceptor;
 import org.aoju.bus.socket.spring.support.MessageFrom;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -24,7 +24,7 @@ import java.util.concurrent.LinkedTransferQueue;
  * 增加了对拦截器的支持
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class StompSubProtocolHandler extends org.springframework.web.socket.messaging.StompSubProtocolHandler {

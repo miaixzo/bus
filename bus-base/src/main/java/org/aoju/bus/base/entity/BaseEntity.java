@@ -35,7 +35,7 @@ import javax.persistence.Transient;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @MappedSuperclass

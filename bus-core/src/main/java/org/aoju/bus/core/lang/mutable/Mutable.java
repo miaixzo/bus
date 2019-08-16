@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang.mutable;
  *
  * @param <T> 值得类型
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public interface Mutable<T> {

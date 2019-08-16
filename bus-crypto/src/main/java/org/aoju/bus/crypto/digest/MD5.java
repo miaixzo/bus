@@ -32,7 +32,7 @@ import java.io.InputStream;
  * MD5算法
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class MD5 extends Digester {
