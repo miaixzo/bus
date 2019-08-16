@@ -44,7 +44,7 @@ import java.util.Properties;
  * mybatis 配置类
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {MybatisProperties.class})
@@ -73,7 +73,7 @@ public class MybatisConfiguration {
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             Interceptor[] plugins = new Interceptor[]{
                     interceptor,
-                    new PerformanceHandler(),
+                    new SQLPerformanceHandler(),
                     new SQLExplainHandler()};
             bean.setPlugins(plugins);
 

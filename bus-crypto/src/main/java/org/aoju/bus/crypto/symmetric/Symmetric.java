@@ -30,7 +30,6 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.RandomUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -42,13 +41,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 对称加密算法<br>
- * 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。<br>
- * 收信方收到密文后，若想解读原文，则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密，才能使其恢复成可读明文。<br>
- * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。<br>
+ * 对称加密算法
+ * 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
+ * 收信方收到密文后，若想解读原文，则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密，才能使其恢复成可读明文。
+ * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class Symmetric {
@@ -70,40 +69,10 @@ public class Symmetric {
     /**
      * 构造，使用随机密钥
      *
-     * @param algorithm {@link Mode}
-     */
-    public Symmetric(Mode algorithm) {
-        this(algorithm, (byte[]) null);
-    }
-
-    /**
-     * 构造，使用随机密钥
-     *
      * @param algorithm 算法，可以是"algorithm/mode/padding"或者"algorithm"
      */
     public Symmetric(String algorithm) {
         this(algorithm, (byte[]) null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param algorithm 算法 {@link Mode}
-     * @param key       自定义KEY
-     */
-    public Symmetric(Mode algorithm, byte[] key) {
-        this(algorithm.getValue(), key);
-    }
-
-    /**
-     * 构造
-     *
-     * @param algorithm 算法 {@link Mode}
-     * @param key       自定义KEY
-     * @since 3.1.2
-     */
-    public Symmetric(Mode algorithm, SecretKey key) {
-        this(algorithm.getValue(), key);
     }
 
     /**

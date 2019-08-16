@@ -153,7 +153,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * 给定字符串数组的总长度<br>
+     * 给定字符串数组的总长度
      * null字符长度定义为0
      *
      * @param strs 字符串数组

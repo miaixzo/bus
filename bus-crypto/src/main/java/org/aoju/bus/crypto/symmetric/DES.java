@@ -23,21 +23,21 @@
  */
 package org.aoju.bus.crypto.symmetric;
 
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 /**
- * DES加密算法实现<br>
- * DES全称为Data Encryption Standard，即数据加密标准，是一种使用密钥加密的块算法<br>
+ * DES加密算法实现
+ * DES全称为Data Encryption Standard，即数据加密标准，是一种使用密钥加密的块算法
  * Java中默认实现为：DES/CBC/PKCS5Padding
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class DES extends Symmetric {
@@ -46,7 +46,7 @@ public class DES extends Symmetric {
      * 构造，默认DES/CBC/PKCS5Padding，使用随机密钥
      */
     public DES() {
-        super(Mode.DES);
+        super(ModeType.DES);
     }
 
     /**
@@ -55,66 +55,66 @@ public class DES extends Symmetric {
      * @param key 密钥
      */
     public DES(byte[] key) {
-        super(Mode.DES, key);
+        super(ModeType.DES, key);
     }
 
     /**
      * 构造，使用随机密钥
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      */
-    public DES(Mode mode, Padding padding) {
-        this(mode.name(), padding.name());
+    public DES(String mode, Padding padding) {
+        this(mode, padding.name());
     }
 
     /**
      * 构造
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      * @param key     密钥，长度：8的倍数
      */
-    public DES(Mode mode, Padding padding, byte[] key) {
+    public DES(String mode, Padding padding, byte[] key) {
         this(mode, padding, key, null);
     }
 
     /**
      * 构造
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      * @param key     密钥，长度：8的倍数
      * @param iv      偏移向量，加盐
      * @since 3.3.0
      */
-    public DES(Mode mode, Padding padding, byte[] key, byte[] iv) {
-        this(mode.name(), padding.name(), key, iv);
+    public DES(String mode, Padding padding, byte[] key, byte[] iv) {
+        this(mode, padding.name(), key, iv);
     }
 
     /**
      * 构造
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      * @param key     密钥，长度：8的倍数
      * @since 3.3.0
      */
-    public DES(Mode mode, Padding padding, SecretKey key) {
+    public DES(String mode, Padding padding, SecretKey key) {
         this(mode, padding, key, null);
     }
 
     /**
      * 构造
      *
-     * @param mode    模式{@link Mode}
+     * @param mode    模式{@link ModeType}
      * @param padding {@link Padding}补码方式
      * @param key     密钥，长度：8的倍数
      * @param iv      偏移向量，加盐
      * @since 3.3.0
      */
-    public DES(Mode mode, Padding padding, SecretKey key, IvParameterSpec iv) {
-        this(mode.name(), padding.name(), key, iv);
+    public DES(String mode, Padding padding, SecretKey key, IvParameterSpec iv) {
+        this(mode, padding.name(), key, iv);
     }
 
     /**

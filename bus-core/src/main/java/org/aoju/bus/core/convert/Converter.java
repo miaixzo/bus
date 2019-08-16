@@ -27,13 +27,13 @@ package org.aoju.bus.core.convert;
  * 转换器接口，实现类型转换
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public interface Converter<T> {
 
     /**
-     * 转换为指定类型<br>
+     * 转换为指定类型
      * 如果类型无法确定，将读取默认值的类型做为目标类型
      *
      * @param value        原始值

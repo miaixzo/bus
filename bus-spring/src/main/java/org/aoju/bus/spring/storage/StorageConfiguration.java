@@ -38,7 +38,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {StorageProperties.class})
@@ -55,7 +55,7 @@ public class StorageConfiguration {
             Properties properties = new Properties();
             storageProvider = new FdfsProvider(this.properties.getGroupName(), properties);
         } else {
-            throw new RuntimeException("Provider[" + this.properties.getProvider() + "] not support");
+            throw new RuntimeException("Provider[" + this.properties.getProvider() + "] not core");
         }
     }
 

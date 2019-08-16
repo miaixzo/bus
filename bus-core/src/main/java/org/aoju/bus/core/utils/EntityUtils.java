@@ -30,7 +30,7 @@ import org.aoju.bus.core.key.ObjectID;
  * 解决问题： 1、快速对实体的常驻字段
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class EntityUtils {
@@ -44,7 +44,7 @@ public class EntityUtils {
     public static <T> void setCreateInfo(T entity) {
         String id = ObjectID.id();
         String[] fields = {"id", "creator", "created"};
-        Object[] value = new Object[]{id, getValue(entity, "x_user_id"), DateUtils.getTimestamp()};
+        Object[] value = new Object[]{id, getValue(entity, "x_user_id"), DateUtils.timestamp()};
         setValue(entity, fields, value);
     }
 
@@ -56,7 +56,7 @@ public class EntityUtils {
      */
     public static <T> void setUpdatedInfo(T entity) {
         String[] fields = {"modifier", "modified"};
-        Object[] value = new Object[]{getValue(entity, "x_user_id"), DateUtils.getTimestamp()};
+        Object[] value = new Object[]{getValue(entity, "x_user_id"), DateUtils.timestamp()};
         setValue(entity, fields, value);
     }
 

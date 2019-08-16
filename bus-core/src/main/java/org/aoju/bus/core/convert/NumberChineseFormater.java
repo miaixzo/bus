@@ -27,7 +27,7 @@ import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
- * 数字转中文类<br>
+ * 数字转中文类
  * 包括：
  * <pre>
  * 1. 数字转中文大写形式，比如一百二十一
@@ -36,7 +36,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class NumberChineseFormater {

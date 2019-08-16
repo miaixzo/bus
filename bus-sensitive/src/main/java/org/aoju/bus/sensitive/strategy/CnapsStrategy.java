@@ -32,7 +32,7 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 前四位明文，后面脱敏
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class CnapsStrategy implements StrategyProvider {

@@ -32,11 +32,11 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
- * 基于{@link InputStream}的资源获取器<br>
+ * 基于{@link InputStream}的资源获取器
  * 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class InputStreamResource implements Resource {

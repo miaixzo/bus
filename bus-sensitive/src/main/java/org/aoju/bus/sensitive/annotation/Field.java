@@ -38,7 +38,7 @@ import java.lang.annotation.*;
  * 脱敏后，插件在写请求后对数据脱敏后存在数据库，对读请求不拦截
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @Documented

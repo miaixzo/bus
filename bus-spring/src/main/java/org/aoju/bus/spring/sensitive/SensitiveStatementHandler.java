@@ -24,8 +24,8 @@
 package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.JSON;
@@ -50,7 +50,7 @@ import java.util.Properties;
  * 数据加密脱敏
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -109,7 +109,7 @@ public class SensitiveStatementHandler implements Interceptor {
         Privacy Privacy = field.getAnnotation(Privacy.class);
         Object newValue = value;
         if (Privacy != null && value != null) {
-            newValue = Base64.encode(CryptoUtils.encrypt(Mode.SHA1withRSA, null, value.toString().getBytes()));
+            newValue = Base64.encode(CryptoUtils.encrypt(ModeType.SHA1withRSA, null, value.toString().getBytes()));
         }
         return newValue;
     }

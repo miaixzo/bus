@@ -24,7 +24,7 @@
 package org.aoju.bus.core.lang;
 
 /**
- * 编辑器接口，常用于对于集合中的元素做统一编辑<br>
+ * 编辑器接口，常用于对于集合中的元素做统一编辑
  * 此编辑器两个作用：
  *
  * <pre>
@@ -34,7 +34,7 @@ package org.aoju.bus.core.lang;
  *
  * @param <T> 被编辑对象类型
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public interface Editor<T> {

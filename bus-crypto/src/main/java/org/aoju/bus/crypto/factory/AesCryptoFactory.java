@@ -24,9 +24,9 @@
 package org.aoju.bus.crypto.factory;
 
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.CryptoFactory;
-import org.aoju.bus.crypto.Mode;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -42,7 +42,7 @@ import java.security.SecureRandom;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class AesCryptoFactory implements CryptoFactory {
@@ -85,14 +85,14 @@ public class AesCryptoFactory implements CryptoFactory {
         if (encryptCipher == null) {
             synchronized (AesCryptoFactory.class) {
                 if (encryptCipher == null) {
-                    KeyGenerator generator = KeyGenerator.getInstance(Mode.AES.getValue());
-                    SecureRandom random = SecureRandom.getInstance(Mode.SHAPRNG.getValue());
+                    KeyGenerator generator = KeyGenerator.getInstance(ModeType.AES);
+                    SecureRandom random = SecureRandom.getInstance(ModeType.SHAPRNG);
                     random.setSeed(key.getBytes(Charset.UTF_8));
                     generator.init(128, random);
                     SecretKey secretKey = generator.generateKey();
                     byte[] enCodeFormat = secretKey.getEncoded();
-                    SecretKeySpec spec = new SecretKeySpec(enCodeFormat, Mode.AES.getValue());
-                    Cipher cipher = Cipher.getInstance(Mode.AES.getValue());
+                    SecretKeySpec spec = new SecretKeySpec(enCodeFormat, ModeType.AES);
+                    Cipher cipher = Cipher.getInstance(ModeType.AES);
                     cipher.init(Cipher.ENCRYPT_MODE, spec);
                     this.encryptCipher = cipher;
                 }
@@ -105,14 +105,14 @@ public class AesCryptoFactory implements CryptoFactory {
         if (decryptCipher == null) {
             synchronized (AesCryptoFactory.class) {
                 if (decryptCipher == null) {
-                    KeyGenerator generator = KeyGenerator.getInstance(Mode.AES.getValue());
-                    SecureRandom random = SecureRandom.getInstance(Mode.SHAPRNG.getValue());
+                    KeyGenerator generator = KeyGenerator.getInstance(ModeType.AES);
+                    SecureRandom random = SecureRandom.getInstance(ModeType.SHAPRNG);
                     random.setSeed(key.getBytes(Charset.UTF_8));
                     generator.init(128, random);
                     SecretKey secretKey = generator.generateKey();
                     byte[] enCodeFormat = secretKey.getEncoded();
-                    SecretKeySpec spec = new SecretKeySpec(enCodeFormat, Mode.AES.getValue());
-                    Cipher cipher = Cipher.getInstance(Mode.AES.getValue());
+                    SecretKeySpec spec = new SecretKeySpec(enCodeFormat, ModeType.AES);
+                    Cipher cipher = Cipher.getInstance(ModeType.AES);
                     cipher.init(Cipher.DECRYPT_MODE, spec);
                     this.decryptCipher = cipher;
                 }

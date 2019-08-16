@@ -27,11 +27,11 @@ import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.utils.DateUtils;
 
 /**
- * 计时器<br>
+ * 计时器
  * 计算某个过程花费的时间，精确到毫秒
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class TimeInterval {
@@ -52,7 +52,7 @@ public class TimeInterval {
      * @return 开始计时并返回当前时间
      */
     public long start() {
-        time = DateUtils.current(isNano);
+        time = DateUtils.timestamp(isNano);
         return time;
     }
 
@@ -60,7 +60,7 @@ public class TimeInterval {
      * @return 重新计时并返回从开始到当前的持续时间
      */
     public long intervalRestart() {
-        long now = DateUtils.current(isNano);
+        long now = DateUtils.timestamp(isNano);
         long d = now - time;
         time = now;
         return d;
@@ -73,18 +73,18 @@ public class TimeInterval {
      * @since 3.0.1
      */
     public TimeInterval restart() {
-        time = DateUtils.current(isNano);
+        time = DateUtils.timestamp(isNano);
         return this;
     }
 
     /**
-     * 从开始到当前的间隔时间（毫秒数）<br>
+     * 从开始到当前的间隔时间（毫秒数）
      * 如果使用纳秒计时，返回纳秒差，否则返回毫秒差
      *
      * @return 从开始到当前的间隔时间（毫秒数）
      */
     public long interval() {
-        return DateUtils.current(isNano) - time;
+        return DateUtils.timestamp(isNano) - time;
     }
 
     /**

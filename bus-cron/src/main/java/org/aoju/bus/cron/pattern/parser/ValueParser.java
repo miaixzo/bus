@@ -24,17 +24,17 @@
 package org.aoju.bus.cron.pattern.parser;
 
 /**
- * 值处理接口<br>
+ * 值处理接口
  * 值处理用于限定表达式中相应位置的值范围，并转换表达式值为int值
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public interface ValueParser {
 
     /**
-     * 处理String值并转为int<br>
+     * 处理String值并转为int
      * 转换包括：
      * <ol>
      * <li>数字字符串转为数字</li>

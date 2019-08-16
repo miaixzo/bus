@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-spring</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.6</version>
     <packaging>jar</packaging>
 
     <name>bus-spring</name>
@@ -23,7 +23,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <aspectj.version>1.8.10</aspectj.version>
         <mysql.version>5.1.30</mysql.version>
         <druid.version>1.1.12</druid.version>
         <dubbo.version>2.6.6</dubbo.version>
@@ -62,7 +61,17 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
+            <artifactId>bus-proxy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
             <artifactId>bus-sensitive</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-socket</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -72,13 +81,13 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-validate</artifactId>
+            <artifactId>bus-tracer</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-validate</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

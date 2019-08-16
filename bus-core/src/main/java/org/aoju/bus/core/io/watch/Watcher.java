@@ -30,7 +30,7 @@ import java.nio.file.WatchEvent;
  * 观察者（监视器）
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public interface Watcher {
@@ -44,7 +44,7 @@ public interface Watcher {
     void onCreate(WatchEvent<?> event, Path currentPath);
 
     /**
-     * 文件修改时执行的方法<br>
+     * 文件修改时执行的方法
      * 文件修改可能触发多次
      *
      * @param event       事件

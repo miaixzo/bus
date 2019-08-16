@@ -26,11 +26,11 @@ package org.aoju.bus.cron;
 import org.aoju.bus.cron.task.Task;
 
 /**
- * 作业执行器<br>
+ * 作业执行器
  * 执行具体的作业，执行完毕销毁
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class TaskExecutor implements Runnable {

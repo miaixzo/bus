@@ -23,14 +23,12 @@
  */
 package org.aoju.bus.spring.crypto;
 
-import org.aoju.bus.spring.crypto.advice.RequestBodyAdvice;
-import org.aoju.bus.spring.crypto.advice.ResponseBodyAdvice;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
 /**
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {CryptoProperties.class})

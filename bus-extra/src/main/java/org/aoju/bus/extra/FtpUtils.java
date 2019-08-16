@@ -43,11 +43,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * FTP客户端封装<br>
+ * FTP客户端封装
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class FtpUtils extends AbstractFtp {

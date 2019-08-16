@@ -42,7 +42,7 @@ import java.util.Set;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class ReflectUtils {
@@ -634,7 +634,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获得指定类中的Public方法名<br>
+     * 获得指定类中的Public方法名
      * 去重重载的方法
      *
      * @param clazz 类
@@ -849,7 +849,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 执行方法<br>
+     * 执行方法
      * 执行前要检查给定参数：
      *
      * <pre>

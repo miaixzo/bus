@@ -28,10 +28,10 @@ import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
 import org.aoju.bus.cache.invoker.InvocationBaseInvoker;
 import org.aoju.bus.cache.support.cache.Cache;
-import org.apache.commons.proxy.Interceptor;
-import org.apache.commons.proxy.Invocation;
-import org.apache.commons.proxy.ProxyFactory;
-import org.apache.commons.proxy.factory.cglib.CglibProxyFactory;
+import org.aoju.bus.proxy.Factory;
+import org.aoju.bus.proxy.Interceptor;
+import org.aoju.bus.proxy.Invocation;
+import org.aoju.bus.proxy.factory.cglib.CglibFactory;
 import org.springframework.beans.factory.FactoryBean;
 
 import java.lang.reflect.Method;
@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class CacheProxy<T> implements FactoryBean<T> {
@@ -92,11 +92,11 @@ public class CacheProxy<T> implements FactoryBean<T> {
     }
 
     private Object newProxy() {
-        ProxyFactory factory;
+        Factory factory;
         if (cglib == CacheConfig.Switch.ON || !this.type.isInterface()) {
-            factory = new CglibProxyFactory();
+            factory = new CglibFactory();
         } else {
-            factory = new ProxyFactory();
+            factory = new Factory();
         }
 
         return factory.createInterceptorProxy(target, interceptor, new Class[]{type});

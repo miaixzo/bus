@@ -24,9 +24,9 @@
 package org.aoju.bus.crypto.factory;
 
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.CryptoFactory;
-import org.aoju.bus.crypto.Mode;
 
 import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
@@ -39,7 +39,7 @@ import java.security.spec.InvalidKeySpecException;
  * 数据加密标准，速度较快，适用于加密大量数据的场合。
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class DesCryptoFactory implements CryptoFactory {
@@ -86,8 +86,8 @@ public class DesCryptoFactory implements CryptoFactory {
                 if (encryptCipher == null) {
                     SecureRandom random = new SecureRandom();
                     DESKeySpec desKey = new DESKeySpec(key.getBytes(Charset.UTF_8));
-                    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(Mode.DES.getValue());
-                    Cipher cipher = Cipher.getInstance(Mode.DES.getValue());
+                    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ModeType.DES);
+                    Cipher cipher = Cipher.getInstance(ModeType.DES);
                     cipher.init(Cipher.ENCRYPT_MODE, keyFactory.generateSecret(desKey), random);
                     this.encryptCipher = cipher;
                 }
@@ -102,8 +102,8 @@ public class DesCryptoFactory implements CryptoFactory {
                 if (decryptCipher == null) {
                     SecureRandom random = new SecureRandom();
                     DESKeySpec desKey = new DESKeySpec(key.getBytes(Charset.UTF_8));
-                    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(Mode.DES.getValue());
-                    Cipher cipher = Cipher.getInstance(Mode.DES.getValue());
+                    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ModeType.DES);
+                    Cipher cipher = Cipher.getInstance(ModeType.DES);
                     cipher.init(Cipher.DECRYPT_MODE, keyFactory.generateSecret(desKey), random);
                     this.decryptCipher = cipher;
                 }

@@ -18,6 +18,7 @@ script:
   - cd ../bus-setting && mvn install -DskipTests=true
   - cd ../bus-crypto && mvn install -DskipTests=true
   - cd ../bus-extra && mvn install -DskipTests=true
+  - cd ../bus-proxy && mvn install -DskipTests=true
   - cd ../bus-cache && mvn install -DskipTests=true
   - cd ../bus-health && mvn install -DskipTests=true
   - cd ../bus-http && mvn install -DskipTests=true
@@ -31,6 +32,7 @@ script:
   - cd ../bus-validate && mvn install -DskipTests=true
   - cd ../bus-sensitive && mvn install -DskipTests=true
   - cd ../bus-base && mvn install -DskipTests=true
+  - cd ../bus-tracer && mvn install -DskipTests=true
   - cd ../bus-spring && mvn install -DskipTests=true
   - cd ../bus-boot && mvn install -DskipTests=true
   - cd ../bus-all && mvn install -DskipTests=true

@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 开启加/解密功能
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @Target({ElementType.TYPE})

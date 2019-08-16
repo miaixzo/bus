@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.crypto.factory;
 
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.CryptoFactory;
-import org.aoju.bus.crypto.Mode;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -42,7 +42,7 @@ import java.util.Base64;
  * RSA 加密解密算法
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class RsaCryptoFactory implements CryptoFactory {
@@ -87,14 +87,14 @@ public class RsaCryptoFactory implements CryptoFactory {
     private PublicKey getPublicKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] keyBytes = Base64.getDecoder().decode(key);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(Mode.RSA.getValue());
+        KeyFactory keyFactory = KeyFactory.getInstance(ModeType.RSA);
         return keyFactory.generatePublic(keySpec);
     }
 
     private PrivateKey getPrivateKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] keyBytes = Base64.getDecoder().decode(key);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(Mode.RSA.getValue());
+        KeyFactory keyFactory = KeyFactory.getInstance(ModeType.RSA);
         return keyFactory.generatePrivate(keySpec);
     }
 
@@ -102,7 +102,7 @@ public class RsaCryptoFactory implements CryptoFactory {
         if (encryptCipher == null) {
             synchronized (RsaCryptoFactory.class) {
                 if (encryptCipher == null) {
-                    Cipher cipher = Cipher.getInstance(Mode.RSA.getValue());
+                    Cipher cipher = Cipher.getInstance(ModeType.RSA);
                     cipher.init(Cipher.ENCRYPT_MODE, getPublicKey(key));
                     this.encryptCipher = cipher;
                 }
@@ -115,7 +115,7 @@ public class RsaCryptoFactory implements CryptoFactory {
         if (decryptCipher == null) {
             synchronized (RsaCryptoFactory.class) {
                 if (decryptCipher == null) {
-                    Cipher cipher = Cipher.getInstance(Mode.RSA.getValue());
+                    Cipher cipher = Cipher.getInstance(ModeType.RSA);
                     cipher.init(Cipher.DECRYPT_MODE, getPrivateKey(key));
                     this.decryptCipher = cipher;
                 }

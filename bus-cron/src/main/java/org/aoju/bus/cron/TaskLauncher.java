@@ -24,12 +24,12 @@
 package org.aoju.bus.cron;
 
 /**
- * 作业启动器<br>
- * 负责检查<strong>TaskTable</strong>是否有匹配到此时运行的Task<br>
+ * 作业启动器
+ * 负责检查<strong>TaskTable</strong>是否有匹配到此时运行的Task
  * 检查完毕后启动器结束
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class TaskLauncher implements Runnable {

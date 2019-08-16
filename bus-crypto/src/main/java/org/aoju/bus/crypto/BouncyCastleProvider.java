@@ -29,7 +29,7 @@ import java.security.Provider;
  * 全局单例对象
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public enum BouncyCastleProvider {
@@ -47,7 +47,7 @@ public enum BouncyCastleProvider {
     }
 
     /**
-     * 设置是否使用Bouncy Castle库<br>
+     * 设置是否使用Bouncy Castle库
      * 如果设置为false，表示强制关闭Bouncy Castle而使用JDK
      *
      * @param isUseBouncyCastle boolean

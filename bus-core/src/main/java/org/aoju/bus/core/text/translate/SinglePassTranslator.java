@@ -31,7 +31,7 @@ import java.io.Writer;
  * Handles initial index checking and counting of returned code points.
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 abstract class SinglePassTranslator extends CharSequenceTranslator {

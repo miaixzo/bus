@@ -31,7 +31,7 @@ import java.util.concurrent.*;
  * {@link ThreadPoolExecutor} 建造者
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
@@ -124,7 +124,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置队列，用于存在未执行的线程<br>
+     * 设置队列，用于存在未执行的线程
      * 可选队列有：
      * <pre>
      * 1. SynchronousQueue    它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程

@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
  * Base64编码
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class Base64Encoder {
@@ -194,7 +194,7 @@ public class Base64Encoder {
     }
 
     /**
-     * 编码为Base64<br>
+     * 编码为Base64
      * 如果isMultiLine为<code>true</code>，则每76个字符一个换行符，否则在一行显示
      *
      * @param arr         被编码的数组

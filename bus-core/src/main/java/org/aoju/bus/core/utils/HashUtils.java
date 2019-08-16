@@ -24,11 +24,11 @@
 package org.aoju.bus.core.utils;
 
 /**
- * Hash算法大全<br>
+ * Hash算法大全
  * 推荐使用FNV1算法
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class HashUtils {

@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.spring.sensitive;
 
+import org.aoju.bus.spring.core.proxy.AspectjProxyChain;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -33,7 +34,7 @@ import org.springframework.core.annotation.Order;
  * AOP切面切点
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @Aspect

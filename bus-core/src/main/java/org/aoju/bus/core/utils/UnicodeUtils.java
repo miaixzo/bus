@@ -28,13 +28,13 @@ package org.aoju.bus.core.utils;
  * 提供Unicode字符串和普通字符串之间的转换
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class UnicodeUtils {
 
     /**
-     * Unicode字符串转为普通字符串<br>
+     * Unicode字符串转为普通字符串
      * Unicode字符串的表现方式为：\\uXXXX
      *
      * @param unicode Unicode字符串

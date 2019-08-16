@@ -24,11 +24,11 @@
 package org.aoju.bus.core.io;
 
 /**
- * 代码移植自<a href="https://github.com/biezhi/blade">blade</a><br>
+ * 代码移植自<a href="https://github.com/biezhi/blade">blade</a>
  * 快速缓冲，将数据存放在缓冲集中，取代以往的单一数组
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class FastByteBuffer {

@@ -34,7 +34,7 @@ import java.util.Properties;
  * 邮件账户对象
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class MailAccount implements Serializable {
@@ -256,7 +256,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置发送方，遵循RFC-822标准<br>
+     * 设置发送方，遵循RFC-822标准
      *
      * @param from 发送方，遵循RFC-822标准
      * @return this

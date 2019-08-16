@@ -31,7 +31,7 @@ import org.apache.ibatis.mapping.MappedStatement;
  * 反射工具
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class Reflector {

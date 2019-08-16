@@ -26,11 +26,11 @@ package org.aoju.bus.cron.pattern.matcher;
 import org.aoju.bus.core.lang.Matcher;
 
 /**
- * 值匹配器<br>
+ * 值匹配器
  * 用于匹配日期位中对应数字是否匹配
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public interface ValueMatcher extends Matcher<Integer> {

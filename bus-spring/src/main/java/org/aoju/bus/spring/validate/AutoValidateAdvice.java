@@ -25,6 +25,7 @@ package org.aoju.bus.spring.validate;
 
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.spring.core.proxy.AspectjProxyChain;
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.Context;
 
@@ -35,7 +36,7 @@ import java.lang.reflect.Method;
  * 自动进行参数处理实现类
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class AutoValidateAdvice {

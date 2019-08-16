@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 时长格式化器
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class BetweenFormat {
@@ -72,7 +72,7 @@ public class BetweenFormat {
     }
 
     /**
-     * 格式化日期间隔输出<br>
+     * 格式化日期间隔输出
      *
      * @return 格式化后的字符串
      */
@@ -159,7 +159,7 @@ public class BetweenFormat {
     }
 
     /**
-     * 等级数量是否有效<br>
+     * 等级数量是否有效
      * 有效的定义是：levelMaxCount大于0（被设置），当前等级数量没有超过这个最大值
      *
      * @param levelCount 登记数量

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.6</version>
     <packaging>jar</packaging>
 
     <name>bus-cache</name>
@@ -23,16 +23,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <lombok.version>1.18.8</lombok.version>
-        <aspectj.version>1.8.10</aspectj.version>
+        <aspectj.version>1.9.4</aspectj.version>
         <guice.version>4.2.0</guice.version>
         <jedis.version>2.9.0</jedis.version>
         <memcached.version>2.0.0</memcached.version>
         <ehcache.version>3.3.1</ehcache.version>
         <commons.proxy.version>1.0</commons.proxy.version>
         <curator.recipes.version>4.2.0</curator.recipes.version>
-        <guava.version>20.0</guava.version>
-        <yaml.version>1.18</yaml.version>
+        <guava.version>28.0-jre</guava.version>
+        <yaml.version>1.23</yaml.version>
         <kryo.version>4.0.0</kryo.version>
         <hession.version>4.0.38</hession.version>
     </properties>
@@ -44,9 +43,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-proxy</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -62,30 +61,33 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-proxy</artifactId>
-            <version>${commons.proxy.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>aopalliance</groupId>
+                    <artifactId>aopalliance</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>${yaml.version}</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- redis -->
+        <!-- jedis -->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>${jedis.version}</version>
             <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <!-- Memcached -->
         <dependency>
             <groupId>com.googlecode.xmemcached</groupId>
             <artifactId>xmemcached</artifactId>
             <version>${memcached.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -97,7 +99,7 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
             <version>${curator.recipes.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
@@ -117,14 +119,14 @@
             <groupId>com.caucho</groupId>
             <artifactId>hessian</artifactId>
             <version>${hession.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <!-- EhCache -->
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>${ehcache.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -135,6 +137,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

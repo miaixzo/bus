@@ -26,7 +26,7 @@ package org.aoju.bus.limiter.execute;
 
 /**
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class LimitContextsValueWrapper {

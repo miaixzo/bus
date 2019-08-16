@@ -26,11 +26,11 @@ package org.aoju.bus.cron.pattern.parser;
 import org.aoju.bus.core.lang.exception.CommonException;
 
 /**
- * 星期值处理<br>
+ * 星期值处理
  * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class DayOfWeekValueParser extends SimpleValueParser {
@@ -45,7 +45,7 @@ public class DayOfWeekValueParser extends SimpleValueParser {
     }
 
     /**
-     * 对于星期提供转换<br>
+     * 对于星期提供转换
      * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
      */
     @Override

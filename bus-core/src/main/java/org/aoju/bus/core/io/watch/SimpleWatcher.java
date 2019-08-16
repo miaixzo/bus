@@ -26,11 +26,11 @@ package org.aoju.bus.core.io.watch;
 import org.aoju.bus.core.io.watch.watchers.IgnoreWatcher;
 
 /**
- * 空白WatchListener<br>
+ * 空白WatchListener
  * 用户继承此类后实现需要监听的方法
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class SimpleWatcher extends IgnoreWatcher {

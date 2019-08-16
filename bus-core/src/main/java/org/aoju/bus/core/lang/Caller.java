@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.CommonException;
  * 调用者。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class Caller {
@@ -59,7 +59,7 @@ public class Caller {
     }
 
     /**
-     * 获得调用者，指定第几级调用者<br>
+     * 获得调用者，指定第几级调用者
      * 调用者层级关系：
      * <pre>
      * 0 {@link Caller}
@@ -101,7 +101,7 @@ public class Caller {
     }
 
     /**
-     * 调用者接口<br>
+     * 调用者接口
      * 可以通过此接口的实现类方法获取调用者、多级调用者以及判断是否被调用
      *
      * @author Kimi Liu

@@ -37,7 +37,7 @@ import java.util.logging.LogManager;
  * <a href="http://java.sun.com/javase/6/docs/technotes/guides/logging/index.html">java.util.logging</a> log.
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class JdkLogFactory extends LogFactory {
@@ -49,19 +49,18 @@ public class JdkLogFactory extends LogFactory {
 
     @Override
     public Log createLog(String name) {
-        return new Jdk(name);
+        return new JdkLog(name);
     }
 
     @Override
     public Log createLog(Class<?> clazz) {
-        return new Jdk(clazz);
+        return new JdkLog(clazz);
     }
 
     /**
      * 读取ClassPath下的logging.properties配置文件
      */
     private void readConfig() {
-        //避免循环引用，Log初始化的时候不使用相关工具类
         InputStream in = ResourceUtils.getStreamSafe("logging.properties");
         if (null == in) {
             System.err.println("[WARN] Can not find [logging.properties], use [%JRE_HOME%/lib/logging.properties] as default!");

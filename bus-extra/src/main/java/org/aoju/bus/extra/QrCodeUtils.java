@@ -45,7 +45,7 @@ import java.util.HashMap;
  * 基于Zxing的二维码工具类
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class QrCodeUtils {
@@ -175,7 +175,7 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码或条形码图片<br>
+     * 生成二维码或条形码图片
      * 只有二维码时QrConfig中的图片才有效
      *
      * @param content 文本内容

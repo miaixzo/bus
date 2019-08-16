@@ -39,7 +39,7 @@ import java.util.List;
  * 外部Jar的类加载器
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class JarClassLoader extends URLClassLoader {
@@ -180,7 +180,7 @@ public class JarClassLoader extends URLClassLoader {
     }
 
     /**
-     * 增加class所在目录或文件<br>
+     * 增加class所在目录或文件
      * 如果为目录，此目录用于搜索class文件，如果为文件，需为jar文件
      *
      * @param dir 目录

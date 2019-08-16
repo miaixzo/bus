@@ -25,14 +25,13 @@ package org.aoju.bus.spring.crypto;
 
 import lombok.Data;
 import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.crypto.Mode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 
 /**
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @Data
@@ -53,7 +52,7 @@ public class CryptoProperties {
     public class Encrypt {
 
         private String key;
-        private Mode type;
+        private String type;
     }
 
     @Data
@@ -61,7 +60,7 @@ public class CryptoProperties {
     public class Decrypt {
 
         private String key;
-        private Mode type;
+        private String type;
     }
 
 }

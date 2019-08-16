@@ -28,11 +28,11 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 
 /**
- * 类转换器<br>
+ * 类转换器
  * 将类名转换为类
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class ClassConverter extends AbstractConverter<Class<?>> {

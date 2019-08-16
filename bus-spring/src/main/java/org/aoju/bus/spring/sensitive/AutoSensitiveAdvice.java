@@ -26,6 +26,7 @@ package org.aoju.bus.spring.sensitive;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Sensitive;
+import org.aoju.bus.spring.core.proxy.AspectjProxyChain;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -34,7 +35,7 @@ import java.lang.reflect.Method;
  * 自动进行参数处理实现类
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class AutoSensitiveAdvice {

@@ -26,11 +26,11 @@ package org.aoju.bus.core.lang.caller;
 import org.aoju.bus.core.utils.CallerUtils;
 
 /**
- * 调用者接口<br>
+ * 调用者接口
  * 可以通过此接口的实现类方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public interface Caller {

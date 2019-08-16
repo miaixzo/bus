@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 作业执行管理器<br>
+ * 作业执行管理器
  * 负责管理作业的启动、停止等
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class TaskExecutorManager {

@@ -24,7 +24,7 @@
 package org.aoju.bus.core.io.file;
 
 /**
- * 换行符枚举<br>
+ * 换行符枚举
  * 换行符包括：
  * <pre>
  * Mac系统换行符："\r"
@@ -33,7 +33,7 @@ package org.aoju.bus.core.io.file;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS

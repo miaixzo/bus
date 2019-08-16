@@ -27,11 +27,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * 此OutputStream写出数据到<b>/dev/null</b>，既忽略所有数据<br>
+ * 此OutputStream写出数据到<b>/dev/null</b>，既忽略所有数据
  * 来自 Apache Commons io
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class NullOutputStream extends OutputStream {

@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型（扩展名）
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public final class FileType {
@@ -757,7 +757,7 @@ public final class FileType {
     }
 
     /**
-     * 增加文件类型映射<br>
+     * 增加文件类型映射
      * 如果已经存在将覆盖之前的映射
      *
      * @param fileStreamHexHead 文件流头部Hex信息

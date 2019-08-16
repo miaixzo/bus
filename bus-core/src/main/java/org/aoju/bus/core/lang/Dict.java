@@ -38,7 +38,7 @@ import java.util.*;
  * 字典对象，扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicTypeGetter<String> {
@@ -172,7 +172,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicTypeGett
     }
 
     /**
-     * 将值对象转换为Dict<br>
+     * 将值对象转换为Dict
      * 类名会被当作表名，小写第一个字母
      *
      * @param <T>  Bean类型
@@ -186,7 +186,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicTypeGett
     }
 
     /**
-     * 将值对象转换为Dict<br>
+     * 将值对象转换为Dict
      * 类名会被当作表名，小写第一个字母
      *
      * @param <T>               Bean类型
@@ -202,7 +202,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicTypeGett
     }
 
     /**
-     * 与给定实体对比并去除相同的部分<br>
+     * 与给定实体对比并去除相同的部分
      * 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段 version from 2.0.0
      *
      * @param <T>          字典对象类型

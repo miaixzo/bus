@@ -28,7 +28,7 @@ package org.aoju;
  * Bus is Licensed under the MIT License, Bus 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public final class Bus {

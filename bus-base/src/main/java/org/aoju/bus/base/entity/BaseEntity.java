@@ -35,12 +35,12 @@ import javax.persistence.Transient;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 @MappedSuperclass
 @Data
-public class BaseEntity extends OAuth2 {
+public class BaseEntity extends Tracer {
 
     private static final long serialVersionUID = -601369123580520198L;
 

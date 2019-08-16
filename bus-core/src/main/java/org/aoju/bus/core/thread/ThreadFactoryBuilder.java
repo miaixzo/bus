@@ -32,10 +32,10 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * ThreadFactory创建器<br>
+ * ThreadFactory创建器
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class ThreadFactoryBuilder implements Builder<ThreadFactory> {

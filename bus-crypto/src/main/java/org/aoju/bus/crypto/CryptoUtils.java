@@ -24,6 +24,7 @@
 package org.aoju.bus.crypto;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
@@ -86,7 +87,7 @@ import java.util.Map;
  * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public final class CryptoUtils {
@@ -165,7 +166,7 @@ public final class CryptoUtils {
         final KeyGenerator keyGenerator = getKeyGenerator(mode);
         if (keySize > 0) {
             keyGenerator.init(keySize);
-        } else if (Mode.AES.getValue().equals(mode)) {
+        } else if (ModeType.AES.equals(mode)) {
             // 对于AES的密钥，除非指定，否则强制使用128位
             keyGenerator.init(128);
         }
@@ -181,7 +182,7 @@ public final class CryptoUtils {
      */
     public static SecretKey generateKey(String mode, byte[] key) {
         Assert.notBlank(mode, "mode is blank!");
-        SecretKey secretKey = null;
+        SecretKey secretKey;
         if (mode.startsWith("PBE")) {
             // PBE密钥
             secretKey = generatePBEKey(mode, (null == key) ? null : StringUtils.str(key, Symbol.SLASH).toCharArray());
@@ -271,7 +272,7 @@ public final class CryptoUtils {
      * @since 4.5.2
      */
     public static PrivateKey generateRSAPrivateKey(byte[] key) {
-        return generatePrivateKey(Mode.RSA.getValue(), key);
+        return generatePrivateKey(ModeType.RSA, key);
     }
 
     /**
@@ -334,7 +335,7 @@ public final class CryptoUtils {
      * @since 4.5.2
      */
     public static PublicKey generateRSAPublicKey(byte[] key) {
-        return generatePublicKey(Mode.RSA.getValue(), key);
+        return generatePublicKey(ModeType.RSA, key);
     }
 
     /**
@@ -934,7 +935,7 @@ public final class CryptoUtils {
      * @return {@link Digester}
      */
     public static Digester sha1() {
-        return new Digester(Mode.SHA1);
+        return new Digester(ModeType.SHA1);
     }
 
     /**
@@ -944,7 +945,7 @@ public final class CryptoUtils {
      * @return SHA1字符串
      */
     public static String sha1(String data) {
-        return new Digester(Mode.SHA1).digestHex(data);
+        return new Digester(ModeType.SHA1).digestHex(data);
     }
 
     /**
@@ -954,7 +955,7 @@ public final class CryptoUtils {
      * @return SHA1字符串
      */
     public static String sha1(InputStream data) {
-        return new Digester(Mode.SHA1).digestHex(data);
+        return new Digester(ModeType.SHA1).digestHex(data);
     }
 
     /**
@@ -964,7 +965,7 @@ public final class CryptoUtils {
      * @return SHA1字符串
      */
     public static String sha1(File dataFile) {
-        return new Digester(Mode.SHA1).digestHex(dataFile);
+        return new Digester(ModeType.SHA1).digestHex(dataFile);
     }
 
     /**
@@ -977,7 +978,7 @@ public final class CryptoUtils {
      * @since 4.3.2
      */
     public static Digester sha256() {
-        return new Digester(Mode.SHA256);
+        return new Digester(ModeType.SHA256);
     }
 
     /**
@@ -988,7 +989,7 @@ public final class CryptoUtils {
      * @since 4.3.2
      */
     public static String sha256(String data) {
-        return new Digester(Mode.SHA256).digestHex(data);
+        return new Digester(ModeType.SHA256).digestHex(data);
     }
 
     /**
@@ -999,7 +1000,7 @@ public final class CryptoUtils {
      * @since 4.3.2
      */
     public static String sha256(InputStream data) {
-        return new Digester(Mode.SHA256).digestHex(data);
+        return new Digester(ModeType.SHA256).digestHex(data);
     }
 
     /**
@@ -1010,42 +1011,42 @@ public final class CryptoUtils {
      * @since 4.3.2
      */
     public static String sha256(File dataFile) {
-        return new Digester(Mode.SHA256).digestHex(dataFile);
+        return new Digester(ModeType.SHA256).digestHex(dataFile);
     }
 
     /**
      * 创建HMac对象，调用digest方法可获得hmac值
      *
-     * @param mode {@link Mode}
+     * @param mode {@link ModeType}
      * @param key  密钥，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
      * @since 3.3.0
      */
-    public static HMac hmac(Mode mode, String key) {
+    public static HMac hmac(String mode, String key) {
         return new HMac(mode, StringUtils.bytes(key));
     }
 
     /**
      * 创建HMac对象，调用digest方法可获得hmac值
      *
-     * @param mode {@link Mode}
+     * @param mode {@link ModeType}
      * @param key  密钥，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
      * @since 3.0.3
      */
-    public static HMac hmac(Mode mode, byte[] key) {
+    public static HMac hmac(String mode, byte[] key) {
         return new HMac(mode, key);
     }
 
     /**
      * 创建HMac对象，调用digest方法可获得hmac值
      *
-     * @param mode {@link Mode}
+     * @param mode {@link ModeType}
      * @param key  密钥{@link SecretKey}，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
      * @since 3.0.3
      */
-    public static HMac hmac(Mode mode, SecretKey key) {
+    public static HMac hmac(String mode, SecretKey key) {
         return new HMac(mode, key);
     }
 
@@ -1073,7 +1074,7 @@ public final class CryptoUtils {
      * @return {@link HMac}
      */
     public static HMac hmacMd5(byte[] key) {
-        return new HMac(Mode.HmacMD5, key);
+        return new HMac(ModeType.HmacMD5, key);
     }
 
     /**
@@ -1085,7 +1086,7 @@ public final class CryptoUtils {
      * @return {@link HMac}
      */
     public static HMac hmacMd5() {
-        return new HMac(Mode.HmacMD5);
+        return new HMac(ModeType.HmacMD5);
     }
 
     /**
@@ -1112,7 +1113,7 @@ public final class CryptoUtils {
      * @return {@link HMac}
      */
     public static HMac hmacSha1(byte[] key) {
-        return new HMac(Mode.HmacSHA1, key);
+        return new HMac(ModeType.HmacSHA1, key);
     }
 
     /**
@@ -1124,7 +1125,7 @@ public final class CryptoUtils {
      * @return {@link HMac}
      */
     public static HMac hmacSha1() {
-        return new HMac(Mode.HmacSHA1);
+        return new HMac(ModeType.HmacSHA1);
     }
 
     /**
@@ -1132,7 +1133,7 @@ public final class CryptoUtils {
      * 生成新的私钥公钥对
      *
      * @return {@link RSA}
-     * @since 3.0.5
+     * @since 3.0.6
      */
     public static RSA rsa() {
         return new RSA();
@@ -1146,7 +1147,7 @@ public final class CryptoUtils {
      * @param privateKeyBase64 私钥Base64
      * @param publicKeyBase64  公钥Base64
      * @return {@link RSA}
-     * @since 3.0.5
+     * @since 3.0.6
      */
     public static RSA rsa(String privateKeyBase64, String publicKeyBase64) {
         return new RSA(privateKeyBase64, publicKeyBase64);
@@ -1160,7 +1161,7 @@ public final class CryptoUtils {
      * @param privateKey 私钥
      * @param publicKey  公钥
      * @return {@link RSA}
-     * @since 3.0.5
+     * @since 3.0.6
      */
     public static RSA rsa(byte[] privateKey, byte[] publicKey) {
         return new RSA(privateKey, publicKey);
@@ -1174,7 +1175,7 @@ public final class CryptoUtils {
      * @return {@link Sign}
      * @since 3.3.0
      */
-    public static Sign sign(Mode mode) {
+    public static Sign sign(String mode) {
         return new Sign(mode);
     }
 
@@ -1189,7 +1190,7 @@ public final class CryptoUtils {
      * @return {@link Sign}
      * @since 3.3.0
      */
-    public static Sign sign(Mode mode, String privateKeyBase64, String publicKeyBase64) {
+    public static Sign sign(String mode, String privateKeyBase64, String publicKeyBase64) {
         return new Sign(mode, privateKeyBase64, publicKeyBase64);
     }
 
@@ -1204,7 +1205,7 @@ public final class CryptoUtils {
      * @return {@link Sign}
      * @since 3.3.0
      */
-    public static Sign sign(Mode mode, byte[] privateKey, byte[] publicKey) {
+    public static Sign sign(String mode, byte[] privateKey, byte[] publicKey) {
         return new Sign(mode, privateKey, publicKey);
     }
 
@@ -1252,7 +1253,7 @@ public final class CryptoUtils {
      * @since 4.0.1
      */
     public static String signParamsMd5(Map<?, ?> params) {
-        return signParams(Mode.MD5, params);
+        return signParams(ModeType.MD5, params);
     }
 
     /**
@@ -1265,7 +1266,7 @@ public final class CryptoUtils {
      * @since 4.0.8
      */
     public static String signParamsSha1(Map<?, ?> params) {
-        return signParams(Mode.SHA1, params);
+        return signParams(ModeType.SHA1, params);
     }
 
     /**
@@ -1278,7 +1279,7 @@ public final class CryptoUtils {
      * @since 4.0.1
      */
     public static String signParamsSha256(Map<?, ?> params) {
-        return signParams(Mode.SHA256, params);
+        return signParams(ModeType.SHA256, params);
     }
 
     /**
@@ -1291,7 +1292,7 @@ public final class CryptoUtils {
      * @return 签名
      * @since 4.0.1
      */
-    public static String signParams(Mode Mode, Map<?, ?> params) {
+    public static String signParams(String Mode, Map<?, ?> params) {
         return signParams(Mode, params, Normal.EMPTY, Normal.EMPTY, true);
     }
 
@@ -1307,7 +1308,7 @@ public final class CryptoUtils {
      * @return 签名
      * @since 4.0.1
      */
-    public static String signParams(Mode Mode, Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull) {
+    public static String signParams(String Mode, Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull) {
         if (MapUtils.isEmpty(params)) {
             return null;
         }
@@ -1836,7 +1837,7 @@ public final class CryptoUtils {
      * @return SHA-1摘要
      */
     public static byte[] sha1(byte[] data) {
-        return new Digester(Mode.SHA1).digest(data);
+        return new Digester(ModeType.SHA1).digest(data);
     }
 
     /**
@@ -1847,7 +1848,7 @@ public final class CryptoUtils {
      * @return SHA-1摘要
      */
     public static byte[] sha1(String data, String charset) {
-        return new Digester(Mode.SHA1).digest(data, charset);
+        return new Digester(ModeType.SHA1).digest(data, charset);
     }
 
     /**
@@ -1857,7 +1858,7 @@ public final class CryptoUtils {
      * @return SHA-1摘要的16进制表示
      */
     public static String sha1Hex(byte[] data) {
-        return new Digester(Mode.SHA1).digestHex(data);
+        return new Digester(ModeType.SHA1).digestHex(data);
     }
 
     /**
@@ -1868,7 +1869,7 @@ public final class CryptoUtils {
      * @return SHA-1摘要的16进制表示
      */
     public static String sha1Hex(String data, String charset) {
-        return new Digester(Mode.SHA1).digestHex(data, charset);
+        return new Digester(ModeType.SHA1).digestHex(data, charset);
     }
 
     /**
@@ -1888,7 +1889,7 @@ public final class CryptoUtils {
      * @return SHA-1摘要的16进制表示
      */
     public static String sha1Hex(InputStream data) {
-        return new Digester(Mode.SHA1).digestHex(data);
+        return new Digester(ModeType.SHA1).digestHex(data);
     }
 
     /**
@@ -1898,7 +1899,7 @@ public final class CryptoUtils {
      * @return SHA-1摘要的16进制表示
      */
     public static String sha1Hex(File file) {
-        return new Digester(Mode.SHA1).digestHex(file);
+        return new Digester(ModeType.SHA1).digestHex(file);
     }
 
     /**
@@ -1909,7 +1910,7 @@ public final class CryptoUtils {
      * @since 3.0.8
      */
     public static byte[] sha256(byte[] data) {
-        return new Digester(Mode.SHA256).digest(data);
+        return new Digester(ModeType.SHA256).digest(data);
     }
 
     /**
@@ -1921,7 +1922,7 @@ public final class CryptoUtils {
      * @since 3.0.8
      */
     public static byte[] sha256(String data, String charset) {
-        return new Digester(Mode.SHA256).digest(data, charset);
+        return new Digester(ModeType.SHA256).digest(data, charset);
     }
 
     /**
@@ -1932,7 +1933,7 @@ public final class CryptoUtils {
      * @since 3.0.8
      */
     public static String sha256Hex(byte[] data) {
-        return new Digester(Mode.SHA256).digestHex(data);
+        return new Digester(ModeType.SHA256).digestHex(data);
     }
 
     /**
@@ -1944,7 +1945,7 @@ public final class CryptoUtils {
      * @since 3.0.8
      */
     public static String sha256Hex(String data, String charset) {
-        return new Digester(Mode.SHA256).digestHex(data, charset);
+        return new Digester(ModeType.SHA256).digestHex(data, charset);
     }
 
     /**
@@ -1966,7 +1967,7 @@ public final class CryptoUtils {
      * @since 3.0.8
      */
     public static String sha256Hex(InputStream data) {
-        return new Digester(Mode.SHA256).digestHex(data);
+        return new Digester(ModeType.SHA256).digestHex(data);
     }
 
     /**
@@ -1977,18 +1978,7 @@ public final class CryptoUtils {
      * @since 3.0.8
      */
     public static String sha256Hex(File file) {
-        return new Digester(Mode.SHA256).digestHex(file);
-    }
-
-    /**
-     * 新建摘要器
-     *
-     * @param mode 签名算法
-     * @return Digester
-     * @since 4.0.1
-     */
-    public static Digester digester(Mode mode) {
-        return new Digester(mode);
+        return new Digester(ModeType.SHA256).digestHex(file);
     }
 
     /**
@@ -2025,47 +2015,46 @@ public final class CryptoUtils {
         return BCrypt.checkpw(password, hashed);
     }
 
-    private static CryptoFactory getFactory(Mode type) {
-        switch (type) {
-            case AES:
-                return LazyCryptoHolder.AES_CRYPTO_FACTORY;
-            case DES:
-                return LazyCryptoHolder.DES_CRYPTO_FACTORY;
-            case RSA:
-                return LazyCryptoHolder.RSA_CRYPTO_FACTORY;
-            default:
-                throw new NullPointerException("未检测到加密");
+    private static CryptoFactory getFactory(String type) {
+        if (ModeType.AES.equals(type)) {
+            return LazyCryptoHolder.AES_CRYPTO_FACTORY;
+        } else if (ModeType.DES.equals(type)) {
+            return LazyCryptoHolder.DES_CRYPTO_FACTORY;
+        } else if (ModeType.RSA.equals(type)) {
+            return LazyCryptoHolder.RSA_CRYPTO_FACTORY;
+        } else {
+            throw new NullPointerException("未检测到加密");
         }
     }
 
-    public static InputStream encrypt(Mode type, String key, InputStream inputStream) {
+    public static InputStream encrypt(String type, String key, InputStream inputStream) {
         final CryptoFactory factory = getFactory(type);
         final byte[] bytes = IoUtils.readBytes(inputStream);
         return new ByteArrayInputStream(factory.encrypt(key, bytes));
     }
 
-    public static InputStream decrypt(Mode type, String key, InputStream inputStream) {
+    public static InputStream decrypt(String type, String key, InputStream inputStream) {
         final CryptoFactory factory = getFactory(type);
         final byte[] bytes = IoUtils.readBytes(inputStream);
         final byte[] decrypt = factory.decrypt(key, bytes);
         return new ByteArrayInputStream(decrypt);
     }
 
-    public static byte[] encrypt(Mode type, String key, byte[] content) {
+    public static byte[] encrypt(String type, String key, byte[] content) {
         final CryptoFactory factory = getFactory(type);
         return factory.encrypt(key, content);
     }
 
-    public static byte[] decrypt(Mode type, String key, byte[] content) {
+    public static byte[] decrypt(String type, String key, byte[] content) {
         final CryptoFactory factory = getFactory(type);
         return factory.decrypt(key, content);
     }
 
-    public static String encrypt(Mode type, String key, String content, Charset charset) {
+    public static String encrypt(String type, String key, String content, Charset charset) {
         return toHexString(encrypt(type, key, content.getBytes(charset)));
     }
 
-    public static String decrypt(Mode type, String key, String content, Charset charset) {
+    public static String decrypt(String type, String key, String content, Charset charset) {
         final byte[] bytes = fromHexString(content);
         final byte[] decrypt = decrypt(type, key, bytes);
         return new String(decrypt, charset);

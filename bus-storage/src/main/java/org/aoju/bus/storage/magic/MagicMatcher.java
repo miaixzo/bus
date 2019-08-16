@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  * This class represents a single match test
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class MagicMatcher implements Cloneable {

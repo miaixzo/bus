@@ -42,7 +42,7 @@ import java.io.OutputStream;
  * Excel工作簿{@link Workbook}相关工具类
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class BookUtils {
@@ -229,7 +229,7 @@ public class BookUtils {
     }
 
     /**
-     * 获取或者创建sheet表<br>
+     * 获取或者创建sheet表
      * 如果sheet表在Workbook中已经存在，则获取之，否则创建之
      *
      * @param book      工作簿{@link Workbook}

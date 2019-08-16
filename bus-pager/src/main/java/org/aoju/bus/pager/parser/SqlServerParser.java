@@ -36,8 +36,8 @@ import org.aoju.bus.pager.PageException;
 import java.util.*;
 
 /**
- * 将sqlserver查询语句转换为分页语句<br>
- * 注意事项：<br>
+ * 将sqlserver查询语句转换为分页语句
+ * 注意事项：
  * <ol>
  * <li>请先保证你的SQL可以执行</li>
  * <li>sql中最好直接包含order by，可以自动从sql提取</li>
@@ -49,7 +49,7 @@ import java.util.*;
  * 该类设计为一个独立的工具类，依赖jsqlparser,可以独立使用
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class SqlServerParser {

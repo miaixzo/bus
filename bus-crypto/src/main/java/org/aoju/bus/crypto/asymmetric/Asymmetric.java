@@ -23,11 +23,10 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.crypto.KeyType;
-import org.aoju.bus.crypto.Mode;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
@@ -47,7 +46,7 @@ import java.security.PublicKey;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
@@ -69,15 +68,6 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
     /**
      * 构造，创建新的私钥公钥对
      *
-     * @param algorithm {@link Mode}
-     */
-    public Asymmetric(Mode algorithm) {
-        this(algorithm, (byte[]) null, (byte[]) null);
-    }
-
-    /**
-     * 构造，创建新的私钥公钥对
-     *
      * @param algorithm 算法
      */
     public Asymmetric(String algorithm) {
@@ -85,58 +75,21 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param algorithm     {@link Mode}
+     * @param algorithm     {@link ModeType}
      * @param privateKeyStr 私钥Hex或Base64表示
      * @param publicKeyStr  公钥Hex或Base64表示
      */
-    public Asymmetric(Mode algorithm, String privateKeyStr, String publicKeyStr) {
-        this(algorithm.getValue(), CryptoUtils.decode(privateKeyStr), CryptoUtils.decode(publicKeyStr));
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
-     *
-     * @param algorithm  {@link Mode}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     */
-    public Asymmetric(Mode algorithm, byte[] privateKey, byte[] publicKey) {
-        this(algorithm.getValue(), privateKey, publicKey);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
-     *
-     * @param algorithm  {@link Mode}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     * @since 3.1.1
-     */
-    public Asymmetric(Mode algorithm, PrivateKey privateKey, PublicKey publicKey) {
-        this(algorithm.getValue(), privateKey, publicKey);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
-     *
-     * @param algorithm        非对称加密算法
-     * @param privateKeyBase64 私钥Base64
-     * @param publicKeyBase64  公钥Base64
-     */
-    public Asymmetric(String algorithm, String privateKeyBase64, String publicKeyBase64) {
-        this(algorithm, Base64.decode(privateKeyBase64), Base64.decode(publicKeyBase64));
+    public Asymmetric(String algorithm, String privateKeyStr, String publicKeyStr) {
+        this(algorithm, CryptoUtils.decode(privateKeyStr), CryptoUtils.decode(publicKeyStr));
     }
 
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
@@ -144,16 +97,16 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
      * @param publicKey  公钥
      */
     public Asymmetric(String algorithm, byte[] privateKey, byte[] publicKey) {
-        this(algorithm, //
-                CryptoUtils.generatePrivateKey(algorithm, privateKey), //
-                CryptoUtils.generatePublicKey(algorithm, publicKey)//
+        this(algorithm,
+                CryptoUtils.generatePrivateKey(algorithm, privateKey),
+                CryptoUtils.generatePublicKey(algorithm, publicKey)
         );
     }
 
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法

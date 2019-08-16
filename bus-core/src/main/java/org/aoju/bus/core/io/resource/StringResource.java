@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  * 字符串资源，字符串做为资源
  *
  * @author Kimi Liu
- * @version 3.0.5
+ * @version 3.0.6
  * @since JDK 1.8
  */
 public class StringResource implements Resource {
