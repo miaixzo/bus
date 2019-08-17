@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class XmlUtils {
@@ -171,7 +171,6 @@ public class XmlUtils {
      * @param doc {@link Document}
      * @return 根节点
      * @see Document#getDocumentElement()
-     * @since 3.0.8
      */
     public static Element getRootElement(Document doc) {
         return (null == doc) ? null : doc.getDocumentElement();

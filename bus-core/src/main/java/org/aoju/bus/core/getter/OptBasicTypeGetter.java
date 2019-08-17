@@ -33,7 +33,7 @@ import java.util.Date;
  * 如果值不存在或获取错误，返回默认值
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public interface OptBasicTypeGetter<K> {

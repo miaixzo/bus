@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class PatternUtils {
@@ -323,7 +323,7 @@ public class PatternUtils {
      * @param content 被查找的内容
      * @param group   正则的分组
      * @return 结果列表
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static List<String> findAll(String regex, String content, int group) {
         return findAll(regex, content, group, new ArrayList<>());
@@ -355,7 +355,7 @@ public class PatternUtils {
      * @param content 被查找的内容
      * @param group   正则的分组
      * @return 结果列表
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static List<String> findAll(Pattern pattern, String content, int group) {
         return findAll(pattern, content, group, new ArrayList<>());

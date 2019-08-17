@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
  * 资源可以是文件、URL、ClassPath中的文件亦或者jar包中的文件
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public interface Resource {

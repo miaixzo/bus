@@ -31,7 +31,7 @@ import java.io.File;
  * Web root资源访问对象
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class WebAppResource extends FileResource {

@@ -45,7 +45,7 @@ import java.util.Set;
  * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 abstract class MemberUtils {
@@ -405,7 +405,6 @@ abstract class MemberUtils {
      * @param v1 被乘数
      * @param v2 乘数
      * @return 积
-     * @since 3.0.8
      */
     public static BigDecimal mul(String v1, String v2) {
         return mul(new BigDecimal(v1), new BigDecimal(v2));
@@ -417,7 +416,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被乘值
      * @return 积
-     * @since 4.0.0
      */
     public static BigDecimal mul(String... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -441,7 +439,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被乘值
      * @return 积
-     * @since 4.0.0
      */
     public static BigDecimal mul(BigDecimal... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -509,7 +506,6 @@ abstract class MemberUtils {
      * @param v1 被除数
      * @param v2 除数
      * @return 两个参数的商
-     * @since 3.1.0
      */
     public static BigDecimal div(Number v1, Number v2) {
         return div(v1, v2, DEFAUT_DIV_SCALE);
@@ -959,7 +955,7 @@ abstract class MemberUtils {
      *                </ul>
      * @param value   值
      * @return 格式化后的值
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static String decimalFormat(String pattern, long value) {
         return new DecimalFormat(pattern).format(value);
@@ -1850,7 +1846,7 @@ abstract class MemberUtils {
      * @param total 总数
      * @param part  每份的个数
      * @return 分成了几份
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static int count(int total, int part) {
         return (total % part == 0) ? (total / part) : (total / part + 1);

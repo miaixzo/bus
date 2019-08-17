@@ -51,7 +51,7 @@ import java.util.*;
  * 类工具类
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class ClassUtils {
@@ -759,7 +759,6 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 默认值
-     * @since 3.0.8
      */
     public static Object getDefaultValue(Class<?> clazz) {
         if (clazz.isPrimitive()) {

@@ -43,7 +43,7 @@ import java.security.cert.CertificateException;
  * {@link IOException} if the call was canceled.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public final class RetryAndFollowUpInterceptor implements Interceptor {

@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @param <T> 被加载对象类型
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public abstract class AtomicLoader<T> implements Loader<T> {

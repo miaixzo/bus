@@ -52,7 +52,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class NumberUtils {
@@ -404,7 +404,6 @@ public class NumberUtils {
      * @param v1 被乘数
      * @param v2 乘数
      * @return 积
-     * @since 3.0.8
      */
     public static BigDecimal mul(String v1, String v2) {
         return mul(new BigDecimal(v1), new BigDecimal(v2));
@@ -825,7 +824,7 @@ public class NumberUtils {
      *                </ul>
      * @param value   值
      * @return 格式化后的值
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static String decimalFormat(String pattern, long value) {
         return new DecimalFormat(pattern).format(value);
@@ -1639,7 +1638,7 @@ public class NumberUtils {
      * @param total 总数
      * @param part  每份的个数
      * @return 分成了几份
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static int count(int total, int part) {
         return (total % part == 0) ? (total / part) : (total / part + 1);

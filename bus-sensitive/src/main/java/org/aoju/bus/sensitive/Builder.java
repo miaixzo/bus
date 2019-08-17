@@ -31,7 +31,7 @@ import org.aoju.bus.core.instance.Instances;
  * 2.主要供单独的字符串处理使用
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public final class Builder {

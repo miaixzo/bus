@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-spring</artifactId>
-    <version>3.0.8</version>
+    <version>3.0.9</version>
     <packaging>jar</packaging>
 
     <name>bus-spring</name>

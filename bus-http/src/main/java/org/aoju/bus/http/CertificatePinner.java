@@ -125,7 +125,7 @@ import java.util.*;
  * is not accepted by {@link javax.net.ssl.TrustManager}.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public final class CertificatePinner {

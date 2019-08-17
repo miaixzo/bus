@@ -33,7 +33,7 @@ import java.net.ProtocolException;
  * An HTTP response status line like "HTTP/1.1 200 OK".
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public final class StatusLine {

@@ -34,7 +34,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class Between {
@@ -123,7 +123,6 @@ public class Between {
      *
      * @param isReset 是否重置时间为起始时间（重置天时分秒）
      * @return 相差月数
-     * @since 3.0.8
      */
     public long betweenMonth(boolean isReset) {
         final Calendar beginCal = DateUtils.calendar(begin);
@@ -150,7 +149,6 @@ public class Between {
      *
      * @param isReset 是否重置时间为起始时间（重置月天时分秒）
      * @return 相差年数
-     * @since 3.0.8
      */
     public long betweenYear(boolean isReset) {
         final Calendar beginCal = DateUtils.calendar(begin);

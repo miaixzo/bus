@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class Convert {
@@ -511,7 +511,6 @@ public class Convert {
      * @param elementType    集合中元素类型
      * @param value          被转换的值
      * @return {@link Collection}
-     * @since 3.0.8
      */
     public static Collection<?> toCollection(Class<?> collectionType, Class<?> elementType, Object value) {
         return new CollectionConverter(collectionType, elementType).convert(value, null);

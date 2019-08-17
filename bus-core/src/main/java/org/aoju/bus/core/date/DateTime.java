@@ -42,7 +42,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class DateTime extends Date {
@@ -564,7 +564,6 @@ public class DateTime extends Date {
      * @param beginDate 起始日期
      * @param endDate   结束日期
      * @return 是否在范围内
-     * @since 3.0.8
      */
     public boolean isIn(Date beginDate, Date endDate) {
         long beginMills = beginDate.getTime();

@@ -57,7 +57,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class ConverterRegistry {
@@ -310,16 +310,16 @@ public class ConverterRegistry {
         // 包装类转换器
         defaultConverterMap.put(Number.class, new NumberConverter());
         defaultConverterMap.put(Integer.class, new NumberConverter(Integer.class));
-        defaultConverterMap.put(AtomicInteger.class, new NumberConverter(AtomicInteger.class));// since 3.0.8
+        defaultConverterMap.put(AtomicInteger.class, new NumberConverter(AtomicInteger.class));
         defaultConverterMap.put(Long.class, new NumberConverter(Long.class));
-        defaultConverterMap.put(AtomicLong.class, new NumberConverter(AtomicLong.class));// since 3.0.8
+        defaultConverterMap.put(AtomicLong.class, new NumberConverter(AtomicLong.class));
         defaultConverterMap.put(Byte.class, new NumberConverter(Byte.class));
         defaultConverterMap.put(Short.class, new NumberConverter(Short.class));
         defaultConverterMap.put(Float.class, new NumberConverter(Float.class));
         defaultConverterMap.put(Double.class, new NumberConverter(Double.class));
         defaultConverterMap.put(Character.class, new CharacterConverter());
         defaultConverterMap.put(Boolean.class, new BooleanConverter());
-        defaultConverterMap.put(AtomicBoolean.class, new AtomicBooleanConverter());// since 3.0.8
+        defaultConverterMap.put(AtomicBoolean.class, new AtomicBooleanConverter());
         defaultConverterMap.put(BigDecimal.class, new NumberConverter(BigDecimal.class));
         defaultConverterMap.put(BigInteger.class, new NumberConverter(BigInteger.class));
         defaultConverterMap.put(String.class, new StringConverter());
@@ -337,17 +337,17 @@ public class ConverterRegistry {
         defaultConverterMap.put(java.sql.Timestamp.class, new DateConverter(java.sql.Timestamp.class));
 
         // Reference
-        defaultConverterMap.put(WeakReference.class, new ReferenceConverter(WeakReference.class));// since 3.0.8
-        defaultConverterMap.put(SoftReference.class, new ReferenceConverter(SoftReference.class));// since 3.0.8
-        defaultConverterMap.put(AtomicReference.class, new AtomicReferenceConverter());// since 3.0.8
+        defaultConverterMap.put(WeakReference.class, new ReferenceConverter(WeakReference.class));
+        defaultConverterMap.put(SoftReference.class, new ReferenceConverter(SoftReference.class));
+        defaultConverterMap.put(AtomicReference.class, new AtomicReferenceConverter());
 
         // 其它类型
         defaultConverterMap.put(Class.class, new ClassConverter());
         defaultConverterMap.put(TimeZone.class, new TimeZoneConverter());
         defaultConverterMap.put(Charset.class, new CharsetConverter());
         defaultConverterMap.put(Path.class, new PathConverter());
-        defaultConverterMap.put(Currency.class, new CurrencyConverter());// since 3.0.8
-        defaultConverterMap.put(UUID.class, new UUIDConverter());// since 4.0.10
+        defaultConverterMap.put(Currency.class, new CurrencyConverter());
+        defaultConverterMap.put(UUID.class, new UUIDConverter());
 
         return this;
     }

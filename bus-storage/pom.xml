@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>3.0.8</version>
+    <version>3.0.9</version>
     <packaging>jar</packaging>
 
     <name>bus-storage</name>
@@ -25,6 +25,12 @@
             <groupId>org.aoju</groupId>
             <artifactId>bus-http</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>[7.0.0, 7.2.99]</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.aliyun.oss</groupId>

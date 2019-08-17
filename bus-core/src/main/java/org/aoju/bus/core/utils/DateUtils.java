@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class DateUtils extends Fields {
@@ -1262,7 +1262,6 @@ public class DateUtils extends Fields {
      * @param endDate   结束日期
      * @param isReset   是否重置时间为起始时间（重置天时分秒）
      * @return 相差月数
-     * @since 3.0.8
      */
     public static long betweenMonth(Date beginDate, Date endDate, boolean isReset) {
         return new Between(beginDate, endDate).betweenMonth(isReset);
@@ -1276,7 +1275,6 @@ public class DateUtils extends Fields {
      * @param endDate   结束日期
      * @param isReset   是否重置时间为起始时间（重置月天时分秒）
      * @return 相差年数
-     * @since 3.0.8
      */
     public static long betweenYear(Date beginDate, Date endDate, boolean isReset) {
         return new Between(beginDate, endDate).betweenYear(isReset);
@@ -1336,7 +1334,6 @@ public class DateUtils extends Fields {
      * @param beginDate 起始日期
      * @param endDate   结束日期
      * @return 是否在范围内
-     * @since 3.0.8
      */
     public static boolean isIn(Date date, Date beginDate, Date endDate) {
         if (date instanceof DateTime) {

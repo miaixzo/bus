@@ -56,7 +56,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class FileUtils {
@@ -747,7 +747,7 @@ public class FileUtils {
      * @param directory 文件夹
      * @return 成功与否
      * @throws CommonException 异常
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static boolean clean(File directory) throws CommonException {
         if (directory == null || directory.exists() == false || false == directory.isDirectory()) {
@@ -1092,27 +1092,19 @@ public class FileUtils {
         } else {
             normalPath = normalize(path);
             if (isAbsolutePath(normalPath)) {
-                // 给定的路径已经是绝对路径了
                 return normalPath;
             }
         }
 
-        // 相对于ClassPath路径
         final URL url = ResourceUtils.getResource(normalPath, baseClass);
         if (null != url) {
-            // 对于jar中文件包含file:前缀，需要去掉此类前缀，在此做标准化，since 3.0.8 解决中文或空格路径被编码的问题
             return FileUtils.normalize(URLUtils.getDecodedPath(url));
         }
 
-        // 如果资源不存在，则返回一个拼接的资源绝对路径
         final String classPath = ClassUtils.getClassPath();
         if (null == classPath) {
-//			throw new NullPointerException("ClassPath is null !");
-            //在jar运行模式中，ClassPath有可能获取不到，此时返回原始相对路径（此时获取的文件为相对工作目录）
             return path;
         }
-
-        // 资源不存在的情况下使用标准化路径有问题，使用原始路径拼接后标准化路径
         return normalize(classPath.concat(path));
     }
 

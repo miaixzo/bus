@@ -35,7 +35,7 @@ import java.lang.annotation.*;
  * Dubbo 支持
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 @Target({ElementType.TYPE})

@@ -1,28 +1,6 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2017, aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package org.aoju.bus.storage.provider;
 
+import lombok.Data;
 import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.storage.StorageProvider;
@@ -36,13 +14,19 @@ import java.net.URL;
 
 /**
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
+@Data
 public abstract class AbstractProvider implements StorageProvider {
 
+    protected static final String DIR_SPLITER = "/";
+
+    protected String accessKey;
+    protected String secretKey;
+    protected String bucket;
     protected String prefix;
-    protected String bucketName;
+    protected boolean privated;
 
     public static String downloadFile(String fileURL, String saveDir) {
         HttpURLConnection httpConn = null;
@@ -63,8 +47,7 @@ public abstract class AbstractProvider implements StorageProvider {
                                 disposition.length() - 1);
                     }
                 } else {
-                    fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1,
-                            fileURL.length());
+                    fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1, fileURL.length());
                 }
                 InputStream inputStream = httpConn.getInputStream();
                 String saveFilePath = saveDir + File.separator + fileName;
@@ -106,8 +89,8 @@ public abstract class AbstractProvider implements StorageProvider {
     }
 
     @Override
-    public String downloadAndSaveAs(String file, String localSaveDir) {
-        return downloadFile(getUrl(file), localSaveDir);
+    public String downloadAndSaveAs(String file, String localSaveDir, boolean isInternal) {
+        return downloadFile(getUrl(file, isInternal), localSaveDir);
     }
 
 }

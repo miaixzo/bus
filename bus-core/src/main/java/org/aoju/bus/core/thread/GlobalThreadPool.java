@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
  * 全局公共线程池
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class GlobalThreadPool {
@@ -112,7 +112,7 @@ public class GlobalThreadPool {
      *
      * @param runnable 可运行对象
      * @return {@link Future}
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static Future<?> submit(Runnable runnable) {
         return executor.submit(runnable);

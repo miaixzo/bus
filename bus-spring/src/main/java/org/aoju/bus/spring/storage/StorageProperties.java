@@ -28,23 +28,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "server.storage")
+@ConfigurationProperties(prefix = "storage.oss")
 public class StorageProperties {
 
     String endpoint;
     String provider;
-    String groupName;
+    String bucket;
     String accessKey;
     String secretKey;
-    String urlprefix;
-    String servers;
-    long connectTimeout = 3000;
-    int maxThreads = 50;
+    String prefix;
+    String internalUrl;
     boolean privated;
-
 
 }

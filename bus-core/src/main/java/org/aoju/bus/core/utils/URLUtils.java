@@ -37,7 +37,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class URLUtils {
@@ -337,7 +337,6 @@ public class URLUtils {
      *
      * @param url {@link URL}
      * @return 路径
-     * @since 3.0.8
      */
     public static String getDecodedPath(URL url) {
         if (null == url) {

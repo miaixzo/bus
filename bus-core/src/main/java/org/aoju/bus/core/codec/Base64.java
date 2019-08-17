@@ -39,7 +39,7 @@ import java.nio.charset.StandardCharsets;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示，长度比原来增加1/3。
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class Base64 {
@@ -178,7 +178,7 @@ public class Base64 {
      * @param in      被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
      * @return 编码后的bytes
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static byte[] encodeUrlSafe(byte[] in, boolean lineSep) {
         return Base64Encoder.encodeUrlSafe(in, lineSep);
@@ -199,7 +199,7 @@ public class Base64 {
      *
      * @param source 被编码的base64字符串
      * @return 被加密后的字符串
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static String encodeUrlSafe(String source) {
         return Base64Encoder.encodeUrlSafe(source);
@@ -222,7 +222,7 @@ public class Base64 {
      * @param source  被编码的base64字符串
      * @param charset 字符集
      * @return 被加密后的字符串
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static String encodeUrlSafe(String source, String charset) {
         return Base64Encoder.encodeUrlSafe(source, charset);
@@ -245,7 +245,7 @@ public class Base64 {
      * @param source  被编码的base64字符串
      * @param charset 字符集
      * @return 被加密后的字符串
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static String encodeUrlSafe(String source, Charset charset) {
         return Base64Encoder.encodeUrlSafe(source, charset);
@@ -266,7 +266,7 @@ public class Base64 {
      *
      * @param source 被编码的base64字符串
      * @return 被加密后的字符串
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static String encodeUrlSafe(byte[] source) {
         return Base64Encoder.encodeUrlSafe(source);
@@ -333,7 +333,7 @@ public class Base64 {
      * @param source  被编码的base64字符串
      * @param charset 字符集
      * @return 被加密后的字符串
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static String encodeUrlSafe(byte[] source, String charset) {
         return Base64Encoder.encodeUrlSafe(source, charset);
@@ -356,7 +356,7 @@ public class Base64 {
      * @param source  被编码的base64字符串
      * @param charset 字符集
      * @return 被加密后的字符串
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static String encodeUrlSafe(byte[] source, Charset charset) {
         return Base64Encoder.encodeUrlSafe(source, charset);

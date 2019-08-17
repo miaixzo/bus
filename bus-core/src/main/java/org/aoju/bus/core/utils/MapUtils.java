@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class MapUtils {
@@ -225,7 +225,6 @@ public class MapUtils {
      *
      * @param array 数组。元素类型为Map.Entry、数组、Iterable、Iterator
      * @return {@link HashMap}
-     * @since 3.0.8
      */
     public static HashMap<Object, Object> of(Object[] array) {
         if (array == null) {

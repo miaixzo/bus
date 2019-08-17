@@ -87,7 +87,7 @@ import java.util.Map;
  * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public final class CryptoUtils {
@@ -1133,7 +1133,7 @@ public final class CryptoUtils {
      * 生成新的私钥公钥对
      *
      * @return {@link RSA}
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static RSA rsa() {
         return new RSA();
@@ -1147,7 +1147,7 @@ public final class CryptoUtils {
      * @param privateKeyBase64 私钥Base64
      * @param publicKeyBase64  公钥Base64
      * @return {@link RSA}
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static RSA rsa(String privateKeyBase64, String publicKeyBase64) {
         return new RSA(privateKeyBase64, publicKeyBase64);
@@ -1161,7 +1161,7 @@ public final class CryptoUtils {
      * @param privateKey 私钥
      * @param publicKey  公钥
      * @return {@link RSA}
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static RSA rsa(byte[] privateKey, byte[] publicKey) {
         return new RSA(privateKey, publicKey);
@@ -1907,7 +1907,6 @@ public final class CryptoUtils {
      *
      * @param data 被摘要数据
      * @return SHA-256摘要
-     * @since 3.0.8
      */
     public static byte[] sha256(byte[] data) {
         return new Digester(ModeType.SHA256).digest(data);
@@ -1919,7 +1918,6 @@ public final class CryptoUtils {
      * @param data    被摘要数据
      * @param charset 编码
      * @return SHA-256摘要
-     * @since 3.0.8
      */
     public static byte[] sha256(String data, String charset) {
         return new Digester(ModeType.SHA256).digest(data, charset);
@@ -1930,7 +1928,6 @@ public final class CryptoUtils {
      *
      * @param data 被摘要数据
      * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
      */
     public static String sha256Hex(byte[] data) {
         return new Digester(ModeType.SHA256).digestHex(data);
@@ -1942,7 +1939,6 @@ public final class CryptoUtils {
      * @param data    被摘要数据
      * @param charset 编码
      * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
      */
     public static String sha256Hex(String data, String charset) {
         return new Digester(ModeType.SHA256).digestHex(data, charset);
@@ -1953,7 +1949,6 @@ public final class CryptoUtils {
      *
      * @param data 被摘要数据
      * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
      */
     public static String sha256Hex(String data) {
         return sha256Hex(data, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
@@ -1964,7 +1959,6 @@ public final class CryptoUtils {
      *
      * @param data 被摘要数据
      * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
      */
     public static String sha256Hex(InputStream data) {
         return new Digester(ModeType.SHA256).digestHex(data);
@@ -1975,7 +1969,6 @@ public final class CryptoUtils {
      *
      * @param file 被摘要文件
      * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
      */
     public static String sha256Hex(File file) {
         return new Digester(ModeType.SHA256).digestHex(file);

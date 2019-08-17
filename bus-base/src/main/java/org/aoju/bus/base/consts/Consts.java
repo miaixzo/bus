@@ -31,7 +31,7 @@ import org.aoju.bus.core.consts.Normal;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class Consts extends Normal {

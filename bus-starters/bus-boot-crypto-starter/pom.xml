@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot-crypto-starter</artifactId>
-    <version>3.0.8</version>
+    <version>3.0.9</version>
     <packaging>jar</packaging>
 
     <name>bus-boot-crypto-starter</name>

@@ -40,7 +40,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class ArrayUtils {
@@ -7844,7 +7844,7 @@ public class ArrayUtils {
      * @return 转换后的数组类型
      * @throws NullPointerException     提供参数为空
      * @throws IllegalArgumentException 参数arrayObj不是数组
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static Object[] cast(Class<?> type, Object arrayObj) throws NullPointerException, IllegalArgumentException {
         if (null == arrayObj) {
@@ -8041,7 +8041,7 @@ public class ArrayUtils {
      * @param destPos 目标数组开始位置
      * @param length  拷贝数组长度
      * @return 目标数组
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static Object copy(Object src, int srcPos, Object dest, int destPos, int length) {
         System.arraycopy(src, srcPos, dest, destPos, length);
@@ -8056,7 +8056,7 @@ public class ArrayUtils {
      * @param dest   目标数组
      * @param length 拷贝数组长度
      * @return 目标数组
-     * @since 3.0.6
+     * @since 3.0.9
      */
     public static Object copy(Object src, Object dest, int length) {
         System.arraycopy(src, 0, dest, 0, length);
@@ -8658,7 +8658,6 @@ public class ArrayUtils {
      * @return 数组长度
      * @throws IllegalArgumentException 如果参数不为数组，抛出此异常
      * @see Array#getLength(Object)
-     * @since 3.0.8
      */
     public static int length(Object array) throws IllegalArgumentException {
         if (null == array) {

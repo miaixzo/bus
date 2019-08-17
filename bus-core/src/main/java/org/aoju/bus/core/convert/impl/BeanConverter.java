@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @param <T> Bean类型
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class BeanConverter<T> extends AbstractConverter<T> {

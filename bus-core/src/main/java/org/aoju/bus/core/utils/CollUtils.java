@@ -47,7 +47,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class CollUtils {
@@ -451,7 +451,6 @@ public class CollUtils {
      * @param isSorted 是否有序，有序返回 {@link LinkedHashSet}，否则返回{@link HashSet}
      * @param iter     {@link Iterator}
      * @return HashSet对象
-     * @since 3.0.8
      */
     public static <T> HashSet<T> newHashSet(boolean isSorted, Iterator<T> iter) {
         if (null == iter) {
@@ -471,7 +470,6 @@ public class CollUtils {
      * @param isSorted   是否有序，有序返回 {@link LinkedHashSet}，否则返回{@link HashSet}
      * @param enumration {@link Enumeration}
      * @return HashSet对象
-     * @since 3.0.8
      */
     public static <T> HashSet<T> newHashSet(boolean isSorted, Enumeration<T> enumration) {
         if (null == enumration) {
@@ -577,7 +575,6 @@ public class CollUtils {
      * @param isLinked   是否新建LinkedList
      * @param enumration {@link Enumeration}
      * @return ArrayList对象
-     * @since 3.0.8
      */
     public static <T> List<T> list(boolean isLinked, Enumeration<T> enumration) {
         final List<T> list = list(isLinked);
@@ -643,7 +640,6 @@ public class CollUtils {
      * @param <T>  集合元素类型
      * @param iter {@link Iterator}
      * @return ArrayList对象
-     * @since 3.0.8
      */
     public static <T> ArrayList<T> newArrayList(Iterator<T> iter) {
         return (ArrayList<T>) list(false, iter);
@@ -656,7 +652,6 @@ public class CollUtils {
      * @param <T>        集合元素类型
      * @param enumration {@link Enumeration}
      * @return ArrayList对象
-     * @since 3.0.8
      */
     public static <T> ArrayList<T> newArrayList(Enumeration<T> enumration) {
         return (ArrayList<T>) list(false, enumration);
@@ -711,12 +706,10 @@ public class CollUtils {
      * @param <T>            对象
      * @param collectionType 集合类型
      * @return 集合类型对应的实例
-     * @since 3.0.8
      */
     public static <T> Collection<T> create(Class<?> collectionType) {
         Collection<T> list = null;
         if (collectionType.isAssignableFrom(AbstractCollection.class)) {
-            // 抽象集合默认使用ArrayList
             list = new ArrayList<>();
         }
 
@@ -1447,7 +1440,6 @@ public class CollUtils {
      * @param array 数组。元素类型为Map.Entry、数组、Iterable、Iterator
      * @return {@link HashMap}
      * @see MapUtils#of(Object[])
-     * @since 3.0.8
      */
     public static HashMap<Object, Object> toMap(Object[] array) {
         return MapUtils.of(array);
@@ -1707,7 +1699,6 @@ public class CollUtils {
      * @param collection 被加入的集合 {@link Collection}
      * @param values     要加入的内容数组
      * @return 原集合
-     * @since 3.0.8
      */
     public static <T> Collection<T> addAll(Collection<T> collection, T[] values) {
         if (null != collection && null != values) {
@@ -1849,7 +1840,6 @@ public class CollUtils {
      * @param iterable {@link Iterable}
      * @return 元素类型，当列表为空或元素全部为null时，返回null
      * @see IterUtils#getElementType(Iterable)
-     * @since 3.0.8
      */
     public static Class<?> getElementType(Iterable<?> iterable) {
         return IterUtils.getElementType(iterable);
@@ -1861,7 +1851,6 @@ public class CollUtils {
      * @param iterator {@link Iterator}
      * @return 元素类型，当列表为空或元素全部为null时，返回null
      * @see IterUtils#getElementType(Iterator)
-     * @since 3.0.8
      */
     public static Class<?> getElementType(Iterator<?> iterator) {
         return IterUtils.getElementType(iterator);
@@ -1876,7 +1865,6 @@ public class CollUtils {
      * @param map  {@link Map}
      * @param keys 键列表
      * @return 值列表
-     * @since 3.0.8
      */
     public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, K... keys) {
         final ArrayList<V> values = new ArrayList<>();

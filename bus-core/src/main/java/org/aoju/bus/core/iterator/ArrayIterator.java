@@ -37,7 +37,7 @@ import java.util.NoSuchElementException;
  *
  * @param <E> the type of elements returned by this iterator
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.0.9
  * @since JDK 1.8
  */
 public class ArrayIterator<E> implements ResettableIterator<E> {
