@@ -1634,7 +1634,6 @@ abstract class MemberUtils {
      * @see ArrayUtils#min(Comparable[])
      * @since 4.0.7
      */
-    @SuppressWarnings("unchecked")
     public static <T extends Comparable<? super T>> T min(T... numberArray) {
         return ArrayUtils.min(numberArray);
     }
@@ -1708,7 +1707,6 @@ abstract class MemberUtils {
      * @see ArrayUtils#max(Comparable[])
      * @since 4.0.7
      */
-    @SuppressWarnings("unchecked")
     public static <T extends Comparable<? super T>> T max(T... numberArray) {
         return ArrayUtils.max(numberArray);
     }

@@ -29,7 +29,6 @@ public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
         return super.get(customKey(key));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public V put(K key, V value) {
         return super.put((K) customKey(key), value);

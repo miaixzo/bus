@@ -332,7 +332,6 @@ public class Sftp extends AbstractFtp {
      * @return boolean 是否删除成功
      */
     @Override
-    @SuppressWarnings("unchecked")
     public boolean delDir(String dirPath) {
         if (false == cd(dirPath)) {
             return false;

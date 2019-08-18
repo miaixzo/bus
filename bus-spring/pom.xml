@@ -24,7 +24,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <mysql.version>5.1.30</mysql.version>
-        <druid.version>1.1.12</druid.version>
+        <druid.version>1.1.16</druid.version>
         <dubbo.version>2.6.6</dubbo.version>
     </properties>
 

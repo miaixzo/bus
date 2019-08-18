@@ -26,8 +26,6 @@ package org.aoju.bus.spring.mapper;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.pager.plugin.PageInterceptor;
-import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -38,10 +36,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.sql.DataSource;
-import java.util.Properties;
 
 /**
- * mybatis 配置类
+ * mybatis 配置
  *
  * @author Kimi Liu
  * @version 3.0.9
@@ -61,21 +58,9 @@ public class MybatisConfiguration {
             if (StringUtils.isNotBlank(this.properties.getTypeAliasesPackage())) {
                 bean.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
             }
-            PageInterceptor interceptor = new PageInterceptor();
-            Properties properties = new Properties();
-            properties.setProperty("autoDelimitKeywords", this.properties.getAutoDelimitKeywords());
-            properties.setProperty("reasonable", this.properties.getReasonable());
-            properties.setProperty("supportMethodsArguments", this.properties.getSupportMethodsArguments());
-            properties.setProperty("returnPageInfo", this.properties.getReturnPageInfo());
-            properties.setProperty("params", this.properties.getParams());
-            interceptor.setProperties(properties);
 
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            Interceptor[] plugins = new Interceptor[]{
-                    interceptor,
-                    new SQLPerformanceHandler(),
-                    new SQLExplainHandler()};
-            bean.setPlugins(plugins);
+            bean.setPlugins(MybatisPluginBuilder.build(properties));
 
             bean.setMapperLocations(resolver.getResources(this.properties.getXmlLocation()));
             return bean.getObject();

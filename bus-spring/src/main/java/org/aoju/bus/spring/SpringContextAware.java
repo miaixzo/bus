@@ -28,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
 /**
@@ -109,7 +110,62 @@ public class SpringContextAware implements ApplicationContextAware {
      * @throws BeansException 异常
      */
     public static <T> Map<String, T> getBeanOfType(Class<T> requiredType) throws BeansException {
+        isApplicationContext();
         return applicationContext.getBeansOfType(requiredType);
+    }
+
+    /**
+     * <pre>
+     *     获取指定注解的Bean
+     *
+     * @param  annType 指定注解类型
+     * @return 结果map
+     * </pre>
+     */
+    public static Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annType) {
+        isApplicationContext();
+        return applicationContext.getBeansWithAnnotation(annType);
+    }
+
+    /**
+     * <pre>
+     *     获取当前profile
+     *     默认获取第一个
+     *
+     * @return profile
+     * </pre>
+     */
+    public static String getActiveProfile() {
+        isApplicationContext();
+        return applicationContext.getEnvironment().getActiveProfiles()[0];
+    }
+
+
+    /**
+     * 当前是否开发/测试模式
+     *
+     * @return boolean true|false
+     */
+    public static boolean isDemoMode() {
+        return isTestMode() || isDevMode();
+    }
+
+    /**
+     * 当前是否开发环境
+     *
+     * @return boolean
+     */
+    public static boolean isDevMode() {
+        return "dev".equalsIgnoreCase(getActiveProfile());
+    }
+
+    /**
+     * 当前是否测试环境
+     *
+     * @return boolean
+     */
+    public static boolean isTestMode() {
+        return "test".equalsIgnoreCase(getActiveProfile());
     }
 
 }
