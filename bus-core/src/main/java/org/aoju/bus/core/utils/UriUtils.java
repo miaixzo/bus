@@ -40,7 +40,7 @@ import java.util.jar.JarFile;
  * @version 3.0.9
  * @since JDK 1.8
  */
-public class URLUtils {
+public class UriUtils {
 
     /**
      * 针对ClassPath路径的伪协议前缀（兼容Spring）: "classpath:"
@@ -157,7 +157,7 @@ public class URLUtils {
         Assert.notBlank(urlStr, "Url is blank !");
         // 去掉url中的空白符，防止空白符导致的异常
         urlStr = StringUtils.cleanBlank(urlStr);
-        return URLUtils.url(urlStr, handler);
+        return UriUtils.url(urlStr, handler);
     }
 
     /**
@@ -346,7 +346,7 @@ public class URLUtils {
         String path = null;
         try {
             // URL对象的getPath方法对于包含中文或空格的问题
-            path = URLUtils.toURI(url).getPath();
+            path = UriUtils.toURI(url).getPath();
         } catch (CommonException e) {
             // ignore
         }

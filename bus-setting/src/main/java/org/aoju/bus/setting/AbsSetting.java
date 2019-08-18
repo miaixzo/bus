@@ -42,12 +42,8 @@ import java.lang.reflect.Type;
  * @version 3.0.9
  * @since JDK 1.8
  */
-public abstract class AbsSetting extends OptNullBasicTypeFromStringGetter<String> implements Serializable {
-
-    /**
-     * 默认分组
-     */
-    private static final long serialVersionUID = 6200156302595905863L;
+public abstract class AbsSetting extends OptNullBasicTypeFromStringGetter<String>
+        implements Serializable {
 
     @Override
     public String getStr(String key, String defaultValue) {

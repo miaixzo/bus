@@ -37,7 +37,6 @@ import java.util.Map.Entry;
  * @since JDK 1.8
  */
 public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
-    private static final long serialVersionUID = -7777365130776081931L;
 
     private int size = -1;
 

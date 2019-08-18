@@ -59,8 +59,6 @@ import java.util.*;
  */
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
-    private static final long serialVersionUID = -8430706353275835496L;
-
     /**
      * 注释符号（当有此符号在行首，表示此行为注释）
      */
@@ -100,7 +98,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
             pathBaseClassLoader = Normal.EMPTY;
         }
 
-        final URL url = URLUtils.getURL(pathBaseClassLoader);
+        final URL url = UriUtils.getURL(pathBaseClassLoader);
         if (url == null) {
             throw new RuntimeException(StringUtils.format("Can not find GroupSet file: [{}]", pathBaseClassLoader));
         }
@@ -117,7 +115,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
         if (configFile == null) {
             throw new RuntimeException("Null GroupSet file!");
         }
-        final URL url = URLUtils.getURL(configFile);
+        final URL url = UriUtils.getURL(configFile);
         if (url == null) {
             throw new RuntimeException(StringUtils.format("Can not find GroupSet file: [{}]", configFile.getAbsolutePath()));
         }
@@ -132,7 +130,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      * @param charset 字符集
      */
     public GroupedSet(String path, Class<?> clazz, Charset charset) {
-        final URL url = URLUtils.getURL(path, clazz);
+        final URL url = UriUtils.getURL(path, clazz);
         if (url == null) {
             throw new RuntimeException(StringUtils.format("Can not find GroupSet file: [{}]", path));
         }

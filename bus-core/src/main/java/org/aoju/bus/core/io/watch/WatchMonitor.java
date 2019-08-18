@@ -184,7 +184,7 @@ public class WatchMonitor extends Thread implements Closeable {
      * @return 监听对象
      */
     public static WatchMonitor create(URL url, int maxDepth, WatchEvent.Kind<?>... events) {
-        return create(URLUtils.toURI(url), maxDepth, events);
+        return create(UriUtils.toURI(url), maxDepth, events);
     }
 
     /**

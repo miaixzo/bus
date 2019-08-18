@@ -2754,12 +2754,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Removes all occurrences of a substring from within the source string.</p>
-     *
-     * <p>A {@code null} source string will return {@code null}.
-     * An empty ("") source string will return the empty string.
-     * A {@code null} remove string will return the source string.
-     * An empty ("") remove string will return the source string.</p>
+     * 替换字符串中的指定字符串.
      *
      * <pre>
      * StringUtils.remove(null, *)        = null
@@ -2784,17 +2779,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>
-     * Case insensitive removal of all occurrences of a substring from within
-     * the source string.
-     * </p>
-     *
-     * <p>
-     * A {@code null} source string will return {@code null}. An empty ("")
-     * source string will return the empty string. A {@code null} remove string
-     * will return the source string. An empty ("") remove string will return
-     * the source string.
-     * </p>
+     * 替换字符串中的指定字符串.
      *
      * <pre>
      * StringUtils.removeIgnoreCase(null, *)        = null
@@ -2822,10 +2807,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Removes all occurrences of a character from within the source string.</p>
-     *
-     * <p>A {@code null} source string will return {@code null}.
-     * An empty ("") source string will return the empty string.</p>
+     * 替换字符串中的指定字符串.
      *
      * <pre>
      * StringUtils.remove(null, *)       = null
@@ -2855,7 +2837,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Removes each substring of the text String that matches the given regular expression.</p>
+     * 替换字符串中的指定字符串.
+     *
      * <pre>
      * StringUtils.removeAll(null, *)      = null
      * StringUtils.removeAll("any", null)  = "any"
@@ -2884,21 +2867,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Removes the first substring of the text string that matches the given regular expression.</p>
-     * <p>
-     * This method is a {@code null} safe equivalent to:
-     * <ul>
-     * <li>{@code text.replaceFirst(regex, StringUtils.EMPTY)}</li>
-     * <li>{@code Pattern.compile(regex).matcher(text).replaceFirst(StringUtils.EMPTY)}</li>
-     * </ul>
+     * 替换字符串中的指定字符串.
      *
-     * <p>A {@code null} reference passed to this method is a no-op.</p>
-     *
-     * <p>The {@link Pattern#DOTALL} option is NOT automatically added.
-     * To use the DOTALL option prepend <code>"(?s)"</code> to the regex.
-     * DOTALL is also known as single-line mode in Perl.</p>
-     *
-     * <pre>
      * StringUtils.removeFirst(null, *)      = null
      * StringUtils.removeFirst("any", null)  = "any"
      * StringUtils.removeFirst("any", "")    = "any"
@@ -2909,7 +2879,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.removeFirst("A&lt;__&gt;\n&lt;__&gt;B", "(?s)&lt;.*&gt;")  = "AB"
      * StringUtils.removeFirst("ABCabc123", "[a-z]")          = "ABCbc123"
      * StringUtils.removeFirst("ABCabc123abc", "[a-z]+")      = "ABC123abc"
-     * </pre>
      *
      * @param text  text to remove from, may be null
      * @param regex the regular expression to which this string is to be matched
@@ -2927,8 +2896,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Replaces each substring of the text String that matches the given regular expression
-     * with the given replacement.</p>
+     * 替换字符串中的指定字符串.
+     *
      * StringUtils.replaceAll(null, *, *)       = null
      * StringUtils.replaceAll("any", null, *)   = "any"
      * StringUtils.replaceAll("any", *, null)   = "any"
@@ -2942,7 +2911,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.replaceAll("ABCabc123", "[^A-Z0-9]+", "_")  = "ABC_123"
      * StringUtils.replaceAll("ABCabc123", "[^A-Z0-9]+", "")   = "ABC123"
      * StringUtils.replaceAll("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum_dolor_sit"
-     * </pre>
      *
      * @param text        text to search and replace in, may be null
      * @param regex       the regular expression to which this string is to be matched
@@ -2963,22 +2931,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Replaces the first substring of the text string that matches the given regular expression
-     * with the given replacement.</p>
-     * <p>
-     * This method is a {@code null} safe equivalent to:
-     * <ul>
-     * <li>{@code text.replaceFirst(regex, replacement)}</li>
-     * <li>{@code Pattern.compile(regex).matcher(text).replaceFirst(replacement)}</li>
-     * </ul>
+     * 替换字符串中的指定字符串.
      *
-     * <p>A {@code null} reference passed to this method is a no-op.</p>
-     *
-     * <p>The {@link Pattern#DOTALL} option is NOT automatically added.
-     * To use the DOTALL option prepend <code>"(?s)"</code> to the regex.
-     * DOTALL is also known as single-line mode in Perl.</p>
-     *
-     * <pre>
      * StringUtils.replaceFirst(null, *, *)       = null
      * StringUtils.replaceFirst("any", null, *)   = "any"
      * StringUtils.replaceFirst("any", *, null)   = "any"
@@ -2992,7 +2946,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.replaceFirst("ABCabc123abc", "[^A-Z0-9]+", "_")  = "ABC_123abc"
      * StringUtils.replaceFirst("ABCabc123abc", "[^A-Z0-9]+", "")   = "ABC123abc"
      * StringUtils.replaceFirst("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum  dolor   sit"
-     * </pre>
      *
      * @param text        text to search and replace in, may be null
      * @param regex       the regular expression to which this string is to be matched
@@ -3013,11 +2966,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Replaces all occurrences of a String within another String.</p>
+     * 替换字符串中的指定字符串.
      *
-     * <p>A {@code null} reference passed to this method is a no-op.</p>
-     *
-     * <pre>
      * StringUtils.replace(null, *, *)        = null
      * StringUtils.replace("", *, *)          = ""
      * StringUtils.replace("any", null, *)    = "any"
@@ -3026,7 +2976,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.replace("aba", "a", null)  = "aba"
      * StringUtils.replace("aba", "a", "")    = "b"
      * StringUtils.replace("aba", "a", "z")   = "zbz"
-     * </pre>
      *
      * @param text         text to search and replace in, may be null
      * @param searchString the String to search for, may be null
@@ -3040,11 +2989,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Case insensitively replaces all occurrences of a String within another String.</p>
-     *
-     * <p>A {@code null} reference passed to this method is a no-op.</p>
-     *
-     * <pre>
+     * 替换字符串中的指定字符串.
      * StringUtils.replaceIgnoreCase(null, *, *)        = null
      * StringUtils.replaceIgnoreCase("", *, *)          = ""
      * StringUtils.replaceIgnoreCase("any", null, *)    = "any"
@@ -3053,7 +2998,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.replaceIgnoreCase("aba", "a", null)  = "aba"
      * StringUtils.replaceIgnoreCase("abA", "A", "")    = "b"
      * StringUtils.replaceIgnoreCase("aba", "A", "z")   = "zbz"
-     * </pre>
      *
      * @param text         text to search and replace in, may be null
      * @param searchString the String to search for (case insensitive), may be null
@@ -3068,12 +3012,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Replaces a String with another String inside a larger String,
-     * for the first {@code max} values of the search String.</p>
+     * 替换字符串中的指定字符串.
      *
-     * <p>A {@code null} reference passed to this method is a no-op.</p>
-     *
-     * <pre>
      * StringUtils.replace(null, *, *, *)         = null
      * StringUtils.replace("", *, *, *)           = ""
      * StringUtils.replace("any", null, *, *)     = "any"
@@ -3086,7 +3026,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.replace("abaa", "a", "z", 1)   = "zbaa"
      * StringUtils.replace("abaa", "a", "z", 2)   = "zbza"
      * StringUtils.replace("abaa", "a", "z", -1)  = "zbzz"
-     * </pre>
      *
      * @param text         text to search and replace in, may be null
      * @param searchString the String to search for, may be null
@@ -3100,13 +3039,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Replaces a String with another String inside a larger String,
-     * for the first {@code max} values of the search String,
-     * case sensitively/insensisitively based on {@code ignoreCase} value.</p>
+     * 替换字符串中的指定字符串.
      *
-     * <p>A {@code null} reference passed to this method is a no-op.</p>
-     *
-     * <pre>
      * StringUtils.replace(null, *, *, *, false)         = null
      * StringUtils.replace("", *, *, *, false)           = ""
      * StringUtils.replace("any", null, *, *, false)     = "any"
@@ -3120,7 +3054,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.replace("abaa", "A", "z", 1, true)   = "zbaa"
      * StringUtils.replace("abAa", "a", "z", 2, true)   = "zbza"
      * StringUtils.replace("abAa", "a", "z", -1, true)  = "zbzz"
-     * </pre>
      *
      * @param text         text to search and replace in, may be null
      * @param searchString the String to search for (case insensitive), may be null
@@ -3162,12 +3095,9 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Case insensitively replaces a String with another String inside a larger String,
-     * for the first {@code max} values of the search String.</p>
+     * 替换字符串中的指定字符串.
      *
-     * <p>A {@code null} reference passed to this method is a no-op.</p>
-     *
-     * <pre>
+     * for the first {@code max} values of the search String.
      * StringUtils.replaceIgnoreCase(null, *, *, *)         = null
      * StringUtils.replaceIgnoreCase("", *, *, *)           = ""
      * StringUtils.replaceIgnoreCase("any", null, *, *)     = "any"
@@ -3180,7 +3110,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.replaceIgnoreCase("abaa", "A", "z", 1)   = "zbaa"
      * StringUtils.replaceIgnoreCase("abAa", "a", "z", 2)   = "zbza"
      * StringUtils.replaceIgnoreCase("abAa", "a", "z", -1)  = "zbzz"
-     * </pre>
      *
      * @param text         text to search and replace in, may be null
      * @param searchString the String to search for (case insensitive), may be null
@@ -3195,18 +3124,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>
-     * Replaces all occurrences of Strings within another String.
-     * </p>
+     *  替换字符串中的指定字符串.
      *
-     * <p>
-     * A {@code null} reference passed to this method is a no-op, or if
-     * any "search string" or "string to replace" is null, that replace will be
-     * ignored. This will not repeat. For repeating replaces, call the
-     * overloaded method.
-     * </p>
-     *
-     * <pre>
      *  StringUtils.replaceEach(null, *, *)        = null
      *  StringUtils.replaceEach("", *, *)          = ""
      *  StringUtils.replaceEach("aba", null, null) = "aba"
@@ -3218,7 +3137,6 @@ public class StringUtils extends TextUtils {
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"})  = "wcte"
      *  (example of how it does not repeat)
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"})  = "dcte"
-     * </pre>
      *
      * @param text            text to search and replace in, no-op if null
      * @param searchList      the Strings to search for, no-op if null
@@ -3234,17 +3152,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>
-     * Replaces all occurrences of Strings within another String.
-     * </p>
+     *  替换字符串中的指定字符串.
      *
-     * <p>
-     * A {@code null} reference passed to this method is a no-op, or if
-     * any "search string" or "string to replace" is null, that replace will be
-     * ignored.
-     * </p>
-     *
-     * <pre>
      *  StringUtils.replaceEachRepeatedly(null, *, *) = null
      *  StringUtils.replaceEachRepeatedly("", *, *) = ""
      *  StringUtils.replaceEachRepeatedly("aba", null, null) = "aba"
@@ -3257,7 +3166,6 @@ public class StringUtils extends TextUtils {
      *  (example of how it repeats)
      *  StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}) = "tcte"
      *  StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}) = IllegalStateException
-     * </pre>
      *
      * @param text            text to search and replace in, no-op if null
      * @param searchList      the Strings to search for, no-op if null
@@ -3271,26 +3179,13 @@ public class StringUtils extends TextUtils {
      * @since 2.4
      */
     public static String replaceEachRepeatedly(final String text, final String[] searchList, final String[] replacementList) {
-        // timeToLive should be 0 if not used or nothing to replace, else it's
-        // the length of the replace array
         final int timeToLive = searchList == null ? 0 : searchList.length;
         return replaceEach(text, searchList, replacementList, true, timeToLive);
     }
 
     /**
-     * <p>
-     * Replace all occurrences of Strings within another String.
-     * This is a private recursive helper method for {@link #replaceEachRepeatedly(String, String[], String[])} and
-     * {@link #replaceEach(String, String[], String[])}
-     * </p>
-     *
-     * <p>
-     * A {@code null} reference passed to this method is a no-op, or if
-     * any "search string" or "string to replace" is null, that replace will be
-     * ignored.
-     * </p>
-     *
-     * <pre>
+     * 替换字符串中的指定字符串.
+     * {@link #replaceEachRepeatedly(String, String[], String[])}
      *  StringUtils.replaceEach(null, *, *, *, *) = null
      *  StringUtils.replaceEach("", *, *, *, *) = ""
      *  StringUtils.replaceEach("aba", null, null, *, *) = "aba"
@@ -3304,7 +3199,6 @@ public class StringUtils extends TextUtils {
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, false, >=0) = "dcte"
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, true, >=2) = "tcte"
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, *, *) = IllegalStateException
-     * </pre>
      *
      * @param text            text to search and replace in, no-op if null
      * @param searchList      the Strings to search for, no-op if null
@@ -3324,15 +3218,11 @@ public class StringUtils extends TextUtils {
     private static String replaceEach(
             final String text, final String[] searchList, final String[] replacementList, final boolean repeat, final int timeToLive) {
 
-        // mchyzer Performance note: This creates very few new objects (one major goal)
-        // let me know if there are performance requests, we can create a harness to measure
-
         if (text == null || text.isEmpty() || searchList == null ||
                 searchList.length == 0 || replacementList == null || replacementList.length == 0) {
             return text;
         }
 
-        // if recursing, this shouldn't be less than 0
         if (timeToLive < 0) {
             throw new IllegalStateException("Aborting to protect against StackOverflowError - " +
                     "output of one loop is the input of another");
@@ -3341,7 +3231,6 @@ public class StringUtils extends TextUtils {
         final int searchLength = searchList.length;
         final int replacementLength = replacementList.length;
 
-        // make sure lengths are ok, these need to be equal
         if (searchLength != replacementLength) {
             throw new IllegalArgumentException("Search and Replace array lengths don't match: "
                     + searchLength
@@ -3349,16 +3238,12 @@ public class StringUtils extends TextUtils {
                     + replacementLength);
         }
 
-        // keep track of which still have matches
         final boolean[] noMoreMatchesForReplIndex = new boolean[searchLength];
 
-        // index on index that the match was found
         int textIndex = -1;
         int replaceIndex = -1;
         int tempIndex = -1;
 
-        // index of replace array that will replace the search string found
-        // NOTE: logic duplicated below START
         for (int i = 0; i < searchLength; i++) {
             if (noMoreMatchesForReplIndex[i] || searchList[i] == null ||
                     searchList[i].isEmpty() || replacementList[i] == null) {
@@ -3366,7 +3251,6 @@ public class StringUtils extends TextUtils {
             }
             tempIndex = text.indexOf(searchList[i]);
 
-            // see if we need to keep searching for this
             if (tempIndex == -1) {
                 noMoreMatchesForReplIndex[i] = true;
             } else {
@@ -3376,29 +3260,25 @@ public class StringUtils extends TextUtils {
                 }
             }
         }
-        // NOTE: logic mostly below END
 
-        // no search strings found, we are done
         if (textIndex == -1) {
             return text;
         }
 
         int start = 0;
 
-        // get a good guess on the size of the result buffer so it doesn't have to double if it goes over a bit
         int increase = 0;
 
-        // count the replacement text elements that are larger than their corresponding text being replaced
         for (int i = 0; i < searchList.length; i++) {
             if (searchList[i] == null || replacementList[i] == null) {
                 continue;
             }
             final int greater = replacementList[i].length() - searchList[i].length();
             if (greater > 0) {
-                increase += 3 * greater; // assume 3 matches
+                increase += 3 * greater;
             }
         }
-        // have upper-bound at 20% increase, then let Java take over
+
         increase = Math.min(increase, text.length() / 5);
 
         final StringBuilder buf = new StringBuilder(text.length() + increase);
@@ -3415,8 +3295,6 @@ public class StringUtils extends TextUtils {
             textIndex = -1;
             replaceIndex = -1;
             tempIndex = -1;
-            // find the next earliest match
-            // NOTE: logic mostly duplicated above START
             for (int i = 0; i < searchLength; i++) {
                 if (noMoreMatchesForReplIndex[i] || searchList[i] == null ||
                         searchList[i].isEmpty() || replacementList[i] == null) {
@@ -3424,7 +3302,6 @@ public class StringUtils extends TextUtils {
                 }
                 tempIndex = text.indexOf(searchList[i], start);
 
-                // see if we need to keep searching for this
                 if (tempIndex == -1) {
                     noMoreMatchesForReplIndex[i] = true;
                 } else {
@@ -3434,7 +3311,6 @@ public class StringUtils extends TextUtils {
                     }
                 }
             }
-            // NOTE: logic duplicated above END
 
         }
         final int textLength = text.length();
@@ -3449,22 +3325,14 @@ public class StringUtils extends TextUtils {
         return replaceEach(result, searchList, replacementList, repeat, timeToLive - 1);
     }
 
-    // Replace, character based
-    //-----------------------------------------------------------------------
-
     /**
-     * <p>Replaces all occurrences of a character in a String with another.
-     * This is a null-safe version of {@link String#replace(char, char)}.</p>
+     * 替换字符串中的指定字符串.
      *
-     * <p>A {@code null} string input returns {@code null}.
-     * An empty ("") string input returns an empty string.</p>
-     *
-     * <pre>
+     * This is a null-safe version of {@link String#replace(char, char)}.
      * StringUtils.replaceChars(null, *, *)        = null
      * StringUtils.replaceChars("", *, *)          = ""
      * StringUtils.replaceChars("abcba", 'b', 'y') = "aycya"
      * StringUtils.replaceChars("abcba", 'z', 'y') = "abcba"
-     * </pre>
      *
      * @param str         String to replace characters in, may be null
      * @param searchChar  the character to search for, may be null
@@ -3480,24 +3348,8 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * <p>Replaces multiple characters in a String in one go.
-     * This method can also be used to delete characters.</p>
+     * 替换字符串中的指定字符串.
      *
-     * <p>For example:<br>
-     * <code>replaceChars(&quot;hello&quot;, &quot;ho&quot;, &quot;jy&quot;) = jelly</code>.</p>
-     *
-     * <p>A {@code null} string input returns {@code null}.
-     * An empty ("") string input returns an empty string.
-     * A null or empty set of search characters returns the input string.</p>
-     *
-     * <p>The length of the search characters should normally equal the length
-     * of the replace characters.
-     * If the search characters is longer, then the extra search characters
-     * are deleted.
-     * If the search characters is shorter, then the extra replace characters
-     * are ignored.</p>
-     *
-     * <pre>
      * StringUtils.replaceChars(null, *, *)           = null
      * StringUtils.replaceChars("", *, *)             = ""
      * StringUtils.replaceChars("abc", null, *)       = "abc"
@@ -3507,7 +3359,6 @@ public class StringUtils extends TextUtils {
      * StringUtils.replaceChars("abcba", "bc", "yz")  = "ayzya"
      * StringUtils.replaceChars("abcba", "bc", "y")   = "ayya"
      * StringUtils.replaceChars("abcba", "bc", "yzx") = "ayzya"
-     * </pre>
      *
      * @param str          String to replace characters in, may be null
      * @param searchChars  a set of characters to search for, may be null
@@ -3543,7 +3394,6 @@ public class StringUtils extends TextUtils {
         }
         return str;
     }
-
 
     /**
      * 替换字符串中的指定字符串，忽略大小写

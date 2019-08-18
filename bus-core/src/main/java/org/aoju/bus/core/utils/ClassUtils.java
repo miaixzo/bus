@@ -37,7 +37,7 @@ import org.aoju.bus.core.lang.SimpleCache;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableObject;
-import org.aoju.bus.core.loader.JarClassLoader;
+import org.aoju.bus.core.loader.JarLoaders;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -965,7 +965,7 @@ public class ClassUtils {
      */
     public static String getClassPath(boolean isEncoded) {
         final URL classPathURL = getClassPathURL();
-        String url = isEncoded ? classPathURL.getPath() : URLUtils.getDecodedPath(classPathURL);
+        String url = isEncoded ? classPathURL.getPath() : UriUtils.getDecodedPath(classPathURL);
         return FileUtils.normalize(url);
     }
 
@@ -1141,14 +1141,14 @@ public class ClassUtils {
     }
 
     /**
-     * 创建新的{@link JarClassLoader}，并使用此Classloader加载目录下的class文件和jar文件
+     * 创建新的{@link JarLoaders}，并使用此Classloader加载目录下的class文件和jar文件
      *
      * @param jarOrDir jar文件或者包含jar和class文件的目录
-     * @return {@link JarClassLoader}
+     * @return {@link JarLoaders}
      * @since 4.4.2
      */
-    public static JarClassLoader getJarClassLoader(File jarOrDir) {
-        return JarClassLoader.load(jarOrDir);
+    public static JarLoaders getJarClassLoader(File jarOrDir) {
+        return JarLoaders.load(jarOrDir);
     }
 
     /**

@@ -29,7 +29,7 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
-import org.aoju.bus.core.io.resource.UrlResource;
+import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.watch.SimpleWatcher;
 import org.aoju.bus.core.io.watch.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
@@ -63,8 +63,6 @@ import java.util.*;
  * @since JDK 1.8
  */
 public class Setting extends AbsSetting implements Map<String, String> {
-
-    private static final long serialVersionUID = 3618305164959883393L;
 
     /**
      * 附带分组的键值对存储
@@ -158,7 +156,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     public Setting(URL url, Charset charset, boolean isUseVariable) {
         Assert.notNull(url, "Null setting url define!");
-        this.init(new UrlResource(url), charset, isUseVariable);
+        this.init(new UriResource(url), charset, isUseVariable);
     }
 
     /**
@@ -189,7 +187,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
         if (null == this.settingLoader) {
             settingLoader = new SettingLoader(this.groupedMap, this.charset, this.isUseVariable);
         }
-        return settingLoader.load(new UrlResource(this.settingUrl));
+        return settingLoader.load(new UriResource(this.settingUrl));
     }
 
     /**

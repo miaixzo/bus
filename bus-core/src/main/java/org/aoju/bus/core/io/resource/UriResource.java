@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.URLUtils;
+import org.aoju.bus.core.utils.UriUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,7 +42,7 @@ import java.nio.charset.Charset;
  * @version 3.0.9
  * @since JDK 1.8
  */
-public class UrlResource implements Resource {
+public class UriResource implements Resource {
 
     protected URL url;
     protected String name;
@@ -52,7 +52,7 @@ public class UrlResource implements Resource {
      *
      * @param url URL
      */
-    public UrlResource(URL url) {
+    public UriResource(URL url) {
         this(url, null);
     }
 
@@ -62,7 +62,7 @@ public class UrlResource implements Resource {
      * @param url  URL，允许为空
      * @param name 资源名称
      */
-    public UrlResource(URL url, String name) {
+    public UriResource(URL url, String name) {
         this.url = url;
         this.name = ObjectUtils.defaultIfNull(name, (null != url) ? FileUtils.getName(url.getPath()) : null);
     }
@@ -82,7 +82,7 @@ public class UrlResource implements Resource {
         if (null == this.url) {
             throw new InstrumentException("Resource [{" + this.url + "}] not exist!");
         }
-        return URLUtils.getStream(url);
+        return UriUtils.getStream(url);
     }
 
     /**
@@ -93,7 +93,7 @@ public class UrlResource implements Resource {
      * @since 3.0.1
      */
     public BufferedReader getReader(Charset charset) {
-        return URLUtils.getReader(this.url, charset);
+        return UriUtils.getReader(this.url, charset);
     }
 
     @Override

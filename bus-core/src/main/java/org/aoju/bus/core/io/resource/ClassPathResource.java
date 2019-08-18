@@ -37,7 +37,7 @@ import org.aoju.bus.core.utils.*;
  * @version 3.0.9
  * @since JDK 1.8
  */
-public class ClassPathResource extends UrlResource {
+public class ClassPathResource extends UriResource {
 
     private String path;
     private ClassLoader classLoader;
@@ -112,7 +112,7 @@ public class ClassPathResource extends UrlResource {
             return this.path;
         }
         // url在初始化的时候已经断言，此处始终不为null
-        return FileUtils.normalize(URLUtils.getDecodedPath(this.url));
+        return FileUtils.normalize(UriUtils.getDecodedPath(this.url));
     }
 
     /**

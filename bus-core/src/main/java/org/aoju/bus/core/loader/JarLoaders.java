@@ -42,12 +42,9 @@ import java.util.List;
  * @version 3.0.9
  * @since JDK 1.8
  */
-public class JarClassLoader extends URLClassLoader {
+public class JarLoaders extends URLClassLoader {
 
-    /**
-     * 构造
-     */
-    public JarClassLoader() {
+    public JarLoaders() {
         this(new URL[]{});
     }
 
@@ -56,7 +53,7 @@ public class JarClassLoader extends URLClassLoader {
      *
      * @param urls 被加载的URL
      */
-    public JarClassLoader(URL[] urls) {
+    public JarLoaders(URL[] urls) {
         super(urls, ClassUtils.getClassLoader());
     }
 
@@ -64,13 +61,11 @@ public class JarClassLoader extends URLClassLoader {
      * 加载Jar到ClassPath
      *
      * @param dir jar文件或所在目录
-     * @return JarClassLoader
+     * @return JarLoaders
      */
-    public static JarClassLoader load(File dir) {
-        final JarClassLoader loader = new JarClassLoader();
-        //查找加载所有jar
+    public static JarLoaders load(File dir) {
+        final JarLoaders loader = new JarLoaders();
         loader.addJar(dir);
-        //查找加载所有class
         loader.addURL(dir);
         return loader;
     }
@@ -79,10 +74,10 @@ public class JarClassLoader extends URLClassLoader {
      * 加载Jar到ClassPath
      *
      * @param jarFile jar文件或所在目录
-     * @return JarClassLoader
+     * @return JarLoaders
      */
-    public static JarClassLoader loadJar(File jarFile) {
-        final JarClassLoader loader = new JarClassLoader();
+    public static JarLoaders loadJar(File jarFile) {
+        final JarLoaders loader = new JarLoaders();
         try {
             loader.addJar(jarFile);
         } finally {
@@ -162,7 +157,7 @@ public class JarClassLoader extends URLClassLoader {
      * @param jarFile jar文件或者jar文件所在目录
      * @return this
      */
-    public JarClassLoader addJar(File jarFile) {
+    public JarLoaders addJar(File jarFile) {
         final List<File> jars = loopJar(jarFile);
         try {
             for (File jar : jars) {
@@ -187,8 +182,8 @@ public class JarClassLoader extends URLClassLoader {
      * @return the jarClassLoader
      * @since 4.4.2
      */
-    public JarClassLoader addURL(File dir) {
-        super.addURL(URLUtils.getURL(dir));
+    public JarLoaders addURL(File dir) {
+        super.addURL(UriUtils.getURL(dir));
         return this;
     }
 

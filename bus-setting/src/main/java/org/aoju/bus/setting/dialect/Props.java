@@ -29,7 +29,7 @@ import org.aoju.bus.core.getter.OptBasicTypeGetter;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
-import org.aoju.bus.core.io.resource.UrlResource;
+import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.watch.SimpleWatcher;
 import org.aoju.bus.core.io.watch.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
@@ -210,7 +210,7 @@ public final class Props extends Properties implements BasicTypeGetter<String>, 
         if (null != charset) {
             this.charset = charset;
         }
-        this.load(new UrlResource(propertiesUrl));
+        this.load(new UriResource(propertiesUrl));
     }
 
     /**
@@ -259,7 +259,7 @@ public final class Props extends Properties implements BasicTypeGetter<String>, 
     /**
      * 初始化配置文件
      *
-     * @param urlResource {@link UrlResource}
+     * @param urlResource {@link UriResource}
      */
     public void load(Resource urlResource) {
         this.propertiesFileUrl = urlResource.getUrl();
@@ -277,7 +277,7 @@ public final class Props extends Properties implements BasicTypeGetter<String>, 
      * 重新加载配置文件
      */
     public void load() {
-        this.load(new UrlResource(this.propertiesFileUrl));
+        this.load(new UriResource(this.propertiesFileUrl));
     }
 
     /**

@@ -63,7 +63,7 @@ public class WatchUtils {
      * @return 监听对象
      */
     public static WatchMonitor create(URL url, int maxDepth, WatchEvent.Kind<?>... events) {
-        return create(URLUtils.toURI(url), maxDepth, events);
+        return create(UriUtils.toURI(url), maxDepth, events);
     }
 
     /**
@@ -178,7 +178,7 @@ public class WatchUtils {
      * @return {@link WatchMonitor}
      */
     public static WatchMonitor createAll(URL url, int maxDepth, Watcher watcher) {
-        return createAll(URLUtils.toURI(url), maxDepth, watcher);
+        return createAll(UriUtils.toURI(url), maxDepth, watcher);
     }
 
     /**

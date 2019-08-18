@@ -23,23 +23,62 @@
  */
 package org.aoju.bus.core.loader;
 
+import org.aoju.bus.core.io.resource.Resource;
+
+import java.io.IOException;
+import java.util.Enumeration;
+
 /**
- * 对象加载抽象接口
- * 通过实现此接口自定义实现对象的加载方式，例如懒加载机制、多线程加载等
+ * 资源加载器，充分采用惰性加载的逻辑，
+ * 让资源的加载延后到{@link Enumeration#hasMoreElements()}
+ * 调用时，避免无用的提前全部预加载。
  *
- * @param <T> 对象类型
  * @author Kimi Liu
  * @version 3.0.9
  * @since JDK 1.8
  */
-public interface Loader<T> {
+public interface Loader {
 
     /**
-     * 获取一个准备好的对象
-     * 通过准备逻辑准备好被加载的对象，然后返回。在准备完毕之前此方法应该被阻塞
+     * 加载指定路径的所有资源，等效于Loader.load(path, false, Filters.ALWAYS)的调用。
+     * 通常情况下不递归加载，但是子类可以改变此方法的行为，
+     * 例如ANT风格路径的资源加载器可以根据传入表达式来判断是否递归加载。
      *
-     * @return 加载完毕的对象
+     * @param path 资源路径
+     * @return 资源对象
+     * @throws IOException I/O 异常
      */
-    T get();
+    Enumeration<Resource> load(String path) throws IOException;
+
+    /**
+     * 加载指定路径的所有资源，等效于Loader.load(path, recursively, Filters.ALWAYS)的调用。
+     *
+     * @param path        资源路径
+     * @param recursively 递归加载
+     * @return 资源枚举器
+     * @throws IOException I/O 异常
+     */
+    Enumeration<Resource> load(String path, boolean recursively) throws IOException;
+
+    /**
+     * 加载指定路径的所有满足过滤条件的资源，等效于Loader.load(path, true, filter)的调用。
+     *
+     * @param path   资源路径
+     * @param filter 过滤器
+     * @return 资源枚举器
+     * @throws IOException I/O 异常
+     */
+    Enumeration<Resource> load(String path, Filter filter) throws IOException;
+
+    /**
+     * 加载指定路径的所有满足过滤条件的资源。
+     *
+     * @param path        资源路径
+     * @param recursively 递归加载
+     * @param filter      过滤器
+     * @return 资源枚举器
+     * @throws IOException I/O 异常
+     */
+    Enumeration<Resource> load(String path, boolean recursively, Filter filter) throws IOException;
 
 }

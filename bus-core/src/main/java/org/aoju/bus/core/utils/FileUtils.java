@@ -425,7 +425,7 @@ public class FileUtils {
      * @return File
      */
     public static File file(URL url) {
-        return new File(URLUtils.toURI(url));
+        return new File(UriUtils.toURI(url));
     }
 
     /**
@@ -1098,7 +1098,7 @@ public class FileUtils {
 
         final URL url = ResourceUtils.getResource(normalPath, baseClass);
         if (null != url) {
-            return FileUtils.normalize(URLUtils.getDecodedPath(url));
+            return FileUtils.normalize(UriUtils.getDecodedPath(url));
         }
 
         final String classPath = ClassUtils.getClassPath();
