@@ -37,7 +37,7 @@ import java.util.Arrays;
  * 两个半部分，描述段如何组成这个字节字符串。
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 final class SegmentedByteString extends ByteString {

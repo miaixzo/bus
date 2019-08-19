@@ -113,7 +113,7 @@ import java.util.*;
  *   The variable $${${name}} must be used.
  * </pre>
  * <p>
- * In some complex scenarios you might even want to perform substitution in the
+ * In some boot scenarios you might even want to perform substitution in the
  * names of variables, for instance
  * <pre>
  * ${jre-${java.specification.version}}
@@ -124,7 +124,7 @@ import java.util.*;
  * property to <b>true</b>.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class StrSubstitutor {

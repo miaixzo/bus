@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 日志工厂类
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @see Slf4jLogFactory
  * @see Log4j2LogFactory
  * @see Log4jLogFactory

@@ -26,8 +26,8 @@ package org.aoju.bus.spring.limiter;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.limiter.LimiterAnnotationParser;
-import org.aoju.bus.limiter.interceptor.BeanFactoryLimitedResourceSourceAdvisor;
-import org.aoju.bus.limiter.interceptor.LimiterInterceptor;
+import org.aoju.bus.limiter.intercept.BeanFactoryLimitedResourceSourceAdvisor;
+import org.aoju.bus.limiter.intercept.LimiterInterceptor;
 import org.aoju.bus.limiter.source.DefaultLimitedResourceSource;
 import org.aoju.bus.limiter.source.LimitedResourceSource;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)

@@ -2,8 +2,8 @@ package org.aoju.bus.tracer.binding.spring.amqp;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Envelope;
-import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.Backend;
+import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.aoju.bus.tracer.consts.TraceConsts;
 import org.springframework.amqp.core.MessageProperties;

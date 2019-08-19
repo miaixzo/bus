@@ -29,7 +29,7 @@ package org.aoju.bus.socket.origin.aio;
  *
  * @param <T> 经过解码器解码后的数据类型
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public interface IoAction<T> {

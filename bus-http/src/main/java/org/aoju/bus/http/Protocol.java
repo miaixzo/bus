@@ -35,7 +35,7 @@ import java.io.IOException;
  * are framed.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public enum Protocol {
@@ -87,7 +87,7 @@ public enum Protocol {
      * HTTP/1.1 semantics are layered on HTTP/2.
      *
      * <p>QUIC is not natively supported by HttpClient, but provided to allow a theoretical
-     * interceptor that provides support.
+     * intercept that provides support.
      */
     QUIC("quic");
 

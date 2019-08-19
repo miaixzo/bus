@@ -35,7 +35,7 @@ import java.util.Set;
  * A simple index that of trusted root certificates that have been loaded into memory.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public final class BasicTrustRootIndex implements TrustRootIndex {

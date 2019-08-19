@@ -56,7 +56,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class FileUtils {
@@ -70,7 +70,7 @@ public class FileUtils {
      * 是否为Windows环境
      *
      * @return 是否为Windows环境
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static boolean isWindows() {
         return Symbol.C_BACKSLASH == File.separatorChar;
@@ -747,7 +747,7 @@ public class FileUtils {
      * @param directory 文件夹
      * @return 成功与否
      * @throws CommonException 异常
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static boolean clean(File directory) throws CommonException {
         if (directory == null || directory.exists() == false || false == directory.isDirectory()) {
@@ -1044,7 +1044,7 @@ public class FileUtils {
      * @param isRetainExt 是否保留原文件的扩展名，如果保留，则newName不需要加扩展名
      * @param isOverride  是否覆盖目标文件
      * @return 目标文件
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
@@ -1350,7 +1350,7 @@ public class FileUtils {
      * @param file1 文件1
      * @param file2 文件2
      * @return 文件路径是否相同
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static boolean pathEquals(File file1, File file2) {
         if (isWindows()) {

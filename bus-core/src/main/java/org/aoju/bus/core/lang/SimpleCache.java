@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class SimpleCache<K, V> {

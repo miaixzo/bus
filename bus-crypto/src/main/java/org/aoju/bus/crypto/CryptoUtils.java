@@ -87,7 +87,7 @@ import java.util.Map;
  * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public final class CryptoUtils {
@@ -1133,7 +1133,7 @@ public final class CryptoUtils {
      * 生成新的私钥公钥对
      *
      * @return {@link RSA}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static RSA rsa() {
         return new RSA();
@@ -1147,7 +1147,7 @@ public final class CryptoUtils {
      * @param privateKeyBase64 私钥Base64
      * @param publicKeyBase64  公钥Base64
      * @return {@link RSA}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static RSA rsa(String privateKeyBase64, String publicKeyBase64) {
         return new RSA(privateKeyBase64, publicKeyBase64);
@@ -1161,7 +1161,7 @@ public final class CryptoUtils {
      * @param privateKey 私钥
      * @param publicKey  公钥
      * @return {@link RSA}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static RSA rsa(byte[] privateKey, byte[] publicKey) {
         return new RSA(privateKey, publicKey);

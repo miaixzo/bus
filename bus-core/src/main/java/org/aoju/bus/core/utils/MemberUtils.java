@@ -45,7 +45,7 @@ import java.util.Set;
  * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 abstract class MemberUtils {
@@ -683,7 +683,7 @@ abstract class MemberUtils {
      * @param scale        精确度，如果为负值，取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static BigDecimal div(BigDecimal v1, BigDecimal v2, int scale, RoundingMode roundingMode) {
         Assert.notNull(v2, "Divisor must be not null !");
@@ -955,7 +955,7 @@ abstract class MemberUtils {
      *                </ul>
      * @param value   值
      * @return 格式化后的值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String decimalFormat(String pattern, long value) {
         return new DecimalFormat(pattern).format(value);
@@ -966,7 +966,7 @@ abstract class MemberUtils {
      *
      * @param value 金额
      * @return 格式化后的值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String decimalFormatMoney(double value) {
         return decimalFormat(",##0.00", value);
@@ -1778,7 +1778,7 @@ abstract class MemberUtils {
      * @param number       A Number
      * @param defaultValue 如果number参数为{@code null}，返回此默认值
      * @return A String.
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String toStr(Number number, String defaultValue) {
         return (null == number) ? defaultValue : toStr(number);
@@ -1844,7 +1844,7 @@ abstract class MemberUtils {
      * @param total 总数
      * @param part  每份的个数
      * @return 分成了几份
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static int count(int total, int part) {
         return (total % part == 0) ? (total / part) : (total / part + 1);
@@ -1855,7 +1855,7 @@ abstract class MemberUtils {
      *
      * @param decimal {@link BigDecimal}，可以为{@code null}
      * @return {@link BigDecimal}参数为空时返回0的值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static BigDecimal null2Zero(BigDecimal decimal) {
 

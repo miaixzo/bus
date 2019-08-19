@@ -33,8 +33,8 @@ import java.lang.annotation.*;
  * 在被拦截方法的入参上使用，表明为全局校验异常.
  * 在对象内部校验的字段上标记，表明为字段异常.
  * 在校验器注解的定义上标记，表明为校验器异常.
- *
- *
+ * <p>
+ * <p>
  * 校验异常说明：
  * 当校验失败时，如果定义了全局校验异常，则抛出全局校验异常；
  * 然后判断如果定义了字段异常，则抛出字段异常；
@@ -43,7 +43,7 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 @Documented

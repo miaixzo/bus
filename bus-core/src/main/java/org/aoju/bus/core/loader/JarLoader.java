@@ -24,6 +24,8 @@
 package org.aoju.bus.core.loader;
 
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.utils.UriUtils;
@@ -40,7 +42,7 @@ import java.util.jar.JarFile;
  * Jar包资源加载器
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class JarLoader extends ResourceLoader implements Loader {
@@ -49,7 +51,7 @@ public class JarLoader extends ResourceLoader implements Loader {
     private final JarFile jarFile;
 
     public JarLoader(File file) throws IOException {
-        this(new URL("jar:" + file.toURI().toURL() + "!/"), new JarFile(file));
+        this(new URL("jar:" + file.toURI().toURL() + Normal.JAR_URL_SEPARATOR), new JarFile(file));
     }
 
     public JarLoader(URL jarURL) throws IOException {
@@ -68,8 +70,8 @@ public class JarLoader extends ResourceLoader implements Loader {
     }
 
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) {
-        while (path.startsWith("/")) path = path.substring(1);
-        while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
+        while (path.startsWith(Symbol.SLASH)) path = path.substring(1);
+        while (path.endsWith(Symbol.SLASH)) path = path.substring(0, path.length() - 1);
         return new Enumerator(context, jarFile, path, recursively, filter != null ? filter : Filters.ALWAYS);
     }
 
@@ -85,7 +87,7 @@ public class JarLoader extends ResourceLoader implements Loader {
         Enumerator(URL context, JarFile jarFile, String path, boolean recursively, Filter filter) {
             this.context = context;
             this.path = path;
-            this.folder = path.endsWith("/") || path.length() == 0 ? path : path + "/";
+            this.folder = path.endsWith(Symbol.SLASH) || path.length() == 0 ? path : path + Symbol.SLASH;
             this.recursively = recursively;
             this.filter = filter;
             this.entries = jarFile.entries();
@@ -103,9 +105,9 @@ public class JarLoader extends ResourceLoader implements Loader {
                 String name = jarEntry.getName();
                 if (name.equals(path)
                         || (recursively && name.startsWith(folder))
-                        || (!recursively && name.startsWith(folder) && name.indexOf('/', folder.length()) < 0)) {
+                        || (!recursively && name.startsWith(folder) && name.indexOf(Symbol.SLASH, folder.length()) < 0)) {
                     try {
-                        URL url = new URL(context, UriUtils.encode(name, Charset.DEFAULT_UTF_8));
+                        URL url = new URL(context, UriUtils.encodePath(name, Charset.UTF_8));
                         if (filter.filtrate(name, url)) {
                             next = new UriResource(url, name);
                             return true;

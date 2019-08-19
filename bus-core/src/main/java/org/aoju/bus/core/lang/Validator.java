@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class Validator {
@@ -681,7 +681,7 @@ public class Validator {
      *
      * @param value 值
      * @return 是否为中国车牌号
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static boolean isPlateNumber(String value) {
         return isMactchRegex(RegEx.PLATE_NUMBER, value);
@@ -693,7 +693,7 @@ public class Validator {
      * @param value    值
      * @param errorMsg 验证错误的信息
      * @throws CommonException 验证异常
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static void validatePlateNumber(String value, String errorMsg) throws CommonException {
         if (false == isPlateNumber(value)) {

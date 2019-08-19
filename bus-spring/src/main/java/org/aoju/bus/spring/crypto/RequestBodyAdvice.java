@@ -46,7 +46,7 @@ import java.lang.reflect.Type;
  * 对加了@Decrypt的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class RequestBodyAdvice extends BaseAdvice
@@ -57,13 +57,13 @@ public class RequestBodyAdvice extends BaseAdvice
 
 
     /**
-     * Invoked first to determine if this interceptor applies.
+     * Invoked first to determine if this intercept applies.
      *
      * @param parameter     the method parameter
      * @param type          the target type, not necessarily the same as the method
      *                      parameter type, e.g. for {@code HttpEntity<String>}.
      * @param converterType the selected converter type
-     * @return whether this interceptor should be invoked or not
+     * @return whether this intercept should be invoked or not
      */
     @Override
     public boolean supports(MethodParameter parameter,

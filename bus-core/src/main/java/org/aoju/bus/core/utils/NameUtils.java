@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * 生成姓名
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public abstract class NameUtils {
@@ -38,6 +38,13 @@ public abstract class NameUtils {
     private static ArrayList<String> entailList = new ArrayList<>();
     private static ArrayList<String> cnSurnameList = new ArrayList<>();
     private static ArrayList<String> cnNameList = new ArrayList<>();
+
+    static {
+        initEnHeadList();
+        initEntailList();
+        initCnSurnameList();
+        initCnNameList();
+    }
 
     public static String getEnName() {
         String head = enHeadList.get((int) (Math.random() * enHeadList.size()));
@@ -6936,12 +6943,5 @@ public abstract class NameUtils {
         cnNameList.add("忆曼");
         cnNameList.add("碧莹");
         cnNameList.add("思山");
-    }
-
-    static {
-        initEnHeadList();
-        initEntailList();
-        initCnSurnameList();
-        initCnNameList();
     }
 }

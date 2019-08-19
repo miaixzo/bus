@@ -53,7 +53,7 @@ import java.util.zip.Checksum;
  * IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class IoUtils {
@@ -374,7 +374,7 @@ public class IoUtils {
      *
      * @param reader 普通Reader，如果为null返回null
      * @return {@link BufferedReader} or null
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static BufferedReader getReader(Reader reader) {
         if (null == reader) {
@@ -710,7 +710,7 @@ public class IoUtils {
      * @param charset     {@link Charset}编码
      * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
      * @throws InstrumentException 异常
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static void readLines(InputStream in, Charset charset, LineHandler lineHandler) throws InstrumentException {
         readLines(getReader(in, charset), lineHandler);
@@ -900,7 +900,7 @@ public class IoUtils {
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
      * @throws InstrumentException 异常
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static void write(OutputStream out, Charset charset, boolean isCloseOut, Object... contents) throws InstrumentException {
         OutputStreamWriter osw = null;

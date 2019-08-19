@@ -21,26 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter.interceptor;
+package org.aoju.bus.forest.provider;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
+import org.aoju.bus.forest.Complex;
 
 /**
+ * 记录可过滤的解密器
+ *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
-public class LimiterInterceptor extends LimiterAspectSupport implements MethodInterceptor, Serializable {
+public abstract class EntryDecryptorProvider<E> extends WrappedDecryptorProvider implements DecryptorProvider, Complex<E> {
 
-    @Override
-    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        Method method = methodInvocation.getMethod();
-        return execute(methodInvocation, methodInvocation.getThis(), method, methodInvocation.getArguments());
+    protected final Complex<E> filter;
+    protected final NopDecryptorProvider xNopDecryptor = new NopDecryptorProvider();
+
+    protected EntryDecryptorProvider(DecryptorProvider decryptorProvider) {
+        this(decryptorProvider, null);
     }
 
+    protected EntryDecryptorProvider(DecryptorProvider decryptorProvider, Complex<E> filter) {
+        super(decryptorProvider);
+        this.filter = filter;
+    }
+
+    @Override
+    public boolean on(E entry) {
+        return filter == null || filter.on(entry);
+    }
 }

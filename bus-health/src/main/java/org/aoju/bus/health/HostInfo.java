@@ -32,7 +32,7 @@ import java.util.Enumeration;
  * 代表当前主机的信息。
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class HostInfo {
@@ -56,32 +56,6 @@ public class HostInfo {
 
         HOST_NAME = hostName;
         HOST_ADDRESS = hostAddress;
-    }
-
-    /**
-     * 取得当前主机的名称。
-     *
-     * <p>
-     * 例如：<code>"webserver1"</code>
-     * </p>
-     *
-     * @return 主机名
-     */
-    public final String getName() {
-        return HOST_NAME;
-    }
-
-    /**
-     * 取得当前主机的地址。
-     *
-     * <p>
-     * 例如：<code>"192.168.0.1"</code>
-     * </p>
-     *
-     * @return 主机地址
-     */
-    public final String getAddress() {
-        return HOST_ADDRESS;
     }
 
     /**
@@ -124,6 +98,32 @@ public class HostInfo {
             unknownHostException.initCause(e);
             throw unknownHostException;
         }
+    }
+
+    /**
+     * 取得当前主机的名称。
+     *
+     * <p>
+     * 例如：<code>"webserver1"</code>
+     * </p>
+     *
+     * @return 主机名
+     */
+    public final String getName() {
+        return HOST_NAME;
+    }
+
+    /**
+     * 取得当前主机的地址。
+     *
+     * <p>
+     * 例如：<code>"192.168.0.1"</code>
+     * </p>
+     *
+     * @return 主机地址
+     */
+    public final String getAddress() {
+        return HOST_ADDRESS;
     }
 
     /**

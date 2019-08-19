@@ -34,7 +34,7 @@ import java.util.UUID;
 
 /**
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 @Data
@@ -59,15 +59,6 @@ public class UploadObject {
         }
     }
 
-    public static String parseFileName(String filePath) {
-        filePath = filePath.split("\\?")[0];
-        int index = filePath.lastIndexOf("/") + 1;
-        if (index > 0) {
-            return filePath.substring(index);
-        }
-        return filePath;
-    }
-
     public UploadObject(File file) {
         this.fileName = file.getName();
         this.file = file;
@@ -88,6 +79,15 @@ public class UploadObject {
         this.fileName = fileName;
         this.bytes = bytes;
         this.mimeType = mimeType;
+    }
+
+    public static String parseFileName(String filePath) {
+        filePath = filePath.split("\\?")[0];
+        int index = filePath.lastIndexOf("/") + 1;
+        if (index > 0) {
+            return filePath.substring(index);
+        }
+        return filePath;
     }
 
     public String getFileName() {

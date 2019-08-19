@@ -27,7 +27,7 @@ package org.aoju.bus.core.loader;
  * ANT风格路径过滤器
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class AntFilter extends RegexFilter implements Filter {

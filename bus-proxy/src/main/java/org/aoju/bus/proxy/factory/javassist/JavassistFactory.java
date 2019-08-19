@@ -39,7 +39,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class JavassistFactory extends AbstractSubclassingFactory {
@@ -126,14 +126,14 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                 JavassistUtils.addInterfaces(proxyClass, toInterfaces(proxyClasses));
                 JavassistUtils.addField(Method[].class, "methods", proxyClass);
                 JavassistUtils.addField(Object.class, "target", proxyClass);
-                JavassistUtils.addField(Interceptor.class, "interceptor", proxyClass);
+                JavassistUtils.addField(Interceptor.class, "intercept", proxyClass);
                 final CtConstructor proxyConstructor = new CtConstructor(
                         JavassistUtils.resolve(
                                 new Class[]{Method[].class, Object.class, Interceptor.class}),
                         proxyClass);
                 proxyConstructor
                         .setBody(
-                                "{\n\tthis.methods = $1;\n\tthis.target = $2;\n\tthis.interceptor = $3; }");
+                                "{\n\tthis.methods = $1;\n\tthis.target = $2;\n\tthis.intercept = $3; }");
                 proxyClass.addConstructor(proxyConstructor);
                 for (int i = 0; i < methods.length; ++i) {
                     final CtMethod method = new CtMethod(JavassistUtils.resolve(methods[i].getReturnType()),
@@ -142,7 +142,7 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                             proxyClass);
                     final Class invocationClass = JavassistInvocation
                             .getMethodInvocationClass(classLoader, methods[i]);
-                    final String body = "{\n\t return ( $r ) interceptor.intercept( new " + invocationClass.getName() +
+                    final String body = "{\n\t return ( $r ) intercept.intercept( new " + invocationClass.getName() +
                             "( methods[" + i + "], target, $args ) );\n }";
                     method.setBody(body);
                     proxyClass.addMethod(method);

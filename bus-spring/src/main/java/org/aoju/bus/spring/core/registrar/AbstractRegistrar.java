@@ -59,7 +59,7 @@ import java.util.Set;
  * 3.参考@FeignClient的用法</p>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public abstract class AbstractRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
@@ -130,7 +130,7 @@ public abstract class AbstractRegistrar implements ImportBeanDefinitionRegistrar
         } catch (ClassNotFoundException e) {
             Logger.error("Get interface for name error", e);
         }
-        definition.addPropertyValue("interceptor", getInterceptor(beanDefinition.getPropertyValues()));
+        definition.addPropertyValue("intercept", getInterceptor(beanDefinition.getPropertyValues()));
 
         definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
 

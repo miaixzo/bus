@@ -35,7 +35,7 @@ import java.util.Map;
  * <p>Description: </p>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class RelaxedPropertyResolver implements PropertyResolver {
@@ -147,7 +147,7 @@ public class RelaxedPropertyResolver implements PropertyResolver {
      * specified key. NOTE: this method can only be used if the underlying resolver is a
      * {@link ConfigurableEnvironment}.
      *
-     * @param keyPrefix the key prefix used to filter results
+     * @param keyPrefix the key prefix used to boot results
      * @return a map of all sub properties starting with the specified key prefix.
      * @see PropertySourceUtils#getSubProperties
      */

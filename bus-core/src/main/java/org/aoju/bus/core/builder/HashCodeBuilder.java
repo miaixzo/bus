@@ -106,7 +106,7 @@ import java.util.Set;
  * used by the <code>reflectionHashCode</code> methods.</p>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class HashCodeBuilder implements Builder<Integer> {

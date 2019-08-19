@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.spring.socket;
 
-import org.aoju.bus.socket.netty.annotation.WebSocket;
 import org.aoju.bus.socket.netty.CustomizeEventHandler;
 import org.aoju.bus.socket.netty.EventHandler;
 import org.aoju.bus.socket.netty.SocketService;
+import org.aoju.bus.socket.netty.annotation.WebSocket;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 @Component

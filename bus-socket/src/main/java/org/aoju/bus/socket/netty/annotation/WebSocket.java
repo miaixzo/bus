@@ -27,7 +27,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 @Target(ElementType.TYPE)
@@ -41,5 +41,5 @@ public @interface WebSocket {
      * @return the string
      */
     String value() default "";
-    
+
 }

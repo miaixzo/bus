@@ -120,7 +120,7 @@ import java.util.concurrent.TimeUnit;
  * remain idle.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
@@ -296,10 +296,10 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
         this.pingInterval = builder.pingInterval;
 
         if (interceptors.contains(null)) {
-            throw new IllegalStateException("Null interceptor: " + interceptors);
+            throw new IllegalStateException("Null intercept: " + interceptors);
         }
         if (networkInterceptors.contains(null)) {
-            throw new IllegalStateException("Null network interceptor: " + networkInterceptors);
+            throw new IllegalStateException("Null network intercept: " + networkInterceptors);
         }
     }
 
@@ -754,7 +754,7 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
         }
 
         public Builder addInterceptor(Interceptor interceptor) {
-            if (interceptor == null) throw new IllegalArgumentException("interceptor == null");
+            if (interceptor == null) throw new IllegalArgumentException("intercept == null");
             interceptors.add(interceptor);
             return this;
         }
@@ -764,7 +764,7 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
         }
 
         public Builder addNetworkInterceptor(Interceptor interceptor) {
-            if (interceptor == null) throw new IllegalArgumentException("interceptor == null");
+            if (interceptor == null) throw new IllegalArgumentException("intercept == null");
             networkInterceptors.add(interceptor);
             return this;
         }

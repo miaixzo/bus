@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 时长格式化器
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class BetweenFormat {
@@ -54,7 +54,7 @@ public class BetweenFormat {
      * @param betweenMs 日期间隔
      * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
      */
-    public BetweenFormat(long betweenMs, Fields.Level  level) {
+    public BetweenFormat(long betweenMs, Fields.Level level) {
         this(betweenMs, level, 0);
     }
 

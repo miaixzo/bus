@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class CommandExecutor {
@@ -41,5 +41,5 @@ public class CommandExecutor {
     public static void execute(Runnable command) {
         executor.execute(command);
     }
-    
+
 }

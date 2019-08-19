@@ -34,15 +34,15 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "request.xss.filter")
+@ConfigurationProperties(prefix = "request.xss.boot")
 public class XssProperties {
 
     private int order;
-    private String name = "xss-filter";
+    private String name = "xss-boot";
     private Map<String, String> initParameters = new LinkedHashMap<>();
     private Set<String> servletNames = new LinkedHashSet<>();
     private Set<ServletRegistrationBean<?>> servletRegistrationBeans = new LinkedHashSet<>();

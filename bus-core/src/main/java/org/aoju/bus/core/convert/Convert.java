@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class Convert {
@@ -808,7 +808,7 @@ public class Convert {
      *
      * @param number {@link Number}对象
      * @return 英文表达式
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String numberToWord(Number number) {
         return NumberWordFormater.format(number);

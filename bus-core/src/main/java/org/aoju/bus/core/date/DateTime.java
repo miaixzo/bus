@@ -42,7 +42,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class DateTime extends Date {
@@ -341,7 +341,7 @@ public class DateTime extends Date {
      * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）
      * 如果一周的第一天为周一，那这天是第一周（返回1）
      *
-     * @return 周 
+     * @return 周
      */
     public int weekOfMonth() {
         return getField(Fields.DateField.WEEK_OF_MONTH);
@@ -592,7 +592,7 @@ public class DateTime extends Date {
      *
      * @param date 日期
      * @return 是否在给定日期之前或与给定日期相等
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public boolean isBeforeOrEquals(Date date) {
         if (null == date) {
@@ -620,7 +620,7 @@ public class DateTime extends Date {
      *
      * @param date 日期
      * @return 是否在给定日期之后或与给定日期相等
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public boolean isAfterOrEquals(Date date) {
         if (null == date) {

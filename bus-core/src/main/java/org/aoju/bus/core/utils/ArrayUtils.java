@@ -40,7 +40,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class ArrayUtils {
@@ -7844,7 +7844,7 @@ public class ArrayUtils {
      * @return 转换后的数组类型
      * @throws NullPointerException     提供参数为空
      * @throws IllegalArgumentException 参数arrayObj不是数组
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static Object[] cast(Class<?> type, Object arrayObj) throws NullPointerException, IllegalArgumentException {
         if (null == arrayObj) {
@@ -8041,7 +8041,7 @@ public class ArrayUtils {
      * @param destPos 目标数组开始位置
      * @param length  拷贝数组长度
      * @return 目标数组
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static Object copy(Object src, int srcPos, Object dest, int destPos, int length) {
         System.arraycopy(src, srcPos, dest, destPos, length);
@@ -8056,7 +8056,7 @@ public class ArrayUtils {
      * @param dest   目标数组
      * @param length 拷贝数组长度
      * @return 目标数组
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static Object copy(Object src, Object dest, int length) {
         System.arraycopy(src, 0, dest, 0, length);
@@ -8970,7 +8970,7 @@ public class ArrayUtils {
      * @param collection    集合
      * @param componentType 集合元素类型
      * @return 数组
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <T> T[] toArray(Collection<T> collection, Class<T> componentType) {
         T[] array = newArray(componentType, collection.size());
@@ -8983,7 +8983,7 @@ public class ArrayUtils {
      * @param <T>         元素类型
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <T extends Comparable<? super T>> T min(T[] numberArray) {
         if (isEmpty(numberArray)) {
@@ -9003,7 +9003,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static long min(long... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9023,7 +9023,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static int min(int... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9043,7 +9043,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static short min(short... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9063,7 +9063,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static char min(char... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9083,7 +9083,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static byte min(byte... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9103,7 +9103,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static double min(double... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9123,7 +9123,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static float min(float... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9144,7 +9144,7 @@ public class ArrayUtils {
      * @param <T>         元素类型
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <T extends Comparable<? super T>> T max(T[] numberArray) {
         if (isEmpty(numberArray)) {
@@ -9164,7 +9164,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static long max(long... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9184,7 +9184,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static int max(int... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9204,7 +9204,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static short max(short... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9224,7 +9224,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static char max(char... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9244,7 +9244,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static byte max(byte... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9264,7 +9264,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static double max(double... numberArray) {
         if (isEmpty(numberArray)) {
@@ -9284,7 +9284,7 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static float max(float... numberArray) {
         if (isEmpty(numberArray)) {

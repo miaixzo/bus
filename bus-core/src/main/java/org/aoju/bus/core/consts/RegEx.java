@@ -31,7 +31,7 @@ import java.util.Set;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class RegEx {

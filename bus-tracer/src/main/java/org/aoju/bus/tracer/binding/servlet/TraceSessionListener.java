@@ -1,7 +1,7 @@
 package org.aoju.bus.tracer.binding.servlet;
 
-import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.Backend;
+import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.consts.TraceConsts;
 
 import javax.servlet.annotation.WebListener;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 /**
- * Warning: This filter assumes that the HttpSessionListener is executed on the same thread as the request handling.
+ * Warning: This boot assumes that the HttpSessionListener is executed on the same thread as the request handling.
  * This might not work for every servlet container.
  * It should at least work for the following containers:
  * <ul>

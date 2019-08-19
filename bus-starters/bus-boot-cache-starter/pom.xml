@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot-cache-starter</artifactId>
-    <version>3.0.9</version>
+    <version>3.1.0</version>
     <packaging>jar</packaging>
 
     <name>bus-boot-cache-starter</name>

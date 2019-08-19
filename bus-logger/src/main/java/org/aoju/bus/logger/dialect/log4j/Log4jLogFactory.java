@@ -30,7 +30,7 @@ import org.aoju.bus.logger.LogFactory;
  * Apache Log4J log.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class Log4jLogFactory extends LogFactory {

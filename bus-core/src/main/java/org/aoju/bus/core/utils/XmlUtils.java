@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class XmlUtils {
@@ -67,7 +67,7 @@ public class XmlUtils {
      * @param inputStream XML流
      * @return XML文档对象
      * @throws CommonException IO异常或转换异常
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static Document readXML(InputStream inputStream) throws CommonException {
         return readXML(new InputSource(inputStream));
@@ -79,7 +79,7 @@ public class XmlUtils {
      * @param reader XML流
      * @return XML文档对象
      * @throws CommonException IO异常或转换异常
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static Document readXML(Reader reader) throws CommonException {
         return readXML(new InputSource(reader));
@@ -91,7 +91,7 @@ public class XmlUtils {
      *
      * @param source {@link InputSource}
      * @return XML文档对象
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static Document readXML(InputSource source) {
         final DocumentBuilder builder = createDocumentBuilder();

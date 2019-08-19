@@ -55,7 +55,7 @@ import java.util.zip.GZIPOutputStream;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class StringUtils extends TextUtils {
@@ -2336,7 +2336,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str 被反转的字符串
      * @return 反转后的字符串
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String reverse(String str) {
         char[] chars = str.toCharArray();
@@ -2546,6 +2546,7 @@ public class StringUtils extends TextUtils {
         }
         return str2;
     }
+
     /**
      * 原字符串首字母大写并在其首部添加指定字符串 例如：str=name, preString=get =》 return getName
      *
@@ -2868,7 +2869,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * StringUtils.removeFirst(null, *)      = null
      * StringUtils.removeFirst("any", null)  = "any"
      * StringUtils.removeFirst("any", "")    = "any"
@@ -2897,7 +2898,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * StringUtils.replaceAll(null, *, *)       = null
      * StringUtils.replaceAll("any", null, *)   = "any"
      * StringUtils.replaceAll("any", *, null)   = "any"
@@ -2932,7 +2933,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * StringUtils.replaceFirst(null, *, *)       = null
      * StringUtils.replaceFirst("any", null, *)   = "any"
      * StringUtils.replaceFirst("any", *, null)   = "any"
@@ -2967,7 +2968,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * StringUtils.replace(null, *, *)        = null
      * StringUtils.replace("", *, *)          = ""
      * StringUtils.replace("any", null, *)    = "any"
@@ -3013,7 +3014,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * StringUtils.replace(null, *, *, *)         = null
      * StringUtils.replace("", *, *, *)           = ""
      * StringUtils.replace("any", null, *, *)     = "any"
@@ -3040,7 +3041,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * StringUtils.replace(null, *, *, *, false)         = null
      * StringUtils.replace("", *, *, *, false)           = ""
      * StringUtils.replace("any", null, *, *, false)     = "any"
@@ -3096,7 +3097,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * for the first {@code max} values of the search String.
      * StringUtils.replaceIgnoreCase(null, *, *, *)         = null
      * StringUtils.replaceIgnoreCase("", *, *, *)           = ""
@@ -3124,19 +3125,19 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     *  替换字符串中的指定字符串.
-     *
-     *  StringUtils.replaceEach(null, *, *)        = null
-     *  StringUtils.replaceEach("", *, *)          = ""
-     *  StringUtils.replaceEach("aba", null, null) = "aba"
-     *  StringUtils.replaceEach("aba", new String[0], null) = "aba"
-     *  StringUtils.replaceEach("aba", null, new String[0]) = "aba"
-     *  StringUtils.replaceEach("aba", new String[]{"a"}, null)  = "aba"
-     *  StringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""})  = "b"
-     *  StringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"})  = "aba"
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"})  = "wcte"
-     *  (example of how it does not repeat)
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"})  = "dcte"
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replaceEach(null, *, *)        = null
+     * StringUtils.replaceEach("", *, *)          = ""
+     * StringUtils.replaceEach("aba", null, null) = "aba"
+     * StringUtils.replaceEach("aba", new String[0], null) = "aba"
+     * StringUtils.replaceEach("aba", null, new String[0]) = "aba"
+     * StringUtils.replaceEach("aba", new String[]{"a"}, null)  = "aba"
+     * StringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""})  = "b"
+     * StringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"})  = "aba"
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"})  = "wcte"
+     * (example of how it does not repeat)
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"})  = "dcte"
      *
      * @param text            text to search and replace in, no-op if null
      * @param searchList      the Strings to search for, no-op if null
@@ -3152,20 +3153,20 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     *  替换字符串中的指定字符串.
-     *
-     *  StringUtils.replaceEachRepeatedly(null, *, *) = null
-     *  StringUtils.replaceEachRepeatedly("", *, *) = ""
-     *  StringUtils.replaceEachRepeatedly("aba", null, null) = "aba"
-     *  StringUtils.replaceEachRepeatedly("aba", new String[0], null) = "aba"
-     *  StringUtils.replaceEachRepeatedly("aba", null, new String[0]) = "aba"
-     *  StringUtils.replaceEachRepeatedly("aba", new String[]{"a"}, null) = "aba"
-     *  StringUtils.replaceEachRepeatedly("aba", new String[]{"a"}, new String[]{""}) = "b"
-     *  StringUtils.replaceEachRepeatedly("aba", new String[]{null}, new String[]{"a"}) = "aba"
-     *  StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}) = "wcte"
-     *  (example of how it repeats)
-     *  StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}) = "tcte"
-     *  StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}) = IllegalStateException
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replaceEachRepeatedly(null, *, *) = null
+     * StringUtils.replaceEachRepeatedly("", *, *) = ""
+     * StringUtils.replaceEachRepeatedly("aba", null, null) = "aba"
+     * StringUtils.replaceEachRepeatedly("aba", new String[0], null) = "aba"
+     * StringUtils.replaceEachRepeatedly("aba", null, new String[0]) = "aba"
+     * StringUtils.replaceEachRepeatedly("aba", new String[]{"a"}, null) = "aba"
+     * StringUtils.replaceEachRepeatedly("aba", new String[]{"a"}, new String[]{""}) = "b"
+     * StringUtils.replaceEachRepeatedly("aba", new String[]{null}, new String[]{"a"}) = "aba"
+     * StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}) = "wcte"
+     * (example of how it repeats)
+     * StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}) = "tcte"
+     * StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}) = IllegalStateException
      *
      * @param text            text to search and replace in, no-op if null
      * @param searchList      the Strings to search for, no-op if null
@@ -3186,19 +3187,19 @@ public class StringUtils extends TextUtils {
     /**
      * 替换字符串中的指定字符串.
      * {@link #replaceEachRepeatedly(String, String[], String[])}
-     *  StringUtils.replaceEach(null, *, *, *, *) = null
-     *  StringUtils.replaceEach("", *, *, *, *) = ""
-     *  StringUtils.replaceEach("aba", null, null, *, *) = "aba"
-     *  StringUtils.replaceEach("aba", new String[0], null, *, *) = "aba"
-     *  StringUtils.replaceEach("aba", null, new String[0], *, *) = "aba"
-     *  StringUtils.replaceEach("aba", new String[]{"a"}, null, *, *) = "aba"
-     *  StringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""}, *, >=0) = "b"
-     *  StringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"}, *, >=0) = "aba"
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}, *, >=0) = "wcte"
-     *  (example of how it repeats)
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, false, >=0) = "dcte"
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, true, >=2) = "tcte"
-     *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, *, *) = IllegalStateException
+     * StringUtils.replaceEach(null, *, *, *, *) = null
+     * StringUtils.replaceEach("", *, *, *, *) = ""
+     * StringUtils.replaceEach("aba", null, null, *, *) = "aba"
+     * StringUtils.replaceEach("aba", new String[0], null, *, *) = "aba"
+     * StringUtils.replaceEach("aba", null, new String[0], *, *) = "aba"
+     * StringUtils.replaceEach("aba", new String[]{"a"}, null, *, *) = "aba"
+     * StringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""}, *, >=0) = "b"
+     * StringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"}, *, >=0) = "aba"
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}, *, >=0) = "wcte"
+     * (example of how it repeats)
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, false, >=0) = "dcte"
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, true, >=2) = "tcte"
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, *, *) = IllegalStateException
      *
      * @param text            text to search and replace in, no-op if null
      * @param searchList      the Strings to search for, no-op if null
@@ -3327,7 +3328,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * This is a null-safe version of {@link String#replace(char, char)}.
      * StringUtils.replaceChars(null, *, *)        = null
      * StringUtils.replaceChars("", *, *)          = ""
@@ -3349,7 +3350,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符串中的指定字符串.
-     *
+     * <p>
      * StringUtils.replaceChars(null, *, *)           = null
      * StringUtils.replaceChars("", *, *)             = ""
      * StringUtils.replaceChars("abc", null, *)       = "abc"
@@ -5191,7 +5192,7 @@ public class StringUtils extends TextUtils {
      * @param str        字符串
      * @param partLength 每等份的长度
      * @return 切分后的数组
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String[] cut(CharSequence str, int partLength) {
         if (null == str) {

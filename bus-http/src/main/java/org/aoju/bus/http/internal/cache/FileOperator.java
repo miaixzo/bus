@@ -39,7 +39,7 @@ import java.nio.channels.FileChannel;
  * </ul>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 final class FileOperator {

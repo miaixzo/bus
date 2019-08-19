@@ -47,7 +47,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class CollUtils {
@@ -1507,7 +1507,7 @@ public class CollUtils {
      * @param <E>      集合元素类型
      * @param iterable {@link Iterable}
      * @return {@link Collection} 或者 {@link ArrayList}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <E> Collection<E> toCollection(Iterable<E> iterable) {
         return (iterable instanceof Collection) ? (Collection<E>) iterable : newArrayList(iterable.iterator());
@@ -1883,7 +1883,7 @@ public class CollUtils {
      * @param map  {@link Map}
      * @param keys 键列表
      * @return 值列表
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, Iterable<K> keys) {
         return valuesOfKeys(map, keys.iterator());
@@ -1898,7 +1898,7 @@ public class CollUtils {
      * @param map  {@link Map}
      * @param keys 键列表
      * @return 值列表
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, Iterator<K> keys) {
         final ArrayList<V> values = new ArrayList<>();
@@ -1998,7 +1998,7 @@ public class CollUtils {
      * @param map        Map
      * @param comparator Entry比较器
      * @return {@link TreeMap}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <K, V> TreeMap<K, V> sort(Map<K, V> map, Comparator<? super K> comparator) {
         final TreeMap<K, V> result = new TreeMap<K, V>(comparator);
@@ -2014,7 +2014,7 @@ public class CollUtils {
      * @param entryCollection Entry集合
      * @param comparator      {@link Comparator}
      * @return {@link LinkedList}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <K, V> LinkedHashMap<K, V> sortToMap(Collection<Entry<K, V>> entryCollection, Comparator<Entry<K, V>> comparator) {
         List<Entry<K, V>> list = new LinkedList<>(entryCollection);
@@ -2035,7 +2035,7 @@ public class CollUtils {
      * @param map        被排序的Map
      * @param comparator {@link Comparator}
      * @return {@link LinkedList}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static <K, V> LinkedHashMap<K, V> sortByEntry(Map<K, V> map, Comparator<Entry<K, V>> comparator) {
         return sortToMap(map.entrySet(), comparator);

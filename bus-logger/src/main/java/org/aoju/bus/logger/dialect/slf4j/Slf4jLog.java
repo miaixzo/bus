@@ -36,7 +36,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * 无缝支持 LogBack
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class Slf4jLog extends AbstractAware {
@@ -193,5 +193,5 @@ public class Slf4jLog extends AbstractAware {
     private void locationAwareLog(LocationAwareLogger logger, String fqcn, int level_int, Throwable t, String msgTemplate, Object[] arguments) {
         logger.log(null, fqcn, level_int, StringUtils.format(msgTemplate, arguments), null, t);
     }
-    
+
 }

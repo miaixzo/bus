@@ -45,7 +45,7 @@ import java.util.Map;
  * <p>Description: </p>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public abstract class AbstractAutoScanProxy extends AbstractAutoProxyCreator {
@@ -248,12 +248,12 @@ public abstract class AbstractAutoScanProxy extends AbstractAutoProxyCreator {
                     Logger.info("------------ Proxy Information -----------");
                     Class<? extends MethodInterceptor>[] commonInterceptorClasses = getCommonInterceptors();
                     if (ArrayUtils.isNotEmpty(commonInterceptorClasses)) {
-                        Logger.info("Class [{}] is proxied by core interceptor classes [{}], proxyTargetClass={}", targetClassName, StringUtils.toString(commonInterceptorClasses), proxyTargetClass);
+                        Logger.info("Class [{}] is proxied by core intercept classes [{}], proxyTargetClass={}", targetClassName, StringUtils.toString(commonInterceptorClasses), proxyTargetClass);
                     }
 
                     String[] commonInterceptorNames = getCommonInterceptorNames();
                     if (ArrayUtils.isNotEmpty(commonInterceptorNames)) {
-                        Logger.info("Class [{}] is proxied by core interceptor beans [{}], proxyTargetClass={}", targetClassName, StringUtils.toString(commonInterceptorNames), proxyTargetClass);
+                        Logger.info("Class [{}] is proxied by core intercept beans [{}], proxyTargetClass={}", targetClassName, StringUtils.toString(commonInterceptorNames), proxyTargetClass);
                     }
 
                     if (proxyInterceptors != PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS && ArrayUtils.isNotEmpty(proxyInterceptors)) {

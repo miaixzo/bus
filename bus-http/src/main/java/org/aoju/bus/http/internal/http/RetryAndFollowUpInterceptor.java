@@ -39,11 +39,11 @@ import java.security.cert.CertificateException;
 
 
 /**
- * This interceptor recovers from failures and follows redirects as necessary. It may throw an
+ * This intercept recovers from failures and follows redirects as necessary. It may throw an
  * {@link IOException} if the call was canceled.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public final class RetryAndFollowUpInterceptor implements Interceptor {
@@ -177,7 +177,7 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
                 this.streamAllocation = streamAllocation;
             } else if (streamAllocation.codec() != null) {
                 throw new IllegalStateException("Closing the body of " + response
-                        + " didn't close its backing stream. Bad interceptor?");
+                        + " didn't close its backing stream. Bad intercept?");
             }
 
             request = followUp;

@@ -1,9 +1,9 @@
 package org.aoju.bus.tracer.binding.spring.soap.config;
 
 import org.aoju.bus.tracer.Backend;
-import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.binding.spring.soap.TraceClientInterceptor;
 import org.aoju.bus.tracer.binding.spring.soap.TracendpointInterceptor;
+import org.aoju.bus.tracer.consts.TraceConsts;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;

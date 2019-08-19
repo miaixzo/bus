@@ -78,6 +78,7 @@ public class Resolver {
         private GetClassLoader(final Class<?> clazz) {
             this.clazz = clazz;
         }
+
         public static ClassLoader fromContext() {
             return doPrivileged(new GetClassLoader(null));
         }
@@ -120,5 +121,5 @@ public class Resolver {
         }
 
     }
-    
+
 }

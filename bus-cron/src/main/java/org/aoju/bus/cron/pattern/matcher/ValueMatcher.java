@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.Matcher;
  * 用于匹配日期位中对应数字是否匹配
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public interface ValueMatcher extends Matcher<Integer> {

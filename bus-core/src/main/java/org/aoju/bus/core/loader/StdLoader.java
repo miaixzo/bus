@@ -24,6 +24,8 @@
 package org.aoju.bus.core.loader;
 
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.utils.UriUtils;
 
@@ -41,7 +43,7 @@ import java.util.jar.JarFile;
  * 标准的资源加载器
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class StdLoader extends ResourceLoader implements Loader {
@@ -66,6 +68,7 @@ public class StdLoader extends ResourceLoader implements Loader {
     }
 
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
+
         private final String path;
         private final boolean recursively;
         private final Filter filter;
@@ -77,23 +80,23 @@ public class StdLoader extends ResourceLoader implements Loader {
             this.recursively = recursively;
             this.filter = filter;
             this.urls = load(classLoader, path);
-            this.resources = Collections.enumeration(Collections.emptySet());
+            this.resources = Collections.enumeration(Collections.<Resource>emptySet());
         }
 
         private Enumeration<URL> load(ClassLoader classLoader, String path) throws IOException {
             if (path.length() > 0) {
                 return classLoader.getResources(path);
             } else {
-                Set<URL> set = new LinkedHashSet<URL>();
+                Set<URL> set = new LinkedHashSet<>();
                 set.add(classLoader.getResource(path));
-                Enumeration<URL> urls = classLoader.getResources("META-INF/");
+                Enumeration<URL> urls = classLoader.getResources(Normal.META_DATA_INF + Symbol.C_SLASH);
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();
-                    if (url.getProtocol().equalsIgnoreCase("jar")) {
+                    if (url.getProtocol().equalsIgnoreCase(Normal.URL_PROTOCOL_JAR)) {
                         String spec = url.toString();
-                        int index = spec.lastIndexOf("!/");
+                        int index = spec.lastIndexOf(Normal.JAR_URL_SEPARATOR);
                         if (index < 0) continue;
-                        set.add(new URL(url, spec.substring(0, index + "!/".length())));
+                        set.add(new URL(url, spec.substring(0, index + Normal.JAR_URL_SEPARATOR.length())));
                     }
                 }
                 return Collections.enumeration(set);
@@ -113,9 +116,9 @@ public class StdLoader extends ResourceLoader implements Loader {
                 String protocol = url.getProtocol();
                 if ("file".equalsIgnoreCase(protocol)) {
                     try {
-                        String uri = UriUtils.decode(url.getPath(), Charset.DEFAULT_UTF_8);
+                        String uri = UriUtils.decode(url.getPath(), Charset.UTF_8);
                         String root = uri.substring(0, uri.lastIndexOf(path));
-                        URL context = new URL(url, "file:" + UriUtils.encode(root, Charset.DEFAULT_UTF_8));
+                        URL context = new URL(url, "file:" + UriUtils.encodePath(root, Charset.UTF_8));
                         File file = new File(root);
                         resources = new FileLoader(context, file).load(path, recursively, filter);
                         return hasMoreElements();
@@ -124,9 +127,9 @@ public class StdLoader extends ResourceLoader implements Loader {
                     }
                 } else if ("jar".equalsIgnoreCase(protocol)) {
                     try {
-                        String uri = UriUtils.decode(url.getPath(), Charset.DEFAULT_UTF_8);
+                        String uri = UriUtils.decode(url.getPath(), Charset.UTF_8);
                         String root = uri.substring(0, uri.lastIndexOf(path));
-                        URL context = new URL(url, "jar:" + UriUtils.encode(root, Charset.DEFAULT_UTF_8));
+                        URL context = new URL(url, "jar:" + UriUtils.encodePath(root, Charset.UTF_8));
                         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                         JarFile jarFile = jarURLConnection.getJarFile();
                         resources = new JarLoader(context, jarFile).load(path, recursively, filter);
@@ -139,6 +142,7 @@ public class StdLoader extends ResourceLoader implements Loader {
                 }
             }
         }
+
     }
 
 }

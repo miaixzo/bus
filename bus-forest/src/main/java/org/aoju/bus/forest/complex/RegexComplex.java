@@ -21,40 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter.interceptor;
+package org.aoju.bus.forest.complex;
 
-import org.aoju.bus.limiter.source.LimitedResourceSource;
-import org.springframework.aop.Pointcut;
-import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
+import org.aoju.bus.forest.Complex;
 
+import java.util.regex.Pattern;
 
 /**
- * 实际的切面
+ * 正则表达式规则
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
-public class BeanFactoryLimitedResourceSourceAdvisor extends AbstractBeanFactoryPointcutAdvisor {
+public abstract class RegexComplex<E> implements Complex<E> {
 
-    private LimitedResourceSource limitedResourceSource;
+    protected final Pattern pattern;
 
-    /**
-     * 切点
-     */
-    private final LimitedResourceSourcePointcut pointcut = new LimitedResourceSourcePointcut() {
-        @Override
-        protected LimitedResourceSource getLimitedResourceSource() {
-            return BeanFactoryLimitedResourceSourceAdvisor.this.limitedResourceSource;
-        }
-    };
+    protected RegexComplex(String regex) {
+        this(Pattern.compile(regex));
+    }
 
-    public BeanFactoryLimitedResourceSourceAdvisor(LimitedResourceSource limitedResourceSource) {
-        this.limitedResourceSource = limitedResourceSource;
+    protected RegexComplex(Pattern pattern) {
+        this.pattern = pattern;
     }
 
     @Override
-    public Pointcut getPointcut() {
-        return this.pointcut;
+    public boolean on(E entry) {
+        String text = toText(entry);
+        return pattern.matcher(text).matches();
     }
+
+    /**
+     * 将记录转换成字符串形式，用于模式匹配。
+     *
+     * @param entry 记录
+     * @return 记录的字符串表达形式
+     */
+    protected abstract String toText(E entry);
+
 }

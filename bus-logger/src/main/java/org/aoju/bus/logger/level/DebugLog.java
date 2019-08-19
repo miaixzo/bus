@@ -27,7 +27,7 @@ package org.aoju.bus.logger.level;
  * DEBUG级别日志接口
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public interface DebugLog {
@@ -70,5 +70,5 @@ public interface DebugLog {
      * @param arguments 参数
      */
     void debug(String fqcn, Throwable t, String format, Object... arguments);
-    
+
 }

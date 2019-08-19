@@ -52,7 +52,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class NumberUtils {
@@ -824,7 +824,7 @@ public class NumberUtils {
      *                </ul>
      * @param value   值
      * @return 格式化后的值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String decimalFormat(String pattern, long value) {
         return new DecimalFormat(pattern).format(value);
@@ -835,7 +835,7 @@ public class NumberUtils {
      *
      * @param value 金额
      * @return 格式化后的值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String decimalFormatMoney(double value) {
         return decimalFormat(",###", value);
@@ -1572,7 +1572,7 @@ public class NumberUtils {
      * @param number       A Number
      * @param defaultValue 如果number参数为{@code null}，返回此默认值
      * @return A String.
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static String toStr(Number number, String defaultValue) {
         return (null == number) ? defaultValue : toStr(number);
@@ -1638,7 +1638,7 @@ public class NumberUtils {
      * @param total 总数
      * @param part  每份的个数
      * @return 分成了几份
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static int count(int total, int part) {
         return (total % part == 0) ? (total / part) : (total / part + 1);
@@ -1649,7 +1649,7 @@ public class NumberUtils {
      *
      * @param decimal {@link BigDecimal}，可以为{@code null}
      * @return {@link BigDecimal}参数为空时返回0的值
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static BigDecimal null2Zero(BigDecimal decimal) {
 

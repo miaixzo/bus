@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot-druid-starter</artifactId>
-    <version>3.0.9</version>
+    <version>3.1.0</version>
     <packaging>jar</packaging>
 
     <name>bus-boot-druid-starter</name>

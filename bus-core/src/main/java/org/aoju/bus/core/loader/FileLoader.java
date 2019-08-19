@@ -39,7 +39,7 @@ import java.util.Queue;
  * 文件资源加载器
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class FileLoader extends ResourceLoader implements Loader {
@@ -52,7 +52,7 @@ public class FileLoader extends ResourceLoader implements Loader {
     }
 
     public FileLoader(URL fileURL) {
-        this(fileURL, new File(UriUtils.decode(fileURL.getPath(), Charset.DEFAULT_UTF_8)));
+        this(fileURL, new File(UriUtils.decode(fileURL.getPath(), Charset.UTF_8)));
     }
 
     public FileLoader(URL context, File root) {
@@ -71,7 +71,6 @@ public class FileLoader extends ResourceLoader implements Loader {
     }
 
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
-
         private final URL context;
         private final boolean recursively;
         private final Filter filter;
@@ -81,7 +80,7 @@ public class FileLoader extends ResourceLoader implements Loader {
             this.context = context;
             this.recursively = recursively;
             this.filter = filter;
-            this.queue = new LinkedList<File>();
+            this.queue = new LinkedList<>();
             File file = new File(root, path);
             if (file.isDirectory()) {
                 File[] files = file.listFiles();
@@ -126,7 +125,6 @@ public class FileLoader extends ResourceLoader implements Loader {
             }
             return false;
         }
-
     }
 
 }

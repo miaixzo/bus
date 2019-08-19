@@ -34,7 +34,7 @@ import java.util.Enumeration;
  * 调用时，避免无用的提前全部预加载。
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public interface Loader {
@@ -61,7 +61,7 @@ public interface Loader {
     Enumeration<Resource> load(String path, boolean recursively) throws IOException;
 
     /**
-     * 加载指定路径的所有满足过滤条件的资源，等效于Loader.load(path, true, filter)的调用。
+     * 加载指定路径的所有满足过滤条件的资源，等效于Loader.load(path, true, boot)的调用。
      *
      * @param path   资源路径
      * @param filter 过滤器

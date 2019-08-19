@@ -4,11 +4,11 @@ package org.aopalliance.intercept;
 import java.lang.reflect.Method;
 
 /**
- * Description of an invocation to a method, given to an interceptor
+ * Description of an invocation to a method, given to an intercept
  * upon method-call.
  * <p>
  * A method invocation is a joinpoint and can be intercepted by a method
- * interceptor.
+ * intercept.
  *
  * @see MethodInterceptor
  */

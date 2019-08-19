@@ -33,11 +33,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A concrete interceptor chain that carries the entire interceptor chain: all application
+ * A concrete intercept chain that carries the entire intercept chain: all application
  * interceptors, the httpClient core, all network interceptors, and finally the network caller.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public final class RealInterceptorChain implements Interceptor.Chain {
@@ -147,37 +147,37 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
         // If we already have a stream, confirm that the incoming request will use it.
         if (this.httpCodec != null && !this.connection.supportsUrl(request.url())) {
-            throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
+            throw new IllegalStateException("network intercept " + interceptors.get(index - 1)
                     + " must retain the same host and port");
         }
 
         // If we already have a stream, confirm that this is the only call to chain.proceed().
         if (this.httpCodec != null && calls > 1) {
-            throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
+            throw new IllegalStateException("network intercept " + interceptors.get(index - 1)
                     + " must call proceed() exactly once");
         }
 
-        // Call the next interceptor in the chain.
+        // Call the next intercept in the chain.
         RealInterceptorChain next = new RealInterceptorChain(interceptors, streamAllocation, httpCodec,
                 connection, index + 1, request, call, eventListener, connectTimeout, readTimeout,
                 writeTimeout);
         Interceptor interceptor = interceptors.get(index);
         Response response = interceptor.intercept(next);
 
-        // Confirm that the next interceptor made its required call to chain.proceed().
+        // Confirm that the next intercept made its required call to chain.proceed().
         if (httpCodec != null && index + 1 < interceptors.size() && next.calls != 1) {
-            throw new IllegalStateException("network interceptor " + interceptor
+            throw new IllegalStateException("network intercept " + interceptor
                     + " must call proceed() exactly once");
         }
 
         // Confirm that the intercepted response isn't null.
         if (response == null) {
-            throw new NullPointerException("interceptor " + interceptor + " returned null");
+            throw new NullPointerException("intercept " + interceptor + " returned null");
         }
 
         if (response.body() == null) {
             throw new IllegalStateException(
-                    "interceptor " + interceptor + " returned a response with no body");
+                    "intercept " + interceptor + " returned a response with no body");
         }
 
         return response;

@@ -53,7 +53,7 @@ import java.util.Random;
  * 参考：http://blog.csdn.net/zhangzhikaixinya/article/details/8459400
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class ImageUtils {
@@ -77,7 +77,7 @@ public class ImageUtils {
      * @param srcStream  源图像来源流
      * @param destStream 缩放后的图像写出到的流
      * @param scale      缩放比例。比例大于1时为放大，小于1大于0为缩小
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static void scale(InputStream srcStream, OutputStream destStream, float scale) {
         scale(read(srcStream), destStream, scale);
@@ -508,7 +508,7 @@ public class ImageUtils {
      * @param srcStream  源图像流
      * @param formatName 包含格式非正式名称的 String：如JPG、JPEG、GIF等
      * @param destStream 目标图像输出流
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static void convert(InputStream srcStream, String formatName, OutputStream destStream) {
         write(read(srcStream), formatName, getImageOutputStream(destStream));
@@ -549,7 +549,7 @@ public class ImageUtils {
      *
      * @param srcStream  源图像流
      * @param destStream 目标图像流
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static void gray(InputStream srcStream, OutputStream destStream) {
         gray(read(srcStream), getImageOutputStream(destStream));
@@ -561,7 +561,7 @@ public class ImageUtils {
      *
      * @param srcStream  源图像流
      * @param destStream 目标图像流
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static void gray(ImageInputStream srcStream, ImageOutputStream destStream) {
         gray(read(srcStream), destStream);
@@ -597,7 +597,7 @@ public class ImageUtils {
      * @param srcImage        源图像流
      * @param destImageStream 目标图像流
      * @throws InstrumentException IO异常
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static void gray(java.awt.Image srcImage, ImageOutputStream destImageStream) throws InstrumentException {
         writeJpg(gray(srcImage), destImageStream);
@@ -1273,7 +1273,7 @@ public class ImageUtils {
      *
      * @param fontFile 字体文件
      * @return {@link Font}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static Font createFont(File fontFile) {
         try {
@@ -1296,7 +1296,7 @@ public class ImageUtils {
      *
      * @param fontStream 字体流
      * @return {@link Font}
-     * @since 3.0.9
+     * @since 3.1.0
      */
     public static Font createFont(InputStream fontStream) {
         try {

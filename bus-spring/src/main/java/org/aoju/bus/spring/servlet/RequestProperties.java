@@ -34,15 +34,15 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "request.filter")
+@ConfigurationProperties(prefix = "request.boot")
 public class RequestProperties {
 
     private int order;
-    private String name = "request-filter";
+    private String name = "request-boot";
     /**
      * Flag to indicate that the registration is enabled.
      */

@@ -30,24 +30,24 @@ import org.aoju.bus.logger.LogFactory;
  * Apache Log4J 2 log.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public class Log4j2LogFactory extends LogFactory {
 
-	public Log4j2LogFactory() {
-		super("Log4j2");
-		checkLogExist(org.apache.logging.log4j.LogManager.class);
-	}
+    public Log4j2LogFactory() {
+        super("Log4j2");
+        checkLogExist(org.apache.logging.log4j.LogManager.class);
+    }
 
-	@Override
-	public Log createLog(String name) {
-		return new Log4j2Log(name);
-	}
+    @Override
+    public Log createLog(String name) {
+        return new Log4j2Log(name);
+    }
 
-	@Override
-	public Log createLog(Class<?> clazz) {
-		return new Log4j2Log(clazz);
-	}
+    @Override
+    public Log createLog(Class<?> clazz) {
+        return new Log4j2Log(clazz);
+    }
 
 }

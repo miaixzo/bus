@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 @Retention(RetentionPolicy.RUNTIME)

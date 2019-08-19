@@ -72,7 +72,7 @@ public class SoapHeaderTransport {
     public void renderSoapHeader(final Map<String, String> context, final Result result) {
         renderSoapHeader(RESULT_MARSHALLER, context, result);
     }
- 
+
     private <T> void renderSoapHeader(final Marshallable<T> marshallable, final Map<String, String> context, T xmlContext) {
         try {
             final Marshaller marshaller = jaxbContext.createMarshaller();

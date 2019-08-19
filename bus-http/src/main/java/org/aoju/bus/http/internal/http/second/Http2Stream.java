@@ -40,7 +40,7 @@ import java.util.List;
  * A logical bidirectional stream.
  *
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public final class Http2Stream {

@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang;
  *
  * @param <T> 被替换操作的类型
  * @author Kimi Liu
- * @version 3.0.9
+ * @version 3.1.0
  * @since JDK 1.8
  */
 public interface Replacer<T> {
