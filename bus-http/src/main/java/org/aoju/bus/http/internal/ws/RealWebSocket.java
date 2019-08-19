@@ -293,9 +293,6 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         reader = new WebSocketReader(streams.client, streams.source, this);
     }
 
-    /**
-     * Receive frames until there are no more. Invoked only by the reader thread.
-     */
     public void loopReader() throws IOException {
         while (receivedCloseCode == -1) {
             // This method call results in first or more onRead* methods being called on this thread.
@@ -303,10 +300,6 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
-    /**
-     * For testing: receive a single frame and return true if there are more frames to read. Invoked
-     * only by the reader thread.
-     */
     boolean processNextFrame() throws IOException {
         try {
             reader.processNextFrame();
@@ -317,16 +310,10 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
-    /**
-     * For testing: wait until the web socket's executor has terminated.
-     */
     void awaitTermination(int timeout, TimeUnit timeUnit) throws InterruptedException {
         executor.awaitTermination(timeout, timeUnit);
     }
 
-    /**
-     * For testing: force this web socket to release its threads.
-     */
     void tearDown() throws InterruptedException {
         if (cancelFuture != null) {
             cancelFuture.cancel(false);
@@ -477,19 +464,6 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
-    /**
-     * Attempts to remove a single frame from a queue and send it. This prefers to write urgent pongs
-     * before less urgent messages and close frames. For example it's possible that a caller will
-     * enqueue messages followed by pongs, but this sends pongs followed by messages. Pongs are always
-     * written in the order they were enqueued.
-     *
-     * <p>If a frame cannot be sent - because there are none enqueued or because the web socket is not
-     * connected - this does nothing and returns false. Otherwise this returns true and the caller
-     * should immediately invoke this method again until it returns false.
-     *
-     * <p>This method may only be invoked by the writer thread. There may be only thread invoking this
-     * method at a time.
-     */
     boolean writeOneFrame() throws IOException {
         WebSocketWriter writer;
         ByteString pong;
@@ -651,4 +625,5 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             cancel();
         }
     }
+
 }

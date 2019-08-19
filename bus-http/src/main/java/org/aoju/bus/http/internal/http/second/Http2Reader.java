@@ -42,15 +42,11 @@ import java.util.List;
  */
 final class Http2Reader implements Closeable {
 
-    // Visible for testing.
     final Hpack.Reader hpackReader;
     private final BufferedSource source;
     private final ContinuationSource continuation;
     private final boolean client;
 
-    /**
-     * Creates a frame reader with max header table size of 4096.
-     */
     Http2Reader(BufferedSource source, boolean client) {
         this.source = source;
         this.client = client;
@@ -75,12 +71,10 @@ final class Http2Reader implements Closeable {
 
     public void readConnectionPreface(Handler handler) throws IOException {
         if (client) {
-            // The client reads the initial SETTINGS frame.
             if (!nextFrame(true, handler)) {
                 throw Http2.ioException("Required SETTINGS preface not received");
             }
         } else {
-            // The server reads the CONNECTION_PREFACE byte string.
             ByteString connectionPreface = source.readByteString(Http2.CONNECTION_PREFACE.size());
             if (!Http2.CONNECTION_PREFACE.equals(connectionPreface)) {
                 throw Http2.ioException("Expected a connection header but was %s", connectionPreface.utf8());
@@ -90,9 +84,9 @@ final class Http2Reader implements Closeable {
 
     public boolean nextFrame(boolean requireSettings, Handler handler) throws IOException {
         try {
-            source.require(9); // Frame header size
+            source.require(9);
         } catch (IOException e) {
-            return false; // This might be a normal socket close.
+            return false;
         }
         int length = readMedium(source);
         if (length < 0 || length > Http2.INITIAL_MAX_FRAME_SIZE) {
@@ -143,7 +137,6 @@ final class Http2Reader implements Closeable {
                 break;
 
             default:
-                // Implementations MUST discard frames that have unknown or unsupported types.
                 source.skip(length);
         }
         return true;
@@ -159,7 +152,7 @@ final class Http2Reader implements Closeable {
 
         if ((flags & Http2.FLAG_PRIORITY) != 0) {
             readPriority(handler, streamId);
-            length -= 5; // account for above read.
+            length -= 5;
         }
 
         length = lengthWithoutPadding(length, flags, padding);
@@ -176,8 +169,6 @@ final class Http2Reader implements Closeable {
         continuation.flags = flags;
         continuation.streamId = streamId;
 
-        // TODO: Concat multi-value headers with 0x0, except COOKIE, which uses 0x3B, 0x20.
-        // http://tools.ietf.org/html/draft-ietf-httpbis-http2-17#section-8.1.2.5
         hpackReader.readHeaders();
         return hpackReader.getAndResetHeaderList();
     }
@@ -332,14 +323,6 @@ final class Http2Reader implements Closeable {
         void data(boolean inFinished, int streamId, BufferedSource source, int length)
                 throws IOException;
 
-        /**
-         * Create or update incoming headers, creating the corresponding streams if necessary. Frames
-         * that trigger this are HEADERS and PUSH_PROMISE.
-         *
-         * @param inFinished         true if the sender will not send further frames.
-         * @param streamId           the stream owning these headers.
-         * @param associatedStreamId the stream that triggered the sender to create this stream.
-         */
         void headers(boolean inFinished, int streamId, int associatedStreamId,
                      List<Header> headerBlock);
 
@@ -347,86 +330,23 @@ final class Http2Reader implements Closeable {
 
         void settings(boolean clearPrevious, Settings settings);
 
-        /**
-         * HTTP/2 only.
-         */
         void ackSettings();
 
-        /**
-         * Read a connection-level ping from the peer. {@code ack} indicates this is a reply. The data
-         * in {@code payload1} and {@code payload2} opaque binary, and there are no rules on the
-         * content.
-         */
         void ping(boolean ack, int payload1, int payload2);
 
-        /**
-         * The peer tells us to stop creating streams.  It is safe to replay streams with {@code ID >
-         * lastGoodStreamId} on a new connection.  In- flight streams with {@code ID <=
-         * lastGoodStreamId} can only be replayed on a new connection if they are idempotent.
-         *
-         * @param lastGoodStreamId the last stream ID the peer processed before sending this message. If
-         *                         {@code lastGoodStreamId} is zero, the peer processed no frames.
-         * @param errorCode        reason for closing the connection.
-         * @param debugData        only valid for HTTP/2; opaque debug data to send.
-         */
         void goAway(int lastGoodStreamId, ErrorCode errorCode, ByteString debugData);
 
-        /**
-         * Notifies that an additional {@code windowSizeIncrement} bytes can be sent on {@code
-         * streamId}, or the connection if {@code streamId} is zero.
-         */
         void windowUpdate(int streamId, long windowSizeIncrement);
 
-        /**
-         * Called when reading a headers or priority frame. This may be used to change the stream's
-         * weight from the default (16) to a new value.
-         *
-         * @param streamId         stream which has a priority change.
-         * @param streamDependency the stream ID this stream is dependent on.
-         * @param weight           relative proportion of priority in [1..256].
-         * @param exclusive        inserts this stream ID as the sole child of {@code streamDependency}.
-         */
         void priority(int streamId, int streamDependency, int weight, boolean exclusive);
 
-        /**
-         * HTTP/2 only. Receive a push promise header block. <p> A push promise contains all the headers
-         * that pertain to a server-initiated request, and a {@code promisedStreamId} to which response
-         * frames will be delivered. Push promise frames are sent as a part of the response to {@code
-         * streamId}.
-         *
-         * @param streamId         client-initiated stream ID.  Must be an odd number.
-         * @param promisedStreamId server-initiated stream ID.  Must be an even number.
-         * @param requestHeaders   minimally includes {@code :method}, {@code :scheme}, {@code
-         *                         :authority}, and (@code :path}.
-         */
         void pushPromise(int streamId, int promisedStreamId, List<Header> requestHeaders)
                 throws IOException;
 
-        /**
-         * HTTP/2 only. Expresses that resources for the connection or a client- initiated stream are
-         * available from a different network location or protocol configuration.
-         *
-         * <p>See <a href="http://tools.ietf.org/html/draft-ietf-httpbis-alt-svc-01">alt-svc</a>
-         *
-         * @param streamId when a client-initiated stream ID (odd number), the origin of this alternate
-         *                 service is the origin of the stream. When zero, the origin is specified in the {@code origin}
-         *                 parameter.
-         * @param origin   when present, the <a href="http://tools.ietf.org/html/rfc6454">origin</a> is
-         *                 typically represented as a combination of scheme, host and port. When empty, the origin is
-         *                 that of the {@code streamId}.
-         * @param protocol an ALPN protocol, such as {@code h2}.
-         * @param host     an IP address or hostname.
-         * @param port     the IP port associated with the service.
-         * @param maxAge   time in seconds that this alternative is considered fresh.
-         */
         void alternateService(int streamId, String origin, ByteString protocol, String host, int port,
                               long maxAge);
     }
 
-    /**
-     * Decompression of the header block occurs above the framing layer. This class lazily reads
-     * continuation frames as they are needed by {@link Hpack.Reader#readHeaders()}.
-     */
     static final class ContinuationSource implements Source {
         private final BufferedSource source;
 
@@ -477,4 +397,5 @@ final class Http2Reader implements Closeable {
             if (streamId != previousStreamId) throw Http2.ioException("TYPE_CONTINUATION streamId changed");
         }
     }
+
 }

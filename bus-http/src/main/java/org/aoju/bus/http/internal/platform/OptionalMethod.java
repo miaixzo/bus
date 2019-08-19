@@ -72,20 +72,10 @@ class OptionalMethod<T> {
         return method;
     }
 
-    /**
-     * Returns true if the method exists on the supplied {@code target}.
-     */
     public boolean isSupported(T target) {
         return getMethod(target.getClass()) != null;
     }
 
-    /**
-     * Invokes the method on {@code target} with {@code args}. If the method does not exist or is not
-     * public then {@code null} is returned. See also {@link #invokeOptionalWithoutCheckedException}.
-     *
-     * @throws IllegalArgumentException  if the arguments are invalid
-     * @throws InvocationTargetException if the invocation throws an exception
-     */
     public Object invokeOptional(T target, Object... args) throws InvocationTargetException {
         Method m = getMethod(target.getClass());
         if (m == null) {
@@ -98,13 +88,6 @@ class OptionalMethod<T> {
         }
     }
 
-    /**
-     * Invokes the method on {@code target}.  If the method does not exist or is not public then
-     * {@code null} is returned. Any RuntimeException thrown by the method is thrown, checked
-     * exceptions are wrapped in an {@link AssertionError}.
-     *
-     * @throws IllegalArgumentException if the arguments are invalid
-     */
     public Object invokeOptionalWithoutCheckedException(T target, Object... args) {
         try {
             return invokeOptional(target, args);
@@ -119,13 +102,6 @@ class OptionalMethod<T> {
         }
     }
 
-    /**
-     * Invokes the method on {@code target} with {@code args}. Throws an error if the method is not
-     * supported. See also {@link #invokeWithoutCheckedException(Object, Object...)}.
-     *
-     * @throws IllegalArgumentException  if the arguments are invalid
-     * @throws InvocationTargetException if the invocation throws an exception
-     */
     public Object invoke(T target, Object... args) throws InvocationTargetException {
         Method m = getMethod(target.getClass());
         if (m == null) {
@@ -141,13 +117,6 @@ class OptionalMethod<T> {
         }
     }
 
-    /**
-     * Invokes the method on {@code target}. Throws an error if the method is not supported. Any
-     * RuntimeException thrown by the method is thrown, checked exceptions are wrapped in an {@link
-     * AssertionError}.
-     *
-     * @throws IllegalArgumentException if the arguments are invalid
-     */
     public Object invokeWithoutCheckedException(T target, Object... args) {
         try {
             return invoke(target, args);
@@ -162,11 +131,6 @@ class OptionalMethod<T> {
         }
     }
 
-    /**
-     * Perform a lookup for the method. No caching. In order to return a method the method name and
-     * arguments must match those specified when the {@link OptionalMethod} was created. If the return
-     * type is specified (i.e. non-null) it must also be compatible. The method must also be public.
-     */
     private Method getMethod(Class<?> clazz) {
         Method method = null;
         if (methodName != null) {
@@ -175,11 +139,11 @@ class OptionalMethod<T> {
                     && returnType != null
                     && !returnType.isAssignableFrom(method.getReturnType())) {
 
-                // If the return type is non-null it must be compatible.
                 method = null;
             }
         }
         return method;
     }
+
 }
 

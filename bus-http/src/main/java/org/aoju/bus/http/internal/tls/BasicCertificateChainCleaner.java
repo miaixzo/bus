@@ -54,13 +54,6 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
         this.trustRootIndex = trustRootIndex;
     }
 
-    /**
-     * Returns a cleaned chain for {@code chain}.
-     *
-     * <p>This method throws if the complete chain to a trusted CA certificate cannot be constructed.
-     * This is unexpected unless the trust root index in this class has a different trust manager than
-     * what was used to establish {@code chain}.
-     */
     @Override
     public List<Certificate> clean(List<Certificate> chain, String hostname)
             throws SSLPeerUnverifiedException {
@@ -112,9 +105,6 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
         throw new SSLPeerUnverifiedException("Certificate chain too long: " + result);
     }
 
-    /**
-     * Returns true if {@code toVerify} was signed by {@code signingCert}'s public key.
-     */
     private boolean verifySignature(X509Certificate toVerify, X509Certificate signingCert) {
         if (!toVerify.getIssuerDN().equals(signingCert.getSubjectDN())) return false;
         try {
@@ -136,4 +126,5 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
         return other instanceof BasicCertificateChainCleaner
                 && ((BasicCertificateChainCleaner) other).trustRootIndex.equals(trustRootIndex);
     }
+
 }

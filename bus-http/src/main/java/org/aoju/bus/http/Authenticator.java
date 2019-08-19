@@ -116,4 +116,5 @@ public interface Authenticator {
     };
 
     Request authenticate(Route route, Response response) throws IOException;
+
 }

@@ -32,15 +32,16 @@ import java.net.ProtocolException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An <a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a>-compatible WebSocket frame reader.
+ * An compatible WebSocket frame reader.
  *
- * <p>This class is not thread safe.
+ * This class is not thread safe.
  *
  * @author Kimi Liu
  * @version 3.1.0
  * @since JDK 1.8
  */
 final class WebSocketReader {
+
     final boolean isClient;
     final BufferedSource source;
     final FrameCallback frameCallback;
@@ -67,16 +68,6 @@ final class WebSocketReader {
         maskCursor = isClient ? null : new Buffer.UnsafeCursor();
     }
 
-    /**
-     * Process the next protocol frame.
-     *
-     * <ul>
-     * <li>If it is a control frame this will result in a single call to {@link FrameCallback}.
-     * <li>If it is a message frame this will result in a single call to {@link
-     * FrameCallback#onReadMessage}. If the message spans multiple frames, each interleaved
-     * control frame will result in a corresponding call to {@link FrameCallback}.
-     * </ul>
-     */
     void processNextFrame() throws IOException {
         readHeader();
         if (isControlFrame) {
@@ -215,11 +206,6 @@ final class WebSocketReader {
         }
     }
 
-    /**
-     * Reads a message body into across first or more frames. Control frames that occur between
-     * fragments will be processed. If the message payload is masked this will unmask as it's being
-     * processed.
-     */
     private void readMessage() throws IOException {
         while (true) {
             if (closed) throw new IOException("closed");

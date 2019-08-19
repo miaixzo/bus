@@ -65,27 +65,16 @@ public final class RouteSelector {
         resetNextProxy(address.url(), address.proxy());
     }
 
-    /**
-     * Obtain a "host" from an {@link InetSocketAddress}. This returns a string containing either an
-     * actual host name or a numeric IP address.
-     */
-    // Visible for testing
     static String getHostString(InetSocketAddress socketAddress) {
         InetAddress address = socketAddress.getAddress();
         if (address == null) {
-            // The InetSocketAddress was specified with a string (either a numeric IP or a host name). If
-            // it is a name, all IPs for that name should be tried. If it is an IP address, only that IP
-            // address should be tried.
+
             return socketAddress.getHostName();
         }
-        // The InetSocketAddress has a specific address: we should only try that address. Therefore we
-        // return the address and ignore any host name that may be available.
+
         return address.getHostAddress();
     }
 
-    /**
-     * Returns true if there's another set of routes to attempt. Every address has at least first route.
-     */
     public boolean hasNext() {
         return hasNextProxy() || !postponedRoutes.isEmpty();
     }
@@ -95,12 +84,8 @@ public final class RouteSelector {
             throw new NoSuchElementException();
         }
 
-        // Compute the next set of routes to attempt.
         List<Route> routes = new ArrayList<>();
         while (hasNextProxy()) {
-            // Postponed routes are always tried last. For example, if we have 2 proxies and all the
-            // routes for proxy1 should be postponed, we'll move to proxy2. Only after we've exhausted
-            // all the good routes will we attempt the postponed routes.
             Proxy proxy = nextProxy();
             for (int i = 0, size = inetSocketAddresses.size(); i < size; i++) {
                 Route route = new Route(address, proxy, inetSocketAddresses.get(i));
@@ -117,7 +102,6 @@ public final class RouteSelector {
         }
 
         if (routes.isEmpty()) {
-            // We've exhausted all Proxies so fallback to the postponed routes.
             routes.addAll(postponedRoutes);
             postponedRoutes.clear();
         }
@@ -125,13 +109,8 @@ public final class RouteSelector {
         return new Selection(routes);
     }
 
-    /**
-     * Clients should invoke this method when they encounter a connectivity failure on a connection
-     * returned by this route selector.
-     */
     public void connectFailed(Route failedRoute, IOException failure) {
         if (failedRoute.proxy().type() != Proxy.Type.DIRECT && address.proxySelector() != null) {
-            // Tell the proxy selector when we fail to connect on a fresh connection.
             address.proxySelector().connectFailed(
                     address.url().uri(), failedRoute.proxy().address(), failure);
         }
@@ -139,15 +118,10 @@ public final class RouteSelector {
         routeDatabase.failed(failedRoute);
     }
 
-    /**
-     * Prepares the proxy servers to try.
-     */
     private void resetNextProxy(HttpUrl url, Proxy proxy) {
         if (proxy != null) {
-            // If the user specifies a proxy, try that and only that.
             proxies = Collections.singletonList(proxy);
         } else {
-            // Try each of the ProxySelector choices until first connection succeeds.
             List<Proxy> proxiesOrNull = address.proxySelector().select(url.uri());
             proxies = proxiesOrNull != null && !proxiesOrNull.isEmpty()
                     ? Internal.immutableList(proxiesOrNull)
@@ -156,16 +130,10 @@ public final class RouteSelector {
         nextProxyIndex = 0;
     }
 
-    /**
-     * Returns true if there's another proxy to try.
-     */
     private boolean hasNextProxy() {
         return nextProxyIndex < proxies.size();
     }
 
-    /**
-     * Returns the next proxy to try. May be PROXY.NO_PROXY but never null.
-     */
     private Proxy nextProxy() throws IOException {
         if (!hasNextProxy()) {
             throw new SocketException("No route to " + address.url().host()
@@ -176,11 +144,7 @@ public final class RouteSelector {
         return result;
     }
 
-    /**
-     * Prepares the socket addresses to attempt for the current proxy or host.
-     */
     private void resetNextInetSocketAddress(Proxy proxy) throws IOException {
-        // Clear the addresses. Necessary if getAllByName() below throws!
         inetSocketAddresses = new ArrayList<>();
 
         String socketHost;
@@ -209,7 +173,6 @@ public final class RouteSelector {
         } else {
             eventListener.dnsStart(call, socketHost);
 
-            // Try each address for best behavior in mixed IPv4/IPv6 environments.
             List<InetAddress> addresses = address.dns().lookup(socketHost);
             if (addresses.isEmpty()) {
                 throw new UnknownHostException(address.dns() + " returned no addresses for " + socketHost);
@@ -224,10 +187,8 @@ public final class RouteSelector {
         }
     }
 
-    /**
-     * A set of selected Routes.
-     */
     public static final class Selection {
+
         private final List<Route> routes;
         private int nextRouteIndex = 0;
 
@@ -245,10 +206,10 @@ public final class RouteSelector {
             }
             return routes.get(nextRouteIndex++);
         }
-
         public List<Route> getAll() {
             return new ArrayList<>(routes);
         }
+
     }
 
 }

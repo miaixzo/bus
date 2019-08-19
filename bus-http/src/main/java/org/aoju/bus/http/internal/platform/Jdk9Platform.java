@@ -52,7 +52,6 @@ final class Jdk9Platform extends Platform {
     }
 
     public static Jdk9Platform buildIfSupported() {
-        // Find JDK 9 new methods
         try {
             Method setProtocolMethod =
                     SSLParameters.class.getMethod("setApplicationProtocols", String[].class);
@@ -88,8 +87,6 @@ final class Jdk9Platform extends Platform {
         try {
             String protocol = (String) getProtocolMethod.invoke(socket);
 
-            // SSLSocket.getApplicationProtocol returns "" if application protocols values will not
-            // be used. Observed if you didn't specify SSLParameters.setApplicationProtocols
             if (protocol == null || protocol.equals("")) {
                 return null;
             }
@@ -102,11 +99,8 @@ final class Jdk9Platform extends Platform {
 
     @Override
     public X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
-        // Not supported due to access checks on JDK 9+:
-        // java.lang.reflect.InaccessibleObjectException: Unable to make member of class
-        // sun.security.ssl.SSLSocketFactoryImpl accessible:  module java.base does not export
-        // sun.security.ssl to unnamed module @xxx
         throw new UnsupportedOperationException(
                 "clientBuilder.sslSocketFactory(SSLSocketFactory) not supported on JDK 9+");
     }
+
 }

@@ -31,8 +31,6 @@ import java.security.cert.X509Certificate;
  * @since JDK 1.8
  */
 public interface TrustRootIndex {
-    /**
-     * Returns the trusted CA certificate that signed {@code cert}.
-     */
+
     X509Certificate findByIssuerAndSignature(X509Certificate cert);
 }

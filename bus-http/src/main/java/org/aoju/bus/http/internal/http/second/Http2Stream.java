@@ -111,17 +111,6 @@ public final class Http2Stream {
         return id;
     }
 
-    /**
-     * Returns true if this stream is open. A stream is open until either:
-     *
-     * <ul>
-     * <li>A {@code SYN_RESET} frame abnormally terminates the stream.
-     * <li>Both input and output streams have transmitted all data and headers.
-     * </ul>
-     *
-     * <p>Note that the input stream may continue to yield data even after a stream reports itself as
-     * not open. This is because input data is buffered.
-     */
     public synchronized boolean isOpen() {
         if (errorCode != null) {
             return false;
@@ -134,9 +123,6 @@ public final class Http2Stream {
         return true;
     }
 
-    /**
-     * Returns true if this stream was created by this peer.
-     */
     public boolean isLocallyInitiated() {
         boolean streamIsClient = ((id & 1) == 1);
         return connection.client == streamIsClient;
@@ -146,11 +132,6 @@ public final class Http2Stream {
         return connection;
     }
 
-    /**
-     * Removes and returns the stream's received response headers, blocking if necessary until headers
-     * have been received. If the returned list contains multiple blocks of headers the blocks will be
-     * delimited by 'null'.
-     */
     public synchronized Headers takeHeaders() throws IOException {
         readTimeout.enter();
         try {
@@ -166,20 +147,10 @@ public final class Http2Stream {
         throw new StreamResetException(errorCode);
     }
 
-    /**
-     * Returns the reason why this stream was closed, or null if it closed normally or has not yet
-     * been closed.
-     */
     public synchronized ErrorCode getErrorCode() {
         return errorCode;
     }
 
-    /**
-     * Sends a reply to an incoming stream.
-     *
-     * @param out true to create an output stream that we can use to send data to the remote peer.
-     *            Corresponds to {@code FLAG_FIN}.
-     */
     public void writeHeaders(List<Header> responseHeaders, boolean out) throws IOException {
         assert (!Thread.holdsLock(Http2Stream.this));
         if (responseHeaders == null) {
@@ -196,15 +167,12 @@ public final class Http2Stream {
             }
         }
 
-        // Only DATA frames are subject to flow-control. Transmit the HEADER frame if the connection
-        // flow-control window is fully depleted.
         if (!flushHeaders) {
             synchronized (connection) {
                 flushHeaders = connection.bytesLeftInWriteWindow == 0L;
             }
         }
 
-        // TODO(jwilson): rename to writeHeaders
         connection.writeSynReply(id, outFinished, responseHeaders);
 
         if (flushHeaders) {
@@ -220,19 +188,10 @@ public final class Http2Stream {
         return writeTimeout;
     }
 
-    /**
-     * Returns a source that reads data from the peer.
-     */
     public Source getSource() {
         return source;
     }
 
-    /**
-     * Returns a sink that can be used to write data to the peer.
-     *
-     * @throws IllegalStateException if this stream was initiated by the peer and a {@link
-     *                               #writeHeaders} has not yet been sent.
-     */
     public Sink getSink() {
         synchronized (this) {
             if (!hasResponseHeaders && !isLocallyInitiated()) {
@@ -242,31 +201,20 @@ public final class Http2Stream {
         return sink;
     }
 
-    /**
-     * Abnormally terminate this stream. This blocks until the {@code RST_STREAM} frame has been
-     * transmitted.
-     */
     public void close(ErrorCode rstStatusCode) throws IOException {
         if (!closeInternal(rstStatusCode)) {
-            return; // Already closed.
+            return;
         }
         connection.writeSynReset(id, rstStatusCode);
     }
 
-    /**
-     * Abnormally terminate this stream. This enqueues a {@code RST_STREAM} frame and returns
-     * immediately.
-     */
     public void closeLater(ErrorCode errorCode) {
         if (!closeInternal(errorCode)) {
-            return; // Already closed.
+            return;
         }
         connection.writeSynResetLater(id, errorCode);
     }
 
-    /**
-     * Returns true if this stream was closed.
-     */
     private boolean closeInternal(ErrorCode errorCode) {
         assert (!Thread.holdsLock(this));
         synchronized (this) {
@@ -283,10 +231,6 @@ public final class Http2Stream {
         return true;
     }
 
-    /**
-     * Accept headers from the network and store them until the client calls {@link #takeHeaders}, or
-     * {@link FramingSource#read} them.
-     */
     void receiveHeaders(List<Header> headers) {
         assert (!Thread.holdsLock(Http2Stream.this));
         boolean open;
@@ -342,19 +286,12 @@ public final class Http2Stream {
             open = isOpen();
         }
         if (cancel) {
-            // RST this stream to prevent additional data from being sent. This
-            // is safe because the input stream is closed (we won't use any
-            // further bytes) and the output stream is either finished or closed
-            // (so RSTing both streams doesn't cause harm).
             Http2Stream.this.close(ErrorCode.CANCEL);
         } else if (!open) {
             connection.removeStream(id);
         }
     }
 
-    /**
-     * {@code delta} will be negative if a settings frame initial window is smaller than the last.
-     */
     void addBytesToWriteWindow(long delta) {
         bytesLeftInWriteWindow += delta;
         if (delta > 0) Http2Stream.this.notifyAll();
@@ -370,10 +307,6 @@ public final class Http2Stream {
         }
     }
 
-    /**
-     * Like {@link #wait}, but throws an {@code InterruptedIOException} when interrupted instead of
-     * the more awkward {@link InterruptedException}.
-     */
     void waitForIo() throws InterruptedIOException {
         try {
             wait();
@@ -383,11 +316,6 @@ public final class Http2Stream {
         }
     }
 
-    /**
-     * A source that reads the incoming data frames of a stream. Although this class uses
-     * synchronization to safely receive incoming data frames, it is not intended for use by multiple
-     * readers.
-     */
     private final class FramingSource implements Source {
         /**
          * Buffer to receive data from the network into. Only accessed by the reader thread.
@@ -428,8 +356,6 @@ public final class Http2Stream {
                 Header.Listener headersListenerToNotify = null;
                 long readBytesDelivered = -1;
                 ErrorCode errorCodeToDeliver = null;
-
-                // 1. Decide what to do in a synchronized block.
 
                 synchronized (Http2Stream.this) {
                     readTimeout.enter();
@@ -478,20 +404,15 @@ public final class Http2Stream {
                 }
 
                 if (readBytesDelivered != -1) {
-                    // Update connection.unacknowledgedBytesRead outside the synchronized block.
                     updateConnectionFlowControl(readBytesDelivered);
                     return readBytesDelivered;
                 }
 
                 if (errorCodeToDeliver != null) {
-                    // We defer throwing the exception until now so that we can refill the connection
-                    // flow-control window. This is necessary because we don't transmit window updates until
-                    // the application reads the data. If we throw this prior to updating the connection
-                    // flow-control window, we risk having it go to 0 preventing the server from sending data.
                     throw new StreamResetException(errorCodeToDeliver);
                 }
 
-                return -1; // This source is exhausted.
+                return -1;
             }
         }
 
@@ -573,9 +494,6 @@ public final class Http2Stream {
         }
     }
 
-    /**
-     * A sink that writes outgoing data frames of a stream. This class is not thread safe.
-     */
     final class FramingSink implements Sink {
         private static final long EMIT_BUFFER_SIZE = 16384;
 
@@ -601,10 +519,6 @@ public final class Http2Stream {
             }
         }
 
-        /**
-         * Emit a single data frame to the connection. The frame's size be limited by this stream's
-         * write window. This method will block until the write window is nonempty.
-         */
         private void emitFrame(boolean outFinished) throws IOException {
             long toWrite;
             synchronized (Http2Stream.this) {
@@ -695,4 +609,5 @@ public final class Http2Stream {
             if (exit()) throw newTimeoutException(null /* cause */);
         }
     }
+
 }

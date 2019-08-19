@@ -56,7 +56,6 @@ class JdkWithJettyBootPlatform extends Platform {
     }
 
     public static Platform buildIfSupported() {
-        // Find Jetty's ALPN extension for OpenJDK.
         try {
             String negoClassName = "org.eclipse.jetty.alpn.ALPN";
             Class<?> negoClass = Class.forName(negoClassName);
@@ -166,5 +165,7 @@ class JdkWithJettyBootPlatform extends Platform {
                 return method.invoke(this, args);
             }
         }
+
     }
+
 }

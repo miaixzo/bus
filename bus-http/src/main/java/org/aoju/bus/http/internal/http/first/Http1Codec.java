@@ -115,16 +115,6 @@ public final class Http1Codec implements HttpCodec {
         if (connection != null) connection.cancel();
     }
 
-    /**
-     * Prepares the HTTP headers and sends them to the server.
-     *
-     * <p>For streaming requests with a body, headers must be prepared <strong>before</strong> the
-     * output stream has been written to. Otherwise the body would need to be buffered!
-     *
-     * <p>For non-streaming requests with a body, headers must be prepared <strong>after</strong> the
-     * output stream has been written to and closed. This ensures that the {@code Content-Length}
-     * header field receives the proper value.
-     */
     @Override
     public void writeRequestHeaders(Request request) throws IOException {
         String requestLine = RequestLine.get(
@@ -156,9 +146,6 @@ public final class Http1Codec implements HttpCodec {
         return new RealResponseBody(contentType, -1L, IoUtils.buffer(newUnknownLengthSource()));
     }
 
-    /**
-     * Returns true if this connection is closed.
-     */
     public boolean isClosed() {
         return state == STATE_CLOSED;
     }
@@ -173,9 +160,6 @@ public final class Http1Codec implements HttpCodec {
         sink.flush();
     }
 
-    /**
-     * Returns bytes of a request header for sending on an HTTP transport.
-     */
     public void writeRequest(Headers headers, String requestLine) throws IOException {
         if (state != STATE_IDLE) throw new IllegalStateException("state: " + state);
         sink.writeUtf8(requestLine).writeUtf8("\r\n");
@@ -227,12 +211,8 @@ public final class Http1Codec implements HttpCodec {
         return line;
     }
 
-    /**
-     * Reads headers or trailers.
-     */
     public Headers readHeaders() throws IOException {
         Headers.Builder headers = new Headers.Builder();
-        // parse the result headers until the first blank line
         for (String line; (line = readHeaderLine()).length() != 0; ) {
             Internal.instance.addLenient(headers, line);
         }
@@ -271,11 +251,6 @@ public final class Http1Codec implements HttpCodec {
         return new UnknownLengthSource();
     }
 
-    /**
-     * Sets the delegate of {@code timeout} to {@link Timeout#NONE} and resets its underlying timeout
-     * to the default configuration. Use this to avoid unexpected sharing of timeouts between pooled
-     * connections.
-     */
     void detachTimeout(ForwardingTimeout timeout) {
         Timeout oldDelegate = timeout.delegate();
         timeout.setDelegate(Timeout.NONE);
@@ -283,9 +258,6 @@ public final class Http1Codec implements HttpCodec {
         oldDelegate.clearTimeout();
     }
 
-    /**
-     * An HTTP body with a fixed length known in advance.
-     */
     private final class FixedLengthSink implements Sink {
         private final ForwardingTimeout timeout = new ForwardingTimeout(sink.timeout());
         private boolean closed;
@@ -314,7 +286,7 @@ public final class Http1Codec implements HttpCodec {
 
         @Override
         public void flush() throws IOException {
-            if (closed) return; // Don't throw; this stream might have been closed on the caller's behalf.
+            if (closed) return;
             sink.flush();
         }
 
@@ -328,11 +300,8 @@ public final class Http1Codec implements HttpCodec {
         }
     }
 
-    /**
-     * An HTTP body with alternating chunk sizes and chunk bodies. It is the caller's responsibility
-     * to buffer chunks; typically by using a buffered sink with this sink.
-     */
     private final class ChunkedSink implements Sink {
+
         private final ForwardingTimeout timeout = new ForwardingTimeout(sink.timeout());
         private boolean closed;
 
@@ -357,7 +326,7 @@ public final class Http1Codec implements HttpCodec {
 
         @Override
         public synchronized void flush() throws IOException {
-            if (closed) return; // Don't throw; this stream might have been closed on the caller's behalf.
+            if (closed) return;
             sink.flush();
         }
 
@@ -396,10 +365,6 @@ public final class Http1Codec implements HttpCodec {
             }
         }
 
-        /**
-         * Closes the cache entry and makes the socket available for reuse. This should be invoked when
-         * the end of the body has been reached.
-         */
         protected final void endOfInput(boolean reuseConnection, IOException e) throws IOException {
             if (state == STATE_CLOSED) return;
             if (state != STATE_READING_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
@@ -413,9 +378,6 @@ public final class Http1Codec implements HttpCodec {
         }
     }
 
-    /**
-     * An HTTP body with a fixed length specified in advance.
-     */
     private class FixedLengthSource extends AbstractSource {
 
         private long bytesRemaining;
@@ -459,9 +421,6 @@ public final class Http1Codec implements HttpCodec {
         }
     }
 
-    /**
-     * An HTTP body with alternating chunk sizes and chunk bodies.
-     */
     private class ChunkedSource extends AbstractSource {
 
         private static final long NO_CHUNK_YET = -1L;
@@ -526,9 +485,6 @@ public final class Http1Codec implements HttpCodec {
         }
     }
 
-    /**
-     * An HTTP message body terminated by the end of the underlying stream.
-     */
     private class UnknownLengthSource extends AbstractSource {
 
         private boolean inputExhausted;
@@ -561,4 +517,5 @@ public final class Http1Codec implements HttpCodec {
             closed = true;
         }
     }
+
 }

@@ -196,10 +196,6 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
     }
 
-    /**
-     * Does all the work to build an HTTPS connection over a proxy tunnel. The catch here is that a
-     * proxy server can issue an auth challenge and then close the connection.
-     */
     private void connectTunnel(int connectTimeout, int readTimeout, int writeTimeout, Call call,
                                EventListener eventListener) throws IOException {
         Request tunnelRequest = createTunnelRequest();
@@ -208,10 +204,8 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             connectSocket(connectTimeout, readTimeout, call, eventListener);
             tunnelRequest = createTunnel(readTimeout, writeTimeout, tunnelRequest, url);
 
-            if (tunnelRequest == null) break; // Tunnel successfully created.
+            if (tunnelRequest == null) break;
 
-            // The proxy decided to close the connection after an auth challenge. We need to create a new
-            // connection, but this time with the auth credentials.
             Internal.closeQuietly(rawSocket);
             rawSocket = null;
             sink = null;
@@ -220,9 +214,6 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
     }
 
-    /**
-     * Does all the work necessary to build a full HTTP or HTTPS connection on a raw socket.
-     */
     private void connectSocket(int connectTimeout, int readTimeout, Call call,
                                EventListener eventListener) throws IOException {
         Proxy proxy = route.proxy();
@@ -242,9 +233,6 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             throw ce;
         }
 
-        // The following try/catch block is a pseudo hacky way to get around a crash on Android 7.0
-        // More details:
-        // https://android-review.googlesource.com/#/c/271775/
         try {
             source = IoUtils.buffer(IoUtils.source(rawSocket));
             sink = IoUtils.buffer(IoUtils.sink(rawSocket));
@@ -350,10 +338,6 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
     }
 
-    /**
-     * To make an HTTPS connection over an HTTP proxy, send an unencrypted CONNECT request to create
-     * the proxy connection. This may need to be retried if the proxy requires authorization.
-     */
     private Request createTunnel(int readTimeout, int writeTimeout, Request tunnelRequest,
                                  HttpUrl url) throws IOException {
         // Make an SSL Tunnel on the first message pair of each SSL + proxy connection.
@@ -404,15 +388,6 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
     }
 
-    /**
-     * Returns a request that creates a TLS tunnel via an HTTP proxy. Everything in the tunnel request
-     * is sent unencrypted to the proxy server, so tunnels include only the minimum set of headers.
-     * This avoids sending potentially sensitive data like HTTP cookies to the proxy unencrypted.
-     *
-     * <p>In order to support preemptive authentication we pass a fake “Auth Failed” response to the
-     * authenticator. This gives the authenticator the option to customize the CONNECT request. It can
-     * decline to do so by returning null, in which case HttpClient will use it as-is
-     */
     private Request createTunnelRequest() throws IOException {
         Request proxyConnectRequest = new Request.Builder()
                 .url(route.address().url())
@@ -441,50 +416,32 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 : proxyConnectRequest;
     }
 
-    /**
-     * Returns true if this connection can carry a stream allocation to {@code address}. If non-null
-     * {@code route} is the resolved route for a connection.
-     */
     public boolean isEligible(Address address, Route route) {
-        // If this connection is not accepting new streams, we're done.
         if (allocations.size() >= allocationLimit || noNewStreams) return false;
 
-        // If the non-host fields of the address don't overlap, we're done.
         if (!Internal.instance.equalsNonHost(this.route.address(), address)) return false;
 
-        // If the host exactly matches, we're done: this connection can carry the address.
         if (address.url().host().equals(this.route().address().url().host())) {
-            return true; // This connection is a perfect match.
+            return true;
         }
 
-        // At this point we don't have a hostname match. But we still be able to carry the request if
-        // our connection coalescing requirements are met. See also:
-        // https://hpbn.co/optimizing-application-delivery/#eliminate-domain-sharding
-        // https://daniel.haxx.se/blog/2016/08/18/http2-connection-coalescing/
-
-        // 1. This connection must be HTTP/2.
         if (http2Connection == null) return false;
 
-        // 2. The routes must share an IP address. This requires us to have a DNS address for both
-        // hosts, which only happens after route planning. We can't coalesce connections that use a
-        // proxy, since proxies don't tell us the origin server's IP address.
         if (route == null) return false;
         if (route.proxy().type() != Proxy.Type.DIRECT) return false;
         if (this.route.proxy().type() != Proxy.Type.DIRECT) return false;
         if (!this.route.socketAddress().equals(route.socketAddress())) return false;
 
-        // 3. This connection's server certificate's must cover the new host.
         if (route.address().hostnameVerifier() != OkHostnameVerifier.INSTANCE) return false;
         if (!supportsUrl(address.url())) return false;
 
-        // 4. Certificate pinning must match the host.
         try {
             address.certificatePinner().check(address.url().host(), handshake().peerCertificates());
         } catch (SSLPeerUnverifiedException e) {
             return false;
         }
 
-        return true; // The caller's address can be carried by this connection.
+        return true;
     }
 
     public boolean supportsUrl(HttpUrl url) {
@@ -537,9 +494,6 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         return socket;
     }
 
-    /**
-     * Returns true if this connection is ready to host new streams.
-     */
     public boolean isHealthy(boolean doExtensiveChecks) {
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
             return false;
@@ -571,17 +525,11 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         return true;
     }
 
-    /**
-     * Refuse incoming streams.
-     */
     @Override
     public void onStream(Http2Stream stream) throws IOException {
         stream.close(ErrorCode.REFUSED_STREAM);
     }
 
-    /**
-     * When settings are received, adjust the allocation limit.
-     */
     @Override
     public void onSettings(Http2Connection connection) {
         synchronized (connectionPool) {
@@ -594,10 +542,6 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         return handshake;
     }
 
-    /**
-     * Returns true if this is an HTTP/2 connection. Such connections can be used in multiple HTTP
-     * requests simultaneously.
-     */
     public boolean isMultiplexed() {
         return http2Connection != null;
     }

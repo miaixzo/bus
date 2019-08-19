@@ -57,9 +57,6 @@ public final class CacheInterceptor implements Interceptor {
                 : response;
     }
 
-    /**
-     * Combines cached headers with a network headers as defined by RFC 7234, 4.3.4.
-     */
     private static Headers combine(Headers cachedHeaders, Headers networkHeaders) {
         Headers.Builder result = new Headers.Builder();
 
@@ -85,10 +82,6 @@ public final class CacheInterceptor implements Interceptor {
         return result.build();
     }
 
-    /**
-     * Returns true if {@code fieldName} is an end-to-end HTTP header, as defined by RFC 2616,
-     * 13.5.1.
-     */
     static boolean isEndToEnd(String fieldName) {
         return !"Connection".equalsIgnoreCase(fieldName)
                 && !"Keep-Alive".equalsIgnoreCase(fieldName)
@@ -100,10 +93,6 @@ public final class CacheInterceptor implements Interceptor {
                 && !"Upgrade".equalsIgnoreCase(fieldName);
     }
 
-    /**
-     * Returns true if {@code fieldName} is content specific and therefore should always be used
-     * from cached headers.
-     */
     static boolean isContentSpecificHeader(String fieldName) {
         return "Content-Length".equalsIgnoreCase(fieldName)
                 || "Content-Encoding".equalsIgnoreCase(fieldName)
@@ -127,10 +116,9 @@ public final class CacheInterceptor implements Interceptor {
         }
 
         if (cacheCandidate != null && cacheResponse == null) {
-            Internal.closeQuietly(cacheCandidate.body()); // The cache candidate wasn't applicable. Close it.
+            Internal.closeQuietly(cacheCandidate.body());
         }
 
-        // If we're forbidden from using the network and the cache is insufficient, fail.
         if (networkRequest == null && cacheResponse == null) {
             return new Response.Builder()
                     .request(chain.request())
@@ -143,7 +131,6 @@ public final class CacheInterceptor implements Interceptor {
                     .build();
         }
 
-        // If we don't need the network, we're done.
         if (networkRequest == null) {
             return cacheResponse.newBuilder()
                     .cacheResponse(stripBody(cacheResponse))
@@ -154,13 +141,11 @@ public final class CacheInterceptor implements Interceptor {
         try {
             networkResponse = chain.proceed(networkRequest);
         } finally {
-            // If we're crashing on I/O or otherwise, don't leak the cache body.
             if (networkResponse == null && cacheCandidate != null) {
                 Internal.closeQuietly(cacheCandidate.body());
             }
         }
 
-        // If we have a cache response too, then we're doing a conditional get.
         if (cacheResponse != null) {
             if (networkResponse.code() == HttpURLConnection.HTTP_NOT_MODIFIED) {
                 Response response = cacheResponse.newBuilder()
@@ -172,8 +157,6 @@ public final class CacheInterceptor implements Interceptor {
                         .build();
                 networkResponse.body().close();
 
-                // Update the cache after combining headers but before stripping the
-                // Content-Encoding header (as performed by initContentStream()).
                 cache.trackConditionalCacheHit();
                 cache.update(cacheResponse, response);
                 return response;
@@ -189,7 +172,6 @@ public final class CacheInterceptor implements Interceptor {
 
         if (cache != null) {
             if (HttpHeaders.hasBody(response) && CacheStrategy.isCacheable(response, networkRequest)) {
-                // Offer this request to the cache.
                 CacheRequest cacheRequest = cache.put(response);
                 return cacheWritingResponse(cacheRequest, response);
             }
@@ -206,14 +188,8 @@ public final class CacheInterceptor implements Interceptor {
         return response;
     }
 
-    /**
-     * Returns a new source that writes bytes to {@code cacheRequest} as they are read by the source
-     * consumer. This is careful to discard bytes left over when the stream is closed; otherwise we
-     * may never exhaust the source stream and therefore not complete the cached response.
-     */
     private Response cacheWritingResponse(final CacheRequest cacheRequest, Response response)
             throws IOException {
-        // Some apps return a null body; for compatibility we treat that like a null cache request.
         if (cacheRequest == null) return response;
         Sink cacheBodyUnbuffered = cacheRequest.body();
         if (cacheBodyUnbuffered == null) return response;
@@ -232,7 +208,7 @@ public final class CacheInterceptor implements Interceptor {
                 } catch (IOException e) {
                     if (!cacheRequestClosed) {
                         cacheRequestClosed = true;
-                        cacheRequest.abort(); // Failed to write a complete cache response.
+                        cacheRequest.abort();
                     }
                     throw e;
                 }
@@ -240,7 +216,7 @@ public final class CacheInterceptor implements Interceptor {
                 if (bytesRead == -1) {
                     if (!cacheRequestClosed) {
                         cacheRequestClosed = true;
-                        cacheBody.close(); // The cache response is complete!
+                        cacheBody.close();
                     }
                     return -1;
                 }
@@ -272,4 +248,5 @@ public final class CacheInterceptor implements Interceptor {
                 .body(new RealResponseBody(contentType, contentLength, IoUtils.buffer(cacheWritingSource)))
                 .build();
     }
+
 }

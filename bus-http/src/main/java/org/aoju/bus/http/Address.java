@@ -96,39 +96,22 @@ public final class Address {
         this.certificatePinner = certificatePinner;
     }
 
-    /**
-     * @return a URL with the hostname and port of the origin server. The path, query, and fragment of
-     * this URL are always empty, since they are not significant for planning a route.
-     */
     public HttpUrl url() {
         return url;
     }
 
-    /**
-     * @return the service that will be used to resolve IP addresses for hostnames.
-     */
     public Dns dns() {
         return dns;
     }
 
-    /**
-     * @return the socket factory for new connections.
-     */
     public SocketFactory socketFactory() {
         return socketFactory;
     }
 
-    /**
-     * @return the client's proxy authenticator.
-     */
     public Authenticator proxyAuthenticator() {
         return proxyAuthenticator;
     }
 
-    /**
-     * @return the protocols the client supports. This method always returns a non-null list that
-     * contains minimally {@link Protocol#HTTP_1_1}.
-     */
     public List<Protocol> protocols() {
         return protocols;
     }
@@ -137,39 +120,22 @@ public final class Address {
         return connectionSpecs;
     }
 
-    /**
-     * @return this address's proxy selector. Only used if the proxy is null. If none of this
-     * selector's proxies are reachable, a direct connection will be attempted.
-     */
     public ProxySelector proxySelector() {
         return proxySelector;
     }
 
-    /**
-     * @return this address's explicitly-specified HTTP proxy, or null to delegate to the {@linkplain
-     * #proxySelector proxy selector}.
-     */
     public Proxy proxy() {
         return proxy;
     }
 
-    /**
-     * @return the SSL socket factory, or null if this is not an HTTPS address.
-     */
     public SSLSocketFactory sslSocketFactory() {
         return sslSocketFactory;
     }
 
-    /**
-     * @return the hostname verifier, or null if this is not an HTTPS address.
-     */
     public HostnameVerifier hostnameVerifier() {
         return hostnameVerifier;
     }
 
-    /**
-     * @return this address's certificate pinner, or null if this is not an HTTPS address.
-     */
     public CertificatePinner certificatePinner() {
         return certificatePinner;
     }
@@ -225,4 +191,5 @@ public final class Address {
         result.append("}");
         return result.toString();
     }
+
 }

@@ -215,7 +215,8 @@ public abstract class Builder {
     /**
      * 删除文件，如果是目录将递归删除子文件或目录
      *
-     * @param file 文件/目录
+     * @param file        文件/目录
+     * @param recursively 递归
      * @return 是否删除成功
      */
     public static boolean delete(File file, boolean recursively) {
@@ -306,6 +307,7 @@ public abstract class Builder {
     /**
      * 创建多个子过滤器AND连接的混合过滤器
      *
+     * @param <E> 对象
      * @return 多个子过滤器AND连接的混合过滤器
      */
     public static <E> AllComplex<E> all() {
@@ -315,6 +317,7 @@ public abstract class Builder {
     /**
      * 创建多个子过滤器AND连接的混合过滤器
      *
+     * @param <E>     对象
      * @param filters 子过滤器
      * @return 多个子过滤器AND连接的混合过滤器
      */
@@ -325,6 +328,7 @@ public abstract class Builder {
     /**
      * 创建多个子过滤器AND连接的混合过滤器
      *
+     * @param <E> 对象
      * @return 多个子过滤器AND连接的混合过滤器
      */
     public static <E> AllComplex<E> and() {
@@ -334,6 +338,7 @@ public abstract class Builder {
     /**
      * 创建多个子过滤器AND连接的混合过滤器
      *
+     * @param <E>     对象
      * @param filters 子过滤器
      * @return 多个子过滤器AND连接的混合过滤器
      */
@@ -344,6 +349,7 @@ public abstract class Builder {
     /**
      * 创建多个子过滤器OR连接的混合过滤器
      *
+     * @param <E> 对象
      * @return 多个子过滤器OR连接的混合过滤器
      */
     public static <E> AnyComplex<E> any() {
@@ -353,6 +359,7 @@ public abstract class Builder {
     /**
      * 创建多个子过滤器OR连接的混合过滤器
      *
+     * @param <E>     对象
      * @param filters 子过滤器
      * @return 多个子过滤器OR连接的混合过滤器
      */
@@ -363,6 +370,7 @@ public abstract class Builder {
     /**
      * 创建多个子过滤器OR连接的混合过滤器
      *
+     * @param <E> 对象
      * @return 多个子过滤器OR连接的混合过滤器
      */
     public static <E> AnyComplex<E> or() {
@@ -372,6 +380,7 @@ public abstract class Builder {
     /**
      * 创建多个子过滤器OR连接的混合过滤器
      *
+     * @param <E>     对象
      * @param filters 子过滤器
      * @return 多个子过滤器OR连接的混合过滤器
      */
@@ -382,6 +391,7 @@ public abstract class Builder {
     /**
      * 创建非门逻辑运算过滤器，实际上就是将委派过滤器的过滤结果取反
      *
+     * @param <E>    对象
      * @param filter 委派过滤器
      * @param <E>    记录类型
      * @return 非门逻辑过滤器

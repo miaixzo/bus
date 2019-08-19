@@ -61,7 +61,6 @@ public final class Header {
     public final ByteString value;
     final int hpackSize;
 
-    // TODO: search for toLowerCase and consider moving logic here.
     public Header(String name, String value) {
         this(ByteString.encodeUtf8(name), ByteString.encodeUtf8(value));
     }

@@ -104,9 +104,6 @@ public final class OkHostnameVerifier implements HostnameVerifier {
                 : verifyHostname(host, certificate);
     }
 
-    /**
-     * Returns true if {@code certificate} matches {@code ipAddress}.
-     */
     private boolean verifyIpAddress(String ipAddress, X509Certificate certificate) {
         List<String> altNames = getSubjectAltNames(certificate, ALT_IPA_NAME);
         for (int i = 0, size = altNames.size(); i < size; i++) {
@@ -117,9 +114,6 @@ public final class OkHostnameVerifier implements HostnameVerifier {
         return false;
     }
 
-    /**
-     * Returns true if {@code certificate} matches {@code hostname}.
-     */
     private boolean verifyHostname(String hostname, X509Certificate certificate) {
         hostname = hostname.toLowerCase(Locale.US);
         List<String> altNames = getSubjectAltNames(certificate, ALT_DNS_NAME);
@@ -131,13 +125,6 @@ public final class OkHostnameVerifier implements HostnameVerifier {
         return false;
     }
 
-    /**
-     * Returns {@code true} iff {@code hostname} matches the entity name {@code pattern}.
-     *
-     * @param hostname lower-case host name.
-     * @param pattern  entity name pattern from certificate. May be a wildcard pattern such as {@code
-     *                 *.android.com}.
-     */
     public boolean verifyHostname(String hostname, String pattern) {
         // Basic sanity checks
         // Check length == 0 instead of .isEmpty() to support Java 5.

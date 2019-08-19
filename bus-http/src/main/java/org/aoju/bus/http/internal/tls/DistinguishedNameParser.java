@@ -355,12 +355,6 @@ final class DistinguishedNameParser {
         return (b1 << 4) + b2;
     }
 
-    /**
-     * Parses the DN and returns the most significant attribute value for an attribute type, or null
-     * if none found.
-     *
-     * @param attributeType attribute type to look for (e.g. "ca")
-     */
     public String findMostSpecific(String attributeType) {
         // Initialize internal state.
         pos = 0;
@@ -419,4 +413,5 @@ final class DistinguishedNameParser {
             }
         }
     }
+
 }

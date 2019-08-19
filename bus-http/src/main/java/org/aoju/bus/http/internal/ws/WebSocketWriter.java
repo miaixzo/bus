@@ -67,27 +67,14 @@ final class WebSocketWriter {
         maskCursor = isClient ? new Buffer.UnsafeCursor() : null;
     }
 
-    /**
-     * Send a ping with the supplied {@code payload}.
-     */
     void writePing(ByteString payload) throws IOException {
         writeControlFrame(WebSocketProtocol.OPCODE_CONTROL_PING, payload);
     }
 
-    /**
-     * Send a pong with the supplied {@code payload}.
-     */
     void writePong(ByteString payload) throws IOException {
         writeControlFrame(WebSocketProtocol.OPCODE_CONTROL_PONG, payload);
     }
 
-    /**
-     * Send a close frame with optional code and reason.
-     *
-     * @param code   Status code as defined by <a
-     *               href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4 of RFC 6455</a> or {@code 0}.
-     * @param reason Reason for shutting down or {@code null}.
-     */
     void writeClose(int code, ByteString reason) throws IOException {
         ByteString payload = ByteString.EMPTY;
         if (code != 0 || reason != null) {
@@ -146,10 +133,6 @@ final class WebSocketWriter {
         sink.flush();
     }
 
-    /**
-     * Stream a message payload as a series of frames. This allows control frames to be interleaved
-     * between parts of the message.
-     */
     Sink newMessageSink(int formatOpcode, long contentLength) {
         if (activeWriter) {
             throw new IllegalStateException("Another message writer is active. Did you call close()?");
@@ -258,4 +241,5 @@ final class WebSocketWriter {
             activeWriter = false;
         }
     }
+
 }

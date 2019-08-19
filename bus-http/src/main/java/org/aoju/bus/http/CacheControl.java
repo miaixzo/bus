@@ -104,13 +104,6 @@ public final class CacheControl {
         this.immutable = builder.immutable;
     }
 
-    /**
-     * Returns the cache directives of {@code headers}. This honors both Cache-Control and Pragma
-     * headers if they are present.
-     *
-     * @param headers Headers
-     * @return CacheControl
-     */
     public static CacheControl parse(Headers headers) {
         boolean noCache = false;
         boolean noStore = false;

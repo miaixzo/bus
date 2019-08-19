@@ -83,7 +83,6 @@ public final class StreamAllocation {
     public final EventListener eventListener;
     private final ConnectionPool connectionPool;
     private final Object callStackTrace;
-    // State guarded by connectionPool.
     private final RouteSelector routeSelector;
     private RouteSelector.Selection routeSelection;
     private Route route;
@@ -126,10 +125,6 @@ public final class StreamAllocation {
         }
     }
 
-    /**
-     * Finds a connection and returns it if it is healthy. If it is unhealthy the process is repeated
-     * until a healthy connection is found.
-     */
     private RealConnection findHealthyConnection(int connectTimeout, int readTimeout,
                                                  int writeTimeout, int pingIntervalMillis, boolean connectionRetryEnabled,
                                                  boolean doExtensiveHealthChecks) throws IOException {
@@ -155,10 +150,6 @@ public final class StreamAllocation {
         }
     }
 
-    /**
-     * Returns a connection to host a new stream. This prefers the existing connection if it exists,
-     * then the pool, finally building a new connection.
-     */
     private RealConnection findConnection(int connectTimeout, int readTimeout, int writeTimeout,
                                           int pingIntervalMillis, boolean connectionRetryEnabled) throws IOException {
         boolean foundPooledConnection = false;
@@ -361,9 +352,6 @@ public final class StreamAllocation {
         }
     }
 
-    /**
-     * Forbid new streams from being created on the connection that hosts this allocation.
-     */
     public void noNewStreams() {
         Socket socket;
         Connection releasedConnection;
@@ -378,13 +366,6 @@ public final class StreamAllocation {
         }
     }
 
-    /**
-     * Releases resources held by this allocation. If sufficient resources are allocated, the
-     * connection will be detached or closed. Callers must be synchronized on the connection pool.
-     *
-     * <p>Returns a closeable that the caller should pass to {@link Internal#closeQuietly} upon completion
-     * of the synchronized block. (We don't do I/O while synchronized on the connection pool.)
-     */
     private Socket deallocate(boolean noNewStreams, boolean released, boolean streamFinished) {
         assert (Thread.holdsLock(connectionPool));
 
@@ -471,10 +452,6 @@ public final class StreamAllocation {
         }
     }
 
-    /**
-     * Use this allocation to hold {@code connection}. Each call to this must be paired with a call to
-     * {@link #release} on the same connection.
-     */
     public void acquire(RealConnection connection, boolean reportedAcquired) {
         assert (Thread.holdsLock(connectionPool));
         if (this.connection != null) throw new IllegalStateException();
@@ -484,9 +461,6 @@ public final class StreamAllocation {
         connection.allocations.add(new StreamAllocationReference(this, callStackTrace));
     }
 
-    /**
-     * Remove this allocation from the connection's list of allocations.
-     */
     private void release(RealConnection connection) {
         for (int i = 0, size = connection.allocations.size(); i < size; i++) {
             Reference<StreamAllocation> reference = connection.allocations.get(i);
@@ -498,14 +472,6 @@ public final class StreamAllocation {
         throw new IllegalStateException();
     }
 
-    /**
-     * Release the connection held by this connection and acquire {@code newConnection} instead. It is
-     * only safe to call this if the held connection is newly connected but duplicated by {@code
-     * newConnection}. Typically this occurs when concurrently connecting to an HTTP/2 webserver.
-     *
-     * <p>Returns a closeable that the caller should pass to {@link Internal#closeQuietly} upon completion
-     * of the synchronized block. (We don't do I/O while synchronized on the connection pool.)
-     */
     public Socket releaseAndAcquire(RealConnection newConnection) {
         assert (Thread.holdsLock(connectionPool));
         if (codec != null || connection.allocations.size() != 1) throw new IllegalStateException();
@@ -534,10 +500,7 @@ public final class StreamAllocation {
     }
 
     public static final class StreamAllocationReference extends WeakReference<StreamAllocation> {
-        /**
-         * Captures the stack trace at the time the Call is executed or enqueued. This is helpful for
-         * identifying the origin of connection leaks.
-         */
+
         public final Object callStackTrace;
 
         StreamAllocationReference(StreamAllocation referent, Object callStackTrace) {

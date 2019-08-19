@@ -124,14 +124,6 @@ final class Relay {
         this.bufferMaxSize = bufferMaxSize;
     }
 
-    /**
-     * Creates a new relay that reads a live stream from {@code upstream}, using {@code file} to share
-     * that data with other sources.
-     *
-     * <p><strong>Warning:</strong> callers to this method must immediately call {@link #newSource} to
-     * create a source and close that when they're done. Otherwise a handle to {@code file} will be
-     * leaked.
-     */
     public static Relay edit(
             File file, Source upstream, ByteString metadata, long bufferMaxSize) throws IOException {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
@@ -144,13 +136,6 @@ final class Relay {
         return result;
     }
 
-    /**
-     * Creates a relay that reads a recorded stream from {@code file}.
-     *
-     * <p><strong>Warning:</strong> callers to this method must immediately call {@link #newSource} to
-     * create a source and close that when they're done. Otherwise a handle to {@code file} will be
-     * leaked.
-     */
     public static Relay read(File file) throws IOException {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
         FileOperator fileOperator = new FileOperator(randomAccessFile.getChannel());
@@ -218,11 +203,6 @@ final class Relay {
         return metadata;
     }
 
-    /**
-     * Returns a new source that returns the same bytes as upstream. Returns null if this relay has
-     * been closed and no further sources are possible. In that case callers should retry after
-     * building a new relay with {@link #read}.
-     */
     public Source newSource() {
         synchronized (Relay.this) {
             if (file == null) return null;
@@ -245,24 +225,6 @@ final class Relay {
          */
         private long sourcePos;
 
-        /**
-         * Selects where to find the bytes for a read and read them. This is first of three sources.
-         *
-         * <h3>Upstream:</h3>
-         * In this case the current thread is assigned as the upstream reader. We read bytes from
-         * upstream and copy them to both the file and to the buffer. Finally we release the upstream
-         * reader lock and return the new bytes.
-         *
-         * <h3>The file</h3>
-         * In this case we copy bytes from the file to the {@code sink}.
-         *
-         * <h3>The buffer</h3>
-         * In this case the bytes are immediately copied into {@code sink} and the number of bytes
-         * copied is returned.
-         *
-         * <p>If upstream would be selected but another thread is already reading upstream this will
-         * block until that read completes. It is possible to time out while waiting for that.
-         */
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
             if (fileOperator == null) throw new IllegalStateException("closed");

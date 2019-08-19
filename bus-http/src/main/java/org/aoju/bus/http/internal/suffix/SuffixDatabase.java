@@ -163,21 +163,6 @@ public final class SuffixDatabase {
         return match;
     }
 
-    /**
-     * Returns the effective top-level entity plus first (eTLD+1) by referencing the public suffix list.
-     * Returns null if the entity is a public suffix or a private address.
-     *
-     * <p>Here are some examples: <pre>{@code
-     * assertEquals("google.com", getEffectiveTldPlusOne("google.com"));
-     * assertEquals("google.com", getEffectiveTldPlusOne("www.google.com"));
-     * assertNull(getEffectiveTldPlusOne("com"));
-     * assertNull(getEffectiveTldPlusOne("localhost"));
-     * assertNull(getEffectiveTldPlusOne("mymacbook"));
-     * }</pre>
-     *
-     * @param domain A canonicalized entity. An International Domain Name (IDN) should be punycode
-     *               encoded.
-     */
     public String getEffectiveTldPlusOne(String domain) {
         if (domain == null) throw new NullPointerException("entity == null");
 
@@ -296,11 +281,6 @@ public final class SuffixDatabase {
                 : wildcardRuleLabels;
     }
 
-    /**
-     * Reads the public suffix list treating the operation as uninterruptible. We always want to read
-     * the list otherwise we'll be left in a bad state. If the thread was interrupted prior to this
-     * operation, it will be re-interrupted after the list is read.
-     */
     private void readTheListUninterruptibly() {
         boolean interrupted = false;
         try {
@@ -351,13 +331,11 @@ public final class SuffixDatabase {
         readCompleteLatch.countDown();
     }
 
-    /**
-     * Visible for testing.
-     */
     void setListBytes(byte[] publicSuffixListBytes, byte[] publicSuffixExceptionListBytes) {
         this.publicSuffixListBytes = publicSuffixListBytes;
         this.publicSuffixExceptionListBytes = publicSuffixExceptionListBytes;
         listRead.set(true);
         readCompleteLatch.countDown();
     }
+
 }

@@ -39,6 +39,7 @@ import java.util.Set;
  * @since JDK 1.8
  */
 public final class BasicTrustRootIndex implements TrustRootIndex {
+
     private final Map<X500Principal, Set<X509Certificate>> subjectToCaCerts;
 
     public BasicTrustRootIndex(X509Certificate... caCerts) {
@@ -84,4 +85,5 @@ public final class BasicTrustRootIndex implements TrustRootIndex {
     public int hashCode() {
         return subjectToCaCerts.hashCode();
     }
+
 }

@@ -80,8 +80,6 @@ public final class BridgeInterceptor implements Interceptor {
             requestBuilder.header("Connection", "Keep-Alive");
         }
 
-        // If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing
-        // the transfer stream.
         boolean transparentGzip = false;
         if (userRequest.header("Accept-Encoding") == null && userRequest.header("Range") == null) {
             transparentGzip = true;
@@ -120,9 +118,6 @@ public final class BridgeInterceptor implements Interceptor {
         return responseBuilder.build();
     }
 
-    /**
-     * Returns a 'Cookie' HTTP request header with all cookies, like {@code a=b; c=d}.
-     */
     private String cookieHeader(List<Cookie> cookies) {
         StringBuilder cookieHeader = new StringBuilder();
         for (int i = 0, size = cookies.size(); i < size; i++) {

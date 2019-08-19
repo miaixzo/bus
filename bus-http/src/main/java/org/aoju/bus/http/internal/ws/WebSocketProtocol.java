@@ -148,4 +148,5 @@ public final class WebSocketProtocol {
     public static String acceptHeader(String key) {
         return ByteString.encodeUtf8(key + WebSocketProtocol.ACCEPT_MAGIC).sha1().base64();
     }
+
 }

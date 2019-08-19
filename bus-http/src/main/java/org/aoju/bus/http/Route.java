@@ -70,12 +70,6 @@ public final class Route {
         return address;
     }
 
-    /**
-     * Returns the {@link Proxy} of this route.
-     *
-     * <strong>Warning:</strong> This may disagree with {@link Address#proxy} when it is null. When
-     * the address's proxy is null, the proxy selector is used.
-     */
     public Proxy proxy() {
         return proxy;
     }
@@ -84,10 +78,6 @@ public final class Route {
         return inetSocketAddress;
     }
 
-    /**
-     * Returns true if this route tunnels HTTPS through an HTTP proxy. See <a
-     * href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817, Section 5.2</a>.
-     */
     public boolean requiresTunnel() {
         return address.sslSocketFactory != null && proxy.type() == Proxy.Type.HTTP;
     }
@@ -113,4 +103,5 @@ public final class Route {
     public String toString() {
         return "Route{" + inetSocketAddress + "}";
     }
+
 }

@@ -104,33 +104,15 @@ public class Platform {
     }
 
     public static boolean isConscryptPreferred() {
-        // mainly to allow tests to run cleanly
         if ("conscrypt".equals(System.getProperty("HttpClient.platform"))) {
             return true;
         }
 
-        // check if Provider manually installed
         String preferredProvider = Security.getProviders()[0].getName();
         return "Conscrypt".equals(preferredProvider);
     }
 
-    /**
-     * Attempt to match the host runtime to a capable Platform implementation.
-     */
     private static Platform findPlatform() {
- /*   Platform android = AndroidPlatform.buildIfSupported();
-
-    if (android != null) {
-      return android;
-    }
-
-    if (isConscryptPreferred()) {
-      Platform conscrypt = ConscryptPlatform.buildIfSupported();
-
-      if (conscrypt != null) {
-        return conscrypt;
-      }
-    }*/
 
         Platform jdk9 = Jdk9Platform.buildIfSupported();
 
@@ -144,19 +126,14 @@ public class Platform {
             return jdkWithJettyBoot;
         }
 
-        // Probably an Oracle JDK like OpenJDK.
         return new Platform();
     }
 
-    /**
-     * Returns the concatenation of 8-bit, length prefixed protocol names.
-     * http://tools.ietf.org/html/draft-agl-tls-nextprotoneg-04#page-4
-     */
     static byte[] concatLengthPrefixed(List<Protocol> protocols) {
         Buffer result = new Buffer();
         for (int i = 0, size = protocols.size(); i < size; i++) {
             Protocol protocol = protocols.get(i);
-            if (protocol == Protocol.HTTP_1_0) continue; // No HTTP/1.0 for ALPN.
+            if (protocol == Protocol.HTTP_1_0) continue;
             result.writeByte(protocol.toString().length());
             result.writeUtf8(protocol.toString());
         }
@@ -177,7 +154,6 @@ public class Platform {
             }
         }
 
-        // Didn't find the field we wanted. As a last gasp attempt, try to find the value on a delegate.
         if (!fieldName.equals("delegate")) {
             Object delegate = readFieldOrNull(instance, Object.class, "delegate");
             if (delegate != null) return readFieldOrNull(delegate, fieldType, fieldName);
@@ -186,17 +162,11 @@ public class Platform {
         return null;
     }
 
-    /**
-     * Prefix used on custom headers.
-     */
     public String getPrefix() {
         return "HttpClient";
     }
 
     protected X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
-        // Attempt to get the trust manager from an OpenJDK socket factory. We attempt this on all
-        // platforms in order to support Robolectric, which mixes classes from both Android and the
-        // Oracle JDK. Note that we don't support HTTP/2 or other nice features on Robolectric.
         try {
             Class<?> sslContextClass = Class.forName("sun.security.ssl.SSLContextImpl");
             Object context = readFieldOrNull(sslSocketFactory, sslContextClass, "context");
@@ -207,25 +177,13 @@ public class Platform {
         }
     }
 
-    /**
-     * Configure TLS extensions on {@code sslSocket} for {@code route}.
-     *
-     * @param hostname non-null for client-side handshakes; null for server-side handshakes.
-     */
     public void configureTlsExtensions(SSLSocket sslSocket, String hostname,
                                        List<Protocol> protocols) {
     }
 
-    /**
-     * Called after the TLS handshake to release resources allocated by {@link
-     * #configureTlsExtensions}.
-     */
     public void afterHandshake(SSLSocket sslSocket) {
     }
 
-    /**
-     * Returns the negotiated protocol, or null if no protocol was negotiated.
-     */
     public String getSelectedProtocol(SSLSocket socket) {
         return null;
     }
@@ -244,11 +202,6 @@ public class Platform {
         return true;
     }
 
-    /**
-     * Returns an object that holds a stack trace created at the moment this method is executed. This
-     * should be used specifically for {@link java.io.Closeable} objects and in conjunction with
-     * {@link #logCloseableLeak(String, Object)}.
-     */
     public Object getStackTraceForCloseable(String closer) {
         if (logger.isLoggable(Level.FINE)) {
             return new Throwable(closer); // These are expensive to allocate.
@@ -285,7 +238,6 @@ public class Platform {
         String jvmVersion = System.getProperty("java.specification.version");
         if ("1.7".equals(jvmVersion)) {
             try {
-                // JDK 1.7 (public version) only support > TLSv1 with named protocols
                 return SSLContext.getInstance("TLSv1.2");
             } catch (NoSuchAlgorithmException e) {
                 // fallback to TLS
@@ -310,4 +262,5 @@ public class Platform {
     public String toString() {
         return getClass().getSimpleName();
     }
+
 }

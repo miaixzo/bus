@@ -82,4 +82,5 @@ class FaultHidingSink extends ForwardingSink {
 
     protected void onException(IOException e) {
     }
+
 }

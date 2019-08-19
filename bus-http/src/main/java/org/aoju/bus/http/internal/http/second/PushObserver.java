@@ -52,6 +52,7 @@ import java.util.List;
  * @since JDK 1.8
  */
 public interface PushObserver {
+
     PushObserver CANCEL = new PushObserver() {
 
         @Override
@@ -76,39 +77,12 @@ public interface PushObserver {
         }
     };
 
-    /**
-     * Describes the request that the server intends to push a response for.
-     *
-     * @param streamId       server-initiated stream ID: an even number.
-     * @param requestHeaders minimally includes {@code :method}, {@code :scheme}, {@code :authority},
-     *                       and {@code :path}.
-     */
     boolean onRequest(int streamId, List<Header> requestHeaders);
 
-    /**
-     * The response headers corresponding to a pushed request.  When {@code last} is true, there are
-     * no data frames to follow.
-     *
-     * @param streamId        server-initiated stream ID: an even number.
-     * @param responseHeaders minimally includes {@code :status}.
-     * @param last            when true, there is no response data.
-     */
     boolean onHeaders(int streamId, List<Header> responseHeaders, boolean last);
 
-    /**
-     * A chunk of response data corresponding to a pushed request.  This data must either be read or
-     * skipped.
-     *
-     * @param streamId  server-initiated stream ID: an even number.
-     * @param source    location of data corresponding with this stream ID.
-     * @param byteCount number of bytes to read or skip from the source.
-     * @param last      when true, there are no data frames to follow.
-     */
     boolean onData(int streamId, BufferedSource source, int byteCount, boolean last)
             throws IOException;
 
-    /**
-     * Indicates the reason why this stream was canceled.
-     */
     void onReset(int streamId, ErrorCode errorCode);
 }

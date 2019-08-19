@@ -56,12 +56,6 @@ public final class ConnectionSpecSelector {
         this.connectionSpecs = connectionSpecs;
     }
 
-    /**
-     * Configures the supplied {@link SSLSocket} to connect to the specified host using an appropriate
-     * {@link ConnectionSpec}. Returns the chosen {@link ConnectionSpec}, never {@code null}.
-     *
-     * @throws IOException if the socket does not support any of the TLS modes available
-     */
     public ConnectionSpec configureSecureSocket(SSLSocket sslSocket) throws IOException {
         ConnectionSpec tlsConfiguration = null;
         for (int i = nextModeIndex, size = connectionSpecs.size(); i < size; i++) {
@@ -74,9 +68,6 @@ public final class ConnectionSpecSelector {
         }
 
         if (tlsConfiguration == null) {
-            // This may be the first time a connection has been attempted and the socket does not support
-            // any the required protocols, or it may be a retry (but this socket supports fewer
-            // protocols than was suggested by a prior socket).
             throw new UnknownServiceException(
                     "Unable to find acceptable protocols. isFallback=" + isFallback
                             + ", modes=" + connectionSpecs
@@ -90,59 +81,36 @@ public final class ConnectionSpecSelector {
         return tlsConfiguration;
     }
 
-    /**
-     * Reports a failure to complete a connection. Determines the next {@link ConnectionSpec} to try,
-     * if any.
-     *
-     * @return {@code true} if the connection should be retried using {@link
-     * #configureSecureSocket(SSLSocket)} or {@code false} if not
-     */
     public boolean connectionFailed(IOException e) {
-        // Any future attempt to connect using this strategy will be a fallback attempt.
+
         isFallback = true;
 
         if (!isFallbackPossible) {
             return false;
         }
 
-        // If there was a protocol problem, don't recover.
         if (e instanceof ProtocolException) {
             return false;
         }
 
-        // If there was an interruption or timeout (SocketTimeoutException), don't recover.
-        // For the socket connect timeout case we do not try the same host with a different
-        // ConnectionSpec: we assume it is unreachable.
         if (e instanceof InterruptedIOException) {
             return false;
         }
 
-        // Look for known client-side or negotiation errors that are unlikely to be fixed by trying
-        // again with a different connection spec.
         if (e instanceof SSLHandshakeException) {
-            // If the problem was a CertificateException from the X509TrustManager,
-            // do not retry.
             if (e.getCause() instanceof CertificateException) {
                 return false;
             }
         }
         if (e instanceof SSLPeerUnverifiedException) {
-            // e.g. a certificate pinning error.
             return false;
         }
 
-        // On Android, SSLProtocolExceptions can be caused by TLS_FALLBACK_SCSV failures, which means we
-        // retry those when we probably should not.
         return (e instanceof SSLHandshakeException
                 || e instanceof SSLProtocolException
                 || e instanceof SSLException);
     }
 
-    /**
-     * Returns {@code true} if any later {@link ConnectionSpec} in the fallback strategy looks
-     * possible based on the supplied {@link SSLSocket}. It assumes that a future socket will have the
-     * same capabilities as the supplied socket.
-     */
     private boolean isFallbackPossible(SSLSocket socket) {
         for (int i = nextModeIndex; i < connectionSpecs.size(); i++) {
             if (connectionSpecs.get(i).isCompatible(socket)) {
@@ -151,4 +119,5 @@ public final class ConnectionSpecSelector {
         }
         return false;
     }
+
 }

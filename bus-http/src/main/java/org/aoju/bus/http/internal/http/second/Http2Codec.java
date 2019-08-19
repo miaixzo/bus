@@ -55,9 +55,6 @@ public final class Http2Codec implements HttpCodec {
     private static final String ENCODING = "encoding";
     private static final String UPGRADE = "upgrade";
 
-    /**
-     * See http://tools.ietf.org/html/draft-ietf-httpbis-http2-09#section-8.1.3.
-     */
     private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Internal.immutableList(
             CONNECTION,
             HOST,
@@ -117,9 +114,6 @@ public final class Http2Codec implements HttpCodec {
         return result;
     }
 
-    /**
-     * Returns headers for a name value block containing an HTTP/2 response.
-     */
     public static Response.Builder readHttp2HeadersList(Headers headerBlock,
                                                         Protocol protocol) throws IOException {
         StatusLine statusLine = null;
@@ -226,4 +220,5 @@ public final class Http2Codec implements HttpCodec {
             streamAllocation.streamFinished(false, Http2Codec.this, bytesRead, e);
         }
     }
+
 }

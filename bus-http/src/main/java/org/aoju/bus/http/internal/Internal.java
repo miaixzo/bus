@@ -66,9 +66,6 @@ public abstract class Internal {
 
     public static final ResponseBody EMPTY_RESPONSE = ResponseBody.create(null, EMPTY_BYTE_ARRAY);
     public static final RequestBody EMPTY_REQUEST = RequestBody.create(null, EMPTY_BYTE_ARRAY);
-    /**
-     * GMT and UTC are equivalent for our purposes.
-     */
     public static final TimeZone UTC = TimeZone.getTimeZone("GMT");
     public static final Comparator<String> NATURAL_ORDER = new Comparator<String>() {
         @Override
@@ -125,17 +122,10 @@ public abstract class Internal {
         }
     }
 
-    /**
-     * Returns true if two possibly-null objects are equal.
-     */
     public static boolean equal(Object a, Object b) {
         return a == b || (a != null && a.equals(b));
     }
 
-    /**
-     * Closes {@code closeable}, ignoring any checked exceptions. Does nothing if {@code closeable} is
-     * null.
-     */
     public static void closeQuietly(Closeable closeable) {
         if (closeable != null) {
             try {
@@ -147,10 +137,6 @@ public abstract class Internal {
         }
     }
 
-    /**
-     * Closes {@code socket}, ignoring any checked exceptions. Does nothing if {@code socket} is
-     * null.
-     */
     public static void closeQuietly(Socket socket) {
         if (socket != null) {
             try {
@@ -164,10 +150,6 @@ public abstract class Internal {
         }
     }
 
-    /**
-     * Closes {@code serverSocket}, ignoring any checked exceptions. Does nothing if {@code
-     * serverSocket} is null.
-     */
     public static void closeQuietly(ServerSocket serverSocket) {
         if (serverSocket != null) {
             try {
@@ -179,11 +161,6 @@ public abstract class Internal {
         }
     }
 
-    /**
-     * Attempts to exhaust {@code source}, returning true if successful. This is useful when reading a
-     * complete source is helpful, such as when doing so completes a cache body or frees a socket
-     * connection for reuse.
-     */
     public static boolean discard(Source source, int timeout, TimeUnit timeUnit) {
         try {
             return skipAll(source, timeout, timeUnit);
@@ -192,10 +169,6 @@ public abstract class Internal {
         }
     }
 
-    /**
-     * Reads until {@code in} is exhausted or the deadline has been reached. This is careful to not
-     * extend the deadline if first exists already.
-     */
     public static boolean skipAll(Source source, int duration, TimeUnit timeUnit) throws IOException {
         long now = System.nanoTime();
         long originalDuration = source.timeout().hasDeadline()
@@ -219,25 +192,16 @@ public abstract class Internal {
         }
     }
 
-    /**
-     * Returns an immutable copy of {@code list}.
-     */
     public static <T> List<T> immutableList(List<T> list) {
         return Collections.unmodifiableList(new ArrayList<>(list));
     }
 
-    /**
-     * Returns an immutable copy of {@code map}.
-     */
     public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
         return map.isEmpty()
                 ? Collections.<K, V>emptyMap()
                 : Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
-    /**
-     * Returns an immutable list containing {@code elements}.
-     */
     public static <T> List<T> immutableList(T... elements) {
         return Collections.unmodifiableList(Arrays.asList(elements.clone()));
     }
@@ -253,10 +217,6 @@ public abstract class Internal {
         };
     }
 
-    /**
-     * Returns an array containing only elements found in {@code first} and also in {@code
-     * second}. The returned elements are in the same order as in {@code first}.
-     */
     public static String[] intersect(
             Comparator<? super String> comparator, String[] first, String[] second) {
         List<String> result = new ArrayList<>();
@@ -271,12 +231,6 @@ public abstract class Internal {
         return result.toArray(new String[result.size()]);
     }
 
-    /**
-     * Returns true if there is an element in {@code first} that is also in {@code second}. This
-     * method terminates if any intersection is found. The sizes of both arguments are assumed to be
-     * so small, and the likelihood of an intersection so great, that it is not worth the CPU cost of
-     * sorting or the memory cost of hashing.
-     */
     public static boolean nonEmptyIntersection(
             Comparator<String> comparator, String[] first, String[] second) {
         if (first == null || second == null || first.length == 0 || second.length == 0) {
@@ -301,10 +255,6 @@ public abstract class Internal {
                 : host;
     }
 
-    /**
-     * Returns true if {@code e} is due to a firmware bug fixed after Android 4.2.2.
-     * https://code.google.com/p/android/issues/detail?id=54072
-     */
     public static boolean isAndroidGetsocknameError(AssertionError e) {
         return e.getCause() != null && e.getMessage() != null
                 && e.getMessage().contains("getsockname failed");
@@ -324,10 +274,6 @@ public abstract class Internal {
         return result;
     }
 
-    /**
-     * Increments {@code pos} until {@code input[pos]} is not ASCII whitespace. Stops at {@code
-     * limit}.
-     */
     public static int skipLeadingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = pos; i < limit; i++) {
             switch (input.charAt(i)) {
@@ -344,10 +290,6 @@ public abstract class Internal {
         return limit;
     }
 
-    /**
-     * Decrements {@code limit} until {@code input[limit - 1]} is not ASCII whitespace. Stops at
-     * {@code pos}.
-     */
     public static int skipTrailingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = limit - 1; i >= pos; i--) {
             switch (input.charAt(i)) {
@@ -364,19 +306,12 @@ public abstract class Internal {
         return pos;
     }
 
-    /**
-     * Equivalent to {@code string.substring(pos, limit).trim()}.
-     */
     public static String trimSubstring(String string, int pos, int limit) {
         int start = skipLeadingAsciiWhitespace(string, pos, limit);
         int end = skipTrailingAsciiWhitespace(string, start, limit);
         return string.substring(start, end);
     }
 
-    /**
-     * Returns the index of the first character in {@code input} that contains a character in {@code
-     * delimiters}. Returns limit if there is no such character.
-     */
     public static int delimiterOffset(String input, int pos, int limit, String delimiters) {
         for (int i = pos; i < limit; i++) {
             if (delimiters.indexOf(input.charAt(i)) != -1) return i;
@@ -384,10 +319,6 @@ public abstract class Internal {
         return limit;
     }
 
-    /**
-     * Returns the index of the first character in {@code input} that is {@code delimiter}. Returns
-     * limit if there is no such character.
-     */
     public static int delimiterOffset(String input, int pos, int limit, char delimiter) {
         for (int i = pos; i < limit; i++) {
             if (input.charAt(i) == delimiter) return i;
@@ -395,14 +326,6 @@ public abstract class Internal {
         return limit;
     }
 
-    /**
-     * If {@code host} is an IP address, this returns the IP address in canonical form.
-     *
-     * <p>Otherwise this performs IDN ToASCII encoding and canonicalize the result to lowercase. For
-     * example this converts {@code ☃.net} to {@code xn--n3h.net}, and {@code WwW.GoOgLe.cOm} to
-     * {@code www.google.com}. {@code null} will be returned if the host cannot be ToASCII encoded or
-     * if the result contains unsupported ASCII characters.
-     */
     public static String canonicalizeHost(String host) {
         // If the input contains a :, it’s an IPv6 address.
         if (host.contains(":")) {
@@ -450,11 +373,6 @@ public abstract class Internal {
         return false;
     }
 
-    /**
-     * Returns the index of the first character in {@code input} that is either a control character
-     * (like {@code \u0000 or \n}) or a non-ASCII character. Returns -1 if {@code input} has no such
-     * characters.
-     */
     public static int indexOfControlOrNonAscii(String input) {
         for (int i = 0, length = input.length(); i < length; i++) {
             char c = input.charAt(i);
@@ -465,9 +383,6 @@ public abstract class Internal {
         return -1;
     }
 
-    /**
-     * Returns true if {@code host} is not a host name and might be an IP address.
-     */
     public static boolean verifyAsIpAddress(String host) {
         return VERIFY_AS_IP_ADDRESS.matcher(host).matches();
     }
@@ -522,9 +437,6 @@ public abstract class Internal {
         return -1;
     }
 
-    /**
-     * Decodes an IPv6 address like 1111:2222:3333:4444:5555:6666:7777:8888 or ::1.
-     */
     private static InetAddress decodeIpv6(String input, int pos, int limit) {
         byte[] address = new byte[16];
         int b = 0;
@@ -595,9 +507,6 @@ public abstract class Internal {
         }
     }
 
-    /**
-     * Decodes an IPv4 address suffix of an IPv6 address, like 1111::5555:6666:192.168.0.1.
-     */
     private static boolean decodeIpv4Suffix(
             String input, int pos, int limit, byte[] address, int addressOffset) {
         int b = addressOffset;
@@ -632,9 +541,6 @@ public abstract class Internal {
         return true; // Success.
     }
 
-    /**
-     * Encodes an IPv6 address in canonical form according to RFC 5952.
-     */
     private static String inet6AddressToAscii(byte[] address) {
         // Go through the address looking for the longest run of 0s. Each group is 2-bytes.
         // A run must be longer than first group (section 4.2.2).

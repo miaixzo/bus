@@ -65,12 +65,7 @@ public final class CacheStrategy {
         this.cacheResponse = cacheResponse;
     }
 
-    /**
-     * Returns true if {@code response} can be stored to later serve another request.
-     */
     public static boolean isCacheable(Response response, Request request) {
-        // Always go to network for uncacheable response codes (RFC 7231 section 6.1),
-        // This implementation doesn't support caching partial content.
         switch (response.code()) {
             case HttpURLConnection.HTTP_OK:
             case HttpURLConnection.HTTP_NOT_AUTHORITATIVE:
@@ -88,23 +83,17 @@ public final class CacheStrategy {
 
             case HttpURLConnection.HTTP_MOVED_TEMP:
             case StatusLine.HTTP_TEMP_REDIRECT:
-                // These codes can only be cached with the right response headers.
-                // http://tools.ietf.org/html/rfc7234#section-3
-                // s-maxage is not checked because httpClient is a private cache that should ignore s-maxage.
                 if (response.header("Expires") != null
                         || response.cacheControl().maxAgeSeconds() != -1
                         || response.cacheControl().isPublic()
                         || response.cacheControl().isPrivate()) {
                     break;
                 }
-                // Fall-through.
 
             default:
-                // All other codes cannot be cached.
                 return false;
         }
 
-        // A 'no-store' directive on request or response prevents the response from being cached.
         return !response.cacheControl().noStore() && !request.cacheControl().noStore();
     }
 
@@ -182,18 +171,10 @@ public final class CacheStrategy {
             }
         }
 
-        /**
-         * Returns true if the request contains conditions that save the server from sending a response
-         * that the client has locally. When a request is enqueued with its own conditions, the built-in
-         * response cache won't be used.
-         */
         private static boolean hasConditions(Request request) {
             return request.header("If-Modified-Since") != null || request.header("If-None-Match") != null;
         }
 
-        /**
-         * Returns a strategy to satisfy {@code request} using the a cached response {@code response}.
-         */
         public CacheStrategy get() {
             CacheStrategy candidate = getCandidate();
 
@@ -205,23 +186,15 @@ public final class CacheStrategy {
             return candidate;
         }
 
-        /**
-         * Returns a strategy to use assuming the request can use the network.
-         */
         private CacheStrategy getCandidate() {
-            // No cached response.
             if (cacheResponse == null) {
                 return new CacheStrategy(request, null);
             }
 
-            // Drop the cached response if it's missing a required handshake.
             if (request.isHttps() && cacheResponse.handshake() == null) {
                 return new CacheStrategy(request, null);
             }
 
-            // If this response shouldn't have been stored, it should never be used
-            // as a response source. This check should be redundant as long as the
-            // persistence store is well-behaved and the rules are consts.
             if (!isCacheable(cacheResponse, request)) {
                 return new CacheStrategy(request, null);
             }
@@ -262,8 +235,6 @@ public final class CacheStrategy {
                 return new CacheStrategy(null, builder.build());
             }
 
-            // Find a condition to add to the request. If the condition is satisfied, the response body
-            // will not be transmitted.
             String conditionName;
             String conditionValue;
             if (etag != null) {
@@ -288,10 +259,6 @@ public final class CacheStrategy {
             return new CacheStrategy(conditionalRequest, cacheResponse);
         }
 
-        /**
-         * Returns the number of milliseconds that the response was fresh for, starting from the served
-         * date.
-         */
         private long computeFreshnessLifetime() {
             CacheControl responseCaching = cacheResponse.cacheControl();
             if (responseCaching.maxAgeSeconds() != -1) {
@@ -304,10 +271,6 @@ public final class CacheStrategy {
                 return delta > 0 ? delta : 0;
             } else if (lastModified != null
                     && cacheResponse.request().url().query() == null) {
-                // As recommended by the HTTP RFC and implemented in Firefox, the
-                // max age of a document should be defaulted to 10% of the
-                // document's age at the time it was served. Default expiration
-                // dates aren't used for URIs containing a query.
                 long servedMillis = servedDate != null
                         ? servedDate.getTime()
                         : sentRequestMillis;
@@ -317,10 +280,6 @@ public final class CacheStrategy {
             return 0;
         }
 
-        /**
-         * Returns the current age of the response, in milliseconds. The calculation is specified by RFC
-         * 7234, 4.2.3 Calculating Age.
-         */
         private long cacheResponseAge() {
             long apparentReceivedAge = servedDate != null
                     ? Math.max(0, receivedResponseMillis - servedDate.getTime())
@@ -333,12 +292,10 @@ public final class CacheStrategy {
             return receivedAge + responseDuration + residentDuration;
         }
 
-        /**
-         * Returns true if computeFreshnessLifetime used a heuristic. If we used a heuristic to serve a
-         * cached response older than 24 hours, we are required to attach a warning.
-         */
         private boolean isFreshnessLifetimeHeuristic() {
             return cacheResponse.cacheControl().maxAgeSeconds() == -1 && expires == null;
         }
+
     }
+
 }

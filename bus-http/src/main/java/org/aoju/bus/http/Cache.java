@@ -482,54 +482,6 @@ public final class Cache implements Closeable, Flushable {
         private final long sentRequestMillis;
         private final long receivedResponseMillis;
 
-        /**
-         * Reads an entry from an input stream. A typical entry looks like this:
-         * <pre>{@code
-         *   http://google.com/foo
-         *   GET
-         *   2
-         *   Accept-Language: fr-CA
-         *   Accept-Charset: UTF-8
-         *   HTTP/1.1 200 OK
-         *   3
-         *   Content-Type: image/png
-         *   Content-Length: 100
-         *   Cache-Control: max-age=600
-         * }</pre>
-         *
-         * <p>A typical HTTPS file looks like this:
-         * <pre>{@code
-         *   https://google.com/foo
-         *   GET
-         *   2
-         *   Accept-Language: fr-CA
-         *   Accept-Charset: UTF-8
-         *   HTTP/1.1 200 OK
-         *   3
-         *   Content-Type: image/png
-         *   Content-Length: 100
-         *   Cache-Control: max-age=600
-         *
-         *   AES_256_WITH_MD5
-         *   2
-         *   base64-encoded peerCertificate[0]
-         *   base64-encoded peerCertificate[1]
-         *   -1
-         *   TLSv1.2
-         * }</pre>
-         * The file is newline separated. The first two lines are the URL and the request method. Next
-         * is the number of HTTP Vary request header lines, followed by those lines.
-         *
-         * <p>Next is the response status line, followed by the number of HTTP response header lines,
-         * followed by those lines.
-         *
-         * <p>HTTPS responses also contain SSL session information. This begins with a blank line, and
-         * then a line containing the cipher suite. Next is the length of the peer certificate chain.
-         * These certificates are base64-encoded and appear each on their own line. The next line
-         * contains the length of the local certificate chain. These certificates are also
-         * base64-encoded and appear each on their own line. A length of -1 is used to encode a null
-         * array. The last line is optional. If present, it contains the TLS version.
-         */
         Entry(Source in) throws IOException {
             try {
                 BufferedSource source = IoUtils.buffer(in);

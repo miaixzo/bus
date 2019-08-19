@@ -40,6 +40,7 @@ import java.util.*;
  * @since JDK 1.8
  */
 public final class HttpHeaders {
+
     private static final ByteString QUOTED_STRING_DELIMITERS = ByteString.encodeUtf8("\"\\");
     private static final ByteString TOKEN_DELIMITERS = ByteString.encodeUtf8("\t ,=");
 
@@ -63,10 +64,6 @@ public final class HttpHeaders {
         }
     }
 
-    /**
-     * Returns true if none of the Vary headers have changed between {@code cachedRequest} and {@code
-     * newRequest}.
-     */
     public static boolean varyMatches(
             Response cachedResponse, Headers cachedRequest, Request newRequest) {
         for (String field : varyFields(cachedResponse)) {
@@ -75,16 +72,10 @@ public final class HttpHeaders {
         return true;
     }
 
-    /**
-     * Returns true if a Vary header contains an asterisk. Such responses cannot be cached.
-     */
     public static boolean hasVaryAll(Response response) {
         return hasVaryAll(response.headers());
     }
 
-    /**
-     * Returns true if a Vary header contains an asterisk. Such responses cannot be cached.
-     */
     public static boolean hasVaryAll(Headers responseHeaders) {
         return varyFields(responseHeaders).contains("*");
     }
@@ -93,9 +84,6 @@ public final class HttpHeaders {
         return varyFields(response.headers());
     }
 
-    /**
-     * Returns the names of the request headers that need to be checked for equality when caching.
-     */
     public static Set<String> varyFields(Headers responseHeaders) {
         Set<String> result = Collections.emptySet();
         for (int i = 0, size = responseHeaders.size(); i < size; i++) {
@@ -112,23 +100,12 @@ public final class HttpHeaders {
         return result;
     }
 
-    /**
-     * Returns the subset of the headers in {@code response}'s request that impact the content of
-     * response's body.
-     */
     public static Headers varyHeaders(Response response) {
-        // Use the request headers sent over the network, since that's what the
-        // response varies on. Otherwise httpClient-supplied headers like
-        // "Accept-Encoding: gzip" may be lost.
         Headers requestHeaders = response.networkResponse().request().headers();
         Headers responseHeaders = response.headers();
         return varyHeaders(requestHeaders, responseHeaders);
     }
 
-    /**
-     * Returns the subset of the headers in {@code requestHeaders} that impact the content of
-     * response's body.
-     */
     public static Headers varyHeaders(Headers requestHeaders, Headers responseHeaders) {
         Set<String> varyFields = varyFields(responseHeaders);
         if (varyFields.isEmpty()) return new Headers.Builder().build();
@@ -143,27 +120,6 @@ public final class HttpHeaders {
         return result.build();
     }
 
-    /**
-     * Parse RFC 7235 challenges. This is awkward because we need to look ahead to know how to
-     * interpret a token.
-     *
-     * <p>For example, the first line has a parameter name/value pair and the second line has a single
-     * token68:
-     *
-     * <pre>   {@code
-     *
-     *   WWW-Authenticate: Digest foo=bar
-     *   WWW-Authenticate: Digest foo=
-     * }</pre>
-     *
-     * <p>Similarly, the first line has first challenge and the second line has two challenges:
-     *
-     * <pre>   {@code
-     *
-     *   WWW-Authenticate: Digest ,foo=bar
-     *   WWW-Authenticate: Digest ,foo
-     * }</pre>
-     */
     public static List<Challenge> parseChallenges(Headers responseHeaders, String headerName) {
         List<Challenge> result = new ArrayList<>();
         for (int h = 0; h < responseHeaders.size(); h++) {
@@ -234,9 +190,6 @@ public final class HttpHeaders {
         }
     }
 
-    /**
-     * Returns true if any commas were skipped.
-     */
     private static boolean skipWhitespaceAndCommas(Buffer buffer) {
         boolean commaFound = false;
         while (!buffer.exhausted()) {
@@ -262,11 +215,6 @@ public final class HttpHeaders {
         return count;
     }
 
-    /**
-     * Reads a double-quoted string, unescaping quoted pairs like {@code \"} to the 2nd character in
-     * each sequence. Returns the unescaped string, or null if the buffer isn't prefixed with a
-     * double-quoted string.
-     */
     private static String readQuotedString(Buffer buffer) {
         if (buffer.readByte() != '\"') throw new IllegalArgumentException();
         Buffer result = new Buffer();
@@ -287,10 +235,6 @@ public final class HttpHeaders {
         }
     }
 
-    /**
-     * Consumes and returns a non-empty token, terminating at special characters in {@link
-     * #TOKEN_DELIMITERS}. Returns null if the buffer is empty or prefixed with a delimiter.
-     */
     private static String readToken(Buffer buffer) {
         try {
             long tokenSize = buffer.indexOfElement(TOKEN_DELIMITERS);
@@ -319,9 +263,6 @@ public final class HttpHeaders {
         cookieJar.saveFromResponse(url, cookies);
     }
 
-    /**
-     * Returns true if the response must have a (possibly 0-length) body. See RFC 7231.
-     */
     public static boolean hasBody(Response response) {
         // HEAD requests never yield a body regardless of the response headers.
         if (response.request().method().equals("HEAD")) {
@@ -345,10 +286,6 @@ public final class HttpHeaders {
         return false;
     }
 
-    /**
-     * Returns the next index in {@code input} at or after {@code pos} that contains a character from
-     * {@code characters}. Returns the input length if none of the requested characters can be found.
-     */
     public static int skipUntil(String input, int pos, String characters) {
         for (; pos < input.length(); pos++) {
             if (characters.indexOf(input.charAt(pos)) != -1) {
@@ -358,10 +295,6 @@ public final class HttpHeaders {
         return pos;
     }
 
-    /**
-     * Returns the next non-whitespace character in {@code input} that is white space. Result is
-     * undefined if input contains newline characters.
-     */
     public static int skipWhitespace(String input, int pos) {
         for (; pos < input.length(); pos++) {
             char c = input.charAt(pos);
@@ -372,10 +305,6 @@ public final class HttpHeaders {
         return pos;
     }
 
-    /**
-     * Returns {@code value} as a positive integer, or 0 if it is negative, or {@code defaultValue} if
-     * it cannot be parsed.
-     */
     public static int parseSeconds(String value, int defaultValue) {
         try {
             long seconds = Long.parseLong(value);
@@ -390,4 +319,5 @@ public final class HttpHeaders {
             return defaultValue;
         }
     }
+
 }

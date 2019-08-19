@@ -67,9 +67,6 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    /**
-     * Applies {@code peerSettings} and then sends a settings ACK.
-     */
     public synchronized void applyAndAckSettings(Settings peerSettings) throws IOException {
         if (closed) throw new IOException("closed");
         this.maxFrameSize = peerSettings.getMaxFrameSize(maxFrameSize);
@@ -84,19 +81,6 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    /**
-     * HTTP/2 only. Send a push promise header block.
-     *
-     * <p>A push promise contains all the headers that pertain to a server-initiated request, and a
-     * {@code promisedStreamId} to which response frames will be delivered. Push promise frames are
-     * sent as a part of the response to {@code streamId}. The {@code promisedStreamId} has a priority
-     * of first greater than {@code streamId}.
-     *
-     * @param streamId         client-initiated stream ID.  Must be an odd number.
-     * @param promisedStreamId server-initiated stream ID.  Must be an even number.
-     * @param requestHeaders   minimally includes {@code :method}, {@code :scheme}, {@code :authority},
-     *                         and {@code :path}.
-     */
     public synchronized void pushPromise(int streamId, int promisedStreamId,
                                          List<Header> requestHeaders) throws IOException {
         if (closed) throw new IOException("closed");
@@ -149,21 +133,10 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    /**
-     * The maximum size of bytes that may be sent in a single call to {@link #data}.
-     */
     public int maxDataLength() {
         return maxFrameSize;
     }
 
-    /**
-     * {@code source.length} may be longer than the max length of the variant's data frame.
-     * Implementations must send multiple frames as necessary.
-     *
-     * @param source    the buffer to draw bytes from. May be null if byteCount is 0.
-     * @param byteCount must be between 0 and the minimum of {@code source.length} and {@link
-     *                  #maxDataLength}.
-     */
     public synchronized void data(boolean outFinished, int streamId, Buffer source, int byteCount)
             throws IOException {
         if (closed) throw new IOException("closed");
@@ -180,9 +153,6 @@ final class Http2Writer implements Closeable {
         }
     }
 
-    /**
-     * Write httpClient's settings to the peer.
-     */
     public synchronized void settings(Settings settings) throws IOException {
         if (closed) throw new IOException("closed");
         int length = settings.size() * 6;
@@ -204,10 +174,6 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    /**
-     * Send a connection-level ping to the peer. {@code ack} indicates this is a reply. The data in
-     * {@code payload1} and {@code payload2} opaque binary, and there are no rules on the content.
-     */
     public synchronized void ping(boolean ack, int payload1, int payload2) throws IOException {
         if (closed) throw new IOException("closed");
         int length = 8;
@@ -220,14 +186,6 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    /**
-     * Tell the peer to stop creating streams and that we last processed {@code lastGoodStreamId}, or
-     * zero if no streams were processed.
-     *
-     * @param lastGoodStreamId the last stream ID processed, or zero if no streams were processed.
-     * @param errorCode        reason for closing the connection.
-     * @param debugData        only valid for HTTP/2; opaque debug data to send.
-     */
     public synchronized void goAway(int lastGoodStreamId, ErrorCode errorCode, byte[] debugData)
             throws IOException {
         if (closed) throw new IOException("closed");
@@ -245,10 +203,6 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    /**
-     * Inform peer that an additional {@code windowSizeIncrement} bytes can be sent on {@code
-     * streamId}, or the connection if {@code streamId} is zero.
-     */
     public synchronized void windowUpdate(int streamId, long windowSizeIncrement) throws IOException {
         if (closed) throw new IOException("closed");
         if (windowSizeIncrement == 0 || windowSizeIncrement > 0x7fffffffL) {
@@ -303,4 +257,5 @@ final class Http2Writer implements Closeable {
 
         if (byteCount > length) writeContinuationFrames(streamId, byteCount - length);
     }
+
 }
