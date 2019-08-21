@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * @author funcas
- * @version 1.0
- * @date 2019年04月12日
+ * @author Kimi Liu
+ * @version 3.1.0
+ * @since JDK 1.8
  */
 @Documented
 @Inherited

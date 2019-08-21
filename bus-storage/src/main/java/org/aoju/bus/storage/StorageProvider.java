@@ -38,23 +38,25 @@ public interface StorageProvider extends Closeable {
     /**
      * 文件上传
      *
-     * @param object
-     * @return
+     * @param object 上传对象
+     * @return the string
      */
     String upload(UploadObject object);
 
     /**
      * 获取文件下载地址
      *
-     * @param
-     * @return
+     * @param fileKey    文件标识
+     * @param isInternal 是否内部
+     * @return the string
      */
     String getUrl(String fileKey, boolean isInternal);
 
     /**
      * 删除图片
      *
-     * @return
+     * @param fileKey 文件标识
+     * @return the true/false
      */
     boolean delete(String fileKey);
 
