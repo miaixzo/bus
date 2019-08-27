@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot-cors-starter</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.2</version>
     <packaging>jar</packaging>
 
     <name>bus-boot-cors-starter</name>

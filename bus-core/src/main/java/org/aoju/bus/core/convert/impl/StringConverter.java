@@ -29,7 +29,7 @@ import org.aoju.bus.core.convert.AbstractConverter;
  * 字符串转换器
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class StringConverter extends AbstractConverter<String> {

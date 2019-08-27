@@ -39,7 +39,7 @@ import java.security.spec.InvalidKeySpecException;
  * 数据加密标准，速度较快，适用于加密大量数据的场合。
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class DesCryptoFactory implements CryptoFactory {

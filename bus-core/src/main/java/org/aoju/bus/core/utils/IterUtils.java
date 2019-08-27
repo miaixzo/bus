@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class IterUtils {
@@ -381,7 +381,7 @@ public class IterUtils {
      * @param keys   键列表
      * @param values 值列表
      * @return 标题内容Map
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> Map<K, V> toMap(Iterable<K> keys, Iterable<V> values) {
         return toMap(keys, values, false);
@@ -414,7 +414,7 @@ public class IterUtils {
      * @param keys   键列表
      * @param values 值列表
      * @return 标题内容Map
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> Map<K, V> toMap(Iterator<K> keys, Iterator<V> values) {
         return toMap(keys, values, false);

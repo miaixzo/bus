@@ -35,7 +35,7 @@ import java.util.Set;
  * 基于emoji-java的Emoji表情工具类
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class EmojiUtils {

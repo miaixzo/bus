@@ -29,7 +29,7 @@ package org.aoju.bus.cron;
  * 检查完毕后启动器结束
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class TaskLauncher implements Runnable {

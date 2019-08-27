@@ -32,7 +32,7 @@ import java.nio.charset.UnsupportedCharsetException;
  * 字符集工具类
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class CharsetUtils {
@@ -98,7 +98,7 @@ public class CharsetUtils {
      * @param srcCharset  原文件的编码，必须与文件内容的编码保持一致
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static File convert(File file, Charset srcCharset, Charset destCharset) {
         final String str = FileUtils.readString(file, srcCharset);

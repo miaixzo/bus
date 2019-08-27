@@ -33,7 +33,7 @@ import java.io.File;
  * 文件资源访问对象
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class FileResource extends UriResource {

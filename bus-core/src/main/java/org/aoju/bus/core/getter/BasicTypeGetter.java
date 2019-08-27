@@ -32,7 +32,7 @@ import java.util.Date;
  * 提供一个统一的接口定义返回不同类型的值（基本类型）
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public interface BasicTypeGetter<K> {

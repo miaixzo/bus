@@ -51,7 +51,7 @@ import java.util.*;
  * 类工具类
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class ClassUtils {
@@ -789,7 +789,7 @@ public class ClassUtils {
      *
      * @param classes 值类型
      * @return 默认值列表
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static Object[] getDefaultValues(Class<?>... classes) {
         final Object[] values = new Object[classes.length];

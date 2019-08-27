@@ -29,7 +29,7 @@ import org.aoju.bus.sensitive.provider.ConditionProvider;
  * 返回真条件
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class Condition implements ConditionProvider {

@@ -33,7 +33,7 @@ import org.aoju.bus.validate.validators.Validator;
  * NOT blank 校验
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class NotBlankStrategy implements Validator<String>, Complex<String, NotBlank> {

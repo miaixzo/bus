@@ -30,7 +30,7 @@ import org.aoju.bus.core.key.ObjectID;
  * 解决问题： 1、快速对实体的常驻字段
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class EntityUtils {

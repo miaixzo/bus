@@ -34,7 +34,7 @@ import java.util.Properties;
  * 邮件账户对象
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class MailAccount implements Serializable {

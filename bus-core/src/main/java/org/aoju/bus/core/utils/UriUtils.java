@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class UriUtils {
@@ -297,7 +297,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return 是否为文件
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static boolean isFileURL(URL url) {
         String protocol = url.getProtocol();

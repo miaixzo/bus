@@ -42,7 +42,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class DateTime extends Date {
@@ -592,7 +592,7 @@ public class DateTime extends Date {
      *
      * @param date 日期
      * @return 是否在给定日期之前或与给定日期相等
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public boolean isBeforeOrEquals(Date date) {
         if (null == date) {
@@ -620,7 +620,7 @@ public class DateTime extends Date {
      *
      * @param date 日期
      * @return 是否在给定日期之后或与给定日期相等
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public boolean isAfterOrEquals(Date date) {
         if (null == date) {

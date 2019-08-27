@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * 文件写入器
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class FileWriter extends FileWrapper {
@@ -217,7 +217,7 @@ public class FileWriter extends FileWrapper {
      * @param isAppend      是否追加
      * @return 目标文件
      * @throws CommonException IO异常
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public <T> File writeLines(Collection<T> list, LineSeparator lineSeparator, boolean isAppend) throws CommonException {
         try (PrintWriter writer = getPrintWriter(isAppend)) {

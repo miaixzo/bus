@@ -38,7 +38,7 @@ import java.util.List;
  * OpenJDK 9+.
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 final class Jdk9Platform extends Platform {

@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 非对称基础，提供锁、私钥和公钥的持有
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class BaseAsymmetric<T extends BaseAsymmetric<T>> {

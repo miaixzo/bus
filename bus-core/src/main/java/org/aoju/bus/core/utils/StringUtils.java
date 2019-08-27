@@ -55,7 +55,7 @@ import java.util.zip.GZIPOutputStream;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class StringUtils extends TextUtils {
@@ -2336,7 +2336,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str 被反转的字符串
      * @return 反转后的字符串
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static String reverse(String str) {
         char[] chars = str.toCharArray();
@@ -3610,7 +3610,7 @@ public class StringUtils extends TextUtils {
      * @param str             被包装的字符串
      * @param prefixAndSuffix 前缀和后缀
      * @return 包装后的字符串
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static String wrap(CharSequence str, CharSequence prefixAndSuffix) {
         return wrap(str, prefixAndSuffix, prefixAndSuffix);
@@ -5192,7 +5192,7 @@ public class StringUtils extends TextUtils {
      * @param str        字符串
      * @param partLength 每等份的长度
      * @return 切分后的数组
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static String[] cut(CharSequence str, int partLength) {
         if (null == str) {

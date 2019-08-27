@@ -30,7 +30,7 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
  * Spring-Boot 所有资源加密规则
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class JarAllComplex implements Complex<JarArchiveEntry> {

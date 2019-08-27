@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
  * Generalization of "has a type."
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @see TypeLiteral
  * @since JDK 1.8
  */

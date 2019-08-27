@@ -44,7 +44,7 @@ import java.lang.reflect.Type;
  *            between primitive objects are stored as their Object wrapper
  *            equivalent.
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public abstract class Diff<T> extends Pair<T, T> {

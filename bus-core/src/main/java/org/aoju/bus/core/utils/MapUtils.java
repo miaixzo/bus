@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class MapUtils {
@@ -526,7 +526,7 @@ public class MapUtils {
      * @param map    Map
      * @param filter 编辑器接口
      * @return 过滤后的Map
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Entry<K, V>> filter) {
         final Map<K, V> map2 = ObjectUtils.clone(map);

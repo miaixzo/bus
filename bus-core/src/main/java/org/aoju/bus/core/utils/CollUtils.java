@@ -47,7 +47,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class CollUtils {
@@ -627,7 +627,7 @@ public class CollUtils {
      * @param <T>      集合元素类型
      * @param iterable {@link Iterable}
      * @return ArrayList对象
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <T> ArrayList<T> newArrayList(Iterable<T> iterable) {
         return (ArrayList<T>) list(false, iterable);
@@ -962,7 +962,7 @@ public class CollUtils {
      * @param collection 集合
      * @param filter     过滤器
      * @return 过滤后的数组
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <T> Collection<T> filter(Collection<T> collection, Filter<T> filter) {
         Collection<T> collection2 = ObjectUtils.clone(collection);
@@ -1094,7 +1094,7 @@ public class CollUtils {
      * @param collection Bean集合或Map集合
      * @param fieldName  字段名或map的键
      * @return 字段值列表
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static List<Object> getFieldValues(Iterable<?> collection, final String fieldName) {
         return extract(collection, new Editor<Object>() {
@@ -1116,7 +1116,7 @@ public class CollUtils {
      * @param collection 集合
      * @param filter     过滤器，满足过滤条件的第一个元素将被返回
      * @return 满足过滤条件的第一个元素
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <T> T findOne(Iterable<T> collection, Filter<T> filter) {
         if (null != collection) {
@@ -1140,7 +1140,7 @@ public class CollUtils {
      * @param fieldName  集合元素对象的字段名或map的键
      * @param fieldValue 集合元素对象的字段值或map的值
      * @return 满足条件的第一个元素
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <T> T findOneByField(Iterable<T> collection, final String fieldName, final Object fieldValue) {
         return findOne(collection, new Filter<T>() {
@@ -1194,7 +1194,7 @@ public class CollUtils {
      * @param filter 编辑器接口
      * @return 过滤后的Map
      * @see MapUtils#filter(Map, Filter)
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Entry<K, V>> filter) {
         return MapUtils.filter(map, filter);
@@ -1507,7 +1507,7 @@ public class CollUtils {
      * @param <E>      集合元素类型
      * @param iterable {@link Iterable}
      * @return {@link Collection} 或者 {@link ArrayList}
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <E> Collection<E> toCollection(Iterable<E> iterable) {
         return (iterable instanceof Collection) ? (Collection<E>) iterable : newArrayList(iterable.iterator());
@@ -1883,7 +1883,7 @@ public class CollUtils {
      * @param map  {@link Map}
      * @param keys 键列表
      * @return 值列表
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, Iterable<K> keys) {
         return valuesOfKeys(map, keys.iterator());
@@ -1898,7 +1898,7 @@ public class CollUtils {
      * @param map  {@link Map}
      * @param keys 键列表
      * @return 值列表
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, Iterator<K> keys) {
         final ArrayList<V> values = new ArrayList<>();
@@ -1998,7 +1998,7 @@ public class CollUtils {
      * @param map        Map
      * @param comparator Entry比较器
      * @return {@link TreeMap}
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> TreeMap<K, V> sort(Map<K, V> map, Comparator<? super K> comparator) {
         final TreeMap<K, V> result = new TreeMap<K, V>(comparator);
@@ -2014,7 +2014,7 @@ public class CollUtils {
      * @param entryCollection Entry集合
      * @param comparator      {@link Comparator}
      * @return {@link LinkedList}
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> LinkedHashMap<K, V> sortToMap(Collection<Entry<K, V>> entryCollection, Comparator<Entry<K, V>> comparator) {
         List<Entry<K, V>> list = new LinkedList<>(entryCollection);
@@ -2035,7 +2035,7 @@ public class CollUtils {
      * @param map        被排序的Map
      * @param comparator {@link Comparator}
      * @return {@link LinkedList}
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static <K, V> LinkedHashMap<K, V> sortByEntry(Map<K, V> map, Comparator<Entry<K, V>> comparator) {
         return sortToMap(map.entrySet(), comparator);

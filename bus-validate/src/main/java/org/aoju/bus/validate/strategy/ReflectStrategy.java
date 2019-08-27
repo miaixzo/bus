@@ -40,7 +40,7 @@ import java.lang.reflect.Method;
  * 反射信息校验
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class ReflectStrategy implements Complex<Object, Reflect> {

@@ -29,7 +29,7 @@ import org.aoju.bus.core.consts.System;
  * 代表当前用户的信息。
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class UserInfo {

@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 字符串为空或为null
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 @Documented

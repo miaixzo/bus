@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * RC4加密解密算法实现
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class RC4 {

@@ -36,7 +36,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class ZipUtils {
@@ -196,7 +196,7 @@ public class ZipUtils {
      * @param data    要压缩的数据
      * @return 压缩文件
      * @throws CommonException IO异常
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static File zip(File zipFile, String path, String data) throws CommonException {
         return zip(zipFile, path, data, DEFAULT_CHARSET);
@@ -226,7 +226,7 @@ public class ZipUtils {
      * @param in      要压缩的源
      * @return 压缩文件
      * @throws CommonException IO异常
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static File zip(File zipFile, String path, InputStream in) throws CommonException {
         return zip(zipFile, path, in, DEFAULT_CHARSET);
@@ -256,7 +256,7 @@ public class ZipUtils {
      * @param ins     要压缩的源
      * @return 压缩文件
      * @throws CommonException IO异常
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static File zip(File zipFile, String[] paths, InputStream[] ins) throws CommonException {
         return zip(zipFile, paths, ins, DEFAULT_CHARSET);
@@ -272,7 +272,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws CommonException IO异常
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static File zip(File zipFile, String[] paths, InputStream[] ins, Charset charset) throws CommonException {
         if (ArrayUtils.isEmpty(paths) || ArrayUtils.isEmpty(ins)) {

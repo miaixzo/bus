@@ -43,7 +43,7 @@ import java.util.*;
  * fills, it is doubled.
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 final class Hpack {

@@ -132,7 +132,7 @@ import java.util.*;
  * {@link CacheControl#FORCE_CACHE} that address the use cases above.
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class Cache implements Closeable, Flushable {

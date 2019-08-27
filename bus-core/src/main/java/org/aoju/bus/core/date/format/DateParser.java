@@ -33,7 +33,7 @@ import java.util.Date;
  * Thanks to Apache Commons Lang 3.5
  *
  * @author Kimi Liu
- * @version 3.1.0
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public interface DateParser extends DateBasic {
