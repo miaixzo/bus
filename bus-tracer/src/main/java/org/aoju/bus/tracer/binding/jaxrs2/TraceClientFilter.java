@@ -1,9 +1,9 @@
 package org.aoju.bus.tracer.binding.jaxrs2;
 
-import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.Backend;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
+import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 
 import javax.ws.rs.client.ClientRequestContext;

@@ -33,7 +33,7 @@ import java.io.IOException;
  * A sink that never throws IOExceptions, even if the underlying sink does.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 class FaultHidingSink extends ForwardingSink {
@@ -82,4 +82,5 @@ class FaultHidingSink extends ForwardingSink {
 
     protected void onException(IOException e) {
     }
+
 }

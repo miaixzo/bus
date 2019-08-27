@@ -30,7 +30,7 @@ import javax.security.auth.x500.X500Principal;
  * It doesn't support values in the hex-string style.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 final class DistinguishedNameParser {
@@ -355,12 +355,6 @@ final class DistinguishedNameParser {
         return (b1 << 4) + b2;
     }
 
-    /**
-     * Parses the DN and returns the most significant attribute value for an attribute type, or null
-     * if none found.
-     *
-     * @param attributeType attribute type to look for (e.g. "ca")
-     */
     public String findMostSpecific(String attributeType) {
         // Initialize internal state.
         pos = 0;
@@ -419,4 +413,5 @@ final class DistinguishedNameParser {
             }
         }
     }
+
 }

@@ -39,11 +39,11 @@ import java.security.cert.CertificateException;
 
 
 /**
- * This interceptor recovers from failures and follows redirects as necessary. It may throw an
+ * This intercept recovers from failures and follows redirects as necessary. It may throw an
  * {@link IOException} if the call was canceled.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class RetryAndFollowUpInterceptor implements Interceptor {
@@ -64,15 +64,6 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
         this.forWebSocket = forWebSocket;
     }
 
-    /**
-     * Immediately closes the socket connection if it's currently held. Use this to interrupt an
-     * in-flight request from any thread. It's the caller's responsibility to close the request body
-     * and response body streams; otherwise resources may be leaked.
-     *
-     * <p>This method is safe to be called concurrently, but provides limited guarantees. If a
-     * transport layer connection has been established (such as a HTTP/2 stream) that is terminated.
-     * Otherwise if a socket connection is being established, that is terminated.
-     */
     public void cancel() {
         canceled = true;
         StreamAllocation streamAllocation = this.streamAllocation;
@@ -177,7 +168,7 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
                 this.streamAllocation = streamAllocation;
             } else if (streamAllocation.codec() != null) {
                 throw new IllegalStateException("Closing the body of " + response
-                        + " didn't close its backing stream. Bad interceptor?");
+                        + " didn't close its backing stream. Bad intercept?");
             }
 
             request = followUp;
@@ -258,11 +249,6 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
         return true;
     }
 
-    /**
-     * Figures out the HTTP request to make in response to receiving {@code userResponse}. This will
-     * either add authentication headers, follow redirects or handle a client request timeout. If a
-     * follow-up is either unnecessary or not applicable, this returns null.
-     */
     private Request followUpRequest(Response userResponse, Route route) throws IOException {
         if (userResponse == null) throw new IllegalStateException();
         int responseCode = userResponse.code();
@@ -393,14 +379,11 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
         return Integer.MAX_VALUE;
     }
 
-    /**
-     * Returns true if an HTTP request for {@code followUp} can reuse the connection used by this
-     * engine.
-     */
     private boolean sameConnection(Response response, HttpUrl followUp) {
         HttpUrl url = response.request().url();
         return url.host().equals(followUp.host())
                 && url.port() == followUp.port()
                 && url.scheme().equals(followUp.scheme());
     }
+
 }

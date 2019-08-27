@@ -53,7 +53,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class Sftp extends AbstractFtp {
@@ -332,7 +332,6 @@ public class Sftp extends AbstractFtp {
      * @return boolean 是否删除成功
      */
     @Override
-    @SuppressWarnings("unchecked")
     public boolean delDir(String dirPath) {
         if (false == cd(dirPath)) {
             return false;

@@ -23,8 +23,7 @@
  */
 package org.aoju.bus.storage;
 
-import org.aoju.bus.core.consts.MediaType;
-import org.aoju.bus.core.consts.Symbol;
+
 import org.aoju.bus.core.utils.JsonUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -33,12 +32,17 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class UploadToken {
 
-    //过期时间（单位秒）
+    private static final String CONTENT_TYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String CONTENT_TYPE_JSON = "application/json";
+    private static final String PATH_SEPARATOR = "/";
+    /**
+     * 过期时间（单位秒）
+     */
     private long expires = 3600;
     private String bucketName;
     private String fileType;
@@ -50,9 +54,13 @@ public class UploadToken {
     private String callbackHost;
     private boolean callbackBodyUseJson = false;
 
-    //如：image/jpg 可以支持通配符image/*
+    /**
+     * 如：image/jpg 可以支持通配符image/*
+     */
     private String mimeLimit;
-    //单位 byte
+    /**
+     * 单位 byte
+     */
     private Long fsizeMin;
     private Long fsizeMax;
 
@@ -90,10 +98,10 @@ public class UploadToken {
     public void setUploadDir(String uploadDir) {
         this.uploadDir = StringUtils.trimToNull(uploadDir);
         if (uploadDir != null) {
-            if (!this.uploadDir.endsWith(Symbol.SLASH)) {
-                this.uploadDir = this.uploadDir.concat(Symbol.SLASH);
+            if (!this.uploadDir.endsWith(PATH_SEPARATOR)) {
+                this.uploadDir = this.uploadDir.concat(PATH_SEPARATOR);
             }
-            if (this.uploadDir.startsWith(Symbol.SLASH)) {
+            if (this.uploadDir.startsWith(PATH_SEPARATOR)) {
                 this.uploadDir = this.uploadDir.substring(1);
             }
         }
@@ -137,7 +145,7 @@ public class UploadToken {
     }
 
     public String getCallbackBodyType() {
-        return callbackBodyUseJson ? MediaType.APPLICATION_JSON : MediaType.APPLICATION_FORM_URLENCODED;
+        return callbackBodyUseJson ? CONTENT_TYPE_JSON : CONTENT_TYPE_FORM_URLENCODED;
     }
 
     public String getMimeLimit() {
@@ -182,7 +190,10 @@ public class UploadToken {
     }
 
     public String getCallbackRuleAsJson() {
-        if (StringUtils.isAnyBlank(callbackBody, callbackHost, callbackUrl)) return null;
+        if (StringUtils.isAnyBlank(callbackBody, callbackHost, callbackUrl)) {
+            return null;
+        }
+
         Map<String, String> map = new HashMap<>(4);
         map.put("callbackBody", callbackBody);
         map.put("callbackHost", callbackHost);

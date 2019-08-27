@@ -44,7 +44,7 @@ import java.util.*;
  * Servlet相关工具类封装
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class ServletUtils {
@@ -471,7 +471,7 @@ public class ServletUtils {
      */
     public static void write(HttpServletResponse response, InputStream in, String contentType, String fileName) {
         final String charset = ObjectUtils.defaultIfNull(response.getCharacterEncoding(), Charset.DEFAULT_UTF_8);
-        response.setHeader("Content-Disposition", StringUtils.format("attachment;filename={}", URLUtils.encode(fileName, charset)));
+        response.setHeader("Content-Disposition", StringUtils.format("attachment;filename={}", UriUtils.encode(fileName, charset)));
         response.setContentType(contentType);
         write(response, in);
     }

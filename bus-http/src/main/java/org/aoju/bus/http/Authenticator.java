@@ -103,7 +103,7 @@ import java.io.IOException;
  * or both.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public interface Authenticator {
@@ -116,4 +116,5 @@ public interface Authenticator {
     };
 
     Request authenticate(Route route, Response response) throws IOException;
+
 }

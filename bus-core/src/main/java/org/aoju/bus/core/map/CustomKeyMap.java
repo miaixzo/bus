@@ -8,7 +8,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
@@ -29,7 +29,6 @@ public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
         return super.get(customKey(key));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public V put(K key, V value) {
         return super.put((K) customKey(key), value);

@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * <p>See <a href="https://tools.ietf.org/html/rfc7234#section-5.2">RFC 7234, 5.2</a>.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class CacheControl {
@@ -104,13 +104,6 @@ public final class CacheControl {
         this.immutable = builder.immutable;
     }
 
-    /**
-     * Returns the cache directives of {@code headers}. This honors both Cache-Control and Pragma
-     * headers if they are present.
-     *
-     * @param headers Headers
-     * @return CacheControl
-     */
     public static CacheControl parse(Headers headers) {
         boolean noCache = false;
         boolean noStore = false;

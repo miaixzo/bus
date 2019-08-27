@@ -24,7 +24,7 @@
 package org.aoju.bus.setting;
 
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.io.resource.UrlResource;
+import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
@@ -46,7 +46,7 @@ import java.util.Set;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class SettingLoader {
@@ -102,16 +102,16 @@ public class SettingLoader {
     /**
      * 加载设置文件
      *
-     * @param urlResource 配置文件URL
+     * @param uriResource 配置文件URL
      * @return 加载是否成功
      */
-    public boolean load(UrlResource urlResource) {
-        if (urlResource == null) {
+    public boolean load(UriResource uriResource) {
+        if (uriResource == null) {
             throw new NullPointerException("Null setting url define!");
         }
         InputStream settingStream = null;
         try {
-            settingStream = urlResource.getStream();
+            settingStream = uriResource.getStream();
             load(settingStream);
         } catch (Exception e) {
             return false;

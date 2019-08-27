@@ -33,10 +33,10 @@ import org.aoju.bus.http.internal.http.RealInterceptorChain;
 import java.io.IOException;
 
 /**
- * Opens a connection to the target server and proceeds to the next interceptor.
+ * Opens a connection to the target server and proceeds to the next intercept.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class ConnectInterceptor implements Interceptor {
@@ -53,7 +53,6 @@ public final class ConnectInterceptor implements Interceptor {
         Request request = realChain.request();
         StreamAllocation streamAllocation = realChain.streamAllocation();
 
-        // We need the network to satisfy this request. Possibly for validating a conditional GET.
         boolean doExtensiveHealthChecks = !request.method().equals("GET");
         HttpCodec httpCodec = streamAllocation.newStream(client, chain, doExtensiveHealthChecks);
         RealConnection connection = streamAllocation.connection();

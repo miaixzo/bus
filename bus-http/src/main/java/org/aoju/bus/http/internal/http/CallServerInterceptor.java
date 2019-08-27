@@ -39,10 +39,10 @@ import java.io.IOException;
 import java.net.ProtocolException;
 
 /**
- * This is the last interceptor in the chain. It makes a network call to the server.
+ * This is the last intercept in the chain. It makes a network call to the server.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class CallServerInterceptor implements Interceptor {

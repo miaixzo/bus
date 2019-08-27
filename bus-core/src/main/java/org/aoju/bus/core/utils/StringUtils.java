@@ -55,7 +55,7 @@ import java.util.zip.GZIPOutputStream;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class StringUtils extends TextUtils {
@@ -1296,7 +1296,6 @@ public class StringUtils extends TextUtils {
      *
      * @param str 被切分的字符串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> splitPath(String str) {
         return splitPath(str, 0);
@@ -1308,7 +1307,6 @@ public class StringUtils extends TextUtils {
      * @param str   被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> splitPath(String str, int limit) {
         return split(str, Symbol.C_SLASH, limit, true, true);
@@ -1319,7 +1317,6 @@ public class StringUtils extends TextUtils {
      *
      * @param str 被切分的字符串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static String[] splitPathToArray(String str) {
         return toArray(splitPath(str));
@@ -1331,7 +1328,6 @@ public class StringUtils extends TextUtils {
      * @param str   被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static String[] splitPathToArray(String str, int limit) {
         return toArray(splitPath(str, limit));
@@ -1383,7 +1379,6 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数，-1不限制
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> splitTrim(String str, char separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty, false);
@@ -1468,7 +1463,6 @@ public class StringUtils extends TextUtils {
      * @param str   被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static String[] splitToArray(String str, int limit) {
         return toArray(split(str, limit));
@@ -1483,7 +1477,6 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static String[] splitToArray(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
@@ -1498,7 +1491,6 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static String[] splitToArray(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
@@ -1513,7 +1505,6 @@ public class StringUtils extends TextUtils {
      * @param isTrim           是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty      是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static String[] splitToArray(String str, Pattern separatorPattern, int limit, boolean isTrim, boolean ignoreEmpty) {
         return toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
@@ -1528,7 +1519,6 @@ public class StringUtils extends TextUtils {
      * @param isTrim         是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty    是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> splitByRegex(String str, String separatorRegex, int limit, boolean isTrim, boolean ignoreEmpty) {
         final Pattern pattern = PatternUtils.get(separatorRegex);
@@ -1639,7 +1629,6 @@ public class StringUtils extends TextUtils {
      * @param str   被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> split(String str, int limit) {
         if (isEmpty(str)) {
@@ -1686,7 +1675,6 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> split(String str, char separator, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, 0, isTrim, ignoreEmpty);
@@ -1700,7 +1688,6 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> split(String str, String separator, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, -1, isTrim, ignoreEmpty, false);
@@ -1715,7 +1702,6 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, false);
@@ -1731,7 +1717,6 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, false);
@@ -1746,14 +1731,13 @@ public class StringUtils extends TextUtils {
      * @param isTrim           是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty      是否忽略空串
      * @return 切分后的集合
-     * @since 3.0.8
      */
     public static List<String> split(String str, Pattern separatorPattern, int limit, boolean isTrim, boolean ignoreEmpty) {
         if (isEmpty(str)) {
-            return new ArrayList<String>(0);
+            return new ArrayList<>(0);
         }
         if (limit == 1) {
-            return addToList(new ArrayList<String>(1), str, isTrim, ignoreEmpty);
+            return addToList(new ArrayList<>(1), str, isTrim, ignoreEmpty);
         }
 
         if (null == separatorPattern) {//分隔符为空时按照空白符切分
@@ -1768,7 +1752,6 @@ public class StringUtils extends TextUtils {
             addToList(list, str.substring(start, matcher.start()), isTrim, ignoreEmpty);
             start = matcher.end();
 
-            //检查是否超出范围（最大允许limit-1个，剩下一个留给末尾字符串）
             if (limit > 0 && list.size() > limit - 2) {
                 break;
             }
@@ -2353,7 +2336,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str 被反转的字符串
      * @return 反转后的字符串
-     * @since 3.0.9
+     * @since 3.1.2
      */
     public static String reverse(String str) {
         char[] chars = str.toCharArray();
@@ -2438,6 +2421,38 @@ public class StringUtils extends TextUtils {
         return sb.toString();
     }
 
+    /**
+     * 删除指定字符串
+     * 是否在开始位置，否则返回源字符串
+     * A {@code null} source string will return {@code null}.
+     * An empty ("") source string will return the empty string.
+     * A {@code null} search string will return the source string.
+     *
+     * <pre>
+     * StringUtils.removeStart(null, *)      = null
+     * StringUtils.removeStart("", *)        = ""
+     * StringUtils.removeStart(*, null)      = *
+     * StringUtils.removeStart("www.domain.com", "www.")   = "domain.com"
+     * StringUtils.removeStart("domain.com", "www.")       = "domain.com"
+     * StringUtils.removeStart("www.domain.com", "domain") = "www.domain.com"
+     * StringUtils.removeStart("abc", "")    = "abc"
+     * </pre>
+     *
+     * @param str    the source String to search, may be null
+     * @param remove the String to search for and remove, may be null
+     * @return the substring with the string removed if found,
+     * {@code null} if null String input
+     * @since 2.1
+     */
+    public static String removeStart(final String str, final String remove) {
+        if (isEmpty(str) || isEmpty(remove)) {
+            return str;
+        }
+        if (str.startsWith(remove)) {
+            return str.substring(remove.length());
+        }
+        return str;
+    }
 
     /**
      * 去掉首部指定长度的字符串并将剩余字符串首字母小写
@@ -2472,6 +2487,64 @@ public class StringUtils extends TextUtils {
      */
     public static String removePreAndLowerFirst(CharSequence str, CharSequence prefix) {
         return lowerFirst(removePrefix(str, prefix));
+    }
+
+
+    /**
+     * 去掉指定前缀
+     *
+     * @param str    字符串
+     * @param prefix 前缀
+     * @return 切掉后的字符串，若前缀不是 preffix， 返回原字符串
+     */
+    public static String removePrefix(CharSequence str, CharSequence prefix) {
+        if (isEmpty(str) || isEmpty(prefix)) {
+            return str(str);
+        }
+
+        final String str2 = str.toString();
+        if (str2.startsWith(prefix.toString())) {
+            return subSuf(str2, prefix.length());// 截取后半段
+        }
+        return str2;
+    }
+
+    /**
+     * 忽略大小写去掉指定前缀
+     *
+     * @param str    字符串
+     * @param prefix 前缀
+     * @return 切掉后的字符串，若前缀不是 prefix， 返回原字符串
+     */
+    public static String removePrefixIgnoreCase(CharSequence str, CharSequence prefix) {
+        if (isEmpty(str) || isEmpty(prefix)) {
+            return str(str);
+        }
+
+        final String str2 = str.toString();
+        if (str2.toLowerCase().startsWith(prefix.toString().toLowerCase())) {
+            return subSuf(str2, prefix.length());// 截取后半段
+        }
+        return str2;
+    }
+
+    /**
+     * 去掉指定后缀
+     *
+     * @param str    字符串
+     * @param suffix 后缀
+     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
+     */
+    public static String removeSuffix(CharSequence str, CharSequence suffix) {
+        if (isEmpty(str) || isEmpty(suffix)) {
+            return str(str);
+        }
+
+        final String str2 = str.toString();
+        if (str2.endsWith(suffix.toString())) {
+            return subPre(str2, str2.length() - suffix.length());// 截取前半段
+        }
+        return str2;
     }
 
     /**
@@ -2681,6 +2754,647 @@ public class StringUtils extends TextUtils {
         return isAllMatch;
     }
 
+    /**
+     * 替换字符串中的指定字符串.
+     *
+     * <pre>
+     * StringUtils.remove(null, *)        = null
+     * StringUtils.remove("", *)          = ""
+     * StringUtils.remove(*, null)        = *
+     * StringUtils.remove(*, "")          = *
+     * StringUtils.remove("queued", "ue") = "qd"
+     * StringUtils.remove("queued", "zz") = "queued"
+     * </pre>
+     *
+     * @param str    the source String to search, may be null
+     * @param remove the String to search for and remove, may be null
+     * @return the substring with the string removed if found,
+     * {@code null} if null String input
+     * @since 2.1
+     */
+    public static String remove(final String str, final String remove) {
+        if (isEmpty(str) || isEmpty(remove)) {
+            return str;
+        }
+        return replace(str, remove, Normal.EMPTY, -1);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     *
+     * <pre>
+     * StringUtils.removeIgnoreCase(null, *)        = null
+     * StringUtils.removeIgnoreCase("", *)          = ""
+     * StringUtils.removeIgnoreCase(*, null)        = *
+     * StringUtils.removeIgnoreCase(*, "")          = *
+     * StringUtils.removeIgnoreCase("queued", "ue") = "qd"
+     * StringUtils.removeIgnoreCase("queued", "zz") = "queued"
+     * StringUtils.removeIgnoreCase("quEUed", "UE") = "qd"
+     * StringUtils.removeIgnoreCase("queued", "zZ") = "queued"
+     * </pre>
+     *
+     * @param str    the source String to search, may be null
+     * @param remove the String to search for (case insensitive) and remove, may be
+     *               null
+     * @return the substring with the string removed if found, {@code null} if
+     * null String input
+     * @since 3.5
+     */
+    public static String removeIgnoreCase(final String str, final String remove) {
+        if (isEmpty(str) || isEmpty(remove)) {
+            return str;
+        }
+        return replaceIgnoreCase(str, remove, Normal.EMPTY, -1);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     *
+     * <pre>
+     * StringUtils.remove(null, *)       = null
+     * StringUtils.remove("", *)         = ""
+     * StringUtils.remove("queued", 'u') = "qeed"
+     * StringUtils.remove("queued", 'z') = "queued"
+     * </pre>
+     *
+     * @param str    the source String to search, may be null
+     * @param remove the char to search for and remove, may be null
+     * @return the substring with the char removed if found,
+     * {@code null} if null String input
+     * @since 2.1
+     */
+    public static String remove(final String str, final char remove) {
+        if (isEmpty(str) || str.indexOf(remove) == INDEX_NOT_FOUND) {
+            return str;
+        }
+        final char[] chars = str.toCharArray();
+        int pos = 0;
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] != remove) {
+                chars[pos++] = chars[i];
+            }
+        }
+        return new String(chars, 0, pos);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     *
+     * <pre>
+     * StringUtils.removeAll(null, *)      = null
+     * StringUtils.removeAll("any", null)  = "any"
+     * StringUtils.removeAll("any", "")    = "any"
+     * StringUtils.removeAll("any", ".*")  = ""
+     * StringUtils.removeAll("any", ".+")  = ""
+     * StringUtils.removeAll("abc", ".?")  = ""
+     * StringUtils.removeAll("A&lt;__&gt;\n&lt;__&gt;B", "&lt;.*&gt;")      = "A\nB"
+     * StringUtils.removeAll("A&lt;__&gt;\n&lt;__&gt;B", "(?s)&lt;.*&gt;")  = "AB"
+     * StringUtils.removeAll("ABCabc123abc", "[a-z]")     = "ABC123"
+     * </pre>
+     *
+     * @param text  text to remove from, may be null
+     * @param regex the regular expression to which this string is to be matched
+     * @return the text with any removes processed,
+     * {@code null} if null String input
+     * @throws java.util.regex.PatternSyntaxException if the regular expression's syntax is invalid
+     * @see #replaceAll(String, String, String)
+     * @see String#replaceAll(String, String)
+     * @see java.util.regex.Pattern
+     * @see java.util.regex.Pattern#DOTALL
+     * @since 3.5
+     */
+    public static String removeAll(final String text, final String regex) {
+        return replaceAll(text, regex, Normal.EMPTY);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.removeFirst(null, *)      = null
+     * StringUtils.removeFirst("any", null)  = "any"
+     * StringUtils.removeFirst("any", "")    = "any"
+     * StringUtils.removeFirst("any", ".*")  = ""
+     * StringUtils.removeFirst("any", ".+")  = ""
+     * StringUtils.removeFirst("abc", ".?")  = "bc"
+     * StringUtils.removeFirst("A&lt;__&gt;\n&lt;__&gt;B", "&lt;.*&gt;")      = "A\n&lt;__&gt;B"
+     * StringUtils.removeFirst("A&lt;__&gt;\n&lt;__&gt;B", "(?s)&lt;.*&gt;")  = "AB"
+     * StringUtils.removeFirst("ABCabc123", "[a-z]")          = "ABCbc123"
+     * StringUtils.removeFirst("ABCabc123abc", "[a-z]+")      = "ABC123abc"
+     *
+     * @param text  text to remove from, may be null
+     * @param regex the regular expression to which this string is to be matched
+     * @return the text with the first replacement processed,
+     * {@code null} if null String input
+     * @throws java.util.regex.PatternSyntaxException if the regular expression's syntax is invalid
+     * @see #replaceFirst(String, String, String)
+     * @see String#replaceFirst(String, String)
+     * @see java.util.regex.Pattern
+     * @see java.util.regex.Pattern#DOTALL
+     * @since 3.5
+     */
+    public static String removeFirst(final String text, final String regex) {
+        return replaceFirst(text, regex, Normal.EMPTY);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replaceAll(null, *, *)       = null
+     * StringUtils.replaceAll("any", null, *)   = "any"
+     * StringUtils.replaceAll("any", *, null)   = "any"
+     * StringUtils.replaceAll("", "", "zzz")    = "zzz"
+     * StringUtils.replaceAll("", ".*", "zzz")  = "zzz"
+     * StringUtils.replaceAll("", ".+", "zzz")  = ""
+     * StringUtils.replaceAll("abc", "", "ZZ")  = "ZZaZZbZZcZZ"
+     * StringUtils.replaceAll("&lt;__&gt;\n&lt;__&gt;", "&lt;.*&gt;", "z")      = "z\nz"
+     * StringUtils.replaceAll("&lt;__&gt;\n&lt;__&gt;", "(?s)&lt;.*&gt;", "z")  = "z"
+     * StringUtils.replaceAll("ABCabc123", "[a-z]", "_")       = "ABC___123"
+     * StringUtils.replaceAll("ABCabc123", "[^A-Z0-9]+", "_")  = "ABC_123"
+     * StringUtils.replaceAll("ABCabc123", "[^A-Z0-9]+", "")   = "ABC123"
+     * StringUtils.replaceAll("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum_dolor_sit"
+     *
+     * @param text        text to search and replace in, may be null
+     * @param regex       the regular expression to which this string is to be matched
+     * @param replacement the string to be substituted for each match
+     * @return the text with any replacements processed,
+     * {@code null} if null String input
+     * @throws java.util.regex.PatternSyntaxException if the regular expression's syntax is invalid
+     * @see String#replaceAll(String, String)
+     * @see java.util.regex.Pattern
+     * @see java.util.regex.Pattern#DOTALL
+     * @since 3.5
+     */
+    public static String replaceAll(final String text, final String regex, final String replacement) {
+        if (text == null || regex == null || replacement == null) {
+            return text;
+        }
+        return text.replaceAll(regex, replacement);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replaceFirst(null, *, *)       = null
+     * StringUtils.replaceFirst("any", null, *)   = "any"
+     * StringUtils.replaceFirst("any", *, null)   = "any"
+     * StringUtils.replaceFirst("", "", "zzz")    = "zzz"
+     * StringUtils.replaceFirst("", ".*", "zzz")  = "zzz"
+     * StringUtils.replaceFirst("", ".+", "zzz")  = ""
+     * StringUtils.replaceFirst("abc", "", "ZZ")  = "ZZabc"
+     * StringUtils.replaceFirst("&lt;__&gt;\n&lt;__&gt;", "&lt;.*&gt;", "z")      = "z\n&lt;__&gt;"
+     * StringUtils.replaceFirst("&lt;__&gt;\n&lt;__&gt;", "(?s)&lt;.*&gt;", "z")  = "z"
+     * StringUtils.replaceFirst("ABCabc123", "[a-z]", "_")          = "ABC_bc123"
+     * StringUtils.replaceFirst("ABCabc123abc", "[^A-Z0-9]+", "_")  = "ABC_123abc"
+     * StringUtils.replaceFirst("ABCabc123abc", "[^A-Z0-9]+", "")   = "ABC123abc"
+     * StringUtils.replaceFirst("Lorem ipsum  dolor   sit", "( +)([a-z]+)", "_$2")  = "Lorem_ipsum  dolor   sit"
+     *
+     * @param text        text to search and replace in, may be null
+     * @param regex       the regular expression to which this string is to be matched
+     * @param replacement the string to be substituted for the first match
+     * @return the text with the first replacement processed,
+     * {@code null} if null String input
+     * @throws java.util.regex.PatternSyntaxException if the regular expression's syntax is invalid
+     * @see String#replaceFirst(String, String)
+     * @see java.util.regex.Pattern
+     * @see java.util.regex.Pattern#DOTALL
+     * @since 3.5
+     */
+    public static String replaceFirst(final String text, final String regex, final String replacement) {
+        if (text == null || regex == null || replacement == null) {
+            return text;
+        }
+        return text.replaceFirst(regex, replacement);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replace(null, *, *)        = null
+     * StringUtils.replace("", *, *)          = ""
+     * StringUtils.replace("any", null, *)    = "any"
+     * StringUtils.replace("any", *, null)    = "any"
+     * StringUtils.replace("any", "", *)      = "any"
+     * StringUtils.replace("aba", "a", null)  = "aba"
+     * StringUtils.replace("aba", "a", "")    = "b"
+     * StringUtils.replace("aba", "a", "z")   = "zbz"
+     *
+     * @param text         text to search and replace in, may be null
+     * @param searchString the String to search for, may be null
+     * @param replacement  the String to replace it with, may be null
+     * @return the text with any replacements processed,
+     * {@code null} if null String input
+     * @see #replace(String text, String searchString, String replacement, int max)
+     */
+    public static String replace(final String text, final String searchString, final String replacement) {
+        return replace(text, searchString, replacement, -1);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * StringUtils.replaceIgnoreCase(null, *, *)        = null
+     * StringUtils.replaceIgnoreCase("", *, *)          = ""
+     * StringUtils.replaceIgnoreCase("any", null, *)    = "any"
+     * StringUtils.replaceIgnoreCase("any", *, null)    = "any"
+     * StringUtils.replaceIgnoreCase("any", "", *)      = "any"
+     * StringUtils.replaceIgnoreCase("aba", "a", null)  = "aba"
+     * StringUtils.replaceIgnoreCase("abA", "A", "")    = "b"
+     * StringUtils.replaceIgnoreCase("aba", "A", "z")   = "zbz"
+     *
+     * @param text         text to search and replace in, may be null
+     * @param searchString the String to search for (case insensitive), may be null
+     * @param replacement  the String to replace it with, may be null
+     * @return the text with any replacements processed,
+     * {@code null} if null String input
+     * @see #replaceIgnoreCase(String text, String searchString, String replacement, int max)
+     * @since 3.5
+     */
+    public static String replaceIgnoreCase(final String text, final String searchString, final String replacement) {
+        return replaceIgnoreCase(text, searchString, replacement, -1);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replace(null, *, *, *)         = null
+     * StringUtils.replace("", *, *, *)           = ""
+     * StringUtils.replace("any", null, *, *)     = "any"
+     * StringUtils.replace("any", *, null, *)     = "any"
+     * StringUtils.replace("any", "", *, *)       = "any"
+     * StringUtils.replace("any", *, *, 0)        = "any"
+     * StringUtils.replace("abaa", "a", null, -1) = "abaa"
+     * StringUtils.replace("abaa", "a", "", -1)   = "b"
+     * StringUtils.replace("abaa", "a", "z", 0)   = "abaa"
+     * StringUtils.replace("abaa", "a", "z", 1)   = "zbaa"
+     * StringUtils.replace("abaa", "a", "z", 2)   = "zbza"
+     * StringUtils.replace("abaa", "a", "z", -1)  = "zbzz"
+     *
+     * @param text         text to search and replace in, may be null
+     * @param searchString the String to search for, may be null
+     * @param replacement  the String to replace it with, may be null
+     * @param max          maximum number of values to replace, or {@code -1} if no maximum
+     * @return the text with any replacements processed,
+     * {@code null} if null String input
+     */
+    public static String replace(final String text, final String searchString, final String replacement, final int max) {
+        return replace(text, searchString, replacement, max, false);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replace(null, *, *, *, false)         = null
+     * StringUtils.replace("", *, *, *, false)           = ""
+     * StringUtils.replace("any", null, *, *, false)     = "any"
+     * StringUtils.replace("any", *, null, *, false)     = "any"
+     * StringUtils.replace("any", "", *, *, false)       = "any"
+     * StringUtils.replace("any", *, *, 0, false)        = "any"
+     * StringUtils.replace("abaa", "a", null, -1, false) = "abaa"
+     * StringUtils.replace("abaa", "a", "", -1, false)   = "b"
+     * StringUtils.replace("abaa", "a", "z", 0, false)   = "abaa"
+     * StringUtils.replace("abaa", "A", "z", 1, false)   = "abaa"
+     * StringUtils.replace("abaa", "A", "z", 1, true)   = "zbaa"
+     * StringUtils.replace("abAa", "a", "z", 2, true)   = "zbza"
+     * StringUtils.replace("abAa", "a", "z", -1, true)  = "zbzz"
+     *
+     * @param text         text to search and replace in, may be null
+     * @param searchString the String to search for (case insensitive), may be null
+     * @param replacement  the String to replace it with, may be null
+     * @param max          maximum number of values to replace, or {@code -1} if no maximum
+     * @param ignoreCase   if true replace is case insensitive, otherwise case sensitive
+     * @return the text with any replacements processed,
+     * {@code null} if null String input
+     */
+    private static String replace(final String text, String searchString, final String replacement, int max, final boolean ignoreCase) {
+        if (isEmpty(text) || isEmpty(searchString) || replacement == null || max == 0) {
+            return text;
+        }
+        String searchText = text;
+        if (ignoreCase) {
+            searchText = text.toLowerCase();
+            searchString = searchString.toLowerCase();
+        }
+        int start = 0;
+        int end = searchText.indexOf(searchString, start);
+        if (end == INDEX_NOT_FOUND) {
+            return text;
+        }
+        final int replLength = searchString.length();
+        int increase = replacement.length() - replLength;
+        increase = increase < 0 ? 0 : increase;
+        increase *= max < 0 ? 16 : max > 64 ? 64 : max;
+        final StringBuilder buf = new StringBuilder(text.length() + increase);
+        while (end != INDEX_NOT_FOUND) {
+            buf.append(text, start, end).append(replacement);
+            start = end + replLength;
+            if (--max == 0) {
+                break;
+            }
+            end = searchText.indexOf(searchString, start);
+        }
+        buf.append(text, start, text.length());
+        return buf.toString();
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * for the first {@code max} values of the search String.
+     * StringUtils.replaceIgnoreCase(null, *, *, *)         = null
+     * StringUtils.replaceIgnoreCase("", *, *, *)           = ""
+     * StringUtils.replaceIgnoreCase("any", null, *, *)     = "any"
+     * StringUtils.replaceIgnoreCase("any", *, null, *)     = "any"
+     * StringUtils.replaceIgnoreCase("any", "", *, *)       = "any"
+     * StringUtils.replaceIgnoreCase("any", *, *, 0)        = "any"
+     * StringUtils.replaceIgnoreCase("abaa", "a", null, -1) = "abaa"
+     * StringUtils.replaceIgnoreCase("abaa", "a", "", -1)   = "b"
+     * StringUtils.replaceIgnoreCase("abaa", "a", "z", 0)   = "abaa"
+     * StringUtils.replaceIgnoreCase("abaa", "A", "z", 1)   = "zbaa"
+     * StringUtils.replaceIgnoreCase("abAa", "a", "z", 2)   = "zbza"
+     * StringUtils.replaceIgnoreCase("abAa", "a", "z", -1)  = "zbzz"
+     *
+     * @param text         text to search and replace in, may be null
+     * @param searchString the String to search for (case insensitive), may be null
+     * @param replacement  the String to replace it with, may be null
+     * @param max          maximum number of values to replace, or {@code -1} if no maximum
+     * @return the text with any replacements processed,
+     * {@code null} if null String input
+     * @since 3.5
+     */
+    public static String replaceIgnoreCase(final String text, final String searchString, final String replacement, final int max) {
+        return replace(text, searchString, replacement, max, true);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replaceEach(null, *, *)        = null
+     * StringUtils.replaceEach("", *, *)          = ""
+     * StringUtils.replaceEach("aba", null, null) = "aba"
+     * StringUtils.replaceEach("aba", new String[0], null) = "aba"
+     * StringUtils.replaceEach("aba", null, new String[0]) = "aba"
+     * StringUtils.replaceEach("aba", new String[]{"a"}, null)  = "aba"
+     * StringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""})  = "b"
+     * StringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"})  = "aba"
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"})  = "wcte"
+     * (example of how it does not repeat)
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"})  = "dcte"
+     *
+     * @param text            text to search and replace in, no-op if null
+     * @param searchList      the Strings to search for, no-op if null
+     * @param replacementList the Strings to replace them with, no-op if null
+     * @return the text with any replacements processed, {@code null} if
+     * null String input
+     * @throws IllegalArgumentException if the lengths of the arrays are not the same (null is ok,
+     *                                  and/or size 0)
+     * @since 2.4
+     */
+    public static String replaceEach(final String text, final String[] searchList, final String[] replacementList) {
+        return replaceEach(text, searchList, replacementList, false, 0);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replaceEachRepeatedly(null, *, *) = null
+     * StringUtils.replaceEachRepeatedly("", *, *) = ""
+     * StringUtils.replaceEachRepeatedly("aba", null, null) = "aba"
+     * StringUtils.replaceEachRepeatedly("aba", new String[0], null) = "aba"
+     * StringUtils.replaceEachRepeatedly("aba", null, new String[0]) = "aba"
+     * StringUtils.replaceEachRepeatedly("aba", new String[]{"a"}, null) = "aba"
+     * StringUtils.replaceEachRepeatedly("aba", new String[]{"a"}, new String[]{""}) = "b"
+     * StringUtils.replaceEachRepeatedly("aba", new String[]{null}, new String[]{"a"}) = "aba"
+     * StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}) = "wcte"
+     * (example of how it repeats)
+     * StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}) = "tcte"
+     * StringUtils.replaceEachRepeatedly("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}) = IllegalStateException
+     *
+     * @param text            text to search and replace in, no-op if null
+     * @param searchList      the Strings to search for, no-op if null
+     * @param replacementList the Strings to replace them with, no-op if null
+     * @return the text with any replacements processed, {@code null} if
+     * null String input
+     * @throws IllegalStateException    if the search is repeating and there is an endless loop due
+     *                                  to outputs of one being inputs to another
+     * @throws IllegalArgumentException if the lengths of the arrays are not the same (null is ok,
+     *                                  and/or size 0)
+     * @since 2.4
+     */
+    public static String replaceEachRepeatedly(final String text, final String[] searchList, final String[] replacementList) {
+        final int timeToLive = searchList == null ? 0 : searchList.length;
+        return replaceEach(text, searchList, replacementList, true, timeToLive);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * {@link #replaceEachRepeatedly(String, String[], String[])}
+     * StringUtils.replaceEach(null, *, *, *, *) = null
+     * StringUtils.replaceEach("", *, *, *, *) = ""
+     * StringUtils.replaceEach("aba", null, null, *, *) = "aba"
+     * StringUtils.replaceEach("aba", new String[0], null, *, *) = "aba"
+     * StringUtils.replaceEach("aba", null, new String[0], *, *) = "aba"
+     * StringUtils.replaceEach("aba", new String[]{"a"}, null, *, *) = "aba"
+     * StringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""}, *, >=0) = "b"
+     * StringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"}, *, >=0) = "aba"
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"}, *, >=0) = "wcte"
+     * (example of how it repeats)
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, false, >=0) = "dcte"
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, true, >=2) = "tcte"
+     * StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, *, *) = IllegalStateException
+     *
+     * @param text            text to search and replace in, no-op if null
+     * @param searchList      the Strings to search for, no-op if null
+     * @param replacementList the Strings to replace them with, no-op if null
+     * @param repeat          if true, then replace repeatedly
+     *                        until there are no more possible replacements or timeToLive < 0
+     * @param timeToLive      if less than 0 then there is a circular reference and endless
+     *                        loop
+     * @return the text with any replacements processed, {@code null} if
+     * null String input
+     * @throws IllegalStateException    if the search is repeating and there is an endless loop due
+     *                                  to outputs of one being inputs to another
+     * @throws IllegalArgumentException if the lengths of the arrays are not the same (null is ok,
+     *                                  and/or size 0)
+     * @since 2.4
+     */
+    private static String replaceEach(
+            final String text, final String[] searchList, final String[] replacementList, final boolean repeat, final int timeToLive) {
+
+        if (text == null || text.isEmpty() || searchList == null ||
+                searchList.length == 0 || replacementList == null || replacementList.length == 0) {
+            return text;
+        }
+
+        if (timeToLive < 0) {
+            throw new IllegalStateException("Aborting to protect against StackOverflowError - " +
+                    "output of one loop is the input of another");
+        }
+
+        final int searchLength = searchList.length;
+        final int replacementLength = replacementList.length;
+
+        if (searchLength != replacementLength) {
+            throw new IllegalArgumentException("Search and Replace array lengths don't match: "
+                    + searchLength
+                    + " vs "
+                    + replacementLength);
+        }
+
+        final boolean[] noMoreMatchesForReplIndex = new boolean[searchLength];
+
+        int textIndex = -1;
+        int replaceIndex = -1;
+        int tempIndex = -1;
+
+        for (int i = 0; i < searchLength; i++) {
+            if (noMoreMatchesForReplIndex[i] || searchList[i] == null ||
+                    searchList[i].isEmpty() || replacementList[i] == null) {
+                continue;
+            }
+            tempIndex = text.indexOf(searchList[i]);
+
+            if (tempIndex == -1) {
+                noMoreMatchesForReplIndex[i] = true;
+            } else {
+                if (textIndex == -1 || tempIndex < textIndex) {
+                    textIndex = tempIndex;
+                    replaceIndex = i;
+                }
+            }
+        }
+
+        if (textIndex == -1) {
+            return text;
+        }
+
+        int start = 0;
+
+        int increase = 0;
+
+        for (int i = 0; i < searchList.length; i++) {
+            if (searchList[i] == null || replacementList[i] == null) {
+                continue;
+            }
+            final int greater = replacementList[i].length() - searchList[i].length();
+            if (greater > 0) {
+                increase += 3 * greater;
+            }
+        }
+
+        increase = Math.min(increase, text.length() / 5);
+
+        final StringBuilder buf = new StringBuilder(text.length() + increase);
+
+        while (textIndex != -1) {
+
+            for (int i = start; i < textIndex; i++) {
+                buf.append(text.charAt(i));
+            }
+            buf.append(replacementList[replaceIndex]);
+
+            start = textIndex + searchList[replaceIndex].length();
+
+            textIndex = -1;
+            replaceIndex = -1;
+            tempIndex = -1;
+            for (int i = 0; i < searchLength; i++) {
+                if (noMoreMatchesForReplIndex[i] || searchList[i] == null ||
+                        searchList[i].isEmpty() || replacementList[i] == null) {
+                    continue;
+                }
+                tempIndex = text.indexOf(searchList[i], start);
+
+                if (tempIndex == -1) {
+                    noMoreMatchesForReplIndex[i] = true;
+                } else {
+                    if (textIndex == -1 || tempIndex < textIndex) {
+                        textIndex = tempIndex;
+                        replaceIndex = i;
+                    }
+                }
+            }
+
+        }
+        final int textLength = text.length();
+        for (int i = start; i < textLength; i++) {
+            buf.append(text.charAt(i));
+        }
+        final String result = buf.toString();
+        if (!repeat) {
+            return result;
+        }
+
+        return replaceEach(result, searchList, replacementList, repeat, timeToLive - 1);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * This is a null-safe version of {@link String#replace(char, char)}.
+     * StringUtils.replaceChars(null, *, *)        = null
+     * StringUtils.replaceChars("", *, *)          = ""
+     * StringUtils.replaceChars("abcba", 'b', 'y') = "aycya"
+     * StringUtils.replaceChars("abcba", 'z', 'y') = "abcba"
+     *
+     * @param str         String to replace characters in, may be null
+     * @param searchChar  the character to search for, may be null
+     * @param replaceChar the character to replace, may be null
+     * @return modified String, {@code null} if null string input
+     * @since 2.0
+     */
+    public static String replaceChars(final String str, final char searchChar, final char replaceChar) {
+        if (str == null) {
+            return null;
+        }
+        return str.replace(searchChar, replaceChar);
+    }
+
+    /**
+     * 替换字符串中的指定字符串.
+     * <p>
+     * StringUtils.replaceChars(null, *, *)           = null
+     * StringUtils.replaceChars("", *, *)             = ""
+     * StringUtils.replaceChars("abc", null, *)       = "abc"
+     * StringUtils.replaceChars("abc", "", *)         = "abc"
+     * StringUtils.replaceChars("abc", "b", null)     = "ac"
+     * StringUtils.replaceChars("abc", "b", "")       = "ac"
+     * StringUtils.replaceChars("abcba", "bc", "yz")  = "ayzya"
+     * StringUtils.replaceChars("abcba", "bc", "y")   = "ayya"
+     * StringUtils.replaceChars("abcba", "bc", "yzx") = "ayzya"
+     *
+     * @param str          String to replace characters in, may be null
+     * @param searchChars  a set of characters to search for, may be null
+     * @param replaceChars a set of characters to replace, may be null
+     * @return modified String, {@code null} if null string input
+     * @since 2.0
+     */
+    public static String replaceChars(final String str, final String searchChars, String replaceChars) {
+        if (isEmpty(str) || isEmpty(searchChars)) {
+            return str;
+        }
+        if (replaceChars == null) {
+            replaceChars = Normal.EMPTY;
+        }
+        boolean modified = false;
+        final int replaceCharsLength = replaceChars.length();
+        final int strLength = str.length();
+        final StringBuilder buf = new StringBuilder(strLength);
+        for (int i = 0; i < strLength; i++) {
+            final char ch = str.charAt(i);
+            final int index = searchChars.indexOf(ch);
+            if (index >= 0) {
+                modified = true;
+                if (index < replaceCharsLength) {
+                    buf.append(replaceChars.charAt(index));
+                }
+            } else {
+                buf.append(ch);
+            }
+        }
+        if (modified) {
+            return buf.toString();
+        }
+        return str;
+    }
 
     /**
      * 替换字符串中的指定字符串，忽略大小写
@@ -2896,7 +3610,7 @@ public class StringUtils extends TextUtils {
      * @param str             被包装的字符串
      * @param prefixAndSuffix 前缀和后缀
      * @return 包装后的字符串
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static String wrap(CharSequence str, CharSequence prefixAndSuffix) {
         return wrap(str, prefixAndSuffix, prefixAndSuffix);
@@ -3096,63 +3810,6 @@ public class StringUtils extends TextUtils {
      */
     public static boolean endWithIgnoreCase(CharSequence str, CharSequence suffix) {
         return endWith(str, suffix, true);
-    }
-
-    /**
-     * 去掉指定前缀
-     *
-     * @param str    字符串
-     * @param prefix 前缀
-     * @return 切掉后的字符串，若前缀不是 preffix， 返回原字符串
-     */
-    public static String removePrefix(CharSequence str, CharSequence prefix) {
-        if (isEmpty(str) || isEmpty(prefix)) {
-            return str(str);
-        }
-
-        final String str2 = str.toString();
-        if (str2.startsWith(prefix.toString())) {
-            return subSuf(str2, prefix.length());// 截取后半段
-        }
-        return str2;
-    }
-
-    /**
-     * 忽略大小写去掉指定前缀
-     *
-     * @param str    字符串
-     * @param prefix 前缀
-     * @return 切掉后的字符串，若前缀不是 prefix， 返回原字符串
-     */
-    public static String removePrefixIgnoreCase(CharSequence str, CharSequence prefix) {
-        if (isEmpty(str) || isEmpty(prefix)) {
-            return str(str);
-        }
-
-        final String str2 = str.toString();
-        if (str2.toLowerCase().startsWith(prefix.toString().toLowerCase())) {
-            return subSuf(str2, prefix.length());// 截取后半段
-        }
-        return str2;
-    }
-
-    /**
-     * 去掉指定后缀
-     *
-     * @param str    字符串
-     * @param suffix 后缀
-     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
-     */
-    public static String removeSuffix(CharSequence str, CharSequence suffix) {
-        if (isEmpty(str) || isEmpty(suffix)) {
-            return str(str);
-        }
-
-        final String str2 = str.toString();
-        if (str2.endsWith(suffix.toString())) {
-            return subPre(str2, str2.length() - suffix.length());// 截取前半段
-        }
-        return str2;
     }
 
     /**
@@ -4076,39 +4733,6 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 删除指定字符串
-     * 是否在开始位置，否则返回源字符串
-     * A {@code null} source string will return {@code null}.
-     * An empty ("") source string will return the empty string.
-     * A {@code null} search string will return the source string.
-     *
-     * <pre>
-     * StringUtils.removeStart(null, *)      = null
-     * StringUtils.removeStart("", *)        = ""
-     * StringUtils.removeStart(*, null)      = *
-     * StringUtils.removeStart("www.domain.com", "www.")   = "domain.com"
-     * StringUtils.removeStart("domain.com", "www.")       = "domain.com"
-     * StringUtils.removeStart("www.domain.com", "domain") = "www.domain.com"
-     * StringUtils.removeStart("abc", "")    = "abc"
-     * </pre>
-     *
-     * @param str    the source String to search, may be null
-     * @param remove the String to search for and remove, may be null
-     * @return the substring with the string removed if found,
-     * {@code null} if null String input
-     * @since 2.1
-     */
-    public static String removeStart(final String str, final String remove) {
-        if (isEmpty(str) || isEmpty(remove)) {
-            return str;
-        }
-        if (str.startsWith(remove)) {
-            return str.substring(remove.length());
-        }
-        return str;
-    }
-
-    /**
      * 用指定的字符串填充一个字符串
      *
      * <pre>
@@ -4568,7 +5192,7 @@ public class StringUtils extends TextUtils {
      * @param str        字符串
      * @param partLength 每等份的长度
      * @return 切分后的数组
-     * @since 3.0.6
+     * @since 3.1.2
      */
     public static String[] cut(CharSequence str, int partLength) {
         if (null == str) {

@@ -28,7 +28,7 @@ import org.aoju.bus.core.io.ByteString;
 
 /**
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class WebSocketProtocol {
@@ -148,4 +148,5 @@ public final class WebSocketProtocol {
     public static String acceptHeader(String key) {
         return ByteString.encodeUtf8(key + WebSocketProtocol.ACCEPT_MAGIC).sha1().base64();
     }
+
 }

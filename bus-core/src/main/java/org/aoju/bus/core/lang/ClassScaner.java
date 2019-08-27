@@ -44,7 +44,7 @@ import java.util.jar.JarFile;
  * 类扫描器
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class ClassScaner {
@@ -196,10 +196,10 @@ public class ClassScaner {
         for (URL url : ResourceUtils.getResourceIter(this.packagePath)) {
             switch (url.getProtocol()) {
                 case "file":
-                    scanFile(new File(URLUtils.decode(url.getFile(), this.charset.name())), null);
+                    scanFile(new File(UriUtils.decode(url.getFile(), this.charset.name())), null);
                     break;
                 case "jar":
-                    scanJar(URLUtils.getJarFile(url));
+                    scanJar(UriUtils.getJarFile(url));
                     break;
             }
         }
@@ -229,7 +229,7 @@ public class ClassScaner {
         final String[] javaClassPaths = ClassUtils.getJavaClassPaths();
         for (String classPath : javaClassPaths) {
             // bug修复，由于路径中空格和中文导致的Jar找不到
-            classPath = URLUtils.decode(classPath, CharsetUtils.systemCharsetName());
+            classPath = UriUtils.decode(classPath, CharsetUtils.systemCharsetName());
 
             scanFile(new File(classPath), null);
         }

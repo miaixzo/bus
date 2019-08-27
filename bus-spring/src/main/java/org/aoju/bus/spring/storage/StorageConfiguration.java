@@ -23,46 +23,57 @@
  */
 package org.aoju.bus.spring.storage;
 
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.storage.Provider;
 import org.aoju.bus.storage.StorageProvider;
 import org.aoju.bus.storage.UploadObject;
 import org.aoju.bus.storage.UploadToken;
-import org.aoju.bus.storage.provider.fdfs.FdfsProvider;
+import org.aoju.bus.storage.provider.aliyun.AliyunOSSProvider;
+import org.aoju.bus.storage.provider.qiniu.QiniuOSSProvider;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {StorageProperties.class})
-public class StorageConfiguration {
+public class StorageConfiguration implements InitializingBean, DisposableBean {
 
     @Autowired
     StorageProperties properties;
     @Autowired
     StorageProvider storageProvider;
 
-    @Bean
+    @Override
+    public void destroy() throws Exception {
+        storageProvider.close();
+    }
+
+    @Override
     public void afterPropertiesSet() {
-        if (FdfsProvider.NAME.equals(this.properties.getProvider())) {
-            Properties properties = new Properties();
-            storageProvider = new FdfsProvider(this.properties.getGroupName(), properties);
+        if (Provider.QINIU_OSS.getValue().equals(storageProvider)) {
+            Assert.notBlank(properties.accessKey, "[accessKey] not defined");
+            Assert.notBlank(properties.secretKey, "[secretKey] not defined");
+            storageProvider = new QiniuOSSProvider(properties.prefix, properties.bucket, properties.accessKey, properties.secretKey, properties.privated);
+        } else if (Provider.ALI_OSS.getValue().equals(storageProvider)) {
+            Assert.notBlank(properties.endpoint, "[endpoint] not defined");
+            storageProvider = new AliyunOSSProvider(properties.prefix, properties.endpoint, properties.bucket, properties.accessKey, properties.secretKey, properties.internalUrl, properties.privated);
         } else {
-            throw new RuntimeException("Provider[" + this.properties.getProvider() + "] not core");
+            throw new RuntimeException("Provider[" + storageProvider + "] not support");
         }
     }
 
     public String upload(String fileName, File file) {
         return storageProvider.upload(new UploadObject(fileName, file));
     }
-
 
     public String upload(String fileName, InputStream in, String mimeType) {
         return storageProvider.upload(new UploadObject(fileName, in, mimeType));

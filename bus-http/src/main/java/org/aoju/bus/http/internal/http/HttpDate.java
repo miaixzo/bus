@@ -35,7 +35,7 @@ import java.util.Locale;
  * Best-effort parser for HTTP dates.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class HttpDate {
@@ -91,9 +91,6 @@ public final class HttpDate {
     private HttpDate() {
     }
 
-    /**
-     * Returns the date for {@code value}. Returns null if the value couldn't be parsed.
-     */
     public static Date parse(String value) {
         if (value.length() == 0) {
             return null;
@@ -131,10 +128,8 @@ public final class HttpDate {
         return null;
     }
 
-    /**
-     * Returns the string for {@code value}.
-     */
     public static String format(Date value) {
         return STANDARD_DATE_FORMAT.get().format(value);
     }
+
 }

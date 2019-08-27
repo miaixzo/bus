@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.storage.provider;
 
+import lombok.Data;
 import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.storage.StorageProvider;
@@ -36,13 +37,19 @@ import java.net.URL;
 
 /**
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
+@Data
 public abstract class AbstractProvider implements StorageProvider {
 
+    protected static final String DIR_SPLITER = "/";
+
+    protected String accessKey;
+    protected String secretKey;
+    protected String bucket;
     protected String prefix;
-    protected String bucketName;
+    protected boolean privated;
 
     public static String downloadFile(String fileURL, String saveDir) {
         HttpURLConnection httpConn = null;
@@ -63,8 +70,7 @@ public abstract class AbstractProvider implements StorageProvider {
                                 disposition.length() - 1);
                     }
                 } else {
-                    fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1,
-                            fileURL.length());
+                    fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1, fileURL.length());
                 }
                 InputStream inputStream = httpConn.getInputStream();
                 String saveFilePath = saveDir + File.separator + fileName;
@@ -106,8 +112,8 @@ public abstract class AbstractProvider implements StorageProvider {
     }
 
     @Override
-    public String downloadAndSaveAs(String file, String localSaveDir) {
-        return downloadFile(getUrl(file), localSaveDir);
+    public String downloadAndSaveAs(String file, String localSaveDir, boolean isInternal) {
+        return downloadFile(getUrl(file, isInternal), localSaveDir);
     }
 
 }

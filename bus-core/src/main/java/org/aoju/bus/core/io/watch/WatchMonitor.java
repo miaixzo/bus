@@ -46,7 +46,7 @@ import java.util.Map;
  * 递归监听目录时，并不会监听新创建的目录
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class WatchMonitor extends Thread implements Closeable {
@@ -184,7 +184,7 @@ public class WatchMonitor extends Thread implements Closeable {
      * @return 监听对象
      */
     public static WatchMonitor create(URL url, int maxDepth, WatchEvent.Kind<?>... events) {
-        return create(URLUtils.toURI(url), maxDepth, events);
+        return create(UriUtils.toURI(url), maxDepth, events);
     }
 
     /**

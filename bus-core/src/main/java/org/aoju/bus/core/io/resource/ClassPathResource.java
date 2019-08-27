@@ -34,10 +34,10 @@ import org.aoju.bus.core.utils.*;
  * 传入的path所指向的资源必须存在，否则报错
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
-public class ClassPathResource extends UrlResource {
+public class ClassPathResource extends UriResource {
 
     private String path;
     private ClassLoader classLoader;
@@ -112,7 +112,7 @@ public class ClassPathResource extends UrlResource {
             return this.path;
         }
         // url在初始化的时候已经断言，此处始终不为null
-        return FileUtils.normalize(URLUtils.getDecodedPath(this.url));
+        return FileUtils.normalize(UriUtils.getDecodedPath(this.url));
     }
 
     /**

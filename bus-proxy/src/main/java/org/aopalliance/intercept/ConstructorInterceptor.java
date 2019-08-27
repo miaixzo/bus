@@ -6,7 +6,7 @@ package org.aopalliance.intercept;
  * <p>The user should implement the {@link
  * #construct(ConstructorInvocation)} method to modify the original
  * behavior. E.g. the following class implements a singleton
- * interceptor (allows only one unique instance for the intercepted
+ * intercept (allows only one unique instance for the intercepted
  * class):
  *
  * <pre class=code>
@@ -33,7 +33,7 @@ public interface ConstructorInterceptor extends Interceptor {
      * @param invocation the construction joinpoint
      * @return the newly created object, which is also the result of
      * the call to {@link Joinpoint#proceed()}, might be replaced by
-     * the interceptor.
+     * the intercept.
      * @throws Throwable if the interceptors or the
      *                   target-object throws an exception.
      */

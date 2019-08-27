@@ -27,10 +27,8 @@ import java.io.Closeable;
 import java.util.Map;
 
 /**
- * 上传接口
- *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public interface StorageProvider extends Closeable {
@@ -40,7 +38,7 @@ public interface StorageProvider extends Closeable {
     /**
      * 文件上传
      *
-     * @param object 对象
+     * @param object 上传对象
      * @return the string
      */
     String upload(UploadObject object);
@@ -48,34 +46,21 @@ public interface StorageProvider extends Closeable {
     /**
      * 获取文件下载地址
      *
-     * @param fileKey 文件（全路径或者fileKey）
+     * @param fileKey    文件标识
+     * @param isInternal 是否内部
      * @return the string
      */
-    String getUrl(String fileKey);
+    String getUrl(String fileKey, boolean isInternal);
 
     /**
      * 删除图片
      *
-     * @param fileKey 文件key
-     * @return the boolean
+     * @param fileKey 文件标识
+     * @return the true/false
      */
     boolean delete(String fileKey);
 
-    /**
-     * 删除图片
-     *
-     * @param fileKey      文件key
-     * @param localSaveDir 路径
-     * @return the string
-     */
-    String downloadAndSaveAs(String fileKey, String localSaveDir);
+    String downloadAndSaveAs(String fileKey, String localSaveDir, boolean isInternal);
 
-    /**
-     * 删除图片
-     *
-     * @param param token
-     * @return the object
-     */
     Map<String, Object> createUploadToken(UploadToken param);
-
 }

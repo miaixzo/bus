@@ -45,7 +45,7 @@ import java.util.Set;
  * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 abstract class MemberUtils {
@@ -405,7 +405,6 @@ abstract class MemberUtils {
      * @param v1 被乘数
      * @param v2 乘数
      * @return 积
-     * @since 3.0.8
      */
     public static BigDecimal mul(String v1, String v2) {
         return mul(new BigDecimal(v1), new BigDecimal(v2));
@@ -417,7 +416,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被乘值
      * @return 积
-     * @since 4.0.0
      */
     public static BigDecimal mul(String... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -441,7 +439,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被乘值
      * @return 积
-     * @since 4.0.0
      */
     public static BigDecimal mul(BigDecimal... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -509,7 +506,6 @@ abstract class MemberUtils {
      * @param v1 被除数
      * @param v2 除数
      * @return 两个参数的商
-     * @since 3.1.0
      */
     public static BigDecimal div(Number v1, Number v2) {
         return div(v1, v2, DEFAUT_DIV_SCALE);
@@ -581,7 +577,7 @@ abstract class MemberUtils {
      * @param v2    除数
      * @param scale 精确度，如果为负值，取绝对值
      * @return 两个参数的商
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static BigDecimal div(Number v1, Number v2, int scale) {
         return div(v1, v2, scale, RoundingMode.HALF_UP);
@@ -660,7 +656,7 @@ abstract class MemberUtils {
      * @param scale        精确度，如果为负值，取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static BigDecimal div(Number v1, Number v2, int scale, RoundingMode roundingMode) {
         return div(v1.toString(), v2.toString(), scale, roundingMode);
@@ -687,7 +683,7 @@ abstract class MemberUtils {
      * @param scale        精确度，如果为负值，取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
-     * @since 3.0.9
+     * @since 3.1.2
      */
     public static BigDecimal div(BigDecimal v1, BigDecimal v2, int scale, RoundingMode roundingMode) {
         Assert.notNull(v2, "Divisor must be not null !");
@@ -959,7 +955,7 @@ abstract class MemberUtils {
      *                </ul>
      * @param value   值
      * @return 格式化后的值
-     * @since 3.0.6
+     * @since 3.1.2
      */
     public static String decimalFormat(String pattern, long value) {
         return new DecimalFormat(pattern).format(value);
@@ -970,7 +966,7 @@ abstract class MemberUtils {
      *
      * @param value 金额
      * @return 格式化后的值
-     * @since 3.0.9
+     * @since 3.1.2
      */
     public static String decimalFormatMoney(double value) {
         return decimalFormat(",##0.00", value);
@@ -1638,7 +1634,6 @@ abstract class MemberUtils {
      * @see ArrayUtils#min(Comparable[])
      * @since 4.0.7
      */
-    @SuppressWarnings("unchecked")
     public static <T extends Comparable<? super T>> T min(T... numberArray) {
         return ArrayUtils.min(numberArray);
     }
@@ -1712,7 +1707,6 @@ abstract class MemberUtils {
      * @see ArrayUtils#max(Comparable[])
      * @since 4.0.7
      */
-    @SuppressWarnings("unchecked")
     public static <T extends Comparable<? super T>> T max(T... numberArray) {
         return ArrayUtils.max(numberArray);
     }
@@ -1784,7 +1778,7 @@ abstract class MemberUtils {
      * @param number       A Number
      * @param defaultValue 如果number参数为{@code null}，返回此默认值
      * @return A String.
-     * @since 3.0.9
+     * @since 3.1.2
      */
     public static String toStr(Number number, String defaultValue) {
         return (null == number) ? defaultValue : toStr(number);
@@ -1850,7 +1844,7 @@ abstract class MemberUtils {
      * @param total 总数
      * @param part  每份的个数
      * @return 分成了几份
-     * @since 3.0.6
+     * @since 3.1.2
      */
     public static int count(int total, int part) {
         return (total % part == 0) ? (total / part) : (total / part + 1);
@@ -1861,7 +1855,7 @@ abstract class MemberUtils {
      *
      * @param decimal {@link BigDecimal}，可以为{@code null}
      * @return {@link BigDecimal}参数为空时返回0的值
-     * @since 3.0.9
+     * @since 3.1.2
      */
     public static BigDecimal null2Zero(BigDecimal decimal) {
 

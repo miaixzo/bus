@@ -5,10 +5,10 @@ import java.lang.reflect.Constructor;
 
 /**
  * Description of an invocation to a constuctor, given to an
- * interceptor upon construtor-call.
+ * intercept upon construtor-call.
  *
  * <p>A constructor invocation is a joinpoint and can be intercepted
- * by a constructor interceptor.
+ * by a constructor intercept.
  *
  * @see ConstructorInterceptor
  */

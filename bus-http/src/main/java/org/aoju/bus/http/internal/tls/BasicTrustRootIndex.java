@@ -35,10 +35,11 @@ import java.util.Set;
  * A simple index that of trusted root certificates that have been loaded into memory.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class BasicTrustRootIndex implements TrustRootIndex {
+
     private final Map<X500Principal, Set<X509Certificate>> subjectToCaCerts;
 
     public BasicTrustRootIndex(X509Certificate... caCerts) {
@@ -84,4 +85,5 @@ public final class BasicTrustRootIndex implements TrustRootIndex {
     public int hashCode() {
         return subjectToCaCerts.hashCode();
     }
+
 }

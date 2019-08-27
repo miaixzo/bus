@@ -31,7 +31,7 @@ import org.aoju.bus.http.Headers;
  * HTTP header: the name is an ASCII string, but the value can be UTF-8.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public final class Header {
@@ -61,7 +61,6 @@ public final class Header {
     public final ByteString value;
     final int hpackSize;
 
-    // TODO: search for toLowerCase and consider moving logic here.
     public Header(String name, String value) {
         this(ByteString.encodeUtf8(name), ByteString.encodeUtf8(value));
     }

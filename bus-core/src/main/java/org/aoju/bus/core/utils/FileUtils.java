@@ -56,7 +56,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public class FileUtils {
@@ -70,7 +70,7 @@ public class FileUtils {
      * 是否为Windows环境
      *
      * @return 是否为Windows环境
-     * @since 3.0.9
+     * @since 3.1.2
      */
     public static boolean isWindows() {
         return Symbol.C_BACKSLASH == File.separatorChar;
@@ -425,7 +425,7 @@ public class FileUtils {
      * @return File
      */
     public static File file(URL url) {
-        return new File(URLUtils.toURI(url));
+        return new File(UriUtils.toURI(url));
     }
 
     /**
@@ -747,7 +747,7 @@ public class FileUtils {
      * @param directory 文件夹
      * @return 成功与否
      * @throws CommonException 异常
-     * @since 3.0.6
+     * @since 3.1.2
      */
     public static boolean clean(File directory) throws CommonException {
         if (directory == null || directory.exists() == false || false == directory.isDirectory()) {
@@ -1044,7 +1044,7 @@ public class FileUtils {
      * @param isRetainExt 是否保留原文件的扩展名，如果保留，则newName不需要加扩展名
      * @param isOverride  是否覆盖目标文件
      * @return 目标文件
-     * @since 3.0.9
+     * @since 3.1.2
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
@@ -1092,27 +1092,19 @@ public class FileUtils {
         } else {
             normalPath = normalize(path);
             if (isAbsolutePath(normalPath)) {
-                // 给定的路径已经是绝对路径了
                 return normalPath;
             }
         }
 
-        // 相对于ClassPath路径
         final URL url = ResourceUtils.getResource(normalPath, baseClass);
         if (null != url) {
-            // 对于jar中文件包含file:前缀，需要去掉此类前缀，在此做标准化，since 3.0.8 解决中文或空格路径被编码的问题
-            return FileUtils.normalize(URLUtils.getDecodedPath(url));
+            return FileUtils.normalize(UriUtils.getDecodedPath(url));
         }
 
-        // 如果资源不存在，则返回一个拼接的资源绝对路径
         final String classPath = ClassUtils.getClassPath();
         if (null == classPath) {
-//			throw new NullPointerException("ClassPath is null !");
-            //在jar运行模式中，ClassPath有可能获取不到，此时返回原始相对路径（此时获取的文件为相对工作目录）
             return path;
         }
-
-        // 资源不存在的情况下使用标准化路径有问题，使用原始路径拼接后标准化路径
         return normalize(classPath.concat(path));
     }
 
@@ -1186,7 +1178,7 @@ public class FileUtils {
      * @param path          {@link Path}
      * @param isFollowLinks 是否追踪到软链对应的真实地址
      * @return 如果为目录true
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static boolean isDirectory(Path path, boolean isFollowLinks) {
         if (null == path) {
@@ -1358,7 +1350,7 @@ public class FileUtils {
      * @param file1 文件1
      * @param file2 文件2
      * @return 文件路径是否相同
-     * @since 3.0.9
+     * @since 3.1.2
      */
     public static boolean pathEquals(File file1, File file2) {
         if (isWindows()) {
@@ -1794,7 +1786,7 @@ public class FileUtils {
      * @param isFollowLinks 是否跟踪到软链对应的真实路径
      * @return {@link BasicFileAttributes}
      * @throws CommonException 异常
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static BasicFileAttributes getAttributes(Path path, boolean isFollowLinks) throws CommonException {
         if (null == path) {
@@ -3141,7 +3133,7 @@ public class FileUtils {
      * @param srcCharset  原文件的编码，必须与文件内容的编码保持一致
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static File convertCharset(File file, Charset srcCharset, Charset destCharset) {
         return CharsetUtils.convert(file, srcCharset, destCharset);
@@ -3155,7 +3147,7 @@ public class FileUtils {
      * @param charset       编码
      * @param lineSeparator 换行符枚举
      * @return 被修改的文件
-     * @since 3.1.0
+     * @since 3.1.2
      */
     public static File convertLineSeparator(File file, Charset charset, LineSeparator lineSeparator) {
         final List<String> lines = readLines(file, charset);

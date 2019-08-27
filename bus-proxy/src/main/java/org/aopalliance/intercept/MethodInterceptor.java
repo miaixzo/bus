@@ -5,7 +5,7 @@ package org.aopalliance.intercept;
  * are nested "on top" of the target.
  * The user should implement the {@link #invoke(MethodInvocation)}
  * method to modify the original behavior. E.g. the following class
- * implements a tracing interceptor (traces all the calls on the
+ * implements a tracing intercept (traces all the calls on the
  * intercepted method(s)):
  *
  * <pre class=code>
@@ -30,7 +30,7 @@ public interface MethodInterceptor extends Interceptor {
      * @param invocation the method invocation joinpoint
      * @return the result of the call to {@link
      * Joinpoint#proceed()}, might be intercepted by the
-     * interceptor.
+     * intercept.
      * @throws Throwable if the interceptors or the
      *                   target-object throws an exception.
      */

@@ -25,7 +25,7 @@ package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.URLUtils;
+import org.aoju.bus.core.utils.UriUtils;
 
 import java.io.File;
 
@@ -33,10 +33,10 @@ import java.io.File;
  * 文件资源访问对象
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
-public class FileResource extends UrlResource {
+public class FileResource extends UriResource {
 
     /**
      * 构造
@@ -54,7 +54,7 @@ public class FileResource extends UrlResource {
      * @param fileName 文件名，如果为null获取文件本身的文件名
      */
     public FileResource(File file, String fileName) {
-        super(URLUtils.getURL(file), StringUtils.isBlank(fileName) ? file.getName() : fileName);
+        super(UriUtils.getURL(file), StringUtils.isBlank(fileName) ? file.getName() : fileName);
     }
 
     /**

@@ -24,7 +24,7 @@ import java.lang.reflect.AccessibleObject;
 public interface Joinpoint {
 
     /**
-     * Proceeds to the next interceptor in the chain.
+     * Proceeds to the next intercept in the chain.
      *
      * <p>The implementation and the semantics of this method depends
      * on the actual joinpoint type (see the children interfaces).

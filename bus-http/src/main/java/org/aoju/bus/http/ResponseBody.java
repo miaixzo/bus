@@ -104,7 +104,7 @@ import java.nio.charset.Charset;
  * {@link #byteStream()}, or {@link #charStream()}.
  *
  * @author Kimi Liu
- * @version 3.0.6
+ * @version 3.1.2
  * @since JDK 1.8
  */
 public abstract class ResponseBody implements Closeable {
@@ -160,10 +160,6 @@ public abstract class ResponseBody implements Closeable {
 
     public abstract MediaType contentType();
 
-    /**
-     * Returns the number of bytes in that will returned by {@link #bytes}, or {@link #byteStream}, or
-     * -1 if unknown.
-     */
     public abstract long contentLength();
 
     public final InputStream byteStream() {

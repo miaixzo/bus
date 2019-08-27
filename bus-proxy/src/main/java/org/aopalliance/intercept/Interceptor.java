@@ -4,9 +4,9 @@ package org.aopalliance.intercept;
 import org.aopalliance.aop.Advice;
 
 /**
- * This interface represents a generic interceptor.
+ * This interface represents a generic intercept.
  *
- * <p>A generic interceptor can intercept runtime events that occur
+ * <p>A generic intercept can intercept runtime events that occur
  * within a base program. Those events are materialized by (reified
  * in) joinpoints. Runtime joinpoints can be invocations, field
  * access, exceptions...
