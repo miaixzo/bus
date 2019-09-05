@@ -30,7 +30,7 @@ import javax.mail.PasswordAuthentication;
  * 用户名密码验证器
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class UserPassAuthenticator extends Authenticator {

@@ -1,6 +1,6 @@
 ﻿/**
 
- @Name：layer v3.1.2 Web弹层组件
+ @Name：layer v3.1.9 Web弹层组件
  @Author：贤心
  @Site：http://layer.layui.com
  @License：MIT

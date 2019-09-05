@@ -35,7 +35,7 @@ import java.util.Set;
  * 拼常用SQL的工具类
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class SqlSourceBuilder {
@@ -488,6 +488,7 @@ public class SqlSourceBuilder {
      * where主键条件
      *
      * @param entityClass 对象
+     * @param useVersion  是否自定义版本
      * @return the string
      */
     public static String wherePKColumns(Class<?> entityClass, boolean useVersion) {
@@ -661,7 +662,7 @@ public class SqlSourceBuilder {
 
     /**
      * 支持 for update
-     *
+     * @param entityClass 对象
      * @return the string
      */
     public static String check(Class<?> entityClass) {

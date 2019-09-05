@@ -43,7 +43,7 @@ import java.io.OutputStream;
  * Word生成器
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class Word07Writer implements Closeable {

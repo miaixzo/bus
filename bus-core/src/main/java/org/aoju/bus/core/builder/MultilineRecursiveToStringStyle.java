@@ -67,7 +67,7 @@ import org.aoju.bus.core.utils.ClassUtils;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class MultilineRecursiveToStringStyle extends RecursiveToStringStyle {

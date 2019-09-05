@@ -59,7 +59,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class Setting extends AbsSetting implements Map<String, String> {
@@ -242,7 +242,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      *
      * @param keys 键列表，常用于别名
      * @return 值
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public Object getAndRemove(String... keys) {
         Object value = null;
@@ -260,7 +260,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      *
      * @param keys 键列表，常用于别名
      * @return 字符串值
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public String getAndRemoveStr(String... keys) {
         Object value = null;

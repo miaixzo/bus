@@ -37,7 +37,7 @@ import java.util.Properties;
  * mapper 注册扫描
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class MapperClassScanner extends MapperScannerConfigurer {

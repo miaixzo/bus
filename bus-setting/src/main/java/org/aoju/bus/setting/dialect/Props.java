@@ -56,7 +56,7 @@ import java.util.Properties;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public final class Props extends Properties implements BasicTypeGetter<String>, OptBasicTypeGetter<String> {
@@ -83,7 +83,7 @@ public final class Props extends Properties implements BasicTypeGetter<String>, 
     /**
      * 构造，使用相对于Class文件根目录的相对路径
      *
-     * @param path
+     * @param path 路径
      */
     public Props(String path) {
         this(path, org.aoju.bus.core.consts.Charset.ISO_8859_1);

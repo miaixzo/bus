@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class DateUtils extends Fields {
@@ -873,7 +873,7 @@ public class DateUtils extends Fields {
      * @param calendar           日期 {@link Calendar}
      * @param isMondayAsFirstDay 是否周一做为一周的第一天（false表示周日做为第一天）
      * @return {@link Calendar}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Calendar beginOfWeek(Calendar calendar, boolean isMondayAsFirstDay) {
         if (isMondayAsFirstDay) {
@@ -901,7 +901,7 @@ public class DateUtils extends Fields {
      * @param calendar          日期 {@link Calendar}
      * @param isSundayAsLastDay 是否周日做为一周的最后一天（false表示周六做为最后一天）
      * @return {@link Calendar}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Calendar endOfWeek(Calendar calendar, boolean isSundayAsLastDay) {
         if (isSundayAsLastDay) {
@@ -1439,7 +1439,7 @@ public class DateUtils extends Fields {
      *
      * @param seconds 需要转换的秒数
      * @return 转换后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String secondToTime(int seconds) {
         if (seconds < 0) {

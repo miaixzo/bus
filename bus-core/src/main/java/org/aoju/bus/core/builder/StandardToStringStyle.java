@@ -33,7 +33,7 @@ package org.aoju.bus.core.builder;
  * program to access.</p>
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class StandardToStringStyle extends ToStringStyle {

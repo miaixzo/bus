@@ -40,7 +40,7 @@ import java.util.List;
  * ClassPath资源工具类
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class ResourceUtils {
@@ -74,7 +74,7 @@ public class ResourceUtils {
      * @param resurce ClassPath资源
      * @return {@link InputStream}
      * @throws CommonException 资源不存在异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static InputStream getStream(String resurce) throws CommonException {
         return new ClassPathResource(resurce).getStream();
@@ -102,7 +102,7 @@ public class ResourceUtils {
      * @param resurce ClassPath资源
      * @param charset 编码
      * @return {@link InputStream}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static BufferedReader getReader(String resurce, Charset charset) {
         return new ClassPathResource(resurce).getReader(charset);

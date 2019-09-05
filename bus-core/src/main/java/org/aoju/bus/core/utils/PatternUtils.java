@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class PatternUtils {
@@ -77,7 +77,7 @@ public class PatternUtils {
      * @param regex   匹配的正则
      * @param content 被匹配的内容
      * @return 匹配后得到的字符串，未匹配返回null
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String getGroup0(String regex, String content) {
         return get(regex, content, 0);
@@ -89,7 +89,7 @@ public class PatternUtils {
      * @param regex   匹配的正则
      * @param content 被匹配的内容
      * @return 匹配后得到的字符串，未匹配返回null
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String getGroup1(String regex, String content) {
         return get(regex, content, 1);
@@ -117,7 +117,7 @@ public class PatternUtils {
      * @param pattern 编译后的正则模式
      * @param content 被匹配的内容
      * @return 匹配后得到的字符串，未匹配返回null
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String getGroup0(Pattern pattern, String content) {
         return get(pattern, content, 0);
@@ -129,7 +129,7 @@ public class PatternUtils {
      * @param pattern 编译后的正则模式
      * @param content 被匹配的内容
      * @return 匹配后得到的字符串，未匹配返回null
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String getGroup1(Pattern pattern, String content) {
         return get(pattern, content, 1);
@@ -161,7 +161,7 @@ public class PatternUtils {
      * @param pattern 编译后的正则模式
      * @param content 被匹配的内容
      * @return 匹配后得到的字符串数组，按照分组顺序依次列出，未匹配到返回空列表，任何一个参数为null返回null
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static List<String> getAllGroups(Pattern pattern, String content) {
         if (null == content || null == pattern) {
@@ -298,7 +298,7 @@ public class PatternUtils {
      * @param regex   正则
      * @param content 被查找的内容
      * @return 结果列表
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static List<String> findAllGroup0(String regex, String content) {
         return findAll(regex, content, 0);
@@ -310,7 +310,7 @@ public class PatternUtils {
      * @param regex   正则
      * @param content 被查找的内容
      * @return 结果列表
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static List<String> findAllGroup1(String regex, String content) {
         return findAll(regex, content, 1);
@@ -323,7 +323,7 @@ public class PatternUtils {
      * @param content 被查找的内容
      * @param group   正则的分组
      * @return 结果列表
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static List<String> findAll(String regex, String content, int group) {
         return findAll(regex, content, group, new ArrayList<>());
@@ -355,7 +355,7 @@ public class PatternUtils {
      * @param content 被查找的内容
      * @param group   正则的分组
      * @return 结果列表
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static List<String> findAll(Pattern pattern, String content, int group) {
         return findAll(pattern, content, group, new ArrayList<>());

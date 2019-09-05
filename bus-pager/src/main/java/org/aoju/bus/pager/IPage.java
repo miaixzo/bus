@@ -27,7 +27,7 @@ package org.aoju.bus.pager;
  * 分页接口
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public interface IPage {

@@ -10,7 +10,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class CaseInsensitiveLinkedMap<K, V> extends CaseInsensitiveMap<K, V> {
@@ -45,7 +45,7 @@ public class CaseInsensitiveLinkedMap<K, V> extends CaseInsensitiveMap<K, V> {
      *
      * @param loadFactor 加载因子
      * @param map        Map
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public CaseInsensitiveLinkedMap(float loadFactor, Map<? extends K, ? extends V> map) {
         this(map.size(), loadFactor);

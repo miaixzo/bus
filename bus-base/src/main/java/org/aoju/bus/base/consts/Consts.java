@@ -31,7 +31,7 @@ import org.aoju.bus.core.consts.Normal;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class Consts extends Normal {
@@ -73,6 +73,16 @@ public class Consts extends Normal {
      **/
     public static final String STATUS_FINISHED = "4";
 
+    public static final String TYPE_ZERO = "0";
+    public static final String TYPE_ONE = "1";
+    public static final String TYPE_TWO = "2";
+    public static final String TYPE_THREE = "3";
+    public static final String TYPE_FOUR = "4";
+    public static final String TYPE_FIVE = "5";
+    public static final String TYPE_SIX = "6";
+    public static final String TYPE_SEVEN = "7";
+    public static final String TYPE_EIGHT = "8";
+    public static final String TYPE_NINE = "9";
 
     /*************** 返回值状态码-系统默认 ****************/
     public static final String EM_SUCCESS = "0";

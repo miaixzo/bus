@@ -46,14 +46,14 @@ import java.lang.annotation.Annotation;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class ResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
 
     @Autowired
-    private CryptoProperties cryptoProperties;
+    CryptoProperties cryptoProperties;
 
     @Override
     public boolean supports(MethodParameter returnType,
@@ -70,20 +70,19 @@ public class ResponseBodyAdvice extends BaseAdvice
     }
 
     /**
-     * Invoked after an {@code HttpMessageConverter} is selected and just before
-     * its write method is invoked.
+     * 在选择{@code HttpMessageConverter}之后和之前调用 调用它的写方法
      *
-     * @param body                  the body to be written
-     * @param parameter             the parameter info
-     * @param selectedContentType   the content type selected through content negotiation
-     * @param selectedConverterType the converter type selected to write to the response
-     * @param request               the current request
-     * @param response              the current response
-     * @return the body that was passed in or a modified (possibly new) instance
+     * @param body          需要操作的body
+     * @param parameter     方法参数
+     * @param mediaType     媒体类型
+     * @param converterType 转换类型
+     * @param request       当前 request
+     * @param response      当前 response
+     * @return 传入或修改(可能是新的)实例的主体
      */
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter parameter, MediaType selectedContentType,
-                                  Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+    public Object beforeBodyWrite(Object body, MethodParameter parameter, MediaType mediaType,
+                                  Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!cryptoProperties.isDebug()) {
             try {
                 final EncryptBody encrypt = parameter.getMethod().getAnnotation(EncryptBody.class);
@@ -91,7 +90,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                     final String key = StringUtils.defaultString(encrypt.key(), cryptoProperties.getDecrypt().getKey());
 
                     if (!StringUtils.hasText(key)) {
-                        throw new NullPointerException("请配置spring.encrypt.key参数");
+                        throw new NullPointerException("请配置request.crypto.encrypt.key参数");
                     }
                     String content = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(body);
                     byte[] data = content.getBytes();
@@ -99,7 +98,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                     return Base64.encode(encodedData);
                 }
             } catch (Exception e) {
-                Logger.error("加密数据异常", e.getMessage());
+                Logger.error("加密数据异常:" + e.getMessage());
             }
         }
         return body;

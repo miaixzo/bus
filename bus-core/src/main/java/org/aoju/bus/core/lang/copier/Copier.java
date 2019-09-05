@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang.copier;
  *
  * @param <T> 拷贝目标类型
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public interface Copier<T> {

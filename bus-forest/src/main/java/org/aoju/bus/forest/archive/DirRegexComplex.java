@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * 文件记录正则表达式规则
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class DirRegexComplex extends RegexComplex<File> implements Complex<File> {
@@ -50,4 +50,5 @@ public class DirRegexComplex extends RegexComplex<File> implements Complex<File>
     protected String toText(File entry) {
         return entry.getName();
     }
+
 }

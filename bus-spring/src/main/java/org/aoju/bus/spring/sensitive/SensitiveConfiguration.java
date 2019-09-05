@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.spring.sensitive;
 
+import org.aoju.bus.spring.crypto.CryptoProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 
@@ -33,9 +35,10 @@ import java.util.List;
  * 加载类
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
+@EnableConfigurationProperties(value = {CryptoProperties.class})
 public class SensitiveConfiguration implements ImportSelector {
 
     @Override

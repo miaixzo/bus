@@ -28,7 +28,7 @@ import org.aoju.bus.proxy.Provider;
 
 /**
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.1.9
  * @since JDK 1.8
  */
 public class BeanProvider implements Provider {
