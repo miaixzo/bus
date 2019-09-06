@@ -46,7 +46,7 @@ import java.util.List;
  * 主键处理
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class SelectKey implements KeyGenerator {
@@ -82,12 +82,12 @@ public class SelectKey implements KeyGenerator {
             statementBuilder.keyProperty(column.getProperty());
             statementBuilder.keyColumn(null);
             statementBuilder.databaseId(null);
-            statementBuilder.lang(configuration.getDefaultScriptingLanuageInstance());
+            statementBuilder.lang(configuration.getDefaultScriptingLanguageInstance());
             statementBuilder.resultOrdered(false);
-            statementBuilder.resulSets(null);
+            statementBuilder.resultSets(null);
             statementBuilder.timeout(configuration.getDefaultStatementTimeout());
 
-            List<ParameterMapping> parameterMappings = new ArrayList<ParameterMapping>();
+            List<ParameterMapping> parameterMappings = new ArrayList<>();
             ParameterMap.Builder inlineParameterMapBuilder = new ParameterMap.Builder(
                     configuration,
                     statementBuilder.id() + "-Inline",
@@ -95,12 +95,12 @@ public class SelectKey implements KeyGenerator {
                     parameterMappings);
             statementBuilder.parameterMap(inlineParameterMapBuilder.build());
 
-            List<ResultMap> resultMaps = new ArrayList<ResultMap>();
+            List<ResultMap> resultMaps = new ArrayList<>();
             ResultMap.Builder inlineResultMapBuilder = new ResultMap.Builder(
                     configuration,
                     statementBuilder.id() + "-Inline",
                     column.getJavaType(),
-                    new ArrayList<ResultMapping>(),
+                    new ArrayList<>(),
                     null);
             resultMaps.add(inlineResultMapBuilder.build());
             statementBuilder.resultMaps(resultMaps);

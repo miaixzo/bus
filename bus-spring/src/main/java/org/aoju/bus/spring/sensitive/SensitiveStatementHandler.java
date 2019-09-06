@@ -31,6 +31,7 @@ import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.JSON;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
+import org.aoju.bus.spring.crypto.CryptoProperties;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -39,6 +40,7 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -50,7 +52,7 @@ import java.util.Properties;
  * 数据加密脱敏
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -58,6 +60,9 @@ public class SensitiveStatementHandler implements Interceptor {
 
     private static final String MAPPEDSTATEMENT = "delegate.mappedStatement";
     private static final String BOUND_SQL = "delegate.boundSql";
+
+    @Autowired
+    CryptoProperties cryptoProperties;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {

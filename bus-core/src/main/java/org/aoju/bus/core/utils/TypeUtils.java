@@ -40,7 +40,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class TypeUtils {
@@ -300,7 +300,7 @@ public class TypeUtils {
      *
      * @param field {@link Field}
      * @return 原始类，如果无法获取原始类，返回{@code null}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Class<?> getClass(Field field) {
         return null == field ? null : field.getType();
@@ -312,7 +312,7 @@ public class TypeUtils {
      *
      * @param method 方法
      * @return {@link Type}，可能为{@code null}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Type getFirstParamType(Method method) {
         return getParamType(method, 0);
@@ -323,7 +323,7 @@ public class TypeUtils {
      *
      * @param method 方法
      * @return 第一个参数类型，可能为{@code null}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Class<?> getFirstParamClass(Method method) {
         return getParamClass(method, 0);
@@ -351,7 +351,7 @@ public class TypeUtils {
      * @param method 方法
      * @param index  第几个参数的索引，从0开始计数
      * @return 参数类，可能为{@code null}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Class<?> getParamClass(Method method, int index) {
         Class<?>[] classes = getParamClasses(method);
@@ -382,7 +382,7 @@ public class TypeUtils {
      * @return 参数类型类列表
      * @see Method#getGenericParameterTypes
      * @see Method#getParameterTypes
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Class<?>[] getParamClasses(Method method) {
         return null == method ? null : method.getParameterTypes();
@@ -408,7 +408,7 @@ public class TypeUtils {
      * @return 返回值类型的类
      * @see Method#getGenericReturnType
      * @see Method#getReturnType
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Class<?> getReturnClass(Method method) {
         return null == method ? null : method.getReturnType();

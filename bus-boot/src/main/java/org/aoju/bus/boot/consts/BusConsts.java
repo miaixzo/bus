@@ -28,7 +28,7 @@ package org.aoju.bus.boot.consts;
  * 全局常量配置
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class BusConsts {
@@ -53,6 +53,6 @@ public class BusConsts {
     /***
      * 应用属性
      */
-    public static final String BUS_BOOT_PROPERTIES = "BusConfigurationProperties";
+    public static final String BUS_BOOT_PROPERTIES = "EnvConfigurable";
 
 }

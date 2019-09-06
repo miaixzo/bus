@@ -28,15 +28,19 @@ import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
+/**
+ * 开启WebSocket
+ *
+ * @author Kimi Liu
+ * @version 3.2.0
+ * @since JDK 1.8
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
 @Import({SocketScannerRegistrar.class})
 public @interface EnableWebSocket {
 
-    /**
-     * 扫描路径
-     */
-    String[] basePackages() default {};
+    String[] basePackage() default {};
 
 }

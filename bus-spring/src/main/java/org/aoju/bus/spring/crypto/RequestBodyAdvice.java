@@ -46,24 +46,24 @@ import java.lang.reflect.Type;
  * 对加了@Decrypt的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class RequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
 
     @Autowired
-    private CryptoProperties cryptoProperties;
+    CryptoProperties cryptoProperties;
 
 
     /**
-     * Invoked first to determine if this intercept applies.
+     * 首次调用，以确定是否应用此拦截.
      *
-     * @param parameter     the method parameter
-     * @param type          the target type, not necessarily the same as the method
-     *                      parameter type, e.g. for {@code HttpEntity<String>}.
-     * @param converterType the selected converter type
-     * @return whether this intercept should be invoked or not
+     * @param parameter     方法参数
+     * @param type          目标类型，不一定与方法相同
+     *                      参数类型，例如 {@code HttpEntity<String>}.
+     * @param converterType 转换器类型
+     * @return true/false 是否应该调用此拦截
      */
     @Override
     public boolean supports(MethodParameter parameter,
@@ -81,14 +81,14 @@ public class RequestBodyAdvice extends BaseAdvice
     }
 
     /**
-     * Invoked second before the request body is read and converted.
+     * 在读取和转换请求体之前调用.
      *
-     * @param inputMessage  the request
-     * @param parameter     the target method parameter
-     * @param type          the target type, not necessarily the same as the method
-     *                      parameter type, e.g. for {@code HttpEntity<String>}.
-     * @param converterType the converter used to deserialize the body
-     * @return the input request or a new instance, never {@code null}
+     * @param inputMessage  HTTP输入消息
+     * @param parameter     方法参数
+     * @param type          目标类型，不一定与方法相同
+     *                      参数类型，例如 {@code HttpEntity<String>}.
+     * @param converterType 转换器类型
+     * @return 输入请求或新实例，永远不会 {@code null}
      */
     @Override
     public org.springframework.http.HttpInputMessage beforeBodyRead(org.springframework.http.HttpInputMessage inputMessage,
@@ -110,35 +110,34 @@ public class RequestBodyAdvice extends BaseAdvice
     }
 
     /**
-     * Invoked third (and last) after the request body is converted to an Object.
+     * 在请求体转换为对象之后调用第三个(也是最后一个).
      *
-     * @param body          set to the converter Object before the first advice is called
-     * @param inputMessage  the request
-     * @param parameter     the target method parameter
-     * @param targetType    the target type, not necessarily the same as the method
-     *                      parameter type, e.g. for {@code HttpEntity<String>}.
-     * @param converterType the converter used to deserialize the body
-     * @return the same body or a new instance
+     * @param body          在调用第一个通知之前将其设置为转换器对象
+     * @param inputMessage  HTTP输入消息
+     * @param parameter     方法参数
+     * @param type          目标类型，不一定与方法相同
+     *                      参数类型，例如 {@code HttpEntity<String>}.
+     * @param converterType 转换器类型
+     * @return 相同的主体或新实例
      */
     @Override
     public Object afterBodyRead(Object body, org.springframework.http.HttpInputMessage inputMessage,
                                 MethodParameter parameter,
-                                Type targetType,
+                                Type type,
                                 Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
     }
 
     /**
-     * Invoked second (and last) if the body is empty.
+     * 如果主体为空，则调用第二个(也是最后一个).
      *
-     * @param body          usually set to {@code null} before the first advice is called
-     * @param inputMessage  the request
-     * @param parameter     the method parameter
-     * @param type          the target type, not necessarily the same as the method
-     *                      parameter type, e.g. for {@code HttpEntity<String>}.
-     * @param converterType the selected converter type
-     * @return the value to use or {@code null} which may then raise an
-     * {@code HttpMessageNotReadableException} if the argument is required.
+     * @param body          通常在调用第一个通知之前将其设置为{@code null}
+     * @param inputMessage  HTTP输入消息
+     * @param parameter     方法参数
+     * @param type          目标类型，不一定与方法相同
+     *                      参数类型，例如 {@code HttpEntity<String>}.
+     * @param converterType 转换器类型
+     * @return 要使用的值或{@code null}，该值可能会引发{@code HttpMessageNotReadableException}.
      */
     @Override
     public Object handleEmptyBody(Object body, org.springframework.http.HttpInputMessage inputMessage,
@@ -158,13 +157,12 @@ public class RequestBodyAdvice extends BaseAdvice
                                 String mode,
                                 String charset) throws Exception {
             if (StringUtils.isEmpty(key)) {
-                throw new NullPointerException("请配置spring.decrypt.key参数");
+                throw new NullPointerException("请配置request.crypto.decrypt.key参数");
             }
 
-            //获取请求内容
             this.headers = inputMessage.getHeaders();
             String content = IoUtils.toString(inputMessage.getBody(), charset);
-            //未加密数据不进行解密操作
+
             String decryptBody;
             if (content.startsWith("{")) {
                 decryptBody = content;

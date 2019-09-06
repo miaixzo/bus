@@ -39,7 +39,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class RandomUtils {
@@ -49,7 +49,7 @@ public class RandomUtils {
      * ThreadLocalRandom是JDK 7之后提供并发产生随机数，能够解决多个线程发生的竞争争夺。
      *
      * @return {@link ThreadLocalRandom}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static ThreadLocalRandom getRandom() {
         return ThreadLocalRandom.current();
@@ -59,7 +59,7 @@ public class RandomUtils {
      * 获取{@link SecureRandom}，类提供加密的强随机数生成器 (RNG)
      *
      * @return {@link SecureRandom}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static SecureRandom getSecureRandom() {
         try {
@@ -368,7 +368,7 @@ public class RandomUtils {
      * 随机数字，数字为0~9单个数字
      *
      * @return 随机数字字符
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static int randomNumber() {
         return randomChar(Normal.NUMBER);
@@ -378,7 +378,7 @@ public class RandomUtils {
      * 随机字母或数字，小写
      *
      * @return 随机字符
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static char randomChar() {
         return randomChar(Normal.LETTER_NUMBER);
@@ -389,7 +389,7 @@ public class RandomUtils {
      *
      * @param baseString 随机字符选取的样本
      * @return 随机字符
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static char randomChar(String baseString) {
         return baseString.charAt(getRandom().nextInt(baseString.length()));

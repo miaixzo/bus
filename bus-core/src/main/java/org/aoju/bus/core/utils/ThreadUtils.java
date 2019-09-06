@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class ThreadUtils {
@@ -90,7 +90,7 @@ public class ThreadUtils {
      *
      * @param blockingCoefficient 阻塞系数，阻塞因子介于0~1之间的数，阻塞因子越大，线程池中的线程数越多。
      * @return {@link ThreadPoolExecutor}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static ThreadPoolExecutor newExecutorByBlockingCoefficient(float blockingCoefficient) {
         if (blockingCoefficient >= 1 || blockingCoefficient < 0) {
@@ -149,7 +149,7 @@ public class ThreadUtils {
      *
      * @param runnable 可运行对象
      * @return {@link Future}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Future<?> execAsync(Runnable runnable) {
         return GlobalThreadPool.submit(runnable);
@@ -194,7 +194,7 @@ public class ThreadUtils {
      * @param runnable {@link Runnable}
      * @param name     线程名
      * @return {@link Thread}
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Thread newThread(Runnable runnable, String name) {
         final Thread t = newThread(runnable, name, false);
@@ -398,7 +398,7 @@ public class ThreadUtils {
      * 获取当前线程的线程组
      *
      * @return 线程组
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static ThreadGroup currentThreadGroup() {
         final SecurityManager s = System.getSecurityManager();

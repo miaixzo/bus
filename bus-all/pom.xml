@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>3.1.2</version>
+    <version>3.2.0</version>
     <packaging>jar</packaging>
 
     <name>bus-all</name>
@@ -42,7 +42,6 @@
         <emoji-java.version>4.0.0</emoji-java.version>
         <servlet.version>4.0.1</servlet.version>
         <!--bus-limiter-->
-        <curator.recipes.version>4.2.0</curator.recipes.version>
         <redisson.version>3.11.2</redisson.version>
         <!--bus-logger-->
         <slf4j.version>1.7.26</slf4j.version>
@@ -360,26 +359,6 @@
                 <exclusion>
                     <groupId>io.netty</groupId>
                     <artifactId>netty-handler</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>${curator.recipes.version}</version>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

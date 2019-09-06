@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class UriUtils {
@@ -211,7 +211,7 @@ public class UriUtils {
      * @param url URL
      * @return 编码后的URL
      * @throws CommonException UnsupportedEncodingException
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String encode(String url) throws CommonException {
         return encode(url, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
@@ -297,7 +297,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return 是否为文件
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static boolean isFileURL(URL url) {
         String protocol = url.getProtocol();

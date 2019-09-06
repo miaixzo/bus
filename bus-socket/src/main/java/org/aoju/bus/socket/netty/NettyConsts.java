@@ -23,6 +23,11 @@
  */
 package org.aoju.bus.socket.netty;
 
+/**
+ * @author Kimi Liu
+ * @version 3.2.0
+ * @since JDK 1.8
+ */
 public class NettyConsts {
 
     public static final String EVENT = "e";

@@ -8,7 +8,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
@@ -18,7 +18,7 @@ public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
      * 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
      *
      * @param m Map 被包装的Map
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public CustomKeyMap(Map<K, V> m) {
         super(m);

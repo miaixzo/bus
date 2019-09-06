@@ -47,9 +47,11 @@ public interface Joinpoint {
 
     /**
      * Returns the static part of this joinpoint.
-     *
-     * <p>The static part is an accessible object on which a chain of
+     * <p>
+     * The static part is an accessible object on which a chain of
      * interceptors are installed.
+     *
+     * @return the object
      */
     AccessibleObject getStaticPart();
 

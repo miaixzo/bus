@@ -55,7 +55,7 @@ import java.util.zip.GZIPOutputStream;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class StringUtils extends TextUtils {
@@ -1339,7 +1339,7 @@ public class StringUtils extends TextUtils {
      * @param str       被切分的字符串
      * @param separator 分隔符字符
      * @return 切分后的集合
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static List<String> splitTrim(CharSequence str, char separator) {
         return splitTrim(str.toString(), separator, true);
@@ -1603,7 +1603,7 @@ public class StringUtils extends TextUtils {
      * @param str       被切分的字符串
      * @param separator 分隔符字符
      * @return 切分后的集合
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static List<String> split(String str, char separator) {
         return split(str, separator, -1);
@@ -1870,7 +1870,7 @@ public class StringUtils extends TextUtils {
      * @param str        字符串
      * @param searchChar 被查找的字符
      * @return 是否包含
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static boolean contains(CharSequence str, char searchChar) {
         return indexOf(str, searchChar) > -1;
@@ -2336,7 +2336,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str 被反转的字符串
      * @return 反转后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String reverse(String str) {
         char[] chars = str.toCharArray();
@@ -3610,7 +3610,7 @@ public class StringUtils extends TextUtils {
      * @param str             被包装的字符串
      * @param prefixAndSuffix 前缀和后缀
      * @return 包装后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String wrap(CharSequence str, CharSequence prefixAndSuffix) {
         return wrap(str, prefixAndSuffix, prefixAndSuffix);
@@ -3818,7 +3818,7 @@ public class StringUtils extends TextUtils {
      * @param str            被处理的字符串
      * @param prefixOrSuffix 前缀或后缀
      * @return 处理后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String strip(CharSequence str, CharSequence prefixOrSuffix) {
         return strip(str, prefixOrSuffix, prefixOrSuffix);
@@ -3831,7 +3831,7 @@ public class StringUtils extends TextUtils {
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 处理后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String strip(CharSequence str, CharSequence prefix, CharSequence suffix) {
         if (isEmpty(str)) {
@@ -3856,7 +3856,7 @@ public class StringUtils extends TextUtils {
      * @param str            被处理的字符串
      * @param prefixOrSuffix 前缀或后缀
      * @return 处理后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String stripIgnoreCase(CharSequence str, CharSequence prefixOrSuffix) {
         return stripIgnoreCase(str, prefixOrSuffix, prefixOrSuffix);
@@ -3869,7 +3869,7 @@ public class StringUtils extends TextUtils {
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 处理后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String stripIgnoreCase(CharSequence str, CharSequence prefix, CharSequence suffix) {
         if (isEmpty(str)) {
@@ -5004,7 +5004,7 @@ public class StringUtils extends TextUtils {
      * @param filledChar 填充的字符
      * @param len        填充长度
      * @return 填充后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String fillBefore(String str, char filledChar, int len) {
         return fill(str, filledChar, len, true);
@@ -5018,7 +5018,7 @@ public class StringUtils extends TextUtils {
      * @param filledChar 填充的字符
      * @param len        填充长度
      * @return 填充后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String fillAfter(String str, char filledChar, int len) {
         return fill(str, filledChar, len, false);
@@ -5032,7 +5032,7 @@ public class StringUtils extends TextUtils {
      * @param len        填充长度
      * @param isPre      是否填充在前
      * @return 填充后的字符串
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String fill(String str, char filledChar, int len, boolean isPre) {
         final int strLen = str.length();
@@ -5192,7 +5192,7 @@ public class StringUtils extends TextUtils {
      * @param str        字符串
      * @param partLength 每等份的长度
      * @return 切分后的数组
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static String[] cut(CharSequence str, int partLength) {
         if (null == str) {

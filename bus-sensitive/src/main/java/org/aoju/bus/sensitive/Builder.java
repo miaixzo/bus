@@ -31,7 +31,7 @@ import org.aoju.bus.core.instance.Instances;
  * 2.主要供单独的字符串处理使用
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public final class Builder {
@@ -118,7 +118,7 @@ public final class Builder {
          */
         BANK_CARD,
         /**
-         * 公司开户银行联号
+         * 企业银行联号
          */
         CNAPS_CODE,
         /**

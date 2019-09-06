@@ -10,7 +10,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {
@@ -45,7 +45,7 @@ public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {
      *
      * @param loadFactor 加载因子
      * @param m          Map
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public CaseInsensitiveMap(float loadFactor, Map<? extends K, ? extends V> m) {
         this(m.size(), loadFactor);

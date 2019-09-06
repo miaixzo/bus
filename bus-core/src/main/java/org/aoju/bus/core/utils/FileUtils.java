@@ -56,7 +56,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 3.1.2
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class FileUtils {
@@ -70,7 +70,7 @@ public class FileUtils {
      * 是否为Windows环境
      *
      * @return 是否为Windows环境
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static boolean isWindows() {
         return Symbol.C_BACKSLASH == File.separatorChar;
@@ -747,7 +747,7 @@ public class FileUtils {
      * @param directory 文件夹
      * @return 成功与否
      * @throws CommonException 异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static boolean clean(File directory) throws CommonException {
         if (directory == null || directory.exists() == false || false == directory.isDirectory()) {
@@ -1044,7 +1044,7 @@ public class FileUtils {
      * @param isRetainExt 是否保留原文件的扩展名，如果保留，则newName不需要加扩展名
      * @param isOverride  是否覆盖目标文件
      * @return 目标文件
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
@@ -1178,7 +1178,7 @@ public class FileUtils {
      * @param path          {@link Path}
      * @param isFollowLinks 是否追踪到软链对应的真实地址
      * @return 如果为目录true
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static boolean isDirectory(Path path, boolean isFollowLinks) {
         if (null == path) {
@@ -1350,7 +1350,7 @@ public class FileUtils {
      * @param file1 文件1
      * @param file2 文件2
      * @return 文件路径是否相同
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static boolean pathEquals(File file1, File file2) {
         if (isWindows()) {
@@ -1560,7 +1560,7 @@ public class FileUtils {
      * @param path  路径
      * @param index 路径节点位置，支持负数（负数从后向前计数）
      * @return 获取的子路径
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Path getPathEle(Path path, int index) {
         return subPath(path, index, index == -1 ? path.getNameCount() : index + 1);
@@ -1571,7 +1571,7 @@ public class FileUtils {
      *
      * @param path 路径
      * @return 获取的最后一个子路径
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Path getLastPathEle(Path path) {
         return getPathEle(path, path.getNameCount() - 1);
@@ -1584,7 +1584,7 @@ public class FileUtils {
      * @param fromIndex 起始路径节点（包括）
      * @param toIndex   结束路径节点（不包括）
      * @return 获取的子路径
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static Path subPath(Path path, int fromIndex, int toIndex) {
         if (null == path) {
@@ -1786,7 +1786,7 @@ public class FileUtils {
      * @param isFollowLinks 是否跟踪到软链对应的真实路径
      * @return {@link BasicFileAttributes}
      * @throws CommonException 异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static BasicFileAttributes getAttributes(Path path, boolean isFollowLinks) throws CommonException {
         if (null == path) {
@@ -2679,7 +2679,7 @@ public class FileUtils {
      * @param path    文件路径
      * @return 写入的文件
      * @throws CommonException 异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static File appendUtf8String(String content, String path) throws CommonException {
         return appendString(content, path, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2718,7 +2718,7 @@ public class FileUtils {
      * @param file    文件
      * @return 写入的文件
      * @throws CommonException 异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static File appendUtf8String(String content, File file) throws CommonException {
         return appendString(content, file, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2844,7 +2844,7 @@ public class FileUtils {
      * @param file 文件
      * @return 目标文件
      * @throws CommonException 异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static <T> File appendUtf8Lines(Collection<T> list, File file) throws CommonException {
         return appendLines(list, file, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2858,7 +2858,7 @@ public class FileUtils {
      * @param path 文件路径
      * @return 目标文件
      * @throws CommonException 异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static <T> File appendUtf8Lines(Collection<T> list, String path) throws CommonException {
         return appendLines(list, path, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2887,7 +2887,7 @@ public class FileUtils {
      * @param charset 字符集
      * @return 目标文件
      * @throws CommonException 异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static <T> File appendLines(Collection<T> list, File file, String charset) throws CommonException {
         return writeLines(list, file, charset, true);
@@ -2916,7 +2916,7 @@ public class FileUtils {
      * @param charset 字符集
      * @return 目标文件
      * @throws CommonException 异常
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static <T> File appendLines(Collection<T> list, File file, Charset charset) throws CommonException {
         return writeLines(list, file, charset, true);
@@ -3133,7 +3133,7 @@ public class FileUtils {
      * @param srcCharset  原文件的编码，必须与文件内容的编码保持一致
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static File convertCharset(File file, Charset srcCharset, Charset destCharset) {
         return CharsetUtils.convert(file, srcCharset, destCharset);
@@ -3147,7 +3147,7 @@ public class FileUtils {
      * @param charset       编码
      * @param lineSeparator 换行符枚举
      * @return 被修改的文件
-     * @since 3.1.2
+     * @since 3.1.9
      */
     public static File convertLineSeparator(File file, Charset charset, LineSeparator lineSeparator) {
         final List<String> lines = readLines(file, charset);
