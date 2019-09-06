@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.tracer.binding.jms;
 
 import javax.jms.MessageProducer;
@@ -29,7 +29,7 @@ import javax.jms.TopicPublisher;
 
 /**
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public final class TraceMessageWriter {

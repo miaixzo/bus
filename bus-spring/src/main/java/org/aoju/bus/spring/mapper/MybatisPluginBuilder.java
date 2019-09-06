@@ -34,13 +34,14 @@ import java.util.Properties;
  * mybatis 插件启用
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class MybatisPluginBuilder {
 
+    protected static Interceptor[] plugins = {};
+
     public static Interceptor[] build(MybatisProperties properties) {
-        Interceptor[] plugins = {};
         if (ObjectUtils.isNotEmpty(properties)) {
             PageInterceptor interceptor = new PageInterceptor();
             Properties p = new Properties();
@@ -50,6 +51,7 @@ public class MybatisPluginBuilder {
             p.setProperty("returnPageInfo", properties.getReturnPageInfo());
             p.setProperty("params", properties.getParams());
             interceptor.setProperties(p);
+
             plugins = new Interceptor[]{
                     interceptor,
                     new SQLPerformanceHandler(),

@@ -37,7 +37,7 @@ import java.util.Set;
  * 签名包装，{@link Signature} 包装类
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class Sign extends BaseAsymmetric<Sign> {

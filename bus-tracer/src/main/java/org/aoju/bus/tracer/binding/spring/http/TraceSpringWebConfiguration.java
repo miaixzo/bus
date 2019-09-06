@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.tracer.binding.spring.http;
 
 
@@ -31,16 +31,14 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
-@Configuration
 public class TraceSpringWebConfiguration {
 
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)

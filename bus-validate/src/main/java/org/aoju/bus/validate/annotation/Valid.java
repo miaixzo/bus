@@ -26,14 +26,14 @@ package org.aoju.bus.validate.annotation;
 import java.lang.annotation.*;
 
 /**
- * 标记注解，标明要被拦截的类或方法
+ * 标记注解，标明要被拦截的类或方法或者参数
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 @Documented
-@Target({ElementType.TYPE, ElementType.PARAMETER})
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Valid {
 

@@ -38,7 +38,7 @@ import java.util.NoSuchElementException;
  * IP address, and TLS mode. Connections may also be recycled.
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public final class RouteSelector {
@@ -206,6 +206,7 @@ public final class RouteSelector {
             }
             return routes.get(nextRouteIndex++);
         }
+
         public List<Route> getAll() {
             return new ArrayList<>(routes);
         }

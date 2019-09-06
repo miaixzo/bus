@@ -20,12 +20,11 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.tracer.binding.spring.boot;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.binding.spring.context.config.TraceContextConfiguration;
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -33,15 +32,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 
 /**
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
-@Configuration
 @ConditionalOnClass(Builder.class)
 @EnableConfigurationProperties(TraceProperties.class)
 public class TraceContextAutoConfiguration {
@@ -49,12 +46,10 @@ public class TraceContextAutoConfiguration {
     @Autowired
     TraceProperties TraceProperties;
 
-    @Configuration
     @ConditionalOnMissingBean(Backend.class)
-    public static class TraceBackendAutoConfiguration extends TraceContextConfiguration {
+    public static class TraceBackendAutoConfiguration {
     }
 
-    @Configuration
     @ConditionalOnMissingBean(TraceFilterConfiguration.class)
     public static class TracePropertiesAutoConfiguration {
 

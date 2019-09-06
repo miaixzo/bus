@@ -30,7 +30,7 @@ import org.aoju.bus.mapper.common.ids.SelectByIdsMapper;
  * 通用Mapper接口,根据ids操作
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public interface IdsMapper<T> extends SelectByIdsMapper<T>, DeleteByIdsMapper<T> {

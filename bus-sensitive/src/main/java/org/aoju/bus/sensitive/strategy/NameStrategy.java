@@ -38,7 +38,7 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 2. 三个及其以上 只保留第一个和最后一个 其他用星号代替
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class NameStrategy implements StrategyProvider {

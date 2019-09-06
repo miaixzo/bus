@@ -29,7 +29,7 @@ import org.aoju.bus.pager.dialect.ReplaceSql;
  * 简单处理 with(nolock)
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class SimpleWithNolockReplaceSql implements ReplaceSql {

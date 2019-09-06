@@ -29,7 +29,7 @@ import org.aoju.bus.core.consts.System;
  * 代表Java Virutal Machine Specification的信息。
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class JvmSpecInfo {

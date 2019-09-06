@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 代表当前运行的JRE的信息。
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class JavaRuntimeInfo {

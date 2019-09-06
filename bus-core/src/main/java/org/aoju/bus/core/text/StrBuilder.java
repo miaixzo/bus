@@ -37,48 +37,11 @@ import java.util.Objects;
 
 
 /**
- * Builds a string from constituent parts providing a more flexible and powerful API
- * than StringBuffer.
- * <p>
- * The main differences from StringBuffer/StringBuilder are:
- * </p>
- * <ul>
- * <li>Not synchronized</li>
- * <li>Not final</li>
- * <li>Subclasses have direct access to character array</li>
- * <li>Additional methods
- * <ul>
- * <li>appendWithSeparators - adds an array of values, with a separator</li>
- * <li>appendPadding - adds a length padding characters</li>
- * <li>appendFixedLength - adds a fixed width field to the builder</li>
- * <li>toCharArray/getChars - simpler ways to get a range of the character array</li>
- * <li>delete - delete char or string</li>
- * <li>replace - search and replace for a char or string</li>
- * <li>leftString/rightString/midString - substring without exceptions</li>
- * <li>contains - whether the builder contains a char or string</li>
- * <li>size/clear/isEmpty - collections style API methods</li>
- * </ul>
- * </li>
- * <li>Views
- * <ul>
- * <li>asTokenizer - uses the internal buffer as the source of a StrTokenizer</li>
- * <li>asReader - uses the internal buffer as the source of a Reader</li>
- * <li>asWriter - allows a Writer to write directly to the internal buffer</li>
- * </ul>
- * </li>
- * </ul>
- * <p>
- * The aim has been to provide an API that mimics very closely what StringBuffer
- * provides, but with additional methods. It should be noted that some edge cases,
- * with invalid indices or null input, have been altered - see individual methods.
- * The biggest of these changes is that by default, null will not output the text
- * 'null'. This can be controlled by a property, {@link #setNullText(String)}.
- * <p>
- * Prior to 3.0, this class implemented Cloneable but did not implement the
- * clone method so could not be used. From 3.0 onwards it no longer implements
- * the interface.
+ * 提供比StringBuffer更灵活和更强大的API.
  *
- * @since 2.2
+ * @author Kimi Liu
+ * @version 3.2.0
+ * @since JDK 1.8
  */
 public class StrBuilder implements CharSequence, Appendable, Serializable, Builder<String> {
 

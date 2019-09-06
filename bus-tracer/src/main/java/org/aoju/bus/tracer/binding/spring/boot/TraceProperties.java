@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.tracer.binding.spring.boot;
 
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 @ConfigurationProperties(prefix = "tracer")

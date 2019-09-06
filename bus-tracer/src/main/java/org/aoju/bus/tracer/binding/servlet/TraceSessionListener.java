@@ -35,8 +35,9 @@ import javax.servlet.http.HttpSessionListener;
  * Warning: This boot assumes that the HttpSessionListener is executed on the same thread as the request handling.
  * This might not work for every servlet container.
  * It should at least work for the following containers:
+ *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 @WebListener("TraceSessionListener to create sessionIds on session creation and remove it instead from the Builder backend on session termination.")

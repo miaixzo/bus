@@ -37,8 +37,9 @@ import java.util.regex.PatternSyntaxException;
 /**
  * A TraceFilterConfiguration that is based on a {@link PropertyChain}.
  * The default property chain may be obtained by the {@link #loadPropertyChain()} method.
+ *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public final class PropertiesBasedTraceFilterConfiguration implements TraceFilterConfiguration {

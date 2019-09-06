@@ -57,7 +57,7 @@ import java.util.List;
  * Any IO - writing to files or network should be done asynchronously.
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public abstract class EventListener {

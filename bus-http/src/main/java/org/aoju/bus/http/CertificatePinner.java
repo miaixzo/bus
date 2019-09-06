@@ -125,7 +125,7 @@ import java.util.*;
  * is not accepted by {@link javax.net.ssl.TrustManager}.
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public final class CertificatePinner {
@@ -144,7 +144,7 @@ public final class CertificatePinner {
     /**
      * Returns the SHA-256 of {@code certificate}'s public key.
      *
-     * <p>In HttpClient 3.1.9 and earlier, this returned a SHA-1 hash of the public key. Both types are
+     * <p>In HttpClient, this returned a SHA-1 hash of the public key. Both types are
      * supported, but SHA-256 is preferred.
      *
      * @param certificate Certificate

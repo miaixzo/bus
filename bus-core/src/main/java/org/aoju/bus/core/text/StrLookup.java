@@ -27,20 +27,10 @@ package org.aoju.bus.core.text;
 import java.util.Map;
 
 /**
- * Lookup a String key to a String value.
- * <p>
- * This class represents the simplest form of a string to string map.
- * It has a benefit over a map in that it can create the result on
- * demand based on the key.
- * <p>
- * This class comes complete with various factory methods.
- * If these do not suffice, you can subclass and implement your own matcher.
- * <p>
- * For example, it would be possible to implement a lookup that used the
- * key as a primary key, and looked up the value on demand from the database
+ * 查找字符串值的字符串键.
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public abstract class StrLookup<V> {

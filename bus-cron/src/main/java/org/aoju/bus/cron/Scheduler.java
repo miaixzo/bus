@@ -70,7 +70,7 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class Scheduler {
@@ -431,7 +431,7 @@ public class Scheduler {
      * 停止定时任务
      * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
      *
-     *  @param clearTasks 标记
+     * @param clearTasks 标记
      * @return this
      * @since 4.1.17
      */

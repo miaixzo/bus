@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.tracer.binding.spring.web.config;
 
 import org.aoju.bus.tracer.Backend;
@@ -28,33 +28,29 @@ import org.aoju.bus.tracer.binding.spring.web.TraceInterceptor;
 import org.aoju.bus.tracer.binding.spring.web.TraceResponseBodyAdvice;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.annotation.Resource;
 
 /**
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-@Configuration
 public class TraceSpringMvcConfiguration {
 
-    public static final String Trace_WEBMVCCONFIGURERADAPTER_INTERNAL = "org.aoju.bus.tracer.WebMvcConfigurerAdapter_internal";
+    @Resource
+    Backend backend;
 
     @Bean
-    TraceInterceptor TraceInterceptor(Backend backend) {
-        return new TraceInterceptor(backend);
-    }
-
-    @Bean(name = Trace_WEBMVCCONFIGURERADAPTER_INTERNAL)
-    WebMvcConfigurerAdapter traceSpringMvcWebMvcConfigurerAdapter(final TraceInterceptor TraceInterceptor) {
-        return new WebMvcConfigurerAdapter() {
+    WebMvcConfigurer traceSpringMvcWebMvcConfigurerAdapter() {
+        return new WebMvcConfigurer() {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
-                registry.addInterceptor(TraceInterceptor);
+                registry.addInterceptor(new TraceInterceptor(backend));
             }
         };
     }

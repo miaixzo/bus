@@ -35,7 +35,7 @@ import java.util.Set;
  * 拼常用SQL的工具类
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class SqlSourceBuilder {
@@ -662,6 +662,7 @@ public class SqlSourceBuilder {
 
     /**
      * 支持 for update
+     *
      * @param entityClass 对象
      * @return the string
      */

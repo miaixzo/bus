@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.tracer;
 
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
@@ -29,8 +29,9 @@ import java.util.Map;
 
 /**
  * 后端应该是线程安全的(读写被委托给线程本地状态).
+ *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public interface Backend {

@@ -31,7 +31,7 @@ import java.io.Serializable;
  * CSV写出配置项
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class CsvWriteConfig extends CsvConfig implements Serializable {

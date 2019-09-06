@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang.caller;
  * 方式获取调用者
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class SecurityManagerCaller extends SecurityManager implements Caller {

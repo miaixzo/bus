@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * of which connections to keep open for future use.
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public final class ConnectionPool {

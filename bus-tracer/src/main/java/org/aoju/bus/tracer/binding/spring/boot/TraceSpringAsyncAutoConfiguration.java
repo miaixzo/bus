@@ -20,28 +20,23 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.tracer.binding.spring.boot;
 
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.binding.spring.context.async.config.TraceAsyncConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.task.AsyncTaskExecutor;
 
 /**
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
-@Configuration
 @ConditionalOnClass(Builder.class)
 @ConditionalOnBean(AsyncTaskExecutor.class)
 @AutoConfigureBefore(TraceContextAutoConfiguration.class)
-@Import(TraceAsyncConfiguration.class)
 public class TraceSpringAsyncAutoConfiguration {
 
 }

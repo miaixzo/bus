@@ -27,7 +27,7 @@ package org.aoju.bus.core.loader;
  * 正则表达式资源加载器
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class RegexLoader extends PatternLoader implements Loader {

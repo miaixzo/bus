@@ -32,7 +32,7 @@ import java.util.Iterator;
  * to be {@link Iterator Iterator} instances.
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public class EnumerationIterator<E> implements Iterator<E> {

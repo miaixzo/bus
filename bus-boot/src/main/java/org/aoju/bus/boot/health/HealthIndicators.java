@@ -27,19 +27,21 @@ package org.aoju.bus.boot.health;
  * 检查运行时是否健康.
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 public interface HealthIndicators {
 
     /**
      * 检查运行时是否准备就绪
+     *
      * @return true/false
      */
     boolean isReadinessHealth();
 
     /**
      * 检查运行时是否为活动健康状态
+     *
      * @return true/false
      */
     boolean isLivenessHealth();

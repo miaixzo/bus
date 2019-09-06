@@ -26,6 +26,7 @@ package org.aoju.bus.spring.sensitive;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.Privacy;
@@ -50,7 +51,7 @@ import java.util.Properties;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 3.1.9
+ * @version 3.2.0
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
@@ -108,7 +109,7 @@ public class SensitiveResultSetHandler implements Interceptor {
                     String resultValue = Builder.on(sensitiveType);
                     objMetaObject.setValue(property, resultValue);
                 } catch (Exception e) {
-                    //ignore it;
+                    Logger.error(e);
                 }
             }
         }
