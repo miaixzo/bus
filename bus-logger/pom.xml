@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-logger</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.5</version>
     <packaging>jar</packaging>
 
     <name>bus-logger</name>
@@ -36,6 +36,7 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
@@ -47,6 +48,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -95,7 +97,7 @@
 
     <developers>
         <developer>
-            <name>aoju.org</name>
+            <name>Kimi Liu</name>
             <url>https://github.com/aoju/bus.git</url>
         </developer>
     </developers>

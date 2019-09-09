@@ -57,7 +57,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
 <dependency>
     <groupId>org.aoju.bus</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>${bus.version}</version>
+    <version>3.2.5</version>
 </dependency>
 ```
 - XML注册
@@ -85,7 +85,6 @@ org.aoju.bus.cache.support.cache.Cache实现 -->
     <constructor-arg name="jedisPool" ref="jedisPool"/>
 </bean>
 ```
-
 ---
 
 ### 使用
@@ -93,11 +92,8 @@ org.aoju.bus.cache.support.cache.Cache实现 -->
 - 在要添加缓存的方法上标`@Cached`
 - 在要组装为key的方法参数上标`@CacheKey`
 
-![](https://img.alicdn.com/tfs/TB1QQd4n26TBKNjSZJiXXbKVFXa-626-144.png)
-
 ---
 #### 2. 缓存失效(`@Invalid` & `@CacheKey`)
-![](https://img.alicdn.com/tfs/TB1FyI2n5AnBKNjSZFvXXaTKXXa-631-111.png)
 
 ---
 ## II. 注解详解
@@ -251,8 +247,6 @@ public @interface CachedGet {
 ---
 ### Ext. 批量模式
 
-![](https://img.alicdn.com/tfs/TB16uFgu8jTBKNjSZFNXXasFXXa-1042-133.png)
-
 在该模式下: `#i`指定了ids作为批量参数: 假设ids={1,2,3}, CacheX会结合前面的prefix组装出 {`[USER]:1`、`[USER]:2`、`[USER]:3`} 这3个key去批量的查询缓存, 假设只有{1,2}能够命中, 则CacheX会只保留{3}去调用`getUsers()`方法, 将返回值写入缓存后, 将两部分内容进行merge返回.
 
 1. 注意1: 如果方法的返回值为`Collection`实例: 则`@CacheKey`必须指定`field`参数, 该参数会指定`Collection`元素(如`User`)内的某个属性(如`id`)与批量参数的元素(如`ids`内的元素项)是一一对应的, 这样CacheX就可以根据该属性提取出参数值, 拼装key然后写入缓存.
@@ -262,9 +256,7 @@ public @interface CachedGet {
 ---
 ### Ext. SpEL执行环境
 对于`@CacheKey`内的`value`属性(SpEL), CacheX在将方法的参数组装为key时, 会将整个方法的参数导入到SpEL的执行环境内,
-所以在任一参数的`@CacheKey`的`value`属性内都可以自由的引用这些变量, 如:
-![](https://img.alicdn.com/tfs/TB1Mza0pcj_B1NjSZFHXXaDWpXa-1039-529.png)
-尽管在`arg0`我们可以引用整个方法的任意参数, 但为了可读性, 我们仍然建议对某个参数的引用放在该参数自己的`@CacheKey`内
-![](https://img.alicdn.com/tfs/TB1U23qn7omBKNjSZFqXXXtqVXa-1206-440.png)
+所以在任一参数的`@CacheKey`的`value`属性内都可以自由的引用这些变量, 
+尽管在`arg0`我们可以引用整个方法的任意参数, 但为了可读性, 我们仍然建议对某个参数的引用放在该参数自己的`@CacheKey`
 
 > 注意: 在Java8环境中, 如果编译时没有指定`-parameters`参数, 则参数名默认为`arg0`、`arg1`、...、`argN`, 如果指定了该参数, 则在`spel`中使用实际的参数名即可, 如:`#source.name()`; 为了兼容这两种方式, CacheX提供了自己的命名方式`args0`、`args1`、...、`argsN`, 使用户可以不用区分是否开启编译参数.

@@ -28,7 +28,7 @@ package org.aoju.bus;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 public class Version {
@@ -50,7 +50,7 @@ public class Version {
      * @return 项目的版本号
      */
 
-    public static String version() {
+    public static String get() {
         return major() + "." + minor() + "." + stage() + "." + level();
     }
 
@@ -69,7 +69,7 @@ public class Version {
      * @return 次要号
      */
     public static String minor() {
-        return "1";
+        return "2";
     }
 
     /**
@@ -78,7 +78,7 @@ public class Version {
      * @return 阶段号
      */
     public static String stage() {
-        return "0";
+        return "2";
     }
 
     /**

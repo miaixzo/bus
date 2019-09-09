@@ -29,7 +29,7 @@ import java.lang.annotation.*;
  * 隐私数据加解密
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 @Target({ElementType.FIELD})

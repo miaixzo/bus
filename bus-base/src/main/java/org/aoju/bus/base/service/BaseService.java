@@ -33,63 +33,213 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 public interface BaseService<T> extends Service {
 
-    /*  添加数据*/
+    /**
+     * 通用:添加数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     String insert(T entity);
 
+    /**
+     * 通用:选择添加数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     String insertSelective(T entity);
 
+    /**
+     * 通用:批量添加数据
+     *
+     * @param list 对象参数
+     * @return 操作结果
+     */
     Object insertBatch(List<T> list);
 
+    /**
+     * 通用:批量选择添加数据
+     *
+     * @param list 对象参数
+     * @return 操作结果
+     */
     Object insertBatchSelective(List<T> list);
 
-    /*  删除数据*/
+    /**
+     * 通用:删除数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     void delete(T entity);
 
+    /**
+     * 通用:删除数据
+     *
+     * @param id 对象主键
+     * @return 操作结果
+     */
     void deleteById(Object id);
 
+    /**
+     * 通用:删除数据
+     *
+     * @param id 多个对象主键
+     * @return 操作结果
+     */
     int deleteByIds(String id);
 
-    int deleteByWhere(Object object);
+    /**
+     * 通用:删除数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
+    int deleteByWhere(Object entity);
 
-
-    /*  更新数据*/
+    /**
+     * 通用:更新数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     void updateById(T entity);
 
+    /**
+     * 通用:更新数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     int updateSelectiveById(T entity);
 
+    /**
+     * 通用:更新数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     T updateByIdCas(T entity, String locking);
 
+    /**
+     * 通用:更新添加数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     T updateSelectiveByIdOrInsert(T entity);
 
+    /**
+     * 通用:多条件更新数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     int updateByWhere(T entity, Object object);
 
+    /**
+     * 通用:选择更新数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     int updateByWhereSelective(T entity, Object object);
 
+    /**
+     * 通用:更新状态
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     int updateStatus(T entity);
 
-    /*  查询数据*/
+    /**
+     * 通用:查询数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     T selectOne(T entity);
 
-    T selectById(Object id);
+    /**
+     * 通用:查询数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
+    T selectById(Object entity);
 
-    int selectCountByWhere(Object object);
+    /**
+     * 通用:查询统计数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
+    int selectCountByWhere(Object entity);
 
+    /**
+     * 通用:查询统计数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     Long selectCount(T entity);
 
+    /**
+     * 通用:查询统计数据
+     *
+     * @param id 对象参数
+     * @return 操作结果
+     */
     List<T> selectListByIds(String id);
 
+    /**
+     * 通用:查询统计数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     List<T> selectList(T entity);
 
+    /**
+     * 通用:查询所有数据
+     *
+     * @return 操作结果
+     */
     List<T> selectListAll();
 
-    List<T> selectByWhere(Object object);
+    /**
+     * 通用:多条件查询
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
+    List<T> selectByWhere(Object entity);
 
-    Result<T> page(int pageNum, int pageSize, T entity, String... params);
+    /**
+     * 通用:多条件分页查询
+     *
+     * @param pageNo   当前页码
+     * @param pageSize 分页大小
+     * @param entity   对象参数
+     * @param orderBy  数据排序
+     * @return 操作结果
+     */
+    Result<T> page(int pageNo, int pageSize, T entity, String... orderBy);
 
-    Result<T> page(String pageNum, String pageSize, T entity, String... params);
+    /**
+     * 通用:多条件分页查询
+     *
+     * @param pageNo   当前页码
+     * @param pageSize 分页大小
+     * @param entity   对象参数
+     * @param orderBy  数据排序
+     * @return 操作结果
+     */
+    Result<T> page(String pageNo, String pageSize, T entity, String... orderBy);
 }

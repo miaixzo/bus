@@ -28,6 +28,7 @@ import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -40,9 +41,10 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
+@Component
 public final class TraceInterceptor implements HandlerInterceptor {
 
     private final Backend backend;

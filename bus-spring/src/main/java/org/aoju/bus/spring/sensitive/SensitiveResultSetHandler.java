@@ -25,6 +25,7 @@ package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
@@ -51,7 +52,7 @@ import java.util.Properties;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
@@ -93,7 +94,7 @@ public class SensitiveResultSetHandler implements Interceptor {
             for (Map.Entry<String, Privacy> entry : sensitiveFieldMap.entrySet()) {
                 String property = entry.getKey();
                 String value = (String) objMetaObject.getValue(property);
-                if (value != null) {
+                if (StringUtils.isNotEmpty(value)) {
                     String decryptValue = new String(CryptoUtils.decrypt(cryptoProperties.getDecrypt().getType(),
                             cryptoProperties.getDecrypt().getKey(), Base64.decode(value)), Charset.DEFAULT_UTF_8);
                     objMetaObject.setValue(property, decryptValue);
@@ -103,14 +104,11 @@ public class SensitiveResultSetHandler implements Interceptor {
                 String property = entry.getKey();
                 org.aoju.bus.sensitive.annotation.Field sensitiveBind = entry.getValue();
                 String bindPropety = sensitiveBind.field();
-                Builder.Type sensitiveType = sensitiveBind.type();
-                try {
+
                     String value = (String) objMetaObject.getValue(bindPropety);
-                    String resultValue = Builder.on(sensitiveType);
+                    String resultValue = Builder.on(value);
                     objMetaObject.setValue(property, resultValue);
-                } catch (Exception e) {
-                    Logger.error(e);
-                }
+
             }
         }
         return results;

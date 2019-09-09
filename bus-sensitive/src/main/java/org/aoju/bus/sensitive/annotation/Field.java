@@ -38,7 +38,7 @@ import java.lang.annotation.*;
  * 脱敏后，插件在写请求后对数据脱敏后存在数据库，对读请求不拦截
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 @Documented
@@ -117,19 +117,5 @@ public @interface Field {
      * @return the object
      */
     Class<? extends StrategyProvider> strategy() default DafaultStrategy.class;
-
-    /**
-     * 是否加密
-     *
-     * @return the boolean
-     */
-    boolean encrypt() default false;
-
-    /**
-     * 是否解密
-     *
-     * @return the boolean
-     */
-    boolean decrypt() default false;
 
 }

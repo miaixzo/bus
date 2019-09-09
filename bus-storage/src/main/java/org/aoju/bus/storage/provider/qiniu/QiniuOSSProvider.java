@@ -24,10 +24,10 @@
 package org.aoju.bus.storage.provider.qiniu;
 
 import com.qiniu.common.QiniuException;
-import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
+import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
@@ -45,7 +45,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 public class QiniuOSSProvider extends AbstractProvider {
@@ -80,8 +80,8 @@ public class QiniuOSSProvider extends AbstractProvider {
         this.bucket = bucket;
         this.auth = Auth.create(accessKey, secretKey);
 
-        Zone z = Zone.autoZone();
-        Configuration c = new Configuration(z);
+        Region region = Region.autoRegion();
+        Configuration c = new Configuration(region);
         uploadManager = new UploadManager(c);
         bucketManager = new BucketManager(auth, c);
 

@@ -39,7 +39,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 public class JavassistFactory extends AbstractSubclassingFactory {
@@ -111,7 +111,7 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                     method.setBody(body);
                     proxyClass.addMethod(method);
                 }
-                return proxyClass.toClass(classLoader);
+                return proxyClass.toClass(classLoader,null);
             } catch (CannotCompileException e) {
                 throw new InstrumentException("Could not compile class.", e);
             }
@@ -148,7 +148,7 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                     proxyClass.addMethod(method);
 
                 }
-                return proxyClass.toClass(classLoader);
+                return proxyClass.toClass(classLoader,null);
             } catch (CannotCompileException e) {
                 throw new InstrumentException("Could not compile class.", e);
             }
@@ -180,7 +180,7 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                     proxyClass.addMethod(ctMethod);
 
                 }
-                return proxyClass.toClass(classLoader);
+                return proxyClass.toClass(classLoader,null);
             } catch (CannotCompileException e) {
                 throw new InstrumentException("Could not compile class.", e);
             }

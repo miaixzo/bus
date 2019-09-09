@@ -36,7 +36,7 @@ import java.util.Map;
  * <p>Description: </p>
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 public abstract class PropertySourceUtils {

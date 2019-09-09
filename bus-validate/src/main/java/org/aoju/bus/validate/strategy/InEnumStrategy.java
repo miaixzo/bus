@@ -38,7 +38,7 @@ import java.util.Objects;
  * int enum 校验
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 public class InEnumStrategy implements Complex<Object, InEnum> {
@@ -50,7 +50,7 @@ public class InEnumStrategy implements Complex<Object, InEnum> {
         }
         Class<? extends Enum> enumClass = annotation.enumClass();
         try {
-            Method method = enumClass.getMethod(annotation.method(), null);
+            Method method = enumClass.getMethod(annotation.method());
             Enum[] enums = enumClass.getEnumConstants();
             for (Enum e : enums) {
                 Object value = ReflectUtils.invokeMethod(method, e);

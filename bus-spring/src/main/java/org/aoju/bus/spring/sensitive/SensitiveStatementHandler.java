@@ -25,6 +25,7 @@ package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.ModeType;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
@@ -52,7 +53,7 @@ import java.util.Properties;
  * 数据加密脱敏
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -77,7 +78,7 @@ public class SensitiveStatementHandler implements Interceptor {
             return invocation.proceed();
         }
         Sensitive enableSensitive = params != null ? params.getClass().getAnnotation(Sensitive.class) : null;
-        if (enableSensitive != null) {
+        if (ObjectUtils.isNotEmpty(enableSensitive)) {
             handleParameters(mappedStatement.getConfiguration(), boundSql, params, commandType);
         }
         return invocation.proceed();
@@ -111,9 +112,9 @@ public class SensitiveStatementHandler implements Interceptor {
     }
 
     private Object handlePrivacy(Field field, Object value) {
-        Privacy Privacy = field.getAnnotation(Privacy.class);
+        Privacy privacy = field.getAnnotation(Privacy.class);
         Object newValue = value;
-        if (Privacy != null && value != null) {
+        if (ObjectUtils.isNotEmpty(privacy) && value != null) {
             newValue = Base64.encode(CryptoUtils.encrypt(ModeType.SHA1withRSA, null, value.toString().getBytes()));
         }
         return newValue;

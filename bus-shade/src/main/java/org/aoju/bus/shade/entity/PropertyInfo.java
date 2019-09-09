@@ -21,18 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju;
+package org.aoju.bus.shade.entity;
 
-import org.aoju.bus.Version;
+import lombok.Data;
+
+import java.io.Serializable;
 
 /**
- * 用于识别当前版本号和版权声明!
- * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
+ * 获取到数据库的信息
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
-public final class Bus extends Version {
+@Data
+public class PropertyInfo implements Serializable {
+
+    private String column;
+
+    private String jdbcType;
+
+    private String comment;
+
+    private String property;
+
+    private String javaType;
 
 }

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.5</version>
     <packaging>jar</packaging>
 
     <name>bus-storage</name>
@@ -36,6 +36,7 @@
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>${aliyun.oss.version}</version>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
@@ -60,7 +61,7 @@
 
     <developers>
         <developer>
-            <name>aoju.org</name>
+            <name>Kimi Liu</name>
             <url>https://github.com/aoju/bus.git</url>
         </developer>
     </developers>

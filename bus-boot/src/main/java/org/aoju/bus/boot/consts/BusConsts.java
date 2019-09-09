@@ -28,31 +28,49 @@ package org.aoju.bus.boot.consts;
  * 全局常量配置
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.5
  * @since JDK 1.8
  */
 public class BusConsts {
 
     /***
-     * 应用名: 备注 @Value("${spring.application.name:@null}")
+     * 应用图标
+     */
+    public static final String[] BUS_BANNER = {
+            "",
+            " $$$$$$\\   $$$$$$\\  $$\\ $$\\   $$\\     $$$$$$\\   $$$$$$\\   $$$$$$\\",
+            " \\____$$\\ $$  __$$\\ \\__|$$ |  $$ |   $$  __$$\\ $$  __$$\\ $$  __$$\\",
+            " $$$$$$$ |$$ /  $$ |$$\\ $$ |  $$ |   $$ /  $$ |$$ |  \\__|$$ /  $$ |",
+            "$$  __$$ |$$ |  $$ |$$ |$$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |",
+            "\\$$$$$$$ |\\$$$$$$  |$$ |\\$$$$$$  |$$\\\\$$$$$$  |$$ |      \\$$$$$$$ |",
+            " \\_______| \\______/ $$ | \\______/ \\__|\\______/ \\__|       \\____$$ |",
+            "              $$\\   $$ |                                 $$\\   $$ |",
+            "              \\$$$$$$  |                                 \\$$$$$$  |",
+            "               \\______/                                   \\______/"
+    };
+    /***
+     * 应用名称
+     */
+    public static final String BUS_NAME = "spring.application.name";
+    /***
+     * 应用版本
      */
     public static final String BUS_VERSION = "version";
-
     /***
-     * 应用名: 备注 @Value("${spring.application.name:@null}")
+     * BOOT
      */
-    public static final String BUS_APP_NAME = "spring.application.name";
+    public static final String BUS_BOOT = "::Bus Boot::";
     /***
-     * 应用版本号
+     * BOOT 版本
      */
     public static final String BUS_BOOT_VERSION = "bus-boot.version";
     /***
-     * 应用版本信息
+     * BOOT 版本信息
      */
     public static final String BUS_BOOT_FORMATTED_VERSION = "bus-boot.formatted-version";
     /***
-     * 应用属性
+     * BOOT 环境属性
      */
-    public static final String BUS_BOOT_PROPERTIES = "EnvConfigurable";
+    public static final String BUS_BOOT_PROPERTIES = "BusEnvironment";
 
 }

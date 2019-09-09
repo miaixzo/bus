@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v3.2.0-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v3.2.5-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -59,7 +59,7 @@ Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、�
 |bus-cron|无|定时器及定时任务等功能|
 |bus-crypto|无|加密解密|
 |bus-extra|无|扩展功能及文件操作|
-|bus-fonts|无|PDF操作及输出字体信息|
+|bus-forest|无|jar加解密,杜绝源码泄漏或被反编译|
 |bus-health|无|应用服务器健康信息|
 |bus-http|无|HTTP功能封装|
 |bus-limiter|无|请求限流|
@@ -67,12 +67,14 @@ Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、�
 |bus-mapper|无|数据操作,mybatis|
 |bus-pager|无|数据分页,mybatis|
 |bus-poi|无|Excel处理|
+|bus-proxy|无|公共代理，使动态代理变得简单|
 |bus-sensitive|无|敏感数据脱敏|
 |bus-setting|无|设置工具类， 用于支持设置/配置|
 |bus-socket|无|基础NIO/AIO通讯|
 |bus-spring|无|spring相关配置|
 |bus-storage|无|存储公用工具类,qiniu,alioss等|
 |bus-swagger|无|API调用及测试|
+|bus-tracer|无|日志及访问流程追踪|
 |bus-validate|无|参数校验|
 
 
