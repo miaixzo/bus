@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 基础请求封装
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class BaseController<Service extends BaseService<T>, T> extends Controller {
@@ -44,6 +44,12 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @Autowired
     protected Service service;
 
+    /**
+     * 通用:添加数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "通用:添加数据", httpMethod = "POST")
     @ResponseBody
@@ -51,14 +57,26 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
         return write(ErrorCode.EM_SUCCESS, service.insertSelective(entity));
     }
 
+    /**
+     * 通用:删除数据
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    @ApiOperation(value = "通用:主键删除", httpMethod = "POST")
+    @ApiOperation(value = "通用:删除数据", httpMethod = "POST")
     @ResponseBody
     public String remove(T entity) {
         service.deleteById(entity);
         return write("0,删除成功", null);
     }
 
+    /**
+     * 通用:主键更新
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value = "通用:主键更新", httpMethod = "POST")
     @ResponseBody
@@ -66,7 +84,12 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
         return write(ErrorCode.EM_SUCCESS, service.updateSelectiveById(entity));
     }
 
-
+    /**
+     * 通用:数据主键查询
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     @ApiOperation(value = "通用:数据主键查询", httpMethod = "GET")
     @ResponseBody
@@ -74,6 +97,12 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
         return write(ErrorCode.EM_SUCCESS, service.selectById(entity));
     }
 
+    /**
+     * 通用:数据条件查询
+     *
+     * @param entity 对象参数
+     * @return 操作结果
+     */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation(value = "通用:数据条件查询", httpMethod = "GET")
     @ResponseBody
@@ -81,6 +110,14 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
         return write(ErrorCode.EM_SUCCESS, service.selectList(entity));
     }
 
+    /**
+     * 通用:数据分页查询
+     *
+     * @param entity   对象参数
+     * @param pageNo   页码
+     * @param pageSize 分页大小
+     * @return 操作结果
+     */
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     @ApiOperation(value = "通用:数据分页查询", httpMethod = "GET")
     @ResponseBody

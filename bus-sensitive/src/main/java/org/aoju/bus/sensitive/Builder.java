@@ -25,13 +25,15 @@ package org.aoju.bus.sensitive;
 
 import org.aoju.bus.core.instance.Instances;
 
+import java.lang.annotation.Annotation;
+
 /**
  * 脱敏策略工具类
  * 1.提供常见的脱敏策略
  * 2.主要供单独的字符串处理使用
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public final class Builder {
@@ -48,7 +50,23 @@ public final class Builder {
      * @since 0.0.4 以前用的是单例。建议使用 spring 等容器管理 Provider 实现。
      */
     public static <T> T on(Object object) {
-        return (T) Instances.singletion(Provider.class).on(object, null);
+        return on(object, null);
+    }
+
+    /**
+     * 脱敏对象
+     * <p>
+     * 每次都创建一个新的对象，避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化。
+     *
+     * @param object     原始对象
+     * @param annotation 注解信息
+     * @param <T>        泛型
+     * @return 脱敏后的对象
+     * @since 0.0.4 以前用的是单例。建议使用 spring 等容器管理 Provider 实现。
+     */
+    public static <T> T on(Object object, Annotation annotation) {
+        return (T) Instances.singletion(Provider.class).on(object, annotation);
     }
 
     /**

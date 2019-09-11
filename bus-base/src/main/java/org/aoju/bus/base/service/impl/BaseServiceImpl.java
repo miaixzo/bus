@@ -46,7 +46,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
@@ -198,18 +198,18 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
     }
 
     @Override
-    public Result<T> page(int pageNum, int pageSize, T entity, String... params) {
-        PageContext.startPage(pageNum, pageSize);
-        if (ArrayUtils.isNotEmpty(params)) {
-            PageContext.orderBy(params[0]);
+    public Result<T> page(int pageNo, int pageSize, T entity, String... orderBy) {
+        PageContext.startPage(pageNo, pageSize);
+        if (ArrayUtils.isNotEmpty(orderBy)) {
+            PageContext.orderBy(orderBy[0]);
         }
         Page<T> list = (Page<T>) mapper.select(entity);
         return new Result<>((int) list.getTotal(), list.getResult());
     }
 
     @Override
-    public Result<T> page(String pageNum, String pageSize, T entity, String... params) {
-        return page(Integer.parseInt(pageNum), Integer.parseInt(pageSize), entity, params);
+    public Result<T> page(String pageNo, String pageSize, T entity, String... orderBy) {
+        return page(Integer.parseInt(pageNo), Integer.parseInt(pageSize), entity, orderBy);
     }
 
     private String setValue(T entity) {

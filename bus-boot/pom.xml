@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.6</version>
     <packaging>jar</packaging>
 
     <name>bus-boot</name>
@@ -16,13 +16,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.1.8.RELEASE</version>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
+        <taobao.text.version>0.0.2</taobao.text.version>
     </properties>
 
     <dependencies>
@@ -30,6 +31,11 @@
             <groupId>org.aoju</groupId>
             <artifactId>bus-logger</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.taobao.text</groupId>
+            <artifactId>text-ui</artifactId>
+            <version>${taobao.text.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,7 +58,7 @@
 
     <developers>
         <developer>
-            <name>aoju.org</name>
+            <name>Kimi Liu</name>
             <url>https://github.com/aoju/bus.git</url>
         </developer>
     </developers>

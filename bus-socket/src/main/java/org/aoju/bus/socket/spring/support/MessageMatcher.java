@@ -3,7 +3,6 @@ package org.aoju.bus.socket.spring.support;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aoju.bus.core.lang.exception.SocketException;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.socket.TextMessage;
@@ -15,10 +14,9 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.6
  * @since JDK 1.8
  */
-@Component
 public class MessageMatcher {
 
     private PathMatcher matcher = new AntPathMatcher();

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-spring</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.6</version>
     <packaging>jar</packaging>
 
     <name>bus-spring</name>
@@ -16,14 +16,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.1.8.RELEASE</version>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <mysql.version>5.1.30</mysql.version>
+        <mysql.version>8.0.15</mysql.version>
         <druid.version>1.1.16</druid.version>
         <dubbo.version>2.6.6</dubbo.version>
     </properties>
@@ -118,11 +118,6 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.2.0</version>
-        </dependency>
     </dependencies>
 
     <licenses>
@@ -140,7 +135,7 @@
 
     <developers>
         <developer>
-            <name>aoju.org</name>
+            <name>Kimi Liu</name>
             <url>https://github.com/aoju/bus.git</url>
         </developer>
     </developers>

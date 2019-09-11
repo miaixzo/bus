@@ -21,18 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju;
-
-import org.aoju.bus.Version;
+package org.aoju.bus.shade.convert;
 
 /**
- * 用于识别当前版本号和版权声明!
- * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
+ * 获取实体类字段属性类信息接口
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.6
  * @since JDK 1.8
  */
-public final class Bus extends Version {
+public interface ColumnType {
+    /**
+     * 获取字段类型
+     *
+     * @return 字段类型
+     */
+    String getType();
 
+    /**
+     * 获取字段类型完整名
+     *
+     * @return 字段类型完整名
+     */
+    String getPkg();
 }

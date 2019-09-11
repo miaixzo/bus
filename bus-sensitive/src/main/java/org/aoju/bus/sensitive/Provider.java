@@ -50,7 +50,7 @@ import java.util.*;
  *
  * @param <T> 参数类型
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class Provider<T> {
@@ -145,11 +145,11 @@ public class Provider<T> {
             this.value = sensitive.value();
         }
 
-        //1. 初始化对象
+        //1. 初始化
         final Class clazz = object.getClass();
         final Context context = new Context();
 
-        //2. 深度复制对象
+        //2. 深度复制
         final T copyObject = clone(object);
 
         //3. 脱敏处理

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.boot.env;
+package org.aoju.bus.boot.config;
 
 import org.aoju.bus.Version;
 import org.aoju.bus.boot.consts.BusConsts;
@@ -40,12 +40,12 @@ import java.util.Properties;
  * 将作为一个名为BusConfigurationProperties的属性源添加
  *
  * @author Kimi Liu
- * @version 3.2.0
+ * @version 3.2.6
  * @since JDK 1.8
  */
 @ComponentScan("org.aoju.**")
-@Order(Ordered.LOWEST_PRECEDENCE - 100)
-public class EnvConfigurable implements EnvironmentPostProcessor {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class BusConfigurable implements EnvironmentPostProcessor {
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment,
@@ -63,7 +63,7 @@ public class EnvConfigurable implements EnvironmentPostProcessor {
         /**
          * 设置必要参数
          **/
-        environment.setRequiredProperties(BusConsts.BUS_APP_NAME);
+        environment.setRequiredProperties(BusConsts.BUS_NAME);
     }
 
     /**
@@ -86,7 +86,7 @@ public class EnvConfigurable implements EnvironmentPostProcessor {
      * @return version
      */
     protected String getVersion() {
-        return Version.version() == null ? "" : Version.version();
+        return Version.get() == null ? "" : Version.get();
     }
 
 }
