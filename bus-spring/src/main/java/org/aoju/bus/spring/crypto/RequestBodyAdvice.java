@@ -46,15 +46,14 @@ import java.lang.reflect.Type;
  * 对加了@Decrypt的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class RequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
 
     @Autowired
-    CryptoProperties cryptoProperties;
-
+    CryptoProperties properties;
 
     /**
      * 首次调用，以确定是否应用此拦截.
@@ -95,12 +94,13 @@ public class RequestBodyAdvice extends BaseAdvice
                                                                     MethodParameter parameter,
                                                                     Type type,
                                                                     Class<? extends HttpMessageConverter<?>> converterType) {
-        if (!cryptoProperties.isDebug()) {
+        if (!this.properties.isDebug()) {
             try {
                 final DecryptBody decrypt = parameter.getMethod().getAnnotation(DecryptBody.class);
                 if (ObjectUtils.isNotNull(decrypt)) {
-                    final String key = StringUtils.defaultString(decrypt.key(), cryptoProperties.getDecrypt().getKey());
-                    return new HttpInputMessage(inputMessage, key, decrypt.type(), Charset.DEFAULT_UTF_8);
+                    final String decryptKey = StringUtils.defaultString(decrypt.key(), this.properties.getDecrypt().getKey());
+                    final String decryptType = StringUtils.defaultString(decrypt.type(), this.properties.getDecrypt().getType());
+                    return new HttpInputMessage(inputMessage, decryptKey, decryptType, Charset.DEFAULT_UTF_8);
                 }
             } catch (Exception e) {
                 Logger.error("数据解密失败", e);
@@ -157,7 +157,7 @@ public class RequestBodyAdvice extends BaseAdvice
                                 String mode,
                                 String charset) throws Exception {
             if (StringUtils.isEmpty(key)) {
-                throw new NullPointerException("请配置request.crypto.decrypt.key参数");
+                throw new NullPointerException("please check the request.crypto.decrypt.key");
             }
 
             this.headers = inputMessage.getHeaders();

@@ -38,7 +38,7 @@ import java.io.IOException;
  * 首先关闭源，对接收器的写入将立即失败，并带有{@link IOException}。
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public final class Pipe {

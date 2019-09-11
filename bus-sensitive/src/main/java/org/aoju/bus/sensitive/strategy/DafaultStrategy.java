@@ -30,7 +30,7 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 默认脱敏处理类
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class DafaultStrategy implements StrategyProvider {

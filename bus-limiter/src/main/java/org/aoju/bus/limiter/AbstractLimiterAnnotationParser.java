@@ -32,7 +32,7 @@ import java.util.Collection;
 
 /**
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public abstract class AbstractLimiterAnnotationParser<T extends Limiter<?>, V extends Annotation> implements LimiterAnnotationParser<T> {

@@ -26,6 +26,7 @@ package org.aoju.bus.spring.crypto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aoju.bus.base.spring.BaseAdvice;
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
@@ -46,14 +47,14 @@ import java.lang.annotation.Annotation;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class ResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
 
     @Autowired
-    CryptoProperties cryptoProperties;
+    CryptoProperties properties;
 
     @Override
     public boolean supports(MethodParameter returnType,
@@ -83,19 +84,18 @@ public class ResponseBodyAdvice extends BaseAdvice
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter parameter, MediaType mediaType,
                                   Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request, ServerHttpResponse response) {
-        if (!cryptoProperties.isDebug()) {
+        if (!this.properties.isDebug()) {
             try {
                 final EncryptBody encrypt = parameter.getMethod().getAnnotation(EncryptBody.class);
                 if (ObjectUtils.isNotNull(encrypt)) {
-                    final String key = StringUtils.defaultString(encrypt.key(), cryptoProperties.getDecrypt().getKey());
-
-                    if (!StringUtils.hasText(key)) {
-                        throw new NullPointerException("请配置request.crypto.encrypt.key参数");
+                    final String encryptKey = StringUtils.defaultString(encrypt.key(), this.properties.getDecrypt().getKey());
+                    final String encryptType = StringUtils.defaultString(encrypt.type(), this.properties.getDecrypt().getType());
+                    if (!StringUtils.hasText(encryptKey)) {
+                        throw new NullPointerException("please check the request.crypto.encrypt.key");
                     }
                     String content = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(body);
-                    byte[] data = content.getBytes();
-                    byte[] encodedData = CryptoUtils.encrypt(encrypt.type(), key, data);
-                    return Base64.encode(encodedData);
+                    content = CryptoUtils.encrypt(encryptType, encryptKey, content, Charset.UTF_8);
+                    return Base64.encode(content);
                 }
             } catch (Exception e) {
                 Logger.error("加密数据异常:" + e.getMessage());

@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public final class TraceClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {

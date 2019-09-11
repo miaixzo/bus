@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型（扩展名）
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public final class FileType {

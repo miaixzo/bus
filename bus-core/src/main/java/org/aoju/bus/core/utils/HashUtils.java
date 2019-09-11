@@ -28,7 +28,7 @@ package org.aoju.bus.core.utils;
  * 推荐使用FNV1算法
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class HashUtils {

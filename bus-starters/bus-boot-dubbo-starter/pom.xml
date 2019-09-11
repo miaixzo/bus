@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot-dubbo-starter</artifactId>
-    <version>3.2.5</version>
+    <version>3.2.6</version>
     <packaging>jar</packaging>
 
     <name>bus-boot-dubbo-starter</name>

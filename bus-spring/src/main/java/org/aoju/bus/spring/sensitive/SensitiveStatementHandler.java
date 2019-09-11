@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.spring.sensitive;
 
-import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.consts.ModeType;
+import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.sensitive.Builder;
@@ -32,6 +32,7 @@ import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.JSON;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
+import org.aoju.bus.spring.SpringContextAware;
 import org.aoju.bus.spring.crypto.CryptoProperties;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
@@ -41,7 +42,6 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -53,7 +53,7 @@ import java.util.Properties;
  * 数据加密脱敏
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -61,9 +61,6 @@ public class SensitiveStatementHandler implements Interceptor {
 
     private static final String MAPPEDSTATEMENT = "delegate.mappedStatement";
     private static final String BOUND_SQL = "delegate.boundSql";
-
-    @Autowired
-    CryptoProperties cryptoProperties;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -82,6 +79,16 @@ public class SensitiveStatementHandler implements Interceptor {
             handleParameters(mappedStatement.getConfiguration(), boundSql, params, commandType);
         }
         return invocation.proceed();
+    }
+
+    @Override
+    public Object plugin(Object o) {
+        return Plugin.wrap(o, this);
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+
     }
 
     private void handleParameters(Configuration configuration, BoundSql boundSql, Object param, SqlCommandType commandType) {
@@ -115,7 +122,11 @@ public class SensitiveStatementHandler implements Interceptor {
         Privacy privacy = field.getAnnotation(Privacy.class);
         Object newValue = value;
         if (ObjectUtils.isNotEmpty(privacy) && value != null) {
-            newValue = Base64.encode(CryptoUtils.encrypt(ModeType.SHA1withRSA, null, value.toString().getBytes()));
+            CryptoProperties properties = SpringContextAware.getBean(CryptoProperties.class);
+            if(ObjectUtils.isEmpty(properties)){
+                throw new InstrumentException("please check the request.crypto.encrypt");
+            }
+            newValue = CryptoUtils.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value.toString(), Charset.UTF_8);
         }
         return newValue;
     }
@@ -161,15 +172,6 @@ public class SensitiveStatementHandler implements Interceptor {
         } catch (Throwable e) {
             return newValue;
         }
-    }
-
-    @Override
-    public Object plugin(Object o) {
-        return Plugin.wrap(o, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
     }
 
 }

@@ -33,7 +33,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public interface BaseService<T> extends Service {
@@ -74,7 +74,6 @@ public interface BaseService<T> extends Service {
      * 通用:删除数据
      *
      * @param entity 对象参数
-     * @return 操作结果
      */
     void delete(T entity);
 
@@ -82,7 +81,6 @@ public interface BaseService<T> extends Service {
      * 通用:删除数据
      *
      * @param id 对象主键
-     * @return 操作结果
      */
     void deleteById(Object id);
 
@@ -106,7 +104,6 @@ public interface BaseService<T> extends Service {
      * 通用:更新数据
      *
      * @param entity 对象参数
-     * @return 操作结果
      */
     void updateById(T entity);
 
@@ -121,7 +118,8 @@ public interface BaseService<T> extends Service {
     /**
      * 通用:更新数据
      *
-     * @param entity 对象参数
+     * @param entity  对象参数
+     * @param locking 锁定
      * @return 操作结果
      */
     T updateByIdCas(T entity, String locking);
@@ -138,6 +136,7 @@ public interface BaseService<T> extends Service {
      * 通用:多条件更新数据
      *
      * @param entity 对象参数
+     * @param object 条件
      * @return 操作结果
      */
     int updateByWhere(T entity, Object object);
@@ -146,6 +145,7 @@ public interface BaseService<T> extends Service {
      * 通用:选择更新数据
      *
      * @param entity 对象参数
+     * @param object 条件
      * @return 操作结果
      */
     int updateByWhereSelective(T entity, Object object);

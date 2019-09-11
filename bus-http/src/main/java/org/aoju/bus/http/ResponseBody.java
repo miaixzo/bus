@@ -104,7 +104,7 @@ import java.nio.charset.Charset;
  * {@link #byteStream()}, or {@link #charStream()}.
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public abstract class ResponseBody implements Closeable {

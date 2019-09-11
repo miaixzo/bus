@@ -29,7 +29,7 @@ import org.aoju.bus.forest.Complex;
  * 非门逻辑规则
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class NotComplex<E> implements Complex<E> {

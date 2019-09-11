@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 认证失败异常
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class AuthorizationException extends UnauthorizedException {

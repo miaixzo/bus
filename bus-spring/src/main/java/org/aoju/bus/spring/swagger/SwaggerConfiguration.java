@@ -49,7 +49,7 @@ import java.util.List;
  * swagger配置项
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 @Component

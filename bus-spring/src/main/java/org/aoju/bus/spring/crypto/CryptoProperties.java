@@ -24,14 +24,14 @@
 package org.aoju.bus.spring.crypto;
 
 import lombok.Data;
-import org.aoju.bus.core.consts.Charset;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 
 /**
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 @Data
@@ -39,18 +39,16 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @ConfigurationProperties(prefix = "request.crypto")
 public class CryptoProperties {
 
-    private String encoding = Charset.DEFAULT_UTF_8;
-
+    @Autowired
     private Encrypt encrypt;
+    @Autowired
     private Decrypt decrypt;
 
-    // 调试模式
-    private boolean debug = false;
+    private boolean debug;
 
     @Data
     @ConfigurationProperties(prefix = "request.crypto.encrypt")
     public class Encrypt {
-
         private String key;
         private String type;
     }
@@ -58,7 +56,6 @@ public class CryptoProperties {
     @Data
     @ConfigurationProperties(prefix = "request.crypto.decrypt")
     public class Decrypt {
-
         private String key;
         private String type;
     }

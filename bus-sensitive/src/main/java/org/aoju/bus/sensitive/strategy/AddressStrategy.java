@@ -33,7 +33,7 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 例子：北京市海淀区****
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class AddressStrategy implements StrategyProvider {

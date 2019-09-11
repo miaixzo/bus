@@ -30,7 +30,7 @@ import org.apache.ibatis.annotations.InsertProvider;
  * 通用Mapper接口,插入
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public interface InsertSelectiveMapper<T> {

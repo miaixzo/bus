@@ -34,7 +34,7 @@ import java.nio.channels.SocketChannel;
  * NIO客户端
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class NioClient {

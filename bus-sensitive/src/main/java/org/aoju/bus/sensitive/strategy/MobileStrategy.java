@@ -32,7 +32,7 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 18233583070 脱敏后: 182****3030
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class MobileStrategy implements StrategyProvider {

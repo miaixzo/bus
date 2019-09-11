@@ -40,7 +40,7 @@ import java.util.Map;
  * 容器元素内部校验
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class EachStrategy implements Complex<Object, Each> {

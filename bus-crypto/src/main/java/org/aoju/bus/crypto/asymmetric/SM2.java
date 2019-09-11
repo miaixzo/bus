@@ -45,7 +45,7 @@ import java.security.PublicKey;
  * /**
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class SM2 extends AbstractAsymmetric<SM2> {

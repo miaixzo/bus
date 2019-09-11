@@ -47,7 +47,7 @@ import static org.aoju.bus.http.internal.platform.Platform.INFO;
 
 /**
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 final class RealCall implements Call {

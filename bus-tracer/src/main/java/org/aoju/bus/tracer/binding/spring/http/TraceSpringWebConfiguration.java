@@ -36,7 +36,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class TraceSpringWebConfiguration {

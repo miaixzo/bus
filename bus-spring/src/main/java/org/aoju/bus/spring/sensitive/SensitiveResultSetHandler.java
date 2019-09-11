@@ -23,15 +23,16 @@
  */
 package org.aoju.bus.spring.sensitive;
 
-import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
+import org.aoju.bus.spring.SpringContextAware;
 import org.aoju.bus.spring.crypto.CryptoProperties;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -52,16 +53,13 @@ import java.util.Properties;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
 public class SensitiveResultSetHandler implements Interceptor {
 
     private static final String MAPPED_STATEMENT = "mappedStatement";
-
-    @Autowired
-    CryptoProperties cryptoProperties;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -95,8 +93,11 @@ public class SensitiveResultSetHandler implements Interceptor {
                 String property = entry.getKey();
                 String value = (String) objMetaObject.getValue(property);
                 if (StringUtils.isNotEmpty(value)) {
-                    String decryptValue = new String(CryptoUtils.decrypt(cryptoProperties.getDecrypt().getType(),
-                            cryptoProperties.getDecrypt().getKey(), Base64.decode(value)), Charset.DEFAULT_UTF_8);
+                    CryptoProperties properties = SpringContextAware.getBean(CryptoProperties.class);
+                    if (ObjectUtils.isEmpty(properties)) {
+                        throw new InstrumentException("please check the request.crypto.decrypt");
+                    }
+                    String decryptValue = CryptoUtils.decrypt(properties.getDecrypt().getType(), properties.getDecrypt().getKey(), value, Charset.UTF_8);
                     objMetaObject.setValue(property, decryptValue);
                 }
             }
@@ -105,13 +106,23 @@ public class SensitiveResultSetHandler implements Interceptor {
                 org.aoju.bus.sensitive.annotation.Field sensitiveBind = entry.getValue();
                 String bindPropety = sensitiveBind.field();
 
-                    String value = (String) objMetaObject.getValue(bindPropety);
-                    String resultValue = Builder.on(value);
-                    objMetaObject.setValue(property, resultValue);
+                String value = (String) objMetaObject.getValue(bindPropety);
+                String resultValue = Builder.on(value);
+                objMetaObject.setValue(property, resultValue);
 
             }
         }
         return results;
+    }
+
+    @Override
+    public Object plugin(Object o) {
+        return Plugin.wrap(o, this);
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+
     }
 
     private Map<String, org.aoju.bus.sensitive.annotation.Field> getSensitiveBindedByResultMap(ResultMap resultMap) {
@@ -146,16 +157,6 @@ public class SensitiveResultSetHandler implements Interceptor {
             }
         }
         return sensitiveFieldMap;
-    }
-
-    @Override
-    public Object plugin(Object o) {
-        return Plugin.wrap(o, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-
     }
 
 }

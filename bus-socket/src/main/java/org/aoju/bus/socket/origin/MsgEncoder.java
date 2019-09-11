@@ -32,7 +32,7 @@ import java.nio.ByteBuffer;
  *
  * @param <T> 编码前后的数据类型
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public interface MsgEncoder<T> {

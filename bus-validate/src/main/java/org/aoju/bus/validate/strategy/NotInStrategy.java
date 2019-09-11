@@ -33,7 +33,7 @@ import org.aoju.bus.validate.validators.Complex;
  * NOT IN 校验
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class NotInStrategy implements Complex<String, NotIn> {

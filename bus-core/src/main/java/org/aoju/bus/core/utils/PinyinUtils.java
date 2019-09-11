@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.exception.CommonException;
  * 注意：部分拼音并不准确，例如：怡
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class PinyinUtils {

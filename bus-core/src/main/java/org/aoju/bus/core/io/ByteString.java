@@ -43,7 +43,7 @@ import static org.aoju.bus.core.utils.IoUtils.arrayRangeEquals;
  * 不可变的字节序列.
  *
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class ByteString implements Serializable, Comparable<ByteString> {

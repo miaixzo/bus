@@ -33,7 +33,7 @@ import java.util.concurrent.Semaphore;
 
 /**
  * @author Kimi Liu
- * @version 3.2.5
+ * @version 3.2.6
  * @since JDK 1.8
  */
 public class JdkPeakLimiter extends PeakLimiter {
