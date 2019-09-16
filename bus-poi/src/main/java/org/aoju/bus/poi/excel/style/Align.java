@@ -27,7 +27,7 @@ package org.aoju.bus.poi.excel.style;
  * 对齐方式枚举
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public enum Align {

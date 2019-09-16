@@ -29,7 +29,7 @@ import java.nio.channels.SelectionKey;
  * SelectionKey Operation的枚举封装
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public enum Operation {

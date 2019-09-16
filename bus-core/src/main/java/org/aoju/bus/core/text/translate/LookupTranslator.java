@@ -35,7 +35,7 @@ import java.util.Map;
  * Translates a value using a lookup table.
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public class LookupTranslator extends CharSequenceTranslator {

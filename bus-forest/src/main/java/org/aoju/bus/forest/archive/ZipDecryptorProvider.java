@@ -40,7 +40,7 @@ import java.util.zip.Deflater;
  * ZIP压缩包解密器
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public class ZipDecryptorProvider extends EntryDecryptorProvider<ZipArchiveEntry> implements DecryptorProvider {

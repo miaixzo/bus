@@ -31,7 +31,7 @@ import org.aoju.bus.http.Headers;
  * HTTP header: the name is an ASCII string, but the value can be UTF-8.
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public final class Header {

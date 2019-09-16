@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v3.2.6-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v3.2.8-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">

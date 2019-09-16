@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.Filter;
  * @param <T> 拷贝的对象
  * @param <C> 本类的类型。用于set方法返回本对象，方便流式编程
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implements Copier<T> {

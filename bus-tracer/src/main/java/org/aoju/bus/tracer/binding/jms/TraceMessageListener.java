@@ -40,7 +40,7 @@ import static org.aoju.bus.tracer.config.TraceFilterConfiguration.Channel.AsyncP
 
 /**
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public final class TraceMessageListener {

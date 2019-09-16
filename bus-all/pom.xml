@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>3.2.6</version>
+    <version>3.2.8</version>
     <packaging>jar</packaging>
 
     <name>bus-all</name>
@@ -71,6 +71,8 @@
         <!--bus-proxy-->
         <javassist.version>3.21.0-GA</javassist.version>
         <cglib.version>3.3.0</cglib.version>
+        <!--bus-shade-->
+        <freemarker.version>2.3.28</freemarker.version>
         <!--bus-socket-->
         <netty.version>4.1.36.Final</netty.version>
         <!--bus-spring-->
@@ -377,6 +379,13 @@
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>${cglib.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--bus-shade-->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
             <scope>provided</scope>
         </dependency>
         <!--bus-socket-->

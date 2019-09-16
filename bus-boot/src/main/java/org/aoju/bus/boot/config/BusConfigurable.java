@@ -40,7 +40,7 @@ import java.util.Properties;
  * 将作为一个名为BusConfigurationProperties的属性源添加
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 @ComponentScan("org.aoju.**")

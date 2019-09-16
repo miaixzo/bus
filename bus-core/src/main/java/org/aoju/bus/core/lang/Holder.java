@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.mutable.MutableObject;
  *
  * @param <T> 所持有值类型
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public final class Holder<T> extends MutableObject<T> {

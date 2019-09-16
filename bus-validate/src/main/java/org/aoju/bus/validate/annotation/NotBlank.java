@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 字符串不为空，不为null校验
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 @Documented

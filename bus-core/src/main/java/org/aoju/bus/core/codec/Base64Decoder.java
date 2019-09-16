@@ -32,7 +32,7 @@ import java.nio.charset.Charset;
  * Base64解码实现
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public class Base64Decoder {

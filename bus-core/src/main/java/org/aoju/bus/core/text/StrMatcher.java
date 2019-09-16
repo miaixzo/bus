@@ -37,7 +37,7 @@ import java.util.Arrays;
  * If these do not suffice, you can subclass and implement your own matcher.
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public abstract class StrMatcher {

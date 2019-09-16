@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  * 方法执行耗时统计
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 @Component

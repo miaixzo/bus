@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * 一个RateLimiter组件
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public class JdkRateLimiter extends RateLimiter {
