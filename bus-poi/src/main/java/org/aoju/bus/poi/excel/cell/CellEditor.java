@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * 单元格编辑器接口
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public interface CellEditor {

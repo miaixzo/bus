@@ -32,7 +32,7 @@ import java.util.List;
  * javax.net.ssl.SSLSocket#setEnabledProtocols}.
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public enum TlsVersion {

@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * <p>See <a href="https://tools.ietf.org/html/rfc7234#section-5.2">RFC 7234, 5.2</a>.
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public final class CacheControl {

@@ -42,7 +42,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Message> {

@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.SimpleCache;
  * 缓存用于防止多次反射造成的性能问题
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public enum BeanDescCache {

@@ -38,7 +38,7 @@ import java.nio.file.WatchEvent;
  * 主要负责文件监听器的快捷创建
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 public class WatchUtils {

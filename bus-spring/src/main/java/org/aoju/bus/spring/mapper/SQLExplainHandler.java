@@ -41,7 +41,7 @@ import java.util.Properties;
  * 防止全表更新与删除
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 @Data

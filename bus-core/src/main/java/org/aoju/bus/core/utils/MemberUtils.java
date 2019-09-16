@@ -45,7 +45,7 @@ import java.util.Set;
  * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
  * @author Kimi Liu
- * @version 3.2.6
+ * @version 3.2.8
  * @since JDK 1.8
  */
 abstract class MemberUtils {
@@ -757,7 +757,7 @@ abstract class MemberUtils {
      * @param numberStr 数字值的字符串表现形式
      * @param scale     保留小数位数
      * @return 新值
-     * @since 3.2.6
+     * @since 3.2.8
      */
     public static String roundStr(String numberStr, int scale) {
         return round(numberStr, scale).toString();
@@ -784,7 +784,7 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 3.2.6
+     * @since 3.2.8
      */
     public static String roundStr(double v, int scale, RoundingMode roundingMode) {
         return round(v, scale, roundingMode).toString();
@@ -838,7 +838,7 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 3.2.6
+     * @since 3.2.8
      */
     public static String roundStr(String numberStr, int scale, RoundingMode roundingMode) {
         return round(numberStr, scale, roundingMode).toString();
@@ -1619,7 +1619,7 @@ abstract class MemberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 3.2.6
+     * @since 3.2.8
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1879,7 +1879,7 @@ abstract class MemberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 3.2.6
+     * @since 3.2.8
      */
     public static BigInteger newBigInteger(String str) {
         str = StringUtils.trimToNull(str);
