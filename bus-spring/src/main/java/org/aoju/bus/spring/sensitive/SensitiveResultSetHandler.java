@@ -40,7 +40,6 @@ import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -53,7 +52,7 @@ import java.util.Properties;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
@@ -101,16 +100,7 @@ public class SensitiveResultSetHandler implements Interceptor {
                     objMetaObject.setValue(property, decryptValue);
                 }
             }
-            for (Map.Entry<String, org.aoju.bus.sensitive.annotation.Field> entry : sensitiveBindedMap.entrySet()) {
-                String property = entry.getKey();
-                org.aoju.bus.sensitive.annotation.Field sensitiveBind = entry.getValue();
-                String bindPropety = sensitiveBind.field();
-
-                String value = (String) objMetaObject.getValue(bindPropety);
-                String resultValue = Builder.on(value);
-                objMetaObject.setValue(property, resultValue);
-
-            }
+            Builder.on(obj);
         }
         return results;
     }

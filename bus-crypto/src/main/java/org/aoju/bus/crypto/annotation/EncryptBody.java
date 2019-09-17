@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 加密
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 @Target(value = {ElementType.METHOD})

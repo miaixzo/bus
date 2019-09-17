@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v3.2.8-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v3.5.0-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -36,7 +36,7 @@
 ---
 
 ## 项目说明
-Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
+Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
 
 很开心地告诉大家这套组件上手和学习难度非常小。如果是以学会使用为目的，只要你会Java语言即可。之前做项目的时候，往往会遇到各种各样的问题，这些问题有可能是会遇到很多次，不善于总结沉淀，这是很多人的一个通病，包括我自己也是。
 
@@ -49,33 +49,34 @@ Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、�
 系统监测的解决方案。
 
 ## 组件信息
-|服务名 | 父级依赖 | 模块说明|
-|----|----|----        |
-|bus-all|无|为微服务提供统一的pom管理，以及通用组件| 
-|bus-boot|无|springboot starter| 
-|bus-base|无|基础功能及base相关功能|
-|bus-cache|无|缓存服务及工具等|
-|bus-core|无|核心功能及工具类等|
-|bus-cron|无|定时器及定时任务等功能|
-|bus-crypto|无|加密解密|
-|bus-extra|无|扩展功能及文件操作|
-|bus-forest|无|jar加解密,杜绝源码泄漏或被反编译|
-|bus-health|无|应用服务器健康信息|
-|bus-http|无|HTTP功能封装|
-|bus-limiter|无|请求限流|
-|bus-logger|无|日志信息及功能|
-|bus-mapper|无|数据操作,mybatis|
-|bus-pager|无|数据分页,mybatis|
-|bus-poi|无|Excel处理|
-|bus-proxy|无|公共代理，使动态代理变得简单|
-|bus-sensitive|无|敏感数据脱敏|
-|bus-setting|无|设置工具类， 用于支持设置/配置|
-|bus-socket|无|基础NIO/AIO通讯|
-|bus-spring|无|spring相关配置|
-|bus-storage|无|存储公用工具类,qiniu,alioss等|
-|bus-swagger|无|API调用及测试|
-|bus-tracer|无|日志及访问流程追踪|
-|bus-validate|无|参数校验|
+| 模块信息 | 描述信息 |
+| ------ | ------- |
+|bus-all|为微服务提供统一的pom管理，以及通用组件| 
+|bus-boot|SpringBoot starter，启动及相关配置文件信息| 
+|bus-base|基础功能及base相关功能,实体类(Entity),服务(Service),接口(Controller)|
+|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
+|bus-core|核心功能及工具类,包括常量、线程、类加载器、字符集编码、反射、集合、日期、等各种常用工具|
+|bus-cron|定时器及定时任务等功能|
+|bus-crypto|加密解密，支持支持AES/DES/REA/MD5等常用加密算法|
+|bus-extra|扩展功能及文件操作|
+|bus-forest|jar加解密,杜绝源码泄漏或被反编译|
+|bus-health|应用服务器健康信息|
+|bus-http|HTTP功能封装|
+|bus-limiter|请求限流|
+|bus-logger|日志信息及功能，态检测日志实现的方式，使日志使用个更加便利灵活简单|
+|bus-mapper|数据操作,mybatis|
+|bus-pager|数据分页,mybatis|
+|bus-poi|Excel处理,POI封装实现，使Java操作Excel等文件变得更加简单|
+|bus-proxy|公共代理，使动态代理变得简单|
+|bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小|
+|bus-setting|设置工具类， 用于支持设置/配置|
+|bus-shade|设置工具类， 用于支持设置/配置|
+|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
+|bus-spring|spring相关配置|
+|bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
+|bus-swagger|API调用及测试|
+|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|
+|bus-validate|参数校验，会默认拦截所有的标记有`@Valid`的方法或类|
 
 
 ## 功能概述
@@ -86,3 +87,35 @@ Bus 是一个微服务套件、基础框架，它基于Java8编写，参考、�
    以及结合springboot封装常用工具按需加载例如mybatis、xss、i18n、sensitive、validate等框架
 
 2. 详细说明请参考每个模块下README介绍
+
+
+## 安装使用
+### Maven
+```
+<dependency>
+    <groupId>org.aoju</groupId>
+    <artifactId>bus-all</artifactId>
+    <version>3.5.0</version>
+</dependency>
+```
+
+### Gradle
+```
+implementation 'org.aoju:bus-all:3.5.0'
+```
+
+### Other
+
+点击以下任一链接，下载`bus-all-X.X.X.jar`即可：
+
+- [Maven中央库1](https://repo1.maven.org/maven2/org/aoju/bus-all/3.5.0)
+- [Maven中央库2](http://repo2.maven.org/maven2/org/aoju/bus-all/3.5.0)
+
+> 注意
+> Bus项目支持JDK8+，对Android平台部分模块没有测试，不能保证所有工具类获工具方法可用。
+
+## 意见建议
+
+### 提供BUG反馈或建议
+
+- [Issues](https://github.com/aoju/bus/issues)

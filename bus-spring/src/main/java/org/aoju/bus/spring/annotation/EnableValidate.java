@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 数据校验
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 @Target({ElementType.TYPE})
@@ -41,4 +41,5 @@ import java.lang.annotation.*;
 @Inherited
 @Import({ValidateConfiguration.class})
 public @interface EnableValidate {
+
 }

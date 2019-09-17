@@ -30,7 +30,7 @@ import org.aoju.bus.shade.convert.MySQLTypeConvert;
  * 获奖java中需要的驼峰命名
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public class NamingRules {
@@ -42,7 +42,7 @@ public class NamingRules {
      * @return String
      */
     public static String getClassName(String table) {
-        table = changeToJavaFiled(table);
+        table = changeToJavaFiled(table, true);
         StringBuilder sbuilder = new StringBuilder();
         char[] cs = table.toCharArray();
         cs[0] -= 32;
@@ -56,7 +56,10 @@ public class NamingRules {
      * @param field 字段名
      * @return String
      */
-    public static String changeToJavaFiled(String field) {
+    public static String changeToJavaFiled(String field, boolean named) {
+        if (!named) {
+            return field;
+        }
         String[] fields = field.split("_");
         StringBuilder sbuilder = new StringBuilder(fields[0]);
         for (int i = 1; i < fields.length; i++) {

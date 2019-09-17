@@ -36,7 +36,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public class Controller {

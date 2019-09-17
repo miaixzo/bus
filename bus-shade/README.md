@@ -12,7 +12,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
-    <version>3.2.8</version>
+    <version>3.5.0</version>
 </dependency>
 ```
 # 数据表结构样式
@@ -65,7 +65,7 @@ CREATE TABLE `hi_user` (
                     MAPPER_URL, MAPPER_XML_URL, SERVICE_URL, SERVICE_IMPL_URL, CONTROLLER_URL, IS_SWAGGER);
             tb.setTable(TABLE);
             tb.setEntityName(NamingRules.getClassName(TABLE.replace("hi_", "")));
-            tb.setObjectName(NamingRules.changeToJavaFiled(TABLE.replace("hi_", "")));
+            tb.setObjectName(NamingRules.changeToJavaFiled(TABLE.replace("hi_", ""),true));
             tb.setEntityComment(CLASSCOMMENT);
     
             tb = TableEntity.get(tb);

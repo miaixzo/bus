@@ -37,7 +37,7 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 只保留前6位和后2位，其他用*代替。
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public class IDCardStrategy implements StrategyProvider {

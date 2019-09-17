@@ -36,7 +36,7 @@ import java.util.zip.Deflater;
  * 这种早期压缩可能不如执行的压缩有效
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public final class DeflaterSink implements Sink {

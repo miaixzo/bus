@@ -29,7 +29,7 @@ import org.aoju.bus.forest.Complex;
  * Ant表达式过规则
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public abstract class AntComplex<E> extends RegexComplex<E> implements Complex<E> {
