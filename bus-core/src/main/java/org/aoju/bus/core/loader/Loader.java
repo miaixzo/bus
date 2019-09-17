@@ -34,7 +34,7 @@ import java.util.Enumeration;
  * 调用时，避免无用的提前全部预加载。
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public interface Loader {

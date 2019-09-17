@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>3.2.8</version>
+    <version>3.5.0</version>
     <packaging>pom</packaging>
 
     <name>bus-bom</name>

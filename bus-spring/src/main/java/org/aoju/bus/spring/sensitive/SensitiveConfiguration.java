@@ -25,27 +25,17 @@ package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.spring.crypto.CryptoProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.ImportSelector;
-import org.springframework.core.type.AnnotationMetadata;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.context.annotation.Import;
 
 /**
  * 加载类
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {CryptoProperties.class})
-public class SensitiveConfiguration implements ImportSelector {
-
-    @Override
-    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
-        List<String> imports = new ArrayList<>();
-        imports.add(AspectjProxyPoint.class.getName());
-        return imports.toArray(new String[0]);
-    }
+@Import(value = AspectjProxyPoint.class)
+public class SensitiveConfiguration {
 
 }

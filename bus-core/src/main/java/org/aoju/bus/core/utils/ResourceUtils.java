@@ -40,7 +40,7 @@ import java.util.List;
  * ClassPath资源工具类
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public class ResourceUtils {
@@ -186,7 +186,7 @@ public class ResourceUtils {
      *
      * @param path 路径，可以是绝对路径，也可以是相对路径
      * @return {@link Resource} 资源对象
-     * @since 3.2.8
+     * @since 3.5.0
      */
     public static Resource getResourceObj(String path) {
         return FileUtils.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);

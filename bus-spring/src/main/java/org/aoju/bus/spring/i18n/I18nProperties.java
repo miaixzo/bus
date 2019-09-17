@@ -30,7 +30,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 国际化资源配置属性
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 @Data

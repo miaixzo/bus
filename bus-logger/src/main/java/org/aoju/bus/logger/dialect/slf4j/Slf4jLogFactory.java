@@ -37,7 +37,7 @@ import java.io.UnsupportedEncodingException;
  * 无缝支持LogBack
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public class Slf4jLogFactory extends LogFactory {

@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public class XmlUtils {
@@ -108,7 +108,7 @@ public class XmlUtils {
      * @param <T>    对象类型
      * @param source {@link InputSource}
      * @return 对象
-     * @since 3.2.8
+     * @since 3.5.0
      */
     public static <T> T readObjectFromXml(InputSource source) {
         Object result = null;
@@ -277,7 +277,7 @@ public class XmlUtils {
      * Xpath相关文章：https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html
      *
      * @return {@link XPath}
-     * @since 3.2.8
+     * @since 3.5.0
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -330,7 +330,7 @@ public class XmlUtils {
      * @param source     资源，可以是Docunent、Node节点等
      * @param returnType 返回类型，{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 3.2.8
+     * @since 3.5.0
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();

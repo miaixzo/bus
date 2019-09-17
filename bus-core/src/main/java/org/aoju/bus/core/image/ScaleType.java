@@ -29,7 +29,7 @@ import java.awt.Image;
  * 图片缩略算法类型
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public enum ScaleType {

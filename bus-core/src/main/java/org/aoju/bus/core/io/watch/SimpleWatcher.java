@@ -30,7 +30,7 @@ import org.aoju.bus.core.io.watch.watchers.IgnoreWatcher;
  * 用户继承此类后实现需要监听的方法
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public class SimpleWatcher extends IgnoreWatcher {

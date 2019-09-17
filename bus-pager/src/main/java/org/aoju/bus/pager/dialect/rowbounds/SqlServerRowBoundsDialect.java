@@ -40,7 +40,7 @@ import java.util.Properties;
  * sqlserver 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 3.2.8
+ * @version 3.5.0
  * @since JDK 1.8
  */
 public class SqlServerRowBoundsDialect extends AbstractRowBoundsDialect {

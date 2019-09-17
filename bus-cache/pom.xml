@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>3.2.8</version>
+    <version>3.5.0</version>
     <packaging>jar</packaging>
 
     <name>bus-cache</name>
@@ -37,11 +37,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.aoju</groupId>
-            <artifactId>bus-logger</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-proxy</artifactId>

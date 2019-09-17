@@ -63,19 +63,19 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |bus-health|应用服务器健康信息|
 |bus-http|HTTP功能封装|
 |bus-limiter|请求限流|
-|bus-logger|日志信息及功能|
+|bus-logger|日志信息及功能，态检测日志实现的方式，使日志使用个更加便利灵活简单|
 |bus-mapper|数据操作,mybatis|
 |bus-pager|数据分页,mybatis|
-|bus-poi|Excel处理|
+|bus-poi|Excel处理,POI封装实现，使Java操作Excel等文件变得更加简单|
 |bus-proxy|公共代理，使动态代理变得简单|
-|bus-sensitive|敏感数据脱敏|
+|bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小|
 |bus-setting|设置工具类， 用于支持设置/配置|
 |bus-shade|设置工具类， 用于支持设置/配置|
-|bus-socket|基础NIO/AIO通讯|
+|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
 |bus-spring|spring相关配置|
 |bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
 |bus-swagger|API调用及测试|
-|bus-tracer|日志及访问流程追踪|
+|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|
 |bus-validate|参数校验，会默认拦截所有的标记有`@Valid`的方法或类|
 
 
