@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017, aoju.org All rights reserved.
+ * Copyright (c) 2017 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -213,7 +213,7 @@ public class Fields {
      */
     public final static String ORM_MONTH_CN_PATTERN = "M月d日";
     /**
-     * 中文日期格式: {@link FastDateFormat} yyyy年M月d日
+     * 中文日期格式: {@link FastDateFormat} M月d日
      */
     public final static FastDateFormat NORM_MONTH_CN_FORMAT = FastDateFormat.getInstance(ORM_MONTH_CN_PATTERN);
 
@@ -225,6 +225,43 @@ public class Fields {
      * UTC时间: {@link FastDateFormat} yyyy-MM-dd'T'HH:mm:ss'Z'
      */
     public final static FastDateFormat UTC_FORMAT = FastDateFormat.getInstance(UTC_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * UTC时间: yyyy-MM-dd'T'HH:mm:ss.SSSZ
+     */
+    public static final String MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    /**
+     * UTC时间: {@link FastDateFormat} yyyy-MM-dd'T'HH:mm:ss.SSSZ
+     */
+    public final static FastDateFormat MSEC_FORMAT = FastDateFormat.getInstance(MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * UTC时间: yyyy-MM-dd HH:mm:ss Z
+     */
+    public static final String SPACEY_PATTERN = "yyyy-MM-dd HH:mm:ss Z";
+    /**
+     * UTC时间: {@link FastDateFormat} yyyy-MM-dd HH:mm:ss Z
+     */
+    public final static FastDateFormat SPACEY_FORMAT = FastDateFormat.getInstance(SPACEY_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * UTC时间: yyyy-MM-dd HH:mm:ss.SSS Z
+     */
+    public static final String SPACEY_MSEC_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS Z";
+    /**
+     * UTC时间: {@link FastDateFormat} yyyy-MM-dd HH:mm:ss.SSS Z
+     */
+    public final static FastDateFormat SPACEY_MSEC_FORMAT = FastDateFormat.getInstance(SPACEY_MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * UTC时间: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+     */
+    public static final String OUTPUT_MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    /**
+     * UTC时间: {@link FastDateFormat} yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+     */
+    public final static FastDateFormat OUTPUT_MSEC_FORMAT = FastDateFormat.getInstance(OUTPUT_MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
+
 
     /**
      * 日期各个部分的枚举
