@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017, aoju.org All rights reserved.
+ * Copyright (c) 2017 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,13 +36,10 @@ import org.aoju.bus.sensitive.annotation.Strategy;
 import org.aoju.bus.sensitive.provider.ConditionProvider;
 import org.aoju.bus.sensitive.provider.StrategyProvider;
 import org.aoju.bus.sensitive.strategy.BuiltInStrategy;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
 import java.util.*;
 
 /**
@@ -50,7 +47,7 @@ import java.util.*;
  *
  * @param <T> 参数类型
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class Provider<T> {
@@ -77,21 +74,6 @@ public class Provider<T> {
         final Class clazz = object.getClass();
         String jsonString = JSON.toJSONString(object);
         return (T) JSON.parseObject(jsonString, clazz);
-    }
-
-    /**
-     * 获得真正的处理对象,可能多层代理.
-     *
-     * @param <T>    泛型
-     * @param target 对象
-     * @return the object
-     */
-    public static <T> T realTarget(Object target) {
-        if (Proxy.isProxyClass(target.getClass())) {
-            MetaObject metaObject = SystemMetaObject.forObject(target);
-            return realTarget(metaObject.getValue("hi.target"));
-        }
-        return (T) target;
     }
 
     /**

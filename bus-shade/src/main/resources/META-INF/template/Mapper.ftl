@@ -1,7 +1,7 @@
 /*
 * The MIT License
 *
-* Copyright (c) 2017, aoju.org All rights reserved.
+* Copyright (c) 2017 aoju.org All rights reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,23 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-package ${serviceImplUrl};
+package ${mapperUrl};
 
 
 import ${entityUrl}.${entityName};
-import ${mapperUrl}.${entityName}Mapper;
-import ${serviceUrl}.${entityName}Service;
-import org.aoju.bus.base.service.impl.BaseServiceImpl;
-import org.springframework.stereotype.Service;
+import org.aoju.bus.base.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
-/**   
- * ${entityComment}服务实现层
+/**
+ *  ${entityComment}数据访问层
+ *  ${entityName}Mapper
  *
  * @version: ${version}
  * @author: ${author}
  * @since JDK 1.8
-*/
-@Service
-@com.alibaba.dubbo.config.annotation.Service
-public class ${entityName}ServiceImpl  extends BaseServiceImpl<${entityName}Mapper, ${entityName}>
-        implements ${entityName}Service  {
-
+ */
+@Mapper
+public interface ${entityName}Mapper extends BaseMapper<${entityName}> {
+	
 }
+	

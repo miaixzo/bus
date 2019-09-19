@@ -1,7 +1,7 @@
 /*
 * The MIT License
 *
-* Copyright (c) 2017, aoju.org All rights reserved.
+* Copyright (c) 2017 aoju.org All rights reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,23 +21,31 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-package ${mapperUrl};
+package ${controllerUrl};
 
 
+<#if isSwagger=="true" >
+import io.swagger.annotations.Api;
+</#if>
 import ${entityUrl}.${entityName};
-import org.aoju.bus.base.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import ${serviceUrl}.${entityName}Service;
+import org.aoju.bus.base.spring.BaseController;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- *  ${entityComment}数据访问层
- *  ${entityName}Mapper
- *
- * @version: ${version}
- * @author: ${author}
- * @since JDK 1.8
- */
-@Mapper
-public interface ${entityName}Mapper extends BaseMapper<${entityName}> {
-	
+* ${entityComment}API接口层
+*
+* @version: ${version}
+* @author: ${author}
+* @since JDK 1.8
+*/
+@RestController
+@RequestMapping("/${objectName}")
+<#if isSwagger=="true" >
+@Api(tags = "${entityComment}", value = "${entityName}Controller")
+</#if>
+public class ${entityName}Controller extends BaseController<${entityName}Service, ${entityName}> {
+
 }
-	

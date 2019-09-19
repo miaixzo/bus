@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017, aoju.org All rights reserved.
+ * Copyright (c) 2017 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import java.util.TimeZone;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class Fields {
@@ -213,7 +213,7 @@ public class Fields {
      */
     public final static String ORM_MONTH_CN_PATTERN = "M月d日";
     /**
-     * 中文日期格式: {@link FastDateFormat} yyyy年M月d日
+     * 中文日期格式: {@link FastDateFormat} M月d日
      */
     public final static FastDateFormat NORM_MONTH_CN_FORMAT = FastDateFormat.getInstance(ORM_MONTH_CN_PATTERN);
 
@@ -227,11 +227,48 @@ public class Fields {
     public final static FastDateFormat UTC_FORMAT = FastDateFormat.getInstance(UTC_PATTERN, TimeZone.getTimeZone("UTC"));
 
     /**
+     * UTC时间: yyyy-MM-dd'T'HH:mm:ss.SSSZ
+     */
+    public static final String MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    /**
+     * UTC时间: {@link FastDateFormat} yyyy-MM-dd'T'HH:mm:ss.SSSZ
+     */
+    public final static FastDateFormat MSEC_FORMAT = FastDateFormat.getInstance(MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * UTC时间: yyyy-MM-dd HH:mm:ss Z
+     */
+    public static final String SPACEY_PATTERN = "yyyy-MM-dd HH:mm:ss Z";
+    /**
+     * UTC时间: {@link FastDateFormat} yyyy-MM-dd HH:mm:ss Z
+     */
+    public final static FastDateFormat SPACEY_FORMAT = FastDateFormat.getInstance(SPACEY_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * UTC时间: yyyy-MM-dd HH:mm:ss.SSS Z
+     */
+    public static final String SPACEY_MSEC_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS Z";
+    /**
+     * UTC时间: {@link FastDateFormat} yyyy-MM-dd HH:mm:ss.SSS Z
+     */
+    public final static FastDateFormat SPACEY_MSEC_FORMAT = FastDateFormat.getInstance(SPACEY_MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * UTC时间: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+     */
+    public static final String OUTPUT_MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    /**
+     * UTC时间: {@link FastDateFormat} yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+     */
+    public final static FastDateFormat OUTPUT_MSEC_FORMAT = FastDateFormat.getInstance(OUTPUT_MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
+
+
+    /**
      * 日期各个部分的枚举
      * 与Calendar相应值对应
      *
      * @author Kimi Liu
-     * @version 3.5.0
+     * @version 3.5.1
      * @since JDK 1.8
      */
     public enum DateField {
@@ -372,7 +409,7 @@ public class Fields {
      * 日期时间单位，每个单位都是以毫秒为基数
      *
      * @author Kimi Liu
-     * @version 3.5.0
+     * @version 3.5.1
      * @since JDK 1.8
      */
     public enum Unit {
@@ -421,7 +458,7 @@ public class Fields {
      * 与Calendar中的月份int值对应
      *
      * @author Kimi Liu
-     * @version 3.5.0
+     * @version 3.5.1
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -559,7 +596,7 @@ public class Fields {
      * 季度枚举
      *
      * @author Kimi Liu
-     * @version 3.5.0
+     * @version 3.5.1
      * @since JDK 1.8
      */
     public enum Quarter {
@@ -622,7 +659,7 @@ public class Fields {
      * 与Calendar中的星期int值对应
      *
      * @author Kimi Liu
-     * @version 3.5.0
+     * @version 3.5.1
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY

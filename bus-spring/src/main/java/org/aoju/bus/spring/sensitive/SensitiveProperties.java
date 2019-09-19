@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017, aoju.org All rights reserved.
+ * Copyright (c) 2017 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,45 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.annotation;
+package org.aoju.bus.spring.sensitive;
 
-import org.aoju.bus.core.consts.ModeType;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
- * 加密
- *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
-@Target(value = {ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EncryptBody {
+@Data
+@EnableConfigurationProperties(value = {SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class})
+@ConfigurationProperties(prefix = "request.sensitive")
+public class SensitiveProperties {
 
-    /**
-     * 如果选择的 RSA 加/解密算法，那么 key 为必填项
-     *
-     * @return Mode
-     */
-    String type() default ModeType.AES;
+    @Autowired
+    private Encrypt encrypt;
+    @Autowired
+    private Decrypt decrypt;
 
-    /**
-     * 可选，如果未配置则采用全局的key
-     *
-     * @return String
-     */
-    String key() default "";
+    private boolean debug;
 
-    /**
-     * 描述信息
-     *
-     * @return String
-     */
-    String description() default "";
+    @Data
+    @ConfigurationProperties(prefix = "request.sensitive.encrypt")
+    public class Encrypt {
+        private String mode;
+        private String key;
+        private String type;
+    }
+
+    @Data
+    @ConfigurationProperties(prefix = "request.sensitive.decrypt")
+    public class Decrypt {
+        private String mode;
+        private String key;
+        private String type;
+    }
 
 }

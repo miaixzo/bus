@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017, aoju.org All rights reserved.
+ * Copyright (c) 2017 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import org.aoju.bus.shade.convert.MySQLTypeConvert;
  * 获奖java中需要的驼峰命名
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class NamingRules {
@@ -54,6 +54,7 @@ public class NamingRules {
      * 说明:获取字段名，把"_"后面字母变大写
      *
      * @param field 字段名
+     * @param named 是否为名称
      * @return String
      */
     public static String changeToJavaFiled(String field, boolean named) {

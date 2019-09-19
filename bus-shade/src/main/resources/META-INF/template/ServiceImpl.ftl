@@ -1,7 +1,7 @@
 /*
 * The MIT License
 *
-* Copyright (c) 2017, aoju.org All rights reserved.
+* Copyright (c) 2017 aoju.org All rights reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -21,31 +21,25 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-package ${controllerUrl};
+package ${serviceImplUrl};
 
 
-<#if isSwagger=="true" >
-import io.swagger.annotations.Api;
-</#if>
 import ${entityUrl}.${entityName};
+import ${mapperUrl}.${entityName}Mapper;
 import ${serviceUrl}.${entityName}Service;
-import org.aoju.bus.base.spring.BaseController;
+import org.aoju.bus.base.service.impl.BaseServiceImpl;
+import org.springframework.stereotype.Service;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-/**
-* ${entityComment}API接口层
-*
-* @version: ${version}
-* @author: ${author}
-* @since JDK 1.8
+/**   
+ * ${entityComment}服务实现层
+ *
+ * @version: ${version}
+ * @author: ${author}
+ * @since JDK 1.8
 */
-@RestController
-@RequestMapping("/${objectName}")
-<#if isSwagger=="true" >
-@Api(tags = "${entityComment}", value = "${entityName}Controller")
-</#if>
-public class ${entityName}Controller extends BaseController<${entityName}Service, ${entityName}> {
+@Service
+@com.alibaba.dubbo.config.annotation.Service
+public class ${entityName}ServiceImpl  extends BaseServiceImpl<${entityName}Mapper, ${entityName}>
+        implements ${entityName}Service  {
 
 }
