@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * 去除String类型的单元格值两边的空格
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class TrimEditor implements CellEditor {

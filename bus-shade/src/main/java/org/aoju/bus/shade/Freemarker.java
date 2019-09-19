@@ -25,6 +25,7 @@ package org.aoju.bus.shade;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.shade.entity.TableEntity;
 
 import java.io.File;
@@ -35,7 +36,7 @@ import java.io.IOException;
  * 创建文件
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class Freemarker {
@@ -47,7 +48,7 @@ public class Freemarker {
             // 通过FreeMarker的Confuguration读取相应的模板文件
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
             // 设置模板路径
-            configuration.setClassForTemplateLoading(Freemarker.class, "/template");
+            configuration.setClassForTemplateLoading(Freemarker.class, "/" + Normal.META_DATA_INF + "/template");
             // 设置默认字体
             configuration.setDefaultEncoding("utf-8");
             // 获取模板

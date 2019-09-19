@@ -34,12 +34,12 @@ import org.springframework.core.annotation.Order;
  * AOP切面切点
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 @Aspect
 @Order(99)
-public class AspectjProxyPoint {
+public class SensitiveAspectProxy {
 
     /**
      * requestMapping

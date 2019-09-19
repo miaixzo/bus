@@ -25,7 +25,7 @@ package org.aoju.bus.proxy.provider;
 
 /**
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class NullProvider extends ConstantProvider {

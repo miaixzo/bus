@@ -40,7 +40,7 @@ import java.util.Map;
  * fastjson工具类
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class JsonUtils {

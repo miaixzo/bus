@@ -29,12 +29,22 @@ import java.lang.annotation.*;
  * 隐私数据加解密
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Privacy {
+
+    /**
+     * 请求解密:IN,
+     * 响应加密:OUT,
+     * 加解密:ALL
+     * 无加解密:NOTHING
+     *
+     * @return type
+     */
+    String value() default "ALL";
 
 }

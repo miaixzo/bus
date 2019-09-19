@@ -41,7 +41,7 @@ import java.util.List;
  * are stateful and should be created and used for a single connection attempt.
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public final class ConnectionSpecSelector {

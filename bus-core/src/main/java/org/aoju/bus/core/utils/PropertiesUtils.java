@@ -28,6 +28,9 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -37,12 +40,12 @@ import java.util.Properties;
  * Parsing The Configuration File
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public final class PropertiesUtils {
 
-    private static Map<String, String> ctxPropertiesMap = new HashMap<String, String>();
+    private static Map<String, String> ctxPropertiesMap = new HashMap<>();
 
     public static Map<String, String> getProperties() {
         return ctxPropertiesMap;
@@ -115,7 +118,7 @@ public final class PropertiesUtils {
      * @return the string
      */
     public static String getString(String className, String path, String propertyKey) {
-        Class clazz = null;
+        Class clazz;
         try {
             clazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
@@ -129,6 +132,11 @@ public final class PropertiesUtils {
             throw new InstrumentException(e);
         }
         return prop.getProperty(propertyKey);
+    }
+
+    public static Reader getReader(String classpath) {
+        InputStream is = PropertiesUtils.class.getResourceAsStream(classpath);
+        return new InputStreamReader(is, StandardCharsets.UTF_8);
     }
 
 }

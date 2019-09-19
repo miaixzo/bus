@@ -28,7 +28,7 @@ package org.aoju.bus.boot.consts;
  * 全局常量配置
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class BusConsts {

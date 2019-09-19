@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.spring.crypto;
+package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.base.spring.BaseAdvice;
 import org.aoju.bus.core.codec.Base64;
@@ -30,8 +30,8 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.annotation.DecryptBody;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.sensitive.annotation.Privacy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -46,14 +46,14 @@ import java.lang.reflect.Type;
  * 对加了@Decrypt的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class RequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
 
     @Autowired
-    CryptoProperties properties;
+    SensitiveProperties properties;
 
     /**
      * 首次调用，以确定是否应用此拦截.
@@ -71,12 +71,12 @@ public class RequestBodyAdvice extends BaseAdvice
         Annotation[] annotations = parameter.getDeclaringClass().getAnnotations();
         if (annotations != null && annotations.length > 0) {
             for (Annotation annotation : annotations) {
-                if (annotation instanceof DecryptBody) {
+                if (annotation instanceof Privacy) {
                     return true;
                 }
             }
         }
-        return parameter.getMethod().isAnnotationPresent(DecryptBody.class);
+        return parameter.getMethod().isAnnotationPresent(Privacy.class);
     }
 
     /**
@@ -96,11 +96,14 @@ public class RequestBodyAdvice extends BaseAdvice
                                                                     Class<? extends HttpMessageConverter<?>> converterType) {
         if (!this.properties.isDebug()) {
             try {
-                final DecryptBody decrypt = parameter.getMethod().getAnnotation(DecryptBody.class);
-                if (ObjectUtils.isNotNull(decrypt)) {
-                    final String decryptKey = StringUtils.defaultString(decrypt.key(), this.properties.getDecrypt().getKey());
-                    final String decryptType = StringUtils.defaultString(decrypt.type(), this.properties.getDecrypt().getType());
-                    return new HttpInputMessage(inputMessage, decryptKey, decryptType, Charset.DEFAULT_UTF_8);
+                final Privacy privacy = parameter.getMethod().getAnnotation(Privacy.class);
+                if (ObjectUtils.isNotNull(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                    if ("ALL".equals(privacy.value()) || "IN".equals(privacy.value())) {
+                        return new HttpInputMessage(inputMessage,
+                                this.properties.getDecrypt().getKey(),
+                                this.properties.getDecrypt().getType(),
+                                Charset.DEFAULT_UTF_8);
+                    }
                 }
             } catch (Exception e) {
                 Logger.error("数据解密失败", e);

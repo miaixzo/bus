@@ -21,25 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.spring.annotation;
+package org.aoju.bus.spring.sensitive;
 
-import org.aoju.bus.spring.crypto.CryptoConfiguration;
-import org.springframework.context.annotation.Import;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import java.lang.annotation.*;
 
 /**
- * 开启加/解密功能
- *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@Import({CryptoConfiguration.class})
-public @interface EnableCrypto {
+@Data
+@EnableConfigurationProperties(value = {SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class})
+@ConfigurationProperties(prefix = "request.sensitive")
+public class SensitiveProperties {
+
+    @Autowired
+    private Encrypt encrypt;
+    @Autowired
+    private Decrypt decrypt;
+
+    private boolean debug;
+
+    @Data
+    @ConfigurationProperties(prefix = "request.sensitive.encrypt")
+    public class Encrypt {
+        private String mode;
+        private String key;
+        private String type;
+    }
+
+    @Data
+    @ConfigurationProperties(prefix = "request.sensitive.decrypt")
+    public class Decrypt {
+        private String mode;
+        private String key;
+        private String type;
+    }
 
 }

@@ -29,7 +29,7 @@ import java.util.TimeZone;
 
 /**
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public abstract class AbstractDateBasic implements DateBasic, Serializable {

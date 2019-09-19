@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.spring.sensitive;
 
-import org.aoju.bus.spring.crypto.CryptoProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
@@ -31,11 +30,11 @@ import org.springframework.context.annotation.Import;
  * 加载类
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
-@EnableConfigurationProperties(value = {CryptoProperties.class})
-@Import(value = AspectjProxyPoint.class)
+@EnableConfigurationProperties(value = {SensitiveProperties.class})
+@Import({SensitiveAspectProxy.class, RequestBodyAdvice.class, ResponseBodyAdvice.class})
 public class SensitiveConfiguration {
 
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.spring.crypto;
+package org.aoju.bus.spring.sensitive;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aoju.bus.base.spring.BaseAdvice;
@@ -30,8 +30,8 @@ import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.annotation.EncryptBody;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.sensitive.annotation.Privacy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -47,14 +47,14 @@ import java.lang.annotation.Annotation;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 3.5.0
+ * @version 3.5.1
  * @since JDK 1.8
  */
 public class ResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
 
     @Autowired
-    CryptoProperties properties;
+    SensitiveProperties properties;
 
     @Override
     public boolean supports(MethodParameter returnType,
@@ -62,12 +62,12 @@ public class ResponseBodyAdvice extends BaseAdvice
         Annotation[] annotations = returnType.getDeclaringClass().getAnnotations();
         if (annotations != null && annotations.length > 0) {
             for (Annotation annotation : annotations) {
-                if (annotation instanceof EncryptBody) {
+                if (annotation instanceof Privacy) {
                     return true;
                 }
             }
         }
-        return returnType.getMethod().isAnnotationPresent(EncryptBody.class);
+        return returnType.getMethod().isAnnotationPresent(Privacy.class);
     }
 
     /**
@@ -86,16 +86,18 @@ public class ResponseBodyAdvice extends BaseAdvice
                                   Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!this.properties.isDebug()) {
             try {
-                final EncryptBody encrypt = parameter.getMethod().getAnnotation(EncryptBody.class);
-                if (ObjectUtils.isNotNull(encrypt)) {
-                    final String encryptKey = StringUtils.defaultString(encrypt.key(), this.properties.getDecrypt().getKey());
-                    final String encryptType = StringUtils.defaultString(encrypt.type(), this.properties.getDecrypt().getType());
-                    if (!StringUtils.hasText(encryptKey)) {
-                        throw new NullPointerException("please check the request.crypto.encrypt.key");
+                final Privacy privacy = parameter.getMethod().getAnnotation(Privacy.class);
+                if (ObjectUtils.isNotNull(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                    if ("ALL".equals(privacy.value()) || "OUT".equals(privacy.value())) {
+                        final String encryptKey = this.properties.getDecrypt().getKey();
+                        final String encryptType = this.properties.getDecrypt().getType();
+                        if (!StringUtils.hasText(encryptKey) || !StringUtils.hasText(encryptType)) {
+                            throw new NullPointerException("please check the request.sensitive.encrypt");
+                        }
+                        String content = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(body);
+                        content = CryptoUtils.encrypt(this.properties.getDecrypt().getType(), this.properties.getDecrypt().getKey(), content, Charset.UTF_8);
+                        return Base64.encode(content);
                     }
-                    String content = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(body);
-                    content = CryptoUtils.encrypt(encryptType, encryptKey, content, Charset.UTF_8);
-                    return Base64.encode(content);
                 }
             } catch (Exception e) {
                 Logger.error("加密数据异常:" + e.getMessage());
