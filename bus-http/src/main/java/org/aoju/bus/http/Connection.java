@@ -75,7 +75,7 @@ import java.net.Socket;
  * has been found. But only complete the stream once its data stream has been exhausted.
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public interface Connection {

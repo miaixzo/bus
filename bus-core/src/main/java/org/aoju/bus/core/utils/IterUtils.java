@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class IterUtils {

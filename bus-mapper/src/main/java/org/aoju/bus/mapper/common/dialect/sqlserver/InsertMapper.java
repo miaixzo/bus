@@ -31,7 +31,7 @@ import org.apache.ibatis.annotations.Options;
  * 通用Mapper接口,插入
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public interface InsertMapper<T> {

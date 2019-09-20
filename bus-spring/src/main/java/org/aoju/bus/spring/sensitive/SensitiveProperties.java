@@ -31,7 +31,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 /**
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 @Data
@@ -49,7 +49,6 @@ public class SensitiveProperties {
     @Data
     @ConfigurationProperties(prefix = "request.sensitive.encrypt")
     public class Encrypt {
-        private String mode;
         private String key;
         private String type;
     }
@@ -57,7 +56,6 @@ public class SensitiveProperties {
     @Data
     @ConfigurationProperties(prefix = "request.sensitive.decrypt")
     public class Decrypt {
-        private String mode;
         private String key;
         private String type;
     }

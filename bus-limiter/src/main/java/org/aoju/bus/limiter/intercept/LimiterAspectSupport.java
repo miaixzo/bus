@@ -48,7 +48,7 @@ import java.util.Collection;
  * 使用beanfactory的一些基础设施
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public abstract class LimiterAspectSupport implements BeanFactoryAware, InitializingBean, SmartInitializingSingleton {

@@ -38,11 +38,11 @@ import java.util.*;
  * 注意：部分拼音并不准确，例如：怡
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class PinyinUtils {
-    
+
     public static final String WITH_OUT_TONE = "WITH_OUT_TONE";
     public static final String WITH_TONE_MARK = "WITH_TONE_MARK";
     public static final String WITH_TONE_NUMBER = "WITH_TONE_NUMBER";

@@ -12,7 +12,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
-    <version>3.5.1</version>
+    <version>3.5.2</version>
 </dependency>
 ```
 # 数据表结构样式

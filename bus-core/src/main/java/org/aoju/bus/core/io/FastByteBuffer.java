@@ -28,7 +28,7 @@ package org.aoju.bus.core.io;
  * 快速缓冲，将数据存放在缓冲集中，取代以往的单一数组
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class FastByteBuffer {
