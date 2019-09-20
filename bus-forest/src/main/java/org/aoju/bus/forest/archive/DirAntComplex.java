@@ -32,7 +32,7 @@ import java.io.File;
  * 文件记录Ant表达式规则
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class DirAntComplex extends AntComplex<File> implements Complex<File> {

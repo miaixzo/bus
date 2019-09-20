@@ -34,7 +34,7 @@ import java.util.Map;
  * 数据库方言 sqlserver2012
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class SqlServer2012Dialect extends SqlServerDialect {

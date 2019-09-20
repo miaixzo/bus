@@ -31,7 +31,9 @@ import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
+import org.aoju.bus.sensitive.annotation.Sensitive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -47,7 +49,7 @@ import java.lang.annotation.Annotation;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class ResponseBodyAdvice extends BaseAdvice
@@ -62,12 +64,14 @@ public class ResponseBodyAdvice extends BaseAdvice
         Annotation[] annotations = returnType.getDeclaringClass().getAnnotations();
         if (annotations != null && annotations.length > 0) {
             for (Annotation annotation : annotations) {
-                if (annotation instanceof Privacy) {
+                if (annotation instanceof Privacy
+                        || annotation instanceof Sensitive) {
                     return true;
                 }
             }
         }
-        return returnType.getMethod().isAnnotationPresent(Privacy.class);
+        return returnType.getMethod().isAnnotationPresent(Privacy.class)
+                || returnType.getMethod().isAnnotationPresent(Sensitive.class);
     }
 
     /**
@@ -86,6 +90,10 @@ public class ResponseBodyAdvice extends BaseAdvice
                                   Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (!this.properties.isDebug()) {
             try {
+                final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
+                if (ObjectUtils.isNotNull(sensitive)) {
+                    body = Builder.on(body, sensitive);
+                }
                 final Privacy privacy = parameter.getMethod().getAnnotation(Privacy.class);
                 if (ObjectUtils.isNotNull(privacy) && StringUtils.isNotEmpty(privacy.value())) {
                     if ("ALL".equals(privacy.value()) || "OUT".equals(privacy.value())) {

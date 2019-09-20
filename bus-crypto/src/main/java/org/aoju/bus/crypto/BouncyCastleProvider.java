@@ -29,7 +29,7 @@ import java.security.Provider;
  * 全局单例对象
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public enum BouncyCastleProvider {

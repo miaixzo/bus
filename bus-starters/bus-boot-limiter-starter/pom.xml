@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot-limiter-starter</artifactId>
-    <version>3.5.1</version>
+    <version>3.5.2</version>
     <packaging>jar</packaging>
 
     <name>bus-boot-limiter-starter</name>

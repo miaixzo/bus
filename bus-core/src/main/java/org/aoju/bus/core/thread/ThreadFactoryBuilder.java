@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * ThreadFactory创建器
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class ThreadFactoryBuilder implements Builder<ThreadFactory> {

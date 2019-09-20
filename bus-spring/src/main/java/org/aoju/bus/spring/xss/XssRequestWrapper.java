@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class XssRequestWrapper extends HttpServletRequestWrapper {

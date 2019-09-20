@@ -30,11 +30,11 @@ import org.springframework.context.annotation.Import;
  * 加载类
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {SensitiveProperties.class})
-@Import({SensitiveAspectProxy.class, RequestBodyAdvice.class, ResponseBodyAdvice.class})
+@Import({RequestBodyAdvice.class, ResponseBodyAdvice.class})
 public class SensitiveConfiguration {
 
 }

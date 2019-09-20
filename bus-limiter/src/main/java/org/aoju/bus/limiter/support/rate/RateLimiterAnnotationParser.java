@@ -30,7 +30,7 @@ import org.springframework.core.annotation.AnnotationAttributes;
 
 /**
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class RateLimiterAnnotationParser extends AbstractLimiterAnnotationParser<RateLimiter, HRateLimiter> {

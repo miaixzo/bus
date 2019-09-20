@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 通用异常类封装
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public class CommonException extends UncheckedException {

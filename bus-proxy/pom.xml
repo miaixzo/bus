@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-proxy</artifactId>
-    <version>3.5.1</version>
+    <version>3.5.2</version>
     <packaging>jar</packaging>
 
     <name>bus-proxy</name>

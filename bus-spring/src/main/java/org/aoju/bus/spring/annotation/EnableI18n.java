@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 开启国际化支持
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 @Target({ElementType.TYPE})

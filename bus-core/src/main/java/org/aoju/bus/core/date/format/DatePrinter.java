@@ -30,7 +30,7 @@ import java.util.Date;
  * 日期格式化输出接口
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public interface DatePrinter extends DateBasic {

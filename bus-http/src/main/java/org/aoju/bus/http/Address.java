@@ -42,7 +42,7 @@ import java.util.List;
  * <p>HTTP requests that share the same {@code Address} may also share the same {@link Connection}.
  *
  * @author Kimi Liu
- * @version 3.5.1
+ * @version 3.5.2
  * @since JDK 1.8
  */
 public final class Address {
