@@ -124,7 +124,7 @@ public class Provider<T> {
 
         if (ObjectUtils.isNotEmpty(annotation)) {
             Sensitive sensitive = (Sensitive) annotation;
-            this.value = sensitive.value();
+            this.value = sensitive.field();
         }
 
         //1. 初始化
@@ -155,7 +155,7 @@ public class Provider<T> {
 
         if (ObjectUtils.isNotEmpty(annotation)) {
             Sensitive sensitive = (Sensitive) annotation;
-            this.value = sensitive.value();
+            this.value = sensitive.field();
         }
 
         final Context context = new Context();

@@ -23,26 +23,56 @@
  */
 package org.aoju.bus.sensitive.annotation;
 
+import org.aoju.bus.sensitive.Builder;
+
 import java.lang.annotation.*;
 
 /**
- * 数据脱敏
+ * 数据脱敏，具体如下:
+ * 1.数据库级别脱敏加密
+ * SensitiveResultSetHandler 解密脱敏
+ * SensitiveStatementHandler 脱敏加密
+ * 2.访问请求级别加解密
+ * RequestBodyAdvice 解密脱敏
+ * ResponseBodyAdvice 脱敏加密
  *
  * @author Kimi Liu
  * @version 3.5.2
  * @since JDK 1.8
  */
 @Documented
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Sensitive {
+
+    /**
+     * 数据处理模式
+     * 可选值
+     * 1.Builder.ALL 全部开启
+     * 2.Builder.SENS 开启脱敏
+     * 3.Builder.SAFE 开启加解密
+     *
+     * @return the string
+     */
+    String value() default Builder.ALL;
+
+    /**
+     * 数据出入方向
+     * 可选值
+     * 1.Builder.ALL 全部开启
+     * 2.Builder.IN  请求/写入
+     * 3.Builder.OUT 查询/输出
+     *
+     * @return the string
+     */
+    String stage() default Builder.ALL;
 
     /**
      * 脱敏属性 {"id","name"}
      *
      * @return the array
      */
-    String[] value() default {};
+    String[] field() default {};
 
     /**
      * 忽略属性 {"created","creator"}
@@ -52,7 +82,7 @@ public @interface Sensitive {
     String[] skip() default {};
 
     /**
-     * 内部校验:true/false
+     * 内部脱敏:true/false
      *
      * @return the boolean
      */

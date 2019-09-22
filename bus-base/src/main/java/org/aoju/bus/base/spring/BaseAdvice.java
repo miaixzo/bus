@@ -79,7 +79,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    public String defaultException(Exception e) {
+    public Object defaultException(Exception e) {
         Logger.error(getStackTraceMessage(e));
         return write(ErrorCode.EM_FAILURE);
     }
@@ -92,7 +92,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = CommonException.class)
-    public String commonException(CommonException e) {
+    public Object commonException(CommonException e) {
         Logger.error(getStackTraceMessage(e));
         return write(ErrorCode.EM_100506);
     }
@@ -105,7 +105,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = InstrumentException.class)
-    public String instrumentException(InstrumentException e) {
+    public Object instrumentException(InstrumentException e) {
         Logger.error(getStackTraceMessage(e));
         return write(ErrorCode.EM_100510);
     }
@@ -119,7 +119,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
-    public String businessException(BusinessException e) {
+    public Object businessException(BusinessException e) {
         Logger.error(getStackTraceMessage(e));
         return write(ErrorCode.EM_100513);
     }
@@ -132,7 +132,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = CrontabException.class)
-    public String crontabException(CrontabException e) {
+    public Object crontabException(CrontabException e) {
         Logger.error(getStackTraceMessage(e));
         return write(ErrorCode.EM_100514);
     }
@@ -145,7 +145,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = ValidateException.class)
-    public String ValidateException(ValidateException e) {
+    public Object ValidateException(ValidateException e) {
         Logger.error(getStackTraceMessage(e));
         return write(e.getErrcode(), e.getErrmsg());
     }
@@ -158,7 +158,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
-    public String httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public Object httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         Logger.error(getStackTraceMessage(e));
         return write(ErrorCode.EM_100507);
     }
@@ -171,7 +171,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
-    public String httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+    public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         Logger.error(getStackTraceMessage(e));
         return write(ErrorCode.EM_100508);
     }
@@ -185,7 +185,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NoHandlerFoundException.class)
-    public String noHandlerFoundException(NoHandlerFoundException e) {
+    public Object noHandlerFoundException(NoHandlerFoundException e) {
         Logger.error(getStackTraceMessage(e));
         return write(ErrorCode.EM_100509);
     }

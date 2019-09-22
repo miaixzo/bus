@@ -39,6 +39,32 @@ import java.lang.annotation.Annotation;
 public final class Builder {
 
     /**
+     * 全局处理
+     */
+    public static final String ALL = "ALL";
+    /**
+     * 数据脱敏
+     */
+    public static final String SENS = "SENS";
+    /**
+     * 数据安全
+     */
+    public static final String SAFE = "SAFE";
+    /**
+     * 请求解密
+     */
+    public static final String IN = "IN";
+    /**
+     * 响应加密
+     */
+    public static final String OUT = "OUT";
+
+    /**
+     * 不做任何处理
+     */
+    public static final String NOTHING = "NOTHING";
+
+    /**
      * 脱敏对象
      * <p>
      * 每次都创建一个新的对象，避免线程问题

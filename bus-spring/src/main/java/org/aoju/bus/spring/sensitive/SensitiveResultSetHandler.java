@@ -68,44 +68,47 @@ public class SensitiveResultSetHandler implements Interceptor {
         }
 
         SensitiveProperties properties = SpringContextAware.getBean(SensitiveProperties.class);
-        if (!properties.isDebug()) {
+        if (ObjectUtils.isNotEmpty(properties) && !properties.isDebug()) {
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
             final MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(MAPPED_STATEMENT);
             final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null : mappedStatement.getResultMaps().get(0);
 
-            Object result0 = results.get(0);
-            Sensitive enableSensitive = result0.getClass().getAnnotation(Sensitive.class);
-            if (enableSensitive == null) {
+            Sensitive sensitive = results.get(0).getClass().getAnnotation(Sensitive.class);
+            if (ObjectUtils.isEmpty(sensitive)
+                    && !Builder.ALL.equals(sensitive.value())
+                    && !Builder.OUT.equals(sensitive.value())) {
                 return results;
             }
 
-            final Map<String, Privacy> sensitiveFieldMap = getSensitiveByResultMap(resultMap);
-            final Map<String, org.aoju.bus.sensitive.annotation.Field> sensitiveBindedMap = getSensitiveBindedByResultMap(resultMap);
-
-            if (sensitiveBindedMap.isEmpty() && sensitiveFieldMap.isEmpty()) {
-                return results;
-            }
-
+            final Map<String, Privacy> privacyMap = getSensitiveByResultMap(resultMap);
             for (Object obj : results) {
-                final MetaObject objMetaObject = mappedStatement.getConfiguration().newMetaObject(obj);
-                for (Map.Entry<String, Privacy> entry : sensitiveFieldMap.entrySet()) {
-                    Privacy privacy = entry.getValue();
-                    if (ObjectUtils.isNotNull(privacy) && StringUtils.isNotEmpty(privacy.value())) {
-                        if ("ALL".equals(privacy.value()) || "OUT".equals(privacy.value())) {
-                            String property = entry.getKey();
-                            String value = (String) objMetaObject.getValue(property);
-                            if (StringUtils.isNotEmpty(value)) {
-                                if (ObjectUtils.isEmpty(properties)) {
-                                    throw new InstrumentException("please check the request.crypto.decrypt");
+                // 数据解密
+                if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
+                        && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+                    final MetaObject objMetaObject = mappedStatement.getConfiguration().newMetaObject(obj);
+                    for (Map.Entry<String, Privacy> entry : privacyMap.entrySet()) {
+                        Privacy privacy = entry.getValue();
+                        if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                            if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
+                                String property = entry.getKey();
+                                String value = (String) objMetaObject.getValue(property);
+                                if (StringUtils.isNotEmpty(value)) {
+                                    if (ObjectUtils.isEmpty(properties)) {
+                                        throw new InstrumentException("please check the request.crypto.decrypt");
+                                    }
+                                    String decryptValue = CryptoUtils.decrypt(properties.getDecrypt().getType(), properties.getDecrypt().getKey(), value, Charset.UTF_8);
+                                    objMetaObject.setValue(property, decryptValue);
                                 }
-                                String decryptValue = CryptoUtils.decrypt(properties.getDecrypt().getType(), properties.getDecrypt().getKey(), value, Charset.UTF_8);
-                                objMetaObject.setValue(property, decryptValue);
                             }
                         }
                     }
                 }
-                Builder.on(obj);
+                // 数据脱敏
+                if (Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value())
+                        && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+                    Builder.on(obj);
+                }
             }
         }
         return results;
@@ -119,21 +122,6 @@ public class SensitiveResultSetHandler implements Interceptor {
     @Override
     public void setProperties(Properties properties) {
 
-    }
-
-    private Map<String, org.aoju.bus.sensitive.annotation.Field> getSensitiveBindedByResultMap(ResultMap resultMap) {
-        if (resultMap == null) {
-            return new HashMap<>(16);
-        }
-        Map<String, org.aoju.bus.sensitive.annotation.Field> sensitiveBindedMap = new HashMap<>(16);
-        Class<?> clazz = resultMap.getType();
-        for (Field field : clazz.getDeclaredFields()) {
-            org.aoju.bus.sensitive.annotation.Field sensitiveBind = field.getAnnotation(org.aoju.bus.sensitive.annotation.Field.class);
-            if (sensitiveBind != null) {
-                sensitiveBindedMap.put(field.getName(), sensitiveBind);
-            }
-        }
-        return sensitiveBindedMap;
     }
 
     private Map<String, Privacy> getSensitiveByResultMap(ResultMap resultMap) {

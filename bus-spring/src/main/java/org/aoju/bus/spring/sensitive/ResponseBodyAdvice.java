@@ -23,11 +23,13 @@
  */
 package org.aoju.bus.spring.sensitive;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.spring.BaseAdvice;
-import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.logger.Logger;
@@ -40,8 +42,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.*;
 
 
 /**
@@ -52,6 +58,8 @@ import java.lang.annotation.Annotation;
  * @version 3.5.2
  * @since JDK 1.8
  */
+@ControllerAdvice
+@RestControllerAdvice
 public class ResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
 
@@ -62,16 +70,14 @@ public class ResponseBodyAdvice extends BaseAdvice
     public boolean supports(MethodParameter returnType,
                             Class<? extends HttpMessageConverter<?>> converterType) {
         Annotation[] annotations = returnType.getDeclaringClass().getAnnotations();
-        if (annotations != null && annotations.length > 0) {
+        if (ArrayUtils.isNotEmpty(annotations)) {
             for (Annotation annotation : annotations) {
-                if (annotation instanceof Privacy
-                        || annotation instanceof Sensitive) {
+                if (annotation instanceof Sensitive) {
                     return true;
                 }
             }
         }
-        return returnType.getMethod().isAnnotationPresent(Privacy.class)
-                || returnType.getMethod().isAnnotationPresent(Sensitive.class);
+        return returnType.getMethod().isAnnotationPresent(Sensitive.class);
     }
 
     /**
@@ -88,30 +94,92 @@ public class ResponseBodyAdvice extends BaseAdvice
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter parameter, MediaType mediaType,
                                   Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request, ServerHttpResponse response) {
-        if (!this.properties.isDebug()) {
+        if (ObjectUtils.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
                 final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
-                if (ObjectUtils.isNotNull(sensitive)) {
-                    body = Builder.on(body, sensitive);
+                if (ObjectUtils.isEmpty(sensitive)) {
+                    return body;
                 }
-                final Privacy privacy = parameter.getMethod().getAnnotation(Privacy.class);
-                if (ObjectUtils.isNotNull(privacy) && StringUtils.isNotEmpty(privacy.value())) {
-                    if ("ALL".equals(privacy.value()) || "OUT".equals(privacy.value())) {
-                        final String encryptKey = this.properties.getDecrypt().getKey();
-                        final String encryptType = this.properties.getDecrypt().getType();
-                        if (!StringUtils.hasText(encryptKey) || !StringUtils.hasText(encryptType)) {
-                            throw new NullPointerException("please check the request.sensitive.encrypt");
-                        }
-                        String content = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(body);
-                        content = CryptoUtils.encrypt(this.properties.getDecrypt().getType(), this.properties.getDecrypt().getKey(), content, Charset.UTF_8);
-                        return Base64.encode(content);
+
+                List list = new ArrayList<>();
+                for (Object obj : ((Message) body).getData() instanceof List ?
+                        (List) ((Message) body).getData() : Arrays.asList(((Message) body).getData())) {
+                    // 数据脱敏
+                    if (Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value())
+                            && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+                        obj = Builder.on(obj, sensitive);
                     }
+                    // 数据加密
+                    if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())) {
+                        Map<String, Privacy> map = getPrivacyMap(obj.getClass());
+                        for (Map.Entry<String, Privacy> entry : map.entrySet()) {
+                            Privacy privacy = entry.getValue();
+                            if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                                if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
+                                    String property = entry.getKey();
+                                    String value = (String) getValue(obj, property);
+                                    if (StringUtils.isNotEmpty(value)) {
+                                        if (ObjectUtils.isEmpty(properties)) {
+                                            throw new InstrumentException("please check the request.crypto.decrypt");
+                                        }
+                                        value = CryptoUtils.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value, Charset.UTF_8);
+                                        setValue(obj, new String[]{property}, new String[]{value});
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    list.add(obj);
                 }
+                ((Message) body).setData(list);
             } catch (Exception e) {
                 Logger.error("加密数据异常:" + e.getMessage());
             }
         }
         return body;
+    }
+
+    /**
+     * 依据对象的属性数组和值数组对进行赋值
+     *
+     * @param <T>    对象
+     * @param entity 反射对象
+     * @param fields 属性数组
+     * @param value  值数组
+     */
+    private static <T> void setValue(T entity, String[] fields, Object[] value) {
+        for (int i = 0; i < fields.length; i++) {
+            String field = fields[i];
+            if (ReflectUtils.hasField(entity, field)) {
+                ReflectUtils.invokeSetter(entity, field, value[i]);
+            }
+        }
+    }
+
+    /**
+     * 依据对象的属性获取对象值
+     *
+     * @param <T>    对象
+     * @param entity 反射对象
+     * @param field  属性数组
+     */
+    private static <T> Object getValue(T entity, String field) {
+        if (ReflectUtils.hasField(entity, field)) {
+            Object object = ReflectUtils.invokeGetter(entity, field);
+            return object != null ? object.toString() : null;
+        }
+        return null;
+    }
+
+    private Map<String, Privacy> getPrivacyMap(Class<?> clazz) {
+        Map<String, Privacy> map = new HashMap<>();
+        for (Field field : clazz.getDeclaredFields()) {
+            Privacy privacy = field.getAnnotation(Privacy.class);
+            if (privacy != null) {
+                map.put(field.getName(), privacy);
+            }
+        }
+        return map;
     }
 
 }
