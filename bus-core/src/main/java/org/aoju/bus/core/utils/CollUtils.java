@@ -2318,22 +2318,17 @@ public class CollUtils {
      * @throws Exception 异常
      */
     public static Object forceGetFieldValue(Object obj, String fieldName) throws Exception {
-        Field field = obj.getClass().getDeclaredField(fieldName);
-        if(ObjectUtils.isNotEmpty(field)){
-
-        }
-        Object object;
+        Field field = FieldUtils.getField(obj.getClass(), fieldName);
         boolean accessible = field.isAccessible();
         if (!accessible) {
             // 如果是private,protected修饰的属性，需要修改为可以访问的
             field.setAccessible(true);
-            object = field.get(obj);
+            obj = field.get(obj);
             // 还原private,protected属性的访问性质
             field.setAccessible(accessible);
-            return object;
+            return obj;
         }
-        object = field.get(obj);
-        return object;
+        return field.get(obj);
     }
 
     /**
