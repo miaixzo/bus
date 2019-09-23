@@ -45,7 +45,7 @@ package org.aoju.bus.core.builder;
  *
  * @param <T> the type of objects that this object may be differentiated against
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public interface Diffable<T> {

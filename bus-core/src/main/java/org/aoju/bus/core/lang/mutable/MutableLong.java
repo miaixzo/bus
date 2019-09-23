@@ -29,7 +29,7 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>long</code> 类型
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @see Long
  * @since JDK 1.8
  */

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot-storage-starter</artifactId>
-    <version>3.5.2</version>
+    <version>3.5.3</version>
     <packaging>jar</packaging>
 
     <name>bus-boot-storage-starter</name>

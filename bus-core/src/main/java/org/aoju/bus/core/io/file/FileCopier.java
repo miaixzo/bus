@@ -46,7 +46,7 @@ import java.util.ArrayList;
  * 4、目录下的文件和目录复制到另一个目录
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class FileCopier extends SrcToDestCopier<File, FileCopier> {

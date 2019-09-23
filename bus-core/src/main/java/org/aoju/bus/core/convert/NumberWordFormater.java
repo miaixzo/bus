@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 将浮点数类型的number转换成英语的表达方式
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class NumberWordFormater {

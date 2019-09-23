@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-poi</artifactId>
-    <version>3.5.2</version>
+    <version>3.5.3</version>
     <packaging>jar</packaging>
 
     <name>bus-poi</name>

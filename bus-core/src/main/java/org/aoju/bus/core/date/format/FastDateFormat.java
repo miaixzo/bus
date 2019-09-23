@@ -43,7 +43,7 @@ import java.util.TimeZone;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class FastDateFormat extends Format implements DateParser, DatePrinter {

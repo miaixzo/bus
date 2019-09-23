@@ -45,7 +45,7 @@ import java.util.jar.Attributes;
  * Jar 工具类，包含I/O，密钥，过滤器的工具方法。
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public abstract class Builder {

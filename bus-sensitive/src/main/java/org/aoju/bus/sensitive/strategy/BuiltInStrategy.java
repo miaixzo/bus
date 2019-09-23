@@ -35,7 +35,7 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 明明是数组，实现却只能是一个
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class BuiltInStrategy implements StrategyProvider {

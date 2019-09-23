@@ -29,7 +29,7 @@ import org.aoju.bus.logger.level.*;
  * 日志统一接口
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public interface Log extends TraceLog, DebugLog, InfoLog, WarnLog, ErrorLog {
