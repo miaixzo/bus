@@ -27,7 +27,7 @@ package org.aoju.bus.cron.pattern.parser;
  * 分钟值处理
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class MinuteValueParser extends SimpleValueParser {

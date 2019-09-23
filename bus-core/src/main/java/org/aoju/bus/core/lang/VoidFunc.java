@@ -30,7 +30,7 @@ package org.aoju.bus.core.lang;
  * 在JDK8之前，Java的函数并不能作为参数传递，也不能作为返回值存在，此接口用于将一个函数包装成为一个对象，从而传递对象
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public interface VoidFunc {

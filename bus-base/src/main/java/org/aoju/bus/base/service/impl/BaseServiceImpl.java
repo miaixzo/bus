@@ -29,7 +29,6 @@ import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.base.mapper.BaseMapper;
 import org.aoju.bus.base.service.BaseService;
 import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.EntityUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.mapper.entity.Condition;
@@ -46,7 +45,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
@@ -111,13 +110,13 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public void updateById(T entity) {
-        EntityUtils.setUpdatedInfo(entity);
+        entity.setUpdatedInfo(entity);
         mapper.updateByPrimaryKey(entity);
     }
 
     @Override
     public int updateSelectiveById(T entity) {
-        EntityUtils.setUpdatedInfo(entity);
+        entity.setUpdatedInfo(entity);
         return mapper.updateByPrimaryKeySelective(entity);
     }
 
@@ -134,26 +133,26 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public T updateSelectiveByIdOrInsert(T entity) {
-        EntityUtils.setUpdatedInfo(entity);
+        entity.setUpdatedInfo(entity);
         mapper.updateByPrimaryKeySelective(entity);
         return entity;
     }
 
     @Override
     public int updateByWhere(T entity, Object object) {
-        EntityUtils.setUpdatedInfo(entity);
+        entity.setUpdatedInfo(entity);
         return mapper.updateByWhere(entity, object);
     }
 
     @Override
     public int updateByWhereSelective(T entity, Object object) {
-        EntityUtils.setUpdatedInfo(entity);
+        entity.setUpdatedInfo(entity);
         return mapper.updateByWhereSelective(entity, object);
     }
 
     @Override
     public int updateStatus(T entity) {
-        EntityUtils.setUpdatedInfo(entity);
+        entity.setUpdatedInfo(entity);
         return mapper.updateByPrimaryKeySelective(entity);
     }
 
@@ -219,8 +218,8 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
         if (StringUtils.isEmpty(entity.getStatus())) {
             entity.setStatus(Consts.STATUS_ENABLED);
         }
-        EntityUtils.setCreateInfo(entity);
-        EntityUtils.setUpdatedInfo(entity);
+        entity.setCreateInfo(entity);
+        entity.setUpdatedInfo(entity);
         return entity.getId();
     }
 

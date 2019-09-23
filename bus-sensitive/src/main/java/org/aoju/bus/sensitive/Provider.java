@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @param <T> 参数类型
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class Provider<T> {
@@ -124,7 +124,7 @@ public class Provider<T> {
 
         if (ObjectUtils.isNotEmpty(annotation)) {
             Sensitive sensitive = (Sensitive) annotation;
-            this.value = sensitive.value();
+            this.value = sensitive.field();
         }
 
         //1. 初始化
@@ -155,7 +155,7 @@ public class Provider<T> {
 
         if (ObjectUtils.isNotEmpty(annotation)) {
             Sensitive sensitive = (Sensitive) annotation;
-            this.value = sensitive.value();
+            this.value = sensitive.field();
         }
 
         final Context context = new Context();

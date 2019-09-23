@@ -23,13 +23,15 @@
  */
 package org.aoju.bus.sensitive.annotation;
 
+import org.aoju.bus.sensitive.Builder;
+
 import java.lang.annotation.*;
 
 /**
  * 隐私数据加解密
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
@@ -38,13 +40,14 @@ import java.lang.annotation.*;
 public @interface Privacy {
 
     /**
-     * 请求解密:IN,
-     * 响应加密:OUT,
-     * 加解密:ALL
-     * 无加解密:NOTHING
+     * 数据处理模式
+     * 可选值
+     * 1.Builder.ALL 全部开启
+     * 2.Builder.IN  请求/写入
+     * 3.Builder.OUT 查询/输出
      *
      * @return the string
      */
-    String value() default "ALL";
+    String value() default Builder.ALL;
 
 }

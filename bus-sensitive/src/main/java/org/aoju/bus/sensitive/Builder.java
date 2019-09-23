@@ -33,10 +33,36 @@ import java.lang.annotation.Annotation;
  * 2.主要供单独的字符串处理使用
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public final class Builder {
+
+    /**
+     * 全局处理
+     */
+    public static final String ALL = "ALL";
+    /**
+     * 数据脱敏
+     */
+    public static final String SENS = "SENS";
+    /**
+     * 数据安全
+     */
+    public static final String SAFE = "SAFE";
+    /**
+     * 请求解密
+     */
+    public static final String IN = "IN";
+    /**
+     * 响应加密
+     */
+    public static final String OUT = "OUT";
+
+    /**
+     * 不做任何处理
+     */
+    public static final String NOTHING = "NOTHING";
 
     /**
      * 脱敏对象

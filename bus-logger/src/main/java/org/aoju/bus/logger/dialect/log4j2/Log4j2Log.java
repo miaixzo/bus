@@ -34,7 +34,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
  * Apache Log4J 2 log.
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class Log4j2Log extends AbstractAware {

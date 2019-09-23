@@ -47,7 +47,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class CollUtils {
@@ -1011,7 +1011,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.5.2
+     * @since 3.5.3
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, new Editor<T>() {
@@ -1043,7 +1043,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.5.2
+     * @since 3.5.3
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -1060,7 +1060,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.5.2
+     * @since 3.5.3
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -2318,22 +2318,17 @@ public class CollUtils {
      * @throws Exception 异常
      */
     public static Object forceGetFieldValue(Object obj, String fieldName) throws Exception {
-        Field field = obj.getClass().getDeclaredField(fieldName);
-        if(ObjectUtils.isNotEmpty(field)){
-
-        }
-        Object object;
+        Field field = FieldUtils.getField(obj.getClass(), fieldName);
         boolean accessible = field.isAccessible();
         if (!accessible) {
             // 如果是private,protected修饰的属性，需要修改为可以访问的
             field.setAccessible(true);
-            object = field.get(obj);
+            obj = field.get(obj);
             // 还原private,protected属性的访问性质
             field.setAccessible(accessible);
-            return object;
+            return obj;
         }
-        object = field.get(obj);
-        return object;
+        return field.get(obj);
     }
 
     /**
@@ -2511,7 +2506,7 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 3.5.2
+     * @since 3.5.3
      */
     public interface Hash<T> {
         /**

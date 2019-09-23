@@ -24,7 +24,6 @@
 package org.aoju.bus.base.spring;
 
 
-import com.alibaba.fastjson.JSON;
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -36,42 +35,42 @@ import org.aoju.bus.core.utils.StringUtils;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class Controller {
 
-    public static String write(ErrorCode respCode) {
+    public static Object write(ErrorCode respCode) {
         return write(respCode, null);
     }
 
-    public static String write(ErrorCode respCode, Object data) {
+    public static Object write(ErrorCode respCode, Object data) {
         return write(respCode.getErrcode(), respCode.getErrmsg(), data);
     }
 
-    public static String write(ErrorCode respCode, String message) {
+    public static Object write(ErrorCode respCode, String message) {
         return write(respCode.getErrcode(), StringUtils.isEmpty(message) ? respCode.getErrmsg() : message);
     }
 
-    public static String write(Object data) {
+    public static Object write(Object data) {
         return write(ErrorCode.EM_SUCCESS, data);
     }
 
-    public static String write(String errcode) {
+    public static Object write(String errcode) {
         return write(ErrorCode.of(errcode), null);
     }
 
-    public static String write(String errcode, String errmsg) {
+    public static Object write(String errcode, String errmsg) {
         return write(errcode, errmsg, null);
     }
 
-    public static String write(String errcode, String errmsg, Object data) {
+    public static Object write(String errcode, String errmsg, Object data) {
         ErrorCode resultCode = ErrorCode.of(errcode);
         if (ObjectUtils.isNotEmpty(resultCode)) {
             errmsg = StringUtils.isEmpty(errmsg) ? resultCode.getErrmsg() : errmsg;
-            return JSON.toJSON(new Message(resultCode.getErrcode(), errmsg, data)).toString();
+            return new Message(resultCode.getErrcode(), errmsg, data);
         }
-        return JSON.toJSON(new Message(ErrorCode.EM_FAILURE.getErrcode(), ErrorCode.EM_FAILURE.errmsg)).toString();
+        return new Message(ErrorCode.EM_FAILURE.getErrcode(), ErrorCode.EM_FAILURE.errmsg);
     }
 
 }

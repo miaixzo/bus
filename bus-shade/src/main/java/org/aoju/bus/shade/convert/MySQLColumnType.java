@@ -27,7 +27,7 @@ package org.aoju.bus.shade.convert;
  * 表字段类型
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public enum MySQLColumnType implements ColumnType {

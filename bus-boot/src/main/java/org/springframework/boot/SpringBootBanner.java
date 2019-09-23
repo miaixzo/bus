@@ -35,7 +35,7 @@ import java.io.PrintStream;
  * 启动旗标
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 class SpringBootBanner implements Banner {

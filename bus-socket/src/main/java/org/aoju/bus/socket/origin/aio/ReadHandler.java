@@ -31,7 +31,7 @@ import java.nio.channels.CompletionHandler;
  * 数据读取完成回调，调用Session中相应方法处理消息，单例使用
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class ReadHandler implements CompletionHandler<Integer, AioSession> {

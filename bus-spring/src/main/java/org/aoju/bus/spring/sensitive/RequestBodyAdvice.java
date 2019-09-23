@@ -26,12 +26,14 @@ package org.aoju.bus.spring.sensitive;
 import org.aoju.bus.base.spring.BaseAdvice;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.sensitive.annotation.Privacy;
+import org.aoju.bus.sensitive.Builder;
+import org.aoju.bus.sensitive.annotation.Sensitive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -46,7 +48,7 @@ import java.lang.reflect.Type;
  * 对加了@Decrypt的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 3.5.2
+ * @version 3.5.3
  * @since JDK 1.8
  */
 public class RequestBodyAdvice extends BaseAdvice
@@ -69,14 +71,14 @@ public class RequestBodyAdvice extends BaseAdvice
                             Type type,
                             Class<? extends HttpMessageConverter<?>> converterType) {
         Annotation[] annotations = parameter.getDeclaringClass().getAnnotations();
-        if (annotations != null && annotations.length > 0) {
+        if (ArrayUtils.isNotEmpty(annotations)) {
             for (Annotation annotation : annotations) {
-                if (annotation instanceof Privacy) {
+                if (annotation instanceof Sensitive) {
                     return true;
                 }
             }
         }
-        return parameter.getMethod().isAnnotationPresent(Privacy.class);
+        return parameter.getMethod().isAnnotationPresent(Sensitive.class);
     }
 
     /**
@@ -94,16 +96,19 @@ public class RequestBodyAdvice extends BaseAdvice
                                                                     MethodParameter parameter,
                                                                     Type type,
                                                                     Class<? extends HttpMessageConverter<?>> converterType) {
-        if (!this.properties.isDebug()) {
+        if (ObjectUtils.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
-                final Privacy privacy = parameter.getMethod().getAnnotation(Privacy.class);
-                if (ObjectUtils.isNotNull(privacy) && StringUtils.isNotEmpty(privacy.value())) {
-                    if ("ALL".equals(privacy.value()) || "IN".equals(privacy.value())) {
-                        return new HttpInputMessage(inputMessage,
-                                this.properties.getDecrypt().getKey(),
-                                this.properties.getDecrypt().getType(),
-                                Charset.DEFAULT_UTF_8);
-                    }
+                final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
+                if (ObjectUtils.isEmpty(sensitive)) {
+                    return inputMessage;
+                }
+                // 数据解密
+                if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
+                        && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
+                    return new HttpInputMessage(inputMessage,
+                            this.properties.getDecrypt().getKey(),
+                            this.properties.getDecrypt().getType(),
+                            Charset.DEFAULT_UTF_8);
                 }
             } catch (Exception e) {
                 Logger.error("数据解密失败", e);
