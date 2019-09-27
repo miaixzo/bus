@@ -39,7 +39,7 @@ import java.nio.charset.StandardCharsets;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示，长度比原来增加1/3。
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Base64 {
@@ -277,7 +277,6 @@ public class Base64 {
      *
      * @param in 被编码base64的流（一般为图片流或者文件流）
      * @return 被加密后的字符串
-     * @since 4.0.9
      */
     public static String encode(InputStream in) {
         return Base64Encoder.encode(IoUtils.readBytes(in));
@@ -288,7 +287,6 @@ public class Base64 {
      *
      * @param in 被编码base64的流（一般为图片流或者文件流）
      * @return 被加密后的字符串
-     * @since 4.0.9
      */
     public static String encodeUrlSafe(InputStream in) {
         return Base64Encoder.encodeUrlSafe(IoUtils.readBytes(in));
@@ -299,7 +297,6 @@ public class Base64 {
      *
      * @param file 被编码base64的文件
      * @return 被加密后的字符串
-     * @since 4.0.9
      */
     public static String encode(File file) {
         return Base64Encoder.encode(FileUtils.readBytes(file));
@@ -310,7 +307,6 @@ public class Base64 {
      *
      * @param file 被编码base64的文件
      * @return 被加密后的字符串
-     * @since 4.0.9
      */
     public static String encodeUrlSafe(File file) {
         return Base64Encoder.encodeUrlSafe(FileUtils.readBytes(file));
@@ -413,7 +409,6 @@ public class Base64 {
      * @param base64   被解码的base64字符串
      * @param destFile 目标文件
      * @return 目标文件
-     * @since 4.0.9
      */
     public static File decodeToFile(String base64, File destFile) {
         return FileUtils.writeBytes(Base64Decoder.decode(base64), destFile);
@@ -425,7 +420,6 @@ public class Base64 {
      * @param base64     被解码的base64字符串
      * @param out        写出到的流
      * @param isCloseOut 是否关闭输出流
-     * @since 4.0.9
      */
     public static void decodeToStream(String base64, OutputStream out, boolean isCloseOut) {
         IoUtils.write(out, isCloseOut, Base64Decoder.decode(base64));

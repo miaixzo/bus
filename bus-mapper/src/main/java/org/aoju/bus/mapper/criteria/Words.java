@@ -31,7 +31,7 @@ import java.util.Set;
  * 关键字处理
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Words {

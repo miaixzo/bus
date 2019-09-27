@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @param <T> 子类类型，用于返回this
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
@@ -78,7 +78,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * 返回工作簿表格数
      *
      * @return 工作簿表格数
-     * @since 4.0.10
      */
     public int getSheetCount() {
         return this.workbook.getNumberOfSheets();
@@ -88,7 +87,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * 获取此工作簿所有Sheet表
      *
      * @return sheet表列表
-     * @since 4.0.3
      */
     public List<Sheet> getSheets() {
         final int totalSheet = getSheetCount();
@@ -103,7 +101,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * 获取表名列表
      *
      * @return 表名列表
-     * @since 4.0.3
      */
     public List<String> getSheetNames() {
         final int totalSheet = workbook.getNumberOfSheets();
@@ -129,7 +126,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      *
      * @param sheetName sheet名
      * @return this
-     * @since 4.0.10
      */
     public T setSheet(String sheetName) {
         this.sheet = this.workbook.getSheet(sheetName);
@@ -145,7 +141,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      *
      * @param sheetIndex sheet序号，从0开始计数
      * @return this
-     * @since 4.0.10
      */
     public T setSheet(int sheetIndex) {
         try {
@@ -165,7 +160,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param x X坐标，从0计数，既列号
      * @param y Y坐标，从0计数，既行号
      * @return {@link Cell}
-     * @since 4.0.5
      */
     public Cell getCell(int x, int y) {
         return getCell(x, y, false);
@@ -177,7 +171,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param x X坐标，从0计数，既列号
      * @param y Y坐标，从0计数，既行号
      * @return {@link Cell}
-     * @since 4.0.6
      */
     public Cell getOrCreateCell(int x, int y) {
         return getCell(x, y, true);
@@ -190,7 +183,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param y                  Y坐标，从0计数，既行号
      * @param isCreateIfNotExist 单元格不存在时是否创建
      * @return {@link Cell}
-     * @since 4.0.6
      */
     public Cell getCell(int x, int y, boolean isCreateIfNotExist) {
         final Row row = isCreateIfNotExist ? RowUtils.getOrCreateRow(this.sheet, y) : this.sheet.getRow(y);
@@ -205,7 +197,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      *
      * @param y Y坐标，从0计数，既行号
      * @return {@link Row}
-     * @since 4.1.4
      */
     public Row getOrCreateRow(int y) {
         return RowUtils.getOrCreateRow(this.sheet, y);
@@ -217,7 +208,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @param x X坐标，从0计数，既列号
      * @param y Y坐标，从0计数，既行号
      * @return {@link CellStyle}
-     * @since 4.1.4
      */
     public CellStyle getOrCreateCellStyle(int x, int y) {
         final Cell cell = getOrCreateCell(x, y);
@@ -234,7 +224,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      *
      * @param y Y坐标，从0计数，既行号
      * @return {@link CellStyle}
-     * @since 4.1.4
      */
     public CellStyle getOrCreateRowStyle(int y) {
         final Row row = getOrCreateRow(y);
@@ -251,7 +240,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      *
      * @param x X坐标，从0计数，既列号
      * @return {@link CellStyle}
-     * @since 4.1.4
      */
     public CellStyle getOrCreateColumnStyle(int x) {
         CellStyle columnStyle = this.sheet.getColumnStyle(x);
@@ -270,7 +258,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * </pre>
      *
      * @return 行数
-     * @since 4.5.4
      */
     public int getRowCount() {
         return this.sheet.getLastRowNum() + 1;
@@ -284,7 +271,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * </pre>
      *
      * @return 行数
-     * @since 4.5.4
      */
     public int getPhysicalRowCount() {
         return this.sheet.getPhysicalNumberOfRows();

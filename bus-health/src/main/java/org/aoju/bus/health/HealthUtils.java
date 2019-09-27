@@ -39,7 +39,7 @@ import java.util.Properties;
  * http://blog.csdn.net/zhongweijian/article/details/7619383
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class HealthUtils {
@@ -151,7 +151,6 @@ public class HealthUtils {
      * 返回Java虚拟机类加载系统相关属性
      *
      * @return {@link ClassLoadingMXBean}
-     * @since 4.1.4
      */
     public static ClassLoadingMXBean getClassLoadingMXBean() {
         return ManagementFactory.getClassLoadingMXBean();
@@ -161,7 +160,6 @@ public class HealthUtils {
      * 返回Java虚拟机内存系统相关属性
      *
      * @return {@link MemoryMXBean}
-     * @since 4.1.4
      */
     public static MemoryMXBean getMemoryMXBean() {
         return ManagementFactory.getMemoryMXBean();
@@ -171,7 +169,6 @@ public class HealthUtils {
      * 返回Java虚拟机线程系统相关属性
      *
      * @return {@link ThreadMXBean}
-     * @since 4.1.4
      */
     public static ThreadMXBean getThreadMXBean() {
         return ManagementFactory.getThreadMXBean();
@@ -181,7 +178,6 @@ public class HealthUtils {
      * 返回Java虚拟机运行时系统相关属性
      *
      * @return {@link RuntimeMXBean}
-     * @since 4.1.4
      */
     public static RuntimeMXBean getRuntimeMXBean() {
         return ManagementFactory.getRuntimeMXBean();
@@ -192,7 +188,6 @@ public class HealthUtils {
      * 如果没有编译系统，则返回<code>null</code>
      *
      * @return a {@link CompilationMXBean} ，如果没有编译系统，则返回<code>null</code>
-     * @since 4.1.4
      */
     public static CompilationMXBean getCompilationMXBean() {
         return ManagementFactory.getCompilationMXBean();
@@ -202,7 +197,6 @@ public class HealthUtils {
      * 返回Java虚拟机运行下的操作系统相关信息属性
      *
      * @return {@link OperatingSystemMXBean}
-     * @since 4.1.4
      */
     public static OperatingSystemMXBean getOperatingSystemMXBean() {
         return ManagementFactory.getOperatingSystemMXBean();

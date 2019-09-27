@@ -63,7 +63,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class EqualsBuilder implements Builder<Boolean> {
@@ -308,7 +308,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @param excludeFields    array of field names to exclude from testing
      * @return <code>true</code> if the two Objects have tested equals.
      * @see EqualsExclude
-     * @since 3.6
      */
     public static boolean reflectionEquals(final Object lhs, final Object rhs, final boolean testTransients, final Class<?> reflectUpToClass,
                                            final boolean testRecursive, final String... excludeFields) {
@@ -332,7 +331,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      *
      * @param testTransients whether to test transient fields
      * @return EqualsBuilder - used to chain calls.
-     * @since 3.6
      */
     public EqualsBuilder setTestTransients(final boolean testTransients) {
         this.testTransients = testTransients;
@@ -344,7 +342,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      *
      * @param testRecursive whether to do a recursive test
      * @return EqualsBuilder - used to chain calls.
-     * @since 3.6
      */
     public EqualsBuilder setTestRecursive(final boolean testRecursive) {
         this.testRecursive = testRecursive;
@@ -362,7 +359,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      *
      * @param bypassReflectionClasses classes to bypass reflection test
      * @return EqualsBuilder - used to chain calls.
-     * @since 3.8
      */
     public EqualsBuilder setBypassReflectionClasses(List<Class<?>> bypassReflectionClasses) {
         this.bypassReflectionClasses = bypassReflectionClasses;
@@ -374,7 +370,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      *
      * @param reflectUpToClass the super class to reflect up to
      * @return EqualsBuilder - used to chain calls.
-     * @since 3.6
      */
     public EqualsBuilder setReflectUpToClass(final Class<?> reflectUpToClass) {
         this.reflectUpToClass = reflectUpToClass;
@@ -386,7 +381,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      *
      * @param excludeFields the fields to exclude
      * @return EqualsBuilder - used to chain calls.
-     * @since 3.6
      */
     public EqualsBuilder setExcludeFields(final String... excludeFields) {
         this.excludeFields = excludeFields;

@@ -46,7 +46,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class BeanUtils {
@@ -282,7 +282,6 @@ public class BeanUtils {
      * @param expression 表达式，例如：person.friend[5].name
      * @param value      值
      * @see BeanPath#get(Object)
-     * @since 4.0.6
      */
     public static void setProperty(Object bean, String expression, Object value) {
         BeanPath.create(expression).set(bean, value);
@@ -409,7 +408,6 @@ public class BeanUtils {
      * @param source Bean对象或Map
      * @param clazz  目标的Bean类型
      * @return Bean对象
-     * @since 4.1.20
      */
     public static <T> T toBean(Object source, Class<T> clazz) {
         final T target = ReflectUtils.newInstance(clazz);
@@ -508,7 +506,6 @@ public class BeanUtils {
      * @param ignoreNullValue 是否忽略值为空的字段
      * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key
      * @return Map
-     * @since 4.0.5
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
         if (bean == null) {
@@ -600,7 +597,6 @@ public class BeanUtils {
      * @param beanClassName Bean的类名
      * @param isSimple      是否只匹配类名而忽略包名，true表示忽略包名
      * @return 是否匹配
-     * @since 4.0.6
      */
     public static boolean isMatchName(Object bean, String beanClassName, boolean isSimple) {
         return ClassUtils.getClassName(bean, isSimple).equals(isSimple ? StringUtils.upperFirst(beanClassName) : beanClassName);
@@ -648,7 +644,6 @@ public class BeanUtils {
      *
      * @param bean Bean对象
      * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
-     * @since 4.1.10
      */
     public static boolean isEmpty(Object bean) {
         if (null != bean) {
@@ -667,7 +662,6 @@ public class BeanUtils {
      *
      * @param bean Bean对象
      * @return 是否包含值为<code>null</code>的属性，<code>true</code> - 包含 / <code>false</code> - 不包含
-     * @since 4.1.10
      */
     public static boolean hasNullField(Object bean) {
         if (null == bean) {

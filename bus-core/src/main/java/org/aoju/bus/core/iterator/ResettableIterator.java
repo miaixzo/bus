@@ -32,7 +32,7 @@ import java.util.Iterator;
  *
  * @param <E> the type to iterate over
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public interface ResettableIterator<E> extends Iterator<E> {

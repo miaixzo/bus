@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 @ConfigurationProperties(prefix = "tracer")

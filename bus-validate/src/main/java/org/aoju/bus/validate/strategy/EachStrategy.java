@@ -40,7 +40,7 @@ import java.util.Map;
  * 容器元素内部校验
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class EachStrategy implements Complex<Object, Each> {
@@ -55,13 +55,13 @@ public class EachStrategy implements Complex<Object, Each> {
             if (!Registry.getInstance().contains(name)) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + name);
             }
-            list.add((Complex) Registry.getInstance().get(name));
+            list.add((Complex) Registry.getInstance().require(name));
         }
         for (Class<? extends Complex> clazz : annotation.classes()) {
             if (!Registry.getInstance().contains(clazz.getSimpleName())) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
             }
-            list.add((Complex) Registry.getInstance().get(clazz.getSimpleName()));
+            list.add((Complex) Registry.getInstance().require(clazz.getSimpleName()));
         }
 
         if (Provider.isArray(object)) {

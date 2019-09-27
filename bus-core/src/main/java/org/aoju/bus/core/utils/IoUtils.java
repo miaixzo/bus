@@ -53,7 +53,7 @@ import java.util.zip.Checksum;
  * IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class IoUtils {
@@ -770,7 +770,6 @@ public class IoUtils {
      *
      * @param content 内容bytes
      * @return 字节流
-     * @since 4.1.8
      */
     public static ByteArrayInputStream toStream(byte[] content) {
         if (content == null) {
@@ -798,7 +797,6 @@ public class IoUtils {
      *
      * @param in {@link InputStream}
      * @return {@link BufferedInputStream}
-     * @since 4.0.10
      */
     public static BufferedInputStream toBuffered(InputStream in) {
         return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in);
@@ -809,7 +807,6 @@ public class IoUtils {
      *
      * @param out {@link OutputStream}
      * @return {@link BufferedOutputStream}
-     * @since 4.0.10
      */
     public static BufferedOutputStream toBuffered(OutputStream out) {
         return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out);
@@ -821,7 +818,6 @@ public class IoUtils {
      *
      * @param in 流
      * @return {@link InputStream}
-     * @since 4.0.9
      */
     public static InputStream toMarkSupportStream(InputStream in) {
         if (null == in) {
@@ -1002,7 +998,6 @@ public class IoUtils {
      * @param input2 第二个流
      * @return 两个流的内容一致返回true，否则false
      * @throws InstrumentException 异常
-     * @since 4.0.6
      */
     public static boolean contentEquals(InputStream input1, InputStream input2) throws InstrumentException {
         if (false == (input1 instanceof BufferedInputStream)) {
@@ -1037,7 +1032,6 @@ public class IoUtils {
      * @param input2 第二个reader
      * @return 两个流的内容一致返回true，否则false
      * @throws InstrumentException 异常
-     * @since 4.0.6
      */
     public static boolean contentEquals(Reader input1, Reader input2) throws InstrumentException {
         input1 = getReader(input1);
@@ -1068,7 +1062,6 @@ public class IoUtils {
      * @param input2 第二个流
      * @return 两个流的内容一致返回true，否则false
      * @throws InstrumentException 异常
-     * @since 4.0.6
      */
     public static boolean contentEqualsIgnoreEOL(Reader input1, Reader input2) throws InstrumentException {
         final BufferedReader br1 = getReader(input1);
@@ -1093,7 +1086,6 @@ public class IoUtils {
      * @param in 文件，不能为目录
      * @return CRC32值
      * @throws InstrumentException 异常
-     * @since 4.0.6
      */
     public static long checksumCRC32(InputStream in) throws InstrumentException {
         return checksum(in, new CRC32()).getValue();
@@ -1106,7 +1098,6 @@ public class IoUtils {
      * @param checksum {@link Checksum}
      * @return Checksum
      * @throws InstrumentException 异常
-     * @since 4.0.10
      */
     public static Checksum checksum(InputStream in, Checksum checksum) throws InstrumentException {
         Assert.notNull(in, "InputStream is null !");

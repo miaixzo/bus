@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class DateUtils extends Fields {
@@ -180,7 +180,6 @@ public class DateUtils extends Fields {
      * 当前时间秒数
      *
      * @return 当前时间秒数
-     * @since 4.0.0
      */
     public static long timestamp() {
         return System.currentTimeMillis();
@@ -211,7 +210,6 @@ public class DateUtils extends Fields {
      *
      * @param date 日期
      * @return 第几个季度
-     * @since 4.1.0
      */
     public static int quarter(Date date) {
         return DateTime.of(date).quarter();
@@ -222,7 +220,6 @@ public class DateUtils extends Fields {
      *
      * @param date 日期
      * @return 第几个季度枚举
-     * @since 4.1.0
      */
     public static Fields.Quarter quarters(Date date) {
         return DateTime.of(date).quarterEnum();
@@ -783,7 +780,6 @@ public class DateUtils extends Fields {
      *
      * @param utcString UTC时间
      * @return 日期对象
-     * @since 4.1.14
      */
     public static DateTime parseUTC(String utcString) {
         return parse(utcString, Fields.UTC_FORMAT);
@@ -980,7 +976,6 @@ public class DateUtils extends Fields {
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
-     * @since 4.1.0
      */
     public static Calendar beginOfQuarter(Calendar calendar) {
         calendar.set(Calendar.MONTH, calendar.get(Fields.DateField.MONTH.getValue()) / 3 * 3);
@@ -993,7 +988,6 @@ public class DateUtils extends Fields {
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
-     * @since 4.1.0
      */
     public static Calendar endOfQuarter(Calendar calendar) {
         calendar.set(Calendar.MONTH, calendar.get(Fields.DateField.MONTH.getValue()) / 3 * 3 + 2);

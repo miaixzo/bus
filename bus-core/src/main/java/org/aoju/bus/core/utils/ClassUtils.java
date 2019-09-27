@@ -51,7 +51,7 @@ import java.util.*;
  * 类工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ClassUtils {
@@ -687,7 +687,7 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();
@@ -879,7 +879,6 @@ public class ClassUtils {
      * @param ignoreNullValue 是否忽略值为空的字段
      * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key
      * @return Map
-     * @since 4.0.5
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
         if (bean == null) {
@@ -1145,7 +1144,6 @@ public class ClassUtils {
      *
      * @param jarOrDir jar文件或者包含jar和class文件的目录
      * @return {@link JarLoaders}
-     * @since 4.4.2
      */
     public static JarLoaders getJarClassLoader(File jarOrDir) {
         return JarLoaders.load(jarOrDir);
@@ -1157,7 +1155,6 @@ public class ClassUtils {
      * @param jarOrDir jar文件或者包含jar和class文件的目录
      * @param name     类名
      * @return 类
-     * @since 4.4.2
      */
     public static Class<?> loadClass(File jarOrDir, String name) {
         try {
@@ -1204,7 +1201,6 @@ public class ClassUtils {
      * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
      * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
      * @return 类名对应的类
-     * @since 4.1.20
      */
     private static Class<?> tryLoadInnerClass(String name, ClassLoader classLoader, boolean isInitialized) {
         // 尝试获取内部类，例如java.lang.Thread.State =》java.lang.Thread$State
@@ -1452,7 +1448,6 @@ public class ClassUtils {
      * @param object the object for which to get the simple class name; may be null
      * @return the simple class name or the empty String
      * @see Class#getSimpleName()
-     * @since 3.7
      */
     public static String getSimpleName(final Object object) {
         return getSimpleName(object, Normal.EMPTY);

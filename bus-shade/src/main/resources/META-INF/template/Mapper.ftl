@@ -29,15 +29,15 @@ import org.aoju.bus.base.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- *  ${entityComment}数据访问层
- *  ${entityName}Mapper
- *
- * @version: ${version}
- * @author: ${author}
- * @since JDK 1.8
- */
+*  ${entityComment}数据访问层
+*  ${entityName}Mapper
+*
+* @version: ${version}
+* @author: ${author}
+* @since JDK 1.8
+*/
 @Mapper
 public interface ${entityName}Mapper extends BaseMapper<${entityName}> {
-	
+
 }
 	

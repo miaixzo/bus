@@ -38,7 +38,7 @@ import java.util.List;
  * 邮件内部工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class InternalMail {
@@ -50,7 +50,6 @@ public class InternalMail {
      * @param addrStrs 地址数组
      * @param charset  编码（主要用于中文用户名的编码）
      * @return 地址数组
-     * @since 4.0.3
      */
     public static InternetAddress[] parseAddressFromStrs(String[] addrStrs, Charset charset) {
         final List<InternetAddress> resultList = new ArrayList<>(addrStrs.length);

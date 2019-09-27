@@ -24,9 +24,8 @@
 package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.lang.exception.CommonException;
-import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.KeyType;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.crypto.Builder;
 
 import java.security.Key;
 import java.security.KeyPair;
@@ -39,10 +38,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * 非对称基础，提供锁、私钥和公钥的持有
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
-public class BaseAsymmetric<T extends BaseAsymmetric<T>> {
+public class Keys<T extends Keys<T>> {
 
     /**
      * 算法
@@ -61,10 +60,11 @@ public class BaseAsymmetric<T extends BaseAsymmetric<T>> {
      */
     protected Lock lock = new ReentrantLock();
 
+
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
@@ -72,13 +72,13 @@ public class BaseAsymmetric<T extends BaseAsymmetric<T>> {
      * @param publicKey  公钥
      * @since 3.1.1
      */
-    public BaseAsymmetric(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
+    public Keys(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
         init(algorithm, privateKey, publicKey);
     }
 
     /**
-     * 初始化
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 初始化<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
      * @param algorithm  算法
@@ -108,7 +108,7 @@ public class BaseAsymmetric<T extends BaseAsymmetric<T>> {
      * @return this
      */
     public T initKeys() {
-        KeyPair keyPair = CryptoUtils.generateKeyPair(this.algorithm);
+        KeyPair keyPair = Builder.generateKeyPair(this.algorithm);
         this.publicKey = keyPair.getPublic();
         this.privateKey = keyPair.getPrivate();
         return (T) this;
@@ -192,6 +192,7 @@ public class BaseAsymmetric<T extends BaseAsymmetric<T>> {
                 }
                 return this.publicKey;
         }
-        throw new CommonException("Uknown key type: " + type);
+        throw new InstrumentException("Uknown key type: " + type);
     }
+
 }

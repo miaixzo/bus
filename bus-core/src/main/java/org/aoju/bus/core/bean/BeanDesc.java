@@ -47,7 +47,7 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class BeanDesc implements Serializable {
@@ -181,7 +181,6 @@ public class BeanDesc implements Serializable {
      *
      * @param field 字段
      * @return {@link PropDesc}
-     * @since 4.0.2
      */
     private PropDesc createProp(Field field) {
         final String fieldName = field.getName();
@@ -411,7 +410,6 @@ public class BeanDesc implements Serializable {
          *
          * @param bean Bean对象
          * @return 字段值
-         * @since 4.0.5
          */
         public Object getValue(Object bean) {
             if (null != this.getter) {
@@ -429,7 +427,6 @@ public class BeanDesc implements Serializable {
          * @param bean  Bean对象
          * @param value 值
          * @return this
-         * @since 4.0.5
          */
         public PropDesc setValue(Object bean, Object value) {
             if (null != this.setter) {

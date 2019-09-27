@@ -27,13 +27,13 @@ package ${serviceUrl};
 import ${entityUrl}.${entityName};
 import org.aoju.bus.base.service.BaseService;
 
-/**   
- * ${entityComment}服务层
- *
- * @version: ${version}
- * @author: ${author}
- * @since JDK 1.8
+/**
+* ${entityComment}服务层
+*
+* @version: ${version}
+* @author: ${author}
+* @since JDK 1.8
 */
 public interface ${entityName}Service extends BaseService<${entityName}> {
-	
+
 }

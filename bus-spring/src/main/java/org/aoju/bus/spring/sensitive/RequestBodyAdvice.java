@@ -24,19 +24,18 @@
 package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.base.spring.BaseAdvice;
-import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Sensitive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
 
 import java.io.InputStream;
@@ -45,10 +44,10 @@ import java.lang.reflect.Type;
 
 /**
  * 请求请求处理类（目前仅仅对requestbody有效）
- * 对加了@Decrypt的方法的数据进行解密密操作
+ * 对加了@P的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class RequestBodyAdvice extends BaseAdvice
@@ -92,26 +91,28 @@ public class RequestBodyAdvice extends BaseAdvice
      * @return 输入请求或新实例，永远不会 {@code null}
      */
     @Override
-    public org.springframework.http.HttpInputMessage beforeBodyRead(org.springframework.http.HttpInputMessage inputMessage,
-                                                                    MethodParameter parameter,
-                                                                    Type type,
-                                                                    Class<? extends HttpMessageConverter<?>> converterType) {
+    public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage,
+                                           MethodParameter parameter,
+                                           Type type,
+                                           Class<? extends HttpMessageConverter<?>> converterType) {
         if (ObjectUtils.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
                 final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
                 if (ObjectUtils.isEmpty(sensitive)) {
                     return inputMessage;
                 }
+
                 // 数据解密
                 if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
-                    return new HttpInputMessage(inputMessage,
+                    inputMessage = new InputMessage(inputMessage,
                             this.properties.getDecrypt().getKey(),
                             this.properties.getDecrypt().getType(),
                             Charset.DEFAULT_UTF_8);
                 }
+
             } catch (Exception e) {
-                Logger.error("数据解密失败", e);
+                Logger.error("Internal processing failure:" + e.getMessage());
             }
         }
         return inputMessage;
@@ -129,7 +130,7 @@ public class RequestBodyAdvice extends BaseAdvice
      * @return 相同的主体或新实例
      */
     @Override
-    public Object afterBodyRead(Object body, org.springframework.http.HttpInputMessage inputMessage,
+    public Object afterBodyRead(Object body, HttpInputMessage inputMessage,
                                 MethodParameter parameter,
                                 Type type,
                                 Class<? extends HttpMessageConverter<?>> converterType) {
@@ -148,22 +149,22 @@ public class RequestBodyAdvice extends BaseAdvice
      * @return 要使用的值或{@code null}，该值可能会引发{@code HttpMessageNotReadableException}.
      */
     @Override
-    public Object handleEmptyBody(Object body, org.springframework.http.HttpInputMessage inputMessage,
+    public Object handleEmptyBody(Object body, HttpInputMessage inputMessage,
                                   MethodParameter parameter,
                                   Type type,
                                   Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
     }
 
-    class HttpInputMessage implements org.springframework.http.HttpInputMessage {
+    class InputMessage implements HttpInputMessage {
 
         private HttpHeaders headers;
         private InputStream body;
 
-        public HttpInputMessage(org.springframework.http.HttpInputMessage inputMessage,
-                                String key,
-                                String mode,
-                                String charset) throws Exception {
+        public InputMessage(HttpInputMessage inputMessage,
+                            String key,
+                            String type,
+                            String charset) throws Exception {
             if (StringUtils.isEmpty(key)) {
                 throw new NullPointerException("please check the request.crypto.decrypt.key");
             }
@@ -181,9 +182,7 @@ public class RequestBodyAdvice extends BaseAdvice
                 if (!StringUtils.isEmpty(content)) {
                     String[] contents = content.split("\\|");
                     for (int k = 0; k < contents.length; k++) {
-                        String value = contents[k];
-                        value = new String(CryptoUtils.decrypt(mode, key, Base64.decode(value)), charset);
-                        json.append(value);
+                        json.append(org.aoju.bus.crypto.Builder.decrypt(type, key, contents[k], Charset.UTF_8));
                     }
                 }
                 decryptBody = json.toString();

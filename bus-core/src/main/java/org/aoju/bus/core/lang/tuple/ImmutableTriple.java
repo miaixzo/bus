@@ -37,7 +37,7 @@ package org.aoju.bus.core.lang.tuple;
  * @param <M> the middle element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public final class ImmutableTriple<L, M, R> extends Triple<L, M, R> {
@@ -85,7 +85,6 @@ public final class ImmutableTriple<L, M, R> extends Triple<L, M, R> {
      * @param <M> the middle element of this triple. Value is {@code null}.
      * @param <R> the right element of this triple. Value is {@code null}.
      * @return an immutable triple of nulls.
-     * @since 3.6
      */
     public static <L, M, R> ImmutableTriple<L, M, R> nullTriple() {
         return NULL;

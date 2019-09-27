@@ -25,11 +25,11 @@ package org.aoju.bus.spring.druid;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.Maps;
+import org.aoju.bus.core.consts.Algorithm;
 import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -52,7 +52,7 @@ import java.util.Map;
  * Druid 配置
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 @ConditionalOnClass(DruidDataSource.class)
@@ -154,13 +154,13 @@ public class DruidConfiguration {
                 Object value = beanMap.get(key);
                 if (StringUtils.isNotEmpty(this.druidProperties.getPrivateKey())) {
                     if ("url".equals(key)) {
-                        value = CryptoUtils.decrypt(ModeType.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("url", value);
                     } else if ("username".equals(key)) {
-                        value = CryptoUtils.decrypt(ModeType.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("username", value);
                     } else if ("password".equals(key)) {
-                        value = CryptoUtils.decrypt(ModeType.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("password", value);
                     }
                 }

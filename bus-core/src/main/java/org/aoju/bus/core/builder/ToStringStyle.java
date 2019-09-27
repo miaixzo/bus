@@ -69,7 +69,7 @@ import java.util.WeakHashMap;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public abstract class ToStringStyle implements Serializable {

@@ -42,7 +42,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class DateTime extends Date {
@@ -73,7 +73,6 @@ public class DateTime extends Date {
      * 当前时间
      *
      * @param timeZone 时区
-     * @since 4.1.2
      */
     public DateTime(TimeZone timeZone) {
         this(System.currentTimeMillis(), timeZone);
@@ -93,7 +92,6 @@ public class DateTime extends Date {
      *
      * @param date     日期
      * @param timeZone 时区
-     * @since 4.1.2
      */
     public DateTime(Date date, TimeZone timeZone) {
         this(date.getTime(), timeZone);
@@ -112,7 +110,6 @@ public class DateTime extends Date {
      * 给定日期毫秒数的构造
      *
      * @param timeMillis 日期毫秒数
-     * @since 4.1.2
      */
     public DateTime(long timeMillis) {
         this(timeMillis, null);
@@ -123,7 +120,6 @@ public class DateTime extends Date {
      *
      * @param timeMillis 日期毫秒数
      * @param timeZone   时区
-     * @since 4.1.2
      */
     public DateTime(long timeMillis, TimeZone timeZone) {
         super(timeMillis);
@@ -500,7 +496,7 @@ public class DateTime extends Date {
      * 考虑到很多框架（例如Hibernate）的兼容性，提供此方法返回JDK原生的Date对象
      *
      * @return {@link Date}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public Date toJdkDate() {
         return new Date(this.getTime());
@@ -578,7 +574,6 @@ public class DateTime extends Date {
      *
      * @param date 日期
      * @return 是否在给定日期之前或与给定日期相等
-     * @since 4.1.3
      */
     public boolean isBefore(Date date) {
         if (null == date) {
@@ -606,7 +601,6 @@ public class DateTime extends Date {
      *
      * @param date 日期
      * @return 是否在给定日期之后或与给定日期相等
-     * @since 4.1.3
      */
     public boolean isAfter(Date date) {
         if (null == date) {
@@ -681,7 +675,6 @@ public class DateTime extends Date {
      *
      * @param timeZone 时区
      * @return this
-     * @since 4.1.2
      */
     public DateTime setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
@@ -707,7 +700,6 @@ public class DateTime extends Date {
      * 转为"yyyy-MM-dd " 格式字符串
      *
      * @return "yyyy-MM-dd " 格式字符串
-     * @since 4.0.0
      */
     public String toDateStr() {
         if (null != this.timeZone) {
@@ -722,7 +714,6 @@ public class DateTime extends Date {
      * 转为"HH:mm:ss" 格式字符串
      *
      * @return "HH:mm:ss" 格式字符串
-     * @since 4.1.4
      */
     public String toTimeStr() {
         if (null != this.timeZone) {

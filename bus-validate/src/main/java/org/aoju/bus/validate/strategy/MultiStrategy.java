@@ -36,7 +36,7 @@ import java.util.List;
  * 多规则匹配校验
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class MultiStrategy implements Complex<Object, Multi> {
@@ -48,13 +48,13 @@ public class MultiStrategy implements Complex<Object, Multi> {
             if (!Registry.getInstance().contains(validatorName)) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + validatorName);
             }
-            validators.add((Complex) Registry.getInstance().get(validatorName));
+            validators.add((Complex) Registry.getInstance().require(validatorName));
         }
         for (Class<? extends Complex> clazz : multi.classes()) {
             if (!Registry.getInstance().contains(clazz.getSimpleName())) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
             }
-            validators.add((Complex) Registry.getInstance().get(clazz.getSimpleName()));
+            validators.add((Complex) Registry.getInstance().require(clazz.getSimpleName()));
         }
         for (Complex validator : validators) {
             if (!validator.on(object, null, context)) {

@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 任务的添加、移除使用读写锁保证线程安全性
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class TaskTable {
@@ -116,7 +116,6 @@ public class TaskTable {
      * @param id      Task的ID
      * @param pattern 新的表达式
      * @return 是否更新成功，如果id对应的规则不存在则不更新
-     * @since 4.0.10
      */
     public boolean updatePattern(String id, CronPattern pattern) {
         final Lock writeLock = lock.writeLock();
@@ -186,7 +185,6 @@ public class TaskTable {
      * 任务表大小，加入的任务数
      *
      * @return 任务表大小，加入的任务数
-     * @since 4.0.2
      */
     public int size() {
         return this.size;
@@ -196,7 +194,6 @@ public class TaskTable {
      * 任务表是否为空
      *
      * @return true为空
-     * @since 4.0.2
      */
     public boolean isEmpty() {
         return this.size < 1;

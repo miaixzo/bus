@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.tracer;
 
+import org.aoju.bus.core.consts.Algorithm;
 import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.consts.ModeType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.tracer.backend.TraceBackendProvider;
 import org.aoju.bus.tracer.consts.TraceConsts;
@@ -37,7 +37,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public final class Builder {
@@ -84,7 +84,7 @@ public final class Builder {
 
     public static String createAlphanumericHash(final String str, final int length) {
         try {
-            final MessageDigest md = MessageDigest.getInstance(ModeType.SHA256);
+            final MessageDigest md = MessageDigest.getInstance(Algorithm.SHA256);
             final byte[] digest = md.digest(str.getBytes(Charset.UTF_8));
             final StringBuilder sb = new StringBuilder();
             for (final byte b : digest) {

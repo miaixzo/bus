@@ -35,7 +35,7 @@ import java.util.Map;
  * 3、忽略的属性列表，设置一个属性列表，不拷贝这些属性值
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class CopyOptions {
@@ -175,7 +175,6 @@ public class CopyOptions {
      * 获取反转之后的映射
      *
      * @return 反转映射
-     * @since 4.1.10
      */
     protected Map<String, String> getReversedMapping() {
         return (null != this.fieldMapping) ? MapUtils.reverse(this.fieldMapping) : null;

@@ -36,7 +36,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ExcelSaxUtils {
@@ -152,7 +152,6 @@ public class ExcelSaxUtils {
      *
      * @param value 单元格值
      * @return 日期
-     * @since 4.1.0
      */
     private static DateTime getDateValue(String value) {
         return DateUtils.date(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(value), false));
@@ -164,7 +163,6 @@ public class ExcelSaxUtils {
      * @param value        值
      * @param numFmtString 格式
      * @return 数字，可以是Double、Long
-     * @since 4.1.0
      */
     private static Number getNumberValue(String value, String numFmtString) {
         if (StringUtils.isBlank(value)) {

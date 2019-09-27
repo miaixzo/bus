@@ -34,7 +34,7 @@ import java.util.Properties;
  * 邮件账户对象
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class MailAccount implements Serializable {
@@ -270,7 +270,6 @@ public class MailAccount implements Serializable {
      * 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
      *
      * @return 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
-     * @since 4.0.2
      */
     public boolean isDebug() {
         return debug;
@@ -281,7 +280,6 @@ public class MailAccount implements Serializable {
      *
      * @param debug 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
      * @return MailAccount
-     * @since 4.0.2
      */
     public MailAccount setDebug(boolean debug) {
         this.debug = debug;
@@ -431,7 +429,6 @@ public class MailAccount implements Serializable {
      *
      * @param timeout SMTP超时时长，单位毫秒，缺省值不超时
      * @return this
-     * @since 4.1.17
      */
     public MailAccount setTimeout(long timeout) {
         this.timeout = timeout;
@@ -443,7 +440,6 @@ public class MailAccount implements Serializable {
      *
      * @param connectionTimeout Socket连接超时值，单位毫秒，缺省值不超时
      * @return this
-     * @since 4.1.17
      */
     public MailAccount setConnectionTimeout(long connectionTimeout) {
         this.connectionTimeout = connectionTimeout;

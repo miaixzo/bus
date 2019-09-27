@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.CryptoServicesRegistrar;
@@ -40,7 +40,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 /**
- * SM2加密解密引擎，来自Bouncy Castle库的SM2Engine类改造
+ * SM2加密解密引擎，来自Bouncy Castle库的SM2Engine类改造<br>
  * SM2加密后的数据格式为（两种模式）：
  *
  * <pre>
@@ -49,7 +49,7 @@ import java.util.Random;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class SM2Engine {
@@ -227,7 +227,7 @@ public class SM2Engine {
 
         ECPoint c1P = this.ecParams.getCurve().decodePoint(c1);
         if (c1P.multiply(this.ecParams.getH()).isInfinity()) {
-            throw new CommonException("[h]C1 at infinity");
+            throw new InstrumentException("[h]C1 at infinity");
         }
         c1P = c1P.multiply(((ECPrivateKeyParameters) ecKey).getD()).normalize();
 
@@ -263,7 +263,7 @@ public class SM2Engine {
 
         if (check != 0) {
             Arrays.fill(c2, (byte) 0);
-            throw new CommonException("invalid cipher text");
+            throw new InstrumentException("invalid cipher text");
         }
 
         return c2;
@@ -353,7 +353,7 @@ public class SM2Engine {
     /**
      * 增加字段节点
      *
-     * @param v
+     * @param v 节点信息
      */
     private void addFieldElement(ECFieldElement v) {
         final byte[] p = BigIntegers.asUnsignedByteArray(this.curveLength, v.toBigInteger());
@@ -361,11 +361,11 @@ public class SM2Engine {
     }
 
     /**
-     * SM2算法模式
+     * SM2算法模式<br>
      * 在SM2算法中，C1C2C3为旧标准模式，C1C3C2为新标准模式
      */
     public static enum SM2Mode {
-        C1C2C3, C1C3C2;
+        C1C2C3, C1C3C2
     }
 
 }

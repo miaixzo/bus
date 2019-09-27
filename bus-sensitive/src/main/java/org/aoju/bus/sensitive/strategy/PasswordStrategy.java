@@ -33,7 +33,7 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 直接返回 null
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class PasswordStrategy implements StrategyProvider {

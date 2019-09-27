@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Validator {
@@ -418,7 +418,6 @@ public class Validator {
      *
      * @param value 字符串内容
      * @return 是否是字母（包括大写和小写字母）
-     * @since 4.1.8
      */
     public static boolean isWord(String value) {
         return isMactchRegex(RegEx.WORD, value);
@@ -430,7 +429,6 @@ public class Validator {
      * @param value    表单值
      * @param errorMsg 验证错误的信息
      * @throws CommonException 验证异常
-     * @since 4.1.8
      */
     public static void validateWord(String value, String errorMsg) throws CommonException {
         if (false == isWord(value)) {
@@ -656,7 +654,6 @@ public class Validator {
      *
      * @param value 值
      * @return 是否为MAC地址
-     * @since 4.1.3
      */
     public static boolean isMac(String value) {
         return isMactchRegex(RegEx.MAC_ADDRESS, value);
@@ -668,7 +665,6 @@ public class Validator {
      * @param value    值
      * @param errorMsg 验证错误的信息
      * @throws CommonException 验证异常
-     * @since 4.1.3
      */
     public static void validateMac(String value, String errorMsg) throws CommonException {
         if (false == isMac(value)) {
@@ -814,7 +810,6 @@ public class Validator {
      * @param min   最小值（包含）
      * @param max   最大值（包含）
      * @return 是否满足
-     * @since 4.1.10
      */
     public static boolean isBetween(Number value, Number min, Number max) {
         Assert.notNull(value);
@@ -832,7 +827,6 @@ public class Validator {
      * @param max      最大值（包含）
      * @param errorMsg 验证错误的信息
      * @throws CommonException 验证异常
-     * @since 4.1.10
      */
     public static void validateBetween(Number value, Number min, Number max, String errorMsg) throws CommonException {
         if (false == isBetween(value, min, max)) {
@@ -845,7 +839,6 @@ public class Validator {
      *
      * @param value 值
      * @return 是否为Hex（16进制）字符串
-     * @since 4.3.3
      */
     public static boolean isHex(CharSequence value) {
         return isMactchRegex(RegEx.HEX, value.toString());

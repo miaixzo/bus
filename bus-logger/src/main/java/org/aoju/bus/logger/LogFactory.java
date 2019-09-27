@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 日志工厂类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @see Slf4jLogFactory
  * @see Log4j2LogFactory
  * @see Log4jLogFactory
@@ -221,7 +221,6 @@ public abstract class LogFactory {
      * 获取日志框架名，用于打印当前所用日志框架
      *
      * @return 日志框架名
-     * @since 4.1.21
      */
     public String getName() {
         return this.name;

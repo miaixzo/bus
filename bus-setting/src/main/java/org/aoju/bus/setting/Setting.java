@@ -59,7 +59,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Setting extends AbsSetting implements Map<String, String> {
@@ -312,7 +312,6 @@ public class Setting extends AbsSetting implements Map<String, String> {
      *
      * @param group 分组
      * @return Props对象
-     * @since 4.1.21
      */
     public Props getProps(String group) {
         final Props props = new Props();
@@ -354,7 +353,6 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * 获取GroupedMap
      *
      * @return GroupedMap
-     * @since 4.0.12
      */
     public GroupedMap getGroupedMap() {
         return this.groupedMap;

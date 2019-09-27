@@ -24,14 +24,11 @@
 package org.aoju.bus.spring.sensitive;
 
 import org.aoju.bus.base.entity.Message;
+import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.base.spring.BaseAdvice;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.ReflectUtils;
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.core.utils.*;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
@@ -42,8 +39,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -55,16 +50,46 @@ import java.util.*;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
-@ControllerAdvice
-@RestControllerAdvice
 public class ResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
 
     @Autowired
     SensitiveProperties properties;
+
+    /**
+     * 依据对象的属性数组和值数组对进行赋值
+     *
+     * @param <T>    对象
+     * @param entity 反射对象
+     * @param fields 属性数组
+     * @param value  值数组
+     */
+    private static <T> void setValue(T entity, String[] fields, Object[] value) {
+        for (int i = 0; i < fields.length; i++) {
+            String field = fields[i];
+            if (ReflectUtils.hasField(entity, field)) {
+                ReflectUtils.invokeSetter(entity, field, value[i]);
+            }
+        }
+    }
+
+    /**
+     * 依据对象的属性获取对象值
+     *
+     * @param <T>    对象
+     * @param entity 反射对象
+     * @param field  属性数组
+     */
+    private static <T> Object getValue(T entity, String field) {
+        if (ReflectUtils.hasField(entity, field)) {
+            Object object = ReflectUtils.invokeGetter(entity, field);
+            return object != null ? object.toString() : null;
+        }
+        return null;
+    }
 
     @Override
     public boolean supports(MethodParameter returnType,
@@ -100,10 +125,17 @@ public class ResponseBodyAdvice extends BaseAdvice
                 if (ObjectUtils.isEmpty(sensitive)) {
                     return body;
                 }
+                List rows;
+                if (((Message) body).getData() instanceof Result) {
+                    rows = ((Result) ((Message) body).getData()).getRows();
+                } else if (((Message) body).getData() instanceof List) {
+                    rows = (List) ((Message) body).getData();
+                } else {
+                    rows = Arrays.asList(((Message) body).getData());
+                }
 
                 List list = new ArrayList<>();
-                for (Object obj : ((Message) body).getData() instanceof List ?
-                        (List) ((Message) body).getData() : Arrays.asList(((Message) body).getData())) {
+                for (Object obj : rows) {
                     // 数据脱敏
                     if (Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value())
                             && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
@@ -122,7 +154,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                                         if (ObjectUtils.isEmpty(properties)) {
                                             throw new InstrumentException("please check the request.crypto.decrypt");
                                         }
-                                        value = CryptoUtils.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value, Charset.UTF_8);
+                                        value = org.aoju.bus.crypto.Builder.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value, Charset.UTF_8);
                                         setValue(obj, new String[]{property}, new String[]{value});
                                     }
                                 }
@@ -131,44 +163,17 @@ public class ResponseBodyAdvice extends BaseAdvice
                     }
                     list.add(obj);
                 }
-                ((Message) body).setData(list);
+
+                if (((Message) body).getData() instanceof Result) {
+                    ((Result) ((Message) body).getData()).setRows(list);
+                } else if (CollUtils.isNotEmpty(list)) {
+                    ((Message) body).setData(list.get(0));
+                }
             } catch (Exception e) {
-                Logger.error("加密数据异常:" + e.getMessage());
+                Logger.error("Internal processing failure:" + e.getMessage());
             }
         }
         return body;
-    }
-
-    /**
-     * 依据对象的属性数组和值数组对进行赋值
-     *
-     * @param <T>    对象
-     * @param entity 反射对象
-     * @param fields 属性数组
-     * @param value  值数组
-     */
-    private static <T> void setValue(T entity, String[] fields, Object[] value) {
-        for (int i = 0; i < fields.length; i++) {
-            String field = fields[i];
-            if (ReflectUtils.hasField(entity, field)) {
-                ReflectUtils.invokeSetter(entity, field, value[i]);
-            }
-        }
-    }
-
-    /**
-     * 依据对象的属性获取对象值
-     *
-     * @param <T>    对象
-     * @param entity 反射对象
-     * @param field  属性数组
-     */
-    private static <T> Object getValue(T entity, String field) {
-        if (ReflectUtils.hasField(entity, field)) {
-            Object object = ReflectUtils.invokeGetter(entity, field);
-            return object != null ? object.toString() : null;
-        }
-        return null;
     }
 
     private Map<String, Privacy> getPrivacyMap(Class<?> clazz) {

@@ -39,7 +39,7 @@ import javax.persistence.Transient;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 @MappedSuperclass
@@ -77,7 +77,7 @@ public class BaseEntity extends Tracer {
      * @param <T>    对象
      * @param entity 反射对象
      */
-    public static <T> void setCreateInfo(T entity) {
+    public <T> void setCreateInfo(T entity) {
         String id = ObjectID.id();
         String[] fields = {"id", "creator", "created"};
         Object[] value = new Object[]{id, getValue(entity, "x_user_id"), StringUtils.toString(DateUtils.timestamp())};
@@ -90,13 +90,13 @@ public class BaseEntity extends Tracer {
      * @param <T>    对象
      * @param entity 反射对象
      */
-    public static <T> void setUpdatedInfo(T entity) {
+    public <T> void setUpdatedInfo(T entity) {
         String[] fields = {"modifier", "modified"};
         Object[] value = new Object[]{getValue(entity, "x_user_id"), StringUtils.toString(DateUtils.timestamp())};
         setValue(entity, fields, value);
     }
 
-    public static <T> void setCreatAndUpdatInfo(T entity) {
+    public <T> void setCreatAndUpdatInfo(T entity) {
         setCreateInfo(entity);
         setUpdatedInfo(entity);
     }
@@ -109,7 +109,7 @@ public class BaseEntity extends Tracer {
      * @param field  属性
      * @return 主键为空，则返回false；主键有值，返回true
      */
-    public static <T> boolean isPKNotNull(T entity, String field) {
+    public <T> boolean isPKNotNull(T entity, String field) {
         if (!ReflectUtils.hasField(entity, field)) {
             return false;
         }
@@ -124,7 +124,7 @@ public class BaseEntity extends Tracer {
      * @param entity 反射对象
      * @param field  属性数组
      */
-    private static <T> Object getValue(T entity, String field) {
+    private <T> Object getValue(T entity, String field) {
         if (ReflectUtils.hasField(entity, field)) {
             Object object = ReflectUtils.invokeGetter(entity, field);
             return object != null ? object.toString() : null;
@@ -140,7 +140,7 @@ public class BaseEntity extends Tracer {
      * @param fields 属性数组
      * @param value  值数组
      */
-    private static <T> void setValue(T entity, String[] fields, Object[] value) {
+    private <T> void setValue(T entity, String[] fields, Object[] value) {
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
             if (ReflectUtils.hasField(entity, field)) {

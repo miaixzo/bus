@@ -44,7 +44,7 @@ import java.util.*;
  * Servlet相关工具类封装
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ServletUtils {
@@ -80,7 +80,6 @@ public class ServletUtils {
      *
      * @param request {@link ServletRequest}
      * @return 获得请求体
-     * @since 4.0.2
      */
     public static String getBody(ServletRequest request) {
         try {
@@ -96,7 +95,6 @@ public class ServletUtils {
      *
      * @param request {@link ServletRequest}
      * @return 获得请求体byte[]
-     * @since 4.0.2
      */
     public static byte[] getBodyBytes(ServletRequest request) {
         try {
@@ -206,7 +204,6 @@ public class ServletUtils {
      * @param request     请求对象{@link HttpServletRequest}
      * @param headerNames 自定义头，通常在Http服务器（例如Nginx）中配置
      * @return IP地址
-     * @since 4.4.1
      */
     public static String getClientIPByHeader(HttpServletRequest request, String... headerNames) {
         String ip;
@@ -446,7 +443,6 @@ public class ServletUtils {
      *
      * @param response 响应对象{@link HttpServletResponse}
      * @param file     写出的文件对象
-     * @since 4.1.15
      */
     public static void write(HttpServletResponse response, File file) {
         final String fileName = file.getName();
@@ -467,7 +463,6 @@ public class ServletUtils {
      * @param in          需要返回客户端的内容
      * @param contentType 返回的类型
      * @param fileName    文件名
-     * @since 4.1.15
      */
     public static void write(HttpServletResponse response, InputStream in, String contentType, String fileName) {
         final String charset = ObjectUtils.defaultIfNull(response.getCharacterEncoding(), Charset.DEFAULT_UTF_8);

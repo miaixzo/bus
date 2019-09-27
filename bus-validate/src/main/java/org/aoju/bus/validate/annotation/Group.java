@@ -29,7 +29,7 @@ import java.lang.annotation.*;
  * 校验组注解，标记当前位置被激活的校验组
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 @Documented

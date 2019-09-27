@@ -70,7 +70,7 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Scheduler {
@@ -312,7 +312,6 @@ public class Scheduler {
      * @param id      Task的ID
      * @param pattern {@link CronPattern}
      * @return this
-     * @since 4.0.10
      */
     public Scheduler updatePattern(String id, CronPattern pattern) {
         this.taskTable.updatePattern(id, pattern);
@@ -345,7 +344,6 @@ public class Scheduler {
      * 是否无任务
      *
      * @return true表示无任务
-     * @since 4.0.2
      */
     public boolean isEmpty() {
         return this.taskTable.isEmpty();
@@ -355,7 +353,6 @@ public class Scheduler {
      * 当前任务数
      *
      * @return 当前任务数
-     * @since 4.0.2
      */
     public int size() {
         return this.taskTable.size();
@@ -365,7 +362,6 @@ public class Scheduler {
      * 清空任务表
      *
      * @return this
-     * @since 4.1.17
      */
     public Scheduler clear() {
         this.taskTable = new TaskTable(this);
@@ -433,7 +429,6 @@ public class Scheduler {
      *
      * @param clearTasks 标记
      * @return this
-     * @since 4.1.17
      */
     public Scheduler stop(boolean clearTasks) {
         synchronized (lock) {

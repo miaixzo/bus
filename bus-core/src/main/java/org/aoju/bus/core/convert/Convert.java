@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Convert {
@@ -75,7 +75,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return String数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static String[] toStrArray(Object value) {
         return convert(String[].class, value);
@@ -111,7 +111,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Character数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Character[] toCharArray(Object value) {
         return convert(Character[].class, value);
@@ -147,7 +147,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Byte数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Byte[] toByteArray(Object value) {
         return convert(Byte[].class, value);
@@ -183,7 +183,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Short数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Short[] toShortArray(Object value) {
         return convert(Short[].class, value);
@@ -219,7 +219,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Number数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Number[] toNumberArray(Object value) {
         return convert(Number[].class, value);
@@ -458,7 +458,6 @@ public class Convert {
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
      * @return 结果
-     * @since 4.1.6
      */
     public static Date toDate(Object value, Date defaultValue) {
         return convert(Date.class, value, defaultValue);
@@ -471,7 +470,6 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return 结果
-     * @since 4.1.6
      */
     public static Date toDate(Object value) {
         return toDate(value, null);
@@ -521,7 +519,6 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return {@link List}
-     * @since 4.1.11
      */
     public static List<?> toList(Object value) {
         return convert(List.class, value);
@@ -534,7 +531,6 @@ public class Convert {
      * @param elementType 集合中元素类型
      * @param value       被转换的值
      * @return {@link List}
-     * @since 4.1.20
      */
     public static <T> List<T> toList(Class<T> elementType, Object value) {
         return (List<T>) toCollection(ArrayList.class, elementType, value);
@@ -548,7 +544,6 @@ public class Convert {
      * @param value     值
      * @return 转换后的值
      * @throws CommonException 转换器不存在
-     * @since 4.0.7
      */
     public static <T> T convertByClassName(String className, Object value) throws CommonException {
         return (T) convert(ClassUtils.loadClass(className), value);
@@ -562,7 +557,6 @@ public class Convert {
      * @param value 值
      * @return 转换后的值
      * @throws CommonException 转换器不存在
-     * @since 4.0.0
      */
     public static <T> T convert(Class<T> type, Object value) throws CommonException {
         return convert((Type) type, value);
@@ -590,7 +584,6 @@ public class Convert {
      * @param defaultValue 默认值
      * @return 转换后的值
      * @throws CommonException 转换器不存在
-     * @since 4.0.0
      */
     public static <T> T convert(Class<T> type, Object value, T defaultValue) throws CommonException {
         return convert((Type) type, value, defaultValue);
@@ -720,7 +713,6 @@ public class Convert {
      * @param charset 编码 {@link Charset}
      * @return 对应的字符串
      * @see HexUtils#decodeHexStr(String, Charset)
-     * @since 4.1.11
      */
     public static String hexToStr(String hexStr, Charset charset) {
         return HexUtils.decodeHexStr(hexStr, charset);
@@ -845,7 +837,7 @@ public class Convert {
      *
      * @param intValue int值
      * @return byte值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static byte intToByte(int intValue) {
         return (byte) intValue;
@@ -856,7 +848,7 @@ public class Convert {
      *
      * @param byteValue byte值
      * @return 无符号int值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static int byteToUnsignedInt(byte byteValue) {
         // Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值
@@ -868,7 +860,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return short值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static short bytesToShort(byte[] bytes) {
         return (short) (bytes[1] & 0xff | (bytes[0] & 0xff) << 8);
@@ -879,7 +871,7 @@ public class Convert {
      *
      * @param shortValue short值
      * @return byte数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static byte[] shortToBytes(short shortValue) {
         byte[] b = new byte[2];
@@ -893,7 +885,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return int值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static int bytesToInt(byte[] bytes) {
         return bytes[3] & 0xFF | //
@@ -907,7 +899,7 @@ public class Convert {
      *
      * @param intValue int值
      * @return byte数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static byte[] intToBytes(int intValue) {
         return new byte[]{ //
@@ -923,7 +915,7 @@ public class Convert {
      *
      * @param longValue long值
      * @return byte数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static byte[] longToBytes(long longValue) {
         final byte[] result = new byte[8];
@@ -939,7 +931,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return long值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static long bytesToLong(byte[] bytes) {
         long values = 0;

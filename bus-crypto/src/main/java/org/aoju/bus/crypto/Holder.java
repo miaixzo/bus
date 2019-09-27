@@ -26,32 +26,36 @@ package org.aoju.bus.crypto;
 import java.security.Provider;
 
 /**
- * 全局单例对象
+ * Provider对象生产法工厂类
+ *
+ * <pre>
+ * 1. 调用{@link #createBouncyCastleProvider()}
+ * 用于新建一个org.bouncycastle.jce.provider.BouncyCastleProvider对象
+ * </pre>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
-public enum BouncyCastleProvider {
+public class Holder {
 
-    INSTANCE;
     private static boolean useBouncyCastle = true;
-    private Provider provider;
 
-    BouncyCastleProvider() {
-        try {
-            this.provider = ProviderFactory.createBouncyCastleProvider();
-        } catch (NoClassDefFoundError e) {
-            // ignore
-        }
+    /**
+     * 创建Bouncy Castle 提供者
+     * 如果用户未引入bouncycastle库，则此方法抛出{@link NoClassDefFoundError} 异常
+     *
+     * @return {@link Provider}
+     */
+    public static Provider createBouncyCastleProvider() {
+        return new org.bouncycastle.jce.provider.BouncyCastleProvider();
     }
 
     /**
      * 设置是否使用Bouncy Castle库
      * 如果设置为false，表示强制关闭Bouncy Castle而使用JDK
      *
-     * @param isUseBouncyCastle boolean
-     * @since 4.5.2
+     * @param isUseBouncyCastle 是否自定义
      */
     public static void setUseBouncyCastle(boolean isUseBouncyCastle) {
         useBouncyCastle = isUseBouncyCastle;
@@ -63,6 +67,7 @@ public enum BouncyCastleProvider {
      * @return {@link Provider}
      */
     public Provider getProvider() {
-        return useBouncyCastle ? this.provider : null;
+        return useBouncyCastle ? createBouncyCastleProvider() : null;
     }
+
 }

@@ -21,32 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto;
+package org.aoju.bus.crypto.digest.mac;
+
+import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.crypto.Builder;
+
+import javax.crypto.SecretKey;
 
 /**
+ * {@link MacEngine} 实现工厂类
+ *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
-public interface CryptoFactory {
+public class MacEngineFactory {
 
     /**
-     * 加密
+     * 根据给定算法和密钥生成对应的{@link MacEngine}
      *
-     * @param key     密钥
-     * @param content 需要加密的内容
-     * @return 加密结果
-     * @throws RuntimeException RuntimeException
+     * @param algorithm 算法
+     * @param key       密钥
+     * @return {@link MacEngine}
      */
-    byte[] encrypt(String key, byte[] content) throws RuntimeException;
+    public static MacEngine createEngine(String algorithm, SecretKey key) {
+        if (algorithm.equalsIgnoreCase(Algorithm.HmacSM3)) {
+            // HmacSM3算法是BC库实现的
+            return Builder.createHmacSm3Engine(key.getEncoded());
+        }
+        return new DefaultHMacEngine(algorithm, key);
+    }
 
-    /**
-     * 解密
-     *
-     * @param key     密钥
-     * @param content 需要解密的内容
-     * @return 解密结果
-     * @throws RuntimeException RuntimeException
-     */
-    byte[] decrypt(String key, byte[] content) throws RuntimeException;
 }

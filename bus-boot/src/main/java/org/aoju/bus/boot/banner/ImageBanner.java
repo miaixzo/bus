@@ -32,12 +32,12 @@ import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.springframework.boot.Banner;
+
 /**
  * ASCII艺术产生的图像文件
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ImageBanner {
@@ -55,89 +55,6 @@ public class ImageBanner {
         }
         this.image = image;
         colorsInit();
-    }
-
-    private void colorsInit() {
-        this.colors.put("BLACK", new Color(0, 0, 0));
-        this.colors.put("RED", new Color(170, 0, 0));
-        this.colors.put("GREEN", new Color(0, 170, 0));
-        this.colors.put("YELLOW", new Color(170, 85, 0));
-        this.colors.put("BLUE", new Color(0, 0, 170));
-        this.colors.put("MAGENTA", new Color(170, 0, 170));
-        this.colors.put("CYAN", new Color(0, 170, 170));
-        this.colors.put("WHITE", new Color(170, 170, 170));
-
-        this.colors.put("BRIGHT_BLACK", new Color(85, 85, 85));
-        this.colors.put("BRIGHT_RED", new Color(255, 85, 85));
-        this.colors.put("BRIGHT_GREEN", new Color(85, 255, 85));
-        this.colors.put("BRIGHT_YELLOW", new Color(255, 255, 85));
-        this.colors.put("BRIGHT_BLUE", new Color(85, 85, 255));
-        this.colors.put("BRIGHT_MAGENTA", new Color(255, 85, 255));
-        this.colors.put("BRIGHT_CYAN", new Color(85, 255, 255));
-        this.colors.put("BRIGHT_WHITE", new Color(255, 255, 255));
-    }
-
-    public String printBanner(Integer maxWidth, Double aspectRatio, boolean invert, boolean cie94) {
-        String headlessProperty = System.getProperty("java.awt.headless");
-        String banner = "";
-        try {
-            System.setProperty("java.awt.headless", "true");
-            BufferedImage sourceImage = ImageIO.read(new FileInputStream(this.image));
-            BufferedImage resizedImage = resizeImage(sourceImage, maxWidth, aspectRatio);
-            banner = imageToBanner(resizedImage, invert, cie94);
-        } catch (Exception ex) {
-            System.out.println("WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass()
-                    + ": '" + ex.getMessage() + "')");
-            ex.printStackTrace();
-        } finally {
-            if (headlessProperty != null) {
-                System.setProperty("java.awt.headless", headlessProperty);
-            }
-        }
-        return banner;
-    }
-
-    private String imageToBanner(BufferedImage image, boolean dark, boolean cie94) {
-        StringBuilder banner = new StringBuilder();
-
-        for (int y = 0; y < image.getHeight(); y++) {
-            if (dark) {
-                banner.append("${AnsiBackground.BLACK}");
-            } else {
-                banner.append("${AnsiBackground.DEFAULT}");
-            }
-            for (int x = 0; x < image.getWidth(); x++) {
-                Color color = new Color(image.getRGB(x, y), false);
-                banner.append(getFormatString(color, dark, cie94));
-            }
-            if (dark) {
-                banner.append("${AnsiBackground.DEFAULT}");
-            }
-            banner.append("${AnsiColor.DEFAULT}\n");
-        }
-
-        return banner.toString();
-    }
-
-    protected String getFormatString(Color color, boolean dark, boolean cie94) {
-        String matchedColorName = null;
-        Double minColorDistance = null;
-
-        for (Entry<String, Color> colorOption : this.colors.entrySet()) {
-            double distance;
-            if (cie94 == true) {
-                distance = getColorDistanceCIE94(color, colorOption.getValue());
-            } else {
-                distance = getColorDistance(color, colorOption.getValue());
-            }
-
-            if (minColorDistance == null || distance < minColorDistance) {
-                minColorDistance = distance;
-                matchedColorName = colorOption.getKey();
-            }
-        }
-
-        return "${AnsiColor." + matchedColorName + "}" + getAsciiCharacter(color, dark);
     }
 
     private static int getLuminance(Color color, boolean inverse) {
@@ -279,6 +196,89 @@ public class ImageBanner {
         } else {
             return (1.0 / 3.0) * Math.pow(29.0 / 6.0, 2) * t + (4.0 / 29.0);
         }
+    }
+
+    private void colorsInit() {
+        this.colors.put("BLACK", new Color(0, 0, 0));
+        this.colors.put("RED", new Color(170, 0, 0));
+        this.colors.put("GREEN", new Color(0, 170, 0));
+        this.colors.put("YELLOW", new Color(170, 85, 0));
+        this.colors.put("BLUE", new Color(0, 0, 170));
+        this.colors.put("MAGENTA", new Color(170, 0, 170));
+        this.colors.put("CYAN", new Color(0, 170, 170));
+        this.colors.put("WHITE", new Color(170, 170, 170));
+
+        this.colors.put("BRIGHT_BLACK", new Color(85, 85, 85));
+        this.colors.put("BRIGHT_RED", new Color(255, 85, 85));
+        this.colors.put("BRIGHT_GREEN", new Color(85, 255, 85));
+        this.colors.put("BRIGHT_YELLOW", new Color(255, 255, 85));
+        this.colors.put("BRIGHT_BLUE", new Color(85, 85, 255));
+        this.colors.put("BRIGHT_MAGENTA", new Color(255, 85, 255));
+        this.colors.put("BRIGHT_CYAN", new Color(85, 255, 255));
+        this.colors.put("BRIGHT_WHITE", new Color(255, 255, 255));
+    }
+
+    public String printBanner(Integer maxWidth, Double aspectRatio, boolean invert, boolean cie94) {
+        String headlessProperty = System.getProperty("java.awt.headless");
+        String banner = "";
+        try {
+            System.setProperty("java.awt.headless", "true");
+            BufferedImage sourceImage = ImageIO.read(new FileInputStream(this.image));
+            BufferedImage resizedImage = resizeImage(sourceImage, maxWidth, aspectRatio);
+            banner = imageToBanner(resizedImage, invert, cie94);
+        } catch (Exception ex) {
+            System.out.println("WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass()
+                    + ": '" + ex.getMessage() + "')");
+            ex.printStackTrace();
+        } finally {
+            if (headlessProperty != null) {
+                System.setProperty("java.awt.headless", headlessProperty);
+            }
+        }
+        return banner;
+    }
+
+    private String imageToBanner(BufferedImage image, boolean dark, boolean cie94) {
+        StringBuilder banner = new StringBuilder();
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            if (dark) {
+                banner.append("${AnsiBackground.BLACK}");
+            } else {
+                banner.append("${AnsiBackground.DEFAULT}");
+            }
+            for (int x = 0; x < image.getWidth(); x++) {
+                Color color = new Color(image.getRGB(x, y), false);
+                banner.append(getFormatString(color, dark, cie94));
+            }
+            if (dark) {
+                banner.append("${AnsiBackground.DEFAULT}");
+            }
+            banner.append("${AnsiColor.DEFAULT}\n");
+        }
+
+        return banner.toString();
+    }
+
+    protected String getFormatString(Color color, boolean dark, boolean cie94) {
+        String matchedColorName = null;
+        Double minColorDistance = null;
+
+        for (Entry<String, Color> colorOption : this.colors.entrySet()) {
+            double distance;
+            if (cie94 == true) {
+                distance = getColorDistanceCIE94(color, colorOption.getValue());
+            } else {
+                distance = getColorDistance(color, colorOption.getValue());
+            }
+
+            if (minColorDistance == null || distance < minColorDistance) {
+                minColorDistance = distance;
+                matchedColorName = colorOption.getKey();
+            }
+        }
+
+        return "${AnsiColor." + matchedColorName + "}" + getAsciiCharacter(color, dark);
     }
 
 }

@@ -25,45 +25,48 @@ package org.aoju.bus.core.consts;
 
 /**
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
-public class ModeType {
+public class Algorithm {
 
     /**
-     * 默认的AES加密方式：AES/CBC/PKCS5Padding
+     * 密钥类型
      */
+    public static final String TYPE_PRIVATE_KEY = "PrivateKey";
+    public static final String TYPE_PUBLIC_KEY = "PublicKey";
+
+    /**
+     * 非对称算法类型
+     */
+    // RSA算法
+    public static final String RSA = "RSA";
+    // RSA算法，此算法用了默认补位方式为RSA/ECB/PKCS1Padding
+    public static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding";
+    //RSA算法，此算法用了RSA/None/NoPadding
+    public static final String RSA_None = "RSA/None/NoPadding";
+    // EC（Elliptic Curve）算法
+    public static final String EC = "EC";
+
+    /**
+     * 对称算法类型
+     */
+    // 默认的AES加密方式：AES/CBC/PKCS5Padding
     public static final String AES = "AES";
     public static final String ARCFOUR = "ARCFOUR";
     public static final String Blowfish = "Blowfish";
-    /**
-     * 默认的DES加密方式：DES/ECB/PKCS5Padding
-     */
+    // 默认的DES加密方式：DES/ECB/PKCS5Padding
     public static final String DES = "DES";
-    /**
-     * 3DES算法，默认实现为：DESede/CBC/PKCS5Padding
-     */
+    //3DES算法，默认实现为：DESede/CBC/PKCS5Padding
     public static final String DESede = "DESede";
-    public static final String RC2 = "RC2";
-    /**
-     * RSA算法
-     */
-    public static final String RSA = "RSA";
-    /**
-     * RSA算法，此算法用了默认补位方式为RSA/ECB/PKCS1Padding
-     */
-    public static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding";
-    /**
-     * RSA算法，此算法用了RSA/None/NoPadding
-     */
-    public static final String RSA_None = "RSA/None/NoPadding";
-    /**
-     * EC算法
-     */
-    public static final String EC = "EC";
+    public static final String RC4 = "RC4";
     public static final String PBEWithMD5AndDES = "PBEWithMD5AndDES";
     public static final String PBEWithSHA1AndDESede = "PBEWithSHA1AndDESede";
     public static final String PBEWithSHA1AndRC2_40 = "PBEWithSHA1AndRC2_40";
+
+    /**
+     * 签名算法类型
+     */
     // The RSA signature algorithm
     public static final String NONEwithRSA = "NONEwithRSA";
     // The MD2/MD5 with RSA Encryption signature algorithm
@@ -84,17 +87,38 @@ public class ModeType {
     public static final String SHA256withECDSA = "SHA256withECDSA";
     public static final String SHA384withECDSA = "SHA384withECDSA";
     public static final String SHA512withECDSA = "SHA512withECDSA";
+
+    /**
+     * HMAC算法类型
+     */
     public static final String HmacMD5 = "HmacMD5";
     public static final String HmacSHA1 = "HmacSHA1";
     public static final String HmacSHA256 = "HmacSHA256";
     public static final String HmacSHA384 = "HmacSHA384";
     public static final String HmacSHA512 = "HmacSHA512";
+    /**
+     * HmacSM3算法实现，需要BouncyCastle库支持
+     */
+    public static final String HmacSM3 = "HmacSM3";
+
+    /**
+     * 摘要算法类型
+     */
     public static final String MD2 = "MD2";
     public static final String MD5 = "MD5";
     public static final String SHA1 = "SHA-1";
     public static final String SHA256 = "SHA-256";
     public static final String SHA384 = "SHA-384";
     public static final String SHA512 = "SHA-512";
+
     public static final String SHAPRNG = "SHA1PRNG";
+
+    /**
+     * 国密算法
+     */
+    public static final String SM1 = "SM1";
+    public static final String SM2 = "SM2";
+    public static final String SM3 = "SM3";
+    public static final String SM4 = "SM4";
 
 }

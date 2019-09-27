@@ -36,7 +36,7 @@ package org.aoju.bus.core.lang.tuple;
  * @param <L> the left element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public final class ImmutablePair<L, R> extends Pair<L, R> {
@@ -72,7 +72,6 @@ public final class ImmutablePair<L, R> extends Pair<L, R> {
      * @param <L> the left element of this pair. Value is {@code null}.
      * @param <R> the right element of this pair. Value is {@code null}.
      * @return an immutable pair of nulls.
-     * @since 3.6
      */
     public static <L, R> ImmutablePair<L, R> nullPair() {
         return NULL;

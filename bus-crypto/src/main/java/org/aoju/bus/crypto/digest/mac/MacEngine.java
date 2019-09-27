@@ -21,30 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto;
+package org.aoju.bus.crypto.digest.mac;
 
-import java.security.Provider;
+import java.io.InputStream;
 
 /**
- * Provider对象生产法工厂类
- *
- * <pre>
- * 调用{@link #createBouncyCastleProvider()} 用于新建一个BouncyCastleProvider对象
- * </pre>
+ * MAC（Message Authentication Code）算法引擎
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
-public abstract class ProviderFactory implements CryptoFactory {
+public interface MacEngine {
 
     /**
-     * 创建Bouncy Castle 提供者
+     * 生成摘要
      *
-     * @return {@link Provider}
+     * @param data         {@link InputStream} 数据流
+     * @param bufferLength 缓存长度
+     * @return 摘要bytes
      */
-    public static Provider createBouncyCastleProvider() {
-        return new org.bouncycastle.jce.provider.BouncyCastleProvider();
-    }
-
+    byte[] digest(InputStream data, int bufferLength);
 }

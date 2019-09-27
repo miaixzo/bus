@@ -56,7 +56,7 @@ import java.util.Properties;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public final class Props extends Properties implements BasicTypeGetter<String>, OptBasicTypeGetter<String> {
@@ -474,7 +474,6 @@ public final class Props extends Properties implements BasicTypeGetter<String>, 
      *
      * @param keys 键列表，常用于别名
      * @return 字符串值
-     * @since 4.1.21
      */
     public String getAndRemoveStr(String... keys) {
         Object value = null;
