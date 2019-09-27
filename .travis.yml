@@ -14,8 +14,8 @@ script:
   - export TZ=Asia/Shanghai
   - cd bus-core && mvn install -DskipTests=true
   - cd ../bus-logger && mvn install -DskipTests=true
-  - cd ../bus-cron && mvn install -DskipTests=true
   - cd ../bus-setting && mvn install -DskipTests=true
+  - cd ../bus-cron && mvn install -DskipTests=true
   - cd ../bus-crypto && mvn install -DskipTests=true
   - cd ../bus-extra && mvn install -DskipTests=true
   - cd ../bus-proxy && mvn install -DskipTests=true
