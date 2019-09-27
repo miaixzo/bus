@@ -69,7 +69,7 @@ public class Version {
      * @return 次要号
      */
     public static String minor() {
-        return "5";
+        return "6";
     }
 
     /**
@@ -78,7 +78,7 @@ public class Version {
      * @return 阶段号
      */
     public static String stage() {
-        return "8";
+        return "0";
     }
 
     /**
