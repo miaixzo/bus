@@ -34,7 +34,7 @@ import java.rmi.server.RMIClientSocketFactory;
 
 /**
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class RmiProvider implements Provider {

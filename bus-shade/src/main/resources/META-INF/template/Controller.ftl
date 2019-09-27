@@ -25,7 +25,7 @@ package ${controllerUrl};
 
 
 <#if isSwagger=="true" >
-import io.swagger.annotations.Api;
+    import io.swagger.annotations.Api;
 </#if>
 import ${entityUrl}.${entityName};
 import ${serviceUrl}.${entityName}Service;
@@ -44,8 +44,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/${objectName}")
 <#if isSwagger=="true" >
-@Api(tags = "${entityComment}", value = "${entityName}Controller")
+    @Api(tags = "${entityComment}", value = "${entityName}Controller")
 </#if>
-public class ${entityName}Controller extends BaseController<${entityName}Service, ${entityName}> {
+public class ${entityName}Controller extends BaseController
+<${entityName}Service, ${entityName}> {
 
 }

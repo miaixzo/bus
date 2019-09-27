@@ -32,7 +32,7 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class EnumUtils {
@@ -86,7 +86,6 @@ public class EnumUtils {
      * @param <E>       对象
      * @param enumClass 枚举类
      * @return 枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序
-     * @since 4.0.2
      */
     public static <E extends Enum<E>> LinkedHashMap<String, E> getEnumMap(final Class<E> enumClass) {
         final LinkedHashMap<String, E> map = new LinkedHashMap<String, E>();
@@ -155,7 +154,6 @@ public class EnumUtils {
      * @param enumClass the class of the enum to query, not null
      * @param enumName  the enum name, null returns false
      * @return true if the enum name is valid, otherwise false
-     * @since 3.8
      */
     public static <E extends Enum<E>> boolean isValidEnumIgnoreCase(final Class<E> enumClass, final String enumName) {
         return getEnumIgnoreCase(enumClass, enumName) != null;
@@ -193,7 +191,6 @@ public class EnumUtils {
      * @param enumClass the class of the enum to query, not null
      * @param enumName  the enum name, null returns null
      * @return the enum, null if not found
-     * @since 3.8
      */
     public static <E extends Enum<E>> E getEnumIgnoreCase(final Class<E> enumClass, final String enumName) {
         if (enumName == null || !enumClass.isEnum()) {

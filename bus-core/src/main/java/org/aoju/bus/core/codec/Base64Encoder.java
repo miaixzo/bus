@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
  * Base64编码
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Base64Encoder {
@@ -191,6 +191,50 @@ public class Base64Encoder {
      */
     public static String encodeUrlSafe(byte[] source, Charset charset) {
         return StringUtils.str(encodeUrlSafe(source, false), charset);
+    }
+
+    /**
+     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串。
+     *
+     * @param buffer    被编码的数组
+     * @param charset   字符集
+     * @param isUrlSafe 是否使用URL安全字符，一般为<code>false</code>
+     * @return 编码后的字符串
+     */
+    public static String encodeBuffer(byte[] buffer, boolean isUrlSafe, Charset charset) {
+        return StringUtils.str(encode(buffer, true, isUrlSafe), charset);
+    }
+
+    /**
+     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串。
+     *
+     * @param buffer    被编码的数组
+     * @param isUrlSafe 是否使用URL安全字符，一般为<code>false</code>
+     * @return 编码后的字符串
+     */
+    public static String encodeBuffer(byte[] buffer, boolean isUrlSafe) {
+        return encodeBuffer(buffer, isUrlSafe, org.aoju.bus.core.consts.Charset.UTF_8);
+    }
+
+    /**
+     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串。
+     *
+     * @param buffer  被编码的数组
+     * @param charset 字符集
+     * @return 编码后的字符串
+     */
+    public static String encodeBuffer(byte[] buffer, Charset charset) {
+        return encodeBuffer(buffer, false, charset);
+    }
+
+    /**
+     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串。
+     *
+     * @param buffer 被编码的数组
+     * @return 编码后的字符串
+     */
+    public static String encodeBuffer(byte[] buffer) {
+        return encodeBuffer(buffer, false);
     }
 
     /**

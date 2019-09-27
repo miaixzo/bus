@@ -39,7 +39,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class RandomUtils {
@@ -53,6 +53,18 @@ public class RandomUtils {
      */
     public static ThreadLocalRandom getRandom() {
         return ThreadLocalRandom.current();
+    }
+
+    /**
+     * 获取随机数产生器
+     *
+     * @param isSecure 是否为强随机数生成器 (RNG)
+     * @return {@link Random}
+     * @see #getSecureRandom()
+     * @see #getRandom()
+     */
+    public static Random getRandom(boolean isSecure) {
+        return isSecure ? getSecureRandom() : getRandom();
     }
 
     /**
@@ -70,16 +82,13 @@ public class RandomUtils {
     }
 
     /**
-     * 获取随机数产生器
+     * 创建{@link SecureRandom}，类提供加密的强随机数生成器 (RNG)<br>
      *
-     * @param isSecure 是否为强随机数生成器 (RNG)
-     * @return {@link Random}
-     * @see #getSecureRandom()
-     * @see #getRandom()
-     * @since 4.1.15
+     * @param seed 自定义随机种子
+     * @return {@link SecureRandom}
      */
-    public static Random getRandom(boolean isSecure) {
-        return isSecure ? getSecureRandom() : getRandom();
+    public static SecureRandom getSecureRandom(byte[] seed) {
+        return (null == seed) ? new SecureRandom() : new SecureRandom(seed);
     }
 
     /**
@@ -181,7 +190,6 @@ public class RandomUtils {
      * 获得指定范围内的随机数[0, 1)
      *
      * @return 随机数
-     * @since 4.0.9
      */
     public static BigDecimal randomBigDecimal() {
         return NumberUtils.toBigDecimal(getRandom().nextDouble());
@@ -192,7 +200,6 @@ public class RandomUtils {
      *
      * @param limit 最大数（不包含）
      * @return 随机数
-     * @since 4.0.9
      */
     public static BigDecimal randomBigDecimal(BigDecimal limit) {
         return NumberUtils.toBigDecimal(getRandom().nextDouble(limit.doubleValue()));
@@ -204,7 +211,6 @@ public class RandomUtils {
      * @param min 最小数（包含）
      * @param max 最大数（不包含）
      * @return 随机数
-     * @since 4.0.9
      */
     public static BigDecimal randomBigDecimal(BigDecimal min, BigDecimal max) {
         return NumberUtils.toBigDecimal(getRandom().nextDouble(min.doubleValue(), max.doubleValue()));
@@ -327,7 +333,6 @@ public class RandomUtils {
      *
      * @param length 字符串的长度
      * @return 随机字符串
-     * @since 4.0.13
      */
     public static String randomStringUpper(int length) {
         return randomString(Normal.LETTER_NUMBER, length).toUpperCase();
@@ -399,7 +404,6 @@ public class RandomUtils {
      * 生成随机颜色
      *
      * @return 随机颜色
-     * @since 4.1.5
      */
     public static Color randomColor() {
         final Random random = getRandom();
@@ -412,7 +416,6 @@ public class RandomUtils {
      * @param min 偏移最小天，可以为负数表示过去的时间
      * @param max 偏移最大天，可以为负数表示过去的时间
      * @return 随机日期（随机天，其它时间不变）
-     * @since 4.0.8
      */
     public static DateTime randomDay(int min, int max) {
         return DateUtils.offsetDay(DateUtils.date(), randomInt(min, max));

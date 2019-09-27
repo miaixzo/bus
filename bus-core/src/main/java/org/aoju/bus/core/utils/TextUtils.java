@@ -34,7 +34,7 @@ import java.util.Arrays;
  * 可复用的字符串生成器，非线程安全
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class TextUtils implements CharSequence, Appendable, Serializable {
@@ -72,7 +72,6 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      * 构造
      *
      * @param strs 初始字符串
-     * @since 4.0.1
      */
     public TextUtils(CharSequence... strs) {
         this(ArrayUtils.isEmpty(strs) ? DEFAULT_CAPACITY : (totalLength(strs) + DEFAULT_CAPACITY));
@@ -105,7 +104,6 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      *
      * @param strs 初始字符串
      * @return {@link TextUtils}
-     * @since 4.0.1
      */
     public static TextUtils create(CharSequence... strs) {
         return new TextUtils(strs);
@@ -117,7 +115,6 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      *
      * @param strs 字符串数组
      * @return 总长度
-     * @since 4.0.1
      */
     private static int totalLength(CharSequence... strs) {
         int totalLength = 0;

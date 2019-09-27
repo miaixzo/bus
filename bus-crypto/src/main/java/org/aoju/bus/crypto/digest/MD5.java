@@ -23,22 +23,27 @@
  */
 package org.aoju.bus.crypto.digest;
 
-import org.aoju.bus.core.consts.ModeType;
+import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.crypto.Builder;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 /**
  * MD5算法
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class MD5 extends Digester {
 
+    /**
+     * 构造
+     */
     public MD5() {
-        super(ModeType.MD5);
+        super(Algorithm.MD5);
     }
 
     /**
@@ -75,14 +80,23 @@ public class MD5 extends Digester {
     }
 
     /**
-     * 32位MD5值转换为16位
+     * 创建MD5实例
      *
-     * @param md5Hex32 32位MD5值
-     * @return 16位MD5值
-     * @since 4.5.1
+     * @return MD5
      */
-    private static String toHex16(String md5Hex32) {
-        return md5Hex32.substring(8, 16);
+    public static MD5 create() {
+        return new MD5();
+    }
+
+    /**
+     * 生成16位MD5摘要
+     *
+     * @param data    数据
+     * @param charset 编码
+     * @return 16位MD5摘要
+     */
+    public String digestHex16(String data, Charset charset) {
+        return Builder.md5HexTo16(digestHex(data, charset));
     }
 
     /**
@@ -90,10 +104,9 @@ public class MD5 extends Digester {
      *
      * @param data 数据
      * @return 16位MD5摘要
-     * @since 4.5.1
      */
     public String digestHex16(String data) {
-        return toHex16(digestHex(data));
+        return Builder.md5HexTo16(digestHex(data));
     }
 
     /**
@@ -101,10 +114,9 @@ public class MD5 extends Digester {
      *
      * @param data 数据
      * @return 16位MD5摘要
-     * @since 4.5.1
      */
     public String digestHex16(InputStream data) {
-        return toHex16(digestHex(data));
+        return Builder.md5HexTo16(digestHex(data));
     }
 
     /**
@@ -114,7 +126,7 @@ public class MD5 extends Digester {
      * @return 16位MD5摘要
      */
     public String digestHex16(File data) {
-        return toHex16(digestHex(data));
+        return Builder.md5HexTo16(digestHex(data));
     }
 
     /**
@@ -122,10 +134,9 @@ public class MD5 extends Digester {
      *
      * @param data 数据
      * @return 16位MD5摘要
-     * @since 4.5.1
      */
     public String digestHex16(byte[] data) {
-        return toHex16(digestHex(data));
+        return Builder.md5HexTo16(digestHex(data));
     }
 
 }

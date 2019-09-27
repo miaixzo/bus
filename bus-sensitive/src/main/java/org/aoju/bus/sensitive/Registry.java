@@ -24,7 +24,6 @@
 package org.aoju.bus.sensitive;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.lang.exception.ValidateException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.sensitive.annotation.Strategy;
@@ -40,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 1. 注解和实现之间映射
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public final class Registry {
@@ -68,30 +67,30 @@ public final class Registry {
     /**
      * 注册组件
      *
-     * @param type  组件名称
-     * @param objet 组件对象
+     * @param name   组件名称
+     * @param object 组件对象
      */
-    public static void register(Builder.Type type, StrategyProvider objet) {
-        if (STRATEGY_CACHE.containsKey(type)) {
-            throw new ValidateException("重复注册同名称的组件：" + type);
+    public static void register(Builder.Type name, StrategyProvider object) {
+        if (STRATEGY_CACHE.containsKey(name)) {
+            throw new InstrumentException("重复注册同名称的组件：" + name);
         }
-        Class<?> clazz = objet.getClass();
+        Class<?> clazz = object.getClass();
         if (STRATEGY_CACHE.containsKey(clazz.getSimpleName())) {
-            throw new ValidateException("重复注册同类型的组件：" + clazz);
+            throw new InstrumentException("重复注册同类型的组件：" + clazz);
         }
-        STRATEGY_CACHE.putIfAbsent(type, objet);
+        STRATEGY_CACHE.putIfAbsent(name, object);
     }
 
     /**
      * 生成脱敏工具
      *
-     * @param type 模型
+     * @param name 模型
      * @return the object
      */
-    public static StrategyProvider require(Builder.Type type) {
-        StrategyProvider sensitiveProvider = STRATEGY_CACHE.get(type);
-        if (sensitiveProvider == null) {
-            throw new IllegalArgumentException("none sensitiveProvider be found!, type:" + type.name());
+    public static StrategyProvider require(Builder.Type name) {
+        StrategyProvider sensitiveProvider = STRATEGY_CACHE.get(name);
+        if (ObjectUtils.isEmpty(sensitiveProvider)) {
+            throw new IllegalArgumentException("none sensitiveProvider be found!, type:" + name);
         }
         return sensitiveProvider;
     }
@@ -104,7 +103,7 @@ public final class Registry {
      */
     public static StrategyProvider require(final Class<? extends Annotation> annotationClass) {
         StrategyProvider strategy = STRATEGY_CACHE.get(annotationClass);
-        if (ObjectUtils.isNull(strategy)) {
+        if (ObjectUtils.isEmpty(strategy)) {
             throw new InstrumentException("不支持的系统内置方法，用户请勿在自定义注解中使用[BuiltInStrategy]!");
         }
         return strategy;
@@ -120,7 +119,7 @@ public final class Registry {
     public static StrategyProvider require(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             Strategy sensitiveStrategy = annotation.annotationType().getAnnotation(Strategy.class);
-            if (ObjectUtils.isNotNull(sensitiveStrategy)) {
+            if (ObjectUtils.isNotEmpty(sensitiveStrategy)) {
                 Class<? extends StrategyProvider> clazz = sensitiveStrategy.value();
                 StrategyProvider strategy;
                 if (BuiltInStrategy.class.equals(clazz)) {
@@ -132,6 +131,16 @@ public final class Registry {
             }
         }
         return null;
+    }
+
+    /**
+     * 是否包含指定名称策略
+     *
+     * @param name 策略名称
+     * @return true：包含， false：不包含
+     */
+    public boolean contains(String name) {
+        return STRATEGY_CACHE.containsKey(name);
     }
 
 }

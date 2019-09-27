@@ -53,7 +53,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Sftp extends AbstractFtp {
@@ -81,7 +81,6 @@ public class Sftp extends AbstractFtp {
      * @param sshUser 远程主机用户名
      * @param sshPass 远程主机密码
      * @param charset 编码
-     * @since 4.1.14
      */
     public Sftp(String sshHost, int sshPort, String sshUser, String sshPass, Charset charset) {
         init(sshHost, sshPort, sshUser, sshPass, charset);
@@ -101,7 +100,6 @@ public class Sftp extends AbstractFtp {
      *
      * @param session {@link Session}
      * @param charset 编码
-     * @since 4.1.14
      */
     public Sftp(Session session, Charset charset) {
         init(session, charset);
@@ -173,7 +171,6 @@ public class Sftp extends AbstractFtp {
      * 获取SFTP通道客户端
      *
      * @return 通道客户端
-     * @since 4.1.14
      */
     public ChannelSftp getClient() {
         return this.channel;
@@ -197,7 +194,6 @@ public class Sftp extends AbstractFtp {
      * 获取HOME路径
      *
      * @return HOME路径
-     * @since 4.0.5
      */
     public String home() {
         try {
@@ -212,7 +208,6 @@ public class Sftp extends AbstractFtp {
      *
      * @param path 遍历某个目录下所有文件或目录
      * @return 目录或文件名列表
-     * @since 4.0.5
      */
     @Override
     public List<String> ls(String path) {
@@ -224,7 +219,6 @@ public class Sftp extends AbstractFtp {
      *
      * @param path 遍历某个目录下所有目录
      * @return 目录名列表
-     * @since 4.0.5
      */
     public List<String> lsDirs(String path) {
         return ls(path, new Filter<LsEntry>() {
@@ -240,7 +234,6 @@ public class Sftp extends AbstractFtp {
      *
      * @param path 遍历某个目录下所有文件
      * @return 文件名列表
-     * @since 4.0.5
      */
     public List<String> lsFiles(String path) {
         return ls(path, new Filter<LsEntry>() {
@@ -257,7 +250,6 @@ public class Sftp extends AbstractFtp {
      * @param path   遍历某个目录下所有文件或目录
      * @param filter 文件或目录过滤器，可以实现过滤器返回自己需要的文件或目录名列表
      * @return 目录或文件名列表
-     * @since 4.0.5
      */
     public List<String> ls(String path, final Filter<LsEntry> filter) {
         final List<String> fileNames = new ArrayList<>();

@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class MapUtils {
@@ -404,7 +404,6 @@ public class MapUtils {
      *
      * @param map Map
      * @return 数组
-     * @since 4.1.9
      */
     public static Object[][] toObjectArray(Map<?, ?> map) {
         if (map == null) {
@@ -551,7 +550,6 @@ public class MapUtils {
      * @param map  原始Map
      * @param keys 键列表
      * @return Map 结果，结果的Map类型与原Map保持一致
-     * @since 4.0.10
      */
     public static <K, V> Map<K, V> filter(Map<K, V> map, K... keys) {
         final Map<K, V> map2 = ObjectUtils.clone(map);
@@ -574,7 +572,7 @@ public class MapUtils {
      * @param <T> 键和值类型
      * @param map Map对象，键值类型必须一致
      * @return 互换后的Map
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static <T> Map<T, T> reverse(Map<T, T> map) {
         return filter(map, new Editor<Entry<T, T>>() {
@@ -609,7 +607,6 @@ public class MapUtils {
      * @param map Map
      * @return TreeMap
      * @see #newTreeMap(Map, Comparator)
-     * @since 4.0.1
      */
     public static <K, V> TreeMap<K, V> sort(Map<K, V> map) {
         return sort(map, null);
@@ -624,7 +621,6 @@ public class MapUtils {
      * @param comparator Key比较器
      * @return TreeMap
      * @see #newTreeMap(Map, Comparator)
-     * @since 4.0.1
      */
     public static <K, V> TreeMap<K, V> sort(Map<K, V> map, Comparator<? super K> comparator) {
         TreeMap<K, V> result;
@@ -647,7 +643,7 @@ public class MapUtils {
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static MapProxy createProxy(Map<?, ?> map) {
         return MapProxy.create(map);
@@ -697,7 +693,6 @@ public class MapUtils {
      * @param map  Map
      * @param keys 键列表
      * @return 新Map，只包含指定的key
-     * @since 4.0.6
      */
     public static <K, V> Map<K, V> getAny(Map<K, V> map, final K... keys) {
         return filter(map, new Filter<Entry<K, V>>() {
@@ -715,7 +710,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.0.6
      */
     public static String getString(Map<?, ?> map, Object key) {
         return get(map, key, String.class);
@@ -727,7 +721,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.0.6
      */
     public static Integer getInt(Map<?, ?> map, Object key) {
         return get(map, key, Integer.class);
@@ -739,7 +732,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.0.6
      */
     public static Double getDouble(Map<?, ?> map, Object key) {
         return get(map, key, Double.class);
@@ -751,7 +743,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.0.6
      */
     public static Float getFloat(Map<?, ?> map, Object key) {
         return get(map, key, Float.class);
@@ -763,7 +754,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.0.6
      */
     public static Short getShort(Map<?, ?> map, Object key) {
         return get(map, key, Short.class);
@@ -775,7 +765,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.0.6
      */
     public static Boolean getBool(Map<?, ?> map, Object key) {
         return get(map, key, Boolean.class);
@@ -787,7 +776,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.0.6
      */
     public static Character getChar(Map<?, ?> map, Object key) {
         return get(map, key, Character.class);
@@ -799,7 +787,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.0.6
      */
     public static Long getLong(Map<?, ?> map, Object key) {
         return get(map, key, Long.class);
@@ -811,7 +798,6 @@ public class MapUtils {
      * @param map Map
      * @param key 键
      * @return 值
-     * @since 4.1.2
      */
     public static Date getDate(Map<?, ?> map, Object key) {
         return get(map, key, Date.class);
@@ -825,7 +811,6 @@ public class MapUtils {
      * @param key  键
      * @param type 值类型
      * @return 值
-     * @since 4.0.6
      */
     public static <T> T get(Map<?, ?> map, Object key, Class<T> type) {
         return null == map ? null : Convert.convert(type, map.get(key));

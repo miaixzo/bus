@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器，并且可以使用端口转发，X11转发，文件传输等。
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class SSHUtils {
@@ -112,7 +112,6 @@ public class SSHUtils {
      * @param sshUser 机用户名
      * @param sshPass 密码
      * @return SSH会话
-     * @since 4.5.2
      */
     public static Session createSession(String sshHost, int sshPort, String sshUser, String sshPass) {
         if (StringUtils.isEmpty(sshHost) || sshPort < 0 || StringUtils.isEmpty(sshUser) || StringUtils.isEmpty(sshPass)) {
@@ -193,7 +192,6 @@ public class SSHUtils {
      *
      * @param session Session会话
      * @return {@link ChannelSftp}
-     * @since 4.0.3
      */
     public static ChannelSftp openSftp(Session session) {
         return (ChannelSftp) openChannel(session, ChannelType.SFTP);
@@ -207,7 +205,6 @@ public class SSHUtils {
      * @param sshUser 远程主机用户名
      * @param sshPass 远程主机密码
      * @return {@link Sftp}
-     * @since 4.0.3
      */
     public static Sftp createSftp(String sshHost, int sshPort, String sshUser, String sshPass) {
         return new Sftp(sshHost, sshPort, sshUser, sshPass);
@@ -218,7 +215,6 @@ public class SSHUtils {
      *
      * @param session SSH会话
      * @return {@link Sftp}
-     * @since 4.0.5
      */
     public static Sftp createSftp(Session session) {
         return new Sftp(session);
@@ -229,7 +225,6 @@ public class SSHUtils {
      *
      * @param session Session会话
      * @return {@link ChannelShell}
-     * @since 4.0.3
      */
     public static ChannelShell openShell(Session session) {
         return (ChannelShell) openChannel(session, ChannelType.SHELL);
@@ -241,7 +236,6 @@ public class SSHUtils {
      * @param session     Session会话
      * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
      * @return {@link Channel}
-     * @since 4.5.2
      */
     public static Channel openChannel(Session session, ChannelType channelType) {
         final Channel channel = createChannel(session, channelType);
@@ -259,7 +253,6 @@ public class SSHUtils {
      * @param session     Session会话
      * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
      * @return {@link Channel}
-     * @since 4.5.2
      */
     public static Channel createChannel(Session session, ChannelType channelType) {
         Channel channel;
@@ -281,7 +274,6 @@ public class SSHUtils {
      * @param cmd     命令
      * @param charset 发送和读取内容的编码
      * @return {@link ChannelExec}
-     * @since 4.0.3
      */
     public static String exec(Session session, String cmd, Charset charset) {
         return exec(session, cmd, charset, System.err);
@@ -295,7 +287,6 @@ public class SSHUtils {
      * @param charset   发送和读取内容的编码
      * @param errStream 错误信息输出到的位置
      * @return {@link ChannelExec}
-     * @since 4.3.1
      */
     public static String exec(Session session, String cmd, Charset charset, OutputStream errStream) {
         if (null == charset) {
@@ -336,7 +327,6 @@ public class SSHUtils {
      * 关闭会话通道
      *
      * @param channel 会话通道
-     * @since 4.0.3
      */
     public static void close(Channel channel) {
         if (channel != null && channel.isConnected()) {

@@ -35,7 +35,7 @@ import org.pmw.tinylog.Logger;
  * tinylog log.
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class TinyLog extends AbstractAware {
@@ -62,7 +62,6 @@ public class TinyLog extends AbstractAware {
      *
      * @param arguments 参数
      * @return 最后一个异常参数
-     * @since 4.0.3
      */
     private static Throwable getLastArgumentIfThrowable(Object... arguments) {
         if (ArrayUtils.isNotEmpty(arguments) && arguments[arguments.length - 1] instanceof Throwable) {
@@ -158,7 +157,6 @@ public class TinyLog extends AbstractAware {
      *
      * @param level Level等级
      * @return Tinylog的Level
-     * @since 4.0.3
      */
     private Level toTinyLevel(org.aoju.bus.logger.level.Level level) {
         Level tinyLevel;

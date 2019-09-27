@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 注意：单例针对的是类和对象，因此get方法第一次调用时创建的对象始终唯一，也就是说就算参数变更，返回的依旧是第一次创建的对象
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public final class Singleton {
@@ -90,7 +90,6 @@ public final class Singleton {
      * 将已有对象放入单例中，其Class做为键
      *
      * @param obj 对象
-     * @since 4.0.7
      */
     public static void put(Object obj) {
         pool.put(obj.getClass(), obj);

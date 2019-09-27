@@ -23,12 +23,12 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
+import org.aoju.bus.core.codec.BCD;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.KeyType;
+import org.aoju.bus.crypto.Builder;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -37,10 +37,10 @@ import java.security.PublicKey;
 
 /**
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
-public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extends BaseAsymmetric<T> {
+public abstract class Safety<T extends Safety<T>> extends Keys<T> {
 
     /**
      * 构造
@@ -53,118 +53,8 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param publicKey  公钥
      * @since 3.1.1
      */
-    public AbstractAsymmetric(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
+    public Safety(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
         super(algorithm, privateKey, publicKey);
-    }
-
-    /**
-     * 字符串转BCD码
-     *
-     * @param asc ASCII字符串
-     * @return BCD
-     */
-    public static byte[] strToBcd(String asc) {
-        int len = asc.length();
-        int mod = len % 2;
-        if (mod != 0) {
-            asc = "0" + asc;
-            len = asc.length();
-        }
-        byte abt[] = new byte[len];
-        if (len >= 2) {
-            len >>= 1;
-        }
-        byte bbt[] = new byte[len];
-        abt = asc.getBytes();
-        int j;
-        int k;
-        for (int p = 0; p < asc.length() / 2; p++) {
-            if ((abt[2 * p] >= '0') && (abt[2 * p] <= '9')) {
-                j = abt[2 * p] - '0';
-            } else if ((abt[2 * p] >= 'a') && (abt[2 * p] <= 'z')) {
-                j = abt[2 * p] - 'a' + 0x0a;
-            } else {
-                j = abt[2 * p] - 'A' + 0x0a;
-            }
-            if ((abt[2 * p + 1] >= '0') && (abt[2 * p + 1] <= '9')) {
-                k = abt[2 * p + 1] - '0';
-            } else if ((abt[2 * p + 1] >= 'a') && (abt[2 * p + 1] <= 'z')) {
-                k = abt[2 * p + 1] - 'a' + 0x0a;
-            } else {
-                k = abt[2 * p + 1] - 'A' + 0x0a;
-            }
-            int a = (j << 4) + k;
-            byte b = (byte) a;
-            bbt[p] = b;
-        }
-        return bbt;
-    }
-
-    /**
-     * ASCII转BCD
-     *
-     * @param ascii ASCII byte数组
-     * @return BCD
-     */
-    public static byte[] ascToBcd(byte[] ascii) {
-        return ascToBcd(ascii, ascii.length);
-    }
-
-    /**
-     * ASCII转BCD
-     *
-     * @param ascii     ASCII byte数组
-     * @param ascLength 长度
-     * @return BCD
-     */
-    public static byte[] ascToBcd(byte[] ascii, int ascLength) {
-        byte[] bcd = new byte[ascLength / 2];
-        int j = 0;
-        for (int i = 0; i < (ascLength + 1) / 2; i++) {
-            bcd[i] = ascToBcd(ascii[j++]);
-            bcd[i] = (byte) (((j >= ascLength) ? 0x00 : ascToBcd(ascii[j++])) + (bcd[i] << 4));
-        }
-        return bcd;
-    }
-
-    /**
-     * BCD转ASCII字符串
-     *
-     * @param bytes BCD byte数组
-     * @return ASCII字符串
-     */
-    public static String bcdToStr(byte[] bytes) {
-        char temp[] = new char[bytes.length * 2], val;
-
-        for (int i = 0; i < bytes.length; i++) {
-            val = (char) (((bytes[i] & 0xf0) >> 4) & 0x0f);
-            temp[i * 2] = (char) (val > 9 ? val + 'A' - 10 : val + '0');
-
-            val = (char) (bytes[i] & 0x0f);
-            temp[i * 2 + 1] = (char) (val > 9 ? val + 'A' - 10 : val + '0');
-        }
-        return new String(temp);
-    }
-
-    /**
-     * 转换单个byte为BCD
-     *
-     * @param asc ACSII
-     * @return BCD
-     */
-    private static byte ascToBcd(byte asc) {
-        byte bcd;
-
-        if ((asc >= '0') && (asc <= '9')) {
-            bcd = (byte) (asc - '0');
-        } else if ((asc >= 'A') && (asc <= 'F')) {
-            bcd = (byte) (asc - 'A' + 10);
-        } else if ((asc >= 'a') && (asc <= 'f')) {
-            bcd = (byte) (asc - 'a' + 10);
-        } else {
-            bcd = (byte) (asc - 48);
-        }
-        return bcd;
     }
 
     /**
@@ -193,7 +83,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    被加密的bytes
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Base64字符串
-     * @since 4.0.1
      */
     public String encryptBase64(byte[] data, KeyType keyType) {
         return Base64.encode(encrypt(data, keyType));
@@ -240,7 +129,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    被加密的字符串
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Hex字符串
-     * @since 4.0.1
      */
     public String encryptHex(String data, KeyType keyType) {
         return HexUtils.encodeHexStr(encrypt(data, keyType));
@@ -253,7 +141,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param charset 编码
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Hex字符串
-     * @since 4.0.1
      */
     public String encryptHex(String data, Charset charset, KeyType keyType) {
         return HexUtils.encodeHexStr(encrypt(data, charset, keyType));
@@ -265,7 +152,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    被加密的字符串
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Base64字符串
-     * @since 4.0.1
      */
     public String encryptBase64(String data, KeyType keyType) {
         return Base64.encode(encrypt(data, keyType));
@@ -275,10 +161,9 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * 编码为Base64字符串
      *
      * @param data    被加密的字符串
-     * @param charset 字符编码
+     * @param charset 字符集
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Base64字符串
-     * @since 4.0.1
      */
     public String encryptBase64(String data, Charset charset, KeyType keyType) {
         return Base64.encode(encrypt(data, charset, keyType));
@@ -301,7 +186,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    被加密的数据流
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Hex字符串
-     * @since 4.0.1
      */
     public String encryptHex(InputStream data, KeyType keyType) {
         return HexUtils.encodeHexStr(encrypt(data, keyType));
@@ -313,7 +197,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    被加密的数据流
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Base64字符串
-     * @since 4.0.1
      */
     public String encryptBase64(InputStream data, KeyType keyType) {
         return Base64.encode(encrypt(data, keyType));
@@ -325,7 +208,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    数据
      * @param keyType 密钥类型
      * @return 加密后的密文
-     * @since 4.1.0
      */
     public String encryptBcd(String data, KeyType keyType) {
         return encryptBcd(data, keyType, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -338,10 +220,9 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 加密后的密文
-     * @since 4.1.0
      */
     public String encryptBcd(String data, KeyType keyType, Charset charset) {
-        return bcdToStr(encrypt(data, charset, keyType));
+        return BCD.bcdToStr(encrypt(data, charset, keyType));
     }
 
     /**
@@ -370,10 +251,9 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    Hex（16进制）或Base64字符串
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 解密后的bytes
-     * @since 4.5.2
      */
     public byte[] decrypt(String data, KeyType keyType) {
-        return decrypt(CryptoUtils.decode(data), keyType);
+        return decrypt(Builder.decode(data), keyType);
     }
 
     /**
@@ -383,7 +263,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 解密后的密文
-     * @since 4.5.2
      */
     public String decryptStr(String data, KeyType keyType, Charset charset) {
         return StringUtils.str(decrypt(data, keyType), charset);
@@ -395,7 +274,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    数据，Hex（16进制）或Base64字符串
      * @param keyType 密钥类型
      * @return 解密后的密文
-     * @since 4.5.2
      */
     public String decryptStr(String data, KeyType keyType) {
         return decryptStr(data, keyType, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -407,7 +285,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    数据
      * @param keyType 密钥类型
      * @return 解密后的密文
-     * @since 4.1.0
      */
     public byte[] decryptFromBcd(String data, KeyType keyType) {
         return decryptFromBcd(data, keyType, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -420,10 +297,9 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 解密后的密文
-     * @since 4.1.0
      */
     public byte[] decryptFromBcd(String data, KeyType keyType, Charset charset) {
-        final byte[] dataBytes = ascToBcd(StringUtils.bytes(data, charset));
+        final byte[] dataBytes = BCD.ascToBcd(StringUtils.bytes(data, charset));
         return decrypt(dataBytes, keyType);
     }
 
@@ -434,7 +310,6 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 解密后的密文
-     * @since 4.5.2
      */
     public String decryptStrFromBcd(String data, KeyType keyType, Charset charset) {
         return StringUtils.str(decryptFromBcd(data, keyType, charset), charset);
@@ -446,9 +321,9 @@ public abstract class AbstractAsymmetric<T extends AbstractAsymmetric<T>> extend
      * @param data    数据，BCD格式
      * @param keyType 密钥类型
      * @return 解密后的密文
-     * @since 4.5.2
      */
     public String decryptStrFromBcd(String data, KeyType keyType) {
         return decryptStrFromBcd(data, keyType, org.aoju.bus.core.consts.Charset.UTF_8);
     }
+
 }

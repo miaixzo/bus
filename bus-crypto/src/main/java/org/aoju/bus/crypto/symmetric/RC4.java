@@ -23,7 +23,9 @@
  */
 package org.aoju.bus.crypto.symmetric;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.nio.charset.Charset;
@@ -35,7 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * RC4加密解密算法实现
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class RC4 {
@@ -59,9 +61,9 @@ public class RC4 {
      * 构造
      *
      * @param key 密钥
-     * @throws CommonException 异常
+     * @throws InstrumentException 异常
      */
-    public RC4(String key) throws CommonException {
+    public RC4(String key) throws InstrumentException {
         setKey(key);
     }
 
@@ -71,9 +73,9 @@ public class RC4 {
      * @param message 消息
      * @param charset 编码
      * @return 密文
-     * @throws CommonException key长度小于5或者大于255抛出此异常
+     * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
-    public byte[] encrypt(String message, Charset charset) throws CommonException {
+    public byte[] encrypt(String message, Charset charset) throws InstrumentException {
         return crypt(StringUtils.bytes(message, charset));
     }
 
@@ -82,10 +84,52 @@ public class RC4 {
      *
      * @param message 消息
      * @return 密文
-     * @throws CommonException key长度小于5或者大于255抛出此异常
+     * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
-    public byte[] encrypt(String message) throws CommonException {
+    public byte[] encrypt(String message) throws InstrumentException {
         return encrypt(message, org.aoju.bus.core.consts.Charset.UTF_8);
+    }
+
+    /**
+     * 加密
+     *
+     * @param data 数据
+     * @return 加密后的Hex
+     */
+    public String encryptHex(byte[] data) {
+        return HexUtils.encodeHexStr(crypt(data));
+    }
+
+    /**
+     * 加密
+     *
+     * @param data 数据
+     * @return 加密后的Base64
+     */
+    public String encryptBase64(byte[] data) {
+        return Base64.encode(crypt(data));
+    }
+
+    /**
+     * 加密
+     *
+     * @param data    被加密的字符串
+     * @param charset 编码
+     * @return 加密后的Hex
+     */
+    public String encryptHex(String data, Charset charset) {
+        return HexUtils.encodeHexStr(encrypt(data, charset));
+    }
+
+    /**
+     * 加密
+     *
+     * @param data    被加密的字符串
+     * @param charset 编码
+     * @return 加密后的Base64
+     */
+    public String encryptBase64(String data, Charset charset) {
+        return Base64.encode(encrypt(data, charset));
     }
 
     /**
@@ -94,9 +138,9 @@ public class RC4 {
      * @param message 消息
      * @param charset 编码
      * @return 明文
-     * @throws CommonException key长度小于5或者大于255抛出此异常
+     * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
-    public String decrypt(byte[] message, Charset charset) throws CommonException {
+    public String decrypt(byte[] message, Charset charset) throws InstrumentException {
         return StringUtils.str(crypt(message), charset);
     }
 
@@ -105,9 +149,9 @@ public class RC4 {
      *
      * @param message 消息
      * @return 明文
-     * @throws CommonException key长度小于5或者大于255抛出此异常
+     * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
-    public String decrypt(byte[] message) throws CommonException {
+    public String decrypt(byte[] message) throws InstrumentException {
         return decrypt(message, org.aoju.bus.core.consts.Charset.UTF_8);
     }
 
@@ -143,12 +187,12 @@ public class RC4 {
      * 设置密钥
      *
      * @param key 密钥
-     * @throws CommonException key长度小于5或者大于255抛出此异常
+     * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
-    public void setKey(String key) throws CommonException {
+    public void setKey(String key) throws InstrumentException {
         final int length = key.length();
         if (length < KEY_MIN_LENGTH || length >= SBOX_LENGTH) {
-            throw new CommonException("Key length has to be between {} and {}", KEY_MIN_LENGTH, (SBOX_LENGTH - 1));
+            throw new InstrumentException("Key length has to be between {} and {}", KEY_MIN_LENGTH, (SBOX_LENGTH - 1));
         }
 
         final WriteLock writeLock = this.lock.writeLock();

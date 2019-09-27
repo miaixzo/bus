@@ -42,7 +42,7 @@ import java.io.OutputStream;
  * Excel工作簿{@link Workbook}相关工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class BookUtils {
@@ -101,7 +101,6 @@ public class BookUtils {
      * @param password       密码
      * @param closeAfterRead 读取结束是否关闭流
      * @return {@link Workbook}
-     * @since 4.0.3
      */
     public static Workbook createBook(InputStream in, String password, boolean closeAfterRead) {
         try {
@@ -120,7 +119,6 @@ public class BookUtils {
      *
      * @param isXlsx 是否为xlsx格式的Excel
      * @return {@link Workbook}
-     * @since 4.1.0
      */
     public static Workbook createBook(boolean isXlsx) {
         Workbook workbook;
@@ -137,7 +135,6 @@ public class BookUtils {
      *
      * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
      * @return {@link SXSSFWorkbook}
-     * @since 4.1.13
      */
     public static SXSSFWorkbook createSXSSFBook(String excelFilePath) {
         return createSXSSFBook(FileUtils.file(excelFilePath), null);
@@ -148,7 +145,6 @@ public class BookUtils {
      *
      * @param excelFile Excel文件
      * @return {@link SXSSFWorkbook}
-     * @since 4.1.13
      */
     public static SXSSFWorkbook createSXSSFBook(File excelFile) {
         return createSXSSFBook(excelFile, null);
@@ -160,7 +156,6 @@ public class BookUtils {
      * @param excelFile Excel文件
      * @param password  Excel工作簿密码，如果无密码传{@code null}
      * @return {@link SXSSFWorkbook}
-     * @since 4.1.13
      */
     public static SXSSFWorkbook createSXSSFBook(File excelFile, String password) {
         return toSXSSFBook(createBook(excelFile, password));
@@ -172,7 +167,6 @@ public class BookUtils {
      * @param in             Excel输入流
      * @param closeAfterRead 读取结束是否关闭流
      * @return {@link SXSSFWorkbook}
-     * @since 4.1.13
      */
     public static SXSSFWorkbook createSXSSFBook(InputStream in, boolean closeAfterRead) {
         return createSXSSFBook(in, null, closeAfterRead);
@@ -185,7 +179,6 @@ public class BookUtils {
      * @param password       密码
      * @param closeAfterRead 读取结束是否关闭流
      * @return {@link SXSSFWorkbook}
-     * @since 4.1.13
      */
     public static SXSSFWorkbook createSXSSFBook(InputStream in, String password, boolean closeAfterRead) {
         return toSXSSFBook(createBook(in, password, closeAfterRead));
@@ -195,7 +188,6 @@ public class BookUtils {
      * 创建SXSSFWorkbook，用于大批量数据写出
      *
      * @return {@link SXSSFWorkbook}
-     * @since 4.1.13
      */
     public static SXSSFWorkbook createSXSSFBook() {
         return new SXSSFWorkbook();
@@ -206,7 +198,6 @@ public class BookUtils {
      *
      * @param rowAccessWindowSize 在内存中的行数
      * @return {@link Workbook}
-     * @since 4.1.13
      */
     public static SXSSFWorkbook createSXSSFBook(int rowAccessWindowSize) {
         return new SXSSFWorkbook(rowAccessWindowSize);
@@ -218,7 +209,7 @@ public class BookUtils {
      * @param book {@link Workbook}
      * @param out  输出流
      * @throws InstrumentException IO异常
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static void writeBook(Workbook book, OutputStream out) throws InstrumentException {
         try {
@@ -235,7 +226,6 @@ public class BookUtils {
      * @param book      工作簿{@link Workbook}
      * @param sheetName 工作表名
      * @return 工作表{@link Sheet}
-     * @since 4.0.2
      */
     public static Sheet getOrCreateSheet(Workbook book, String sheetName) {
         if (null == book) {
@@ -254,7 +244,6 @@ public class BookUtils {
      *
      * @param sheet {@link Sheet}
      * @return sheet是否为空
-     * @since 4.0.1
      */
     public static boolean isEmpty(Sheet sheet) {
         return null == sheet || (sheet.getLastRowNum() == 0 && sheet.getPhysicalNumberOfRows() == 0);
@@ -265,7 +254,6 @@ public class BookUtils {
      *
      * @param book 工作簿
      * @return SXSSFWorkbook
-     * @since 4.1.13
      */
     private static SXSSFWorkbook toSXSSFBook(Workbook book) {
         if (book instanceof SXSSFWorkbook) {

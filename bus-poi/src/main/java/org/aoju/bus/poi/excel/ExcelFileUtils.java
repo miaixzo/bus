@@ -36,7 +36,7 @@ import java.io.PushbackInputStream;
  * Excel文件工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ExcelFileUtils {

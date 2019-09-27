@@ -43,7 +43,7 @@ import java.util.List;
  * 校验检查器
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Checker {
@@ -133,7 +133,7 @@ public class Checker {
      * @return 校验结果
      */
     private Collector doObject(Validated validated, Property property) {
-        Complex complex = (Complex) Registry.getInstance().get(property.getName(), property.getClazz());
+        Complex complex = (Complex) Registry.getInstance().require(property.getName(), property.getClazz());
         if (ObjectUtils.isEmpty(complex)) {
             throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s",
                     property.getName(),

@@ -47,7 +47,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class FtpUtils extends AbstractFtp {
@@ -188,7 +188,6 @@ public class FtpUtils extends AbstractFtp {
      *
      * @param mode 模式枚举
      * @return this
-     * @since 4.1.19
      */
     public FtpUtils setMode(FtpMode mode) {
         this.mode = mode;
@@ -246,7 +245,6 @@ public class FtpUtils extends AbstractFtp {
      * 远程当前目录
      *
      * @return 远程当前目录
-     * @since 4.1.14
      */
     @Override
     public String pwd() {

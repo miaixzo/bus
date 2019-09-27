@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ThreadUtils {
@@ -211,7 +211,6 @@ public class ThreadUtils {
      * @param name     线程名
      * @param isDeamon 是否守护线程
      * @return {@link Thread}
-     * @since 4.1.2
      */
     public static Thread newThread(Runnable runnable, String name, boolean isDeamon) {
         final Thread t = new Thread(null, runnable, name);
@@ -316,7 +315,6 @@ public class ThreadUtils {
      *
      * @return ThreadFactoryBuilder
      * @see ThreadFactoryBuilder#build()
-     * @since 4.1.13
      */
     public static ThreadFactoryBuilder createThreadFactoryBuilder() {
         return ThreadFactoryBuilder.create();
@@ -411,7 +409,6 @@ public class ThreadUtils {
      * @param prefix   线程名前缀
      * @param isDeamon 是否守护线程
      * @return the object
-     * @since 4.0.0
      */
     public static ThreadFactory newNamedThreadFactory(String prefix, boolean isDeamon) {
         return new NamedThreadFactory(prefix, isDeamon);
@@ -424,7 +421,6 @@ public class ThreadUtils {
      * @param threadGroup 线程组，可以为null
      * @param isDeamon    是否守护线程
      * @return the object
-     * @since 4.0.0
      */
     public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon) {
         return new NamedThreadFactory(prefix, threadGroup, isDeamon);
@@ -438,7 +434,6 @@ public class ThreadUtils {
      * @param isDeamon    是否守护线程
      * @param handler     未捕获异常处理
      * @return the object
-     * @since 4.0.0
      */
     public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon, UncaughtExceptionHandler handler) {
         return new NamedThreadFactory(prefix, threadGroup, isDeamon, handler);

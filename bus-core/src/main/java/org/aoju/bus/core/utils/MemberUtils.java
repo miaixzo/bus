@@ -45,7 +45,7 @@ import java.util.Set;
  * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 abstract class MemberUtils {
@@ -125,7 +125,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被加值
      * @return 和
-     * @since 4.0.0
      */
     public static BigDecimal add(Number... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -149,7 +148,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被加值
      * @return 和
-     * @since 4.0.0
      */
     public static BigDecimal add(String... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -173,7 +171,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被加值
      * @return 和
-     * @since 4.0.0
      */
     public static BigDecimal add(BigDecimal... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -253,7 +250,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被减值
      * @return 差
-     * @since 4.0.0
      */
     public static BigDecimal sub(Number... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -277,7 +273,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被减值
      * @return 差
-     * @since 4.0.0
      */
     public static BigDecimal sub(String... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -301,7 +296,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被减值
      * @return 差
-     * @since 4.0.0
      */
     public static BigDecimal sub(BigDecimal... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -381,7 +375,6 @@ abstract class MemberUtils {
      *
      * @param values 多个被乘值
      * @return 积
-     * @since 4.0.0
      */
     public static BigDecimal mul(Number... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -743,7 +736,6 @@ abstract class MemberUtils {
      * @param number 数字值
      * @param scale  保留小数位数
      * @return 新值
-     * @since 4.1.0
      */
     public static BigDecimal round(BigDecimal number, int scale) {
         return round(number, scale, RoundingMode.HALF_UP);
@@ -757,7 +749,7 @@ abstract class MemberUtils {
      * @param numberStr 数字值的字符串表现形式
      * @param scale     保留小数位数
      * @return 新值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static String roundStr(String numberStr, int scale) {
         return round(numberStr, scale).toString();
@@ -784,7 +776,7 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static String roundStr(double v, int scale, RoundingMode roundingMode) {
         return round(v, scale, roundingMode).toString();
@@ -838,7 +830,7 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static String roundStr(String numberStr, int scale, RoundingMode roundingMode) {
         return round(numberStr, scale, roundingMode).toString();
@@ -862,7 +854,6 @@ abstract class MemberUtils {
      * @param number 需要科学计算的数据
      * @param scale  保留的小数位
      * @return 结果
-     * @since 4.1.0
      */
     public static BigDecimal roundHalfEven(Number number, int scale) {
         return roundHalfEven(toBigDecimal(number), scale);
@@ -886,7 +877,6 @@ abstract class MemberUtils {
      * @param value 需要科学计算的数据
      * @param scale 保留的小数位
      * @return 结果
-     * @since 4.1.0
      */
     public static BigDecimal roundHalfEven(BigDecimal value, int scale) {
         return round(value, scale, RoundingMode.HALF_EVEN);
@@ -898,7 +888,6 @@ abstract class MemberUtils {
      * @param number 需要科学计算的数据
      * @param scale  保留的小数位
      * @return 结果
-     * @since 4.1.0
      */
     public static BigDecimal roundDown(Number number, int scale) {
         return roundDown(toBigDecimal(number), scale);
@@ -910,7 +899,6 @@ abstract class MemberUtils {
      * @param value 需要科学计算的数据
      * @param scale 保留的小数位
      * @return 结果
-     * @since 4.1.0
      */
     public static BigDecimal roundDown(BigDecimal value, int scale) {
         return round(value, scale, RoundingMode.DOWN);
@@ -1111,7 +1099,6 @@ abstract class MemberUtils {
      *
      * @param s String
      * @return 是否为{@link Long}类型
-     * @since 4.0.0
      */
     public static boolean isLong(String s) {
         try {
@@ -1316,7 +1303,6 @@ abstract class MemberUtils {
      * @param start 阶乘起始
      * @param end   阶乘结束
      * @return 结果
-     * @since 4.1.0
      */
     public static long factorial(long start, long end) {
         if (start < end) {
@@ -1619,7 +1605,7 @@ abstract class MemberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1632,7 +1618,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最小值
      * @see ArrayUtils#min(Comparable[])
-     * @since 4.0.7
      */
     public static <T extends Comparable<? super T>> T min(T... numberArray) {
         return ArrayUtils.min(numberArray);
@@ -1644,7 +1629,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最小值
      * @see ArrayUtils#min(long...)
-     * @since 4.0.7
      */
     public static long min(long... numberArray) {
         return ArrayUtils.min(numberArray);
@@ -1656,7 +1640,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最小值
      * @see ArrayUtils#min(int...)
-     * @since 4.0.7
      */
     public static int min(int... numberArray) {
         return ArrayUtils.min(numberArray);
@@ -1668,7 +1651,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最小值
      * @see ArrayUtils#min(short...)
-     * @since 4.0.7
      */
     public static short min(short... numberArray) {
         return ArrayUtils.min(numberArray);
@@ -1680,7 +1662,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最小值
      * @see ArrayUtils#min(double...)
-     * @since 4.0.7
      */
     public static double min(double... numberArray) {
         return ArrayUtils.min(numberArray);
@@ -1692,7 +1673,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最小值
      * @see ArrayUtils#min(float...)
-     * @since 4.0.7
      */
     public static float min(float... numberArray) {
         return ArrayUtils.min(numberArray);
@@ -1705,7 +1685,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最大值
      * @see ArrayUtils#max(Comparable[])
-     * @since 4.0.7
      */
     public static <T extends Comparable<? super T>> T max(T... numberArray) {
         return ArrayUtils.max(numberArray);
@@ -1717,7 +1696,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最大值
      * @see ArrayUtils#max(long...)
-     * @since 4.0.7
      */
     public static long max(long... numberArray) {
         return ArrayUtils.max(numberArray);
@@ -1729,7 +1707,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最大值
      * @see ArrayUtils#max(int...)
-     * @since 4.0.7
      */
     public static int max(int... numberArray) {
         return ArrayUtils.max(numberArray);
@@ -1741,7 +1718,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最大值
      * @see ArrayUtils#max(short...)
-     * @since 4.0.7
      */
     public static short max(short... numberArray) {
         return ArrayUtils.max(numberArray);
@@ -1753,7 +1729,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最大值
      * @see ArrayUtils#max(double...)
-     * @since 4.0.7
      */
     public static double max(double... numberArray) {
         return ArrayUtils.max(numberArray);
@@ -1765,7 +1740,6 @@ abstract class MemberUtils {
      * @param numberArray 数字数组
      * @return 最大值
      * @see ArrayUtils#max(float...)
-     * @since 4.0.7
      */
     public static float max(float... numberArray) {
         return ArrayUtils.max(numberArray);
@@ -1818,7 +1792,6 @@ abstract class MemberUtils {
      *
      * @param number 数字
      * @return {@link BigDecimal}
-     * @since 4.0.9
      */
     public static BigDecimal toBigDecimal(Number number) {
         if (null == number) {
@@ -1832,7 +1805,6 @@ abstract class MemberUtils {
      *
      * @param number 数字
      * @return {@link BigDecimal}
-     * @since 4.0.9
      */
     public static BigDecimal toBigDecimal(String number) {
         return (null == number) ? BigDecimal.ZERO : new BigDecimal(number);
@@ -1879,7 +1851,7 @@ abstract class MemberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static BigInteger newBigInteger(String str) {
         str = StringUtils.trimToNull(str);
@@ -1922,7 +1894,6 @@ abstract class MemberUtils {
      * @param number1 数字1
      * @param number2 数字2
      * @return 是否相邻
-     * @since 4.0.7
      */
     public static boolean isBeside(long number1, long number2) {
         return Math.abs(number1 - number2) == 1;
@@ -1935,7 +1906,6 @@ abstract class MemberUtils {
      * @param number1 数字1
      * @param number2 数字2
      * @return 是否相邻
-     * @since 4.0.7
      */
     public static boolean isBeside(int number1, int number2) {
         return Math.abs(number1 - number2) == 1;
@@ -1948,7 +1918,6 @@ abstract class MemberUtils {
      * @param total     总数
      * @param partCount 份数
      * @return 每份的个数
-     * @since 4.0.7
      */
     public static int partValue(int total, int partCount) {
         return partValue(total, partCount, true);
@@ -1962,7 +1931,6 @@ abstract class MemberUtils {
      * @param partCount           份数
      * @param isPlusOneWhenHasRem 在有余数时是否每份+1
      * @return 每份的个数
-     * @since 4.0.7
      */
     public static int partValue(int total, int partCount, boolean isPlusOneWhenHasRem) {
         int partValue = 0;
@@ -1983,7 +1951,6 @@ abstract class MemberUtils {
      * @param number 底数
      * @param n      指数
      * @return 幂的积
-     * @since 4.1.0
      */
     public static BigDecimal pow(Number number, int n) {
         return pow(toBigDecimal(number), n);
@@ -1995,7 +1962,6 @@ abstract class MemberUtils {
      * @param number 底数
      * @param n      指数
      * @return 幂的积
-     * @since 4.1.0
      */
     public static BigDecimal pow(BigDecimal number, int n) {
         return number.pow(n);
@@ -2016,7 +1982,6 @@ abstract class MemberUtils {
      * @param number 数字，支持0x开头、0开头和普通十进制
      * @return int
      * @throws NumberFormatException 数字格式异常
-     * @since 4.1.4
      */
     public static int parseInt(String number) throws NumberFormatException {
         if (StringUtils.isBlank(number)) {
@@ -2049,7 +2014,6 @@ abstract class MemberUtils {
      *
      * @param number 数字，支持0x开头、0开头和普通十进制
      * @return long
-     * @since 4.1.4
      */
     public static long parseLong(String number) {
         if (StringUtils.isBlank(number)) {
@@ -2075,7 +2039,6 @@ abstract class MemberUtils {
      *
      * @param numberStr Number字符串
      * @return Number对象
-     * @since 4.1.15
      */
     public static Number parseNumber(String numberStr) {
         numberStr = removeNumberFlag(numberStr);
@@ -2091,7 +2054,6 @@ abstract class MemberUtils {
      *
      * @param value 值
      * @return byte数组
-     * @since 4.4.5
      */
     public static byte[] toBytes(int value) {
         final byte[] result = new byte[4];
@@ -2109,7 +2071,6 @@ abstract class MemberUtils {
      *
      * @param bytes
      * @return int
-     * @since 4.4.5
      */
     public static int toInt(byte[] bytes) {
         return (bytes[0] & 0xff) << 24//
@@ -2123,7 +2084,6 @@ abstract class MemberUtils {
      *
      * @param value 需要转换的值
      * @return 无符号bytes
-     * @since 4.5.0
      */
     public static byte[] toUnsignedByteArray(BigInteger value) {
         byte[] bytes = value.toByteArray();
@@ -2144,7 +2104,6 @@ abstract class MemberUtils {
      * @param length bytes长度
      * @param value  需要转换的值
      * @return 无符号bytes
-     * @since 4.5.0
      */
     public static byte[] toUnsignedByteArray(int length, BigInteger value) {
         byte[] bytes = value.toByteArray();
@@ -2169,7 +2128,6 @@ abstract class MemberUtils {
      *
      * @param buf buf 无符号bytes
      * @return {@link BigInteger}
-     * @since 4.5.0
      */
     public static BigInteger fromUnsignedByteArray(byte[] buf) {
         return new BigInteger(1, buf);

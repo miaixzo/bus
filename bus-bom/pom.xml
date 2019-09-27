@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>3.5.3</version>
+    <version>3.6.0</version>
     <packaging>pom</packaging>
 
     <name>bus-bom</name>
@@ -18,7 +18,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.aoju</groupId>

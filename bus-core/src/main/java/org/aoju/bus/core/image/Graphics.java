@@ -32,7 +32,7 @@ import java.awt.image.BufferedImage;
  * {@link java.awt.Graphics}相关工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Graphics {
@@ -43,7 +43,6 @@ public class Graphics {
      * @param image {@link BufferedImage}
      * @param color {@link Color}背景颜色以及当前画笔颜色，{@code null}表示不设置背景色
      * @return {@link Graphics2D}
-     * @since 4.5.2
      */
     public static Graphics2D createGraphics(BufferedImage image, Color color) {
         final Graphics2D g = image.createGraphics();
@@ -64,7 +63,6 @@ public class Graphics {
      * @param g                {@link Graphics2D}画笔
      * @param backgroundHeight 背景高度
      * @return 最小高度，-1表示无法获取
-     * @since 4.5.17
      */
     public static int getCenterY(java.awt.Graphics g, int backgroundHeight) {
         // 获取允许文字最小高度
@@ -92,7 +90,6 @@ public class Graphics {
      * @param width  字符串总宽度
      * @param height 字符串背景高度
      * @return 画笔对象
-     * @since 4.5.10
      */
     public static java.awt.Graphics drawStringColourful(java.awt.Graphics g, String str, Font font, int width, int height) {
         return drawString(g, str, font, null, width, height);
@@ -108,7 +105,6 @@ public class Graphics {
      * @param width  字符串背景的宽度
      * @param height 字符串背景的高度
      * @return 画笔对象
-     * @since 4.5.10
      */
     public static java.awt.Graphics drawString(java.awt.Graphics g, String str, Font font, Color color, int width, int height) {
         // 抗锯齿

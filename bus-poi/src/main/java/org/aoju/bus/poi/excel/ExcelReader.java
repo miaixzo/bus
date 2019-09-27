@@ -46,7 +46,7 @@ import java.util.Map;
  * 读取Excel工作簿
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ExcelReader extends ExcelBase<ExcelReader> {
@@ -234,7 +234,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      *
      * @param startRowIndex 起始行（包含，从0开始计数）
      * @return 行的集合，一行使用List表示
-     * @since 4.0.0
      */
     public List<List<Object>> read(int startRowIndex) {
         return read(startRowIndex, Integer.MAX_VALUE);
@@ -344,7 +343,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param startRowIndex  起始行（包含，从0开始计数）
      * @param beanType       每行对应Bean的类型
      * @return Map的列表
-     * @since 4.0.1
      */
     public <T> List<T> read(int headerRowIndex, int startRowIndex, Class<T> beanType) {
         return read(headerRowIndex, startRowIndex, Integer.MAX_VALUE, beanType);
@@ -380,7 +378,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      *
      * @param withSheetName 是否附带sheet名
      * @return Excel文本
-     * @since 4.1.0
      */
     public String readAsText(boolean withSheetName) {
         final ExcelExtractor extractor = getExtractor();
@@ -392,7 +389,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 获取 {@link ExcelExtractor} 对象
      *
      * @return {@link ExcelExtractor}
-     * @since 4.1.0
      */
     public ExcelExtractor getExtractor() {
         ExcelExtractor extractor;
@@ -410,7 +406,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      *
      * @param rowIndex 行号，从0开始
      * @return 一行数据
-     * @since 4.0.3
      */
     public List<Object> readRow(int rowIndex) {
         return readRow(this.sheet.getRow(rowIndex));
@@ -422,7 +417,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param x X坐标，从0计数，既列号
      * @param y Y坐标，从0计数，既行号
      * @return 值，如果单元格无值返回null
-     * @since 4.0.3
      */
     public Object readCellValue(int x, int y) {
         return CellUtils.getCellValue(getCell(x, y), this.cellEditor);
@@ -433,7 +427,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 在读取Excel并做一定编辑后，获取写出器写出
      *
      * @return {@link ExcelWriter}
-     * @since 4.0.6
      */
     public ExcelWriter getWriter() {
         return new ExcelWriter(this.sheet);
@@ -474,7 +467,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param headerObj 原标题
      * @param index     标题所在列号，当标题为空时，列号对应的字母便是header
      * @return 转换别名列表
-     * @since 4.3.2
      */
     private String aliasHeader(Object headerObj, int index) {
         if (null == headerObj) {

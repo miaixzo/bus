@@ -40,7 +40,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class CellUtils {
@@ -179,7 +179,6 @@ public class CellUtils {
      * @param row       Excel表的行
      * @param cellIndex 列号
      * @return {@link Row}
-     * @since 4.0.2
      */
     public static Cell getOrCreateCell(Row row, int cellIndex) {
         Cell cell = row.getCell(cellIndex);

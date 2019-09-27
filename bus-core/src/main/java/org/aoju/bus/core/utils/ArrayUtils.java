@@ -40,7 +40,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ArrayUtils {
@@ -7024,7 +7024,6 @@ public class ArrayUtils {
      * @return {@code String[]} of the same size as the source with its element's string representation,
      * {@code null} if null array input
      * @throws NullPointerException if array contains {@code null}
-     * @since 3.6
      */
     public static String[] toStringArray(final Object[] array) {
         if (array == null) {
@@ -7050,7 +7049,6 @@ public class ArrayUtils {
      * @param array                the Object[] to be processed, may be null
      * @param valueForNullElements the value to insert if {@code null} is found
      * @return a {@code String} array, {@code null} if null array input
-     * @since 3.6
      */
     public static String[] toStringArray(final Object[] array, final String valueForNullElements) {
         if (null == array) {
@@ -7078,7 +7076,6 @@ public class ArrayUtils {
      * @param index       插入位置，此位置为对应此位置元素之前的空档
      * @param newElements 新元素
      * @return 新数组
-     * @since 4.0.8
      */
 
     public static <T> Object insert(Object array, int index, T... newElements) {
@@ -7120,7 +7117,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static boolean[] insert(final int index, final boolean[] array, final boolean... values) {
         if (array == null) {
@@ -7162,7 +7158,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static byte[] insert(final int index, final byte[] array, final byte... values) {
         if (array == null) {
@@ -7204,7 +7199,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static char[] insert(final int index, final char[] array, final char... values) {
         if (array == null) {
@@ -7246,7 +7240,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static double[] insert(final int index, final double[] array, final double... values) {
         if (array == null) {
@@ -7288,7 +7281,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static float[] insert(final int index, final float[] array, final float... values) {
         if (array == null) {
@@ -7330,7 +7322,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static int[] insert(final int index, final int[] array, final int... values) {
         if (array == null) {
@@ -7372,7 +7363,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static long[] insert(final int index, final long[] array, final long... values) {
         if (array == null) {
@@ -7414,7 +7404,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static short[] insert(final int index, final short[] array, final short... values) {
         if (array == null) {
@@ -7457,7 +7446,6 @@ public class ArrayUtils {
      * @return The new array.
      * @throws IndexOutOfBoundsException if {@code array} is provided
      *                                   and either {@code index < 0} or {@code index > array.length}
-     * @since 3.6
      */
     public static <T> T[] insert(final int index, final T[] array, final T... values) {
         /*
@@ -7496,7 +7484,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final Object[] array) {
         shuffle(array, new Random());
@@ -7508,7 +7495,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final Object[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7521,7 +7507,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final boolean[] array) {
         shuffle(array, new Random());
@@ -7533,7 +7518,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final boolean[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7546,7 +7530,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final byte[] array) {
         shuffle(array, new Random());
@@ -7558,7 +7541,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final byte[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7571,7 +7553,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final char[] array) {
         shuffle(array, new Random());
@@ -7583,7 +7564,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final char[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7596,7 +7576,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final short[] array) {
         shuffle(array, new Random());
@@ -7608,7 +7587,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final short[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7621,7 +7599,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final int[] array) {
         shuffle(array, new Random());
@@ -7633,7 +7610,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final int[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7646,7 +7622,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final long[] array) {
         shuffle(array, new Random());
@@ -7658,7 +7633,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final long[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7671,7 +7645,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final float[] array) {
         shuffle(array, new Random());
@@ -7683,7 +7656,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final float[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7696,7 +7668,6 @@ public class ArrayUtils {
      *
      * @param array the array to shuffle
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final double[] array) {
         shuffle(array, new Random());
@@ -7708,7 +7679,6 @@ public class ArrayUtils {
      * @param array  the array to shuffle
      * @param random the source of randomness used to permute the elements
      * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
-     * @since 3.6
      */
     public static void shuffle(final double[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7723,7 +7693,6 @@ public class ArrayUtils {
      * @param array the array to inspect, may be null
      * @param index the index of the array to be inspected
      * @return Whether the given index is safely-accessible in the given array
-     * @since 3.8
      */
     public static <T> boolean isArrayIndexValid(T[] array, int index) {
         if (getLength(array) == 0 || array.length <= index) {
@@ -7805,7 +7774,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7816,7 +7785,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7828,7 +7797,7 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return newArray(componentType, 0).getClass();
@@ -7904,7 +7873,6 @@ public class ArrayUtils {
      * @param index  位置，大于长度追加，否则替换
      * @param value  新值
      * @return 新数组或原有数组
-     * @since 4.1.2
      */
     public static <T> T[] setOrAppend(T[] buffer, int index, T value) {
         if (index < buffer.length) {
@@ -7925,7 +7893,7 @@ public class ArrayUtils {
      * @param index       插入位置，此位置为对应此位置元素之前的空档
      * @param newElements 新元素
      * @return 新数组
-     * @since 4.0.8
+     *
      */
     /**
      * 将元素值设置为数组的某个位置，当给定的index大于数组长度，则追加
@@ -7934,7 +7902,6 @@ public class ArrayUtils {
      * @param index 位置，大于长度追加，否则替换
      * @param value 新值
      * @return 新数组或原有数组
-     * @since 4.1.2
      */
     public static Object setOrAppend(Object array, int index, Object value) {
         if (index < length(array)) {
@@ -7996,6 +7963,25 @@ public class ArrayUtils {
      */
     public static <T> T[] resize(T[] buffer, int newSize) {
         return resize(buffer, newSize, buffer.getClass().getComponentType());
+    }
+
+    /**
+     * 生成一个新的重新设置大小的数组<br>
+     * 调整大小后拷贝原数组到新数组下。扩大则占位前N个位置，其它位置补充0，缩小则截断
+     *
+     * @param bytes   原数组
+     * @param newSize 新的数组大小
+     * @return 调整后的新数组
+     */
+    public static byte[] resize(byte[] bytes, int newSize) {
+        if (newSize < 0) {
+            return bytes;
+        }
+        final byte[] newArray = new byte[newSize];
+        if (newSize > 0 && isNotEmpty(bytes)) {
+            System.arraycopy(bytes, 0, newArray, 0, Math.min(bytes.length, newSize));
+        }
+        return newArray;
     }
 
     /**
@@ -8557,7 +8543,6 @@ public class ArrayUtils {
      * @param array 数组对象
      * @param index 下标，支持负数
      * @return 值
-     * @since 4.0.6
      */
     public static <T> T get(Object array, int index) {
         if (index < 0) {
@@ -8589,7 +8574,6 @@ public class ArrayUtils {
      * @param start 开始位置（包括）
      * @param end   结束位置（不包括）
      * @return 新的数组
-     * @since 4.0.6
      */
     public static Object[] sub(Object array, int start, int end) {
         return sub(array, start, end, 1);
@@ -8603,7 +8587,6 @@ public class ArrayUtils {
      * @param end   结束位置（不包括）
      * @param step  步进
      * @return 新的数组
-     * @since 4.0.6
      */
     public static Object[] sub(Object array, int start, int end, int step) {
         int length = length(array);
@@ -8700,7 +8683,6 @@ public class ArrayUtils {
      * @param prefix      每个元素添加的前缀，null表示不添加
      * @param suffix      每个元素添加的后缀，null表示不添加
      * @return 连接后的字符串
-     * @since 4.0.10
      */
     public static <T> String join(T[] array, CharSequence conjunction, String prefix, String suffix) {
         if (null == array) {
@@ -9363,7 +9345,7 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口，用于定义过滤规则
      * @return 过滤后的数组
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<T>(array.length);

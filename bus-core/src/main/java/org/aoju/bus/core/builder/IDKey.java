@@ -31,7 +31,7 @@ package org.aoju.bus.core.builder;
  * identityHashCodes that can occur.
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 final class IDKey {

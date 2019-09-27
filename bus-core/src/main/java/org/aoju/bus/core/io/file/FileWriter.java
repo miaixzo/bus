@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * 文件写入器
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class FileWriter extends FileWrapper {
@@ -240,7 +240,6 @@ public class FileWriter extends FileWrapper {
      * @param isAppend    是否追加
      * @return 目标文件
      * @throws CommonException IO异常
-     * @since 4.0.5
      */
     public File writeMap(Map<?, ?> map, String kvSeparator, boolean isAppend) throws CommonException {
         return writeMap(map, null, kvSeparator, isAppend);
@@ -255,7 +254,6 @@ public class FileWriter extends FileWrapper {
      * @param isAppend      是否追加
      * @return 目标文件
      * @throws CommonException IO异常
-     * @since 4.0.5
      */
     public File writeMap(Map<?, ?> map, LineSeparator lineSeparator, String kvSeparator, boolean isAppend) throws CommonException {
         if (null == kvSeparator) {
@@ -401,7 +399,6 @@ public class FileWriter extends FileWrapper {
      *
      * @param writer        Writer
      * @param lineSeparator 换行符枚举
-     * @since 4.0.5
      */
     private void printNewLine(PrintWriter writer, LineSeparator lineSeparator) {
         if (null == lineSeparator) {

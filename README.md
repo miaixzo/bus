@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v3.5.3-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v3.6.0-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -70,7 +70,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |bus-proxy|公共代理，使动态代理变得简单|
 |bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小|
 |bus-setting|设置工具类， 用于支持设置/配置|
-|bus-shade|设置工具类， 用于支持设置/配置|
+|bus-shade|Entity,Service,Mapper等相关代码生成工具|
 |bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
 |bus-spring|spring相关配置|
 |bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
@@ -95,21 +95,21 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>3.5.3</version>
+    <version>3.6.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:3.5.3'
+implementation 'org.aoju:bus-all:3.6.0'
 ```
 
 ### Other
 
 点击以下任一链接，下载`bus-all-X.X.X.jar`即可：
 
-- [Maven中央库1](https://repo1.maven.org/maven2/org/aoju/bus-all/3.5.3)
-- [Maven中央库2](http://repo2.maven.org/maven2/org/aoju/bus-all/3.5.3)
+- [Maven中央库①](https://repo1.maven.org/maven2/org/aoju/bus-all/3.6.0)
+- [Maven中央库②](http://repo2.maven.org/maven2/org/aoju/bus-all/3.6.0)
 
 > 注意
 > Bus项目支持JDK8+，对Android平台部分模块没有测试，不能保证所有工具类获工具方法可用。

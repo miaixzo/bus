@@ -30,16 +30,17 @@ import ${serviceUrl}.${entityName}Service;
 import org.aoju.bus.base.service.impl.BaseServiceImpl;
 import org.springframework.stereotype.Service;
 
-/**   
- * ${entityComment}服务实现层
- *
- * @version: ${version}
- * @author: ${author}
- * @since JDK 1.8
+/**
+* ${entityComment}服务实现层
+*
+* @version: ${version}
+* @author: ${author}
+* @since JDK 1.8
 */
 @Service
 @com.alibaba.dubbo.config.annotation.Service
-public class ${entityName}ServiceImpl  extends BaseServiceImpl<${entityName}Mapper, ${entityName}>
-        implements ${entityName}Service  {
+public class ${entityName}ServiceImpl  extends BaseServiceImpl
+<${entityName}Mapper, ${entityName}>
+implements ${entityName}Service  {
 
 }

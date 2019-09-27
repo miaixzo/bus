@@ -37,7 +37,7 @@ import java.util.HashMap;
  * 二维码设置
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class QrConfig {
@@ -104,7 +104,6 @@ public class QrConfig {
      * 创建QrConfig
      *
      * @return QrConfig
-     * @since 4.1.14
      */
     public static QrConfig create() {
         return new QrConfig();

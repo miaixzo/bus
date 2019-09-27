@@ -26,7 +26,7 @@ package org.aoju.bus.spring.sensitive;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.JSON;
@@ -53,7 +53,7 @@ import java.util.Properties;
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -61,6 +61,21 @@ public class SensitiveStatementHandler implements Interceptor {
 
     private static final String MAPPEDSTATEMENT = "delegate.mappedStatement";
     private static final String BOUND_SQL = "delegate.boundSql";
+
+    /**
+     * 获得真正的处理对象,可能多层代理.
+     *
+     * @param <T>    泛型
+     * @param target 对象
+     * @return the object
+     */
+    private static <T> T realTarget(Object target) {
+        if (Proxy.isProxyClass(target.getClass())) {
+            MetaObject metaObject = SystemMetaObject.forObject(target);
+            return realTarget(metaObject.getValue("hi.target"));
+        }
+        return (T) target;
+    }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -100,34 +115,34 @@ public class SensitiveStatementHandler implements Interceptor {
 
         for (Field field : param.getClass().getDeclaredFields()) {
             Object value = metaObject.getValue(field.getName());
-            Object newValue = value;
 
             if (value instanceof CharSequence) {
-                if (isWriteCommand(commandType) && !Provider.alreadyBeSentisived(newValue)) {
+                if (isWriteCommand(commandType) && !Provider.alreadyBeSentisived(value)) {
                     // 数据脱敏
                     if (Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value())
                             && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
-                        newValue = handleSensitive(field, newValue);
+                        value = handleSensitive(field, value);
                     }
                 }
             }
 
-            if (value != null && newValue != null && !value.equals(newValue)) {
+            if (ObjectUtils.isNotEmpty(value)) {
                 // 数据加密
                 if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
                     Privacy privacy = field.getAnnotation(Privacy.class);
-                    if (Builder.ALL.equals(privacy.value()) || Builder.IN.equals(privacy.value())) {
-                        SensitiveProperties properties = SpringContextAware.getBean(SensitiveProperties.class);
-                        if (ObjectUtils.isEmpty(properties)) {
-                            throw new InstrumentException("please check the request.crypto.encrypt");
+                    if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                        if (Builder.ALL.equals(privacy.value()) || Builder.IN.equals(privacy.value())) {
+                            SensitiveProperties properties = SpringContextAware.getBean(SensitiveProperties.class);
+                            if (ObjectUtils.isEmpty(properties)) {
+                                throw new InstrumentException("please check the request.crypto.encrypt");
+                            }
+                            value = org.aoju.bus.crypto.Builder.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value.toString(), Charset.UTF_8);
                         }
-                        newValue = CryptoUtils.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value.toString(), Charset.UTF_8);
                     }
                 }
-                newValues.put(field.getName(), newValue);
+                newValues.put(field.getName(), value);
             }
-
         }
         for (Map.Entry<String, Object> entry : newValues.entrySet()) {
             boundSql.setAdditionalParameter(entry.getKey(), entry.getValue());
@@ -157,21 +172,6 @@ public class SensitiveStatementHandler implements Interceptor {
             value = Provider.parseMaptoJSONString(map);
         }
         return value;
-    }
-
-    /**
-     * 获得真正的处理对象,可能多层代理.
-     *
-     * @param <T>    泛型
-     * @param target 对象
-     * @return the object
-     */
-    private static <T> T realTarget(Object target) {
-        if (Proxy.isProxyClass(target.getClass())) {
-            MetaObject metaObject = SystemMetaObject.forObject(target);
-            return realTarget(metaObject.getValue("hi.target"));
-        }
-        return (T) target;
     }
 
 }

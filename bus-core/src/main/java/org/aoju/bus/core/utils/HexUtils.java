@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
  * <p>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class HexUtils {
@@ -297,7 +297,6 @@ public class HexUtils {
      *
      * @param ch char值
      * @return Unicode表现形式
-     * @since 4.0.1
      */
     public static String toUnicodeHex(char ch) {
         StringBuilder sb = new StringBuilder(6);

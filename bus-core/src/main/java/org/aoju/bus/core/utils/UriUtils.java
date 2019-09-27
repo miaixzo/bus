@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class UriUtils {
@@ -62,7 +62,6 @@ public class UriUtils {
      * @param url     URL
      * @param handler {@link URLStreamHandler}
      * @return URL对象
-     * @since 4.1.1
      */
     public static URL url(String url, URLStreamHandler handler) {
         Assert.notNull(url, "URL must not be null");
@@ -90,7 +89,6 @@ public class UriUtils {
      *
      * @param urlStr URL字符串
      * @return URL
-     * @since 4.1.9
      */
     public static URL toUrlForHttp(String urlStr) {
         return toUrlForHttp(urlStr, null);
@@ -102,7 +100,6 @@ public class UriUtils {
      * @param urlStr  URL字符串
      * @param handler {@link URLStreamHandler}
      * @return URL
-     * @since 4.1.9
      */
     public static URL toUrlForHttp(String urlStr, URLStreamHandler handler) {
         Assert.notBlank(urlStr, "Url is blank !");
@@ -325,7 +322,6 @@ public class UriUtils {
      *
      * @param url the URL to check
      * @return whether the URL has been identified as a JAR file URL
-     * @since 4.1
      */
     public static boolean isJarFileURL(URL url) {
         return (Normal.URL_PROTOCOL_FILE.equals(url.getProtocol()) && //
@@ -337,7 +333,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
@@ -354,7 +350,7 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);
@@ -365,7 +361,6 @@ public class UriUtils {
      *
      * @param url URL
      * @return JarFile
-     * @since 4.1.5
      */
     public static JarFile getJarFile(URL url) {
         try {
@@ -856,7 +851,6 @@ public class UriUtils {
      *
      * @param path the URI path (e.g. "/products/index.html")
      * @return the extracted file extension (e.g. "html")
-     * @since 4.3.2
      */
 
     public static String extractFileExtension(String path) {

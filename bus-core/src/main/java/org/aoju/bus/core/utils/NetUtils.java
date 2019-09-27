@@ -39,7 +39,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class NetUtils {
@@ -136,7 +136,6 @@ public class NetUtils {
      * 来自org.springframework.util.SocketUtils
      *
      * @return 可用的端口
-     * @since 4.5.4
      */
     public static int getUsableLocalPort() {
         return getUsableLocalPort(PORT_RANGE_MIN);
@@ -149,7 +148,6 @@ public class NetUtils {
      *
      * @param minPort 端口最小值（包含）
      * @return 可用的端口
-     * @since 4.5.4
      */
     public static int getUsableLocalPort(int minPort) {
         return getUsableLocalPort(minPort, PORT_RANGE_MAX);
@@ -163,7 +161,6 @@ public class NetUtils {
      * @param minPort 端口最小值（包含）
      * @param maxPort 端口最大值（包含）
      * @return 可用的端口
-     * @since 4.5.4
      */
     public static int getUsableLocalPort(int minPort, int maxPort) {
         for (int i = minPort; i <= maxPort; i++) {
@@ -341,7 +338,6 @@ public class NetUtils {
      * 返回的IP列表有序，按照系统设备顺序
      *
      * @return IP地址列表 {@link LinkedHashSet}
-     * @since 4.5.17
      */
     public static LinkedHashSet<String> localIpv6s() {
         final LinkedHashSet<InetAddress> localAddressList = localAddressList(new Filter<InetAddress>() {
@@ -360,7 +356,6 @@ public class NetUtils {
      *
      * @param addressList 地址{@link Inet4Address} 列表
      * @return IP地址字符串列表
-     * @since 4.5.17
      */
     public static LinkedHashSet<String> toIpList(Set<InetAddress> addressList) {
         final LinkedHashSet<String> ipSet = new LinkedHashSet<>();
@@ -387,7 +382,6 @@ public class NetUtils {
      *
      * @param addressFilter 过滤器，null表示不过滤，获取所有地址
      * @return 过滤后的地址对象列表
-     * @since 4.5.17
      */
     public static LinkedHashSet<InetAddress> localAddressList(Filter<InetAddress> addressFilter) {
         Enumeration<NetworkInterface> networkInterfaces;
@@ -591,7 +585,6 @@ public class NetUtils {
      * @param ip   需要验证的IP
      * @param cidr CIDR规则
      * @return 是否在范围内
-     * @since 4.0.6
      */
     public static boolean isInRange(String ip, String cidr) {
         String[] ips = StringUtils.splitToArray(ip, '.');
@@ -609,7 +602,6 @@ public class NetUtils {
      *
      * @param unicode Unicode域名
      * @return puny code
-     * @since 4.1.22
      */
     public static String idnToASCII(String unicode) {
         return IDN.toASCII(unicode);
@@ -620,7 +612,6 @@ public class NetUtils {
      *
      * @param ip 获得的IP地址
      * @return 第一个非unknown IP地址
-     * @since 4.4.1
      */
     public static String getMultistageReverseProxyIp(String ip) {
         // 多级反向代理检测
@@ -641,7 +632,6 @@ public class NetUtils {
      *
      * @param checkString 被检测的字符串
      * @return 是否未知
-     * @since 4.4.1
      */
     public static boolean isUnknow(String checkString) {
         return StringUtils.isBlank(checkString) || "unknown".equalsIgnoreCase(checkString);

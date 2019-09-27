@@ -36,7 +36,7 @@ import java.util.List;
  * Excel中的行{@link Row}封装工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class RowUtils {
@@ -46,7 +46,6 @@ public class RowUtils {
      * @param sheet    Excel表
      * @param rowIndex 行号
      * @return {@link Row}
-     * @since 4.0.2
      */
     public static Row getOrCreateRow(Sheet sheet, int rowIndex) {
         Row row = sheet.getRow(rowIndex);

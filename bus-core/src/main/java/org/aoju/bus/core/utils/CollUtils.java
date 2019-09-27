@@ -47,7 +47,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class CollUtils {
@@ -201,7 +201,6 @@ public class CollUtils {
      * @param collection 集合
      * @param value      需要查找的值
      * @return 如果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
-     * @since 4.1.10
      */
     public static boolean contains(final Collection<?> collection, Object value) {
         return isNotEmpty(collection) && collection.contains(value);
@@ -395,7 +394,6 @@ public class CollUtils {
      * @param <T> 集合元素类型
      * @param ts  元素数组
      * @return HashSet对象
-     * @since 4.1.10
      */
     public static <T> LinkedHashSet<T> newLinkedHashSet(T... ts) {
         return (LinkedHashSet<T>) newHashSet(true, ts);
@@ -488,7 +486,6 @@ public class CollUtils {
      * @param <T>      集合元素类型
      * @param isLinked 是否新建LinkedList
      * @return List对象
-     * @since 4.1.2
      */
     public static <T> List<T> list(boolean isLinked) {
         return isLinked ? new LinkedList<T>() : new ArrayList<T>();
@@ -501,7 +498,6 @@ public class CollUtils {
      * @param isLinked 是否新建LinkedList
      * @param values   数组
      * @return List对象
-     * @since 4.1.2
      */
     public static <T> List<T> list(boolean isLinked, T... values) {
         if (ArrayUtils.isEmpty(values)) {
@@ -521,7 +517,6 @@ public class CollUtils {
      * @param isLinked   是否新建LinkedList
      * @param collection 集合
      * @return List对象
-     * @since 4.1.2
      */
     public static <T> List<T> list(boolean isLinked, Collection<T> collection) {
         if (null == collection) {
@@ -538,7 +533,6 @@ public class CollUtils {
      * @param isLinked 是否新建LinkedList
      * @param iterable {@link Iterable}
      * @return List对象
-     * @since 4.1.2
      */
     public static <T> List<T> list(boolean isLinked, Iterable<T> iterable) {
         if (null == iterable) {
@@ -555,7 +549,6 @@ public class CollUtils {
      * @param isLinked 是否新建LinkedList
      * @param iter     {@link Iterator}
      * @return ArrayList对象
-     * @since 4.1.2
      */
     public static <T> List<T> list(boolean isLinked, Iterator<T> iter) {
         final List<T> list = list(isLinked);
@@ -603,7 +596,6 @@ public class CollUtils {
      * @param <T>    集合元素类型
      * @param values 数组
      * @return ArrayList对象
-     * @since 4.0.11
      */
     public static <T> ArrayList<T> toList(T... values) {
         return newArrayList(values);
@@ -663,7 +655,6 @@ public class CollUtils {
      * @param values 数组
      * @param <T>    类型
      * @return LinkedList
-     * @since 4.1.2
      */
     public static <T> LinkedList<T> newLinkedList(T... values) {
         return (LinkedList<T>) list(true, values);
@@ -795,7 +786,6 @@ public class CollUtils {
      * @param end   结束位置（不包含）
      * @param step  步进
      * @return 截取后的数组，当开始位置超过最大时，返回空的List
-     * @since 4.0.6
      */
     public static <T> List<T> sub(List<T> list, int start, int end, int step) {
         if (list == null || list.isEmpty()) {
@@ -857,7 +847,6 @@ public class CollUtils {
      * @param end   结束位置（不包含）
      * @param step  步进
      * @return 截取后的数组，当开始位置超过最大时，返回空集合
-     * @since 4.0.6
      */
     public static <T> List<T> sub(Collection<T> list, int start, int end, int step) {
         if (list == null || list.isEmpty()) {
@@ -936,7 +925,6 @@ public class CollUtils {
      * @param list   集合
      * @param editor 编辑器接口
      * @return 过滤后的数组
-     * @since 4.1.8
      */
     public static <T> List<T> filter(List<T> list, Editor<T> editor) {
         final List<T> list2 = (list instanceof LinkedList) ? new LinkedList<T>() : new ArrayList<T>(list.size());
@@ -993,7 +981,6 @@ public class CollUtils {
      * @param list   集合
      * @param filter 过滤器
      * @return 过滤后的数组
-     * @since 4.1.8
      */
     public static <T> List<T> filter(List<T> list, Filter<T> filter) {
         final List<T> list2 = (list instanceof LinkedList) ? new LinkedList<T>() : new ArrayList<T>(list.size());
@@ -1011,7 +998,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, new Editor<T>() {
@@ -1030,7 +1017,6 @@ public class CollUtils {
      * @param collection  集合
      * @param elesRemoved 被去掉的元素数组
      * @return 原集合
-     * @since 4.1.0
      */
     public static <T> Collection<T> removeAny(Collection<T> collection, T... elesRemoved) {
         collection.removeAll(newHashSet(elesRemoved));
@@ -1043,7 +1029,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -1060,7 +1046,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -1734,7 +1720,6 @@ public class CollUtils {
      * @param collection 集合
      * @param index      下标，支持负数
      * @return 元素值
-     * @since 4.0.6
      */
     public static <T> T get(Collection<T> collection, int index) {
         final int size = collection.size();
@@ -1771,7 +1756,6 @@ public class CollUtils {
      * @param collection 集合
      * @param indexes    下标，支持负数
      * @return 元素值列表
-     * @since 4.0.6
      */
     public static <T> List<T> getAny(Collection<T> collection, int... indexes) {
         final int size = collection.size();
@@ -1828,7 +1812,6 @@ public class CollUtils {
      * @param <T>        集合元素类型
      * @param collection {@link Collection}
      * @return 最后一个元素
-     * @since 4.1.10
      */
     public static <T> T getLast(Collection<T> collection) {
         return get(collection, -1);
@@ -2195,7 +2178,6 @@ public class CollUtils {
      * @param <T>  元素类型
      * @param list 被反转的List
      * @return 反转后的List
-     * @since 4.0.6
      */
     public static <T> List<T> reverse(List<T> list) {
         Collections.reverse(list);
@@ -2208,7 +2190,6 @@ public class CollUtils {
      * @param <T>  元素类型
      * @param list 被反转的List
      * @return 反转后的List
-     * @since 4.0.6
      */
     public static <T> List<T> reverseNew(List<T> list) {
         final List<T> list2 = ObjectUtils.clone(list);
@@ -2506,7 +2487,7 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public interface Hash<T> {
         /**

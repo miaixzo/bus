@@ -23,10 +23,9 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.consts.ModeType;
-import org.aoju.bus.core.lang.exception.CommonException;
-import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.KeyType;
+import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.crypto.Builder;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -44,27 +43,21 @@ import java.security.spec.RSAPublicKeySpec;
  * 罗纳德·李维斯特（Ron [R]ivest）、阿迪·萨莫尔（Adi [S]hamir）和伦纳德·阿德曼（Leonard [A]dleman）
  * </p>
  * <p>
- * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密，
+ * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密，<br>
  * 非对称加密算法可以用来对对称加密的密钥加密，这样保证密钥的安全也就保证了数据的安全
  * </p>
- * <p>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class RSA extends Asymmetric {
 
     /**
-     * 默认的RSA算法
-     */
-    private static final String ALGORITHM_RSA = ModeType.RSA_ECB_PKCS1;
-
-    /**
      * 构造，生成新的私钥公钥对
      */
     public RSA() {
-        super(ALGORITHM_RSA);
+        super(Algorithm.RSA);
     }
 
     /**
@@ -77,46 +70,45 @@ public class RSA extends Asymmetric {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param privateKeyStr 私钥Hex或Base64表示
-     * @param publicKeyStr  公钥Hex或Base64表示
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public RSA(String privateKeyStr, String publicKeyStr) {
-        super(ALGORITHM_RSA, privateKeyStr, publicKeyStr);
+    public RSA(String privateKey, String publicKey) {
+        super(Algorithm.RSA, privateKey, publicKey);
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param rsaAlgorithm  自定义RSA算法，例如RSA/ECB/PKCS1Padding
-     * @param privateKeyStr 私钥Hex或Base64表示
-     * @param publicKeyStr  公钥Hex或Base64表示
-     * @since 4.5.8
+     * @param algorithm  自定义RSA算法，例如RSA/ECB/PKCS1Padding
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public RSA(String rsaAlgorithm, String privateKeyStr, String publicKeyStr) {
-        super(rsaAlgorithm, privateKeyStr, publicKeyStr);
+    public RSA(String algorithm, String privateKey, String publicKey) {
+        super(algorithm, privateKey, publicKey);
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造 <br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
      */
     public RSA(byte[] privateKey, byte[] publicKey) {
-        super(ALGORITHM_RSA, privateKey, publicKey);
+        super(Algorithm.RSA, privateKey, publicKey);
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造 <br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param modulus         N特征值
@@ -129,8 +121,8 @@ public class RSA extends Asymmetric {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造 <br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
@@ -138,18 +130,17 @@ public class RSA extends Asymmetric {
      * @since 3.1.1
      */
     public RSA(PrivateKey privateKey, PublicKey publicKey) {
-        super(ALGORITHM_RSA, privateKey, publicKey);
+        super(Algorithm.RSA, privateKey, publicKey);
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造 <br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param rsaAlgorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
      * @param privateKey   私钥
      * @param publicKey    公钥
-     * @since 4.5.8
      */
     public RSA(String rsaAlgorithm, PrivateKey privateKey, PublicKey publicKey) {
         super(rsaAlgorithm, privateKey, publicKey);
@@ -163,7 +154,7 @@ public class RSA extends Asymmetric {
      * @return {@link PrivateKey}
      */
     public static PrivateKey generatePrivateKey(BigInteger modulus, BigInteger privateExponent) {
-        return CryptoUtils.generatePrivateKey(ALGORITHM_RSA, new RSAPrivateKeySpec(modulus, privateExponent));
+        return Builder.generatePrivateKey(Algorithm.RSA_ECB_PKCS1, new RSAPrivateKeySpec(modulus, privateExponent));
     }
 
     /**
@@ -174,7 +165,7 @@ public class RSA extends Asymmetric {
      * @return {@link PublicKey}
      */
     public static PublicKey generatePublicKey(BigInteger modulus, BigInteger publicExponent) {
-        return CryptoUtils.generatePublicKey(ALGORITHM_RSA, new RSAPublicKeySpec(modulus, publicExponent));
+        return Builder.generatePublicKey(Algorithm.RSA_ECB_PKCS1, new RSAPublicKeySpec(modulus, publicExponent));
     }
 
     @Override
@@ -199,11 +190,11 @@ public class RSA extends Asymmetric {
     protected void initCipher() {
         try {
             super.initCipher();
-        } catch (CommonException e) {
+        } catch (InstrumentException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof NoSuchAlgorithmException) {
                 // 在Linux下，未引入BC库可能会导致RSA/ECB/PKCS1Padding算法无法找到，此时使用默认算法
-                this.algorithm = ModeType.RSA;
+                this.algorithm = Algorithm.RSA;
                 super.initCipher();
             }
             throw e;

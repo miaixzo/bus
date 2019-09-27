@@ -30,7 +30,7 @@ import org.aoju.bus.core.consts.Symbol;
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class CharUtils {
@@ -185,7 +185,6 @@ public class CharUtils {
      *
      * @param c 字符
      * @return 是否为16进制规范的字符
-     * @since 4.1.5
      */
     public static boolean isHexChar(char c) {
         return isNumber(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
@@ -249,7 +248,6 @@ public class CharUtils {
      * @return 是否空白符
      * @see Character#isWhitespace(int)
      * @see Character#isSpaceChar(int)
-     * @since 4.0.10
      */
     public static boolean isBlankChar(char c) {
         return isBlankChar((int) c);
@@ -263,7 +261,6 @@ public class CharUtils {
      * @return 是否空白符
      * @see Character#isWhitespace(int)
      * @see Character#isSpaceChar(int)
-     * @since 4.0.10
      */
     public static boolean isBlankChar(int c) {
         return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == '\ufeff' || c == '\u202a';
@@ -274,7 +271,6 @@ public class CharUtils {
      *
      * @param c 字符
      * @return 是否为emoji
-     * @since 4.0.8
      */
     public static boolean isEmoji(char c) {
         return false == ((c == 0x0) || //
@@ -293,7 +289,6 @@ public class CharUtils {
      * @param c2         字符2
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
-     * @since 4.0.3
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         if (ignoreCase) {
@@ -320,7 +315,6 @@ public class CharUtils {
      *
      * @param c 字符
      * @return 是否为Windows或者Linux（Unix）文件分隔符
-     * @since 4.1.11
      */
     public static boolean isFileSeparator(char c) {
         return Symbol.C_SLASH == c || Symbol.C_BACKSLASH == c;

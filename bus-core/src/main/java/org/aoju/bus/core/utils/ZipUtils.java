@@ -36,7 +36,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ZipUtils {
@@ -211,7 +211,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws CommonException IO异常
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static File zip(File zipFile, String path, String data, Charset charset) throws CommonException {
         return zip(zipFile, path, IoUtils.toStream(data, charset), charset);
@@ -241,7 +241,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws CommonException IO异常
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static File zip(File zipFile, String path, InputStream in, Charset charset) throws CommonException {
         return zip(zipFile, new String[]{path}, new InputStream[]{in}, charset);
@@ -312,7 +312,7 @@ public class ZipUtils {
      * @param charset     编码
      * @return 解压的目录
      * @throws CommonException IO异常
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static File unzip(String zipFilePath, Charset charset) throws CommonException {
         return unzip(FileUtils.file(zipFilePath), charset);
@@ -324,7 +324,7 @@ public class ZipUtils {
      * @param zipFile 压缩文件
      * @return 解压的目录
      * @throws CommonException IO异常
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static File unzip(File zipFile) throws CommonException {
         return unzip(zipFile, DEFAULT_CHARSET);
@@ -337,7 +337,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws CommonException IO异常
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static File unzip(File zipFile, Charset charset) throws CommonException {
         return unzip(zipFile, FileUtils.file(zipFile.getParentFile(), FileUtils.mainName(zipFile)), charset);
@@ -388,7 +388,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws CommonException IO异常
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static File unzip(File zipFile, File outFile, Charset charset) throws CommonException {
         charset = (null == charset) ? DEFAULT_CHARSET : charset;
@@ -424,7 +424,6 @@ public class ZipUtils {
      * @param zipFilePath Zip文件
      * @param name        文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
      * @return 文件内容bytes
-     * @since 4.1.8
      */
     public static byte[] unzipFileBytes(String zipFilePath, String name) {
         return unzipFileBytes(zipFilePath, DEFAULT_CHARSET, name);
@@ -437,7 +436,6 @@ public class ZipUtils {
      * @param charset     编码
      * @param name        文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
      * @return 文件内容bytes
-     * @since 4.1.8
      */
     public static byte[] unzipFileBytes(String zipFilePath, Charset charset, String name) {
         return unzipFileBytes(FileUtils.file(zipFilePath), charset, name);
@@ -449,7 +447,6 @@ public class ZipUtils {
      * @param zipFile Zip文件
      * @param name    文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
      * @return 文件内容bytes
-     * @since 4.1.8
      */
     public static byte[] unzipFileBytes(File zipFile, String name) {
         return unzipFileBytes(zipFile, DEFAULT_CHARSET, name);
@@ -462,7 +459,6 @@ public class ZipUtils {
      * @param charset 编码
      * @param name    文件名，如果存在于子文件夹中，此文件名必须包含目录名，例如images/aaa.txt
      * @return 文件内容bytes
-     * @since 4.1.8
      */
     public static byte[] unzipFileBytes(File zipFile, Charset charset, String name) {
         ZipFile zipFileObj = null;
@@ -532,7 +528,6 @@ public class ZipUtils {
      * @param in 被压缩的流
      * @return 压缩后的字节流
      * @throws CommonException IO异常
-     * @since 4.1.18
      */
     public static byte[] gzip(InputStream in) throws CommonException {
         return gzip(in, DEFAULT_BYTE_ARRAY_LENGTH);
@@ -545,7 +540,6 @@ public class ZipUtils {
      * @param length 预估长度
      * @return 压缩后的字节流
      * @throws CommonException IO异常
-     * @since 4.1.18
      */
     public static byte[] gzip(InputStream in, int length) throws CommonException {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
@@ -603,7 +597,6 @@ public class ZipUtils {
      * @param length 估算长度，如果无法确定请传入{@link #DEFAULT_BYTE_ARRAY_LENGTH}
      * @return 解压后的数据
      * @throws CommonException IO异常
-     * @since 4.1.18
      */
     public static byte[] unGzip(InputStream in, int length) throws CommonException {
         GZIPInputStream gzi = null;
@@ -628,7 +621,6 @@ public class ZipUtils {
      * @param charset 编码
      * @param level   压缩级别，1~9
      * @return 压缩后的字节流
-     * @since 4.1.4
      */
     public static byte[] zlib(String content, String charset, int level) {
         return zlib(StringUtils.bytes(content, charset), level);
@@ -640,7 +632,6 @@ public class ZipUtils {
      * @param file  被压缩的文件
      * @param level 压缩级别
      * @return 压缩后的字节流
-     * @since 4.1.4
      */
     public static byte[] zlib(File file, int level) {
         BufferedInputStream in = null;
@@ -658,7 +649,6 @@ public class ZipUtils {
      * @param buf   数据
      * @param level 压缩级别，0~9
      * @return 压缩后的bytes
-     * @since 4.1.4
      */
     public static byte[] zlib(byte[] buf, int level) {
         return zlib(new ByteArrayInputStream(buf), level, buf.length);
@@ -670,7 +660,6 @@ public class ZipUtils {
      * @param in    数据流
      * @param level 压缩级别，0~9
      * @return 压缩后的bytes
-     * @since 4.1.19
      */
     public static byte[] zlib(InputStream in, int level) {
         return zlib(in, level, DEFAULT_BYTE_ARRAY_LENGTH);
@@ -683,7 +672,6 @@ public class ZipUtils {
      * @param level  压缩级别，0~9
      * @param length 预估大小
      * @return 压缩后的bytes
-     * @since 4.1.19
      */
     public static byte[] zlib(InputStream in, int level, int length) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
@@ -697,7 +685,6 @@ public class ZipUtils {
      * @param buf     压缩过的字节流
      * @param charset 编码
      * @return 解压后的字符串
-     * @since 4.1.4
      */
     public static String unZlib(byte[] buf, String charset) {
         return StringUtils.str(unZlib(buf), charset);
@@ -708,7 +695,6 @@ public class ZipUtils {
      *
      * @param buf 数据
      * @return 解压后的bytes
-     * @since 4.1.4
      */
     public static byte[] unZlib(byte[] buf) {
         return unZlib(new ByteArrayInputStream(buf), buf.length);
@@ -719,7 +705,6 @@ public class ZipUtils {
      *
      * @param in 数据流
      * @return 解压后的bytes
-     * @since 4.1.19
      */
     public static byte[] unZlib(InputStream in) {
         return unZlib(in, DEFAULT_BYTE_ARRAY_LENGTH);
@@ -731,7 +716,6 @@ public class ZipUtils {
      * @param in     数据流
      * @param length 预估长度
      * @return 解压后的bytes
-     * @since 4.1.19
      */
     public static byte[] unZlib(InputStream in, int length) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
@@ -800,7 +784,6 @@ public class ZipUtils {
      * @param path 在压缩文件中的路径
      * @param out  压缩文件存储对象
      * @throws CommonException IO异常
-     * @since 4.0.5
      */
     private static void addFile(File file, String path, ZipOutputStream out) throws CommonException {
         BufferedInputStream in = null;

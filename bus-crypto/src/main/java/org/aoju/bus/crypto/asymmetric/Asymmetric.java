@@ -23,13 +23,14 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.consts.ModeType;
-import org.aoju.bus.core.lang.exception.CommonException;
-import org.aoju.bus.crypto.CryptoUtils;
-import org.aoju.bus.crypto.KeyType;
+import org.aoju.bus.core.io.FastByteArrayOutputStream;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.crypto.Builder;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import java.io.ByteArrayOutputStream;
+import javax.crypto.IllegalBlockSizeException;
+import java.io.IOException;
 import java.security.Key;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -46,10 +47,10 @@ import java.security.PublicKey;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
-public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
+public class Asymmetric extends Safety<Asymmetric> {
 
     /**
      * Cipher负责完成加密或解密工作
@@ -65,6 +66,7 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
      */
     protected int decryptBlockSize = -1;
 
+
     /**
      * 构造，创建新的私钥公钥对
      *
@@ -75,21 +77,21 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param algorithm     {@link ModeType}
-     * @param privateKeyStr 私钥Hex或Base64表示
-     * @param publicKeyStr  公钥Hex或Base64表示
+     * @param algorithm  算法
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public Asymmetric(String algorithm, String privateKeyStr, String publicKeyStr) {
-        this(algorithm, CryptoUtils.decode(privateKeyStr), CryptoUtils.decode(publicKeyStr));
+    public Asymmetric(String algorithm, String privateKey, String publicKey) {
+        this(algorithm, Builder.decode(privateKey), Builder.decode(publicKey));
     }
 
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
@@ -98,15 +100,15 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
      */
     public Asymmetric(String algorithm, byte[] privateKey, byte[] publicKey) {
         this(algorithm,
-                CryptoUtils.generatePrivateKey(algorithm, privateKey),
-                CryptoUtils.generatePublicKey(algorithm, publicKey)
+                Builder.generatePrivateKey(algorithm, privateKey),
+                Builder.generatePublicKey(algorithm, publicKey)
         );
     }
 
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
@@ -171,27 +173,14 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
     @Override
     public byte[] encrypt(byte[] data, KeyType keyType) {
         final Key key = getKeyByType(keyType);
-        final int inputLen = data.length;
-        final int maxBlockSize = this.encryptBlockSize < 0 ? inputLen : this.encryptBlockSize;
+        final int maxBlockSize = this.encryptBlockSize < 0 ? data.length : this.encryptBlockSize;
 
         lock.lock();
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream();) {
+        try {
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            int offSet = 0;
-            byte[] cache;
-            // 剩余长度
-            int remainLength = inputLen;
-            // 对数据分段加密
-            while (remainLength > 0) {
-                cache = cipher.doFinal(data, offSet, Math.min(remainLength, maxBlockSize));
-                out.write(cache, 0, cache.length);
-
-                offSet += maxBlockSize;
-                remainLength = inputLen - offSet;
-            }
-            return out.toByteArray();
+            return doFinal(data, maxBlockSize);
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             lock.unlock();
         }
@@ -200,35 +189,21 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
     /**
      * 解密
      *
-     * @param bytes   被解密的bytes
+     * @param data    被解密的bytes
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 解密后的bytes
      */
     @Override
-    public byte[] decrypt(byte[] bytes, KeyType keyType) {
+    public byte[] decrypt(byte[] data, KeyType keyType) {
         final Key key = getKeyByType(keyType);
-        // 模长
-        final int inputLen = bytes.length;
-        final int maxBlockSize = this.decryptBlockSize < 0 ? inputLen : this.decryptBlockSize;
+        final int maxBlockSize = this.decryptBlockSize < 0 ? data.length : this.decryptBlockSize;
 
         lock.lock();
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+        try {
             cipher.init(Cipher.DECRYPT_MODE, key);
-            int offSet = 0;
-            byte[] cache;
-            // 剩余长度
-            int remainLength = inputLen;
-            // 对数据分段解密
-            while (remainLength > 0) {
-                cache = cipher.doFinal(bytes, offSet, Math.min(remainLength, maxBlockSize));
-                out.write(cache, 0, cache.length);
-
-                offSet += maxBlockSize;
-                remainLength = inputLen - offSet;
-            }
-            return out.toByteArray();
+            return doFinal(data, maxBlockSize);
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             lock.unlock();
         }
@@ -245,11 +220,61 @@ public class Asymmetric extends AbstractAsymmetric<Asymmetric> {
 
     /**
      * 初始化{@link Cipher}，默认尝试加载BC库
-     *
-     * @since 4.5.2
      */
     protected void initCipher() {
-        this.cipher = CryptoUtils.createCipher(algorithm);
+        this.cipher = Builder.createCipher(algorithm);
+    }
+
+    /**
+     * 加密或解密
+     *
+     * @param data         被加密或解密的内容数据
+     * @param maxBlockSize 最大块（分段）大小
+     * @return 加密或解密后的数据
+     * @throws IllegalBlockSizeException 分段异常
+     * @throws BadPaddingException       padding错误异常
+     * @throws IOException               IO异常，不会被触发
+     */
+    private byte[] doFinal(byte[] data, int maxBlockSize) throws IllegalBlockSizeException, BadPaddingException, IOException {
+        // 模长
+        final int dataLength = data.length;
+
+        // 不足分段
+        if (dataLength <= maxBlockSize) {
+            return this.cipher.doFinal(data, 0, dataLength);
+        }
+
+        // 分段解密
+        return doFinalWithBlock(data, maxBlockSize);
+    }
+
+    /**
+     * 分段加密或解密
+     *
+     * @param data         数据
+     * @param maxBlockSize 最大分段的段大小，不能为小于1
+     * @return 加密或解密后的数据
+     * @throws IllegalBlockSizeException 分段异常
+     * @throws BadPaddingException       padding错误异常
+     * @throws IOException               IO异常，不会被触发
+     */
+    private byte[] doFinalWithBlock(byte[] data, int maxBlockSize) throws IllegalBlockSizeException, BadPaddingException, IOException {
+        final int dataLength = data.length;
+        final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
+
+        int offSet = 0;
+        // 剩余长度
+        int remainLength = dataLength;
+        int blockSize;
+        // 对数据分段处理
+        while (remainLength > 0) {
+            blockSize = Math.min(remainLength, maxBlockSize);
+            out.write(cipher.doFinal(data, offSet, blockSize));
+
+            offSet += blockSize;
+            remainLength = dataLength - offSet;
+        }
+        return out.toByteArray();
     }
 
 }

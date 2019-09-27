@@ -38,7 +38,7 @@ import java.util.*;
  * 注意：部分拼音并不准确，例如：怡
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class PinyinUtils {
@@ -87,10 +87,10 @@ public class PinyinUtils {
      *
      * @param str       需要转换的字符串
      * @param separator 拼音分隔符
-     * @param format 拼音格式
-     *               WITH_TONE_NUMBER 数字声调
-     *               WITH_OUT_TONE 不带声调
-     *               WITH_TONE_MARK 带声调
+     * @param format    拼音格式
+     *                  WITH_TONE_NUMBER 数字声调
+     *                  WITH_OUT_TONE 不带声调
+     *                  WITH_TONE_MARK 带声调
      * @return 字符串的拼音
      */
     public static String convert(String str, String separator, String format) {

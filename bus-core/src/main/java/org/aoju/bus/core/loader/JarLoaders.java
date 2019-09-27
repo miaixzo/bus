@@ -39,7 +39,7 @@ import java.util.List;
  * 外部Jar的类加载器
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class JarLoaders extends URLClassLoader {
@@ -142,7 +142,6 @@ public class JarLoaders extends URLClassLoader {
      *
      * @param file 文件
      * @return 是否为jar文件
-     * @since 4.4.2
      */
     private static boolean isJarFile(File file) {
         if (false == FileUtils.isFile(file)) {
@@ -180,7 +179,6 @@ public class JarLoaders extends URLClassLoader {
      *
      * @param dir 目录
      * @return the jarClassLoader
-     * @since 4.4.2
      */
     public JarLoaders addURL(File dir) {
         super.addURL(UriUtils.getURL(dir));

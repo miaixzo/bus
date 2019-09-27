@@ -27,7 +27,6 @@ import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.crypto.CryptoUtils;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
@@ -51,13 +50,28 @@ import java.util.Properties;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
 public class SensitiveResultSetHandler implements Interceptor {
 
     private static final String MAPPED_STATEMENT = "mappedStatement";
+
+    /**
+     * 获得真正的处理对象,可能多层代理.
+     *
+     * @param <T>    泛型
+     * @param target 对象
+     * @return the object
+     */
+    private static <T> T realTarget(Object target) {
+        if (Proxy.isProxyClass(target.getClass())) {
+            MetaObject metaObject = SystemMetaObject.forObject(target);
+            return realTarget(metaObject.getValue("hi.target"));
+        }
+        return (T) target;
+    }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -75,9 +89,7 @@ public class SensitiveResultSetHandler implements Interceptor {
             final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null : mappedStatement.getResultMaps().get(0);
 
             Sensitive sensitive = results.get(0).getClass().getAnnotation(Sensitive.class);
-            if (ObjectUtils.isEmpty(sensitive)
-                    && !Builder.ALL.equals(sensitive.value())
-                    && !Builder.OUT.equals(sensitive.value())) {
+            if (ObjectUtils.isEmpty(sensitive)) {
                 return results;
             }
 
@@ -97,7 +109,7 @@ public class SensitiveResultSetHandler implements Interceptor {
                                     if (ObjectUtils.isEmpty(properties)) {
                                         throw new InstrumentException("please check the request.crypto.decrypt");
                                     }
-                                    String decryptValue = CryptoUtils.decrypt(properties.getDecrypt().getType(), properties.getDecrypt().getKey(), value, Charset.UTF_8);
+                                    String decryptValue = org.aoju.bus.crypto.Builder.decrypt(properties.getDecrypt().getType(), properties.getDecrypt().getKey(), value, Charset.UTF_8);
                                     objMetaObject.setValue(property, decryptValue);
                                 }
                             }
@@ -140,21 +152,6 @@ public class SensitiveResultSetHandler implements Interceptor {
             }
         }
         return sensitiveFieldMap;
-    }
-
-    /**
-     * 获得真正的处理对象,可能多层代理.
-     *
-     * @param <T>    泛型
-     * @param target 对象
-     * @return the object
-     */
-    private static <T> T realTarget(Object target) {
-        if (Proxy.isProxyClass(target.getClass())) {
-            MetaObject metaObject = SystemMetaObject.forObject(target);
-            return realTarget(metaObject.getValue("hi.target"));
-        }
-        return (T) target;
     }
 
 }

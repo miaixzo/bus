@@ -90,7 +90,7 @@ import java.util.*;
  * </ul>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class CronPattern {
@@ -171,7 +171,6 @@ public class CronPattern {
      * @param index    位置
      * @param value    被匹配的值
      * @return 是否匹配
-     * @since 4.0.2
      */
     private static boolean isMatch(List<ValueMatcher> matchers, int index, int value) {
         return (matchers.size() > index) ? matchers.get(index).match(value) : true;

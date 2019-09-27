@@ -26,37 +26,37 @@ package ${entityUrl};
 
 import org.aoju.bus.base.entity.BaseEntity;
 <#if isSwagger=="true" >
-import io.swagger.annotations.ApiModelProperty;
+    import io.swagger.annotations.ApiModelProperty;
 </#if>
 import lombok.Data;
 
 import javax.persistence.Table;
 
 /**
- * ${entityComment}实体类
- *
- * @version: ${version}
- * @author: ${author}
- * @since JDK 1.8
+* ${entityComment}实体类
+*
+* @version: ${version}
+* @author: ${author}
+* @since JDK 1.8
 */
 @Data
 @Table(name = "${table}")
 public class ${entityName} extends BaseEntity {
 
-    private static final long serialVersionUID = ${agile}L;
+private static final long serialVersionUID = ${agile}L;
 
 <#list cis as ci>
- <#if ci.property !="id"
-     && ci.property !="status"
-     && ci.property !="creator"
-     && ci.property !="created"
-     && ci.property !="modifier"
-     && ci.property !="modified">
-    <#if isSwagger=="true" >
-    @ApiModelProperty(value = "${ci.comment}")
+    <#if ci.property !="id"
+    && ci.property !="status"
+    && ci.property !="creator"
+    && ci.property !="created"
+    && ci.property !="modifier"
+    && ci.property !="modified">
+        <#if isSwagger=="true" >
+            @ApiModelProperty(value = "${ci.comment}")
+        </#if>
+        private ${ci.javaType} ${ci.property};
     </#if>
-    private ${ci.javaType} ${ci.property};
- </#if>
 </#list>
 }
 	

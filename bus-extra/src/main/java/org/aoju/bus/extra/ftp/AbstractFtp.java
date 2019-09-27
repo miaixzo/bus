@@ -37,7 +37,7 @@ import java.util.List;
  * 抽象FTP类，用于定义通用的FTP方法
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public abstract class AbstractFtp implements Closeable {
@@ -78,7 +78,6 @@ public abstract class AbstractFtp implements Closeable {
      * 如果连接超时的话，重新进行连接
      *
      * @return this
-     * @since 4.5.2
      */
     public abstract AbstractFtp reconnectIfTimeout();
 
@@ -94,7 +93,6 @@ public abstract class AbstractFtp implements Closeable {
      * 打开上级目录
      *
      * @return 是否打开目录
-     * @since 4.0.5
      */
     public boolean toParent() {
         return cd("..");

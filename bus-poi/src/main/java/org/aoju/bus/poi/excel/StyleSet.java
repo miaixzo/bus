@@ -31,7 +31,7 @@ import java.io.Serializable;
  * 样式集合，此样式集合汇集了整个工作簿的样式，用于减少样式的创建和冗余
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class StyleSet implements Serializable {
@@ -121,7 +121,6 @@ public class StyleSet implements Serializable {
      * @param borderSize 边框粗细{@link BorderStyle}枚举
      * @param colorIndex 颜色的short值
      * @return this
-     * @since 4.0.0
      */
     public StyleSet setBorder(BorderStyle borderSize, IndexedColors colorIndex) {
         StyleUtils.setBorder(this.headCellStyle, borderSize, colorIndex);
@@ -137,7 +136,6 @@ public class StyleSet implements Serializable {
      * @param halign 横向位置
      * @param valign 纵向位置
      * @return this
-     * @since 4.0.0
      */
     public StyleSet setAlign(HorizontalAlignment halign, VerticalAlignment valign) {
         StyleUtils.setAlign(this.headCellStyle, halign, valign);
@@ -153,7 +151,6 @@ public class StyleSet implements Serializable {
      * @param backgroundColor 背景色
      * @param withHeadCell    是否也定义头部样式
      * @return this
-     * @since 4.0.0
      */
     public StyleSet setBackgroundColor(IndexedColors backgroundColor, boolean withHeadCell) {
         if (withHeadCell) {
@@ -185,7 +182,6 @@ public class StyleSet implements Serializable {
      * @param font       字体，可以通过{@link StyleUtils#createFont(Workbook, short, short, String)}创建
      * @param ignoreHead 是否跳过头部样式
      * @return this
-     * @since 4.1.0
      */
     public StyleSet setFont(Font font, boolean ignoreHead) {
         if (false == ignoreHead) {
@@ -201,7 +197,6 @@ public class StyleSet implements Serializable {
      * 设置单元格文本自动换行
      *
      * @return this
-     * @since 4.5.16
      */
     public StyleSet setWrapText() {
         this.cellStyle.setWrapText(true);

@@ -40,7 +40,7 @@ import java.util.Objects;
  * 提供比StringBuffer更灵活和更强大的API.
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class StrBuilder implements CharSequence, Appendable, Serializable, Builder<String> {
@@ -106,7 +106,6 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * 创建字符串构建器
      *
      * @param strs 初始字符串
-     * @since 4.0.1
      */
     public StrBuilder(CharSequence... strs) {
         this(ArrayUtils.isEmpty(strs) ? CAPACITY : (totalLength(strs) + CAPACITY));
@@ -121,7 +120,6 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @param strs 字符串数组
      * @return 总长度
-     * @since 4.0.1
      */
     private static int totalLength(CharSequence... strs) {
         int totalLength = 0;

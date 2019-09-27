@@ -35,7 +35,7 @@ import java.util.List;
  * 自动生成需要的基本信息
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 @Data
@@ -135,7 +135,7 @@ public class TableEntity implements Serializable {
                     ci.setJdbcType(jdbcType);
                 }
                 ci.setComment(comment);
-                ci.setProperty(NamingRules.changeToJavaFiled(column,false));
+                ci.setProperty(NamingRules.changeToJavaFiled(column, false));
                 ci.setJavaType(NamingRules.jdbcTypeToJavaType(jdbcType));
                 //设置注解类型
                 if (column.equalsIgnoreCase("id")) {

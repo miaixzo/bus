@@ -35,4 +35,4 @@ script:
   - cd ../bus-tracer && mvn install -DskipTests=true
   - cd ../bus-spring && mvn install -DskipTests=true
   - cd ../bus-boot && mvn install -DskipTests=true
-  - cd ../bus-all && mvn install -DskipTests=true
+  - cd ../bus-bom && mvn install -DskipTests=true

@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.crypto.digest;
 
-import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
-import org.aoju.bus.crypto.CryptoUtils;
+import org.aoju.bus.crypto.Builder;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -40,7 +40,7 @@ import java.security.Provider;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class Digester {
@@ -73,7 +73,6 @@ public class Digester {
      *
      * @param algorithm 算法
      * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
-     * @since 4.5.1
      */
     public Digester(String algorithm, Provider provider) {
         init(algorithm, provider);
@@ -85,16 +84,16 @@ public class Digester {
      * @param algorithm 算法
      * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
      * @return {@link Digester}
-     * @throws CommonException Cause by IOException
+     * @throws InstrumentException Cause by IOException
      */
     public Digester init(String algorithm, Provider provider) {
         if (null == provider) {
-            this.digest = CryptoUtils.createMessageDigest(algorithm);
+            this.digest = Builder.createMessageDigest(algorithm);
         } else {
             try {
                 this.digest = MessageDigest.getInstance(algorithm, provider);
             } catch (NoSuchAlgorithmException e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
         return this;
@@ -105,7 +104,6 @@ public class Digester {
      *
      * @param salt 盐值
      * @return this
-     * @since 4.4.3
      */
     public Digester setSalt(byte[] salt) {
         this.salt = salt;
@@ -128,7 +126,6 @@ public class Digester {
      *
      * @param saltPosition 盐的位置
      * @return this
-     * @since 4.4.3
      */
     public Digester setSaltPosition(int saltPosition) {
         this.saltPosition = saltPosition;
@@ -150,7 +147,6 @@ public class Digester {
      * 重置{@link MessageDigest}
      *
      * @return this
-     * @since 4.5.1
      */
     public Digester reset() {
         this.digest.reset();
@@ -160,11 +156,22 @@ public class Digester {
     /**
      * 生成文件摘要
      *
+     * @param data        被摘要数据
+     * @param charsetName 编码
+     * @return 摘要
+     */
+    public byte[] digest(String data, String charsetName) {
+        return digest(data, CharsetUtils.charset(charsetName));
+    }
+
+    /**
+     * 生成文件摘要
+     *
      * @param data    被摘要数据
      * @param charset 编码
      * @return 摘要
      */
-    public byte[] digest(String data, String charset) {
+    public byte[] digest(String data, Charset charset) {
         return digest(StringUtils.bytes(data, charset));
     }
 
@@ -175,7 +182,18 @@ public class Digester {
      * @return 摘要
      */
     public byte[] digest(String data) {
-        return digest(data, Charset.DEFAULT_UTF_8);
+        return digest(data, org.aoju.bus.core.consts.Charset.UTF_8);
+    }
+
+    /**
+     * 生成文件摘要，并转为16进制字符串
+     *
+     * @param data        被摘要数据
+     * @param charsetName 编码
+     * @return 摘要
+     */
+    public String digestHex(String data, String charsetName) {
+        return digestHex(data, CharsetUtils.charset(charsetName));
     }
 
     /**
@@ -185,7 +203,7 @@ public class Digester {
      * @param charset 编码
      * @return 摘要
      */
-    public String digestHex(String data, String charset) {
+    public String digestHex(String data, Charset charset) {
         return HexUtils.encodeHexStr(digest(data, charset));
     }
 
@@ -196,18 +214,18 @@ public class Digester {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, Charset.DEFAULT_UTF_8);
+        return digestHex(data, org.aoju.bus.core.consts.Charset.UTF_8);
     }
 
     /**
      * 生成文件摘要
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小
      *
      * @param file 被摘要文件
      * @return 摘要bytes
-     * @throws CommonException Cause by IOException
+     * @throws InstrumentException Cause by IOException
      */
-    public byte[] digest(File file) throws CommonException {
+    public byte[] digest(File file) throws InstrumentException {
         InputStream in = null;
         try {
             in = FileUtils.getInputStream(file);
@@ -219,7 +237,7 @@ public class Digester {
 
     /**
      * 生成文件摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小
      *
      * @param file 被摘要文件
      * @return 摘要
@@ -235,7 +253,7 @@ public class Digester {
      * @return 摘要bytes
      */
     public byte[] digest(byte[] data) {
-        byte[] result = null;
+        byte[] result;
         if (this.saltPosition <= 0) {
             // 加盐在开头，自动忽略空盐值
             result = doDigest(this.salt, data);
@@ -267,7 +285,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 生成摘要，使用默认缓存大小
      *
      * @param data {@link InputStream} 数据流
      * @return 摘要bytes
@@ -278,7 +296,7 @@ public class Digester {
 
     /**
      * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -291,11 +309,10 @@ public class Digester {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度
      * @return 摘要bytes
-     * @throws CommonException IO异常
      */
-    public byte[] digest(InputStream data, int bufferLength) throws CommonException {
+    public byte[] digest(InputStream data, int bufferLength) {
         if (bufferLength < 1) {
             bufferLength = IoUtils.DEFAULT_BUFFER_SIZE;
         }
@@ -308,7 +325,7 @@ public class Digester {
                 result = digestWithSalt(data, bufferLength);
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
 
         return resetAndRepeatDigest(result);
@@ -316,10 +333,10 @@ public class Digester {
 
     /**
      * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小
      *
      * @param data         被摘要数据
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度
      * @return 摘要
      */
     public String digestHex(InputStream data, int bufferLength) {
@@ -339,7 +356,6 @@ public class Digester {
      * 获取散列长度，0表示不支持此方法
      *
      * @return 散列长度，0表示不支持此方法
-     * @since 4.5.0
      */
     public int getDigestLength() {
         return this.digest.getDigestLength();
@@ -349,7 +365,7 @@ public class Digester {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度
      * @return 摘要bytes
      * @throws IOException 从流中读取数据引发的IO异常
      */
@@ -366,7 +382,7 @@ public class Digester {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度
      * @return 摘要bytes
      * @throws IOException 从流中读取数据引发的IO异常
      */
@@ -406,7 +422,6 @@ public class Digester {
      *
      * @param datas 数据bytes
      * @return 摘要bytes
-     * @since 4.4.3
      */
     private byte[] doDigest(byte[]... datas) {
         for (byte[] data : datas) {

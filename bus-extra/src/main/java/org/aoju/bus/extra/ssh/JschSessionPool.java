@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Jsch会话池
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public enum JschSessionPool {
@@ -114,7 +114,6 @@ public enum JschSessionPool {
      * 移除指定Session
      *
      * @param session Session会话
-     * @since 4.1.15
      */
     public void remove(Session session) {
         if (null != session) {

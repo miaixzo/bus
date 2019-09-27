@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class XmlUtils {
@@ -108,7 +108,7 @@ public class XmlUtils {
      * @param <T>    对象类型
      * @param source {@link InputSource}
      * @return 对象
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static <T> T readObjectFromXml(InputSource source) {
         Object result = null;
@@ -127,7 +127,6 @@ public class XmlUtils {
      * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，既XML在转为文本的时候才定义编码
      *
      * @return XML文档
-     * @since 4.0.8
      */
     public static Document createXml() {
         return createDocumentBuilder().newDocument();
@@ -137,7 +136,6 @@ public class XmlUtils {
      * 创建 DocumentBuilder
      *
      * @return DocumentBuilder
-     * @since 4.1.2
      */
     public static DocumentBuilder createDocumentBuilder() {
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -274,10 +272,9 @@ public class XmlUtils {
 
     /**
      * 创建XPath
-     * Xpath相关文章：https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html
      *
      * @return {@link XPath}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -285,12 +282,10 @@ public class XmlUtils {
 
     /**
      * 通过XPath方式读取XML节点等信息
-     * Xpath相关文章：https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html
      *
      * @param expression XPath表达式
      * @param source     资源，可以是Docunent、Node节点等
      * @return 匹配返回类型的值
-     * @since 4.0.9
      */
     public static Element getElementByXPath(String expression, Object source) {
         return (Element) getNodeByXPath(expression, source);
@@ -298,12 +293,10 @@ public class XmlUtils {
 
     /**
      * 通过XPath方式读取XML的NodeList
-     * Xpath相关文章：https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html
      *
      * @param expression XPath表达式
      * @param source     资源，可以是Docunent、Node节点等
      * @return NodeList
-     * @since 4.0.9
      */
     public static NodeList getNodeListByXPath(String expression, Object source) {
         return (NodeList) getByXPath(expression, source, XPathConstants.NODESET);
@@ -316,7 +309,6 @@ public class XmlUtils {
      * @param expression XPath表达式
      * @param source     资源，可以是Docunent、Node节点等
      * @return 匹配返回类型的值
-     * @since 4.0.9
      */
     public static Node getNodeByXPath(String expression, Object source) {
         return (Node) getByXPath(expression, source, XPathConstants.NODE);
@@ -330,7 +322,7 @@ public class XmlUtils {
      * @param source     资源，可以是Docunent、Node节点等
      * @param returnType 返回类型，{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();
@@ -357,7 +349,6 @@ public class XmlUtils {
      *
      * @param string 被替换的字符串
      * @return 替换后的字符串
-     * @since 4.0.8
      */
     public static String escape(String string) {
         final StringBuilder sb = new StringBuilder(string.length());
@@ -391,7 +382,6 @@ public class XmlUtils {
      *
      * @param node XML节点
      * @return XML数据转换后的Map
-     * @since 4.0.8
      */
     public static Map<String, Object> xmlToMap(Node node) {
         return xmlToMap(node, new HashMap<>());
@@ -403,7 +393,6 @@ public class XmlUtils {
      * @param node   XML节点
      * @param result 结果Map类型
      * @return XML数据转换后的Map
-     * @since 4.0.8
      */
     public static Map<String, Object> xmlToMap(Node node, Map<String, Object> result) {
         if (null == result) {
@@ -430,7 +419,6 @@ public class XmlUtils {
      * @param data     Map类型数据
      * @param rootName 节点
      * @return XML
-     * @since 4.0.9
      */
     public static Document mapToXml(Map<?, ?> data, String rootName) {
         final Document doc = createXml();
@@ -445,7 +433,6 @@ public class XmlUtils {
      *
      * @param node 节点
      * @return 是否为{@link Element} 类型节点
-     * @since 4.0.8
      */
     public static boolean isElement(Node node) {
         return (null != node) && Node.ELEMENT_NODE == node.getNodeType();
@@ -457,7 +444,6 @@ public class XmlUtils {
      * @param node    节点
      * @param tagName 标签名
      * @return 子节点
-     * @since 4.0.9
      */
     public static Element appendChild(Node node, String tagName) {
         Document doc = (node instanceof Document) ? (Document) node : node.getOwnerDocument();
@@ -472,7 +458,6 @@ public class XmlUtils {
      * @param doc     {@link Document}
      * @param element 节点
      * @param data    Map类型数据
-     * @since 4.0.8
      */
     private static void mapToXml(Document doc, Element element, Map<?, ?> data) {
         Element filedEle;

@@ -31,7 +31,7 @@ import java.util.concurrent.*;
  * {@link ThreadPoolExecutor} 建造者
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
@@ -144,7 +144,6 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      * 使用{@link SynchronousQueue} 做为等待队列
      *
      * @return this
-     * @since 4.1.11
      */
     public ExecutorBuilder useSynchronousQueue() {
         return setWorkQueue(new SynchronousQueue<Runnable>());

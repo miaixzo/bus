@@ -41,7 +41,7 @@ import java.io.OutputStream;
  * Excel工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ExcelUtils {
@@ -52,7 +52,7 @@ public class ExcelUtils {
      * @param path       Excel文件路径
      * @param sheetIndex sheet序号
      * @param rowHandler 行处理器
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static void readBySax(String path, int sheetIndex, RowHandler rowHandler) {
         BufferedInputStream in = null;
@@ -70,7 +70,7 @@ public class ExcelUtils {
      * @param file       Excel文件
      * @param sheetIndex sheet序号
      * @param rowHandler 行处理器
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static void readBySax(File file, int sheetIndex, RowHandler rowHandler) {
         BufferedInputStream in = null;
@@ -88,7 +88,7 @@ public class ExcelUtils {
      * @param in         Excel流
      * @param sheetIndex sheet序号
      * @param rowHandler 行处理器
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static void readBySax(InputStream in, int sheetIndex, RowHandler rowHandler) {
         in = IoUtils.toMarkSupportStream(in);
@@ -106,7 +106,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Excel07SaxReader read07BySax(InputStream in, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -123,7 +123,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Excel07SaxReader read07BySax(File file, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -140,7 +140,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Excel07SaxReader read07BySax(String path, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -157,7 +157,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Excel03SaxReader read03BySax(InputStream in, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -174,7 +174,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel03SaxReader}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Excel03SaxReader read03BySax(File file, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -191,7 +191,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel03SaxReader}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static Excel03SaxReader read03BySax(String path, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -288,7 +288,6 @@ public class ExcelUtils {
      * @param bookStream     Excel文件的流
      * @param closeAfterRead 读取结束是否关闭流
      * @return {@link ExcelReader}
-     * @since 4.0.3
      */
     public static ExcelReader getReader(InputStream bookStream, boolean closeAfterRead) {
         try {
@@ -321,7 +320,6 @@ public class ExcelUtils {
      * @param sheetIndex     sheet序号，0表示第一个sheet
      * @param closeAfterRead 读取结束是否关闭流
      * @return {@link ExcelReader}
-     * @since 4.0.3
      */
     public static ExcelReader getReader(InputStream bookStream, int sheetIndex, boolean closeAfterRead) {
         try {
@@ -369,7 +367,7 @@ public class ExcelUtils {
      * 若写出到文件，还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
      *
      * @return {@link ExcelWriter}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static ExcelWriter getWriter() {
         try {
@@ -386,7 +384,7 @@ public class ExcelUtils {
      *
      * @param isXlsx 是否为xlsx格式
      * @return {@link ExcelWriter}
-     * @since 3.5.3
+     * @since 3.6.0
      */
     public static ExcelWriter getWriter(boolean isXlsx) {
         try {
@@ -460,7 +458,6 @@ public class ExcelUtils {
      * 若写出到文件，还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
      *
      * @return {@link BigExcelWriter}
-     * @since 4.1.13
      */
     public static ExcelWriter getBigWriter() {
         try {
@@ -477,7 +474,6 @@ public class ExcelUtils {
      *
      * @param rowAccessWindowSize 在内存中的行数
      * @return {@link BigExcelWriter}
-     * @since 4.1.13
      */
     public static ExcelWriter getBigWriter(int rowAccessWindowSize) {
         try {
@@ -550,7 +546,6 @@ public class ExcelUtils {
      *
      * @param index 列号, 从0开始
      * @return the sring
-     * @since 4.1.20
      */
     public static String indexToColName(int index) {
         if (index < 0) {
@@ -573,7 +568,6 @@ public class ExcelUtils {
      *
      * @param colName 列名, 从A开始
      * @return the int
-     * @since 4.1.20
      */
     public static int colNameToIndex(String colName) {
         int length = colName.length();

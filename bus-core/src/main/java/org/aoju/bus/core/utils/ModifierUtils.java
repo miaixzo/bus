@@ -32,7 +32,7 @@ import java.lang.reflect.Modifier;
  * 修饰符工具类
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class ModifierUtils {
@@ -138,7 +138,6 @@ public class ModifierUtils {
      *
      * @param field 字段
      * @return 是否是static
-     * @since 4.0.8
      */
     public static boolean isStatic(Field field) {
         return hasModifier(field, ModifierType.STATIC);
@@ -149,7 +148,6 @@ public class ModifierUtils {
      *
      * @param method 方法
      * @return 是否是static
-     * @since 4.0.8
      */
     public static boolean isStatic(Method method) {
         return hasModifier(method, ModifierType.STATIC);
@@ -160,7 +158,6 @@ public class ModifierUtils {
      *
      * @param clazz 类
      * @return 是否是static
-     * @since 4.0.8
      */
     public static boolean isStatic(Class<?> clazz) {
         return hasModifier(clazz, ModifierType.STATIC);
@@ -182,8 +179,6 @@ public class ModifierUtils {
 
     /**
      * 修饰符枚举
-     *
-     * @since 4.0.5
      */
     public enum ModifierType {
         /**

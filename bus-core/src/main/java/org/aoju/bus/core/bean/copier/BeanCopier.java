@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @param <T> 目标对象类型
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class BeanCopier<T> implements Copier<T> {
@@ -82,7 +82,6 @@ public class BeanCopier<T> implements Copier<T> {
      * @param mapping   反向映射Map
      * @param fieldName 字段名
      * @return 映射值，无对应值返回字段名
-     * @since 4.1.10
      */
     private static String mappingKey(Map<String, String> mapping, String fieldName) {
         if (MapUtils.isEmpty(mapping)) {
@@ -152,7 +151,6 @@ public class BeanCopier<T> implements Copier<T> {
      * @param bean      bean对象
      * @param targetMap 目标的Map
      * @return Map
-     * @since 4.1.22
      */
     private void beanToMap(Object bean, Map targetMap) {
         final Collection<BeanDesc.PropDesc> props = BeanUtils.getBeanDesc(bean.getClass()).getProps();

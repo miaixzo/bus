@@ -48,7 +48,7 @@ import java.util.*;
  * If this call fails then the method may fail.</p>
  *
  * @author Kimi Liu
- * @version 3.5.3
+ * @version 3.6.0
  * @since JDK 1.8
  */
 public class MethodUtils {
@@ -843,7 +843,6 @@ public class MethodUtils {
      * @param ignoreAccess  determines if non public methods should be considered
      * @return an array of Methods (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.6
      */
     public static Method[] getMethodsWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls,
                                                     final boolean searchSupers, final boolean ignoreAccess) {
@@ -861,7 +860,6 @@ public class MethodUtils {
      * @param ignoreAccess  determines if non public methods should be considered
      * @return a list of Methods (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.6
      */
     public static List<Method> getMethodsListWithAnnotation(final Class<?> cls,
                                                             final Class<? extends Annotation> annotationCls,
@@ -900,7 +898,6 @@ public class MethodUtils {
      * @param ignoreAccess  determines if underlying method has to be accessible
      * @return the first matching annotation, or {@code null} if not found
      * @throws IllegalArgumentException if the method or annotation are {@code null}
-     * @since 3.6
      */
     public static <A extends Annotation> A getAnnotation(final Method method, final Class<A> annotationCls,
                                                          final boolean searchSupers, final boolean ignoreAccess) {
