@@ -50,7 +50,7 @@ import java.util.*;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class ResponseBodyAdvice extends BaseAdvice
@@ -137,12 +137,13 @@ public class ResponseBodyAdvice extends BaseAdvice
                 List list = new ArrayList<>();
                 for (Object obj : rows) {
                     // 数据脱敏
-                    if (Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value())
+                    if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                             && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
                         obj = Builder.on(obj, sensitive);
                     }
                     // 数据加密
-                    if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())) {
+                    if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
+                            && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
                         Map<String, Privacy> map = getPrivacyMap(obj.getClass());
                         for (Map.Entry<String, Privacy> entry : map.entrySet()) {
                             Privacy privacy = entry.getValue();

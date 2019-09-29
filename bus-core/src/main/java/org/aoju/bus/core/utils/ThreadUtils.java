@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class ThreadUtils {
@@ -438,4 +438,20 @@ public class ThreadUtils {
     public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon, UncaughtExceptionHandler handler) {
         return new NamedThreadFactory(prefix, threadGroup, isDeamon, handler);
     }
+
+    /**
+     * 阻塞当前线程，保证在main方法中执行不被退出
+     *
+     * @param obj 对象所在线程
+     */
+    public static void sync(Object obj) {
+        synchronized (obj) {
+            try {
+                obj.wait();
+            } catch (InterruptedException e) {
+                // ignore
+            }
+        }
+    }
+
 }

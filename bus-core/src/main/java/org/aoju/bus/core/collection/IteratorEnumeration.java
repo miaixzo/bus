@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.iterator;
+package org.aoju.bus.core.collection;
 
 import java.util.Enumeration;
 import java.util.Iterator;
 
 /**
- * Adapter to make an {@link Iterator Iterator} instance appear to be an
- * {@link Enumeration Enumeration} instance.
+ * {@link Iterator}对象转{@link Enumeration}.
  *
+ * @param <E> 元素类型
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class IteratorEnumeration<E> implements Enumeration<E> {
@@ -49,10 +49,9 @@ public class IteratorEnumeration<E> implements Enumeration<E> {
     }
 
     /**
-     * Constructs a new <code>IteratorEnumeration</code> that will use the given
-     * iterator.
+     * 构造
      *
-     * @param iterator the iterator to use
+     * @param iterator {@link Iterator}对象
      */
     public IteratorEnumeration(final Iterator<? extends E> iterator) {
         this.iterator = iterator;
@@ -72,8 +71,6 @@ public class IteratorEnumeration<E> implements Enumeration<E> {
      * Returns the next element from the underlying iterator.
      *
      * @return the next element from the underlying iterator.
-     * @throws java.util.NoSuchElementException if the underlying iterator has
-     *                                          no more elements
      */
     @Override
     public E nextElement() {

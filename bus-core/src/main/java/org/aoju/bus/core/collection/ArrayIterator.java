@@ -21,23 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.iterator;
+package org.aoju.bus.core.collection;
 
 import java.lang.reflect.Array;
 import java.util.NoSuchElementException;
 
 /**
- * Implements an {@link java.util.Iterator Iterator} over any array.
- * <p>
- * The array can be either an array of object or of primitives. If you know
- * class is a better choice, as it will perform better.
- * <p>
- * The iterator implements a {@link #reset} method, allowing the reset of
- * the iterator back to the start if required.
+ * 实现一个{@link java.util.Iterator} 任何数组的迭代器。
  *
- * @param <E> the type of elements returned by this iterator
+ * 数组可以是对象数组，也可以是基元数组。如果你知道
+ * class是更好的选择，因为它会表现得更好。
+ *
+ * 迭代器实现了一个{@link #reset}方法，允许重置
+ * 如果需要，迭代器返回到开始。
+ *
+ * @param <E> 元素类型
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class ArrayIterator<E> implements ResettableIterator<E> {

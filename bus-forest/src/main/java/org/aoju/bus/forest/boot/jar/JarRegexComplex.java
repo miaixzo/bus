@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * Jar记录正则表达式规则
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class JarRegexComplex extends RegexComplex<JarArchiveEntry> implements Complex<JarArchiveEntry> {

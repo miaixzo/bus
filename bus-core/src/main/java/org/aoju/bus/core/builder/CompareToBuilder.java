@@ -70,7 +70,7 @@ import java.util.Comparator;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class CompareToBuilder implements Builder<Integer> {
@@ -100,17 +100,17 @@ public class CompareToBuilder implements Builder<Integer> {
      * <p>
      * 如果被比较的两个对象都为<code>null</code>，被认为相同。
      *
-     * @param lhs 第一个对象
-     * @param rhs 第二个对象
-     * @return a negative integer, zero, or a positive integer as <code>lhs</code>
-     * is less than, equal to, or greater than <code>rhs</code>
+     * @param left  第一个对象
+     * @param right 第二个对象
+     * @return a negative integer, zero, or a positive integer as <code>left</code>
+     * is less than, equal to, or greater than <code>right</code>
      * @throws NullPointerException if either (but not both) parameters are
      *                              <code>null</code>
-     * @throws ClassCastException   if <code>rhs</code> is not assignment-compatible
-     *                              with <code>lhs</code>
+     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
+     *                              with <code>left</code>
      */
-    public static int reflectionCompare(final Object lhs, final Object rhs) {
-        return reflectionCompare(lhs, rhs, false, null);
+    public static int reflectionCompare(final Object left, final Object right) {
+        return reflectionCompare(left, right, false, null);
     }
 
     /**
@@ -128,21 +128,21 @@ public class CompareToBuilder implements Builder<Integer> {
      * <li>Superclass fields will be compared</li>
      * </ul>
      *
-     * <p>If both <code>lhs</code> and <code>rhs</code> are <code>null</code>,
+     * <p>If both <code>left</code> and <code>right</code> are <code>null</code>,
      * they are considered equal.</p>
      *
-     * @param lhs               left-hand object
-     * @param rhs               right-hand object
+     * @param left              left-hand object
+     * @param right             right-hand object
      * @param compareTransients whether to compare transient fields
-     * @return a negative integer, zero, or a positive integer as <code>lhs</code>
-     * is less than, equal to, or greater than <code>rhs</code>
-     * @throws NullPointerException if either <code>lhs</code> or <code>rhs</code>
+     * @return a negative integer, zero, or a positive integer as <code>left</code>
+     * is less than, equal to, or greater than <code>right</code>
+     * @throws NullPointerException if either <code>left</code> or <code>right</code>
      *                              (but not both) is <code>null</code>
-     * @throws ClassCastException   if <code>rhs</code> is not assignment-compatible
-     *                              with <code>lhs</code>
+     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
+     *                              with <code>left</code>
      */
-    public static int reflectionCompare(final Object lhs, final Object rhs, final boolean compareTransients) {
-        return reflectionCompare(lhs, rhs, compareTransients, null);
+    public static int reflectionCompare(final Object left, final Object right, final boolean compareTransients) {
+        return reflectionCompare(left, right, compareTransients, null);
     }
 
     /**
@@ -160,22 +160,22 @@ public class CompareToBuilder implements Builder<Integer> {
      * <li>Superclass fields will be compared</li>
      * </ul>
      *
-     * <p>If both <code>lhs</code> and <code>rhs</code> are <code>null</code>,
+     * <p>If both <code>left</code> and <code>right</code> are <code>null</code>,
      * they are considered equal.</p>
      *
-     * @param lhs           left-hand object
-     * @param rhs           right-hand object
+     * @param left          left-hand object
+     * @param right         right-hand object
      * @param excludeFields Collection of String fields to exclude
-     * @return a negative integer, zero, or a positive integer as <code>lhs</code>
-     * is less than, equal to, or greater than <code>rhs</code>
-     * @throws NullPointerException if either <code>lhs</code> or <code>rhs</code>
+     * @return a negative integer, zero, or a positive integer as <code>left</code>
+     * is less than, equal to, or greater than <code>right</code>
+     * @throws NullPointerException if either <code>left</code> or <code>right</code>
      *                              (but not both) is <code>null</code>
-     * @throws ClassCastException   if <code>rhs</code> is not assignment-compatible
-     *                              with <code>lhs</code>
+     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
+     *                              with <code>left</code>
      * @since 2.2
      */
-    public static int reflectionCompare(final Object lhs, final Object rhs, final Collection<String> excludeFields) {
-        return reflectionCompare(lhs, rhs, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
+    public static int reflectionCompare(final Object left, final Object right, final Collection<String> excludeFields) {
+        return reflectionCompare(left, right, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
     }
 
     /**
@@ -193,22 +193,22 @@ public class CompareToBuilder implements Builder<Integer> {
      * <li>Superclass fields will be compared</li>
      * </ul>
      *
-     * <p>If both <code>lhs</code> and <code>rhs</code> are <code>null</code>,
+     * <p>If both <code>left</code> and <code>right</code> are <code>null</code>,
      * they are considered equal.</p>
      *
-     * @param lhs           left-hand object
-     * @param rhs           right-hand object
+     * @param left          left-hand object
+     * @param right         right-hand object
      * @param excludeFields array of fields to exclude
-     * @return a negative integer, zero, or a positive integer as <code>lhs</code>
-     * is less than, equal to, or greater than <code>rhs</code>
-     * @throws NullPointerException if either <code>lhs</code> or <code>rhs</code>
+     * @return a negative integer, zero, or a positive integer as <code>left</code>
+     * is less than, equal to, or greater than <code>right</code>
+     * @throws NullPointerException if either <code>left</code> or <code>right</code>
      *                              (but not both) is <code>null</code>
-     * @throws ClassCastException   if <code>rhs</code> is not assignment-compatible
-     *                              with <code>lhs</code>
+     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
+     *                              with <code>left</code>
      * @since 2.2
      */
-    public static int reflectionCompare(final Object lhs, final Object rhs, final String... excludeFields) {
-        return reflectionCompare(lhs, rhs, false, null, excludeFields);
+    public static int reflectionCompare(final Object left, final Object right, final String... excludeFields) {
+        return reflectionCompare(left, right, false, null, excludeFields);
     }
 
     /**
@@ -227,62 +227,61 @@ public class CompareToBuilder implements Builder<Integer> {
      * If <code>reflectUpToClass</code> is <code>null</code>, compares all superclass fields.</li>
      * </ul>
      *
-     * <p>If both <code>lhs</code> and <code>rhs</code> are <code>null</code>,
+     * <p>If both <code>left</code> and <code>right</code> are <code>null</code>,
      * they are considered equal.</p>
      *
-     * @param lhs               left-hand object
-     * @param rhs               right-hand object
+     * @param left              left-hand object
+     * @param right             right-hand object
      * @param compareTransients whether to compare transient fields
      * @param reflectUpToClass  last superclass for which fields are compared
      * @param excludeFields     fields to exclude
-     * @return a negative integer, zero, or a positive integer as <code>lhs</code>
-     * is less than, equal to, or greater than <code>rhs</code>
-     * @throws NullPointerException if either <code>lhs</code> or <code>rhs</code>
+     * @return a negative integer, zero, or a positive integer as <code>left</code>
+     * is less than, equal to, or greater than <code>right</code>
+     * @throws NullPointerException if either <code>left</code> or <code>right</code>
      *                              (but not both) is <code>null</code>
-     * @throws ClassCastException   if <code>rhs</code> is not assignment-compatible
-     *                              with <code>lhs</code>
+     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
+     *                              with <code>left</code>
      * @since 2.2 (2.0 as <code>reflectionCompare(Object, Object, boolean, Class)</code>)
      */
     public static int reflectionCompare(
-            final Object lhs,
-            final Object rhs,
+            final Object left,
+            final Object right,
             final boolean compareTransients,
             final Class<?> reflectUpToClass,
             final String... excludeFields) {
 
-        if (lhs == rhs) {
+        if (left == right) {
             return 0;
         }
-        if (lhs == null || rhs == null) {
+        if (left == null || right == null) {
             throw new NullPointerException();
         }
-        Class<?> lhsClazz = lhs.getClass();
-        if (!lhsClazz.isInstance(rhs)) {
+        Class<?> leftClazz = left.getClass();
+        if (!leftClazz.isInstance(right)) {
             throw new ClassCastException();
         }
         final CompareToBuilder compareToBuilder = new CompareToBuilder();
-        reflectionAppend(lhs, rhs, lhsClazz, compareToBuilder, compareTransients, excludeFields);
-        while (lhsClazz.getSuperclass() != null && lhsClazz != reflectUpToClass) {
-            lhsClazz = lhsClazz.getSuperclass();
-            reflectionAppend(lhs, rhs, lhsClazz, compareToBuilder, compareTransients, excludeFields);
+        reflectionAppend(left, right, leftClazz, compareToBuilder, compareTransients, excludeFields);
+        while (leftClazz.getSuperclass() != null && leftClazz != reflectUpToClass) {
+            leftClazz = leftClazz.getSuperclass();
+            reflectionAppend(left, right, leftClazz, compareToBuilder, compareTransients, excludeFields);
         }
         return compareToBuilder.toComparison();
     }
 
     /**
-     * <p>Appends to <code>builder</code> the comparison of <code>lhs</code>
-     * to <code>rhs</code> using the fields defined in <code>clazz</code>.</p>
+     * 附加到builder，比较left/right使用clazz.
      *
-     * @param lhs           left-hand object
-     * @param rhs           right-hand object
-     * @param clazz         <code>Class</code> that defines fields to be compared
-     * @param builder       <code>CompareToBuilder</code> to append to
-     * @param useTransients whether to compare transient fields
+     * @param left          数值
+     * @param right         数值
+     * @param clazz         <code>Class</code> 定义要比较的字段
+     * @param builder       <code>CompareToBuilder</code>
+     * @param useTransients 是否比较 transient fields
      * @param excludeFields fields to exclude
      */
     private static void reflectionAppend(
-            final Object lhs,
-            final Object rhs,
+            final Object left,
+            final Object right,
             final Class<?> clazz,
             final CompareToBuilder builder,
             final boolean useTransients,
@@ -297,10 +296,8 @@ public class CompareToBuilder implements Builder<Integer> {
                     && (useTransients || !Modifier.isTransient(f.getModifiers()))
                     && !Modifier.isStatic(f.getModifiers())) {
                 try {
-                    builder.append(f.get(lhs), f.get(rhs));
+                    builder.append(f.get(left), f.get(right));
                 } catch (final IllegalAccessException e) {
-                    // This can't happen. Would get a Security exception instead.
-                    // Throw a runtime exception in case the impossible happens.
                     throw new InternalError("Unexpected IllegalAccessException");
                 }
             }
@@ -308,12 +305,10 @@ public class CompareToBuilder implements Builder<Integer> {
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the <code>compareTo(Object)</code>
-     * result of the superclass.</p>
+     * 附加到 builder compareTo(Object) 超类的结果。
      *
-     * @param superCompareTo result of calling <code>super.compareTo(Object)</code>
-     * @return this - used to chain append calls
-     * @since 2.0
+     * @param superCompareTo 调用 <code>super.compareTo(Object)</code>结果
+     * @return this - object
      */
     public CompareToBuilder appendSuper(final int superCompareTo) {
         if (comparison != 0) {
@@ -324,249 +319,209 @@ public class CompareToBuilder implements Builder<Integer> {
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the comparison of
-     * two <code>Object</code>s.</p>
+     * 附加到builder的深层比较,两个Object数组
      *
      * <ol>
-     * <li>Check if <code>lhs == rhs</code></li>
-     * <li>Check if either <code>lhs</code> or <code>rhs</code> is <code>null</code>,
-     * a <code>null</code> object is less than a non-<code>null</code> object</li>
-     * <li>Check the object contents</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(Object, Object)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * <p><code>lhs</code> must either be an array or implement {@link Comparable}.</p>
-     *
-     * @param lhs left-hand object
-     * @param rhs right-hand object
-     * @return this - used to chain append calls
-     * @throws ClassCastException if <code>rhs</code> is not assignment-compatible
-     *                            with <code>lhs</code>
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final Object lhs, final Object rhs) {
-        return append(lhs, rhs, null);
+    public CompareToBuilder append(final Object left, final Object right) {
+        return append(left, right, null);
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the comparison of
-     * two <code>Object</code>s.</p>
+     * 附加到builder的深层比较,两个Object数组
      *
      * <ol>
-     * <li>Check if <code>lhs == rhs</code></li>
-     * <li>Check if either <code>lhs</code> or <code>rhs</code> is <code>null</code>,
-     * a <code>null</code> object is less than a non-<code>null</code> object</li>
-     * <li>Check the object contents</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(Object, Object, Comparator)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * <p>If <code>lhs</code> is an array, array comparison methods will be used.
-     * Otherwise <code>comparator</code> will be used to compare the objects.
-     * If <code>comparator</code> is <code>null</code>, <code>lhs</code> must
-     * implement {@link Comparable} instead.</p>
-     *
-     * @param lhs        left-hand object
-     * @param rhs        right-hand object
-     * @param comparator <code>Comparator</code> used to compare the objects,
-     *                   <code>null</code> means treat lhs as <code>Comparable</code>
-     * @return this - used to chain append calls
-     * @throws ClassCastException if <code>rhs</code> is not assignment-compatible
-     *                            with <code>lhs</code>
-     * @since 2.0
+     * @param left       数值
+     * @param right      数值
+     * @param comparator 用来比较数值元素的比较器.
+     * @return this - object
      */
-    public CompareToBuilder append(final Object lhs, final Object rhs, final Comparator<?> comparator) {
+    public CompareToBuilder append(final Object left, final Object right, final Comparator<?> comparator) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.getClass().isArray()) {
-            // factor out array case in order to keep method small enough to be inlined
-            appendArray(lhs, rhs, comparator);
+        if (left.getClass().isArray()) {
+            appendArray(left, right, comparator);
         } else {
-            // the simple case, not an array, just test the element
             if (comparator == null) {
-                final Comparable<Object> comparable = (Comparable<Object>) lhs;
-                comparison = comparable.compareTo(rhs);
+                final Comparable<Object> comparable = (Comparable<Object>) left;
+                comparison = comparable.compareTo(right);
             } else {
                 final Comparator<Object> comparator2 = (Comparator<Object>) comparator;
-                comparison = comparator2.compare(lhs, rhs);
+                comparison = comparator2.compare(left, right);
             }
         }
         return this;
     }
 
-    private void appendArray(final Object lhs, final Object rhs, final Comparator<?> comparator) {
-        // switch on type of array, to dispatch to the correct handler
-        // handles multi dimensional arrays
-        // throws a ClassCastException if rhs is not the correct array type
-        if (lhs instanceof long[]) {
-            append((long[]) lhs, (long[]) rhs);
-        } else if (lhs instanceof int[]) {
-            append((int[]) lhs, (int[]) rhs);
-        } else if (lhs instanceof short[]) {
-            append((short[]) lhs, (short[]) rhs);
-        } else if (lhs instanceof char[]) {
-            append((char[]) lhs, (char[]) rhs);
-        } else if (lhs instanceof byte[]) {
-            append((byte[]) lhs, (byte[]) rhs);
-        } else if (lhs instanceof double[]) {
-            append((double[]) lhs, (double[]) rhs);
-        } else if (lhs instanceof float[]) {
-            append((float[]) lhs, (float[]) rhs);
-        } else if (lhs instanceof boolean[]) {
-            append((boolean[]) lhs, (boolean[]) rhs);
+    private void appendArray(final Object left, final Object right, final Comparator<?> comparator) {
+        if (left instanceof long[]) {
+            append((long[]) left, (long[]) right);
+        } else if (left instanceof int[]) {
+            append((int[]) left, (int[]) right);
+        } else if (left instanceof short[]) {
+            append((short[]) left, (short[]) right);
+        } else if (left instanceof char[]) {
+            append((char[]) left, (char[]) right);
+        } else if (left instanceof byte[]) {
+            append((byte[]) left, (byte[]) right);
+        } else if (left instanceof double[]) {
+            append((double[]) left, (double[]) right);
+        } else if (left instanceof float[]) {
+            append((float[]) left, (float[]) right);
+        } else if (left instanceof boolean[]) {
+            append((boolean[]) left, (boolean[]) right);
         } else {
-            // not an array of primitives
-            // throws a ClassCastException if rhs is not an array
-            append((Object[]) lhs, (Object[]) rhs, comparator);
+            append((Object[]) left, (Object[]) right, comparator);
         }
     }
 
     /**
-     * Appends to the <code>builder</code> the comparison of
-     * two <code>long</code>s.
+     * 附加到builder的深层比较,两个long值比较
      *
-     * @param lhs left-hand value
-     * @param rhs right-hand value
-     * @return this - used to chain append calls
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final long lhs, final long rhs) {
+    public CompareToBuilder append(final long left, final long right) {
         if (comparison != 0) {
             return this;
         }
-        comparison = Long.compare(lhs, rhs);
+        comparison = Long.compare(left, right);
         return this;
     }
 
     /**
-     * Appends to the <code>builder</code> the comparison of
-     * two <code>int</code>s.
+     * 附加到builder的深层比较,两个int值比较
      *
-     * @param lhs left-hand value
-     * @param rhs right-hand value
-     * @return this - used to chain append calls
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final int lhs, final int rhs) {
+    public CompareToBuilder append(final int left, final int right) {
         if (comparison != 0) {
             return this;
         }
-        comparison = Integer.compare(lhs, rhs);
+        comparison = Integer.compare(left, right);
         return this;
     }
 
     /**
-     * Appends to the <code>builder</code> the comparison of
-     * two <code>short</code>s.
+     * 附加到builder的深层比较,两个short值比较
      *
-     * @param lhs left-hand value
-     * @param rhs right-hand value
-     * @return this - used to chain append calls
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final short lhs, final short rhs) {
+    public CompareToBuilder append(final short left, final short right) {
         if (comparison != 0) {
             return this;
         }
-        comparison = Short.compare(lhs, rhs);
+        comparison = Short.compare(left, right);
         return this;
     }
 
     /**
-     * Appends to the <code>builder</code> the comparison of
-     * two <code>char</code>s.
+     * 附加到builder的深层比较,两个char值比较
      *
-     * @param lhs left-hand value
-     * @param rhs right-hand value
-     * @return this - used to chain append calls
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final char lhs, final char rhs) {
+    public CompareToBuilder append(final char left, final char right) {
         if (comparison != 0) {
             return this;
         }
-        comparison = Character.compare(lhs, rhs);
+        comparison = Character.compare(left, right);
         return this;
     }
 
     /**
-     * Appends to the <code>builder</code> the comparison of
-     * two <code>byte</code>s.
+     * 附加到builder的深层比较,两个byte值比较
      *
-     * @param lhs left-hand value
-     * @param rhs right-hand value
-     * @return this - used to chain append calls
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final byte lhs, final byte rhs) {
+    public CompareToBuilder append(final byte left, final byte right) {
         if (comparison != 0) {
             return this;
         }
-        comparison = Byte.compare(lhs, rhs);
+        comparison = Byte.compare(left, right);
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the comparison of
-     * two <code>double</code>s.</p>
+     * 附加到builder的深层比较,两个double值比较
      *
-     * <p>This handles NaNs, Infinities, and <code>-0.0</code>.</p>
-     *
-     * <p>It is compatible with the hash code generated by
-     * <code>HashCodeBuilder</code>.</p>
-     *
-     * @param lhs left-hand value
-     * @param rhs right-hand value
-     * @return this - used to chain append calls
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final double lhs, final double rhs) {
+    public CompareToBuilder append(final double left, final double right) {
         if (comparison != 0) {
             return this;
         }
-        comparison = Double.compare(lhs, rhs);
+        comparison = Double.compare(left, right);
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the comparison of
-     * two <code>float</code>s.</p>
+     * 附加到builder的深层比较,两个float值比较
      *
-     * <p>This handles NaNs, Infinities, and <code>-0.0</code>.</p>
-     *
-     * <p>It is compatible with the hash code generated by
-     * <code>HashCodeBuilder</code>.</p>
-     *
-     * @param lhs left-hand value
-     * @param rhs right-hand value
-     * @return this - used to chain append calls
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final float lhs, final float rhs) {
+    public CompareToBuilder append(final float left, final float right) {
         if (comparison != 0) {
             return this;
         }
-        comparison = Float.compare(lhs, rhs);
+        comparison = Float.compare(left, right);
         return this;
     }
 
     /**
-     * Appends to the <code>builder</code> the comparison of
-     * two <code>booleans</code>s.
+     * 附加到builder的深层比较,两个boolean值比较
      *
-     * @param lhs left-hand value
-     * @param rhs right-hand value
-     * @return this - used to chain append calls
+     * @param left  数值
+     * @param right 数值
+     * @return this - object
      */
-    public CompareToBuilder append(final boolean lhs, final boolean rhs) {
+    public CompareToBuilder append(final boolean left, final boolean right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs) {
+        if (left) {
             comparison = 1;
         } else {
             comparison = -1;
@@ -575,404 +530,380 @@ public class CompareToBuilder implements Builder<Integer> {
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>Object</code> arrays.</p>
+     * 附加到builder的深层比较,两个Object数组
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a short length array is less than a long length array</li>
-     * <li>Check array contents element by element using {@link #append(Object, Object, Comparator)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(Object, Object)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * <p>This method will also will be called for the top level of multi-dimensional,
-     * ragged, and multi-typed arrays.</p>
-     *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
-     * @throws ClassCastException if <code>rhs</code> is not assignment-compatible
-     *                            with <code>lhs</code>
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final Object[] lhs, final Object[] rhs) {
-        return append(lhs, rhs, null);
+    public CompareToBuilder append(final Object[] left, final Object[] right) {
+        return append(left, right, null);
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>Object</code> arrays.</p>
+     * 附加到builder的深层比较,两个Object数组
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a short length array is less than a long length array</li>
-     * <li>Check array contents element by element using {@link #append(Object, Object, Comparator)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(Object, Object, Comparator)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * <p>This method will also will be called for the top level of multi-dimensional,
-     * ragged, and multi-typed arrays.</p>
-     *
-     * @param lhs        left-hand array
-     * @param rhs        right-hand array
-     * @param comparator <code>Comparator</code> to use to compare the array elements,
-     *                   <code>null</code> means to treat <code>lhs</code> elements as <code>Comparable</code>.
-     * @return this - used to chain append calls
-     * @throws ClassCastException if <code>rhs</code> is not assignment-compatible
-     *                            with <code>lhs</code>
-     * @since 2.0
+     * @param left       数组
+     * @param right      数组
+     * @param comparator 用来比较数组元素的比较器.
+     * @return this - object
      */
-    public CompareToBuilder append(final Object[] lhs, final Object[] rhs, final Comparator<?> comparator) {
+    public CompareToBuilder append(final Object[] left, final Object[] right, final Comparator<?> comparator) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i], comparator);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i], comparator);
         }
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>long</code> arrays.</p>
+     * 附加到builder的深层比较,两个long数组.
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a shorter length array is less than a longer length array</li>
-     * <li>Check array contents element by element using {@link #append(long, long)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(long, long)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final long[] lhs, final long[] rhs) {
+    public CompareToBuilder append(final long[] left, final long[] right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i]);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i]);
         }
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>int</code> arrays.</p>
+     * 附加到builder的深层比较,两个int数组.
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a shorter length array is less than a longer length array</li>
-     * <li>Check array contents element by element using {@link #append(int, int)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(int, int)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final int[] lhs, final int[] rhs) {
+    public CompareToBuilder append(final int[] left, final int[] right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i]);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i]);
         }
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>short</code> arrays.</p>
+     * 附加到builder的深层比较,两个short数组.
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a shorter length array is less than a longer length array</li>
-     * <li>Check array contents element by element using {@link #append(short, short)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(short, short)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final short[] lhs, final short[] rhs) {
+    public CompareToBuilder append(final short[] left, final short[] right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i]);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i]);
         }
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>char</code> arrays.</p>
+     * 附加到builder的深层比较,两个char数组.
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a shorter length array is less than a longer length array</li>
-     * <li>Check array contents element by element using {@link #append(char, char)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(char, char)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final char[] lhs, final char[] rhs) {
+    public CompareToBuilder append(final char[] left, final char[] right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i]);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i]);
         }
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>byte</code> arrays.</p>
+     * 附加到builder的深层比较,两个byte数组.
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a shorter length array is less than a longer length array</li>
-     * <li>Check array contents element by element using {@link #append(byte, byte)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(byte, byte)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final byte[] lhs, final byte[] rhs) {
+    public CompareToBuilder append(final byte[] left, final byte[] right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i]);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i]);
         }
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>double</code> arrays.</p>
+     * 附加到builder的深层比较,两个double数组.
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a shorter length array is less than a longer length array</li>
-     * <li>Check array contents element by element using {@link #append(double, double)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(double, double)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final double[] lhs, final double[] rhs) {
+    public CompareToBuilder append(final double[] left, final double[] right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i]);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i]);
         }
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>float</code> arrays.</p>
+     * 附加到builder的深层比较,两个float数组.
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a shorter length array is less than a longer length array</li>
-     * <li>Check array contents element by element using {@link #append(float, float)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(float, float)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final float[] lhs, final float[] rhs) {
+    public CompareToBuilder append(final float[] left, final float[] right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i]);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i]);
         }
         return this;
     }
 
     /**
-     * <p>Appends to the <code>builder</code> the deep comparison of
-     * two <code>boolean</code> arrays.</p>
+     * 附加到builder的深层比较,两个boolean数组.
      *
      * <ol>
-     * <li>Check if arrays are the same using <code>==</code></li>
-     * <li>Check if for <code>null</code>, <code>null</code> is less than non-<code>null</code></li>
-     * <li>Check array length, a shorter length array is less than a longer length array</li>
-     * <li>Check array contents element by element using {@link #append(boolean, boolean)}</li>
+     * <li>使用==检查数组是否相同</li>
+     * <li>检查是否为null， null小于非null</li>
+     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>使用{@link #append(boolean, boolean)}逐个元素检查数组内容</li>
      * </ol>
      *
-     * @param lhs left-hand array
-     * @param rhs right-hand array
-     * @return this - used to chain append calls
+     * @param left  数组
+     * @param right 数组
+     * @return this - object
      */
-    public CompareToBuilder append(final boolean[] lhs, final boolean[] rhs) {
+    public CompareToBuilder append(final boolean[] left, final boolean[] right) {
         if (comparison != 0) {
             return this;
         }
-        if (lhs == rhs) {
+        if (left == right) {
             return this;
         }
-        if (lhs == null) {
+        if (left == null) {
             comparison = -1;
             return this;
         }
-        if (rhs == null) {
+        if (right == null) {
             comparison = 1;
             return this;
         }
-        if (lhs.length != rhs.length) {
-            comparison = lhs.length < rhs.length ? -1 : 1;
+        if (left.length != right.length) {
+            comparison = left.length < right.length ? -1 : 1;
             return this;
         }
-        for (int i = 0; i < lhs.length && comparison == 0; i++) {
-            append(lhs[i], rhs[i]);
+        for (int i = 0; i < left.length && comparison == 0; i++) {
+            append(left[i], right[i]);
         }
         return this;
     }
 
     /**
-     * Returns a negative integer, a positive integer, or zero as
-     * the <code>builder</code> has judged the "left-hand" side
-     * as less than, greater than, or equal to the "right-hand"
-     * side.
+     * 返回一个负整数、一个正整数或零
+     * builder判断左边小于、大于或等于右边。
      *
-     * @return final comparison result
+     * @return 比较结果
      * @see #build()
      */
     public int toComparison() {
@@ -980,12 +911,10 @@ public class CompareToBuilder implements Builder<Integer> {
     }
 
     /**
-     * Returns a negative Integer, a positive Integer, or zero as
-     * the <code>builder</code> has judged the "left-hand" side
-     * as less than, greater than, or equal to the "right-hand"
-     * side.
+     * 返回一个负整数、一个正整数或零
+     * builder判断左边小于、大于或等于右边。
      *
-     * @return final comparison result as an Integer
+     * @return 最终的比较结果为整数
      * @see #toComparison()
      * @since 3.0
      */

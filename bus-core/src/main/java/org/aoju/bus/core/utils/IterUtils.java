@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.iterator.EnumerationIterator;
+import org.aoju.bus.core.collection.EnumerationIterator;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class IterUtils {

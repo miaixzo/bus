@@ -25,7 +25,7 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.annotation.Element;
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AccessibleObject;
@@ -39,7 +39,7 @@ import java.util.Map;
  * 快速获取注解对象、注解值等工具封装
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class AnnoUtils {
@@ -88,14 +88,14 @@ public class AnnoUtils {
      * @param annotationEle  {@link AccessibleObject}，可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
      * @return 注解对象
-     * @throws CommonException 调用注解中的方法时执行异常
+     * @throws InstrumentException 调用注解中的方法时执行异常
      */
-    public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) throws CommonException {
+    public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) throws InstrumentException {
         return getAnnotationValue(annotationEle, annotationType, "value");
     }
 
     /**
-     * 获取指定注解属性的值
+     * 获取指定注解属性的值<br>
      * 如果无指定的属性方法返回null
      *
      * @param <T>            注解值类型
@@ -103,19 +103,19 @@ public class AnnoUtils {
      * @param annotationType 注解类型
      * @param propertyName   属性名，例如注解中定义了name()方法，则 此处传入name
      * @return 注解对象
-     * @throws CommonException 调用注解中的方法时执行异常
+     * @throws InstrumentException 调用注解中的方法时执行异常
      */
-    public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType, String propertyName) throws CommonException {
+    public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType, String propertyName) throws InstrumentException {
         final Annotation annotation = getAnnotation(annotationEle, annotationType);
         if (null == annotation) {
             return null;
         }
 
-        final Method method = ReflectUtils.getMethodOfObj(annotationEle, propertyName);
+        final Method method = ReflectUtils.getMethodOfObj(annotation, propertyName);
         if (null == method) {
             return null;
         }
-        return ReflectUtils.invoke(annotationEle, method);
+        return ReflectUtils.invoke(annotation, method);
     }
 
     /**
@@ -125,9 +125,9 @@ public class AnnoUtils {
      * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
      * @return 注解对象
-     * @throws CommonException 调用注解中的方法时执行异常
+     * @throws InstrumentException 调用注解中的方法时执行异常
      */
-    public static Map<String, Object> getAnnotationValueMap(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) throws CommonException {
+    public static Map<String, Object> getAnnotationValueMap(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) throws InstrumentException {
         final Annotation annotation = getAnnotation(annotationEle, annotationType);
         if (null == annotation) {
             return null;
@@ -137,10 +137,10 @@ public class AnnoUtils {
             @Override
             public boolean accept(Method t) {
                 if (ArrayUtils.isEmpty(t.getParameterTypes())) {
-                    // 只读取无参方法
                     final String name = t.getName();
-                    // 跳过自有的几个方法
-                    return !"hashCode".equals(name) && !"toString".equals(name) && !"annotationType".equals(name);
+                    return (false == "hashCode".equals(name)) //
+                            && (false == "toString".equals(name)) //
+                            && (false == "annotationType".equals(name));
                 }
                 return false;
             }
@@ -176,14 +176,14 @@ public class AnnoUtils {
     public static ElementType[] getTargetType(Class<? extends Annotation> annotationType) {
         final Target target = annotationType.getAnnotation(Target.class);
         if (null == target) {
-            return new ElementType[]{ElementType.TYPE, //
-                    ElementType.FIELD, //
-                    ElementType.METHOD, //
-                    ElementType.PARAMETER, //
-                    ElementType.CONSTRUCTOR, //
-                    ElementType.LOCAL_VARIABLE, //
-                    ElementType.ANNOTATION_TYPE, //
-                    ElementType.PACKAGE//
+            return new ElementType[]{ElementType.TYPE,
+                    ElementType.FIELD,
+                    ElementType.METHOD,
+                    ElementType.PARAMETER,
+                    ElementType.CONSTRUCTOR,
+                    ElementType.LOCAL_VARIABLE,
+                    ElementType.ANNOTATION_TYPE,
+                    ElementType.PACKAGE
             };
         }
         return target.value();

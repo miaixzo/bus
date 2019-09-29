@@ -30,7 +30,7 @@ import org.aoju.bus.mapper.common.basic.delete.DeleteMapper;
  * 通用Mapper接口,基础删除
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public interface BasicDeleteMapper<T> extends

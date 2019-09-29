@@ -52,7 +52,7 @@ import java.util.Map;
  * Druid 配置
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 @ConditionalOnClass(DruidDataSource.class)

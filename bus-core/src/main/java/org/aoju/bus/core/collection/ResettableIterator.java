@@ -21,18 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.iterator;
+package org.aoju.bus.core.collection;
 
 import java.util.Iterator;
 
 /**
- * Defines an iterator that can be reset back to an initial state.
- * <p>
- * This interface allows an iterator to be repeatedly reused.
+ * 定义一个迭代器，该迭代器可以重置为初始状态.
  *
- * @param <E> the type to iterate over
+ * @param <E> 元素类型
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public interface ResettableIterator<E> extends Iterator<E> {
