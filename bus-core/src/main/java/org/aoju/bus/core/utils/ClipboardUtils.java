@@ -95,9 +95,8 @@ public class ClipboardUtils {
     /**
      * 从剪贴板的{@link Transferable}获取文本
      *
-     * @param content
+     * @param content 内容
      * @return 文本
-     * @since 4.5.6
      */
     public static String getStr(Transferable content) {
         return (String) get(content, DataFlavor.stringFlavor);
@@ -124,9 +123,8 @@ public class ClipboardUtils {
     /**
      * 从剪贴板的{@link Transferable}获取图片
      *
-     * @param content
+     * @param content 内容
      * @return 图片
-     * @since 4.5.6
      */
     public static Image getImage(Transferable content) {
         return (Image) get(content, DataFlavor.imageFlavor);
@@ -137,7 +135,7 @@ public class ClipboardUtils {
      *
      * @param listener 监听处理接口
      * @see ClipboardMonitor#listen(boolean)
-     * @since 4.5.6
+
      */
     public static void listen(ClipboardListener listener) {
         listen(listener, true);
@@ -149,7 +147,7 @@ public class ClipboardUtils {
      * @param listener 监听处理接口
      * @param sync     是否同步阻塞
      * @see ClipboardMonitor#listen(boolean)
-     * @since 4.5.6
+
      */
     public static void listen(ClipboardListener listener, boolean sync) {
         listen(ClipboardMonitor.DEFAULT_TRY_COUNT, ClipboardMonitor.DEFAULT_DELAY, listener, sync);
@@ -163,7 +161,7 @@ public class ClipboardUtils {
      * @param listener 监听处理接口
      * @param sync     是否同步阻塞
      * @see ClipboardMonitor#listen(boolean)
-     * @since 4.5.6
+
      */
     public static void listen(int tryCount, long delay, ClipboardListener listener, boolean sync) {
         ClipboardMonitor.INSTANCE//

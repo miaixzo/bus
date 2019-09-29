@@ -27,25 +27,12 @@ import java.lang.reflect.Array;
 import java.util.NoSuchElementException;
 
 /**
- * Implements an {@link java.util.Iterator Iterator} over any array.
- * <p>
- * The array can be either an array of object or of primitives. If you know
- * class is a better choice, as it will perform better.
- * <p>
- * The iterator implements a {@link #reset} method, allowing the reset of
- * the iterator back to the start if required.
  * 实现一个{@link java.util.Iterator} 任何数组的迭代器。
  *
- * <p>
- * <p>
  * 数组可以是对象数组，也可以是基元数组。如果你知道
- * <p>
  * class是更好的选择，因为它会表现得更好。
  *
- * <p>
- * <p>
  * 迭代器实现了一个{@link #reset}方法，允许重置
- * <p>
  * 如果需要，迭代器返回到开始。
  *
  * @param <E> 元素类型

@@ -65,7 +65,7 @@ public class DesktopUtils {
      * 当按键执行完后的等待时间，也可以用ThreadUtil.sleep方法代替
      *
      * @param delayMillis 等待毫秒数
-     * @since 4.5.7
+
      */
     public static void setDelay(int delayMillis) {
         delay = delayMillis;
@@ -76,7 +76,7 @@ public class DesktopUtils {
      *
      * @param x 移动到的x坐标
      * @param y 移动到的y坐标
-     * @since 4.5.7
+
      */
     public static void mouseMove(int x, int y) {
         robot.mouseMove(x, y);
@@ -85,8 +85,7 @@ public class DesktopUtils {
     /**
      * 模拟单击<br>
      * 鼠标单击包括鼠标左键的按下和释放
-     *
-     * @since 4.5.7
+
      */
     public static void click() {
         robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -97,8 +96,7 @@ public class DesktopUtils {
     /**
      * 模拟右键单击<br>
      * 鼠标单击包括鼠标右键的按下和释放
-     *
-     * @since 4.5.7
+
      */
     public static void rightClick() {
         robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -110,7 +108,7 @@ public class DesktopUtils {
      * 模拟鼠标滚轮滚动
      *
      * @param wheelAmt 滚动数，负数表示向前滚动，正数向后滚动
-     * @since 4.5.7
+
      */
     public static void mouseWheel(int wheelAmt) {
         robot.mouseWheel(wheelAmt);
@@ -122,7 +120,6 @@ public class DesktopUtils {
      * 包括键盘的按下和释放
      *
      * @param keyCodes 按键码列表，见{@link java.awt.event.KeyEvent}
-     * @since 4.5.7
      */
     public static void keyClick(int... keyCodes) {
         for (int keyCode : keyCodes) {
@@ -255,7 +252,6 @@ public class DesktopUtils {
      * 使用平台默认浏览器打开指定URI地址
      *
      * @param uri URI地址
-     * @since 4.6.3
      */
     public static void browse(URI uri) {
         final Desktop dsktop = getDsktop();
