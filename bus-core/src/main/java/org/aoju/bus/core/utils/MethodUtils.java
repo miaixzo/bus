@@ -48,7 +48,7 @@ import java.util.*;
  * If this call fails then the method may fail.</p>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class MethodUtils {
@@ -80,7 +80,7 @@ public class MethodUtils {
      * @throws NoSuchMethodException     if there is no such accessible method
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
      * @throws IllegalAccessException    if the requested method is not accessible via reflection
-     * @since 3.4
+     * @since 3.5
      */
     public static Object invokeMethod(final Object object, final String methodName) throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
@@ -256,7 +256,7 @@ public class MethodUtils {
      *                                   method invoked
      * @throws IllegalAccessException    if the requested method is not accessible
      *                                   via reflection
-     * @since 3.4
+     * @since 3.5
      */
     public static Object invokeExactMethod(final Object object, final String methodName) throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
@@ -815,7 +815,7 @@ public class MethodUtils {
      * @param annotationCls the {@link Annotation} that must be present on a method to be matched
      * @return an array of Methods (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.4
+     * @since 3.5
      */
     public static Method[] getMethodsWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         return getMethodsWithAnnotation(cls, annotationCls, false, false);
@@ -828,7 +828,7 @@ public class MethodUtils {
      * @param annotationCls the {@link Annotation} that must be present on a method to be matched
      * @return a list of Methods (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.4
+     * @since 3.5
      */
     public static List<Method> getMethodsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         return getMethodsListWithAnnotation(cls, annotationCls, false, false);

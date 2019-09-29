@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
 import org.aoju.bus.cache.entity.CacheKeys;
 import org.aoju.bus.cache.entity.Pair;
 import org.aoju.bus.cache.support.cache.Cache;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 @Singleton
@@ -165,7 +165,7 @@ public class CacheManager {
             return defaultCache;
         } else {
             return cachePool.computeIfAbsent(cacheName, (key) -> {
-                throw new CommonException(StringUtils.format("no cache implementation named [%s].", key));
+                throw new InstrumentException(StringUtils.format("no cache implementation named [%s].", key));
             });
         }
     }

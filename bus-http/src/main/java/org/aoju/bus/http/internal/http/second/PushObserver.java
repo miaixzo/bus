@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferedSource;
 import org.aoju.bus.http.Protocol;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ import java.util.List;
  * future frames won't arrive on the stream ID.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public interface PushObserver {

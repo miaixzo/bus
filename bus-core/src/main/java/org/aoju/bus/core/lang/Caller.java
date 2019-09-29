@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * 调用者。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Caller {
@@ -198,7 +198,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new CommonException("[" + className + "] not found!");
+                throw new InstrumentException("[" + className + "] not found!");
             }
         }
 
@@ -208,7 +208,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new CommonException("[" + className + "] not found!");
+                throw new InstrumentException("[" + className + "] not found!");
             }
         }
 
@@ -218,7 +218,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new CommonException("[" + className + "] not found!");
+                throw new InstrumentException("[" + className + "] not found!");
             }
         }
 

@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferedSource;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.BufferedSource;
 import org.aoju.bus.http.internal.http.HttpHeaders;
 import org.aoju.bus.http.internal.http.StatusLine;
 
@@ -43,7 +43,7 @@ import static java.net.HttpURLConnection.*;
  * {@link ResponseBody} for an explanation and examples.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class Response implements Closeable {

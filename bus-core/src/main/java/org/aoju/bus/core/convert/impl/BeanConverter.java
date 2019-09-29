@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.core.convert.impl;
 
-import org.aoju.bus.core.bean.copier.BeanCopier;
-import org.aoju.bus.core.bean.copier.CopyOptions;
-import org.aoju.bus.core.bean.copier.ValueProvider;
+import org.aoju.bus.core.beans.copier.BeanCopier;
+import org.aoju.bus.core.beans.copier.CopyOptions;
+import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @param <T> Bean类型
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class BeanConverter<T> extends AbstractConverter<T> {

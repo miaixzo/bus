@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.segment.*;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.util.List;
  * Http2#INITIAL_MAX_FRAME_SIZE}.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 final class Http2Reader implements Closeable {

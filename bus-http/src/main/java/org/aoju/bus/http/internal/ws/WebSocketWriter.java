@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.ws;
 
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.segment.*;
 
 import java.io.IOException;
 import java.util.Random;
@@ -34,7 +34,7 @@ import java.util.Random;
  * <p>This class is not thread safe.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 final class WebSocketWriter {

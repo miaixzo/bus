@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.extra.mail;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 
 import javax.mail.internet.AddressException;
@@ -38,7 +38,7 @@ import java.util.List;
  * 邮件内部工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class InternalMail {
@@ -78,7 +78,7 @@ public class InternalMail {
             try {
                 return new InternetAddress(address);
             } catch (AddressException e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
         return internetAddresses[0];
@@ -97,7 +97,7 @@ public class InternalMail {
         try {
             addresses = InternetAddress.parse(address);
         } catch (AddressException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         //编码用户名
         if (ArrayUtils.isNotEmpty(addresses)) {
@@ -105,7 +105,7 @@ public class InternalMail {
                 try {
                     internetAddress.setPersonal(internetAddress.getPersonal(), charset.name());
                 } catch (UnsupportedEncodingException e) {
-                    throw new CommonException(e);
+                    throw new InstrumentException(e);
                 }
             }
         }

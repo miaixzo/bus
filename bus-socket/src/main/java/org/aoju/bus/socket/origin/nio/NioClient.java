@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin.nio;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -34,7 +34,7 @@ import java.nio.channels.SocketChannel;
  * NIO客户端
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class NioClient {
@@ -70,7 +70,7 @@ public class NioClient {
         try {
             this.channel = SocketChannel.open(address);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return this;
     }
@@ -86,7 +86,7 @@ public class NioClient {
         try {
             this.channel.read(buffer);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return this;
     }
@@ -102,7 +102,7 @@ public class NioClient {
         try {
             this.channel.write(datas);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return this;
     }

@@ -24,125 +24,86 @@
 package org.aoju.bus.core.text;
 
 
+import org.aoju.bus.core.lang.exception.InstrumentException;
+
 import java.util.Map;
 
 /**
  * 查找字符串值的字符串键.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public abstract class StrLookup<V> {
 
     /**
-     * Lookup that always returns null.
-     */
-    private static final StrLookup<String> NONE_LOOKUP = new MapStrLookup<String>(null);
-
-    /**
-     * Lookup based on system properties.
+     * 基于系统属性的查找.
      */
     private static final StrLookup<String> SYSTEM_PROPERTIES_LOOKUP = new SystemPropertiesStrLookup();
 
-    /**
-     * Constructor.
-     */
     protected StrLookup() {
         super();
     }
 
     /**
-     * Returns a lookup which always returns null.
+     * 返回一个新的查找，该查找使用当前的副本
+     * 如果安全管理器阻塞了对系统属性的访问，
+     * 则null将阻塞每次查找都返回。
      *
-     * @return a lookup that always returns null, not null
-     */
-    public static StrLookup<?> noneLookup() {
-        return NONE_LOOKUP;
-    }
-
-    /**
-     * Returns a new lookup which uses a copy of the current
-     * {@link System#getProperties() System properties}.
-     * <p>
-     * If a security manager blocked access to system properties, then null will
-     * be returned from every lookup.
-     * <p>
-     * If a null key is used, this lookup will throw a NullPointerException.
-     *
-     * @return a lookup using system properties, not null
+     * @return 使用系统属性返回查找，而不是null
      */
     public static StrLookup<String> systemPropertiesLookup() {
         return SYSTEM_PROPERTIES_LOOKUP;
     }
 
     /**
-     * Returns a lookup which looks up values using a map.
-     * <p>
-     * If the map is null, then null will be returned from every lookup.
-     * The map result object is converted to a string using toString().
+     * 返回使用映射查找值的查找。
+     * 如果映射为null，那么每次查找都会返回null
+     * 使用toString()将映射结果对象转换为字符串
      *
-     * @param <V> the type of the values supported by the lookup
-     * @param map the map of keys to values, may be null
-     * @return a lookup using the map, not null
+     * @param <V> 查找支持的值的类型
+     * @param map 映射键值的映射，可以为空
+     * @return 使用映射的查找，而不是null
      */
     public static <V> StrLookup<V> mapLookup(final Map<String, V> map) {
         return new MapStrLookup<V>(map);
     }
 
     /**
-     * Looks up a String key to a String value.
-     * <p>
-     * The internal implementation may use any mechanism to return the value.
-     * The simplest implementation is to use a Map. However, virtually any
-     * implementation is possible.
-     * <p>
-     * For example, it would be possible to implement a lookup that used the
-     * key as a primary key, and looked up the value on demand from the database
-     * Or, a numeric based implementation could be created that treats the key
-     * as an integer, increments the value and return the result as a string -
-     * converting 1 to 2, 15 to 16 etc.
-     * <p>
-     * The {@link #lookup(String)} method always returns a String, regardless of
-     * the underlying data, by converting it as necessary. For example:
-     * <pre>
-     * Map&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();
-     * map.put("number", Integer.valueOf(2));
-     * assertEquals("2", StrLookup.mapLookup(map).lookup("number"));
-     * </pre>
+     * 查找字符串值的字符串键。
      *
-     * @param key the key to be looked up, may be null
-     * @return the matching value, null if no match
+     * @param key 要查找的键可以为空
+     * @return 匹配值，如果没有匹配则为空
      */
     public abstract String lookup(String key);
 
     /**
-     * Lookup implementation that uses a Map.
+     * 使用映射的查找实现.
      */
     static class MapStrLookup<V> extends StrLookup<V> {
 
         /**
-         * Map keys are variable names and value.
+         * Map键是变量名和值.
          */
         private final Map<String, V> map;
 
         /**
-         * Creates a new instance backed by a Map.
+         * 创建由映射支持的新实例.
          *
-         * @param map the map of keys to values, may be null
+         * @param map 键到值的映射可以为空
          */
         MapStrLookup(final Map<String, V> map) {
             this.map = map;
         }
 
         /**
-         * Looks up a String key to a String value using the map.
-         * <p>
-         * If the map is null, then null is returned.
-         * The map result object is converted to a string using toString().
+         * 使用映射查找字符串值的字符串键。
+         * 如果映射为null，则返回null。
+         * 使用toString()将映射结果对象转换为字符串。
          *
-         * @param key the key to be looked up, may be null
-         * @return the matching value, null if no match
+         * @param key 要查找的键可以为空
+         * @return 匹配值，如果没有匹配则为空
          */
         @Override
         public String lookup(final String key) {
@@ -158,22 +119,21 @@ public abstract class StrLookup<V> {
     }
 
     /**
-     * Lookup implementation based on system properties.
+     * 基于系统属性的查找实现s.
      */
     private static class SystemPropertiesStrLookup extends StrLookup<String> {
-        /**
-         * {@inheritDoc} This implementation directly accesses system properties.
-         */
+
         @Override
         public String lookup(String key) {
             if (key.length() > 0) {
                 try {
                     return System.getProperty(key);
-                } catch (SecurityException scex) {
-                    // Squelched. All lookup(String) will return null.
+                } catch (SecurityException e) {
+                    throw new InstrumentException(e);
                 }
             }
             return null;
         }
     }
+
 }

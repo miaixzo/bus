@@ -24,7 +24,7 @@
 package org.aoju.bus.cron.pattern.matcher;
 
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -39,7 +39,7 @@ import java.util.List;
  * {@link ValueMatcher} 构建器，用于构建表达式中每一项的匹配器
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ValueMatcherBuilder {
@@ -60,7 +60,7 @@ public class ValueMatcherBuilder {
 
         List<Integer> values = parseArray(value, parser);
         if (values.size() == 0) {
-            throw new CommonException("Invalid field: [{}]", value);
+            throw new InstrumentException("Invalid field: [{}]", value);
         }
 
         if (parser instanceof DayOfMonthValueParser) {
@@ -119,11 +119,11 @@ public class ValueMatcherBuilder {
         } else if (size == 2) {// 间隔形式
             final int step = parser.parse(parts.get(1));
             if (step < 1) {
-                throw new CommonException("Non positive divisor for field: [{}]", value);
+                throw new InstrumentException("Non positive divisor for field: [{}]", value);
             }
             results = parseRange(parts.get(0), step, parser);
         } else {
-            throw new CommonException("Invalid syntax of field: [{}]", value);
+            throw new InstrumentException("Invalid syntax of field: [{}]", value);
         }
         return results;
     }
@@ -154,7 +154,7 @@ public class ValueMatcherBuilder {
                 try {
                     minValue = Math.max(minValue, Integer.parseInt(value));
                 } catch (NumberFormatException e) {
-                    throw new CommonException("Invalid field value: [{}]", value);
+                    throw new InstrumentException("Invalid field value: [{}]", value);
                 }
             } else {
                 //在全匹配模式下，如果步进不存在，表示步进为1
@@ -165,7 +165,7 @@ public class ValueMatcherBuilder {
             if (step > 0) {
                 final int maxValue = parser.getMax();
                 if (minValue > maxValue) {
-                    throw new CommonException("Invalid value {} > {}", minValue, maxValue);
+                    throw new InstrumentException("Invalid value {} > {}", minValue, maxValue);
                 }
                 //有步进
                 for (int i = minValue; i <= maxValue; i += step) {
@@ -208,7 +208,7 @@ public class ValueMatcherBuilder {
                 }
             }
         } else {
-            throw new CommonException("Invalid syntax of field: [{}]", value);
+            throw new InstrumentException("Invalid syntax of field: [{}]", value);
         }
         return results;
     }

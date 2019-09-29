@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.bean.*;
-import org.aoju.bus.core.bean.copier.BeanCopier;
-import org.aoju.bus.core.bean.copier.CopyOptions;
-import org.aoju.bus.core.bean.copier.ValueProvider;
+import org.aoju.bus.core.beans.*;
+import org.aoju.bus.core.beans.copier.BeanCopier;
+import org.aoju.bus.core.beans.copier.CopyOptions;
+import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 
 import java.beans.*;
@@ -46,7 +46,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class BeanUtils {
@@ -137,14 +137,14 @@ public class BeanUtils {
      *
      * @param clazz Bean类
      * @return 字段描述数组
-     * @throws CommonException 获取属性异常
+     * @throws InstrumentException 获取属性异常
      */
-    public static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws CommonException {
+    public static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws InstrumentException {
         BeanInfo beanInfo;
         try {
             beanInfo = Introspector.getBeanInfo(clazz);
         } catch (IntrospectionException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return ArrayUtils.filter(beanInfo.getPropertyDescriptors(), new Filter<PropertyDescriptor>() {
             @Override
@@ -161,9 +161,8 @@ public class BeanUtils {
      * @param clazz      Bean类
      * @param ignoreCase 是否忽略大小写
      * @return 字段名和字段描述Map
-     * @throws CommonException 获取属性异常
      */
-    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> clazz, boolean ignoreCase) throws CommonException {
+    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> clazz, boolean ignoreCase) {
         Map<String, PropertyDescriptor> map = BeanInfoCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase);
         if (null == map) {
             map = internalGetPropertyDescriptorMap(clazz, ignoreCase);
@@ -178,9 +177,8 @@ public class BeanUtils {
      * @param clazz      Bean类
      * @param ignoreCase 是否忽略大小写
      * @return 字段名和字段描述Map
-     * @throws CommonException 获取属性异常
      */
-    private static Map<String, PropertyDescriptor> internalGetPropertyDescriptorMap(Class<?> clazz, boolean ignoreCase) throws CommonException {
+    private static Map<String, PropertyDescriptor> internalGetPropertyDescriptorMap(Class<?> clazz, boolean ignoreCase) {
         final PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(clazz);
         final Map<String, PropertyDescriptor> map = ignoreCase ? new CaseInsensitiveMap<>(propertyDescriptors.length, 1)
                 : new HashMap<>(propertyDescriptors.length, 1);
@@ -197,9 +195,8 @@ public class BeanUtils {
      * @param clazz     Bean类
      * @param fieldName 字段名
      * @return PropertyDescriptor
-     * @throws CommonException 获取属性异常
      */
-    public static PropertyDescriptor getPropertyDescriptor(Class<?> clazz, final String fieldName) throws CommonException {
+    public static PropertyDescriptor getPropertyDescriptor(Class<?> clazz, final String fieldName) {
         return getPropertyDescriptor(clazz, fieldName, false);
     }
 
@@ -210,9 +207,8 @@ public class BeanUtils {
      * @param fieldName  字段名
      * @param ignoreCase 是否忽略大小写
      * @return PropertyDescriptor
-     * @throws CommonException 获取属性异常
      */
-    public static PropertyDescriptor getPropertyDescriptor(Class<?> clazz, final String fieldName, boolean ignoreCase) throws CommonException {
+    public static PropertyDescriptor getPropertyDescriptor(Class<?> clazz, final String fieldName, boolean ignoreCase) {
         final Map<String, PropertyDescriptor> map = getPropertyDescriptorMap(clazz, ignoreCase);
         return (null == map) ? null : map.get(fieldName);
     }

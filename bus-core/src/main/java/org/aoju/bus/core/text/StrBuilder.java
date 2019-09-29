@@ -24,8 +24,8 @@
 package org.aoju.bus.core.text;
 
 
+import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.lang.Builder;
 import org.aoju.bus.core.utils.ArrayUtils;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.Objects;
  * 提供比StringBuffer更灵活和更强大的API.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class StrBuilder implements CharSequence, Appendable, Serializable, Builder<String> {
@@ -383,7 +383,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param readable object to read from
      * @return the number of characters read
      * @throws IOException if an I/O error occurs
-     * @since 3.4
+     * @since 3.5
      */
     public int readFrom(final Readable readable) throws IOException {
         final int oldSize = size;
@@ -575,7 +575,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @param buf the char buffer to append
      * @return this, to enable chaining
-     * @since 3.4
+     * @since 3.5
      */
     public StrBuilder append(final CharBuffer buf) {
         if (buf == null) {
@@ -601,7 +601,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param startIndex the start index, inclusive, must be valid
      * @param length     the length to append, must be valid
      * @return this, to enable chaining
-     * @since 3.4
+     * @since 3.5
      */
     public StrBuilder append(final CharBuffer buf, final int startIndex, final int length) {
         if (buf == null) {

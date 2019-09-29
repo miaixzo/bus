@@ -26,7 +26,7 @@ package org.aoju.bus.core.utils;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import java.util.*;
  * 注意：部分拼音并不准确，例如：怡
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class PinyinUtils {
@@ -377,7 +377,7 @@ public class PinyinUtils {
                 asc = (256 * hightByte + lowByte) - 256 * 256;
                 break;
             default:
-                throw new CommonException("Illegal resource string");
+                throw new InstrumentException("Illegal resource string");
         }
         return asc;
     }

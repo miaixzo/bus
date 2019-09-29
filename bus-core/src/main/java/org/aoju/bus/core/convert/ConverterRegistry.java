@@ -25,7 +25,7 @@ package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.convert.impl.*;
 import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
@@ -57,7 +57,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ConverterRegistry {
@@ -169,9 +169,9 @@ public class ConverterRegistry {
      * @param defaultValue  默认值
      * @param isCustomFirst 是否自定义转换器优先
      * @return 转换后的值
-     * @throws CommonException 转换器不存在
+     * @throws InstrumentException 转换器不存在
      */
-    public <T> T convert(Type type, Object value, T defaultValue, boolean isCustomFirst) throws CommonException {
+    public <T> T convert(Type type, Object value, T defaultValue, boolean isCustomFirst) throws InstrumentException {
         if (null == type && null == defaultValue) {
             throw new NullPointerException("[type] and [defaultValue] are both null, we can not know what type to convert !");
         }
@@ -201,7 +201,7 @@ public class ConverterRegistry {
         }
 
         // 无法转换
-        throw new CommonException("No Converter for type [{}]", rowType.getName());
+        throw new InstrumentException("No Converter for type [{}]", rowType.getName());
     }
 
     /**
@@ -213,9 +213,9 @@ public class ConverterRegistry {
      * @param value        值
      * @param defaultValue 默认值
      * @return 转换后的值
-     * @throws CommonException 转换器不存在
+     * @throws InstrumentException 转换器不存在
      */
-    public <T> T convert(Type type, Object value, T defaultValue) throws CommonException {
+    public <T> T convert(Type type, Object value, T defaultValue) throws InstrumentException {
         return convert(type, value, defaultValue, true);
     }
 
@@ -226,9 +226,9 @@ public class ConverterRegistry {
      * @param type  类型
      * @param value 值
      * @return 转换后的值，默认为<code>null</code>
-     * @throws CommonException 转换器不存在
+     * @throws InstrumentException 转换器不存在
      */
-    public <T> T convert(Type type, Object value) throws CommonException {
+    public <T> T convert(Type type, Object value) throws InstrumentException {
         return convert(type, value, null);
     }
 

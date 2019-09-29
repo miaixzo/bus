@@ -25,7 +25,7 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.awt.*;
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class RandomUtils {
@@ -77,7 +77,7 @@ public class RandomUtils {
         try {
             return SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

@@ -24,7 +24,7 @@
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.segment.*;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.cache.CacheRequest;
@@ -132,7 +132,7 @@ import java.util.*;
  * {@link CacheControl#FORCE_CACHE} that address the use cases above.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class Cache implements Closeable, Flushable {

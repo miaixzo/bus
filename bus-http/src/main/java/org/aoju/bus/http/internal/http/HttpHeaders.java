@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.internal.http;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * Headers and utilities for internal use by httpClient.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class HttpHeaders {

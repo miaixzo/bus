@@ -25,7 +25,7 @@ package org.aoju.bus.validate.validators;
 
 import lombok.Data;
 import org.aoju.bus.core.lang.exception.ValidateException;
-import org.aoju.bus.core.text.StrSubstitutor;
+import org.aoju.bus.core.text.Substitute;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.MapUtils;
 
@@ -39,7 +39,7 @@ import java.util.Map;
  * 校验注解所包含的通用属性
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 @Data
@@ -124,8 +124,7 @@ public class Property {
      * @return the string
      */
     public String getFormatted() {
-        StrSubstitutor sub = new StrSubstitutor(this.param);
-        return sub.replace(this.errmsg);
+        return new Substitute(this.param).replace(this.errmsg);
     }
 
 }

@@ -32,13 +32,13 @@ import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
 import org.aoju.bus.core.lang.Validator;
-import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class DateUtils extends Fields {
@@ -694,7 +694,7 @@ public class DateUtils extends Fields {
         } else if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
             return parse(FileUtils.normalize(dateStr), Fields.NORM_DATETIME_MS_FORMAT);
         }
-        throw new CommonException("No format fit for date String [{}] !", dateStr);
+        throw new InstrumentException("No format fit for date String [{}] !", dateStr);
     }
 
     /**
@@ -2550,6 +2550,107 @@ public class DateUtils extends Fields {
         Date cmpDate = addDays(new Date(), -1);
         Date srcDate = parse(date, format);
         return srcDate.after(cmpDate);
+    }
+
+    /**
+     * 通过生日计算星座
+     *
+     * @param date 出生日期
+     * @return 星座名
+     */
+    public static String getZodiac(Date date) {
+        return getZodiac(DateUtils.calendar(date));
+    }
+
+    /**
+     * 通过生日计算星座
+     *
+     * @param calendar 出生日期
+     * @return 星座名
+     */
+    public static String getZodiac(Calendar calendar) {
+        if (null == calendar) {
+            return null;
+        }
+        return getZodiac(calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    /**
+     * 通过生日计算星座
+     *
+     * @param month 月，从0开始计数
+     * @param day   天
+     * @return 星座名
+     */
+    public static String getZodiac(Fields.Month month, int day) {
+        return getZodiac(month.getValue(), day);
+    }
+
+    /**
+     * 通过生日计算星座
+     *
+     * @param month 月，从0开始计数，见{@link Fields.Month#getValue()}
+     * @param day   天
+     * @return 星座名
+     */
+    public static String getZodiac(int month, int day) {
+        return day < Fields.ZODIAC_SLICED[month] ? Fields.ZODIAC[month] : Fields.ZODIAC[month + 1];
+    }
+
+    /**
+     * 通过生日计算生肖，只计算1900年后出生的人
+     *
+     * @param date 出生日期（年需农历）
+     * @return 星座名
+     */
+    public static String getChineseZodiac(Date date) {
+        return getChineseZodiac(DateUtils.calendar(date));
+    }
+
+    /**
+     * 通过生日计算生肖，只计算1900年后出生的人
+     *
+     * @param calendar 出生日期（年需农历）
+     * @return 星座名
+     */
+    public static String getChineseZodiac(Calendar calendar) {
+        if (null == calendar) {
+            return null;
+        }
+        return getChineseZodiac(calendar.get(Calendar.YEAR));
+    }
+
+    /**
+     * 计算生肖，只计算1900年后出生的人
+     *
+     * @param year 农历年
+     * @return 生肖名
+     */
+    public static String getChineseZodiac(int year) {
+        if (year < 1900) {
+            return null;
+        }
+        return Fields.CHINESE_ZODIAC[(year - 1900) % Fields.CHINESE_ZODIAC.length];
+    }
+
+    /**
+     * 纳秒转毫秒
+     *
+     * @param duration 时长
+     * @return 时长毫秒
+     */
+    public static long nanosToMillis(long duration) {
+        return TimeUnit.NANOSECONDS.toMillis(duration);
+    }
+
+    /**
+     * 纳秒转秒，保留小数
+     *
+     * @param duration 时长
+     * @return 秒
+     */
+    public static double nanosToSeconds(long duration) {
+        return duration / 1_000_000_000.0;
     }
 
 }

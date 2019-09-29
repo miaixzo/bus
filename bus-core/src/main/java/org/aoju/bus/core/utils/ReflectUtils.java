@@ -29,7 +29,7 @@ import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.SimpleCache;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import java.util.Set;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ReflectUtils {
@@ -496,9 +496,9 @@ public class ReflectUtils {
      * @param obj       对象
      * @param fieldName 字段名
      * @return 字段值
-     * @throws CommonException 包装IllegalAccessException异常
+     * @throws InstrumentException 包装IllegalAccessException异常
      */
-    public static Object getFieldValue(Object obj, String fieldName) throws CommonException {
+    public static Object getFieldValue(Object obj, String fieldName) throws InstrumentException {
         if (null == obj || StringUtils.isBlank(fieldName)) {
             return null;
         }
@@ -511,9 +511,9 @@ public class ReflectUtils {
      * @param obj   对象
      * @param field 字段
      * @return 字段值
-     * @throws CommonException 包装IllegalAccessException异常
+     * @throws InstrumentException 包装IllegalAccessException异常
      */
-    public static Object getFieldValue(Object obj, Field field) throws CommonException {
+    public static Object getFieldValue(Object obj, Field field) throws InstrumentException {
         if (null == obj || null == field) {
             return null;
         }
@@ -522,7 +522,7 @@ public class ReflectUtils {
         try {
             result = field.get(obj);
         } catch (IllegalAccessException e) {
-            throw new CommonException("IllegalAccess for " + obj.getClass() + "." + field.getName());
+            throw new InstrumentException("IllegalAccess for " + obj.getClass() + "." + field.getName());
         }
         return result;
     }
@@ -533,9 +533,9 @@ public class ReflectUtils {
      * @param obj       对象
      * @param fieldName 字段名
      * @param value     值，值类型必须与字段类型匹配，不会自动转换对象类型
-     * @throws CommonException 包装IllegalAccessException异常
+     * @throws InstrumentException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(Object obj, String fieldName, Object value) throws CommonException {
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws InstrumentException {
         Assert.notNull(obj);
         Assert.notBlank(fieldName);
         setFieldValue(obj, getField(obj.getClass(), fieldName), value);
@@ -547,9 +547,9 @@ public class ReflectUtils {
      * @param obj   对象
      * @param field 字段
      * @param value 值，值类型必须与字段类型匹配，不会自动转换对象类型
-     * @throws CommonException UtilException 包装IllegalAccessException异常
+     * @throws InstrumentException UtilException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(Object obj, Field field, Object value) throws CommonException {
+    public static void setFieldValue(Object obj, Field field, Object value) throws InstrumentException {
         Assert.notNull(obj);
         Assert.notNull(field);
         field.setAccessible(true);
@@ -557,7 +557,7 @@ public class ReflectUtils {
         try {
             field.set(obj, value);
         } catch (IllegalAccessException e) {
-            throw new CommonException("IllegalAccess for " + obj.getClass() + "." + field.getName());
+            throw new InstrumentException("IllegalAccess for " + obj.getClass() + "." + field.getName());
         }
     }
 
@@ -585,7 +585,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型，指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>... paramTypes) throws SecurityException {
         return getMethod(clazz, true, methodName, paramTypes);
@@ -613,7 +613,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型，指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static Method getMethod(Class<?> clazz, boolean ignoreCase, String methodName, Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringUtils.isBlank(methodName)) {
@@ -762,13 +762,13 @@ public class ReflectUtils {
      * @param <T>   对象类型
      * @param clazz 类名
      * @return 对象
-     * @throws CommonException 包装各类异常
+     * @throws InstrumentException 包装各类异常
      */
-    public static <T> T newInstance(String clazz) throws CommonException {
+    public static <T> T newInstance(String clazz) throws InstrumentException {
         try {
             return (T) Class.forName(clazz).newInstance();
         } catch (Exception e) {
-            throw new CommonException(StringUtils.format("Instance class [{}] error!", clazz), e);
+            throw new InstrumentException(StringUtils.format("Instance class [{}] error!", clazz), e);
         }
     }
 
@@ -779,26 +779,26 @@ public class ReflectUtils {
      * @param clazz  类
      * @param params 构造函数参数
      * @return 对象
-     * @throws CommonException 包装各类异常
+     * @throws InstrumentException 包装各类异常
      */
-    public static <T> T newInstance(Class<T> clazz, Object... params) throws CommonException {
+    public static <T> T newInstance(Class<T> clazz, Object... params) throws InstrumentException {
         if (ArrayUtils.isEmpty(params)) {
             try {
                 return clazz.newInstance();
             } catch (Exception e) {
-                throw new CommonException(StringUtils.format("Instance class [{}] error!", clazz), e);
+                throw new InstrumentException(StringUtils.format("Instance class [{}] error!", clazz), e);
             }
         }
 
         final Class<?>[] paramTypes = ClassUtils.getClasses(params);
         final Constructor<?> constructor = getConstructor(clazz, paramTypes);
         if (null == constructor) {
-            throw new CommonException("No Constructor matched for parameter types: [" + new Object[]{paramTypes} + "]");
+            throw new InstrumentException("No Constructor matched for parameter types: [" + new Object[]{paramTypes} + "]");
         }
         try {
             return getConstructor(clazz, paramTypes).newInstance(params);
         } catch (Exception e) {
-            throw new CommonException(StringUtils.format("Instance class [{}] error!", clazz), e);
+            throw new InstrumentException(StringUtils.format("Instance class [{}] error!", clazz), e);
         }
     }
 
@@ -842,9 +842,9 @@ public class ReflectUtils {
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
-     * @throws CommonException 多种异常包装
+     * @throws InstrumentException 多种异常包装
      */
-    public static <T> T invokeStatic(Method method, Object... args) throws CommonException {
+    public static <T> T invokeStatic(Method method, Object... args) throws InstrumentException {
         return invoke(null, method, args);
     }
 
@@ -862,9 +862,9 @@ public class ReflectUtils {
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
-     * @throws CommonException 一些列异常的包装
+     * @throws InstrumentException 一些列异常的包装
      */
-    public static <T> T invokeWithCheck(Object obj, Method method, Object... args) throws CommonException {
+    public static <T> T invokeWithCheck(Object obj, Method method, Object... args) throws InstrumentException {
         final Class<?>[] types = method.getParameterTypes();
         if (null != types && null != args) {
             Assert.isTrue(args.length == types.length, "Params length [{}] is not fit for param length [{}] of method !", args.length, types.length);
@@ -889,9 +889,9 @@ public class ReflectUtils {
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
-     * @throws CommonException 一些列异常的包装
+     * @throws InstrumentException 一些列异常的包装
      */
-    public static <T> T invoke(Object obj, Method method, Object... args) throws CommonException {
+    public static <T> T invoke(Object obj, Method method, Object... args) throws InstrumentException {
         if (false == method.isAccessible()) {
             method.setAccessible(true);
         }
@@ -899,7 +899,7 @@ public class ReflectUtils {
         try {
             return (T) method.invoke(ClassUtils.isStatic(method) ? null : obj, args);
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -911,13 +911,13 @@ public class ReflectUtils {
      * @param methodName 方法名
      * @param args       参数列表
      * @return 执行结果
-     * @throws CommonException IllegalAccessException包装
+     * @throws InstrumentException IllegalAccessException包装
      * @since 3.1.9
      */
-    public static <T> T invoke(Object obj, String methodName, Object... args) throws CommonException {
+    public static <T> T invoke(Object obj, String methodName, Object... args) throws InstrumentException {
         final Method method = getMethodOfObj(obj, methodName, args);
         if (null == method) {
-            throw new CommonException(StringUtils.format("No such method: [{}]", methodName));
+            throw new InstrumentException(StringUtils.format("No such method: [{}]", methodName));
         }
         return invoke(obj, method, args);
     }

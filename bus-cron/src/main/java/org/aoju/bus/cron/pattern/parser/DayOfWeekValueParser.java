@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.cron.pattern.parser;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * 星期值处理
  * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class DayOfWeekValueParser extends SimpleValueParser {
@@ -49,7 +49,7 @@ public class DayOfWeekValueParser extends SimpleValueParser {
      * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
      */
     @Override
-    public int parse(String value) throws CommonException {
+    public int parse(String value) throws InstrumentException {
         try {
             return super.parse(value) % 7;
         } catch (Exception e) {
@@ -62,9 +62,9 @@ public class DayOfWeekValueParser extends SimpleValueParser {
      *
      * @param value 别名值
      * @return 月份int值
-     * @throws CommonException
+     * @throws InstrumentException
      */
-    private int parseAlias(String value) throws CommonException {
+    private int parseAlias(String value) throws InstrumentException {
         if (value.equalsIgnoreCase("L")) {
             //最后一天为星期六
             return ALIASES.length - 1;
@@ -75,6 +75,6 @@ public class DayOfWeekValueParser extends SimpleValueParser {
                 return i;
             }
         }
-        throw new CommonException("Invalid month alias: {}", value);
+        throw new InstrumentException("Invalid month alias: {}", value);
     }
 }

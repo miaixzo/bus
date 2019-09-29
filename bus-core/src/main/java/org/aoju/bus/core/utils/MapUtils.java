@@ -26,7 +26,7 @@ package org.aoju.bus.core.utils;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.map.CamelCaseLinkedMap;
 import org.aoju.bus.core.map.CamelCaseMap;
 import org.aoju.bus.core.map.MapBuilder;
@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class MapUtils {
@@ -170,7 +170,7 @@ public class MapUtils {
             try {
                 return (Map<K, V>) ReflectUtils.newInstance(mapType);
             } catch (Exception e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
     }
@@ -474,7 +474,7 @@ public class MapUtils {
                 } else {
                     strBuilder.append(separator);
                 }
-                strBuilder.append(Convert.toStr(entry.getKey())).append(keyValueSeparator).append(Convert.toStr(entry.getValue()));
+                strBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
             }
         return strBuilder.toString();
     }
@@ -572,7 +572,7 @@ public class MapUtils {
      * @param <T> 键和值类型
      * @param map Map对象，键值类型必须一致
      * @return 互换后的Map
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static <T> Map<T, T> reverse(Map<T, T> map) {
         return filter(map, new Editor<Entry<T, T>>() {
@@ -643,7 +643,7 @@ public class MapUtils {
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static MapProxy createProxy(Map<?, ?> map) {
         return MapProxy.create(map);

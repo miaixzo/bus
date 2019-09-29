@@ -24,9 +24,9 @@
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferedSource;
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.http.internal.Internal;
 
 import java.io.*;
@@ -104,7 +104,7 @@ import java.nio.charset.Charset;
  * {@link #byteStream()}, or {@link #charStream()}.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public abstract class ResponseBody implements Closeable {

@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.cron.pattern.parser;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * 简易值转换器。将给定String值转为int
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class SimpleValueParser implements ValueParser {
@@ -54,15 +54,15 @@ public class SimpleValueParser implements ValueParser {
     }
 
     @Override
-    public int parse(String value) throws CommonException {
+    public int parse(String value) throws InstrumentException {
         int i;
         try {
             i = Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new CommonException("Invalid integer value: [{}]", value);
+            throw new InstrumentException("Invalid integer value: [{}]", value);
         }
         if (i < min || i > max) {
-            throw new CommonException("Value [{}] out of range: [{} , {}]", i, min, max);
+            throw new InstrumentException("Value [{}] out of range: [{} , {}]", i, min, max);
         }
         return i;
     }

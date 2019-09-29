@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.http.first;
 
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.segment.*;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
@@ -57,7 +57,7 @@ import java.util.concurrent.TimeUnit;
  * newFixedLengthSource(0)} and may skip reading and closing that source.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class Http1Codec implements HttpCodec {

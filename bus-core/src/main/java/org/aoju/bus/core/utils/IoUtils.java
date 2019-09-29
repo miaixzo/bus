@@ -25,7 +25,11 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.io.LineHandler;
+import org.aoju.bus.core.io.NullOutputStream;
+import org.aoju.bus.core.io.StreamProgress;
+import org.aoju.bus.core.io.segment.*;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -53,7 +57,7 @@ import java.util.zip.Checksum;
  * IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class IoUtils {
@@ -436,7 +440,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static String read(InputStream in, String charsetName) throws InstrumentException {
-        FastByteArrayOutputStream out = read(in);
+        FastByteArray out = read(in);
         return StringUtils.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
     }
 
@@ -449,7 +453,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static String read(InputStream in, Charset charset) throws InstrumentException {
-        FastByteArrayOutputStream out = read(in);
+        FastByteArray out = read(in);
         return null == charset ? out.toString() : out.toString(charset);
     }
 
@@ -460,8 +464,8 @@ public class IoUtils {
      * @return 输出流
      * @throws InstrumentException 异常
      */
-    public static FastByteArrayOutputStream read(InputStream in) throws InstrumentException {
-        final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
+    public static FastByteArray read(InputStream in) throws InstrumentException {
+        final FastByteArray out = new FastByteArray();
         copy(in, out);
         return out;
     }
@@ -535,7 +539,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static byte[] readBytes(InputStream in) throws InstrumentException {
-        final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
+        final FastByteArray out = new FastByteArray();
         copy(in, out);
         return out.toByteArray();
     }
@@ -904,7 +908,7 @@ public class IoUtils {
             osw = getWriter(out, charset);
             for (Object content : contents) {
                 if (content != null) {
-                    osw.write(Convert.toStr(content, Normal.EMPTY));
+                    osw.write(Convert.toString(content, Normal.EMPTY));
                     osw.flush();
                 }
             }
@@ -1145,7 +1149,7 @@ public class IoUtils {
 
                     if (head.pos == head.limit) {
                         source.head = head.pop();
-                        SegmentPool.recycle(head);
+                        Segments.recycle(head);
                     }
                 }
             }

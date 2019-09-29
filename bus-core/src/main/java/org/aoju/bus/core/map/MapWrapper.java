@@ -12,7 +12,7 @@ import java.util.Set;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Serializable, Cloneable {
@@ -24,8 +24,8 @@ public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, S
     /**
      * 默认初始大小
      */
-    protected static final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // aka 16
-    private static final long serialVersionUID = -7524578042008586382L;
+    protected static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
+
     private Map<K, V> raw;
 
     /**

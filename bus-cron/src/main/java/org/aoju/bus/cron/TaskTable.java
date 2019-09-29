@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.cron.pattern.CronPattern;
 import org.aoju.bus.cron.task.Task;
 
@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 任务的添加、移除使用读写锁保证线程安全性
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class TaskTable {
@@ -77,7 +77,7 @@ public class TaskTable {
         try {
             writeLock.lock();
             if (ids.contains(id)) {
-                throw new CommonException("Id [{}] has been existed!", id);
+                throw new InstrumentException("Id [{}] has been existed!", id);
             }
             ids.add(id);
             patterns.add(pattern);

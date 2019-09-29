@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * 锁
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 @Target({ElementType.METHOD, ElementType.TYPE})

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin.aio;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.socket.SocketUtils;
 import org.aoju.bus.socket.origin.OriginConfig;
@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  * 每个客户端对应一个会话对象
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class AioSession {
@@ -195,7 +195,7 @@ public class AioSession {
             try {
                 this.channel.shutdownInput();
             } catch (IOException e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
         return this;
@@ -211,7 +211,7 @@ public class AioSession {
             try {
                 this.channel.shutdownOutput();
             } catch (IOException e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
         return this;

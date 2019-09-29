@@ -25,7 +25,6 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.annotation.Element;
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AccessibleObject;
@@ -39,7 +38,7 @@ import java.util.Map;
  * 快速获取注解对象、注解值等工具封装
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class AnnoUtils {
@@ -88,9 +87,8 @@ public class AnnoUtils {
      * @param annotationEle  {@link AccessibleObject}，可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
      * @return 注解对象
-     * @throws InstrumentException 调用注解中的方法时执行异常
      */
-    public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) throws InstrumentException {
+    public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) {
         return getAnnotationValue(annotationEle, annotationType, "value");
     }
 
@@ -103,9 +101,8 @@ public class AnnoUtils {
      * @param annotationType 注解类型
      * @param propertyName   属性名，例如注解中定义了name()方法，则 此处传入name
      * @return 注解对象
-     * @throws InstrumentException 调用注解中的方法时执行异常
      */
-    public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType, String propertyName) throws InstrumentException {
+    public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType, String propertyName) {
         final Annotation annotation = getAnnotation(annotationEle, annotationType);
         if (null == annotation) {
             return null;
@@ -125,9 +122,8 @@ public class AnnoUtils {
      * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
      * @return 注解对象
-     * @throws InstrumentException 调用注解中的方法时执行异常
      */
-    public static Map<String, Object> getAnnotationValueMap(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) throws InstrumentException {
+    public static Map<String, Object> getAnnotationValueMap(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) {
         final Annotation annotation = getAnnotation(annotationEle, annotationType);
         if (null == annotation) {
             return null;

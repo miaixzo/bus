@@ -23,10 +23,12 @@
  */
 package org.aoju.bus.base.spring;
 
-import org.aoju.bus.base.consts.Consts;
 import org.aoju.bus.base.consts.ErrorCode;
-import org.aoju.bus.core.lang.exception.*;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.lang.exception.BusinessException;
+import org.aoju.bus.core.lang.exception.CrontabException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.ValidateException;
+import org.aoju.bus.core.utils.RuntimeUtils;
 import org.aoju.bus.logger.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -42,7 +44,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 @ControllerAdvice
@@ -80,25 +82,12 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public Object defaultException(Exception e) {
-        Logger.error(getStackTraceMessage(e));
+        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_FAILURE);
     }
 
     /**
-     * 通用异常信息
-     *
-     * @param e 异常信息
-     * @return 异常提示
-     */
-    @ResponseBody
-    @ExceptionHandler(value = CommonException.class)
-    public Object commonException(CommonException e) {
-        Logger.error(getStackTraceMessage(e));
-        return write(ErrorCode.EM_100506);
-    }
-
-    /**
-     * 工具异常拦截
+     * 内部异常拦截
      *
      * @param e 异常信息
      * @return 异常提示
@@ -106,7 +95,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = InstrumentException.class)
     public Object instrumentException(InstrumentException e) {
-        Logger.error(getStackTraceMessage(e));
+        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100510);
     }
 
@@ -120,7 +109,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
     public Object businessException(BusinessException e) {
-        Logger.error(getStackTraceMessage(e));
+        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100513);
     }
 
@@ -133,7 +122,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = CrontabException.class)
     public Object crontabException(CrontabException e) {
-        Logger.error(getStackTraceMessage(e));
+        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100514);
     }
 
@@ -145,8 +134,8 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = ValidateException.class)
-    public Object ValidateException(ValidateException e) {
-        Logger.error(getStackTraceMessage(e));
+    public Object validateException(ValidateException e) {
+        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(e.getErrcode(), e.getErrmsg());
     }
 
@@ -159,7 +148,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public Object httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        Logger.error(getStackTraceMessage(e));
+        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100507);
     }
 
@@ -172,7 +161,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
-        Logger.error(getStackTraceMessage(e));
+        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100508);
     }
 
@@ -186,48 +175,8 @@ public class BaseAdvice extends Controller {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public Object noHandlerFoundException(NoHandlerFoundException e) {
-        Logger.error(getStackTraceMessage(e));
+        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100509);
-    }
-
-    /**
-     * 从当前堆栈中获取
-     *
-     * @param exception 当前堆栈异常对象
-     * @return String 消息格式[className.methodName:lineNumber : message]
-     */
-    private String getStackTraceMessage(Exception exception) {
-        if (ObjectUtils.isNull(exception)) {
-            return " exception is null ";
-        }
-
-        StringBuilder stackMessage = new StringBuilder(128);
-        stackMessage.append(exception.getMessage()).append("\n");
-
-        StackTraceElement[] stackTraceElements = exception.getStackTrace();
-        if (null != stackTraceElements && stackTraceElements.length > 0) {
-            int count = 0;
-            for (StackTraceElement currentStackTrace : stackTraceElements) {
-                if (isStack(currentStackTrace) && count < Consts.CODE_STACK_DEPTH) {
-                    String message = String.format("        %s.%s : %s",
-                            currentStackTrace.getClassName(),
-                            currentStackTrace.getMethodName(),
-                            currentStackTrace.getLineNumber());
-                    stackMessage.append(message).append("\n");
-                }
-                count++;
-            }
-        }
-        return stackMessage.toString();
-    }
-
-    /**
-     * @param stackTraceElement 当前堆栈元素
-     * @return true/false
-     */
-    private boolean isStack(StackTraceElement stackTraceElement) {
-        return ObjectUtils.isNotNull(stackTraceElement)
-                ? stackTraceElement.getClassName().startsWith(Consts.CLASS_NAME_PREFIX) : Boolean.FALSE;
     }
 
 }

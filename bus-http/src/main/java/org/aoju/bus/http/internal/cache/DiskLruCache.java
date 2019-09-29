@@ -23,8 +23,11 @@
  */
 package org.aoju.bus.http.internal.cache;
 
-import org.aoju.bus.core.io.FileSystem;
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.FileSystem;
+import org.aoju.bus.core.io.segment.Sink;
+import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.platform.Platform;
@@ -79,7 +82,7 @@ import java.util.regex.Pattern;
  * IOException} and responding appropriately.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class DiskLruCache implements Closeable, Flushable {

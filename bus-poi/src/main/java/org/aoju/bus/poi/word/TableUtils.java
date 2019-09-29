@@ -41,7 +41,7 @@ import java.util.Map;
  * Word中表格相关工具
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class TableUtils {
@@ -135,7 +135,7 @@ public class TableUtils {
         int index = 0;
         for (Object cellData : rowData) {
             cell = getOrCreateCell(row, index);
-            cell.setText(Convert.toStr(cellData));
+            cell.setText( Convert.toString(cellData));
             index++;
         }
     }

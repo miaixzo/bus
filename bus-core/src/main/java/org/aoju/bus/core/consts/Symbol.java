@@ -27,7 +27,7 @@ package org.aoju.bus.core.consts;
  * 标点符号常量
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class Symbol {
@@ -161,8 +161,8 @@ public final class Symbol {
     /**
      * 大括号-右
      */
-    public static final char C_DELIM_END = '}';
-    public static final String DELIM_END = Normal.EMPTY + C_DELIM_END;
+    public static final char C_DELIM_RIGHT = '}';
+    public static final String DELIM_RIGHT = Normal.EMPTY + C_DELIM_RIGHT;
 
     /**
      * 符号: 方括号-左

@@ -6,10 +6,10 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>3.6.1</version>
+    <version>3.6.2</version>
     <packaging>pom</packaging>
 
-    <name>bus-bom</name>
+    <name>${project.artifactId}</name>
     <description>Bus Bom</description>
     <url>https://github.com/aoju/bus</url>
 

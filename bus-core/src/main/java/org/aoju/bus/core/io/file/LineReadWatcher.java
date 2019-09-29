@@ -24,7 +24,7 @@
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.io.LineHandler;
-import org.aoju.bus.core.io.watch.SimpleWatcher;
+import org.aoju.bus.core.io.watchers.SimpleWatcher;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 
@@ -38,7 +38,7 @@ import java.nio.file.WatchEvent;
  * 行处理的Watcher实现
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class LineReadWatcher extends SimpleWatcher implements Runnable {

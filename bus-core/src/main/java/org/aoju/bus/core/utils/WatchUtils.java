@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.io.watch.WatchMonitor;
-import org.aoju.bus.core.io.watch.Watcher;
+import org.aoju.bus.core.io.watchers.WatchMonitor;
+import org.aoju.bus.core.io.watchers.Watcher;
 
 import java.io.File;
 import java.net.URI;
@@ -38,7 +38,7 @@ import java.nio.file.WatchEvent;
  * 主要负责文件监听器的快捷创建
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class WatchUtils {

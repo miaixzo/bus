@@ -23,18 +23,14 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.bean.BeanDesc;
-import org.aoju.bus.core.bean.copier.BeanCopier;
-import org.aoju.bus.core.bean.copier.CopyOptions;
-import org.aoju.bus.core.bean.copier.ValueProvider;
+import org.aoju.bus.core.beans.BeanDesc;
+import org.aoju.bus.core.beans.copier.BeanCopier;
+import org.aoju.bus.core.beans.copier.CopyOptions;
+import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.BasicType;
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Editor;
-import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.SimpleCache;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 import org.aoju.bus.core.loader.JarLoaders;
@@ -51,7 +47,7 @@ import java.util.*;
  * 类工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ClassUtils {
@@ -64,7 +60,7 @@ public class ClassUtils {
     private static SimpleCache<String, Class<?>> classCache = new SimpleCache<>();
 
     static {
-        List<Class<?>> primitiveTypes = new ArrayList<Class<?>>(32);
+        List<Class<?>> primitiveTypes = new ArrayList<>(32);
         // 加入原始类型
         primitiveTypes.addAll(BasicType.primitiveWrapperMap.keySet());
         // 加入原始类型数组类型
@@ -393,6 +389,96 @@ public class ClassUtils {
     }
 
     /**
+     * 执行方法<br>
+     * 可执行Private方法，也可执行static方法<br>
+     * 执行非static方法时，必须满足对象有默认构造方法<br>
+     * 非单例模式，如果是非静态方法，每次创建一个新对象
+     *
+     * @param <T>                     对象类型
+     * @param classNameWithMethodName 类名和方法名表达式，类名与方法名用<code>.</code>或<code>#</code>连接 例如：com.xiaoleilu.hutool.StrUtil.isEmpty 或 com.xiaoleilu.hutool.StrUtil#isEmpty
+     * @param args                    参数，必须严格对应指定方法的参数类型和数量
+     * @return 返回结果
+     */
+    public static <T> T invoke(String classNameWithMethodName, Object[] args) {
+        return invoke(classNameWithMethodName, false, args);
+    }
+
+    /**
+     * 执行方法<br>
+     * 可执行Private方法，也可执行static方法<br>
+     * 执行非static方法时，必须满足对象有默认构造方法<br>
+     *
+     * @param <T>                     对象类型
+     * @param classNameWithMethodName 类名和方法名表达式，例如：com.xiaoleilu.hutool.StrUtil#isEmpty或com.xiaoleilu.hutool.StrUtil.isEmpty
+     * @param isSingleton             是否为单例对象，如果此参数为false，每次执行方法时创建一个新对象
+     * @param args                    参数，必须严格对应指定方法的参数类型和数量
+     * @return 返回结果
+     */
+    public static <T> T invoke(String classNameWithMethodName, boolean isSingleton, Object... args) {
+        if (StringUtils.isBlank(classNameWithMethodName)) {
+            throw new InstrumentException("Blank classNameDotMethodName!");
+        }
+
+        int splitIndex = classNameWithMethodName.lastIndexOf('#');
+        if (splitIndex <= 0) {
+            splitIndex = classNameWithMethodName.lastIndexOf('.');
+        }
+        if (splitIndex <= 0) {
+            throw new InstrumentException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
+        }
+
+        final String className = classNameWithMethodName.substring(0, splitIndex);
+        final String methodName = classNameWithMethodName.substring(splitIndex + 1);
+
+        return invoke(className, methodName, isSingleton, args);
+    }
+
+    /**
+     * 执行方法<br>
+     * 可执行Private方法，也可执行static方法<br>
+     * 执行非static方法时，必须满足对象有默认构造方法<br>
+     * 非单例模式，如果是非静态方法，每次创建一个新对象
+     *
+     * @param <T>        对象类型
+     * @param className  类名，完整类路径
+     * @param methodName 方法名
+     * @param args       参数，必须严格对应指定方法的参数类型和数量
+     * @return 返回结果
+     */
+    public static <T> T invoke(String className, String methodName, Object[] args) {
+        return invoke(className, methodName, false, args);
+    }
+
+    /**
+     * 执行方法<br>
+     * 可执行Private方法，也可执行static方法<br>
+     * 执行非static方法时，必须满足对象有默认构造方法<br>
+     *
+     * @param <T>         对象类型
+     * @param className   类名，完整类路径
+     * @param methodName  方法名
+     * @param isSingleton 是否为单例对象，如果此参数为false，每次执行方法时创建一个新对象
+     * @param args        参数，必须严格对应指定方法的参数类型和数量
+     * @return 返回结果
+     */
+    public static <T> T invoke(String className, String methodName, boolean isSingleton, Object... args) {
+        Class<Object> clazz = loadClass(className);
+        try {
+            final Method method = getDeclaredMethod(clazz, methodName, getClasses(args));
+            if (null == method) {
+                throw new NoSuchMethodException(StringUtils.format("No such method: [{}]", methodName));
+            }
+            if (isStatic(method)) {
+                return ReflectUtils.invoke(null, method, args);
+            } else {
+                return ReflectUtils.invoke(isSingleton ? Singleton.get(clazz) : clazz.newInstance(), method, args);
+            }
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
      * 是否为包装类型
      *
      * @param clazz 类
@@ -687,7 +773,7 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();
@@ -837,7 +923,7 @@ public class ClassUtils {
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, boolean isToUnderlineCase, boolean ignoreNullValue) {
-        return beanToMap(bean, new HashMap<String, Object>(), isToUnderlineCase, ignoreNullValue);
+        return beanToMap(bean, new HashMap<>(), isToUnderlineCase, ignoreNullValue);
     }
 
     /**
@@ -988,9 +1074,10 @@ public class ClassUtils {
      *
      * @param resource 资源（相对Classpath的路径）
      * @return 资源URL
+     * @throws InstrumentException 异常
      * @see ResourceUtils#getResource(String)
      */
-    public static URL getResourceURL(String resource) throws CommonException {
+    public static URL getResourceURL(String resource) throws InstrumentException {
         return ResourceUtils.getResource(resource);
     }
 
@@ -1030,11 +1117,12 @@ public class ClassUtils {
      * 3、内部类，例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
      * </pre>
      *
+     * @param <T>  对象
      * @param name 类名
      * @return 类名对应的类
-     * @throws CommonException 包装{@link CommonException}，没有类名对应的类时抛出此异常
+     * @throws InstrumentException 没有类名对应的类时抛出此异常
      */
-    public static Class<?> loadClass(String name) throws CommonException {
+    public static <T> Class<T> loadClass(String name) throws InstrumentException {
         return loadClass(name, true);
     }
 
@@ -1048,13 +1136,14 @@ public class ClassUtils {
      * 3、内部类，例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
      * </pre>
      *
+     * @param <T>           对象
      * @param name          类名
      * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
      * @return 类名对应的类
-     * @throws CommonException 包装{@link CommonException}，没有类名对应的类时抛出此异常
+     * @throws InstrumentException 没有类名对应的类时抛出此异常
      */
-    public static Class<?> loadClass(String name, boolean isInitialized) throws CommonException {
-        return loadClass(name, null, isInitialized);
+    public static <T> Class<T> loadClass(String name, boolean isInitialized) throws InstrumentException {
+        return (Class<T>) loadClass(name, null, isInitialized);
     }
 
     /**
@@ -1073,9 +1162,9 @@ public class ClassUtils {
      * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
      * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
      * @return 类名对应的类
-     * @throws CommonException 包装{@link CommonException}，没有类名对应的类时抛出此异常
+     * @throws InstrumentException 没有类名对应的类时抛出此异常
      */
-    public static Class<?> loadClass(String name, ClassLoader classLoader, boolean isInitialized) throws CommonException {
+    public static Class<?> loadClass(String name, ClassLoader classLoader, boolean isInitialized) throws InstrumentException {
         Assert.notNull(name, "Name must not be null");
 
         // 加载原始类型和缓存中的类
@@ -1113,7 +1202,7 @@ public class ClassUtils {
                 // 尝试获取内部类，例如java.lang.Thread.State =》java.lang.Thread$State
                 clazz = tryLoadInnerClass(name, classLoader, isInitialized);
                 if (null == clazz) {
-                    throw new CommonException(ex);
+                    throw new InstrumentException(ex);
                 }
             }
         }
@@ -1160,7 +1249,7 @@ public class ClassUtils {
         try {
             return getJarClassLoader(jarOrDir).loadClass(name);
         } catch (ClassNotFoundException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

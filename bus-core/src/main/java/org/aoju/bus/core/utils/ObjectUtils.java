@@ -24,9 +24,8 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.io.FastByteArrayOutputStream;
+import org.aoju.bus.core.io.FastByteArray;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
@@ -41,7 +40,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ObjectUtils {
@@ -253,13 +252,13 @@ public class ObjectUtils {
      * @param <T> 对象类型
      * @param obj 被克隆对象
      * @return 克隆后的对象
-     * @throws CommonException IO异常和ClassNotFoundException封装
+     * @throws InstrumentException IO异常和ClassNotFoundException封装
      */
     public static <T> T cloneByStream(T obj) {
         if (null == obj || false == (obj instanceof Serializable)) {
             return null;
         }
-        final FastByteArrayOutputStream byteOut = new FastByteArrayOutputStream();
+        final FastByteArray byteOut = new FastByteArray();
         ObjectOutputStream out = null;
         try {
             out = new ObjectOutputStream(byteOut);
@@ -268,7 +267,7 @@ public class ObjectUtils {
             final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray()));
             return (T) in.readObject();
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -425,7 +424,7 @@ public class ObjectUtils {
                 }
                 return object;
             } catch (Exception e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
     }
@@ -453,7 +452,7 @@ public class ObjectUtils {
             objOut.writeObject(obj);
             return byteOut.toByteArray();
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -481,7 +480,7 @@ public class ObjectUtils {
             ObjectInputStream objIn = new ObjectInputStream(byteIn);
             return (T) objIn.readObject();
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -494,7 +493,7 @@ public class ObjectUtils {
         try {
             return Class.forName(classAllName);
         } catch (ClassNotFoundException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -528,7 +527,7 @@ public class ObjectUtils {
             }
             return obj;
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -554,7 +553,7 @@ public class ObjectUtils {
                 }
             }
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -583,7 +582,7 @@ public class ObjectUtils {
             return null;
 
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -612,7 +611,7 @@ public class ObjectUtils {
             map.remove("serialVersionUID");
             return map;
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -634,7 +633,7 @@ public class ObjectUtils {
             attrMap.remove("serialVersionUID");
             return attrMap;
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -669,7 +668,7 @@ public class ObjectUtils {
             map.remove("serialVersionUID");
             return map;
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -731,7 +730,7 @@ public class ObjectUtils {
             map.remove("serialVersionUID");
             return map;
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -767,7 +766,7 @@ public class ObjectUtils {
             map.remove("serialVersionUID");
             return map;
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -786,7 +785,7 @@ public class ObjectUtils {
             Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
             return (Class<T>) params[0];
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -941,7 +940,7 @@ public class ObjectUtils {
             Map<String, Object> attrMap = getFields(bean);
             return initObject(clazz, attrMap);
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -956,7 +955,7 @@ public class ObjectUtils {
             Map<String, Object> attrMap = getFields(bean);
             return (T) initObject(bean.getClass(), attrMap);
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -982,7 +981,7 @@ public class ObjectUtils {
                 }
             }
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -1015,7 +1014,7 @@ public class ObjectUtils {
                 }
             }
         } catch (Exception e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

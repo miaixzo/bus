@@ -120,7 +120,7 @@ import java.util.concurrent.TimeUnit;
  * remain idle.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
@@ -427,7 +427,7 @@ public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
     }
 
     @Override
-    public WebSocket newWebSocket(Request request, WebSocketListener listener) {
+    public WebSocket newWebSocket(Request request, SocketListener listener) {
         RealWebSocket webSocket = new RealWebSocket(request, listener, new Random(), pingInterval);
         webSocket.connect(this);
         return webSocket;

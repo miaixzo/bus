@@ -24,7 +24,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
 import java.io.*;
@@ -35,7 +35,7 @@ import java.util.Collection;
  * CSV数据写出器
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class CsvWriter implements Closeable, Flushable {
@@ -180,9 +180,9 @@ public final class CsvWriter implements Closeable, Flushable {
      *
      * @param lines 多行数据
      * @return this
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public CsvWriter write(String[]... lines) throws CommonException {
+    public CsvWriter write(String[]... lines) throws InstrumentException {
         if (ArrayUtils.isNotEmpty(lines)) {
             for (final String[] values : lines) {
                 appendLine(values);
@@ -197,9 +197,9 @@ public final class CsvWriter implements Closeable, Flushable {
      *
      * @param lines 多行数据
      * @return this
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public CsvWriter write(Collection<String[]> lines) throws CommonException {
+    public CsvWriter write(Collection<String[]> lines) throws InstrumentException {
         if (CollUtils.isNotEmpty(lines)) {
             for (final String[] values : lines) {
                 appendLine(values);
@@ -212,13 +212,13 @@ public final class CsvWriter implements Closeable, Flushable {
     /**
      * 追加新行（换行）
      *
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public void writeLine() throws CommonException {
+    public void writeLine() throws InstrumentException {
         try {
             writer.write(config.lineDelimiter);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         newline = true;
     }
@@ -229,11 +229,11 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     @Override
-    public void flush() throws CommonException {
+    public void flush() throws InstrumentException {
         try {
             writer.flush();
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -241,13 +241,13 @@ public final class CsvWriter implements Closeable, Flushable {
      * 追加一行，末尾会自动换行，但是追加前不会换行
      *
      * @param fields 字段列表 ({@code null} 值会被做为空值追加)
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    private void appendLine(final String... fields) throws CommonException {
+    private void appendLine(final String... fields) throws InstrumentException {
         try {
             doAppendLine(fields);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

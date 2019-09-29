@@ -70,7 +70,7 @@ import java.util.Comparator;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class CompareToBuilder implements Builder<Integer> {

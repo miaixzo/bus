@@ -33,7 +33,7 @@ import java.net.URL;
  * URL对象转换器
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class URLConverter extends AbstractConverter<URL> {

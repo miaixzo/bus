@@ -30,160 +30,152 @@ import org.aoju.bus.core.utils.StringUtils;
 import java.util.Arrays;
 
 /**
- * A matcher class that can be queried to determine if a character array
- * portion matches.
- * <p>
- * This class comes complete with various factory methods.
- * If these do not suffice, you can subclass and implement your own matcher.
+ * 一个匹配器类，可以查询它来确定一个字符数组是否存在部分匹配。
+ * 如果这些还不够，您可以子类化并实现自己的匹配器。
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public abstract class StrMatcher {
 
     /**
-     * Matches the comma character.
+     * 匹配逗号字符.
      */
     private static final StrMatcher COMMA_MATCHER = new CharMatcher(Symbol.C_COMMA);
     /**
-     * Matches the tab character.
+     * 匹配tab字符.
      */
     private static final StrMatcher TAB_MATCHER = new CharMatcher(Symbol.C_HT);
     /**
-     * Matches the space character.
+     * 匹配空格字符.
      */
     private static final StrMatcher SPACE_MATCHER = new CharMatcher(Symbol.C_SPACE);
     /**
-     * Matches the same characters as StringTokenizer,
-     * namely space, tab, newline, formfeed.
+     * 匹配相同的字符，即空格、制表符、换行符等.
      */
     private static final StrMatcher SPLIT_MATCHER = new CharSetMatcher(" \t\n\r\f".toCharArray());
     /**
-     * Matches the String trim() whitespace characters.
+     * 匹配字符串trim()空白字符.
      */
     private static final StrMatcher TRIM_MATCHER = new TrimMatcher();
     /**
-     * Matches the double quote character.
+     * 匹配双引号字符.
      */
     private static final StrMatcher SINGLE_QUOTE_MATCHER = new CharMatcher(Symbol.C_SINGLE_QUOTE);
     /**
-     * Matches the double quote character.
+     * 匹配双引号字符.
      */
     private static final StrMatcher DOUBLE_QUOTE_MATCHER = new CharMatcher(Symbol.C_DOUBLE_QUOTES);
     /**
-     * Matches the single or double quote character.
+     * 匹配单引号或双引号字符.
      */
     private static final StrMatcher QUOTE_MATCHER = new CharSetMatcher("'\"".toCharArray());
     /**
-     * Matches no characters.
+     * 匹配任何字符.
      */
     private static final StrMatcher NONE_MATCHER = new NoMatcher();
 
-    /**
-     * Constructor.
-     */
     protected StrMatcher() {
         super();
     }
 
     /**
-     * Returns a matcher which matches the comma character.
+     * 返回一个匹配逗号字符的匹配器。
      *
-     * @return a matcher for a comma
+     * @return 逗号的匹配器
      */
     public static StrMatcher commaMatcher() {
         return COMMA_MATCHER;
     }
 
     /**
-     * Returns a matcher which matches the tab character.
+     * 返回一个匹配tab字符的匹配器。
      *
-     * @return a matcher for a tab
+     * @return tab的匹配器
      */
     public static StrMatcher tabMatcher() {
         return TAB_MATCHER;
     }
 
     /**
-     * Returns a matcher which matches the space character.
+     * 返回一个匹配空格字符的匹配器。
      *
-     * @return a matcher for a space
+     * @return 空格的匹配器
      */
     public static StrMatcher spaceMatcher() {
         return SPACE_MATCHER;
     }
 
     /**
-     * Matches the same characters as StringTokenizer,
-     * namely space, tab, newline and formfeed.
+     * 匹配相同的字符，即空格、制表符、换行符等.
      *
-     * @return the split matcher
+     * @return 分割匹配器
      */
     public static StrMatcher splitMatcher() {
         return SPLIT_MATCHER;
     }
 
     /**
-     * Matches the String trim() whitespace characters.
+     * 匹配字符串trim()空白字符.
      *
-     * @return the trim matcher
+     * @return 空白匹配器
      */
     public static StrMatcher trimMatcher() {
         return TRIM_MATCHER;
     }
 
     /**
-     * Returns a matcher which matches the single quote character.
+     * 匹配字符串单引号字符.
      *
-     * @return a matcher for a single quote
+     * @return 单引号匹配器
      */
     public static StrMatcher singleQuoteMatcher() {
         return SINGLE_QUOTE_MATCHER;
     }
 
     /**
-     * Returns a matcher which matches the double quote character.
+     * 匹配字符串双引号字符.
      *
-     * @return a matcher for a double quote
+     * @return 双引号匹配器
      */
     public static StrMatcher doubleQuoteMatcher() {
         return DOUBLE_QUOTE_MATCHER;
     }
 
     /**
-     * Returns a matcher which matches the single or double quote character.
+     * 匹配字符串单引号/双引号字符.
      *
-     * @return a matcher for a single or double quote
+     * @return 单引号/双引号匹配器
      */
     public static StrMatcher quoteMatcher() {
         return QUOTE_MATCHER;
     }
 
     /**
-     * Matches no characters.
+     * 匹配任何字符.
      *
-     * @return a matcher that matches nothing
+     * @return 什么也不匹配的匹配器
      */
     public static StrMatcher noneMatcher() {
         return NONE_MATCHER;
     }
 
     /**
-     * Constructor that creates a matcher from a character.
+     * 构造函数
      *
-     * @param ch the character to match, must not be null
-     * @return a new Matcher for the given char
+     * @param ch 匹配的字符不能为空
+     * @return 给定的字符返回一个新的匹配器
      */
     public static StrMatcher charMatcher(final char ch) {
         return new CharMatcher(ch);
     }
 
     /**
-     * Constructor that creates a matcher from a set of characters.
+     * 构造函数
      *
-     * @param chars the characters to match, null or empty matches nothing
-     * @return a new matcher for the given char[]
+     * @param chars 对要匹配的字符进行字符切分，null或empty不匹配任何字符
+     * @return 给定字符的新匹配器[]
      */
     public static StrMatcher charSetMatcher(final char... chars) {
         if (chars == null || chars.length == 0) {
@@ -196,10 +188,10 @@ public abstract class StrMatcher {
     }
 
     /**
-     * Constructor that creates a matcher from a string representing a set of characters.
+     * 构造函数
      *
-     * @param chars the characters to match, null or empty matches nothing
-     * @return a new Matcher for the given characters
+     * @param chars 对要匹配的字符进行字符切分，null或empty不匹配任何字符
+     * @return 给定字符的新匹配器
      */
     public static StrMatcher charSetMatcher(final String chars) {
         if (StringUtils.isEmpty(chars)) {
@@ -212,10 +204,10 @@ public abstract class StrMatcher {
     }
 
     /**
-     * Constructor that creates a matcher from a string.
+     * 构造函数
      *
-     * @param str the string to match, null or empty matches nothing
-     * @return a new Matcher for the given String
+     * @param str 匹配的字符串为null或空，不匹配任何内容
+     * @return 给定字符串返回一个新的匹配器
      */
     public static StrMatcher stringMatcher(final String str) {
         if (StringUtils.isEmpty(str)) {
@@ -225,70 +217,37 @@ public abstract class StrMatcher {
     }
 
     /**
-     * Returns the number of matching characters, zero for no match.
-     * <p>
-     * This method is called to check for a match.
-     * The parameter <code>pos</code> represents the current position to be
-     * checked in the string <code>buffer</code> (a character array which must
-     * not be changed).
-     * The API guarantees that <code>pos</code> is a valid index for <code>buffer</code>.
-     * <p>
-     * The character array may be larger than the active area to be matched.
-     * Only values in the buffer between the specified indices may be accessed.
-     * <p>
-     * The matching code may check one character or many.
-     * It may check characters preceding <code>pos</code> as well as those
-     * after, so long as no checks exceed the bounds specified.
-     * <p>
-     * It must return zero for no match, or a positive number if a match was found.
-     * The number indicates the number of characters that matched.
+     * 返回匹配字符的数量，如果没有匹配，则返回0
      *
-     * @param buffer      the text content to match against, do not change
-     * @param pos         the starting position for the match, valid for buffer
-     * @param bufferStart the first active index in the buffer, valid for buffer
-     * @param bufferEnd   the end index (exclusive) of the active buffer, valid for buffer
-     * @return the number of matching characters, zero for no match
+     * @param buffer      要匹配的文本内容，不要更改
+     * @param pos         匹配的起始位置，对buffer有效
+     * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
+     * @param bufferEnd   活动缓冲区的结束索引(排除)，对缓冲区有效
+     * @return 匹配字符的数量，如果没有匹配，则返回0
      */
     public abstract int isMatch(char[] buffer, int pos, int bufferStart, int bufferEnd);
 
     /**
-     * Returns the number of matching characters, zero for no match.
-     * <p>
-     * This method is called to check for a match.
-     * The parameter <code>pos</code> represents the current position to be
-     * checked in the string <code>buffer</code> (a character array which must
-     * not be changed).
-     * The API guarantees that <code>pos</code> is a valid index for <code>buffer</code>.
-     * <p>
-     * The matching code may check one character or many.
-     * It may check characters preceding <code>pos</code> as well as those after.
-     * <p>
-     * It must return zero for no match, or a positive number if a match was found.
-     * The number indicates the number of characters that matched.
+     * 返回匹配字符的数量，如果没有匹配，则返回0
      *
-     * @param buffer the text content to match against, do not change
-     * @param pos    the starting position for the match, valid for buffer
-     * @return the number of matching characters, zero for no match
-     * @since 2.4
+     * @param pos    匹配的起始位置，对buffer有效
+     * @param buffer 要匹配的文本内容，不要更改
+     * @return 匹配字符的数量，如果没有匹配，则返回0
      */
     public int isMatch(final char[] buffer, final int pos) {
         return isMatch(buffer, pos, 0, buffer.length);
     }
 
     /**
-     * Class used to define a set of characters for matching purposes.
+     * 用于定义用于匹配目的的一组字符.
      */
     static final class CharSetMatcher extends StrMatcher {
+
         /**
-         * The set of characters to match.
+         * 要匹配的字符集.
          */
         private final char[] chars;
 
-        /**
-         * Constructor that creates a matcher from a character array.
-         *
-         * @param chars the characters to match, must not be null
-         */
         CharSetMatcher(final char[] chars) {
             super();
             this.chars = chars.clone();
@@ -296,13 +255,13 @@ public abstract class StrMatcher {
         }
 
         /**
-         * Returns whether or not the given character matches.
+         * 返回给定字符是否匹配。
          *
-         * @param buffer      the text content to match against, do not change
-         * @param pos         the starting position for the match, valid for buffer
-         * @param bufferStart the first active index in the buffer, valid for buffer
-         * @param bufferEnd   the end index of the active buffer, valid for buffer
-         * @return the number of matching characters, zero for no match
+         * @param buffer      要匹配的文本内容，不要更改
+         * @param pos         匹配的起始位置，对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
+         * @return 匹配字符的数量，如果没有匹配，则返回0
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
@@ -311,32 +270,28 @@ public abstract class StrMatcher {
     }
 
     /**
-     * Class used to define a character for matching purposes.
+     * 用于定义用于匹配目的的字符.
      */
     static final class CharMatcher extends StrMatcher {
+
         /**
-         * The character to match.
+         * 要匹配的字符集.
          */
         private final char ch;
 
-        /**
-         * Constructor that creates a matcher that matches a single character.
-         *
-         * @param ch the character to match
-         */
         CharMatcher(final char ch) {
             super();
             this.ch = ch;
         }
 
         /**
-         * Returns whether or not the given character matches.
+         * 返回给定字符是否匹配。
          *
-         * @param buffer      the text content to match against, do not change
-         * @param pos         the starting position for the match, valid for buffer
-         * @param bufferStart the first active index in the buffer, valid for buffer
-         * @param bufferEnd   the end index of the active buffer, valid for buffer
-         * @return the number of matching characters, zero for no match
+         * @param buffer      要匹配的文本内容，不要更改
+         * @param pos         匹配的起始位置，对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
+         * @return 匹配字符的数量，如果没有匹配，则返回0
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
@@ -345,32 +300,28 @@ public abstract class StrMatcher {
     }
 
     /**
-     * Class used to define a set of characters for matching purposes.
+     * 用于定义用于匹配目的的一组字符.
      */
     static final class StringMatcher extends StrMatcher {
+
         /**
-         * The string to match, as a character array.
+         * 要匹配的字符集.
          */
         private final char[] chars;
 
-        /**
-         * Constructor that creates a matcher from a String.
-         *
-         * @param str the string to match, must not be null
-         */
         StringMatcher(final String str) {
             super();
             chars = str.toCharArray();
         }
 
         /**
-         * Returns whether or not the given text matches the stored string.
+         * 返回给定文本是否与存储的字符串匹配。
          *
-         * @param buffer      the text content to match against, do not change
-         * @param pos         the starting position for the match, valid for buffer
-         * @param bufferStart the first active index in the buffer, valid for buffer
-         * @param bufferEnd   the end index of the active buffer, valid for buffer
-         * @return the number of matching characters, zero for no match
+         * @param buffer      要匹配的文本内容，不要更改
+         * @param pos         匹配的起始位置，对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
+         * @return 匹配字符的数量，如果没有匹配，则返回0
          */
         @Override
         public int isMatch(final char[] buffer, int pos, final int bufferStart, final int bufferEnd) {
@@ -394,25 +345,22 @@ public abstract class StrMatcher {
     }
 
     /**
-     * Class used to match no characters.
+     * 用于不匹配任何字符.
      */
     static final class NoMatcher extends StrMatcher {
 
-        /**
-         * Constructs a new instance of <code>NoMatcher</code>.
-         */
         NoMatcher() {
             super();
         }
 
         /**
-         * Always returns <code>false</code>.
+         * 总是返回false。
          *
-         * @param buffer      the text content to match against, do not change
-         * @param pos         the starting position for the match, valid for buffer
-         * @param bufferStart the first active index in the buffer, valid for buffer
-         * @param bufferEnd   the end index of the active buffer, valid for buffer
-         * @return the number of matching characters, zero for no match
+         * @param buffer      要匹配的文本内容，不要更改
+         * @param pos         匹配的起始位置，对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
+         * @return 匹配字符的数量，如果没有匹配，则返回0
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
@@ -421,25 +369,22 @@ public abstract class StrMatcher {
     }
 
     /**
-     * Class used to match whitespace as per trim().
+     * 用于根据trim()匹配空格.
      */
     static final class TrimMatcher extends StrMatcher {
 
-        /**
-         * Constructs a new instance of <code>TrimMatcher</code>.
-         */
         TrimMatcher() {
             super();
         }
 
         /**
-         * Returns whether or not the given character matches.
+         * 返回给定字符是否匹配。
          *
-         * @param buffer      the text content to match against, do not change
-         * @param pos         the starting position for the match, valid for buffer
-         * @param bufferStart the first active index in the buffer, valid for buffer
-         * @param bufferEnd   the end index of the active buffer, valid for buffer
-         * @return the number of matching characters, zero for no match
+         * @param buffer      要匹配的文本内容，不要更改
+         * @param pos         匹配的起始位置，对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
+         * @return 匹配字符的数量，如果没有匹配，则返回0
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {

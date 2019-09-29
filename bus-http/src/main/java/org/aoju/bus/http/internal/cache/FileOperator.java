@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.cache;
 
-import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.segment.Buffer;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -38,7 +38,7 @@ import java.nio.channels.FileChannel;
  * </ul>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 final class FileOperator {

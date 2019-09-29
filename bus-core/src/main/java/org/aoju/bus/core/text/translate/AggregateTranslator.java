@@ -29,25 +29,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Executes a sequence of translators one after the other. Execution ends whenever
- * the first translator consumes codepoints from the input.
+ * 执行一个接一个的翻译程序序列。执行结束时
+ * 第一个转换器使用输入中的代码点.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class AggregateTranslator extends CharSequenceTranslator {
 
-    /**
-     * Translator list.
-     */
     private final List<CharSequenceTranslator> translators = new ArrayList<>();
 
-    /**
-     * Specify the translators to be used at creation time.
-     *
-     * @param translators CharSequenceTranslator array to aggregate
-     */
     public AggregateTranslator(final CharSequenceTranslator... translators) {
         if (translators != null) {
             for (final CharSequenceTranslator translator : translators) {
@@ -58,11 +50,6 @@ public class AggregateTranslator extends CharSequenceTranslator {
         }
     }
 
-    /**
-     * The first translator to consume codepoints from the input is the 'winner'.
-     * Execution stops with the number of consumed codepoints being returned.
-     * {@inheritDoc}
-     */
     @Override
     public int translate(final CharSequence input, final int index, final Writer out) throws IOException {
         for (final CharSequenceTranslator translator : translators) {

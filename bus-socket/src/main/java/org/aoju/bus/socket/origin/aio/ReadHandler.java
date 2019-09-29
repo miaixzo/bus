@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin.aio;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.nio.channels.CompletionHandler;
 
@@ -31,7 +31,7 @@ import java.nio.channels.CompletionHandler;
  * 数据读取完成回调，调用Session中相应方法处理消息，单例使用
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ReadHandler implements CompletionHandler<Integer, AioSession> {
@@ -43,7 +43,7 @@ public class ReadHandler implements CompletionHandler<Integer, AioSession> {
 
     @Override
     public void failed(Throwable exc, AioSession session) {
-        throw new CommonException(exc);
+        throw new InstrumentException(exc);
     }
 
 }

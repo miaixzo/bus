@@ -29,7 +29,7 @@ import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
 
 import java.lang.reflect.Array;
@@ -40,7 +40,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ArrayUtils {
@@ -3905,7 +3905,7 @@ public class ArrayUtils {
         } else if (isArray(array)) {
             return 0 == Array.getLength(array);
         }
-        throw new CommonException("Object to provide is not a Array !");
+        throw new InstrumentException("Object to provide is not a Array !");
     }
 
     /**
@@ -6491,7 +6491,7 @@ public class ArrayUtils {
      * @param array the array to check
      * @param <T>   the datatype of the array to check, it must implement {@code Comparable}
      * @return whether the array is sorted
-     * @since 3.4
+     * @since 3.5
      */
     public static <T extends Comparable<? super T>> boolean isSorted(final T[] array) {
         return isSorted(array, new Comparator<T>() {
@@ -6510,7 +6510,7 @@ public class ArrayUtils {
      * @param comparator the {@code Comparator} to compare over
      * @param <T>        the datatype of the array
      * @return whether the array is sorted
-     * @since 3.4
+     * @since 3.5
      */
     public static <T> boolean isSorted(final T[] array, final Comparator<T> comparator) {
         if (comparator == null) {
@@ -6539,7 +6539,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.4
+     * @since 3.5
      */
     public static boolean isSorted(final int[] array) {
         if (array == null || array.length < 2) {
@@ -6564,7 +6564,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.4
+     * @since 3.5
      */
     public static boolean isSorted(final long[] array) {
         if (array == null || array.length < 2) {
@@ -6589,7 +6589,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.4
+     * @since 3.5
      */
     public static boolean isSorted(final short[] array) {
         if (array == null || array.length < 2) {
@@ -6614,7 +6614,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.4
+     * @since 3.5
      */
     public static boolean isSorted(final double[] array) {
         if (array == null || array.length < 2) {
@@ -6639,7 +6639,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.4
+     * @since 3.5
      */
     public static boolean isSorted(final float[] array) {
         if (array == null || array.length < 2) {
@@ -6664,7 +6664,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.4
+     * @since 3.5
      */
     public static boolean isSorted(final byte[] array) {
         if (array == null || array.length < 2) {
@@ -6689,7 +6689,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.4
+     * @since 3.5
      */
     public static boolean isSorted(final char[] array) {
         if (array == null || array.length < 2) {
@@ -6715,7 +6715,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.4
+     * @since 3.5
      */
     public static boolean isSorted(final boolean[] array) {
         if (array == null || array.length < 2) {
@@ -7774,7 +7774,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7785,7 +7785,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7797,7 +7797,7 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return newArray(componentType, 0).getClass();
@@ -8487,7 +8487,7 @@ public class ArrayUtils {
      *
      * @param obj 对象，可以是对象数组或者基本类型数组
      * @return 包装类型数组或对象数组
-     * @throws CommonException 对象为非数组
+     * @throws InstrumentException 对象为非数组
      */
     public static Object[] wrap(Object obj) {
         if (null == obj) {
@@ -8516,11 +8516,11 @@ public class ArrayUtils {
                     case "double":
                         return wrap((double[]) obj);
                     default:
-                        throw new CommonException(e);
+                        throw new InstrumentException(e);
                 }
             }
         }
-        throw new CommonException("is not Array!");
+        throw new InstrumentException("is not Array!");
     }
 
     /**
@@ -8915,13 +8915,13 @@ public class ArrayUtils {
                     case "double":
                         return join((double[]) array, conjunction);
                     default:
-                        throw new CommonException("Unknown primitive type:" + componentTypeName);
+                        throw new InstrumentException("Unknown primitive type:" + componentTypeName);
                 }
             } else {
                 return join(array, conjunction);
             }
         }
-        throw new CommonException("is not a Array!");
+        throw new InstrumentException("is not a Array!");
     }
 
     /**
@@ -9345,7 +9345,7 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口，用于定义过滤规则
      * @return 过滤后的数组
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<T>(array.length);

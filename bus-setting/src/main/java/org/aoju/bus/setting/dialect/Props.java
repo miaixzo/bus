@@ -30,10 +30,10 @@ import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.UriResource;
-import org.aoju.bus.core.io.watch.SimpleWatcher;
-import org.aoju.bus.core.io.watch.WatchMonitor;
+import org.aoju.bus.core.io.watchers.SimpleWatcher;
+import org.aoju.bus.core.io.watchers.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
@@ -56,7 +56,7 @@ import java.util.Properties;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class Props extends Properties implements BasicTypeGetter<String>, OptBasicTypeGetter<String> {
@@ -264,7 +264,7 @@ public final class Props extends Properties implements BasicTypeGetter<String>, 
     public void load(Resource urlResource) {
         this.propertiesFileUrl = urlResource.getUrl();
         if (null == this.propertiesFileUrl) {
-            throw new CommonException("Can not find properties file: [{}]", urlResource);
+            throw new InstrumentException("Can not find properties file: [{}]", urlResource);
         }
         try (final BufferedReader reader = urlResource.getReader(charset)) {
             super.load(reader);
@@ -299,7 +299,7 @@ public final class Props extends Properties implements BasicTypeGetter<String>, 
                     }
                 }).start();
             } catch (Exception e) {
-                throw new CommonException("Setting auto load not support url: [{}]", this.propertiesFileUrl);
+                throw new InstrumentException("Setting auto load not support url: [{}]", this.propertiesFileUrl);
             }
         } else {
             IoUtils.close(this.watchMonitor);
@@ -500,15 +500,15 @@ public final class Props extends Properties implements BasicTypeGetter<String>, 
      * 持久化当前设置，会覆盖掉之前的设置
      *
      * @param absolutePath 设置文件的绝对路径
-     * @throws CommonException IO异常，可能为文件未找到
+     * @throws InstrumentException IO异常，可能为文件未找到
      */
-    public void store(String absolutePath) throws CommonException {
+    public void store(String absolutePath) throws InstrumentException {
         Writer writer = null;
         try {
             writer = FileUtils.getWriter(absolutePath, charset, false);
             super.store(writer, null);
         } catch (IOException e) {
-            throw new CommonException("Store properties to [{}] error!", absolutePath);
+            throw new InstrumentException("Store properties to [{}] error!", absolutePath);
         } finally {
             IoUtils.close(writer);
         }

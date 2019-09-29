@@ -35,7 +35,7 @@ import java.util.Map;
  * 转换器不会抛出转换异常，转换失败时会返回{@code null}
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public abstract class AbstractConverter<T> implements Converter<T> {
@@ -58,7 +58,7 @@ public abstract class AbstractConverter<T> implements Converter<T> {
                 // 除Map外，已经是目标类型，不需要转换（Map类型涉及参数类型，需要单独转换）
                 return targetType.cast(value);
             }
-            T result = null;
+            T result;
             try {
                 result = convertInternal(value);
             } catch (RuntimeException e) {
@@ -67,6 +67,22 @@ public abstract class AbstractConverter<T> implements Converter<T> {
             return ((null == result) ? defaultValue : result);
         } else {
             throw new IllegalArgumentException(StringUtils.format("Default value [{}] is not the instance of [{}]", defaultValue, targetType));
+        }
+    }
+
+    /**
+     * 不抛异常转换<br>
+     * 当转换失败时返回默认值
+     *
+     * @param value        被转换的值
+     * @param defaultValue 默认值
+     * @return 转换后的值
+     */
+    public T convertQuietly(Object value, T defaultValue) {
+        try {
+            return convert(value, defaultValue);
+        } catch (Exception e) {
+            return defaultValue;
         }
     }
 
@@ -106,7 +122,6 @@ public abstract class AbstractConverter<T> implements Converter<T> {
         } else if (ArrayUtils.isArray(value)) {
             return ArrayUtils.toString(value);
         } else if (CharUtils.isChar(value)) {
-            //对于ASCII字符使用缓存加速转换，减少空间创建
             return CharUtils.toString((char) value);
         }
         return value.toString();

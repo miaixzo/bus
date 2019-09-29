@@ -24,7 +24,7 @@
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.copier.SrcToDestCopier;
+import org.aoju.bus.core.lang.copier.Duplicate;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -46,10 +46,10 @@ import java.util.ArrayList;
  * 4、目录下的文件和目录复制到另一个目录
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
-public class FileCopier extends SrcToDestCopier<File, FileCopier> {
+public class FileCopier extends Duplicate<File, FileCopier> {
 
     /**
      * 是否覆盖目标文件

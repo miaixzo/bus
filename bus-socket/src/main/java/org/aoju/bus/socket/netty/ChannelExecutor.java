@@ -23,19 +23,19 @@
  */
 package org.aoju.bus.socket.netty;
 
-import org.aoju.bus.core.thread.ThreadFactoryBuilder;
+import org.aoju.bus.core.thread.ThreadBuilder;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ChannelExecutor {
 
-    private static ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new ThreadFactoryBuilder().setNamePrefix("channel-check-%d").build());
+    private static ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, new ThreadBuilder().setNamePrefix("channel-check-%d").build());
 
     private static void execute(Runnable command) {
         executor.scheduleAtFixedRate(command, 0, 60, TimeUnit.SECONDS);

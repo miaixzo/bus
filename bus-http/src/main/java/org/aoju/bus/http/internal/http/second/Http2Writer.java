@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferedSink;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.BufferedSink;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.List;
  * Writes HTTP/2 transport frames.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 final class Http2Writer implements Closeable {

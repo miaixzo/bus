@@ -30,7 +30,7 @@ import org.aoju.bus.validate.validators.Complex;
  * 这个校验器的结果永远为true
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class AlwaysStrategy implements Complex {

@@ -23,15 +23,14 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.convert.ConverterRegistry;
 import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.collection.IteratorEnumeration;
+import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.convert.ConverterRegistry;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Matcher;
-import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.Field;
@@ -47,7 +46,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class CollUtils {
@@ -727,7 +726,7 @@ public class CollUtils {
             try {
                 list = (Collection<T>) ReflectUtils.newInstance(collectionType);
             } catch (Exception e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
         return list;
@@ -998,7 +997,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, new Editor<T>() {
@@ -1029,7 +1028,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -1046,7 +1045,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -1617,7 +1616,7 @@ public class CollUtils {
         } else if (ArrayUtils.isArray(value)) {
             iter = new ArrayIterator<>(value);
         } else {
-            throw new CommonException("Unsupport value type " + value.getClass() + " !");
+            throw new InstrumentException("Unsupport value type " + value.getClass() + " !");
         }
 
         final ConverterRegistry convert = ConverterRegistry.getInstance();
@@ -2487,7 +2486,7 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public interface Hash<T> {
         /**

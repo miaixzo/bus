@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.ByteString;
 
 import java.nio.charset.Charset;
 
@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
  * Factory for HTTP authorization credentials.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class Credentials {

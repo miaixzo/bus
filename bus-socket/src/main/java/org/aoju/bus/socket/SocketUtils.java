@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -34,7 +34,7 @@ import java.nio.channels.ClosedChannelException;
  * Socket相关工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class SocketUtils {
@@ -53,7 +53,7 @@ public class SocketUtils {
             // Channel未打开或已关闭，返回null表示未连接
             return null;
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

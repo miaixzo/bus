@@ -24,7 +24,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -39,7 +39,7 @@ import java.util.*;
  * CSV行解析器，参考：FastCSV
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class CsvParser implements Closeable {
@@ -126,9 +126,9 @@ public final class CsvParser implements Closeable {
      * 读取下一行数据
      *
      * @return CsvRow
-     * @throws CommonException IO读取异常
+     * @throws InstrumentException IO读取异常
      */
-    public CsvRow nextRow() throws CommonException {
+    public CsvRow nextRow() throws InstrumentException {
         long startingLineNo;
         List<String> currentFields;
         int fieldCount;
@@ -154,7 +154,7 @@ public final class CsvParser implements Closeable {
                 if (firstLineFieldCount == -1) {
                     firstLineFieldCount = fieldCount;
                 } else if (fieldCount != firstLineFieldCount) {
-                    throw new CommonException(String.format("Line %d has %d fields, but first line has %d fields", lineNo, fieldCount, firstLineFieldCount));
+                    throw new InstrumentException(String.format("Line %d has %d fields, but first line has %d fields", lineNo, fieldCount, firstLineFieldCount));
                 }
             }
 
@@ -197,9 +197,9 @@ public final class CsvParser implements Closeable {
      * 读取一行数据
      *
      * @return 一行数据
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    private List<String> readLine() throws CommonException {
+    private List<String> readLine() throws InstrumentException {
         final List<String> currentFields = new ArrayList<>(maxFieldCount > 0 ? maxFieldCount : DEFAULT_ROW_CAPACITY);
 
         final TextUtils localCurrentField = currentField;
@@ -219,7 +219,7 @@ public final class CsvParser implements Closeable {
                 try {
                     bufLen = reader.read(localBuf);
                 } catch (IOException e) {
-                    throw new CommonException(e);
+                    throw new InstrumentException(e);
                 }
 
                 if (bufLen < 0) {

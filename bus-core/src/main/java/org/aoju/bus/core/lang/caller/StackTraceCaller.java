@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.core.lang.caller;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * 通过StackTrace方式获取调用者。此方式效率最低，不推荐使用
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class StackTraceCaller implements Caller {
@@ -46,7 +46,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new CommonException(className + " not found!");
+            throw new InstrumentException(className + " not found!");
         }
     }
 
@@ -60,7 +60,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new CommonException(className + "not found!");
+            throw new InstrumentException(className + "not found!");
         }
     }
 
@@ -74,7 +74,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new CommonException(className + " not found!");
+            throw new InstrumentException(className + " not found!");
         }
     }
 

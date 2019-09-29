@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.cache.support.serialize;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 
 import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class JdkSerializer extends AbstractSerializer {
@@ -45,7 +45,7 @@ public class JdkSerializer extends AbstractSerializer {
                 out = new ObjectOutputStream(outputStream);
                 out.writeObject(obj);
             } catch (IOException e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             } finally {
                 try {
                     if (out != null) {
@@ -69,7 +69,7 @@ public class JdkSerializer extends AbstractSerializer {
                 in = new ObjectInputStream(inputStream);
                 result = in.readObject();
             } catch (ClassCastException | IOException | ClassNotFoundException ce) {
-                throw new CommonException(ce);
+                throw new InstrumentException(ce);
             } finally {
                 try {
                     if (in != null) {

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * or response.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public interface Interceptor {

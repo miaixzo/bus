@@ -6,10 +6,10 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>3.6.1</version>
+    <version>3.6.2</version>
     <packaging>jar</packaging>
 
-    <name>bus-pager</name>
+    <name>${project.artifactId}</name>
     <description>Bus Pager</description>
     <url>https://github.com/aoju/bus</url>
 

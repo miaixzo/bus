@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.date.format;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
  * {@link java.text.SimpleDateFormat} 的线程安全版本，用于将 {@link Date} 格式化输出
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
@@ -500,7 +500,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                 rule.appendTo(buf, calendar);
             }
         } catch (final IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return buf;
     }

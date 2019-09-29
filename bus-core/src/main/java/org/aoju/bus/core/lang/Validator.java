@@ -24,7 +24,7 @@
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.consts.RegEx;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
 import java.net.MalformedURLException;
@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Validator {
@@ -68,11 +68,11 @@ public class Validator {
      * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
      * @param params           模板中变量替换后的值
      * @return 检查过后的值
-     * @throws CommonException 检查不满足条件抛出的异常
+     * @throws InstrumentException 检查不满足条件抛出的异常
      */
-    public static <T> T validateNotNull(T value, String errorMsgTemplate, Object... params) throws CommonException {
+    public static <T> T validateNotNull(T value, String errorMsgTemplate, Object... params) throws InstrumentException {
         if (isNull(value)) {
-            throw new CommonException(errorMsgTemplate, params);
+            throw new InstrumentException(errorMsgTemplate, params);
         }
         return value;
     }
@@ -105,11 +105,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateNotEmpty(Object value, String errorMsg) throws CommonException {
+    public static void validateNotEmpty(Object value, String errorMsg) throws InstrumentException {
         if (isEmpty(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -131,11 +131,11 @@ public class Validator {
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateEqual(Object t1, Object t2, String errorMsg) throws CommonException {
+    public static void validateEqual(Object t1, Object t2, String errorMsg) throws InstrumentException {
         if (false == equal(t1, t2)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -145,11 +145,11 @@ public class Validator {
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateNotEqual(Object t1, Object t2, String errorMsg) throws CommonException {
+    public static void validateNotEqual(Object t1, Object t2, String errorMsg) throws InstrumentException {
         if (equal(t1, t2)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -161,9 +161,9 @@ public class Validator {
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateNotEmptyAndEqual(Object t1, Object t2, String errorMsg) throws CommonException {
+    public static void validateNotEmptyAndEqual(Object t1, Object t2, String errorMsg) throws InstrumentException {
         validateNotEmpty(t1, errorMsg);
         validateEqual(t1, t2, errorMsg);
     }
@@ -176,9 +176,9 @@ public class Validator {
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateNotEmptyAndNotEqual(Object t1, Object t2, String errorMsg) throws CommonException {
+    public static void validateNotEmptyAndNotEqual(Object t1, Object t2, String errorMsg) throws InstrumentException {
         validateNotEmpty(t1, errorMsg);
         validateNotEqual(t1, t2, errorMsg);
     }
@@ -201,11 +201,11 @@ public class Validator {
      * @param regex    正则
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateMatchRegex(String regex, String value, String errorMsg) throws CommonException {
+    public static void validateMatchRegex(String regex, String value, String errorMsg) throws InstrumentException {
         if (false == isMactchRegex(regex, value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -235,11 +235,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateGeneral(String value, String errorMsg) throws CommonException {
+    public static void validateGeneral(String value, String errorMsg) throws InstrumentException {
         if (false == isGeneral(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -269,11 +269,11 @@ public class Validator {
      * @param min      最小长度，负数自动识别为0
      * @param max      最大长度，0或负数表示不限制最大长度
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateGeneral(String value, int min, int max, String errorMsg) throws CommonException {
+    public static void validateGeneral(String value, int min, int max, String errorMsg) throws InstrumentException {
         if (false == isGeneral(value, min, max)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -294,9 +294,9 @@ public class Validator {
      * @param value    值
      * @param min      最小长度，负数自动识别为0
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateGeneral(String value, int min, String errorMsg) throws CommonException {
+    public static void validateGeneral(String value, int min, String errorMsg) throws InstrumentException {
         validateGeneral(value, min, 0, errorMsg);
     }
 
@@ -321,12 +321,12 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      * @since 3.3.0
      */
-    public static void validateLetter(String value, String errorMsg) throws CommonException {
+    public static void validateLetter(String value, String errorMsg) throws InstrumentException {
         if (false == isLetter(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -351,12 +351,12 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      * @since 3.3.0
      */
-    public static void validateUpperCase(String value, String errorMsg) throws CommonException {
+    public static void validateUpperCase(String value, String errorMsg) throws InstrumentException {
         if (false == isUpperCase(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -381,12 +381,12 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      * @since 3.3.0
      */
-    public static void validateLowerCase(String value, String errorMsg) throws CommonException {
+    public static void validateLowerCase(String value, String errorMsg) throws InstrumentException {
         if (false == isLowerCase(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -405,11 +405,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateNumber(String value, String errorMsg) throws CommonException {
+    public static void validateNumber(String value, String errorMsg) throws InstrumentException {
         if (false == isNumber(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -428,11 +428,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateWord(String value, String errorMsg) throws CommonException {
+    public static void validateWord(String value, String errorMsg) throws InstrumentException {
         if (false == isWord(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -451,11 +451,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateMoney(String value, String errorMsg) throws CommonException {
+    public static void validateMoney(String value, String errorMsg) throws InstrumentException {
         if (false == isMoney(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -474,11 +474,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateZipCode(String value, String errorMsg) throws CommonException {
+    public static void validateZipCode(String value, String errorMsg) throws InstrumentException {
         if (false == isZipCode(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -497,11 +497,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateEmail(String value, String errorMsg) throws CommonException {
+    public static void validateEmail(String value, String errorMsg) throws InstrumentException {
         if (false == isEmail(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -520,11 +520,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateMobile(String value, String errorMsg) throws CommonException {
+    public static void validateMobile(String value, String errorMsg) throws InstrumentException {
         if (false == isMobile(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -545,11 +545,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateCitizenIdNumber(String value, String errorMsg) throws CommonException {
+    public static void validateCitizenIdNumber(String value, String errorMsg) throws InstrumentException {
         if (false == isCitizenId(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -618,11 +618,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateBirthday(String value, String errorMsg) throws CommonException {
+    public static void validateBirthday(String value, String errorMsg) throws InstrumentException {
         if (false == isBirthday(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -641,11 +641,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateIpv4(String value, String errorMsg) throws CommonException {
+    public static void validateIpv4(String value, String errorMsg) throws InstrumentException {
         if (false == isIpv4(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -664,11 +664,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateMac(String value, String errorMsg) throws CommonException {
+    public static void validateMac(String value, String errorMsg) throws InstrumentException {
         if (false == isMac(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -688,12 +688,12 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      * @since 3.1.9
      */
-    public static void validatePlateNumber(String value, String errorMsg) throws CommonException {
+    public static void validatePlateNumber(String value, String errorMsg) throws InstrumentException {
         if (false == isPlateNumber(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -717,11 +717,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateUrl(String value, String errorMsg) throws CommonException {
+    public static void validateUrl(String value, String errorMsg) throws InstrumentException {
         if (false == isUrl(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -740,11 +740,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateChinese(String value, String errorMsg) throws CommonException {
+    public static void validateChinese(String value, String errorMsg) throws InstrumentException {
         if (false == isChinese(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -763,11 +763,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateGeneralWithChinese(String value, String errorMsg) throws CommonException {
+    public static void validateGeneralWithChinese(String value, String errorMsg) throws InstrumentException {
         if (false == isGeneralWithChinese(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -788,11 +788,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateUUID(String value, String errorMsg) throws CommonException {
+    public static void validateUUID(String value, String errorMsg) throws InstrumentException {
         if (false == isUUID(value)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 
@@ -826,11 +826,11 @@ public class Validator {
      * @param min      最小值（包含）
      * @param max      最大值（包含）
      * @param errorMsg 验证错误的信息
-     * @throws CommonException 验证异常
+     * @throws InstrumentException 验证异常
      */
-    public static void validateBetween(Number value, Number min, Number max, String errorMsg) throws CommonException {
+    public static void validateBetween(Number value, Number min, Number max, String errorMsg) throws InstrumentException {
         if (false == isBetween(value, min, max)) {
-            throw new CommonException(errorMsg);
+            throw new InstrumentException(errorMsg);
         }
     }
 

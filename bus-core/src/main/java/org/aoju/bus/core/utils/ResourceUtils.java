@@ -26,7 +26,7 @@ package org.aoju.bus.core.utils;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.List;
  * ClassPath资源工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ResourceUtils {
@@ -73,10 +73,10 @@ public class ResourceUtils {
      *
      * @param resurce ClassPath资源
      * @return {@link InputStream}
-     * @throws CommonException 资源不存在异常
+     * @throws InstrumentException 资源不存在异常
      * @since 3.1.9
      */
-    public static InputStream getStream(String resurce) throws CommonException {
+    public static InputStream getStream(String resurce) throws InstrumentException {
         return new ClassPathResource(resurce).getStream();
     }
 
@@ -89,7 +89,7 @@ public class ResourceUtils {
     public static InputStream getStreamSafe(String resurce) {
         try {
             return new ClassPathResource(resurce).getStream();
-        } catch (CommonException e) {
+        } catch (InstrumentException e) {
             // ignore
         }
         return null;
@@ -119,7 +119,7 @@ public class ResourceUtils {
      * @param resource 资源（相对Classpath的路径）
      * @return 资源URL
      */
-    public static URL getResource(String resource) throws CommonException {
+    public static URL getResource(String resource) throws InstrumentException {
         return getResource(resource, null);
     }
 
@@ -140,7 +140,7 @@ public class ResourceUtils {
         try {
             resources = ClassUtils.getClassLoader().getResources(resource);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return CollUtils.newArrayList(resources);
     }
@@ -162,7 +162,7 @@ public class ResourceUtils {
         try {
             resources = ClassUtils.getClassLoader().getResources(resource);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return new IterUtils.EnumerationIter<>(resources);
     }
@@ -184,7 +184,7 @@ public class ResourceUtils {
      *
      * @param path 路径，可以是绝对路径，也可以是相对路径
      * @return {@link Resource} 资源对象
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static Resource getResourceObj(String path) {
         return FileUtils.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);

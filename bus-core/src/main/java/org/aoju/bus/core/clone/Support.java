@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.clone;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * <p>
@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.exception.CommonException;
  *
  * @param <T> 继承类的类型
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Support<T> implements Cloneable<T> {
@@ -42,7 +42,7 @@ public class Support<T> implements Cloneable<T> {
         try {
             return (T) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

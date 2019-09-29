@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.AsyncTimeout;
-import org.aoju.bus.core.io.Timeout;
+import org.aoju.bus.core.io.segment.AsyncTimeout;
+import org.aoju.bus.core.io.segment.Timeout;
 import org.aoju.bus.http.internal.NamedRunnable;
 import org.aoju.bus.http.internal.cache.CacheInterceptor;
 import org.aoju.bus.http.internal.connection.ConnectInterceptor;
@@ -47,7 +47,7 @@ import static org.aoju.bus.http.internal.platform.Platform.INFO;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 final class RealCall implements Call {

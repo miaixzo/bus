@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.platform;
 
-import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.http.HttpClient;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.internal.tls.BasicCertificateChainCleaner;
@@ -79,7 +79,7 @@ import java.util.logging.Logger;
  * <p>Supported on Android 6.0+ via {@code NetworkSecurityPolicy}.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Platform {

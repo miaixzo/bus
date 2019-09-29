@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.http;
 
-import org.aoju.bus.core.io.Sink;
+import org.aoju.bus.core.io.segment.Sink;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
 import org.aoju.bus.http.ResponseBody;
@@ -34,7 +34,7 @@ import java.io.IOException;
  * Encodes HTTP requests and decodes HTTP responses.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public interface HttpCodec {

@@ -24,7 +24,7 @@
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ import java.io.PushbackInputStream;
  * </code>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class BOMInputStream extends InputStream {
@@ -77,7 +77,7 @@ public class BOMInputStream extends InputStream {
             try {
                 init();
             } catch (IOException ex) {
-                throw new CommonException(ex);
+                throw new InstrumentException(ex);
             }
         }
         return charset;

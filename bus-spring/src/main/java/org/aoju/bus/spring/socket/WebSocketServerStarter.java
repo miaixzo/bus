@@ -24,7 +24,7 @@
 package org.aoju.bus.spring.socket;
 
 
-import org.aoju.bus.core.thread.ThreadFactoryBuilder;
+import org.aoju.bus.core.thread.ThreadBuilder;
 import org.aoju.bus.socket.netty.SocketService;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,14 +33,14 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class WebSocketServerStarter {
 
     private SocketProperties properties;
 
-    private ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNamePrefix("websocket-server-%d").build());
+    private ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new ThreadBuilder().setNamePrefix("websocket-server-%d").build());
 
 
     public WebSocketServerStarter(SocketProperties properties) {

@@ -42,14 +42,14 @@ import java.util.regex.Pattern;
  * 数据库表
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class EntityTable {
 
     public static final Pattern DELIMITER = Pattern.compile("^[`\\[\"]?(.*?)[`\\]\"]?$");
     //属性和列对应
-    protected Map<String, EntityColumn> propertyMap;
+    public Map<String, EntityColumn> propertyMap;
     private String name;
     private String catalog;
     private String schema;
@@ -84,7 +84,7 @@ public class EntityTable {
         if (entityClassColumns == null || entityClassColumns.size() == 0) {
             return null;
         }
-        List<ResultMapping> resultMappings = new ArrayList<ResultMapping>();
+        List<ResultMapping> resultMappings = new ArrayList<>();
         for (EntityColumn entityColumn : entityClassColumns) {
             String column = entityColumn.getColumn();
             //去掉可能存在的分隔符
@@ -116,7 +116,7 @@ public class EntityTable {
     }
 
     public void initPropertyMap() {
-        propertyMap = new HashMap<String, EntityColumn>(getEntityClassColumns().size());
+        propertyMap = new HashMap<>(getEntityClassColumns().size());
         for (EntityColumn column : getEntityClassColumns()) {
             propertyMap.put(column.getProperty(), column);
         }
@@ -186,7 +186,7 @@ public class EntityTable {
 
     public void setKeyColumns(String keyColumn) {
         if (this.keyColumns == null) {
-            this.keyColumns = new ArrayList<String>();
+            this.keyColumns = new ArrayList<>();
             this.keyColumns.add(keyColumn);
         } else {
             this.keyColumns.add(keyColumn);
@@ -206,7 +206,7 @@ public class EntityTable {
 
     public void setKeyProperties(String keyProperty) {
         if (this.keyProperties == null) {
-            this.keyProperties = new ArrayList<String>();
+            this.keyProperties = new ArrayList<>();
             this.keyProperties.add(keyProperty);
         } else {
             this.keyProperties.add(keyProperty);

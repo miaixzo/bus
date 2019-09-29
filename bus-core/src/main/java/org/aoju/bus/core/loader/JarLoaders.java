@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.loader;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
 import java.io.File;
@@ -39,7 +39,7 @@ import java.util.List;
  * 外部Jar的类加载器
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class JarLoaders extends URLClassLoader {
@@ -91,9 +91,9 @@ public class JarLoaders extends URLClassLoader {
      *
      * @param loader  {@link URLClassLoader}
      * @param jarFile 被加载的jar
-     * @throws CommonException IO异常包装和执行异常
+     * @throws InstrumentException IO异常包装和执行异常
      */
-    public static void loadJar(URLClassLoader loader, File jarFile) throws CommonException {
+    public static void loadJar(URLClassLoader loader, File jarFile) throws InstrumentException {
         try {
             final Method method = ClassUtils.getDeclaredMethod(URLClassLoader.class, "addURL", URL.class);
             if (null != method) {
@@ -104,7 +104,7 @@ public class JarLoaders extends URLClassLoader {
                 }
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -163,7 +163,7 @@ public class JarLoaders extends URLClassLoader {
                 super.addURL(jar.toURI().toURL());
             }
         } catch (MalformedURLException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return this;
     }

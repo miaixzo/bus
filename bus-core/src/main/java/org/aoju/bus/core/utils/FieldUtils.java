@@ -36,7 +36,7 @@ import java.util.List;
  * 反射处理{@link Field} 的实用程序
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class FieldUtils {
@@ -207,7 +207,7 @@ public class FieldUtils {
      * @param annotationCls the {@link Annotation} that must be present on a field to be matched
      * @return an array of Fields (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.4
+     * @since 3.5
      */
     public static Field[] getFieldsWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         final List<Field> annotatedFieldsList = getFieldsListWithAnnotation(cls, annotationCls);
@@ -221,7 +221,7 @@ public class FieldUtils {
      * @param annotationCls the {@link Annotation} that must be present on a field to be matched
      * @return a list of Fields (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.4
+     * @since 3.5
      */
     public static List<Field> getFieldsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         Assert.isTrue(annotationCls != null, "The annotation class must not be null");

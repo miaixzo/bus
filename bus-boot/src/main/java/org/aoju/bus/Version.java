@@ -31,16 +31,11 @@ import org.aoju.bus.core.consts.Symbol;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Version {
 
-    /**
-     * 版本号
-     */
-
-    private String version;
     /**
      * 是否完整模式，默认使用完整模式
      */
@@ -91,7 +86,7 @@ public class Version {
      * @return 阶段号
      */
     public static String stage() {
-        return "0";
+        return "2";
     }
 
     /**
@@ -104,33 +99,13 @@ public class Version {
     }
 
     /**
-     * 私有实例化构造方法
-     */
-    private Version() {
-    }
-
-    private Version(String version) {
-        this.version = version;
-    }
-
-    /**
      * 不完整模式
      *
      * @return {Version}
      */
-    public Version incomplete() {
+    public Version inComplete() {
         this.complete = false;
         return this;
-    }
-
-    /**
-     * 构造器
-     *
-     * @param version 版本
-     * @return {Version}
-     */
-    public static Version of(String version) {
-        return new Version(version);
     }
 
     /**
@@ -206,7 +181,7 @@ public class Version {
      * @return {int}
      */
     private int compare(String version) {
-        return Version.compare(this.version, version, complete);
+        return compare(get(), version, complete);
     }
 
     /**
@@ -252,6 +227,5 @@ public class Version {
 
         return 0;
     }
-
 
 }

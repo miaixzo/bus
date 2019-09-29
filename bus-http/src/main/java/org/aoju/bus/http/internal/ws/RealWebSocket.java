@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http.internal.ws;
 
-import org.aoju.bus.core.io.BufferedSink;
-import org.aoju.bus.core.io.BufferedSource;
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
@@ -64,7 +64,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      * shutdown. If the server doesn't respond the websocket will be canceled.
      */
     private static final long CANCEL_AFTER_CLOSE_MILLIS = 60 * 1000;
-    final WebSocketListener listener;
+    final SocketListener listener;
     /**
      * The application's original request unadulterated by web socket headers.
      */
@@ -159,7 +159,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      */
     private boolean awaitingPong;
 
-    public RealWebSocket(Request request, WebSocketListener listener, Random random,
+    public RealWebSocket(Request request, SocketListener listener, Random random,
                          long pingIntervalMillis) {
         if (!"GET".equals(request.method())) {
             throw new IllegalArgumentException("Request must be GET: " + request.method());

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.extra.mail;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -42,7 +42,7 @@ import java.util.Date;
  * 邮件发送客户端
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Mail {
@@ -249,13 +249,13 @@ public class Mail {
      * 发送
      *
      * @return this
-     * @throws CommonException 邮件发送异常
+     * @throws InstrumentException 邮件发送异常
      */
-    public Mail send() throws CommonException {
+    public Mail send() throws InstrumentException {
         try {
             return doSend();
         } catch (MessagingException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

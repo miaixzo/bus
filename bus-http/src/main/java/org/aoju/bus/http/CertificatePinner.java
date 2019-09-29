@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.tls.CertificateChainCleaner;
 
@@ -125,7 +125,7 @@ import java.util.*;
  * is not accepted by {@link javax.net.ssl.TrustManager}.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class CertificatePinner {

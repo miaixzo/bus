@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin.nio;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.Closeable;
@@ -37,7 +37,7 @@ import java.util.Iterator;
  * 基于NIO的Socket服务端实现
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public abstract class NioServer implements Closeable {
@@ -76,7 +76,7 @@ public abstract class NioServer implements Closeable {
             // 服务器套接字注册到Selector中 并指定Selector监控连接事件
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
 
         return this;
@@ -89,7 +89,7 @@ public abstract class NioServer implements Closeable {
         try {
             doListen();
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -124,7 +124,7 @@ public abstract class NioServer implements Closeable {
                 // 获取连接到此服务器的客户端通道
                 socketChannel = server.accept();
             } catch (IOException e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
 
             // SocketChannel通道的可读事件注册到Selector中
@@ -188,7 +188,7 @@ public abstract class NioServer implements Closeable {
             // 注册通道
             channel.register(selector, ops.getValue());
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

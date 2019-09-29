@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.ByteString;
 
 /**
  * A non-blocking interface to a web socket. Use the {@linkplain WebSocket.Factory factory} to
@@ -59,7 +59,7 @@ import org.aoju.bus.core.io.ByteString;
  * its incoming messages.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public interface WebSocket {
@@ -78,7 +78,7 @@ public interface WebSocket {
 
     interface Factory {
 
-        WebSocket newWebSocket(Request request, WebSocketListener listener);
+        WebSocket newWebSocket(Request request, SocketListener listener);
 
     }
 

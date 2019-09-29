@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.consts;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型（扩展名）
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class FileType {
@@ -798,9 +798,9 @@ public final class FileType {
      *
      * @param in {@link InputStream}
      * @return 类型，文件的扩展名，未找到为<code>null</code>
-     * @throws CommonException 读取流引起的异常
+     * @throws InstrumentException 读取流引起的异常
      */
-    public static String getType(InputStream in) throws CommonException {
+    public static String getType(InputStream in) throws InstrumentException {
         return getType(IoUtils.readHex28Upper(in));
     }
 
@@ -809,9 +809,9 @@ public final class FileType {
      *
      * @param file 文件 {@link File}
      * @return 类型，文件的扩展名，未找到为<code>null</code>
-     * @throws CommonException 读取文件引起的异常
+     * @throws InstrumentException 读取文件引起的异常
      */
-    public static String getType(File file) throws CommonException {
+    public static String getType(File file) throws InstrumentException {
         FileInputStream in = null;
         try {
             in = IoUtils.toStream(file);
@@ -826,9 +826,9 @@ public final class FileType {
      *
      * @param path 路径，绝对路径或相对ClassPath的路径
      * @return 类型
-     * @throws CommonException 读取文件引起的异常
+     * @throws InstrumentException 读取文件引起的异常
      */
-    public static String getTypeByPath(String path) throws CommonException {
+    public static String getTypeByPath(String path) throws InstrumentException {
         return getType(FileUtils.file(path));
     }
 

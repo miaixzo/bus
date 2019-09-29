@@ -13,7 +13,7 @@ import java.io.IOException;
  * 剪贴板工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ClipboardUtils {
@@ -135,7 +135,6 @@ public class ClipboardUtils {
      *
      * @param listener 监听处理接口
      * @see ClipboardMonitor#listen(boolean)
-
      */
     public static void listen(ClipboardListener listener) {
         listen(listener, true);
@@ -147,7 +146,6 @@ public class ClipboardUtils {
      * @param listener 监听处理接口
      * @param sync     是否同步阻塞
      * @see ClipboardMonitor#listen(boolean)
-
      */
     public static void listen(ClipboardListener listener, boolean sync) {
         listen(ClipboardMonitor.DEFAULT_TRY_COUNT, ClipboardMonitor.DEFAULT_DELAY, listener, sync);
@@ -161,13 +159,12 @@ public class ClipboardUtils {
      * @param listener 监听处理接口
      * @param sync     是否同步阻塞
      * @see ClipboardMonitor#listen(boolean)
-
      */
     public static void listen(int tryCount, long delay, ClipboardListener listener, boolean sync) {
-        ClipboardMonitor.INSTANCE//
-                .setTryCount(tryCount)//
-                .setDelay(delay)//
-                .addListener(listener)//
+        ClipboardMonitor.INSTANCE
+                .setTryCount(tryCount)
+                .setDelay(delay)
+                .addListener(listener)
                 .listen(sync);
     }
 

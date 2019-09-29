@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron.pattern;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.cron.pattern.matcher.AlwaysTrueValueMatcher;
@@ -90,7 +90,7 @@ import java.util.*;
  * </ul>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class CronPattern {
@@ -262,7 +262,7 @@ public class CronPattern {
         if (parts.length == 6 || parts.length == 7) {
             offset = 1;
         } else if (parts.length != 5) {
-            throw new CommonException("RegEx [{}] is invalid, it must be 5-7 parts!", pattern);
+            throw new InstrumentException("RegEx [{}] is invalid, it must be 5-7 parts!", pattern);
         }
 
         // 秒
@@ -270,7 +270,7 @@ public class CronPattern {
             try {
                 this.secondMatchers.add(ValueMatcherBuilder.build(parts[0], SECOND_VALUE_PARSER));
             } catch (Exception e) {
-                throw new CommonException("Invalid pattern [{}], parsing 'second' field error!", pattern);
+                throw new InstrumentException("Invalid pattern [{}], parsing 'second' field error!", pattern);
             }
         } else {// 不支持秒的表达式，则第一位按照表达式生成时间的秒数赋值，表示整分匹配
             this.secondMatchers.add(ValueMatcherBuilder.build(String.valueOf(DateUtils.date().second()), SECOND_VALUE_PARSER));
@@ -279,38 +279,38 @@ public class CronPattern {
         try {
             this.minuteMatchers.add(ValueMatcherBuilder.build(parts[0 + offset], MINUTE_VALUE_PARSER));
         } catch (Exception e) {
-            throw new CommonException("Invalid pattern [{}], parsing 'minute' field error!", pattern);
+            throw new InstrumentException("Invalid pattern [{}], parsing 'minute' field error!", pattern);
         }
         // 小时
         try {
             this.hourMatchers.add(ValueMatcherBuilder.build(parts[1 + offset], HOUR_VALUE_PARSER));
         } catch (Exception e) {
-            throw new CommonException("Invalid pattern [{}], parsing 'hour' field error!", pattern);
+            throw new InstrumentException("Invalid pattern [{}], parsing 'hour' field error!", pattern);
         }
         // 每月第几天
         try {
             this.dayOfMonthMatchers.add(ValueMatcherBuilder.build(parts[2 + offset], DAY_OF_MONTH_VALUE_PARSER));
         } catch (Exception e) {
-            throw new CommonException("Invalid pattern [{}], parsing 'day of month' field error!", pattern);
+            throw new InstrumentException("Invalid pattern [{}], parsing 'day of month' field error!", pattern);
         }
         // 月
         try {
             this.monthMatchers.add(ValueMatcherBuilder.build(parts[3 + offset], MONTH_VALUE_PARSER));
         } catch (Exception e) {
-            throw new CommonException("Invalid pattern [{}], parsing 'month' field error!", pattern);
+            throw new InstrumentException("Invalid pattern [{}], parsing 'month' field error!", pattern);
         }
         // 星期几
         try {
             this.dayOfWeekMatchers.add(ValueMatcherBuilder.build(parts[4 + offset], DAY_OF_WEEK_VALUE_PARSER));
         } catch (Exception e) {
-            throw new CommonException("Invalid pattern [{}], parsing 'day of week' field error!", pattern);
+            throw new InstrumentException("Invalid pattern [{}], parsing 'day of week' field error!", pattern);
         }
         // 年
         if (parts.length == 7) {// 支持年的表达式
             try {
                 this.yearMatchers.add(ValueMatcherBuilder.build(parts[6], YEAR_VALUE_PARSER));
             } catch (Exception e) {
-                throw new CommonException("Invalid pattern [{}], parsing 'year' field error!", pattern);
+                throw new InstrumentException("Invalid pattern [{}], parsing 'year' field error!", pattern);
             }
         } else {// 不支持年的表达式，全部匹配
             this.secondMatchers.add(new AlwaysTrueValueMatcher());

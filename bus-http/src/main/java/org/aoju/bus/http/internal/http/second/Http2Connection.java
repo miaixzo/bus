@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferedSink;
-import org.aoju.bus.core.io.BufferedSource;
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Headers;
@@ -54,7 +54,7 @@ import java.util.concurrent.*;
  * that caller.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class Http2Connection implements Closeable {

@@ -69,7 +69,7 @@ import java.util.WeakHashMap;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public abstract class ToStringStyle implements Serializable {
@@ -134,7 +134,7 @@ public abstract class ToStringStyle implements Serializable {
      * [name=John Doe,age=33,smoker=false]
      * </pre>
      *
-     * @since 3.4
+     * @since 3.5
      */
     public static final ToStringStyle NO_CLASS_NAME_STYLE = new NoClassNameToStringStyle();
     /**
@@ -152,7 +152,7 @@ public abstract class ToStringStyle implements Serializable {
      * when calling {@code toString()} on them.
      *
      * @see <a href="http://json.org">json.org</a>
-     * @since 3.4
+     * @since 3.5
      */
     public static final ToStringStyle JSON_STYLE = new JsonToStringStyle();
     /**
@@ -2257,7 +2257,7 @@ public abstract class ToStringStyle implements Serializable {
      * </p>
      *
      * @see <a href="http://json.org">json.org</a>
-     * @since 3.4
+     * @since 3.5
      */
     private static final class JsonToStringStyle extends ToStringStyle {
 

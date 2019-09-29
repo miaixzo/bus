@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.internal.cache;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.ByteString;
-import org.aoju.bus.core.io.Source;
-import org.aoju.bus.core.io.Timeout;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.segment.Timeout;
 import org.aoju.bus.http.internal.Internal;
 
 import java.io.File;
@@ -46,7 +46,7 @@ import java.io.RandomAccessFile;
  * save a small amount of file I/O and data copying.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 final class Relay {

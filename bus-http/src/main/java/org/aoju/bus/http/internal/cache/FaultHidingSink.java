@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http.internal.cache;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.ForwardingSink;
-import org.aoju.bus.core.io.Sink;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.ForwardingSink;
+import org.aoju.bus.core.io.segment.Sink;
 
 import java.io.IOException;
 
@@ -33,7 +33,7 @@ import java.io.IOException;
  * A sink that never throws IOExceptions, even if the underlying sink does.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 class FaultHidingSink extends ForwardingSink {

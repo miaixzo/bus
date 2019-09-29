@@ -45,7 +45,7 @@ import java.util.Set;
  * 多数据源支持
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class MultiDataSource extends AbstractRoutingDataSource {

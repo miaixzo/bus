@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.Timeout;
+import org.aoju.bus.core.io.segment.Timeout;
 
 import java.io.IOException;
 
@@ -32,7 +32,7 @@ import java.io.IOException;
  * represents a single request/response pair (stream), it cannot be executed twice.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public interface Call extends Cloneable {

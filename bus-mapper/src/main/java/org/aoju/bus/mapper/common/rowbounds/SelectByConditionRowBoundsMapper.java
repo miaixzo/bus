@@ -33,7 +33,7 @@ import java.util.List;
  * 通用Mapper接口,Condition查询
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public interface SelectByConditionRowBoundsMapper<T> {

@@ -26,7 +26,7 @@ package org.aoju.bus.cron;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.cron.pattern.CronPattern;
 import org.aoju.bus.cron.task.Task;
@@ -42,7 +42,7 @@ import java.util.List;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class CronUtils {
@@ -75,7 +75,7 @@ public final class CronUtils {
     public static void setCronSetting(String cronSettingPath) {
         try {
             crontabSetting = new Setting(cronSettingPath, Charset.UTF_8, false);
-        } catch (CommonException e) {
+        } catch (InstrumentException e) {
             // ignore setting file parse error and no config error
         }
     }
@@ -180,7 +180,7 @@ public final class CronUtils {
             setCronSetting(CRONTAB_CONFIG_PATH);
         }
         if (scheduler.isStarted()) {
-            throw new CommonException("Scheduler has been started, please stop it first!");
+            throw new InstrumentException("Scheduler has been started, please stop it first!");
         }
 
         schedule(crontabSetting);

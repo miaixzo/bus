@@ -25,7 +25,7 @@ package org.aoju.bus.setting;
 
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.resource.UriResource;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.PatternUtils;
@@ -46,7 +46,7 @@ import java.util.Set;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class SettingLoader {
@@ -193,7 +193,7 @@ public class SettingLoader {
             writer = FileUtils.getPrintWriter(absolutePath, charset, false);
             store(writer);
         } catch (IOException e) {
-            throw new CommonException("Store Setting to [{}] error!", absolutePath);
+            throw new InstrumentException("Store Setting to [{}] error!", absolutePath);
         } finally {
             IoUtils.close(writer);
         }

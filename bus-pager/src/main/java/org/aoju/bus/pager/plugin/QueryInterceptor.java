@@ -37,7 +37,7 @@ import java.util.Properties;
  * QueryInterceptor 规范
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 @Intercepts(

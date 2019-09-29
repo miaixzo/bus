@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.netty;
 
-import org.aoju.bus.core.thread.ThreadFactoryBuilder;
+import org.aoju.bus.core.thread.ThreadBuilder;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -31,12 +31,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class CommandExecutor {
 
-    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 8, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNamePrefix("websocket-command-%d").build());
+    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 8, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new ThreadBuilder().setNamePrefix("websocket-command-%d").build());
 
     public static void execute(Runnable command) {
         executor.execute(command);

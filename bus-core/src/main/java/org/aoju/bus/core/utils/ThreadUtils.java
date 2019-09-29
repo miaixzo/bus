@@ -24,9 +24,9 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.thread.ExecutorBuilder;
-import org.aoju.bus.core.thread.GlobalThreadPool;
+import org.aoju.bus.core.thread.GlobalThread;
 import org.aoju.bus.core.thread.NamedThreadFactory;
-import org.aoju.bus.core.thread.ThreadFactoryBuilder;
+import org.aoju.bus.core.thread.ThreadBuilder;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.*;
@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ThreadUtils {
@@ -108,7 +108,7 @@ public class ThreadUtils {
      * @param runnable 可运行对象
      */
     public static void execute(Runnable runnable) {
-        GlobalThreadPool.execute(runnable);
+        GlobalThread.execute(runnable);
     }
 
     /**
@@ -140,7 +140,7 @@ public class ThreadUtils {
      * @return Future
      */
     public static <T> Future<T> execAsync(Callable<T> task) {
-        return GlobalThreadPool.submit(task);
+        return GlobalThread.submit(task);
     }
 
     /**
@@ -152,7 +152,7 @@ public class ThreadUtils {
      * @since 3.1.9
      */
     public static Future<?> execAsync(Runnable runnable) {
-        return GlobalThreadPool.submit(runnable);
+        return GlobalThread.submit(runnable);
     }
 
     /**
@@ -163,7 +163,7 @@ public class ThreadUtils {
      * @return CompletionService
      */
     public static <T> CompletionService<T> newCompletionService() {
-        return new ExecutorCompletionService<T>(GlobalThreadPool.getExecutor());
+        return new ExecutorCompletionService<T>(GlobalThread.getExecutor());
     }
 
     /**
@@ -314,10 +314,10 @@ public class ThreadUtils {
      * 创建ThreadFactoryBuilder
      *
      * @return ThreadFactoryBuilder
-     * @see ThreadFactoryBuilder#build()
+     * @see ThreadBuilder#build()
      */
-    public static ThreadFactoryBuilder createThreadFactoryBuilder() {
-        return ThreadFactoryBuilder.create();
+    public static ThreadBuilder createThreadFactoryBuilder() {
+        return ThreadBuilder.create();
     }
 
     /**

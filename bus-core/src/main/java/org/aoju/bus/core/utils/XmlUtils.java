@@ -24,7 +24,6 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.RegEx;
-import org.aoju.bus.core.lang.exception.CommonException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,7 +54,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class XmlUtils {
@@ -66,10 +65,10 @@ public class XmlUtils {
      *
      * @param inputStream XML流
      * @return XML文档对象
-     * @throws CommonException IO异常或转换异常
+     * @throws InstrumentException IO异常或转换异常
      * @since 3.1.9
      */
-    public static Document readXML(InputStream inputStream) throws CommonException {
+    public static Document readXML(InputStream inputStream) throws InstrumentException {
         return readXML(new InputSource(inputStream));
     }
 
@@ -78,10 +77,10 @@ public class XmlUtils {
      *
      * @param reader XML流
      * @return XML文档对象
-     * @throws CommonException IO异常或转换异常
+     * @throws InstrumentException IO异常或转换异常
      * @since 3.1.9
      */
-    public static Document readXML(Reader reader) throws CommonException {
+    public static Document readXML(Reader reader) throws InstrumentException {
         return readXML(new InputSource(reader));
     }
 
@@ -98,7 +97,7 @@ public class XmlUtils {
         try {
             return builder.parse(source);
         } catch (Exception e) {
-            throw new CommonException("Parse XML from stream error!");
+            throw new InstrumentException("Parse XML from stream error!");
         }
     }
 
@@ -108,7 +107,7 @@ public class XmlUtils {
      * @param <T>    对象类型
      * @param source {@link InputSource}
      * @return 对象
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static <T> T readObjectFromXml(InputSource source) {
         Object result = null;
@@ -144,7 +143,7 @@ public class XmlUtils {
         try {
             builder = dbf.newDocumentBuilder();
         } catch (Exception e) {
-            throw new CommonException("Create xml document error!");
+            throw new InstrumentException("Create xml document error!");
         }
         return builder;
     }
@@ -274,7 +273,7 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -322,7 +321,7 @@ public class XmlUtils {
      * @param source     资源，可以是Docunent、Node节点等
      * @param returnType 返回类型，{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();
@@ -333,7 +332,7 @@ public class XmlUtils {
                 return xPath.evaluate(expression, source, returnType);
             }
         } catch (XPathExpressionException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

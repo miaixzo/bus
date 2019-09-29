@@ -24,8 +24,8 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.io.FastByteArrayOutputStream;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -36,7 +36,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ZipUtils {
@@ -53,9 +53,9 @@ public class ZipUtils {
      *
      * @param srcPath 源文件路径
      * @return 打包好的压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(String srcPath) throws CommonException {
+    public static File zip(String srcPath) throws InstrumentException {
         return zip(srcPath, DEFAULT_CHARSET);
     }
 
@@ -65,9 +65,9 @@ public class ZipUtils {
      * @param srcPath 源文件路径
      * @param charset 编码
      * @return 打包好的压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(String srcPath, Charset charset) throws CommonException {
+    public static File zip(String srcPath, Charset charset) throws InstrumentException {
         return zip(FileUtils.file(srcPath), charset);
     }
 
@@ -76,9 +76,9 @@ public class ZipUtils {
      *
      * @param srcFile 源文件或目录
      * @return 打包好的压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(File srcFile) throws CommonException {
+    public static File zip(File srcFile) throws InstrumentException {
         return zip(srcFile, DEFAULT_CHARSET);
     }
 
@@ -88,9 +88,9 @@ public class ZipUtils {
      * @param srcFile 源文件或目录
      * @param charset 编码
      * @return 打包好的压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(File srcFile, Charset charset) throws CommonException {
+    public static File zip(File srcFile, Charset charset) throws InstrumentException {
         final File zipFile = FileUtils.file(srcFile.getParentFile(), FileUtils.mainName(srcFile) + ".zip");
         zip(zipFile, charset, false, srcFile);
         return zipFile;
@@ -103,9 +103,9 @@ public class ZipUtils {
      * @param srcPath 要压缩的源文件路径。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      * @param zipPath 压缩文件保存的路径，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
      * @return 压缩好的Zip文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(String srcPath, String zipPath) throws CommonException {
+    public static File zip(String srcPath, String zipPath) throws InstrumentException {
         return zip(srcPath, zipPath, false);
     }
 
@@ -116,9 +116,9 @@ public class ZipUtils {
      * @param zipPath    压缩文件保存的路径，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
      * @param withSrcDir 是否包含被打包目录
      * @return 压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(String srcPath, String zipPath, boolean withSrcDir) throws CommonException {
+    public static File zip(String srcPath, String zipPath, boolean withSrcDir) throws InstrumentException {
         return zip(srcPath, zipPath, DEFAULT_CHARSET, withSrcDir);
     }
 
@@ -130,9 +130,9 @@ public class ZipUtils {
      * @param charset    编码
      * @param withSrcDir 是否包含被打包目录
      * @return 压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(String srcPath, String zipPath, Charset charset, boolean withSrcDir) throws CommonException {
+    public static File zip(String srcPath, String zipPath, Charset charset, boolean withSrcDir) throws InstrumentException {
         final File srcFile = FileUtils.file(srcPath);
         final File zipFile = FileUtils.file(zipPath);
         zip(zipFile, charset, withSrcDir, srcFile);
@@ -147,9 +147,9 @@ public class ZipUtils {
      * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
      * @param srcFiles   要压缩的源文件或目录。
      * @return 压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(File zipFile, boolean withSrcDir, File... srcFiles) throws CommonException {
+    public static File zip(File zipFile, boolean withSrcDir, File... srcFiles) throws InstrumentException {
         return zip(zipFile, DEFAULT_CHARSET, withSrcDir, srcFiles);
     }
 
@@ -161,9 +161,9 @@ public class ZipUtils {
      * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
      * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      * @return 压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File zip(File zipFile, Charset charset, boolean withSrcDir, File... srcFiles) throws CommonException {
+    public static File zip(File zipFile, Charset charset, boolean withSrcDir, File... srcFiles) throws InstrumentException {
         validateFiles(zipFile, srcFiles);
 
         try (ZipOutputStream out = getZipOutputStream(zipFile, charset)) {
@@ -183,7 +183,7 @@ public class ZipUtils {
                 out.flush();
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return zipFile;
     }
@@ -195,10 +195,10 @@ public class ZipUtils {
      * @param path    流数据在压缩文件中的路径或文件名
      * @param data    要压缩的数据
      * @return 压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      * @since 3.1.9
      */
-    public static File zip(File zipFile, String path, String data) throws CommonException {
+    public static File zip(File zipFile, String path, String data) throws InstrumentException {
         return zip(zipFile, path, data, DEFAULT_CHARSET);
     }
 
@@ -210,10 +210,10 @@ public class ZipUtils {
      * @param data    要压缩的数据
      * @param charset 编码
      * @return 压缩文件
-     * @throws CommonException IO异常
-     * @since 3.6.1
+     * @throws InstrumentException IO异常
+     * @since 3.6.2
      */
-    public static File zip(File zipFile, String path, String data, Charset charset) throws CommonException {
+    public static File zip(File zipFile, String path, String data, Charset charset) throws InstrumentException {
         return zip(zipFile, path, IoUtils.toStream(data, charset), charset);
     }
 
@@ -225,10 +225,10 @@ public class ZipUtils {
      * @param path    流数据在压缩文件中的路径或文件名
      * @param in      要压缩的源
      * @return 压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      * @since 3.1.9
      */
-    public static File zip(File zipFile, String path, InputStream in) throws CommonException {
+    public static File zip(File zipFile, String path, InputStream in) throws InstrumentException {
         return zip(zipFile, path, in, DEFAULT_CHARSET);
     }
 
@@ -240,10 +240,10 @@ public class ZipUtils {
      * @param in      要压缩的源
      * @param charset 编码
      * @return 压缩文件
-     * @throws CommonException IO异常
-     * @since 3.6.1
+     * @throws InstrumentException IO异常
+     * @since 3.6.2
      */
-    public static File zip(File zipFile, String path, InputStream in, Charset charset) throws CommonException {
+    public static File zip(File zipFile, String path, InputStream in, Charset charset) throws InstrumentException {
         return zip(zipFile, new String[]{path}, new InputStream[]{in}, charset);
     }
 
@@ -255,10 +255,10 @@ public class ZipUtils {
      * @param paths   流数据在压缩文件中的路径或文件名
      * @param ins     要压缩的源
      * @return 压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      * @since 3.1.9
      */
-    public static File zip(File zipFile, String[] paths, InputStream[] ins) throws CommonException {
+    public static File zip(File zipFile, String[] paths, InputStream[] ins) throws InstrumentException {
         return zip(zipFile, paths, ins, DEFAULT_CHARSET);
     }
 
@@ -271,10 +271,10 @@ public class ZipUtils {
      * @param ins     要压缩的源
      * @param charset 编码
      * @return 压缩文件
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      * @since 3.1.9
      */
-    public static File zip(File zipFile, String[] paths, InputStream[] ins, Charset charset) throws CommonException {
+    public static File zip(File zipFile, String[] paths, InputStream[] ins, Charset charset) throws InstrumentException {
         if (ArrayUtils.isEmpty(paths) || ArrayUtils.isEmpty(ins)) {
             throw new IllegalArgumentException("Paths or ins is empty !");
         }
@@ -299,9 +299,9 @@ public class ZipUtils {
      *
      * @param zipFilePath 压缩文件路径
      * @return 解压的目录
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File unzip(String zipFilePath) throws CommonException {
+    public static File unzip(String zipFilePath) throws InstrumentException {
         return unzip(zipFilePath, DEFAULT_CHARSET);
     }
 
@@ -311,10 +311,10 @@ public class ZipUtils {
      * @param zipFilePath 压缩文件路径
      * @param charset     编码
      * @return 解压的目录
-     * @throws CommonException IO异常
-     * @since 3.6.1
+     * @throws InstrumentException IO异常
+     * @since 3.6.2
      */
-    public static File unzip(String zipFilePath, Charset charset) throws CommonException {
+    public static File unzip(String zipFilePath, Charset charset) throws InstrumentException {
         return unzip(FileUtils.file(zipFilePath), charset);
     }
 
@@ -323,10 +323,10 @@ public class ZipUtils {
      *
      * @param zipFile 压缩文件
      * @return 解压的目录
-     * @throws CommonException IO异常
-     * @since 3.6.1
+     * @throws InstrumentException IO异常
+     * @since 3.6.2
      */
-    public static File unzip(File zipFile) throws CommonException {
+    public static File unzip(File zipFile) throws InstrumentException {
         return unzip(zipFile, DEFAULT_CHARSET);
     }
 
@@ -336,10 +336,10 @@ public class ZipUtils {
      * @param zipFile 压缩文件
      * @param charset 编码
      * @return 解压的目录
-     * @throws CommonException IO异常
-     * @since 3.6.1
+     * @throws InstrumentException IO异常
+     * @since 3.6.2
      */
-    public static File unzip(File zipFile, Charset charset) throws CommonException {
+    public static File unzip(File zipFile, Charset charset) throws InstrumentException {
         return unzip(zipFile, FileUtils.file(zipFile.getParentFile(), FileUtils.mainName(zipFile)), charset);
     }
 
@@ -349,9 +349,9 @@ public class ZipUtils {
      * @param zipFilePath 压缩文件的路径
      * @param outFileDir  解压到的目录
      * @return 解压的目录
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File unzip(String zipFilePath, String outFileDir) throws CommonException {
+    public static File unzip(String zipFilePath, String outFileDir) throws InstrumentException {
         return unzip(zipFilePath, outFileDir, DEFAULT_CHARSET);
     }
 
@@ -362,9 +362,9 @@ public class ZipUtils {
      * @param outFileDir  解压到的目录
      * @param charset     编码
      * @return 解压的目录
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File unzip(String zipFilePath, String outFileDir, Charset charset) throws CommonException {
+    public static File unzip(String zipFilePath, String outFileDir, Charset charset) throws InstrumentException {
         return unzip(FileUtils.file(zipFilePath), FileUtils.mkdir(outFileDir), charset);
     }
 
@@ -374,9 +374,9 @@ public class ZipUtils {
      * @param zipFile zip文件
      * @param outFile 解压到的目录
      * @return 解压的目录
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static File unzip(File zipFile, File outFile) throws CommonException {
+    public static File unzip(File zipFile, File outFile) throws InstrumentException {
         return unzip(zipFile, outFile, DEFAULT_CHARSET);
     }
 
@@ -387,10 +387,10 @@ public class ZipUtils {
      * @param outFile 解压到的目录
      * @param charset 编码
      * @return 解压的目录
-     * @throws CommonException IO异常
-     * @since 3.6.1
+     * @throws InstrumentException IO异常
+     * @since 3.6.2
      */
-    public static File unzip(File zipFile, File outFile, Charset charset) throws CommonException {
+    public static File unzip(File zipFile, File outFile, Charset charset) throws InstrumentException {
         charset = (null == charset) ? DEFAULT_CHARSET : charset;
 
         ZipFile zipFileObj = null;
@@ -411,7 +411,7 @@ public class ZipUtils {
                 }
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             IoUtils.close(zipFileObj);
         }
@@ -475,7 +475,7 @@ public class ZipUtils {
                 }
             }
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             IoUtils.close(zipFileObj);
         }
@@ -488,9 +488,9 @@ public class ZipUtils {
      * @param content 被压缩的字符串
      * @param charset 编码
      * @return 压缩后的字节流
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static byte[] gzip(String content, String charset) throws CommonException {
+    public static byte[] gzip(String content, String charset) throws InstrumentException {
         return gzip(StringUtils.bytes(content, charset));
     }
 
@@ -499,9 +499,9 @@ public class ZipUtils {
      *
      * @param buf 被压缩的字节流
      * @return 压缩后的字节流
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static byte[] gzip(byte[] buf) throws CommonException {
+    public static byte[] gzip(byte[] buf) throws InstrumentException {
         return gzip(new ByteArrayInputStream(buf), buf.length);
     }
 
@@ -510,9 +510,9 @@ public class ZipUtils {
      *
      * @param file 被压缩的文件
      * @return 压缩后的字节流
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static byte[] gzip(File file) throws CommonException {
+    public static byte[] gzip(File file) throws InstrumentException {
         BufferedInputStream in = null;
         try {
             in = FileUtils.getInputStream(file);
@@ -527,9 +527,9 @@ public class ZipUtils {
      *
      * @param in 被压缩的流
      * @return 压缩后的字节流
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static byte[] gzip(InputStream in) throws CommonException {
+    public static byte[] gzip(InputStream in) throws InstrumentException {
         return gzip(in, DEFAULT_BYTE_ARRAY_LENGTH);
     }
 
@@ -539,16 +539,16 @@ public class ZipUtils {
      * @param in     被压缩的流
      * @param length 预估长度
      * @return 压缩后的字节流
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static byte[] gzip(InputStream in, int length) throws CommonException {
+    public static byte[] gzip(InputStream in, int length) throws InstrumentException {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
         GZIPOutputStream gos = null;
         try {
             gos = new GZIPOutputStream(bos);
             IoUtils.copy(in, gos);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             IoUtils.close(gos);
         }
@@ -562,9 +562,9 @@ public class ZipUtils {
      * @param buf     压缩过的字节流
      * @param charset 编码
      * @return 解压后的字符串
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static String unGzip(byte[] buf, String charset) throws CommonException {
+    public static String unGzip(byte[] buf, String charset) throws InstrumentException {
         return StringUtils.str(unGzip(buf), charset);
     }
 
@@ -573,9 +573,9 @@ public class ZipUtils {
      *
      * @param buf buf
      * @return bytes
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static byte[] unGzip(byte[] buf) throws CommonException {
+    public static byte[] unGzip(byte[] buf) throws InstrumentException {
         return unGzip(new ByteArrayInputStream(buf), buf.length);
     }
 
@@ -584,9 +584,9 @@ public class ZipUtils {
      *
      * @param in Gzip数据
      * @return 解压后的数据
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static byte[] unGzip(InputStream in) throws CommonException {
+    public static byte[] unGzip(InputStream in) throws InstrumentException {
         return unGzip(in, DEFAULT_BYTE_ARRAY_LENGTH);
     }
 
@@ -596,17 +596,17 @@ public class ZipUtils {
      * @param in     Gzip数据
      * @param length 估算长度，如果无法确定请传入{@link #DEFAULT_BYTE_ARRAY_LENGTH}
      * @return 解压后的数据
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public static byte[] unGzip(InputStream in, int length) throws CommonException {
+    public static byte[] unGzip(InputStream in, int length) throws InstrumentException {
         GZIPInputStream gzi = null;
-        FastByteArrayOutputStream bos = null;
+        FastByteArray bos = null;
         try {
             gzi = (in instanceof GZIPInputStream) ? (GZIPInputStream) in : new GZIPInputStream(in);
-            bos = new FastByteArrayOutputStream(length);
+            bos = new FastByteArray(length);
             IoUtils.copy(gzi, bos);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             IoUtils.close(gzi);
         }
@@ -754,9 +754,9 @@ public class ZipUtils {
      * @param out        压缩文件存储对象
      * @param srcRootDir 被压缩的文件夹根目录
      * @param file       当前递归压缩的文件或目录对象
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    private static void zip(File file, String srcRootDir, ZipOutputStream out) throws CommonException {
+    private static void zip(File file, String srcRootDir, ZipOutputStream out) throws InstrumentException {
         if (file == null) {
             return;
         }
@@ -783,9 +783,9 @@ public class ZipUtils {
      * @param file 需要压缩的文件
      * @param path 在压缩文件中的路径
      * @param out  压缩文件存储对象
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    private static void addFile(File file, String path, ZipOutputStream out) throws CommonException {
+    private static void addFile(File file, String path, ZipOutputStream out) throws InstrumentException {
         BufferedInputStream in = null;
         try {
             in = FileUtils.getInputStream(file);
@@ -801,9 +801,9 @@ public class ZipUtils {
      * @param in   需要压缩的输入流
      * @param path 压缩的路径
      * @param out  压缩文件存储对象
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    private static void addFile(InputStream in, String path, ZipOutputStream out) throws CommonException {
+    private static void addFile(InputStream in, String path, ZipOutputStream out) throws InstrumentException {
         if (null == in) {
             return;
         }
@@ -811,7 +811,7 @@ public class ZipUtils {
             out.putNextEntry(new ZipEntry(path));
             IoUtils.copy(in, out);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             closeEntry(out);
         }
@@ -822,14 +822,14 @@ public class ZipUtils {
      *
      * @param path 压缩的路径
      * @param out  压缩文件存储对象
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    private static void addDir(String path, ZipOutputStream out) throws CommonException {
+    private static void addDir(String path, ZipOutputStream out) throws InstrumentException {
         path = StringUtils.addSuffixIfNot(path, Symbol.SLASH);
         try {
             out.putNextEntry(new ZipEntry(path));
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         } finally {
             closeEntry(out);
         }
@@ -841,9 +841,9 @@ public class ZipUtils {
      * @param zipFile  压缩后的产生的文件路径
      * @param srcFiles 被压缩的文件或目录
      */
-    private static void validateFiles(File zipFile, File... srcFiles) throws CommonException {
+    private static void validateFiles(File zipFile, File... srcFiles) throws InstrumentException {
         if (zipFile.isDirectory()) {
-            throw new CommonException("Zip file [{}] must not be a directory !", zipFile.getAbsoluteFile());
+            throw new InstrumentException("Zip file [{}] must not be a directory !", zipFile.getAbsoluteFile());
         }
 
         for (File srcFile : srcFiles) {
@@ -851,18 +851,18 @@ public class ZipUtils {
                 continue;
             }
             if (false == srcFile.exists()) {
-                throw new CommonException(StringUtils.format("File [{}] not exist!", srcFile.getAbsolutePath()));
+                throw new InstrumentException(StringUtils.format("File [{}] not exist!", srcFile.getAbsolutePath()));
             }
 
             try {
                 final File parentFile = zipFile.getCanonicalFile().getParentFile();
                 // 压缩文件不能位于被压缩的目录内
                 if (srcFile.isDirectory() && parentFile.getCanonicalPath().contains(srcFile.getCanonicalPath())) {
-                    throw new CommonException("Zip file path [{}] must not be the child directory of [{}] !", zipFile.getCanonicalPath(), srcFile.getCanonicalPath());
+                    throw new InstrumentException("Zip file path [{}] must not be the child directory of [{}] !", zipFile.getCanonicalPath(), srcFile.getCanonicalPath());
                 }
 
             } catch (IOException e) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
     }
@@ -913,7 +913,7 @@ public class ZipUtils {
         try {
             ios.finish();
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -930,7 +930,7 @@ public class ZipUtils {
         try {
             ios.finish();
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

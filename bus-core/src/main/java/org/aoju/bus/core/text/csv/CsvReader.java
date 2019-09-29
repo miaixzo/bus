@@ -24,7 +24,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 
@@ -41,7 +41,7 @@ import java.util.Objects;
  * CSV文件读取器，参考：FastCSV
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class CsvReader {
@@ -114,9 +114,9 @@ public final class CsvReader {
      *
      * @param file CSV文件
      * @return {@link CsvData}，包含数据列表和行信息
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public CsvData read(File file) throws CommonException {
+    public CsvData read(File file) throws InstrumentException {
         return read(file, org.aoju.bus.core.consts.Charset.UTF_8);
     }
 
@@ -126,9 +126,9 @@ public final class CsvReader {
      * @param file    CSV文件
      * @param charset 文件编码，默认系统编码
      * @return {@link CsvData}，包含数据列表和行信息
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public CsvData read(File file, Charset charset) throws CommonException {
+    public CsvData read(File file, Charset charset) throws InstrumentException {
         return read(Objects.requireNonNull(file.toPath(), "file must not be null"), charset);
     }
 
@@ -137,9 +137,9 @@ public final class CsvReader {
      *
      * @param path CSV文件
      * @return {@link CsvData}，包含数据列表和行信息
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public CsvData read(Path path) throws CommonException {
+    public CsvData read(Path path) throws InstrumentException {
         return read(path, org.aoju.bus.core.consts.Charset.UTF_8);
     }
 
@@ -149,14 +149,14 @@ public final class CsvReader {
      * @param path    CSV文件
      * @param charset 文件编码，默认系统编码
      * @return {@link CsvData}，包含数据列表和行信息
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public CsvData read(Path path, Charset charset) throws CommonException {
+    public CsvData read(Path path, Charset charset) throws InstrumentException {
         Assert.notNull(path, "path must not be null");
         try (Reader reader = FileUtils.getReader(path, charset)) {
             return read(reader);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -165,9 +165,9 @@ public final class CsvReader {
      *
      * @param reader Reader
      * @return {@link CsvData}，包含数据列表和行信息
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    public CsvData read(Reader reader) throws CommonException {
+    public CsvData read(Reader reader) throws InstrumentException {
         final CsvParser csvParser = parse(reader);
 
         final List<CsvRow> rows = new ArrayList<>();
@@ -185,9 +185,9 @@ public final class CsvReader {
      *
      * @param reader Reader
      * @return CsvParser
-     * @throws CommonException IO异常
+     * @throws InstrumentException IO异常
      */
-    private CsvParser parse(Reader reader) throws CommonException {
+    private CsvParser parse(Reader reader) throws InstrumentException {
         return new CsvParser(reader, config);
     }
 

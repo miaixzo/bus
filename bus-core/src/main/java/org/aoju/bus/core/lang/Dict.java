@@ -38,7 +38,7 @@ import java.util.*;
  * 字典对象，扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicTypeGetter<String> {
@@ -290,7 +290,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicTypeGett
      */
     @Override
     public String getStr(String attr) {
-        return Convert.toStr(get(attr), null);
+        return Convert.toString(get(attr), null);
     }
 
     /**

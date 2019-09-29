@@ -39,7 +39,7 @@ import java.nio.charset.Charset;
  * URL资源访问类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class UriResource implements Resource {

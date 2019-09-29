@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http.internal.ws;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferedSource;
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.ByteString;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * This class is not thread safe.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 final class WebSocketReader {

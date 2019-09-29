@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class Http2 {

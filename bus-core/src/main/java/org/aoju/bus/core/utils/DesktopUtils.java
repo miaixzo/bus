@@ -15,14 +15,13 @@ import java.net.URI;
  * 截屏,显示器相关
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class DesktopUtils {
 
-    public static Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-
     private static final Robot robot;
+    public static Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
     private static int delay;
 
     static {
@@ -65,7 +64,6 @@ public class DesktopUtils {
      * 当按键执行完后的等待时间，也可以用ThreadUtil.sleep方法代替
      *
      * @param delayMillis 等待毫秒数
-
      */
     public static void setDelay(int delayMillis) {
         delay = delayMillis;
@@ -76,7 +74,6 @@ public class DesktopUtils {
      *
      * @param x 移动到的x坐标
      * @param y 移动到的y坐标
-
      */
     public static void mouseMove(int x, int y) {
         robot.mouseMove(x, y);
@@ -85,7 +82,6 @@ public class DesktopUtils {
     /**
      * 模拟单击<br>
      * 鼠标单击包括鼠标左键的按下和释放
-
      */
     public static void click() {
         robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -96,7 +92,6 @@ public class DesktopUtils {
     /**
      * 模拟右键单击<br>
      * 鼠标单击包括鼠标右键的按下和释放
-
      */
     public static void rightClick() {
         robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -108,7 +103,6 @@ public class DesktopUtils {
      * 模拟鼠标滚轮滚动
      *
      * @param wheelAmt 滚动数，负数表示向前滚动，正数向后滚动
-
      */
     public static void mouseWheel(int wheelAmt) {
         robot.mouseWheel(wheelAmt);

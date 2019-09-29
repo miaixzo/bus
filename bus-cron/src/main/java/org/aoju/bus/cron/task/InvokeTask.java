@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron.task;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
  * 如果是静态方法直接执行，如果是对象方法，需要类有默认的构造方法。
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class InvokeTask implements Task {
@@ -56,7 +56,7 @@ public class InvokeTask implements Task {
             splitIndex = classNameWithMethodName.lastIndexOf('.');
         }
         if (splitIndex <= 0) {
-            throw new CommonException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
+            throw new InstrumentException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
         }
 
         //类
@@ -85,8 +85,8 @@ public class InvokeTask implements Task {
     public void execute() {
         try {
             ReflectUtils.invoke(this.obj, this.method, new Object[]{});
-        } catch (CommonException e) {
-            throw new CommonException(e.getCause());
+        } catch (InstrumentException e) {
+            throw new InstrumentException(e.getCause());
         }
     }
 

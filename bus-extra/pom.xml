@@ -6,10 +6,10 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-extra</artifactId>
-    <version>3.6.1</version>
+    <version>3.6.2</version>
     <packaging>jar</packaging>
 
-    <name>bus-extra</name>
+    <name>${project.artifactId}</name>
     <description>Bus Extra</description>
     <url>https://github.com/aoju/bus</url>
 

@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.BufferedSink;
-import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.ByteString;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.io.IOException;
  * </ul>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 class Huffman {

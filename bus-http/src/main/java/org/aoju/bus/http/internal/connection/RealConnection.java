@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http.internal.connection;
 
-import org.aoju.bus.core.io.BufferedSink;
-import org.aoju.bus.core.io.BufferedSource;
-import org.aoju.bus.core.io.Source;
+import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.internal.Internal;
@@ -59,7 +59,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {

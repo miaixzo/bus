@@ -30,10 +30,10 @@ import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.UriResource;
-import org.aoju.bus.core.io.watch.SimpleWatcher;
-import org.aoju.bus.core.io.watch.WatchMonitor;
+import org.aoju.bus.core.io.watchers.SimpleWatcher;
+import org.aoju.bus.core.io.watchers.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -59,7 +59,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Setting extends AbsSetting implements Map<String, String> {
@@ -209,7 +209,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
                     }
                 }).start();
             } catch (Exception e) {
-                throw new CommonException("Setting auto load not support url: [{}]", this.settingUrl);
+                throw new InstrumentException("Setting auto load not support url: [{}]", this.settingUrl);
             }
         } else {
             this.watchMonitor = null;
@@ -443,7 +443,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 被删除的值，如果值不存在，返回null
      */
     public String remove(String group, Object key) {
-        return this.groupedMap.remove(group, Convert.toStr(key));
+        return this.groupedMap.remove(group,  Convert.toString(key));
     }
 
     /**
@@ -525,7 +525,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public boolean containsKey(Object key) {
-        return this.groupedMap.containsKey(Normal.EMPTY, Convert.toStr(key));
+        return this.groupedMap.containsKey(Normal.EMPTY,  Convert.toString(key));
     }
 
     /**
@@ -536,7 +536,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public boolean containsValue(Object value) {
-        return this.groupedMap.containsValue(Normal.EMPTY, Convert.toStr(value));
+        return this.groupedMap.containsValue(Normal.EMPTY,  Convert.toString(value));
     }
 
     /**
@@ -547,7 +547,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String get(Object key) {
-        return this.groupedMap.get(Normal.EMPTY, Convert.toStr(key));
+        return this.groupedMap.get(Normal.EMPTY,  Convert.toString(key));
     }
 
     /**
@@ -570,7 +570,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String remove(Object key) {
-        return this.groupedMap.remove(Normal.EMPTY, Convert.toStr(key));
+        return this.groupedMap.remove(Normal.EMPTY,  Convert.toString(key));
     }
 
     /**

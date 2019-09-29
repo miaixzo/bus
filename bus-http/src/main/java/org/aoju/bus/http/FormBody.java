@@ -25,8 +25,8 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferedSink;
+import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.segment.BufferedSink;
 import org.aoju.bus.http.internal.Internal;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class FormBody extends RequestBody {

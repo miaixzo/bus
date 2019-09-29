@@ -30,7 +30,7 @@ import org.apache.ibatis.annotations.SelectProvider;
  * 通用Mapper接口,查询
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public interface ExistsWithPrimaryKeyMapper<T> {

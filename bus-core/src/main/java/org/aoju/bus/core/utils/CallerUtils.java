@@ -24,14 +24,14 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.caller.Caller;
-import org.aoju.bus.core.lang.caller.SecurityManagerCaller;
+import org.aoju.bus.core.lang.caller.SecurityCaller;
 import org.aoju.bus.core.lang.caller.StackTraceCaller;
 
 /**
  * 调用者。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class CallerUtils {
@@ -95,7 +95,7 @@ public class CallerUtils {
      */
     private static Caller tryCreateCaller() {
         try {
-            return new SecurityManagerCaller();
+            return new SecurityCaller();
         } catch (Throwable e) {
         }
         return new StackTraceCaller();

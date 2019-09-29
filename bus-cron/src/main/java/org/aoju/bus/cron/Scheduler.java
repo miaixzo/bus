@@ -24,9 +24,9 @@
 package org.aoju.bus.cron;
 
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.thread.ExecutorBuilder;
-import org.aoju.bus.core.thread.ThreadFactoryBuilder;
+import org.aoju.bus.core.thread.ThreadBuilder;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.cron.listener.TaskListener;
@@ -70,7 +70,7 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Scheduler {
@@ -142,12 +142,12 @@ public class Scheduler {
      *
      * @param on <code>true</code>为守护线程，否则非守护线程
      * @return this
-     * @throws CommonException 定时任务已经启动抛出此异常
+     * @throws InstrumentException 定时任务已经启动抛出此异常
      */
-    public Scheduler setDaemon(boolean on) throws CommonException {
+    public Scheduler setDaemon(boolean on) throws InstrumentException {
         synchronized (lock) {
             if (started) {
-                throw new CommonException("Scheduler already started!");
+                throw new InstrumentException("Scheduler already started!");
             }
             this.daemon = on;
         }
@@ -226,7 +226,7 @@ public class Scheduler {
                     try {
                         schedule(pattern, new InvokeTask(jobClass));
                     } catch (Exception e) {
-                        throw new CommonException("Schedule [{}] [{}] error!", pattern, jobClass);
+                        throw new InstrumentException("Schedule [{}] [{}] error!", pattern, jobClass);
                     }
                 }
             }
@@ -394,11 +394,11 @@ public class Scheduler {
     public Scheduler start() {
         synchronized (lock) {
             if (this.started) {
-                throw new CommonException("Schedule is started!");
+                throw new InstrumentException("Schedule is started!");
             }
 
             this.threadExecutor = ExecutorBuilder.create().useSynchronousQueue().setThreadFactory(//
-                    ThreadFactoryBuilder.create().setNamePrefix("exec-cron-").setDaemon(this.daemon).build()//
+                    ThreadBuilder.create().setNamePrefix("exec-cron-").setDaemon(this.daemon).build()//
             ).build();
             this.taskLauncherManager = new TaskLauncherManager(this);
             this.taskExecutorManager = new TaskExecutorManager(this);

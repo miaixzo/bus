@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.thread;
 
-import org.aoju.bus.core.lang.Builder;
+import org.aoju.bus.core.builder.Builder;
 
 import java.util.concurrent.*;
 
@@ -31,7 +31,7 @@ import java.util.concurrent.*;
  * {@link ThreadPoolExecutor} 建造者
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
@@ -154,7 +154,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      *
      * @param threadFactory 线程工厂
      * @return this
-     * @see ThreadFactoryBuilder
+     * @see ThreadBuilder
      */
     public ExecutorBuilder setThreadFactory(ThreadFactory threadFactory) {
         this.threadFactory = threadFactory;

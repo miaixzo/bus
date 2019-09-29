@@ -25,7 +25,7 @@ package org.aoju.bus.storage.provider;
 
 import lombok.Data;
 import org.aoju.bus.core.consts.Httpd;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.storage.StorageProvider;
 
 import java.io.File;
@@ -37,7 +37,7 @@ import java.net.URL;
 
 /**
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 @Data
@@ -88,10 +88,10 @@ public abstract class AbstractProvider implements StorageProvider {
 
                 return saveFilePath;
             } else {
-                throw new CommonException("下载失败");
+                throw new InstrumentException("下载失败");
             }
         } catch (IOException e) {
-            throw new CommonException("下载失败", e);
+            throw new InstrumentException("下载失败", e);
         } finally {
             try {
                 if (outputStream != null) outputStream.close();

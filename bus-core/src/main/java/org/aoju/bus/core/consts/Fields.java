@@ -32,7 +32,7 @@ import java.util.TimeZone;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class Fields {
@@ -262,13 +262,25 @@ public class Fields {
      */
     public final static FastDateFormat OUTPUT_MSEC_FORMAT = FastDateFormat.getInstance(OUTPUT_MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
 
+    /**
+     * 星座
+     */
+    public static final String[] ZODIAC = new String[]{"摩羯座", "水瓶座", "双鱼座", "白羊座", "金牛座", "双子座", "巨蟹座", "狮子座", "处女座", "天秤座", "天蝎座", "射手座", "摩羯座"};
+    /**
+     * 属相
+     */
+    public static final String[] CHINESE_ZODIAC = new String[]{"鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"};
+    /**
+     * 星座分隔时间日
+     */
+    public static final int[] ZODIAC_SLICED = new int[]{20, 19, 21, 20, 21, 22, 23, 23, 23, 24, 23, 22};
 
     /**
      * 日期各个部分的枚举
      * 与Calendar相应值对应
      *
      * @author Kimi Liu
-     * @version 3.6.1
+     * @version 3.6.2
      * @since JDK 1.8
      */
     public enum DateField {
@@ -409,7 +421,7 @@ public class Fields {
      * 日期时间单位，每个单位都是以毫秒为基数
      *
      * @author Kimi Liu
-     * @version 3.6.1
+     * @version 3.6.2
      * @since JDK 1.8
      */
     public enum Unit {
@@ -458,7 +470,7 @@ public class Fields {
      * 与Calendar中的月份int值对应
      *
      * @author Kimi Liu
-     * @version 3.6.1
+     * @version 3.6.2
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -596,7 +608,7 @@ public class Fields {
      * 季度枚举
      *
      * @author Kimi Liu
-     * @version 3.6.1
+     * @version 3.6.2
      * @since JDK 1.8
      */
     public enum Quarter {
@@ -659,7 +671,7 @@ public class Fields {
      * 与Calendar中的星期int值对应
      *
      * @author Kimi Liu
-     * @version 3.6.1
+     * @version 3.6.2
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY

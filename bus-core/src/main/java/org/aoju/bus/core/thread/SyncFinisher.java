@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.thread;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
  * 不能保证同时开始
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class SyncFinisher {
@@ -70,7 +70,7 @@ public class SyncFinisher {
      */
     public void await() throws InterruptedException {
         if (countDownLatch == null) {
-            throw new CommonException("Please call start() method first!");
+            throw new InstrumentException("Please call start() method first!");
         }
 
         countDownLatch.await();

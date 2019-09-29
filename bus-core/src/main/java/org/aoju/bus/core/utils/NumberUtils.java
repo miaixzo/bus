@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -52,7 +52,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class NumberUtils {
@@ -1020,7 +1020,7 @@ public class NumberUtils {
         }
         // 加入逻辑判断，确保begin<end并且size不能大于该表示范围
         if ((end - begin) < size) {
-            throw new CommonException("Size is larger than range between begin and end!");
+            throw new InstrumentException("Size is larger than range between begin and end!");
         }
         // 种子你可以随意生成，但不能重复
         int[] seed = new int[end - begin];
@@ -1058,7 +1058,7 @@ public class NumberUtils {
         }
         // 加入逻辑判断，确保begin<end并且size不能大于该表示范围
         if ((end - begin) < size) {
-            throw new CommonException("Size is larger than range between begin and end!");
+            throw new InstrumentException("Size is larger than range between begin and end!");
         }
 
         Random ran = new Random();
@@ -1397,7 +1397,7 @@ public class NumberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1643,7 +1643,7 @@ public class NumberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 3.6.1
+     * @since 3.6.2
      */
     public static BigInteger newBigInteger(String str) {
         if (null == str) {
@@ -1837,7 +1837,7 @@ public class NumberUtils {
         try {
             return NumberFormat.getInstance().parse(numberStr);
         } catch (ParseException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

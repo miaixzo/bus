@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.spring.core.proxy;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -44,7 +44,7 @@ import java.lang.reflect.Method;
  * <p>Description: </p>
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public abstract class AbstractInterceptor implements MethodInterceptor {
@@ -148,7 +148,7 @@ public abstract class AbstractInterceptor implements MethodInterceptor {
         Object[] arguments = getArguments(invocation);
 
         if (ArrayUtils.isEmpty(parameterAnnotations)) {
-            throw new CommonException("Not found any annotations");
+            throw new InstrumentException("Not found any annotations");
         }
 
         T value = null;
@@ -159,18 +159,18 @@ public abstract class AbstractInterceptor implements MethodInterceptor {
                 if (annotation.annotationType() == parameterAnnotationType) {
                     // 方法注解在方法上只允许有一个（通过判断value的重复赋值）
                     if (value != null) {
-                        throw new CommonException("Only 1 annotation=" + parameterAnnotationType.getName() + " can be added in method [name=" + methodName + ", parameterTypes=" + parameterTypesValue + "]");
+                        throw new InstrumentException("Only 1 annotation=" + parameterAnnotationType.getName() + " can be added in method [name=" + methodName + ", parameterTypes=" + parameterTypesValue + "]");
                     }
 
                     Object object = arguments[valueIndex];
                     // 方法注解的值不允许为空
                     if (object == null) {
-                        throw new CommonException("Value for annotation=" + parameterAnnotationType.getName() + " in method [name=" + methodName + ", parameterTypes=" + parameterTypesValue + "] is null");
+                        throw new InstrumentException("Value for annotation=" + parameterAnnotationType.getName() + " in method [name=" + methodName + ", parameterTypes=" + parameterTypesValue + "] is null");
                     }
 
                     // 方法注解的类型不匹配
                     if (object.getClass() != parameterType) {
-                        throw new CommonException("Type for annotation=" + parameterAnnotationType.getName() + " in method [name=" + methodName + ", parameterTypes=" + parameterTypesValue + "] must be " + parameterType.getName());
+                        throw new InstrumentException("Type for annotation=" + parameterAnnotationType.getName() + " in method [name=" + methodName + ", parameterTypes=" + parameterTypesValue + "] must be " + parameterType.getName());
                     }
 
                     value = (T) object;
@@ -183,7 +183,7 @@ public abstract class AbstractInterceptor implements MethodInterceptor {
 
         if (annotationIndex == 0) {
             return null;
-            // throw new CommonException("Not found annotation=" + parameterAnnotationType.getName() + " in method [name=" + methodName + ", parameterTypes=" + parameterTypesValue + "]");
+            // throw new InstrumentException("Not found annotation=" + parameterAnnotationType.getName() + " in method [name=" + methodName + ", parameterTypes=" + parameterTypesValue + "]");
         }
 
         return value;

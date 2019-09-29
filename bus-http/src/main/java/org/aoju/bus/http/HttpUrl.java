@@ -25,7 +25,7 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.http.internal.Internal;
 import org.aoju.bus.http.internal.suffix.SuffixDatabase;
 
@@ -59,7 +59,7 @@ import java.util.*;
  * component has been encoded already.
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public final class HttpUrl {

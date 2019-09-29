@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.cron.pattern.parser;
 
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * 月份值处理
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class MonthValueParser extends SimpleValueParser {
@@ -44,7 +44,7 @@ public class MonthValueParser extends SimpleValueParser {
     }
 
     @Override
-    public int parse(String value) throws CommonException {
+    public int parse(String value) throws InstrumentException {
         try {
             return super.parse(value);
         } catch (Exception e) {
@@ -57,15 +57,15 @@ public class MonthValueParser extends SimpleValueParser {
      *
      * @param value 别名值
      * @return 月份int值
-     * @throws CommonException
+     * @throws InstrumentException
      */
-    private int parseAlias(String value) throws CommonException {
+    private int parseAlias(String value) throws InstrumentException {
         for (int i = 0; i < ALIASES.length; i++) {
             if (ALIASES[i].equalsIgnoreCase(value)) {
                 return i + 1;
             }
         }
-        throw new CommonException("Invalid month alias: {}", value);
+        throw new InstrumentException("Invalid month alias: {}", value);
     }
 
 }

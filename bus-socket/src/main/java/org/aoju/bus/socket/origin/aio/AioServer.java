@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.socket.origin.aio;
 
-import org.aoju.bus.core.lang.exception.CommonException;
-import org.aoju.bus.core.thread.ThreadFactoryBuilder;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.thread.ThreadBuilder;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.socket.origin.OriginConfig;
 
@@ -39,7 +39,7 @@ import java.nio.channels.AsynchronousServerSocketChannel;
  * 基于AIO的Socket服务端实现
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.2
  * @since JDK 1.8
  */
 public class AioServer {
@@ -80,11 +80,11 @@ public class AioServer {
         try {
             this.group = AsynchronousChannelGroup.withFixedThreadPool(//
                     config.getThreadPoolSize(), // 默认线程池大小
-                    ThreadFactoryBuilder.create().setNamePrefix("Aoju-socket-").build()//
+                    ThreadBuilder.create().setNamePrefix("Aoju-socket-").build()//
             );
             this.channel = AsynchronousServerSocketChannel.open(group).bind(address);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return this;
     }
@@ -98,7 +98,7 @@ public class AioServer {
         try {
             doStart(sync);
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
