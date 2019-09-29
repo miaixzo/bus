@@ -27,7 +27,7 @@ package org.aoju.bus.boot.health;
  * 检查运行时是否健康.
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public interface HealthIndicators {

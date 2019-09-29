@@ -39,7 +39,7 @@ import java.util.Map;
  * 校验注解所包含的通用属性
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 @Data
@@ -124,7 +124,7 @@ public class Property {
      * @return the string
      */
     public String getFormatted() {
-        StrSubstitutor sub = new StrSubstitutor(param);
+        StrSubstitutor sub = new StrSubstitutor(this.param);
         return sub.replace(this.errmsg);
     }
 

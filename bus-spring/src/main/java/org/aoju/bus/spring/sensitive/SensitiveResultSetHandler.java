@@ -50,7 +50,7 @@ import java.util.Properties;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
@@ -117,7 +117,7 @@ public class SensitiveResultSetHandler implements Interceptor {
                     }
                 }
                 // 数据脱敏
-                if (Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value())
+                if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
                     Builder.on(obj);
                 }

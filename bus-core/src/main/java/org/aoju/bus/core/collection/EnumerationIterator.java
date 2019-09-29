@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.iterator;
+package org.aoju.bus.core.collection;
 
 import java.util.Collection;
 import java.util.Enumeration;
@@ -31,8 +31,9 @@ import java.util.Iterator;
  * Adapter to make {@link Enumeration Enumeration} instances appear
  * to be {@link Iterator Iterator} instances.
  *
+ * @param <E> 元素类型
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class EnumerationIterator<E> implements Iterator<E> {

@@ -24,11 +24,12 @@
 package org.aoju.bus.core.thread;
 
 /**
- * 带有Name标识的 {@link InheritableThreadLocal}，调用toString返回name
+ * 带有Name标识的 {@link InheritableThreadLocal}，
+ * 调用toString返回name
  *
  * @param <T> 值类型
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class NamedInheritableThreadLocal<T> extends InheritableThreadLocal<T> {

@@ -32,7 +32,7 @@ import java.util.List;
  * 通用Mapper接口,查询
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public interface SelectMapper<T> {

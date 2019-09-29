@@ -30,7 +30,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * POI中NUMRIC类型的值默认返回的是Double类型，此编辑器用于转换其为int型
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class NumericToIntEditor implements CellEditor {

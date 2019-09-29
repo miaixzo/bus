@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实例化工厂类
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public final class InstanceFactory implements Instance {

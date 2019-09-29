@@ -28,7 +28,7 @@ import org.aoju.bus.proxy.Invocation;
 
 /**
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class FilteredInterceptor implements Interceptor {

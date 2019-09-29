@@ -36,7 +36,7 @@ import java.util.List;
  * 反射处理{@link Field} 的实用程序
  *
  * @author Kimi Liu
- * @version 3.6.0
+ * @version 3.6.1
  * @since JDK 1.8
  */
 public class FieldUtils {
