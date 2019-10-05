@@ -45,8 +45,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 
 欢迎大家来 这里 踩踩,生命有限！少写重复代码！给颗星奖励下呗~
 
-目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -
-系统监测的解决方案。
+目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测等，快速实现业务需求的全栈式技术解决方案。
 
 ## 组件信息
 | 模块信息 | 描述信息 |
@@ -64,7 +63,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |bus-http|HTTP功能封装|
 |bus-limiter|请求限流|
 |bus-logger|日志信息及功能，态检测日志实现的方式，使日志使用个更加便利灵活简单|
-|bus-mapper|数据操作,mybatis|
+|bus-mapper|数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生|
 |bus-oauth|第三方登录,已集成十多家第三方平台（国内外常用的基本都已包含）|
 |bus-pager|数据分页,mybatis|
 |bus-poi|Excel处理,POI封装实现，使Java操作Excel等文件变得更加简单|
@@ -118,6 +117,12 @@ implementation 'org.aoju:bus-all:3.6.3'
 
 ## 意见建议
 
-### 提供BUG反馈或建议
+All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are welcome.
 
-- [Issues](https://github.com/aoju/bus/issues)
+欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 bugs 的报告。
+
+## License 许可证
+
+Open sourced under the MIT license.
+
+根据 MIT 许可证开源。
