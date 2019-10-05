@@ -46,16 +46,22 @@ public @interface NShield {
 
     /**
      * 过滤对象
+     *
+     * @return 对象信息
      */
     Class<?> type();
 
     /**
      * 包含属性
+     *
+     * @return 对象属性
      */
     String include() default "";
 
     /**
      * 过滤属性
+     *
+     * @return 对象属性
      */
     String filter() default "";
 }
