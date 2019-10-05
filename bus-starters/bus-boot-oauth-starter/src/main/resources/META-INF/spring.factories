@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.aoju.bus.boot.oauth.OAuthAutoConfiguration
+org.aoju.bus.boot.oauth.AuthAutoConfiguration

@@ -86,7 +86,7 @@ public class Version {
      * @return 阶段号
      */
     public static String stage() {
-        return "2";
+        return "3";
     }
 
     /**

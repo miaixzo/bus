@@ -37,6 +37,6 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import(value = AuthConfiguration.class)
-public class OAuthAutoConfiguration {
+public class AuthAutoConfiguration {
 
 }
