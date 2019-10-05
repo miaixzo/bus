@@ -24,7 +24,7 @@ import java.util.concurrent.LinkedTransferQueue;
  * 增加了对拦截器的支持
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class StompSubProtocolHandler extends org.springframework.web.socket.messaging.StompSubProtocolHandler {

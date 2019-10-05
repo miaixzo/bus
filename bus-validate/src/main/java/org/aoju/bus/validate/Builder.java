@@ -32,7 +32,7 @@ import java.lang.annotation.Annotation;
  * 当前框架内预定义的校验器名称
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Builder extends Validator {
@@ -54,18 +54,26 @@ public class Builder extends Validator {
      */
     public static final String _ALWAYS = "Always";
     public static final String _BLANK = "Blank";
+    public static final String _CHINESE = "Chinese";
+    public static final String _CITIZENID = "CitizenId";
+    public static final String _DATE = "Date";
     public static final String _EACH = "Each";
+    public static final String _EMAIL = "Email";
+    public static final String _ENGLISH = "English";
     public static final String _EQUALS = "Equals";
     public static final String _FALSE = "False";
-    public static final String _IN = "In";
     public static final String _IN_ENUM = "InEnum";
+    public static final String _IN = "In";
     public static final String _INT_RANGE = "IntRange";
+    public static final String _IP_ADDRESS = "IPAddress";
     public static final String _LENGTH = "Length";
+    public static final String _MOBILE = "Mobile";
     public static final String _MULTI = "Multi";
     public static final String _NOT_BLANK = "NotBlank";
     public static final String _NOT_IN = "NotIn";
     public static final String _NOT_NULL = "NotNull";
     public static final String _NULL = "Null";
+    public static final String _PHONE = "Phone";
     public static final String _REFLECT = "Reflect";
     public static final String _REGEX = "Regex";
     public static final String _TRUE = "True";

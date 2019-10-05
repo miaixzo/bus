@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Validator {
@@ -511,6 +511,16 @@ public class Validator {
      * @param value 值
      * @return 是否为手机号码（中国）
      */
+    public static boolean isPhone(String value) {
+        return isMactchRegex(RegEx.PHONE, value);
+    }
+
+    /**
+     * 验证是否为手机号码（中国）
+     *
+     * @param value 值
+     * @return 是否为手机号码（中国）
+     */
     public static boolean isMobile(String value) {
         return isMactchRegex(RegEx.MOBILE, value);
     }
@@ -726,13 +736,23 @@ public class Validator {
     }
 
     /**
+     * 验证是否为英文
+     *
+     * @param value 值
+     * @return 是否为汉字
+     */
+    public static boolean isEnglish(String value) {
+        return isMactchRegex("^" + RegEx.WORD_PATTERN + "+$", value);
+    }
+
+    /**
      * 验证是否为汉字
      *
      * @param value 值
      * @return 是否为汉字
      */
     public static boolean isChinese(String value) {
-        return isMactchRegex("^" + RegEx.RE_CHINESE + "+$", value);
+        return isMactchRegex("^" + RegEx.CHINESE_PATTERN + "+$", value);
     }
 
     /**

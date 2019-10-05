@@ -40,7 +40,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class TypeUtils {
@@ -69,7 +69,6 @@ public class TypeUtils {
      *
      * @param clazz 对象类型
      * @return 是否为 map class
-     * @since 0.0.3 fixed
      */
     public static boolean isMap(final Class<?> clazz) {
         return Map.class.isAssignableFrom(clazz);
@@ -130,7 +129,6 @@ public class TypeUtils {
      *
      * @param clazz 类
      * @return 是否为抽象类
-     * @since 0.0.2
      */
     public static boolean isAbstract(Class<?> clazz) {
         return Modifier.isAbstract(clazz.getModifiers());
@@ -141,7 +139,6 @@ public class TypeUtils {
      *
      * @param clazz 类信息
      * @return 是否
-     * @since 0.1.14
      */
     public static boolean isAbstractOrInterface(Class<?> clazz) {
         return isAbstract(clazz)
@@ -167,7 +164,6 @@ public class TypeUtils {
      *
      * @param clazz 类
      * @return 是否为标准类
-     * @since 0.0.2
      */
     public static boolean isJavaBean(Class<?> clazz) {
         return null != clazz
@@ -438,7 +434,6 @@ public class TypeUtils {
      *
      * @param field 字段
      * @return 返回对应的 class 类型
-     * @since 0.0.7
      */
     public static Class getListType(Field field) {
         ParameterizedType listGenericType = (ParameterizedType) field.getGenericType();
@@ -451,7 +446,6 @@ public class TypeUtils {
      *
      * @param type 类型
      * @return 是否
-     * @since 0.1.14
      */
     public static boolean isWildcardGenericType(final Type type) {
         final Class clazz = type.getClass();
@@ -463,7 +457,6 @@ public class TypeUtils {
      *
      * @param clazz 类型
      * @return 结果
-     * @since 0.1.14
      */
     public static boolean isList(final Class clazz) {
         return List.class.isAssignableFrom(clazz);
@@ -474,7 +467,6 @@ public class TypeUtils {
      *
      * @param clazz 类型
      * @return 结果
-     * @since 0.1.14
      */
     public static boolean isSet(final Class clazz) {
         return Set.class.isAssignableFrom(clazz);

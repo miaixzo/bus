@@ -57,7 +57,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
 <dependency>
     <groupId>org.aoju.bus</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>3.6.2</version>
+    <version>3.6.3</version>
 </dependency>
 ```
 - XML注册
@@ -156,20 +156,17 @@ public @interface Cached {
 public @interface Invalid {
 
     /**
-     * @return as {@code @Cached}
-     * @since 0.3
+     * @return as {@code @Cached} 
      */
     String value() default "";
 
     /**
-     * @return as {@code @Cached}
-     * @since 0.3
+     * @return as {@code @Cached} 
      */
     String prefix() default "";
 
     /**
-     * @return as {@code @Cached}
-     * @since 0.3
+     * @return as {@code @Cached} 
      */
     String condition() default "";
 }
@@ -221,22 +218,19 @@ public @interface CachedGet {
     /**
      * @return Specifies the <b>Used cache implementation</b>,
      * default the first {@code caches} config in {@code CacheXAspect}
-     * @since 0.3
      */
     String value() default "";
 
     /**
      * @return Specifies the start keyExp on every key,
      * if the {@code Method} have non {@code param},
-     * {@code keyExp}consts{@code Method}
-     * @since 0.3
+     * {@code keyExp}consts{@code Method} 
      */
     String prefix() default "";
 
     /**
      * @return use <b>SpEL</b>,
      * when this spel is {@code true}, this {@Code Method} will go through by cache
-     * @since 0.3
      */
     String condition() default "";
 }

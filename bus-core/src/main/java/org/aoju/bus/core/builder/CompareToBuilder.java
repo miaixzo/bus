@@ -70,7 +70,7 @@ import java.util.Comparator;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class CompareToBuilder implements Builder<Integer> {
@@ -172,7 +172,7 @@ public class CompareToBuilder implements Builder<Integer> {
      *                              (but not both) is <code>null</code>
      * @throws ClassCastException   if <code>right</code> is not assignment-compatible
      *                              with <code>left</code>
-     * @since 2.2
+     * @since 2.2.0
      */
     public static int reflectionCompare(final Object left, final Object right, final Collection<String> excludeFields) {
         return reflectionCompare(left, right, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
@@ -205,7 +205,7 @@ public class CompareToBuilder implements Builder<Integer> {
      *                              (but not both) is <code>null</code>
      * @throws ClassCastException   if <code>right</code> is not assignment-compatible
      *                              with <code>left</code>
-     * @since 2.2
+     * @since 2.2.0
      */
     public static int reflectionCompare(final Object left, final Object right, final String... excludeFields) {
         return reflectionCompare(left, right, false, null, excludeFields);
@@ -241,7 +241,6 @@ public class CompareToBuilder implements Builder<Integer> {
      *                              (but not both) is <code>null</code>
      * @throws ClassCastException   if <code>right</code> is not assignment-compatible
      *                              with <code>left</code>
-     * @since 2.2 (2.0 as <code>reflectionCompare(Object, Object, boolean, Class)</code>)
      */
     public static int reflectionCompare(
             final Object left,

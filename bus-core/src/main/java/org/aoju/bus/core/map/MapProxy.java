@@ -32,7 +32,7 @@ import java.util.Set;
  * Map代理，提供各种getXXX方法，并提供默认值支持
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class MapProxy implements Map<Object, Object> {

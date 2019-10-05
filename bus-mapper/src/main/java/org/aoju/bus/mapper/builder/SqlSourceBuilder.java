@@ -35,7 +35,7 @@ import java.util.Set;
  * 拼常用SQL的工具类
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class SqlSourceBuilder {
@@ -460,7 +460,7 @@ public class SqlSourceBuilder {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getCanonicalName();
                     sql.append(column.getColumn())
-                            .append(" = ${@VersionUtil@nextVersion(\"")
+                            .append(" = ${@org.aoju.bus.mapper.version.VersionUtil@nextVersion(\"")
                             .append(versionClass).append("\", ")
                             .append(column.getProperty()).append(")},");
                 } else if (notNull) {

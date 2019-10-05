@@ -23,28 +23,28 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 默认脱敏处理类
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class DafaultStrategy implements StrategyProvider {
-
-    private static final int SIZE = 6;
-    private static final int TWO = 2;
-    private static final String SYMBOL = "*";
+public class DafaultStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        if (null == object || "".equals(object)) {
+        if (ObjectUtils.isEmpty(object)) {
             return null;
         }
-        //  Mode mode = this.builder.getMode();
+
+        final int SIZE = 6;
+        final int TWO = 2;
+        final String SYMBOL = "*";
 
         String value = object.toString();
 
@@ -71,7 +71,8 @@ public class DafaultStrategy implements StrategyProvider {
                 for (int i = 0; i < SIZE; i++) {
                     stringBuilder.append(SYMBOL);
                 }
-                if (ispamaThree(pamathree)) {
+
+                if ((pamathree == 0 && SIZE / 2 == 0) || (pamathree != 0 && SIZE % 2 != 0)) {
                     stringBuilder.append(value.substring(len - pamafive, len));
                 } else {
                     stringBuilder.append(value.substring(len - (pamafive + 1), len));
@@ -86,10 +87,6 @@ public class DafaultStrategy implements StrategyProvider {
             }
         }
         return stringBuilder.toString();
-    }
-
-    private boolean ispamaThree(int pamathree) {
-        return (pamathree == 0 && SIZE / 2 == 0) || (pamathree != 0 && SIZE % 2 != 0);
     }
 
 }

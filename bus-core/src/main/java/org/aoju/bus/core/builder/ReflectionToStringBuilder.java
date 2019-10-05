@@ -98,7 +98,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class ReflectionToStringBuilder extends ToStringBuilder {
@@ -106,7 +106,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     /**
      * Which field names to exclude from output. Intended for fields like <code>"password"</code>.
      *
-     * @since 3.0
+     * @since 3.0.0
      */
     protected String[] excludeFieldNames;
     /**
@@ -191,7 +191,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * @param reflectUpToClass the superclass to reflect up to (inclusive), may be <code>null</code>
      * @param outputTransients whether to include transient fields
      * @param outputStatics    whether to include static fields
-     * @since 2.1
+     * @since 2.1.0
      */
     public <T> ReflectionToStringBuilder(
             final T object, final ToStringStyle style, final StringBuffer buffer,
@@ -356,7 +356,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * @throws IllegalArgumentException if the Object is <code>null</code>
      * @see ToStringExclude
      * @see ToStringSummary
-     * @since 2.1
+     * @since 2.1.0
      */
     public static String toString(final Object object, final ToStringStyle style, final boolean outputTransients, final boolean outputStatics) {
         return toString(object, style, outputTransients, outputStatics, null);
@@ -402,7 +402,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * @throws IllegalArgumentException if the Object is <code>null</code>
      * @see ToStringExclude
      * @see ToStringSummary
-     * @since 2.1
+     * @since 2.1.0
      */
     public static <T> String toString(
             final T object, final ToStringStyle style, final boolean outputTransients,
@@ -665,7 +665,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * </p>
      *
      * @return Whether or not to append static fields.
-     * @since 2.1
+     * @since 2.1.0
      */
     public boolean isAppendStatics() {
         return this.appendStatics;
@@ -677,7 +677,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * </p>
      *
      * @param appendStatics Whether or not to append static fields.
-     * @since 2.1
+     * @since 2.1.0
      */
     public void setAppendStatics(final boolean appendStatics) {
         this.appendStatics = appendStatics;

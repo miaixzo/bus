@@ -24,7 +24,7 @@
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 用于标识为系统内置的注解实现方式
@@ -35,10 +35,10 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 明明是数组，实现却只能是一个
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class BuiltInStrategy implements StrategyProvider {
+public class BuiltInStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {

@@ -23,7 +23,10 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.internal.Internal;
+import org.aoju.bus.http.accord.ConnectionSpec;
+import org.aoju.bus.http.offers.Authenticator;
+import org.aoju.bus.http.offers.CertificatePinner;
+import org.aoju.bus.http.offers.Dns;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
@@ -33,38 +36,35 @@ import java.net.ProxySelector;
 import java.util.List;
 
 /**
- * A specification for a connection to an origin server. For simple connections, this is the
- * server's hostname and port. If an explicit proxy is requested (or {@linkplain Proxy#NO_PROXY no
- * proxy} is explicitly requested), this also includes that proxy information. For secure
- * connections the address also includes the SSL socket factory, hostname verifier, and certificate
- * pinner.
- *
- * <p>HTTP requests that share the same {@code Address} may also share the same {@link Connection}.
+ * 服务器的连接的规范。
+ * 对于简单的连接，这是服务器的主机名和端口。
+ * 如果请求显式代理，则还包括该代理信息。
+ * 对于安全连接，该地址还包括SSL套接字工厂、主机名验证器和证书
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Address {
 
-    final HttpUrl url;
-    final Dns dns;
-    final SocketFactory socketFactory;
-    final Authenticator proxyAuthenticator;
-    final List<Protocol> protocols;
-    final List<ConnectionSpec> connectionSpecs;
-    final ProxySelector proxySelector;
-    final Proxy proxy;
-    final SSLSocketFactory sslSocketFactory;
-    final HostnameVerifier hostnameVerifier;
-    final CertificatePinner certificatePinner;
+    public final Url url;
+    public final Dns dns;
+    public final SocketFactory socketFactory;
+    public final Authenticator proxyAuthenticator;
+    public final List<Protocol> protocols;
+    public final List<ConnectionSpec> connectionSpecs;
+    public final ProxySelector proxySelector;
+    public final Proxy proxy;
+    public final SSLSocketFactory sslSocketFactory;
+    public final HostnameVerifier hostnameVerifier;
+    public final CertificatePinner certificatePinner;
 
     public Address(String uriHost, int uriPort, Dns dns, SocketFactory socketFactory,
                    SSLSocketFactory sslSocketFactory, HostnameVerifier hostnameVerifier,
                    CertificatePinner certificatePinner, Authenticator proxyAuthenticator,
                    Proxy proxy, List<Protocol> protocols, List<ConnectionSpec> connectionSpecs,
                    ProxySelector proxySelector) {
-        this.url = new HttpUrl.Builder()
+        this.url = new Url.Builder()
                 .scheme(sslSocketFactory != null ? "https" : "http")
                 .host(uriHost)
                 .port(uriPort)
@@ -96,7 +96,7 @@ public final class Address {
         this.certificatePinner = certificatePinner;
     }
 
-    public HttpUrl url() {
+    public Url url() {
         return url;
     }
 
@@ -124,7 +124,7 @@ public final class Address {
         return proxySelector;
     }
 
-    public Proxy proxy() {
+    public java.net.Proxy proxy() {
         return proxy;
     }
 
@@ -163,7 +163,7 @@ public final class Address {
         return result;
     }
 
-    boolean equalsNonHost(Address that) {
+    public boolean equalsNonHost(Address that) {
         return this.dns.equals(that.dns)
                 && this.proxyAuthenticator.equals(that.proxyAuthenticator)
                 && this.protocols.equals(that.protocols)

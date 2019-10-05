@@ -24,9 +24,12 @@
 package org.aoju.bus.http.internal.http;
 
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.internal.Internal;
-import org.aoju.bus.http.internal.connection.RouteException;
-import org.aoju.bus.http.internal.connection.StreamAllocation;
+import org.aoju.bus.http.accord.RouteException;
+import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.bodys.RequestBody;
+import org.aoju.bus.http.offers.CertificatePinner;
+import org.aoju.bus.http.offers.EventListener;
+import org.aoju.bus.http.offers.Interceptor;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLHandshakeException;
@@ -34,6 +37,7 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.net.Proxy;
 import java.net.*;
 import java.security.cert.CertificateException;
 
@@ -43,7 +47,7 @@ import java.security.cert.CertificateException;
  * {@link IOException} if the call was canceled.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class RetryAndFollowUpInterceptor implements Interceptor {
@@ -53,13 +57,13 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
      */
     private static final int MAX_FOLLOW_UPS = 20;
 
-    private final HttpClient client;
+    private final Client client;
     private final boolean forWebSocket;
     private volatile StreamAllocation streamAllocation;
     private Object callStackTrace;
     private volatile boolean canceled;
 
-    public RetryAndFollowUpInterceptor(HttpClient client, boolean forWebSocket) {
+    public RetryAndFollowUpInterceptor(Client client, boolean forWebSocket) {
         this.client = client;
         this.forWebSocket = forWebSocket;
     }
@@ -176,7 +180,7 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
         }
     }
 
-    private Address createAddress(HttpUrl url) {
+    private Address createAddress(Url url) {
         SSLSocketFactory sslSocketFactory = null;
         HostnameVerifier hostnameVerifier = null;
         CertificatePinner certificatePinner = null;
@@ -284,7 +288,7 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
 
                 String location = userResponse.header("Location");
                 if (location == null) return null;
-                HttpUrl url = userResponse.request().url().resolve(location);
+                Url url = userResponse.request().url().resolve(location);
 
                 // Don't follow redirects to unsupported protocols.
                 if (url == null) return null;
@@ -379,8 +383,8 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
         return Integer.MAX_VALUE;
     }
 
-    private boolean sameConnection(Response response, HttpUrl followUp) {
-        HttpUrl url = response.request().url();
+    private boolean sameConnection(Response response, Url followUp) {
+        Url url = response.request().url();
         return url.host().equals(followUp.host())
                 && url.port() == followUp.port()
                 && url.scheme().equals(followUp.scheme());

@@ -28,12 +28,12 @@ import org.aoju.bus.core.io.segment.BufferedSink;
 import org.aoju.bus.core.io.segment.ForwardingSink;
 import org.aoju.bus.core.io.segment.Sink;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.Interceptor;
+import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
-import org.aoju.bus.http.internal.Internal;
-import org.aoju.bus.http.internal.connection.RealConnection;
-import org.aoju.bus.http.internal.connection.StreamAllocation;
+import org.aoju.bus.http.accord.RealConnection;
+import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.offers.Interceptor;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -42,7 +42,7 @@ import java.net.ProtocolException;
  * This is the last intercept in the chain. It makes a network call to the server.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class CallServerInterceptor implements Interceptor {

@@ -23,7 +23,9 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.internal.Internal;
+import org.aoju.bus.http.bodys.RequestBody;
+import org.aoju.bus.http.cache.CacheControl;
+import org.aoju.bus.http.header.Headers;
 import org.aoju.bus.http.internal.http.HttpMethod;
 
 import java.net.URL;
@@ -37,12 +39,12 @@ import java.util.Map;
  * immutable.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Request {
 
-    final HttpUrl url;
+    final Url url;
     final String method;
     final Headers headers;
     final RequestBody body;
@@ -58,7 +60,7 @@ public final class Request {
         this.tags = Internal.immutableMap(builder.tags);
     }
 
-    public HttpUrl url() {
+    public Url url() {
         return url;
     }
 
@@ -115,7 +117,7 @@ public final class Request {
     }
 
     public static class Builder {
-        HttpUrl url;
+        Url url;
         String method;
         Headers.Builder headers;
         RequestBody body;
@@ -137,7 +139,7 @@ public final class Request {
             this.headers = request.headers.newBuilder();
         }
 
-        public Builder url(HttpUrl url) {
+        public Builder url(Url url) {
             if (url == null) throw new NullPointerException("url == null");
             this.url = url;
             return this;
@@ -153,12 +155,12 @@ public final class Request {
                 url = "https:" + url.substring(4);
             }
 
-            return url(HttpUrl.get(url));
+            return url(Url.get(url));
         }
 
         public Builder url(URL url) {
             if (url == null) throw new NullPointerException("url == null");
-            return url(HttpUrl.get(url.toString()));
+            return url(Url.get(url.toString()));
         }
 
         public Builder header(String name, String value) {

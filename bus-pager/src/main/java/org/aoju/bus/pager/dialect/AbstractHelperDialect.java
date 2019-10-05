@@ -41,7 +41,7 @@ import java.util.*;
  * 针对 PageContext 的实现
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public abstract class AbstractHelperDialect extends AbstractDialect {
@@ -90,7 +90,7 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
         if (page.getPageSize() < 0) {
             return false;
         }
-        return count > 0;
+        return count > ((page.getPageNo() - 1) * page.getPageSize());
     }
 
     @Override

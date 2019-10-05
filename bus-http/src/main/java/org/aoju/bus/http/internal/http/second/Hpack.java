@@ -28,7 +28,7 @@ import org.aoju.bus.core.io.segment.BufferedSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.internal.Internal;
+import org.aoju.bus.http.Internal;
 
 import java.io.IOException;
 import java.util.*;
@@ -43,7 +43,7 @@ import java.util.*;
  * fills, it is doubled.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 final class Hpack {

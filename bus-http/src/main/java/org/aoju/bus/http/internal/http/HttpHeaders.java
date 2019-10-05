@@ -25,8 +25,14 @@ package org.aoju.bus.http.internal.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.http.*;
-import org.aoju.bus.http.internal.Internal;
+import org.aoju.bus.http.Internal;
+import org.aoju.bus.http.Request;
+import org.aoju.bus.http.Response;
+import org.aoju.bus.http.Url;
+import org.aoju.bus.http.cookie.Cookie;
+import org.aoju.bus.http.cookie.CookieJar;
+import org.aoju.bus.http.header.Headers;
+import org.aoju.bus.http.offers.Challenge;
 
 import java.io.EOFException;
 import java.net.HttpURLConnection;
@@ -36,7 +42,7 @@ import java.util.*;
  * Headers and utilities for internal use by httpClient.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class HttpHeaders {
@@ -254,7 +260,7 @@ public final class HttpHeaders {
         return new String(array);
     }
 
-    public static void receiveHeaders(CookieJar cookieJar, HttpUrl url, Headers headers) {
+    public static void receiveHeaders(CookieJar cookieJar, Url url, Headers headers) {
         if (cookieJar == CookieJar.NO_COOKIES) return;
 
         List<Cookie> cookies = Cookie.parseAll(url, headers);

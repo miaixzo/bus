@@ -23,11 +23,16 @@
  */
 package org.aoju.bus.core.consts;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.Arrays;
+
 /**
  * 默认常量
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Normal {
@@ -71,11 +76,17 @@ public class Normal {
     /**
      * 简体中文形式
      **/
-    public static final String[] SIMPLE_DIGITS = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};
+    public static final String[] SIMPLE_DIGITS = {
+            "零", "一", "二", "三", "四", "五",
+            "六", "七", "八", "九"
+    };
     /**
      * 繁体中文形式
      **/
-    public static final String[] TRADITIONAL_DIGITS = {"零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"};
+    public static final String[] TRADITIONAL_DIGITS = {
+            "零", "壹", "贰", "叁", "肆", "伍",
+            "陆", "柒", "捌", "玖"
+    };
 
     /**
      * 简体中文单位
@@ -86,15 +97,60 @@ public class Normal {
      **/
     public static final String[] TRADITIONAL_UNITS = {"", "拾", "佰", "仟"};
 
-    public static final String[] EN_NUMBER = new String[]{"", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN",
-            "EIGHT", "NINE"};
-    public static final String[] NUMBER_TEEN = new String[]{"TEN", "ELEVEN", "TWELEVE", "THIRTEEN", "FOURTEEN",
-            "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"};
-    public static final String[] NUMBER_TEN = new String[]{"TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY",
-            "SEVENTY", "EIGHTY", "NINETY"};
-    public static final String[] NUMBER_MORE = new String[]{"", "THOUSAND", "MILLION", "BILLION"};
+    /**
+     * 英文数字1-9
+     **/
+    public static final String[] EN_NUMBER = new String[]{
+            "", "ONE", "TWO", "THREE", "FOUR", "FIVE",
+            "SIX", "SEVEN", "EIGHT", "NINE"
+    };
+    /**
+     * 英文数字10-19
+     **/
+    public static final String[] NUMBER_TEEN = new String[]{
+            "TEN", "ELEVEN", "TWELEVE", "THIRTEEN", "FOURTEEN",
+            "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"
+    };
+    /**
+     * 英文数字10-90
+     **/
+    public static final String[] NUMBER_TEN = new String[]{
+            "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY",
+            "SIXTY", "SEVENTY", "EIGHTY", "NINETY"
+    };
+    /**
+     * 英文数字千-亿
+     **/
+    public static final String[] NUMBER_MORE = new String[]{
+            "", "THOUSAND", "MILLION", "BILLION"
+    };
 
-    public static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    /**
+     * 将数字表示为字符串的所有字符
+     */
+    public static final char[] HEX_DIGITS = {
+            '0', '1', '2', '3', '4', '5',
+            '6', '7', '8', '9', 'A', 'B',
+            'C', 'D', 'E', 'F'
+    };
+
+    /**
+     * 将数字表示为字符串的所有字符
+     */
+    public final static byte[] HEX_DIGITS_ALL = {
+            '0', '1', '2', '3', '4', '5',
+            '6', '7', '8', '9', 'a', 'b',
+            'c', 'd', 'e', 'f', 'g', 'h',
+            'i', 'j', 'k', 'l', 'm', 'n',
+            'o', 'p', 'q', 'r', 's', 't',
+            'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F',
+            'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R',
+            'S', 'T', 'U', 'V', 'W', 'X',
+            'Y', 'Z'
+    };
+
     /**
      * 字符串: 字母和数字
      */
@@ -161,5 +217,36 @@ public class Normal {
      * WAR路径及内部文件路径分界符
      */
     public static final String WAR_URL_SEPARATOR = "*/";
+
+    @Getter
+    @AllArgsConstructor
+    public enum Gender {
+        /**
+         * MALE/FAMALE为正常值，通过{@link Gender#getGender(String)}方法获取真实的性别
+         * UNKNOWN为容错值，部分平台不会返回用户性别，为了方便统一，使用UNKNOWN标记所有未知或不可测的用户性别信息
+         */
+        MALE(1, "男"),
+        FEMALE(0, "女"),
+        UNKNOWN(-1, "未知");
+
+        private int code;
+        private String desc;
+
+        public static Gender getGender(String code) {
+            if (code == null) {
+                return UNKNOWN;
+            }
+            String[] males = {"M", "男", "1", "Male"};
+            if (Arrays.asList(males).contains(code.toLowerCase())) {
+                return MALE;
+            }
+            String[] females = {"F", "女", "0", "Female"};
+            if (Arrays.asList(females).contains(code.toLowerCase())) {
+                return FEMALE;
+            }
+            return UNKNOWN;
+        }
+
+    }
 
 }

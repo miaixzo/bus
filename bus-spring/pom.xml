@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-spring</artifactId>
-    <version>3.6.2</version>
+    <version>3.6.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -52,6 +52,11 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-mapper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-oauth</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -106,7 +106,7 @@ import java.util.Set;
  * used by the <code>reflectionHashCode</code> methods.</p>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class HashCodeBuilder implements Builder<Integer> {
@@ -126,7 +126,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * A registry of objects used by reflection methods to detect cyclical object references and avoid infinite loops.
      * </p>
      *
-     * @since 2.3
+     * @since 2.3.0
      */
     private static final ThreadLocal<Set<IDKey>> REGISTRY = new ThreadLocal<>();
 
@@ -176,7 +176,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * </p>
      *
      * @return Set the registry of objects being traversed
-     * @since 2.3
+     * @since 2.3.0
      */
     static Set<IDKey> getRegistry() {
         return REGISTRY.get();
@@ -190,7 +190,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      *
      * @param value The object to lookup in the registry.
      * @return boolean <code>true</code> if the registry contains the given object.
-     * @since 2.3
+     * @since 2.3.0
      */
     static boolean isRegistered(final Object value) {
         final Set<IDKey> registry = getRegistry();
@@ -355,7 +355,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * @throws IllegalArgumentException if the Object is <code>null</code>
      * @throws IllegalArgumentException if the number is zero or even
      * @see HashCodeExclude
-     * @since 2.0
+     * @since 2.0.0
      */
     public static <T> int reflectionHashCode(final int initialNonZeroOddNumber, final int multiplierNonZeroOddNumber, final T object,
                                              final boolean testTransients, final Class<? super T> reflectUpToClass, final String... excludeFields) {
@@ -502,7 +502,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * Used by the reflection methods to avoid infinite loops.
      *
      * @param value The object to unregister.
-     * @since 2.3
+     * @since 2.3.0
      */
     private static void unregister(final Object value) {
         final Set<IDKey> registry = getRegistry();
@@ -864,7 +864,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      *
      * @param superHashCode the result of calling <code>super.hashCode()</code>
      * @return this HashCodeBuilder, used to chain calls.
-     * @since 2.0
+     * @since 2.0.0
      */
     public HashCodeBuilder appendSuper(final int superHashCode) {
         iTotal = iTotal * iConstant + superHashCode;
@@ -886,7 +886,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * Returns the computed <code>hashCode</code>.
      *
      * @return <code>hashCode</code> based on the fields appended
-     * @since 3.0
+     * @since 3.0.0
      */
     @Override
     public Integer build() {
@@ -900,7 +900,7 @@ public class HashCodeBuilder implements Builder<Integer> {
      * HashCodeBuilder itself is.</p>
      *
      * @return <code>hashCode</code> based on the fields appended
-     * @since 2.5
+     * @since 2.5.0
      */
     @Override
     public int hashCode() {

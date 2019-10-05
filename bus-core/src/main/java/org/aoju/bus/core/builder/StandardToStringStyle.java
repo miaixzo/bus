@@ -33,7 +33,7 @@ package org.aoju.bus.core.builder;
  * program to access.</p>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class StandardToStringStyle extends ToStringStyle {
@@ -77,7 +77,7 @@ public class StandardToStringStyle extends ToStringStyle {
      * <p>Gets whether to output short or long class names.</p>
      *
      * @return the current useShortClassName flag
-     * @since 2.0
+     * @since 2.0.0
      */
     @Override
     public boolean isUseShortClassName() { // NOPMD as this is implementing the abstract class
@@ -88,7 +88,7 @@ public class StandardToStringStyle extends ToStringStyle {
      * <p>Sets whether to output short or long class names.</p>
      *
      * @param useShortClassName the new useShortClassName flag
-     * @since 2.0
+     * @since 2.0.0
      */
     @Override
     public void setUseShortClassName(final boolean useShortClassName) { // NOPMD as this is implementing the abstract class
@@ -343,7 +343,7 @@ public class StandardToStringStyle extends ToStringStyle {
      * of each buffer.</p>
      *
      * @return the fieldSeparatorAtStart flag
-     * @since 2.0
+     * @since 2.0.0
      */
     @Override
     public boolean isFieldSeparatorAtStart() { // NOPMD as this is implementing the abstract class
@@ -355,7 +355,7 @@ public class StandardToStringStyle extends ToStringStyle {
      * of each buffer.</p>
      *
      * @param fieldSeparatorAtStart the fieldSeparatorAtStart flag
-     * @since 2.0
+     * @since 2.0.0
      */
     @Override
     public void setFieldSeparatorAtStart(final boolean fieldSeparatorAtStart) { // NOPMD as this is implementing the abstract class
@@ -367,7 +367,7 @@ public class StandardToStringStyle extends ToStringStyle {
      * of each buffer.</p>
      *
      * @return fieldSeparatorAtEnd flag
-     * @since 2.0
+     * @since 2.0.0
      */
     @Override
     public boolean isFieldSeparatorAtEnd() { // NOPMD as this is implementing the abstract class
@@ -379,7 +379,7 @@ public class StandardToStringStyle extends ToStringStyle {
      * of each buffer.</p>
      *
      * @param fieldSeparatorAtEnd the fieldSeparatorAtEnd flag
-     * @since 2.0
+     * @since 2.0.0
      */
     @Override
     public void setFieldSeparatorAtEnd(final boolean fieldSeparatorAtEnd) { // NOPMD as this is implementing the abstract class

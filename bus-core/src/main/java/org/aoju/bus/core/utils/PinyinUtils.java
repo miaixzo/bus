@@ -38,7 +38,7 @@ import java.util.*;
  * 注意：部分拼音并不准确，例如：怡
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class PinyinUtils {
@@ -332,6 +332,17 @@ public class PinyinUtils {
      */
     public static boolean isTraditional(char c) {
         return DICT_CHINESE.containsKey(String.valueOf(c));
+    }
+
+    /**
+     * 判断某个字符是否为汉字
+     *
+     * @param c 需要判断的字符
+     * @return 是汉字返回true，否则返回false
+     */
+    public static boolean isChinese(String c) {
+        String regex = "[\\u4e00-\\u9fa5]";
+        return String.valueOf(c).matches(regex);
     }
 
     /**

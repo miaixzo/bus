@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.http;
 
+import org.aoju.bus.http.offers.CipherSuite;
+
 import java.io.IOException;
 
 /**
@@ -35,7 +37,7 @@ import java.io.IOException;
  * are framed.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public enum Protocol {

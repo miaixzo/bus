@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 import org.aoju.bus.sensitive.annotation.Condition;
 import org.aoju.bus.sensitive.annotation.Entry;
-import org.aoju.bus.sensitive.annotation.Field;
+import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.ConditionProvider;
 import org.aoju.bus.sensitive.provider.StrategyProvider;
 
@@ -47,7 +47,7 @@ import java.util.List;
  * 因为 FastJSON 本身的转换问题，如果对象中存储的是集合对象列表，会导致显示不是信息本身。
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilter {
@@ -66,7 +66,6 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
      *
      * @param annotations 字段上的注解
      * @return 对应的用户自定义条件
-     * @since 0.0.6
      */
     private static ConditionProvider getConditionOpt(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
@@ -164,7 +163,6 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
      *
      * @param context 上下文
      * @param field   当前字段
-     * @since 0.0.6
      */
     private Object handleSensitive(final Context context,
                                    final java.lang.reflect.Field field) {
@@ -173,7 +171,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             final Object originalFieldVal = context.getEntry();
 
             //处理 @Sensitive
-            Field sensitive = field.getAnnotation(Field.class);
+            Shield sensitive = field.getAnnotation(Shield.class);
             if (ObjectUtils.isNotNull(sensitive)) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
                 ConditionProvider condition = conditionClass.newInstance();
@@ -215,7 +213,6 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
      *
      * @param fieldTypeClass 字段类型
      * @return 是否
-     * @since 0.0.6
      */
     private boolean isBaseType(final Class fieldTypeClass) {
         if (TypeUtils.isBase(fieldTypeClass)) {

@@ -23,9 +23,11 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.annotation.Shield;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 签约协议号脱敏方式
@@ -33,20 +35,27 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 签约协议号脱敏格式为前6位后6位保留明文，中间脱敏
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class PayStrategy implements StrategyProvider {
+public class PayStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        if (object == null) {
+        if (ObjectUtils.isEmpty(object)) {
             return null;
         }
-        // Mode mode = this.builder.getMode();
-
+        final Shield shield = context.getShield();
         String agreementNo = object.toString();
-        return StringUtils.left(agreementNo, 6).concat(StringUtils.removeStart(StringUtils.leftPad(StringUtils.right(agreementNo, 6), StringUtils.length(agreementNo), "*"), "***"));
+        return StringUtils.left(agreementNo, 6).concat(
+                StringUtils.removeStart(
+                        StringUtils.leftPad(
+                                StringUtils.right(agreementNo, 6),
+                                StringUtils.length(agreementNo), shield.shadow()
+                        ),
+                        StringUtils.fill(3, shield.shadow())
+                )
+        );
     }
 
 }

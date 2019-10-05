@@ -39,7 +39,7 @@ import java.util.Properties;
  * http://blog.csdn.net/zhongweijian/article/details/7619383
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class HealthUtils {
@@ -355,7 +355,7 @@ public class HealthUtils {
      * @param value   值
      */
     protected static void append(StringBuilder builder, String caption, Object value) {
-        builder.append(caption).append(StringUtils.nullToDefault( Convert.toString(value), "[n/a]")).append("\n");
+        builder.append(caption).append(StringUtils.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
     }
 
 }

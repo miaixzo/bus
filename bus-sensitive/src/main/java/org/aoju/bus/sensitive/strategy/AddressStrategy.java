@@ -23,9 +23,11 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.annotation.Shield;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 收货地址脱敏处理类
@@ -33,30 +35,29 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 例子：北京市海淀区****
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class AddressStrategy implements StrategyProvider {
-
-    private static final int RIGHT = 10;
-    private static final int LEFT = 6;
+public class AddressStrategy extends AbstractProvider {
 
     @Override
     public String build(Object object, Context context) {
-        if (object == null) {
+        if (ObjectUtils.isEmpty(object)) {
             return null;
         }
-        //Mode mode = this.builder.getMode();
+        final int RIGHT = 10;
+        final int LEFT = 6;
 
+        final Shield shield = context.getShield();
         String address = object.toString();
         int length = StringUtils.length(address);
         if (length > RIGHT + LEFT) {
-            return StringUtils.rightPad(StringUtils.left(address, length - RIGHT), length, "*");
+            return StringUtils.rightPad(StringUtils.left(address, length - RIGHT), length, shield.shadow());
         }
         if (length <= LEFT) {
             return address;
         } else {
-            return address.substring(0, LEFT + 1).concat("*****");
+            return address.substring(0, LEFT + 1).concat(StringUtils.fill(5, shield.shadow()));
         }
     }
 

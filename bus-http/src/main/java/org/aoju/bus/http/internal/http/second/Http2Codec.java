@@ -23,16 +23,14 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.segment.Sink;
-import org.aoju.bus.core.io.segment.Source;
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.core.io.segment.ForwardingSource;
+import org.aoju.bus.core.io.segment.*;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.internal.Internal;
-import org.aoju.bus.http.internal.connection.StreamAllocation;
+import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.bodys.ResponseBody;
+import org.aoju.bus.http.header.Headers;
 import org.aoju.bus.http.internal.http.*;
+import org.aoju.bus.http.offers.Interceptor;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -45,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * Encode requests and responses using HTTP/2 frames.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Http2Codec implements HttpCodec {
@@ -87,7 +85,7 @@ public final class Http2Codec implements HttpCodec {
     private final Protocol protocol;
     private Http2Stream stream;
 
-    public Http2Codec(HttpClient client, Interceptor.Chain chain, StreamAllocation streamAllocation,
+    public Http2Codec(Client client, Interceptor.Chain chain, StreamAllocation streamAllocation,
                       Http2Connection connection) {
         this.chain = chain;
         this.streamAllocation = streamAllocation;

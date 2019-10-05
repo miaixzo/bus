@@ -23,9 +23,11 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.annotation.Shield;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 银行卡号脱敏
@@ -33,20 +35,26 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 6227 0383 3938 3938 393 脱敏结果: 6227 **** **** ***8 393
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class BandCardStrategy implements StrategyProvider {
+public class BandCardStrategy extends AbstractProvider {
 
     @Override
     public String build(Object object, Context context) {
-        if (object == null) {
+        if (ObjectUtils.isEmpty(object)) {
             return null;
         }
-        //Mode mode = this.builder.getMode();
-
+        final Shield shield = context.getShield();
         String bankCard = object.toString();
-        return StringUtils.left(bankCard, 4).concat(StringUtils.removeStart(StringUtils.leftPad(StringUtils.right(bankCard, 4), StringUtils.length(bankCard), "*"), "***"));
+        return StringUtils.left(bankCard, 4).concat(
+                StringUtils.removeStart(
+                        StringUtils.leftPad(
+                                StringUtils.right(bankCard, 4),
+                                StringUtils.length(bankCard), shield.shadow()
+                        ),
+                        StringUtils.fill(3, shield.shadow())
+                ));
     }
 
 }

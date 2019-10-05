@@ -25,15 +25,17 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.segment.AsyncTimeout;
 import org.aoju.bus.core.io.segment.Timeout;
+import org.aoju.bus.http.accord.ConnectInterceptor;
+import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.accord.platform.Platform;
+import org.aoju.bus.http.cache.CacheInterceptor;
 import org.aoju.bus.http.internal.NamedRunnable;
-import org.aoju.bus.http.internal.cache.CacheInterceptor;
-import org.aoju.bus.http.internal.connection.ConnectInterceptor;
-import org.aoju.bus.http.internal.connection.StreamAllocation;
 import org.aoju.bus.http.internal.http.BridgeInterceptor;
 import org.aoju.bus.http.internal.http.CallServerInterceptor;
 import org.aoju.bus.http.internal.http.RealInterceptorChain;
 import org.aoju.bus.http.internal.http.RetryAndFollowUpInterceptor;
-import org.aoju.bus.http.internal.platform.Platform;
+import org.aoju.bus.http.offers.EventListener;
+import org.aoju.bus.http.offers.Interceptor;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -43,23 +45,23 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.aoju.bus.http.internal.platform.Platform.INFO;
+import static org.aoju.bus.http.accord.platform.Platform.INFO;
 
 /**
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-final class RealCall implements Call {
+public final class RealCall implements Call {
 
-    final HttpClient client;
-    final RetryAndFollowUpInterceptor retryAndFollowUpInterceptor;
-    final AsyncTimeout timeout;
+    public final Client client;
+    public final RetryAndFollowUpInterceptor retryAndFollowUpInterceptor;
+    public final AsyncTimeout timeout;
     /**
      * The application's original request unadulterated by redirects or auth headers.
      */
-    final Request originalRequest;
-    final boolean forWebSocket;
+    public final Request originalRequest;
+    public final boolean forWebSocket;
     /**
      * There is a cycle between the {@link Call} and {@link EventListener} that makes this awkward.
      * This will be set after we create the call instance then create the event listener instance.
@@ -68,7 +70,7 @@ final class RealCall implements Call {
     // Guarded by this.
     private boolean executed;
 
-    private RealCall(HttpClient client, Request originalRequest, boolean forWebSocket) {
+    private RealCall(Client client, Request originalRequest, boolean forWebSocket) {
         this.client = client;
         this.originalRequest = originalRequest;
         this.forWebSocket = forWebSocket;
@@ -82,7 +84,7 @@ final class RealCall implements Call {
         this.timeout.timeout(client.callTimeoutMillis(), MILLISECONDS);
     }
 
-    static RealCall newRealCall(HttpClient client, Request originalRequest, boolean forWebSocket) {
+    static RealCall newRealCall(Client client, Request originalRequest, boolean forWebSocket) {
         // Safely publish the Call instance to the EventListener.
         RealCall call = new RealCall(client, originalRequest, forWebSocket);
         call.eventListener = client.eventListenerFactory().create(call);
@@ -206,7 +208,8 @@ final class RealCall implements Call {
         return chain.proceed(originalRequest);
     }
 
-    final class AsyncCall extends NamedRunnable {
+    public final class AsyncCall extends NamedRunnable {
+
         private final Callback responseCallback;
 
         AsyncCall(Callback responseCallback) {
@@ -214,23 +217,25 @@ final class RealCall implements Call {
             this.responseCallback = responseCallback;
         }
 
-        String host() {
+        public String host() {
             return originalRequest.url().host();
         }
 
-        Request request() {
+        public Request request() {
             return originalRequest;
         }
 
-        RealCall get() {
+        public RealCall get() {
             return RealCall.this;
         }
 
         /**
          * Attempt to enqueue this async call on {@code executorService}. This will attempt to clean up
          * if the executor has been shut down by reporting the call as failed.
+         *
+         * @param executorService the executor
          */
-        void executeOn(ExecutorService executorService) {
+        public void executeOn(ExecutorService executorService) {
             assert (!Thread.holdsLock(client.dispatcher()));
             boolean success = false;
             try {

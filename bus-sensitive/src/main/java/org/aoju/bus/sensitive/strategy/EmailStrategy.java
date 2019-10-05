@@ -28,7 +28,8 @@ import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.annotation.Shield;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 邮箱脱敏策略
@@ -36,10 +37,10 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 保留前三位，中间隐藏4位。其他正常显示
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class EmailStrategy implements StrategyProvider {
+public class EmailStrategy extends AbstractProvider {
 
     /**
      * 脱敏邮箱
@@ -47,7 +48,7 @@ public class EmailStrategy implements StrategyProvider {
      * @param email 邮箱
      * @return 结果
      */
-    public static String email(final String email) {
+    private static String email(final String email, final String shadow) {
         if (StringUtils.isEmpty(email)) {
             return null;
         }
@@ -55,18 +56,22 @@ public class EmailStrategy implements StrategyProvider {
         final int prefixLength = 3;
 
         final int atIndex = email.indexOf(Symbol.AT);
-        String middle = "****";
+        String middle = StringUtils.fill(4, shadow);
 
         if (atIndex > 0) {
             int middleLength = atIndex - prefixLength;
-            middle = StringUtils.repeat(Symbol.STAR, middleLength);
+            middle = StringUtils.repeat(shadow, middleLength);
         }
         return StringUtils.buildString(email, middle, prefixLength);
     }
 
     @Override
     public Object build(Object object, Context context) {
-        return this.email(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString());
+        if (ObjectUtils.isEmpty(object)) {
+            return null;
+        }
+        final Shield shield = context.getShield();
+        return this.email(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
     }
 
 }

@@ -59,7 +59,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Setting extends AbsSetting implements Map<String, String> {
@@ -443,7 +443,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 被删除的值，如果值不存在，返回null
      */
     public String remove(String group, Object key) {
-        return this.groupedMap.remove(group,  Convert.toString(key));
+        return this.groupedMap.remove(group, Convert.toString(key));
     }
 
     /**
@@ -525,7 +525,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public boolean containsKey(Object key) {
-        return this.groupedMap.containsKey(Normal.EMPTY,  Convert.toString(key));
+        return this.groupedMap.containsKey(Normal.EMPTY, Convert.toString(key));
     }
 
     /**
@@ -536,7 +536,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public boolean containsValue(Object value) {
-        return this.groupedMap.containsValue(Normal.EMPTY,  Convert.toString(value));
+        return this.groupedMap.containsValue(Normal.EMPTY, Convert.toString(value));
     }
 
     /**
@@ -547,7 +547,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String get(Object key) {
-        return this.groupedMap.get(Normal.EMPTY,  Convert.toString(key));
+        return this.groupedMap.get(Normal.EMPTY, Convert.toString(key));
     }
 
     /**
@@ -570,7 +570,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String remove(Object key) {
-        return this.groupedMap.remove(Normal.EMPTY,  Convert.toString(key));
+        return this.groupedMap.remove(Normal.EMPTY, Convert.toString(key));
     }
 
     /**

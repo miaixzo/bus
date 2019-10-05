@@ -23,10 +23,15 @@
  */
 package org.aoju.bus.http.internal.http;
 
-import org.aoju.bus.http.*;
-import org.aoju.bus.http.internal.Internal;
-import org.aoju.bus.http.internal.connection.RealConnection;
-import org.aoju.bus.http.internal.connection.StreamAllocation;
+import org.aoju.bus.http.Call;
+import org.aoju.bus.http.Internal;
+import org.aoju.bus.http.Request;
+import org.aoju.bus.http.Response;
+import org.aoju.bus.http.accord.Connection;
+import org.aoju.bus.http.accord.RealConnection;
+import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.offers.EventListener;
+import org.aoju.bus.http.offers.Interceptor;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  * interceptors, the httpClient core, all network interceptors, and finally the network caller.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class RealInterceptorChain implements Interceptor.Chain {

@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 校验器注册中心
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Registry {
@@ -50,26 +50,36 @@ public class Registry {
     private static Registry instance;
 
     static {
+        register(Builder._ALWAYS, new AlwaysStrategy());
         register(Builder._BLANK, new BlankStrategy());
+        register(Builder._CHINESE, new ChineseStrategy());
+        register(Builder._CITIZENID, new CitizenIdStrategy());
+        register(Builder._DATE, new DateStrategy());
         register(Builder._EACH, new EachStrategy());
+        register(Builder._EMAIL, new EmailStrategy());
+        register(Builder._ENGLISH, new EnglishStrategy());
         register(Builder._EQUALS, new EqualsStrategy());
         register(Builder._FALSE, new FalseStrategy());
-        register(Builder._IN, new InStrategy());
         register(Builder._IN_ENUM, new InEnumStrategy());
+        register(Builder._IN, new InStrategy());
         register(Builder._INT_RANGE, new IntRangeStrategy());
+        register(Builder._IP_ADDRESS, new IPAddressStrategy());
         register(Builder._LENGTH, new LengthStrategy());
+        register(Builder._MOBILE, new MobileStrategy());
         register(Builder._MULTI, new MultiStrategy());
         register(Builder._NOT_BLANK, new NotBlankStrategy());
         register(Builder._NOT_IN, new NotInStrategy());
         register(Builder._NOT_NULL, new NotNullStrategy());
         register(Builder._NULL, new NullStrategy());
+        register(Builder._PHONE, new PhoneStrategy());
         register(Builder._REFLECT, new ReflectStrategy());
         register(Builder._REGEX, new RegexStrategy());
         register(Builder._TRUE, new TrueStrategy());
-        register(Builder._ALWAYS, new AlwaysStrategy());
+
     }
 
     public Registry() {
+
     }
 
     /**

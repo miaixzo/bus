@@ -32,7 +32,7 @@ import org.springframework.beans.MutablePropertyValues;
  * <p>Description: </p>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public abstract class AbstractRegistrarInterceptor extends AbstractInterceptor {

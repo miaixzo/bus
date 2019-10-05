@@ -29,9 +29,10 @@ import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
-import org.aoju.bus.sensitive.annotation.JSON;
+import org.aoju.bus.sensitive.annotation.NShield;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
+import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.spring.SpringContextAware;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
@@ -53,7 +54,7 @@ import java.util.Properties;
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -154,15 +155,15 @@ public class SensitiveStatementHandler implements Interceptor {
     }
 
     private Object handleSensitive(Field field, Object value) {
-        org.aoju.bus.sensitive.annotation.Field sensitiveField = field.getAnnotation(org.aoju.bus.sensitive.annotation.Field.class);
+        Shield sensitiveField = field.getAnnotation(Shield.class);
         if (ObjectUtils.isNotEmpty(sensitiveField)) {
             value = Builder.on(value);
         }
-        JSON json = field.getAnnotation(JSON.class);
+        NShield json = field.getAnnotation(NShield.class);
         if (ObjectUtils.isNotEmpty(json) && ObjectUtils.isNotEmpty(value)) {
             Map<String, Object> map = Provider.parseToObjectMap(value.toString());
-            org.aoju.bus.sensitive.annotation.Field[] keys = json.value();
-            for (org.aoju.bus.sensitive.annotation.Field f : keys) {
+            Shield[] keys = json.value();
+            for (Shield f : keys) {
                 String key = f.key();
                 Object data = map.get(key);
                 if (data != null) {

@@ -30,7 +30,7 @@ import org.aoju.bus.logger.LogFactory;
  * 利用System.out.println()打印日志
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class ConsoleLogFactory extends LogFactory {

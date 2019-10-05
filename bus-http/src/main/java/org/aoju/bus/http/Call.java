@@ -24,6 +24,7 @@
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.segment.Timeout;
+import org.aoju.bus.http.bodys.ResponseBody;
 
 import java.io.IOException;
 
@@ -32,7 +33,7 @@ import java.io.IOException;
  * represents a single request/response pair (stream), it cannot be executed twice.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public interface Call extends Cloneable {
@@ -76,7 +77,7 @@ public interface Call extends Cloneable {
     /**
      * Schedules the request to be executed at some point in the future.
      *
-     * <p>The {@link HttpClient#dispatcher dispatcher} defines when the request will run: usually
+     * <p>The {@link Client#dispatcher dispatcher} defines when the request will run: usually
      * immediately unless there are several other requests currently being executed.
      *
      * <p>This client will later call back {@code responseCallback} with either an HTTP response or a
@@ -106,7 +107,7 @@ public interface Call extends Cloneable {
      * body, server processing, and reading the response body. If the call requires redirects or
      * retries all must complete within one timeout period.
      *
-     * <p>Configure the client's default timeout with {@link HttpClient.Builder#callTimeout}.
+     * <p>Configure the client's default timeout with {@link Client.Builder#callTimeout}.
      *
      * @return the Timeout
      */

@@ -40,7 +40,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class ObjectUtils {
@@ -202,6 +202,36 @@ public class ObjectUtils {
      */
     public static <T> T defaultIfNull(final T object, final T defaultValue) {
         return (null != object) ? object : defaultValue;
+    }
+
+    /**
+     * 判断对象为true
+     *
+     * @param object 对象
+     * @return 对象是否为true
+     */
+    public static boolean isTrue(Boolean object) {
+        return Boolean.TRUE.equals(object);
+    }
+
+    /**
+     * 判断对象为false
+     *
+     * @param object 对象
+     * @return 对象是否为false
+     */
+    public static boolean isFalse(Boolean object) {
+        return object == null || Boolean.FALSE.equals(object);
+    }
+
+    /**
+     * 确定给定的对象是一个数组:对象数组还是基元数组
+     *
+     * @param object 要检查的对象
+     * @return the true/false
+     */
+    public static boolean isArray(Object object) {
+        return (object != null && object.getClass().isArray());
     }
 
     /**
@@ -1110,7 +1140,7 @@ public class ObjectUtils {
      *
      * @param buffer the buffer to append to
      * @param object the object to create a toString for
-     * @since 2.4
+     * @since 2.4.0
      */
     public static void identityToString(final StringBuffer buffer, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");

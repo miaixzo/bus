@@ -34,7 +34,7 @@ import java.util.List;
  * 处理 Order by
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class OrderByParser {
@@ -47,10 +47,8 @@ public class OrderByParser {
      * @return the string
      */
     public static String converToOrderBySql(String sql, String orderBy) {
-        //解析SQL
-        Statement stmt = null;
         try {
-            stmt = CCJSqlParserUtil.parse(sql);
+            Statement stmt = CCJSqlParserUtil.parse(sql);
             Select select = (Select) stmt;
             SelectBody selectBody = select.getSelectBody();
             //处理body-去最外层order by

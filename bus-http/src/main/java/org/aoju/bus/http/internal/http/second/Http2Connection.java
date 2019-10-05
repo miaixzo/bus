@@ -29,11 +29,11 @@ import org.aoju.bus.core.io.segment.BufferedSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.Headers;
+import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.Protocol;
-import org.aoju.bus.http.internal.Internal;
+import org.aoju.bus.http.accord.platform.Platform;
+import org.aoju.bus.http.header.Headers;
 import org.aoju.bus.http.internal.NamedRunnable;
-import org.aoju.bus.http.internal.platform.Platform;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -54,7 +54,7 @@ import java.util.concurrent.*;
  * that caller.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Http2Connection implements Closeable {

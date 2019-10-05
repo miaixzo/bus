@@ -61,14 +61,14 @@ public class Entity {
     /**
      * 脱敏的身份证号
      */
-    @Field(field = "idCard",value = Builder.Type.ID_CARD)
+    @Field(field = "idCard",value = Builder.Type.CITIZENID)
     private String idcardSensitive;
     /**
      * 一个json串，需要脱敏
      * SensitiveJSONField标记json中需要脱敏的字段
      */
     @JSON( {
-            @Field(key = "idCard",type = Builder.Type.ID_CARD),
+            @Field(key = "idCard",type = Builder.Type.CITIZENID),
             @Field(key = "name",type = Builder.Type.NAME),
     })
     private String jsonStr;
@@ -115,7 +115,7 @@ public class Entity {
     
     例如：
     @JSON({
-        @Field(key = "idCard",type = Builder.Type.ID_CARD),
+        @Field(key = "idCard",type = Builder.Type.CITIZENID),
         @Field(key = "name",type = Builder.Type.NAME)
        })
     private String jsonStr;
@@ -171,7 +171,7 @@ public class Entity {
        /**
         * 身份证号
         */
-       ID_CARD,
+       CITIZENID,
        /**
         * 座机号
         */

@@ -33,7 +33,7 @@ import java.lang.annotation.Annotation;
  * 2.主要供单独的字符串处理使用
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Builder {
@@ -73,7 +73,6 @@ public final class Builder {
      * @param object 原始对象
      * @param <T>    泛型
      * @return 脱敏后的对象
-     * @since 0.0.4 以前用的是单例。建议使用 spring 等容器管理 Provider 实现。
      */
     public static <T> T on(Object object) {
         return on(object, null);
@@ -89,7 +88,6 @@ public final class Builder {
      * @param annotation 注解信息
      * @param <T>        泛型
      * @return 脱敏后的对象
-     * @since 0.0.4 以前用的是单例。建议使用 spring 等容器管理 Provider 实现。
      */
     public static <T> T on(Object object, Annotation annotation) {
         return (T) Instances.singletion(Provider.class).on(object, annotation);
@@ -101,7 +99,6 @@ public final class Builder {
      *
      * @param object 对象
      * @return 结果 json
-     * @since 0.0.6
      */
     public static String json(Object object) {
         return Instances.singletion(Provider.class).json(object, null);
@@ -140,7 +137,7 @@ public final class Builder {
         /**
          * 身份证号
          */
-        ID_CARD,
+        CITIZENID,
         /**
          * 座机号
          */

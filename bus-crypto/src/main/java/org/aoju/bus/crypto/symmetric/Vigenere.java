@@ -28,7 +28,7 @@ package org.aoju.bus.crypto.symmetric;
  * 人们在恺撒移位密码的基础上扩展出多表密码，称为维吉尼亚密码
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Vigenere {

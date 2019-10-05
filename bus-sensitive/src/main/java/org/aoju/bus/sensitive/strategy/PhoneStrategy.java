@@ -27,17 +27,18 @@ import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.annotation.Shield;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 手机号脱敏
  * 脱敏规则：180****1120
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class PhoneStrategy implements StrategyProvider {
+public class PhoneStrategy extends AbstractProvider {
 
     /**
      * 脱敏电话号码
@@ -45,15 +46,19 @@ public class PhoneStrategy implements StrategyProvider {
      * @param phone 电话号码
      * @return 结果
      */
-    public static String phone(final String phone) {
+    private static String phone(final String phone, final String shadow) {
         final int prefixLength = 3;
-        final String middle = "****";
+        final String middle = StringUtils.fill(4, shadow);
         return StringUtils.buildString(phone, middle, prefixLength);
     }
 
     @Override
     public Object build(Object object, Context context) {
-        return this.phone(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString());
+        if (ObjectUtils.isEmpty(object)) {
+            return null;
+        }
+        final Shield shield = context.getShield();
+        return this.phone(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
     }
 
 }

@@ -31,7 +31,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * 2. 当前类出于测试阶段。
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public interface Instance {
@@ -90,7 +90,6 @@ public interface Instance {
      * @param clazz class 类型
      * @param <T>   泛型
      * @return 实例化对象
-     * @since 0.1.3
      */
     <T> T threadSafe(final Class<T> clazz);
 

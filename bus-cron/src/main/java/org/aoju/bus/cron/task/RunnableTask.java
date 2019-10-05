@@ -27,7 +27,7 @@ package org.aoju.bus.cron.task;
  * {@link Runnable} 的 {@link Task}包装
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class RunnableTask implements Task {

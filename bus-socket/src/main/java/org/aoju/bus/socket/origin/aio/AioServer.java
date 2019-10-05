@@ -39,7 +39,7 @@ import java.nio.channels.AsynchronousServerSocketChannel;
  * 基于AIO的Socket服务端实现
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class AioServer {

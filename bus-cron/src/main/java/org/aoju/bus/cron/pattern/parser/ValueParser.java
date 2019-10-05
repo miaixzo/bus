@@ -28,7 +28,7 @@ package org.aoju.bus.cron.pattern.parser;
  * 值处理用于限定表达式中相应位置的值范围，并转换表达式值为int值
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public interface ValueParser {

@@ -25,6 +25,7 @@ package org.aoju.bus.sensitive;
 
 import lombok.Data;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.sensitive.annotation.Shield;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import java.util.List;
  * 脱敏的执行上下文
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 @Data
@@ -56,16 +57,17 @@ public class Context {
     private List<Field> allFieldList = new ArrayList<>();
 
     /**
+     * 当前注解
+     */
+    private Shield shield;
+
+    /**
      * 类信息
-     *
-     * @since 0.0.6
      */
     private Class beanClass;
 
     /**
      * 明细信息
-     *
-     * @since 0.0.6
      */
     private Object entry;
 
@@ -73,7 +75,6 @@ public class Context {
      * 新建一个对象实例
      *
      * @return this
-     * @since 0.0.6
      */
     public static Context newInstance() {
         return new Context();
@@ -83,7 +84,6 @@ public class Context {
      * 获取当前字段名称
      *
      * @return 字段名称
-     * @since 0.0.4
      */
     public String getCurrentFieldName() {
         return this.currentField.getName();
@@ -94,7 +94,6 @@ public class Context {
      * 获取当前字段值
      *
      * @return 字段值
-     * @since 0.0.4
      */
     public Object getCurrentFieldValue() {
         try {

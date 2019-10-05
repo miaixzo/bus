@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.http;
 
-import org.aoju.bus.http.internal.Internal;
+import org.aoju.bus.http.Internal;
 
 import java.text.DateFormat;
 import java.text.ParsePosition;
@@ -35,7 +35,7 @@ import java.util.Locale;
  * Best-effort parser for HTTP dates.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class HttpDate {

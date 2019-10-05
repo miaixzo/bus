@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>3.6.2</version>
+    <version>3.6.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -63,8 +63,10 @@
         <mybatis.version>3.5.2</mybatis.version>
         <mybatis-spring.version>2.0.1</mybatis-spring.version>
         <persistence.version>2.2</persistence.version>
+        <!--bus-oauth-->
+        <alipay-sdk-version>3.7.4.ALL</alipay-sdk-version>
         <!--bus-pager-->
-        <jsqlparser.version>1.2</jsqlparser.version>
+        <jsqlparser.version>2.0</jsqlparser.version>
         <!--bus-poi-->
         <poi.version>3.17</poi.version>
         <xerces.version>2.12.0</xerces.version>
@@ -333,6 +335,13 @@
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
             <version>${persistence.version}</version>
+        </dependency>
+        <!--bus-oauth-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>${alipay-sdk-version}</version>
+            <optional>true</optional>
         </dependency>
         <!--bus-pager-->
         <dependency>

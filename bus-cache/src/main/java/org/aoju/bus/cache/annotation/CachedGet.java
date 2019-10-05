@@ -28,7 +28,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 @Documented
@@ -39,7 +39,6 @@ public @interface CachedGet {
     /**
      * @return Specifies the Used cache implementation,
      * default the first caches config in CacheAspect
-     * @since 0.3
      */
     String value() default "";
 
@@ -47,14 +46,12 @@ public @interface CachedGet {
      * @return Specifies the start keyExp on every key,
      * if the  Method have non param,
      * keyExp is the consts key used by this Method
-     * @since 0.3
      */
     String prefix() default "";
 
     /**
      * @return the string
      * when this spel is  true, this Method will go through by cache
-     * @since 0.3
      */
     String condition() default "";
 }

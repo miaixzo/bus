@@ -46,16 +46,16 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
  * 字符串处理类
- * <p>
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class StringUtils extends TextUtils {
@@ -982,7 +982,7 @@ public class StringUtils extends TextUtils {
      * @param str2       要比较的字符串2
      * @param ignoreCase 是否忽略大小写
      * @return 如果两个字符串相同，或者都是null，则返回true
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static boolean equals(CharSequence str1, CharSequence str2, boolean ignoreCase) {
         if (null == str1) {
@@ -1352,7 +1352,7 @@ public class StringUtils extends TextUtils {
      * @param separator   分隔符字符
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static List<String> splitTrim(String str, char separator, boolean ignoreEmpty) {
         return split(str, separator, 0, true, ignoreEmpty);
@@ -1365,7 +1365,7 @@ public class StringUtils extends TextUtils {
      * @param separator   分隔符字符串
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static List<String> splitTrim(String str, String separator, boolean ignoreEmpty) {
         return split(str, separator, true, ignoreEmpty);
@@ -1392,7 +1392,7 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static List<String> splitTrim(String str, String separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty);
@@ -1407,7 +1407,7 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static List<String> splitIgnoreCase(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, true);
@@ -1422,7 +1422,7 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static List<String> splitIgnoreCase(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, true);
@@ -1436,7 +1436,7 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static List<String> splitTrimIgnoreCase(String str, String separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty, true);
@@ -1769,7 +1769,7 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
         if (isEmpty(str)) {
@@ -1806,7 +1806,7 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
         if (isEmpty(str)) {
@@ -2059,7 +2059,7 @@ public class StringUtils extends TextUtils {
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
         return indexOfIgnoreCase(str, searchStr, 0);
@@ -2086,7 +2086,7 @@ public class StringUtils extends TextUtils {
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置
      * @return 位置
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
         return indexOf(str, searchStr, fromIndex, true);
@@ -2100,7 +2100,7 @@ public class StringUtils extends TextUtils {
      * @param fromIndex  起始位置
      * @param ignoreCase 是否忽略大小写
      * @return 位置
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
         if (str == null || searchStr == null) {
@@ -2137,7 +2137,7 @@ public class StringUtils extends TextUtils {
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
         return lastIndexOfIgnoreCase(str, searchStr, str.length());
@@ -2150,7 +2150,7 @@ public class StringUtils extends TextUtils {
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置，从后往前计数
      * @return 位置
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
         return lastIndexOf(str, searchStr, fromIndex, true);
@@ -2164,7 +2164,7 @@ public class StringUtils extends TextUtils {
      * @param fromIndex  起始位置，从后往前计数
      * @param ignoreCase 是否忽略大小写
      * @return 位置
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static int lastIndexOf(final CharSequence str, final CharSequence searchStr, int fromIndex, boolean ignoreCase) {
         if (str == null || searchStr == null) {
@@ -2246,7 +2246,7 @@ public class StringUtils extends TextUtils {
      * @param length     截取长度
      * @param ignoreCase 是否忽略大小写
      * @return 子串是否相同
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static boolean isSubEquals(CharSequence str1, int start1, CharSequence str2, int start2, int length, boolean ignoreCase) {
         if (null == str1 || null == str2) {
@@ -2442,7 +2442,7 @@ public class StringUtils extends TextUtils {
      * @param remove the String to search for and remove, may be null
      * @return the substring with the string removed if found,
      * {@code null} if null String input
-     * @since 2.1
+     * @since 2.1.0
      */
     public static String removeStart(final String str, final String remove) {
         if (isEmpty(str) || isEmpty(remove)) {
@@ -2770,7 +2770,7 @@ public class StringUtils extends TextUtils {
      * @param remove the String to search for and remove, may be null
      * @return the substring with the string removed if found,
      * {@code null} if null String input
-     * @since 2.1
+     * @since 2.1.0
      */
     public static String remove(final String str, final String remove) {
         if (isEmpty(str) || isEmpty(remove)) {
@@ -2798,7 +2798,7 @@ public class StringUtils extends TextUtils {
      *               null
      * @return the substring with the string removed if found, {@code null} if
      * null String input
-     * @since 3.5
+     * @since 3.5.0
      */
     public static String removeIgnoreCase(final String str, final String remove) {
         if (isEmpty(str) || isEmpty(remove)) {
@@ -2821,7 +2821,7 @@ public class StringUtils extends TextUtils {
      * @param remove the char to search for and remove, may be null
      * @return the substring with the char removed if found,
      * {@code null} if null String input
-     * @since 2.1
+     * @since 2.1.0
      */
     public static String remove(final String str, final char remove) {
         if (isEmpty(str) || str.indexOf(remove) == INDEX_NOT_FOUND) {
@@ -2861,7 +2861,7 @@ public class StringUtils extends TextUtils {
      * @see String#replaceAll(String, String)
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
-     * @since 3.5
+     * @since 3.5.0
      */
     public static String removeAll(final String text, final String regex) {
         return replaceAll(text, regex, Normal.EMPTY);
@@ -2890,7 +2890,7 @@ public class StringUtils extends TextUtils {
      * @see String#replaceFirst(String, String)
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
-     * @since 3.5
+     * @since 3.5.0
      */
     public static String removeFirst(final String text, final String regex) {
         return replaceFirst(text, regex, Normal.EMPTY);
@@ -2922,7 +2922,7 @@ public class StringUtils extends TextUtils {
      * @see String#replaceAll(String, String)
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
-     * @since 3.5
+     * @since 3.5.0
      */
     public static String replaceAll(final String text, final String regex, final String replacement) {
         if (text == null || regex == null || replacement == null) {
@@ -2957,7 +2957,7 @@ public class StringUtils extends TextUtils {
      * @see String#replaceFirst(String, String)
      * @see java.util.regex.Pattern
      * @see java.util.regex.Pattern#DOTALL
-     * @since 3.5
+     * @since 3.5.0
      */
     public static String replaceFirst(final String text, final String regex, final String replacement) {
         if (text == null || regex == null || replacement == null) {
@@ -3006,7 +3006,7 @@ public class StringUtils extends TextUtils {
      * @return the text with any replacements processed,
      * {@code null} if null String input
      * @see #replaceIgnoreCase(String text, String searchString, String replacement, int max)
-     * @since 3.5
+     * @since 3.5.0
      */
     public static String replaceIgnoreCase(final String text, final String searchString, final String replacement) {
         return replaceIgnoreCase(text, searchString, replacement, -1);
@@ -3118,7 +3118,7 @@ public class StringUtils extends TextUtils {
      * @param max          maximum number of values to replace, or {@code -1} if no maximum
      * @return the text with any replacements processed,
      * {@code null} if null String input
-     * @since 3.5
+     * @since 3.5.0
      */
     public static String replaceIgnoreCase(final String text, final String searchString, final String replacement, final int max) {
         return replace(text, searchString, replacement, max, true);
@@ -3146,7 +3146,7 @@ public class StringUtils extends TextUtils {
      * null String input
      * @throws IllegalArgumentException if the lengths of the arrays are not the same (null is ok,
      *                                  and/or size 0)
-     * @since 2.4
+     * @since 2.4.0
      */
     public static String replaceEach(final String text, final String[] searchList, final String[] replacementList) {
         return replaceEach(text, searchList, replacementList, false, 0);
@@ -3177,7 +3177,7 @@ public class StringUtils extends TextUtils {
      *                                  to outputs of one being inputs to another
      * @throws IllegalArgumentException if the lengths of the arrays are not the same (null is ok,
      *                                  and/or size 0)
-     * @since 2.4
+     * @since 2.4.0
      */
     public static String replaceEachRepeatedly(final String text, final String[] searchList, final String[] replacementList) {
         final int timeToLive = searchList == null ? 0 : searchList.length;
@@ -3214,7 +3214,7 @@ public class StringUtils extends TextUtils {
      *                                  to outputs of one being inputs to another
      * @throws IllegalArgumentException if the lengths of the arrays are not the same (null is ok,
      *                                  and/or size 0)
-     * @since 2.4
+     * @since 2.4.0
      */
     private static String replaceEach(
             final String text, final String[] searchList, final String[] replacementList, final boolean repeat, final int timeToLive) {
@@ -3339,7 +3339,7 @@ public class StringUtils extends TextUtils {
      * @param searchChar  the character to search for, may be null
      * @param replaceChar the character to replace, may be null
      * @return modified String, {@code null} if null string input
-     * @since 2.0
+     * @since 2.0.0
      */
     public static String replaceChars(final String str, final char searchChar, final char replaceChar) {
         if (str == null) {
@@ -3365,7 +3365,7 @@ public class StringUtils extends TextUtils {
      * @param searchChars  a set of characters to search for, may be null
      * @param replaceChars a set of characters to replace, may be null
      * @return modified String, {@code null} if null string input
-     * @since 2.0
+     * @since 2.0.0
      */
     public static String replaceChars(final String str, final String searchChars, String replaceChars) {
         if (isEmpty(str) || isEmpty(searchChars)) {
@@ -3487,7 +3487,7 @@ public class StringUtils extends TextUtils {
      * @param endExclude   结束位置（不包含）
      * @param replacedChar 被替换的字符
      * @return 替换后的字符串
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static String replace(CharSequence str, int startInclude, int endExclude, char replacedChar) {
         if (isEmpty(str)) {
@@ -3536,7 +3536,7 @@ public class StringUtils extends TextUtils {
      * @param chars       需要替换的字符列表，用一个字符串表示这个字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static String replaceChars(CharSequence str, String chars, CharSequence replacedStr) {
         if (isEmpty(str) || isEmpty(chars)) {
@@ -3552,7 +3552,7 @@ public class StringUtils extends TextUtils {
      * @param chars       需要替换的字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static String replaceChars(CharSequence str, char[] chars, CharSequence replacedStr) {
         if (isEmpty(str) || ArrayUtils.isEmpty(chars)) {
@@ -3924,7 +3924,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static boolean containsAny(CharSequence str, CharSequence... testStrs) {
         return null != getContainsStr(str, testStrs);
@@ -3998,7 +3998,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static String getContainsStr(CharSequence str, CharSequence... testStrs) {
         if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {
@@ -4034,7 +4034,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static boolean containsAnyIgnoreCase(CharSequence str, CharSequence... testStrs) {
         return null != getContainsStrIgnoreCase(str, testStrs);
@@ -4047,7 +4047,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static String getContainsStrIgnoreCase(CharSequence str, CharSequence... testStrs) {
         if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {
@@ -4372,7 +4372,7 @@ public class StringUtils extends TextUtils {
      *
      * @param css the CharSequences to check, may be null or empty
      * @return {@code true} if any of the CharSequences are empty or null or whitespace only
-     * @since 3.2
+     * @since 3.2.0
      */
     public static boolean isAnyBlank(final CharSequence... css) {
         if (ArrayUtils.isEmpty(css)) {
@@ -4384,6 +4384,19 @@ public class StringUtils extends TextUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 是否全非 Blank
+     *
+     * @param css CharSequence
+     * @return boolean
+     */
+    public static boolean isNoneBlank(final CharSequence... css) {
+        if (ObjectUtils.isEmpty(css)) {
+            return false;
+        }
+        return Stream.of(css).allMatch(StringUtils::isNotBlank);
     }
 
     /**
@@ -4402,7 +4415,7 @@ public class StringUtils extends TextUtils {
      * @param str the String to be trimmed, may be null
      * @return the trimmed String,
      * {@code null} if only chars &lt;= 32, empty or null String input
-     * @since 2.0
+     * @since 2.0.0
      */
     public static String trimToNull(final String str) {
         final String ts = trim(str);
@@ -4424,7 +4437,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str the String to be trimmed, may be null
      * @return the trimmed String, or an empty String if {@code null} input
-     * @since 2.0
+     * @since 2.0.0
      */
     public static String trimToEmpty(final String str) {
         return str == null ? Normal.EMPTY : str.trim();
@@ -4594,7 +4607,7 @@ public class StringUtils extends TextUtils {
      * @param padChar the character to pad with
      * @return right padded String or original String if no padding is necessary,
      * {@code null} if null String input
-     * @since 2.0
+     * @since 2.0.0
      */
     public static String rightPad(final String str, final int size, final char padChar) {
         if (str == null) {
@@ -4755,7 +4768,7 @@ public class StringUtils extends TextUtils {
      * @param padChar the character to pad with
      * @return left padded String or original String if no padding is necessary,
      * {@code null} if null String input
-     * @since 2.0
+     * @since 2.0.0
      */
     public static String leftPad(final String str, final int size, final char padChar) {
         if (str == null) {
@@ -4840,7 +4853,6 @@ public class StringUtils extends TextUtils {
      * @param middle       中间隐藏信息
      * @param prefixLength 前边信息长度
      * @return 构建后的新字符串
-     * @since 0.0.8
      */
     public static String buildString(final Object original,
                                      final String middle,
@@ -4993,36 +5005,71 @@ public class StringUtils extends TextUtils {
      * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
      * 字符填充于字符串后
      *
-     * @param str        被填充的字符串
-     * @param filledChar 填充的字符
-     * @param len        填充长度
+     * @param strVal  被填充的字符串
+     * @param charVal 填充的字符
+     * @param len     填充长度
      * @return 填充后的字符串
      * @since 3.1.9
      */
-    public static String fillAfter(String str, char filledChar, int len) {
-        return fill(str, filledChar, len, false);
+    public static String fillAfter(String strVal, char charVal, int len) {
+        return fill(strVal, charVal, len, false);
     }
 
     /**
      * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
      *
-     * @param str        被填充的字符串
-     * @param filledChar 填充的字符
-     * @param len        填充长度
-     * @param isPre      是否填充在前
+     * @param strVal  被填充的字符串
+     * @param charVal 填充的字符
+     * @param len     填充长度
+     * @param isPre   是否填充在前
      * @return 填充后的字符串
      * @since 3.1.9
      */
-    public static String fill(String str, char filledChar, int len, boolean isPre) {
-        final int strLen = str.length();
+    public static String fill(String strVal, char charVal, int len, boolean isPre) {
+        final int strLen = strVal.length();
         if (strLen > len) {
-            return str;
+            return strVal;
         }
 
-        String filledStr = repeat(filledChar, len - strLen);
-        return isPre ? filledStr.concat(str) : str.concat(filledStr);
+        String filled = repeat(charVal, len - strLen);
+        return isPre ? filled.concat(strVal) : strVal.concat(filled);
     }
 
+    /**
+     * 输出指定长度字符
+     *
+     * @param count   长度
+     * @param charVal 字符
+     * @return 填充后的字符串
+     */
+    public static String fill(int count, char charVal) {
+        if (count < 0) {
+            throw new IllegalArgumentException("count must be greater than or equal 0.");
+        }
+        char[] chs = new char[count];
+        for (int i = 0; i < count; i++) {
+            chs[i] = charVal;
+        }
+        return new String(chs);
+    }
+
+    /**
+     * 输出指定长度字符
+     *
+     * @param count  长度
+     * @param strVal 字符
+     * @return 填充后的字符串
+     */
+    public static String fill(int count, String strVal) {
+        if (count < 0) {
+            throw new IllegalArgumentException("count must be greater than or equal 0.");
+        }
+        StringBuilder sb = new StringBuilder(count);
+        for (int i = 0; i < count; i++) {
+            sb.append(strVal);
+        }
+        return sb.toString();
+    }
 
     /**
      * 创建StringBuilder对象
@@ -5227,6 +5274,71 @@ public class StringUtils extends TextUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 首字母变小写
+     *
+     * @param str 字符串
+     * @return {String}
+     */
+    public static String firstCharToLower(String str) {
+        char firstChar = str.charAt(0);
+        if (firstChar >= 'A' && firstChar <= 'Z') {
+            char[] arr = str.toCharArray();
+            arr[0] += ('a' - 'A');
+            return new String(arr);
+        }
+        return str;
+    }
+
+    /**
+     * 首字母变大写
+     *
+     * @param str 字符串
+     * @return {String}
+     */
+    public static String firstCharToUpper(String str) {
+        char firstChar = str.charAt(0);
+        if (firstChar >= 'a' && firstChar <= 'z') {
+            char[] arr = str.toCharArray();
+            arr[0] -= ('a' - 'A');
+            return new String(arr);
+        }
+        return str;
+    }
+
+    /**
+     * 清理字符串，清理出某些不可见字符和一些sql特殊字符
+     *
+     * @param txt 文本
+     * @return {String}
+     */
+    public static String cleanText(String txt) {
+        if (txt == null) {
+            return null;
+        }
+        return Pattern.compile("[`'\"|/,;()-+*%#·•�　\\s]").matcher(txt).replaceAll(Normal.EMPTY);
+    }
+
+    /**
+     * 获取标识符，用于参数清理
+     *
+     * @param param 参数
+     * @return 清理后的标识符
+     */
+    public static String cleanIdentifier(String param) {
+        if (param == null) {
+            return null;
+        }
+        StringBuilder paramBuilder = new StringBuilder();
+        for (int i = 0; i < param.length(); i++) {
+            char c = param.charAt(i);
+            if (Character.isJavaIdentifierPart(c)) {
+                paramBuilder.append(c);
+            }
+        }
+        return paramBuilder.toString();
     }
 
 }

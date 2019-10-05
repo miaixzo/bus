@@ -24,11 +24,11 @@
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.annotation.Shield;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 中文名称脱敏策略：
@@ -38,10 +38,10 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
  * 2. 三个及其以上 只保留第一个和最后一个 其他用星号代替
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class NameStrategy implements StrategyProvider {
+public class NameStrategy extends AbstractProvider {
 
     /**
      * 脱敏中文名称
@@ -49,7 +49,7 @@ public class NameStrategy implements StrategyProvider {
      * @param chineseName 中文名称
      * @return 脱敏后的结果
      */
-    public static String name(final String chineseName) {
+    private static String name(final String chineseName, final String shadow) {
         if (StringUtils.isEmpty(chineseName)) {
             return chineseName;
         }
@@ -60,13 +60,13 @@ public class NameStrategy implements StrategyProvider {
         }
 
         if (2 == nameLength) {
-            return Symbol.STAR + chineseName.charAt(1);
+            return shadow + chineseName.charAt(1);
         }
 
         StringBuilder stringBuffer = new StringBuilder();
         stringBuffer.append(chineseName.charAt(0));
         for (int i = 0; i < nameLength - 2; i++) {
-            stringBuffer.append(Symbol.STAR);
+            stringBuffer.append(shadow);
         }
         stringBuffer.append(chineseName.charAt(nameLength - 1));
         return stringBuffer.toString();
@@ -74,7 +74,11 @@ public class NameStrategy implements StrategyProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        return this.name(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString());
+        if (ObjectUtils.isEmpty(object)) {
+            return null;
+        }
+        final Shield shield = context.getShield();
+        return this.name(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
     }
 
 }

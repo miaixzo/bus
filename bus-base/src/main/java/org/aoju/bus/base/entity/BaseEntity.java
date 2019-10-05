@@ -39,7 +39,7 @@ import javax.persistence.Transient;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 @MappedSuperclass
@@ -70,6 +70,10 @@ public class BaseEntity extends Tracer {
     @Transient
     @ApiModelProperty(value = "分页大小", notes = "默认值:20")
     protected Integer pageSize = 20;
+
+    @Transient
+    @ApiModelProperty(value = "数据排序")
+    protected String orderBy;
 
     /**
      * 快速将bean的creator、created附上相关值

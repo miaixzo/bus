@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  * 反射工具
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class MetaObject {
@@ -41,15 +41,22 @@ public class MetaObject {
     static {
         try {
             // 高版本中的 MetaObject.forObject 有 4 个参数，低版本是 1 个
+            //先判断当前使用的是否为高版本
+            Class.forName("org.apache.ibatis.reflection.ReflectorFactory");
             // 下面这个 MetaObjectWithCache 带反射的缓存信息
             Class<?> metaClass = Class.forName("org.aoju.bus.pager.reflect.MetaObjectWithCache");
             method = metaClass.getDeclaredMethod("forObject", Object.class);
         } catch (Throwable e1) {
             try {
-                Class<?> metaClass = Class.forName("org.apache.ibatis.reflection.MetaObject");
+                Class<?> metaClass = Class.forName("org.apache.ibatis.reflection.SystemMetaObject");
                 method = metaClass.getDeclaredMethod("forObject", Object.class);
             } catch (Exception e2) {
-                throw new PageException(e2);
+                try {
+                    Class<?> metaClass = Class.forName("org.apache.ibatis.reflection.MetaObject");
+                    method = metaClass.getDeclaredMethod("forObject", Object.class);
+                } catch (Exception e3) {
+                    throw new PageException(e3);
+                }
             }
         }
 

@@ -24,8 +24,8 @@
 package org.aoju.bus.http.internal.http.second;
 
 import org.aoju.bus.core.io.segment.*;
-import org.aoju.bus.http.Headers;
-import org.aoju.bus.http.internal.Internal;
+import org.aoju.bus.http.Internal;
+import org.aoju.bus.http.header.Headers;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.List;
  * A logical bidirectional stream.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Http2Stream {

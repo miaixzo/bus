@@ -26,9 +26,10 @@ package org.aoju.bus.http.internal.http.first;
 import org.aoju.bus.core.io.segment.*;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.internal.Internal;
-import org.aoju.bus.http.internal.connection.RealConnection;
-import org.aoju.bus.http.internal.connection.StreamAllocation;
+import org.aoju.bus.http.accord.RealConnection;
+import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.bodys.ResponseBody;
+import org.aoju.bus.http.header.Headers;
 import org.aoju.bus.http.internal.http.*;
 
 import java.io.EOFException;
@@ -57,7 +58,7 @@ import java.util.concurrent.TimeUnit;
  * newFixedLengthSource(0)} and may skip reading and closing that source.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Http1Codec implements HttpCodec {
@@ -74,7 +75,7 @@ public final class Http1Codec implements HttpCodec {
     /**
      * The client that configures this stream. May be null for HTTPS proxy tunnels.
      */
-    final HttpClient client;
+    final Client client;
     /**
      * The stream allocation that owns this stream. May be null for HTTPS proxy tunnels.
      */
@@ -85,7 +86,7 @@ public final class Http1Codec implements HttpCodec {
     int state = STATE_IDLE;
     private long headerLimit = HEADER_LIMIT;
 
-    public Http1Codec(HttpClient client, StreamAllocation streamAllocation, BufferedSource source,
+    public Http1Codec(Client client, StreamAllocation streamAllocation, BufferedSource source,
                       BufferedSink sink) {
         this.client = client;
         this.streamAllocation = streamAllocation;
@@ -237,7 +238,7 @@ public final class Http1Codec implements HttpCodec {
         return new FixedLengthSource(length);
     }
 
-    public Source newChunkedSource(HttpUrl url) throws IOException {
+    public Source newChunkedSource(Url url) throws IOException {
         if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
         state = STATE_READING_RESPONSE_BODY;
         return new ChunkedSource(url);
@@ -424,11 +425,11 @@ public final class Http1Codec implements HttpCodec {
     private class ChunkedSource extends AbstractSource {
 
         private static final long NO_CHUNK_YET = -1L;
-        private final HttpUrl url;
+        private final Url url;
         private long bytesRemainingInChunk = NO_CHUNK_YET;
         private boolean hasMoreChunks = true;
 
-        ChunkedSource(HttpUrl url) {
+        ChunkedSource(Url url) {
             this.url = url;
         }
 

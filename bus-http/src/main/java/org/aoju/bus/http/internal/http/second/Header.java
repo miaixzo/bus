@@ -25,13 +25,13 @@ package org.aoju.bus.http.internal.http.second;
 
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.Headers;
+import org.aoju.bus.http.header.Headers;
 
 /**
  * HTTP header: the name is an ASCII string, but the value can be UTF-8.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Header {

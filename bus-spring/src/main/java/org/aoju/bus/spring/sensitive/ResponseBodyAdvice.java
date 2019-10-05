@@ -28,7 +28,10 @@ import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.base.spring.BaseAdvice;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.utils.ArrayUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.utils.ReflectUtils;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
@@ -42,7 +45,10 @@ import org.springframework.http.server.ServerHttpResponse;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -50,7 +56,7 @@ import java.util.*;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class ResponseBodyAdvice extends BaseAdvice
@@ -125,56 +131,64 @@ public class ResponseBodyAdvice extends BaseAdvice
                 if (ObjectUtils.isEmpty(sensitive)) {
                     return body;
                 }
-                List rows;
-                if (((Message) body).getData() instanceof Result) {
-                    rows = ((Result) ((Message) body).getData()).getRows();
-                } else if (((Message) body).getData() instanceof List) {
-                    rows = (List) ((Message) body).getData();
-                } else {
-                    rows = Arrays.asList(((Message) body).getData());
-                }
 
-                List list = new ArrayList<>();
-                for (Object obj : rows) {
-                    // 数据脱敏
-                    if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
-                            && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-                        obj = Builder.on(obj, sensitive);
+                Object object = ((Message) body).getData();
+                if (object instanceof Result) {
+                    List list = new ArrayList<>();
+                    for (Object obj : ((Result) object).getRows()) {
+                        this.beforeBodyWrite(sensitive, obj);
+                        list.add(obj);
                     }
-                    // 数据加密
-                    if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
-                            && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-                        Map<String, Privacy> map = getPrivacyMap(obj.getClass());
-                        for (Map.Entry<String, Privacy> entry : map.entrySet()) {
-                            Privacy privacy = entry.getValue();
-                            if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
-                                if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
-                                    String property = entry.getKey();
-                                    String value = (String) getValue(obj, property);
-                                    if (StringUtils.isNotEmpty(value)) {
-                                        if (ObjectUtils.isEmpty(properties)) {
-                                            throw new InstrumentException("please check the request.crypto.decrypt");
-                                        }
-                                        value = org.aoju.bus.crypto.Builder.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value, Charset.UTF_8);
-                                        setValue(obj, new String[]{property}, new String[]{value});
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    list.add(obj);
-                }
-
-                if (((Message) body).getData() instanceof Result) {
                     ((Result) ((Message) body).getData()).setRows(list);
-                } else if (CollUtils.isNotEmpty(list)) {
-                    ((Message) body).setData(list.get(0));
+                } else if (object instanceof List) {
+                    List list = new ArrayList<>();
+                    for (Object obj : (List) object) {
+                        this.beforeBodyWrite(sensitive, obj);
+                        list.add(obj);
+                    }
+                    ((Message) body).setData(list);
+                } else {
+                    this.beforeBodyWrite(sensitive, object);
+                    ((Message) body).setData(object);
                 }
             } catch (Exception e) {
                 Logger.error("Internal processing failure:" + e.getMessage());
             }
         }
         return body;
+    }
+
+
+    private void beforeBodyWrite(Sensitive sensitive, Object object) {
+        if (ObjectUtils.isEmpty() || ObjectUtils.isEmpty(object)) {
+            return;
+        }
+        // 数据脱敏
+        if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
+                && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+            object = Builder.on(object, sensitive);
+        }
+        // 数据加密
+        if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
+                && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+            Map<String, Privacy> map = getPrivacyMap(object.getClass());
+            for (Map.Entry<String, Privacy> entry : map.entrySet()) {
+                Privacy privacy = entry.getValue();
+                if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                    if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
+                        String property = entry.getKey();
+                        String value = (String) getValue(object, property);
+                        if (StringUtils.isNotEmpty(value)) {
+                            if (ObjectUtils.isEmpty(properties)) {
+                                throw new InstrumentException("please check the request.crypto.decrypt");
+                            }
+                            value = org.aoju.bus.crypto.Builder.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value, Charset.UTF_8);
+                            setValue(object, new String[]{property}, new String[]{value});
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private Map<String, Privacy> getPrivacyMap(Class<?> clazz) {

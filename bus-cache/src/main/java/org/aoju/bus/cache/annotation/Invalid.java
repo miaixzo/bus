@@ -28,7 +28,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 @Documented
@@ -38,19 +38,16 @@ public @interface Invalid {
 
     /**
      * @return as {@code @Cached}
-     * @since 0.3
      */
     String value() default "";
 
     /**
      * @return as {@code @Cached}
-     * @since 0.3
      */
     String prefix() default "";
 
     /**
      * @return as {@code @Cached}
-     * @since 0.3
      */
     String condition() default "";
 }

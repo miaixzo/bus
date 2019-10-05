@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class CopiedIter<E> implements Iterator<E>, Iterable<E>, Serializable {

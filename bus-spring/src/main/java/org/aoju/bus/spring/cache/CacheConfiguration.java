@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Bean;
  * 缓存相关配置
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {CacheProperties.class})

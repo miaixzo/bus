@@ -30,9 +30,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 import org.aoju.bus.sensitive.annotation.Condition;
-import org.aoju.bus.sensitive.annotation.Entry;
-import org.aoju.bus.sensitive.annotation.Sensitive;
-import org.aoju.bus.sensitive.annotation.Strategy;
+import org.aoju.bus.sensitive.annotation.*;
 import org.aoju.bus.sensitive.provider.ConditionProvider;
 import org.aoju.bus.sensitive.provider.StrategyProvider;
 import org.aoju.bus.sensitive.strategy.BuiltInStrategy;
@@ -47,7 +45,7 @@ import java.util.*;
  *
  * @param <T> 参数类型
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Provider<T> {
@@ -68,7 +66,6 @@ public class Provider<T> {
      * @param object 对象
      * @param <T>    泛型
      * @return 深拷贝后的对象
-     * @since 0.0.2
      */
     public static <T> T clone(T object) {
         final Class clazz = object.getClass();
@@ -146,7 +143,6 @@ public class Provider<T> {
      * @param object     对象
      * @param annotation 注解
      * @return json
-     * @since 0.0.6
      */
     public String json(T object, Annotation annotation) {
         if (ObjectUtils.isEmpty(object)) {
@@ -272,18 +268,18 @@ public class Provider<T> {
      * @param entry   明细
      * @param field   字段信息
      * @return 处理后的信息
-     * @since 0.0.2
      */
     private Object handleSensitiveEntry(final Context context,
                                         final Object entry,
                                         final Field field) {
         try {
             //处理 @Field
-            org.aoju.bus.sensitive.annotation.Field sensitive = field.getAnnotation(org.aoju.bus.sensitive.annotation.Field.class);
+            Shield sensitive = field.getAnnotation(Shield.class);
             if (ObjectUtils.isNotNull(sensitive)) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
                 ConditionProvider condition = conditionClass.newInstance();
                 if (condition.valid(context)) {
+                    context.setShield(sensitive);
                     Class<? extends StrategyProvider> strategyClass = sensitive.strategy();
                     StrategyProvider strategy = strategyClass.newInstance();
                     return strategy.build(entry, context);
@@ -314,18 +310,18 @@ public class Provider<T> {
      * @param context    上下文
      * @param copyObject 复制的对象
      * @param field      当前字段
-     * @since 0.0.2
      */
     private void handleSensitive(final Context context,
                                  final Object copyObject,
                                  final Field field) {
         try {
             //处理 @Field
-            org.aoju.bus.sensitive.annotation.Field sensitive = field.getAnnotation(org.aoju.bus.sensitive.annotation.Field.class);
+            Shield sensitive = field.getAnnotation(Shield.class);
             if (sensitive != null) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
                 ConditionProvider condition = conditionClass.newInstance();
                 if (condition.valid(context)) {
+                    context.setShield(sensitive);
                     Class<? extends StrategyProvider> strategyClass = sensitive.strategy();
                     StrategyProvider strategy = strategyClass.newInstance();
                     final Object originalFieldVal = field.get(copyObject);
@@ -396,7 +392,6 @@ public class Provider<T> {
      *
      * @param fieldTypeClass 字段类型
      * @return 是否
-     * @since 0.0.2
      */
     private boolean needHandleEntryType(final Class fieldTypeClass) {
         if (TypeUtils.isBase(fieldTypeClass)

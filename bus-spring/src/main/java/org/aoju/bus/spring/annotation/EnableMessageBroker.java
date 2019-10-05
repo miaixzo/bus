@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * 要使用消息拦截的功能，必须在启动类或配置类上标注此注解
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -25,11 +25,11 @@ package org.aoju.bus.http.internal.http;
 
 import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.BufferedSource;
-import org.aoju.bus.http.ResponseBody;
+import org.aoju.bus.http.bodys.ResponseBody;
 
 /**
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class RealResponseBody extends ResponseBody {

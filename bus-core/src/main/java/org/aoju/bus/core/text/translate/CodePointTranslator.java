@@ -31,7 +31,7 @@ import java.io.Writer;
  * 以支持翻译一次最多替换一个字符.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public abstract class CodePointTranslator extends CharSequenceTranslator {

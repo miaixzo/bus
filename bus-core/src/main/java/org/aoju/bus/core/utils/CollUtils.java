@@ -33,6 +33,7 @@ import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Matcher;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -41,12 +42,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 /**
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class CollUtils {
@@ -195,6 +197,21 @@ public class CollUtils {
     }
 
     /**
+     * 检查给定数组是否包含给定元素。
+     *
+     * @param array   数组要检查的数组
+     * @param element 要查找的元素
+     * @param <T>     通用标签
+     * @return 如果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
+     */
+    public static <T> boolean contains(T[] array, final T element) {
+        if (array == null) {
+            return false;
+        }
+        return Arrays.stream(array).anyMatch(x -> ObjectUtils.nullSafeEquals(x, element));
+    }
+
+    /**
      * 判断指定集合是否包含指定值，如果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
      *
      * @param collection 集合
@@ -206,13 +223,51 @@ public class CollUtils {
     }
 
     /**
+     * 检查给定的迭代器是否包含给定的元素.
+     *
+     * @param iterator 要检查的迭代器
+     * @param element  要查找的元素
+     * @return {@code true} 如果找到, {@code false} 否则返回
+     */
+    public static boolean contains(final Iterator<?> iterator, Object element) {
+        if (iterator != null) {
+            while (iterator.hasNext()) {
+                Object candidate = iterator.next();
+                if (ObjectUtils.nullSafeEquals(candidate, element)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 检查给定枚举是否包含给定元素.
+     *
+     * @param enumeration 要检查的枚举
+     * @param element     要查找的元素
+     * @return {@code true} 如果找到, {@code false} 否则返回
+     */
+    public static boolean contains(Enumeration<?> enumeration, Object element) {
+        if (enumeration != null) {
+            while (enumeration.hasMoreElements()) {
+                Object candidate = enumeration.nextElement();
+                if (ObjectUtils.nullSafeEquals(candidate, element)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 其中一个集合在另一个集合中是否至少包含一个元素，既是两个集合是否至少有一个共同的元素
      *
      * @param coll1 集合1
      * @param coll2 集合2
      * @return 其中一个集合在另一个集合中是否至少包含一个元素
      * @see #intersection
-     * @since 2.1
+     * @since 2.1.0
      */
     public static boolean containsAny(final Collection<?> coll1, final Collection<?> coll2) {
         if (isEmpty(coll1) || isEmpty(coll2)) {
@@ -997,7 +1052,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, new Editor<T>() {
@@ -1028,7 +1083,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -1045,7 +1100,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -2433,7 +2488,6 @@ public class CollUtils {
      * @param list 列表
      * @param <T>  泛型
      * @return 不为 null 的元素
-     * @since 0.1.6
      */
     public static <T> Optional<T> firstNotNullElem(Collection<T> list) {
         if (isEmpty(list)) {
@@ -2446,6 +2500,46 @@ public class CollUtils {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * Concatenates 2 arrays
+     *
+     * @param <T>   对象
+     * @param one   数组1
+     * @param other 数组2
+     * @param clazz 数组类
+     * @return 新数组
+     */
+    public static <T> T[] concat(T[] one, T[] other, Class<T> clazz) {
+        T[] target = (T[]) Array.newInstance(clazz, one.length + other.length);
+        System.arraycopy(one, 0, target, 0, one.length);
+        System.arraycopy(other, 0, target, one.length, other.length);
+        return target;
+    }
+
+    /**
+     * 不可变 Set
+     *
+     * @param es  对象
+     * @param <E> 泛型
+     * @return 集合
+     */
+    public static <E> Set<E> ofImmutableSet(E... es) {
+        Objects.requireNonNull(es, "args es is null.");
+        return Arrays.stream(es).collect(Collectors.toSet());
+    }
+
+    /**
+     * 不可变 List
+     *
+     * @param es  对象
+     * @param <E> 泛型
+     * @return 集合
+     */
+    public static <E> List<E> ofImmutableList(E... es) {
+        Objects.requireNonNull(es, "args es is null.");
+        return Arrays.stream(es).collect(Collectors.toList());
     }
 
     /**
@@ -2486,7 +2580,7 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public interface Hash<T> {
         /**

@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class UriUtils {
@@ -214,6 +214,32 @@ public class UriUtils {
         return encode(url, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
     }
 
+    /**
+     * 编码URL，默认使用UTF-8编码
+     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     *
+     * @param url URL
+     * @return 编码后的URL
+     */
+    public static String encodeAll(String url) {
+        return encodeAll(url, org.aoju.bus.core.consts.Charset.UTF_8);
+    }
+
+    /**
+     * 编码URL
+     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     *
+     * @param url     URL
+     * @param charset 编码
+     * @return 编码后的URL
+     */
+    public static String encodeAll(String url, Charset charset) {
+        try {
+            return java.net.URLEncoder.encode(url, charset.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new InstrumentException(e);
+        }
+    }
 
     /**
      * 获得path部分
@@ -223,7 +249,7 @@ public class UriUtils {
      * @throws InstrumentException 包装URISyntaxException
      */
     public static String getPath(String uriStr) {
-        URI uri = null;
+        URI uri;
         try {
             uri = new URI(uriStr);
         } catch (URISyntaxException e) {
@@ -333,7 +359,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
@@ -350,7 +376,7 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);

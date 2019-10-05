@@ -23,24 +23,25 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 不脱敏
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class NoneStrategy implements StrategyProvider {
+public class NoneStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        if (object != null) {
-            return object.toString();
+        if (ObjectUtils.isEmpty(object)) {
+            return null;
         }
-        return null;
+        return object.toString();
     }
 
 }

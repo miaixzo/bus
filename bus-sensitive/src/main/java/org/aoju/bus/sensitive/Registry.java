@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 1. 注解和实现之间映射
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Registry {
@@ -55,7 +55,7 @@ public final class Registry {
         register(Builder.Type.CNAPS_CODE, new CnapsStrategy());
         register(Builder.Type.DEFAUL, new DafaultStrategy());
         register(Builder.Type.EMAIL, new EmailStrategy());
-        register(Builder.Type.ID_CARD, new IDCardStrategy());
+        register(Builder.Type.CITIZENID, new CitizenIdStrategy());
         register(Builder.Type.MOBILE, new MobileStrategy());
         register(Builder.Type.NAME, new NameStrategy());
         register(Builder.Type.NONE, new NoneStrategy());
@@ -114,7 +114,6 @@ public final class Registry {
      *
      * @param annotations 字段对应注解
      * @return 策略
-     * @since 0.0.6
      */
     public static StrategyProvider require(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {

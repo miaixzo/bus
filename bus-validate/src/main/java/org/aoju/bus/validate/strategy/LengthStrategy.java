@@ -35,7 +35,7 @@ import java.util.Map;
  * 数据长度校验
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class LengthStrategy implements Complex<Object, Length> {
@@ -47,6 +47,7 @@ public class LengthStrategy implements Complex<Object, Length> {
         }
 
         int num;
+
         if (object instanceof String) {
             num = ((String) object).length();
         } else if (object.getClass().isArray()) {

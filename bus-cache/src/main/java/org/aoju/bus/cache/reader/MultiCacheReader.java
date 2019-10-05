@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 @Singleton
@@ -165,7 +165,7 @@ public class MultiCacheReader extends AbstractCacheReader {
             if (Map.class.isAssignableFrom(returnType)) {
                 Map proceedEntryValueMap = (Map) proceed;
 
-                // @since 1.5.4 为了兼容@CachedGet注解, 客户端缓存
+                // 为了兼容@CachedGet注解, 客户端缓存
                 if (needWrite) {
                     // 将方法调用返回的map转换成key_value_map写入Cache
                     Map<String, Object> keyValueMap = KeyValueUtils.mapToKeyValue(proceedEntryValueMap, missKeys, multiEntry2Key, config.getPrevent());
@@ -176,7 +176,7 @@ public class MultiCacheReader extends AbstractCacheReader {
             } else {
                 Collection proceedCollection = asCollection(proceed, returnType);
 
-                // @since 1.5.4 为了兼容@CachedGet注解, 客户端缓存
+                // 为了兼容@CachedGet注解, 客户端缓存
                 if (needWrite) {
                     // 将方法调用返回的collection转换成key_value_map写入Cache
                     Map<String, Object> keyValueMap = KeyValueUtils.collectionToKeyValue(proceedCollection, cacheHolder.getId(), missKeys, multiEntry2Key, config.getPrevent());

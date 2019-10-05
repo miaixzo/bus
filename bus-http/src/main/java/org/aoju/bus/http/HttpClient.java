@@ -23,769 +23,967 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.internal.Internal;
-import org.aoju.bus.http.internal.cache.InternalCache;
-import org.aoju.bus.http.internal.connection.RealConnection;
-import org.aoju.bus.http.internal.connection.RouteDatabase;
-import org.aoju.bus.http.internal.connection.StreamAllocation;
-import org.aoju.bus.http.internal.platform.Platform;
-import org.aoju.bus.http.internal.proxy.NullProxySelector;
-import org.aoju.bus.http.internal.tls.CertificateChainCleaner;
-import org.aoju.bus.http.internal.tls.OkHostnameVerifier;
-import org.aoju.bus.http.internal.ws.RealWebSocket;
+import org.aoju.bus.core.consts.Httpd;
+import org.aoju.bus.core.consts.MediaType;
+import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.*;
+import org.aoju.bus.http.accord.ConnectionPool;
+import org.aoju.bus.http.bodys.MultipartBody;
+import org.aoju.bus.http.bodys.RequestBody;
+import org.aoju.bus.http.offers.Dispatcher;
+import org.aoju.bus.http.offers.Dns;
+import org.aoju.bus.logger.Logger;
 
-import javax.net.SocketFactory;
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import java.io.File;
 import java.io.IOException;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.Socket;
-import java.security.GeneralSecurityException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
- * Factory for {@linkplain Call calls}, which can be used to send HTTP requests and read their
- * responses.
- *
- * <h3>OkHttpClients should be shared</h3>
- *
- * <p>OkHttp performs best when you create a single {@code HttpClient} instance and reuse it for
- * all of your HTTP calls. This is because each client holds its own connection pool and thread
- * pools. Reusing connections and threads reduces latency and saves memory. Conversely, creating a
- * client for each request wastes resources on idle pools.
- *
- * <p>Use {@code new HttpClient()} to create a shared instance with the default settings:
- * <pre>   {@code
- *
- *   // The singleton HTTP client.
- *   public final HttpClient client = new HttpClient();
- * }</pre>
- *
- * <p>Or use {@code new HttpClient.Builder()} to create a shared instance with custom settings:
- * <pre>   {@code
- *
- *   // The singleton HTTP client.
- *   public final HttpClient client = new HttpClient.Builder()
- *       .addInterceptor(new HttpLoggingInterceptor())
- *       .cache(new Cache(cacheDir, cacheSize))
- *       .build();
- * }</pre>
- *
- * <h3>Customize your client with newBuilder()</h3>
- *
- * <p>You can customize a shared HttpClient instance with {@link #newBuilder()}. This builds a
- * client that shares the same connection pool, thread pools, and configuration. Use the builder
- * methods to configure the derived client for a specific purpose.
- *
- * <p>This example shows a call with a short 500 millisecond timeout: <pre>   {@code
- *
- *   HttpClient eagerClient = client.newBuilder()
- *       .readTimeout(500, TimeUnit.MILLISECONDS)
- *       .build();
- *   Response response = eagerClient.newCall(request).execute();
- * }</pre>
- *
- * <h3>Shutdown isn't necessary</h3>
- *
- * <p>The threads and connections that are held will be released automatically if they remain idle.
- * But if you are writing a application that needs to aggressively release unused resources you may
- * do so.
- *
- * <p>Shutdown the dispatcher's executor service with {@link ExecutorService#shutdown shutdown()}.
- * This will also cause future calls to the client to be rejected. <pre>   {@code
- *
- *     client.dispatcher().executorService().shutdown();
- * }</pre>
- *
- * <p>Clear the connection pool with {@link ConnectionPool#evictAll() evictAll()}. Note that the
- * connection pool's daemon thread may not exit immediately. <pre>   {@code
- *
- *     client.connectionPool().evictAll();
- * }</pre>
- *
- * <p>If your client has a cache, call {@link Cache#close close()}. Note that it is an error to
- * create calls against a cache that is closed, and doing so will cause the call to crash.
- * <pre>   {@code
- *
- *     client.cache().close();
- * }</pre>
- *
- * <p>OkHttp also uses daemon threads for HTTP/2 connections. These will exit automatically if they
- * remain idle.
+ * Http 辅助类
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class HttpClient implements Cloneable, Call.Factory, WebSocket.Factory {
+public class HttpClient extends Client {
 
-    static final List<Protocol> DEFAULT_PROTOCOLS = Internal.immutableList(
-            Protocol.HTTP_2, Protocol.HTTP_1_1);
-
-    static final List<ConnectionSpec> DEFAULT_CONNECTION_SPECS = Internal.immutableList(
-            ConnectionSpec.MODERN_TLS, ConnectionSpec.CLEARTEXT);
+    /**
+     * 懒汉安全加同步
+     * 私有的静态成员变量 只声明不创建
+     * 私有的构造方法
+     * 提供返回实例的静态方法
+     */
+    private static Client client;
 
     static {
-        Internal.instance = new Internal() {
-
-            @Override
-            public void addLenient(Headers.Builder builder, String line) {
-                builder.addLenient(line);
-            }
-
-            @Override
-            public void addLenient(Headers.Builder builder, String name, String value) {
-                builder.addLenient(name, value);
-            }
-
-            @Override
-            public void setCache(HttpClient.Builder builder, InternalCache internalCache) {
-                builder.setInternalCache(internalCache);
-            }
-
-            @Override
-            public boolean connectionBecameIdle(
-                    ConnectionPool pool, RealConnection connection) {
-                return pool.connectionBecameIdle(connection);
-            }
-
-            @Override
-            public RealConnection get(ConnectionPool pool, Address address,
-                                      StreamAllocation streamAllocation, Route route) {
-                return pool.get(address, streamAllocation, route);
-            }
-
-            @Override
-            public boolean equalsNonHost(Address a, Address b) {
-                return a.equalsNonHost(b);
-            }
-
-            @Override
-            public Socket deduplicate(
-                    ConnectionPool pool, Address address, StreamAllocation streamAllocation) {
-                return pool.deduplicate(address, streamAllocation);
-            }
-
-            @Override
-            public void put(ConnectionPool pool, RealConnection connection) {
-                pool.put(connection);
-            }
-
-            @Override
-            public RouteDatabase routeDatabase(ConnectionPool connectionPool) {
-                return connectionPool.routeDatabase;
-            }
-
-            @Override
-            public int code(Response.Builder responseBuilder) {
-                return responseBuilder.code;
-            }
-
-            @Override
-            public void apply(ConnectionSpec tlsConfiguration, SSLSocket sslSocket, boolean isFallback) {
-                tlsConfiguration.apply(sslSocket, isFallback);
-            }
-
-            @Override
-            public boolean isInvalidHttpUrlHost(IllegalArgumentException e) {
-                return e.getMessage().startsWith(HttpUrl.Builder.INVALID_HOST);
-            }
-
-            @Override
-            public StreamAllocation streamAllocation(Call call) {
-                return ((RealCall) call).streamAllocation();
-            }
-
-            @Override
-            public IOException timeoutExit(Call call, IOException e) {
-                return ((RealCall) call).timeoutExit(e);
-            }
-
-            @Override
-            public Call newWebSocketCall(HttpClient client, Request originalRequest) {
-                return RealCall.newRealCall(client, originalRequest, true);
-            }
-        };
+        client = new HttpClient(new X509TrustManager());
     }
 
-    final Dispatcher dispatcher;
-    final Proxy proxy;
-    final List<Protocol> protocols;
-    final List<ConnectionSpec> connectionSpecs;
-    final List<Interceptor> interceptors;
-    final List<Interceptor> networkInterceptors;
-    final EventListener.Factory eventListenerFactory;
-    final ProxySelector proxySelector;
-    final CookieJar cookieJar;
-    final Cache cache;
-    final InternalCache internalCache;
-    final SocketFactory socketFactory;
-    final SSLSocketFactory sslSocketFactory;
-    final CertificateChainCleaner certificateChainCleaner;
-    final HostnameVerifier hostnameVerifier;
-    final CertificatePinner certificatePinner;
-    final Authenticator proxyAuthenticator;
-    final Authenticator authenticator;
-    final ConnectionPool connectionPool;
-    final Dns dns;
-    final boolean followSslRedirects;
-    final boolean followRedirects;
-    final boolean retryOnConnectionFailure;
-    final int callTimeout;
-    final int connectTimeout;
-    final int readTimeout;
-    final int writeTimeout;
-    final int pingInterval;
-
+    /**
+     * 提供返回实例的静态方法
+     */
     public HttpClient() {
-        this(new Builder());
+        this(30, 30, 30);
     }
 
-    HttpClient(Builder builder) {
-        this.dispatcher = builder.dispatcher;
-        this.proxy = builder.proxy;
-        this.protocols = builder.protocols;
-        this.connectionSpecs = builder.connectionSpecs;
-        this.interceptors = Internal.immutableList(builder.interceptors);
-        this.networkInterceptors = Internal.immutableList(builder.networkInterceptors);
-        this.eventListenerFactory = builder.eventListenerFactory;
-        this.proxySelector = builder.proxySelector;
-        this.cookieJar = builder.cookieJar;
-        this.cache = builder.cache;
-        this.internalCache = builder.internalCache;
-        this.socketFactory = builder.socketFactory;
-
-        boolean isTLS = false;
-        for (ConnectionSpec spec : connectionSpecs) {
-            isTLS = isTLS || spec.isTls();
-        }
-
-        if (builder.sslSocketFactory != null || !isTLS) {
-            this.sslSocketFactory = builder.sslSocketFactory;
-            this.certificateChainCleaner = builder.certificateChainCleaner;
-        } else {
-            X509TrustManager trustManager = Internal.platformTrustManager();
-            this.sslSocketFactory = newSslSocketFactory(trustManager);
-            this.certificateChainCleaner = CertificateChainCleaner.get(trustManager);
-        }
-
-        if (sslSocketFactory != null) {
-            Platform.get().configureSslSocketFactory(sslSocketFactory);
-        }
-
-        this.hostnameVerifier = builder.hostnameVerifier;
-        this.certificatePinner = builder.certificatePinner.withCertificateChainCleaner(
-                certificateChainCleaner);
-        this.proxyAuthenticator = builder.proxyAuthenticator;
-        this.authenticator = builder.authenticator;
-        this.connectionPool = builder.connectionPool;
-        this.dns = builder.dns;
-        this.followSslRedirects = builder.followSslRedirects;
-        this.followRedirects = builder.followRedirects;
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
-
-        if (interceptors.contains(null)) {
-            throw new IllegalStateException("Null intercept: " + interceptors);
-        }
-        if (networkInterceptors.contains(null)) {
-            throw new IllegalStateException("Null network intercept: " + networkInterceptors);
-        }
+    /**
+     * 提供返回实例的静态方法
+     *
+     * @param x509TrustManager 信任管理器
+     */
+    public HttpClient(X509TrustManager x509TrustManager) {
+        this(null, null, 30, 30, 30, 64, 5, 5, 5, createTrustAllSSLFactory(x509TrustManager), x509TrustManager, createTrustAllHostnameVerifier());
     }
 
-    private static SSLSocketFactory newSslSocketFactory(X509TrustManager trustManager) {
-        try {
-            SSLContext sslContext = Platform.get().getSSLContext();
-            sslContext.init(null, new TrustManager[]{trustManager}, null);
-            return sslContext.getSocketFactory();
-        } catch (GeneralSecurityException e) {
-            throw Internal.assertionError("No System TLS", e); // The system has no TLS. Just give up.
-        }
+    /**
+     * 构建一个自定义配置的 HTTP Client 类
+     *
+     * @param connTimeout  连接
+     * @param readTimeout  读取
+     * @param writeTimeout 输出
+     */
+    public HttpClient(int connTimeout,
+                      int readTimeout,
+                      int writeTimeout) {
+        this(null, null, connTimeout, readTimeout, writeTimeout, 64, 5, 5, 5);
     }
 
-    public int callTimeoutMillis() {
-        return callTimeout;
+    /**
+     * 构建一个自定义配置的 HTTP Client 类
+     *
+     * @param connTimeout        连接
+     * @param readTimeout        读取
+     * @param writeTimeout       输出
+     * @param maxRequests        最大请求
+     * @param maxRequestsPerHost 主机最大请求
+     * @param maxIdleConnections 最大连接
+     * @param keepAliveDuration  链接时长
+     */
+    public HttpClient(int connTimeout,
+                      int readTimeout,
+                      int writeTimeout,
+                      int maxRequests,
+                      int maxRequestsPerHost,
+                      int maxIdleConnections,
+                      int keepAliveDuration) {
+        this(null, null, connTimeout, readTimeout, writeTimeout, maxRequests, maxRequestsPerHost, maxIdleConnections, keepAliveDuration);
     }
 
-    public int connectTimeoutMillis() {
-        return connectTimeout;
+    /**
+     * 构建一个自定义配置的 HTTP Client 类
+     *
+     * @param dns                DNS 信息
+     * @param proxy              代理信息
+     * @param connTimeout        连接
+     * @param readTimeout        读取
+     * @param writeTimeout       输出
+     * @param maxRequests        最大请求
+     * @param maxRequestsPerHost 主机最大请求
+     * @param maxIdleConnections 最大连接
+     * @param keepAliveDuration  链接时长
+     */
+    public HttpClient(Dns dns,
+                      Proxy proxy,
+                      int connTimeout,
+                      int readTimeout,
+                      int writeTimeout,
+                      int maxRequests,
+                      int maxRequestsPerHost,
+                      int maxIdleConnections,
+                      int keepAliveDuration
+    ) {
+        this(dns, proxy, connTimeout, readTimeout, writeTimeout, maxRequests, maxRequestsPerHost, maxIdleConnections, keepAliveDuration, null, null, null);
     }
 
-    public int readTimeoutMillis() {
-        return readTimeout;
-    }
+    /**
+     * 构建一个自定义配置的 HTTP Client 类
+     *
+     * @param dns                DNS 信息
+     * @param proxy              代理信息
+     * @param connTimeout        连接
+     * @param readTimeout        读取
+     * @param writeTimeout       输出
+     * @param maxRequests        最大请求
+     * @param maxRequestsPerHost 主机最大请求
+     * @param maxIdleConnections 最大连接
+     * @param keepAliveDuration  链接时长
+     * @param sslSocketFactory   抽象类，扩展自SocketFactory, SSLSocket的工厂
+     * @param x509TrustManager   证书信任管理器
+     * @param hostnameVerifier   主机名校验信息
+     */
+    public HttpClient(final Dns dns,
+                      final Proxy proxy,
+                      int connTimeout,
+                      int readTimeout,
+                      int writeTimeout,
+                      int maxRequests,
+                      int maxRequestsPerHost,
+                      int maxIdleConnections,
+                      int keepAliveDuration,
+                      SSLSocketFactory sslSocketFactory,
+                      javax.net.ssl.X509TrustManager x509TrustManager,
+                      HostnameVerifier hostnameVerifier
+    ) {
+        synchronized (HttpClient.class) {
+            if (ObjectUtils.isEmpty(client)) {
+                Dispatcher dispatcher = new Dispatcher();
+                dispatcher.setMaxRequests(maxRequests);
+                dispatcher.setMaxRequestsPerHost(maxRequestsPerHost);
+                ConnectionPool connectionPool = new ConnectionPool(maxIdleConnections,
+                        keepAliveDuration, TimeUnit.MINUTES);
+                Client.Builder builder = new Client.Builder();
 
-    public int writeTimeoutMillis() {
-        return writeTimeout;
-    }
-
-    public int pingIntervalMillis() {
-        return pingInterval;
-    }
-
-    public Proxy proxy() {
-        return proxy;
-    }
-
-    public ProxySelector proxySelector() {
-        return proxySelector;
-    }
-
-    public CookieJar cookieJar() {
-        return cookieJar;
-    }
-
-    public Cache cache() {
-        return cache;
-    }
-
-    InternalCache internalCache() {
-        return cache != null ? cache.internalCache : internalCache;
-    }
-
-    public Dns dns() {
-        return dns;
-    }
-
-    public SocketFactory socketFactory() {
-        return socketFactory;
-    }
-
-    public SSLSocketFactory sslSocketFactory() {
-        return sslSocketFactory;
-    }
-
-    public HostnameVerifier hostnameVerifier() {
-        return hostnameVerifier;
-    }
-
-    public CertificatePinner certificatePinner() {
-        return certificatePinner;
-    }
-
-    public Authenticator authenticator() {
-        return authenticator;
-    }
-
-    public Authenticator proxyAuthenticator() {
-        return proxyAuthenticator;
-    }
-
-    public ConnectionPool connectionPool() {
-        return connectionPool;
-    }
-
-    public boolean followSslRedirects() {
-        return followSslRedirects;
-    }
-
-    public boolean followRedirects() {
-        return followRedirects;
-    }
-
-    public boolean retryOnConnectionFailure() {
-        return retryOnConnectionFailure;
-    }
-
-    public Dispatcher dispatcher() {
-        return dispatcher;
-    }
-
-    public List<Protocol> protocols() {
-        return protocols;
-    }
-
-    public List<ConnectionSpec> connectionSpecs() {
-        return connectionSpecs;
-    }
-
-    public List<Interceptor> interceptors() {
-        return interceptors;
-    }
-
-    public List<Interceptor> networkInterceptors() {
-        return networkInterceptors;
-    }
-
-    public EventListener.Factory eventListenerFactory() {
-        return eventListenerFactory;
-    }
-
-    @Override
-    public Call newCall(Request request) {
-        return RealCall.newRealCall(this, request, false /* for web socket */);
-    }
-
-    @Override
-    public WebSocket newWebSocket(Request request, SocketListener listener) {
-        RealWebSocket webSocket = new RealWebSocket(request, listener, new Random(), pingInterval);
-        webSocket.connect(this);
-        return webSocket;
-    }
-
-    public Builder newBuilder() {
-        return new Builder(this);
-    }
-
-    public static final class Builder {
-        final List<Interceptor> interceptors = new ArrayList<>();
-        final List<Interceptor> networkInterceptors = new ArrayList<>();
-        Dispatcher dispatcher;
-        Proxy proxy;
-        List<Protocol> protocols;
-        List<ConnectionSpec> connectionSpecs;
-        EventListener.Factory eventListenerFactory;
-        ProxySelector proxySelector;
-        CookieJar cookieJar;
-        Cache cache;
-        InternalCache internalCache;
-        SocketFactory socketFactory;
-        SSLSocketFactory sslSocketFactory;
-        CertificateChainCleaner certificateChainCleaner;
-        HostnameVerifier hostnameVerifier;
-        CertificatePinner certificatePinner;
-        Authenticator proxyAuthenticator;
-        Authenticator authenticator;
-        ConnectionPool connectionPool;
-        Dns dns;
-        boolean followSslRedirects;
-        boolean followRedirects;
-        boolean retryOnConnectionFailure;
-        int callTimeout;
-        int connectTimeout;
-        int readTimeout;
-        int writeTimeout;
-        int pingInterval;
-
-        public Builder() {
-            dispatcher = new Dispatcher();
-            protocols = DEFAULT_PROTOCOLS;
-            connectionSpecs = DEFAULT_CONNECTION_SPECS;
-            eventListenerFactory = EventListener.factory(EventListener.NONE);
-            proxySelector = ProxySelector.getDefault();
-            if (proxySelector == null) {
-                proxySelector = new NullProxySelector();
+                builder.dispatcher(dispatcher);
+                builder.connectionPool(connectionPool);
+                builder.addNetworkInterceptor(chain -> {
+                    Request request = chain.request();
+                    return chain.proceed(request);
+                });
+                if (ObjectUtils.isNotEmpty(dns)) {
+                    builder.dns(hostname -> {
+                        try {
+                            return dns.lookup(hostname);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return Dns.SYSTEM.lookup(hostname);
+                    });
+                }
+                if (ObjectUtils.isNotEmpty(proxy)) {
+                    builder.proxy(proxy.proxy());
+                    if (proxy.user != null && proxy.password != null) {
+                        builder.proxyAuthenticator(proxy.authenticator());
+                    }
+                }
+                builder.connectTimeout(connTimeout, TimeUnit.SECONDS);
+                builder.readTimeout(readTimeout, TimeUnit.SECONDS);
+                builder.writeTimeout(writeTimeout, TimeUnit.SECONDS);
+                if (ObjectUtils.isNotEmpty(sslSocketFactory)) {
+                    builder.sslSocketFactory(sslSocketFactory, x509TrustManager);
+                }
+                if (ObjectUtils.isNotEmpty(hostnameVerifier)) {
+                    builder.hostnameVerifier(hostnameVerifier);
+                }
+                client = builder.build();
             }
-            cookieJar = CookieJar.NO_COOKIES;
-            socketFactory = SocketFactory.getDefault();
-            hostnameVerifier = OkHostnameVerifier.INSTANCE;
-            certificatePinner = CertificatePinner.DEFAULT;
-            proxyAuthenticator = Authenticator.NONE;
-            authenticator = Authenticator.NONE;
-            connectionPool = new ConnectionPool();
-            dns = Dns.SYSTEM;
-            followSslRedirects = true;
-            followRedirects = true;
-            retryOnConnectionFailure = true;
-            callTimeout = 0;
-            connectTimeout = 30_000;
-            readTimeout = 30_000;
-            writeTimeout = 30_000;
-            pingInterval = 0;
+        }
+    }
+
+    /**
+     * 简单的 GET 请求 使用默认编码 UTF-8
+     *
+     * @param url URL地址 String
+     * @return String
+     */
+    public static String get(final String url) {
+        return get(url, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 简单的 GET 请求 使用自定义编码
+     *
+     * @param url     URL地址 String
+     * @param charset 自定义编码 String
+     * @return String
+     */
+    public static String get(final String url, final String charset) {
+        return execute(Builder.builder().url(url).requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * 异步get请求，回调
+     *
+     * @param url     URL地址
+     * @param isAsync 是否异步
+     * @return String
+     */
+    public static String get(final String url, final boolean isAsync) {
+        if (isAsync) {
+            return enqueue(Builder.builder().url(url).method(Httpd.GET).build());
+        }
+        return get(url);
+    }
+
+    /**
+     * 带查询参数 GET 请求 使用默认编码 UTF-8
+     *
+     * @param url      URL地址 String
+     * @param queryMap 查询参数 Map
+     * @return String
+     */
+    public static String get1(final String url, final Map<String, Object> queryMap) {
+        return get(url, queryMap, null, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 GET 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址 String
+     * @param queryMap  查询参数 Map
+     * @param headerMap Header参数 Map
+     * @return String
+     */
+    public static String get(final String url, final Map<String, Object> queryMap, Map<String, String> headerMap) {
+        return get(url, queryMap, headerMap, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 GET 请求 使用自定义编码
+     *
+     * @param url       URL地址 String
+     * @param queryMap  查询参数 Map
+     * @param headerMap Header参数 Map
+     * @param charset   自定义编码 String
+     * @return String
+     */
+    public static String get(final String url, final Map<String, Object> queryMap, Map<String, String> headerMap,
+                             final String charset) {
+        return execute(Builder.builder().url(url).headerMap(headerMap).queryMap(queryMap)
+                .requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * form 方式 POST 请求
+     *
+     * @param url URL地址 String
+     * @return String
+     */
+    public static String post(final String url) {
+        return post(url, null);
+    }
+
+    /**
+     * form 方式 POST 请求
+     * application/x-www-form-urlencoded
+     *
+     * @param url     URL地址 String
+     * @param formMap 查询参数 Map
+     * @return String
+     */
+    public static String post(final String url, final Map<String, Object> formMap) {
+        String data = "";
+        if (MapUtils.isNotEmpty(formMap)) {
+            data = formMap.entrySet().stream()
+                    .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+                    .collect(Collectors.joining("&"));
+        }
+        return post(url, data, MediaType.APPLICATION_FORM_URLENCODED);
+    }
+
+    /**
+     * 带查询参数 POST 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址 String
+     * @param data      请求数据 String
+     * @param mediaType 类型 String
+     * @return String
+     */
+    public static String post(final String url, final String data,
+                              final String mediaType) {
+        return post(url, data, mediaType, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 POST 请求 使用自定义编码
+     *
+     * @param url       URL地址 String
+     * @param data      请求数据 String
+     * @param mediaType 类型 String
+     * @param charset   自定义编码 String
+     * @return String
+     */
+    public static String post(final String url, final String data, final String mediaType,
+                              final String charset) {
+        return execute(Builder.builder().url(url).method(Httpd.POST).data(data).mediaType(mediaType)
+                .requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * 带查询参数 POST 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址 String
+     * @param queryMap  请求数据 Map
+     * @param mediaType 类型 String
+     * @return String
+     */
+    public static String post(final String url, final Map<String, Object> queryMap,
+                              final String mediaType) {
+        return post(url, queryMap, mediaType, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 POST 请求 使用自定义编码
+     *
+     * @param url       URL地址 String
+     * @param headerMap 头部数据 Map
+     * @param queryMap  请求数据 Map
+     * @return String
+     */
+    public static String post(final String url, final Map<String, Object> queryMap,
+                              final Map<String, String> headerMap) {
+        return post(url, queryMap, headerMap, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 POST 请求 使用自定义编码
+     *
+     * @param url       URL地址 String
+     * @param queryMap  请求数据 Map
+     * @param mediaType 类型 String
+     * @param charset   自定义编码 String
+     * @return String
+     */
+    public static String post(final String url, final Map<String, Object> queryMap,
+                              final String mediaType, final String charset) {
+        return execute(Builder.builder().url(url).method(Httpd.POST).queryMap(queryMap).mediaType(mediaType)
+                .requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * 带查询参数 POST 请求 使用自定义编码
+     *
+     * @param url       URL地址 String
+     * @param headerMap 头部数据 Map
+     * @param queryMap  请求数据 Map
+     * @param mediaType 类型 String
+     * @return String
+     */
+    public static String post(final String url, final Map<String, Object> queryMap,
+                              final Map<String, String> headerMap, final String mediaType) {
+        return post(url, queryMap, headerMap, mediaType, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 POST 请求 使用自定义编码
+     *
+     * @param url       URL地址 String
+     * @param headerMap 头部数据 Map
+     * @param queryMap  请求数据 Map
+     * @param mediaType 类型 String
+     * @param charset   自定义编码 String
+     * @return String
+     */
+    public static String post(final String url, final Map<String, Object> queryMap,
+                              final Map<String, String> headerMap, final String mediaType,
+                              final String charset) {
+        return execute(Builder.builder().url(url).method(Httpd.POST).headerMap(headerMap).queryMap(queryMap)
+                .mediaType(mediaType).requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * 表单提交带文件上传
+     *
+     * @param url      请求地址 String
+     * @param params   请求参数 Map
+     * @param pathList 上传文件 List
+     * @return String
+     */
+    public static String post(final String url, final Map<String, Object> params,
+                              final List<String> pathList) {
+        MediaType mediaType = MediaType
+                .get(MediaType.APPLICATION_FORM_URLENCODED + ";" + org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        RequestBody bodyParams = RequestBody.create(mediaType, params.toString());
+        MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE)
+                .addFormDataPart("params", "", bodyParams);
+
+        File file;
+        for (String path : pathList) {
+            file = new File(path);
+            requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.create(mediaType, new File(path)));
+        }
+        RequestBody requestBody = requestBodyBuilder.build();
+        Request request = new Request.Builder().url(url).post(requestBody).build();
+        String result = "";
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                byte[] bytes = response.body().bytes();
+                result = new String(bytes, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+            }
+        } catch (Exception e) {
+            Logger.error(">>>>>>>>error requesting HTTP upload file form request<<<<<<<<", e);
+        }
+        return result;
+    }
+
+    /**
+     * Process the Http request Map
+     *
+     * @param map map
+     * @return The result is output<code>String</code>。
+     */
+    public static String getParameterMap(Map<String, Object> map) {
+        StringBuilder sb = new StringBuilder();
+        if (ObjectUtils.isNotEmpty(map)) {
+            Set<String> keys = map.keySet();
+            for (String key : keys) {
+                sb.append(key).append("=").append(map.get(key)).append("&");
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 对URL参数做编码，只编码键和值<br>
+     * 提供的值可以是url附带参数，但是不能只是url
+     *
+     * <p>注意，此方法只能标准化整个URL，并不适合于单独编码参数值</p>
+     *
+     * @param paramsStr url参数，可以包含url本身
+     * @param charset   编码
+     * @return 编码后的url和参数
+     */
+    public static String encode(String paramsStr, java.nio.charset.Charset charset) {
+        if (StringUtils.isBlank(paramsStr)) {
+            return Normal.EMPTY;
         }
 
-        Builder(HttpClient httpClient) {
-            this.dispatcher = httpClient.dispatcher;
-            this.proxy = httpClient.proxy;
-            this.protocols = httpClient.protocols;
-            this.connectionSpecs = httpClient.connectionSpecs;
-            this.interceptors.addAll(httpClient.interceptors);
-            this.networkInterceptors.addAll(httpClient.networkInterceptors);
-            this.eventListenerFactory = httpClient.eventListenerFactory;
-            this.proxySelector = httpClient.proxySelector;
-            this.cookieJar = httpClient.cookieJar;
-            this.internalCache = httpClient.internalCache;
-            this.cache = httpClient.cache;
-            this.socketFactory = httpClient.socketFactory;
-            this.sslSocketFactory = httpClient.sslSocketFactory;
-            this.certificateChainCleaner = httpClient.certificateChainCleaner;
-            this.hostnameVerifier = httpClient.hostnameVerifier;
-            this.certificatePinner = httpClient.certificatePinner;
-            this.proxyAuthenticator = httpClient.proxyAuthenticator;
-            this.authenticator = httpClient.authenticator;
-            this.connectionPool = httpClient.connectionPool;
-            this.dns = httpClient.dns;
-            this.followSslRedirects = httpClient.followSslRedirects;
-            this.followRedirects = httpClient.followRedirects;
-            this.retryOnConnectionFailure = httpClient.retryOnConnectionFailure;
-            this.callTimeout = httpClient.callTimeout;
-            this.connectTimeout = httpClient.connectTimeout;
-            this.readTimeout = httpClient.readTimeout;
-            this.writeTimeout = httpClient.writeTimeout;
-            this.pingInterval = httpClient.pingInterval;
+        String urlPart = null; // url部分，不包括问号
+        String paramPart; // 参数部分
+        int pathEndPos = paramsStr.indexOf('?');
+        if (pathEndPos > -1) {
+            // url + 参数
+            urlPart = StringUtils.subPre(paramsStr, pathEndPos);
+            paramPart = StringUtils.subSuf(paramsStr, pathEndPos + 1);
+            if (StringUtils.isBlank(paramPart)) {
+                // 无参数，返回url
+                return urlPart;
+            }
+        } else {
+            // 无URL
+            paramPart = paramsStr;
         }
 
+        paramPart = normalizeParams(paramPart, charset);
 
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            callTimeout = Internal.checkDuration("timeout", timeout, unit);
-            return this;
+        return StringUtils.isBlank(urlPart) ? paramPart : urlPart + "?" + paramPart;
+    }
+
+    /**
+     * 标准化参数字符串，即URL中？后的部分
+     *
+     * <p>注意，此方法只能标准化整个URL，并不适合于单独编码参数值</p>
+     *
+     * @param paramPart 参数字符串
+     * @param charset   编码
+     * @return 标准化的参数字符串
+     */
+    public static String normalizeParams(String paramPart, java.nio.charset.Charset charset) {
+        final TextUtils builder = TextUtils.create(paramPart.length() + 16);
+        final int len = paramPart.length();
+        String name = null;
+        int pos = 0; // 未处理字符开始位置
+        char c; // 当前字符
+        int i; // 当前字符位置
+        for (i = 0; i < len; i++) {
+            c = paramPart.charAt(i);
+            if (c == '=') { // 键值对的分界点
+                if (null == name) {
+                    // 只有=前未定义name时被当作键值分界符，否则做为普通字符
+                    name = (pos == i) ? Normal.EMPTY : paramPart.substring(pos, i);
+                    pos = i + 1;
+                }
+            } else if (c == '&') { // 参数对的分界点
+                if (pos != i) {
+                    if (null == name) {
+                        // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                        name = paramPart.substring(pos, i);
+                        builder.append(UriUtils.encodeQuery(name, charset)).append('=');
+                    } else {
+                        builder.append(UriUtils.encodeQuery(name, charset)).append('=').append(UriUtils.encodeQuery(paramPart.substring(pos, i), charset)).append('&');
+                    }
+                    name = null;
+                }
+                pos = i + 1;
+            }
         }
 
-        public Builder callTimeout(Duration duration) {
-            callTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
-            return this;
+        // 结尾处理
+        if (null != name) {
+            builder.append(UriUtils.encodeQuery(name, charset)).append('=');
+        }
+        if (pos != i) {
+            if (null == name && pos > 0) {
+                builder.append('=');
+            }
+            builder.append(UriUtils.encodeQuery(paramPart.substring(pos, i), charset));
         }
 
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            connectTimeout = Internal.checkDuration("timeout", timeout, unit);
-            return this;
+        // 以&结尾则去除之
+        int lastIndex = builder.length() - 1;
+        if ('&' == builder.charAt(lastIndex)) {
+            builder.delTo(lastIndex);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 将Map形式的Form表单数据转换为Url参数形式<br>
+     * paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""）<br>
+     * 会自动url编码键和值
+     *
+     * <pre>
+     * key1=v1&amp;key2=&amp;key3=v3
+     * </pre>
+     *
+     * @param paramMap 表单数据
+     * @param charset  编码
+     * @return url参数
+     */
+    public static String toParams(Map<String, ?> paramMap, java.nio.charset.Charset charset) {
+        if (CollUtils.isEmpty(paramMap)) {
+            return Normal.EMPTY;
+        }
+        if (null == charset) {// 默认编码为系统编码
+            charset = org.aoju.bus.core.consts.Charset.UTF_8;
         }
 
-        public Builder connectTimeout(Duration duration) {
-            connectTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
-            return this;
+        final StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        String key;
+        Object value;
+        String valueStr;
+        for (Map.Entry<String, ?> item : paramMap.entrySet()) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append("&");
+            }
+            key = item.getKey();
+            value = item.getValue();
+            if (value instanceof Iterable) {
+                value = CollUtils.join((Iterable<?>) value, ",");
+            } else if (value instanceof Iterator) {
+                value = CollUtils.join((Iterator<?>) value, ",");
+            }
+            valueStr = Convert.toString(value);
+            if (StringUtils.isNotEmpty(key)) {
+                sb.append(UriUtils.encodeAll(key, charset)).append("=");
+                if (StringUtils.isNotEmpty(valueStr)) {
+                    sb.append(UriUtils.encodeAll(valueStr, charset));
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+
+    /**
+     * 将URL参数解析为Map（也可以解析Post中的键值对参数）
+     *
+     * @param params  参数字符串（或者带参数的Path）
+     * @param charset 字符集
+     * @return 参数Map
+     */
+    public static Map<String, String> decodeMap(String params, String charset) {
+        final Map<String, List<String>> paramsMap = decode(params, charset);
+        final Map<String, String> result = MapUtils.newHashMap(paramsMap.size());
+        List<String> list;
+        for (Map.Entry<String, List<String>> entry : paramsMap.entrySet()) {
+            list = entry.getValue();
+            result.put(entry.getKey(), CollUtils.isEmpty(list) ? null : list.get(0));
+        }
+        return result;
+    }
+
+    /**
+     * 将URL参数解析为Map（也可以解析Post中的键值对参数）
+     *
+     * @param params  参数字符串（或者带参数的Path）
+     * @param charset 字符集
+     * @return 参数Map
+     */
+    public static Map<String, List<String>> decode(String params, String charset) {
+        if (StringUtils.isBlank(params)) {
+            return Collections.emptyMap();
         }
 
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            readTimeout = Internal.checkDuration("timeout", timeout, unit);
-            return this;
+        // 去掉Path部分
+        int pathEndPos = params.indexOf('?');
+        if (pathEndPos > -1) {
+            params = StringUtils.subSuf(params, pathEndPos + 1);
         }
 
-        public Builder readTimeout(Duration duration) {
-            readTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
-            return this;
+        final Map<String, List<String>> map = new LinkedHashMap<>();
+        final int len = params.length();
+        String name = null;
+        int pos = 0; // 未处理字符开始位置
+        int i; // 未处理字符结束位置
+        char c; // 当前字符
+        for (i = 0; i < len; i++) {
+            c = params.charAt(i);
+            if (c == '=') { // 键值对的分界点
+                if (null == name) {
+                    // name可以是""
+                    name = params.substring(pos, i);
+                }
+                pos = i + 1;
+            } else if (c == '&') { // 参数对的分界点
+                if (null == name && pos != i) {
+                    // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                    addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
+                } else if (name != null) {
+                    addParam(map, name, params.substring(pos, i), charset);
+                    name = null;
+                }
+                pos = i + 1;
+            }
         }
 
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            writeTimeout = Internal.checkDuration("timeout", timeout, unit);
-            return this;
+        // 处理结尾
+        if (pos != i) {
+            if (name == null) {
+                addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
+            } else {
+                addParam(map, name, params.substring(pos, i), charset);
+            }
+        } else if (name != null) {
+            addParam(map, name, Normal.EMPTY, charset);
         }
 
-        public Builder writeTimeout(Duration duration) {
-            writeTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
-            return this;
+        return map;
+    }
+
+    /**
+     * 将表单数据加到URL中（用于GET表单提交）<br>
+     * 表单的键值对会被url编码，但是url中原参数不会被编码
+     *
+     * @param url            URL
+     * @param form           表单数据
+     * @param charset        编码
+     * @param isEncodeParams 是否对键和值做转义处理
+     * @return 合成后的URL
+     */
+    public static String withForm(String url, Map<String, Object> form, java.nio.charset.Charset charset, boolean isEncodeParams) {
+        if (isEncodeParams && StringUtils.contains(url, '?')) {
+            url = encode(url, charset);
         }
 
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            pingInterval = Internal.checkDuration("interval", interval, unit);
-            return this;
+        return withForm(url, toParams(form, charset), charset, false);
+    }
+
+    /**
+     * 将表单数据字符串加到URL中（用于GET表单提交）
+     *
+     * @param url         URL
+     * @param queryString 表单数据字符串
+     * @param charset     编码
+     * @param isEncode    是否对键和值做转义处理
+     * @return 拼接后的字符串
+     */
+    public static String withForm(String url, String queryString, java.nio.charset.Charset charset, boolean isEncode) {
+        if (StringUtils.isBlank(queryString)) {
+            if (StringUtils.contains(url, '?')) {
+                return isEncode ? encode(url, charset) : url;
+            }
+            return url;
         }
 
-        public Builder pingInterval(Duration duration) {
-            pingInterval = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
-            return this;
+        final TextUtils textUtils = TextUtils.create(url.length() + queryString.length() + 16);
+        int qmIndex = url.indexOf('?');
+        if (qmIndex > 0) {
+            textUtils.append(isEncode ? encode(url, charset) : url);
+            if (false == StringUtils.endWith(url, '&')) {
+                textUtils.append('&');
+            }
+        } else {
+            textUtils.append(url);
+            if (qmIndex < 0) {
+                textUtils.append('?');
+            }
+        }
+        textUtils.append(isEncode ? encode(queryString, charset) : queryString);
+        return textUtils.toString();
+    }
+
+    /**
+     * 将键值对加入到值为List类型的Map中
+     *
+     * @param params  参数
+     * @param name    key
+     * @param value   value
+     * @param charset 编码
+     */
+    private static void addParam(Map<String, List<String>> params, String name, String value, String charset) {
+        name = UriUtils.decode(name, charset);
+        value = UriUtils.decode(value, charset);
+        List<String> values = params.get(name);
+        if (values == null) {
+            values = new ArrayList<>(1);
+            params.put(name, values);
+        }
+        values.add(value);
+    }
+
+    /**
+     * 通用同步执行方法
+     *
+     * @param builder Builder
+     * @return String
+     */
+    private static String execute(final Builder builder) {
+        if (StringUtils.isBlank(builder.requestCharset)) {
+            builder.requestCharset = org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8;
+        }
+        if (StringUtils.isBlank(builder.responseCharset)) {
+            builder.responseCharset = org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8;
+        }
+        if (StringUtils.isBlank(builder.method)) {
+            builder.method = Httpd.GET;
+        }
+        if (StringUtils.isBlank(builder.mediaType)) {
+            builder.mediaType = MediaType.APPLICATION_FORM_URLENCODED;
+        }
+        if (builder.tracer) {
+            Logger.info(">>>>>>>>Builder[{}]<<<<<<<<", builder.toString());
+        }
+        String url = builder.url;
+        Request.Builder request = new Request.Builder();
+
+        if (MapUtils.isNotEmpty(builder.queryMap)) {
+            String queryParams = builder.queryMap.entrySet().stream()
+                    .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+                    .collect(Collectors.joining("&"));
+            url = String.format("%s%s%s", url, url.contains("?") ? "&" : "?", queryParams);
+        }
+        request.url(url);
+        if (MapUtils.isNotEmpty(builder.headerMap)) {
+            builder.headerMap.forEach(request::addHeader);
+        }
+        String method = builder.method.toUpperCase();
+        String mediaType = String.format("%s;charset=%s", builder.mediaType, builder.requestCharset);
+        if (StringUtils.equals(method, Httpd.GET)) {
+            request.get();
+        } else if (ArrayUtils.contains(new String[]{Httpd.POST, Httpd.PUT, Httpd.DELETE, Httpd.PATCH}, method)) {
+            RequestBody requestBody = RequestBody.create(MediaType.get(mediaType), builder.data);
+            request.method(method, requestBody);
+        } else {
+            throw new InstrumentException(String.format(">>>>>>>>request method not found [%s]<<<<<<<<", method));
+        }
+        String result = "";
+        try {
+            Request build = request.build();
+            Response response = client.newCall(build).execute();
+            if (response.isSuccessful()) {
+                assert response.body() != null;
+                byte[] bytes = response.body().bytes();
+                result = new String(bytes, builder.responseCharset);
+            }
+            if (builder.tracer) {
+                Logger.info(">>>>>>>>Url[{}],response[{}]<<<<<<<<", url, result);
+            }
+        } catch (Exception e) {
+            Logger.error(">>>>>>>>Builder[{}] error<<<<<<<<", builder.toString(), e);
+        }
+        return result;
+    }
+
+    /**
+     * 通用异步执行方法
+     *
+     * @param builder Builder
+     * @return String
+     */
+    private static String enqueue(final Builder builder) {
+        if (StringUtils.isBlank(builder.requestCharset)) {
+            builder.requestCharset = org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8;
+        }
+        if (StringUtils.isBlank(builder.responseCharset)) {
+            builder.responseCharset = org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8;
+        }
+        if (StringUtils.isBlank(builder.method)) {
+            builder.method = Httpd.GET;
+        }
+        if (StringUtils.isBlank(builder.mediaType)) {
+            builder.mediaType = MediaType.APPLICATION_FORM_URLENCODED;
+        }
+        if (builder.tracer) {
+            Logger.info(builder.toString());
+        }
+        String url = builder.url;
+        Request.Builder request = new Request.Builder();
+        if (MapUtils.isNotEmpty(builder.queryMap)) {
+            String queryParams = builder.queryMap.entrySet().stream()
+                    .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+                    .collect(Collectors.joining("&"));
+            url = String.format("%s%s%s", url, url.contains("?") ? "&" : "?", queryParams);
+        }
+        request.url(url);
+        if (MapUtils.isNotEmpty(builder.headerMap)) {
+            builder.headerMap.forEach(request::addHeader);
+        }
+        String method = builder.method.toUpperCase();
+        String mediaType = String.format("%s;charset=%s", builder.mediaType, builder.requestCharset);
+        if (StringUtils.equals(method, Httpd.GET)) {
+            request.get();
+        } else if (ArrayUtils.contains(new String[]{Httpd.POST, Httpd.PUT, Httpd.DELETE, Httpd.PATCH}, method)) {
+            RequestBody requestBody = RequestBody.create(MediaType.get(mediaType), builder.data);
+            request.method(method, requestBody);
+        } else {
+            throw new InstrumentException(String.format(">>>>>>>>request method not found[%s]<<<<<<<<", method));
+        }
+        final String[] result = {""};
+        try {
+            String finalUrl = url;
+            Call call = client.newCall(request.build());
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Logger.info(String.format(">>>>>>>>Url[%s]failure<<<<<<<<", finalUrl));
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
+                        byte[] bytes = response.body().bytes();
+                        result[0] = new String(bytes, builder.responseCharset);
+                        if (builder.tracer) {
+                            Logger.info(">>>>>>>>Url[{}],response[{}]<<<<<<<<", finalUrl, result[0]);
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Logger.error(builder.toString(), e);
+        }
+        return result[0];
+    }
+
+    /**
+     * Https SSL证书
+     *
+     * @param X509TrustManager
+     * @return SSLSocketFactory
+     */
+    private static SSLSocketFactory createTrustAllSSLFactory(X509TrustManager X509TrustManager) {
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, new TrustManager[]{X509TrustManager}, new SecureRandom());
+            return sc.getSocketFactory();
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取 HostnameVerifier
+     *
+     * @return
+     */
+    private static HostnameVerifier createTrustAllHostnameVerifier() {
+        return (hostname, session) -> true;
+    }
+
+    private static class X509TrustManager implements javax.net.ssl.X509TrustManager {
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) {
         }
 
-        public Builder proxy(Proxy proxy) {
-            this.proxy = proxy;
-            return this;
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) {
         }
 
-        public Builder proxySelector(ProxySelector proxySelector) {
-            if (proxySelector == null) throw new NullPointerException("proxySelector == null");
-            this.proxySelector = proxySelector;
-            return this;
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
         }
 
-        public Builder cookieJar(CookieJar cookieJar) {
-            if (cookieJar == null) throw new NullPointerException("cookieJar == null");
-            this.cookieJar = cookieJar;
-            return this;
-        }
+    }
 
-        void setInternalCache(InternalCache internalCache) {
-            this.internalCache = internalCache;
-            this.cache = null;
-        }
-
-        public Builder cache(Cache cache) {
-            this.cache = cache;
-            this.internalCache = null;
-            return this;
-        }
-
-        public Builder dns(Dns dns) {
-            if (dns == null) throw new NullPointerException("dns == null");
-            this.dns = dns;
-            return this;
-        }
-
-        public Builder socketFactory(SocketFactory socketFactory) {
-            if (socketFactory == null) throw new NullPointerException("socketFactory == null");
-            this.socketFactory = socketFactory;
-            return this;
-        }
-
-        public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory) {
-            if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
-            this.sslSocketFactory = sslSocketFactory;
-            this.certificateChainCleaner = Platform.get().buildCertificateChainCleaner(sslSocketFactory);
-            return this;
-        }
-
-        public Builder sslSocketFactory(
-                SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
-            if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
-            if (trustManager == null) throw new NullPointerException("trustManager == null");
-            this.sslSocketFactory = sslSocketFactory;
-            this.certificateChainCleaner = CertificateChainCleaner.get(trustManager);
-            return this;
-        }
-
-        public Builder hostnameVerifier(HostnameVerifier hostnameVerifier) {
-            if (hostnameVerifier == null) throw new NullPointerException("hostnameVerifier == null");
-            this.hostnameVerifier = hostnameVerifier;
-            return this;
-        }
-
-        public Builder certificatePinner(CertificatePinner certificatePinner) {
-            if (certificatePinner == null) throw new NullPointerException("certificatePinner == null");
-            this.certificatePinner = certificatePinner;
-            return this;
-        }
-
-        public Builder authenticator(Authenticator authenticator) {
-            if (authenticator == null) throw new NullPointerException("authenticator == null");
-            this.authenticator = authenticator;
-            return this;
-        }
-
-        public Builder proxyAuthenticator(Authenticator proxyAuthenticator) {
-            if (proxyAuthenticator == null) throw new NullPointerException("proxyAuthenticator == null");
-            this.proxyAuthenticator = proxyAuthenticator;
-            return this;
-        }
-
-        public Builder connectionPool(ConnectionPool connectionPool) {
-            if (connectionPool == null) throw new NullPointerException("connectionPool == null");
-            this.connectionPool = connectionPool;
-            return this;
-        }
-
-        public Builder followSslRedirects(boolean followProtocolRedirects) {
-            this.followSslRedirects = followProtocolRedirects;
-            return this;
-        }
-
-        public Builder followRedirects(boolean followRedirects) {
-            this.followRedirects = followRedirects;
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
-            return this;
-        }
-
-        public Builder dispatcher(Dispatcher dispatcher) {
-            if (dispatcher == null) throw new IllegalArgumentException("dispatcher == null");
-            this.dispatcher = dispatcher;
-            return this;
-        }
+    @lombok.Builder
+    @lombok.ToString
+    private static class Builder {
+        /**
+         * 请求 url
+         */
+        private String url;
+        /**
+         * 方法类型
+         */
+        private String method;
+        /**
+         * 请求参数
+         */
+        private String data;
+        /**
+         * 数据格式类型
+         */
+        private String mediaType;
+        /**
+         * 请求参数
+         */
+        private Map<String, Object> queryMap;
+        /**
+         * 头部参数
+         */
+        private Map<String, String> headerMap;
 
         /**
-         * Configure the protocols used by this client to communicate with remote servers. By default
-         * this client will prefer the most efficient transport available, falling back to more
-         * ubiquitous protocols. Applications should only call this method to avoid specific
-         * compatibility problems, such as web servers that behave incorrectly when HTTP/2 is enabled.
-         *
-         * <p>The following protocols are currently supported:
-         *
-         * <ul>
-         * <li><a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">http/1.1</a>
-         * <li><a href="https://tools.ietf.org/html/rfc7540">h2</a>
-         * <li><a href="https://tools.ietf.org/html/rfc7540#section-3.4">h2 with prior knowledge
-         * (cleartext only)</a>
-         * </ul>
-         *
-         * <p><strong>This is an evolving set.</strong> Future releases include support for transitional
-         * protocols. The http/1.1 transport will never be dropped.
-         *
-         * <p>If multiple protocols are specified, <a
-         * href="http://tools.ietf.org/html/draft-ietf-tls-applayerprotoneg">ALPN</a> will be used to
-         * negotiate a transport. Protocol negotiation is only attempted for HTTPS URLs.
-         *
-         * <p>{@link Protocol#HTTP_1_0} is not supported in this set. Requests are initiated with {@code
-         * HTTP/1.1}. If the server responds with {@code HTTP/1.0}, that will be exposed by {@link
-         * Response#protocol()}.
-         *
-         * @param protocols the protocols to use, in order of preference. If the list contains {@link
-         *                  Protocol#H2_PRIOR_KNOWLEDGE} then that must be the only protocol and HTTPS URLs will not
-         *                  be supported. Otherwise the list must contain {@link Protocol#HTTP_1_1}. The list must
-         *                  not contain null or {@link Protocol#HTTP_1_0}.
-         * @return Builder
+         * 请求编码
          */
-        public Builder protocols(List<Protocol> protocols) {
-            // Create a private copy of the list.
-            protocols = new ArrayList<>(protocols);
-
-            // Validate that the list has everything we require and nothing we forbid.
-            if (!protocols.contains(Protocol.H2_PRIOR_KNOWLEDGE)
-                    && !protocols.contains(Protocol.HTTP_1_1)) {
-                throw new IllegalArgumentException(
-                        "protocols must contain h2_prior_knowledge or http/1.1: " + protocols);
-            }
-            if (protocols.contains(Protocol.H2_PRIOR_KNOWLEDGE) && protocols.size() > 1) {
-                throw new IllegalArgumentException(
-                        "protocols containing h2_prior_knowledge cannot use other protocols: " + protocols);
-            }
-            if (protocols.contains(Protocol.HTTP_1_0)) {
-                throw new IllegalArgumentException("protocols must not contain http/1.0: " + protocols);
-            }
-            if (protocols.contains(null)) {
-                throw new IllegalArgumentException("protocols must not contain null");
-            }
-
-            // Remove protocols that we no longer support.
-            protocols.remove(Protocol.SPDY_3);
-
-            // Assign as an unmodifiable list. This is effectively immutable.
-            this.protocols = Collections.unmodifiableList(protocols);
-            return this;
-        }
-
-        public Builder connectionSpecs(List<ConnectionSpec> connectionSpecs) {
-            this.connectionSpecs = Internal.immutableList(connectionSpecs);
-            return this;
-        }
-
-        public List<Interceptor> interceptors() {
-            return interceptors;
-        }
-
-        public Builder addInterceptor(Interceptor interceptor) {
-            if (interceptor == null) throw new IllegalArgumentException("intercept == null");
-            interceptors.add(interceptor);
-            return this;
-        }
-
-        public List<Interceptor> networkInterceptors() {
-            return networkInterceptors;
-        }
-
-        public Builder addNetworkInterceptor(Interceptor interceptor) {
-            if (interceptor == null) throw new IllegalArgumentException("intercept == null");
-            networkInterceptors.add(interceptor);
-            return this;
-        }
-
-        public Builder eventListener(EventListener eventListener) {
-            if (eventListener == null) throw new NullPointerException("eventListener == null");
-            this.eventListenerFactory = EventListener.factory(eventListener);
-            return this;
-        }
-
-        public Builder eventListenerFactory(EventListener.Factory eventListenerFactory) {
-            if (eventListenerFactory == null) {
-                throw new NullPointerException("eventListenerFactory == null");
-            }
-            this.eventListenerFactory = eventListenerFactory;
-            return this;
-        }
-
-        public HttpClient build() {
-            return new HttpClient(this);
-        }
+        private String requestCharset;
+        /**
+         * 响应编码
+         */
+        private String responseCharset;
+        /**
+         * 日志追踪
+         */
+        private boolean tracer;
     }
 
 }

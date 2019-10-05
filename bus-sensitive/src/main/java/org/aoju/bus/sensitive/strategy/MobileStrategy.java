@@ -23,27 +23,35 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.annotation.Shield;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 手机号脱敏处理类
  * 18233583070 脱敏后: 182****3030
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class MobileStrategy implements StrategyProvider {
+public class MobileStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        if (object == null) {
+        if (ObjectUtils.isEmpty(object)) {
             return null;
         }
+        final Shield shield = context.getShield();
         String value = object.toString();
-        return StringUtils.left(value, 3).concat(StringUtils.removeStart(StringUtils.leftPad(StringUtils.right(value, 4), StringUtils.length(value), "*"), "***"));
+        return StringUtils.left(value, 3).concat(
+                StringUtils.removeStart(
+                        StringUtils.leftPad(StringUtils.right(value, 4),
+                                StringUtils.length(value),
+                                shield.shadow()),
+                        StringUtils.fill(3, shield.shadow())));
     }
 
 }

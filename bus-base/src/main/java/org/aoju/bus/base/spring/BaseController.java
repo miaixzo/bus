@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 基础请求封装
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class BaseController<Service extends BaseService<T>, T> extends Controller {
@@ -114,15 +114,13 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      * 通用:数据分页查询
      *
      * @param entity   对象参数
-     * @param pageNo   页码
-     * @param pageSize 分页大小
      * @return 操作结果
      */
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     @ApiOperation(value = "通用:数据分页查询", httpMethod = "GET")
     @ResponseBody
-    public Object page(T entity, @RequestParam(value = "pageSize", defaultValue = "20") String pageSize, @RequestParam(value = "pageNo", defaultValue = "1") String pageNo) {
-        return write(ErrorCode.EM_SUCCESS, service.page(pageNo, pageSize, entity));
+    public Object page(T entity) {
+        return write(ErrorCode.EM_SUCCESS, service.page(entity));
     }
 
 }

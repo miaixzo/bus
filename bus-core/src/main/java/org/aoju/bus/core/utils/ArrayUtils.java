@@ -40,7 +40,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class ArrayUtils {
@@ -1016,7 +1016,7 @@ public class ArrayUtils {
      * @param array the array to retrieve the length from, may be null
      * @return The length of the array, or {@code 0} if the array is {@code null}
      * @throws IllegalArgumentException if the object argument is not an array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static int getLength(final Object array) {
         if (array == null) {
@@ -4117,7 +4117,7 @@ public class ArrayUtils {
      * The type of the new array is the type of the first array,
      * unless the first array is null, in which case the type is the same as the second array.
      * @throws IllegalArgumentException if the array types are incompatible
-     * @since 2.1
+     * @since 2.1.0
      */
     public static <T> T[] addAll(final T[] array1, final T... array2) {
         if (array1 == null) {
@@ -4162,7 +4162,7 @@ public class ArrayUtils {
      * @param array1 the first array whose elements are added to the new array.
      * @param array2 the second array whose elements are added to the new array.
      * @return The new boolean[] array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static boolean[] addAll(final boolean[] array1, final boolean... array2) {
         if (array1 == null) {
@@ -4191,7 +4191,7 @@ public class ArrayUtils {
      * @param array1 the first array whose elements are added to the new array.
      * @param array2 the second array whose elements are added to the new array.
      * @return The new char[] array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static char[] addAll(final char[] array1, final char... array2) {
         if (array1 == null) {
@@ -4220,7 +4220,7 @@ public class ArrayUtils {
      * @param array1 the first array whose elements are added to the new array.
      * @param array2 the second array whose elements are added to the new array.
      * @return The new byte[] array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static byte[] addAll(final byte[] array1, final byte... array2) {
         if (array1 == null) {
@@ -4249,7 +4249,7 @@ public class ArrayUtils {
      * @param array1 the first array whose elements are added to the new array.
      * @param array2 the second array whose elements are added to the new array.
      * @return The new short[] array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static short[] addAll(final short[] array1, final short... array2) {
         if (array1 == null) {
@@ -4278,7 +4278,7 @@ public class ArrayUtils {
      * @param array1 the first array whose elements are added to the new array.
      * @param array2 the second array whose elements are added to the new array.
      * @return The new int[] array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static int[] addAll(final int[] array1, final int... array2) {
         if (array1 == null) {
@@ -4307,7 +4307,7 @@ public class ArrayUtils {
      * @param array1 the first array whose elements are added to the new array.
      * @param array2 the second array whose elements are added to the new array.
      * @return The new long[] array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static long[] addAll(final long[] array1, final long... array2) {
         if (array1 == null) {
@@ -4336,7 +4336,7 @@ public class ArrayUtils {
      * @param array1 the first array whose elements are added to the new array.
      * @param array2 the second array whose elements are added to the new array.
      * @return The new float[] array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static float[] addAll(final float[] array1, final float... array2) {
         if (array1 == null) {
@@ -4365,7 +4365,7 @@ public class ArrayUtils {
      * @param array1 the first array whose elements are added to the new array.
      * @param array2 the second array whose elements are added to the new array.
      * @return The new double[] array.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static double[] addAll(final double[] array1, final double... array2) {
         if (array1 == null) {
@@ -4406,7 +4406,7 @@ public class ArrayUtils {
      * in which case it will have the same type as the element.
      * If both are null, an IllegalArgumentException is thrown
      * @throws IllegalArgumentException if both arguments are null
-     * @since 2.1
+     * @since 2.1.0
      */
     public static <T> T[] add(final T[] array, final T element) {
         Class<?> type;
@@ -4441,7 +4441,7 @@ public class ArrayUtils {
      * @param array   the array to copy and add the element to, may be {@code null}
      * @param element the object to add at the last index of the new array
      * @return A new array containing the existing elements plus the new element
-     * @since 2.1
+     * @since 2.1.0
      */
     public static boolean[] add(final boolean[] array, final boolean element) {
         final boolean[] newArray = (boolean[]) copyArrayGrow1(array, Boolean.TYPE);
@@ -4468,7 +4468,7 @@ public class ArrayUtils {
      * @param array   the array to copy and add the element to, may be {@code null}
      * @param element the object to add at the last index of the new array
      * @return A new array containing the existing elements plus the new element
-     * @since 2.1
+     * @since 2.1.0
      */
     public static byte[] add(final byte[] array, final byte element) {
         final byte[] newArray = (byte[]) copyArrayGrow1(array, Byte.TYPE);
@@ -4495,7 +4495,7 @@ public class ArrayUtils {
      * @param array   the array to copy and add the element to, may be {@code null}
      * @param element the object to add at the last index of the new array
      * @return A new array containing the existing elements plus the new element
-     * @since 2.1
+     * @since 2.1.0
      */
     public static char[] add(final char[] array, final char element) {
         final char[] newArray = (char[]) copyArrayGrow1(array, Character.TYPE);
@@ -4522,7 +4522,7 @@ public class ArrayUtils {
      * @param array   the array to copy and add the element to, may be {@code null}
      * @param element the object to add at the last index of the new array
      * @return A new array containing the existing elements plus the new element
-     * @since 2.1
+     * @since 2.1.0
      */
     public static double[] add(final double[] array, final double element) {
         final double[] newArray = (double[]) copyArrayGrow1(array, Double.TYPE);
@@ -4549,7 +4549,7 @@ public class ArrayUtils {
      * @param array   the array to copy and add the element to, may be {@code null}
      * @param element the object to add at the last index of the new array
      * @return A new array containing the existing elements plus the new element
-     * @since 2.1
+     * @since 2.1.0
      */
     public static float[] add(final float[] array, final float element) {
         final float[] newArray = (float[]) copyArrayGrow1(array, Float.TYPE);
@@ -4576,7 +4576,7 @@ public class ArrayUtils {
      * @param array   the array to copy and add the element to, may be {@code null}
      * @param element the object to add at the last index of the new array
      * @return A new array containing the existing elements plus the new element
-     * @since 2.1
+     * @since 2.1.0
      */
     public static int[] add(final int[] array, final int element) {
         final int[] newArray = (int[]) copyArrayGrow1(array, Integer.TYPE);
@@ -4603,7 +4603,7 @@ public class ArrayUtils {
      * @param array   the array to copy and add the element to, may be {@code null}
      * @param element the object to add at the last index of the new array
      * @return A new array containing the existing elements plus the new element
-     * @since 2.1
+     * @since 2.1.0
      */
     public static long[] add(final long[] array, final long element) {
         final long[] newArray = (long[]) copyArrayGrow1(array, Long.TYPE);
@@ -4630,7 +4630,7 @@ public class ArrayUtils {
      * @param array   the array to copy and add the element to, may be {@code null}
      * @param element the object to add at the last index of the new array
      * @return A new array containing the existing elements plus the new element
-     * @since 2.1
+     * @since 2.1.0
      */
     public static short[] add(final short[] array, final short element) {
         final short[] newArray = (short[]) copyArrayGrow1(array, Short.TYPE);
@@ -5040,7 +5040,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static <T> T[] removeElement(final T[] array, final Object element) {
         final int index = indexOf(array, element);
@@ -5076,7 +5076,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static boolean[] remove(final boolean[] array, final int index) {
         return (boolean[]) remove((Object) array, index);
@@ -5105,7 +5105,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static boolean[] removeElement(final boolean[] array, final boolean element) {
         final int index = indexOf(array, element);
@@ -5141,7 +5141,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static byte[] remove(final byte[] array, final int index) {
         return (byte[]) remove((Object) array, index);
@@ -5170,7 +5170,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static byte[] removeElement(final byte[] array, final byte element) {
         final int index = indexOf(array, element);
@@ -5206,7 +5206,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static char[] remove(final char[] array, final int index) {
         return (char[]) remove((Object) array, index);
@@ -5235,7 +5235,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static char[] removeElement(final char[] array, final char element) {
         final int index = indexOf(array, element);
@@ -5271,7 +5271,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static double[] remove(final double[] array, final int index) {
         return (double[]) remove((Object) array, index);
@@ -5300,7 +5300,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static double[] removeElement(final double[] array, final double element) {
         final int index = indexOf(array, element);
@@ -5336,7 +5336,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static float[] remove(final float[] array, final int index) {
         return (float[]) remove((Object) array, index);
@@ -5365,7 +5365,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static float[] removeElement(final float[] array, final float element) {
         final int index = indexOf(array, element);
@@ -5401,7 +5401,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static int[] remove(final int[] array, final int index) {
         return (int[]) remove((Object) array, index);
@@ -5430,7 +5430,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static int[] removeElement(final int[] array, final int element) {
         final int index = indexOf(array, element);
@@ -5466,7 +5466,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static long[] remove(final long[] array, final int index) {
         return (long[]) remove((Object) array, index);
@@ -5495,7 +5495,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static long[] removeElement(final long[] array, final long element) {
         final int index = indexOf(array, element);
@@ -5531,7 +5531,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static short[] remove(final short[] array, final int index) {
         return (short[]) remove((Object) array, index);
@@ -5560,7 +5560,7 @@ public class ArrayUtils {
      * @param element the element to be removed
      * @return A new array containing the existing elements except the first
      * occurrence of the specified element.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static short[] removeElement(final short[] array, final short element) {
         final int index = indexOf(array, element);
@@ -5589,7 +5589,7 @@ public class ArrayUtils {
      * at the specified position.
      * @throws IndexOutOfBoundsException if the index is out of range
      *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1
+     * @since 2.1.0
      */
     private static Object remove(final Object array, final int index) {
         final int length = getLength(array);
@@ -7774,7 +7774,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7785,7 +7785,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7797,7 +7797,7 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return newArray(componentType, 0).getClass();
@@ -9345,7 +9345,7 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口，用于定义过滤规则
      * @return 过滤后的数组
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<T>(array.length);
@@ -9376,7 +9376,6 @@ public class ArrayUtils {
      *
      * @param objects 对象
      * @return 不为 null 的元素
-     * @since 0.1.18
      */
     public static Optional<Object> firstNotNullElem(Object[] objects) {
         if (isEmpty(objects)) {

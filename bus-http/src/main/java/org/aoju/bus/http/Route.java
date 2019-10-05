@@ -42,7 +42,7 @@ import java.net.Proxy;
  * <p>Each route is a specific selection of these options.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Route {
@@ -51,7 +51,7 @@ public final class Route {
     final Proxy proxy;
     final InetSocketAddress inetSocketAddress;
 
-    public Route(Address address, Proxy proxy, InetSocketAddress inetSocketAddress) {
+    public Route(Address address, java.net.Proxy proxy, InetSocketAddress inetSocketAddress) {
         if (address == null) {
             throw new NullPointerException("address == null");
         }

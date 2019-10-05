@@ -30,7 +30,7 @@ import java.util.Date;
  * 日期格式化输出接口
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public interface DatePrinter extends DateBasic {
@@ -40,7 +40,7 @@ public interface DatePrinter extends DateBasic {
      *
      * @param millis 日期毫秒数
      * @return the formatted string
-     * @since 2.1
+     * @since 2.1.0
      */
     String format(long millis);
 

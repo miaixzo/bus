@@ -24,33 +24,22 @@
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.sensitive.Context;
-import org.aoju.bus.sensitive.provider.StrategyProvider;
+import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 密码的脱敏策略：
  * 直接返回 null
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
-public class PasswordStrategy implements StrategyProvider {
-
-    /**
-     * 脱敏密码
-     *
-     * @param password 原始密码
-     * @return 结果
-     */
-    public static String password(final String password) {
-        return null;
-    }
+public class PasswordStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        return this.password(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString());
+        return Normal.EMPTY;
     }
 
 }

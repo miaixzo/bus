@@ -31,7 +31,7 @@ import java.util.Set;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class RegEx {
@@ -39,23 +39,17 @@ public class RegEx {
     /**
      * 正则表达式匹配中文汉字
      */
-    public final static String RE_CHINESE = "[\u4E00-\u9FFF]";
-    /**
-     * 正则表达式匹配中文字符串
-     */
-    public final static String RE_CHINESES = RE_CHINESE + Symbol.PLUS;
-
+    public final static String CHINESE_PATTERN = "[\u4E00-\u9FFF]";
+    public final static java.util.regex.Pattern CHINESE = java.util.regex.Pattern.compile(CHINESE_PATTERN);
     /**
      * 在XML中无效的字符 正则
      */
     public final static String INVALID_REGEX = "[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]";
-
     /**
      * 英文字母 、数字和下划线
      */
     public final static String GENERAL_PATTERN = "^\\w+$";
     public final static java.util.regex.Pattern GENERAL = java.util.regex.Pattern.compile(GENERAL_PATTERN);
-
     /**
      * 字母
      */
@@ -66,16 +60,6 @@ public class RegEx {
      */
     public final static String NUMBERS_PATTERN = "\\d+";
     public final static java.util.regex.Pattern NUMBERS = java.util.regex.Pattern.compile(NUMBERS_PATTERN);
-    /**
-     * 单个中文汉字
-     */
-    public final static String CHINESE_PATTERN = "[\u4E00-\u9FFF]";
-    public final static java.util.regex.Pattern CHINESE = java.util.regex.Pattern.compile(CHINESE_PATTERN);
-    /**
-     * 中文汉字
-     */
-    public final static String CHINESES_PATTERN = "RE_CHINESE + \"+\"";
-    public final static java.util.regex.Pattern CHINESES = java.util.regex.Pattern.compile(CHINESES_PATTERN);
     /**
      * 分组
      */
@@ -102,6 +86,11 @@ public class RegEx {
      */
     public final static String EMAIL_PATTERN = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     public final static java.util.regex.Pattern EMAIL = java.util.regex.Pattern.compile(EMAIL_PATTERN, java.util.regex.Pattern.CASE_INSENSITIVE);
+    /**
+     * 固定电话
+     */
+    public final static String PHONE_PATTERN = "^0[1-9](\\\\d{1,2}\\\\-?)\\\\d{7,8}";
+    public final static java.util.regex.Pattern PHONE = java.util.regex.Pattern.compile(PHONE_PATTERN);
     /**
      * 移动电话
      */

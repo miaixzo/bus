@@ -25,8 +25,13 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.http.bodys.ResponseBody;
+import org.aoju.bus.http.cache.CacheControl;
+import org.aoju.bus.http.header.Headers;
 import org.aoju.bus.http.internal.http.HttpHeaders;
 import org.aoju.bus.http.internal.http.StatusLine;
+import org.aoju.bus.http.offers.Challenge;
+import org.aoju.bus.http.offers.Handshake;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -43,7 +48,7 @@ import static java.net.HttpURLConnection.*;
  * {@link ResponseBody} for an explanation and examples.
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class Response implements Closeable {

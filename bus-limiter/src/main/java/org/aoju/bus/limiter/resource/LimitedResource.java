@@ -32,7 +32,7 @@ import java.util.Collection;
 
 /**
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public interface LimitedResource<T extends Limiter> {

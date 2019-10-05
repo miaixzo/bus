@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.http.internal.http;
 
-import org.aoju.bus.http.HttpUrl;
 import org.aoju.bus.http.Request;
+import org.aoju.bus.http.Url;
 
 import java.net.Proxy;
 
 /**
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class RequestLine {
@@ -57,7 +57,7 @@ public final class RequestLine {
         return !request.isHttps() && proxyType == Proxy.Type.HTTP;
     }
 
-    public static String requestPath(HttpUrl url) {
+    public static String requestPath(Url url) {
         String path = url.encodedPath();
         String query = url.encodedQuery();
         return query != null ? (path + '?' + query) : path;

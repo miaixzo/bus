@@ -41,7 +41,7 @@ import java.util.Map;
  * Excel图片工具类
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class ExcelPicUtils {

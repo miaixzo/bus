@@ -47,7 +47,7 @@ import java.util.*;
  * 类工具类
  *
  * @author Kimi Liu
- * @version 3.6.2
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class ClassUtils {
@@ -773,7 +773,7 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 3.6.2
+     * @since 3.6.3
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();
@@ -1565,7 +1565,7 @@ public class ClassUtils {
      * @param cls the class to convert, may be null
      * @return the wrapper class for {@code cls} or {@code cls} if
      * {@code cls} is not a primitive. {@code null} if null input.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static Class<?> primitiveToWrapper(final Class<?> cls) {
         Class<?> convertedClass = cls;
@@ -1583,7 +1583,7 @@ public class ClassUtils {
      * @return an array which contains for each given class, the wrapper class or
      * the original class if class is not a primitive. {@code null} if null input.
      * Empty array if an empty array passed in.
-     * @since 2.1
+     * @since 2.1.0
      */
     public static Class<?>[] primitivesToWrappers(final Class<?>... classes) {
         if (classes == null) {
@@ -1615,7 +1615,7 @@ public class ClassUtils {
      * @return the corresponding primitive type if {@code cls} is a
      * wrapper class, <b>null</b> otherwise
      * @see #primitiveToWrapper(Class)
-     * @since 2.4
+     * @since 2.4.0
      */
     public static Class<?> wrapperToPrimitive(final Class<?> cls) {
         return wrapperPrimitiveMap.get(cls);
@@ -1633,7 +1633,7 @@ public class ClassUtils {
      * <b>null</b> if the original class is not a wrapper class. {@code null} if null input.
      * Empty array if an empty array passed in.
      * @see #wrapperToPrimitive(Class)
-     * @since 2.4
+     * @since 2.4.0
      */
     public static Class<?>[] wrappersToPrimitives(final Class<?>... classes) {
         if (classes == null) {
@@ -1919,7 +1919,6 @@ public class ClassUtils {
      * @param clazz 类信息
      * @return 方法列表
      * @throws IntrospectionException if any
-     * @since 0.0.7
      */
     public static List<Method> getAllFieldsReadMethods(final Class clazz) throws IntrospectionException {
         List<Field> fieldList = getAllFieldList(clazz);
