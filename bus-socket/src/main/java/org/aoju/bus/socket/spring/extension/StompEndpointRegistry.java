@@ -5,7 +5,6 @@ import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.spring.intercept.FromClientInterceptor;
 import org.aoju.bus.socket.spring.intercept.ToClientInterceptor;
 import org.springframework.context.ApplicationContext;
-import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.HttpRequestHandler;
@@ -31,7 +30,7 @@ import java.util.Map;
  * 代替{@link WebMvcStompEndpointRegistry}
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class StompEndpointRegistry extends WebMvcStompEndpointRegistry {
@@ -45,7 +44,6 @@ public class StompEndpointRegistry extends WebMvcStompEndpointRegistry {
     private final StompSubProtocolHandler stompHandler;
     private final List<WebMvcStompWebSocketEndpointRegistration> registrations = new ArrayList<>();
     private int order = 1;
-    @Nullable
     private UrlPathHelper urlPathHelper;
 
     public StompEndpointRegistry(WebSocketHandler webSocketHandler, WebSocketTransportRegistration transportRegistration, TaskScheduler defaultSockJsTaskScheduler) {
@@ -118,14 +116,13 @@ public class StompEndpointRegistry extends WebMvcStompEndpointRegistry {
         this.order = order;
     }
 
-    @Nullable
     @Override
     protected UrlPathHelper getUrlPathHelper() {
         return this.urlPathHelper;
     }
 
     @Override
-    public void setUrlPathHelper(@Nullable UrlPathHelper urlPathHelper) {
+    public void setUrlPathHelper(UrlPathHelper urlPathHelper) {
         this.urlPathHelper = urlPathHelper;
     }
 

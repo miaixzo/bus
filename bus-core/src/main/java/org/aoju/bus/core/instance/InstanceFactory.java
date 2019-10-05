@@ -27,7 +27,7 @@ package org.aoju.bus.core.instance;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.util.Map;
@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实例化工厂类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public final class InstanceFactory implements Instance {
@@ -70,7 +70,6 @@ public final class InstanceFactory implements Instance {
      * @param clazz 类信息
      * @param <T>   泛型
      * @return 结果
-     * @since 0.1.8
      */
     public static <T> T singletion(Class<T> clazz) {
         return getInstance().singleton(clazz);
@@ -83,7 +82,6 @@ public final class InstanceFactory implements Instance {
      * @param groupName 分组名称
      * @param <T>       泛型
      * @return 结果
-     * @since 0.1.8
      */
     public static <T> T singletion(Class<T> clazz, final String groupName) {
         return getInstance().singleton(clazz, groupName);
@@ -127,7 +125,7 @@ public final class InstanceFactory implements Instance {
         try {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

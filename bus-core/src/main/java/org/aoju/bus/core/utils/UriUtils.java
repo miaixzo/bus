@@ -26,7 +26,7 @@ package org.aoju.bus.core.utils;
 import org.aoju.bus.core.consts.FileType;
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CommonException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.net.*;
@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class UriUtils {
@@ -79,7 +79,7 @@ public class UriUtils {
             try {
                 return new File(url).toURI().toURL();
             } catch (MalformedURLException ex2) {
-                throw new CommonException(e);
+                throw new InstrumentException(e);
             }
         }
     }
@@ -136,14 +136,14 @@ public class UriUtils {
      *
      * @param file URL对应的文件对象
      * @return URL
-     * @throws CommonException MalformedURLException
+     * @throws InstrumentException MalformedURLException
      */
     public static URL getURL(File file) {
         Assert.notNull(file, "File is null !");
         try {
             return file.toURI().toURL();
         } catch (MalformedURLException e) {
-            throw new CommonException("Error occured when get URL!");
+            throw new InstrumentException("Error occured when get URL!");
         }
     }
 
@@ -152,7 +152,7 @@ public class UriUtils {
      *
      * @param files URL对应的文件对象
      * @return URL
-     * @throws CommonException MalformedURLException
+     * @throws InstrumentException MalformedURLException
      */
     public static URL[] getURLs(File... files) {
         final URL[] urls = new URL[files.length];
@@ -161,7 +161,7 @@ public class UriUtils {
                 urls[i] = files[i].toURI().toURL();
             }
         } catch (MalformedURLException e) {
-            throw new CommonException("Error occured when get URL!");
+            throw new InstrumentException("Error occured when get URL!");
         }
 
         return urls;
@@ -184,7 +184,7 @@ public class UriUtils {
      * @param baseUrl      基准URL
      * @param relativePath 相对URL
      * @return 相对路径
-     * @throws CommonException MalformedURLException
+     * @throws InstrumentException MalformedURLException
      */
     public static String complateUrl(String baseUrl, String relativePath) {
         baseUrl = formatUrl(baseUrl);
@@ -197,7 +197,7 @@ public class UriUtils {
             final URL parseUrl = new URL(absoluteUrl, relativePath);
             return parseUrl.toString();
         } catch (MalformedURLException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -207,27 +207,53 @@ public class UriUtils {
      *
      * @param url URL
      * @return 编码后的URL
-     * @throws CommonException UnsupportedEncodingException
+     * @throws InstrumentException UnsupportedEncodingException
      * @since 3.1.9
      */
-    public static String encode(String url) throws CommonException {
+    public static String encode(String url) throws InstrumentException {
         return encode(url, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
     }
 
+    /**
+     * 编码URL，默认使用UTF-8编码
+     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     *
+     * @param url URL
+     * @return 编码后的URL
+     */
+    public static String encodeAll(String url) {
+        return encodeAll(url, org.aoju.bus.core.consts.Charset.UTF_8);
+    }
+
+    /**
+     * 编码URL
+     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     *
+     * @param url     URL
+     * @param charset 编码
+     * @return 编码后的URL
+     */
+    public static String encodeAll(String url, Charset charset) {
+        try {
+            return java.net.URLEncoder.encode(url, charset.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new InstrumentException(e);
+        }
+    }
 
     /**
      * 获得path部分
      *
      * @param uriStr URI路径
      * @return path
-     * @throws CommonException 包装URISyntaxException
+     * @throws InstrumentException 包装URISyntaxException
      */
     public static String getPath(String uriStr) {
-        URI uri = null;
+        URI uri;
         try {
             uri = new URI(uriStr);
         } catch (URISyntaxException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
         return uri.getPath();
     }
@@ -249,7 +275,7 @@ public class UriUtils {
         try {
             // URL对象的getPath方法对于包含中文或空格的问题
             path = UriUtils.toURI(url).getPath();
-        } catch (CommonException e) {
+        } catch (InstrumentException e) {
             // ignore
         }
         return (null != path) ? path : url.getPath();
@@ -260,16 +286,16 @@ public class UriUtils {
      *
      * @param url URL
      * @return URI
-     * @throws CommonException 包装URISyntaxException
+     * @throws InstrumentException 包装URISyntaxException
      */
-    public static URI toURI(URL url) throws CommonException {
+    public static URI toURI(URL url) throws InstrumentException {
         if (null == url) {
             return null;
         }
         try {
             return url.toURI();
         } catch (URISyntaxException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -278,13 +304,13 @@ public class UriUtils {
      *
      * @param location 字符串路径
      * @return URI
-     * @throws CommonException 包装URISyntaxException
+     * @throws InstrumentException 包装URISyntaxException
      */
-    public static URI toURI(String location) throws CommonException {
+    public static URI toURI(String location) throws InstrumentException {
         try {
             return new URI(location.replace(" ", "%20"));
         } catch (URISyntaxException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -333,14 +359,14 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 3.6.1
+     * @since 3.6.3
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
         try {
             return url.openStream();
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -350,7 +376,7 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 3.6.1
+     * @since 3.6.3
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);
@@ -367,7 +393,7 @@ public class UriUtils {
             JarURLConnection urlConnection = (JarURLConnection) url.openConnection();
             return urlConnection.getJarFile();
         } catch (IOException e) {
-            throw new CommonException(e);
+            throw new InstrumentException(e);
         }
     }
 

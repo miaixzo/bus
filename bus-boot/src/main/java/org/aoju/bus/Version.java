@@ -31,16 +31,11 @@ import org.aoju.bus.core.consts.Symbol;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 3.6.1
+ * @version 3.6.3
  * @since JDK 1.8
  */
 public class Version {
 
-    /**
-     * 版本号
-     */
-
-    private String version;
     /**
      * 是否完整模式，默认使用完整模式
      */
@@ -91,7 +86,7 @@ public class Version {
      * @return 阶段号
      */
     public static String stage() {
-        return "0";
+        return "3";
     }
 
     /**
@@ -104,13 +99,47 @@ public class Version {
     }
 
     /**
-     * 私有实例化构造方法
+     * 比较2个版本号
+     *
+     * @param v1       v1
+     * @param v2       v2
+     * @param complete 是否完整的比较两个版本
+     * @return (v1 < v2) ? -1 : ((v1 == v2) ? 0 : 1)
      */
-    private Version() {
-    }
+    private static int compare(String v1, String v2, boolean complete) {
+        // v1 null视为最小版本，排在前
+        if (v1 == v2) {
+            return 0;
+        } else if (v1 == null) {
+            return -1;
+        } else if (v2 == null) {
+            return 1;
+        }
+        // 去除空格
+        v1 = v1.trim();
+        v2 = v2.trim();
+        if (v1.equals(v2)) {
+            return 0;
+        }
+        String[] v1s = v1.split(Symbol.BACKSLASH + Symbol.DOT);
+        String[] v2s = v2.split(Symbol.BACKSLASH + Symbol.DOT);
+        int v1sLen = v1s.length;
+        int v2sLen = v2s.length;
+        int len = complete
+                ? Math.max(v1sLen, v2sLen)
+                : Math.min(v1sLen, v2sLen);
 
-    private Version(String version) {
-        this.version = version;
+        for (int i = 0; i < len; i++) {
+            String c1 = len > v1sLen || null == v1s[i] ? Normal.EMPTY : v1s[i];
+            String c2 = len > v2sLen || null == v2s[i] ? Normal.EMPTY : v2s[i];
+
+            int result = c1.compareTo(c2);
+            if (result != 0) {
+                return result;
+            }
+        }
+
+        return 0;
     }
 
     /**
@@ -118,19 +147,9 @@ public class Version {
      *
      * @return {Version}
      */
-    public Version incomplete() {
+    public Version inComplete() {
         this.complete = false;
         return this;
-    }
-
-    /**
-     * 构造器
-     *
-     * @param version 版本
-     * @return {Version}
-     */
-    public static Version of(String version) {
-        return new Version(version);
     }
 
     /**
@@ -206,52 +225,7 @@ public class Version {
      * @return {int}
      */
     private int compare(String version) {
-        return Version.compare(this.version, version, complete);
+        return compare(get(), version, complete);
     }
-
-    /**
-     * 比较2个版本号
-     *
-     * @param v1       v1
-     * @param v2       v2
-     * @param complete 是否完整的比较两个版本
-     * @return (v1 < v2) ? -1 : ((v1 == v2) ? 0 : 1)
-     */
-    private static int compare(String v1, String v2, boolean complete) {
-        // v1 null视为最小版本，排在前
-        if (v1 == v2) {
-            return 0;
-        } else if (v1 == null) {
-            return -1;
-        } else if (v2 == null) {
-            return 1;
-        }
-        // 去除空格
-        v1 = v1.trim();
-        v2 = v2.trim();
-        if (v1.equals(v2)) {
-            return 0;
-        }
-        String[] v1s = v1.split(Symbol.BACKSLASH + Symbol.DOT);
-        String[] v2s = v2.split(Symbol.BACKSLASH + Symbol.DOT);
-        int v1sLen = v1s.length;
-        int v2sLen = v2s.length;
-        int len = complete
-                ? Math.max(v1sLen, v2sLen)
-                : Math.min(v1sLen, v2sLen);
-
-        for (int i = 0; i < len; i++) {
-            String c1 = len > v1sLen || null == v1s[i] ? Normal.EMPTY : v1s[i];
-            String c2 = len > v2sLen || null == v2s[i] ? Normal.EMPTY : v2s[i];
-
-            int result = c1.compareTo(c2);
-            if (result != 0) {
-                return result;
-            }
-        }
-
-        return 0;
-    }
-
 
 }
