@@ -30,14 +30,12 @@ import java.util.List;
 /**
  * *
  * 使用方法:
- * <li>String msg = Ansi.Red.and(Ansi.BgYellow).format("Hello %s", name)</li>
- * <li>String msg = Ansi.Blink.colorize("BOOM!")</li>
- * <p>
+ * String msg = Ansi.Red.and(Ansi.BgYellow).format("Hello %s", name)
+ * String msg = Ansi.Blink.colorize("BOOM!")
  * 或者，可以直接使用常数:
- * <li>String msg = new Ansi(Ansi.ITALIC, Ansi.GREEN).format("Green money")</li>
+ * String msg = new Ansi(Ansi.ITALIC, Ansi.GREEN).format("Green money")
  * Or, even:
- * <li>String msg = Ansi.BLUE + "scientific"</li>
- * <p>
+ * String msg = Ansi.BLUE + "scientific"
  * 注意:同时出现多种组合FG颜色或BG颜色，只有最后一个会显示
  *
  * @author Kimi Liu
