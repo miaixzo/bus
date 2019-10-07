@@ -24,7 +24,6 @@
 package org.aoju.bus.boot.banner;
 
 
-import com.taobao.text.util.RenderUtil;
 import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.utils.IoUtils;
 
@@ -34,7 +33,7 @@ import java.io.InputStream;
  * 旗标生成器
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public abstract class AbstractBanner {
@@ -79,7 +78,11 @@ public abstract class AbstractBanner {
 
     // 显示成非ansi模式
     public String getPlainBanner() {
-        return RenderUtil.ansiToPlainText(banner);
+        if (banner != null) {
+            banner = banner.replaceAll("\u001b\\[[;\\d]*m", "");
+        }
+
+        return banner;
     }
 
     protected abstract String generateBanner(String bannerText);

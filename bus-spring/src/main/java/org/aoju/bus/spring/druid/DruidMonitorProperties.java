@@ -24,17 +24,18 @@
 package org.aoju.bus.spring.druid;
 
 import lombok.Data;
+import org.aoju.bus.spring.core.Extend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Druid 监控配置项
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "spring.druid.monitor")
+@ConfigurationProperties(prefix = Extend.DRUID)
 public class DruidMonitorProperties {
 
     private String DruidStatView;

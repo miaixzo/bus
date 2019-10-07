@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.spring.annotation;
 
-import org.aoju.bus.spring.servlet.RequestWrapperFilter;
+import org.aoju.bus.spring.wrapper.WrapperConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -32,13 +32,13 @@ import java.lang.annotation.*;
  * 开启 Request/Response 多次读取
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @Documented
-@Import(RequestWrapperFilter.class)
+@Import(WrapperConfiguration.class)
 public @interface EnableOnceFilter {
 
 }

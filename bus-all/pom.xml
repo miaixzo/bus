@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>3.6.3</version>
+    <version>3.6.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -23,8 +23,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <!--bus-boot-->
-        <taobao.text.version>0.0.2</taobao.text.version>
         <!--bus-cache-->
         <aspectj.version>1.9.4</aspectj.version>
         <guice.version>4.2.0</guice.version>
@@ -67,7 +65,7 @@
         <alipay-sdk-version>3.7.4.ALL</alipay-sdk-version>
         <!--bus-pager-->
         <jsqlparser.version>2.0</jsqlparser.version>
-        <!--bus-poi-->
+        <!--bus-office-->
         <poi.version>3.17</poi.version>
         <xerces.version>2.12.0</xerces.version>
         <!--bus-proxy-->
@@ -82,7 +80,14 @@
         <druid.version>1.1.16</druid.version>
         <dubbo.version>2.6.6</dubbo.version>
         <!--bus-storage-->
-        <aliyun.oss.version>2.8.3</aliyun.oss.version>
+        <aliyun.oss.version>3.4.2</aliyun.oss.version>
+        <baidu.bos.version>0.10.48</baidu.bos.version>
+        <huawei.oss.version>3.0.2</huawei.oss.version>
+        <jd.oss.version>1.11.136</jd.oss.version>
+        <minio.oss.version>3.0.12</minio.oss.version>
+        <qiniu.oss.version>[7.2.0, 7.2.99]</qiniu.oss.version>
+        <tencent.oss.version>5.5.9</tencent.oss.version>
+        <upyun.oss.version>4.0.1</upyun.oss.version>
         <!--bus-swagger-->
         <swagger.version>2.9.2</swagger.version>
         <!--bus-tracer-->
@@ -94,13 +99,6 @@
     </properties>
 
     <dependencies>
-        <!--bus-boot-->
-        <dependency>
-            <groupId>com.taobao.text</groupId>
-            <artifactId>text-ui</artifactId>
-            <version>${taobao.text.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <!--bus-cache-->
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -349,7 +347,7 @@
             <artifactId>jsqlparser</artifactId>
             <version>${jsqlparser.version}</version>
         </dependency>
-        <!--bus-poi-->
+        <!--bus-office-->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -434,13 +432,81 @@
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>${aliyun.oss.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpclient</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.baidubce</groupId>
+            <artifactId>bce-java-sdk</artifactId>
+            <version>${baidu.bos.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.huawei.storage</groupId>
+            <artifactId>esdk-obs-java</artifactId>
+            <version>${huawei.oss.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>${jd.oss.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.oss.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>${qiniu.oss.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos_api</artifactId>
+            <version>${tencent.oss.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.upyun</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>${upyun.oss.version}</version>
+            <optional>true</optional>
         </dependency>
         <!--bus-swagger-->
         <dependency>
@@ -554,15 +620,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.qiniu</groupId>
-            <artifactId>qiniu-java-sdk</artifactId>
-            <version>[7.0.0, 7.2.99]</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

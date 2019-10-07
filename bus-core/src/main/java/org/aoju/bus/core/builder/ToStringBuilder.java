@@ -88,7 +88,7 @@ import org.aoju.bus.core.utils.ObjectUtils;
  * the {@link ToStringStyle} passed into the constructor.</p>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class ToStringBuilder implements Builder<String> {

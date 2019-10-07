@@ -25,6 +25,7 @@ package org.aoju.bus.base.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Transient;
 
@@ -34,10 +35,11 @@ import javax.persistence.Transient;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class Tracer extends OAuth2 {
 
     @Transient

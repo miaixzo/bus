@@ -49,10 +49,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Druid 配置
+ * 数据源配置
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @ConditionalOnClass(DruidDataSource.class)

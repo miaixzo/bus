@@ -218,22 +218,24 @@
                                     <td><span class="api-badge">{{ param.in }}</span></td>
                                     {{# if(param.in == "body" && param.showtype != "string"){ }}
                                     <td>
-                                        <textarea rows="10" dreq="{{ param.required }}"
-                                                  dtype="{{ param.in.toLowerCase() }}" dprop="{{ param.name }}"
-                                                  class="layui-textarea">{{ layui.nswagger.jsonmock.mock(param.itemtype) }}</textarea>
+                                        <textarea class="layui-textarea" dprop="{{ param.name }}"
+                                                  dreq="{{ param.required }}" dtype="{{ param.in.toLowerCase() }}"
+                                                  rows="10">{{ layui.nswagger.jsonmock.mock(param.itemtype) }}</textarea>
                                     </td>
                                     {{# } else if(param.in == "formData" && param.type == "file") { }}
                                     <td>
-                                        <button dreq="{{ param.required }}" dtype="{{ param.in.toLowerCase() }}"
-                                                dprop="{{ param.name }}" type="button" class="layui-btn btnUpload"><i
+                                        <button class="layui-btn btnUpload" dprop="{{ param.name }}"
+                                                dreq="{{ param.required }}" dtype="{{ param.in.toLowerCase() }}"
+                                                type="button"><i
                                                 class="layui-icon">&#xe67c;</i>Upload
                                         </button>
                                     </td>
                                     {{# } else { }}
                                     <td>
-                                        <input dreq="{{ param.required }}" dtype="{{ param.in.toLowerCase() }}"
-                                               dprop="{{ param.name }}" type="text" name="username" autocomplete="off"
-                                               class="layui-input" value="{{ param.default || '' }}"/>
+                                        <input autocomplete="off" class="layui-input"
+                                               dprop="{{ param.name }}" dreq="{{ param.required }}"
+                                               dtype="{{ param.in.toLowerCase() }}" name="username"
+                                               type="text" value="{{ param.default || '' }}"/>
                                     </td>
                                     {{# } }}
                                 </tr>
@@ -254,8 +256,8 @@
                                     {{ d.dhttpmethod.toUpperCase() }}
                                 </label>
                                 <div class="layui-input-inline ipt-api-url">
-                                    <input type="text" autocomplete="off" class="layui-input" value="{{ d.dpath }}"
-                                           disabled/>
+                                    <input autocomplete="off" class="layui-input" disabled type="text"
+                                           value="{{ d.dpath }}"/>
                                 </div>
                                 <div class="layui-input-inline">
                                     <button class="layui-btn send-btn">Send</button>
@@ -336,7 +338,7 @@
                     layer.msg("required field : " + dprop, {icon: 5});
                     return;
                 }
-                if (pval && typeof(pval) != "undefined") {
+                if (pval && typeof (pval) != "undefined") {
                     if (dtype == "header") {
                     } else if (dtype == "path") {
                         paths[dprop] = pval;

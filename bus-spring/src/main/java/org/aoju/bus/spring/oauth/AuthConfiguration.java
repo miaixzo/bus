@@ -23,44 +23,34 @@
  */
 package org.aoju.bus.spring.oauth;
 
-import org.aoju.bus.logger.Logger;
-import org.aoju.bus.oauth.cache.DefaultStateCache;
-import org.aoju.bus.oauth.cache.StateCache;
+import org.aoju.bus.oauth.metric.DefaultStateCache;
+import org.aoju.bus.oauth.metric.StateCache;
+import org.aoju.bus.spring.core.Extend;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 /**
- * 授权登录相关配置
+ * 授权配置
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {AuthProperties.class})
 public class AuthConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "request.oauth", value = "enabled", havingValue = "true", matchIfMissing = true)
-    public AuthProviderService authRequestFactory(AuthProperties properties, StateCache stateCache) {
+    public AuthProviderService authProviderFactory(AuthProperties properties, StateCache stateCache) {
         return new AuthProviderService(properties, stateCache);
     }
 
-    /**
-     * 默认缓存
-     */
+    @Bean
     @ConditionalOnMissingBean(StateCache.class)
-    @ConditionalOnProperty(name = "request.cache.type", havingValue = "default", matchIfMissing = true)
-    static class Default {
-        static {
-            Logger.debug("使用默认缓存存储 state 数据");
-        }
-
-        @Bean
-        public StateCache authStateCache() {
-            return DefaultStateCache.INSTANCE;
-        }
+    @ConditionalOnProperty(name = Extend.OAUTH + ".cache.type", havingValue = "default", matchIfMissing = true)
+    public StateCache stateCache() {
+        return DefaultStateCache.INSTANCE;
     }
 
 }

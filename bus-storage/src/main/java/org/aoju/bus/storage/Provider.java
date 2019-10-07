@@ -23,36 +23,136 @@
  */
 package org.aoju.bus.storage;
 
+import org.aoju.bus.storage.magic.Readers;
+
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Path;
+
 /**
+ * 文件存储提供者
+ *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
-public enum Provider {
+public interface Provider {
 
     /**
-     * 阿里云
+     * 文件下载（流式下载）
+     *
+     * @param fileName 文件名
+     * @return 处理结果 {@link Readers}
      */
-    ALI_OSS("阿里云oss", "aliyun"),
+    Readers download(String fileName);
+
     /**
-     * 七牛云
+     * 文件下载（流式下载）
+     *
+     * @param bucketName 存储桶名
+     * @param fileName   文件名
+     * @return 处理结果 {@link Readers}
      */
-    QINIU_OSS("七牛云oss", "qiniu");
+    Readers download(String bucketName, String fileName);
 
-    String name;
-    String value;
+    /**
+     * 文件下载（文件下载到本地）
+     *
+     * @param bucketName 存储桶名
+     * @param fileName   文件名
+     * @param file       保存的本地文件路径
+     * @return 处理结果 {@link Readers}
+     */
+    Readers download(String bucketName, String fileName, File file);
 
-    Provider(String name, String value) {
-        this.name = name;
-        this.value = value;
-    }
+    /**
+     * 文件下载（文件下载到本地）
+     *
+     * @param fileName 文件名
+     * @param file     保存的本地文件路径
+     * @return 处理结果 {@link Readers}
+     */
+    Readers download(String fileName, File file);
 
-    public String getName() {
-        return name;
-    }
+    /**
+     * 文件列表
+     *
+     * @return 处理结果 {@link Readers}
+     */
+    Readers list();
 
-    public String getValue() {
-        return value;
-    }
+    /**
+     * 重命名
+     *
+     * @param oldName 原始名称
+     * @param newName 新名称
+     * @return 处理结果 {@link Readers}
+     */
+    Readers rename(String oldName, String newName);
+
+    /**
+     * 重命名
+     *
+     * @param bucketName 存储桶名
+     * @param oldName    原始名称
+     * @param newName    新名称
+     * @return 处理结果 {@link Readers}
+     */
+    Readers rename(String bucketName, String oldName, String newName);
+
+    /**
+     * 上传文件到指定的 bucket
+     *
+     * @param fileName 文件名字
+     * @param content  文件内容
+     * @return 处理结果 {@link Readers}
+     */
+    Readers upload(String fileName, byte[] content);
+
+    /**
+     * 上传文件到指定的 bucket
+     *
+     * @param bucketName 存储桶名
+     * @param fileName   文件名字
+     * @param content    文件内容
+     * @return 处理结果 {@link Readers}
+     */
+    Readers upload(String bucketName, String fileName, InputStream content);
+
+    /**
+     * 上传文件到指定的 bucket
+     *
+     * @param bucketName 存储桶名
+     * @param fileName   文件名字
+     * @param content    文件内容
+     * @return 处理结果 {@link Readers}
+     */
+    Readers upload(String bucketName, String fileName, byte[] content);
+
+    /**
+     * 删除文件
+     *
+     * @param fileName 文件名
+     * @return 处理结果 {@link Readers}
+     */
+    Readers remove(String fileName);
+
+    /**
+     * 删除文件
+     *
+     * @param bucketName 存储桶名
+     * @param fileName   文件名
+     * @return 处理结果 {@link Readers}
+     */
+    Readers remove(String bucketName, String fileName);
+
+    /**
+     * 删除文件
+     *
+     * @param bucketName 存储桶名
+     * @param path       文件路径
+     * @return 处理结果 {@link Readers}
+     */
+    Readers remove(String bucketName, Path path);
 
 }

@@ -24,15 +24,16 @@
 package org.aoju.bus.spring.socket;
 
 import lombok.Data;
+import org.aoju.bus.spring.core.Extend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "net.websocket")
+@ConfigurationProperties(prefix = Extend.WEBSOCKET)
 public class SocketProperties {
 
     private int port = 80;

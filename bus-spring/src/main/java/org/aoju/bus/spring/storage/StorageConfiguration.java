@@ -23,68 +23,36 @@
  */
 package org.aoju.bus.spring.storage;
 
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.storage.Provider;
-import org.aoju.bus.storage.StorageProvider;
-import org.aoju.bus.storage.UploadObject;
-import org.aoju.bus.storage.UploadToken;
-import org.aoju.bus.storage.provider.aliyun.AliyunOSSProvider;
-import org.aoju.bus.storage.provider.qiniu.QiniuOSSProvider;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
+import org.aoju.bus.spring.core.Extend;
+import org.aoju.bus.storage.metric.DefaultStorageCache;
+import org.aoju.bus.storage.metric.StorageCache;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.Map;
+import org.springframework.context.annotation.Bean;
 
 /**
+ * 授权配置
+ *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
+@Data
 @EnableConfigurationProperties(value = {StorageProperties.class})
-public class StorageConfiguration implements InitializingBean, DisposableBean {
+public class StorageConfiguration {
 
-    @Autowired
-    StorageProperties properties;
-    @Autowired
-    StorageProvider storageProvider;
-
-    @Override
-    public void destroy() throws Exception {
-        storageProvider.close();
+    @Bean
+    public StorageProviderService storageProviderFactory(StorageProperties properties, StorageCache storageCache) {
+        return new StorageProviderService(properties, storageCache);
     }
 
-    @Override
-    public void afterPropertiesSet() {
-        if (Provider.QINIU_OSS.getValue().equals(storageProvider)) {
-            Assert.notBlank(properties.accessKey, "[accessKey] not defined");
-            Assert.notBlank(properties.secretKey, "[secretKey] not defined");
-            storageProvider = new QiniuOSSProvider(properties.prefix, properties.bucket, properties.accessKey, properties.secretKey, properties.privated);
-        } else if (Provider.ALI_OSS.getValue().equals(storageProvider)) {
-            Assert.notBlank(properties.endpoint, "[endpoint] not defined");
-            storageProvider = new AliyunOSSProvider(properties.prefix, properties.endpoint, properties.bucket, properties.accessKey, properties.secretKey, properties.internalUrl, properties.privated);
-        } else {
-            throw new RuntimeException("Provider[" + storageProvider + "] not support");
-        }
-    }
-
-    public String upload(String fileName, File file) {
-        return storageProvider.upload(new UploadObject(fileName, file));
-    }
-
-    public String upload(String fileName, InputStream in, String mimeType) {
-        return storageProvider.upload(new UploadObject(fileName, in, mimeType));
-    }
-
-    public boolean delete(String fileName) {
-        return storageProvider.delete(fileName);
-    }
-
-    public Map<String, Object> createUploadToken(UploadToken param) {
-        return storageProvider.createUploadToken(param);
+    @Bean
+    @ConditionalOnMissingBean(StorageCache.class)
+    @ConditionalOnProperty(name = Extend.STORAGE + ".cache.type", havingValue = "default", matchIfMissing = true)
+    public StorageCache storageCache() {
+        return DefaultStorageCache.INSTANCE;
     }
 
 }

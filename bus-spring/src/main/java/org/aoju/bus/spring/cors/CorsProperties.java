@@ -24,17 +24,18 @@
 package org.aoju.bus.spring.cors;
 
 import lombok.Data;
+import org.aoju.bus.spring.core.Extend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Core 跨域相关配置
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties("request.cors")
+@ConfigurationProperties(Extend.CORS)
 public class CorsProperties {
 
     /**

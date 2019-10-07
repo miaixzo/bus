@@ -24,24 +24,35 @@
 package org.aoju.bus.spring.storage;
 
 import lombok.Data;
+import org.aoju.bus.spring.cache.CacheProperties;
+import org.aoju.bus.spring.core.Extend;
+import org.aoju.bus.storage.Context;
+import org.aoju.bus.storage.Registry;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import java.util.Map;
 
 /**
+ * 存储配置信息
+ *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "storage.oss")
+@ConfigurationProperties(prefix = Extend.STORAGE)
 public class StorageProperties {
 
-    String endpoint;
-    String provider;
-    String bucket;
-    String accessKey;
-    String secretKey;
-    String prefix;
-    String internalUrl;
-    boolean privated;
+    /**
+     * 基础配置
+     */
+    private Map<Registry, Context> type;
+
+    /**
+     * 缓存配置
+     */
+    @NestedConfigurationProperty
+    private CacheProperties cache;
 
 }

@@ -28,7 +28,6 @@ import org.aoju.bus.base.entity.BaseEntity;
 import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.base.mapper.BaseMapper;
 import org.aoju.bus.base.service.BaseService;
-import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.mapper.entity.Condition;
@@ -45,7 +44,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>

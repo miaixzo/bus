@@ -30,7 +30,6 @@ import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -42,12 +41,11 @@ import javax.sql.DataSource;
  * Druid 监控配置
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @ConditionalOnClass(DruidDataSource.class)
 @EnableConfigurationProperties(DruidMonitorProperties.class)
-@ConditionalOnProperty(prefix = "spring.druid.monitor", havingValue = "enabled", value = "enabled")
 @AutoConfigureAfter(DataSource.class)
 public class DruidMonitorConfiguration {
 

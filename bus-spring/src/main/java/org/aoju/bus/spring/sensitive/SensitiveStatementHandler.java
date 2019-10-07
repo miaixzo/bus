@@ -33,7 +33,7 @@ import org.aoju.bus.sensitive.annotation.NShield;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
 import org.aoju.bus.sensitive.annotation.Shield;
-import org.aoju.bus.spring.SpringContextAware;
+import org.aoju.bus.spring.SpringAware;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -54,7 +54,7 @@ import java.util.Properties;
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -90,7 +90,7 @@ public class SensitiveStatementHandler implements Interceptor {
         if (params instanceof Map) {
             return invocation.proceed();
         }
-        SensitiveProperties properties = SpringContextAware.getBean(SensitiveProperties.class);
+        SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
         if (ObjectUtils.isNotEmpty(properties) && !properties.isDebug()) {
             Sensitive sensitive = params != null ? params.getClass().getAnnotation(Sensitive.class) : null;
             if (ObjectUtils.isNotEmpty(sensitive)) {
@@ -134,7 +134,7 @@ public class SensitiveStatementHandler implements Interceptor {
                     Privacy privacy = field.getAnnotation(Privacy.class);
                     if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
                         if (Builder.ALL.equals(privacy.value()) || Builder.IN.equals(privacy.value())) {
-                            SensitiveProperties properties = SpringContextAware.getBean(SensitiveProperties.class);
+                            SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
                             if (ObjectUtils.isEmpty(properties)) {
                                 throw new InstrumentException("please check the request.crypto.encrypt");
                             }

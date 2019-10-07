@@ -7,7 +7,7 @@ import java.util.function.Supplier;
  * 工具包集合，工具类快捷方式
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class $ {
@@ -170,16 +170,6 @@ public class $ {
      */
     public static boolean isAnyBlank(final CharSequence... css) {
         return StringUtils.isAnyBlank(css);
-    }
-
-    /**
-     * 判断是否全为非空字符串
-     *
-     * @param css CharSequence
-     * @return boolean
-     */
-    public static boolean isNoneBlank(final CharSequence... css) {
-        return StringUtils.isNoneBlank(css);
     }
 
     /**

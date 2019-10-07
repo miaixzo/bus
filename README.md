@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v3.6.3-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v3.6.5-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -66,7 +66,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |bus-mapper|数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生|
 |bus-oauth|第三方登录,已集成十多家第三方平台（国内外常用的基本都已包含）|
 |bus-pager|数据分页,mybatis|
-|bus-poi|Excel处理,POI封装实现，使Java操作Excel等文件变得更加简单|
+|bus-office|Excel/Word处理,POI封装实现，使Java操作Excel等文件变得更加简单|
 |bus-proxy|公共代理，使动态代理变得简单|
 |bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小|
 |bus-setting|设置工具类， 用于支持设置/配置|
@@ -96,13 +96,13 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>3.6.3</version>
+    <version>3.6.5</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:3.6.3'
+implementation 'org.aoju:bus-all:3.6.5'
 ```
 
 ### Other

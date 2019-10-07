@@ -29,14 +29,13 @@ import org.aoju.bus.base.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 基础请求封装
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class BaseController<Service extends BaseService<T>, T> extends Controller {
@@ -113,7 +112,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     /**
      * 通用:数据分页查询
      *
-     * @param entity   对象参数
+     * @param entity 对象参数
      * @return 操作结果
      */
     @RequestMapping(value = "/page", method = RequestMethod.GET)
