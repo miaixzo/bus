@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
-import org.aoju.bus.spring.SpringContextAware;
+import org.aoju.bus.spring.SpringAware;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
@@ -50,7 +50,7 @@ import java.util.Properties;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
@@ -81,7 +81,7 @@ public class SensitiveResultSetHandler implements Interceptor {
             return results;
         }
 
-        SensitiveProperties properties = SpringContextAware.getBean(SensitiveProperties.class);
+        SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
         if (ObjectUtils.isNotEmpty(properties) && !properties.isDebug()) {
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);

@@ -2,7 +2,7 @@
  * jQuery json-viewer
  * @author: Alexandre Bodelot <alexandre.bodelot@gmail.com>
  */
-(function($){
+(function ($) {
 
     /**
      * Check if arg is either an array with at least 1 element, or a dict with at least 1 key
@@ -34,17 +34,13 @@
                 html += '<a href="' + json + '" class="json-string">' + json + '</a>';
             else
                 html += '<span class="json-string">"' + json + '"</span>';
-        }
-        else if (typeof json === 'number') {
+        } else if (typeof json === 'number') {
             html += '<span class="json-literal">' + json + '</span>';
-        }
-        else if (typeof json === 'boolean') {
+        } else if (typeof json === 'boolean') {
             html += '<span class="json-literal">' + json + '</span>';
-        }
-        else if (json === null) {
+        } else if (json === null) {
             html += '<span class="json-literal">null</span>';
-        }
-        else if (json instanceof Array) {
+        } else if (json instanceof Array) {
             if (json.length > 0) {
                 html += '[<ol class="json-array">';
                 for (var i = 0; i < json.length; ++i) {
@@ -61,12 +57,10 @@
                     html += '</li>';
                 }
                 html += '</ol>]';
-            }
-            else {
+            } else {
                 html += '[]';
             }
-        }
-        else if (typeof json === 'object') {
+        } else if (typeof json === 'object') {
             var key_count = Object.keys(json).length;
             if (key_count > 0) {
                 html += '{<ul class="json-dict">';
@@ -78,8 +72,7 @@
                         /* Add toggle button if item is collapsable */
                         if (isCollapsable(json[key])) {
                             html += '<a href class="json-toggle">' + keyRepr + '</a>';
-                        }
-                        else {
+                        } else {
                             html += keyRepr;
                         }
                         html += ': ' + json2html(json[key], options);
@@ -90,8 +83,7 @@
                     }
                 }
                 html += '</ul>}';
-            }
-            else {
+            } else {
                 html += '{}';
             }
         }
@@ -103,11 +95,11 @@
      * @param json: a javascript object
      * @param options: an optional options hash
      */
-    $.fn.jsonViewer = function(json, options) {
+    $.fn.jsonViewer = function (json, options) {
         options = options || {};
 
         /* jQuery chaining */
-        return this.each(function() {
+        return this.each(function () {
 
             /* Transform to HTML */
             var html = json2html(json, options);
@@ -119,13 +111,12 @@
 
             /* Bind click on toggle buttons */
             $(this).off('click');
-            $(this).on('click', 'a.json-toggle', function() {
+            $(this).on('click', 'a.json-toggle', function () {
                 var target = $(this).toggleClass('collapsed').siblings('ul.json-dict, ol.json-array');
                 target.toggle();
                 if (target.is(':visible')) {
                     target.siblings('.json-placeholder').remove();
-                }
-                else {
+                } else {
                     var count = target.children('li').length;
                     var placeholder = count + (count > 1 ? ' items' : ' item');
                     target.after('<a href class="json-placeholder">' + placeholder + '</a>');
@@ -134,7 +125,7 @@
             });
 
             /* Simulate click on toggle button when placeholder is clicked */
-            $(this).on('click', 'a.json-placeholder', function() {
+            $(this).on('click', 'a.json-placeholder', function () {
                 $(this).siblings('a.json-toggle').click();
                 return false;
             });

@@ -57,7 +57,7 @@ import java.util.Collection;
  * <code>Person@7f54[name=Stephen,age=29,smoker=false,job=Job@43cd2[title=Manager]]</code></p>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class RecursiveToStringStyle extends ToStringStyle {

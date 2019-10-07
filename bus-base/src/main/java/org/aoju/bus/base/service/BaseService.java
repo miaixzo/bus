@@ -33,7 +33,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public interface BaseService<T> extends Service {
@@ -224,7 +224,7 @@ public interface BaseService<T> extends Service {
     /**
      * 通用:多条件分页查询
      *
-     * @param entity  对象参数
+     * @param entity 对象参数
      * @return 操作结果
      */
     Result<T> page(T entity);

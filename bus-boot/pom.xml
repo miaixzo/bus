@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot</artifactId>
-    <version>3.6.3</version>
+    <version>3.6.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -23,7 +23,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <taobao.text.version>0.0.2</taobao.text.version>
     </properties>
 
     <dependencies>
@@ -33,9 +32,13 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.taobao.text</groupId>
-            <artifactId>text-ui</artifactId>
-            <version>${taobao.text.version}</version>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-health</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

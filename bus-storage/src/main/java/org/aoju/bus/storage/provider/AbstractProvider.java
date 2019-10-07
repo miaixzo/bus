@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.storage.provider;
 
-import lombok.Data;
 import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.storage.StorageProvider;
+import org.aoju.bus.storage.Context;
+import org.aoju.bus.storage.Provider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,22 +36,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
+ * 预定义存储实现
+ *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
-@Data
-public abstract class AbstractProvider implements StorageProvider {
+public abstract class AbstractProvider implements Provider {
 
-    protected static final String DIR_SPLITER = "/";
+    protected Context property;
 
-    protected String accessKey;
-    protected String secretKey;
-    protected String bucket;
-    protected String prefix;
-    protected boolean privated;
-
-    public static String downloadFile(String fileURL, String saveDir) {
+    protected static String downloadFile(String fileURL, String saveDir) {
         HttpURLConnection httpConn = null;
         FileOutputStream outputStream = null;
         try {
@@ -70,7 +65,7 @@ public abstract class AbstractProvider implements StorageProvider {
                                 disposition.length() - 1);
                     }
                 } else {
-                    fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1, fileURL.length());
+                    fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1);
                 }
                 InputStream inputStream = httpConn.getInputStream();
                 String saveFilePath = saveDir + File.separator + fileName;
@@ -88,10 +83,10 @@ public abstract class AbstractProvider implements StorageProvider {
 
                 return saveFilePath;
             } else {
-                throw new InstrumentException("下载失败");
+                throw new InstrumentException("file download failed");
             }
         } catch (IOException e) {
-            throw new InstrumentException("下载失败", e);
+            throw new InstrumentException("file download failed", e);
         } finally {
             try {
                 if (outputStream != null) outputStream.close();
@@ -108,12 +103,7 @@ public abstract class AbstractProvider implements StorageProvider {
         if (file.startsWith(Httpd.HTTP_PREFIX) || file.startsWith(Httpd.HTTPS_PREFIX)) {
             return file;
         }
-        return prefix + file;
-    }
-
-    @Override
-    public String downloadAndSaveAs(String file, String localSaveDir, boolean isInternal) {
-        return downloadFile(getUrl(file, isInternal), localSaveDir);
+        return this.property.getPrefix() + file;
     }
 
 }

@@ -38,7 +38,7 @@ import java.util.*;
  * 注意：部分拼音并不准确，例如：怡
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class PinyinUtils {
@@ -393,10 +393,10 @@ public class PinyinUtils {
         return asc;
     }
 
-    private static Properties getDict(String dict) {
+    private static Properties getDict(String type) {
         Properties p = new Properties();
         try {
-            String path = "/" + Normal.META_DATA_INF + "/services/org.aoju.bus.core.dict." + dict;
+            String path = "/" + Normal.META_DATA_INF + "/template/" + type + ".dict";
             Reader reader = PropertiesUtils.getReader(path);
             BufferedReader br = new BufferedReader(reader);
             String line;

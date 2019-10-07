@@ -33,10 +33,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * 缓存相关配置
+ * 缓存配置
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {CacheProperties.class})

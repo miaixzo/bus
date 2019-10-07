@@ -25,12 +25,12 @@ package org.aoju.bus.base.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
-import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 /**
@@ -39,11 +39,11 @@ import javax.persistence.Transient;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
-@MappedSuperclass
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class BaseEntity extends Tracer {
 
     private static final long serialVersionUID = -601369123580520198L;

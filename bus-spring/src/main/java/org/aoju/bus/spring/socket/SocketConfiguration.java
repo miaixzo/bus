@@ -29,15 +29,17 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
+ * Socket配置
+ *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(SocketProperties.class)
 public class SocketConfiguration {
 
     @Autowired
-    private SocketProperties properties;
+    SocketProperties properties;
 
     @Bean(initMethod = "start")
     @ConditionalOnMissingBean

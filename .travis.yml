@@ -24,8 +24,9 @@ script:
   - cd ../bus-http && mvn install -DskipTests=true
   - cd ../bus-limiter && mvn install -DskipTests=true
   - cd ../bus-mapper && mvn install -DskipTests=true
+  - cd ../bus-oauth && mvn install -DskipTests=true
+  - cd ../bus-office && mvn install -DskipTests=true
   - cd ../bus-pager && mvn install -DskipTests=true
-  - cd ../bus-poi && mvn install -DskipTests=true
   - cd ../bus-sensitive && mvn install -DskipTests=true
   - cd ../bus-socket && mvn install -DskipTests=true
   - cd ../bus-storage && mvn install -DskipTests=true

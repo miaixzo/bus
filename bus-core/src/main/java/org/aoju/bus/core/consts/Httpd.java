@@ -27,7 +27,7 @@ package org.aoju.bus.core.consts;
  * http相关常量
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class Httpd {
@@ -35,13 +35,16 @@ public class Httpd {
     public static final String HTTP_PREFIX = "http://";
     public static final String HTTPS_PREFIX = "https://";
 
+    public final static String ALL = "ALL";
     public final static String GET = "GET";
-    public final static String HEAD = "HEAD";
     public final static String POST = "POST";
     public final static String PUT = "PUT";
     public final static String PATCH = "PATCH";
     public final static String DELETE = "DELETE";
-    public final static String OPTIONS = "OPTIONS";
+    public final static String HEAD = "HEAD";
     public final static String TRACE = "TRACE";
-
+    public final static String CONNECT = "CONNECT";
+    public final static String OPTIONS = "OPTIONS";
+    public final static String BEFORE = "BEFORE";
+    public final static String AFTER = "AFTER";
 }

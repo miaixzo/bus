@@ -24,6 +24,7 @@
 package org.aoju.bus.spring.druid;
 
 import lombok.Data;
+import org.aoju.bus.spring.core.Extend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
@@ -32,11 +33,11 @@ import java.util.List;
  * Druid 配置项
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "spring.datasource")
+@ConfigurationProperties(prefix = Extend.DATASOURCE)
 public class DruidProperties {
 
     private String key;

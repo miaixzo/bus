@@ -35,7 +35,7 @@ import java.util.Map;
  * 使用查找表转换值.
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class LookupTranslator extends CharSequenceTranslator {

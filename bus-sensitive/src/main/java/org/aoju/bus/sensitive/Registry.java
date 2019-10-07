@@ -36,16 +36,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 系统中内置的策略映射
- * 1. 注解和实现之间映射
+ * 注解和实现之间映射
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public final class Registry {
 
     /**
-     * 验证组列表
+     * 策略组列表
      */
     private static Map<Builder.Type, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();
 

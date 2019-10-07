@@ -24,6 +24,7 @@
 package org.aoju.bus.validate;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -46,10 +47,11 @@ import java.util.List;
  * </P>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class Validated extends Provider {
 
     /**

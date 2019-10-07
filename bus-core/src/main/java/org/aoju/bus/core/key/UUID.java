@@ -54,7 +54,7 @@ import java.util.Random;
  * 这些类型的 version 值分别为 1、2、3 和 4。
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -97,6 +97,17 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     public UUID(long mostSigBits, long leastSigBits) {
         this.mostSigBits = mostSigBits;
         this.leastSigBits = leastSigBits;
+    }
+
+    /**
+     * 根据一个范围，生成一个随机的整数
+     *
+     * @param min 最小值（包括）
+     * @param max 最大值（包括）
+     * @return 随机数
+     */
+    public static int random(int min, int max) {
+        return Holder.numberGenerator.nextInt(max - min + 1) + min;
     }
 
     /**

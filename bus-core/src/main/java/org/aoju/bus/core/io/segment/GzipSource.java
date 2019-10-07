@@ -34,7 +34,7 @@ import java.util.zip.Inflater;
  * 解压读取数据
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public final class GzipSource implements Source {

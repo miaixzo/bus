@@ -25,6 +25,7 @@ package org.aoju.bus.spring.dubbo;
 
 import com.alibaba.dubbo.config.*;
 import lombok.Data;
+import org.aoju.bus.spring.core.Extend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -32,11 +33,11 @@ import org.springframework.context.annotation.Bean;
  * swagger配置项
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties(prefix = "spring.dubbo")
+@ConfigurationProperties(prefix = Extend.DUBBO)
 public class DubboProperties {
 
     protected String basePackage;
@@ -44,31 +45,31 @@ public class DubboProperties {
     protected boolean multiple;
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.dubbo.application")
+    @ConfigurationProperties(prefix = Extend.DUBBO + ".application")
     public ApplicationConfig applicationConfig() {
         return new ApplicationConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.dubbo.provider")
+    @ConfigurationProperties(prefix = Extend.DUBBO + ".provider")
     public ProviderConfig ProviderConfig() {
         return new ProviderConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.dubbo.monitor")
+    @ConfigurationProperties(prefix = Extend.DUBBO + ".monitor")
     public MonitorConfig monitorConfig() {
         return new MonitorConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.dubbo.consumer")
+    @ConfigurationProperties(prefix = Extend.DUBBO + ".consumer")
     public ConsumerConfig consumerConfig() {
         return new ConsumerConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.dubbo.registry")
+    @ConfigurationProperties(prefix = Extend.DUBBO + ".registry")
     public RegistryConfig registryConfig() {
         return new RegistryConfig();
     }

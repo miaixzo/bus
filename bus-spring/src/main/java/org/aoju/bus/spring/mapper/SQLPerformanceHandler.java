@@ -50,7 +50,7 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Intercepts(value = {
@@ -62,8 +62,8 @@ import java.util.regex.Matcher;
 public class SQLPerformanceHandler implements Interceptor {
 
     public static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
-        Logger.info(sqlId + " :  ==> " + time + " ms");
-        Logger.info(showSql(configuration, boundSql));
+        Logger.debug(sqlId + " :  ==> " + time + " ms");
+        Logger.debug(showSql(configuration, boundSql));
     }
 
     private static String getParameterValue(Object obj) {

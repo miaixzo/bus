@@ -24,6 +24,7 @@
 package org.aoju.bus.base.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -35,10 +36,11 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class Result<T> extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -631369123580520198L;

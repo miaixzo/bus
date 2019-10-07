@@ -36,7 +36,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class NumberChinese {

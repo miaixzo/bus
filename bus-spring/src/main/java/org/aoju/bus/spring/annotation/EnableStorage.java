@@ -1,23 +1,20 @@
 package org.aoju.bus.spring.annotation;
 
-import org.aoju.bus.spring.storage.StorageImportSelector;
-import org.aoju.bus.storage.Provider;
+import org.aoju.bus.spring.storage.StorageConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
-@Documented
-@Inherited
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import({StorageImportSelector.class})
+@Documented
+@Inherited
+@Import({StorageConfiguration.class})
 public @interface EnableStorage {
-
-    Provider provider();
 
 }

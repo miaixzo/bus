@@ -1,4 +1,4 @@
 org.springframework.boot.env.EnvironmentPostProcessor=\
-org.aoju.bus.boot.env.BusEnvironment
+org.aoju.bus.boot.builtin.GenieBuilder
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.aoju.bus.boot.config.BusConfigurable
+org.aoju.bus.boot.metric.Configurable

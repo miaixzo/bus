@@ -26,10 +26,10 @@ package org.aoju.bus.spring.validate;
 import org.springframework.context.annotation.Import;
 
 /**
- * 加载类
+ * 数据校验配置
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Import(value = AspectjProxyPoint.class)

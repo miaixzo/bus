@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * 正则表达式过滤器
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class RegexFilter implements Filter {

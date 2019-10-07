@@ -24,7 +24,7 @@
 package org.aoju.bus.spring.socket;
 
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.spring.annotation.EnableWebSocket;
+import org.aoju.bus.spring.annotation.EnableSocket;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -37,7 +37,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class SocketScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
@@ -46,7 +46,7 @@ public class SocketScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
-        AnnotationAttributes attributes = AnnotationAttributes.fromMap(annotationMetadata.getAnnotationAttributes(EnableWebSocket.class.getName()));
+        AnnotationAttributes attributes = AnnotationAttributes.fromMap(annotationMetadata.getAnnotationAttributes(EnableSocket.class.getName()));
         ClassPathSocketScanner scanner = new ClassPathSocketScanner(beanDefinitionRegistry);
         if (resourceLoader != null) {
             scanner.setResourceLoader(resourceLoader);

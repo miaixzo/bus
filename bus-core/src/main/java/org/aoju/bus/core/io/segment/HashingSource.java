@@ -36,7 +36,7 @@ import java.security.NoSuchAlgorithmException;
  * 然后调用{@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public final class HashingSource extends ForwardingSource {

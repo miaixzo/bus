@@ -29,7 +29,7 @@ import org.aoju.bus.core.convert.AbstractConverter;
  * 泛型枚举转换器
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E> {

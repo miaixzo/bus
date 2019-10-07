@@ -34,19 +34,17 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import javax.validation.Validator;
 
 /**
+ * 国际化配置
+ *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @EnableConfigurationProperties(value = {I18nProperties.class})
 public class I18nConfiguration {
 
-    private final I18nProperties properties;
-
     @Autowired
-    public I18nConfiguration(I18nProperties properties) {
-        this.properties = properties;
-    }
+    I18nProperties properties;
 
     private ResourceBundleMessageSource getMessageSource() {
         ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();

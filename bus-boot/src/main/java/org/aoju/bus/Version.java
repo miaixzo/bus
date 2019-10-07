@@ -31,7 +31,7 @@ import org.aoju.bus.core.consts.Symbol;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class Version {
@@ -86,7 +86,7 @@ public class Version {
      * @return 阶段号
      */
     public static String stage() {
-        return "3";
+        return "5";
     }
 
     /**

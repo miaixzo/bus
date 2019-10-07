@@ -24,6 +24,7 @@
 package org.aoju.bus.core.lang.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -31,10 +32,11 @@ import java.lang.reflect.InvocationTargetException;
  * 自定义异常: 未受检异常
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class UncheckedException extends RuntimeException {
 
     /**

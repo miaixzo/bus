@@ -14,7 +14,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>3.6.3</version>
+    <version>3.6.5</version>
 </dependency>
 ```
 - 调用api

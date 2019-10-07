@@ -30,12 +30,12 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.HttpClient;
 import org.aoju.bus.oauth.*;
-import org.aoju.bus.oauth.cache.DefaultStateCache;
-import org.aoju.bus.oauth.cache.StateCache;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.DefaultStateCache;
+import org.aoju.bus.oauth.metric.StateCache;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -55,7 +55,7 @@ import java.util.TreeMap;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public abstract class DefaultProvider implements Provider {

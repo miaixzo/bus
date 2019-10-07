@@ -24,17 +24,18 @@
 package org.aoju.bus.spring.i18n;
 
 import lombok.Data;
+import org.aoju.bus.spring.core.Extend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 国际化资源配置属性
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 @Data
-@ConfigurationProperties("request.i18n")
+@ConfigurationProperties(Extend.I18N)
 public class I18nProperties {
 
     /**

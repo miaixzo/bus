@@ -28,16 +28,16 @@ import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
-import org.aoju.bus.oauth.cache.StateCache;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.StateCache;
 
 /**
  * CSDN登录
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class CsdnProvider extends DefaultProvider {

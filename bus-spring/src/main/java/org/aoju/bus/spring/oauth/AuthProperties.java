@@ -24,28 +24,30 @@
 package org.aoju.bus.spring.oauth;
 
 import lombok.Data;
-import org.aoju.bus.oauth.Complex;
 import org.aoju.bus.oauth.Context;
+import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.spring.cache.CacheProperties;
+import org.aoju.bus.spring.core.Extend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 授权配置信息
+ *
+ * @author Kimi Liu
+ * @version 3.6.5
+ * @since JDK 1.8
+ */
 @Data
-@ConfigurationProperties(prefix = "request.oauth")
+@ConfigurationProperties(prefix = Extend.OAUTH)
 public class AuthProperties {
-
-    /**
-     * 是否启用
-     */
-    private boolean enabled;
 
     /**
      * 基础配置
      */
-    private Map<Complex, Context> type = new HashMap<>();
+    private Map<Registry, Context> type;
 
     /**
      * 缓存配置

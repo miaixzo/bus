@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>3.6.3</version>
+    <version>3.6.5</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -87,7 +87,7 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-poi</artifactId>
+            <artifactId>bus-office</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 校验器注册中心
  *
  * @author Kimi Liu
- * @version 3.6.3
+ * @version 3.6.5
  * @since JDK 1.8
  */
 public class Registry {
@@ -75,7 +75,6 @@ public class Registry {
         register(Builder._REFLECT, new ReflectStrategy());
         register(Builder._REGEX, new RegexStrategy());
         register(Builder._TRUE, new TrueStrategy());
-
     }
 
     public Registry() {
