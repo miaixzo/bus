@@ -40,7 +40,7 @@ dependency-reduced-pom.xml
 **/.local*
 .vagrant/
 /logs/
-/bus-xtest/
+/bus-xcopy/
 
 # osx stuff
 .DS_Store
