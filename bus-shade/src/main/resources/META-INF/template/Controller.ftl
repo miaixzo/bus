@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 *
 * @version: ${version}
 * @author: ${author}
-* @since JDK 1.8
+* @since JDK 1.8+
 */
 @RestController
 @RequestMapping("/${objectName}")

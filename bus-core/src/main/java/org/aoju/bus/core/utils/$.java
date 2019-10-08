@@ -7,8 +7,8 @@ import java.util.function.Supplier;
  * 工具包集合，工具类快捷方式
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class $ {
 

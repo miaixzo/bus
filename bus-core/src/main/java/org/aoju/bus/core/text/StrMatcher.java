@@ -34,8 +34,8 @@ import java.util.Arrays;
  * 如果这些还不够，您可以子类化并实现自己的匹配器。
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public abstract class StrMatcher {
 

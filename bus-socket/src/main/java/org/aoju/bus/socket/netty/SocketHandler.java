@@ -30,8 +30,8 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @ChannelHandler.Sharable
 public class SocketHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {

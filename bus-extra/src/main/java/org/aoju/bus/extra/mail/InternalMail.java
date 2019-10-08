@@ -38,8 +38,8 @@ import java.util.List;
  * 邮件内部工具类
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class InternalMail {
 

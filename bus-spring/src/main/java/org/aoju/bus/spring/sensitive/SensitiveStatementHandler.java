@@ -54,8 +54,8 @@ import java.util.Properties;
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class SensitiveStatementHandler implements Interceptor {

@@ -33,11 +33,11 @@ package org.aoju.bus.core.io.file;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.5
+ * @version 3.6.6
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS
- * @since JDK 1.8
+ * @since JDK 1.8+
  */
 public enum LineSeparator {
 

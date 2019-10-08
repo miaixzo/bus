@@ -38,8 +38,8 @@ import java.util.Map;
  * 快速获取注解对象、注解值等工具封装
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class AnnoUtils {
 

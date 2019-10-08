@@ -34,7 +34,7 @@ import org.apache.ibatis.annotations.Mapper;
 *
 * @version: ${version}
 * @author: ${author}
-* @since JDK 1.8
+* @since JDK 1.8+
 */
 @Mapper
 public interface ${entityName}Mapper extends BaseMapper<${entityName}> {

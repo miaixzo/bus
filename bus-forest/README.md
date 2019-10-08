@@ -11,7 +11,7 @@
 * 支持加密WEB-INF/lib或BOOT-INF/lib下的依赖jar包
 
 ## 环境依赖
-JDK 1.8 +
+JDK 1.8+ +
 
 ## 使用步骤
 

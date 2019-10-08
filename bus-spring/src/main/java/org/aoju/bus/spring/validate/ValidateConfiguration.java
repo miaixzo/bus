@@ -29,8 +29,8 @@ import org.springframework.context.annotation.Import;
  * 数据校验配置
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Import(value = AspectjProxyPoint.class)
 public class ValidateConfiguration {

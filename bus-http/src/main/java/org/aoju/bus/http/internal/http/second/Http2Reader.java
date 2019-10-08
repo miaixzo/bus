@@ -37,8 +37,8 @@ import java.util.List;
  * Http2#INITIAL_MAX_FRAME_SIZE}.
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 final class Http2Reader implements Closeable {
 

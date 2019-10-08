@@ -44,8 +44,8 @@ import java.util.List;
  * defer all feature selection to the underlying SSL socket.
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public final class ConnectionSpec {
 

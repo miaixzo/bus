@@ -30,8 +30,8 @@ import java.io.InputStream;
  * 不关闭的输入流
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class AlwaysInputStream extends InputStream {
 

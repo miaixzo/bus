@@ -38,8 +38,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * 非对称基础，提供锁、私钥和公钥的持有
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class Keys<T extends Keys<T>> {
 

@@ -29,8 +29,8 @@ import java.io.IOException;
  * 将调用转发给另一个调用的{@link Sink}
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public abstract class ForwardingSink implements Sink {
 

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>3.6.5</version>
+    <version>3.6.6</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -82,12 +82,17 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-pager</artifactId>
+            <artifactId>bus-oauth</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-office</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aoju</groupId>
+            <artifactId>bus-pager</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

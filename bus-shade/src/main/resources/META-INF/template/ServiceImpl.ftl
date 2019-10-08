@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 *
 * @version: ${version}
 * @author: ${author}
-* @since JDK 1.8
+* @since JDK 1.8+
 */
 @Service
 @com.alibaba.dubbo.config.annotation.Service

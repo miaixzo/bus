@@ -27,8 +27,8 @@ package org.aoju.bus.core.io.file;
  * 文件读写模式，常用于RandomAccessFile
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public enum FileMode {
 

@@ -44,8 +44,8 @@ import java.util.zip.Deflater;
  * 普通JAR包解密器
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry> implements DecryptorProvider {
     private final int level;

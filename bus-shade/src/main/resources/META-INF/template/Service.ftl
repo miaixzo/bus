@@ -32,7 +32,7 @@ import org.aoju.bus.base.service.BaseService;
 *
 * @version: ${version}
 * @author: ${author}
-* @since JDK 1.8
+* @since JDK 1.8+
 */
 public interface ${entityName}Service extends BaseService<${entityName}> {
 

@@ -28,8 +28,8 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Documented
 @Target(value = ElementType.METHOD)
@@ -54,4 +54,5 @@ public @interface CachedGet {
      * when this spel is  true, this Method will go through by cache
      */
     String condition() default "";
+
 }

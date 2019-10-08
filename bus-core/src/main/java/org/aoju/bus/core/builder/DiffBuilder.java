@@ -66,12 +66,12 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.5
+ * @version 3.6.6
  * @see Diffable
  * @see Diff
  * @see DiffResult
  * @see ToStringStyle
- * @since JDK 1.8
+ * @since JDK 1.8+
  */
 public class DiffBuilder implements Builder<DiffResult> {
 

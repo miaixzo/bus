@@ -27,8 +27,8 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -52,4 +52,5 @@ public @interface HPeak {
      * @return the int
      */
     int max() default 10;
+
 }

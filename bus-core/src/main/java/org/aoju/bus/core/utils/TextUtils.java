@@ -34,8 +34,8 @@ import java.util.Arrays;
  * 可复用的字符串生成器，非线程安全
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class TextUtils implements CharSequence, Appendable, Serializable {
 

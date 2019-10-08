@@ -31,8 +31,8 @@ import java.util.regex.Pattern;
  * 正则表达式规则
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public abstract class RegexComplex<E> implements Complex<E> {
 

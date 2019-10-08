@@ -1,6 +1,6 @@
 #### 项目说明
 文件存储组件,支持阿里云、七牛集成，提供了工厂模式和spring注入两种集成方式。
-#### 添加依赖
+#### 添加依赖(华为SDK需要添加至私服)
 ```
     <aliyun.oss.version>3.4.2</aliyun.oss.version>
     <baidu.bos.version>0.10.48</baidu.bos.version>

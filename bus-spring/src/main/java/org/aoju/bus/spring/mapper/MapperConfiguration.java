@@ -35,8 +35,8 @@ import org.springframework.core.env.Environment;
  * mapper 扫描配置类
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @AutoConfigureAfter(MybatisConfiguration.class)
 public class MapperConfiguration implements EnvironmentAware {

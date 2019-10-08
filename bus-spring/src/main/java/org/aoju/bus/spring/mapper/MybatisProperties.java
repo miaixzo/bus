@@ -31,8 +31,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * mybatis配置项
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Data
 @ConfigurationProperties(prefix = Extend.MYBATIS)
