@@ -52,8 +52,8 @@ import java.util.stream.Collectors;
  * Http 辅助类
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class HttpClient extends Client {
 
@@ -261,7 +261,7 @@ public class HttpClient extends Client {
      * @param queryMap 查询参数 Map
      * @return String
      */
-    public static String get1(final String url, final Map<String, Object> queryMap) {
+    public static String get(final String url, final Map<String, Object> queryMap) {
         return get(url, queryMap, null, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
     }
 

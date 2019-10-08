@@ -30,8 +30,8 @@ import org.aoju.bus.cron.TaskExecutor;
  * 通过实现此接口，实现对定时任务的各个环节做监听
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public interface TaskListener {
     /**

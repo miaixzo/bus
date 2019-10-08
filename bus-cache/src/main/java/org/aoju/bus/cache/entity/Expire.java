@@ -25,8 +25,8 @@ package org.aoju.bus.cache.entity;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public interface Expire {
 
@@ -61,4 +61,5 @@ public interface Expire {
     int TWO_DAY = 2 * ONE_DAY;
 
     int ONE_WEEK = 7 * ONE_DAY;
+
 }

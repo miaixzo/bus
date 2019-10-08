@@ -29,9 +29,9 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>long</code> 类型
  *
  * @author Kimi Liu
- * @version 3.6.5
+ * @version 3.6.6
  * @see Long
- * @since JDK 1.8
+ * @since JDK 1.8+
  */
 public class MutableLong extends Number implements Comparable<MutableLong>, Mutable<Number> {
 

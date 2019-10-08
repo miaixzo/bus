@@ -27,8 +27,8 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Documented
 @Target(ElementType.PARAMETER)
@@ -45,4 +45,5 @@ public @interface CacheKey {
      * the {@code field} indicate which of the {@code Collection}'s entity field related with this param
      */
     String field() default "";
+
 }

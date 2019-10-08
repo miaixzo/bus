@@ -31,8 +31,8 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * 对于 {@link InstanceFactory} 的便于使用
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @ThreadSafe
 public final class Instances {

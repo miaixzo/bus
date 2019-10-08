@@ -32,8 +32,8 @@ import java.lang.reflect.Modifier;
  *
  * @param <T> the type of the object the method might be on, typically an interface or base class
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 class OptionalMethod<T> {
 

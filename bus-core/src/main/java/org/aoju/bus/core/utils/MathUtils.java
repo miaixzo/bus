@@ -33,8 +33,8 @@ import java.util.List;
  * 此工具类与{@link NumberUtils}属于一类工具，NumberUtil偏向于简单数学计算的封装，MathUtil偏向复杂数学计算
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class MathUtils {
 

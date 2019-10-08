@@ -34,8 +34,8 @@ import java.lang.annotation.Target;
  * 名字转换样式，注解的优先级高于全局配置
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

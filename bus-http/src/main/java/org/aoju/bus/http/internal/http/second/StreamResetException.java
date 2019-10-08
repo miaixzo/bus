@@ -29,8 +29,8 @@ import java.io.IOException;
  * Thrown when an HTTP/2 stream is canceled without damage to the socket that carries it.
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public final class StreamResetException extends IOException {
 

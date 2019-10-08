@@ -42,8 +42,8 @@ import java.util.Objects;
  * @param <L> the left element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, R>>, Serializable {
 

@@ -50,8 +50,8 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Intercepts(value = {
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),

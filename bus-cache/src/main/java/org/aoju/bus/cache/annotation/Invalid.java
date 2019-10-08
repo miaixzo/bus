@@ -28,8 +28,8 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Documented
 @Target(value = ElementType.METHOD)
@@ -50,4 +50,5 @@ public @interface Invalid {
      * @return as {@code @Cached}
      */
     String condition() default "";
+
 }

@@ -29,8 +29,8 @@ import java.util.List;
  * Sax方式读取Excel行处理器
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public interface RowHandler {
 

@@ -43,16 +43,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 日志工厂类
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @see Slf4jLogFactory
- * @see Log4j2LogFactory
- * @see Log4jLogFactory
- * @see ApacheCommonsLogFactory
- * @see TinyLogFactory
- * @see JbossLogFactory
- * @see ConsoleLogFactory
- * @see JdkLogFactory
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public abstract class LogFactory {
 

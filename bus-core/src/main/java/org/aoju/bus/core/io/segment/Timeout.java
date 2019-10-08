@@ -38,8 +38,8 @@ import java.util.concurrent.TimeUnit;
  * This class offers two complementary controls to define a timeout policy.
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class Timeout {
     /**

@@ -37,7 +37,7 @@ import javax.persistence.Table;
 *
 * @version: ${version}
 * @author: ${author}
-* @since JDK 1.8
+* @since JDK 1.8+
 */
 @Data
 @Table(name = "${table}")

@@ -30,8 +30,8 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class DayOfWeekValueParser extends SimpleValueParser {
 

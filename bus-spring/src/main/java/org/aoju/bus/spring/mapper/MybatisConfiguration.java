@@ -41,8 +41,8 @@ import javax.sql.DataSource;
  * mybatis 配置
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {MybatisProperties.class})
 public class MybatisConfiguration {

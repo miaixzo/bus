@@ -25,8 +25,8 @@ package org.aoju.bus.spring.core.proxy.mode;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public enum ProxyMode {
     // 只通过扫描到接口名或者类名上的注解后，来确定是否要代理

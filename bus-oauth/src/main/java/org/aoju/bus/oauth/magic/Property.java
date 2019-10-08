@@ -30,8 +30,8 @@ import org.aoju.bus.core.consts.Normal;
  * 授权成功后的用户信息，根据授权平台的不同，获取的数据完整性也不同
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Getter
 @Setter

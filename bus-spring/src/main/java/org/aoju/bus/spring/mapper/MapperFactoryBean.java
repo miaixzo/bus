@@ -35,8 +35,8 @@ import static org.aoju.bus.core.lang.Assert.notNull;
  * 增加mapperBuilder
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class MapperFactoryBean<T> extends SqlSessionDaoSupport
         implements FactoryBean<T> {

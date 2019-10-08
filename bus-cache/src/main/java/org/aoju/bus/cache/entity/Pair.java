@@ -25,8 +25,8 @@ package org.aoju.bus.cache.entity;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class Pair<L, R> {
 
@@ -50,4 +50,5 @@ public class Pair<L, R> {
     public R getRight() {
         return right;
     }
+
 }

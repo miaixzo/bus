@@ -29,8 +29,8 @@ import java.lang.annotation.*;
  * 标记注解，标明要被拦截的类或方法或者参数
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Documented
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})

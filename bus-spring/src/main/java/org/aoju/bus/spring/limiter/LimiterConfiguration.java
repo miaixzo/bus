@@ -45,8 +45,8 @@ import java.util.List;
  * 限流配置
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @Import(DefaultConfiguration.class)

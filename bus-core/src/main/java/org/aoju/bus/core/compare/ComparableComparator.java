@@ -8,8 +8,8 @@ import java.util.Comparator;
  *
  * @param <E> 比较对象类型
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class ComparableComparator<E extends Comparable<? super E>> implements Comparator<E>, Serializable {
 

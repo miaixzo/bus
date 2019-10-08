@@ -31,8 +31,8 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class MemoryCache implements Cache {
 
@@ -54,7 +54,6 @@ public class MemoryCache implements Cache {
         for (String key : keys) {
             subCache.put(key, read(key));
         }
-
         return subCache;
     }
 
@@ -69,4 +68,5 @@ public class MemoryCache implements Cache {
             map.remove(key);
         }
     }
+
 }

@@ -30,9 +30,9 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>short</code> 类型
  *
  * @author Kimi Liu
- * @version 3.6.5
+ * @version 3.6.6
  * @see Short
- * @since JDK 1.8
+ * @since JDK 1.8+
  */
 public class MutableShort extends Number implements Comparable<MutableShort>, Mutable<Number> {
 

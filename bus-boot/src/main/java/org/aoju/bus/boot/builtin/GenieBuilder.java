@@ -39,8 +39,8 @@ import java.util.Properties;
  * 将作为一个名为BusConfigurationProperties的属性源添加
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GenieBuilder implements EnvironmentPostProcessor {

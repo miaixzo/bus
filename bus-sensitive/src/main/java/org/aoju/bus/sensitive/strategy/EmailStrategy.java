@@ -37,8 +37,8 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 保留前三位，中间隐藏4位。其他正常显示
  *
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 public class EmailStrategy extends AbstractProvider {
 

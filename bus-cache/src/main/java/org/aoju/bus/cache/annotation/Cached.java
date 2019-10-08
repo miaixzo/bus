@@ -29,8 +29,8 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.5
- * @since JDK 1.8
+ * @version 3.6.6
+ * @since JDK 1.8+
  */
 @Documented
 @Target(value = ElementType.METHOD)
@@ -60,4 +60,5 @@ public @interface Cached {
      * @return expire time, time unit: <b>seconds</b>
      */
     int expire() default Expire.FOREVER;
+
 }
