@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * 生成姓名
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public abstract class NameUtils {

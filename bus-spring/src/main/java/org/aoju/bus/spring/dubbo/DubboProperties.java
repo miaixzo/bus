@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Bean;
  * swagger配置项
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 @Data
@@ -75,7 +75,7 @@ public class DubboProperties {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.dubbo.protocol")
+    @ConfigurationProperties(prefix = Extend.DUBBO + ".protocol")
     public ProtocolConfig protocolConfig() {
         return new ProtocolConfig();
     }

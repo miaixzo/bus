@@ -27,7 +27,7 @@ package org.aoju.bus.logger.level;
  * ERROR级别日志接口
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public interface ErrorLog {

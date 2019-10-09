@@ -27,7 +27,7 @@ package org.aoju.bus.storage.metric;
  * Cache配置类
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class CacheConfig {

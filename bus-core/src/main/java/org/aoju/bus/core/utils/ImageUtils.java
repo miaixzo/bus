@@ -53,7 +53,7 @@ import java.util.Random;
  * 参考：http://blog.csdn.net/zhangzhikaixinya/article/details/8459400
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class ImageUtils {
@@ -104,7 +104,7 @@ public class ImageUtils {
      * @param destFile 缩放后的图像写出到的流
      * @param scale    缩放比例。比例大于1时为放大，小于1大于0为缩小
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void scale(java.awt.Image srcImage, File destFile, float scale) throws InstrumentException {
         Image.from(srcImage).setTargetImageType(FileUtils.extName(destFile)).scale(scale).write(destFile);
@@ -118,7 +118,7 @@ public class ImageUtils {
      * @param out      缩放后的图像写出到的流
      * @param scale    缩放比例。比例大于1时为放大，小于1大于0为缩小
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void scale(java.awt.Image srcImage, OutputStream out, float scale) throws InstrumentException {
         scale(srcImage, getImageOutputStream(out), scale);
@@ -281,7 +281,7 @@ public class ImageUtils {
      * @param destFile  输出的文件
      * @param rectangle 矩形对象，表示矩形区域的x，y，width，height
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void cut(java.awt.Image srcImage, File destFile, Rectangle rectangle) throws InstrumentException {
         write(cut(srcImage, rectangle), destFile);
@@ -569,7 +569,7 @@ public class ImageUtils {
      *
      * @param srcImage 源图像流
      * @param outFile  目标文件
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void gray(java.awt.Image srcImage, File outFile) {
         write(gray(srcImage), outFile);
@@ -581,7 +581,7 @@ public class ImageUtils {
      *
      * @param srcImage 源图像流
      * @param out      目标图像流
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void gray(java.awt.Image srcImage, OutputStream out) {
         gray(srcImage, getImageOutputStream(out));
@@ -753,7 +753,7 @@ public class ImageUtils {
      * @param y         修正值。 默认在中间，偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void pressText(java.awt.Image srcImage, File destFile, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
         write(pressText(srcImage, pressText, color, font, x, y, alpha), destFile);
@@ -772,7 +772,7 @@ public class ImageUtils {
      * @param y         修正值。 默认在中间，偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void pressText(java.awt.Image srcImage, OutputStream to, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
         pressText(srcImage, getImageOutputStream(to), pressText, color, font, x, y, alpha);
@@ -808,7 +808,7 @@ public class ImageUtils {
      * @param y         修正值。 默认在中间，偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static java.awt.Image pressText(java.awt.Image srcImage, String pressText, Color color, Font font, int x, int y, float alpha) {
         return Image.from(srcImage).pressText(pressText, color, font, x, y, alpha).getImg();
@@ -870,7 +870,7 @@ public class ImageUtils {
      * @param y          修正值。 默认在中间，偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void pressImage(java.awt.Image srcImage, File outFile, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
         write(pressImage(srcImage, pressImage, x, y, alpha), outFile);
@@ -887,7 +887,7 @@ public class ImageUtils {
      * @param y          修正值。 默认在中间，偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void pressImage(java.awt.Image srcImage, OutputStream out, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
         pressImage(srcImage, getImageOutputStream(out), pressImage, x, y, alpha);
@@ -946,7 +946,7 @@ public class ImageUtils {
      * @param degree    旋转角度
      * @param outFile   输出文件
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void rotate(File imageFile, int degree, File outFile) throws InstrumentException {
         rotate(read(imageFile), degree, outFile);
@@ -960,7 +960,7 @@ public class ImageUtils {
      * @param degree  旋转角度
      * @param outFile 输出文件
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void rotate(java.awt.Image image, int degree, File outFile) throws InstrumentException {
         write(rotate(image, degree), outFile);
@@ -974,7 +974,7 @@ public class ImageUtils {
      * @param degree 旋转角度
      * @param out    输出流
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void rotate(java.awt.Image image, int degree, OutputStream out) throws InstrumentException {
         writeJpg(rotate(image, degree), getImageOutputStream(out));
@@ -988,7 +988,7 @@ public class ImageUtils {
      * @param degree 旋转角度
      * @param out    输出图像流
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void rotate(java.awt.Image image, int degree, ImageOutputStream out) throws InstrumentException {
         writeJpg(rotate(image, degree), out);
@@ -1001,7 +1001,7 @@ public class ImageUtils {
      * @param image  目标图像
      * @param degree 旋转角度
      * @return 旋转后的图片
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static java.awt.Image rotate(java.awt.Image image, int degree) {
         return Image.from(image).rotate(degree).getImg();
@@ -1013,7 +1013,7 @@ public class ImageUtils {
      * @param imageFile 图像文件
      * @param outFile   输出文件
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void flip(File imageFile, File outFile) throws InstrumentException {
         flip(read(imageFile), outFile);
@@ -1025,7 +1025,7 @@ public class ImageUtils {
      * @param image   图像
      * @param outFile 输出文件
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void flip(java.awt.Image image, File outFile) throws InstrumentException {
         write(flip(image), outFile);
@@ -1037,7 +1037,7 @@ public class ImageUtils {
      * @param image 图像
      * @param out   输出
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void flip(java.awt.Image image, OutputStream out) throws InstrumentException {
         flip(image, getImageOutputStream(out));
@@ -1049,7 +1049,7 @@ public class ImageUtils {
      * @param image 图像
      * @param out   输出
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static void flip(java.awt.Image image, ImageOutputStream out) throws InstrumentException {
         writeJpg(flip(image), out);
@@ -1060,7 +1060,7 @@ public class ImageUtils {
      *
      * @param image 图像
      * @return 翻转后的图片
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static java.awt.Image flip(java.awt.Image image) {
         return Image.from(image).flip().getImg();
@@ -1491,7 +1491,7 @@ public class ImageUtils {
      *
      * @param imageFile 图片文件
      * @return 图片
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static BufferedImage read(File imageFile) {
         try {
@@ -1516,7 +1516,7 @@ public class ImageUtils {
      *
      * @param imageStream 图片文件
      * @return 图片
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static BufferedImage read(InputStream imageStream) {
         try {
@@ -1531,7 +1531,7 @@ public class ImageUtils {
      *
      * @param imageStream 图片文件
      * @return 图片
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static BufferedImage read(ImageInputStream imageStream) {
         try {
@@ -1546,7 +1546,7 @@ public class ImageUtils {
      *
      * @param imageUrl 图片文件
      * @return 图片
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static BufferedImage read(URL imageUrl) {
         try {
@@ -1578,7 +1578,7 @@ public class ImageUtils {
      * @param outFile {@link File}
      * @return {@link ImageOutputStream}
      * @throws InstrumentException IO异常
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static ImageOutputStream getImageOutputStream(File outFile) throws InstrumentException {
         try {

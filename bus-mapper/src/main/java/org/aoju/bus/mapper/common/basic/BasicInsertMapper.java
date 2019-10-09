@@ -31,7 +31,7 @@ import org.aoju.bus.mapper.common.basic.insert.InsertSelectiveMapper;
  * 通用Mapper接口,基础查询
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public interface BasicInsertMapper<T> extends

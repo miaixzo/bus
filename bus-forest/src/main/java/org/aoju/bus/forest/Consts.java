@@ -29,7 +29,7 @@ import org.aoju.bus.core.consts.Symbol;
  * 常量表
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public interface Consts {

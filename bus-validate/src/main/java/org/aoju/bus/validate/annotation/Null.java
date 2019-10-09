@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 校验对象只能为null
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 @Documented
