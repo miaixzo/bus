@@ -44,7 +44,7 @@ import java.util.*;
  * from conscrypt, which lists the cipher suites supported by Conscrypt.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public final class CipherSuite {

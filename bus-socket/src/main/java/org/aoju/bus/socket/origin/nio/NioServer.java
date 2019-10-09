@@ -37,7 +37,7 @@ import java.util.Iterator;
  * 基于NIO的Socket服务端实现
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public abstract class NioServer implements Closeable {

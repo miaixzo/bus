@@ -43,7 +43,7 @@ import java.util.Map;
  * 美团登录
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class MeituanProvider extends DefaultProvider {

@@ -37,7 +37,7 @@ import java.util.Set;
  * 配置信息
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 @Data

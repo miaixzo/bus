@@ -30,7 +30,7 @@ import org.aoju.bus.setting.Setting;
  * 全局的Profile配置中心
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class GlobalProfile {

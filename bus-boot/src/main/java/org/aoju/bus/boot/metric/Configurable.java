@@ -32,7 +32,7 @@ import org.springframework.core.annotation.Order;
  * 将作为一个名为BusConfigurationProperties的属性源添加
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 @ComponentScan("org.aoju.**")

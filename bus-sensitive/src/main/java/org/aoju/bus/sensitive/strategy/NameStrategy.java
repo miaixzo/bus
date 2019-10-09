@@ -38,7 +38,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 2. 三个及其以上 只保留第一个和最后一个 其他用星号代替
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class NameStrategy extends AbstractProvider {

@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang.exception;
  * 无效的参数异常
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class InvalidParamsException extends UncheckedException {

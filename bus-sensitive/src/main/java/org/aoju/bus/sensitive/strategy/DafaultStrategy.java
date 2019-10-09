@@ -31,7 +31,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 默认脱敏处理类
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class DafaultStrategy extends AbstractProvider {

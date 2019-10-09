@@ -48,7 +48,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * </ul>
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class NumberConverter extends AbstractConverter<Number> {

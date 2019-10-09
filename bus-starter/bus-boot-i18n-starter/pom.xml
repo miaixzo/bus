@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-boot-i18n-starter</artifactId>
-    <version>3.6.6</version>
+    <version>3.6.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

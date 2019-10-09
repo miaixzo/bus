@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * 将调用转发给另一个调用的 {@link Timeout}.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class ForwardingTimeout extends Timeout {

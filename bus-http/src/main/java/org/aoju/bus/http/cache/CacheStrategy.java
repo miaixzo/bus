@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * potentially stale).
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public final class CacheStrategy {

@@ -33,7 +33,7 @@ import org.aoju.bus.validate.validators.Complex;
  * IP地址校验
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class IPAddressStrategy implements Complex<Object, IPAddress> {

@@ -40,7 +40,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 3.6.8
  * @since JDK 1.8+
  */
 public class ArrayUtils {
@@ -7774,7 +7774,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7785,7 +7785,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7797,7 +7797,7 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return newArray(componentType, 0).getClass();
@@ -9345,7 +9345,7 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口，用于定义过滤规则
      * @return 过滤后的数组
-     * @since 3.6.6
+     * @since 3.6.8
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<T>(array.length);
