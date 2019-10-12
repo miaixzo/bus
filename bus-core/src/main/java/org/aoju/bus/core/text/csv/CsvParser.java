@@ -39,7 +39,7 @@ import java.util.*;
  * CSV行解析器，参考：FastCSV
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public final class CsvParser implements Closeable {

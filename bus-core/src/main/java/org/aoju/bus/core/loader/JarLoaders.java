@@ -39,7 +39,7 @@ import java.util.List;
  * 外部Jar的类加载器
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class JarLoaders extends URLClassLoader {

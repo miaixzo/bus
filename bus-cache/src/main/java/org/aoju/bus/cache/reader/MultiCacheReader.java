@@ -25,13 +25,13 @@ package org.aoju.bus.cache.reader;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.aoju.bus.cache.CacheConfig;
-import org.aoju.bus.cache.CacheManager;
+import org.aoju.bus.cache.Context;
+import org.aoju.bus.cache.Manage;
 import org.aoju.bus.cache.entity.CacheHolder;
 import org.aoju.bus.cache.entity.CacheKeys;
 import org.aoju.bus.cache.entity.CacheMethod;
-import org.aoju.bus.cache.invoker.BaseInvoker;
-import org.aoju.bus.cache.provider.BaseProvider;
+import org.aoju.bus.cache.proxy.ProxyChain;
+import org.aoju.bus.cache.Provider;
 import org.aoju.bus.cache.support.*;
 import org.aoju.bus.logger.Logger;
 
@@ -40,20 +40,20 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 @Singleton
-public class MultiCacheReader extends AbstractCacheReader {
+public class MultiCacheReader extends AbstractReader {
 
     @Inject
-    private CacheManager cacheManager;
+    private Manage cacheManager;
 
     @Inject
-    private CacheConfig config;
+    private Context config;
 
     @Inject(optional = true)
-    private BaseProvider baseProvider;
+    private Provider baseProvider;
 
     private static Map mergeMap(Class<?> resultMapType,
                                 Map proceedEntryValueMap,
@@ -120,7 +120,7 @@ public class MultiCacheReader extends AbstractCacheReader {
     }
 
     @Override
-    public Object read(CacheHolder cacheHolder, CacheMethod cacheMethod, BaseInvoker baseInvoker, boolean needWrite) throws Throwable {
+    public Object read(CacheHolder cacheHolder, CacheMethod cacheMethod, ProxyChain baseInvoker, boolean needWrite) throws Throwable {
         // compose keys
         Map[] pair = KeyGenerator.generateMultiKey(cacheHolder, baseInvoker.getArgs());
         Map<String, Object> key2MultiEntry = pair[1];
@@ -144,7 +144,7 @@ public class MultiCacheReader extends AbstractCacheReader {
         return result;
     }
 
-    private Object handlePartHit(BaseInvoker baseInvoker, CacheKeys cacheKeys,
+    private Object handlePartHit(ProxyChain baseInvoker, CacheKeys cacheKeys,
                                  CacheHolder cacheHolder, CacheMethod cacheMethod,
                                  Map[] pair, boolean needWrite) throws Throwable {
 
@@ -210,7 +210,7 @@ public class MultiCacheReader extends AbstractCacheReader {
         return Arrays.asList((Object[]) proceed);
     }
 
-    private Object handleFullHit(BaseInvoker baseInvoker, Map<String, Object> keyValueMap,
+    private Object handleFullHit(ProxyChain baseInvoker, Map<String, Object> keyValueMap,
                                  CacheMethod cacheMethod, Map<String, Object> key2Id) throws Throwable {
 
         Object result;

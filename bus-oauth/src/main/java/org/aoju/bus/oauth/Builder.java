@@ -45,24 +45,11 @@ import java.util.Map;
  * 构造URL
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 @Setter
 public class Builder {
-
-    /**
-     * 内置的缓存
-     */
-    public static final String CACHE_DEFAULT = "DEFAULT";
-    /**
-     * Redis缓存
-     */
-    public static final String CACHE_REDIS = "REDIS";
-    /**
-     * 自定义缓存
-     */
-    public static final String CACHE_CUSTOM = "CUSTOM";
 
     private final Map<String, Object> params = new LinkedHashMap<>(7);
     private String baseUrl;

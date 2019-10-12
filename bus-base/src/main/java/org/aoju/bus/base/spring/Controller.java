@@ -27,7 +27,6 @@ package org.aoju.bus.base.spring;
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
 
 /**
  * <p>
@@ -35,42 +34,29 @@ import org.aoju.bus.core.utils.StringUtils;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class Controller {
-
-    public static Object write(ErrorCode respCode) {
-        return write(respCode, null);
-    }
-
-    public static Object write(ErrorCode respCode, Object data) {
-        return write(respCode.getErrcode(), respCode.getErrmsg(), data);
-    }
-
-    public static Object write(ErrorCode respCode, String message) {
-        return write(respCode.getErrcode(), StringUtils.isEmpty(message) ? respCode.getErrmsg() : message);
-    }
 
     public static Object write(Object data) {
         return write(ErrorCode.EM_SUCCESS, data);
     }
 
     public static Object write(String errcode) {
-        return write(ErrorCode.of(errcode), null);
+        return write(errcode, ErrorCode.require(errcode));
     }
 
     public static Object write(String errcode, String errmsg) {
-        return write(errcode, errmsg, null);
+        return new Message(errcode, errmsg);
     }
 
-    public static Object write(String errcode, String errmsg, Object data) {
-        ErrorCode resultCode = ErrorCode.of(errcode);
-        if (ObjectUtils.isNotEmpty(resultCode)) {
-            errmsg = StringUtils.isEmpty(errmsg) ? resultCode.getErrmsg() : errmsg;
-            return new Message(resultCode.getErrcode(), errmsg, data);
+    private static Object write(String errcode, Object data) {
+        String errmsg = ErrorCode.require(errcode);
+        if (ObjectUtils.isNotEmpty(errmsg)) {
+            return new Message(errcode, errmsg, data);
         }
-        return new Message(ErrorCode.EM_FAILURE.getErrcode(), ErrorCode.EM_FAILURE.errmsg);
+        return new Message(ErrorCode.EM_FAILURE, ErrorCode.require(ErrorCode.EM_FAILURE));
     }
 
 }

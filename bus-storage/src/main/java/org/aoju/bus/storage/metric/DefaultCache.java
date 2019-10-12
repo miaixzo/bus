@@ -30,6 +30,10 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -37,10 +41,22 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 默认的缓存实现
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class DefaultCache implements Cache {
+
+    /**
+     * 默认缓存过期时间：3分钟
+     * 鉴于授权过程中，根据个人的操作习惯，或者授权平台的不同（google等），每个授权流程的耗时也有差异，不过单个授权流程一般不会太长
+     * 本缓存工具默认的过期时间设置为3分钟，即程序默认认为3分钟内的授权有效，超过3分钟则默认失效，失效后删除
+     */
+    public static long timeout = 3 * 60 * 1000;
+
+    /**
+     * 是否开启定时{@link DefaultCache#pruneCache()}的任务
+     */
+    public static boolean schedulePrune = true;
 
     /**
      * state cache
@@ -51,8 +67,8 @@ public class DefaultCache implements Cache {
     private final Lock readLock = cacheLock.readLock();
 
     public DefaultCache() {
-        if (CacheConfig.schedulePrune) {
-            this.schedulePrune(CacheConfig.timeout);
+        if (schedulePrune) {
+            this.schedulePrune(timeout);
         }
     }
 
@@ -64,7 +80,7 @@ public class DefaultCache implements Cache {
      */
     @Override
     public void set(String key, String value) {
-        set(key, value, CacheConfig.timeout);
+        set(key, value, timeout);
     }
 
     /**
@@ -160,6 +176,37 @@ public class DefaultCache implements Cache {
         boolean isExpired() {
             return System.currentTimeMillis() > this.expire;
         }
+    }
+
+    enum CacheScheduler {
+
+        /**
+         * 当前实例
+         */
+        INSTANCE;
+
+        private AtomicInteger cacheTaskNumber = new AtomicInteger(1);
+        private ScheduledExecutorService scheduler;
+
+        CacheScheduler() {
+            create();
+        }
+
+        private void create() {
+            this.shutdown();
+            this.scheduler = new ScheduledThreadPoolExecutor(10, r -> new Thread(r, String.format("JustAuth-Task-%s", cacheTaskNumber.getAndIncrement())));
+        }
+
+        private void shutdown() {
+            if (null != scheduler) {
+                this.scheduler.shutdown();
+            }
+        }
+
+        public void schedule(Runnable task, long delay) {
+            this.scheduler.scheduleAtFixedRate(task, delay, delay, TimeUnit.MILLISECONDS);
+        }
+
     }
 
 }

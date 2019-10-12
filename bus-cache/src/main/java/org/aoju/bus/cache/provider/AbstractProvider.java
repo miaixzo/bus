@@ -23,7 +23,8 @@
  */
 package org.aoju.bus.cache.provider;
 
-import org.aoju.bus.cache.entity.Pair;
+import org.aoju.bus.cache.Provider;
+import org.aoju.bus.cache.entity.CachePair;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.yaml.snakeyaml.Yaml;
 
@@ -40,10 +41,10 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public abstract class AbstractProvider implements BaseProvider {
+public abstract class AbstractProvider implements Provider {
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r);
@@ -56,9 +57,9 @@ public abstract class AbstractProvider implements BaseProvider {
 
     private volatile boolean isShutdown = false;
 
-    private BlockingQueue<Pair<String, Integer>> hitQueue = new LinkedTransferQueue<>();
+    private BlockingQueue<CachePair<String, Integer>> hitQueue = new LinkedTransferQueue<>();
 
-    private BlockingQueue<Pair<String, Integer>> requireQueue = new LinkedTransferQueue<>();
+    private BlockingQueue<CachePair<String, Integer>> requireQueue = new LinkedTransferQueue<>();
 
     private JdbcOperations jdbcOperations;
 
@@ -95,9 +96,9 @@ public abstract class AbstractProvider implements BaseProvider {
      */
     protected abstract Stream<DataDO> transferResults(List<Map<String, Object>> map);
 
-    private void dumpToDB(BlockingQueue<Pair<String, Integer>> queue, String column) {
+    private void dumpToDB(BlockingQueue<CachePair<String, Integer>> queue, String column) {
         long times = 0;
-        Pair<String, Integer> head;
+        CachePair<String, Integer> head;
 
         // gather queue's all or before 100 data to a Map
         Map<String, AtomicLong> holdMap = new HashMap<>();
@@ -115,13 +116,13 @@ public abstract class AbstractProvider implements BaseProvider {
     @Override
     public void hitIncr(String pattern, int count) {
         if (count != 0)
-            hitQueue.add(Pair.of(pattern, count));
+            hitQueue.add(CachePair.of(pattern, count));
     }
 
     @Override
     public void reqIncr(String pattern, int count) {
         if (count != 0)
-            requireQueue.add(Pair.of(pattern, count));
+            requireQueue.add(CachePair.of(pattern, count));
     }
 
     @Override

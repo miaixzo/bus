@@ -24,10 +24,10 @@
 package org.aoju.bus.core.consts;
 
 /**
- * http相关常量
+ * HTTP 相关常量
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class Httpd {
@@ -47,4 +47,5 @@ public class Httpd {
     public final static String OPTIONS = "OPTIONS";
     public final static String BEFORE = "BEFORE";
     public final static String AFTER = "AFTER";
+    
 }

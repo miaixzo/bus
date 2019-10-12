@@ -29,8 +29,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.MapBinder;
 import com.google.inject.name.Names;
-import org.aoju.bus.cache.provider.BaseProvider;
-import org.aoju.bus.cache.reader.AbstractCacheReader;
+import org.aoju.bus.cache.reader.AbstractReader;
 import org.aoju.bus.cache.reader.MultiCacheReader;
 import org.aoju.bus.cache.reader.SingleCacheReader;
 import org.aoju.bus.cache.support.cache.Cache;
@@ -41,26 +40,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public class CacheModule extends AbstractModule {
+public class Module extends AbstractModule {
 
     private static final AtomicBoolean init = new AtomicBoolean(false);
 
     private static Injector injector;
 
-    private CacheConfig config;
+    private Context config;
 
-    private CacheModule(CacheConfig config) {
+    private Module(Context config) {
         this.config = config;
     }
 
-    public synchronized static CacheCore coreInstance(CacheConfig config) {
+    public synchronized static Complex coreInstance(Context config) {
         if (init.compareAndSet(false, true)) {
-            injector = Guice.createInjector(new CacheModule(config));
+            injector = Guice.createInjector(new Module(config));
         }
-        return injector.getInstance(CacheCore.class);
+        return injector.getInstance(Complex.class);
     }
 
     /**
@@ -71,7 +70,7 @@ public class CacheModule extends AbstractModule {
         Preconditions.checkArgument(config != null, "config param can not be null.");
         Preconditions.checkArgument(CollUtils.isNotEmpty(config.getCaches()), "caches param can not be empty.");
 
-        bind(CacheConfig.class).toInstance(config);
+        bind(Context.class).toInstance(config);
 
         // bind caches
         MapBinder<String, Cache> mapBinder = MapBinder.newMapBinder(binder(), String.class, Cache.class);
@@ -79,10 +78,10 @@ public class CacheModule extends AbstractModule {
 
         // bind baseProvider
         Optional.ofNullable(config.getProvider())
-                .ifPresent(mxBean -> bind(BaseProvider.class).toInstance(mxBean));
+                .ifPresent(mxBean -> bind(Provider.class).toInstance(mxBean));
 
-        bind(AbstractCacheReader.class).annotatedWith(Names.named("singleCacheReader")).to(SingleCacheReader.class);
-        bind(AbstractCacheReader.class).annotatedWith(Names.named("multiCacheReader")).to(MultiCacheReader.class);
+        bind(AbstractReader.class).annotatedWith(Names.named("singleCacheReader")).to(SingleCacheReader.class);
+        bind(AbstractReader.class).annotatedWith(Names.named("multiCacheReader")).to(MultiCacheReader.class);
     }
 
 }

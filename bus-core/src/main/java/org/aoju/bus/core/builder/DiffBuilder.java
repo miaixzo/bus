@@ -66,7 +66,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @see Diffable
  * @see Diff
  * @see DiffResult

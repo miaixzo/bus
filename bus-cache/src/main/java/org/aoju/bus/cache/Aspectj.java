@@ -26,7 +26,7 @@ package org.aoju.bus.cache;
 import org.aoju.bus.cache.annotation.Cached;
 import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
-import org.aoju.bus.cache.invoker.JoinPointBaseInvoker;
+import org.aoju.bus.cache.proxy.AspectJoinPoint;
 import org.aoju.bus.cache.support.cache.Cache;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -40,35 +40,34 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 @Aspect
-public class CacheAspect {
+public class Aspectj {
 
-    private CacheCore core;
+    private Complex core;
 
-    public CacheAspect(Map<String, Cache> caches) {
-        this(CacheConfig.newConfig(caches));
+    public Aspectj(Map<String, Cache> caches) {
+        this(Context.newConfig(caches));
     }
 
-    public CacheAspect(CacheConfig config) {
-        core = CacheModule.coreInstance(config);
+    public Aspectj(Context config) {
+        core = Module.coreInstance(config);
     }
 
     @Around("@annotation(org.aoju.bus.cache.annotation.CachedGet)")
     public Object read(ProceedingJoinPoint point) throws Throwable {
         Method method = getMethod(point);
         CachedGet cachedGet = method.getAnnotation(CachedGet.class);
-        return core.read(cachedGet, method, new JoinPointBaseInvoker(point));
+        return core.read(cachedGet, method, new AspectJoinPoint(point));
     }
 
     @Around("@annotation(org.aoju.bus.cache.annotation.Cached)")
     public Object readWrite(ProceedingJoinPoint point) throws Throwable {
         Method method = getMethod(point);
         Cached cached = method.getAnnotation(Cached.class);
-
-        return core.readWrite(cached, method, new JoinPointBaseInvoker(point));
+        return core.readWrite(cached, method, new AspectJoinPoint(point));
     }
 
     @After("@annotation(org.aoju.bus.cache.annotation.Invalid)")
@@ -84,7 +83,6 @@ public class CacheAspect {
         if (method.getDeclaringClass().isInterface()) {
             method = point.getTarget().getClass().getDeclaredMethod(ms.getName(), method.getParameterTypes());
         }
-
         return method;
     }
 

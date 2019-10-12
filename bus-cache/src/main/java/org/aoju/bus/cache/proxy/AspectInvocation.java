@@ -21,19 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.cache.invoker;
+package org.aoju.bus.cache.proxy;
+
+import org.aoju.bus.proxy.Invocation;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public interface BaseInvoker {
+public class AspectInvocation implements ProxyChain {
 
-    Object[] getArgs();
+    private Object target;
 
-    Object proceed() throws Throwable;
+    private Invocation invocation;
 
-    Object proceed(Object[] args) throws Throwable;
+    public AspectInvocation(Object target, Invocation invocation) {
+        this.target = target;
+        this.invocation = invocation;
+    }
+
+    @Override
+    public Object[] getArgs() {
+        return invocation.getArguments();
+    }
+
+    @Override
+    public Object proceed() throws Throwable {
+        return invocation.proceed();
+    }
+
+    @Override
+    public Object proceed(Object[] args) throws Throwable {
+        return invocation.getMethod().invoke(target, args);
+    }
 
 }

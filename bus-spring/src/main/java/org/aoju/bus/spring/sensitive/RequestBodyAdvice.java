@@ -47,7 +47,7 @@ import java.lang.reflect.Type;
  * 对加了@P的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class RequestBodyAdvice extends BaseAdvice
@@ -165,7 +165,7 @@ public class RequestBodyAdvice extends BaseAdvice
                             String type,
                             String charset) throws Exception {
             if (StringUtils.isEmpty(key)) {
-                throw new NullPointerException("please check the request.crypto.decrypt.key");
+                throw new NullPointerException("please check the request.crypto.decrypt");
             }
 
             this.headers = inputMessage.getHeaders();

@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @param <T> 参数类型
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class Provider<T> {
@@ -111,10 +111,11 @@ public class Provider<T> {
      * 不能因为脱敏，就导致代码中的对象被改变。否则代码逻辑会出现问题。
      *
      * @param object     原始对象
-     * @param annotation 注解
+     * @param annotation 注解信息
+     * @param clone      是否克隆
      * @return 脱敏后的新对象
      */
-    public T on(T object, Annotation annotation) {
+    public T on(T object, Annotation annotation, boolean clone) {
         if (ObjectUtils.isEmpty(object)) {
             return object;
         }
@@ -124,16 +125,20 @@ public class Provider<T> {
             this.value = sensitive.field();
         }
 
-        //1. 初始化
+        // 1. 初始化
         final Class clazz = object.getClass();
         final Context context = new Context();
 
-        //2. 深度复制
-        final T copyObject = clone(object);
+        if (clone) {
+            // 2. 深度复制，不改变原始对象
+            T copy = clone(object);
+            handleClassField(context, copy, clazz);
+            return copy;
+        }
 
-        //3. 脱敏处理
-        handleClassField(context, copyObject, clazz);
-        return copyObject;
+        // 3. 脱敏处理
+        handleClassField(context, object, clazz);
+        return object;
     }
 
     /**

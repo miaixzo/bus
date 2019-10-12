@@ -21,27 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.storage.metric;
+package org.aoju.bus.cache.proxy;
 
 /**
- * Cache配置类
- *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public class CacheConfig {
+public interface ProxyChain {
 
-    /**
-     * 默认缓存过期时间：3分钟
-     * 根据个人的操作习惯，或者平台的不同，每个流程的耗时也有差异，不过单个授权流程一般不会太长
-     * 本缓存工具默认的过期时间设置为3分钟，即程序默认认为3分钟内的授权有效，超过3分钟则默认失效，失效后删除
-     */
-    public static long timeout = 3 * 60 * 1000;
+    Object[] getArgs();
 
-    /**
-     * 是否开启定时{@link DefaultCache#pruneCache()}的任务
-     */
-    public static boolean schedulePrune = true;
+    Object proceed() throws Throwable;
+
+    Object proceed(Object[] args) throws Throwable;
 
 }

@@ -29,7 +29,7 @@ import java.util.*;
  * 可以读取的一组索引值 {@link BufferedSource#select}.
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public final class Options extends AbstractList<ByteString> implements RandomAccess {

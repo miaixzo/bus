@@ -4,7 +4,7 @@
  * Copyright (c) 2017 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation files (the "Software"); to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -23,97 +23,159 @@
  */
 package org.aoju.bus.base.consts;
 
-import lombok.Getter;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 系统响应码
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public enum ErrorCode {
+public class ErrorCode {
 
-    EM_SUCCESS(Consts.EM_SUCCESS, "请求成功", ""),
-    EM_FAILURE(Consts.EM_FAILURE, "系统繁忙,请稍后重试", ""),
-    EM_LIMITER(Consts.EM_LIMITER, "请求过于频繁", ""),
-    EM_100100(Consts.EM_100100, "无效的令牌", ""),
-    EM_100101(Consts.EM_100101, "无效的参数", ""),
-    EM_100102(Consts.EM_100102, "无效的版本", ""),
-    EM_100103(Consts.EM_100103, "无效的方法", ""),
-    EM_100104(Consts.EM_100104, "无效的语言", ""),
-    EM_100105(Consts.EM_100105, "无效的格式化类型", ""),
-    EM_100106(Consts.EM_100106, "缺少token参数", ""),
-    EM_100107(Consts.EM_100107, "缺少version参数 ", ""),
-    EM_100108(Consts.EM_100108, "缺少method参数", ""),
-    EM_100109(Consts.EM_100109, "缺少language参数", ""),
-    EM_100110(Consts.EM_100110, "缺少fields参数", ""),
-    EM_100111(Consts.EM_100111, "缺少format参数", ""),
-    EM_100112(Consts.EM_100112, "code错误", ""),
-    EM_100113(Consts.EM_100113, "code过期", ""),
-    EM_100114(Consts.EM_100114, "缺少sign参数", ""),
-    EM_100115(Consts.EM_100115, "缺少noncestr参数", ""),
-    EM_100116(Consts.EM_100116, "缺少timestamp参数", ""),
-    EM_100117(Consts.EM_100117, "缺少sign", ""),
-    EM_100118(Consts.EM_100118, "token过期", ""),
-    EM_100200(Consts.EM_100200, "请使用GET请求", ""),
-    EM_100201(Consts.EM_100201, "请使用POST请求", ""),
-    EM_100202(Consts.EM_100202, "请使用PUT请求", ""),
-    EM_100203(Consts.EM_100203, "请使用DELETE请求", ""),
-    EM_100204(Consts.EM_100204, "请使用OPTIONS请求", ""),
-    EM_100205(Consts.EM_100205, "请使用HEAD请求", ""),
-    EM_100206(Consts.EM_100206, "请使用PATCH请求", ""),
-    EM_100207(Consts.EM_100207, "请使用TRACE请求", ""),
-    EM_100208(Consts.EM_100208, "请使用CONNECT请求", ""),
-    EM_100209(Consts.EM_100209, "请使用HTTPS协议", ""),
-    EM_100300(Consts.EM_100300, "暂无数据", ""),
-    EM_100400(Consts.EM_100400, "转换JSON/XML错误", ""),
-    EM_100500(Consts.EM_100500, "API未授权", ""),
-    EM_100501(Consts.EM_100501, "日期格式化错误", ""),
-    EM_100502(Consts.EM_100502, "账号已冻结", ""),
-    EM_100503(Consts.EM_100503, "账号已存在", ""),
-    EM_100504(Consts.EM_100504, "账号不存在", ""),
-    EM_100505(Consts.EM_100505, "密码错误", ""),
-    EM_100506(Consts.EM_100506, "通用函数,处理异常", ""),
-    EM_100507(Consts.EM_100507, "请求方法不支持", ""),
-    EM_100508(Consts.EM_100508, "不支持此类型", ""),
-    EM_100509(Consts.EM_100509, "未找到资源", ""),
-    EM_100510(Consts.EM_100510, "内部处理异常", ""),
-    EM_100511(Consts.EM_100511, "验证失败!", ""),
-    EM_100512(Consts.EM_100512, "数据已存在", ""),
-    EM_100513(Consts.EM_100513, "业务处理失败", ""),
-    EM_100514(Consts.EM_100514, "任务执行失败", "");
+    /*********** 返回值状态码-系统默认 ************/
+    public static final String EM_SUCCESS = "0";
+    public static final String EM_FAILURE = "-1";
+    public static final String EM_LIMITER = "-2";
+    public static final String EM_100100 = "100100";
+    public static final String EM_100101 = "100101";
+    public static final String EM_100102 = "100102";
+    public static final String EM_100103 = "100103";
+    public static final String EM_100104 = "100104";
+    public static final String EM_100105 = "100105";
+    public static final String EM_100106 = "100106";
+    public static final String EM_100107 = "100107";
+    public static final String EM_100108 = "100108";
+    public static final String EM_100109 = "100109";
+    public static final String EM_100110 = "100110";
+    public static final String EM_100111 = "100111";
+    public static final String EM_100112 = "100112";
+    public static final String EM_100113 = "100113";
+    public static final String EM_100114 = "100114";
+    public static final String EM_100115 = "100115";
+    public static final String EM_100116 = "100116";
+    public static final String EM_100117 = "100117";
+    public static final String EM_100118 = "100118";
+    public static final String EM_100200 = "100200";
+    public static final String EM_100201 = "100201";
+    public static final String EM_100202 = "100202";
+    public static final String EM_100203 = "100203";
+    public static final String EM_100204 = "100204";
+    public static final String EM_100205 = "100205";
+    public static final String EM_100206 = "100206";
+    public static final String EM_100207 = "100207";
+    public static final String EM_100208 = "100208";
+    public static final String EM_100209 = "100209";
+    public static final String EM_100300 = "100300";
+    public static final String EM_100400 = "100400";
+    public static final String EM_100500 = "100500";
+    public static final String EM_100501 = "100501";
+    public static final String EM_100502 = "100502";
+    public static final String EM_100503 = "100503";
+    public static final String EM_100504 = "100504";
+    public static final String EM_100505 = "100505";
+    public static final String EM_100506 = "100506";
+    public static final String EM_100507 = "100507";
+    public static final String EM_100508 = "100508";
+    public static final String EM_100509 = "100509";
+    public static final String EM_100510 = "100510";
+    public static final String EM_100511 = "100511";
+    public static final String EM_100512 = "100512";
+    public static final String EM_100513 = "100513";
+    public static final String EM_100514 = "100514";
 
+    /**
+     * 错误码列表
+     */
+    private static Map<String, String> ERRORCODE_CACHE = new ConcurrentHashMap<>();
 
-    @Getter
-    public String errcode;
-    @Getter
-    public String errmsg;
-    @Getter
-    public String solution;
-
-    ErrorCode(String errcode, String errmsg, String solution) {
-        this.errcode = errcode;
-        this.errmsg = errmsg;
-        this.solution = solution;
+    static {
+        register(EM_SUCCESS, "请求成功");
+        register(EM_FAILURE, "系统繁忙,请稍后重试");
+        register(EM_LIMITER, "请求过于频繁");
+        register(EM_100100, "无效的令牌");
+        register(EM_100101, "无效的参数");
+        register(EM_100102, "无效的版本");
+        register(EM_100103, "无效的方法");
+        register(EM_100104, "无效的语言");
+        register(EM_100105, "无效的格式化类型");
+        register(EM_100106, "缺少token参数");
+        register(EM_100107, "缺少version参数 ");
+        register(EM_100108, "缺少method参数");
+        register(EM_100109, "缺少language参数");
+        register(EM_100110, "缺少fields参数");
+        register(EM_100111, "缺少format参数");
+        register(EM_100112, "code错误");
+        register(EM_100113, "code过期");
+        register(EM_100114, "缺少sign参数");
+        register(EM_100115, "缺少noncestr参数");
+        register(EM_100116, "缺少timestamp参数");
+        register(EM_100117, "缺少sign");
+        register(EM_100118, "token过期");
+        register(EM_100200, "请使用GET请求");
+        register(EM_100201, "请使用POST请求");
+        register(EM_100202, "请使用PUT请求");
+        register(EM_100203, "请使用DELETE请求");
+        register(EM_100204, "请使用OPTIONS请求");
+        register(EM_100205, "请使用HEAD请求");
+        register(EM_100206, "请使用PATCH请求");
+        register(EM_100207, "请使用TRACE请求");
+        register(EM_100208, "请使用CONNECT请求");
+        register(EM_100209, "请使用HTTPS协议");
+        register(EM_100300, "暂无数据");
+        register(EM_100400, "转换JSON/XML错误");
+        register(EM_100500, "API未授权");
+        register(EM_100501, "日期格式化错误");
+        register(EM_100502, "账号已冻结");
+        register(EM_100503, "账号已存在");
+        register(EM_100504, "账号不存在");
+        register(EM_100505, "密码错误");
+        register(EM_100506, "通用函数,处理异常");
+        register(EM_100507, "请求方法不支持");
+        register(EM_100508, "不支持此类型");
+        register(EM_100509, "未找到资源");
+        register(EM_100510, "内部处理异常");
+        register(EM_100511, "验证失败!");
+        register(EM_100512, "数据已存在");
+        register(EM_100513, "业务处理失败");
+        register(EM_100514, "任务执行失败");
     }
 
-    public static ErrorCode of(String errcode) {
-        for (ErrorCode errorCode : ErrorCode.values()) {
-            if (errorCode.errcode.equalsIgnoreCase(errcode)) {
-                return errorCode;
-            }
+    /**
+     * 注册组件
+     *
+     * @param key   错误码
+     * @param value 错误信息
+     */
+    public static void register(String key, String value) {
+        if (ERRORCODE_CACHE.containsKey(key)) {
+            throw new InstrumentException("重复注册同名称的错误码：" + key);
         }
-        return EM_FAILURE;
+        ERRORCODE_CACHE.putIfAbsent(key, value);
     }
 
-    public static String of(ErrorCode errcode) {
-        for (ErrorCode errorCode : ErrorCode.values()) {
-            if (errorCode.equals(errcode)) {
-                return errorCode.errcode;
-            }
-        }
-        return "";
+    /**
+     * 是否包含指定名称的错误码
+     *
+     * @param name 错误码名称
+     * @return true：包含， false：不包含
+     */
+    public static boolean contains(String name) {
+        return ERRORCODE_CACHE.containsKey(name);
+    }
+
+    /**
+     * 根据错误码名称获取错误码
+     *
+     * @param name 错误码名称
+     * @return 错误码对象，找不到时返回null
+     */
+    public static String require(String name) {
+        return ERRORCODE_CACHE.get(name);
     }
 
 }

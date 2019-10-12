@@ -37,7 +37,7 @@ import java.lang.annotation.*;
  * ResponseBodyAdvice 脱敏加密
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 @Documented
@@ -62,6 +62,7 @@ public @interface Sensitive {
      * 1.Builder.ALL 全部开启
      * 2.Builder.IN  请求/写入
      * 3.Builder.OUT 查询/输出
+     * 4.Builder.OVERALL 全局加密
      *
      * @return the string
      */

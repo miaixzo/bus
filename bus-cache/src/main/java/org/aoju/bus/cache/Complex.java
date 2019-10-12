@@ -31,10 +31,10 @@ import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
 import org.aoju.bus.cache.entity.CacheHolder;
 import org.aoju.bus.cache.entity.CacheMethod;
-import org.aoju.bus.cache.entity.Expire;
-import org.aoju.bus.cache.entity.Pair;
-import org.aoju.bus.cache.invoker.BaseInvoker;
-import org.aoju.bus.cache.reader.AbstractCacheReader;
+import org.aoju.bus.cache.entity.CacheExpire;
+import org.aoju.bus.cache.entity.CachePair;
+import org.aoju.bus.cache.proxy.ProxyChain;
+import org.aoju.bus.cache.reader.AbstractReader;
 import org.aoju.bus.cache.support.ArgNameGenerator;
 import org.aoju.bus.cache.support.CacheInfoContainer;
 import org.aoju.bus.cache.support.KeyGenerator;
@@ -47,41 +47,41 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 @Singleton
-public class CacheCore {
+public class Complex {
 
     @Inject
-    private CacheConfig config;
+    private Context config;
 
     @Inject
-    private CacheManager cacheManager;
+    private Manage cacheManager;
 
     @Inject
     @Named("singleCacheReader")
-    private AbstractCacheReader singleCacheReader;
+    private AbstractReader singleCacheReader;
 
     @Inject
     @Named("multiCacheReader")
-    private AbstractCacheReader multiCacheReader;
+    private AbstractReader multiCacheReader;
 
-    public static boolean isSwitchOn(CacheConfig config, Cached cached, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == CacheConfig.Switch.ON,
+    public static boolean isSwitchOn(Context config, Cached cached, Method method, Object[] args) {
+        return doIsSwitchOn(config.getCache() == Context.Switch.ON,
                 cached.expire(), cached.condition(),
                 method, args);
     }
 
-    public static boolean isSwitchOn(CacheConfig config, Invalid invalid, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == CacheConfig.Switch.ON,
-                Expire.FOREVER, invalid.condition(),
+    public static boolean isSwitchOn(Context config, Invalid invalid, Method method, Object[] args) {
+        return doIsSwitchOn(config.getCache() == Context.Switch.ON,
+                CacheExpire.FOREVER, invalid.condition(),
                 method, args);
     }
 
-    public static boolean isSwitchOn(CacheConfig config, CachedGet cachedGet, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == CacheConfig.Switch.ON,
-                Expire.FOREVER, cachedGet.condition(),
+    public static boolean isSwitchOn(Context config, CachedGet cachedGet, Method method, Object[] args) {
+        return doIsSwitchOn(config.getCache() == Context.Switch.ON,
+                CacheExpire.FOREVER, cachedGet.condition(),
                 method, args);
     }
 
@@ -92,14 +92,14 @@ public class CacheCore {
             return false;
         }
 
-        if (expire == Expire.NO) {
+        if (expire == CacheExpire.NO) {
             return false;
         }
 
         return (boolean) SpelCalculator.calcSpelValueWithContext(condition, ArgNameGenerator.getArgNames(method), args, true);
     }
 
-    public Object read(CachedGet cachedGet, Method method, BaseInvoker baseInvoker) throws Throwable {
+    public Object read(CachedGet cachedGet, Method method, ProxyChain baseInvoker) throws Throwable {
         Object result;
         if (isSwitchOn(config, cachedGet, method, baseInvoker.getArgs())) {
             result = doReadWrite(method, baseInvoker, false);
@@ -110,7 +110,7 @@ public class CacheCore {
         return result;
     }
 
-    public Object readWrite(Cached cached, Method method, BaseInvoker baseInvoker) throws Throwable {
+    public Object readWrite(Cached cached, Method method, ProxyChain baseInvoker) throws Throwable {
         Object result;
         if (isSwitchOn(config, cached, method, baseInvoker.getArgs())) {
             result = doReadWrite(method, baseInvoker, true);
@@ -144,10 +144,10 @@ public class CacheCore {
         }
     }
 
-    private Object doReadWrite(Method method, BaseInvoker baseInvoker, boolean needWrite) throws Throwable {
+    private Object doReadWrite(Method method, ProxyChain baseInvoker, boolean needWrite) throws Throwable {
         long start = System.currentTimeMillis();
 
-        Pair<CacheHolder, CacheMethod> pair = CacheInfoContainer.getCacheInfo(method);
+        CachePair<CacheHolder, CacheMethod> pair = CacheInfoContainer.getCacheInfo(method);
         CacheHolder cacheHolder = pair.getLeft();
         CacheMethod cacheMethod = pair.getRight();
 

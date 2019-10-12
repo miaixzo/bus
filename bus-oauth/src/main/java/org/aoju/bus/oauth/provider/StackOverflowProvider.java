@@ -39,17 +39,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Stack Overflow登录
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class StackOverflowProvider extends DefaultProvider {
 
     public StackOverflowProvider(Context config) {
-        super(config, Registry.STACK_OVERFLOW);
+        super(config, Registry.STACK);
     }
 
     public StackOverflowProvider(Context config, StateCache stateCache) {
-        super(config, Registry.STACK_OVERFLOW, stateCache);
+        super(config, Registry.STACK, stateCache);
     }
 
     @Override

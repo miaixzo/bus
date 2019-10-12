@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Bean;
  * 授权配置
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {AuthProperties.class})

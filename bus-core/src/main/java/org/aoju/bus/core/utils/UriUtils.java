@@ -25,23 +25,21 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.consts.FileType;
 import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.JarFile;
 
 /**
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class UriUtils {
@@ -359,7 +357,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 3.6.8
+     * @since 5.0.0
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
@@ -376,7 +374,7 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 3.6.8
+     * @since 5.0.0
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);
@@ -1013,6 +1011,299 @@ public class UriUtils {
         protected boolean isPchar(int c) {
             return (isUnreserved(c) || isSubDelimiter(c) || ':' == c || '@' == c);
         }
+    }
+
+
+    /**
+     * 对URL参数做编码，只编码键和值<br>
+     * 提供的值可以是url附带参数，但是不能只是url
+     *
+     * <p>注意，此方法只能标准化整个URL，并不适合于单独编码参数值</p>
+     *
+     * @param paramsStr url参数，可以包含url本身
+     * @param charset   编码
+     * @return 编码后的url和参数
+     */
+    public static String encodeVal(String paramsStr, Charset charset) {
+        if (StringUtils.isBlank(paramsStr)) {
+            return Normal.EMPTY;
+        }
+
+        String urlPart = null; // url部分，不包括问号
+        String paramPart; // 参数部分
+        int pathEndPos = paramsStr.indexOf('?');
+        if (pathEndPos > -1) {
+            // url + 参数
+            urlPart = StringUtils.subPre(paramsStr, pathEndPos);
+            paramPart = StringUtils.subSuf(paramsStr, pathEndPos + 1);
+            if (StringUtils.isBlank(paramPart)) {
+                // 无参数，返回url
+                return urlPart;
+            }
+        } else {
+            // 无URL
+            paramPart = paramsStr;
+        }
+
+        paramPart = normalize(paramPart, charset);
+
+        return StringUtils.isBlank(urlPart) ? paramPart : urlPart + "?" + paramPart;
+    }
+
+    /**
+     * 标准化参数字符串，即URL中？后的部分
+     *
+     * <p>注意，此方法只能标准化整个URL，并不适合于单独编码参数值</p>
+     *
+     * @param paramPart 参数字符串
+     * @param charset   编码
+     * @return 标准化的参数字符串
+     */
+    public static String normalize(String paramPart, Charset charset) {
+        final TextUtils builder = TextUtils.create(paramPart.length() + 16);
+        final int len = paramPart.length();
+        String name = null;
+        int pos = 0; // 未处理字符开始位置
+        char c; // 当前字符
+        int i; // 当前字符位置
+        for (i = 0; i < len; i++) {
+            c = paramPart.charAt(i);
+            if (c == '=') { // 键值对的分界点
+                if (null == name) {
+                    // 只有=前未定义name时被当作键值分界符，否则做为普通字符
+                    name = (pos == i) ? Normal.EMPTY : paramPart.substring(pos, i);
+                    pos = i + 1;
+                }
+            } else if (c == '&') { // 参数对的分界点
+                if (pos != i) {
+                    if (null == name) {
+                        // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                        name = paramPart.substring(pos, i);
+                        builder.append(UriUtils.encodeQuery(name, charset)).append('=');
+                    } else {
+                        builder.append(UriUtils.encodeQuery(name, charset)).append('=').append(UriUtils.encodeQuery(paramPart.substring(pos, i), charset)).append('&');
+                    }
+                    name = null;
+                }
+                pos = i + 1;
+            }
+        }
+
+        // 结尾处理
+        if (null != name) {
+            builder.append(UriUtils.encodeQuery(name, charset)).append('=');
+        }
+        if (pos != i) {
+            if (null == name && pos > 0) {
+                builder.append('=');
+            }
+            builder.append(UriUtils.encodeQuery(paramPart.substring(pos, i), charset));
+        }
+
+        // 以&结尾则去除之
+        int lastIndex = builder.length() - 1;
+        if ('&' == builder.charAt(lastIndex)) {
+            builder.delTo(lastIndex);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 将Map形式的Form表单数据转换为Url参数形式<br>
+     * paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""）<br>
+     * 会自动url编码键和值
+     *
+     * <pre>
+     * key1=v1&amp;key2=&amp;key3=v3
+     * </pre>
+     *
+     * @param paramMap 表单数据
+     * @param charset  编码
+     * @return url参数
+     */
+    public static String decodeMap(Map<String, ?> paramMap, Charset charset) {
+        if (CollUtils.isEmpty(paramMap)) {
+            return Normal.EMPTY;
+        }
+        if (null == charset) {// 默认编码为系统编码
+            charset = org.aoju.bus.core.consts.Charset.UTF_8;
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        String key;
+        Object value;
+        String valueStr;
+        for (Map.Entry<String, ?> item : paramMap.entrySet()) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append("&");
+            }
+            key = item.getKey();
+            value = item.getValue();
+            if (value instanceof Iterable) {
+                value = CollUtils.join((Iterable<?>) value, ",");
+            } else if (value instanceof Iterator) {
+                value = CollUtils.join((Iterator<?>) value, ",");
+            }
+            valueStr = Convert.toString(value);
+            if (StringUtils.isNotEmpty(key)) {
+                sb.append(UriUtils.encodeAll(key, charset)).append("=");
+                if (StringUtils.isNotEmpty(valueStr)) {
+                    sb.append(UriUtils.encodeAll(valueStr, charset));
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+
+    /**
+     * 将URL参数解析为Map（也可以解析Post中的键值对参数）
+     *
+     * @param params  参数字符串（或者带参数的Path）
+     * @param charset 字符集
+     * @return 参数Map
+     */
+    public static Map<String, String> decodeVal(String params, String charset) {
+        final Map<String, List<String>> paramsMap = decodeObj(params, charset);
+        final Map<String, String> result = MapUtils.newHashMap(paramsMap.size());
+        List<String> list;
+        for (Map.Entry<String, List<String>> entry : paramsMap.entrySet()) {
+            list = entry.getValue();
+            result.put(entry.getKey(), CollUtils.isEmpty(list) ? null : list.get(0));
+        }
+        return result;
+    }
+
+    /**
+     * 将URL参数解析为Map（也可以解析Post中的键值对参数）
+     *
+     * @param params  参数字符串（或者带参数的Path）
+     * @param charset 字符集
+     * @return 参数Map
+     */
+    public static Map<String, List<String>> decodeObj(String params, String charset) {
+        if (StringUtils.isBlank(params)) {
+            return Collections.emptyMap();
+        }
+
+        // 去掉Path部分
+        int pathEndPos = params.indexOf('?');
+        if (pathEndPos > -1) {
+            params = StringUtils.subSuf(params, pathEndPos + 1);
+        }
+
+        final Map<String, List<String>> map = new LinkedHashMap<>();
+        final int len = params.length();
+        String name = null;
+        int pos = 0; // 未处理字符开始位置
+        int i; // 未处理字符结束位置
+        char c; // 当前字符
+        for (i = 0; i < len; i++) {
+            c = params.charAt(i);
+            if (c == '=') { // 键值对的分界点
+                if (null == name) {
+                    // name可以是""
+                    name = params.substring(pos, i);
+                }
+                pos = i + 1;
+            } else if (c == '&') { // 参数对的分界点
+                if (null == name && pos != i) {
+                    // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                    addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
+                } else if (name != null) {
+                    addParam(map, name, params.substring(pos, i), charset);
+                    name = null;
+                }
+                pos = i + 1;
+            }
+        }
+
+        // 处理结尾
+        if (pos != i) {
+            if (name == null) {
+                addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
+            } else {
+                addParam(map, name, params.substring(pos, i), charset);
+            }
+        } else if (name != null) {
+            addParam(map, name, Normal.EMPTY, charset);
+        }
+
+        return map;
+    }
+
+    /**
+     * 将表单数据加到URL中（用于GET表单提交）<br>
+     * 表单的键值对会被url编码，但是url中原参数不会被编码
+     *
+     * @param url            URL
+     * @param form           表单数据
+     * @param charset        编码
+     * @param isEncodeParams 是否对键和值做转义处理
+     * @return 合成后的URL
+     */
+    public static String withForm(String url, Map<String, Object> form, Charset charset, boolean isEncodeParams) {
+        if (isEncodeParams && StringUtils.contains(url, '?')) {
+            url = encodeVal(url, charset);
+        }
+
+        return withForm(url, decodeMap(form, charset), charset, false);
+    }
+
+    /**
+     * 将表单数据字符串加到URL中（用于GET表单提交）
+     *
+     * @param url         URL
+     * @param queryString 表单数据字符串
+     * @param charset     编码
+     * @param isEncode    是否对键和值做转义处理
+     * @return 拼接后的字符串
+     */
+    public static String withForm(String url, String queryString, Charset charset, boolean isEncode) {
+        if (StringUtils.isBlank(queryString)) {
+            if (StringUtils.contains(url, '?')) {
+                return isEncode ? encodeVal(url, charset) : url;
+            }
+            return url;
+        }
+
+        final TextUtils textUtils = TextUtils.create(url.length() + queryString.length() + 16);
+        int qmIndex = url.indexOf('?');
+        if (qmIndex > 0) {
+            textUtils.append(isEncode ? encodeVal(url, charset) : url);
+            if (false == StringUtils.endWith(url, '&')) {
+                textUtils.append('&');
+            }
+        } else {
+            textUtils.append(url);
+            if (qmIndex < 0) {
+                textUtils.append('?');
+            }
+        }
+        textUtils.append(isEncode ? encodeVal(queryString, charset) : queryString);
+        return textUtils.toString();
+    }
+
+    /**
+     * 将键值对加入到值为List类型的Map中
+     *
+     * @param params  参数
+     * @param name    key
+     * @param value   value
+     * @param charset 编码
+     */
+    private static void addParam(Map<String, List<String>> params, String name, String value, String charset) {
+        name = UriUtils.decode(name, charset);
+        value = UriUtils.decode(value, charset);
+        List<String> values = params.get(name);
+        if (values == null) {
+            values = new ArrayList<>(1);
+            params.put(name, values);
+        }
+        values.add(value);
     }
 
 }

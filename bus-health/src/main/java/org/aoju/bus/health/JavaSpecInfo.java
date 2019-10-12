@@ -29,7 +29,7 @@ import org.aoju.bus.core.consts.System;
  * 代表Java Specification的信息。
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class JavaSpecInfo {

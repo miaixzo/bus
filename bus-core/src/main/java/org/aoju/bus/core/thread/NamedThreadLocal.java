@@ -29,7 +29,7 @@ package org.aoju.bus.core.thread;
  *
  * @param <T> 值类型
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class NamedThreadLocal<T> extends ThreadLocal<T> {

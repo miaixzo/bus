@@ -23,23 +23,22 @@
  */
 package org.aoju.bus.cache;
 
-import org.aoju.bus.cache.provider.BaseProvider;
 import org.aoju.bus.cache.support.cache.Cache;
 
 import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public class CacheConfig {
+public class Context {
 
     // cache接口实现
     private Map<String, Cache> caches;
 
     // 缓存分组命中率统计
-    private BaseProvider provider;
+    private Provider provider;
 
     // 是否开启Cache(全局开关)
     private Switch cache;
@@ -47,8 +46,8 @@ public class CacheConfig {
     // 是否开启缓存防击穿
     private Switch prevent;
 
-    public static CacheConfig newConfig(Map<String, Cache> caches) {
-        CacheConfig config = new CacheConfig();
+    public static Context newConfig(Map<String, Cache> caches) {
+        Context config = new Context();
         config.caches = caches;
         config.cache = Switch.ON;
         config.prevent = Switch.OFF;
@@ -68,11 +67,11 @@ public class CacheConfig {
         this.caches = caches;
     }
 
-    public BaseProvider getProvider() {
+    public Provider getProvider() {
         return provider;
     }
 
-    public void setProvider(BaseProvider provider) {
+    public void setProvider(Provider provider) {
         this.provider = provider;
     }
 

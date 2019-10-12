@@ -26,7 +26,7 @@ package org.aoju.bus.cache.support.cache;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClientBuilder;
 import net.rubyeye.xmemcached.exception.MemcachedException;
-import org.aoju.bus.cache.entity.Expire;
+import org.aoju.bus.cache.entity.CacheExpire;
 import org.aoju.bus.cache.support.serialize.BaseSerializer;
 import org.aoju.bus.cache.support.serialize.Hessian2Serializer;
 
@@ -39,7 +39,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class MemcachedCache implements Cache {
@@ -73,7 +73,7 @@ public class MemcachedCache implements Cache {
     public void write(String key, Object value, long expire) {
         byte[] byteValue = serializer.serialize(value);
         try {
-            if (expire == Expire.FOREVER) {
+            if (expire == CacheExpire.FOREVER) {
                 client.set(key, _30_DAYS, byteValue);
             } else {
                 client.set(key, (int) (expire / 1000), byteValue);

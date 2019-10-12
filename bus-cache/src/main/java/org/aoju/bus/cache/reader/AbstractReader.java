@@ -21,39 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.cache.invoker;
+package org.aoju.bus.cache.reader;
 
-import org.aoju.bus.proxy.Invocation;
+import org.aoju.bus.cache.entity.CacheHolder;
+import org.aoju.bus.cache.entity.CacheMethod;
+import org.aoju.bus.cache.proxy.ProxyChain;
+import org.aoju.bus.logger.Logger;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public class InvocationBaseInvoker implements BaseInvoker {
+public abstract class AbstractReader {
 
-    private Object target;
+    public abstract Object read(CacheHolder cacheHolder, CacheMethod cacheMethod, ProxyChain baseInvoker, boolean needWrite) throws Throwable;
 
-    private Invocation invocation;
-
-    public InvocationBaseInvoker(Object target, Invocation invocation) {
-        this.target = target;
-        this.invocation = invocation;
+    Object doLogInvoke(ThrowableSupplier<Object> throwableSupplier) throws Throwable {
+        long start = System.currentTimeMillis();
+        try {
+            return throwableSupplier.get();
+        } finally {
+            Logger.debug("method invoke total cost [{}] ms", (System.currentTimeMillis() - start));
+        }
     }
 
-    @Override
-    public Object[] getArgs() {
-        return invocation.getArguments();
-    }
-
-    @Override
-    public Object proceed() throws Throwable {
-        return invocation.proceed();
-    }
-
-    @Override
-    public Object proceed(Object[] args) throws Throwable {
-        return invocation.getMethod().invoke(target, args);
+    @FunctionalInterface
+    protected interface ThrowableSupplier<T> {
+        T get() throws Throwable;
     }
 
 }

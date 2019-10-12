@@ -30,7 +30,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 @ChannelHandler.Sharable

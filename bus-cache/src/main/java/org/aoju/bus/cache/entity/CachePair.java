@@ -25,22 +25,22 @@ package org.aoju.bus.cache.entity;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public class Pair<L, R> {
+public class CachePair<L, R> {
 
     private L left;
 
     private R right;
 
-    private Pair(L left, R right) {
+    private CachePair(L left, R right) {
         this.left = left;
         this.right = right;
     }
 
-    public static <L, R> Pair<L, R> of(L left, R right) {
-        return new Pair<>(left, right);
+    public static <L, R> CachePair<L, R> of(L left, R right) {
+        return new CachePair<>(left, right);
     }
 
     public L getLeft() {

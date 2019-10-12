@@ -79,7 +79,7 @@ import java.util.regex.Pattern;
  * IOException} and responding appropriately.
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public final class DiskLruCache implements Closeable, Flushable {

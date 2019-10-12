@@ -21,36 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.cache.invoker;
-
-import org.aspectj.lang.ProceedingJoinPoint;
+package org.aoju.bus.cache.entity;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public class JoinPointBaseInvoker implements BaseInvoker {
+public interface CacheExpire {
 
-    private ProceedingJoinPoint proceedingJoinPoint;
+    int NO = -1;
 
-    public JoinPointBaseInvoker(ProceedingJoinPoint proceedingJoinPoint) {
-        this.proceedingJoinPoint = proceedingJoinPoint;
-    }
+    int FOREVER = 0;
 
-    @Override
-    public Object[] getArgs() {
-        return proceedingJoinPoint.getArgs();
-    }
+    int ONE_SEC = 1000;
 
-    @Override
-    public Object proceed() throws Throwable {
-        return proceedingJoinPoint.proceed();
-    }
+    int FIVE_SEC = 4 * ONE_SEC;
 
-    @Override
-    public Object proceed(Object[] args) throws Throwable {
-        return proceedingJoinPoint.proceed(args);
-    }
+    int TEN_SEC = 2 * FIVE_SEC;
+
+    int ONE_MIN = 6 * TEN_SEC;
+
+    int FIVE_MIN = 5 * ONE_MIN;
+
+    int TEN_MIN = 2 * FIVE_MIN;
+
+    int HALF_HOUR = 30 * TEN_MIN;
+
+    int ONE_HOUR = 2 * HALF_HOUR;
+
+    int TWO_HOUR = 2 * ONE_HOUR;
+
+    int SIX_HOUR = 3 * TWO_HOUR;
+
+    int TWELVE_HOUR = 2 * SIX_HOUR;
+
+    int ONE_DAY = 2 * TWELVE_HOUR;
+
+    int TWO_DAY = 2 * ONE_DAY;
+
+    int ONE_WEEK = 7 * ONE_DAY;
 
 }

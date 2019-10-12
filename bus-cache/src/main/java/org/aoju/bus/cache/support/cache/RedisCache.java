@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cache.support.cache;
 
-import org.aoju.bus.cache.entity.Expire;
+import org.aoju.bus.cache.entity.CacheExpire;
 import org.aoju.bus.cache.support.serialize.BaseSerializer;
 import org.aoju.bus.cache.support.serialize.Hessian2Serializer;
 import redis.clients.jedis.Jedis;
@@ -38,7 +38,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class RedisCache implements Cache {
@@ -101,7 +101,7 @@ public class RedisCache implements Cache {
     public void write(String key, Object value, long expire) {
         try (Jedis client = jedisPool.getResource()) {
             byte[] bytesValue = serializer.serialize(value);
-            if (expire == Expire.FOREVER) {
+            if (expire == CacheExpire.FOREVER) {
                 client.set(key.getBytes(), bytesValue);
             } else {
                 client.psetex(key.getBytes(), expire, bytesValue);
@@ -121,7 +121,7 @@ public class RedisCache implements Cache {
     public void write(Map<String, Object> keyValueMap, long expire) {
         try (Jedis client = jedisPool.getResource()) {
             byte[][] kvs = toByteArray(keyValueMap, serializer);
-            if (expire == Expire.FOREVER) {
+            if (expire == CacheExpire.FOREVER) {
                 client.mset(kvs);
             } else {
                 Pipeline pipeline = client.pipelined();

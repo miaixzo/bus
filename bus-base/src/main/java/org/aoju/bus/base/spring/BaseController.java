@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 基础请求封装
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class BaseController<Service extends BaseService<T>, T> extends Controller {
@@ -53,7 +53,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:添加数据", httpMethod = "POST")
     @ResponseBody
     public Object add(T entity) {
-        return write(ErrorCode.EM_SUCCESS, service.insertSelective(entity));
+        return write(service.insertSelective(entity));
     }
 
     /**
@@ -67,7 +67,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ResponseBody
     public Object remove(T entity) {
         service.deleteById(entity);
-        return write("0,删除成功", null);
+        return write(ErrorCode.EM_SUCCESS);
     }
 
     /**
@@ -80,7 +80,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:主键更新", httpMethod = "POST")
     @ResponseBody
     public Object update(T entity) {
-        return write(ErrorCode.EM_SUCCESS, service.updateSelectiveById(entity));
+        return write(service.updateSelectiveById(entity));
     }
 
     /**
@@ -93,7 +93,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:数据主键查询", httpMethod = "GET")
     @ResponseBody
     public Object get(T entity) {
-        return write(ErrorCode.EM_SUCCESS, service.selectById(entity));
+        return write(service.selectById(entity));
     }
 
     /**
@@ -106,7 +106,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:数据条件查询", httpMethod = "GET")
     @ResponseBody
     public Object list(T entity) {
-        return write(ErrorCode.EM_SUCCESS, service.selectList(entity));
+        return write(service.selectList(entity));
     }
 
     /**
@@ -119,7 +119,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:数据分页查询", httpMethod = "GET")
     @ResponseBody
     public Object page(T entity) {
-        return write(ErrorCode.EM_SUCCESS, service.page(entity));
+        return write(service.page(entity));
     }
 
 }

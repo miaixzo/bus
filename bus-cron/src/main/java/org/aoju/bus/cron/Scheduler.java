@@ -70,7 +70,7 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class Scheduler {

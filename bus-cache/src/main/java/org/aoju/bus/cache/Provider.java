@@ -21,16 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.cache.provider;
+package org.aoju.bus.cache;
 
 import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public interface BaseProvider {
+public interface Provider {
 
     void reqIncr(String pattern, int count);
 

@@ -27,7 +27,7 @@ package org.aoju.bus.oauth.metric;
  * 默认的state缓存实现
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public enum DefaultStateCache implements StateCache {
@@ -37,10 +37,10 @@ public enum DefaultStateCache implements StateCache {
      */
     INSTANCE;
 
-    private Cache oauthCache;
+    private Cache cache;
 
     DefaultStateCache() {
-        oauthCache = new DefaultCache();
+        cache = new DefaultCache();
     }
 
     /**
@@ -51,7 +51,7 @@ public enum DefaultStateCache implements StateCache {
      */
     @Override
     public void cache(String key, String value) {
-        oauthCache.set(key, value);
+        cache.set(key, value);
     }
 
     /**
@@ -63,7 +63,7 @@ public enum DefaultStateCache implements StateCache {
      */
     @Override
     public void cache(String key, String value, long timeout) {
-        oauthCache.set(key, value, timeout);
+        cache.set(key, value, timeout);
     }
 
     /**
@@ -74,7 +74,7 @@ public enum DefaultStateCache implements StateCache {
      */
     @Override
     public String get(String key) {
-        return oauthCache.get(key);
+        return cache.get(key);
     }
 
     /**
@@ -85,7 +85,7 @@ public enum DefaultStateCache implements StateCache {
      */
     @Override
     public boolean containsKey(String key) {
-        return oauthCache.containsKey(key);
+        return cache.containsKey(key);
     }
 
 }

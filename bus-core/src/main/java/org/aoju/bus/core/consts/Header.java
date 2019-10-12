@@ -24,102 +24,89 @@
 package org.aoju.bus.core.consts;
 
 /**
- * HTTP header 对象
+ * Header 常量
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public interface Header {
+public class Header {
 
     /**
      * The header Accept
      */
-    String ACCEPT = "Accept";
+    public static final String ACCEPT = "Accept";
     /**
      * The header Accept-Charset
      */
-    String ACCEPT_CHARSET = "Accept-Charset";
+    public static final String ACCEPT_CHARSET = "Accept-Charset";
     /**
      * The header Accept-Encoding
      */
-    String ACCEPT_ENCODING = "Accept-Encoding";
+    public static final String ACCEPT_ENCODING = "Accept-Encoding";
     /**
      * The header Accept-Language
      */
-    String ACCEPT_LANGUAGE = "Accept-Language";
+    public static final String ACCEPT_LANGUAGE = "Accept-Language";
     /**
      * The header Accept-Ranges
      */
-    String ACCEPT_RANGES = "Accept-Ranges";
+    public static final String ACCEPT_RANGES = "Accept-Ranges";
     /**
      * The header Age
      */
-    String AGE = "Age";
+    public static final String AGE = "Age";
     /**
      * The header Allow
      */
-    String ALLOW = "Allow";
+    public static final String ALLOW = "Allow";
     /**
      * The header Cache-Control
      */
-    String CACHE_CONTROL = "Cache-Control";
+    public static final String CACHE_CONTROL = "Cache-Control";
     /**
      * The header Connection
      */
-    String CONNECTION = "Connection";
+    public static final String CONNECTION = "Connection";
     /**
      * The header Content-Encoding
      */
-    String CONTENT_ENCODING = "Content-Encoding";
+    public static final String CONTENT_ENCODING = "Content-Encoding";
     /**
      * The header Content-Language
      */
-    String CONTENT_LANGUAGE = "Content-Language";
+    public static final String CONTENT_LANGUAGE = "Content-Language";
     /**
      * The header Content-Length
      */
-    String CONTENT_LENGTH = "Content-Length";
+    public static final String CONTENT_LENGTH = "Content-Length";
     /**
      * The header Content-Location
      */
-    String CONTENT_LOCATION = "Content-Location";
+    public static final String CONTENT_LOCATION = "Content-Location";
     /**
      * The header Content-MD5
      */
-    String CONTENT_MD5 = "Content-MD5";
+    public static final String CONTENT_MD5 = "Content-MD5";
     /**
      * The header Content-Range
      */
-    String CONTENT_RANGE = "Content-Range";
+    public static final String CONTENT_RANGE = "Content-Range";
     /**
      * The header Content-Type
      */
-    String CONTENT_TYPE = "Content-Type";
+    public static final String CONTENT_TYPE = "Content-Type";
     /**
      * The header Content-Disposition
      */
-    String CONTENT_DISPOSITION = "Content-Disposition";
+    public static final String CONTENT_DISPOSITION = "Content-Disposition";
     /**
      * The header User-Agent
      */
-    String USER_AGENT = "User-Agent";
+    public static final String USER_AGENT = "User-Agent";
     /**
      * The header Transfer-Encoding
      */
-    String TRANSFER_ENCODING = "Transfer-Encoding";
+    public static final String TRANSFER_ENCODING = "Transfer-Encoding";
 
-    /**
-     * Get the name of the Header.
-     *
-     * @return the name of the Header,  never {@code null}
-     */
-    String getName();
-
-    /**
-     * Get the value of the Header.
-     *
-     * @return the value of the Header,  may be {@code null}
-     */
-    String getValue();
 }

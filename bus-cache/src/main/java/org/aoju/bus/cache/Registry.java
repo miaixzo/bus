@@ -26,9 +26,8 @@ package org.aoju.bus.cache;
 import org.aoju.bus.cache.annotation.Cached;
 import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
-import org.aoju.bus.cache.invoker.InvocationBaseInvoker;
+import org.aoju.bus.cache.proxy.AspectInvocation;
 import org.aoju.bus.cache.support.cache.Cache;
-import org.aoju.bus.proxy.Factory;
 import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invocation;
 import org.aoju.bus.proxy.factory.cglib.CglibFactory;
@@ -39,10 +38,10 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public class CacheProxy<T> implements FactoryBean<T> {
+public class Registry<T> implements FactoryBean<T> {
 
     private Object target;
 
@@ -50,9 +49,9 @@ public class CacheProxy<T> implements FactoryBean<T> {
 
     private Class<T> type;
 
-    private CacheConfig.Switch cglib = CacheConfig.Switch.OFF;
+    private Context.Switch cglib = Context.Switch.OFF;
 
-    private CacheCore cacheCore;
+    private Complex cacheCore;
     private Interceptor interceptor = new Interceptor() {
 
         @Override
@@ -61,12 +60,12 @@ public class CacheProxy<T> implements FactoryBean<T> {
             Method method = invocation.getMethod();
             Cached cached;
             if ((cached = method.getAnnotation(Cached.class)) != null) {
-                return cacheCore.readWrite(cached, method, new InvocationBaseInvoker(target, invocation));
+                return cacheCore.readWrite(cached, method, new AspectInvocation(target, invocation));
             }
 
             CachedGet cachedGet;
             if ((cachedGet = method.getAnnotation(CachedGet.class)) != null) {
-                return cacheCore.read(cachedGet, method, new InvocationBaseInvoker(target, invocation));
+                return cacheCore.read(cachedGet, method, new AspectInvocation(target, invocation));
             }
 
             Invalid invalid;
@@ -79,24 +78,24 @@ public class CacheProxy<T> implements FactoryBean<T> {
         }
     };
 
-    public CacheProxy(Object target, Map<String, Cache> caches) {
-        this(target, (Class<T>) target.getClass().getInterfaces()[0], caches, CacheConfig.Switch.OFF);
+    public Registry(Object target, Map<String, Cache> caches) {
+        this(target, (Class<T>) target.getClass().getInterfaces()[0], caches, Context.Switch.OFF);
     }
 
-    public CacheProxy(Object target, Class<T> type, Map<String, Cache> caches, CacheConfig.Switch cglib) {
+    public Registry(Object target, Class<T> type, Map<String, Cache> caches, Context.Switch cglib) {
         this.target = target;
         this.type = type;
         this.cglib = cglib;
         this.proxy = newProxy();
-        this.cacheCore = CacheModule.coreInstance(CacheConfig.newConfig(caches));
+        this.cacheCore = Module.coreInstance(Context.newConfig(caches));
     }
 
     private Object newProxy() {
-        Factory factory;
-        if (cglib == CacheConfig.Switch.ON || !this.type.isInterface()) {
+        org.aoju.bus.proxy.Factory factory;
+        if (cglib == Context.Switch.ON || !this.type.isInterface()) {
             factory = new CglibFactory();
         } else {
-            factory = new Factory();
+            factory = new org.aoju.bus.proxy.Factory();
         }
 
         return factory.createInterceptorProxy(target, interceptor, new Class[]{type});

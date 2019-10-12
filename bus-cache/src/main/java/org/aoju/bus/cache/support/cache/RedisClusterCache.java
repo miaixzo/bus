@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cache.support.cache;
 
-import org.aoju.bus.cache.entity.Expire;
+import org.aoju.bus.cache.entity.CacheExpire;
 import org.aoju.bus.cache.support.serialize.BaseSerializer;
 import org.aoju.bus.cache.support.serialize.Hessian2Serializer;
 import redis.clients.jedis.JedisCluster;
@@ -34,7 +34,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 public class RedisClusterCache implements Cache {
@@ -93,7 +93,7 @@ public class RedisClusterCache implements Cache {
     @Override
     public void write(String key, Object value, long expire) {
         byte[] bytes = serializer.serialize(value);
-        if (expire == Expire.FOREVER) {
+        if (expire == CacheExpire.FOREVER) {
             jedisCluster.set(key.getBytes(), bytes);
         } else {
             jedisCluster.setex(key.getBytes(), (int) (expire / 1000), bytes);
@@ -116,7 +116,7 @@ public class RedisClusterCache implements Cache {
             return;
         }
 
-        if (expire == Expire.FOREVER) {
+        if (expire == CacheExpire.FOREVER) {
             jedisCluster.mset(toByteArray(keyValueMap, this.serializer));
         } else {
             for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {

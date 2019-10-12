@@ -29,7 +29,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * Dubbo自动配置
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {DubboProperties.class})

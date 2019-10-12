@@ -25,14 +25,12 @@ package org.aoju.bus.core.consts;
 
 /**
  * 系统常量
- * <p>
- * String currentUser = System.getProperty("user.name");
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.0
  * @since JDK 1.8+
  */
-public final class System {
+public class System {
 
     /**
      * Java 运行时环境版本
