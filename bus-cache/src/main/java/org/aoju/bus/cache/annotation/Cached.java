@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.cache.annotation;
 
-import org.aoju.bus.cache.entity.Expire;
+import org.aoju.bus.cache.entity.CacheExpire;
 
 import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @Documented
@@ -59,6 +59,6 @@ public @interface Cached {
     /**
      * @return expire time, time unit: <b>seconds</b>
      */
-    int expire() default Expire.FOREVER;
+    int expire() default CacheExpire.FOREVER;
 
 }

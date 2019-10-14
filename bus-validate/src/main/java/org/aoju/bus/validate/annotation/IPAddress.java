@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * 判断是否为IP地址
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -36,14 +36,14 @@ import org.aoju.bus.oauth.provider.*;
  * 授权服务提供
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
 public class AuthProviderService {
 
-    private final AuthProperties properties;
-    private final StateCache stateCache;
+    final AuthProperties properties;
+    final StateCache stateCache;
 
     /**
      * 返回type对象
@@ -99,11 +99,11 @@ public class AuthProviderService {
             return new RenrenProvider(config, stateCache);
         } else if (Registry.PINTEREST.equals(type)) {
             return new PinterestProvider(config, stateCache);
-        } else if (Registry.STACK_OVERFLOW.equals(type)) {
+        } else if (Registry.STACK.equals(type)) {
             return new StackOverflowProvider(config, stateCache);
         } else if (Registry.HUAWEI.equals(type)) {
             return new HuaweiProvider(config, stateCache);
-        } else if (Registry.WECHAT_ENTERPRISE.equals(type)) {
+        } else if (Registry.WECHAT_EE.equals(type)) {
             return new WeChatEEProvider(config, stateCache);
         } else if (Registry.GITLAB.equals(type)) {
             return new GitlabProvider(config, stateCache);

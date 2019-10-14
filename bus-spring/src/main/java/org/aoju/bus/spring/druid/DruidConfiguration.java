@@ -52,7 +52,7 @@ import java.util.Map;
  * 数据源配置
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @ConditionalOnClass(DruidDataSource.class)

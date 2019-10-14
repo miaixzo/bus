@@ -40,17 +40,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class WeChatEEProvider extends DefaultProvider {
 
     public WeChatEEProvider(Context config) {
-        super(config, Registry.WECHAT_ENTERPRISE);
+        super(config, Registry.WECHAT_EE);
     }
 
     public WeChatEEProvider(Context config, StateCache stateCache) {
-        super(config, Registry.WECHAT_ENTERPRISE, stateCache);
+        super(config, Registry.WECHAT_EE, stateCache);
     }
 
     /**

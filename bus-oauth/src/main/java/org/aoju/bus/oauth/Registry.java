@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 内置的各api需要的url， 用枚举类分平台类型管理
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public enum Registry implements Complex {
@@ -527,7 +527,7 @@ public enum Registry implements Complex {
     /**
      * Stack Overflow
      */
-    STACK_OVERFLOW {
+    STACK {
         @Override
         public String authorize() {
             return "https://stackoverflow.com/oauth";
@@ -576,7 +576,7 @@ public enum Registry implements Complex {
      *
      * @since 2.0.0
      */
-    WECHAT_ENTERPRISE {
+    WECHAT_EE {
         @Override
         public String authorize() {
             return "https://open.work.weixin.qq.com/wwopen/sso/qrConnect";

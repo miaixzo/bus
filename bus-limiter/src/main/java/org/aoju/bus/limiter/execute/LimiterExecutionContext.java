@@ -43,7 +43,7 @@ import java.util.Map;
  * limiter 上下文信息
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class LimiterExecutionContext {

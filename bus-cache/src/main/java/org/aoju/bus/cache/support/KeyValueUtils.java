@@ -24,7 +24,7 @@
 package org.aoju.bus.cache.support;
 
 import com.google.common.base.Strings;
-import org.aoju.bus.cache.CacheConfig;
+import org.aoju.bus.cache.Context;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class KeyValueUtils {
@@ -41,7 +41,7 @@ public class KeyValueUtils {
     public static Map<String, Object> mapToKeyValue(Map proceedEntryValueMap,
                                                     Set<String> missKeys,
                                                     Map<Object, String> multiEntry2Key,
-                                                    CacheConfig.Switch prevent) {
+                                                    Context.Switch prevent) {
         Map<String, Object> keyValueMap = new HashMap<>(proceedEntryValueMap.size());
         proceedEntryValueMap.forEach((multiArgEntry, value) -> {
             String key = multiEntry2Key.get(multiArgEntry);
@@ -54,14 +54,14 @@ public class KeyValueUtils {
         });
 
         // 触发防击穿逻辑
-        if (prevent == CacheConfig.Switch.ON && !missKeys.isEmpty()) {
+        if (prevent == Context.Switch.ON && !missKeys.isEmpty()) {
             missKeys.forEach(key -> keyValueMap.put(key, PreventObjects.getPreventObject()));
         }
 
         return keyValueMap;
     }
 
-    public static Map<String, Object> collectionToKeyValue(Collection proceedCollection, String idSpel, Set<String> missKeys, Map<Object, String> id2Key, CacheConfig.Switch prevent) {
+    public static Map<String, Object> collectionToKeyValue(Collection proceedCollection, String idSpel, Set<String> missKeys, Map<Object, String> id2Key, Context.Switch prevent) {
         Map<String, Object> keyValueMap = new HashMap<>(proceedCollection.size());
 
         for (Object value : proceedCollection) {
@@ -74,7 +74,7 @@ public class KeyValueUtils {
             }
         }
 
-        if (prevent == CacheConfig.Switch.ON && !missKeys.isEmpty()) {
+        if (prevent == Context.Switch.ON && !missKeys.isEmpty()) {
             missKeys.forEach(key -> keyValueMap.put(key, PreventObjects.getPreventObject()));
         }
 

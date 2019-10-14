@@ -25,9 +25,11 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSON;
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.utils.UriUtils;
 import org.aoju.bus.http.HttpClient;
 import org.aoju.bus.oauth.*;
 import org.aoju.bus.oauth.magic.AccToken;
@@ -55,7 +57,7 @@ import java.util.TreeMap;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public abstract class DefaultProvider implements Provider {
@@ -174,7 +176,7 @@ public abstract class DefaultProvider implements Provider {
      */
     public static Map<String, Object> parseQueryToMap(String url) {
         Map<String, Object> paramMap = new HashMap<>();
-        HttpClient.decodeMap(url, "UTF-8").forEach(paramMap::put);
+        UriUtils.decodeVal(url, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
         return paramMap;
     }
 
@@ -281,10 +283,10 @@ public abstract class DefaultProvider implements Provider {
         if (isSupported && Registry.ALIPAY == source) {
             isSupported = StringUtils.isNotEmpty(config.getAlipayPublicKey());
         }
-        if (isSupported && Registry.STACK_OVERFLOW == source) {
+        if (isSupported && Registry.STACK == source) {
             isSupported = StringUtils.isNotEmpty(config.getStackOverflowKey());
         }
-        if (isSupported && Registry.WECHAT_ENTERPRISE == source) {
+        if (isSupported && Registry.WECHAT_EE == source) {
             isSupported = StringUtils.isNotEmpty(config.getAgentId());
         }
         return isSupported;

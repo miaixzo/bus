@@ -54,7 +54,7 @@ import java.util.Properties;
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -157,7 +157,7 @@ public class SensitiveStatementHandler implements Interceptor {
     private Object handleSensitive(Field field, Object value) {
         Shield sensitiveField = field.getAnnotation(Shield.class);
         if (ObjectUtils.isNotEmpty(sensitiveField)) {
-            value = Builder.on(value);
+            Builder.on(value);
         }
         NShield json = field.getAnnotation(NShield.class);
         if (ObjectUtils.isNotEmpty(json) && ObjectUtils.isNotEmpty(value)) {

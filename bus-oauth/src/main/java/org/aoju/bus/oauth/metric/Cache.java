@@ -27,7 +27,7 @@ package org.aoju.bus.oauth.metric;
  * 缓存，用来缓存State
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public interface Cache {
@@ -69,6 +69,7 @@ public interface Cache {
      * 清理过期的缓存
      */
     default void pruneCache() {
+
     }
 
 }

@@ -25,12 +25,12 @@ package org.aoju.bus.cache.reader;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.aoju.bus.cache.CacheConfig;
-import org.aoju.bus.cache.CacheManager;
+import org.aoju.bus.cache.Context;
+import org.aoju.bus.cache.Manage;
+import org.aoju.bus.cache.Provider;
 import org.aoju.bus.cache.entity.CacheHolder;
 import org.aoju.bus.cache.entity.CacheMethod;
-import org.aoju.bus.cache.invoker.BaseInvoker;
-import org.aoju.bus.cache.provider.BaseProvider;
+import org.aoju.bus.cache.proxy.ProxyChain;
 import org.aoju.bus.cache.support.KeyGenerator;
 import org.aoju.bus.cache.support.PatternGenerator;
 import org.aoju.bus.cache.support.PreventObjects;
@@ -38,23 +38,23 @@ import org.aoju.bus.logger.Logger;
 
 /**
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @Singleton
-public class SingleCacheReader extends AbstractCacheReader {
+public class SingleCacheReader extends AbstractReader {
 
     @Inject
-    private CacheManager cacheManager;
+    private Manage cacheManager;
 
     @Inject
-    private CacheConfig config;
+    private Context config;
 
     @Inject(optional = true)
-    private BaseProvider baseProvider;
+    private Provider baseProvider;
 
     @Override
-    public Object read(CacheHolder cacheHolder, CacheMethod cacheMethod, BaseInvoker baseInvoker, boolean needWrite) throws Throwable {
+    public Object read(CacheHolder cacheHolder, CacheMethod cacheMethod, ProxyChain baseInvoker, boolean needWrite) throws Throwable {
         String key = KeyGenerator.generateSingleKey(cacheHolder, baseInvoker.getArgs());
         Object readResult = cacheManager.readSingle(cacheHolder.getCache(), key);
 

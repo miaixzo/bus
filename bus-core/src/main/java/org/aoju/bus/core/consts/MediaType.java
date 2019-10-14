@@ -33,8 +33,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * HTTP 媒体类型
+ *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @Data

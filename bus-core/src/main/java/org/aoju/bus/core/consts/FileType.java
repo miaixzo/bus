@@ -39,10 +39,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型（扩展名）
  *
  * @author Kimi Liu
- * @version 3.6.8
+ * @version 5.0.1
  * @since JDK 1.8+
  */
-public final class FileType {
+public class FileType {
 
     /**
      * Class文件扩展名
