@@ -29,7 +29,7 @@ import org.aoju.bus.core.convert.AbstractConverter;
  * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class EnumConverter extends AbstractConverter<Object> {

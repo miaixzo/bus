@@ -32,7 +32,7 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class EnumUtils {
@@ -247,7 +247,7 @@ public class EnumUtils {
      * with least significant digits rightmost.
      * @throws NullPointerException     if {@code enumClass} or {@code values} is {@code null}
      * @throws IllegalArgumentException if {@code enumClass} is not an enum class, or if any {@code values} {@code null}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static <E extends Enum<E>> long[] generateBitVectors(final Class<E> enumClass, final Iterable<? extends E> values) {
         asEnum(enumClass);
@@ -301,7 +301,7 @@ public class EnumUtils {
      * with least significant digits rightmost.
      * @throws NullPointerException     if {@code enumClass} or {@code values} is {@code null}
      * @throws IllegalArgumentException if {@code enumClass} is not an enum class, or if any {@code values} {@code null}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static <E extends Enum<E>> long[] generateBitVectors(final Class<E> enumClass, final E... values) {
         asEnum(enumClass);
@@ -347,7 +347,7 @@ public class EnumUtils {
      * @return a set of enum values
      * @throws NullPointerException     if {@code enumClass} is {@code null}
      * @throws IllegalArgumentException if {@code enumClass} is not an enum class
-     * @since 3.2
+     * @since 3.2.0
      */
     public static <E extends Enum<E>> EnumSet<E> processBitVectors(final Class<E> enumClass, final long... values) {
         final EnumSet<E> results = EnumSet.noneOf(asEnum(enumClass));
@@ -388,7 +388,7 @@ public class EnumUtils {
      * @return {@code enumClass}
      * @throws NullPointerException     if {@code enumClass} is {@code null}
      * @throws IllegalArgumentException if {@code enumClass} is not an enum class
-     * @since 3.2
+     * @since 3.2.0
      */
     private static <E extends Enum<E>> Class<E> asEnum(final Class<E> enumClass) {
         Assert.notNull(enumClass, ENUM_CLASS_MUST_BE_DEFINED);

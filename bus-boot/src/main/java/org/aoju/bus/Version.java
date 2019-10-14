@@ -31,7 +31,7 @@ import org.aoju.bus.core.consts.Symbol;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class Version {

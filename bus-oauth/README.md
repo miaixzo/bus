@@ -14,7 +14,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>5.0.1</version>
+    <version>5.0.2</version>
 </dependency>
 ```
 - 调用api
@@ -30,6 +30,42 @@ provider.authorize("state");
 // 授权登录后会返回code（auth_code（仅限支付宝））、state，1.8.0版本后，可以用Callback类作为回调接口的参数
 // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
 provider.login(callback);
+```
+
+### 获取授权链接
+
+```java
+String authorizeUrl = provider.authorize("state");
+```
+获取到`authorizeUrl`后，可以手动实现redirect到`authorizeUrl`上
+
+
+**注：`state`建议必传！`state`在`OAuth`的流程中的主要作用就是保证请求完整性，防止**CSRF**风险，此处传的`state`将在回调时传回
+
+### 登录(获取用户信息)
+
+```java
+provider.login(callback);
+```
+
+授权登录后会返回code（auth_code（仅限支付宝）、authorization_code（仅限华为））、state，1.8.0版本后，用`AuthCallback`类作为回调接口的入参
+
+**注：第三方平台中配置的授权回调地址，以本文为例，在创建授权应用时的回调地址应为：`[host]/callback/gitee`**
+
+### 刷新token
+
+注：`refresh`功能，并不是每个平台都支持
+
+```java
+provider.refresh(AccToken.builder().refreshToken(token).build());
+```
+
+### 取消授权
+
+注：`revoke`功能，并不是每个平台都支持
+
+```java
+provider.revoke(AccToken.builder().accessToken(token).build());
 ```
 
 #### API列表
@@ -128,7 +164,5 @@ _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经�
   - 适用于客户端调用主服务API型应用（比如百度API Store）
   
 ## 致谢
-
-在项目立项初期，也对当前开源圈的一些相同类型的项目作过调研，同时本项目也参考过这些项目，再次感谢开源圈内的朋友。
 
 - [JustAuth](https://github.com/justauth/JustAuth): 第三方登录授权 SDK

@@ -40,7 +40,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class ObjectUtils {
@@ -1093,7 +1093,7 @@ public class ObjectUtils {
      * @param appendable the appendable to append to
      * @param object     the object to create a toString for
      * @throws IOException if an I/O error occurs
-     * @since 3.2
+     * @since 3.2.0
      */
     public static void identityToString(final Appendable appendable, final Object object) throws IOException {
         Assert.notNull(object, "Cannot get the toString of a null object");
@@ -1115,7 +1115,7 @@ public class ObjectUtils {
      *
      * @param builder the builder to append to
      * @param object  the object to create a toString for
-     * @since 3.2
+     * @since 3.2.0
      */
     public static void identityToString(final StrBuilder builder, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");
@@ -1165,7 +1165,7 @@ public class ObjectUtils {
      *
      * @param builder the builder to append to
      * @param object  the object to create a toString for
-     * @since 3.2
+     * @since 3.2.0
      */
     public static void identityToString(final StringBuilder builder, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");

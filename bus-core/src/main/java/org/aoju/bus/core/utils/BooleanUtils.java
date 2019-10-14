@@ -30,7 +30,7 @@ import org.aoju.bus.core.convert.Convert;
  * Boolean类型相关工具类
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class BooleanUtils {
@@ -477,7 +477,7 @@ public class BooleanUtils {
      * @return the value {@code 0} if {@code x == y};
      * a value less than {@code 0} if {@code !x && y}; and
      * a value greater than {@code 0} if {@code x && !y}
-     * @since 3.5
+     * @since 3.5.0
      */
     public static int compare(boolean x, boolean y) {
         if (x == y) {

@@ -47,7 +47,7 @@ import java.util.*;
  * 类工具类
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class ClassUtils {
@@ -773,7 +773,7 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 5.0.1
+     * @since 5.0.2
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();
@@ -1734,7 +1734,7 @@ public class ClassUtils {
      *
      * @param type the type to get the class hierarchy from
      * @return Iterable an Iterable over the class hierarchy of the given class
-     * @since 3.2
+     * @since 3.2.0
      */
     public static Iterable<Class<?>> hierarchy(final Class<?> type) {
         return hierarchy(type, Interfaces.EXCLUDE);
@@ -1746,7 +1746,7 @@ public class ClassUtils {
      * @param type               the type to get the class hierarchy from
      * @param interfacesBehavior switch indicating whether to include or exclude interfaces
      * @return Iterable an Iterable over the class hierarchy of the given class
-     * @since 3.2
+     * @since 3.2.0
      */
     public static Iterable<Class<?>> hierarchy(final Class<?> type, final Interfaces interfacesBehavior) {
         final Iterable<Class<?>> classes = new Iterable<Class<?>>() {

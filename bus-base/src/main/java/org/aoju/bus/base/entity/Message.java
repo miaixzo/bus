@@ -32,7 +32,7 @@ import lombok.Data;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 @Data

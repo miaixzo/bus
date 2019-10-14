@@ -39,7 +39,7 @@ import java.util.Properties;
  * http://blog.csdn.net/zhongweijian/article/details/7619383
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class HealthUtils {

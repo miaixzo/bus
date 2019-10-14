@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * 重写 将Document转换成Swagger 类, 根据order进行排序
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 @Primary

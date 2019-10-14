@@ -48,7 +48,7 @@ import java.util.*;
  * If this call fails then the method may fail.</p>
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class MethodUtils {
@@ -80,7 +80,7 @@ public class MethodUtils {
      * @throws NoSuchMethodException     if there is no such accessible method
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
      * @throws IllegalAccessException    if the requested method is not accessible via reflection
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Object invokeMethod(final Object object, final String methodName) throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
@@ -101,7 +101,7 @@ public class MethodUtils {
      * @throws NoSuchMethodException     if there is no such accessible method
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
      * @throws IllegalAccessException    if the requested method is not accessible via reflection
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Object invokeMethod(final Object object, final boolean forceAccess, final String methodName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -156,7 +156,7 @@ public class MethodUtils {
      * @throws NoSuchMethodException     if there is no such accessible method
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
      * @throws IllegalAccessException    if the requested method is not accessible via reflection
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Object invokeMethod(final Object object, final boolean forceAccess, final String methodName,
                                       Object... args) throws NoSuchMethodException,
@@ -182,7 +182,7 @@ public class MethodUtils {
      * @throws NoSuchMethodException     if there is no such accessible method
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
      * @throws IllegalAccessException    if the requested method is not accessible via reflection
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Object invokeMethod(final Object object, final boolean forceAccess, final String methodName,
                                       Object[] args, Class<?>[] parameterTypes)
@@ -256,7 +256,7 @@ public class MethodUtils {
      *                                   method invoked
      * @throws IllegalAccessException    if the requested method is not accessible
      *                                   via reflection
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Object invokeExactMethod(final Object object, final String methodName) throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
@@ -436,7 +436,7 @@ public class MethodUtils {
      * @param args                 the array of arguments passed to the varags method
      * @param methodParameterTypes the declared array of method parameter types
      * @return an array of the variadic arguments passed to the method
-     * @since 3.5
+     * @since 3.5.0
      */
     static Object[] getVarArgs(final Object[] args, final Class<?>[] methodParameterTypes) {
         if (args.length == methodParameterTypes.length
@@ -699,7 +699,7 @@ public class MethodUtils {
      * @param methodName     The method that we wish to call
      * @param parameterTypes Argument class types
      * @return The method
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Method getMatchingMethod(final Class<?> cls, final String methodName,
                                            final Class<?>... parameterTypes) {
@@ -768,7 +768,7 @@ public class MethodUtils {
      * @param interfacesBehavior whether to search interfaces, {@code null} {@code implies} false
      * @return Set&lt;Method&gt; in ascending order from sub- to superclass
      * @throws NullPointerException if the specified method is {@code null}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static Set<Method> getOverrideHierarchy(final Method method, final ClassUtils.Interfaces interfacesBehavior) {
         Assert.notNull(method);
@@ -815,7 +815,7 @@ public class MethodUtils {
      * @param annotationCls the {@link Annotation} that must be present on a method to be matched
      * @return an array of Methods (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Method[] getMethodsWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         return getMethodsWithAnnotation(cls, annotationCls, false, false);
@@ -828,7 +828,7 @@ public class MethodUtils {
      * @param annotationCls the {@link Annotation} that must be present on a method to be matched
      * @return a list of Methods (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.5
+     * @since 3.5.0
      */
     public static List<Method> getMethodsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         return getMethodsListWithAnnotation(cls, annotationCls, false, false);

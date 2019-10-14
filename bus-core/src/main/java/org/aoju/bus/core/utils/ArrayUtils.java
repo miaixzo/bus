@@ -40,7 +40,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class ArrayUtils {
@@ -378,7 +378,7 @@ public class ArrayUtils {
      * @param <T>   the class type
      * @return the same array, {@code public static} empty array if {@code null}
      * @throws IllegalArgumentException if the type argument is null
-     * @since 3.5
+     * @since 3.5.0
      */
     public static <T> T[] nullToEmpty(final T[] array, final Class<T[]> type) {
         if (type == null) {
@@ -1368,7 +1368,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap(["1", "2", "3"], 0, 5) -&gt; ["1", "2", "3"]</li>
      *                <li>ArrayUtils.swap(["1", "2", "3"], -1, 1) -&gt; ["2", "1", "3"]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final Object[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1391,7 +1391,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([true, false, true], 0, 5) -&gt; [true, false, true]</li>
      *                <li>ArrayUtils.swap([true, false, true], -1, 1) -&gt; [false, true, true]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final long[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1415,7 +1415,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final int[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1439,7 +1439,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final short[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1463,7 +1463,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final char[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1487,7 +1487,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final byte[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1511,7 +1511,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final double[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1535,7 +1535,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final float[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1559,7 +1559,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final boolean[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1584,7 +1584,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([true, false, true, false], -3, 2, 2) -&gt; [true, false, true, false]</li>
      *                <li>ArrayUtils.swap([true, false, true, false], 0, 3, 3) -&gt; [false, false, true, true]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final boolean[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1620,7 +1620,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final byte[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1656,7 +1656,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final char[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1692,7 +1692,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final double[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1728,7 +1728,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final float[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1835,7 +1835,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap(["1", "2", "3", "4"], -3, 2, 2) -&gt; ["3", "4", "1", "2"]</li>
      *                <li>ArrayUtils.swap(["1", "2", "3", "4"], 0, 3, 3) -&gt; ["4", "2", "3", "1"]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final Object[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1870,7 +1870,7 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void swap(final short[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1903,7 +1903,7 @@ public class ArrayUtils {
      * @param array  the array to shift, may be {@code null}
      * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
      *               rotate, than the effective offset is modulo the number of elements to rotate.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void shift(final Object[] array, final int offset) {
         if (array == null) {
@@ -1921,7 +1921,7 @@ public class ArrayUtils {
      * @param array  the array to shift, may be {@code null}
      * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
      *               rotate, than the effective offset is modulo the number of elements to rotate.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void shift(final long[] array, final int offset) {
         if (array == null) {
@@ -1939,7 +1939,7 @@ public class ArrayUtils {
      * @param array  the array to shift, may be {@code null}
      * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
      *               rotate, than the effective offset is modulo the number of elements to rotate.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static void shift(final int[] array, final int offset) {
         if (array == null) {
@@ -3798,7 +3798,7 @@ public class ArrayUtils {
      *
      * @param array an array of wrapper object
      * @return an array of the corresponding primitive type, or the original array
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Object toPrimitive(final Object array) {
         if (array == null) {
@@ -6452,17 +6452,10 @@ public class ArrayUtils {
      * @param array   source
      * @param indices to remove
      * @return new array of same type minus elements specified by the set bits in {@code indices}
-     * @since 3.2
+     * @since 3.2.0
      */
-    // package protected for access by unit tests
     static Object removeAll(final Object array, final BitSet indices) {
         final int srcLength = getLength(array);
-        // No need to check maxIndex here, because method only currently called from removeElements()
-        // which guarantee to generate on;y valid bit entries.
-//        final int maxIndex = indices.length();
-//        if (maxIndex > srcLength) {
-//            throw new IndexOutOfBoundsException("Index: " + (maxIndex-1) + ", Length: " + srcLength);
-//        }
         final int removals = indices.cardinality(); // true bits are items to remove
         final Object result = Array.newInstance(array.getClass().getComponentType(), srcLength - removals);
         int srcIndex = 0;
@@ -6491,7 +6484,7 @@ public class ArrayUtils {
      * @param array the array to check
      * @param <T>   the datatype of the array to check, it must implement {@code Comparable}
      * @return whether the array is sorted
-     * @since 3.5
+     * @since 3.5.0
      */
     public static <T extends Comparable<? super T>> boolean isSorted(final T[] array) {
         return isSorted(array, new Comparator<T>() {
@@ -6510,7 +6503,7 @@ public class ArrayUtils {
      * @param comparator the {@code Comparator} to compare over
      * @param <T>        the datatype of the array
      * @return whether the array is sorted
-     * @since 3.5
+     * @since 3.5.0
      */
     public static <T> boolean isSorted(final T[] array, final Comparator<T> comparator) {
         if (comparator == null) {
@@ -6539,7 +6532,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean isSorted(final int[] array) {
         if (array == null || array.length < 2) {
@@ -6564,7 +6557,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean isSorted(final long[] array) {
         if (array == null || array.length < 2) {
@@ -6589,7 +6582,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean isSorted(final short[] array) {
         if (array == null || array.length < 2) {
@@ -6614,7 +6607,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean isSorted(final double[] array) {
         if (array == null || array.length < 2) {
@@ -6639,7 +6632,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean isSorted(final float[] array) {
         if (array == null || array.length < 2) {
@@ -6664,7 +6657,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean isSorted(final byte[] array) {
         if (array == null || array.length < 2) {
@@ -6689,7 +6682,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean isSorted(final char[] array) {
         if (array == null || array.length < 2) {
@@ -6715,7 +6708,7 @@ public class ArrayUtils {
      *
      * @param array the array to check
      * @return whether the array is sorted according to natural ordering
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean isSorted(final boolean[] array) {
         if (array == null || array.length < 2) {
@@ -6747,7 +6740,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static boolean[] removeAllOccurences(final boolean[] array, final boolean element) {
         int index = indexOf(array, element);
@@ -6778,7 +6771,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static char[] removeAllOccurences(final char[] array, final char element) {
         int index = indexOf(array, element);
@@ -6809,7 +6802,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static byte[] removeAllOccurences(final byte[] array, final byte element) {
         int index = indexOf(array, element);
@@ -6840,7 +6833,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static short[] removeAllOccurences(final short[] array, final short element) {
         int index = indexOf(array, element);
@@ -6871,7 +6864,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static int[] removeAllOccurences(final int[] array, final int element) {
         int index = indexOf(array, element);
@@ -6902,7 +6895,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static long[] removeAllOccurences(final long[] array, final long element) {
         int index = indexOf(array, element);
@@ -6933,7 +6926,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static float[] removeAllOccurences(final float[] array, final float element) {
         int index = indexOf(array, element);
@@ -6964,7 +6957,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static double[] removeAllOccurences(final double[] array, final double element) {
         int index = indexOf(array, element);
@@ -6996,7 +6989,7 @@ public class ArrayUtils {
      * @param element the element to remove
      * @param array   the input array
      * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5
+     * @since 3.5.0
      */
     public static <T> T[] removeAllOccurences(final T[] array, final T element) {
         int index = indexOf(array, element);
@@ -7774,7 +7767,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 5.0.1
+     * @since 5.0.2
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7785,7 +7778,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 5.0.1
+     * @since 5.0.2
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7797,7 +7790,7 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 5.0.1
+     * @since 5.0.2
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return newArray(componentType, 0).getClass();
@@ -9345,7 +9338,7 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口，用于定义过滤规则
      * @return 过滤后的数组
-     * @since 5.0.1
+     * @since 5.0.2
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<T>(array.length);

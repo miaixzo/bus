@@ -5,7 +5,7 @@ package org.aoju.bus.core.utils;
  * 各种比较器实现和封装
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class CompareUtils {

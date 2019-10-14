@@ -66,7 +66,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @see Diffable
  * @see Diff
  * @see DiffResult
@@ -102,7 +102,7 @@ public class DiffBuilder implements Builder<DiffResult> {
      *                           test is enabled and returns true.  The result of this test
      *                           is never changed throughout the life of this {@link DiffBuilder}.
      * @throws IllegalArgumentException if {@code lhs} or {@code rhs} is {@code null}
-     * @since 3.5
+     * @since 3.5.0
      */
     public DiffBuilder(final Object lhs, final Object rhs,
                        final ToStringStyle style, final boolean testTriviallyEqual) {
@@ -869,7 +869,7 @@ public class DiffBuilder implements Builder<DiffResult> {
      * @param diffResult the {@code DiffResult} to append
      * @return this
      * @throws IllegalArgumentException if field name is {@code null}
-     * @since 3.5
+     * @since 3.5.0
      */
     public DiffBuilder append(final String fieldName,
                               final DiffResult diffResult) {

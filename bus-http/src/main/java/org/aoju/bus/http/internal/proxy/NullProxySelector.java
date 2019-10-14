@@ -35,7 +35,7 @@ import java.util.List;
  * A proxy selector that always returns the {@link Proxy#NO_PROXY}.
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class NullProxySelector extends ProxySelector {

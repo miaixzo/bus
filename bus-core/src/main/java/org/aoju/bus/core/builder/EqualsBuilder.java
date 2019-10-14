@@ -63,7 +63,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class EqualsBuilder implements Builder<Boolean> {

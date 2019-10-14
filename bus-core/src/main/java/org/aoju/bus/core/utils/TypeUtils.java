@@ -40,7 +40,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class TypeUtils {
@@ -784,7 +784,7 @@ public class TypeUtils {
      * @param var            the type variable to look up
      * @param typeVarAssigns the map used for the look up
      * @return Type or {@code null} if some variable was not in the map
-     * @since 3.2
+     * @since 3.2.0
      */
     private static Type unrollVariableAssignments(TypeVariable<?> var, final Map<TypeVariable<?>, Type> typeVarAssigns) {
         Type result;
@@ -1660,7 +1660,7 @@ public class TypeUtils {
      * @param typeArguments as from {@link TypeUtils#getTypeArguments(Type, Class)}
      * @param type          the type to unroll variable assignments for
      * @return Type
-     * @since 3.2
+     * @since 3.2.0
      */
     public static Type unrollVariables(Map<TypeVariable<?>, Type> typeArguments, final Type type) {
         if (typeArguments == null) {
@@ -1703,7 +1703,7 @@ public class TypeUtils {
      * @param typeArguments assignments {@link Map}
      * @param bounds        in which to expand variables
      * @return {@code bounds} with any variables reassigned
-     * @since 3.2
+     * @since 3.2.0
      */
     private static Type[] unrollBounds(final Map<TypeVariable<?>, Type> typeArguments, final Type[] bounds) {
         Type[] result = bounds;
@@ -1724,7 +1724,7 @@ public class TypeUtils {
      *
      * @param type the type to check for type variables
      * @return boolean
-     * @since 3.2
+     * @since 3.2.0
      */
     public static boolean containsTypeVariables(final Type type) {
         if (type instanceof TypeVariable<?>) {
@@ -1755,7 +1755,7 @@ public class TypeUtils {
      * @param raw           the raw class to create a parameterized type instance for
      * @param typeArguments the types used for parameterization
      * @return {@link ParameterizedType}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static final ParameterizedType parameterize(final Class<?> raw, final Type... typeArguments) {
         return parameterizeWithOwner(null, raw, typeArguments);
@@ -1767,7 +1767,7 @@ public class TypeUtils {
      * @param raw             the raw class to create a parameterized type instance for
      * @param typeArgMappings the mapping used for parameterization
      * @return {@link ParameterizedType}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static final ParameterizedType parameterize(final Class<?> raw,
                                                        final Map<TypeVariable<?>, Type> typeArgMappings) {
@@ -1783,7 +1783,7 @@ public class TypeUtils {
      * @param raw           the raw class to create a parameterized type instance for
      * @param typeArguments the types used for parameterization
      * @return {@link ParameterizedType}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static final ParameterizedType parameterizeWithOwner(final Type owner, final Class<?> raw,
                                                                 final Type... typeArguments) {
@@ -1814,7 +1814,7 @@ public class TypeUtils {
      * @param raw             the raw class to create a parameterized type instance for
      * @param typeArgMappings the mapping used for parameterization
      * @return {@link ParameterizedType}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static final ParameterizedType parameterizeWithOwner(final Type owner, final Class<?> raw,
                                                                 final Map<TypeVariable<?>, Type> typeArgMappings) {
@@ -1844,7 +1844,7 @@ public class TypeUtils {
      * Get a {@link WildcardTypeBuilder}.
      *
      * @return {@link WildcardTypeBuilder}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static WildcardTypeBuilder wildcardType() {
         return new WildcardTypeBuilder();
@@ -1856,7 +1856,7 @@ public class TypeUtils {
      * @param componentType the type of the elements of the array. For example the component type of {@code boolean[]}
      *                      is {@code boolean}
      * @return {@link GenericArrayType}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static GenericArrayType genericArrayType(final Type componentType) {
         return new GenericArrayTypeImpl(Assert.notNull(componentType, "componentType is null"));
@@ -1868,7 +1868,7 @@ public class TypeUtils {
      * @param t1 the first type
      * @param t2 the second type
      * @return boolean
-     * @since 3.2
+     * @since 3.2.0
      */
     public static boolean equals(final Type t1, final Type t2) {
         if (Objects.equals(t1, t2)) {
@@ -1892,7 +1892,7 @@ public class TypeUtils {
      * @param p LHS
      * @param t RHS
      * @return boolean
-     * @since 3.2
+     * @since 3.2.0
      */
     private static boolean equals(final ParameterizedType p, final Type t) {
         if (t instanceof ParameterizedType) {
@@ -1910,7 +1910,7 @@ public class TypeUtils {
      * @param a LHS
      * @param t RHS
      * @return boolean
-     * @since 3.2
+     * @since 3.2.0
      */
     private static boolean equals(final GenericArrayType a, final Type t) {
         return t instanceof GenericArrayType
@@ -1923,7 +1923,7 @@ public class TypeUtils {
      * @param w LHS
      * @param t RHS
      * @return boolean
-     * @since 3.2
+     * @since 3.2.0
      */
     private static boolean equals(final WildcardType w, final Type t) {
         if (t instanceof WildcardType) {
@@ -1940,7 +1940,7 @@ public class TypeUtils {
      * @param t1 LHS
      * @param t2 RHS
      * @return boolean
-     * @since 3.2
+     * @since 3.2.0
      */
     private static boolean equals(final Type[] t1, final Type[] t2) {
         if (t1.length == t2.length) {
@@ -1959,7 +1959,7 @@ public class TypeUtils {
      *
      * @param type the type to create a String representation for, not {@code null}
      * @return String
-     * @since 3.2
+     * @since 3.2.0
      */
     public static String toString(final Type type) {
         Assert.notNull(type);
@@ -1986,7 +1986,7 @@ public class TypeUtils {
      *
      * @param var the type variable to create a String representation for, not {@code null}
      * @return String
-     * @since 3.2
+     * @since 3.2.0
      */
     public static String toLongString(final TypeVariable<?> var) {
         Assert.notNull(var, "var is null");
@@ -2015,7 +2015,7 @@ public class TypeUtils {
      *
      * @param c {@code Class} to format
      * @return String
-     * @since 3.2
+     * @since 3.2.0
      */
     private static String classToString(final Class<?> c) {
         if (c.isArray()) {
@@ -2042,7 +2042,7 @@ public class TypeUtils {
      *
      * @param v {@code TypeVariable} to format
      * @return String
-     * @since 3.2
+     * @since 3.2.0
      */
     private static String typeVariableToString(final TypeVariable<?> v) {
         final StringBuilder buf = new StringBuilder(v.getName());
@@ -2059,7 +2059,7 @@ public class TypeUtils {
      *
      * @param p {@code ParameterizedType} to format
      * @return String
-     * @since 3.2
+     * @since 3.2.0
      */
     private static String parameterizedTypeToString(final ParameterizedType p) {
         final StringBuilder buf = new StringBuilder();
@@ -2123,7 +2123,7 @@ public class TypeUtils {
      *
      * @param w {@code WildcardType} to format
      * @return String
-     * @since 3.2
+     * @since 3.2.0
      */
     private static String wildcardTypeToString(final WildcardType w) {
         final StringBuilder buf = new StringBuilder().append('?');
@@ -2142,7 +2142,7 @@ public class TypeUtils {
      *
      * @param g {@code GenericArrayType} to format
      * @return String
-     * @since 3.2
+     * @since 3.2.0
      */
     private static String genericArrayTypeToString(final GenericArrayType g) {
         return String.format("%s[]", toString(g.getGenericComponentType()));
@@ -2155,7 +2155,7 @@ public class TypeUtils {
      * @param sep   separator
      * @param types to append
      * @return {@code buf}
-     * @since 3.2
+     * @since 3.2.0
      */
     private static <T> StringBuilder appendAllTo(final StringBuilder buf, final String sep, final T... types) {
         Assert.notEmpty(Assert.noNullElements(types));
@@ -2175,7 +2175,7 @@ public class TypeUtils {
     /**
      * {@link WildcardType} builder.
      *
-     * @since 3.2
+     * @since 3.2.0
      */
     public static class WildcardTypeBuilder implements Builder<WildcardType> {
         private Type[] upperBounds;
@@ -2219,7 +2219,7 @@ public class TypeUtils {
     /**
      * GenericArrayType implementation class.
      *
-     * @since 3.2
+     * @since 3.2.0
      */
     private static final class GenericArrayTypeImpl implements GenericArrayType {
         private final Type componentType;
@@ -2263,7 +2263,7 @@ public class TypeUtils {
     /**
      * ParameterizedType implementation class.
      *
-     * @since 3.2
+     * @since 3.2.0
      */
     private static final class ParameterizedTypeImpl implements ParameterizedType {
         private final Class<?> raw;
@@ -2329,7 +2329,7 @@ public class TypeUtils {
     /**
      * WildcardType implementation class.
      *
-     * @since 3.2
+     * @since 3.2.0
      */
     private static final class WildcardTypeImpl implements WildcardType {
         private static final Type[] EMPTY_BOUNDS = new Type[0];

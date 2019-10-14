@@ -29,7 +29,7 @@ import org.aoju.bus.core.consts.System;
  * 代表Java Virtual Machine Implementation的信息。
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class JvmInfo {

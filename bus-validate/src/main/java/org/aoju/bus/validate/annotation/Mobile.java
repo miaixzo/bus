@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * 判断是否为手机号码
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

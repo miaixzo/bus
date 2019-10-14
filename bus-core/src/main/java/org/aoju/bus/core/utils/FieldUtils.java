@@ -36,7 +36,7 @@ import java.util.List;
  * 反射处理{@link Field} 的实用程序
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class FieldUtils {
@@ -173,7 +173,7 @@ public class FieldUtils {
      * @param cls the {@link Class} to query
      * @return an array of Fields (possibly empty).
      * @throws IllegalArgumentException if the class is {@code null}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static Field[] getAllFields(final Class<?> cls) {
         final List<Field> allFieldsList = getAllFieldsList(cls);
@@ -186,7 +186,7 @@ public class FieldUtils {
      * @param cls the {@link Class} to query
      * @return an array of Fields (possibly empty).
      * @throws IllegalArgumentException if the class is {@code null}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static List<Field> getAllFieldsList(final Class<?> cls) {
         Assert.isTrue(cls != null, "The class must not be null");
@@ -207,7 +207,7 @@ public class FieldUtils {
      * @param annotationCls the {@link Annotation} that must be present on a field to be matched
      * @return an array of Fields (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.5
+     * @since 3.5.0
      */
     public static Field[] getFieldsWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         final List<Field> annotatedFieldsList = getFieldsListWithAnnotation(cls, annotationCls);
@@ -221,7 +221,7 @@ public class FieldUtils {
      * @param annotationCls the {@link Annotation} that must be present on a field to be matched
      * @return a list of Fields (possibly empty).
      * @throws IllegalArgumentException if the class or annotation are {@code null}
-     * @since 3.5
+     * @since 3.5.0
      */
     public static List<Field> getFieldsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         Assert.isTrue(annotationCls != null, "The annotation class must not be null");
@@ -574,7 +574,7 @@ public class FieldUtils {
      *
      * @param field to remove the final modifier
      * @throws IllegalArgumentException if the field is {@code null}
-     * @since 3.2
+     * @since 3.2.0
      */
     public static void removeFinalModifier(final Field field) {
         removeFinalModifier(field, true);

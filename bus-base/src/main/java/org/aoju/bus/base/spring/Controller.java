@@ -26,35 +26,63 @@ package org.aoju.bus.base.spring;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.Message;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.utils.StringUtils;
 
 /**
- * <p>
  * 基础输出封装
- * </p>
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class Controller {
 
+    /**
+     * 返回值:数据处理
+     *
+     * @param data 数据信息
+     * @return body 返回值
+     */
     public static Object write(Object data) {
         return write(ErrorCode.EM_SUCCESS, data);
     }
 
+    /**
+     * 返回值:数据处理
+     *
+     * @param errcode 错误编码
+     * @return body 返回值
+     */
     public static Object write(String errcode) {
         return write(errcode, ErrorCode.require(errcode));
     }
 
-    public static Object write(String errcode, String errmsg) {
-        return new Message(errcode, errmsg);
+    /**
+     * 返回值:数据处理
+     *
+     * @param errcode 错误编码
+     * @param data    数据信息
+     * @return body 返回值
+     */
+    public static Object write(String errcode, Object data) {
+        String errmsg = ErrorCode.require(errcode);
+        if (StringUtils.isNotEmpty(errmsg)) {
+            return new Message(errcode, errmsg, data);
+        }
+        return new Message(ErrorCode.EM_FAILURE, ErrorCode.require(ErrorCode.EM_FAILURE));
     }
 
-    private static Object write(String errcode, Object data) {
-        String errmsg = ErrorCode.require(errcode);
-        if (ObjectUtils.isNotEmpty(errmsg)) {
-            return new Message(errcode, errmsg, data);
+    /**
+     * 返回值:数据处理
+     *
+     * @param errcode 错误编码
+     * @param errmsg  错误信息
+     * @return body 返回值
+     */
+    public static Object write(String errcode, String errmsg) {
+        String error = ErrorCode.require(errcode);
+        if (StringUtils.isNotEmpty(error)) {
+            return new Message(errcode, errmsg);
         }
         return new Message(ErrorCode.EM_FAILURE, ErrorCode.require(ErrorCode.EM_FAILURE));
     }

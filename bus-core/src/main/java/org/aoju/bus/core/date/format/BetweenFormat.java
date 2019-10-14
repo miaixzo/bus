@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 时长格式化器
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 public class BetweenFormat {

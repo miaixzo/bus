@@ -34,7 +34,7 @@ import java.util.Random;
  * <p>This class is not thread safe.
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.2
  * @since JDK 1.8+
  */
 final class WebSocketWriter {
