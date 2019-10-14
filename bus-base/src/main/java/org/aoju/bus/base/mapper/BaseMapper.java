@@ -30,7 +30,7 @@ package org.aoju.bus.base.mapper;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public interface BaseMapper<T> extends Mapper<T> {

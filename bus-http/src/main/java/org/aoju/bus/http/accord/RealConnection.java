@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.core.io.segment.BufferedSink;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSink;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
@@ -62,7 +62,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {
@@ -105,8 +105,8 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     private Handshake handshake;
     private Protocol protocol;
     private Http2Connection http2Connection;
-    private BufferedSource source;
-    private BufferedSink sink;
+    private BufferSource source;
+    private BufferSink sink;
 
     public RealConnection(ConnectionPool connectionPool, Route route) {
         this.connectionPool = connectionPool;

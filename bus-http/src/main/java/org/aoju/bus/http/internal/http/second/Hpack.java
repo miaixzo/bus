@@ -24,7 +24,7 @@
 package org.aoju.bus.http.internal.http.second;
 
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.core.utils.IoUtils;
@@ -43,7 +43,7 @@ import java.util.*;
  * fills, it is doubled.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 final class Hpack {
@@ -148,7 +148,7 @@ final class Hpack {
     static final class Reader {
 
         private final List<Header> headerList = new ArrayList<>();
-        private final BufferedSource source;
+        private final BufferSource source;
 
         private final int headerTableSizeSetting;
         // Visible for testing.

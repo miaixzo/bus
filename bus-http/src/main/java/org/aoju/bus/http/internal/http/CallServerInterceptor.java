@@ -24,8 +24,8 @@
 package org.aoju.bus.http.internal.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSink;
-import org.aoju.bus.core.io.segment.ForwardingSink;
+import org.aoju.bus.core.io.segment.BufferSink;
+import org.aoju.bus.core.io.segment.ForwardSink;
 import org.aoju.bus.core.io.segment.Sink;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Internal;
@@ -42,7 +42,7 @@ import java.net.ProtocolException;
  * This is the last intercept in the chain. It makes a network call to the server.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class CallServerInterceptor implements Interceptor {
@@ -84,7 +84,7 @@ public final class CallServerInterceptor implements Interceptor {
                 long contentLength = request.body().contentLength();
                 CountingSink requestBodyOut =
                         new CountingSink(httpCodec.createRequestBody(request, contentLength));
-                BufferedSink bufferedRequestBody = IoUtils.buffer(requestBodyOut);
+                BufferSink bufferedRequestBody = IoUtils.buffer(requestBodyOut);
 
                 request.body().writeTo(bufferedRequestBody);
                 bufferedRequestBody.close();
@@ -155,7 +155,7 @@ public final class CallServerInterceptor implements Interceptor {
         return response;
     }
 
-    static final class CountingSink extends ForwardingSink {
+    static final class CountingSink extends ForwardSink {
         long successfulCount;
 
         CountingSink(Sink delegate) {

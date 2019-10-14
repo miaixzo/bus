@@ -24,8 +24,8 @@
 package org.aoju.bus.http.internal.http.second;
 
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSink;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSink;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -54,7 +54,7 @@ import java.util.concurrent.*;
  * that caller.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class Http2Connection implements Closeable {
@@ -524,7 +524,7 @@ public final class Http2Connection implements Closeable {
         }
     }
 
-    void pushDataLater(final int streamId, final BufferedSource source, final int byteCount,
+    void pushDataLater(final int streamId, final BufferSource source, final int byteCount,
                        final boolean inFinished) throws IOException {
         final Buffer buffer = new Buffer();
         source.require(byteCount); // Eagerly read the frame before firing client thread.
@@ -568,8 +568,8 @@ public final class Http2Connection implements Closeable {
     public static class Builder {
         Socket socket;
         String hostname;
-        BufferedSource source;
-        BufferedSink sink;
+        BufferSource source;
+        BufferSink sink;
         Listener listener = Listener.REFUSE_INCOMING_STREAMS;
         PushObserver pushObserver = PushObserver.CANCEL;
         boolean client;
@@ -585,7 +585,7 @@ public final class Http2Connection implements Closeable {
         }
 
         public Builder socket(
-                Socket socket, String hostname, BufferedSource source, BufferedSink sink) {
+                Socket socket, String hostname, BufferSource source, BufferSink sink) {
             this.socket = socket;
             this.hostname = hostname;
             this.source = source;
@@ -676,7 +676,7 @@ public final class Http2Connection implements Closeable {
         }
 
         @Override
-        public void data(boolean inFinished, int streamId, BufferedSource source, int length)
+        public void data(boolean inFinished, int streamId, BufferSource source, int length)
                 throws IOException {
             if (pushedStream(streamId)) {
                 pushDataLater(streamId, source, length, inFinished);

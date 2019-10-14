@@ -39,7 +39,7 @@ import java.util.Map;
  * 数据库方言 informix
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class InformixDialect extends AbstractHelperDialect {

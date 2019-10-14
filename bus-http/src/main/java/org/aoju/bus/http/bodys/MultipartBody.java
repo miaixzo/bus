@@ -25,7 +25,7 @@ package org.aoju.bus.http.bodys;
 
 import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.header.Headers;
@@ -39,7 +39,7 @@ import java.util.UUID;
  * An <a href="http://www.ietf.org/rfc/rfc2387.txt">RFC 2387</a>-compliant request body.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class MultipartBody extends RequestBody {
@@ -117,12 +117,12 @@ public final class MultipartBody extends RequestBody {
     }
 
     @Override
-    public void writeTo(BufferedSink sink) throws IOException {
+    public void writeTo(BufferSink sink) throws IOException {
         writeOrCountBytes(sink, false);
     }
 
     private long writeOrCountBytes(
-            BufferedSink sink, boolean countBytes) throws IOException {
+            BufferSink sink, boolean countBytes) throws IOException {
         long byteCount = 0L;
 
         Buffer byteCountBuffer = null;

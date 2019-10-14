@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Role;
 
 /**
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @ConditionalOnClass(Builder.class)

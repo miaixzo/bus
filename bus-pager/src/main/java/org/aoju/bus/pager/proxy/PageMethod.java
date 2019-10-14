@@ -33,7 +33,7 @@ import java.util.Properties;
  * 基础分页方法
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public abstract class PageMethod {

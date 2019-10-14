@@ -27,7 +27,7 @@ package org.aoju.bus.forest.algorithm;
  * 非对称密钥
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public interface AsymmetricKey extends Key {

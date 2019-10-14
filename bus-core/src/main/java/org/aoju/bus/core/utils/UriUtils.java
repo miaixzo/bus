@@ -39,7 +39,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class UriUtils {
@@ -357,7 +357,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 5.0.0
+     * @since 5.0.1
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
@@ -374,7 +374,7 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 5.0.0
+     * @since 5.0.1
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);
@@ -897,124 +897,6 @@ public class UriUtils {
     }
 
     /**
-     * Enumeration used to identify the allowed characters per URI component.
-     * <p>Contains methods to indicate whether a given character is valid in a specific URI component.
-     *
-     * @see <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>
-     */
-    public enum Type {
-
-        SCHEME {
-            @Override
-            public boolean isAllowed(int c) {
-                return isAlpha(c) || isDigit(c) || '+' == c || '-' == c || '.' == c;
-            }
-        },
-        AUTHORITY {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c) || isSubDelimiter(c) || ':' == c || '@' == c;
-            }
-        },
-        USER_INFO {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c) || isSubDelimiter(c) || ':' == c;
-            }
-        },
-        HOST_IPV4 {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c) || isSubDelimiter(c);
-            }
-        },
-        HOST_IPV6 {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c) || isSubDelimiter(c) || '[' == c || ']' == c || ':' == c;
-            }
-        },
-        PORT {
-            @Override
-            public boolean isAllowed(int c) {
-                return isDigit(c);
-            }
-        },
-        PATH {
-            @Override
-            public boolean isAllowed(int c) {
-                return isPchar(c) || '/' == c;
-            }
-        },
-        PATH_SEGMENT {
-            @Override
-            public boolean isAllowed(int c) {
-                return isPchar(c);
-            }
-        },
-        QUERY {
-            @Override
-            public boolean isAllowed(int c) {
-                return isPchar(c) || '/' == c || '?' == c;
-            }
-        },
-        QUERY_PARAM {
-            @Override
-            public boolean isAllowed(int c) {
-                if ('=' == c || '&' == c) {
-                    return false;
-                } else {
-                    return isPchar(c) || '/' == c || '?' == c;
-                }
-            }
-        },
-        FRAGMENT {
-            @Override
-            public boolean isAllowed(int c) {
-                return isPchar(c) || '/' == c || '?' == c;
-            }
-        },
-        URI {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c);
-            }
-        };
-
-        public abstract boolean isAllowed(int c);
-
-        protected boolean isAlpha(int c) {
-            return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
-        }
-
-        protected boolean isDigit(int c) {
-            return (c >= '0' && c <= '9');
-        }
-
-        protected boolean isGenericDelimiter(int c) {
-            return (':' == c || '/' == c || '?' == c || '#' == c || '[' == c || ']' == c || '@' == c);
-        }
-
-        protected boolean isSubDelimiter(int c) {
-            return ('!' == c || '$' == c || '&' == c || '\'' == c || '(' == c || ')' == c || '*' == c || '+' == c ||
-                    ',' == c || ';' == c || '=' == c);
-        }
-
-        protected boolean isReserved(int c) {
-            return (isGenericDelimiter(c) || isSubDelimiter(c));
-        }
-
-        protected boolean isUnreserved(int c) {
-            return (isAlpha(c) || isDigit(c) || '-' == c || '.' == c || '_' == c || '~' == c);
-        }
-
-        protected boolean isPchar(int c) {
-            return (isUnreserved(c) || isSubDelimiter(c) || ':' == c || '@' == c);
-        }
-    }
-
-
-    /**
      * 对URL参数做编码，只编码键和值<br>
      * 提供的值可以是url附带参数，但是不能只是url
      *
@@ -1157,7 +1039,6 @@ public class UriUtils {
         }
         return sb.toString();
     }
-
 
     /**
      * 将URL参数解析为Map（也可以解析Post中的键值对参数）
@@ -1304,6 +1185,123 @@ public class UriUtils {
             params.put(name, values);
         }
         values.add(value);
+    }
+
+    /**
+     * Enumeration used to identify the allowed characters per URI component.
+     * <p>Contains methods to indicate whether a given character is valid in a specific URI component.
+     *
+     * @see <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>
+     */
+    public enum Type {
+
+        SCHEME {
+            @Override
+            public boolean isAllowed(int c) {
+                return isAlpha(c) || isDigit(c) || '+' == c || '-' == c || '.' == c;
+            }
+        },
+        AUTHORITY {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c) || isSubDelimiter(c) || ':' == c || '@' == c;
+            }
+        },
+        USER_INFO {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c) || isSubDelimiter(c) || ':' == c;
+            }
+        },
+        HOST_IPV4 {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c) || isSubDelimiter(c);
+            }
+        },
+        HOST_IPV6 {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c) || isSubDelimiter(c) || '[' == c || ']' == c || ':' == c;
+            }
+        },
+        PORT {
+            @Override
+            public boolean isAllowed(int c) {
+                return isDigit(c);
+            }
+        },
+        PATH {
+            @Override
+            public boolean isAllowed(int c) {
+                return isPchar(c) || '/' == c;
+            }
+        },
+        PATH_SEGMENT {
+            @Override
+            public boolean isAllowed(int c) {
+                return isPchar(c);
+            }
+        },
+        QUERY {
+            @Override
+            public boolean isAllowed(int c) {
+                return isPchar(c) || '/' == c || '?' == c;
+            }
+        },
+        QUERY_PARAM {
+            @Override
+            public boolean isAllowed(int c) {
+                if ('=' == c || '&' == c) {
+                    return false;
+                } else {
+                    return isPchar(c) || '/' == c || '?' == c;
+                }
+            }
+        },
+        FRAGMENT {
+            @Override
+            public boolean isAllowed(int c) {
+                return isPchar(c) || '/' == c || '?' == c;
+            }
+        },
+        URI {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c);
+            }
+        };
+
+        public abstract boolean isAllowed(int c);
+
+        protected boolean isAlpha(int c) {
+            return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
+        }
+
+        protected boolean isDigit(int c) {
+            return (c >= '0' && c <= '9');
+        }
+
+        protected boolean isGenericDelimiter(int c) {
+            return (':' == c || '/' == c || '?' == c || '#' == c || '[' == c || ']' == c || '@' == c);
+        }
+
+        protected boolean isSubDelimiter(int c) {
+            return ('!' == c || '$' == c || '&' == c || '\'' == c || '(' == c || ')' == c || '*' == c || '+' == c ||
+                    ',' == c || ';' == c || '=' == c);
+        }
+
+        protected boolean isReserved(int c) {
+            return (isGenericDelimiter(c) || isSubDelimiter(c));
+        }
+
+        protected boolean isUnreserved(int c) {
+            return (isAlpha(c) || isDigit(c) || '-' == c || '.' == c || '_' == c || '~' == c);
+        }
+
+        protected boolean isPchar(int c) {
+            return (isUnreserved(c) || isSubDelimiter(c) || ':' == c || '@' == c);
+        }
     }
 
 }

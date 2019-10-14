@@ -34,7 +34,7 @@ import java.util.Random;
  * <p>This class is not thread safe.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 final class WebSocketWriter {
@@ -42,7 +42,7 @@ final class WebSocketWriter {
     final boolean isClient;
     final Random random;
 
-    final BufferedSink sink;
+    final BufferSink sink;
     /**
      * The {@link Buffer} of {@link #sink}. Write to this and then flush/emit {@link #sink}.
      */
@@ -54,7 +54,7 @@ final class WebSocketWriter {
     boolean writerClosed;
     boolean activeWriter;
 
-    WebSocketWriter(boolean isClient, BufferedSink sink, Random random) {
+    WebSocketWriter(boolean isClient, BufferSink sink, Random random) {
         if (sink == null) throw new NullPointerException("sink == null");
         if (random == null) throw new NullPointerException("random == null");
         this.isClient = isClient;

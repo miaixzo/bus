@@ -54,7 +54,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {

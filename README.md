@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v5.0.0-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v5.0.1-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -9,7 +9,7 @@
 		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg">
 	</a>
 	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-2.1.6-brightgreen.svg">
+		<img src="https://img.shields.io/badge/Spring Boot-2.1.9-brightgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.mysql.com">
 		<img src="https://img.shields.io/badge/Mysql-5.7-blue.svg">
@@ -96,13 +96,13 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.0.0</version>
+    <version>5.0.1</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:5.0.0'
+implementation 'org.aoju:bus-all:5.0.1'
 ```
 
 ### Other

@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * Serves requests from the cache and writes responses to the cache.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class CacheInterceptor implements Interceptor {
@@ -198,8 +198,8 @@ public final class CacheInterceptor implements Interceptor {
         Sink cacheBodyUnbuffered = cacheRequest.body();
         if (cacheBodyUnbuffered == null) return response;
 
-        final BufferedSource source = response.body().source();
-        final BufferedSink cacheBody = IoUtils.buffer(cacheBodyUnbuffered);
+        final BufferSource source = response.body().source();
+        final BufferSink cacheBody = IoUtils.buffer(cacheBodyUnbuffered);
 
         Source cacheWritingSource = new Source() {
             boolean cacheRequestClosed;

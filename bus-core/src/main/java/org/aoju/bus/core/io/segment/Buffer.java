@@ -29,7 +29,6 @@ import org.aoju.bus.core.utils.IoUtils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
@@ -43,10 +42,10 @@ import java.util.List;
  * 内存中字节的集合.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
-public final class Buffer implements BufferedSource, BufferedSink, Cloneable, ByteChannel {
+public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
 
     static final int REPLACEMENT_CHARACTER = '\ufffd';
     private static final byte[] DIGITS =
@@ -105,7 +104,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     @Override
-    public BufferedSink emit() {
+    public BufferSink emit() {
         return this; // Nowhere to emit to!
     }
 
@@ -125,7 +124,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     @Override
-    public BufferedSource peek() {
+    public BufferSource peek() {
         return IoUtils.buffer(new PeekSource(this));
     }
 
@@ -276,7 +275,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
             if (s.pos == s.limit) {
                 Segment toRecycle = s;
                 head = s = toRecycle.pop();
-                Segments.recycle(toRecycle);
+                LifeCycle.recycle(toRecycle);
             }
         }
 
@@ -357,7 +356,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
         if (pos == limit) {
             head = segment.pop();
-            Segments.recycle(segment);
+            LifeCycle.recycle(segment);
         } else {
             segment.pos = pos;
         }
@@ -410,7 +409,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
         if (pos == limit) {
             head = segment.pop();
-            Segments.recycle(segment);
+            LifeCycle.recycle(segment);
         } else {
             segment.pos = pos;
         }
@@ -443,7 +442,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
         if (pos == limit) {
             head = segment.pop();
-            Segments.recycle(segment);
+            LifeCycle.recycle(segment);
         } else {
             segment.pos = pos;
         }
@@ -478,7 +477,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
         if (pos == limit) {
             head = segment.pop();
-            Segments.recycle(segment);
+            LifeCycle.recycle(segment);
         } else {
             segment.pos = pos;
         }
@@ -550,7 +549,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
             if (pos == limit) {
                 head = segment.pop();
-                Segments.recycle(segment);
+                LifeCycle.recycle(segment);
             } else {
                 segment.pos = pos;
             }
@@ -607,7 +606,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
             if (pos == limit) {
                 head = segment.pop();
-                Segments.recycle(segment);
+                LifeCycle.recycle(segment);
             } else {
                 segment.pos = pos;
             }
@@ -628,7 +627,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     @Override
-    public int select(Options options) {
+    public int select(BufferOption options) {
         int index = selectPrefix(options, false);
         if (index == -1) return -1;
 
@@ -654,7 +653,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
      *                        and first option may be a prefix of another. For example, this returns -2 if the buffer
      *                        contains [ab] and the options are [abc, a].
      */
-    int selectPrefix(Options options, boolean selectTruncated) {
+    int selectPrefix(BufferOption options, boolean selectTruncated) {
         Segment head = this.head;
         if (head == null) {
             if (selectTruncated) return -2; // A result is present but truncated.
@@ -809,7 +808,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
         if (s.pos == s.limit) {
             head = s.pop();
-            Segments.recycle(s);
+            LifeCycle.recycle(s);
         }
 
         return result;
@@ -988,14 +987,14 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
         if (s.pos == s.limit) {
             head = s.pop();
-            Segments.recycle(s);
+            LifeCycle.recycle(s);
         }
 
         return toCopy;
     }
 
     @Override
-    public int read(ByteBuffer sink) throws IOException {
+    public int read(java.nio.ByteBuffer sink) throws IOException {
         Segment s = head;
         if (s == null) return -1;
 
@@ -1007,7 +1006,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
 
         if (s.pos == s.limit) {
             head = s.pop();
-            Segments.recycle(s);
+            LifeCycle.recycle(s);
         }
 
         return toCopy;
@@ -1041,7 +1040,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
             if (head.pos == head.limit) {
                 Segment toRecycle = head;
                 head = toRecycle.pop();
-                Segments.recycle(toRecycle);
+                LifeCycle.recycle(toRecycle);
             }
         }
     }
@@ -1221,7 +1220,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     @Override
-    public int write(ByteBuffer source) throws IOException {
+    public int write(java.nio.ByteBuffer source) throws IOException {
         if (source == null) throw new IllegalArgumentException("source == null");
 
         int byteCount = source.remaining();
@@ -1251,7 +1250,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
     }
 
     @Override
-    public BufferedSink write(Source source, long byteCount) throws IOException {
+    public BufferSink write(Source source, long byteCount) throws IOException {
         while (byteCount > 0) {
             long read = source.read(this, byteCount);
             if (read == -1) throw new EOFException();
@@ -1414,13 +1413,13 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
         if (minimumCapacity < 1 || minimumCapacity > Segment.SIZE) throw new IllegalArgumentException();
 
         if (head == null) {
-            head = Segments.take(); // Acquire a first segment.
+            head = LifeCycle.take(); // Acquire a first segment.
             return head.next = head.prev = head;
         }
 
         Segment tail = head.prev;
         if (tail.limit + minimumCapacity > Segment.SIZE || !tail.owner) {
-            tail = tail.push(Segments.take()); // Append a new empty segment to fill up.
+            tail = tail.push(LifeCycle.take()); // Append a new empty segment to fill up.
         }
         return tail;
     }
@@ -1995,7 +1994,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
      */
     public final ByteString snapshot(int byteCount) {
         if (byteCount == 0) return ByteString.EMPTY;
-        return new Segmented(this, byteCount);
+        return new ByteBuffer(this, byteCount);
     }
 
     public final UnsafeCursor readUnsafe() {
@@ -2350,7 +2349,7 @@ public final class Buffer implements BufferedSource, BufferedSink, Cloneable, By
                     int tailSize = tail.limit - tail.pos;
                     if (tailSize <= bytesToSubtract) {
                         buffer.head = tail.pop();
-                        Segments.recycle(tail);
+                        LifeCycle.recycle(tail);
                         bytesToSubtract -= tailSize;
                     } else {
                         tail.limit -= bytesToSubtract;

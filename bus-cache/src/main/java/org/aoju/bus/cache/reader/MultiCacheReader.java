@@ -27,11 +27,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.aoju.bus.cache.Context;
 import org.aoju.bus.cache.Manage;
+import org.aoju.bus.cache.Provider;
 import org.aoju.bus.cache.entity.CacheHolder;
 import org.aoju.bus.cache.entity.CacheKeys;
 import org.aoju.bus.cache.entity.CacheMethod;
 import org.aoju.bus.cache.proxy.ProxyChain;
-import org.aoju.bus.cache.Provider;
 import org.aoju.bus.cache.support.*;
 import org.aoju.bus.logger.Logger;
 
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @Singleton

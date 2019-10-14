@@ -57,7 +57,7 @@ import java.util.zip.Checksum;
  * IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class IoUtils {
@@ -1117,12 +1117,12 @@ public class IoUtils {
         return checksum;
     }
 
-    public static BufferedSource buffer(Source source) {
-        return new RealBufferedSource(source);
+    public static BufferSource buffer(Source source) {
+        return new RealSource(source);
     }
 
-    public static BufferedSink buffer(Sink sink) {
-        return new RealBufferedSink(sink);
+    public static BufferSink buffer(Sink sink) {
+        return new RealSink(sink);
     }
 
     public static Sink sink(OutputStream out) {
@@ -1149,7 +1149,7 @@ public class IoUtils {
 
                     if (head.pos == head.limit) {
                         source.head = head.pop();
-                        Segments.recycle(head);
+                        LifeCycle.recycle(head);
                     }
                 }
             }
@@ -1179,7 +1179,7 @@ public class IoUtils {
     public static Sink sink(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getOutputStream() == null) throw new IOException("socket's output stream == null");
-        AsyncTimeout timeout = timeout(socket);
+        Awaits timeout = timeout(socket);
         Sink sink = sink(socket.getOutputStream(), timeout);
         return timeout.sink(sink);
     }
@@ -1279,13 +1279,13 @@ public class IoUtils {
     public static Source source(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getInputStream() == null) throw new IOException("socket's input stream == null");
-        AsyncTimeout timeout = timeout(socket);
+        Awaits timeout = timeout(socket);
         Source source = source(socket.getInputStream(), timeout);
         return timeout.source(source);
     }
 
-    private static AsyncTimeout timeout(final Socket socket) {
-        return new AsyncTimeout() {
+    private static Awaits timeout(final Socket socket) {
+        return new Awaits() {
             @Override
             protected IOException newTimeoutException(IOException cause) {
                 InterruptedIOException ioe = new SocketTimeoutException("timeout");

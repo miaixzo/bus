@@ -35,10 +35,10 @@ import java.io.IOException;
  *
  *
  * <h3>Interop with OutputStream</h3>
- * {@link BufferedSink#outputStream} to adapt a sink to an {@code OutputStream}.
+ * {@link BufferSink#outputStream} to adapt a sink to an {@code OutputStream}.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public interface Sink extends Closeable, Flushable {

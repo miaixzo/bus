@@ -24,7 +24,7 @@
 package org.aoju.bus.http.bodys;
 
 import org.aoju.bus.core.consts.MediaType;
-import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.core.utils.IoUtils;
@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public abstract class RequestBody {
@@ -68,7 +68,7 @@ public abstract class RequestBody {
             }
 
             @Override
-            public void writeTo(BufferedSink sink) throws IOException {
+            public void writeTo(BufferSink sink) throws IOException {
                 sink.write(content);
             }
         };
@@ -94,7 +94,7 @@ public abstract class RequestBody {
             }
 
             @Override
-            public void writeTo(BufferedSink sink) throws IOException {
+            public void writeTo(BufferSink sink) throws IOException {
                 sink.write(content, offset, byteCount);
             }
         };
@@ -115,7 +115,7 @@ public abstract class RequestBody {
             }
 
             @Override
-            public void writeTo(BufferedSink sink) throws IOException {
+            public void writeTo(BufferSink sink) throws IOException {
                 Source source = null;
                 try {
                     source = IoUtils.source(file);
@@ -133,6 +133,6 @@ public abstract class RequestBody {
         return -1;
     }
 
-    public abstract void writeTo(BufferedSink sink) throws IOException;
+    public abstract void writeTo(BufferSink sink) throws IOException;
 
 }

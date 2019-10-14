@@ -42,7 +42,7 @@ import java.io.OutputStream;
  * Excel工作簿{@link Workbook}相关工具类
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class BookUtils {
@@ -209,7 +209,7 @@ public class BookUtils {
      * @param book {@link Workbook}
      * @param out  输出流
      * @throws InstrumentException IO异常
-     * @since 5.0.0
+     * @since 5.0.1
      */
     public static void writeBook(Workbook book, OutputStream out) throws InstrumentException {
         try {

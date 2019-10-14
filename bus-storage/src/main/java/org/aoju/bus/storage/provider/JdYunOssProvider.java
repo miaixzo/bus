@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * 存储服务-京东云
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class JdYunOssProvider extends AbstractProvider {
@@ -131,7 +131,7 @@ public class JdYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class JdYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String bucket, String fileName, byte[] content) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override

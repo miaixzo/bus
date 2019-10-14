@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.io.segment.ByteString;
 
 import java.io.ByteArrayOutputStream;
@@ -40,7 +40,7 @@ import java.io.IOException;
  * </ul>
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 class Huffman {
@@ -98,7 +98,7 @@ class Huffman {
         return INSTANCE;
     }
 
-    void encode(ByteString data, BufferedSink sink) throws IOException {
+    void encode(ByteString data, BufferSink sink) throws IOException {
         long current = 0;
         int n = 0;
 

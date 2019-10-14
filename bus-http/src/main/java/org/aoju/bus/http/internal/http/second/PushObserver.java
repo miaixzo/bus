@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.internal.http.second;
 
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.http.Protocol;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ import java.util.List;
  * future frames won't arrive on the stream ID.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public interface PushObserver {
@@ -66,7 +66,7 @@ public interface PushObserver {
         }
 
         @Override
-        public boolean onData(int streamId, BufferedSource source, int byteCount,
+        public boolean onData(int streamId, BufferSource source, int byteCount,
                               boolean last) throws IOException {
             source.skip(byteCount);
             return true;
@@ -81,7 +81,7 @@ public interface PushObserver {
 
     boolean onHeaders(int streamId, List<Header> responseHeaders, boolean last);
 
-    boolean onData(int streamId, BufferedSource source, int byteCount, boolean last)
+    boolean onData(int streamId, BufferSource source, int byteCount, boolean last)
             throws IOException;
 
     void onReset(int streamId, ErrorCode errorCode);

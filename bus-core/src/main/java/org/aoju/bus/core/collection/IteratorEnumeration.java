@@ -31,7 +31,7 @@ import java.util.Iterator;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class IteratorEnumeration<E> implements Enumeration<E> {

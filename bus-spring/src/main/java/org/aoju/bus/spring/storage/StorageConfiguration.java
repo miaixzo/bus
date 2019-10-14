@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.spring.storage;
 
-import lombok.Data;
 import org.aoju.bus.spring.core.Extend;
 import org.aoju.bus.storage.metric.DefaultStorageCache;
 import org.aoju.bus.storage.metric.StorageCache;
@@ -36,10 +35,9 @@ import org.springframework.context.annotation.Bean;
  * 授权配置
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 3.6.9
  * @since JDK 1.8+
  */
-@Data
 @EnableConfigurationProperties(value = {StorageProperties.class})
 public class StorageConfiguration {
 

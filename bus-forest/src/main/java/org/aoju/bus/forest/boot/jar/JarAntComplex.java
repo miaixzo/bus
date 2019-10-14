@@ -31,7 +31,7 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
  * Jar记录Ant表达式规则
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class JarAntComplex extends AntComplex<JarArchiveEntry> implements Complex<JarArchiveEntry> {

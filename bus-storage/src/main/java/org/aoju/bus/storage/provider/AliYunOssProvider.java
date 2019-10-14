@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 存储服务-阿里云
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class AliYunOssProvider extends AbstractProvider {
@@ -92,7 +92,7 @@ public class AliYunOssProvider extends AbstractProvider {
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class AliYunOssProvider extends AbstractProvider {
         } catch (IOException e) {
             Logger.error("file upload failed ", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -175,7 +175,7 @@ public class AliYunOssProvider extends AbstractProvider {
             this.client.putObject(bucketName, fileName, bis);
             Logger.error("file upload failed ", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override

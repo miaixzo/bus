@@ -40,7 +40,7 @@ import java.util.List;
  * A logical bidirectional stream.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class Http2Stream {
@@ -245,7 +245,7 @@ public final class Http2Stream {
         }
     }
 
-    void receiveData(BufferedSource in, int length) throws IOException {
+    void receiveData(BufferSource in, int length) throws IOException {
         assert (!Thread.holdsLock(Http2Stream.this));
         this.source.receive(in, length);
     }
@@ -421,7 +421,7 @@ public final class Http2Stream {
             connection.updateConnectionFlowControl(read);
         }
 
-        void receive(BufferedSource in, long byteCount) throws IOException {
+        void receive(BufferSource in, long byteCount) throws IOException {
             assert (!Thread.holdsLock(Http2Stream.this));
 
             while (byteCount > 0) {
@@ -590,7 +590,7 @@ public final class Http2Stream {
      * The org.aoju.bus.core.io.timeout watchdog will call {@link #timedOut} if the timeout is reached. In that case
      * we close the stream (asynchronously) which will notify the waiting thread.
      */
-    class StreamTimeout extends AsyncTimeout {
+    class StreamTimeout extends Awaits {
         @Override
         protected void timedOut() {
             closeLater(ErrorCode.CANCEL);

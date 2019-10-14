@@ -29,9 +29,9 @@ import com.google.inject.name.Named;
 import org.aoju.bus.cache.annotation.Cached;
 import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
+import org.aoju.bus.cache.entity.CacheExpire;
 import org.aoju.bus.cache.entity.CacheHolder;
 import org.aoju.bus.cache.entity.CacheMethod;
-import org.aoju.bus.cache.entity.CacheExpire;
 import org.aoju.bus.cache.entity.CachePair;
 import org.aoju.bus.cache.proxy.ProxyChain;
 import org.aoju.bus.cache.reader.AbstractReader;
@@ -47,7 +47,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @Singleton

@@ -8,7 +8,7 @@ import java.util.Comparator;
  *
  * @param <E> 比较对象类型
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class ComparableComparator<E extends Comparable<? super E>> implements Comparator<E>, Serializable {

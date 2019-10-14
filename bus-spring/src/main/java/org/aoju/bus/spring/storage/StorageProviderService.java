@@ -36,7 +36,7 @@ import org.aoju.bus.storage.provider.*;
  * 存储服务提供
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 3.6.9
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
@@ -63,6 +63,8 @@ public class StorageProviderService {
             return new TencentCosProvider(context);
         } else if (Registry.UPYUN.equals(type)) {
             return new UpaiYunOssProvider(context);
+        } else if (Registry.LOCAL.equals(type)) {
+            return new LocalFileProvider(context);
         }
         throw new InstrumentException(Builder.FAILURE);
     }

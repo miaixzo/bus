@@ -40,7 +40,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class CellUtils {

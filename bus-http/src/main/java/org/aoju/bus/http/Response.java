@@ -24,7 +24,7 @@
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.cache.CacheControl;
 import org.aoju.bus.http.header.Headers;
@@ -48,7 +48,7 @@ import static java.net.HttpURLConnection.*;
  * {@link ResponseBody} for an explanation and examples.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class Response implements Closeable {
@@ -125,7 +125,7 @@ public final class Response implements Closeable {
     }
 
     public ResponseBody peekBody(long byteCount) throws IOException {
-        BufferedSource source = body.source();
+        BufferSource source = body.source();
         source.request(byteCount);
         Buffer copy = source.buffer().clone();
 

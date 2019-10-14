@@ -36,12 +36,12 @@ import java.util.zip.Deflater;
  * 这种早期压缩可能不如执行的压缩有效
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class DeflaterSink implements Sink {
 
-    private final BufferedSink sink;
+    private final BufferSink sink;
     private final Deflater deflater;
     private boolean closed;
 
@@ -54,7 +54,7 @@ public final class DeflaterSink implements Sink {
      * In general we can't share a BufferedSource because the deflater holds input
      * bytes until they are inflated.
      */
-    DeflaterSink(BufferedSink sink, Deflater deflater) {
+    DeflaterSink(BufferSink sink, Deflater deflater) {
         if (sink == null) throw new IllegalArgumentException("source == null");
         if (deflater == null) throw new IllegalArgumentException("inflater == null");
         this.sink = sink;
@@ -78,7 +78,7 @@ public final class DeflaterSink implements Sink {
             head.pos += toDeflate;
             if (head.pos == head.limit) {
                 source.head = head.pop();
-                Segments.recycle(head);
+                LifeCycle.recycle(head);
             }
 
             byteCount -= toDeflate;
@@ -106,7 +106,7 @@ public final class DeflaterSink implements Sink {
                 if (s.pos == s.limit) {
                     // We allocated a tail segment, but didn't end up needing it. Recycle!
                     buffer.head = s.pop();
-                    Segments.recycle(s);
+                    LifeCycle.recycle(s);
                 }
                 return;
             }

@@ -37,12 +37,12 @@ import static java.util.zip.Deflater.DEFAULT_COMPRESSION;
  * 只在应用程序行为需要时调用{@link #flush}。
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class GzipSink implements Sink {
 
-    private final BufferedSink sink;
+    private final BufferSink sink;
 
     private final Deflater deflater;
 

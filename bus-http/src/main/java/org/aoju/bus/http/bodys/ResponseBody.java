@@ -25,7 +25,7 @@ package org.aoju.bus.http.bodys;
 
 import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.http.Call;
 import org.aoju.bus.http.Callback;
@@ -107,7 +107,7 @@ import java.nio.charset.Charset;
  * {@link #byteStream()}, or {@link #charStream()}.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public abstract class ResponseBody implements Closeable {
@@ -141,7 +141,7 @@ public abstract class ResponseBody implements Closeable {
     }
 
     public static ResponseBody create(final MediaType contentType,
-                                      final long contentLength, final BufferedSource content) {
+                                      final long contentLength, final BufferSource content) {
         if (content == null) throw new NullPointerException("source == null");
         return new ResponseBody() {
             @Override
@@ -155,7 +155,7 @@ public abstract class ResponseBody implements Closeable {
             }
 
             @Override
-            public BufferedSource source() {
+            public BufferSource source() {
                 return content;
             }
         };
@@ -169,7 +169,7 @@ public abstract class ResponseBody implements Closeable {
         return source().inputStream();
     }
 
-    public abstract BufferedSource source();
+    public abstract BufferSource source();
 
     public final byte[] bytes() throws IOException {
         long contentLength = contentLength();
@@ -177,7 +177,7 @@ public abstract class ResponseBody implements Closeable {
             throw new IOException("Cannot buffer entire body for content length: " + contentLength);
         }
 
-        BufferedSource source = source();
+        BufferSource source = source();
         byte[] bytes;
         try {
             bytes = source.readByteArray();
@@ -200,7 +200,7 @@ public abstract class ResponseBody implements Closeable {
     }
 
     public final String string() throws IOException {
-        BufferedSource source = source();
+        BufferSource source = source();
         try {
             Charset charset = Internal.bomAwareCharset(source, charset());
             return source.readString(charset);
@@ -220,13 +220,13 @@ public abstract class ResponseBody implements Closeable {
     }
 
     static final class BomAwareReader extends Reader {
-        private final BufferedSource source;
+        private final BufferSource source;
         private final Charset charset;
 
         private boolean closed;
         private Reader delegate;
 
-        BomAwareReader(BufferedSource source, Charset charset) {
+        BomAwareReader(BufferSource source, Charset charset) {
             this.source = source;
             this.charset = charset;
         }

@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * 存储服务-又拍云
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class UpaiYunOssProvider extends AbstractProvider {
@@ -69,23 +69,23 @@ public class UpaiYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers download(String bucket, String fileName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers download(String fileName, File file) {
         try {
             this.client.writeFile(fileName, file);
-            return new Readers(null, Builder.SUCCESS);
+            return new Readers(Builder.SUCCESS);
         } catch (IOException | UpException e) {
             Logger.error("file download failed" + e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers download(String bucket, String fileName, File file) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -102,17 +102,17 @@ public class UpaiYunOssProvider extends AbstractProvider {
         } catch (IOException | UpException e) {
             Logger.error("file list failed" + e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers rename(String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -122,12 +122,12 @@ public class UpaiYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String bucket, String fileName, InputStream content) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers upload(String bucket, String fileName, byte[] content) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -138,12 +138,12 @@ public class UpaiYunOssProvider extends AbstractProvider {
         } catch (IOException | UpException e) {
             Logger.error("file remove failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers remove(String bucket, String fileName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override

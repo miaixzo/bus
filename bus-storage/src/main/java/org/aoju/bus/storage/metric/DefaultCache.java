@@ -41,7 +41,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 默认的缓存实现
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class DefaultCache implements Cache {
@@ -161,23 +161,6 @@ public class DefaultCache implements Cache {
         CacheScheduler.INSTANCE.schedule(this::pruneCache, delay);
     }
 
-    @Getter
-    @Setter
-    private class CacheState implements Serializable {
-        private String state;
-        private long expire;
-
-        CacheState(String state, long expire) {
-            this.state = state;
-            // 实际过期时间等于当前时间加上有效期
-            this.expire = System.currentTimeMillis() + expire;
-        }
-
-        boolean isExpired() {
-            return System.currentTimeMillis() > this.expire;
-        }
-    }
-
     enum CacheScheduler {
 
         /**
@@ -207,6 +190,23 @@ public class DefaultCache implements Cache {
             this.scheduler.scheduleAtFixedRate(task, delay, delay, TimeUnit.MILLISECONDS);
         }
 
+    }
+
+    @Getter
+    @Setter
+    private class CacheState implements Serializable {
+        private String state;
+        private long expire;
+
+        CacheState(String state, long expire) {
+            this.state = state;
+            // 实际过期时间等于当前时间加上有效期
+            this.expire = System.currentTimeMillis() + expire;
+        }
+
+        boolean isExpired() {
+            return System.currentTimeMillis() > this.expire;
+        }
     }
 
 }

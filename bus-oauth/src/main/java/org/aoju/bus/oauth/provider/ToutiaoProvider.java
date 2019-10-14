@@ -40,7 +40,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class ToutiaoProvider extends DefaultProvider {

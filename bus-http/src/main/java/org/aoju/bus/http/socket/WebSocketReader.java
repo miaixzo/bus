@@ -24,7 +24,7 @@
 package org.aoju.bus.http.socket;
 
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
 
 import java.io.IOException;
@@ -37,13 +37,13 @@ import java.util.concurrent.TimeUnit;
  * This class is not thread safe.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 final class WebSocketReader {
 
     final boolean isClient;
-    final BufferedSource source;
+    final BufferSource source;
     final FrameCallback frameCallback;
     private final Buffer controlFrameBuffer = new Buffer();
     private final Buffer messageFrameBuffer = new Buffer();
@@ -56,7 +56,7 @@ final class WebSocketReader {
     boolean isFinalFrame;
     boolean isControlFrame;
 
-    WebSocketReader(boolean isClient, BufferedSource source, FrameCallback frameCallback) {
+    WebSocketReader(boolean isClient, BufferSource source, FrameCallback frameCallback) {
         if (source == null) throw new NullPointerException("source == null");
         if (frameCallback == null) throw new NullPointerException("frameCallback == null");
         this.isClient = isClient;

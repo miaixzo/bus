@@ -24,7 +24,7 @@
 package org.aoju.bus.http.internal.http.second;
 
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSink;
+import org.aoju.bus.core.io.segment.BufferSink;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -34,19 +34,19 @@ import java.util.List;
  * Writes HTTP/2 transport frames.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 final class Http2Writer implements Closeable {
 
     final Hpack.Writer hpackWriter;
-    private final BufferedSink sink;
+    private final BufferSink sink;
     private final boolean client;
     private final Buffer hpackBuffer;
     private int maxFrameSize;
     private boolean closed;
 
-    Http2Writer(BufferedSink sink, boolean client) {
+    Http2Writer(BufferSink sink, boolean client) {
         this.sink = sink;
         this.client = client;
         this.hpackBuffer = new Buffer();
@@ -54,7 +54,7 @@ final class Http2Writer implements Closeable {
         this.maxFrameSize = Http2.INITIAL_MAX_FRAME_SIZE;
     }
 
-    private static void writeMedium(BufferedSink sink, int i) throws IOException {
+    private static void writeMedium(BufferSink sink, int i) throws IOException {
         sink.writeByte((i >>> 16) & 0xff);
         sink.writeByte((i >>> 8) & 0xff);
         sink.writeByte(i & 0xff);

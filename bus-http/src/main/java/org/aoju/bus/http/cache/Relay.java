@@ -46,7 +46,7 @@ import java.io.RandomAccessFile;
  * save a small amount of file I/O and data copying.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 final class Relay {

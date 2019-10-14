@@ -24,7 +24,7 @@
 package org.aoju.bus.http.internal.suffix;
 
 import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.GzipSource;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Internal;
@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <a href="https://publicsuffix.org/">suffix.org</a>.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class SuffixDatabase {
@@ -310,7 +310,7 @@ public final class SuffixDatabase {
         InputStream resource = SuffixDatabase.class.getResourceAsStream(PUBLIC_SUFFIX_RESOURCE);
         if (resource == null) return;
 
-        BufferedSource bufferedSource = IoUtils.buffer(new GzipSource(IoUtils.source(resource)));
+        BufferSource bufferedSource = IoUtils.buffer(new GzipSource(IoUtils.source(resource)));
         try {
             int totalBytes = bufferedSource.readInt();
             publicSuffixListBytes = new byte[totalBytes];

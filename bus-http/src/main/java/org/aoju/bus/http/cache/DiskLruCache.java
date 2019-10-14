@@ -79,7 +79,7 @@ import java.util.regex.Pattern;
  * IOException} and responding appropriately.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class DiskLruCache implements Closeable, Flushable {
@@ -106,7 +106,7 @@ public final class DiskLruCache implements Closeable, Flushable {
     private final int appVersion;
 
     private final Executor executor;
-    BufferedSink journalWriter;
+    BufferSink journalWriter;
     int redundantOpCount;
     boolean hasJournalErrors;
     boolean initialized;
@@ -213,7 +213,7 @@ public final class DiskLruCache implements Closeable, Flushable {
     }
 
     private void readJournal() throws IOException {
-        BufferedSource source = IoUtils.buffer(fileSystem.source(journalFile));
+        BufferSource source = IoUtils.buffer(fileSystem.source(journalFile));
         try {
             String magic = source.readUtf8LineStrict();
             String version = source.readUtf8LineStrict();
@@ -250,7 +250,7 @@ public final class DiskLruCache implements Closeable, Flushable {
         }
     }
 
-    private BufferedSink newJournalWriter() throws FileNotFoundException {
+    private BufferSink newJournalWriter() throws FileNotFoundException {
         Sink fileSink = fileSystem.appendingSink(journalFile);
         Sink faultHidingSink = new FaultHidingSink(fileSink) {
             @Override
@@ -333,7 +333,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             journalWriter.close();
         }
 
-        BufferedSink writer = IoUtils.buffer(fileSystem.sink(journalFileTmp));
+        BufferSink writer = IoUtils.buffer(fileSystem.sink(journalFileTmp));
         try {
             writer.writeUtf8(MAGIC).writeByte('\n');
             writer.writeUtf8(VERSION_1).writeByte('\n');
@@ -874,7 +874,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             }
         }
 
-        void writeLengths(BufferedSink writer) throws IOException {
+        void writeLengths(BufferSink writer) throws IOException {
             for (long length : lengths) {
                 writer.writeByte(' ').writeDecimalLong(length);
             }

@@ -36,14 +36,14 @@ import org.aoju.bus.oauth.provider.*;
  * 授权服务提供
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
 public class AuthProviderService {
 
-    private final AuthProperties properties;
-    private final StateCache stateCache;
+    final AuthProperties properties;
+    final StateCache stateCache;
 
     /**
      * 返回type对象

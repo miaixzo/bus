@@ -26,7 +26,7 @@ package org.aoju.bus.core.io.segment;
 import java.io.IOException;
 
 /**
- * 一个{@link Source}，它可以窥视上游的{@link BufferedSource}并允许读取和
+ * 一个{@link Source}，它可以窥视上游的{@link BufferSource}并允许读取和
  * 展开缓冲数据而不使用它。这是通过请求额外的数据吗
  * 如果需要，则复制上游源文件，如果需要，则从上游源文件的内部缓冲区复制
  * 此源还维护其上游缓冲区的起始位置的快照
@@ -34,12 +34,12 @@ import java.io.IOException;
  * 无效，在以后的读取中抛出{@link IllegalStateException}。
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 final class PeekSource implements Source {
 
-    private final BufferedSource upstream;
+    private final BufferSource upstream;
     private final Buffer buffer;
 
     private Segment expectedSegment;
@@ -47,7 +47,7 @@ final class PeekSource implements Source {
     private boolean closed;
     private long pos;
 
-    PeekSource(BufferedSource upstream) {
+    PeekSource(BufferSource upstream) {
         this.upstream = upstream;
         this.buffer = upstream.buffer();
         this.expectedSegment = buffer.head;

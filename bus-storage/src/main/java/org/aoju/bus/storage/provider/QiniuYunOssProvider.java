@@ -49,7 +49,7 @@ import java.nio.file.Path;
  * 存储服务-七牛
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class QiniuYunOssProvider extends AbstractProvider {
@@ -84,41 +84,41 @@ public class QiniuYunOssProvider extends AbstractProvider {
         try {
             String encodedFileName = URLEncoder.encode(fileKey, "utf-8");
             String format = String.format("%s/%s", path, encodedFileName);
-            return new Readers(null, Builder.SUCCESS);
+            return new Readers(Builder.SUCCESS);
         } catch (UnsupportedEncodingException e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers download(String bucketName, String fileName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers download(String bucketName, String fileName, File file) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers download(String fileName, File file) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers list() {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers rename(String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
             String upToken = auth.uploadToken(bucket);
             Response response = uploadManager.put(content, fileName, upToken, null, null);
             if (!response.isOK()) {
-                return new Readers(null, response.error);
+                return new Readers(Builder.FAILURE);
             }
             return new Readers(Attachs.builder()
                     .name(fileName)
@@ -141,7 +141,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
         } catch (QiniuException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
             String upToken = auth.uploadToken(bucket, fileName);
             Response response = uploadManager.put(content, fileName, upToken);
             if (!response.isOK()) {
-                return new Readers(null, response.error);
+                return new Readers(Builder.FAILURE);
             }
             return new Readers(Attachs.builder()
                     .size(StringUtils.toString(response.body().length))
@@ -159,7 +159,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
         } catch (QiniuException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -169,22 +169,22 @@ public class QiniuYunOssProvider extends AbstractProvider {
                 fileKey = fileKey.replace(this.property.getPrefix(), "");
             }
             bucketManager.delete(this.property.getBucket(), fileKey);
-            return new Readers(null, Builder.SUCCESS);
+            return new Readers(Builder.SUCCESS);
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers remove(String bucket, String fileName) {
         try {
             bucketManager.delete(bucket, fileName);
-            return new Readers(null, Builder.SUCCESS);
+            return new Readers(Builder.SUCCESS);
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override

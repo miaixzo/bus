@@ -31,7 +31,7 @@ import java.io.Writer;
  * 处理初始索引检查和返回代码点的计数.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 abstract class SinglePassTranslator extends CharSequenceTranslator {

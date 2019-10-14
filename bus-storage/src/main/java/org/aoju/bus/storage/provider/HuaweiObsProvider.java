@@ -29,7 +29,6 @@ import com.obs.services.model.DownloadFileRequest;
 import com.obs.services.model.ListObjectsRequest;
 import com.obs.services.model.ObjectListing;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
@@ -46,7 +45,7 @@ import java.util.stream.Collectors;
  * 存储服务-华为云
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class HuaweiObsProvider extends AbstractProvider {
@@ -70,7 +69,7 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     @Override
     public Readers download(String bucket, String fileName) {
-        throw new InstrumentException("method not implemented");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -105,12 +104,12 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     @Override
     public Readers rename(String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -126,7 +125,7 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String bucket, String fileName, byte[] content) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override

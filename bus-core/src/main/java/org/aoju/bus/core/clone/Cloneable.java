@@ -30,7 +30,7 @@ package org.aoju.bus.core.clone;
  *
  * @param <T> 实现克隆接口的类型
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public interface Cloneable<T> extends java.lang.Cloneable {

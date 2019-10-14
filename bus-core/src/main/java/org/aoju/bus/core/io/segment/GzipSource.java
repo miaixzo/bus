@@ -34,7 +34,7 @@ import java.util.zip.Inflater;
  * 解压读取数据
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class GzipSource implements Source {
@@ -53,7 +53,7 @@ public final class GzipSource implements Source {
      * by deflated bytes (which we consume via an InflaterSource), followed by a
      * GZIP trailer (which we also consume directly).
      */
-    private final BufferedSource source;
+    private final BufferSource source;
     /**
      * The inflater used to decompress the deflated body.
      */

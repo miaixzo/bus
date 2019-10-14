@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.segment.BufferedSink;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSink;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
@@ -505,7 +505,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
             } else if (messageOrClose instanceof Message) {
                 ByteString data = ((Message) messageOrClose).data;
-                BufferedSink sink = IoUtils.buffer(writer.newMessageSink(
+                BufferSink sink = IoUtils.buffer(writer.newMessageSink(
                         ((Message) messageOrClose).formatOpcode, data.size()));
                 sink.write(data);
                 sink.close();
@@ -599,10 +599,10 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
     public abstract static class Streams implements Closeable {
         public final boolean client;
-        public final BufferedSource source;
-        public final BufferedSink sink;
+        public final BufferSource source;
+        public final BufferSink sink;
 
-        public Streams(boolean client, BufferedSource source, BufferedSink sink) {
+        public Streams(boolean client, BufferSource source, BufferSink sink) {
             this.client = client;
             this.source = source;
             this.sink = sink;

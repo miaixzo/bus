@@ -133,7 +133,7 @@ import java.util.*;
  * {@link CacheControl#FORCE_CACHE} that address the use cases above.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public final class Cache implements Closeable, Flushable {
@@ -194,7 +194,7 @@ public final class Cache implements Closeable, Flushable {
         return ByteString.encodeUtf8(url.toString()).md5().hex();
     }
 
-    static int readInt(BufferedSource source) throws IOException {
+    static int readInt(BufferSource source) throws IOException {
         try {
             long result = source.readDecimalLong();
             String line = source.readUtf8LineStrict();
@@ -368,7 +368,7 @@ public final class Cache implements Closeable, Flushable {
                 while (delegate.hasNext()) {
                     DiskLruCache.Snapshot snapshot = delegate.next();
                     try {
-                        BufferedSource metadata = IoUtils.buffer(snapshot.getSource(ENTRY_METADATA));
+                        BufferSource metadata = IoUtils.buffer(snapshot.getSource(ENTRY_METADATA));
                         nextUrl = metadata.readUtf8LineStrict();
                         return true;
                     } catch (IOException ignored) {
@@ -485,7 +485,7 @@ public final class Cache implements Closeable, Flushable {
 
         Entry(Source in) throws IOException {
             try {
-                BufferedSource source = IoUtils.buffer(in);
+                BufferSource source = IoUtils.buffer(in);
                 url = source.readUtf8LineStrict();
                 requestMethod = source.readUtf8LineStrict();
                 Headers.Builder varyHeadersBuilder = new Headers.Builder();
@@ -551,7 +551,7 @@ public final class Cache implements Closeable, Flushable {
         }
 
         public void writeTo(DiskLruCache.Editor editor) throws IOException {
-            BufferedSink sink = IoUtils.buffer(editor.newSink(ENTRY_METADATA));
+            BufferSink sink = IoUtils.buffer(editor.newSink(ENTRY_METADATA));
 
             sink.writeUtf8(url)
                     .writeByte('\n');
@@ -600,7 +600,7 @@ public final class Cache implements Closeable, Flushable {
             return url.startsWith("https://");
         }
 
-        private List<Certificate> readCertificateList(BufferedSource source) throws IOException {
+        private List<Certificate> readCertificateList(BufferSource source) throws IOException {
             int length = readInt(source);
             if (length == -1) return Collections.emptyList(); // HttpClient v1.2 used -1 to indicate null.
 
@@ -619,7 +619,7 @@ public final class Cache implements Closeable, Flushable {
             }
         }
 
-        private void writeCertList(BufferedSink sink, List<Certificate> certificates)
+        private void writeCertList(BufferSink sink, List<Certificate> certificates)
                 throws IOException {
             try {
                 sink.writeDecimalLong(certificates.size())
@@ -665,7 +665,7 @@ public final class Cache implements Closeable, Flushable {
 
     private static class CacheResponseBody extends ResponseBody {
         final DiskLruCache.Snapshot snapshot;
-        private final BufferedSource bodySource;
+        private final BufferSource bodySource;
         private final String contentType;
         private final String contentLength;
 
@@ -676,7 +676,7 @@ public final class Cache implements Closeable, Flushable {
             this.contentLength = contentLength;
 
             Source source = snapshot.getSource(ENTRY_BODY);
-            bodySource = IoUtils.buffer(new ForwardingSource(source) {
+            bodySource = IoUtils.buffer(new ForwardSource(source) {
                 @Override
                 public void close() throws IOException {
                     snapshot.close();
@@ -700,7 +700,7 @@ public final class Cache implements Closeable, Flushable {
         }
 
         @Override
-        public BufferedSource source() {
+        public BufferSource source() {
             return bodySource;
         }
     }
@@ -714,7 +714,7 @@ public final class Cache implements Closeable, Flushable {
         CacheRequestImpl(final DiskLruCache.Editor editor) {
             this.editor = editor;
             this.cacheOut = editor.newSink(ENTRY_BODY);
-            this.body = new ForwardingSink(cacheOut) {
+            this.body = new ForwardSink(cacheOut) {
                 @Override
                 public void close() throws IOException {
                     synchronized (Cache.this) {

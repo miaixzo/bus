@@ -24,7 +24,7 @@
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferedSource;
+import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.http.accord.*;
@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  * utility methods.
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public abstract class Internal {
@@ -387,7 +387,7 @@ public abstract class Internal {
         return VERIFY_AS_IP_ADDRESS.matcher(host).matches();
     }
 
-    public static Charset bomAwareCharset(BufferedSource source, Charset charset) throws IOException {
+    public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {
         if (source.rangeEquals(0, UTF_8_BOM)) {
             source.skip(UTF_8_BOM.size());
             return org.aoju.bus.core.consts.Charset.UTF_8;

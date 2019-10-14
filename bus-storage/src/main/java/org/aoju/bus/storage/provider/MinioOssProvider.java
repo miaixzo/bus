@@ -53,7 +53,7 @@ import java.util.stream.StreamSupport;
  * 存储服务-MinIO
  *
  * @author Kimi Liu
- * @version 5.0.0
+ * @version 5.0.1
  * @since JDK 1.8+
  */
 public class MinioOssProvider extends AbstractProvider {
@@ -103,7 +103,7 @@ public class MinioOssProvider extends AbstractProvider {
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class MinioOssProvider extends AbstractProvider {
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -150,24 +150,24 @@ public class MinioOssProvider extends AbstractProvider {
                                 XmlPullParserException |
                                 ErrorResponseException |
                                 InternalException e) {
-                            return new Readers(null, Builder.FAILURE);
+                            return new Readers(Builder.FAILURE);
                         }
                     })
                     .collect(Collectors.toList()));
         } catch (XmlPullParserException e) {
             Logger.error("file list failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers rename(String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
     public Readers rename(String bucketName, String oldName, String newName) {
-        return new Readers(null, "failure to provide services");
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -188,7 +188,7 @@ public class MinioOssProvider extends AbstractProvider {
         } catch (Exception e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
@@ -209,7 +209,7 @@ public class MinioOssProvider extends AbstractProvider {
         } catch (Exception e) {
             Logger.error("file remove failed ", e.getMessage());
         }
-        return new Readers(null, Builder.FAILURE);
+        return new Readers(Builder.FAILURE);
     }
 
     @Override
