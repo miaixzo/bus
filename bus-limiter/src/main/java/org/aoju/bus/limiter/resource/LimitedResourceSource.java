@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.limiter.resource;
 
-import org.aoju.bus.limiter.resource.LimitedResource;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 

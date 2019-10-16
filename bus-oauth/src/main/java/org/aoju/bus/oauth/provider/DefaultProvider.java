@@ -274,7 +274,7 @@ public abstract class DefaultProvider implements Provider {
      * 是否支持第三方登录
      *
      * @param context context
-     * @param source source
+     * @param source  source
      * @return true or false
      * @since 1.6.2
      */
@@ -296,7 +296,7 @@ public abstract class DefaultProvider implements Provider {
      * 检查配置合法性。针对部分平台， 对redirect uri有特定要求。一般来说redirect uri都是http://，而对于facebook平台， redirect uri 必须是https的链接
      *
      * @param context context
-     * @param source source
+     * @param source  source
      * @since 1.6.2
      */
     public static void checkcontext(Context context, Complex source) {
@@ -319,7 +319,7 @@ public abstract class DefaultProvider implements Provider {
      * <p>
      * {@code v1.10.0}版本中改为传入{@code source}和{@code callback}，对于不同平台使用不同参数接受code的情况统一做处理
      *
-     * @param complex   当前授权平台
+     * @param complex  当前授权平台
      * @param callback 从第三方授权回调回来时传入的参数集合
      * @since 1.8.0
      */

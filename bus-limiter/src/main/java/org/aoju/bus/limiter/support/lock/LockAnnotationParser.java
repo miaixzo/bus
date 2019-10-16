@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.limiter.support.lock;
 
-import org.aoju.bus.limiter.support.rate.AbstractParser;
 import org.aoju.bus.limiter.annotation.Lock;
 import org.aoju.bus.limiter.resource.LimitedResource;
+import org.aoju.bus.limiter.support.rate.AbstractParser;
 import org.springframework.core.annotation.AnnotationAttributes;
 
 /**

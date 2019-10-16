@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.limiter.support.peak;
 
-import org.aoju.bus.limiter.support.rate.AbstractParser;
 import org.aoju.bus.limiter.annotation.Peak;
 import org.aoju.bus.limiter.resource.LimitedResource;
+import org.aoju.bus.limiter.support.rate.AbstractParser;
 import org.springframework.core.annotation.AnnotationAttributes;
 
 /**

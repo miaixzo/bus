@@ -144,7 +144,7 @@ final class Hpack {
         return name;
     }
 
-   static final class Reader {
+    static final class Reader {
 
         private final List<Header> headerList = new ArrayList<>();
         private final BufferSource source;

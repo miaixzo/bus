@@ -47,7 +47,7 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 public class QqProvider extends DefaultProvider {
-    
+
     public QqProvider(Context context) {
         super(context, Registry.QQ);
     }
