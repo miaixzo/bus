@@ -25,7 +25,7 @@ package org.aoju.bus.limiter.intercept;
 
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.limiter.source.LimitedResourceSource;
+import org.aoju.bus.limiter.resource.LimitedResourceSource;
 import org.springframework.aop.support.StaticMethodMatcherPointcut;
 
 import java.io.Serializable;
@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
  * 切点抽象定义
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 abstract class LimitedResourceSourcePointcut extends StaticMethodMatcherPointcut implements Serializable {

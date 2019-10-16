@@ -39,17 +39,17 @@ import java.util.Map;
  * Github登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class GithubProvider extends DefaultProvider {
 
-    public GithubProvider(Context config) {
-        super(config, Registry.GITHUB);
+    public GithubProvider(Context context) {
+        super(context, Registry.GITHUB);
     }
 
-    public GithubProvider(Context config, StateCache stateCache) {
-        super(config, Registry.GITHUB, stateCache);
+    public GithubProvider(Context context, StateCache stateCache) {
+        super(context, Registry.GITHUB, stateCache);
     }
 
     @Override

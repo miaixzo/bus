@@ -41,17 +41,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class DouyinProvider extends DefaultProvider {
 
-    public DouyinProvider(Context config) {
-        super(config, Registry.DOUYIN);
+    public DouyinProvider(Context context) {
+        super(context, Registry.DOUYIN);
     }
 
-    public DouyinProvider(Context config, StateCache stateCache) {
-        super(config, Registry.DOUYIN, stateCache);
+    public DouyinProvider(Context context, StateCache stateCache) {
+        super(context, Registry.DOUYIN, stateCache);
     }
 
     @Override
@@ -126,8 +126,8 @@ public class DouyinProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_key", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_key", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "user_info")
                 .queryParam("state", getRealState(state))
                 .build();
@@ -143,8 +143,8 @@ public class DouyinProvider extends DefaultProvider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_key", config.getClientId())
-                .queryParam("client_secret", config.getClientSecret())
+                .queryParam("client_key", context.getClientId())
+                .queryParam("client_secret", context.getClientSecret())
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -172,7 +172,7 @@ public class DouyinProvider extends DefaultProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromBaseUrl(source.refresh())
-                .queryParam("client_key", config.getClientId())
+                .queryParam("client_key", context.getClientId())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();

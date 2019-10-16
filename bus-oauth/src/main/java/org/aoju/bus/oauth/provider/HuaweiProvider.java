@@ -43,17 +43,17 @@ import java.util.Map;
  * 华为授权登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class HuaweiProvider extends DefaultProvider {
 
-    public HuaweiProvider(Context config) {
-        super(config, Registry.HUAWEI);
+    public HuaweiProvider(Context context) {
+        super(context, Registry.HUAWEI);
     }
 
-    public HuaweiProvider(Context config, StateCache stateCache) {
-        super(config, Registry.HUAWEI, stateCache);
+    public HuaweiProvider(Context context, StateCache stateCache) {
+        super(context, Registry.HUAWEI, stateCache);
     }
 
     /**
@@ -68,9 +68,9 @@ public class HuaweiProvider extends DefaultProvider {
         Map<String, Object> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("code", Callback.getAuthorization_code());
-        params.put("client_id", config.getClientId());
-        params.put("client_secret", config.getClientSecret());
-        params.put("redirect_uri", config.getRedirectUri());
+        params.put("client_id", context.getClientId());
+        params.put("client_secret", context.getClientSecret());
+        params.put("redirect_uri", context.getRedirectUri());
 
         HttpClient.post(source.accessToken(), params);
 
@@ -119,8 +119,8 @@ public class HuaweiProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         Map<String, Object> params = new HashMap<>();
-        params.put("client_id", config.getClientId());
-        params.put("client_secret", config.getClientSecret());
+        params.put("client_id", context.getClientId());
+        params.put("client_secret", context.getClientSecret());
         params.put("refresh_token", token.getRefreshToken());
         params.put("grant_type", "refresh_token");
         HttpClient.post(source.accessToken(), params);
@@ -154,8 +154,8 @@ public class HuaweiProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("access_type", "offline")
                 .queryParam("scope", "https%3A%2F%2Fwww.huawei.com%2Fauth%2Faccount%2Fbase.profile")
                 .queryParam("state", getRealState(state))
@@ -173,9 +173,9 @@ public class HuaweiProvider extends DefaultProvider {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("code", code)
-                .queryParam("client_id", config.getClientId())
-                .queryParam("client_secret", config.getClientSecret())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
 

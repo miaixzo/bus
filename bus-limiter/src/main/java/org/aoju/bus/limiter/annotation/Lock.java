@@ -21,16 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter;
+package org.aoju.bus.limiter.annotation;
 
-import java.util.Map;
+import java.lang.annotation.*;
 
 /**
+ * 锁
+ *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public interface ArgumentInjector {
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Repeatable(Locks.class)
+public @interface Lock {
 
-    Map<String, Object> inject(Object... args);
+    String limiter() default "";
+
+    String key() default "";
+
+    String fallback() default "defaultFallbackResolver";
+
+    String errorHandler() default "defaultErrorHandler";
+
+    String[] argumentInjectors() default {};
+
 }

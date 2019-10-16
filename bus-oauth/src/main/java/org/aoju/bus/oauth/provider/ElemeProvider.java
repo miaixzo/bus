@@ -47,24 +47,24 @@ import java.util.Map;
  * 注：集成的是正式环境，非沙箱环境
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class ElemeProvider extends DefaultProvider {
 
-    public ElemeProvider(Context config) {
-        super(config, Registry.ELEME);
+    public ElemeProvider(Context context) {
+        super(context, Registry.ELEME);
     }
 
-    public ElemeProvider(Context config, StateCache stateCache) {
-        super(config, Registry.ELEME, stateCache);
+    public ElemeProvider(Context context, StateCache stateCache) {
+        super(context, Registry.ELEME, stateCache);
     }
 
     @Override
     protected AccToken getAccessToken(Callback Callback) {
         Map<String, String> header = new HashMap<>();
-        header.put("client_id", config.getClientId());
-        header.put("redirect_uri", config.getRedirectUri());
+        header.put("client_id", context.getClientId());
+        header.put("redirect_uri", context.getRedirectUri());
         header.put("code", Callback.getCode());
         header.put("grant_type", "authorization_code");
 
@@ -93,9 +93,9 @@ public class ElemeProvider extends DefaultProvider {
         final long timestamp = System.currentTimeMillis();
         // 公共参数
         Map<String, String> metasHashMap = new HashMap<>();
-        metasHashMap.put("app_key", config.getClientId());
+        metasHashMap.put("app_key", context.getClientId());
         metasHashMap.put("timestamp", "" + timestamp);
-        String signature = generateElemeSignature(config.getClientId(), config.getClientSecret(), timestamp, action, token.getAccessToken(), parameters);
+        String signature = generateElemeSignature(context.getClientId(), context.getClientSecret(), timestamp, action, token.getAccessToken(), parameters);
 
         String requestId = this.getRequestId();
 
@@ -172,7 +172,7 @@ public class ElemeProvider extends DefaultProvider {
 
     private void setHeader(Map<String, String> header) {
         setHeader(header, "application/x-www-form-urlencoded;charset=UTF-8", getRequestId());
-        header.put("Authorization", this.getBasic(config.getClientId(), config.getClientSecret()));
+        header.put("Authorization", this.getBasic(context.getClientId(), context.getClientSecret()));
     }
 
     private void setHeader(Map<String, String> header, String contentType, String requestId) {

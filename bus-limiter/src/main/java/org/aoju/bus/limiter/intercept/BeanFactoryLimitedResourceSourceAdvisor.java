@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.limiter.intercept;
 
-import org.aoju.bus.limiter.source.LimitedResourceSource;
+import org.aoju.bus.limiter.resource.LimitedResourceSource;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
 
@@ -32,7 +32,7 @@ import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
  * 实际的切面
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class BeanFactoryLimitedResourceSourceAdvisor extends AbstractBeanFactoryPointcutAdvisor {

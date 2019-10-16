@@ -24,7 +24,6 @@
 package org.aoju.bus.limiter.support.lock;
 
 import org.aoju.bus.limiter.Limiter;
-import org.aoju.bus.limiter.annotation.HLock;
 
 import java.util.Map;
 
@@ -32,10 +31,10 @@ import java.util.Map;
  * Lock
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public abstract class Lock implements Limiter<HLock> {
+public abstract class Lock implements Limiter<org.aoju.bus.limiter.annotation.Lock> {
 
     public abstract boolean lock(Object key);
 

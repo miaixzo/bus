@@ -34,7 +34,7 @@ import java.util.Map;
  * 附件信息
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 @Data

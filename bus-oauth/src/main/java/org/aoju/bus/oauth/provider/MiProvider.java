@@ -43,17 +43,17 @@ import java.text.MessageFormat;
  * 小米登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class MiProvider extends DefaultProvider {
 
-    public MiProvider(Context config) {
-        super(config, Registry.MI);
+    public MiProvider(Context context) {
+        super(context, Registry.MI);
     }
 
-    public MiProvider(Context config, StateCache stateCache) {
-        super(config, Registry.MI, stateCache);
+    public MiProvider(Context context, StateCache stateCache) {
+        super(context, Registry.MI, stateCache);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class MiProvider extends DefaultProvider {
                 .build();
 
         // 获取用户邮箱手机号等信息
-        String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}", "https://open.account.xiaomi.com/user/phoneAndEmail", config
+        String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}", "https://open.account.xiaomi.com/user/phoneAndEmail", context
                 .getClientId(), token.getAccessToken());
 
         JSONObject userEmailPhone = JSONObject.parseObject(HttpClient.get(emailPhoneUrl));
@@ -140,8 +140,8 @@ public class MiProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "user/profile%20user/openIdV2%20user/phoneAndEmail")
                 .queryParam("skip_confirm", "false")
                 .queryParam("state", getRealState(state))
@@ -157,7 +157,7 @@ public class MiProvider extends DefaultProvider {
     @Override
     protected String userInfoUrl(AccToken token) {
         return Builder.fromBaseUrl(source.userInfo())
-                .queryParam("clientId", config.getClientId())
+                .queryParam("clientId", context.getClientId())
                 .queryParam("token", token.getAccessToken())
                 .build();
     }

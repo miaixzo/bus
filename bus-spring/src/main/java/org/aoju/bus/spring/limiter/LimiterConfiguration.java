@@ -25,11 +25,11 @@ package org.aoju.bus.spring.limiter;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.limiter.LimiterAnnotationParser;
+import org.aoju.bus.limiter.Parser;
 import org.aoju.bus.limiter.intercept.BeanFactoryLimitedResourceSourceAdvisor;
 import org.aoju.bus.limiter.intercept.LimiterInterceptor;
-import org.aoju.bus.limiter.source.DefaultLimitedResourceSource;
-import org.aoju.bus.limiter.source.LimitedResourceSource;
+import org.aoju.bus.limiter.resource.DefaultLimitedResourceSource;
+import org.aoju.bus.limiter.resource.LimitedResourceSource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ import java.util.List;
  * 限流配置
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -78,10 +78,10 @@ public class LimiterConfiguration extends AbstractLimiterConfiguration implement
                 parsersClassNames[i + len] = defaultParsers.get(i);
             }
         }
-        LimiterAnnotationParser[] parsers = new LimiterAnnotationParser[parsersClassNames.length];
+        Parser[] parsers = new Parser[parsersClassNames.length];
         for (int i = 0; i < parsersClassNames.length; i++) {
             try {
-                Class<LimiterAnnotationParser> parserClass = (Class<LimiterAnnotationParser>) Class.forName(parsersClassNames[i]);
+                Class<Parser> parserClass = (Class<Parser>) Class.forName(parsersClassNames[i]);
                 parsers[i] = parserClass.newInstance();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                 throw new InstrumentException("Class Not Found!");

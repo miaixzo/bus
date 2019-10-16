@@ -36,7 +36,7 @@ import org.aoju.bus.oauth.provider.*;
  * 授权服务提供
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
@@ -52,63 +52,63 @@ public class AuthProviderService {
      * @return {@link Provider}
      */
     public Provider get(Registry type) {
-        Context config = properties.getType().get(type);
+        Context context = properties.getType().get(type);
         if (Registry.GITHUB.equals(type)) {
-            return new GithubProvider(config, stateCache);
+            return new GithubProvider(context, stateCache);
         } else if (Registry.WEIBO.equals(type)) {
-            return new WeiboProvider(config, stateCache);
+            return new WeiboProvider(context, stateCache);
         } else if (Registry.GITEE.equals(type)) {
-            return new GiteeProvider(config, stateCache);
+            return new GiteeProvider(context, stateCache);
         } else if (Registry.DINGTALK.equals(type)) {
-            return new DingTalkProvider(config, stateCache);
+            return new DingTalkProvider(context, stateCache);
         } else if (Registry.BAIDU.equals(type)) {
-            return new BaiduProvider(config, stateCache);
+            return new BaiduProvider(context, stateCache);
         } else if (Registry.CSDN.equals(type)) {
-            return new CsdnProvider(config, stateCache);
+            return new CsdnProvider(context, stateCache);
         } else if (Registry.CODING.equals(type)) {
-            return new CodingProvider(config, stateCache);
+            return new CodingProvider(context, stateCache);
         } else if (Registry.TENCENT_CLOUD.equals(type)) {
-            return new TencentCloudProvider(config, stateCache);
+            return new TencentCloudProvider(context, stateCache);
         } else if (Registry.OSCHINA.equals(type)) {
-            return new OschinaProvider(config, stateCache);
+            return new OschinaProvider(context, stateCache);
         } else if (Registry.ALIPAY.equals(type)) {
-            return new AlipayProvider(config, stateCache);
+            return new AlipayProvider(context, stateCache);
         } else if (Registry.QQ.equals(type)) {
-            return new QqProvider(config, stateCache);
+            return new QqProvider(context, stateCache);
         } else if (Registry.WECHAT.equals(type)) {
-            return new WeChatProvider(config, stateCache);
+            return new WeChatProvider(context, stateCache);
         } else if (Registry.TAOBAO.equals(type)) {
-            return new TaobaoProvider(config, stateCache);
+            return new TaobaoProvider(context, stateCache);
         } else if (Registry.GOOGLE.equals(type)) {
-            return new GoogleProvider(config, stateCache);
+            return new GoogleProvider(context, stateCache);
         } else if (Registry.FACEBOOK.equals(type)) {
-            return new FacebookProvider(config, stateCache);
+            return new FacebookProvider(context, stateCache);
         } else if (Registry.DOUYIN.equals(type)) {
-            return new DouyinProvider(config, stateCache);
+            return new DouyinProvider(context, stateCache);
         } else if (Registry.LINKEDIN.equals(type)) {
-            return new LinkedinProvider(config, stateCache);
+            return new LinkedinProvider(context, stateCache);
         } else if (Registry.MICROSOFT.equals(type)) {
-            return new MicrosoftProvider(config, stateCache);
+            return new MicrosoftProvider(context, stateCache);
         } else if (Registry.MI.equals(type)) {
-            return new MiProvider(config, stateCache);
+            return new MiProvider(context, stateCache);
         } else if (Registry.TOUTIAO.equals(type)) {
-            return new ToutiaoProvider(config, stateCache);
+            return new ToutiaoProvider(context, stateCache);
         } else if (Registry.TEAMBITION.equals(type)) {
-            return new TeambitionProvider(config, stateCache);
+            return new TeambitionProvider(context, stateCache);
         } else if (Registry.RENREN.equals(type)) {
-            return new RenrenProvider(config, stateCache);
+            return new RenrenProvider(context, stateCache);
         } else if (Registry.PINTEREST.equals(type)) {
-            return new PinterestProvider(config, stateCache);
+            return new PinterestProvider(context, stateCache);
         } else if (Registry.STACK.equals(type)) {
-            return new StackOverflowProvider(config, stateCache);
+            return new StackOverflowProvider(context, stateCache);
         } else if (Registry.HUAWEI.equals(type)) {
-            return new HuaweiProvider(config, stateCache);
+            return new HuaweiProvider(context, stateCache);
         } else if (Registry.WECHAT_EE.equals(type)) {
-            return new WeChatEEProvider(config, stateCache);
+            return new WeChatEEProvider(context, stateCache);
         } else if (Registry.GITLAB.equals(type)) {
-            return new GitlabProvider(config, stateCache);
+            return new GitlabProvider(context, stateCache);
         } else if (Registry.KUJIALE.equals(type)) {
-            return new KujialeProvider(config, stateCache);
+            return new KujialeProvider(context, stateCache);
         }
         throw new InstrumentException(Builder.Status.UNSUPPORTED.getCode());
     }

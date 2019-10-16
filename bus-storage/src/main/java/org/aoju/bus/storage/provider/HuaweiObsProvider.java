@@ -45,26 +45,26 @@ import java.util.stream.Collectors;
  * 存储服务-华为云
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class HuaweiObsProvider extends AbstractProvider {
 
     private ObsClient client;
 
-    public HuaweiObsProvider(Context property) {
-        this.property = property;
-        Assert.notBlank(this.property.getEndpoint(), "[endpoint] not defined");
-        Assert.notBlank(this.property.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.property.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.property.getSecretKey(), "[secure] not defined");
+    public HuaweiObsProvider(Context context) {
+        this.context = context;
+        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
+        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
 
-        this.client = new ObsClient(this.property.getAccessKey(), this.property.getSecretKey(), this.property.getEndpoint());
+        this.client = new ObsClient(this.context.getAccessKey(), this.context.getSecretKey(), this.context.getEndpoint());
     }
 
     @Override
     public Readers download(String fileName) {
-        return download(this.property.getBucket(), fileName);
+        return download(this.context.getBucket(), fileName);
     }
 
     @Override
@@ -74,17 +74,17 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     @Override
     public Readers download(String fileName, File file) {
-        return download(this.property.getBucket(), fileName, file);
+        return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
     public Readers download(String bucket, String fileName, File file) {
-        return new Readers(this.client.downloadFile(new DownloadFileRequest(bucket, this.property.getAccessKey(), fileName)));
+        return new Readers(this.client.downloadFile(new DownloadFileRequest(bucket, this.context.getAccessKey(), fileName)));
     }
 
     @Override
     public Readers list() {
-        ListObjectsRequest request = new ListObjectsRequest(this.property.getBucket());
+        ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
         ObjectListing objectListing = client.listObjects(request);
 
         return new Readers(objectListing.getObjects().stream().map(item -> {
@@ -114,7 +114,7 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String fileName, byte[] content) {
-        return upload(this.property.getBucket(), fileName, content);
+        return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     @Override
     public Readers remove(String fileName) {
-        return remove(this.property.getBucket(), fileName);
+        return remove(this.context.getBucket(), fileName);
     }
 
     @Override

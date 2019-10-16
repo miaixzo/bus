@@ -52,28 +52,28 @@ import java.util.stream.Collectors;
  * 存储服务-京东云
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class JdYunOssProvider extends AbstractProvider {
 
     private AmazonS3 client;
 
-    public JdYunOssProvider(Context property) {
-        this.property = property;
-        Assert.notBlank(this.property.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.property.getEndpoint(), "[endpoint] not defined");
-        Assert.notBlank(this.property.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.property.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.property.getSecretKey(), "[secure] not defined");
-        Assert.notBlank(this.property.getRegion(), "[region] not defined");
+    public JdYunOssProvider(Context context) {
+        this.context = context;
+        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
+        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
+        Assert.notBlank(this.context.getRegion(), "[region] not defined");
 
         ClientConfiguration config = new ClientConfiguration();
 
         AwsClientBuilder.EndpointConfiguration endpointConfig =
-                new AwsClientBuilder.EndpointConfiguration(this.property.getEndpoint(), this.property.getRegion());
+                new AwsClientBuilder.EndpointConfiguration(this.context.getEndpoint(), this.context.getRegion());
 
-        AWSCredentials awsCredentials = new BasicAWSCredentials(this.property.getAccessKey(), this.property.getSecretKey());
+        AWSCredentials awsCredentials = new BasicAWSCredentials(this.context.getAccessKey(), this.context.getSecretKey());
         AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
 
         client = AmazonS3Client.builder()
@@ -87,7 +87,7 @@ public class JdYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers download(String fileName) {
-        return download(this.property.getBucket(), fileName);
+        return download(this.context.getBucket(), fileName);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class JdYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers download(String fileName, File file) {
-        return download(this.property.getBucket(), fileName, file);
+        return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class JdYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers list() {
-        ListObjectsRequest request = new ListObjectsRequest().withBucketName(this.property.getBucket());
+        ListObjectsRequest request = new ListObjectsRequest().withBucketName(this.context.getBucket());
         ObjectListing objectListing = client.listObjects(request);
         return new Readers(objectListing.getObjectSummaries().stream().map(item -> {
             Attachs storageItem = new Attachs();
@@ -136,7 +136,7 @@ public class JdYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String fileName, byte[] content) {
-        return upload(this.property.getBucket(), fileName, content);
+        return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class JdYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers remove(String fileName) {
-        return remove(this.property.getBucket(), fileName);
+        return remove(this.context.getBucket(), fileName);
     }
 
     @Override

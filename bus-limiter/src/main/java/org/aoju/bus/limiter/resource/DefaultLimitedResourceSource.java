@@ -21,12 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter.source;
+package org.aoju.bus.limiter.resource;
 
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.limiter.LimiterAnnotationParser;
-import org.aoju.bus.limiter.resource.LimitedResource;
+import org.aoju.bus.limiter.Parser;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.MethodClassKey;
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -40,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class DefaultLimitedResourceSource implements LimitedResourceSource {
@@ -49,11 +48,11 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
 
     private final Map<Object, Collection<LimitedResource>> cache = new ConcurrentHashMap(1024);
 
-    private final Set<LimiterAnnotationParser> annotationParsers;
+    private final Set<Parser> annotationParsers;
 
 
-    public DefaultLimitedResourceSource(LimiterAnnotationParser... annotationParsers) {
-        Set<LimiterAnnotationParser> parsers = new LinkedHashSet<>(annotationParsers.length);
+    public DefaultLimitedResourceSource(Parser... annotationParsers) {
+        Set<Parser> parsers = new LinkedHashSet<>(annotationParsers.length);
         Collections.addAll(parsers, annotationParsers);
         this.annotationParsers = parsers;
     }
@@ -116,7 +115,7 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
     private Collection<LimitedResource> findLimitedResourceFromAnnotatedElement(AnnotatedElement ae) {
         Annotation[] annotations = ae.getAnnotations();
         Collection<LimitedResource> retVal = null;
-        for (LimiterAnnotationParser parser : annotationParsers) {
+        for (Parser parser : annotationParsers) {
             for (Annotation ai : annotations) {
                 if (ai.annotationType().equals(parser.getSupportAnnotation())) {
                     if (retVal == null) {

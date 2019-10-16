@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.limiter.ArgumentInjector;
+import org.aoju.bus.limiter.Injector;
 import org.aoju.bus.limiter.expression.LimiterOperationExpressionEvaluator;
 import org.aoju.bus.limiter.metadata.LimitedResourceMetadata;
 import org.springframework.beans.factory.BeanFactory;
@@ -43,7 +43,7 @@ import java.util.Map;
  * limiter 上下文信息
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class LimiterExecutionContext {
@@ -140,8 +140,8 @@ public class LimiterExecutionContext {
             return emptyMap;
         }
         Map<String, Object> retVal = new HashMap<>();
-        Collection<ArgumentInjector> argumentInjectors = this.metadata.getArgumentInjectors();
-        for (ArgumentInjector argumentInjector : argumentInjectors) {
+        Collection<Injector> argumentInjectors = this.metadata.getArgumentInjectors();
+        for (Injector argumentInjector : argumentInjectors) {
             Map<String, Object> tempMap = argumentInjector.inject(this.args);
             if (!tempMap.isEmpty()) {
                 retVal.putAll(tempMap);

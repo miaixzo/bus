@@ -43,17 +43,17 @@ import java.util.Map;
  * 钉钉登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class DingTalkProvider extends DefaultProvider {
 
-    public DingTalkProvider(Context config) {
-        super(config, Registry.DINGTALK);
+    public DingTalkProvider(Context context) {
+        super(context, Registry.DINGTALK);
     }
 
-    public DingTalkProvider(Context config, StateCache stateCache) {
-        super(config, Registry.DINGTALK, stateCache);
+    public DingTalkProvider(Context context, StateCache stateCache) {
+        super(context, Registry.DINGTALK, stateCache);
     }
 
     @Override
@@ -97,9 +97,9 @@ public class DingTalkProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("appid", config.getClientId())
+                .queryParam("appid", context.getClientId())
                 .queryParam("scope", "snsapi_login")
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .build();
     }
@@ -114,12 +114,12 @@ public class DingTalkProvider extends DefaultProvider {
     protected String userInfoUrl(AccToken token) {
         // 根据timestamp, appSecret计算签名值
         String timestamp = System.currentTimeMillis() + "";
-        String urlEncodeSignature = generateDingTalkSignature(config.getClientSecret(), timestamp);
+        String urlEncodeSignature = generateDingTalkSignature(context.getClientSecret(), timestamp);
 
         return Builder.fromBaseUrl(source.userInfo())
                 .queryParam("signature", urlEncodeSignature)
                 .queryParam("timestamp", timestamp)
-                .queryParam("accessKey", config.getClientId())
+                .queryParam("accessKey", context.getClientId())
                 .build();
     }
 

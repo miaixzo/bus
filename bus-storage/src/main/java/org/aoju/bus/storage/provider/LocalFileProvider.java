@@ -17,13 +17,13 @@ import java.nio.file.Path;
  * 本地文件上传
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class LocalFileProvider extends AbstractProvider {
 
-    public LocalFileProvider(Context property) {
-        this.property = property;
+    public LocalFileProvider(Context context) {
+        this.context = context;
     }
 
     @Override

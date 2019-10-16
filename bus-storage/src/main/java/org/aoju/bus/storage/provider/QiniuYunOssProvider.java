@@ -49,7 +49,7 @@ import java.nio.file.Path;
  * 存储服务-七牛
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class QiniuYunOssProvider extends AbstractProvider {
@@ -58,18 +58,18 @@ public class QiniuYunOssProvider extends AbstractProvider {
     private BucketManager bucketManager;
     private Auth auth;
 
-    public QiniuYunOssProvider(Context property) {
-        this.property = property;
-        Assert.notBlank(this.property.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.property.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.property.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.property.getSecretKey(), "[secretKey] not defined");
-        Assert.notBlank(this.property.getRegion(), "[region] not defined");
-        Assert.notNull(this.property.isSecure(), "[secure] not defined");
+    public QiniuYunOssProvider(Context context) {
+        this.context = context;
+        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
+        Assert.notBlank(this.context.getRegion(), "[region] not defined");
+        Assert.notNull(this.context.isSecure(), "[secure] not defined");
 
-        this.auth = Auth.create(this.property.getAccessKey(), this.property.getSecretKey());
+        this.auth = Auth.create(this.context.getAccessKey(), this.context.getSecretKey());
 
-        Region region = Region.autoRegion(this.property.getRegion());
+        Region region = Region.autoRegion(this.context.getRegion());
         Configuration c = new Configuration(region);
         this.uploadManager = new UploadManager(c);
         this.bucketManager = new BucketManager(auth, c);
@@ -78,7 +78,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
     @Override
     public Readers download(String fileKey) {
         String path = getFullPath(fileKey);
-        if (this.property.isSecure()) {
+        if (this.context.isSecure()) {
             path = this.auth.privateDownloadUrl(path, 3600);
         }
         try {
@@ -123,7 +123,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String fileName, byte[] content) {
-        return upload(this.property.getBucket(), fileName, content);
+        return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
@@ -166,9 +166,9 @@ public class QiniuYunOssProvider extends AbstractProvider {
     public Readers remove(String fileKey) {
         try {
             if (fileKey.contains(Symbol.SLASH)) {
-                fileKey = fileKey.replace(this.property.getPrefix(), "");
+                fileKey = fileKey.replace(this.context.getPrefix(), "");
             }
-            bucketManager.delete(this.property.getBucket(), fileKey);
+            bucketManager.delete(this.context.getBucket(), fileKey);
             return new Readers(Builder.SUCCESS);
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());

@@ -40,17 +40,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 酷家乐授权登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class KujialeProvider extends DefaultProvider {
 
-    public KujialeProvider(Context config) {
-        super(config, Registry.KUJIALE);
+    public KujialeProvider(Context context) {
+        super(context, Registry.KUJIALE);
     }
 
-    public KujialeProvider(Context config, StateCache stateCache) {
-        super(config, Registry.KUJIALE, stateCache);
+    public KujialeProvider(Context context, StateCache stateCache) {
+        super(context, Registry.KUJIALE, stateCache);
     }
 
     /**
@@ -77,8 +77,8 @@ public class KujialeProvider extends DefaultProvider {
     public String authorize(String state, String scopeStr) {
         Builder builder = Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state));
         if (StringUtils.isNotEmpty(scopeStr)) {
             builder.queryParam("scope", scopeStr);

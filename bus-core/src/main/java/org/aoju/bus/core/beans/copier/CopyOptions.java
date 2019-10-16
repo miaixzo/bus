@@ -36,7 +36,7 @@ import java.util.Map;
  * 3、忽略的属性列表，设置一个属性列表，不拷贝这些属性值
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class CopyOptions {

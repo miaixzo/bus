@@ -45,35 +45,35 @@ import java.util.stream.Collectors;
  * 存储服务-阿里云
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class AliYunOssProvider extends AbstractProvider {
 
     private OSSClient client;
 
-    public AliYunOssProvider(Context property) {
-        this.property = property;
-        Assert.notBlank(this.property.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.property.getEndpoint(), "[endpoint] not defined");
-        Assert.notBlank(this.property.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.property.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.property.getSecretKey(), "[secretKey] not defined");
-        Assert.notNull(this.property.isSecure(), "[secure] not defined");
+    public AliYunOssProvider(Context context) {
+        this.context = context;
+        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
+        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
+        Assert.notNull(this.context.isSecure(), "[secure] not defined");
 
-        this.client = new OSSClient(this.property.getEndpoint(), new DefaultCredentialProvider(this.property.getAccessKey(), this.property.getSecretKey()), null);
-        if (!this.client.doesBucketExist(this.property.getBucket())) {
-            System.out.println("Creating bucket " + this.property.getBucket() + "\n");
-            this.client.createBucket(this.property.getBucket());
-            CreateBucketRequest createBucketRequest = new CreateBucketRequest(this.property.getBucket());
-            createBucketRequest.setCannedACL(this.property.isSecure() ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead);
+        this.client = new OSSClient(this.context.getEndpoint(), new DefaultCredentialProvider(this.context.getAccessKey(), this.context.getSecretKey()), null);
+        if (!this.client.doesBucketExist(this.context.getBucket())) {
+            System.out.println("Creating bucket " + this.context.getBucket() + "\n");
+            this.client.createBucket(this.context.getBucket());
+            CreateBucketRequest createBucketRequest = new CreateBucketRequest(this.context.getBucket());
+            createBucketRequest.setCannedACL(this.context.isSecure() ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead);
             this.client.createBucket(createBucketRequest);
         }
     }
 
     @Override
     public Readers download(String fileName) {
-        return download(this.property.getBucket(), fileName);
+        return download(this.context.getBucket(), fileName);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class AliYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers download(String fileName, File file) {
-        return download(this.property.getBucket(), fileName, file);
+        return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class AliYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers list() {
-        ListObjectsRequest request = new ListObjectsRequest(this.property.getBucket());
+        ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
         ObjectListing objectListing = client.listObjects(request);
         return new Readers(objectListing.getObjectSummaries().stream().map(item -> {
             Attachs storageItem = new Attachs();
@@ -125,7 +125,7 @@ public class AliYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers rename(String oldName, String newName) {
-        return rename(this.property.getBucket(), oldName, newName);
+        return rename(this.context.getBucket(), oldName, newName);
     }
 
     @Override
@@ -144,14 +144,14 @@ public class AliYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String fileName, byte[] content) {
-        return upload(this.property.getBucket(), fileName, content);
+        return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
     public Readers upload(String bucketName, String fileName, InputStream content) {
         try {
             byte[] bytes = new byte[content.available()];
-            return upload(this.property.getBucket(), fileName, bytes);
+            return upload(this.context.getBucket(), fileName, bytes);
         } catch (IOException e) {
             Logger.error("file upload failed ", e.getMessage());
         }
@@ -180,7 +180,7 @@ public class AliYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers remove(String fileName) {
-        return remove(this.property.getBucket(), fileName);
+        return remove(this.context.getBucket(), fileName);
     }
 
     @Override

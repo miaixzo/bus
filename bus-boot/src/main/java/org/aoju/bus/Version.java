@@ -25,13 +25,14 @@ package org.aoju.bus;
 
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.utils.StringUtils;
 
 /**
  * 用于识别当前版本号和版权声明!
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class Version {
@@ -59,7 +60,7 @@ public class Version {
      */
 
     public static String get() {
-        return major() + "." + minor() + "." + stage() + "." + level();
+        return "5.0.3.RELEASE";
     }
 
     /**
@@ -68,7 +69,7 @@ public class Version {
      * @return 版本号
      */
     public static String major() {
-        return "3";
+        return StringUtils.split(get(), Symbol.DOT)[0];
     }
 
     /**
@@ -77,7 +78,7 @@ public class Version {
      * @return 次要号
      */
     public static String minor() {
-        return "6";
+        return StringUtils.split(get(), Symbol.DOT)[1];
     }
 
     /**
@@ -86,7 +87,7 @@ public class Version {
      * @return 阶段号
      */
     public static String stage() {
-        return "8";
+        return StringUtils.split(get(), Symbol.DOT)[2];
     }
 
     /**
@@ -95,7 +96,7 @@ public class Version {
      * @return 质量
      */
     public static String level() {
-        return "RELEASE";
+        return StringUtils.split(get(), Symbol.DOT)[3];
     }
 
     /**

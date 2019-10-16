@@ -40,17 +40,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class ToutiaoProvider extends DefaultProvider {
 
-    public ToutiaoProvider(Context config) {
-        super(config, Registry.TOUTIAO);
+    public ToutiaoProvider(Context context) {
+        super(context, Registry.TOUTIAO);
     }
 
-    public ToutiaoProvider(Context config, StateCache stateCache) {
-        super(config, Registry.TOUTIAO, stateCache);
+    public ToutiaoProvider(Context context, StateCache stateCache) {
+        super(context, Registry.TOUTIAO, stateCache);
     }
 
     @Override
@@ -100,8 +100,8 @@ public class ToutiaoProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_key", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_key", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("auth_only", 1)
                 .queryParam("display", 0)
                 .queryParam("state", getRealState(state))
@@ -118,8 +118,8 @@ public class ToutiaoProvider extends DefaultProvider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_key", config.getClientId())
-                .queryParam("client_secret", config.getClientSecret())
+                .queryParam("client_key", context.getClientId())
+                .queryParam("client_secret", context.getClientSecret())
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -133,7 +133,7 @@ public class ToutiaoProvider extends DefaultProvider {
     @Override
     protected String userInfoUrl(AccToken token) {
         return Builder.fromBaseUrl(source.userInfo())
-                .queryParam("client_key", config.getClientId())
+                .queryParam("client_key", context.getClientId())
                 .queryParam("access_token", token.getAccessToken())
                 .build();
     }

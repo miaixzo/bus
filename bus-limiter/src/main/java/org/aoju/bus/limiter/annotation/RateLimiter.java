@@ -26,15 +26,17 @@ package org.aoju.bus.limiter.annotation;
 import java.lang.annotation.*;
 
 /**
+ * 限流
+ *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface HPeak {
+public @interface RateLimiter {
 
     String limiter() default "";
 
@@ -47,10 +49,18 @@ public @interface HPeak {
     String[] argumentInjectors() default {};
 
     /**
-     * 最大并发数
+     * 限制的频率 默认 1次/秒
      *
-     * @return the int
+     * @return the double
      */
-    int max() default 10;
+    double rate() default 10.0d;
+
+    /**
+     * 最大可累计的令牌容量
+     * 默认为 1 且最小为1
+     *
+     * @return the long
+     */
+    long capacity() default 10;
 
 }

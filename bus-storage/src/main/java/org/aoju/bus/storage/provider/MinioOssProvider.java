@@ -53,36 +53,36 @@ import java.util.stream.StreamSupport;
  * 存储服务-MinIO
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class MinioOssProvider extends AbstractProvider {
 
     private MinioClient client;
 
-    public MinioOssProvider(Context property) {
-        this.property = property;
-        Assert.notBlank(this.property.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.property.getEndpoint(), "[endpoint] not defined");
-        Assert.notBlank(this.property.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.property.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.property.getSecretKey(), "[secretKey] not defined");
-        Assert.notNull(this.property.isSecure(), "[secure] not defined");
-        Assert.notBlank(StringUtils.toString(this.property.getReadTimeout()), "[readTimeout] not defined");
-        Assert.notBlank(StringUtils.toString(this.property.getConnectTimeout()), "[connectTimeout] not defined");
-        Assert.notBlank(StringUtils.toString(this.property.getWriteTimeout()), "[writeTimeout] not defined");
-        Assert.notBlank(StringUtils.toString(this.property.getReadTimeout()), "[readTimeout] not defined");
+    public MinioOssProvider(Context context) {
+        this.context = context;
+        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
+        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
+        Assert.notNull(this.context.isSecure(), "[secure] not defined");
+        Assert.notBlank(StringUtils.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
+        Assert.notBlank(StringUtils.toString(this.context.getConnectTimeout()), "[connectTimeout] not defined");
+        Assert.notBlank(StringUtils.toString(this.context.getWriteTimeout()), "[writeTimeout] not defined");
+        Assert.notBlank(StringUtils.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
         try {
             this.client = new MinioClient(
-                    this.property.getEndpoint(),
-                    this.property.getAccessKey(),
-                    this.property.getSecretKey(),
-                    this.property.isSecure()
+                    this.context.getEndpoint(),
+                    this.context.getAccessKey(),
+                    this.context.getSecretKey(),
+                    this.context.isSecure()
             );
             this.client.setTimeout(
-                    Duration.ofSeconds(this.property.getConnectTimeout() != 0 ? this.property.getConnectTimeout() : 10).toMillis(),
-                    Duration.ofSeconds(this.property.getWriteTimeout() != 60 ? this.property.getWriteTimeout() : 60).toMillis(),
-                    Duration.ofSeconds(this.property.getReadTimeout() != 0 ? this.property.getReadTimeout() : 10).toMillis()
+                    Duration.ofSeconds(this.context.getConnectTimeout() != 0 ? this.context.getConnectTimeout() : 10).toMillis(),
+                    Duration.ofSeconds(this.context.getWriteTimeout() != 60 ? this.context.getWriteTimeout() : 60).toMillis(),
+                    Duration.ofSeconds(this.context.getReadTimeout() != 0 ? this.context.getReadTimeout() : 10).toMillis()
             );
         } catch (InvalidPortException | InvalidEndpointException ex) {
             throw new InstrumentException(ex.getMessage());
@@ -91,7 +91,7 @@ public class MinioOssProvider extends AbstractProvider {
 
     @Override
     public Readers download(String fileName) {
-        return download(this.property.getBucket(), fileName);
+        return download(this.context.getBucket(), fileName);
     }
 
     @Override
@@ -120,13 +120,13 @@ public class MinioOssProvider extends AbstractProvider {
 
     @Override
     public Readers download(String fileName, File file) {
-        return download(this.property.getBucket(), fileName, file);
+        return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
     public Readers list() {
         try {
-            Iterable<Result<Item>> iterable = this.client.listObjects(this.property.getBucket());
+            Iterable<Result<Item>> iterable = this.client.listObjects(this.context.getBucket());
             return new Readers(StreamSupport
                     .stream(iterable.spliterator(), true)
                     .map(itemResult -> {
@@ -173,7 +173,7 @@ public class MinioOssProvider extends AbstractProvider {
     @Override
     public Readers upload(String fileName, byte[] content) {
         InputStream stream = new ByteArrayInputStream(content);
-        return upload(this.property.getBucket(), fileName, stream);
+        return upload(this.context.getBucket(), fileName, stream);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class MinioOssProvider extends AbstractProvider {
                     ContentType.APPLICATION_OCTET_STREAM.getMimeType());
             return new Readers(Attachs.builder()
                     .name(fileName)
-                    .path(this.property.getPrefix() + fileName)
+                    .path(this.context.getPrefix() + fileName)
                     .build());
         } catch (Exception e) {
             Logger.error("file upload failed", e.getMessage());
@@ -198,7 +198,7 @@ public class MinioOssProvider extends AbstractProvider {
 
     @Override
     public Readers remove(String fileName) {
-        return remove(this.property.getBucket(), fileName);
+        return remove(this.context.getBucket(), fileName);
     }
 
     @Override

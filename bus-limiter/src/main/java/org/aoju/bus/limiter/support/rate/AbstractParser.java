@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter;
+package org.aoju.bus.limiter.support.rate;
 
+import org.aoju.bus.limiter.Limiter;
+import org.aoju.bus.limiter.Parser;
 import org.springframework.core.annotation.AnnotationAttributes;
 
 import java.lang.annotation.Annotation;
@@ -32,10 +34,10 @@ import java.util.Collection;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public abstract class AbstractLimiterAnnotationParser<T extends Limiter<?>, V extends Annotation> implements LimiterAnnotationParser<T> {
+public abstract class AbstractParser<T extends Limiter<?>, V extends Annotation> implements Parser<T> {
 
     private Class<Annotation> supportAnnotation;
 

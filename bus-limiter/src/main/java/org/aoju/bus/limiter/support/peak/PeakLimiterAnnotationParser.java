@@ -23,17 +23,17 @@
  */
 package org.aoju.bus.limiter.support.peak;
 
-import org.aoju.bus.limiter.AbstractLimiterAnnotationParser;
-import org.aoju.bus.limiter.annotation.HPeak;
+import org.aoju.bus.limiter.support.rate.AbstractParser;
+import org.aoju.bus.limiter.annotation.Peak;
 import org.aoju.bus.limiter.resource.LimitedResource;
 import org.springframework.core.annotation.AnnotationAttributes;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public class PeakLimiterAnnotationParser extends AbstractLimiterAnnotationParser<PeakLimiter, HPeak> {
+public class PeakLimiterAnnotationParser extends AbstractParser<PeakLimiter, Peak> {
 
     @Override
     public LimitedResource<PeakLimiter> parseLimiterAnnotation(AnnotationAttributes attributes) {

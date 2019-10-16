@@ -43,24 +43,24 @@ import java.util.Map;
  * 美团登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class MeituanProvider extends DefaultProvider {
 
-    public MeituanProvider(Context config) {
-        super(config, Registry.MEITUAN);
+    public MeituanProvider(Context context) {
+        super(context, Registry.MEITUAN);
     }
 
-    public MeituanProvider(Context config, StateCache stateCache) {
-        super(config, Registry.MEITUAN, stateCache);
+    public MeituanProvider(Context context, StateCache stateCache) {
+        super(context, Registry.MEITUAN, stateCache);
     }
 
     @Override
     protected AccToken getAccessToken(Callback Callback) {
         Map<String, Object> params = new HashMap<>();
-        params.put("app_id", config.getClientId());
-        params.put("secret", config.getClientSecret());
+        params.put("app_id", context.getClientId());
+        params.put("secret", context.getClientSecret());
         params.put("code", Callback.getCode());
         params.put("grant_type", "authorization_code");
 
@@ -79,8 +79,8 @@ public class MeituanProvider extends DefaultProvider {
     @Override
     protected Property getUserInfo(AccToken token) {
         Map<String, Object> params = new HashMap<>();
-        params.put("app_id", config.getClientId());
-        params.put("secret", config.getClientSecret());
+        params.put("app_id", context.getClientId());
+        params.put("secret", context.getClientSecret());
         params.put("access_token", token.getAccessToken());
 
         String response = HttpClient.post(source.refresh(), params);
@@ -102,8 +102,8 @@ public class MeituanProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken oldToken) {
         Map<String, Object> params = new HashMap<>();
-        params.put("app_id", config.getClientId());
-        params.put("secret", config.getClientSecret());
+        params.put("app_id", context.getClientId());
+        params.put("secret", context.getClientSecret());
         params.put("refresh_token", oldToken.getRefreshToken());
         params.put("grant_type", "refresh_token");
 
@@ -132,8 +132,8 @@ public class MeituanProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("app_id", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("app_id", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .queryParam("scope", "")
                 .build();

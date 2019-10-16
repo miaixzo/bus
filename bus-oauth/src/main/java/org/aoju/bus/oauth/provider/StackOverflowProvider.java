@@ -39,17 +39,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Stack Overflow登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class StackOverflowProvider extends DefaultProvider {
 
-    public StackOverflowProvider(Context config) {
-        super(config, Registry.STACK);
+    public StackOverflowProvider(Context context) {
+        super(context, Registry.STACK);
     }
 
-    public StackOverflowProvider(Context config, StateCache stateCache) {
-        super(config, Registry.STACK, stateCache);
+    public StackOverflowProvider(Context context, StateCache stateCache) {
+        super(context, Registry.STACK, stateCache);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class StackOverflowProvider extends DefaultProvider {
         String userInfoUrl = Builder.fromBaseUrl(this.source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("site", "stackoverflow")
-                .queryParam("key", this.config.getStackOverflowKey())
+                .queryParam("key", this.context.getStackOverflowKey())
                 .build();
         JSONObject object = JSONObject.parseObject(HttpClient.get(userInfoUrl));
         this.checkResponse(object);
@@ -100,8 +100,8 @@ public class StackOverflowProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "read_inbox")
                 .queryParam("state", getRealState(state))
                 .build();

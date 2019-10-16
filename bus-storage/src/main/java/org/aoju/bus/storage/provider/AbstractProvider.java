@@ -39,12 +39,12 @@ import java.net.URL;
  * 预定义存储实现
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {
 
-    protected Context property;
+    protected Context context;
 
     protected static String downloadFile(String fileURL, String saveDir) {
         HttpURLConnection httpConn = null;
@@ -103,7 +103,7 @@ public abstract class AbstractProvider implements Provider {
         if (file.startsWith(Httpd.HTTP_PREFIX) || file.startsWith(Httpd.HTTPS_PREFIX)) {
             return file;
         }
-        return this.property.getPrefix() + file;
+        return this.context.getPrefix() + file;
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.Comparator;
  *
  * @param <E> 被比较对象类型
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class ReverseComparator<E> implements Comparator<E>, Serializable {

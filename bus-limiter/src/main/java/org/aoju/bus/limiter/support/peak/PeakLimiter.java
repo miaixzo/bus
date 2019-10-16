@@ -24,16 +24,16 @@
 package org.aoju.bus.limiter.support.peak;
 
 import org.aoju.bus.limiter.Limiter;
-import org.aoju.bus.limiter.annotation.HPeak;
+import org.aoju.bus.limiter.annotation.Peak;
 
 import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public abstract class PeakLimiter implements Limiter<HPeak> {
+public abstract class PeakLimiter implements Limiter<Peak> {
 
     public abstract boolean acquire(Object key, int max);
 

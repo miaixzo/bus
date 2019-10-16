@@ -23,20 +23,19 @@
  */
 package org.aoju.bus.limiter.support.rate;
 
-import org.aoju.bus.limiter.AbstractLimiterAnnotationParser;
-import org.aoju.bus.limiter.annotation.HRateLimiter;
+import org.aoju.bus.limiter.annotation.RateLimiter;
 import org.aoju.bus.limiter.resource.LimitedResource;
 import org.springframework.core.annotation.AnnotationAttributes;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public class RateLimiterAnnotationParser extends AbstractLimiterAnnotationParser<RateLimiter, HRateLimiter> {
+public class RateLimiterAnnotationParser extends AbstractParser<org.aoju.bus.limiter.support.rate.RateLimiter, RateLimiter> {
 
     @Override
-    public LimitedResource<RateLimiter> parseLimiterAnnotation(AnnotationAttributes attributes) {
+    public LimitedResource<org.aoju.bus.limiter.support.rate.RateLimiter> parseLimiterAnnotation(AnnotationAttributes attributes) {
         return new RateLimiterResource(getKey(attributes),
                 getArgumentInjectors(attributes),
                 getFallback(attributes),

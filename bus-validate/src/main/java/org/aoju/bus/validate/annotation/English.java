@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * 判断是否为英文
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

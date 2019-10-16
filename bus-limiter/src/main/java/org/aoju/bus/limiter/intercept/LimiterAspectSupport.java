@@ -29,7 +29,7 @@ import org.aoju.bus.limiter.execute.LimiterExecutionContext;
 import org.aoju.bus.limiter.metadata.LimitedResourceMetadata;
 import org.aoju.bus.limiter.metadata.LimitedResourceMetadataCache;
 import org.aoju.bus.limiter.resource.LimitedResource;
-import org.aoju.bus.limiter.source.LimitedResourceSource;
+import org.aoju.bus.limiter.resource.LimitedResourceSource;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
@@ -48,7 +48,7 @@ import java.util.Collection;
  * 使用beanfactory的一些基础设施
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public abstract class LimiterAspectSupport implements BeanFactoryAware, InitializingBean, SmartInitializingSingleton {

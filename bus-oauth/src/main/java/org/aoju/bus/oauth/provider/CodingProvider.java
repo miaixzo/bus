@@ -38,17 +38,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Cooding登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class CodingProvider extends DefaultProvider {
 
-    public CodingProvider(Context config) {
-        super(config, Registry.CODING);
+    public CodingProvider(Context context) {
+        super(context, Registry.CODING);
     }
 
-    public CodingProvider(Context config, StateCache stateCache) {
-        super(config, Registry.CODING, stateCache);
+    public CodingProvider(Context context, StateCache stateCache) {
+        super(context, Registry.CODING, stateCache);
     }
 
     @Override
@@ -106,8 +106,8 @@ public class CodingProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "user")
                 .queryParam("state", getRealState(state))
                 .build();

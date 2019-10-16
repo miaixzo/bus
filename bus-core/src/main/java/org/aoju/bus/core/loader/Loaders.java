@@ -32,7 +32,7 @@ import java.util.jar.JarFile;
  * 资源加载器工具类
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public abstract class Loaders {

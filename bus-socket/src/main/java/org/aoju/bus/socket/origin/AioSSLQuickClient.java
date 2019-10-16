@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutionException;
  * AIO实现的客户端服务
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public final class AioSSLQuickClient<T> extends AioQuickClient<T> {

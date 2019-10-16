@@ -44,27 +44,27 @@ import java.util.stream.Collectors;
  * 存储服务-又拍云
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class UpaiYunOssProvider extends AbstractProvider {
 
     private UpYun client;
 
-    public UpaiYunOssProvider(Context property) {
-        this.property = property;
-        Assert.notBlank(this.property.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.property.getEndpoint(), "[endpoint] not defined");
-        Assert.notBlank(this.property.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.property.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.property.getSecretKey(), "[secure] not defined");
+    public UpaiYunOssProvider(Context context) {
+        this.context = context;
+        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
+        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
 
-        this.client = new UpYun(this.property.getBucket(), this.property.getAccessKey(), this.property.getSecretKey());
+        this.client = new UpYun(this.context.getBucket(), this.context.getAccessKey(), this.context.getSecretKey());
     }
 
     @Override
     public Readers download(String fileName) {
-        return download(this.property.getBucket(), fileName);
+        return download(this.context.getBucket(), fileName);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class UpaiYunOssProvider extends AbstractProvider {
     @Override
     public Readers list() {
         try {
-            List<UpYun.FolderItem> list = client.readDir(this.property.getPrefix());
+            List<UpYun.FolderItem> list = client.readDir(this.context.getPrefix());
             return new Readers(list.stream().map(item -> {
                 Attachs storageItem = new Attachs();
                 storageItem.setName(item.name);
@@ -117,7 +117,7 @@ public class UpaiYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String fileName, byte[] content) {
-        return upload(this.property.getBucket(), fileName, content);
+        return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override

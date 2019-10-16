@@ -38,17 +38,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Gitlab登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class GitlabProvider extends DefaultProvider {
 
-    public GitlabProvider(Context config) {
-        super(config, Registry.GITLAB);
+    public GitlabProvider(Context context) {
+        super(context, Registry.GITLAB);
     }
 
-    public GitlabProvider(Context config, StateCache stateCache) {
-        super(config, Registry.GITLAB, stateCache);
+    public GitlabProvider(Context context, StateCache stateCache) {
+        super(context, Registry.GITLAB, stateCache);
     }
 
     @Override

@@ -21,13 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter.source;
+package org.aoju.bus.limiter.resource;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.limiter.LimiterAnnotationParser;
-import org.aoju.bus.limiter.resource.LimitedResource;
+import org.aoju.bus.limiter.Parser;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -43,7 +42,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class LimitedResourceScanner implements LimitedResourceSource {
@@ -55,10 +54,10 @@ public class LimitedResourceScanner implements LimitedResourceSource {
     private ResourcePatternResolver resourcePatternResolver;
     private MetadataReaderFactory metadataReaderFactory;
     private String basePackage;
-    private Collection<LimiterAnnotationParser> limiterAnnotationParsers;
+    private Collection<Parser> limiterAnnotationParsers;
 
 
-    public LimitedResourceScanner(String basePackage, Collection<LimiterAnnotationParser> limiterAnnotationParsers, ResourceLoader resourceLoader) {
+    public LimitedResourceScanner(String basePackage, Collection<Parser> limiterAnnotationParsers, ResourceLoader resourceLoader) {
         this.basePackage = basePackage;
         this.limiterAnnotationParsers = limiterAnnotationParsers;
         this.resourcePatternResolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
@@ -77,7 +76,7 @@ public class LimitedResourceScanner implements LimitedResourceSource {
                     if (classVisitor.isInterface() || classVisitor.isAbstract()) {
                         continue;
                     }
-                    for (LimiterAnnotationParser parser : limiterAnnotationParsers) {
+                    for (Parser parser : limiterAnnotationParsers) {
                         Set<MethodMetadata> methodMetadata = classVisitor.getAnnotatedMethods(parser.getSupportAnnotation().getName());
                         if (CollUtils.isEmpty(methodMetadata)) {
                             continue;

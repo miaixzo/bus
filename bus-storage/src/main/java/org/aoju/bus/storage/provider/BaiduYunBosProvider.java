@@ -47,31 +47,31 @@ import java.util.stream.Collectors;
  * 存储服务-百度云
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class BaiduYunBosProvider extends AbstractProvider {
 
     private BosClient client;
 
-    public BaiduYunBosProvider(Context property) {
-        this.property = property;
-        Assert.notBlank(this.property.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.property.getEndpoint(), "[endpoint] not defined");
-        Assert.notBlank(this.property.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.property.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.property.getSecretKey(), "[secure] not defined");
-        Assert.notNull(this.property.isSecure(), "[secure] not defined");
+    public BaiduYunBosProvider(Context context) {
+        this.context = context;
+        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
+        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
+        Assert.notNull(this.context.isSecure(), "[secure] not defined");
 
         BosClientConfiguration config = new BosClientConfiguration();
-        config.setCredentials(new DefaultBceCredentials(this.property.getAccessKey(), this.property.getSecretKey()));
-        config.setEndpoint(this.property.getEndpoint());
+        config.setCredentials(new DefaultBceCredentials(this.context.getAccessKey(), this.context.getSecretKey()));
+        config.setEndpoint(this.context.getEndpoint());
         this.client = new BosClient(config);
     }
 
     @Override
     public Readers download(String fileName) {
-        return download(this.property.getBucket(), fileName);
+        return download(this.context.getBucket(), fileName);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
 
     @Override
     public Readers download(String fileName, File file) {
-        return download(this.property.getBucket(), fileName, file);
+        return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
 
     @Override
     public Readers list() {
-        ListObjectsRequest request = new ListObjectsRequest(this.property.getBucket());
+        ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
         ListObjectsResponse objectListing = this.client.listObjects(request);
         return new Readers(objectListing.getContents().stream().map(item -> {
             Attachs storageItem = new Attachs();
@@ -120,7 +120,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String fileName, byte[] content) {
-        return upload(this.property.getBucket(), fileName, content);
+        return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
 
     @Override
     public Readers remove(String fileName) {
-        return remove(this.property.getBucket(), fileName);
+        return remove(this.context.getBucket(), fileName);
     }
 
     @Override

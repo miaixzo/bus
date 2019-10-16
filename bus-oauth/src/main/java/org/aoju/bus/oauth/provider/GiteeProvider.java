@@ -37,17 +37,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Gitee登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class GiteeProvider extends DefaultProvider {
 
-    public GiteeProvider(Context config) {
-        super(config, Registry.GITEE);
+    public GiteeProvider(Context context) {
+        super(context, Registry.GITEE);
     }
 
-    public GiteeProvider(Context config, StateCache stateCache) {
-        super(config, Registry.GITEE, stateCache);
+    public GiteeProvider(Context context, StateCache stateCache) {
+        super(context, Registry.GITEE, stateCache);
     }
 
     @Override

@@ -24,16 +24,19 @@
 package org.aoju.bus.limiter;
 
 import org.aoju.bus.limiter.resource.LimitedResource;
+import org.springframework.core.annotation.AnnotationAttributes;
 
-import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public interface LimitedFallbackResolver<T> {
+public interface Parser<T extends Limiter> {
 
-    T resolve(Method method, Class<?> clazz, Object[] args, LimitedResource limitedResource, Object target);
+    Class<Annotation> getSupportAnnotation();
+
+    LimitedResource<T> parseLimiterAnnotation(AnnotationAttributes attributes);
 
 }

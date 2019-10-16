@@ -44,7 +44,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
@@ -211,7 +211,7 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
             return null;
         }
         if (StringUtils.isEmpty(entity.getStatus())) {
-            entity.setStatus(Consts.STATUS_ENABLED);
+            entity.setStatus(Consts.STATUS_ONE);
         }
         entity.setCreateInfo(entity);
         entity.setUpdatedInfo(entity);

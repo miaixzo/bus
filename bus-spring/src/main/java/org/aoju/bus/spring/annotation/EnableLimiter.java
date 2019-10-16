@@ -36,7 +36,7 @@ import static org.springframework.context.annotation.AdviceMode.PROXY;
  * 限流降级
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 @Target(ElementType.TYPE)

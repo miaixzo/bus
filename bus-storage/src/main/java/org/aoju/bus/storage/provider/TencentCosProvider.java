@@ -50,24 +50,24 @@ import java.nio.file.Path;
  * 存储服务-腾讯云
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class TencentCosProvider extends AbstractProvider {
 
     private COSClient client;
 
-    public TencentCosProvider(Context property) {
-        this.property = property;
-        Assert.notBlank(this.property.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.property.getBucket(), "[bucket] not defined");
-        Assert.notBlank(this.property.getAccessKey(), "[accessKey] not defined");
-        Assert.notBlank(this.property.getSecretKey(), "[secretKey] not defined");
-        Assert.notBlank(this.property.getRegion(), "[region] not defined");
+    public TencentCosProvider(Context context) {
+        this.context = context;
+        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+        Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
+        Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
+        Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
+        Assert.notBlank(this.context.getRegion(), "[region] not defined");
 
         this.client = new COSClient(
-                new BasicCOSCredentials(this.property.getAccessKey(), this.property.getSecretKey()),
-                new ClientConfig(new Region(this.property.getRegion()))
+                new BasicCOSCredentials(this.context.getAccessKey(), this.context.getSecretKey()),
+                new ClientConfig(new Region(this.context.getRegion()))
         );
     }
 
@@ -110,7 +110,7 @@ public class TencentCosProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String fileName, byte[] content) {
-        return upload(this.property.getBucket(), fileName, content);
+        return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
@@ -122,13 +122,13 @@ public class TencentCosProvider extends AbstractProvider {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         try {
             objectMetadata.setContentLength(content.available());
-            PutObjectRequest request = new PutObjectRequest(this.property.getBucket(), fileName, content, objectMetadata);
+            PutObjectRequest request = new PutObjectRequest(this.context.getBucket(), fileName, content, objectMetadata);
             PutObjectResult result = this.client.putObject(request);
             if (StringUtils.isEmpty(result.getETag())) {
                 return new Readers(Builder.FAILURE);
             }
             return new Readers(Attachs.builder()
-                    .path(this.property.getPrefix() + fileName)
+                    .path(this.context.getPrefix() + fileName)
                     .name(fileName)
                     .build());
         } catch (IOException e) {
@@ -146,7 +146,7 @@ public class TencentCosProvider extends AbstractProvider {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         // 设置输入流长度为 500
         objectMetadata.setContentLength(content.length);
-        PutObjectRequest request = new PutObjectRequest(this.property.getBucket(), fileName,
+        PutObjectRequest request = new PutObjectRequest(this.context.getBucket(), fileName,
                 new ByteArrayInputStream(content), objectMetadata);
         PutObjectResult result = this.client.putObject(request);
         if (StringUtils.isEmpty(result.getETag())) {
@@ -154,7 +154,7 @@ public class TencentCosProvider extends AbstractProvider {
         }
         return new Readers(Attachs.builder()
                 .name(fileName)
-                .path(this.property.getPrefix() + fileName)
+                .path(this.context.getPrefix() + fileName)
                 .build());
     }
 

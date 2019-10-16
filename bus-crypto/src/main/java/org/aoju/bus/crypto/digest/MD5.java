@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
  * MD5算法
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class MD5 extends Digester {

@@ -23,17 +23,17 @@
  */
 package org.aoju.bus.limiter.support.lock;
 
-import org.aoju.bus.limiter.AbstractLimiterAnnotationParser;
-import org.aoju.bus.limiter.annotation.HLock;
+import org.aoju.bus.limiter.support.rate.AbstractParser;
+import org.aoju.bus.limiter.annotation.Lock;
 import org.aoju.bus.limiter.resource.LimitedResource;
 import org.springframework.core.annotation.AnnotationAttributes;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public class LockAnnotationParser extends AbstractLimiterAnnotationParser<Lock, HLock> {
+public class LockAnnotationParser extends AbstractParser<org.aoju.bus.limiter.support.lock.Lock, Lock> {
 
     @Override
     public LimitedResource parseLimiterAnnotation(AnnotationAttributes attributes) {

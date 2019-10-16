@@ -38,17 +38,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * oschina登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class OschinaProvider extends DefaultProvider {
 
-    public OschinaProvider(Context config) {
-        super(config, Registry.OSCHINA);
+    public OschinaProvider(Context context) {
+        super(context, Registry.OSCHINA);
     }
 
-    public OschinaProvider(Context config, StateCache stateCache) {
-        super(config, Registry.OSCHINA, stateCache);
+    public OschinaProvider(Context context, StateCache stateCache) {
+        super(context, Registry.OSCHINA, stateCache);
     }
 
     @Override
@@ -91,10 +91,10 @@ public class OschinaProvider extends DefaultProvider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_id", config.getClientId())
-                .queryParam("client_secret", config.getClientSecret())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("client_secret", context.getClientSecret())
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("dataType", "json")
                 .build();
     }

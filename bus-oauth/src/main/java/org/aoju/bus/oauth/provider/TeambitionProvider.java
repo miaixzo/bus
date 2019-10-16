@@ -43,17 +43,17 @@ import java.util.Map;
  * Teambition授权登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class TeambitionProvider extends DefaultProvider {
 
-    public TeambitionProvider(Context config) {
-        super(config, Registry.TEAMBITION);
+    public TeambitionProvider(Context context) {
+        super(context, Registry.TEAMBITION);
     }
 
-    public TeambitionProvider(Context config, StateCache stateCache) {
-        super(config, Registry.TEAMBITION, stateCache);
+    public TeambitionProvider(Context context, StateCache stateCache) {
+        super(context, Registry.TEAMBITION, stateCache);
     }
 
     /**
@@ -63,8 +63,8 @@ public class TeambitionProvider extends DefaultProvider {
     @Override
     protected AccToken getAccessToken(Callback Callback) {
         Map<String, Object> params = new HashMap<>();
-        params.put("client_id", config.getClientId());
-        params.put("client_secret", config.getClientSecret());
+        params.put("client_id", context.getClientId());
+        params.put("client_secret", context.getClientSecret());
         params.put("code", Callback.getCode());
         params.put("grant_type", "code");
 

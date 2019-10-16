@@ -23,22 +23,22 @@
  */
 package org.aoju.bus.spring.limiter;
 
-import org.aoju.bus.limiter.ErrorHandler;
-import org.aoju.bus.limiter.LimitedFallbackResolver;
+import org.aoju.bus.limiter.Handler;
+import org.aoju.bus.limiter.Resolver;
 import org.aoju.bus.limiter.execute.LimiterExecutionContext;
 import org.aoju.bus.logger.Logger;
 import org.springframework.context.annotation.Bean;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class DefaultConfiguration {
 
     @Bean
-    ErrorHandler defaultErrorHandler() {
-        ErrorHandler errorHandler = new ErrorHandler() {
+    Handler defaultErrorHandler() {
+        Handler errorHandler = new Handler() {
             @Override
             public boolean resolve(Throwable throwable, LimiterExecutionContext executionContext) {
                 Logger.info(throwable.getMessage());
@@ -49,8 +49,8 @@ public class DefaultConfiguration {
     }
 
     @Bean
-    LimitedFallbackResolver defaultFallbackResolver() {
-        LimitedFallbackResolver limitedFallbackResolver
+    Resolver defaultFallbackResolver() {
+        Resolver limitedFallbackResolver
                 = (method, clazz, args, limitedResource, target) -> {
             throw new RuntimeException("no message available");
         };

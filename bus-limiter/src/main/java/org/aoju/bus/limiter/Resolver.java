@@ -21,30 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter.annotation;
+package org.aoju.bus.limiter;
 
-import java.lang.annotation.*;
+import org.aoju.bus.limiter.resource.LimitedResource;
+
+import java.lang.reflect.Method;
 
 /**
- * 锁
- *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Repeatable(HLocks.class)
-public @interface HLock {
+public interface Resolver<T> {
 
-    String limiter() default "";
-
-    String key() default "";
-
-    String fallback() default "defaultFallbackResolver";
-
-    String errorHandler() default "defaultErrorHandler";
-
-    String[] argumentInjectors() default {};
+    T resolve(Method method, Class<?> clazz, Object[] args, LimitedResource limitedResource, Object target);
 
 }

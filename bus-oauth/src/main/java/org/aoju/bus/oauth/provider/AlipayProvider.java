@@ -45,22 +45,22 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 支付宝登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class AlipayProvider extends DefaultProvider {
 
     private AlipayClient alipayClient;
 
-    public AlipayProvider(Context config) {
-        super(config, Registry.ALIPAY);
-        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), config.getClientId(), config.getClientSecret(), "json", "UTF-8", config
+    public AlipayProvider(Context context) {
+        super(context, Registry.ALIPAY);
+        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getClientId(), context.getClientSecret(), "json", "UTF-8", context
                 .getAlipayPublicKey(), "RSA2");
     }
 
-    public AlipayProvider(Context config, StateCache stateCache) {
-        super(config, Registry.ALIPAY, stateCache);
-        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), config.getClientId(), config.getClientSecret(), "json", "UTF-8", config
+    public AlipayProvider(Context context, StateCache stateCache) {
+        super(context, Registry.ALIPAY, stateCache);
+        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getClientId(), context.getClientSecret(), "json", "UTF-8", context
                 .getAlipayPublicKey(), "RSA2");
     }
 
@@ -125,9 +125,9 @@ public class AlipayProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
-                .queryParam("app_id", config.getClientId())
+                .queryParam("app_id", context.getClientId())
                 .queryParam("scope", "auth_user")
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .build();
     }

@@ -24,9 +24,9 @@
 package org.aoju.bus.limiter.metadata;
 
 import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.limiter.ArgumentInjector;
-import org.aoju.bus.limiter.ErrorHandler;
-import org.aoju.bus.limiter.LimitedFallbackResolver;
+import org.aoju.bus.limiter.Injector;
+import org.aoju.bus.limiter.Handler;
+import org.aoju.bus.limiter.Resolver;
 import org.aoju.bus.limiter.Limiter;
 import org.aoju.bus.limiter.annotation.LimiterParameter;
 import org.aoju.bus.limiter.resource.LimitedResource;
@@ -40,7 +40,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource> implements LimitedResourceMetadata<T>, Observer {
@@ -51,11 +51,11 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
 
     private Limiter limiter;
 
-    private ErrorHandler errorHandler;
+    private Handler errorHandler;
 
-    private LimitedFallbackResolver limitedFallbackResolver;
+    private Resolver limitedFallbackResolver;
 
-    private Collection<ArgumentInjector> argumentInjectors;
+    private Collection<Injector> argumentInjectors;
 
     private Map<String, Object> limiterParameters;
 
@@ -76,12 +76,12 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
 
     private void parse(T limitedResource) {
         this.limiter = (Limiter) this.beanFactory.getBean(limitedResource.getLimiter());
-        this.errorHandler = (ErrorHandler) this.beanFactory.getBean(limitedResource.getErrorHandler());
+        this.errorHandler = (Handler) this.beanFactory.getBean(limitedResource.getErrorHandler());
         // 优先获取本类中的同名方法 而后从BeanFactory中获取
         try {
             final Method fallbackMethod = this.targetClass.getDeclaredMethod(limitedResource.getFallback(), this.targetMethod.getParameterTypes());
             fallbackMethod.setAccessible(true);
-            this.limitedFallbackResolver = new LimitedFallbackResolver() {
+            this.limitedFallbackResolver = new Resolver() {
                 @Override
                 public Object resolve(Method method, Class clazz, Object[] args, LimitedResource limitedResource, Object target) {
                     try {
@@ -94,14 +94,14 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
                 }
             };
         } catch (NoSuchMethodException e) {
-            this.limitedFallbackResolver = (LimitedFallbackResolver) this.beanFactory.getBean(limitedResource.getFallback());
+            this.limitedFallbackResolver = (Resolver) this.beanFactory.getBean(limitedResource.getFallback());
         }
 
         if (!CollUtils.isEmpty(limitedResource.getArgumentInjectors())) {
             argumentInjectors = new ArrayList<>();
             Collection<String> injectors = limitedResource.getArgumentInjectors();
             for (String si : injectors) {
-                argumentInjectors.add((ArgumentInjector) this.beanFactory.getBean(si));
+                argumentInjectors.add((Injector) this.beanFactory.getBean(si));
             }
         }
         this.limiterParameters = findLimiterParameters();
@@ -154,17 +154,17 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
     }
 
     @Override
-    public LimitedFallbackResolver getFallback() {
+    public Resolver getFallback() {
         return limitedFallbackResolver;
     }
 
     @Override
-    public ErrorHandler getErrorHandler() {
+    public Handler getErrorHandler() {
         return errorHandler;
     }
 
     @Override
-    public Collection<ArgumentInjector> getArgumentInjectors() {
+    public Collection<Injector> getArgumentInjectors() {
         return argumentInjectors;
     }
 

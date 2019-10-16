@@ -38,17 +38,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Facebook登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class FacebookProvider extends DefaultProvider {
 
-    public FacebookProvider(Context config) {
-        super(config, Registry.FACEBOOK);
+    public FacebookProvider(Context context) {
+        super(context, Registry.FACEBOOK);
     }
 
-    public FacebookProvider(Context config, StateCache stateCache) {
-        super(config, Registry.FACEBOOK, stateCache);
+    public FacebookProvider(Context context, StateCache stateCache) {
+        super(context, Registry.FACEBOOK, stateCache);
     }
 
     @Override

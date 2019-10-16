@@ -25,7 +25,7 @@ package org.aoju.bus.mapper.version;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class DefaultNextVersion implements NextVersion {

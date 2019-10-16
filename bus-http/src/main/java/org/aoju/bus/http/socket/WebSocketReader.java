@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * This class is not thread safe.
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 final class WebSocketReader {

@@ -42,17 +42,17 @@ import java.util.Map;
  * Google登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class GoogleProvider extends DefaultProvider {
 
-    public GoogleProvider(Context config) {
-        super(config, Registry.GOOGLE);
+    public GoogleProvider(Context context) {
+        super(context, Registry.GOOGLE);
     }
 
-    public GoogleProvider(Context config, StateCache stateCache) {
-        super(config, Registry.GOOGLE, stateCache);
+    public GoogleProvider(Context context, StateCache stateCache) {
+        super(context, Registry.GOOGLE, stateCache);
     }
 
     @Override
@@ -101,9 +101,9 @@ public class GoogleProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", config.getClientId())
+                .queryParam("client_id", context.getClientId())
                 .queryParam("scope", "openid%20email%20profile")
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .build();
     }

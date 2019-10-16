@@ -41,17 +41,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 微信登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class WeChatProvider extends DefaultProvider {
 
-    public WeChatProvider(Context config) {
-        super(config, Registry.WECHAT);
+    public WeChatProvider(Context context) {
+        super(context, Registry.WECHAT);
     }
 
-    public WeChatProvider(Context config, StateCache stateCache) {
-        super(config, Registry.WECHAT, stateCache);
+    public WeChatProvider(Context context, StateCache stateCache) {
+        super(context, Registry.WECHAT, stateCache);
     }
 
     /**
@@ -139,8 +139,8 @@ public class WeChatProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("appid", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("appid", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "snsapi_login")
                 .queryParam("state", getRealState(state))
                 .build();
@@ -156,8 +156,8 @@ public class WeChatProvider extends DefaultProvider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("appid", config.getClientId())
-                .queryParam("secret", config.getClientSecret())
+                .queryParam("appid", context.getClientId())
+                .queryParam("secret", context.getClientSecret())
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -186,9 +186,10 @@ public class WeChatProvider extends DefaultProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromBaseUrl(source.refresh())
-                .queryParam("appid", config.getClientId())
+                .queryParam("appid", context.getClientId())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();
     }
+
 }

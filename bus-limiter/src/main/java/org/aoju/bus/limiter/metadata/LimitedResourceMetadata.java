@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.limiter.metadata;
 
-import org.aoju.bus.limiter.ArgumentInjector;
-import org.aoju.bus.limiter.ErrorHandler;
-import org.aoju.bus.limiter.LimitedFallbackResolver;
+import org.aoju.bus.limiter.Injector;
+import org.aoju.bus.limiter.Handler;
+import org.aoju.bus.limiter.Resolver;
 import org.aoju.bus.limiter.Limiter;
 import org.aoju.bus.limiter.resource.LimitedResource;
 
@@ -35,7 +35,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public interface LimitedResourceMetadata<T extends LimitedResource> {
@@ -48,11 +48,11 @@ public interface LimitedResourceMetadata<T extends LimitedResource> {
 
     Limiter getLimiter();
 
-    ErrorHandler getErrorHandler();
+    Handler getErrorHandler();
 
-    LimitedFallbackResolver getFallback();
+    Resolver getFallback();
 
-    Collection<ArgumentInjector> getArgumentInjectors();
+    Collection<Injector> getArgumentInjectors();
 
     Map<String, Object> getLimiterParameters();
 

@@ -46,17 +46,17 @@ import java.util.Map;
  * 微博登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class WeiboProvider extends DefaultProvider {
 
-    public WeiboProvider(Context config) {
-        super(config, Registry.WEIBO);
+    public WeiboProvider(Context context) {
+        super(context, Registry.WEIBO);
     }
 
-    public WeiboProvider(Context config, StateCache stateCache) {
-        super(config, Registry.WEIBO, stateCache);
+    public WeiboProvider(Context context, StateCache stateCache) {
+        super(context, Registry.WEIBO, stateCache);
     }
 
     public static String getLocalIp() {

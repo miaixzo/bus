@@ -44,17 +44,17 @@ import java.util.Objects;
  * 人人登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class RenrenProvider extends DefaultProvider {
 
-    public RenrenProvider(Context config) {
-        super(config, Registry.RENREN);
+    public RenrenProvider(Context context) {
+        super(context, Registry.RENREN);
     }
 
-    public RenrenProvider(Context config, StateCache stateCache) {
-        super(config, Registry.RENREN, stateCache);
+    public RenrenProvider(Context context, StateCache stateCache) {
+        super(context, Registry.RENREN, stateCache);
     }
 
     @Override

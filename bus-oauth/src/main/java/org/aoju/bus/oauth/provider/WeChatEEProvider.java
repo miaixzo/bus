@@ -40,17 +40,17 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class WeChatEEProvider extends DefaultProvider {
 
-    public WeChatEEProvider(Context config) {
-        super(config, Registry.WECHAT_EE);
+    public WeChatEEProvider(Context context) {
+        super(context, Registry.WECHAT_EE);
     }
 
-    public WeChatEEProvider(Context config, StateCache stateCache) {
-        super(config, Registry.WECHAT_EE, stateCache);
+    public WeChatEEProvider(Context context, StateCache stateCache) {
+        super(context, Registry.WECHAT_EE, stateCache);
     }
 
     /**
@@ -139,9 +139,9 @@ public class WeChatEEProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
-                .queryParam("appid", config.getClientId())
-                .queryParam("agentid", config.getAgentId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("appid", context.getClientId())
+                .queryParam("agentid", context.getAgentId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .build();
     }
@@ -155,8 +155,8 @@ public class WeChatEEProvider extends DefaultProvider {
     @Override
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
-                .queryParam("corpid", config.getClientId())
-                .queryParam("corpsecret", config.getClientSecret())
+                .queryParam("corpid", context.getClientId())
+                .queryParam("corpsecret", context.getClientSecret())
                 .build();
     }
 

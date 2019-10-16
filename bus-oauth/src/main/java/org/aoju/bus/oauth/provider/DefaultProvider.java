@@ -57,29 +57,29 @@ import java.util.TreeMap;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public abstract class DefaultProvider implements Provider {
 
     private static final String ALGORITHM = "HmacSHA256";
-    protected Context config;
+    protected Context context;
     protected Complex source;
     protected StateCache stateCache;
 
-    public DefaultProvider(Context config, Complex source) {
-        this(config, source, DefaultStateCache.INSTANCE);
+    public DefaultProvider(Context context, Complex source) {
+        this(context, source, DefaultStateCache.INSTANCE);
     }
 
-    public DefaultProvider(Context config, Complex source, StateCache stateCache) {
-        this.config = config;
+    public DefaultProvider(Context context, Complex source, StateCache stateCache) {
+        this.context = context;
         this.source = source;
         this.stateCache = stateCache;
-        if (!isSupportedAuth(config, source)) {
+        if (!isSupportedAuth(context, source)) {
             throw new InstrumentException(Builder.Status.PARAMETER_INCOMPLETE.getCode());
         }
         // 校验配置合法性
-        checkConfig(config, source);
+        checkcontext(context, source);
     }
 
     /**
@@ -273,21 +273,21 @@ public abstract class DefaultProvider implements Provider {
     /**
      * 是否支持第三方登录
      *
-     * @param config config
+     * @param context context
      * @param source source
      * @return true or false
      * @since 1.6.2
      */
-    public static boolean isSupportedAuth(Context config, Complex source) {
-        boolean isSupported = StringUtils.isNotEmpty(config.getClientId()) && StringUtils.isNotEmpty(config.getClientSecret()) && StringUtils.isNotEmpty(config.getRedirectUri());
+    public static boolean isSupportedAuth(Context context, Complex source) {
+        boolean isSupported = StringUtils.isNotEmpty(context.getClientId()) && StringUtils.isNotEmpty(context.getClientSecret()) && StringUtils.isNotEmpty(context.getRedirectUri());
         if (isSupported && Registry.ALIPAY == source) {
-            isSupported = StringUtils.isNotEmpty(config.getAlipayPublicKey());
+            isSupported = StringUtils.isNotEmpty(context.getAlipayPublicKey());
         }
         if (isSupported && Registry.STACK == source) {
-            isSupported = StringUtils.isNotEmpty(config.getStackOverflowKey());
+            isSupported = StringUtils.isNotEmpty(context.getStackOverflowKey());
         }
         if (isSupported && Registry.WECHAT_EE == source) {
-            isSupported = StringUtils.isNotEmpty(config.getAgentId());
+            isSupported = StringUtils.isNotEmpty(context.getAgentId());
         }
         return isSupported;
     }
@@ -295,12 +295,12 @@ public abstract class DefaultProvider implements Provider {
     /**
      * 检查配置合法性。针对部分平台， 对redirect uri有特定要求。一般来说redirect uri都是http://，而对于facebook平台， redirect uri 必须是https的链接
      *
-     * @param config config
+     * @param context context
      * @param source source
      * @since 1.6.2
      */
-    public static void checkConfig(Context config, Complex source) {
-        String redirectUri = config.getRedirectUri();
+    public static void checkcontext(Context context, Complex source) {
+        String redirectUri = context.getRedirectUri();
         if (!isHttpProtocol(redirectUri) && !isHttpsProtocol(redirectUri)) {
             throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
         }
@@ -319,15 +319,15 @@ public abstract class DefaultProvider implements Provider {
      * <p>
      * {@code v1.10.0}版本中改为传入{@code source}和{@code callback}，对于不同平台使用不同参数接受code的情况统一做处理
      *
-     * @param source   当前授权平台
+     * @param complex   当前授权平台
      * @param callback 从第三方授权回调回来时传入的参数集合
      * @since 1.8.0
      */
-    public static void checkCode(Complex source, Callback callback) {
+    public static void checkCode(Complex complex, Callback callback) {
         String code = callback.getCode();
-        if (source == Registry.ALIPAY) {
+        if (complex == Registry.ALIPAY) {
             code = callback.getAuth_code();
-        } else if (source == Registry.HUAWEI) {
+        } else if (complex == Registry.HUAWEI) {
             code = callback.getAuthorization_code();
         }
         if (StringUtils.isEmpty(code)) {
@@ -399,8 +399,8 @@ public abstract class DefaultProvider implements Provider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", config.getClientId())
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .build();
     }
@@ -414,10 +414,10 @@ public abstract class DefaultProvider implements Provider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_id", config.getClientId())
-                .queryParam("client_secret", config.getClientSecret())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("client_secret", context.getClientSecret())
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
 
@@ -429,11 +429,11 @@ public abstract class DefaultProvider implements Provider {
      */
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromBaseUrl(source.refresh())
-                .queryParam("client_id", config.getClientId())
-                .queryParam("client_secret", config.getClientSecret())
+                .queryParam("client_id", context.getClientId())
+                .queryParam("client_secret", context.getClientSecret())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
-                .queryParam("redirect_uri", config.getRedirectUri())
+                .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
 

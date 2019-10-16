@@ -43,16 +43,17 @@ import java.util.Map;
  * qq登录
  *
  * @author Kimi Liu
- * @version 5.0.2
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class QqProvider extends DefaultProvider {
-    public QqProvider(Context config) {
-        super(config, Registry.QQ);
+    
+    public QqProvider(Context context) {
+        super(context, Registry.QQ);
     }
 
-    public QqProvider(Context config, StateCache stateCache) {
-        super(config, Registry.QQ, stateCache);
+    public QqProvider(Context context, StateCache stateCache) {
+        super(context, Registry.QQ, stateCache);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class QqProvider extends DefaultProvider {
     private String getOpenId(AccToken token) {
         String response = HttpClient.get(Builder.fromBaseUrl("https://graph.qq.com/oauth2.0/me")
                 .queryParam("access_token", token.getAccessToken())
-                .queryParam("unionid", config.isUnionId() ? 1 : 0)
+                .queryParam("unionid", context.isUnionId() ? 1 : 0)
                 .build());
 
         String removePrefix = StringUtils.replace(response, "callback(", "");
@@ -128,7 +129,7 @@ public class QqProvider extends DefaultProvider {
     protected String userInfoUrl(AccToken token) {
         return Builder.fromBaseUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
-                .queryParam("oauth_consumer_key", config.getClientId())
+                .queryParam("oauth_consumer_key", context.getClientId())
                 .queryParam("openid", token.getOpenId())
                 .build();
     }
