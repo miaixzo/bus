@@ -43,7 +43,7 @@ import java.util.*;
  * fills, it is doubled.
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 final class Hpack {
@@ -144,7 +144,6 @@ final class Hpack {
         return name;
     }
 
-    // http://tools.ietf.org/html/draft-ietf-httpbis-header-compression-12#section-3.1
     static final class Reader {
 
         private final List<Header> headerList = new ArrayList<>();

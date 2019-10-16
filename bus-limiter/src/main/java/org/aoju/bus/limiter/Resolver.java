@@ -21,26 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter.source;
+package org.aoju.bus.limiter;
 
 import org.aoju.bus.limiter.resource.LimitedResource;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 
 /**
- * 获取限流规则
- *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public interface LimitedResourceSource {
+public interface Resolver<T> {
 
-    /**
-     * @param targetClass 目标
-     * @param method      方法
-     * @return the object
-     */
-    Collection<LimitedResource> getLimitedResource(Class<?> targetClass, Method method);
+    T resolve(Method method, Class<?> clazz, Object[] args, LimitedResource limitedResource, Object target);
+
 }

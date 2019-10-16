@@ -27,14 +27,14 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface HPeak {
+public @interface Peak {
 
     String limiter() default "";
 

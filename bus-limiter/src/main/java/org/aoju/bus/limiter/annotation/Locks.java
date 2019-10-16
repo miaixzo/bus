@@ -21,19 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter;
+package org.aoju.bus.limiter.annotation;
 
-import org.aoju.bus.limiter.resource.LimitedResource;
-
-import java.lang.reflect.Method;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * 锁
+ *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public interface LimitedFallbackResolver<T> {
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Locks {
 
-    T resolve(Method method, Class<?> clazz, Object[] args, LimitedResource limitedResource, Object target);
+    Lock[] value();
 
 }

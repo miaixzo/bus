@@ -28,6 +28,11 @@ import org.aoju.bus.http.offers.Credentials;
 
 import java.net.InetSocketAddress;
 
+/**
+ * @author Kimi Liu
+ * @version 5.0.3
+ * @since JDK 1.8+
+ */
 public class Proxy {
 
     public final String hostAddress;

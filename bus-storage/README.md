@@ -140,6 +140,6 @@ provider.upload("test", null, new File("/Users/leaves/logo.gif"));
 ```
 @Autowired
 StorageProviderService service;
-service.get(Complex.ALIYUN_OSS);
+service.get(Registry.ALIYUN);
 provider.upload("test", null, new File("/Users/leaves/logo.gif"));
 ```

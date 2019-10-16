@@ -26,16 +26,17 @@ package org.aoju.bus.limiter.annotation;
 import java.lang.annotation.*;
 
 /**
- * 锁
+ * 限流
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(HLocks.class)
-public @interface HLock {
+@Inherited
+@Documented
+public @interface RateLimiter {
 
     String limiter() default "";
 
@@ -46,5 +47,20 @@ public @interface HLock {
     String errorHandler() default "defaultErrorHandler";
 
     String[] argumentInjectors() default {};
+
+    /**
+     * 限制的频率 默认 1次/秒
+     *
+     * @return the double
+     */
+    double rate() default 10.0d;
+
+    /**
+     * 最大可累计的令牌容量
+     * 默认为 1 且最小为1
+     *
+     * @return the long
+     */
+    long capacity() default 10;
 
 }

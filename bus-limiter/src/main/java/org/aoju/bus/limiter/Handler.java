@@ -21,24 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter.annotation;
+package org.aoju.bus.limiter;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+
+import org.aoju.bus.limiter.execute.LimiterExecutionContext;
 
 /**
- * 锁
+ * 当limiter由于其他原因不能正常工作(如Redis宕机)
+ * 该接口将会被调用，如果你不希望这些异常影响接口提供服务
+ * return true，这样将会跳过该limiter，实际上，更好的
+ * limiter 降级策略应该由limiter本身实现，这里只是一个简单的替代方案
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface HLocks {
+public interface Handler {
 
-    HLock[] value();
+    /**
+     * @param throwable        异常
+     * @param executionContext 上下文
+     * @return true/false
+     */
+    boolean resolve(Throwable throwable, LimiterExecutionContext executionContext);
 
 }

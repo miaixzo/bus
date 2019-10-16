@@ -21,46 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.limiter.annotation;
+package org.aoju.bus.limiter;
 
-import java.lang.annotation.*;
+import java.util.Map;
 
 /**
- * 限流
- *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Documented
-public @interface HRateLimiter {
+public interface Injector {
 
-    String limiter() default "";
-
-    String key() default "";
-
-    String fallback() default "defaultFallbackResolver";
-
-    String errorHandler() default "defaultErrorHandler";
-
-    String[] argumentInjectors() default {};
-
-    /**
-     * 限制的频率 默认 1次/秒
-     *
-     * @return the double
-     */
-    double rate() default 10.0d;
-
-    /**
-     * 最大可累计的令牌容量
-     * 默认为 1 且最小为1
-     *
-     * @return the long
-     */
-    long capacity() default 10;
-
+    Map<String, Object> inject(Object... args);
 }

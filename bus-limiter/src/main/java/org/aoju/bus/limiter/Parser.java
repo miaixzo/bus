@@ -30,10 +30,10 @@ import java.lang.annotation.Annotation;
 
 /**
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
-public interface LimiterAnnotationParser<T extends Limiter> {
+public interface Parser<T extends Limiter> {
 
     Class<Annotation> getSupportAnnotation();
 

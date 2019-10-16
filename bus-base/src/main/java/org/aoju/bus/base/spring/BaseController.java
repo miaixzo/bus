@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 基础请求封装
  *
  * @author Kimi Liu
- * @version 5.0.1
+ * @version 5.0.3
  * @since JDK 1.8+
  */
 public class BaseController<Service extends BaseService<T>, T> extends Controller {
@@ -53,7 +53,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:添加数据", httpMethod = "POST")
     @ResponseBody
     public Object add(T entity) {
-        return write(service.insertSelective(entity));
+        return write(ErrorCode.EM_SUCCESS, service.insertSelective(entity));
     }
 
     /**
@@ -80,7 +80,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
     @ApiOperation(value = "通用:主键更新", httpMethod = "POST")
     @ResponseBody
     public Object update(T entity) {
-        return write(service.updateSelectiveById(entity));
+        return write(ErrorCode.EM_SUCCESS, service.updateSelectiveById(entity));
     }
 
     /**
