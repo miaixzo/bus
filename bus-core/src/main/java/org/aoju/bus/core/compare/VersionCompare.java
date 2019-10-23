@@ -1,6 +1,5 @@
 package org.aoju.bus.core.compare;
 
-import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 

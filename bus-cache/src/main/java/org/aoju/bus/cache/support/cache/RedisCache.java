@@ -58,6 +58,35 @@ public class RedisCache implements Cache {
         this.serializer = serializer;
     }
 
+    static byte[][] toByteArray(Map<String, Object> keyValueMap, BaseSerializer serializer) {
+        byte[][] kvs = new byte[keyValueMap.size() * 2][];
+        int index = 0;
+        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
+            kvs[index++] = entry.getKey().getBytes();
+            kvs[index++] = serializer.serialize(entry.getValue());
+        }
+        return kvs;
+    }
+
+    static byte[][] toByteArray(Collection<String> keys) {
+        byte[][] array = new byte[keys.size()][];
+        int index = 0;
+        for (String str : keys) {
+            array[index++] = str.getBytes();
+        }
+        return array;
+    }
+
+    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues, BaseSerializer serializer) {
+        int index = 0;
+        Map<String, Object> result = new HashMap<>(keys.size());
+        for (String key : keys) {
+            Object value = serializer.deserialize(bytesValues.get(index++));
+            result.put(key, value);
+        }
+        return result;
+    }
+
     @Override
     public Object read(String key) {
         try (Jedis client = jedisPool.getResource()) {
@@ -119,35 +148,6 @@ public class RedisCache implements Cache {
         if (jedisPool != null && !jedisPool.isClosed()) {
             jedisPool.destroy();
         }
-    }
- 
-    static byte[][] toByteArray(Map<String, Object> keyValueMap, BaseSerializer serializer) {
-        byte[][] kvs = new byte[keyValueMap.size() * 2][];
-        int index = 0;
-        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
-            kvs[index++] = entry.getKey().getBytes();
-            kvs[index++] = serializer.serialize(entry.getValue());
-        }
-        return kvs;
-    }
-
-    static byte[][] toByteArray(Collection<String> keys) {
-        byte[][] array = new byte[keys.size()][];
-        int index = 0;
-        for (String str : keys) {
-            array[index++] = str.getBytes();
-        }
-        return array;
-    }
-
-    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues, BaseSerializer serializer) {
-        int index = 0;
-        Map<String, Object> result = new HashMap<>(keys.size());
-        for (String key : keys) {
-            Object value = serializer.deserialize(bytesValues.get(index++));
-            result.put(key, value);
-        }
-        return result;
     }
 
 }

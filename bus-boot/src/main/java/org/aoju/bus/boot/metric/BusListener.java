@@ -28,10 +28,16 @@ public class BusListener implements
         ApplicationListener<ApplicationEnvironmentPreparedEvent>,
         Ordered {
 
-    private static AtomicBoolean executed = new AtomicBoolean(false);
     private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(
             BootConsts.BUS_HIGH_PRIORITY_CONFIG,
             new HashMap<>());
+    private static AtomicBoolean executed = new AtomicBoolean(false);
+
+    public static boolean filterAllLogConfig(String key) {
+        return key.startsWith("logging.level.") || key.startsWith("logging.path.")
+                || key.startsWith("logging.config.") || key.equals("logging.path")
+                || key.equals("loggingRoot") || key.equals("file.encoding");
+    }
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
@@ -120,12 +126,6 @@ public class BusListener implements
      */
     private void unAssemblyEnvironmentMark(ConfigurableEnvironment environment) {
         environment.getPropertySources().remove(BootConsts.BUS_BOOTSTRAP);
-    }
-
-    public static boolean filterAllLogConfig(String key) {
-        return key.startsWith("logging.level.") || key.startsWith("logging.path.")
-                || key.startsWith("logging.config.") || key.equals("logging.path")
-                || key.equals("loggingRoot") || key.equals("file.encoding");
     }
 
 }

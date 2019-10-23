@@ -51,7 +51,7 @@ public class CglibFactory extends AbstractFactory {
         enhancer.setCallback(new CglibInterceptor(target, aspect));
         return (T) enhancer.create();
     }
-    
+
     public Object createDelegatorProxy(ClassLoader classLoader, Provider targetProvider,
                                        Class[] proxyClasses) {
         final Enhancer enhancer = new Enhancer();

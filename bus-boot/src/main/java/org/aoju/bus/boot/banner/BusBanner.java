@@ -13,7 +13,7 @@ import java.io.PrintStream;
 public class BusBanner implements Banner {
 
     private static final String SPRING_BOOT = "::Spring Boot::";
-    
+
     @Override
     public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
         for (Object line : BootConsts.BUS_BANNER) {
