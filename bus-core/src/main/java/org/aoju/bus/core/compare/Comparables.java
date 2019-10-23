@@ -4,30 +4,30 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * 针对 {@link Comparable}对象的默认比较器
+ * 针对 {@link java.lang.Comparable}对象的默认比较器
  *
  * @param <E> 比较对象类型
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class ComparableComparator<E extends Comparable<? super E>> implements Comparator<E>, Serializable {
+public class Comparables<E extends Comparable<? super E>> implements Comparator<E>, Serializable {
 
     /**
      * 单例
      */
-    public static final ComparableComparator INSTANCE = new ComparableComparator<>();
+    public static final Comparables INSTANCE = new Comparables<>();
     private static final long serialVersionUID = 1L;
 
     /**
      * 构造
      */
-    public ComparableComparator() {
+    public Comparables() {
         super();
     }
 
     /**
-     * 比较两个{@link Comparable}对象
+     * 比较两个{@link java.lang.Comparable}对象
      *
      * <pre>
      * obj1.compareTo(obj2)
@@ -44,7 +44,7 @@ public class ComparableComparator<E extends Comparable<? super E>> implements Co
 
     @Override
     public int hashCode() {
-        return "ComparableComparator".hashCode();
+        return "Comparables".hashCode();
     }
 
     @Override

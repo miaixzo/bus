@@ -1,11 +1,14 @@
 package org.aoju.bus.core.utils;
 
 
+import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.consts.Symbol;
+
 /**
  * 各种比较器实现和封装
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class CompareUtils {
@@ -42,6 +45,49 @@ public class CompareUtils {
             return isNullGreater ? -1 : 1;
         }
         return c1.compareTo(c2);
+    }
+
+    /**
+     * 比较2个版本号
+     *
+     * @param v1       版本1
+     * @param v2       版本2
+     * @param complete 是否完整的比较两个版本
+     * @return (v1 小于 v2) ? -1 : ((v1 等于 v2) ? 0 : 1)
+     */
+    public static int compare(String v1, String v2, boolean complete) {
+        // v1 null视为最小版本，排在前
+        if (v1 == v2) {
+            return 0;
+        } else if (v1 == null) {
+            return -1;
+        } else if (v2 == null) {
+            return 1;
+        }
+        // 去除空格
+        v1 = v1.trim();
+        v2 = v2.trim();
+        if (v1.equals(v2)) {
+            return 0;
+        }
+        String[] v1s = v1.split(Symbol.BACKSLASH + Symbol.DOT);
+        String[] v2s = v2.split(Symbol.BACKSLASH + Symbol.DOT);
+        int v1sLen = v1s.length;
+        int v2sLen = v2s.length;
+        int len = complete
+                ? Math.max(v1sLen, v2sLen)
+                : Math.min(v1sLen, v2sLen);
+
+        for (int i = 0; i < len; i++) {
+            String c1 = len > v1sLen || null == v1s[i] ? Normal.EMPTY : v1s[i];
+            String c2 = len > v2sLen || null == v2s[i] ? Normal.EMPTY : v2s[i];
+
+            int result = c1.compareTo(c2);
+            if (result != 0) {
+                return result;
+            }
+        }
+        return 0;
     }
 
     /**

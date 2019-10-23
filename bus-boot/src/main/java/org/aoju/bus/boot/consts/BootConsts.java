@@ -28,7 +28,7 @@ package org.aoju.bus.boot.consts;
  * 全局常量配置
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class BootConsts {
@@ -72,5 +72,9 @@ public class BootConsts {
      * BOOT 环境属性
      */
     public static final String BUS_BOOT_PROPERTIES = "GenieBuilder";
+
+    public static final String BUS_HIGH_PRIORITY_CONFIG = "BusHighPriorityConfig";
+
+    public static final String BUS_BOOTSTRAP = "BusBootstrap";
 
 }

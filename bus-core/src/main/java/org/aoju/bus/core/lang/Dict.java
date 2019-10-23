@@ -24,7 +24,7 @@
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.getter.BasicTypeGetter;
+import org.aoju.bus.core.getter.BasicType;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.CollUtils;
 
@@ -38,10 +38,10 @@ import java.util.*;
  * 字典对象，扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class Dict extends LinkedHashMap<String, Object> implements BasicTypeGetter<String> {
+public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
 
     private static final long serialVersionUID = 6135423866861206530L;
 

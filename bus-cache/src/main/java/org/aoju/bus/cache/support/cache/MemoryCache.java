@@ -30,8 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * 内存缓存支持
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class MemoryCache implements Cache {
@@ -67,6 +69,11 @@ public class MemoryCache implements Cache {
         for (String key : keys) {
             map.remove(key);
         }
+    }
+
+    @Override
+    public void clear() {
+        map.clear();
     }
 
 }

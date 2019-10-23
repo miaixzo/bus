@@ -44,7 +44,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
@@ -132,8 +132,12 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public T updateSelectiveByIdOrInsert(T entity) {
-        entity.setUpdatedInfo(entity);
-        mapper.updateByPrimaryKeySelective(entity);
+        if (StringUtils.isEmpty(entity.getId())) {
+            this.insert(entity);
+        } else {
+            entity.setUpdatedInfo(entity);
+            mapper.updateByPrimaryKeySelective(entity);
+        }
         return entity;
     }
 

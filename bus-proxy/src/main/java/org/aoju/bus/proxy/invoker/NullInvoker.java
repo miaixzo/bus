@@ -31,7 +31,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class NullInvoker implements Invoker {
@@ -49,7 +49,7 @@ public class NullInvoker implements Invoker {
         primitiveValueMap.put(Boolean.TYPE, Boolean.FALSE);
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) {
         final Class returnType = method.getReturnType();
         if (returnType.isPrimitive()) {
             return primitiveValueMap.get(returnType);

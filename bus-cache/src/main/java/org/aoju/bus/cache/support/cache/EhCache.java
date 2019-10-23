@@ -40,8 +40,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * EhCache进程内缓存框架，
+ * 具有快速、精干等特点
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class EhCache implements Cache {
@@ -106,6 +109,11 @@ public class EhCache implements Cache {
     @Override
     public void remove(String... keys) {
         ehcache.removeAll(Sets.newHashSet(keys));
+    }
+
+    @Override
+    public void clear() {
+        ehcache.clear();
     }
 
     @PreDestroy

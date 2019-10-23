@@ -28,19 +28,29 @@ import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invocation;
 import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
-import org.aoju.bus.proxy.factory.AbstractSubclassingFactory;
+import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.factory.AbstractFactory;
+import org.aoju.bus.proxy.intercept.CglibInterceptor;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class CglibFactory extends AbstractSubclassingFactory {
+public class CglibFactory extends AbstractFactory {
 
     private static CallbackFilter callbackFilter = new PublicCallbackFilter();
+
+    @Override
+    public <T> T proxy(T target, Aspect aspect) {
+        final Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(target.getClass());
+        enhancer.setCallback(new CglibInterceptor(target, aspect));
+        return (T) enhancer.create();
+    }
 
     public Object createDelegatorProxy(ClassLoader classLoader, Provider targetProvider,
                                        Class[] proxyClasses) {
@@ -76,12 +86,15 @@ public class CglibFactory extends AbstractSubclassingFactory {
     }
 
     private static class PublicCallbackFilter implements CallbackFilter {
+
         public int accept(Method method) {
             return Modifier.isPublic(method.getModifiers()) ? 0 : 1;
         }
+
     }
 
     private class InvokerBridge implements InvocationHandler {
+
         private final Invoker original;
 
         public InvokerBridge(Invoker original) {
@@ -91,9 +104,11 @@ public class CglibFactory extends AbstractSubclassingFactory {
         public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
             return original.invoke(object, method, objects);
         }
+
     }
 
     private class InterceptorBridge implements net.sf.cglib.proxy.MethodInterceptor {
+
         private final Interceptor inner;
         private final Object target;
 
@@ -105,9 +120,11 @@ public class CglibFactory extends AbstractSubclassingFactory {
         public Object intercept(Object object, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
             return inner.intercept(new MethodProxyInvocation(target, method, args, methodProxy));
         }
+
     }
 
     private class MethodProxyInvocation implements Invocation {
+
         private final MethodProxy methodProxy;
         private final Method method;
         private final Object[] args;
@@ -138,6 +155,7 @@ public class CglibFactory extends AbstractSubclassingFactory {
     }
 
     private class ObjectProviderDispatcher implements Dispatcher {
+
         private final Provider delegateProvider;
 
         public ObjectProviderDispatcher(Provider delegateProvider) {

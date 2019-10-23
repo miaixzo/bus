@@ -21,25 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.proxy.provider;
+package org.aoju.bus.proxy.invoker;
 
+import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
+
+import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class ProviderDecorator implements Provider {
+public class DuckInvoker implements Invoker {
 
-    protected Provider inner;
+    private final Provider targetProvider;
 
-    public ProviderDecorator(Provider inner) {
-        this.inner = inner;
+    public DuckInvoker(final Provider targetProvider) {
+        this.targetProvider = targetProvider;
     }
 
-    public Object getObject() {
-        return inner.getObject();
+    public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
+        final Object target = targetProvider.getObject();
+        final Class targetClass = target.getClass();
+        try {
+            final Method targetMethod = targetClass.getMethod(method.getName(), method.getParameterTypes());
+            if (method.getReturnType().isAssignableFrom(targetMethod.getReturnType())) {
+                return targetMethod.invoke(target, arguments);
+            }
+            throw new UnsupportedOperationException(
+                    "Target type " + targetClass.getName() + " method has incompatible return type.");
+        } catch (NoSuchMethodException e) {
+            throw new UnsupportedOperationException(
+                    "Target type " + targetClass.getName() + " does not have a method matching " + method + ".");
+        }
     }
+
 }
-

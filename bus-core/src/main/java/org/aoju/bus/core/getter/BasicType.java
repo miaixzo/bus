@@ -25,102 +25,130 @@ package org.aoju.bus.core.getter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
 
 /**
- * 数组类型的Get接口
+ * 基本类型的getter接口
+ * 提供一个统一的接口定义返回不同类型的值（基本类型）
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public interface ArrayTypeGetter {
+public interface BasicType<K> {
 
     /**
-     * 获取Object型属性值数组
+     * 获取Object属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    String[] getObjs(String key);
+    Object getObj(K key);
 
     /**
-     * 获取String型属性值数组
+     * 获取字符串型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    String[] getStrs(String key);
+    String getStr(K key);
 
     /**
-     * 获取Integer型属性值数组
+     * 获取int型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    Integer[] getInts(String key);
+    Integer getInt(K key);
 
     /**
-     * 获取Short型属性值数组
+     * 获取short型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    Short[] getShorts(String key);
+    Short getShort(K key);
 
     /**
-     * 获取Boolean型属性值数组
+     * 获取boolean型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    Boolean[] getBools(String key);
+    Boolean getBool(K key);
 
     /**
-     * 获取Long型属性值数组
+     * 获取long型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    Long[] getLongs(String key);
+    Long getLong(K key);
 
     /**
-     * 获取Character型属性值数组
+     * 获取char型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    Character[] getChars(String key);
+    Character getChar(K key);
 
     /**
-     * 获取Double型属性值数组
+     * 获取float型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    Double[] getDoubles(String key);
+    Float getFloat(K key);
 
     /**
-     * 获取Byte型属性值数组
+     * 获取double型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    Byte[] getBytes(String key);
+    Double getDouble(K key);
 
     /**
-     * 获取BigInteger型属性值数组
+     * 获取byte型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    BigInteger[] getBigIntegers(String key);
+    Byte getByte(K key);
 
     /**
-     * 获取BigDecimal型属性值数组
+     * 获取BigDecimal型属性值
      *
      * @param key 属性名
-     * @return 属性值列表
+     * @return 属性值
      */
-    BigDecimal[] getBigDecimals(String key);
+    BigDecimal getBigDecimal(K key);
+
+    /**
+     * 获取BigInteger型属性值
+     *
+     * @param key 属性名
+     * @return 属性值
+     */
+    BigInteger getBigInteger(K key);
+
+    /**
+     * 获得Enum类型的值
+     *
+     * @param <E>   枚举类型
+     * @param clazz Enum的Class
+     * @param key   KEY
+     * @return Enum类型的值，无则返回Null
+     */
+    <E extends Enum<E>> E getEnum(Class<E> clazz, K key);
+
+    /**
+     * 获取Date类型值
+     *
+     * @param key 属性名
+     * @return Date类型属性值
+     */
+    Date getDate(K key);
 
 }

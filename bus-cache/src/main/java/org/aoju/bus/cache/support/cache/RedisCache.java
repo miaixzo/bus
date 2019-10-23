@@ -37,8 +37,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Redis 单机缓存支持
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class RedisCache implements Cache {
@@ -56,7 +58,6 @@ public class RedisCache implements Cache {
         this.serializer = serializer;
     }
 
-    /* For Write */
     static byte[][] toByteArray(Map<String, Object> keyValueMap, BaseSerializer serializer) {
         byte[][] kvs = new byte[keyValueMap.size() * 2][];
         int index = 0;
@@ -67,7 +68,6 @@ public class RedisCache implements Cache {
         return kvs;
     }
 
-    /* For Read */
     static byte[][] toByteArray(Collection<String> keys) {
         byte[][] array = new byte[keys.size()][];
         int index = 0;
@@ -78,14 +78,12 @@ public class RedisCache implements Cache {
     }
 
     static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues, BaseSerializer serializer) {
-
         int index = 0;
         Map<String, Object> result = new HashMap<>(keys.size());
         for (String key : keys) {
             Object value = serializer.deserialize(bytesValues.get(index++));
             result.put(key, value);
         }
-
         return result;
     }
 
@@ -138,6 +136,11 @@ public class RedisCache implements Cache {
         try (Jedis client = jedisPool.getResource()) {
             client.del(keys);
         }
+    }
+
+    @Override
+    public void clear() {
+        tearDown();
     }
 
     @PreDestroy

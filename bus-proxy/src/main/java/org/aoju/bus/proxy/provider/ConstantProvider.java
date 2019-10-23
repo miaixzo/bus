@@ -26,8 +26,10 @@ package org.aoju.bus.proxy.provider;
 import org.aoju.bus.proxy.Provider;
 
 /**
+ * 常量模型
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class ConstantProvider implements Provider {
@@ -41,5 +43,6 @@ public class ConstantProvider implements Provider {
     public Object getObject() {
         return constant;
     }
+
 }
 

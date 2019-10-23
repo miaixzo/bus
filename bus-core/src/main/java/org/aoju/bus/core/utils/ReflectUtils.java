@@ -42,7 +42,7 @@ import java.util.Set;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class ReflectUtils {
@@ -585,7 +585,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型，指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.0.3
+     * @since 5.0.8
      */
     public static Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>... paramTypes) throws SecurityException {
         return getMethod(clazz, true, methodName, paramTypes);
@@ -613,7 +613,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型，指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.0.3
+     * @since 5.0.8
      */
     public static Method getMethod(Class<?> clazz, boolean ignoreCase, String methodName, Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringUtils.isBlank(methodName)) {
@@ -940,6 +940,21 @@ public class ReflectUtils {
      */
     public static String getSetMethodName(String fieldName) {
         return Normal.SETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+    }
+
+
+    /**
+     * 设置方法为可访问（私有方法可以被外部调用）
+     *
+     * @param <T>              AccessibleObject的子类，比如Class、Method、Field等
+     * @param accessibleObject 可设置访问权限的对象，比如Class、Method、Field等
+     * @return 被设置可访问的对象
+     */
+    public static <T extends AccessibleObject> T setAccessible(T accessibleObject) {
+        if (null != accessibleObject && false == accessibleObject.isAccessible()) {
+            accessibleObject.setAccessible(true);
+        }
+        return accessibleObject;
     }
 
 }

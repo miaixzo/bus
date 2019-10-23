@@ -24,7 +24,9 @@
 package org.aoju.bus.boot.builtin;
 
 import org.aoju.bus.Version;
+import org.aoju.bus.boot.banner.BusBanner;
 import org.aoju.bus.boot.consts.BootConsts;
+import org.aoju.bus.boot.metric.BusListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
@@ -39,7 +41,7 @@ import java.util.Properties;
  * 将作为一个名为BusConfigurationProperties的属性源添加
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -48,43 +50,38 @@ public class GenieBuilder implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment,
                                        SpringApplication application) {
-
         /**
-         * 获取版本信息
+         * 环境信息
          */
-        Properties properties = getProperties();
-
         PropertiesPropertySource propertySource = new PropertiesPropertySource(
-                BootConsts.BUS_BOOT_PROPERTIES, properties);
+                BootConsts.BUS_BOOT_PROPERTIES, getProperties());
         environment.getPropertySources().addLast(propertySource);
-
         /**
-         * 设置必要参数
-         **/
+         * 必要参数
+         */
         environment.setRequiredProperties(BootConsts.BUS_NAME);
+        /**
+         * 监听器
+         */
+        application.addListeners(new BusListener());
+        /**
+         * Banner
+         */
+        application.setBanner(new BusBanner());
     }
 
     /**
-     * 获取版本信息以及banner信息
+     * 获取版本信息
      *
      * @return properties
      */
     protected Properties getProperties() {
         Properties properties = new Properties();
-        String version = getVersion();
+        String version = Version.get() == null ? "" : Version.get();
         properties.setProperty(BootConsts.BUS_BOOT_VERSION, version);
         properties.setProperty(BootConsts.BUS_BOOT_FORMATTED_VERSION,
                 version.isEmpty() ? "" : String.format(" (v%s)", version));
         return properties;
-    }
-
-    /**
-     * 获取bus版本信息.
-     *
-     * @return version
-     */
-    protected String getVersion() {
-        return Version.get() == null ? "" : Version.get();
     }
 
 }

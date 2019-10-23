@@ -11,10 +11,10 @@ import java.util.*;
  * 此类copy from Apache-commons-collections
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<E>>, Comparator<E>, Serializable {
+public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, Comparator<E>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
     /**
      * 构造空的比较器链，必须至少有一个比较器，否则会在compare时抛出{@link UnsupportedOperationException}
      */
-    public ComparatorChain() {
+    public CompareChain() {
         this(new ArrayList<Comparator<E>>(), new BitSet());
     }
 
@@ -43,7 +43,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      *
      * @param comparator 在比较器链中的第一个比较器
      */
-    public ComparatorChain(final Comparator<E> comparator) {
+    public CompareChain(final Comparator<E> comparator) {
         this(comparator, false);
     }
 
@@ -53,7 +53,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @param comparator 在比较器链中的第一个比较器
      * @param reverse    是否反序，true表示反序，false正序
      */
-    public ComparatorChain(final Comparator<E> comparator, final boolean reverse) {
+    public CompareChain(final Comparator<E> comparator, final boolean reverse) {
         chain = new ArrayList<Comparator<E>>(1);
         chain.add(comparator);
         orderingBits = new BitSet(1);
@@ -66,9 +66,9 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * 构造，使用已有的比较器列表
      *
      * @param list 比较器列表
-     * @see #ComparatorChain(List, BitSet)
+     * @see #CompareChain(List, BitSet)
      */
-    public ComparatorChain(final List<Comparator<E>> list) {
+    public CompareChain(final List<Comparator<E>> list) {
         this(list, new BitSet(list.size()));
     }
 
@@ -79,7 +79,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @param list {@link Comparator} 列表
      * @param bits {@link Comparator} 列表对应的排序boolean值，true表示正序，false反序
      */
-    public ComparatorChain(final List<Comparator<E>> list, final BitSet bits) {
+    public CompareChain(final List<Comparator<E>> list, final BitSet bits) {
         chain = list;
         orderingBits = bits;
     }
@@ -90,7 +90,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @param comparator {@link Comparator} 比较器，正向
      * @return this
      */
-    public ComparatorChain<E> addComparator(final Comparator<E> comparator) {
+    public CompareChain<E> addComparator(final Comparator<E> comparator) {
         return addComparator(comparator, false);
     }
 
@@ -101,7 +101,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @param reverse    是否反序，true表示正序，false反序
      * @return this
      */
-    public ComparatorChain<E> addComparator(final Comparator<E> comparator, final boolean reverse) {
+    public CompareChain<E> addComparator(final Comparator<E> comparator, final boolean reverse) {
         checkLocked();
 
         chain.add(comparator);
@@ -119,7 +119,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @return this
      * @throws IndexOutOfBoundsException if index &lt; 0 or index &gt;= size()
      */
-    public ComparatorChain<E> setComparator(final int index, final Comparator<E> comparator) throws IndexOutOfBoundsException {
+    public CompareChain<E> setComparator(final int index, final Comparator<E> comparator) throws IndexOutOfBoundsException {
         return setComparator(index, comparator, false);
     }
 
@@ -131,7 +131,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @param reverse    是否反序，true表示正序，false反序
      * @return this
      */
-    public ComparatorChain<E> setComparator(final int index, final Comparator<E> comparator, final boolean reverse) {
+    public CompareChain<E> setComparator(final int index, final Comparator<E> comparator, final boolean reverse) {
         checkLocked();
 
         chain.set(index, comparator);
@@ -149,7 +149,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @param index 位置
      * @return this
      */
-    public ComparatorChain<E> setForwardSort(final int index) {
+    public CompareChain<E> setForwardSort(final int index) {
         checkLocked();
         orderingBits.clear(index);
         return this;
@@ -161,7 +161,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @param index 位置
      * @return this
      */
-    public ComparatorChain<E> setReverseSort(final int index) {
+    public CompareChain<E> setReverseSort(final int index) {
         checkLocked();
         orderingBits.set(index);
         return this;
@@ -191,7 +191,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
     }
 
     @Override
-    public ComparatorChain<E> addChain(Comparator<E> element) {
+    public CompareChain<E> addChain(Comparator<E> element) {
         return this.addComparator(element);
     }
 
@@ -250,7 +250,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
             return false;
         }
         if (object.getClass().equals(this.getClass())) {
-            final ComparatorChain<?> otherChain = (ComparatorChain<?>) object;
+            final CompareChain<?> otherChain = (CompareChain<?>) object;
             return (null == orderingBits ? null == otherChain.orderingBits : this.orderingBits.equals(otherChain.orderingBits)) //
                     && (null == otherChain ? null == otherChain.chain : this.chain.equals(otherChain.chain));
         }

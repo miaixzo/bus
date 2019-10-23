@@ -30,13 +30,14 @@ import org.aoju.bus.proxy.Invocation;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class LoggingInterceptor implements Interceptor {
 
     private static final int BUFFER_SIZE = 100;
 
+    @Override
     public Object intercept(Invocation invocation) throws Throwable {
         final String methodName = invocation.getMethod().getName();
         entry(methodName, invocation.getArguments());

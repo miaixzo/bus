@@ -33,22 +33,24 @@ import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class MethodInterceptorAdapter implements Interceptor {
+public class MethodAdapter implements Interceptor {
 
     private final MethodInterceptor methodInterceptor;
 
-    public MethodInterceptorAdapter(MethodInterceptor methodInterceptor) {
+    public MethodAdapter(MethodInterceptor methodInterceptor) {
         this.methodInterceptor = methodInterceptor;
     }
 
+    @Override
     public Object intercept(Invocation invocation) throws Throwable {
         return methodInterceptor.invoke(new MethodInvocationAdapter(invocation));
     }
 
     private static class MethodInvocationAdapter implements MethodInvocation {
+
         private final Invocation invocation;
 
         public MethodInvocationAdapter(Invocation invocation) {
@@ -74,6 +76,7 @@ public class MethodInterceptorAdapter implements Interceptor {
         public AccessibleObject getStaticPart() {
             return invocation.getMethod();
         }
+
     }
 
 }

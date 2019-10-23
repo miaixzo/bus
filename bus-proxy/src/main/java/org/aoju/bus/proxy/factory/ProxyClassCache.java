@@ -30,15 +30,15 @@ import java.util.WeakHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class ProxyClassCache {
 
     private final Map loaderToClassCache = new WeakHashMap();
-    private final ProxyClassGenerator proxyClassGenerator;
+    private final ProxyClass proxyClassGenerator;
 
-    public ProxyClassCache(ProxyClassGenerator proxyClassGenerator) {
+    public ProxyClassCache(ProxyClass proxyClassGenerator) {
         this.proxyClassGenerator = proxyClassGenerator;
     }
 
@@ -48,13 +48,13 @@ public class ProxyClassCache {
         Class proxyClass;
         WeakReference proxyClassReference = (WeakReference) classCache.get(key);
         if (proxyClassReference == null) {
-            proxyClass = proxyClassGenerator.generateProxyClass(classLoader, proxyClasses);
+            proxyClass = proxyClassGenerator.createProxy(classLoader, proxyClasses);
             classCache.put(key, new WeakReference(proxyClass));
         } else {
             synchronized (proxyClassReference) {
                 proxyClass = (Class) proxyClassReference.get();
                 if (proxyClass == null) {
-                    proxyClass = proxyClassGenerator.generateProxyClass(classLoader, proxyClasses);
+                    proxyClass = proxyClassGenerator.createProxy(classLoader, proxyClasses);
                     classCache.put(key, new WeakReference(proxyClass));
                 }
             }

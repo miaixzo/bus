@@ -30,7 +30,7 @@ import org.aoju.bus.proxy.Provider;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class InterceptorChain {
@@ -69,6 +69,7 @@ public class InterceptorChain {
     }
 
     private class ProxyProvider implements Provider {
+
         private final ClassLoader classLoader;
         private final Class[] proxyClasses;
         private final Object terminus;
@@ -85,6 +86,7 @@ public class InterceptorChain {
         public Object getObject() {
             return createProxy(factory, classLoader, terminus, proxyClasses);
         }
+
     }
 
 }

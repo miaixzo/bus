@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class LimiterConfigurationSelector extends AdviceModeImportSelector<EnableLimiter> {

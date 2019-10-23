@@ -38,8 +38,10 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * Memcached 缓存支持
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class MemcachedCache implements Cache {
@@ -114,6 +116,15 @@ public class MemcachedCache implements Cache {
             for (String key : keys) {
                 client.delete(key);
             }
+        } catch (TimeoutException | InterruptedException | MemcachedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void clear() {
+        try {
+            client.flushAll();
         } catch (TimeoutException | InterruptedException | MemcachedException e) {
             throw new RuntimeException(e);
         }

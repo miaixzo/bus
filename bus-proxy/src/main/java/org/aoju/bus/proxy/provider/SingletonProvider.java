@@ -26,11 +26,13 @@ package org.aoju.bus.proxy.provider;
 import org.aoju.bus.proxy.Provider;
 
 /**
+ * 单例模型
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class SingletonProvider extends ProviderDecorator {
+public class SingletonProvider extends DecoratorProvider {
 
     private Object instance;
 

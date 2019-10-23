@@ -29,10 +29,10 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public abstract class AbstractProxyClassGenerator implements ProxyClassGenerator {
+public abstract class AbstractProxyClass implements ProxyClass {
 
     public static Method[] getImplementationMethods(Class[] proxyClasses) {
         final Map signatureMethodMap = new HashMap();
