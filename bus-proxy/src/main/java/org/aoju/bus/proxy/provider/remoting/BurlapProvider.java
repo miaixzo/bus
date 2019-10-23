@@ -31,7 +31,7 @@ import java.net.MalformedURLException;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class BurlapProvider implements Provider {
@@ -40,6 +40,7 @@ public class BurlapProvider implements Provider {
     private String url;
 
     public BurlapProvider() {
+
     }
 
     public BurlapProvider(Class serviceInterface, String url) {

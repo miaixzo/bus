@@ -21,16 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.proxy.factory;
+package org.aoju.bus.proxy.invoker;
+
+import org.aoju.bus.proxy.Invoker;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public interface ProxyClassGenerator {
+public class HandlerInvoker implements Invoker {
 
-    Class generateProxyClass(ClassLoader classLoader, Class[] proxyClasses);
+    private final InvocationHandler invocationHandler;
+
+    public HandlerInvoker(InvocationHandler invocationHandler) {
+        this.invocationHandler = invocationHandler;
+    }
+
+    public Object invoke(Object proxy, Method method, Object[] arguments) throws Throwable {
+        return invocationHandler.invoke(proxy, method, arguments);
+    }
 
 }
-

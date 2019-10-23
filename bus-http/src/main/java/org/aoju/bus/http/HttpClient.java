@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  * Http 辅助类
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class HttpClient extends Client {
@@ -178,47 +178,45 @@ public class HttpClient extends Client {
                       HostnameVerifier hostnameVerifier
     ) {
         synchronized (HttpClient.class) {
-            if (ObjectUtils.isEmpty(client)) {
-                Dispatcher dispatcher = new Dispatcher();
-                dispatcher.setMaxRequests(maxRequests);
-                dispatcher.setMaxRequestsPerHost(maxRequestsPerHost);
-                ConnectionPool connectionPool = new ConnectionPool(maxIdleConnections,
-                        keepAliveDuration, TimeUnit.MINUTES);
-                Client.Builder builder = new Client.Builder();
+            Dispatcher dispatcher = new Dispatcher();
+            dispatcher.setMaxRequests(maxRequests);
+            dispatcher.setMaxRequestsPerHost(maxRequestsPerHost);
+            ConnectionPool connectionPool = new ConnectionPool(maxIdleConnections,
+                    keepAliveDuration, TimeUnit.MINUTES);
+            Client.Builder builder = new Client.Builder();
 
-                builder.dispatcher(dispatcher);
-                builder.connectionPool(connectionPool);
-                builder.addNetworkInterceptor(chain -> {
-                    Request request = chain.request();
-                    return chain.proceed(request);
-                });
-                if (ObjectUtils.isNotEmpty(dns)) {
-                    builder.dns(hostname -> {
-                        try {
-                            return dns.lookup(hostname);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return Dns.SYSTEM.lookup(hostname);
-                    });
-                }
-                if (ObjectUtils.isNotEmpty(proxy)) {
-                    builder.proxy(proxy.proxy());
-                    if (proxy.user != null && proxy.password != null) {
-                        builder.proxyAuthenticator(proxy.authenticator());
+            builder.dispatcher(dispatcher);
+            builder.connectionPool(connectionPool);
+            builder.addNetworkInterceptor(chain -> {
+                Request request = chain.request();
+                return chain.proceed(request);
+            });
+            if (ObjectUtils.isNotEmpty(dns)) {
+                builder.dns(hostname -> {
+                    try {
+                        return dns.lookup(hostname);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }
-                builder.connectTimeout(connTimeout, TimeUnit.SECONDS);
-                builder.readTimeout(readTimeout, TimeUnit.SECONDS);
-                builder.writeTimeout(writeTimeout, TimeUnit.SECONDS);
-                if (ObjectUtils.isNotEmpty(sslSocketFactory)) {
-                    builder.sslSocketFactory(sslSocketFactory, x509TrustManager);
-                }
-                if (ObjectUtils.isNotEmpty(hostnameVerifier)) {
-                    builder.hostnameVerifier(hostnameVerifier);
-                }
-                client = builder.build();
+                    return Dns.SYSTEM.lookup(hostname);
+                });
             }
+            if (ObjectUtils.isNotEmpty(proxy)) {
+                builder.proxy(proxy.proxy());
+                if (proxy.user != null && proxy.password != null) {
+                    builder.proxyAuthenticator(proxy.authenticator());
+                }
+            }
+            builder.connectTimeout(connTimeout, TimeUnit.SECONDS);
+            builder.readTimeout(readTimeout, TimeUnit.SECONDS);
+            builder.writeTimeout(writeTimeout, TimeUnit.SECONDS);
+            if (ObjectUtils.isNotEmpty(sslSocketFactory)) {
+                builder.sslSocketFactory(sslSocketFactory, x509TrustManager);
+            }
+            if (ObjectUtils.isNotEmpty(hostnameVerifier)) {
+                builder.hostnameVerifier(hostnameVerifier);
+            }
+            client = builder.build();
         }
     }
 

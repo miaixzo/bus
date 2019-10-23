@@ -13,10 +13,10 @@ import java.util.Comparator;
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class FieldComparator<T> implements Comparator<T>, Serializable {
+public class FieldCompare<T> implements Comparator<T>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public class FieldComparator<T> implements Comparator<T>, Serializable {
      * @param beanClass Bean类
      * @param fieldName 字段名
      */
-    public FieldComparator(Class<T> beanClass, String fieldName) {
+    public FieldCompare(Class<T> beanClass, String fieldName) {
         this.field = ClassUtils.getDeclaredField(beanClass, fieldName);
         if (this.field == null) {
             throw new IllegalArgumentException(StringUtils.format("Field [{}] not found in Class [{}]", fieldName, beanClass.getName()));
@@ -45,11 +45,11 @@ public class FieldComparator<T> implements Comparator<T>, Serializable {
             return -1;
         }
 
-        Comparable<?> v1;
-        Comparable<?> v2;
+        java.lang.Comparable<?> v1;
+        java.lang.Comparable<?> v2;
         try {
-            v1 = (Comparable<?>) ReflectUtils.getFieldValue(o1, this.field);
-            v2 = (Comparable<?>) ReflectUtils.getFieldValue(o2, this.field);
+            v1 = (java.lang.Comparable<?>) ReflectUtils.getFieldValue(o1, this.field);
+            v2 = (java.lang.Comparable<?>) ReflectUtils.getFieldValue(o2, this.field);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -57,7 +57,7 @@ public class FieldComparator<T> implements Comparator<T>, Serializable {
         return compare(o1, o2, v1, v2);
     }
 
-    private int compare(T o1, T o2, Comparable fieldValue1, Comparable fieldValue2) {
+    private int compare(T o1, T o2, java.lang.Comparable fieldValue1, java.lang.Comparable fieldValue2) {
         int result = ObjectUtils.compare(fieldValue1, fieldValue2);
         if (0 == result) {
             //避免TreeSet / TreeMap 过滤掉排序字段相同但是对象不相同的情况

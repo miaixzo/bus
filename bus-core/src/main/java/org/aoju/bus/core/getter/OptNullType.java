@@ -33,10 +33,10 @@ import java.util.Date;
  * 在不提供默认值的情况下， 如果值不存在或获取错误，返回null
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public abstract class OptNullTypeGetter<K> implements BasicTypeGetter<K>, OptBasicTypeGetter<K> {
+public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
 
     @Override
     public Object getObj(K key) {

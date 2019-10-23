@@ -21,38 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.springframework.boot;
-
-import org.aoju.bus.Version;
-import org.aoju.bus.boot.consts.BootConsts;
-import org.springframework.boot.ansi.AnsiColor;
-import org.springframework.boot.ansi.AnsiOutput;
-import org.springframework.core.env.Environment;
-
-import java.io.PrintStream;
+package org.aoju.bus.proxy.factory;
 
 /**
- * 启动旗标
- *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-class SpringBootBanner implements Banner {
+public interface ProxyClass {
 
-    private static final String SPRING_BOOT = "::Spring Boot::";
-
-    @Override
-    public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
-        for (Object line : BootConsts.BUS_BANNER) {
-            printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_YELLOW, line));
-        }
-
-        printStream.println();
-        printStream.println(AnsiOutput.toString(
-                AnsiColor.BRIGHT_MAGENTA, SPRING_BOOT + String.format(" (v%s)", SpringBootVersion.getVersion()),
-                AnsiColor.BRIGHT_MAGENTA, "      " + BootConsts.BUS_BOOT + String.format(" (v%s)", Version.get())));
-        printStream.println();
-    }
+    Class createProxy(ClassLoader classLoader, Class[] proxyClasses);
 
 }
+

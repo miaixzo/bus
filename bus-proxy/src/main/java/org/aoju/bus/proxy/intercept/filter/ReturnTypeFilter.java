@@ -33,7 +33,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class ReturnTypeFilter implements MethodFilter {
@@ -51,4 +51,5 @@ public class ReturnTypeFilter implements MethodFilter {
     public boolean accepts(Method method) {
         return validReturnTypes.contains(method.getReturnType());
     }
+
 }

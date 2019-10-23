@@ -21,28 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.proxy.invoker;
+package org.aoju.bus.proxy.provider;
 
-import org.aoju.bus.proxy.Invoker;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import org.aoju.bus.proxy.Provider;
 
 /**
+ * 装饰者模型
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class InvocationHandlerAdapter implements Invoker {
+public class DecoratorProvider implements Provider {
 
-    private final InvocationHandler invocationHandler;
+    protected Provider inner;
 
-    public InvocationHandlerAdapter(InvocationHandler invocationHandler) {
-        this.invocationHandler = invocationHandler;
+    public DecoratorProvider(Provider inner) {
+        this.inner = inner;
     }
 
-    public Object invoke(Object proxy, Method method, Object[] arguments) throws Throwable {
-        return invocationHandler.invoke(proxy, method, arguments);
+    public Object getObject() {
+        return inner.getObject();
     }
 
 }
+

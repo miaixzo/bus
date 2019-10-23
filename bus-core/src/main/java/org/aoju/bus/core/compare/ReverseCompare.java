@@ -8,10 +8,10 @@ import java.util.Comparator;
  *
  * @param <E> 被比较对象类型
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class ReverseComparator<E> implements Comparator<E>, Serializable {
+public class ReverseCompare<E> implements Comparator<E>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -20,8 +20,8 @@ public class ReverseComparator<E> implements Comparator<E>, Serializable {
      */
     private final Comparator<? super E> comparator;
 
-    public ReverseComparator(Comparator<? super E> comparator) {
-        this.comparator = (null == comparator) ? ComparableComparator.INSTANCE : comparator;
+    public ReverseCompare(Comparator<? super E> comparator) {
+        this.comparator = (null == comparator) ? Comparables.INSTANCE : comparator;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ReverseComparator<E> implements Comparator<E>, Serializable {
             return false;
         }
         if (object.getClass().equals(this.getClass())) {
-            final ReverseComparator<?> thatrc = (ReverseComparator<?>) object;
+            final ReverseCompare<?> thatrc = (ReverseCompare<?>) object;
             return comparator.equals(thatrc.comparator);
         }
         return false;

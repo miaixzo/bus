@@ -37,8 +37,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Redis 单机缓存支持
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class RedisCache implements Cache {
@@ -54,39 +56,6 @@ public class RedisCache implements Cache {
     public RedisCache(JedisPool jedisPool, BaseSerializer serializer) {
         this.jedisPool = jedisPool;
         this.serializer = serializer;
-    }
-
-    /* For Write */
-    static byte[][] toByteArray(Map<String, Object> keyValueMap, BaseSerializer serializer) {
-        byte[][] kvs = new byte[keyValueMap.size() * 2][];
-        int index = 0;
-        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
-            kvs[index++] = entry.getKey().getBytes();
-            kvs[index++] = serializer.serialize(entry.getValue());
-        }
-        return kvs;
-    }
-
-    /* For Read */
-    static byte[][] toByteArray(Collection<String> keys) {
-        byte[][] array = new byte[keys.size()][];
-        int index = 0;
-        for (String str : keys) {
-            array[index++] = str.getBytes();
-        }
-        return array;
-    }
-
-    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues, BaseSerializer serializer) {
-
-        int index = 0;
-        Map<String, Object> result = new HashMap<>(keys.size());
-        for (String key : keys) {
-            Object value = serializer.deserialize(bytesValues.get(index++));
-            result.put(key, value);
-        }
-
-        return result;
     }
 
     @Override
@@ -140,11 +109,45 @@ public class RedisCache implements Cache {
         }
     }
 
+    @Override
+    public void clear() {
+        tearDown();
+    }
+
     @PreDestroy
     public void tearDown() {
         if (jedisPool != null && !jedisPool.isClosed()) {
             jedisPool.destroy();
         }
+    }
+ 
+    static byte[][] toByteArray(Map<String, Object> keyValueMap, BaseSerializer serializer) {
+        byte[][] kvs = new byte[keyValueMap.size() * 2][];
+        int index = 0;
+        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
+            kvs[index++] = entry.getKey().getBytes();
+            kvs[index++] = serializer.serialize(entry.getValue());
+        }
+        return kvs;
+    }
+
+    static byte[][] toByteArray(Collection<String> keys) {
+        byte[][] array = new byte[keys.size()][];
+        int index = 0;
+        for (String str : keys) {
+            array[index++] = str.getBytes();
+        }
+        return array;
+    }
+
+    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues, BaseSerializer serializer) {
+        int index = 0;
+        Map<String, Object> result = new HashMap<>(keys.size());
+        for (String key : keys) {
+            Object value = serializer.deserialize(bytesValues.get(index++));
+            result.put(key, value);
+        }
+        return result;
     }
 
 }

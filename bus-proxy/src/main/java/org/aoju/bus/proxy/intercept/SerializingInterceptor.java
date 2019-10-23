@@ -30,11 +30,12 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class SerializingInterceptor implements Interceptor {
 
+    @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object[] arguments = invocation.getArguments();
         for (int i = 0; i < arguments.length; i++) {

@@ -1,5 +1,6 @@
 package org.aoju.bus.core.compare;
 
+import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -14,21 +15,21 @@ import java.util.List;
  * 支持如：1.3.20.8，6.82.20160101，8.5a/8.5c等版本形式
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class VersionComparator implements Comparator<String>, Serializable {
+public class VersionCompare implements Comparator<String>, Serializable {
 
     /**
      * 单例
      */
-    public static final VersionComparator INSTANCE = new VersionComparator();
+    public static final VersionCompare INSTANCE = new VersionCompare();
     private static final long serialVersionUID = 1L;
 
     /**
      * 默认构造
      */
-    public VersionComparator() {
+    public VersionCompare() {
     }
 
     /**
@@ -94,7 +95,7 @@ public class VersionComparator implements Comparator<String>, Serializable {
             return false;
         }
         if (object.getClass().equals(this.getClass())) {
-            final VersionComparator other = (VersionComparator) object;
+            final VersionCompare other = (VersionCompare) object;
             return this.equals(other);
         }
         return false;

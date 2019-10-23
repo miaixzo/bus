@@ -36,24 +36,24 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class SessionBeanProvider implements Provider {
 
     private final String jndiName;
-    private final Class homeInterface;
+    private final Class clazz;
     private final Properties properties;
 
-    public SessionBeanProvider(String jndiName, Class homeInterface) {
+    public SessionBeanProvider(String jndiName, Class clazz) {
         this.jndiName = jndiName;
-        this.homeInterface = homeInterface;
+        this.clazz = clazz;
         this.properties = null;
     }
 
-    public SessionBeanProvider(String jndiName, Class homeInterface, Properties properties) {
+    public SessionBeanProvider(String jndiName, Class clazz, Properties properties) {
         this.jndiName = jndiName;
-        this.homeInterface = homeInterface;
+        this.clazz = clazz;
         this.properties = properties;
     }
 
@@ -61,21 +61,21 @@ public class SessionBeanProvider implements Provider {
         try {
             final InitialContext initialContext = properties == null ? new InitialContext() :
                     new InitialContext(properties);
-            Object homeObject = PortableRemoteObject.narrow(initialContext.lookup(jndiName), homeInterface);
+            Object homeObject = PortableRemoteObject.narrow(initialContext.lookup(jndiName), clazz);
             final Method createMethod = homeObject.getClass().getMethod("create", Builder.EMPTY_ARGUMENT_TYPES);
             return createMethod.invoke(homeObject, Builder.EMPTY_ARGUMENTS);
         } catch (NoSuchMethodException e) {
             throw new InstrumentException(
-                    "Unable to find no-arg create() method on home interface " + homeInterface.getName() + ".", e);
+                    "Unable to find no-arg create() method on home interface " + clazz.getName() + ".", e);
         } catch (IllegalAccessException e) {
             throw new InstrumentException(
-                    "No-arg create() method on home interface " + homeInterface.getName() + " is not accessible.",
+                    "No-arg create() method on home interface " + clazz.getName() + " is not accessible.",
                     e);
         } catch (NamingException e) {
             throw new InstrumentException("Unable to lookup EJB home object in JNDI.", e);
         } catch (InvocationTargetException e) {
             throw new InstrumentException(
-                    "No-arg create() method on home interface " + homeInterface.getName() + " threw an exception.", e);
+                    "No-arg create() method on home interface " + clazz.getName() + " threw an exception.", e);
         }
     }
 

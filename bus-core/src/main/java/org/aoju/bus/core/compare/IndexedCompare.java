@@ -11,10 +11,10 @@ import java.util.Comparator;
  *
  * @param <T> 被排序元素类型
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class IndexedComparator<T> implements Comparator<T> {
+public class IndexedCompare<T> implements Comparator<T> {
 
     private T[] array;
 
@@ -23,7 +23,7 @@ public class IndexedComparator<T> implements Comparator<T> {
      *
      * @param objs 参与排序的数组，数组的元素位置决定了对象的排序先后
      */
-    public IndexedComparator(T... objs) {
+    public IndexedCompare(T... objs) {
         this.array = objs;
     }
 

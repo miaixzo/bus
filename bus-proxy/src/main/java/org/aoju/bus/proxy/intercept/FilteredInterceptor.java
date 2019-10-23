@@ -28,7 +28,7 @@ import org.aoju.bus.proxy.Invocation;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class FilteredInterceptor implements Interceptor {
@@ -41,6 +41,7 @@ public class FilteredInterceptor implements Interceptor {
         this.filter = filter;
     }
 
+    @Override
     public Object intercept(Invocation invocation) throws Throwable {
         if (filter.accepts(invocation.getMethod())) {
             return inner.intercept(invocation);

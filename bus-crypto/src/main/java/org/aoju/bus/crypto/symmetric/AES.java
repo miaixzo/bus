@@ -34,8 +34,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 /**
- * AES加密算法实现<br>
- * 高级加密标准（英语：Advanced Encryption Standard，缩写：AES），在密码学中又称Rijndael加密法<br>
+ * AES加密算法实现
+ * 高级加密标准（英语：Advanced Encryption Standard，缩写：AES），在密码学中又称Rijndael加密法
  * 对于Java中AES的默认模式是：AES/ECB/PKCS5Padding，如果使用CryptoJS，请调整为：padding: CryptoJS.pad.Pkcs7
  *
  * <p>
@@ -49,7 +49,7 @@ import javax.crypto.spec.IvParameterSpec;
  * <p>
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class AES extends Symmetric {

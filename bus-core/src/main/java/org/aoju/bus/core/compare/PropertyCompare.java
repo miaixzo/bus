@@ -14,10 +14,10 @@ import java.util.Comparator;
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class PropertyComparator<T> implements Comparator<T>, Serializable {
+public class PropertyCompare<T> implements Comparator<T>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable {
      *
      * @param property 属性名
      */
-    public PropertyComparator(String property) {
+    public PropertyCompare(String property) {
         this(property, true);
     }
 
@@ -39,7 +39,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable {
      * @param property      属性名
      * @param isNullGreater null值是否排在后（从小到大排序）
      */
-    public PropertyComparator(String property, boolean isNullGreater) {
+    public PropertyCompare(String property, boolean isNullGreater) {
         this.property = property;
         this.isNullGreater = isNullGreater;
     }
@@ -54,11 +54,11 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable {
             return isNullGreater ? -1 : 1;
         }
 
-        Comparable<?> v1;
-        Comparable<?> v2;
+        java.lang.Comparable<?> v1;
+        java.lang.Comparable<?> v2;
         try {
-            v1 = (Comparable<?>) BeanUtils.getProperty(o1, property);
-            v2 = (Comparable<?>) BeanUtils.getProperty(o2, property);
+            v1 = (java.lang.Comparable<?>) BeanUtils.getProperty(o1, property);
+            v2 = (java.lang.Comparable<?>) BeanUtils.getProperty(o2, property);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -66,7 +66,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable {
         return compare(o1, o2, v1, v2);
     }
 
-    private int compare(T o1, T o2, Comparable fieldValue1, Comparable fieldValue2) {
+    private int compare(T o1, T o2, java.lang.Comparable fieldValue1, java.lang.Comparable fieldValue2) {
         int result = ObjectUtils.compare(fieldValue1, fieldValue2, isNullGreater);
         if (0 == result) {
             result = CompareUtils.compare(o1, o2, this.isNullGreater);

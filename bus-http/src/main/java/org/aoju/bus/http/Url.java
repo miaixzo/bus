@@ -58,7 +58,7 @@ import java.util.*;
  * component has been encoded already.
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public final class Url {

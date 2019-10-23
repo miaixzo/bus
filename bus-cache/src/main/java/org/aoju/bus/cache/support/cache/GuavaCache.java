@@ -33,8 +33,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Guava 缓存支持
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class GuavaCache implements Cache {
@@ -77,6 +79,11 @@ public class GuavaCache implements Cache {
     @Override
     public void remove(String... keys) {
         guavaCache.invalidateAll(Arrays.asList(keys));
+    }
+
+    @Override
+    public void clear() {
+        guavaCache.cleanUp();
     }
 
 }

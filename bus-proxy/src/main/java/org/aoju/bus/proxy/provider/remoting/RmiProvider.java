@@ -34,7 +34,7 @@ import java.rmi.server.RMIClientSocketFactory;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class RmiProvider implements Provider {
@@ -45,6 +45,7 @@ public class RmiProvider implements Provider {
     private String name;
 
     public RmiProvider() {
+
     }
 
     public RmiProvider(String name) {
@@ -70,9 +71,8 @@ public class RmiProvider implements Provider {
     }
 
     public Object getObject() {
-        Registry reg = null;
         try {
-            reg = getRegistry();
+            Registry reg = getRegistry();
             return reg.lookup(name);
         } catch (NotBoundException e) {
             throw new InstrumentException("Name " + name + " not found in registry at " + host + ":" + port + ".",

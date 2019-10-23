@@ -31,18 +31,20 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
-import org.aoju.bus.proxy.factory.AbstractProxyClassGenerator;
-import org.aoju.bus.proxy.factory.AbstractSubclassingFactory;
+import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.factory.AbstractFactory;
+import org.aoju.bus.proxy.factory.AbstractProxyClass;
 import org.aoju.bus.proxy.factory.ProxyClassCache;
+import org.aoju.bus.proxy.intercept.JavassistInterceptor;
 
 import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public class JavassistFactory extends AbstractSubclassingFactory {
+public class JavassistFactory extends AbstractFactory {
 
     private static final ProxyClassCache delegatingProxyClassCache = new ProxyClassCache(
             new DelegatingProxyClassGenerator());
@@ -50,6 +52,14 @@ public class JavassistFactory extends AbstractSubclassingFactory {
             new InterceptorProxyClassGenerator());
     private static final ProxyClassCache invocationHandlerProxyClassCache = new ProxyClassCache(
             new InvokerProxyClassGenerator());
+
+    @Override
+    public <T> T proxy(T target, Aspect aspect) {
+        return (T) newProxyInstance(
+                target.getClass().getClassLoader(),
+                new JavassistInterceptor(target, aspect),
+                target.getClass().getInterfaces());
+    }
 
     public Object createDelegatorProxy(ClassLoader classLoader, Provider targetProvider,
                                        Class[] proxyClasses) {
@@ -66,7 +76,7 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                                          Class[] proxyClasses) {
         try {
             final Class clazz = interceptorProxyClassCache.getProxyClass(classLoader, proxyClasses);
-            final Method[] methods = AbstractProxyClassGenerator.getImplementationMethods(proxyClasses);
+            final Method[] methods = AbstractProxyClass.getImplementationMethods(proxyClasses);
             return clazz.getConstructor(new Class[]{Method[].class, Object.class, Interceptor.class})
                     .newInstance(methods, target, interceptor);
         } catch (Exception e) {
@@ -78,7 +88,7 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                                      Class[] proxyClasses) {
         try {
             final Class clazz = invocationHandlerProxyClassCache.getProxyClass(classLoader, proxyClasses);
-            final Method[] methods = AbstractProxyClassGenerator.getImplementationMethods(proxyClasses);
+            final Method[] methods = AbstractProxyClass.getImplementationMethods(proxyClasses);
             return clazz.getConstructor(new Class[]{Method[].class, Invoker.class})
                     .newInstance(methods, invoker);
         } catch (Exception e) {
@@ -86,8 +96,9 @@ public class JavassistFactory extends AbstractSubclassingFactory {
         }
     }
 
-    private static class InvokerProxyClassGenerator extends AbstractProxyClassGenerator {
-        public Class generateProxyClass(ClassLoader classLoader, Class[] proxyClasses) {
+    private static class InvokerProxyClassGenerator extends AbstractProxyClass {
+
+        public Class createProxy(ClassLoader classLoader, Class[] proxyClasses) {
             try {
                 final CtClass proxyClass = JavassistUtils.createClass(getSuperclass(proxyClasses));
                 final Method[] methods = getImplementationMethods(proxyClasses);
@@ -116,10 +127,12 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                 throw new InstrumentException("Could not compile class.", e);
             }
         }
+
     }
 
-    private static class InterceptorProxyClassGenerator extends AbstractProxyClassGenerator {
-        public Class generateProxyClass(ClassLoader classLoader, Class[] proxyClasses) {
+    private static class InterceptorProxyClassGenerator extends AbstractProxyClass {
+
+        public Class createProxy(ClassLoader classLoader, Class[] proxyClasses) {
             try {
                 final CtClass proxyClass = JavassistUtils.createClass(getSuperclass(proxyClasses));
                 final Method[] methods = getImplementationMethods(proxyClasses);
@@ -153,10 +166,12 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                 throw new InstrumentException("Could not compile class.", e);
             }
         }
+
     }
 
-    private static class DelegatingProxyClassGenerator extends AbstractProxyClassGenerator {
-        public Class generateProxyClass(ClassLoader classLoader, Class[] proxyClasses) {
+    private static class DelegatingProxyClassGenerator extends AbstractProxyClass {
+
+        public Class createProxy(ClassLoader classLoader, Class[] proxyClasses) {
             try {
                 final CtClass proxyClass = JavassistUtils.createClass(getSuperclass(proxyClasses));
                 JavassistUtils.addField(Provider.class, "provider", proxyClass);
@@ -185,6 +200,8 @@ public class JavassistFactory extends AbstractSubclassingFactory {
                 throw new InstrumentException("Could not compile class.", e);
             }
         }
+
     }
+
 }
 

@@ -25,130 +25,104 @@ package org.aoju.bus.core.getter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
 
 /**
- * 基本类型的getter接口
- * 提供一个统一的接口定义返回不同类型的值（基本类型）
+ * 基于分组的Get接口
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public interface BasicTypeGetter<K> {
-
-    /**
-     * 获取Object属性值
-     *
-     * @param key 属性名
-     * @return 属性值
-     */
-    Object getObj(K key);
+public interface GroupedType {
 
     /**
      * 获取字符串型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    String getStr(K key);
+    String getStrByGroup(String key, String group);
 
     /**
      * 获取int型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    Integer getInt(K key);
+    Integer getIntByGroup(String key, String group);
 
     /**
      * 获取short型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    Short getShort(K key);
+    Short getShortByGroup(String key, String group);
 
     /**
      * 获取boolean型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    Boolean getBool(K key);
+    Boolean getBoolByGroup(String key, String group);
 
     /**
-     * 获取long型属性值
+     * 获取Long型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    Long getLong(K key);
+    Long getLongByGroup(String key, String group);
 
     /**
      * 获取char型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    Character getChar(K key);
-
-    /**
-     * 获取float型属性值
-     *
-     * @param key 属性名
-     * @return 属性值
-     */
-    Float getFloat(K key);
+    Character getCharByGroup(String key, String group);
 
     /**
      * 获取double型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    Double getDouble(K key);
+    Double getDoubleByGroup(String key, String group);
 
     /**
      * 获取byte型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    Byte getByte(K key);
+    Byte getByteByGroup(String key, String group);
 
     /**
      * 获取BigDecimal型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    BigDecimal getBigDecimal(K key);
+    BigDecimal getBigDecimalByGroup(String key, String group);
 
     /**
      * 获取BigInteger型属性值
      *
-     * @param key 属性名
+     * @param key   属性名
+     * @param group 分组
      * @return 属性值
      */
-    BigInteger getBigInteger(K key);
-
-    /**
-     * 获得Enum类型的值
-     *
-     * @param <E>   枚举类型
-     * @param clazz Enum的Class
-     * @param key   KEY
-     * @return Enum类型的值，无则返回Null
-     */
-    <E extends Enum<E>> E getEnum(Class<E> clazz, K key);
-
-    /**
-     * 获取Date类型值
-     *
-     * @param key 属性名
-     * @return Date类型属性值
-     */
-    Date getDate(K key);
+    BigInteger getBigIntegerByGroup(String key, String group);
 
 }

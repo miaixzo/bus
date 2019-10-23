@@ -33,8 +33,10 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Redis 集群缓存支持
+ *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
 public class RedisClusterCache implements Cache {
@@ -50,39 +52,6 @@ public class RedisClusterCache implements Cache {
     public RedisClusterCache(JedisCluster jedisCluster, BaseSerializer serializer) {
         this.jedisCluster = jedisCluster;
         this.serializer = serializer;
-    }
-
-    /* For Write */
-    static byte[][] toByteArray(Map<String, Object> keyValueMap, BaseSerializer serializer) {
-        byte[][] kvs = new byte[keyValueMap.size() * 2][];
-        int index = 0;
-        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
-            kvs[index++] = entry.getKey().getBytes();
-            kvs[index++] = serializer.serialize(entry.getValue());
-        }
-        return kvs;
-    }
-
-    /* For Read */
-    static byte[][] toByteArray(Collection<String> keys) {
-        byte[][] array = new byte[keys.size()][];
-        int index = 0;
-        for (String str : keys) {
-            array[index++] = str.getBytes();
-        }
-        return array;
-    }
-
-    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues, BaseSerializer serializer) {
-
-        int index = 0;
-        Map<String, Object> result = new HashMap<>(keys.size());
-        for (String key : keys) {
-            Object value = serializer.deserialize(bytesValues.get(index++));
-            result.put(key, value);
-        }
-
-        return result;
     }
 
     @Override
@@ -130,15 +99,52 @@ public class RedisClusterCache implements Cache {
         if (keys.length == 0) {
             return;
         }
-
         jedisCluster.del(keys);
     }
 
+    @Override
+    public void clear() {
+        tearDown();
+    }
+
     @PreDestroy
-    public void tearDown() throws IOException {
+    public void tearDown() {
         if (this.jedisCluster != null) {
-            this.jedisCluster.close();
+            try {
+                this.jedisCluster.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+    }
+
+    static byte[][] toByteArray(Map<String, Object> keyValueMap, BaseSerializer serializer) {
+        byte[][] kvs = new byte[keyValueMap.size() * 2][];
+        int index = 0;
+        for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
+            kvs[index++] = entry.getKey().getBytes();
+            kvs[index++] = serializer.serialize(entry.getValue());
+        }
+        return kvs;
+    }
+
+    static byte[][] toByteArray(Collection<String> keys) {
+        byte[][] array = new byte[keys.size()][];
+        int index = 0;
+        for (String str : keys) {
+            array[index++] = str.getBytes();
+        }
+        return array;
+    }
+
+    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues, BaseSerializer serializer) {
+        int index = 0;
+        Map<String, Object> result = new HashMap<>(keys.size());
+        for (String key : keys) {
+            Object value = serializer.deserialize(bytesValues.get(index++));
+            result.put(key, value);
+        }
+        return result;
     }
 
 }

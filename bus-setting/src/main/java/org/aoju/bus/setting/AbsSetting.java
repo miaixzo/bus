@@ -28,7 +28,7 @@ import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.getter.OptNullStringGetter;
+import org.aoju.bus.core.getter.OptNullString;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -39,10 +39,10 @@ import java.lang.reflect.Type;
  * Setting抽象类
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public abstract class AbsSetting extends OptNullStringGetter<String>
+public abstract class AbsSetting extends OptNullString<String>
         implements Serializable {
 
     @Override

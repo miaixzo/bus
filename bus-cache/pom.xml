@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>5.0.3</version>
+    <version>5.0.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -28,11 +28,9 @@
         <jedis.version>2.9.0</jedis.version>
         <memcached.version>2.0.0</memcached.version>
         <ehcache.version>3.3.1</ehcache.version>
-        <commons.proxy.version>1.0</commons.proxy.version>
-        <curator.recipes.version>4.2.0</curator.recipes.version>
+        <curator.version>4.2.0</curator.version>
         <guava.version>28.0-jre</guava.version>
         <yaml.version>1.23</yaml.version>
-        <kryo.version>4.0.0</kryo.version>
         <hession.version>4.0.38</hession.version>
     </properties>
 
@@ -92,7 +90,7 @@
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
-            <version>${curator.recipes.version}</version>
+            <version>${curator.version}</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
@@ -130,11 +128,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 

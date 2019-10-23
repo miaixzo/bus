@@ -24,8 +24,8 @@
 package org.aoju.bus.setting.dialect;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.getter.BasicTypeGetter;
-import org.aoju.bus.core.getter.OptBasicTypeGetter;
+import org.aoju.bus.core.getter.BasicType;
+import org.aoju.bus.core.getter.OptBasicType;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
@@ -55,10 +55,10 @@ import java.util.Properties;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 5.0.3
+ * @version 5.0.8
  * @since JDK 1.8+
  */
-public final class Props extends Properties implements BasicTypeGetter<String>, OptBasicTypeGetter<String> {
+public final class Props extends Properties implements BasicType<String>, OptBasicType<String> {
 
     private static final long serialVersionUID = 1935981579709590740L;
 
