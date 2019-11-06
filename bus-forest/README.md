@@ -18,28 +18,28 @@ JDK 1.8+ +
 ```java
 // Spring-Boot Jar包加密
 String password = "forest";
-Key key = Kit.key(password);
+Key key = Builder.key(password);
 Boot.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key);
 ```
 
 ```java
 // 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
 String password = "forest";
-Key key = Kit.key(password);
+Key key = Builder.key(password);
 Boot.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key, Builder.MODE_DANGER);
 ```
 
 ```java
 // Spring-Boot Jar包解密
 String password = "forest";
-Key key = Kit.key(password);
+Key key = Builder.key(password);
 Boot.decrypt("/path/to/read/forest.jar", "/path/to/save/deforest.jar", key);
 ```
 
 ```java
 // Jar包加密
 String password = "forest";
-Key key = Kit.key(password);
+Key key = Builder.key(password);
 Jar.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key);
 ```
 
@@ -53,7 +53,7 @@ Jar.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key, XCons
 ```java
 // Jar包解密
 String password = "forest";
-Key key = Kit.key(password);
+Key key = Builder.key(password);
 Jar.decrypt("/path/to/read/forest.jar", "/path/to/save/deforest.jar", key);
 ```
 
@@ -107,7 +107,7 @@ hold: HOLD
 * #### 硬编码方式
 ```java
 // 假如项目所有类的包名都以 com.company.project 开头，那只加密自身项目的字节码即可采用以下方式。
-XBoot.encrypt(
+Boot.encrypt(
         "/path/to/read/plaintext.jar", 
         "/path/to/save/encrypted.jar", 
         "forest", 
@@ -121,51 +121,51 @@ XBoot.encrypt(
 * #### 表达式方式
 ```java
 // 1. 采用Ant表达式过滤器更简洁地来指定需要加密的资源。
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**"));
+Boot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("mapper/*Mapper.xml"));
+Boot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("mapper/*Mapper.xml"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**/*API.class"));
+Boot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**/*API.class"));
 
 // 2. 采用更精确的正则表达式过滤器。
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/(.+)"));
+Boot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/(.+)"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("mapper/(.+)Mapper.xml"));
+Boot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("mapper/(.+)Mapper.xml"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/(.+)/(.+)API.class"));
+Boot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/(.+)/(.+)API.class"));
 ```
 * #### 混合方式
-当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 XKit 工具类提供的多个过滤器混合方法混合成一个，XKit 提供 “与” “或” “非” 三种逻辑运算的混合。
+当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 Builder 工具类提供的多个过滤器混合方法混合成一个，Builder 提供 “与” “或” “非” 三种逻辑运算的混合。
 ```java
 // 1. 与运算，即所有过滤器都满足的情况下才满足，mix() 方法返回的是this，可以继续拼接。
-XEntryFilter and = XKit.and()
-    .mix(new XJarAntEntryFilter("com/company/project/**"))
-    .mix(new XJarAntEntryFilter("*/**.class"));
+XEntryFilter and = Builder.and()
+    .mix(new AntEntryFilter("com/company/project/**"))
+    .mix(new AntEntryFilter("*/**.class"));
 
-XEntryFilter all = XKit.all()
-    .mix(new XJarAntEntryFilter("com/company/project/**"))
-    .mix(new XJarAntEntryFilter("*/**.class"));
+XEntryFilter all = Builder.all()
+    .mix(new AntEntryFilter("com/company/project/**"))
+    .mix(new AntEntryFilter("*/**.class"));
 
 // 2. 或运算，即任意一个过滤器满足的情况下就满足，mix() 方法返回的是this，可以继续拼接。
-XEntryFilter or = XKit.or()
-    .mix(new XJarAntEntryFilter("com/company/project/**"))
-    .mix(new XJarAntEntryFilter("mapper/*Mapper.xml"));
+XEntryFilter or = Builder.or()
+    .mix(new AntEntryFilter("com/company/project/**"))
+    .mix(new AntEntryFilter("mapper/*Mapper.xml"));
 
-XEntryFilter any = XKit.any()
-    .mix(new XJarAntEntryFilter("com/company/project/**"))
-    .mix(new XJarAntEntryFilter("mapper/*Mapper.xml"));
+XEntryFilter any = Builder.any()
+    .mix(new AntEntryFilter("com/company/project/**"))
+    .mix(new AntEntryFilter("mapper/*Mapper.xml"));
 
 // 3. 非运算，即除此之外都满足，该例子中即排除项目或其他模块和第三方依赖jar中的静态文件。
-XEntryFilter not  = XKit.not(
+XEntryFilter not  = Builder.not(
         XKit.or()
-            .mix(new XJarAntEntryFilter("static/**"))
-            .mix(new XJarAntEntryFilter("META-INF/resources/**"))
+            .mix(new AntEntryFilter("static/**"))
+            .mix(new AntEntryFilter("META-INF/resources/**"))
 );
 ```
 
 ## 静态资源无法加载问题
 由于静态文件被加密后文件体积变大，Spring Boot 会采用文件的大小作为
-Content-Length 头返回给浏览器， 但实际上通过 XJar
+Content-Length 头返回给浏览器， 但实际上通过 
 加载解密后文件大小恢复了原本的大小，所以浏览器认为还没接收完导致一直等待服务端。
 由此我们需要在加密时忽略静态文件的加密，实际上静态文件也没加密的必要，因为即便加密了用户在浏览器
 查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 和
@@ -174,72 +174,11 @@ META-INF/resources/ 目录下，
 ```java
 XKit.not(
         XKit.or()
-            .mix(new XJarAntEntryFilter("static/**"))
-            .mix(new XJarAntEntryFilter("META-INF/resources/**"))
+            .mix(new AntEntryFilter("static/**"))
+            .mix(new AntEntryFilter("META-INF/resources/**"))
 );
 ```
-或通过插件配置排除
-```xml
-<plugin>
-    <groupId>com.github.core-lib</groupId>
-    <artifactId>forest-maven-plugin</artifactId>
-    <version>1.0.5</version>
-    <executions>
-        <execution>
-            <goals>
-                <goal>build</goal>
-            </goals>
-            <phase>package</phase>
-            <!-- 或使用
-            <phase>install</phase>
-            -->
-            <configuration>
-                <password>forest</password>
-                <excludes>
-                    <exclude>static/**</exclude>
-                    <exclude>META-INF/resources/**</exclude>
-                </excludes>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
-```
 
-#### 对于Spring Boot 项目或模块，该插件要后于 spring-boot-maven-plugin 插件执行，有两种方式：
-* 将插件放置于 spring-boot-maven-plugin 的后面，因为其插件的默认 phase 也是 package
-* 将插件的 phase 设置为 install（默认值为：package），打包命令采用 mvn clean install
-```xml
-<project>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.aoju</groupId>
-                <artifactId>forest-maven-plugin</artifactId>
-                <version>1.0.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <!-- 或使用
-                        <phase>install</phase>
-                        -->
-                        <configuration>
-                            <password>forest</password>
-                            <includes>
-                                <include>com/company/project/**</include>
-                                <include>mapper/*Mapper.xml</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-</project>
-
-```
 #### 也可以通过Maven命令执行
 ```text
 mvn xjar:build -Dxjar.password=forest
