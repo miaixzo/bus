@@ -53,7 +53,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class Sftp extends AbstractFtp {

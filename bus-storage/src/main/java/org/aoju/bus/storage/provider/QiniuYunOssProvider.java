@@ -49,7 +49,7 @@ import java.nio.file.Path;
  * 存储服务-七牛
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class QiniuYunOssProvider extends AbstractProvider {
@@ -92,12 +92,12 @@ public class QiniuYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String bucketName, String fileName) {
+    public Readers download(String bucket, String fileName) {
         return new Readers(Builder.FAILURE);
     }
 
     @Override
-    public Readers download(String bucketName, String fileName, File file) {
+    public Readers download(String bucket, String fileName, File file) {
         return new Readers(Builder.FAILURE);
     }
 
@@ -188,8 +188,8 @@ public class QiniuYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers remove(String bucketName, Path path) {
-        return remove(bucketName, path.toString());
+    public Readers remove(String bucket, Path path) {
+        return remove(bucket, path.toString());
     }
 
 }

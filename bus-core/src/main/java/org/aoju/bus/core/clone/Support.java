@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  *
  * @param <T> 继承类的类型
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class Support<T> implements Cloneable<T> {

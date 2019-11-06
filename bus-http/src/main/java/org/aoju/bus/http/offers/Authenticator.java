@@ -107,7 +107,7 @@ import java.io.IOException;
  * or both.
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public interface Authenticator {

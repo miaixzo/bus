@@ -21,25 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.spring.annotation;
-
-import org.aoju.bus.spring.validate.ValidateConfiguration;
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+package org.aoju.bus.core.annotation;
 
 /**
- * 数据校验
+ * 设置返回元素的类型
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@Import({ValidateConfiguration.class})
-public @interface EnableValidate {
+@FunctionalInterface
+public interface Copyable<T> {
+
+    /**
+     * @return 具有相同值的新实例
+     */
+    T copy();
 
 }

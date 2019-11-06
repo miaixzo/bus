@@ -113,13 +113,13 @@ extend:
       timeout: 1L
     type:
       qliyun:
-        client-id: 10******85
-        client-secret: 1f7d************************d629e
-        redirect-uri: http://oauth.aoju.org/qq/callback
+        accessKey: 10******85
+        secretKey: 1f7d************************d629e
+        prefix: http://oauth.aoju.org/qq/callback
       baidu:
-        client-id: 10******85
-        client-secret: 1f7d************************d629e
-        redirect-uri: http://oauth.aoju.org/qq/callback
+        accessKey: 10******85
+        secretKey: 1f7d************************d629e
+        prefix: http://oauth.aoju.org/qq/callback
 ......
 ```
 

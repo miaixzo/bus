@@ -17,7 +17,7 @@ import java.nio.file.Path;
  * 本地文件上传
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class LocalFileProvider extends AbstractProvider {
@@ -32,12 +32,12 @@ public class LocalFileProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String bucketName, String fileName) {
+    public Readers download(String bucket, String fileName) {
         return null;
     }
 
     @Override
-    public Readers download(String bucketName, String fileName, File file) {
+    public Readers download(String bucket, String fileName, File file) {
         return null;
     }
 
@@ -57,7 +57,7 @@ public class LocalFileProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers rename(String bucketName, String oldName, String newName) {
+    public Readers rename(String bucket, String oldName, String newName) {
         return null;
     }
 
@@ -67,9 +67,9 @@ public class LocalFileProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers upload(String bucketName, String fileName, InputStream content) {
+    public Readers upload(String bucket, String fileName, InputStream content) {
         try {
-            File dest = new File(bucketName, fileName);
+            File dest = new File(bucket, fileName);
             if (!new File(dest.getParent()).exists()) {
                 boolean result = new File(dest.getParent()).mkdirs();
                 if (!result) {
@@ -88,7 +88,7 @@ public class LocalFileProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers upload(String bucketName, String fileName, byte[] content) {
+    public Readers upload(String bucket, String fileName, byte[] content) {
         return null;
     }
 
@@ -98,12 +98,13 @@ public class LocalFileProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers remove(String bucketName, String fileName) {
+    public Readers remove(String bucket, String fileName) {
         return null;
     }
 
     @Override
-    public Readers remove(String bucketName, Path path) {
+    public Readers remove(String bucket, Path path) {
         return null;
     }
+
 }

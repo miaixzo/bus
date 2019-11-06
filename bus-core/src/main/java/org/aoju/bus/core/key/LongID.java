@@ -47,7 +47,7 @@ import java.util.Date;
  * </ul>
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class LongID {

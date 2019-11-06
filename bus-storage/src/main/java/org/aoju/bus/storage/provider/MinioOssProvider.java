@@ -53,7 +53,7 @@ import java.util.stream.StreamSupport;
  * 存储服务-MinIO
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class MinioOssProvider extends AbstractProvider {
@@ -95,9 +95,9 @@ public class MinioOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String bucketName, String fileName) {
+    public Readers download(String bucket, String fileName) {
         try {
-            InputStream inputStream = this.client.getObject(bucketName, fileName);
+            InputStream inputStream = this.client.getObject(bucket, fileName);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             return new Readers(bufferedReader);
         } catch (Exception e) {
@@ -107,9 +107,9 @@ public class MinioOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String bucketName, String fileName, File file) {
+    public Readers download(String bucket, String fileName, File file) {
         try {
-            InputStream inputStream = this.client.getObject(bucketName, fileName);
+            InputStream inputStream = this.client.getObject(bucket, fileName);
             OutputStream outputStream = new FileOutputStream(file);
             IoUtils.copy(inputStream, outputStream);
         } catch (Exception e) {
@@ -166,20 +166,20 @@ public class MinioOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers rename(String bucketName, String oldName, String newName) {
+    public Readers rename(String bucket, String oldName, String newName) {
         return new Readers(Builder.FAILURE);
     }
 
     @Override
-    public Readers upload(String fileName, byte[] content) {
+    public Readers upload(String bucket, byte[] content) {
         InputStream stream = new ByteArrayInputStream(content);
-        return upload(this.context.getBucket(), fileName, stream);
+        return upload(this.context.getBucket(), bucket, stream);
     }
 
     @Override
-    public Readers upload(String bucketName, String fileName, InputStream content) {
+    public Readers upload(String bucket, String fileName, InputStream content) {
         try {
-            this.client.putObject(bucketName, fileName, content, content.available(),
+            this.client.putObject(bucket, fileName, content, content.available(),
                     ContentType.APPLICATION_OCTET_STREAM.getMimeType());
             return new Readers(Attachs.builder()
                     .name(fileName)
@@ -192,8 +192,8 @@ public class MinioOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers upload(String bucketName, String fileName, byte[] content) {
-        return upload(bucketName, fileName, new ByteArrayInputStream(content));
+    public Readers upload(String bucket, String fileName, byte[] content) {
+        return upload(bucket, fileName, new ByteArrayInputStream(content));
     }
 
     @Override
@@ -202,9 +202,9 @@ public class MinioOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers remove(String bucketName, String fileName) {
+    public Readers remove(String bucket, String fileName) {
         try {
-            this.client.removeObject(bucketName, fileName);
+            this.client.removeObject(bucket, fileName);
             return new Readers(Builder.SUCCESS);
         } catch (Exception e) {
             Logger.error("file remove failed ", e.getMessage());
@@ -213,8 +213,8 @@ public class MinioOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers remove(String bucketName, Path path) {
-        return remove(bucketName, path.toString());
+    public Readers remove(String bucket, Path path) {
+        return remove(bucket, path.toString());
     }
 
 }

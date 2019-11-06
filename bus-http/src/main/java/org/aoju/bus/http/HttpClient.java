@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  * Http 辅助类
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class HttpClient extends Client {
@@ -464,8 +464,7 @@ public class HttpClient extends Client {
      */
     public static String post(final String url, final Map<String, Object> params,
                               final List<String> pathList) {
-        MediaType mediaType = MediaType
-                .get(MediaType.APPLICATION_FORM_URLENCODED + ";" + org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED + ";" + org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
         RequestBody bodyParams = RequestBody.create(mediaType, params.toString());
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE)
                 .addFormDataPart("params", "", bodyParams);
@@ -532,7 +531,7 @@ public class HttpClient extends Client {
             request.get();
         } else if (ArrayUtils.contains(new String[]{Httpd.POST, Httpd.PUT, Httpd.DELETE, Httpd.PATCH}, method)) {
             String data = StringUtils.isEmpty(builder.data) ? builder.queryMap.toString() : builder.data;
-            RequestBody requestBody = RequestBody.create(MediaType.get(mediaType), data);
+            RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), data);
             request.method(method, requestBody);
         } else {
             throw new InstrumentException(String.format(">>>>>>>>request method not found [%s]<<<<<<<<", method));
@@ -597,7 +596,7 @@ public class HttpClient extends Client {
             request.get();
         } else if (ArrayUtils.contains(new String[]{Httpd.POST, Httpd.PUT, Httpd.DELETE, Httpd.PATCH}, method)) {
             String data = StringUtils.isEmpty(builder.data) ? builder.queryMap.toString() : builder.data;
-            RequestBody requestBody = RequestBody.create(MediaType.get(mediaType), data);
+            RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), data);
             request.method(method, requestBody);
         } else {
             throw new InstrumentException(String.format(">>>>>>>>request method not found[%s]<<<<<<<<", method));

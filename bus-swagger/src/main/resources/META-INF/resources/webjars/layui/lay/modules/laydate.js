@@ -1,6 +1,6 @@
 /**
 
- @Name : layDate 5.0.9 日期时间控件
+ @Name : layDate 5.1.0 日期时间控件
  @Author: 贤心
  @Site：http://www.layui.com/laydate/
  @License：MIT
@@ -66,7 +66,7 @@
         }
 
         , laydate = {
-            v: '5.0.9'
+            v: '5.1.0'
             , config: {} //全局配置项
             , index: (window.laydate && window.laydate.v) ? 100000 : 0
             , path: ready.getPath

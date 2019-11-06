@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Import;
  * 第三方授权登陆
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 @Configuration
