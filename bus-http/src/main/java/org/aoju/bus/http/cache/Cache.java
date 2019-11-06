@@ -133,7 +133,7 @@ import java.util.*;
  * {@link CacheControl#FORCE_CACHE} that address the use cases above.
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public final class Cache implements Closeable, Flushable {
@@ -687,7 +687,7 @@ public final class Cache implements Closeable, Flushable {
 
         @Override
         public MediaType contentType() {
-            return contentType != null ? MediaType.get(contentType) : null;
+            return contentType != null ? MediaType.valueOf(contentType) : null;
         }
 
         @Override

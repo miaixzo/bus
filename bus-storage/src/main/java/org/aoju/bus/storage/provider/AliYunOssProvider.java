@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 存储服务-阿里云
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class AliYunOssProvider extends AbstractProvider {
@@ -77,9 +77,9 @@ public class AliYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String bucketName, String fileName) {
+    public Readers download(String bucket, String fileName) {
         // ossObject包含文件所在的存储空间名称、文件名称、文件元信息以及一个输入流。
-        OSSObject ossObject = this.client.getObject(bucketName, fileName);
+        OSSObject ossObject = this.client.getObject(bucket, fileName);
         // 读取文件内容。
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent()))) {
             while (true) {
@@ -101,8 +101,8 @@ public class AliYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String bucketName, String fileName, File file) {
-        this.client.getObject(new GetObjectRequest(bucketName, fileName), file);
+    public Readers download(String bucket, String fileName, File file) {
+        this.client.getObject(new GetObjectRequest(bucket, fileName), file);
         return new Readers(Builder.SUCCESS);
     }
 
@@ -129,15 +129,15 @@ public class AliYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers rename(String bucketName, String oldName, String newName) {
+    public Readers rename(String bucket, String oldName, String newName) {
         boolean keyExists = true;
         try {
-            this.client.getObjectMetadata(bucketName, oldName);
+            this.client.getObjectMetadata(bucket, oldName);
         } catch (Exception e) {
             keyExists = false;
         }
         if (keyExists) {
-            this.client.copyObject(bucketName, oldName, bucketName, newName);
+            this.client.copyObject(bucket, oldName, bucket, newName);
         }
         return new Readers(Builder.SUCCESS);
     }
@@ -148,7 +148,7 @@ public class AliYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers upload(String bucketName, String fileName, InputStream content) {
+    public Readers upload(String bucket, String fileName, InputStream content) {
         try {
             byte[] bytes = new byte[content.available()];
             return upload(this.context.getBucket(), fileName, bytes);
@@ -159,10 +159,10 @@ public class AliYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers upload(String bucketName, String fileName, byte[] content) {
+    public Readers upload(String bucket, String fileName, byte[] content) {
         ByteArrayInputStream bis = new ByteArrayInputStream(content);
         try {
-            PutObjectResult objectResult = this.client.putObject(bucketName, fileName, bis);
+            PutObjectResult objectResult = this.client.putObject(bucket, fileName, bis);
             ResponseMessage response = objectResult.getResponse();
             if (!response.isSuccessful()) {
                 return new Readers(null, response.getErrorResponseAsString());
@@ -172,7 +172,7 @@ public class AliYunOssProvider extends AbstractProvider {
                     .path(response.getUri())
                     .build());
         } catch (Exception e) {
-            this.client.putObject(bucketName, fileName, bis);
+            this.client.putObject(bucket, fileName, bis);
             Logger.error("file upload failed ", e.getMessage());
         }
         return new Readers(Builder.FAILURE);
@@ -184,14 +184,14 @@ public class AliYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers remove(String bucketName, String fileName) {
-        this.client.deleteObject(bucketName, fileName);
+    public Readers remove(String bucket, String fileName) {
+        this.client.deleteObject(bucket, fileName);
         return new Readers(Builder.SUCCESS);
     }
 
     @Override
-    public Readers remove(String bucketName, Path path) {
-        remove(bucketName, path.toString());
+    public Readers remove(String bucket, Path path) {
+        remove(bucket, path.toString());
         return new Readers(Builder.SUCCESS);
     }
 

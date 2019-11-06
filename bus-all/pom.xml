@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.0.8</version>
+    <version>5.1.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -34,8 +34,8 @@
         <yaml.version>1.23</yaml.version>
         <hession.version>4.0.38</hession.version>
         <!--bus-core-->
-        <lombok.version>1.18.8</lombok.version>
-        <fastjson.version>1.2.36</fastjson.version>
+        <lombok.version>1.18.10</lombok.version>
+        <fastjson.version>1.2.62</fastjson.version>
         <!--bus-crypto-->
         <bouncycastle.version>1.60</bouncycastle.version>
         <!--bus-extra-->

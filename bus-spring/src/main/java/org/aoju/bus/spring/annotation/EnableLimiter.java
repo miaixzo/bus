@@ -36,7 +36,7 @@ import static org.springframework.context.annotation.AdviceMode.PROXY;
  * 限流降级
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 @Target(ElementType.TYPE)
@@ -65,6 +65,6 @@ public @interface EnableLimiter {
      *
      * @return the object
      */
-    AdviceMode mode() default PROXY;
+    AdviceMode mode() default AdviceMode.PROXY;
 
 }

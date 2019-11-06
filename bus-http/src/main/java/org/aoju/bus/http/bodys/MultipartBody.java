@@ -39,7 +39,7 @@ import java.util.UUID;
  * An <a href="http://www.ietf.org/rfc/rfc2387.txt">RFC 2387</a>-compliant request body.
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public final class MultipartBody extends RequestBody {
@@ -57,7 +57,7 @@ public final class MultipartBody extends RequestBody {
     MultipartBody(ByteString boundary, MediaType type, List<Part> parts) {
         this.boundary = boundary;
         this.originalType = type;
-        this.contentType = MediaType.get(type + "; boundary=" + boundary.utf8());
+        this.contentType = MediaType.valueOf(type + "; boundary=" + boundary.utf8());
         this.parts = Internal.immutableList(parts);
     }
 

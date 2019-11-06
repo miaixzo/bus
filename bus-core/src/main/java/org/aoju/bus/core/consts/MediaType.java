@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * HTTP 媒体类型
  *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 @Data
@@ -334,7 +334,7 @@ public class MediaType {
         this(null, type, subtype, charset, createParametersMap(params));
     }
 
-    private MediaType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
+    public MediaType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
         this.mediaType = mediaType == null ? APPLICATION_FORM_URLENCODED : mediaType;
         this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
@@ -354,12 +354,12 @@ public class MediaType {
     }
 
     /**
-     * Returns a media type for {@code string}.
+     * 返回媒体类型.
      *
      * @param text 字符串
      * @return the mediaType
      */
-    public static MediaType get(String text) {
+    public static MediaType valueOf(String text) {
         Matcher typeSubtype = TYPE_SUBTYPE.matcher(text);
         if (!typeSubtype.lookingAt()) {
             throw new IllegalArgumentException("No subtype found for: \"" + text + '"');
@@ -393,23 +393,6 @@ public class MediaType {
         }
 
         return new MediaType(text, type, subtype, charset);
-    }
-
-    private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
-        TreeMap<String, String> map = new TreeMap(new Comparator<String>() {
-            public int compare(String o1, String o2) {
-                return o1.compareToIgnoreCase(o2);
-            }
-        });
-        if (initialValues != null) {
-            Iterator i$ = initialValues.entrySet().iterator();
-
-            while (i$.hasNext()) {
-                Entry<String, String> e = (Entry) i$.next();
-                map.put(e.getKey().toLowerCase(), e.getValue());
-            }
-        }
-        return map;
     }
 
     public boolean equals(Object obj) {
@@ -476,6 +459,42 @@ public class MediaType {
         } catch (IllegalArgumentException e) {
             return defaultValue;
         }
+    }
+
+    /**
+     * 检查此媒体类型是否与其他媒体类型兼容。
+     * 例如:image/*与image/jpeg、image/png等兼容。
+     * 忽略媒体类型参数。这个函数是可交换的
+     *
+     * @param mediaType 要比较的媒体类型.
+     * @return 如果类型兼容，则为true，否则为false.
+     */
+    public boolean isCompatible(MediaType mediaType) {
+        return mediaType != null
+                && (type.equals(MEDIA_TYPE_WILDCARD)
+                || mediaType.type.equals(MEDIA_TYPE_WILDCARD)
+                || (type.equalsIgnoreCase(mediaType.type)
+                && (subtype.equals(MEDIA_TYPE_WILDCARD)
+                || mediaType.subtype.equals(MEDIA_TYPE_WILDCARD)))
+                || (type.equalsIgnoreCase(mediaType.type)
+                && this.subtype.equalsIgnoreCase(mediaType.subtype)));
+    }
+
+    private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
+        TreeMap<String, String> map = new TreeMap(new Comparator<String>() {
+            public int compare(String o1, String o2) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        });
+        if (initialValues != null) {
+            Iterator i$ = initialValues.entrySet().iterator();
+
+            while (i$.hasNext()) {
+                Entry<String, String> e = (Entry) i$.next();
+                map.put(e.getKey().toLowerCase(), e.getValue());
+            }
+        }
+        return map;
     }
 
 }

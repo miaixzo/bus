@@ -29,7 +29,7 @@ import org.aoju.bus.http.bodys.ResponseBody;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public final class RealResponseBody extends ResponseBody {
@@ -50,7 +50,7 @@ public final class RealResponseBody extends ResponseBody {
 
     @Override
     public MediaType contentType() {
-        return contentType != null ? MediaType.get(contentType) : null;
+        return contentType != null ? MediaType.valueOf(contentType) : null;
     }
 
     @Override

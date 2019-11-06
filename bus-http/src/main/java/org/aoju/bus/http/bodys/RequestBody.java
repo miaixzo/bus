@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public abstract class RequestBody {
@@ -47,7 +47,7 @@ public abstract class RequestBody {
             charset = contentType.charset();
             if (charset == null) {
                 charset = org.aoju.bus.core.consts.Charset.UTF_8;
-                contentType = MediaType.get(contentType + "; charset=utf-8");
+                contentType = MediaType.valueOf(contentType + "; charset=utf-8");
             }
         }
         byte[] bytes = content.getBytes(charset);
