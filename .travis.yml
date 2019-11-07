@@ -29,7 +29,6 @@ script:
   - cd ../bus-pager && mvn install -DskipTests=true
   - cd ../bus-sensitive && mvn install -DskipTests=true
   - cd ../bus-socket && mvn install -DskipTests=true
-  - cd ../bus-swagger && mvn install -DskipTests=true
   - cd ../bus-validate && mvn install -DskipTests=true
   - cd ../bus-tracer && mvn install -DskipTests=true
   - cd ../bus-base && mvn install -DskipTests=true

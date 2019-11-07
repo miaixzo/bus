@@ -34,7 +34,7 @@ import java.io.IOException;
  * Encodes HTTP requests and decodes HTTP responses.
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public interface HttpCodec {

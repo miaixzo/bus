@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.forest.boot.jar;
 
-import org.aoju.bus.forest.Consts;
+import org.aoju.bus.forest.Builder;
 import org.aoju.bus.forest.Launcher;
 
 import java.io.File;
@@ -41,7 +41,7 @@ import java.util.jar.Manifest;
  * JAR包启动器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class JarLauncher {
@@ -77,7 +77,7 @@ public class JarLauncher {
         }
 
         Thread.currentThread().setContextClassLoader(jarClassLoader);
-        URL resource = jarClassLoader.findResource(Consts.META_INF_MANIFEST);
+        URL resource = jarClassLoader.findResource(Builder.META_INF_MANIFEST);
         try (InputStream in = resource.openStream()) {
             Manifest manifest = new Manifest(in);
             Attributes attributes = manifest.getMainAttributes();

@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.ThreadUtils;
  * 计时器线程每隔一分钟检查一次任务列表，一旦匹配到执行对应的Task
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class CronTimer extends Thread {

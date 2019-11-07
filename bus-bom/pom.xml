@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>5.1.0</version>
+    <version>5.2.0</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -23,11 +23,6 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-base</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aoju</groupId>
-            <artifactId>bus-boot</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -117,17 +112,12 @@
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
-            <artifactId>bus-spring</artifactId>
+            <artifactId>bus-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-storage</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aoju</groupId>
-            <artifactId>bus-swagger</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

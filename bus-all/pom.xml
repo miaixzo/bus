@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.1.0</version>
+    <version>5.2.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -23,6 +23,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
+        <!--bus-base-->
+        <swagger.version>2.9.2</swagger.version>
         <!--bus-cache-->
         <aspectj.version>1.9.4</aspectj.version>
         <guice.version>4.2.0</guice.version>
@@ -45,6 +47,9 @@
         <net.version>3.6</net.version>
         <emoji-java.version>4.0.0</emoji-java.version>
         <servlet.version>4.0.1</servlet.version>
+        <!--bus-forest-->
+        <compress.version>1.19</compress.version>
+        <loader.version>2.0.1.RELEASE</loader.version>
         <!--bus-limiter-->
         <redisson.version>3.11.2</redisson.version>
         <!--bus-logger-->
@@ -86,8 +91,6 @@
         <qiniu.oss.version>[7.2.0, 7.2.99]</qiniu.oss.version>
         <tencent.oss.version>5.5.9</tencent.oss.version>
         <upyun.oss.version>4.0.1</upyun.oss.version>
-        <!--bus-swagger-->
-        <swagger.version>2.9.2</swagger.version>
         <!--bus-tracer-->
         <cxf.version>2.7.18</cxf.version>
         <httpclient.version>4.5.2</httpclient.version>
@@ -234,6 +237,18 @@
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
             <version>${emoji-java.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--bus-forest-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${compress.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-loader</artifactId>
+            <version>${loader.version}</version>
             <scope>provided</scope>
         </dependency>
         <!--bus-limiter-->

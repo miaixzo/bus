@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-forest</artifactId>
-    <version>5.1.0</version>
+    <version>5.2.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -18,7 +18,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <project.compiler.version>1.8</project.compiler.version>
-        <compress.version>1.18</compress.version>
+        <compress.version>1.19</compress.version>
         <loader.version>2.0.1.RELEASE</loader.version>
     </properties>
 

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.forest.boot.jar;
 
-import org.aoju.bus.forest.Consts;
+import org.aoju.bus.forest.Builder;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.provider.DecryptorProvider;
 import org.aoju.bus.forest.provider.EncryptorProvider;
@@ -43,7 +43,7 @@ import java.util.Set;
  * 加密的URL处理器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class JarURLHandler extends URLStreamHandler {
@@ -58,7 +58,7 @@ public class JarURLHandler extends URLStreamHandler {
         this.encryptorProvider = encryptorProvider;
         this.key = key;
         this.indexes = new LinkedHashSet<>();
-        Enumeration<URL> resources = classLoader.getResources(Consts.XJAR_INF_DIR + Consts.XJAR_INF_IDX);
+        Enumeration<URL> resources = classLoader.getResources(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX);
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
             String url = resource.toString();

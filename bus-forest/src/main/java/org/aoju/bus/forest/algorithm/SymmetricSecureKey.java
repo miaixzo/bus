@@ -27,11 +27,10 @@ package org.aoju.bus.forest.algorithm;
  * 对称密钥
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public final class SymmetricSecureKey extends SecureKey implements SymmetricKey {
-    private static final long serialVersionUID = -2932869368903909669L;
 
     private final byte[] secretKey;
     private final byte[] iv;

@@ -45,7 +45,7 @@ import java.util.jar.Manifest;
  * 加密的URL连接
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class JarURLConnection extends java.net.JarURLConnection {
@@ -314,4 +314,5 @@ public class JarURLConnection extends java.net.JarURLConnection {
     public Certificate[] getCertificates() throws IOException {
         return jarURLConnection.getCertificates();
     }
+
 }

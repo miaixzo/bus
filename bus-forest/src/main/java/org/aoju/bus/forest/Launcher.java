@@ -45,7 +45,7 @@ import java.util.jar.Manifest;
  * Spring-Boot 启动器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class Launcher {
@@ -57,26 +57,26 @@ public class Launcher {
 
     public Launcher(String... args) throws Exception {
         this.args = args;
-        String algorithm = Consts.DEFAULT_ALGORITHM;
-        int keysize = Consts.DEFAULT_KEYSIZE;
-        int ivsize = Consts.DEFAULT_IVSIZE;
+        String algorithm = Builder.DEFAULT_ALGORITHM;
+        int keysize = Builder.DEFAULT_KEYSIZE;
+        int ivsize = Builder.DEFAULT_IVSIZE;
         String password = null;
         String keypath = null;
         for (String arg : args) {
-            if (arg.toLowerCase().startsWith(Consts.XJAR_ALGORITHM)) {
-                algorithm = arg.substring(Consts.XJAR_ALGORITHM.length());
+            if (arg.toLowerCase().startsWith(Builder.XJAR_ALGORITHM)) {
+                algorithm = arg.substring(Builder.XJAR_ALGORITHM.length());
             }
-            if (arg.toLowerCase().startsWith(Consts.XJAR_KEYSIZE)) {
-                keysize = Integer.valueOf(arg.substring(Consts.XJAR_KEYSIZE.length()));
+            if (arg.toLowerCase().startsWith(Builder.XJAR_KEYSIZE)) {
+                keysize = Integer.valueOf(arg.substring(Builder.XJAR_KEYSIZE.length()));
             }
-            if (arg.toLowerCase().startsWith(Consts.XJAR_IVSIZE)) {
-                ivsize = Integer.valueOf(arg.substring(Consts.XJAR_IVSIZE.length()));
+            if (arg.toLowerCase().startsWith(Builder.XJAR_IVSIZE)) {
+                ivsize = Integer.valueOf(arg.substring(Builder.XJAR_IVSIZE.length()));
             }
-            if (arg.toLowerCase().startsWith(Consts.XJAR_PASSWORD)) {
-                password = arg.substring(Consts.XJAR_PASSWORD.length());
+            if (arg.toLowerCase().startsWith(Builder.XJAR_PASSWORD)) {
+                password = arg.substring(Builder.XJAR_PASSWORD.length());
             }
-            if (arg.toLowerCase().startsWith(Consts.XJAR_KEYFILE)) {
-                keypath = arg.substring(Consts.XJAR_KEYFILE.length());
+            if (arg.toLowerCase().startsWith(Builder.XJAR_KEYFILE)) {
+                keypath = arg.substring(Builder.XJAR_KEYFILE.length());
             }
         }
 
@@ -89,17 +89,17 @@ public class Launcher {
             JarFile jar = new JarFile(file, false);
             Manifest manifest = jar.getManifest();
             Attributes attributes = manifest.getMainAttributes();
-            if (attributes.getValue(Consts.XJAR_ALGORITHM_KEY) != null) {
-                algorithm = attributes.getValue(Consts.XJAR_ALGORITHM_KEY);
+            if (attributes.getValue(Builder.XJAR_ALGORITHM_KEY) != null) {
+                algorithm = attributes.getValue(Builder.XJAR_ALGORITHM_KEY);
             }
-            if (attributes.getValue(Consts.XJAR_KEYSIZE_KEY) != null) {
-                keysize = Integer.valueOf(attributes.getValue(Consts.XJAR_KEYSIZE_KEY));
+            if (attributes.getValue(Builder.XJAR_KEYSIZE_KEY) != null) {
+                keysize = Integer.valueOf(attributes.getValue(Builder.XJAR_KEYSIZE_KEY));
             }
-            if (attributes.getValue(Consts.XJAR_IVSIZE_KEY) != null) {
-                ivsize = Integer.valueOf(attributes.getValue(Consts.XJAR_IVSIZE_KEY));
+            if (attributes.getValue(Builder.XJAR_IVSIZE_KEY) != null) {
+                ivsize = Integer.valueOf(attributes.getValue(Builder.XJAR_IVSIZE_KEY));
             }
-            if (attributes.getValue(Consts.XJAR_PASSWORD_KEY) != null) {
-                password = attributes.getValue(Consts.XJAR_PASSWORD_KEY);
+            if (attributes.getValue(Builder.XJAR_PASSWORD_KEY) != null) {
+                password = attributes.getValue(Builder.XJAR_PASSWORD_KEY);
             }
         }
 
@@ -134,19 +134,19 @@ public class Launcher {
             Set<String> names = key.stringPropertyNames();
             for (String name : names) {
                 switch (name.toLowerCase()) {
-                    case Consts.XJAR_KEY_ALGORITHM:
+                    case Builder.XJAR_KEY_ALGORITHM:
                         algorithm = key.getProperty(name);
                         break;
-                    case Consts.XJAR_KEY_KEYSIZE:
+                    case Builder.XJAR_KEY_KEYSIZE:
                         keysize = Integer.valueOf(key.getProperty(name));
                         break;
-                    case Consts.XJAR_KEY_IVSIZE:
+                    case Builder.XJAR_KEY_IVSIZE:
                         ivsize = Integer.valueOf(key.getProperty(name));
                         break;
-                    case Consts.XJAR_KEY_PASSWORD:
+                    case Builder.XJAR_KEY_PASSWORD:
                         password = key.getProperty(name);
                         break;
-                    case Consts.XJAR_KEY_HOLD:
+                    case Builder.XJAR_KEY_HOLD:
                         hold = key.getProperty(name);
                     default:
                         break;
