@@ -10,7 +10,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class CaseInsensitiveLinkedMap<K, V> extends CaseInsensitiveMap<K, V> {

@@ -49,7 +49,7 @@ import java.nio.file.Path;
  * 存储服务-七牛
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class QiniuYunOssProvider extends AbstractProvider {

@@ -37,7 +37,7 @@ import java.lang.reflect.Type;
  * {@link Reference}转换器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class ReferenceConverter extends AbstractConverter<Reference> {

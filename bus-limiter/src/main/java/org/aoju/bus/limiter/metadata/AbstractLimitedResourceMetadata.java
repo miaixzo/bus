@@ -40,7 +40,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource> implements LimitedResourceMetadata<T>, Observer {

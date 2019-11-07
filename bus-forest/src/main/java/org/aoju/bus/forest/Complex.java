@@ -27,7 +27,7 @@ package org.aoju.bus.forest;
  * 记录加/解密规则
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public interface Complex<E> {

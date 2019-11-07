@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 @Singleton

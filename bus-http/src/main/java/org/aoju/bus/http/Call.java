@@ -33,7 +33,7 @@ import java.io.IOException;
  * represents a single request/response pair (stream), it cannot be executed twice.
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public interface Call extends Cloneable {

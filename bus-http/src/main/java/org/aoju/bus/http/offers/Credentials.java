@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
  * Factory for HTTP authorization credentials.
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public final class Credentials {

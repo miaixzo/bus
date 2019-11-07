@@ -25,7 +25,6 @@ package org.aoju.bus.forest.boot;
 
 import org.aoju.bus.forest.Builder;
 import org.aoju.bus.forest.Complex;
-import org.aoju.bus.forest.Consts;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.boot.jar.JarAllComplex;
 import org.aoju.bus.forest.boot.jar.JarDecryptorProvider;
@@ -48,7 +47,7 @@ import java.util.zip.Deflater;
  * Spring-Boot JAR包解密器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry>
@@ -96,9 +95,9 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
             JarDecryptorProvider xJarDecryptor = new JarDecryptorProvider(decryptorProvider, level, filter);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
-                if (entry.getName().startsWith(Consts.XJAR_SRC_DIR)
-                        || entry.getName().endsWith(Consts.XJAR_INF_DIR)
-                        || entry.getName().endsWith(Consts.XJAR_INF_DIR + Consts.XJAR_INF_IDX)
+                if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
+                        || entry.getName().endsWith(Builder.XJAR_INF_DIR)
+                        || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
                 ) {
                     continue;
                 }
@@ -109,7 +108,7 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
                     zos.putArchiveEntry(jarArchiveEntry);
                 }
                 // META-INF/MANIFEST.MF
-                else if (entry.getName().equals(Consts.META_INF_MANIFEST)) {
+                else if (entry.getName().equals(Builder.META_INF_MANIFEST)) {
                     Manifest manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Boot-Main-Class");
@@ -124,7 +123,7 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
                     manifest.write(nos);
                 }
                 // BOOT-INF/classes/**
-                else if (entry.getName().startsWith(Consts.BOOT_INF_CLASSES)) {
+                else if (entry.getName().startsWith(Builder.BOOT_INF_CLASSES)) {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
@@ -136,7 +135,7 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
                     }
                 }
                 // BOOT-INF/lib/**
-                else if (entry.getName().startsWith(Consts.BOOT_INF_LIB)) {
+                else if (entry.getName().startsWith(Builder.BOOT_INF_LIB)) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
                     xJarDecryptor.decrypt(key, nis, cos);

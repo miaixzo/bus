@@ -35,10 +35,11 @@ import java.util.List;
  * Spring-Boot Properties 启动器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class BootPropertiesLauncher extends PropertiesLauncher {
+
     private final Launcher launcher;
 
     public BootPropertiesLauncher(String... args) throws Exception {

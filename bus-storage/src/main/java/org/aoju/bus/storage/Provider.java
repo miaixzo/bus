@@ -33,7 +33,7 @@ import java.nio.file.Path;
  * 文件存储提供者
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public interface Provider {
@@ -49,8 +49,8 @@ public interface Provider {
     /**
      * 文件下载（流式下载）
      *
-     * @param bucket 存储桶名
-     * @param fileName   文件名
+     * @param bucket   存储桶名
+     * @param fileName 文件名
      * @return 处理结果 {@link Readers}
      */
     Readers download(String bucket, String fileName);
@@ -58,9 +58,9 @@ public interface Provider {
     /**
      * 文件下载（文件下载到本地）
      *
-     * @param bucket 存储桶名
-     * @param fileName   文件名
-     * @param file       保存的本地文件路径
+     * @param bucket   存储桶名
+     * @param fileName 文件名
+     * @param file     保存的本地文件路径
      * @return 处理结果 {@link Readers}
      */
     Readers download(String bucket, String fileName, File file);
@@ -93,9 +93,9 @@ public interface Provider {
     /**
      * 重命名
      *
-     * @param bucket 存储桶名
-     * @param oldName    原始名称
-     * @param newName    新名称
+     * @param bucket  存储桶名
+     * @param oldName 原始名称
+     * @param newName 新名称
      * @return 处理结果 {@link Readers}
      */
     Readers rename(String bucket, String oldName, String newName);
@@ -112,9 +112,9 @@ public interface Provider {
     /**
      * 上传文件到指定的 bucket
      *
-     * @param bucket 存储桶名
-     * @param fileName   文件名字
-     * @param content    文件内容
+     * @param bucket   存储桶名
+     * @param fileName 文件名字
+     * @param content  文件内容
      * @return 处理结果 {@link Readers}
      */
     Readers upload(String bucket, String fileName, InputStream content);
@@ -122,9 +122,9 @@ public interface Provider {
     /**
      * 上传文件到指定的 bucket
      *
-     * @param bucket 存储桶名
-     * @param fileName   文件名字
-     * @param content    文件内容
+     * @param bucket   存储桶名
+     * @param fileName 文件名字
+     * @param content  文件内容
      * @return 处理结果 {@link Readers}
      */
     Readers upload(String bucket, String fileName, byte[] content);
@@ -140,8 +140,8 @@ public interface Provider {
     /**
      * 删除文件
      *
-     * @param bucket 存储桶名
-     * @param fileName   文件名
+     * @param bucket   存储桶名
+     * @param fileName 文件名
      * @return 处理结果 {@link Readers}
      */
     Readers remove(String bucket, String fileName);
@@ -150,7 +150,7 @@ public interface Provider {
      * 删除文件
      *
      * @param bucket 存储桶名
-     * @param path       文件路径
+     * @param path   文件路径
      * @return 处理结果 {@link Readers}
      */
     Readers remove(String bucket, Path path);

@@ -9,7 +9,7 @@
     @EnableSwagger
     @EnableCrypto
     @EnableValidate
-    @SpringBootApplication
+    ...
 ```
   
 1. 启用Cors 注解形式 `@EnableCorsFilter` 或者POM如下：
@@ -17,7 +17,7 @@
       <dependency>
           <groupId>org.aoju</groupId>
           <artifactId>bus-boot-cors-starter</artifactId>
-          <version>5.1.0</version>
+          <version>5.2.0</version>
       </dependency> 
   ```  
 
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-druid-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```
 
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-druid-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```
 4. 启用Dubbo 注解形式 `@EnableDubbo` 或者POM如下：
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-dubbo-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```      
    
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-i18n-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```
      
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-mapper-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```
       
@@ -70,7 +70,7 @@
         <dependency>
            <groupId>org.aoju</groupId>
            <artifactId>bus-boot-wrapper-starter</artifactId>
-           <version>5.1.0</version> 
+           <version>5.2.0</version> 
         </dependency> 
     ```
  
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-sensitive-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```
 
@@ -88,7 +88,7 @@
        <dependency>
            <groupId>org.aoju</groupId>
            <artifactId>bus-boot-oauth-starter</artifactId>
-           <version>5.1.0</version>
+           <version>5.2.0</version>
        </dependency>
    ```
 
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-storage-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```
    
@@ -106,7 +106,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-swagger-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```
       
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>org.aoju</groupId>
             <artifactId>bus-boot-validate-starter</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
     ```
 

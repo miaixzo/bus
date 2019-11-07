@@ -36,7 +36,7 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
  * 反射带缓存，提高反射性能
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class MetaObjectWithCache {

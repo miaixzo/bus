@@ -30,7 +30,7 @@ import java.util.TimeZone;
  * 日期基本信息获取接口
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public interface DateBasic {

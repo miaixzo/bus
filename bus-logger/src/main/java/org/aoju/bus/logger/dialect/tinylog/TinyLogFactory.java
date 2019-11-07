@@ -30,7 +30,7 @@ import org.aoju.bus.logger.LogFactory;
  * TinyLog log.
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class TinyLogFactory extends LogFactory {
