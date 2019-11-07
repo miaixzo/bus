@@ -34,7 +34,7 @@ import java.util.List;
  * Writes HTTP/2 transport frames.
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 final class Http2Writer implements Closeable {

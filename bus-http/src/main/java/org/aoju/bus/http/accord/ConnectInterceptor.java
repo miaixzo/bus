@@ -36,7 +36,7 @@ import java.io.IOException;
  * Opens a connection to the target server and proceeds to the next intercept.
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public final class ConnectInterceptor implements Interceptor {

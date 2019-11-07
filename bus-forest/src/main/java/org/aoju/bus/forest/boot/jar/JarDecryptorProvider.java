@@ -25,7 +25,6 @@ package org.aoju.bus.forest.boot.jar;
 
 import org.aoju.bus.forest.Builder;
 import org.aoju.bus.forest.Complex;
-import org.aoju.bus.forest.Consts;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.provider.DecryptorProvider;
 import org.aoju.bus.forest.provider.EntryDecryptorProvider;
@@ -44,10 +43,11 @@ import java.util.zip.Deflater;
  * 普通JAR包解密器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry> implements DecryptorProvider {
+
     private final int level;
 
     public JarDecryptorProvider(DecryptorProvider xEncryptor) {
@@ -89,9 +89,9 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
             AlwaysOutputStream nos = new AlwaysOutputStream(zos);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
-                if (entry.getName().startsWith(Consts.XJAR_SRC_DIR)
-                        || entry.getName().endsWith(Consts.XJAR_INF_DIR)
-                        || entry.getName().endsWith(Consts.XJAR_INF_DIR + Consts.XJAR_INF_IDX)
+                if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
+                        || entry.getName().endsWith(Builder.XJAR_INF_DIR)
+                        || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
                 ) {
                     continue;
                 }
@@ -99,7 +99,7 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                } else if (entry.getName().equals(Consts.META_INF_MANIFEST)) {
+                } else if (entry.getName().equals(Builder.META_INF_MANIFEST)) {
                     Manifest manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Jar-Main-Class");

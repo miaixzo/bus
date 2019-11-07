@@ -25,7 +25,6 @@ package org.aoju.bus.forest.boot;
 
 import org.aoju.bus.forest.Builder;
 import org.aoju.bus.forest.Complex;
-import org.aoju.bus.forest.Consts;
 import org.aoju.bus.forest.Injector;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.boot.jar.JarAllComplex;
@@ -53,7 +52,7 @@ import java.util.zip.Deflater;
  * Spring-Boot JAR包加密器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry>
@@ -83,7 +82,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
     }
 
     public BootEncryptorProvider(EncryptorProvider encryptorProvider, int level, Complex<JarArchiveEntry> filter) {
-        this(encryptorProvider, level, Consts.MODE_NORMAL, filter);
+        this(encryptorProvider, level, Builder.MODE_NORMAL, filter);
     }
 
     public BootEncryptorProvider(EncryptorProvider encryptorProvider, int level, int mode) {
@@ -121,9 +120,9 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
-                if (entry.getName().startsWith(Consts.XJAR_SRC_DIR)
-                        || entry.getName().endsWith(Consts.XJAR_INF_DIR)
-                        || entry.getName().endsWith(Consts.XJAR_INF_DIR + Consts.XJAR_INF_IDX)
+                if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
+                        || entry.getName().endsWith(Builder.XJAR_INF_DIR)
+                        || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
                 ) {
                     continue;
                 }
@@ -134,7 +133,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                     zos.putArchiveEntry(jarArchiveEntry);
                 }
                 // META-INF/MANIFEST.MF
-                else if (entry.getName().equals(Consts.META_INF_MANIFEST)) {
+                else if (entry.getName().equals(Builder.META_INF_MANIFEST)) {
                     manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
@@ -142,7 +141,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                         attributes.putValue("Boot-Main-Class", mainClass);
                         attributes.putValue("Main-Class", map.get(mainClass));
                     }
-                    if ((mode & Consts.FLAG_DANGER) == Consts.FLAG_DANGER) {
+                    if ((mode & Builder.FLAG_DANGER) == Builder.FLAG_DANGER) {
                         Builder.retainKey(key, attributes);
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
@@ -151,7 +150,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                     manifest.write(nos);
                 }
                 // BOOT-INF/classes/**
-                else if (entry.getName().startsWith(Consts.BOOT_INF_CLASSES)) {
+                else if (entry.getName().startsWith(Builder.BOOT_INF_CLASSES)) {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
@@ -166,7 +165,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                     }
                 }
                 // BOOT-INF/lib/**
-                else if (entry.getName().startsWith(Consts.BOOT_INF_LIB)) {
+                else if (entry.getName().startsWith(Builder.BOOT_INF_LIB)) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
                     xJarEncryptor.encrypt(key, nis, cos);
@@ -190,17 +189,17 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
             }
 
             if (!indexes.isEmpty()) {
-                JarArchiveEntry xjarInfDir = new JarArchiveEntry(Consts.BOOT_INF_CLASSES + Consts.XJAR_INF_DIR);
+                JarArchiveEntry xjarInfDir = new JarArchiveEntry(Builder.BOOT_INF_CLASSES + Builder.XJAR_INF_DIR);
                 xjarInfDir.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(xjarInfDir);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry xjarInfIdx = new JarArchiveEntry(Consts.BOOT_INF_CLASSES + Consts.XJAR_INF_DIR + Consts.XJAR_INF_IDX);
+                JarArchiveEntry xjarInfIdx = new JarArchiveEntry(Builder.BOOT_INF_CLASSES + Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX);
                 xjarInfIdx.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(xjarInfIdx);
                 for (String index : indexes) {
                     zos.write(index.getBytes());
-                    zos.write(Consts.CRLF.getBytes());
+                    zos.write(Builder.CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
             }

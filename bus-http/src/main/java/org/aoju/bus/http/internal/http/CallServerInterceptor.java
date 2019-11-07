@@ -42,7 +42,7 @@ import java.net.ProtocolException;
  * This is the last intercept in the chain. It makes a network call to the server.
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public final class CallServerInterceptor implements Interceptor {

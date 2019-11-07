@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.forest;
 
+import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.algorithm.SecureRandom;
 import org.aoju.bus.forest.algorithm.SymmetricSecureKey;
@@ -45,10 +46,51 @@ import java.util.jar.Attributes;
  * Jar 工具类，包含I/O，密钥，过滤器的工具方法。
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public abstract class Builder {
+
+    public static String BOOT_INF_CLASSES = "BOOT-INF/classes/";
+    public static String BOOT_INF_LIB = "BOOT-INF/lib/";
+
+    public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
+    public static final String WEB_INF_LIB = "WEB-INF/lib/";
+
+    public static final String META_INF_MANIFEST = "META-INF/MANIFEST.MF";
+    public static final String XJAR_SRC_DIR = Builder.class.getPackage().getName().replace(Symbol.C_DOT, Symbol.C_SLASH) + Symbol.SLASH;
+    public static final String XJAR_INF_DIR = "META-INF/";
+    public static final String XJAR_INF_IDX = "FOREST.MF";
+    public static String CRLF = System.getProperty("line.separator");
+
+    public static final String XJAR_ALGORITHM = "--xjar.algorithm=";
+    public static final String XJAR_KEYSIZE = "--xjar.keysize=";
+    public static final String XJAR_IVSIZE = "--xjar.ivsize=";
+    public static final String XJAR_PASSWORD = "--xjar.password=";
+    public static final String XJAR_KEYFILE = "--xjar.keyfile=";
+
+    public static final String XJAR_ALGORITHM_KEY = "Jar-Algorithm";
+    public static final String XJAR_KEYSIZE_KEY = "Jar-Keysize";
+    public static final String XJAR_IVSIZE_KEY = "Jar-Ivsize";
+    public static final String XJAR_PASSWORD_KEY = "Jar-Password";
+
+    public static final String XJAR_KEY_ALGORITHM = "algorithm";
+    public static final String XJAR_KEY_KEYSIZE = "keysize";
+    public static final String XJAR_KEY_IVSIZE = "ivsize";
+    public static final String XJAR_KEY_PASSWORD = "password";
+    public static final String XJAR_KEY_HOLD = "hold";
+
+    public static final String DEFAULT_ALGORITHM = "AES";
+
+    public static int DEFAULT_KEYSIZE = 128;
+    public static int DEFAULT_IVSIZE = 128;
+
+    // 保留密钥在 META-INF/MANIFEST.MF 中，启动时无需输入密钥。
+    public static int FLAG_DANGER = 1;
+    // 危险模式：保留密钥
+    public static int MODE_DANGER = FLAG_DANGER;
+    // 普通模式
+    public static int MODE_NORMAL = 0;
 
     /**
      * 从输入流中读取一行字节码
@@ -240,7 +282,7 @@ public abstract class Builder {
      * @throws NoSuchAlgorithmException 没有该密钥算法
      */
     public static Key key(String password) throws NoSuchAlgorithmException {
-        return key(Consts.DEFAULT_ALGORITHM, Consts.DEFAULT_KEYSIZE, Consts.DEFAULT_IVSIZE, password);
+        return key(DEFAULT_ALGORITHM, DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
     }
 
     /**
@@ -252,7 +294,7 @@ public abstract class Builder {
      * @throws NoSuchAlgorithmException 没有该密钥算法
      */
     public static Key key(String algorithm, String password) throws NoSuchAlgorithmException {
-        return key(algorithm, Consts.DEFAULT_KEYSIZE, Consts.DEFAULT_IVSIZE, password);
+        return key(algorithm, DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
     }
 
     /**
@@ -265,7 +307,7 @@ public abstract class Builder {
      * @throws NoSuchAlgorithmException 没有该密钥算法
      */
     public static Key key(String algorithm, int keysize, String password) throws NoSuchAlgorithmException {
-        return key(algorithm, keysize, Consts.DEFAULT_IVSIZE, password);
+        return key(algorithm, keysize, DEFAULT_IVSIZE, password);
     }
 
     /**
@@ -291,17 +333,17 @@ public abstract class Builder {
     }
 
     public static void retainKey(Key key, Attributes attributes) {
-        attributes.putValue(Consts.XJAR_ALGORITHM_KEY, key.getAlgorithm());
-        attributes.putValue(Consts.XJAR_KEYSIZE_KEY, String.valueOf(key.getKeysize()));
-        attributes.putValue(Consts.XJAR_IVSIZE_KEY, String.valueOf(key.getIvsize()));
-        attributes.putValue(Consts.XJAR_PASSWORD_KEY, key.getPassword());
+        attributes.putValue(XJAR_ALGORITHM_KEY, key.getAlgorithm());
+        attributes.putValue(XJAR_KEYSIZE_KEY, String.valueOf(key.getKeysize()));
+        attributes.putValue(XJAR_IVSIZE_KEY, String.valueOf(key.getIvsize()));
+        attributes.putValue(XJAR_PASSWORD_KEY, key.getPassword());
     }
 
     public static void removeKey(Attributes attributes) {
-        attributes.remove(new Attributes.Name(Consts.XJAR_ALGORITHM_KEY));
-        attributes.remove(new Attributes.Name(Consts.XJAR_KEYSIZE_KEY));
-        attributes.remove(new Attributes.Name(Consts.XJAR_IVSIZE_KEY));
-        attributes.remove(new Attributes.Name(Consts.XJAR_PASSWORD_KEY));
+        attributes.remove(new Attributes.Name(XJAR_ALGORITHM_KEY));
+        attributes.remove(new Attributes.Name(XJAR_KEYSIZE_KEY));
+        attributes.remove(new Attributes.Name(XJAR_IVSIZE_KEY));
+        attributes.remove(new Attributes.Name(XJAR_PASSWORD_KEY));
     }
 
     /**

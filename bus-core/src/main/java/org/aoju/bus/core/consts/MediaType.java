@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * HTTP 媒体类型
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 @Data
@@ -395,6 +395,23 @@ public class MediaType {
         return new MediaType(text, type, subtype, charset);
     }
 
+    private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
+        TreeMap<String, String> map = new TreeMap(new Comparator<String>() {
+            public int compare(String o1, String o2) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        });
+        if (initialValues != null) {
+            Iterator i$ = initialValues.entrySet().iterator();
+
+            while (i$.hasNext()) {
+                Entry<String, String> e = (Entry) i$.next();
+                map.put(e.getKey().toLowerCase(), e.getValue());
+            }
+        }
+        return map;
+    }
+
     public boolean equals(Object obj) {
         if (!(obj instanceof MediaType)) {
             return false;
@@ -478,23 +495,6 @@ public class MediaType {
                 || mediaType.subtype.equals(MEDIA_TYPE_WILDCARD)))
                 || (type.equalsIgnoreCase(mediaType.type)
                 && this.subtype.equalsIgnoreCase(mediaType.subtype)));
-    }
-
-    private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
-        TreeMap<String, String> map = new TreeMap(new Comparator<String>() {
-            public int compare(String o1, String o2) {
-                return o1.compareToIgnoreCase(o2);
-            }
-        });
-        if (initialValues != null) {
-            Iterator i$ = initialValues.entrySet().iterator();
-
-            while (i$.hasNext()) {
-                Entry<String, String> e = (Entry) i$.next();
-                map.put(e.getKey().toLowerCase(), e.getValue());
-            }
-        }
-        return map;
     }
 
 }

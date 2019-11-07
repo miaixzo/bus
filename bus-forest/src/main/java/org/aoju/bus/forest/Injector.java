@@ -39,7 +39,7 @@ import java.util.Set;
  * 框架注入器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class Injector {
@@ -52,7 +52,7 @@ public class Injector {
      */
     public static void inject(JarArchiveOutputStream zos) throws IOException {
         Set<String> directories = new HashSet<>();
-        Enumeration<Resource> resources = Loaders.ant().load(Consts.XJAR_SRC_DIR + "**");
+        Enumeration<Resource> resources = Loaders.ant().load(Builder.XJAR_SRC_DIR + "**");
         while (resources.hasMoreElements()) {
             Resource resource = resources.nextElement();
             String name = resource.getName();

@@ -35,7 +35,7 @@ import java.io.IOException;
  * 文件夹加密器
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class DirEncryptorProvider extends EntryEncryptorProvider<File> implements EncryptorProvider {

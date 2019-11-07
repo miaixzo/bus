@@ -31,7 +31,7 @@ import java.io.OutputStream;
  * 来自 Apache Commons io
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class NullOutputStream extends OutputStream {

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.forest.boot;
 
-import org.aoju.bus.forest.Consts;
+import org.aoju.bus.forest.Builder;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 
@@ -33,7 +33,7 @@ import java.util.zip.ZipException;
  * 为了兼容Spring-Boot FatJar 和普通Jar 的包内资源URL一致 所以去掉路径前面的 BOOT-INF/classes/
  *
  * @author Kimi Liu
- * @version 5.1.0
+ * @version 5.2.0
  * @since JDK 1.8+
  */
 public class BootJarArchiveEntry extends JarArchiveEntry {
@@ -44,6 +44,7 @@ public class BootJarArchiveEntry extends JarArchiveEntry {
 
     @Override
     public String getName() {
-        return super.getName().substring(Consts.BOOT_INF_CLASSES.length());
+        return super.getName().substring(Builder.BOOT_INF_CLASSES.length());
     }
+
 }
