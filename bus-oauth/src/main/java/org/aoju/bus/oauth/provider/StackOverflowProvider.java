@@ -39,7 +39,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Stack Overflow登录
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class StackOverflowProvider extends DefaultProvider {

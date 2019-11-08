@@ -54,7 +54,7 @@ import java.util.concurrent.*;
  * that caller.
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public final class Http2Connection implements Closeable {
@@ -131,7 +131,7 @@ public final class Http2Connection implements Closeable {
         pushObserver = builder.pushObserver;
         client = builder.client;
         listener = builder.listener;
-        // http://tools.ietf.org/html/draft-ietf-httpbis-http2-17#section-5.2.0
+        // http://tools.ietf.org/html/draft-ietf-httpbis-http2-17#section-5.2.1
         nextStreamId = builder.client ? 1 : 2;
         if (builder.client) {
             nextStreamId += 2; // In HTTP/2, 1 on client is reserved for Upgrade.

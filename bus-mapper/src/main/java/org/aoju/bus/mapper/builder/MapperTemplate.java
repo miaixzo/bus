@@ -54,7 +54,7 @@ import static org.aoju.bus.mapper.reflection.Reflector.getMethodName;
  * 通用Mapper模板类，扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public abstract class MapperTemplate {

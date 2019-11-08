@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class Criteria {
@@ -48,6 +48,8 @@ public class Criteria {
     protected String andOr;
     //属性和列对应
     protected Map<String, EntityColumn> propertyMap;
+    //模糊查询标识符
+    protected String likePlaceholder = "%";
 
     public Criteria(Map<String, EntityColumn> propertyMap, boolean exists, boolean notNull) {
         this.exists = exists;
@@ -212,14 +214,37 @@ public class Criteria {
         return this;
     }
 
+    private String getLikeValue(String value) {
+        if (null != value && !value.contains(likePlaceholder)) {
+            return likePlaceholder + value + likePlaceholder;
+        }
+        return value;
+    }
+
     public Criteria andLike(String property, String value) {
-        addCriterion(column(property) + "  like", value, property(property));
+        addCriterion(column(property) + "  like", getLikeValue(value), property(property));
         return this;
     }
 
+    public Criteria andBeforeLike(String property, String value) {
+        return andLike(property, likePlaceholder + value);
+    }
+
+    public Criteria andAfterLike(String property, String value) {
+        return andLike(property, value + likePlaceholder);
+    }
+
     public Criteria andNotLike(String property, String value) {
-        addCriterion(column(property) + "  not like", value, property(property));
+        addCriterion(column(property) + "  not like", getLikeValue(value), property(property));
         return this;
+    }
+
+    public Criteria andNotBeforeLike(String property, String value) {
+        return andNotLike(property, likePlaceholder + value);
+    }
+
+    public Criteria andNotAfterLike(String property, String value) {
+        return andNotLike(property, value + likePlaceholder);
     }
 
     /**
@@ -352,13 +377,29 @@ public class Criteria {
     }
 
     public Criteria orLike(String property, String value) {
-        addOrCriterion(column(property) + "  like", value, property(property));
+        addOrCriterion(column(property) + "  like", getLikeValue(value), property(property));
         return this;
     }
 
+    public Criteria orBeforeLike(String property, String value) {
+        return orLike(property, likePlaceholder + value);
+    }
+
+    public Criteria orAfterLike(String property, String value) {
+        return orLike(property, value + likePlaceholder);
+    }
+
     public Criteria orNotLike(String property, String value) {
-        addOrCriterion(column(property) + "  not like", value, property(property));
+        addOrCriterion(column(property) + "  not like", getLikeValue(value), property(property));
         return this;
+    }
+
+    public Criteria orNotBeforeLike(String property, String value) {
+        return orLike(property, likePlaceholder + value);
+    }
+
+    public Criteria orNotAfterLike(String property, String value) {
+        return orLike(property, value + likePlaceholder);
     }
 
     /**

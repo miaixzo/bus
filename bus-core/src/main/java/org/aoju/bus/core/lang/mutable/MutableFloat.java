@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>float</code> 类型
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @see Float
  * @since JDK 1.8+
  */

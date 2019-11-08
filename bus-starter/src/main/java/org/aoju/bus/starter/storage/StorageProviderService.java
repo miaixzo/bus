@@ -36,14 +36,14 @@ import org.aoju.bus.storage.provider.*;
  * 存储服务提供
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
 public class StorageProviderService {
 
-    private final StorageProperties properties;
-    private final StorageCache storageCache;
+    public final StorageProperties properties;
+    public final StorageCache storageCache;
 
     public Provider get(Registry type) {
         Context context = properties.getType().get(1);
