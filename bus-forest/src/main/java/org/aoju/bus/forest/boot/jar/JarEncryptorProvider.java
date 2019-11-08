@@ -25,6 +25,7 @@ package org.aoju.bus.forest.boot.jar;
 
 import org.aoju.bus.forest.Builder;
 import org.aoju.bus.forest.Complex;
+import org.aoju.bus.forest.Consts;
 import org.aoju.bus.forest.Injector;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.provider.EncryptorProvider;
@@ -46,7 +47,7 @@ import java.util.zip.Deflater;
  * 普通JAR包加密器
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.1.0
  * @since JDK 1.8+
  */
 public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry> implements EncryptorProvider {
@@ -67,7 +68,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
     }
 
     public JarEncryptorProvider(EncryptorProvider encryptorProvider, int level, Complex<JarArchiveEntry> filter) {
-        this(encryptorProvider, level, Builder.MODE_NORMAL, filter);
+        this(encryptorProvider, level, Consts.MODE_NORMAL, filter);
     }
 
     public JarEncryptorProvider(EncryptorProvider encryptorProvider, int level, int mode) {
@@ -104,9 +105,9 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
-                if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
-                        || entry.getName().endsWith(Builder.XJAR_INF_DIR)
-                        || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
+                if (entry.getName().startsWith(Consts.XJAR_SRC_DIR)
+                        || entry.getName().endsWith(Consts.XJAR_INF_DIR)
+                        || entry.getName().endsWith(Consts.XJAR_INF_DIR + Consts.XJAR_INF_IDX)
                 ) {
                     continue;
                 }
@@ -114,7 +115,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                } else if (entry.getName().equals(Builder.META_INF_MANIFEST)) {
+                } else if (entry.getName().equals(Consts.META_INF_MANIFEST)) {
                     manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
@@ -122,7 +123,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                         attributes.putValue("Jar-Main-Class", mainClass);
                         attributes.putValue("Main-Class", "org.aoju.bus.forest.archive.jar.BootJarLauncher");
                     }
-                    if ((mode & Builder.FLAG_DANGER) == Builder.FLAG_DANGER) {
+                    if ((mode & Consts.FLAG_DANGER) == Consts.FLAG_DANGER) {
                         Builder.retainKey(key, attributes);
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
@@ -146,17 +147,17 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
             }
 
             if (!indexes.isEmpty()) {
-                JarArchiveEntry xjarInfDir = new JarArchiveEntry(Builder.XJAR_INF_DIR);
+                JarArchiveEntry xjarInfDir = new JarArchiveEntry(Consts.XJAR_INF_DIR);
                 xjarInfDir.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(xjarInfDir);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry xjarInfIdx = new JarArchiveEntry(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX);
+                JarArchiveEntry xjarInfIdx = new JarArchiveEntry(Consts.XJAR_INF_DIR + Consts.XJAR_INF_IDX);
                 xjarInfIdx.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(xjarInfIdx);
                 for (String index : indexes) {
                     zos.write(index.getBytes());
-                    zos.write(Builder.CRLF.getBytes());
+                    zos.write(Consts.CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
             }
