@@ -32,7 +32,7 @@ import org.aoju.bus.validate.validators.Complex;
  * FALSE 校验
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class FalseStrategy implements Complex<Boolean, False> {

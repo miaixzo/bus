@@ -51,7 +51,7 @@ import java.io.IOException;
  * Xss/重复读取等配置
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties({WrapperProperties.class})
@@ -82,7 +82,6 @@ public class WrapperConfiguration {
         }
         return registrationBean;
     }
-
 
     @Bean
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {

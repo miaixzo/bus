@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 权限不足异常
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class ForbiddenException extends UncheckedException {

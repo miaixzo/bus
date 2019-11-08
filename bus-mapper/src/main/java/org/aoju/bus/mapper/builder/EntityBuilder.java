@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实体类工具类 - 处理实体和数据库表以及字段
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class EntityBuilder {
@@ -188,7 +188,7 @@ public class EntityBuilder {
         }
         for (EntityField field : fields) {
             //如果启用了简单类型，就做简单类型校验，如果不是简单类型，直接跳过
-            //5.2.0 如果启用了枚举作为简单类型，就不会自动忽略枚举类型
+            //5.2.1 如果启用了枚举作为简单类型，就不会自动忽略枚举类型
             if (config.isUseSimpleType() &&
                     !(SimpleType.isSimpleType(field.getJavaType())
                             ||

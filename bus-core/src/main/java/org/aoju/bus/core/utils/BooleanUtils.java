@@ -30,7 +30,7 @@ import org.aoju.bus.core.convert.Convert;
  * Boolean类型相关工具类
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class BooleanUtils {

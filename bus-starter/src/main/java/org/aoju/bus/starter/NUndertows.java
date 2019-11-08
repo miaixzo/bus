@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
  * 容器警告处理.
  *
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 @Component

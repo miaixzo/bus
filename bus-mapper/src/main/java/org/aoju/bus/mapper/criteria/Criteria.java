@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.2.0
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class Criteria {
@@ -48,7 +48,7 @@ public class Criteria {
     protected String andOr;
     //属性和列对应
     protected Map<String, EntityColumn> propertyMap;
-    // 模糊查询标识符
+    //模糊查询标识符
     protected String likePlaceholder = "%";
 
     public Criteria(Map<String, EntityColumn> propertyMap, boolean exists, boolean notNull) {
