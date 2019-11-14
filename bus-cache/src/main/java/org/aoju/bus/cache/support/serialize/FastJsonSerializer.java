@@ -27,7 +27,7 @@ import com.alibaba.fastjson.JSON;
 
 /**
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class FastJsonSerializer extends AbstractSerializer {
@@ -49,4 +49,5 @@ public class FastJsonSerializer extends AbstractSerializer {
         String json = new String(bytes, 0, bytes.length, "UTF-8");
         return JSON.parseObject(json, type);
     }
+
 }

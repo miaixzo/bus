@@ -33,7 +33,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class KeyValueUtils {
@@ -77,7 +77,7 @@ public class KeyValueUtils {
         if (prevent == Context.Switch.ON && !missKeys.isEmpty()) {
             missKeys.forEach(key -> keyValueMap.put(key, PreventObjects.getPreventObject()));
         }
-
         return keyValueMap;
     }
+
 }

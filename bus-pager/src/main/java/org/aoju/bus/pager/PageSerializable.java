@@ -30,7 +30,7 @@ import java.util.List;
  * 分页信息
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class PageSerializable<T> implements Serializable {

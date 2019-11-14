@@ -23,9 +23,6 @@
  */
 package org.aoju.bus.cache;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import org.aoju.bus.cache.annotation.Cached;
 import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
@@ -39,6 +36,9 @@ import org.aoju.bus.cache.support.ArgNameGenerator;
 import org.aoju.bus.cache.support.CacheInfoContainer;
 import org.aoju.bus.cache.support.KeyGenerator;
 import org.aoju.bus.cache.support.SpelCalculator;
+import org.aoju.bus.core.annotation.Inject;
+import org.aoju.bus.core.annotation.Named;
+import org.aoju.bus.core.annotation.Singleton;
 import org.aoju.bus.logger.Logger;
 
 import java.lang.reflect.Method;
@@ -47,7 +47,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 @Singleton

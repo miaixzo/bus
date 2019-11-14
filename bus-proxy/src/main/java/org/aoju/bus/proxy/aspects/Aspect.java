@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
  * 切面接口
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public interface Aspect {

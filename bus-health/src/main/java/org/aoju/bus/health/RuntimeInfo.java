@@ -29,7 +29,7 @@ import org.aoju.bus.core.utils.FileUtils;
  * 运行时信息，包括内存总大小、已用大小、可用大小等
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class RuntimeInfo {
