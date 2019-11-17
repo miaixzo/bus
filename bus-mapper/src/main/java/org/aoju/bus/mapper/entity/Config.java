@@ -37,7 +37,7 @@ import java.util.Properties;
  * 通用Mapper属性配置
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class Config {

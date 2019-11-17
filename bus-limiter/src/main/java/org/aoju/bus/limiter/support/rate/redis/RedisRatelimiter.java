@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class RedisRatelimiter extends RateLimiter {

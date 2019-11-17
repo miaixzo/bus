@@ -40,7 +40,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class WeChatEEProvider extends DefaultProvider {

@@ -39,7 +39,7 @@ import java.io.InputStream;
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class BCHMacEngine implements MacEngine {

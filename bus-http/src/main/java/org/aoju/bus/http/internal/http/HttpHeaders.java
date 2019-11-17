@@ -42,7 +42,7 @@ import java.util.*;
  * Headers and utilities for internal use by httpClient.
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public final class HttpHeaders {

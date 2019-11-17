@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * 文件写入器
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class FileWriter extends FileWrapper {

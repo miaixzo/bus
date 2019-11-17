@@ -30,7 +30,7 @@ package org.aoju.bus.crypto;
  * 在加密时对明文分组的模式，它代表了不同的分组方式
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public enum Mode {

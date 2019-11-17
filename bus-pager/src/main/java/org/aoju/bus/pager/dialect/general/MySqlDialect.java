@@ -39,7 +39,7 @@ import java.util.Map;
  * 数据库方言 mysql
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class MySqlDialect extends AbstractHelperDialect {
