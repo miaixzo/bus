@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public final class ThreadLocalHashSet<T> extends InheritableThreadLocal<Set<T>> {

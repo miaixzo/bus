@@ -32,7 +32,7 @@ import org.aoju.bus.validate.validators.Complex;
  * Boolean true 校验
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class TrueStrategy implements Complex<Boolean, True> {

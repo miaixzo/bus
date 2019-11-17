@@ -35,7 +35,7 @@ package org.aoju.bus.core.io.segment;
  * 限制、prev和next引用不共享。
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public final class Segment {

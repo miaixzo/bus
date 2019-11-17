@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -55,7 +56,7 @@ import java.util.stream.Collectors;
  * Http 辅助类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class HttpClient extends Client {
@@ -227,7 +228,7 @@ public class HttpClient extends Client {
      * @return String
      */
     public static String get(final String url) {
-        return get(url, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return get(url, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -263,7 +264,7 @@ public class HttpClient extends Client {
      * @return String
      */
     public static String get(final String url, final Map<String, Object> queryMap) {
-        return get(url, queryMap, null, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return get(url, queryMap, null, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -275,7 +276,7 @@ public class HttpClient extends Client {
      * @return String
      */
     public static String get(final String url, final Map<String, Object> queryMap, Map<String, String> headerMap) {
-        return get(url, queryMap, headerMap, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return get(url, queryMap, headerMap, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -364,7 +365,7 @@ public class HttpClient extends Client {
      */
     public static String post(final String url, final String data,
                               final String mediaType) {
-        return post(url, data, mediaType, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return post(url, data, mediaType, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -392,7 +393,7 @@ public class HttpClient extends Client {
      */
     public static String post(final String url, final Map<String, Object> queryMap,
                               final String mediaType) {
-        return post(url, queryMap, mediaType, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return post(url, queryMap, mediaType, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -405,7 +406,7 @@ public class HttpClient extends Client {
      */
     public static String post(final String url, final Map<String, Object> queryMap,
                               final Map<String, String> headerMap) {
-        return post(url, queryMap, headerMap, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return post(url, queryMap, headerMap, MediaType.APPLICATION_FORM_URLENCODED);
     }
 
     /**
@@ -434,7 +435,7 @@ public class HttpClient extends Client {
      */
     public static String post(final String url, final Map<String, Object> queryMap,
                               final Map<String, String> headerMap, final String mediaType) {
-        return post(url, queryMap, headerMap, mediaType, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return post(url, queryMap, headerMap, mediaType, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -464,7 +465,7 @@ public class HttpClient extends Client {
      */
     public static String post(final String url, final Map<String, Object> params,
                               final List<String> pathList) {
-        MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED + ";" + org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED + ";" + Charset.DEFAULT_UTF_8);
         RequestBody bodyParams = RequestBody.create(mediaType, params.toString());
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE)
                 .addFormDataPart("params", "", bodyParams);
@@ -482,7 +483,7 @@ public class HttpClient extends Client {
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 byte[] bytes = response.body().bytes();
-                result = new String(bytes, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+                result = new String(bytes, Charset.DEFAULT_UTF_8);
             }
         } catch (Exception e) {
             Logger.error(">>>>>>>>error requesting HTTP upload file form request<<<<<<<<", e);
@@ -498,10 +499,10 @@ public class HttpClient extends Client {
      */
     private static String execute(final Builder builder) {
         if (StringUtils.isBlank(builder.requestCharset)) {
-            builder.requestCharset = org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8;
+            builder.requestCharset = Charset.DEFAULT_UTF_8;
         }
         if (StringUtils.isBlank(builder.responseCharset)) {
-            builder.responseCharset = org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8;
+            builder.responseCharset = Charset.DEFAULT_UTF_8;
         }
         if (StringUtils.isBlank(builder.method)) {
             builder.method = Httpd.GET;
@@ -562,10 +563,10 @@ public class HttpClient extends Client {
      */
     private static String enqueue(final Builder builder) {
         if (StringUtils.isBlank(builder.requestCharset)) {
-            builder.requestCharset = org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8;
+            builder.requestCharset = Charset.DEFAULT_UTF_8;
         }
         if (StringUtils.isBlank(builder.responseCharset)) {
-            builder.responseCharset = org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8;
+            builder.responseCharset = Charset.DEFAULT_UTF_8;
         }
         if (StringUtils.isBlank(builder.method)) {
             builder.method = Httpd.GET;

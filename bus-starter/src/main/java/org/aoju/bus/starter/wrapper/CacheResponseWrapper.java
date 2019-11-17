@@ -35,15 +35,15 @@ import java.io.PrintWriter;
 
 /**
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
-public class ResponseWrapper extends HttpServletResponseWrapper {
+public class CacheResponseWrapper extends HttpServletResponseWrapper {
 
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     private PrintWriter writer = new PrintWriter(byteArrayOutputStream);
 
-    ResponseWrapper(HttpServletResponse response) {
+    CacheResponseWrapper(HttpServletResponse response) {
         super(response);
     }
 
@@ -71,7 +71,7 @@ public class ResponseWrapper extends HttpServletResponseWrapper {
 
             @Override
             public void write(int b) throws IOException {
-                TeeOutputStream write = new TeeOutputStream(ResponseWrapper.super.getOutputStream(), byteArrayOutputStream);
+                TeeOutputStream write = new TeeOutputStream(CacheResponseWrapper.super.getOutputStream(), byteArrayOutputStream);
                 write.write(b);
             }
         };

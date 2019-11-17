@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-bom</artifactId>
-    <version>5.2.2</version>
+    <version>5.2.1</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -48,6 +48,16 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-extra</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-forest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-gitlab</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

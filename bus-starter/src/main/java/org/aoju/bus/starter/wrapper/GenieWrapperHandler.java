@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * 对于某些处理程序组，添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 @Component
@@ -98,10 +98,13 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String method = request.getMethod().toUpperCase();
         isHandle(method, request.getRequestURL().toString());
-        if (Httpd.GET.equals(method) || Httpd.POST.equals(method) || Httpd.PATCH.equals(method) || Httpd.PUT.equals(method)) {
-            if (request instanceof RequestWrapper) {
-                RequestWrapper requestWrapper = ((RequestWrapper) request);
-                Logger.info("==> {}", new String(requestWrapper.getBody()));
+        if (Httpd.GET.equals(method)
+                || Httpd.POST.equals(method)
+                || Httpd.PATCH.equals(method)
+                || Httpd.PUT.equals(method)) {
+            if (request instanceof CacheRequestWrapper) {
+                CacheRequestWrapper cacheRequestWrapper = ((CacheRequestWrapper) request);
+                Logger.info("==> {}", new String(cacheRequestWrapper.getBody()));
             }
         }
         return true;
@@ -140,10 +143,12 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
         final String method = request.getMethod();
-        if (Httpd.POST.equals(method) || Httpd.PATCH.equals(method) || Httpd.PUT.equals(method)) {
-            if (response instanceof ResponseWrapper) {
-                ResponseWrapper responseWrapper = ((ResponseWrapper) response);
-                Logger.info("<== {}", new String(responseWrapper.getBody()));
+        if (Httpd.POST.equals(method)
+                || Httpd.PATCH.equals(method)
+                || Httpd.PUT.equals(method)) {
+            if (response instanceof CacheResponseWrapper) {
+                CacheResponseWrapper cacheResponseWrapper = ((CacheResponseWrapper) response);
+                Logger.info("<== {}", new String(cacheResponseWrapper.getBody()));
             }
         }
     }

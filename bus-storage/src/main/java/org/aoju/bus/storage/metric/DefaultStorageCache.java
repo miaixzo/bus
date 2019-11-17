@@ -27,7 +27,7 @@ package org.aoju.bus.storage.metric;
  * 默认的state缓存实现
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public enum DefaultStorageCache implements StorageCache {

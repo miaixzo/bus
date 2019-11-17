@@ -30,7 +30,7 @@ import org.aoju.bus.shade.convert.MySQLTypeConvert;
  * 获奖java中需要的驼峰命名
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class NamingRules {

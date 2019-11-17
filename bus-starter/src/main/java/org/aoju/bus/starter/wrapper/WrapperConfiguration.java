@@ -51,7 +51,7 @@ import java.io.IOException;
  * Xss/重复读取等配置
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties({WrapperProperties.class})
@@ -64,9 +64,7 @@ public class WrapperConfiguration {
     public FilterRegistrationBean registrationBodyCacheFilter() {
         FilterRegistrationBean<BodyCacheFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setEnabled(this.properties.getEnabled());
-        // 设置顺序
         registrationBean.setOrder(this.properties.getOrder());
-        // 设置 BodyCacheFilter
         registrationBean.setFilter(new BodyCacheFilter());
         if (!StringUtils.isEmpty(this.properties.getName())) {
             registrationBean.setName(this.properties.getName());
@@ -85,9 +83,7 @@ public class WrapperConfiguration {
 
     @Bean
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
-        //解析器
         ObjectMapper objectMapper = builder.createXmlMapper(false).build();
-        //注册xss解析器
         SimpleModule simpleModule = new SimpleModule("commonJsonSerializer");
         simpleModule.addSerializer(new CommonJsonSerializer(this.properties));
         objectMapper.registerModule(simpleModule);
@@ -123,12 +119,12 @@ public class WrapperConfiguration {
             final String method = request.getMethod();
             // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换，提高性能
             if (Httpd.POST.equals(method) || Httpd.PATCH.equals(method) || Httpd.PUT.equals(method)) {
-                if (!(request instanceof RequestWrapper)) {
-                    request = new RequestWrapper(request);
+                if (!(request instanceof CacheRequestWrapper)) {
+                    request = new CacheRequestWrapper(request);
                 }
             }
-            if (!(response instanceof ResponseWrapper)) {
-                response = new ResponseWrapper(response);
+            if (!(response instanceof CacheResponseWrapper)) {
+                response = new CacheResponseWrapper(response);
             }
             filterChain.doFilter(request, response);
         }

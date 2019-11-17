@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * 数据库表
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class EntityTable {

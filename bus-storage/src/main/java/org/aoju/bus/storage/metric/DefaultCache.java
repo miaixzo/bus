@@ -41,7 +41,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 默认的缓存实现
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
 public class DefaultCache implements Cache {

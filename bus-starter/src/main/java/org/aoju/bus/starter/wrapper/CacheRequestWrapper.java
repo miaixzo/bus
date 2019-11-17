@@ -37,16 +37,16 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.1
  * @since JDK 1.8+
  */
-public class RequestWrapper extends HttpServletRequestWrapper {
+public class CacheRequestWrapper extends HttpServletRequestWrapper {
 
     private final static byte[] DEFAULT_BYTE = new byte[0];
     private byte[] body;
     private ServletInputStreamWrapper inputStreamWrapper;
 
-    RequestWrapper(HttpServletRequest request) throws IOException {
+    CacheRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         this.body = IoUtils.readBytes(request.getInputStream());
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.body != null ? this.body : DEFAULT_BYTE);
