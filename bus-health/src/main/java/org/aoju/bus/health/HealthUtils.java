@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Java的System类封装工具类。
+ * Java的System类封装工具类
  * http://blog.csdn.net/zhongweijian/article/details/7619383
  *
  * @author Kimi Liu
@@ -45,7 +45,7 @@ import java.util.Properties;
 public class HealthUtils {
 
     /**
-     * 取得系统属性，如果因为Java安全的限制而失败，则将错误打在Log中，然后返回 <code>null</code>。
+     * 取得系统属性,如果因为Java安全的限制而失败,则将错误打在Log中,然后返回 <code>null</code>
      *
      * @param name         属性名
      * @param defaultValue 默认值
@@ -56,10 +56,10 @@ public class HealthUtils {
     }
 
     /**
-     * 取得系统属性，如果因为Java安全的限制而失败，则将错误打在Log中，然后返回 <code>null</code>。
+     * 取得系统属性,如果因为Java安全的限制而失败,则将错误打在Log中,然后返回 <code>null</code>
      *
      * @param name  属性名
-     * @param quiet 安静模式，不将出错信息打在<code>System.err</code>中
+     * @param quiet 安静模式,不将出错信息打在<code>System.err</code>中
      * @return 属性值或<code>null</code>
      */
     public static String get(String name, boolean quiet) {
@@ -185,9 +185,9 @@ public class HealthUtils {
 
     /**
      * 返回Java虚拟机编译系统相关属性
-     * 如果没有编译系统，则返回<code>null</code>
+     * 如果没有编译系统,则返回<code>null</code>
      *
-     * @return a {@link CompilationMXBean} ，如果没有编译系统，则返回<code>null</code>
+     * @return a {@link CompilationMXBean} ,如果没有编译系统,则返回<code>null</code>
      */
     public static CompilationMXBean getCompilationMXBean() {
         return ManagementFactory.getCompilationMXBean();
@@ -232,7 +232,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得Java Virtual Machine Specification的信息。
+     * 取得Java Virtual Machine Specification的信息
      *
      * @return <code>JvmSpecInfo</code>对象
      */
@@ -241,7 +241,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得Java Virtual Machine Implementation的信息。
+     * 取得Java Virtual Machine Implementation的信息
      *
      * @return <code>JvmInfo</code>对象
      */
@@ -250,7 +250,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得Java Specification的信息。
+     * 取得Java Specification的信息
      *
      * @return <code>JavaSpecInfo</code>对象
      */
@@ -259,7 +259,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得Java Implementation的信息。
+     * 取得Java Implementation的信息
      *
      * @return <code>JavaInfo</code>对象
      */
@@ -268,7 +268,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得当前运行的JRE的信息。
+     * 取得当前运行的JRE的信息
      *
      * @return <code>JreInfo</code>对象
      */
@@ -277,7 +277,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得OS的信息。
+     * 取得OS的信息
      *
      * @return <code>OsInfo</code>对象
      */
@@ -286,7 +286,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得User的信息。
+     * 取得User的信息
      *
      * @return <code>UserInfo</code>对象
      */
@@ -295,7 +295,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得Host的信息。
+     * 取得Host的信息
      *
      * @return <code>HostInfo</code>对象
      */
@@ -304,7 +304,7 @@ public class HealthUtils {
     }
 
     /**
-     * 取得Runtime的信息。
+     * 取得Runtime的信息
      *
      * @return <code>RuntimeInfo</code>对象
      */
@@ -313,14 +313,14 @@ public class HealthUtils {
     }
 
     /**
-     * 将系统信息输出到<code>System.out</code>中。
+     * 将系统信息输出到<code>System.out</code>中
      */
     public static void dumpSystemInfo() {
         dumpSystemInfo(new PrintWriter(System.out));
     }
 
     /**
-     * 将系统信息输出到指定<code>PrintWriter</code>中。
+     * 将系统信息输出到指定<code>PrintWriter</code>中
      *
      * @param out <code>PrintWriter</code>输出流
      */
@@ -348,7 +348,7 @@ public class HealthUtils {
     }
 
     /**
-     * 输出到<code>StringBuilder</code>。
+     * 输出到<code>StringBuilder</code>
      *
      * @param builder <code>StringBuilder</code>对象
      * @param caption 标题

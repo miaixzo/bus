@@ -36,7 +36,7 @@ package org.aoju.bus.core.clone;
 public interface Cloneable<T> extends java.lang.Cloneable {
 
     /**
-     * 克隆当前对象，浅复制
+     * 克隆当前对象,浅复制
      *
      * @return 克隆后的对象
      */

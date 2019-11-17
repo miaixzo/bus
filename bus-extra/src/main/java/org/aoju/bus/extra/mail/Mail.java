@@ -80,12 +80,12 @@ public class Mail {
      */
     private DataSource[] attachments;
     /**
-     * 是否使用全局会话，默认为true
+     * 是否使用全局会话,默认为true
      */
     private boolean useGlobalSession = true;
 
     /**
-     * 构造，使用全局邮件帐户
+     * 构造,使用全局邮件帐户
      */
     public Mail() {
         this(GlobalMailAccount.INSTANCE.getAccount());
@@ -94,7 +94,7 @@ public class Mail {
     /**
      * 构造
      *
-     * @param mailAccount 邮件帐户，如果为null使用默认配置文件的全局邮件配置
+     * @param mailAccount 邮件帐户,如果为null使用默认配置文件的全局邮件配置
      */
     public Mail(MailAccount mailAccount) {
         mailAccount = (null != mailAccount) ? mailAccount : GlobalMailAccount.INSTANCE.getAccount();
@@ -112,7 +112,7 @@ public class Mail {
     }
 
     /**
-     * 创建邮件客户端，使用全局邮件帐户
+     * 创建邮件客户端,使用全局邮件帐户
      *
      * @return {@link Mail}
      */
@@ -212,7 +212,7 @@ public class Mail {
     }
 
     /**
-     * 设置附件，附件使用{@link DataSource} 形式表示，可以使用{@link FileDataSource}包装文件表示文件附件
+     * 设置附件,附件使用{@link DataSource} 形式表示,可以使用{@link FileDataSource}包装文件表示文件附件
      *
      * @param attachments 附件列表
      * @return this
@@ -235,9 +235,9 @@ public class Mail {
     }
 
     /**
-     * 设置是否使用全局会话，默认为true
+     * 设置是否使用全局会话,默认为true
      *
-     * @param isUseGlobalSession 是否使用全局会话，默认为true
+     * @param isUseGlobalSession 是否使用全局会话,默认为true
      * @return this
      */
     public Mail setUseGlobalSession(boolean isUseGlobalSession) {
@@ -282,7 +282,7 @@ public class Mail {
         // 发件人
         final String from = this.mailAccount.getFrom();
         if (StringUtils.isEmpty(from)) {
-            // 用户未提供发送方，则从Session中自动获取
+            // 用户未提供发送方,则从Session中自动获取
             msg.setFrom();
         } else {
             msg.setFrom(InternalMail.parseFirstAddress(from, charset));
@@ -337,7 +337,7 @@ public class Mail {
 
     /**
      * 获取默认邮件会话
-     * 如果为全局单例的会话，则全局只允许一个邮件帐号，否则每次发送邮件会新建一个新的会话
+     * 如果为全局单例的会话,则全局只允许一个邮件帐号,否则每次发送邮件会新建一个新的会话
      *
      * @param isSingleton 是否使用单例Session
      * @return 邮件会话 {@link Session}

@@ -40,7 +40,7 @@ public class SocketRequest {
     private ChannelHandlerContext context;
 
     /**
-     * 事件类型：订阅，消息，取消订阅，心跳
+     * 事件类型：订阅,消息,取消订阅,心跳
      */
     private String event;
 

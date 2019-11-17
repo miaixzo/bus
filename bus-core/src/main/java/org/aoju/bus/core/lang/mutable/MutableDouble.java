@@ -41,7 +41,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     private double value;
 
     /**
-     * 构造，默认值0
+     * 构造,默认值0
      */
     public MutableDouble() {
         super();
@@ -130,7 +130,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     /**
      * 增加值
      *
-     * @param operand 被增加的值，非空
+     * @param operand 被增加的值,非空
      * @return this
      */
     public MutableDouble add(final Number operand) {
@@ -152,7 +152,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     /**
      * 减去值
      *
-     * @param operand 被减的值，非空
+     * @param operand 被减的值,非空
      * @return this
      */
     public MutableDouble subtract(final Number operand) {
@@ -189,7 +189,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * </ol>
      *
      * @param obj 比对的对象
-     * @return 相同返回<code>true</code>，否则 <code>false</code>
+     * @return 相同返回<code>true</code>,否则 <code>false</code>
      */
     @Override
     public boolean equals(final Object obj) {
@@ -209,7 +209,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      * 比较
      *
      * @param other 其它 {@link MutableDouble} 对象
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      */
     @Override
     public int compareTo(final MutableDouble other) {

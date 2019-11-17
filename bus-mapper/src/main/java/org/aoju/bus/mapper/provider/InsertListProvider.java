@@ -63,7 +63,7 @@ public class InsertListProvider extends MapperTemplate {
                 .append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         //获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (column.isInsertable()) {
                 sql.append(column.getColumnHolder("record") + ",");
@@ -91,7 +91,7 @@ public class InsertListProvider extends MapperTemplate {
                 .append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         //获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (!column.isId() && column.isInsertable()) {
                 sql.append(column.getColumnHolder("record") + ",");
@@ -103,7 +103,7 @@ public class InsertListProvider extends MapperTemplate {
     }
 
     /**
-     * 插入，主键id，自增
+     * 插入,主键id,自增
      *
      * @param ms MappedStatement
      * @return the string

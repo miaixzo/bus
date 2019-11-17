@@ -77,8 +77,8 @@ public class SqlServerDialect extends AbstractHelperDialect {
     }
 
     /**
-     * 分页查询，pageHelper转换SQL时报错with(nolock)不识别的问题，
-     * 重写父类AbstractHelperDialect.getPageSql转换出错的方法。
+     * 分页查询,pageHelper转换SQL时报错with(nolock)不识别的问题,
+     * 重写父类AbstractHelperDialect.getPageSql转换出错的方法
      * 1. this.replaceSql.replace(sql);先转换成假的表名
      * 2. 然后进行SQL转换
      * 3. this.replaceSql.restore(sql);最后再恢复成真的with(nolock)
@@ -128,7 +128,7 @@ public class SqlServerDialect extends AbstractHelperDialect {
             try {
                 this.replaceSql = (ReplaceSql) Class.forName(replaceSql).newInstance();
             } catch (Exception e) {
-                throw new RuntimeException("replaceSql 参数配置的值不符合要求，可选值为 simple 和 regex，或者是实现了 "
+                throw new RuntimeException("replaceSql 参数配置的值不符合要求,可选值为 simple 和 regex,或者是实现了 "
                         + ReplaceSql.class.getCanonicalName() + " 接口的全限定类名", e);
             }
         }

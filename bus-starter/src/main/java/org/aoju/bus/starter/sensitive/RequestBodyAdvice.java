@@ -57,11 +57,11 @@ public class RequestBodyAdvice extends BaseAdvice
     SensitiveProperties properties;
 
     /**
-     * 首次调用，以确定是否应用此拦截.
+     * 首次调用,以确定是否应用此拦截.
      *
      * @param parameter     方法参数
-     * @param type          目标类型，不一定与方法相同
-     *                      参数类型，例如 {@code HttpEntity<String>}.
+     * @param type          目标类型,不一定与方法相同
+     *                      参数类型,例如 {@code HttpEntity<String>}.
      * @param converterType 转换器类型
      * @return true/false 是否应该调用此拦截
      */
@@ -85,10 +85,10 @@ public class RequestBodyAdvice extends BaseAdvice
      *
      * @param inputMessage  HTTP输入消息
      * @param parameter     方法参数
-     * @param type          目标类型，不一定与方法相同
-     *                      参数类型，例如 {@code HttpEntity<String>}.
+     * @param type          目标类型,不一定与方法相同
+     *                      参数类型,例如 {@code HttpEntity<String>}.
      * @param converterType 转换器类型
-     * @return 输入请求或新实例，永远不会 {@code null}
+     * @return 输入请求或新实例, 永远不会 {@code null}
      */
     @Override
     public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage,
@@ -123,8 +123,8 @@ public class RequestBodyAdvice extends BaseAdvice
      * @param body          在调用第一个通知之前将其设置为转换器对象
      * @param inputMessage  HTTP输入消息
      * @param parameter     方法参数
-     * @param type          目标类型，不一定与方法相同
-     *                      参数类型，例如 {@code HttpEntity<String>}.
+     * @param type          目标类型,不一定与方法相同
+     *                      参数类型,例如 {@code HttpEntity<String>}.
      * @param converterType 转换器类型
      * @return 相同的主体或新实例
      */
@@ -137,15 +137,15 @@ public class RequestBodyAdvice extends BaseAdvice
     }
 
     /**
-     * 如果主体为空，则调用第二个(也是最后一个).
+     * 如果主体为空,则调用第二个(也是最后一个).
      *
      * @param body          通常在调用第一个通知之前将其设置为{@code null}
      * @param inputMessage  HTTP输入消息
      * @param parameter     方法参数
-     * @param type          目标类型，不一定与方法相同
-     *                      参数类型，例如 {@code HttpEntity<String>}.
+     * @param type          目标类型,不一定与方法相同
+     *                      参数类型,例如 {@code HttpEntity<String>}.
      * @param converterType 转换器类型
-     * @return 要使用的值或{@code null}，该值可能会引发{@code HttpMessageNotReadableException}.
+     * @return 要使用的值或{@code null},该值可能会引发{@code HttpMessageNotReadableException}.
      */
     @Override
     public Object handleEmptyBody(Object body, HttpInputMessage inputMessage,

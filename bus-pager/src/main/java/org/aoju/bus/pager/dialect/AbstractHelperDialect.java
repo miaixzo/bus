@@ -85,8 +85,8 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
         if (rowBounds instanceof PageRowBounds) {
             ((PageRowBounds) rowBounds).setTotal(count);
         }
-        //pageSize < 0 的时候，不执行分页查询
-        //pageSize = 0 的时候，还需要执行后续查询，但是不会分页
+        //pageSize < 0 的时候,不执行分页查询
+        //pageSize = 0 的时候,还需要执行后续查询,但是不会分页
         if (page.getPageSize() < 0) {
             return false;
         }
@@ -110,7 +110,7 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
             paramMap.putAll((Map) parameterObject);
         } else {
             paramMap = new HashMap<String, Object>();
-            //动态sql时的判断条件不会出现在ParameterMapping中，但是必须有，所以这里需要收集所有的getter属性
+            //动态sql时的判断条件不会出现在ParameterMapping中,但是必须有,所以这里需要收集所有的getter属性
             //TypeHandlerRegistry可以直接处理的会作为一个直接使用的对象进行处理
             boolean hasTypeHandler = ms.getConfiguration().getTypeHandlerRegistry().hasTypeHandler(parameterObject.getClass());
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(parameterObject);
@@ -120,7 +120,7 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
                     paramMap.put(name, metaObject.getValue(name));
                 }
             }
-            //下面这段方法，主要解决一个常见类型的参数时的问题
+            //下面这段方法,主要解决一个常见类型的参数时的问题
             if (boundSql.getParameterMappings() != null && boundSql.getParameterMappings().size() > 0) {
                 for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
                     String name = parameterMapping.getProperty();

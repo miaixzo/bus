@@ -85,7 +85,7 @@ public class BaiduProvider extends DefaultProvider {
     public Message revoke(AccToken token) {
         JSONObject object = JSONObject.parseObject(doGetRevoke(token));
         this.checkResponse(object);
-        // 返回1表示取消授权成功，否则失败
+        // 返回1表示取消授权成功,否则失败
         Builder.Status status = object.getIntValue("result") == 1 ? Builder.Status.SUCCESS : Builder.Status.FAILURE;
         return Message.builder().errcode(status.getCode()).errmsg(status.getMsg()).build();
     }
@@ -105,9 +105,9 @@ public class BaiduProvider extends DefaultProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      * @since 1.9.3
      */

@@ -49,10 +49,10 @@ import java.lang.reflect.Method;
  */
 public abstract class AbstractInterceptor implements MethodInterceptor {
 
-    // 通过标准反射来获取变量名，适用于接口代理
+    // 通过标准反射来获取变量名,适用于接口代理
     private ParameterNameDiscoverer standardReflectionParameterNameDiscoverer = new StandardReflectionParameterNameDiscoverer();
 
-    // 通过解析字节码文件的本地变量表来获取的，只支持CGLIG(ASM library)，适用于类代理
+    // 通过解析字节码文件的本地变量表来获取的,只支持CGLIG(ASM library),适用于类代理
     private ParameterNameDiscoverer localVariableTableParameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
 
     public boolean isCglibAopProxy(MethodInvocation invocation) {
@@ -136,11 +136,11 @@ public abstract class AbstractInterceptor implements MethodInterceptor {
         return invocation.getArguments();
     }
 
-    // 获取参数注解对应的参数值。例如方法doXX(@MyAnnotation String id)，根据MyAnnotation注解和String类型，获得id的值
+    // 获取参数注解对应的参数值 例如方法doXX(@MyAnnotation String id),根据MyAnnotation注解和String类型,获得id的值
     // 但下面的方法只适用于同时满足如下三个条件的场景（更多场景请自行扩展）：
-    // 1. 方法注解parameterAnnotationType，只能放在若干个参数中的一个
-    // 2. 方法注解parameterAnnotationType，对应的参数类型必须匹配给定的类型parameterType
-    // 3. 方法注解parameterAnnotationType，对应的参数值不能为null
+    // 1. 方法注解parameterAnnotationType,只能放在若干个参数中的一个
+    // 2. 方法注解parameterAnnotationType,对应的参数类型必须匹配给定的类型parameterType
+    // 3. 方法注解parameterAnnotationType,对应的参数值不能为null
     public <T> T getValueByParameterAnnotation(MethodInvocation invocation, Class<?> parameterAnnotationType, Class<T> parameterType) {
         String methodName = getMethodName(invocation);
         String parameterTypesValue = getMethodParameterTypesValue(invocation);

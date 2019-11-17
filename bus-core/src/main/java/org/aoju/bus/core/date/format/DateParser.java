@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 日期解析接口，用于解析日期字符串为 {@link Date} 对象
+ * 日期解析接口,用于解析日期字符串为 {@link Date} 对象
  * Thanks to Apache Commons Lang 3.5
  *
  * @author Kimi Liu
@@ -44,7 +44,7 @@ public interface DateParser extends DateBasic {
      *
      * @param source 日期字符串
      * @return {@link Date}
-     * @throws ParseException 转换异常，被转换的字符串格式错误。
+     * @throws ParseException 转换异常,被转换的字符串格式错误
      */
     Date parse(String source) throws ParseException;
 
@@ -65,7 +65,7 @@ public interface DateParser extends DateBasic {
      * Upon parse failure, ParsePosition error index is updated to the offset of the source text which does not match the supplied format.
      *
      * @param source   被转换的日期字符串
-     * @param pos      定义开始转换的位置，转换结束后更新转换到的位置
+     * @param pos      定义开始转换的位置,转换结束后更新转换到的位置
      * @param calendar The calendar into which to set parsed fields.
      * @return true, if source has been parsed (pos parsePosition is updated); otherwise false (and pos errorIndex is updated)
      * @throws IllegalArgumentException when Calendar has been set to be not lenient, and a parsed field is out of range.

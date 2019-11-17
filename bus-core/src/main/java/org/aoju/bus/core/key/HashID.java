@@ -29,8 +29,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Hashids用于从数字(如YouTube和Bitly)生成短散列，
- * 数据库id，将它们用作忘记密码散列、邀请码、存储碎片号
+ * Hashids用于从数字(如YouTube和Bitly)生成短散列,
+ * 数据库id,将它们用作忘记密码散列、邀请码、存储碎片号
  *
  * @author Kimi Liu
  * @version 5.2.2

@@ -47,9 +47,9 @@ public class SettingUtils {
 
     /**
      * 获取当前环境下的配置文件
-     * name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
+     * name可以为不包括扩展名的文件名（默认.setting为结尾）,也可以是文件名全称
      *
-     * @param name 文件名，如果没有扩展名，默认为.setting
+     * @param name 文件名,如果没有扩展名,默认为.setting
      * @return 当前环境下配置文件
      */
     public static Setting get(String name) {

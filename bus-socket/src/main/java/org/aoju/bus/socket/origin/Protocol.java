@@ -26,11 +26,11 @@ package org.aoju.bus.socket.origin;
 import java.nio.ByteBuffer;
 
 /**
- * 消息传输采用的协议，
- * 根据通信双方约定的协议规范实现{@code Protocol}接口，
+ * 消息传输采用的协议,
+ * 根据通信双方约定的协议规范实现{@code Protocol}接口,
  * 使用时将该实现类注册至服务启动类{@link AioQuickClient}/{@link AioQuickServer}
- * 注意：框架本身的所有Socket链路复用同一个Protocol，
- * 请勿在其实现类的成员变量中存储特定链路的数据。
+ * 注意：框架本身的所有Socket链路复用同一个Protocol,
+ * 请勿在其实现类的成员变量中存储特定链路的数据
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -39,7 +39,7 @@ import java.nio.ByteBuffer;
 public interface Protocol<T> {
 
     /**
-     * 对于从Socket流中获取到的数据采用当前Protocol的实现类协议进行解析。
+     * 对于从Socket流中获取到的数据采用当前Protocol的实现类协议进行解析
      *
      * @param readBuffer 待处理的读buffer
      * @param session    本次需要解码的session

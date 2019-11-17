@@ -66,7 +66,7 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * 获取表名 - 支持动态表名，该方法用于多个入参时，通过parameterName指定入参中实体类的@Param的注解值
+     * 获取表名 - 支持动态表名,该方法用于多个入参时,通过parameterName指定入参中实体类的@Param的注解值
      *
      * @param entityClass   对象
      * @param tableName     表
@@ -232,7 +232,7 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * 获取所有查询列，如id,name,criteria...
+     * 获取所有查询列,如id,name,criteria...
      *
      * @param entityClass 对象
      * @return the string
@@ -381,7 +381,7 @@ public class SqlSourceBuilder {
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         //获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (!column.isInsertable()) {
                 continue;
@@ -413,7 +413,7 @@ public class SqlSourceBuilder {
         sql.append("<trim prefix=\"VALUES (\" suffix=\")\" suffixOverrides=\",\">");
         //获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (!column.isInsertable()) {
                 continue;
@@ -447,11 +447,11 @@ public class SqlSourceBuilder {
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
         //对乐观锁的支持
         EntityColumn versionColumn = null;
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (versionColumn != null) {
-                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段,一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;
             }
@@ -496,7 +496,7 @@ public class SqlSourceBuilder {
         sql.append("<where>");
         //获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getPKColumns(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             sql.append(" AND " + column.getColumnEqualsHolder());
         }
@@ -508,7 +508,7 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * where所有列的条件，会判断是否!=null
+     * where所有列的条件,会判断是否!=null
      *
      * @param entityClass 对象
      * @param empty       是否为empty
@@ -519,7 +519,7 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * where所有列的条件，会判断是否!=null
+     * where所有列的条件,会判断是否!=null
      *
      * @param entityClass 对象
      * @param empty       是否为empty
@@ -531,7 +531,7 @@ public class SqlSourceBuilder {
         sql.append("<where>");
         //获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (!useVersion || !column.getEntityField().isAnnotationPresent(Version.class)) {
                 sql.append(getIfNotNull(column, " AND " + column.getColumnEqualsHolder(), empty));
@@ -557,7 +557,7 @@ public class SqlSourceBuilder {
         for (EntityColumn column : columnList) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (hasVersion) {
-                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段,一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 hasVersion = true;
                 result = " AND " + column.getColumnEqualsHolder();
@@ -567,7 +567,7 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * 获取默认的orderBy，通过注解设置的
+     * 获取默认的orderBy,通过注解设置的
      *
      * @param entityClass 对象
      * @return the string
@@ -628,7 +628,7 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * 查询中的orderBy条件，会判断默认orderBy
+     * 查询中的orderBy条件,会判断默认orderBy
      *
      * @param entityClass 对象
      * @return the string
@@ -675,7 +675,7 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * 查询中的where结构，用于只有一个参数时
+     * 查询中的where结构,用于只有一个参数时
      *
      * @return the string
      */
@@ -713,7 +713,7 @@ public class SqlSourceBuilder {
     }
 
     /**
-     * Update中的where结构，用于多个参数时，带@Param("condition")注解时
+     * Update中的where结构,用于多个参数时,带@Param("condition")注解时
      *
      * @return the string
      */

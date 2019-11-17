@@ -78,12 +78,12 @@ public class QrConfig {
      */
     public Image img;
     /**
-     * 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * 二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
      */
     public int ratio = 6;
 
     /**
-     * 构造，默认长宽为300
+     * 构造,默认长宽为300
      */
     public QrConfig() {
         this(300, 300);
@@ -159,7 +159,7 @@ public class QrConfig {
     }
 
     /**
-     * 设置前景色，例如：Color.BLUE.getRGB()
+     * 设置前景色,例如：Color.BLUE.getRGB()
      *
      * @param foreColor 前景色
      * @return this
@@ -179,7 +179,7 @@ public class QrConfig {
     }
 
     /**
-     * 设置背景色，例如：Color.BLUE.getRGB()
+     * 设置背景色,例如：Color.BLUE.getRGB()
      *
      * @param backColor 背景色
      * @return this
@@ -290,18 +290,18 @@ public class QrConfig {
     }
 
     /**
-     * 获取二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * 获取二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
      *
-     * @return 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * @return 二维码中的Logo缩放的比例系数, 如5表示长宽最小值的1/5
      */
     public int getRatio() {
         return this.ratio;
     }
 
     /**
-     * 设置二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * 设置二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
      *
-     * @param ratio 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * @param ratio 二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
      * @return this;
      */
     public QrConfig setRatio(int ratio) {

@@ -151,7 +151,7 @@ public class JarLoaders extends URLClassLoader {
     }
 
     /**
-     * 加载Jar文件，或者加载目录
+     * 加载Jar文件,或者加载目录
      *
      * @param jarFile jar文件或者jar文件所在目录
      * @return this
@@ -175,7 +175,7 @@ public class JarLoaders extends URLClassLoader {
 
     /**
      * 增加class所在目录或文件
-     * 如果为目录，此目录用于搜索class文件，如果为文件，需为jar文件
+     * 如果为目录,此目录用于搜索class文件,如果为文件,需为jar文件
      *
      * @param dir 目录
      * @return the jarClassLoader

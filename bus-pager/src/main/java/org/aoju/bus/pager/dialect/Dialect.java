@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 数据库方言，针对不同数据库进行实现
+ * 数据库方言,针对不同数据库进行实现
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -55,12 +55,12 @@ public interface Dialect {
      * @param ms              MappedStatement
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
-     * @return true 跳过，返回默认查询结果，false 执行分页查询
+     * @return true 跳过,返回默认查询结果,false 执行分页查询
      */
     boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds);
 
     /**
-     * 执行分页前，返回 true 会进行 count 查询，false 会继续下面的 beforePage 判断
+     * 执行分页前,返回 true 会进行 count 查询,false 会继续下面的 beforePage 判断
      *
      * @param ms              MappedStatement
      * @param parameterObject 方法参数
@@ -87,7 +87,7 @@ public interface Dialect {
      * @param count           查询结果总数
      * @param parameterObject 接口参数
      * @param rowBounds       分页参数
-     * @return true 继续分页查询，false 直接返回
+     * @return true 继续分页查询,false 直接返回
      */
     boolean afterCount(long count, Object parameterObject, RowBounds rowBounds);
 
@@ -103,7 +103,7 @@ public interface Dialect {
     Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey);
 
     /**
-     * 执行分页前，返回 true 会进行分页查询，false 会返回默认查询结果
+     * 执行分页前,返回 true 会进行分页查询,false 会返回默认查询结果
      *
      * @param ms              MappedStatement
      * @param parameterObject 方法参数
@@ -125,7 +125,7 @@ public interface Dialect {
     String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey);
 
     /**
-     * 分页查询后，处理分页结果，拦截器中直接 return 该方法的返回值
+     * 分页查询后,处理分页结果,拦截器中直接 return 该方法的返回值
      *
      * @param pageList        分页查询结果
      * @param parameterObject 方法参数

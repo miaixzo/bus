@@ -20,6 +20,7 @@ public class Variable {
     @JsonProperty("masked")
     private Boolean isMasked;
     private String environmentScope;
+
     public Variable() {
     }
 

@@ -34,7 +34,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
 /**
  * 邮箱脱敏策略
  * 脱敏规则：
- * 保留前三位，中间隐藏4位。其他正常显示
+ * 保留前三位,中间隐藏4位 其他正常显示
  *
  * @author Kimi Liu
  * @version 5.2.2

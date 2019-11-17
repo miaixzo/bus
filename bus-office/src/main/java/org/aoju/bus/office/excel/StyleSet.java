@@ -28,7 +28,7 @@ import org.apache.poi.ss.usermodel.*;
 import java.io.Serializable;
 
 /**
- * 样式集合，此样式集合汇集了整个工作簿的样式，用于减少样式的创建和冗余
+ * 样式集合,此样式集合汇集了整个工作簿的样式,用于减少样式的创建和冗余
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -80,7 +80,7 @@ public class StyleSet implements Serializable {
     }
 
     /**
-     * 获取头部样式，获取后可以定义整体头部样式
+     * 获取头部样式,获取后可以定义整体头部样式
      *
      * @return 头部样式
      */
@@ -89,7 +89,7 @@ public class StyleSet implements Serializable {
     }
 
     /**
-     * 获取常规单元格样式，获取后可以定义整体头部样式
+     * 获取常规单元格样式,获取后可以定义整体头部样式
      *
      * @return 常规单元格样式
      */
@@ -98,7 +98,7 @@ public class StyleSet implements Serializable {
     }
 
     /**
-     * 获取数字（带小数点）单元格样式，获取后可以定义整体头部样式
+     * 获取数字（带小数点）单元格样式,获取后可以定义整体头部样式
      *
      * @return 数字（带小数点）单元格样式
      */
@@ -107,7 +107,7 @@ public class StyleSet implements Serializable {
     }
 
     /**
-     * 获取日期单元格样式，获取后可以定义整体头部样式
+     * 获取日期单元格样式,获取后可以定义整体头部样式
      *
      * @return 日期单元格样式
      */
@@ -166,8 +166,8 @@ public class StyleSet implements Serializable {
      * 设置全局字体
      *
      * @param color      字体颜色
-     * @param fontSize   字体大小，-1表示默认大小
-     * @param fontName   字体名，null表示默认字体
+     * @param fontSize   字体大小,-1表示默认大小
+     * @param fontName   字体名,null表示默认字体
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
@@ -179,7 +179,7 @@ public class StyleSet implements Serializable {
     /**
      * 设置全局字体
      *
-     * @param font       字体，可以通过{@link StyleUtils#createFont(Workbook, short, short, String)}创建
+     * @param font       字体,可以通过{@link StyleUtils#createFont(Workbook, short, short, String)}创建
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */

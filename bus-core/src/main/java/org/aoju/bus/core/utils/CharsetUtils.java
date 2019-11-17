@@ -40,7 +40,7 @@ public class CharsetUtils {
     /**
      * 转换为Charset对象
      *
-     * @param charsetName 字符集，为空则返回默认字符集
+     * @param charsetName 字符集,为空则返回默认字符集
      * @return Charset
      * @throws UnsupportedCharsetException 编码不支持
      */
@@ -52,8 +52,8 @@ public class CharsetUtils {
      * 转换字符串的字符集编码
      *
      * @param source      字符串
-     * @param srcCharset  源字符集，默认ISO-8859-1
-     * @param destCharset 目标字符集，默认UTF-8
+     * @param srcCharset  源字符集,默认ISO-8859-1
+     * @param destCharset 目标字符集,默认UTF-8
      * @return 转换后的字符集
      */
     public static String convert(String source, String srcCharset, String destCharset) {
@@ -62,17 +62,17 @@ public class CharsetUtils {
 
     /**
      * 转换字符串的字符集编码
-     * 当以错误的编码读取为字符串时，打印字符串将出现乱码。
-     * 此方法用于纠正因读取使用编码错误导致的乱码问题。
-     * 例如，在Servlet请求中客户端用GBK编码了请求参数，我们使用UTF-8读取到的是乱码，此时，使用此方法即可还原原编码的内容
+     * 当以错误的编码读取为字符串时,打印字符串将出现乱码
+     * 此方法用于纠正因读取使用编码错误导致的乱码问题
+     * 例如,在Servlet请求中客户端用GBK编码了请求参数,我们使用UTF-8读取到的是乱码,此时,使用此方法即可还原原编码的内容
      * <pre>
      * 客户端 -》 GBK编码 -》 Servlet容器 -》 UTF-8解码 -》 乱码
      * 乱码 -》 UTF-8编码 -》 GBK解码 -》 正确内容
      * </pre>
      *
      * @param source      字符串
-     * @param srcCharset  源字符集，默认ISO-8859-1
-     * @param destCharset 目标字符集，默认UTF-8
+     * @param srcCharset  源字符集,默认ISO-8859-1
+     * @param destCharset 目标字符集,默认UTF-8
      * @return 转换后的字符集
      */
     public static String convert(String source, Charset srcCharset, Charset destCharset) {
@@ -92,10 +92,10 @@ public class CharsetUtils {
 
     /**
      * 转换文件编码
-     * 此方法用于转换文件编码，读取的文件实际编码必须与指定的srcCharset编码一致，否则导致乱码
+     * 此方法用于转换文件编码,读取的文件实际编码必须与指定的srcCharset编码一致,否则导致乱码
      *
      * @param file        文件
-     * @param srcCharset  原文件的编码，必须与文件内容的编码保持一致
+     * @param srcCharset  原文件的编码,必须与文件内容的编码保持一致
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
      * @since 3.1.9
@@ -125,7 +125,7 @@ public class CharsetUtils {
 
 
     /**
-     * 系统字符集编码，如果是Windows，则默认为GBK编码，否则取 {@link CharsetUtils#defaultCharsetName()}
+     * 系统字符集编码,如果是Windows,则默认为GBK编码,否则取 {@link CharsetUtils#defaultCharsetName()}
      *
      * @return 系统字符集编码
      * @see CharsetUtils#defaultCharsetName()
@@ -136,7 +136,7 @@ public class CharsetUtils {
     }
 
     /**
-     * 系统字符集编码，如果是Windows，则默认为GBK编码，否则取 {@link CharsetUtils#defaultCharsetName()}
+     * 系统字符集编码,如果是Windows,则默认为GBK编码,否则取 {@link CharsetUtils#defaultCharsetName()}
      *
      * @return 系统字符集编码
      * @see CharsetUtils#defaultCharsetName()

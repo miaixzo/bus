@@ -71,7 +71,7 @@ public class PageInterceptor implements Interceptor {
             Executor executor = (Executor) invocation.getTarget();
             CacheKey cacheKey;
             BoundSql boundSql;
-            //由于逻辑关系，只会进入一次
+            //由于逻辑关系,只会进入一次
             if (args.length == 4) {
                 //4 个参数时
                 boundSql = ms.getBoundSql(parameter);
@@ -84,22 +84,22 @@ public class PageInterceptor implements Interceptor {
             checkDialectExists();
 
             List resultList;
-            //调用方法判断是否需要进行分页，如果不需要，直接返回结果
+            //调用方法判断是否需要进行分页,如果不需要,直接返回结果
             if (!dialect.skip(ms, parameter, rowBounds)) {
                 //判断是否需要进行 count 查询
                 if (dialect.beforeCount(ms, parameter, rowBounds)) {
                     //查询总数
                     Long count = count(executor, ms, parameter, rowBounds, resultHandler, boundSql);
-                    //处理查询总数，返回 true 时继续分页查询，false 时直接返回
+                    //处理查询总数,返回 true 时继续分页查询,false 时直接返回
                     if (!dialect.afterCount(count, parameter, rowBounds)) {
-                        //当查询总数为 0 时，直接返回空的结果
+                        //当查询总数为 0 时,直接返回空的结果
                         return dialect.afterPage(new ArrayList(), parameter, rowBounds);
                     }
                 }
                 resultList = CountExecutor.pageQuery(dialect, executor,
                         ms, parameter, rowBounds, resultHandler, boundSql, cacheKey);
             } else {
-                //rowBounds用参数值，不使用分页插件处理时，仍然支持默认的内存分页
+                //rowBounds用参数值,不使用分页插件处理时,仍然支持默认的内存分页
                 resultList = executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
             }
             return dialect.afterPage(resultList, parameter, rowBounds);
@@ -111,7 +111,7 @@ public class PageInterceptor implements Interceptor {
     }
 
     /**
-     * Spring bean 方式配置时，如果没有配置属性就不会执行下面的 setProperties 方法，就不会初始化
+     * Spring bean 方式配置时,如果没有配置属性就不会执行下面的 setProperties 方法,就不会初始化
      * <p>
      * 因此这里会出现 null 的情况 fixed #26
      */

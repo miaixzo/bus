@@ -61,7 +61,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器），使用默认配置，覆盖已有文件（如果存在）
+     * 获取CSV生成器（写出器）,使用默认配置,覆盖已有文件（如果存在）
      *
      * @param filePath File CSV文件路径
      * @param charset  编码
@@ -72,7 +72,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器），使用默认配置，覆盖已有文件（如果存在）
+     * 获取CSV生成器（写出器）,使用默认配置,覆盖已有文件（如果存在）
      *
      * @param file    File CSV文件
      * @param charset 编码
@@ -83,7 +83,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器），使用默认配置
+     * 获取CSV生成器（写出器）,使用默认配置
      *
      * @param filePath File CSV文件路径
      * @param charset  编码
@@ -95,7 +95,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器），使用默认配置
+     * 获取CSV生成器（写出器）,使用默认配置
      *
      * @param file     File CSV文件
      * @param charset  编码
@@ -112,7 +112,7 @@ public class CsvUtils {
      * @param file     File CSV文件
      * @param charset  编码
      * @param isAppend 是否追加
-     * @param config   写出配置，null则使用默认配置
+     * @param config   写出配置,null则使用默认配置
      * @return {@link CsvWriter}
      */
     public static CsvWriter getWriter(File file, Charset charset, boolean isAppend, CsvWriteConfig config) {
@@ -133,7 +133,7 @@ public class CsvUtils {
      * 获取CSV生成器（写出器）
      *
      * @param writer Writer
-     * @param config 写出配置，null则使用默认配置
+     * @param config 写出配置,null则使用默认配置
      * @return {@link CsvWriter}
      */
     public static CsvWriter getWriter(Writer writer, CsvWriteConfig config) {

@@ -144,9 +144,9 @@ public class HuaweiProvider extends DefaultProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      * @since 1.9.3
      */
@@ -196,7 +196,7 @@ public class HuaweiProvider extends DefaultProvider {
     }
 
     /**
-     * 获取用户的实际性别。华为系统中，用户的性别：1表示女，0表示男
+     * 获取用户的实际性别 华为系统中,用户的性别：1表示女,0表示男
      *
      * @param object obj
      * @return AuthUserGender

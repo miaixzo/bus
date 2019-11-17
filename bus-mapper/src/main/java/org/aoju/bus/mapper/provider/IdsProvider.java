@@ -48,7 +48,7 @@ public class IdsProvider extends MapperTemplate {
     }
 
     /**
-     * 根据主键字符串进行删除，类中只有存在一个带有@Id注解的字段
+     * 根据主键字符串进行删除,类中只有存在一个带有@Id注解的字段
      *
      * @param ms MappedStatement
      * @return the string
@@ -70,7 +70,7 @@ public class IdsProvider extends MapperTemplate {
     }
 
     /**
-     * 根据主键字符串进行查询，类中只有存在一个带有@Id注解的字段
+     * 根据主键字符串进行查询,类中只有存在一个带有@Id注解的字段
      *
      * @param ms MappedStatement
      * @return the string

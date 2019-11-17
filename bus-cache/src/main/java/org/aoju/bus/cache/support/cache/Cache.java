@@ -53,20 +53,20 @@ public interface Cache {
     Map<String, Object> read(Collection<String> keys);
 
     /**
-     * 将对象加入到缓存，使用指定失效时长
+     * 将对象加入到缓存,使用指定失效时长
      *
      * @param key    键
      * @param value  缓存的对象
-     * @param expire 失效时长，单位毫秒
+     * @param expire 失效时长,单位毫秒
      * @see Cache#write(String, Object, long)
      */
     void write(String key, Object value, long expire);
 
     /**
-     * 将对象加入到缓存，使用指定失效时长
+     * 将对象加入到缓存,使用指定失效时长
      *
      * @param map    缓存的对象
-     * @param expire 失效时长，单位毫秒
+     * @param expire 失效时长,单位毫秒
      * @see Cache#write(Map, long)
      */
     void write(Map<String, Object> map, long expire);

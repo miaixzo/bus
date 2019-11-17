@@ -64,7 +64,7 @@ public class ImageUtils {
      *
      * @param srcImageFile  源图像文件
      * @param destImageFile 缩放后的图像文件
-     * @param scale         缩放比例。比例大于1时为放大，小于1大于0为缩小
+     * @param scale         缩放比例 比例大于1时为放大,小于1大于0为缩小
      */
     public static void scale(File srcImageFile, File destImageFile, float scale) {
         scale(read(srcImageFile), destImageFile, scale);
@@ -72,11 +72,11 @@ public class ImageUtils {
 
     /**
      * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcStream  源图像来源流
      * @param destStream 缩放后的图像写出到的流
-     * @param scale      缩放比例。比例大于1时为放大，小于1大于0为缩小
+     * @param scale      缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @since 3.1.9
      */
     public static void scale(InputStream srcStream, OutputStream destStream, float scale) {
@@ -85,11 +85,11 @@ public class ImageUtils {
 
     /**
      * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcStream  源图像来源流
      * @param destStream 缩放后的图像写出到的流
-     * @param scale      缩放比例。比例大于1时为放大，小于1大于0为缩小
+     * @param scale      缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @since 3.1.9
      */
     public static void scale(ImageInputStream srcStream, ImageOutputStream destStream, float scale) {
@@ -98,11 +98,11 @@ public class ImageUtils {
 
     /**
      * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcImage 源图像来源流
      * @param destFile 缩放后的图像写出到的流
-     * @param scale    缩放比例。比例大于1时为放大，小于1大于0为缩小
+     * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @throws InstrumentException IO异常
      * @since 5.2.2
      */
@@ -112,11 +112,11 @@ public class ImageUtils {
 
     /**
      * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcImage 源图像来源流
      * @param out      缩放后的图像写出到的流
-     * @param scale    缩放比例。比例大于1时为放大，小于1大于0为缩小
+     * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @throws InstrumentException IO异常
      * @since 5.2.2
      */
@@ -126,11 +126,11 @@ public class ImageUtils {
 
     /**
      * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcImage        源图像来源流
      * @param destImageStream 缩放后的图像写出到的流
-     * @param scale           缩放比例。比例大于1时为放大，小于1大于0为缩小
+     * @param scale           缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @throws InstrumentException IO异常
      * @since 3.1.9
      */
@@ -142,7 +142,7 @@ public class ImageUtils {
      * 缩放图像（按比例缩放）
      *
      * @param srcImage 源图像来源流
-     * @param scale    缩放比例。比例大于1时为放大，小于1大于0为缩小
+     * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @return {@link java.awt.Image}
      * @since 3.1.9
      */
@@ -172,7 +172,7 @@ public class ImageUtils {
      * @param destImageFile 缩放后的图像地址
      * @param width         缩放后的宽度
      * @param height        缩放后的高度
-     * @param fixedColor    比例不对时补充的颜色，不补充为<code>null</code>
+     * @param fixedColor    比例不对时补充的颜色,不补充为<code>null</code>
      * @throws InstrumentException IO异常
      */
     public static void scale(File srcImageFile, File destImageFile, int width, int height, Color fixedColor) throws InstrumentException {
@@ -181,13 +181,13 @@ public class ImageUtils {
 
     /**
      * 缩放图像（按高度和宽度缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcStream  源图像流
      * @param destStream 缩放后的图像目标流
      * @param width      缩放后的宽度
      * @param height     缩放后的高度
-     * @param fixedColor 比例不对时补充的颜色，不补充为<code>null</code>
+     * @param fixedColor 比例不对时补充的颜色,不补充为<code>null</code>
      * @throws InstrumentException IO异常
      */
     public static void scale(InputStream srcStream, OutputStream destStream, int width, int height, Color fixedColor) throws InstrumentException {
@@ -196,13 +196,13 @@ public class ImageUtils {
 
     /**
      * 缩放图像（按高度和宽度缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcStream  源图像流
      * @param destStream 缩放后的图像目标流
      * @param width      缩放后的宽度
      * @param height     缩放后的高度
-     * @param fixedColor 比例不对时补充的颜色，不补充为<code>null</code>
+     * @param fixedColor 比例不对时补充的颜色,不补充为<code>null</code>
      * @throws InstrumentException IO异常
      */
     public static void scale(ImageInputStream srcStream, ImageOutputStream destStream, int width, int height, Color fixedColor) throws InstrumentException {
@@ -211,13 +211,13 @@ public class ImageUtils {
 
     /**
      * 缩放图像（按高度和宽度缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcImage        源图像
      * @param destImageStream 缩放后的图像目标流
      * @param width           缩放后的宽度
      * @param height          缩放后的高度
-     * @param fixedColor      比例不对时补充的颜色，不补充为<code>null</code>
+     * @param fixedColor      比例不对时补充的颜色,不补充为<code>null</code>
      * @throws InstrumentException IO异常
      */
     public static void scale(java.awt.Image srcImage, ImageOutputStream destImageStream, int width, int height, Color fixedColor) throws InstrumentException {
@@ -231,7 +231,7 @@ public class ImageUtils {
      * @param srcImage   源图像
      * @param width      缩放后的宽度
      * @param height     缩放后的高度
-     * @param fixedColor 比例不对时补充的颜色，不补充为<code>null</code>
+     * @param fixedColor 比例不对时补充的颜色,不补充为<code>null</code>
      * @return {@link java.awt.Image}
      */
     public static java.awt.Image scale(java.awt.Image srcImage, int width, int height, Color fixedColor) {
@@ -243,7 +243,7 @@ public class ImageUtils {
      *
      * @param srcImgFile  源图像文件
      * @param destImgFile 切片后的图像文件
-     * @param rectangle   矩形对象，表示矩形区域的x，y，width，height
+     * @param rectangle   矩形对象,表示矩形区域的x,y,width,height
      * @since 3.1.9
      */
     public static void cut(File srcImgFile, File destImgFile, Rectangle rectangle) {
@@ -251,11 +251,11 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割(按指定起点坐标和宽高切割)，此方法并不关闭流
+     * 图像切割(按指定起点坐标和宽高切割),此方法并不关闭流
      *
      * @param srcStream  源图像流
      * @param destStream 切片后的图像输出流
-     * @param rectangle  矩形对象，表示矩形区域的x，y，width，height
+     * @param rectangle  矩形对象,表示矩形区域的x,y,width,height
      * @since 3.1.9
      */
     public static void cut(InputStream srcStream, OutputStream destStream, Rectangle rectangle) {
@@ -263,11 +263,11 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割(按指定起点坐标和宽高切割)，此方法并不关闭流
+     * 图像切割(按指定起点坐标和宽高切割),此方法并不关闭流
      *
      * @param srcStream  源图像流
      * @param destStream 切片后的图像输出流
-     * @param rectangle  矩形对象，表示矩形区域的x，y，width，height
+     * @param rectangle  矩形对象,表示矩形区域的x,y,width,height
      * @since 3.1.9
      */
     public static void cut(ImageInputStream srcStream, ImageOutputStream destStream, Rectangle rectangle) {
@@ -275,11 +275,11 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割(按指定起点坐标和宽高切割)，此方法并不关闭流
+     * 图像切割(按指定起点坐标和宽高切割),此方法并不关闭流
      *
      * @param srcImage  源图像
      * @param destFile  输出的文件
-     * @param rectangle 矩形对象，表示矩形区域的x，y，width，height
+     * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
      * @throws InstrumentException IO异常
      * @since 5.2.2
      */
@@ -288,11 +288,11 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割(按指定起点坐标和宽高切割)，此方法并不关闭流
+     * 图像切割(按指定起点坐标和宽高切割),此方法并不关闭流
      *
      * @param srcImage  源图像
      * @param out       切片后的图像输出流
-     * @param rectangle 矩形对象，表示矩形区域的x，y，width，height
+     * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
      * @throws InstrumentException IO异常
      * @since 3.1.9
      */
@@ -301,11 +301,11 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割(按指定起点坐标和宽高切割)，此方法并不关闭流
+     * 图像切割(按指定起点坐标和宽高切割),此方法并不关闭流
      *
      * @param srcImage        源图像
      * @param destImageStream 切片后的图像输出流
-     * @param rectangle       矩形对象，表示矩形区域的x，y，width，height
+     * @param rectangle       矩形对象,表示矩形区域的x,y,width,height
      * @throws InstrumentException IO异常
      * @since 3.1.9
      */
@@ -317,7 +317,7 @@ public class ImageUtils {
      * 图像切割(按指定起点坐标和宽高切割)
      *
      * @param srcImage  源图像
-     * @param rectangle 矩形对象，表示矩形区域的x，y，width，height
+     * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
      * @return {@link BufferedImage}
      * @since 3.1.9
      */
@@ -326,7 +326,7 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割(按指定起点坐标和宽高切割)，填充满整个图片（直径取长宽最小值）
+     * 图像切割(按指定起点坐标和宽高切割),填充满整个图片（直径取长宽最小值）
      *
      * @param srcImage 源图像
      * @param x        原图的x坐标起始位置
@@ -343,7 +343,7 @@ public class ImageUtils {
      * @param srcImage 源图像
      * @param x        原图的x坐标起始位置
      * @param y        原图的y坐标起始位置
-     * @param radius   半径，小于0表示填充满整个图片（直径取长宽最小值）
+     * @param radius   半径,小于0表示填充满整个图片（直径取长宽最小值）
      * @return {@link java.awt.Image}
      */
     public static java.awt.Image cut(java.awt.Image srcImage, int x, int y, int radius) {
@@ -355,8 +355,8 @@ public class ImageUtils {
      *
      * @param srcImageFile 源图像
      * @param descDir      切片目标文件夹
-     * @param destWidth    目标切片宽度。默认200
-     * @param destHeight   目标切片高度。默认150
+     * @param destWidth    目标切片宽度 默认200
+     * @param destHeight   目标切片高度 默认150
      */
     public static void slice(File srcImageFile, File descDir, int destWidth, int destHeight) {
         slice(read(srcImageFile), descDir, destWidth, destHeight);
@@ -367,8 +367,8 @@ public class ImageUtils {
      *
      * @param srcImage   源图像
      * @param descDir    切片目标文件夹
-     * @param destWidth  目标切片宽度。默认200
-     * @param destHeight 目标切片高度。默认150
+     * @param destWidth  目标切片宽度 默认200
+     * @param destHeight 目标切片高度 默认150
      */
     public static void slice(java.awt.Image srcImage, File descDir, int destWidth, int destHeight) {
         if (destWidth <= 0) {
@@ -417,8 +417,8 @@ public class ImageUtils {
      *
      * @param srcImageFile 源图像文件
      * @param destDir      切片目标文件夹
-     * @param rows         目标切片行数。默认2，必须是范围 [1, 20] 之内
-     * @param cols         目标切片列数。默认2，必须是范围 [1, 20] 之内
+     * @param rows         目标切片行数 默认2,必须是范围 [1, 20] 之内
+     * @param cols         目标切片列数 默认2,必须是范围 [1, 20] 之内
      */
     public static void sliceByRowsAndCols(File srcImageFile, File destDir, int rows, int cols) {
         try {
@@ -433,8 +433,8 @@ public class ImageUtils {
      *
      * @param srcImage 源图像
      * @param destDir  切片目标文件夹
-     * @param rows     目标切片行数。默认2，必须是范围 [1, 20] 之内
-     * @param cols     目标切片列数。默认2，必须是范围 [1, 20] 之内
+     * @param rows     目标切片行数 默认2,必须是范围 [1, 20] 之内
+     * @param cols     目标切片列数 默认2,必须是范围 [1, 20] 之内
      */
     public static void sliceByRowsAndCols(java.awt.Image srcImage, File destDir, int rows, int cols) {
         if (false == destDir.exists()) {
@@ -612,7 +612,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白二值化图片，根据目标文件扩展名确定转换后的格式
+     * 彩色转为黑白二值化图片,根据目标文件扩展名确定转换后的格式
      *
      * @param srcImageFile  源图像地址
      * @param destImageFile 目标图像地址
@@ -646,7 +646,7 @@ public class ImageUtils {
     }
 
     /**
-     * 彩色转为黑白二值化图片，根据目标文件扩展名确定转换后的格式
+     * 彩色转为黑白二值化图片,根据目标文件扩展名确定转换后的格式
      *
      * @param srcImage 源图像流
      * @param outFile  目标文件
@@ -657,7 +657,7 @@ public class ImageUtils {
 
     /**
      * 彩色转为黑白二值化图片
-     * 此方法并不关闭流，输出JPG格式
+     * 此方法并不关闭流,输出JPG格式
      *
      * @param srcImage  源图像流
      * @param out       目标图像流
@@ -669,7 +669,7 @@ public class ImageUtils {
 
     /**
      * 彩色转为黑白二值化图片
-     * 此方法并不关闭流，输出JPG格式
+     * 此方法并不关闭流,输出JPG格式
      *
      * @param srcImage        源图像流
      * @param destImageStream 目标图像流
@@ -697,9 +697,9 @@ public class ImageUtils {
      * @param destFile  目标图像文件
      * @param pressText 水印文字
      * @param color     水印的字体颜色
-     * @param font      {@link Font} 字体相关信息，如果默认则为{@code null}
-     * @param x         修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y         修正值。 默认在中间，偏移量相对于中间偏移
+     * @param font      {@link Font} 字体相关信息,如果默认则为{@code null}
+     * @param x         修正值  默认在中间,偏移量相对于中间偏移
+     * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      */
     public static void pressText(File imageFile, File destFile, String pressText, Color color, Font font, int x, int y, float alpha) {
@@ -714,9 +714,9 @@ public class ImageUtils {
      * @param destStream 目标图像流
      * @param pressText  水印文字
      * @param color      水印的字体颜色
-     * @param font       {@link Font} 字体相关信息，如果默认则为{@code null}
-     * @param x          修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y          修正值。 默认在中间，偏移量相对于中间偏移
+     * @param font       {@link Font} 字体相关信息,如果默认则为{@code null}
+     * @param x          修正值  默认在中间,偏移量相对于中间偏移
+     * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      */
     public static void pressText(InputStream srcStream, OutputStream destStream, String pressText, Color color, Font font, int x, int y, float alpha) {
@@ -731,9 +731,9 @@ public class ImageUtils {
      * @param destStream 目标图像流
      * @param pressText  水印文字
      * @param color      水印的字体颜色
-     * @param font       {@link Font} 字体相关信息，如果默认则为{@code null}
-     * @param x          修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y          修正值。 默认在中间，偏移量相对于中间偏移
+     * @param font       {@link Font} 字体相关信息,如果默认则为{@code null}
+     * @param x          修正值  默认在中间,偏移量相对于中间偏移
+     * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      */
     public static void pressText(ImageInputStream srcStream, ImageOutputStream destStream, String pressText, Color color, Font font, int x, int y, float alpha) {
@@ -748,9 +748,9 @@ public class ImageUtils {
      * @param destFile  目标流
      * @param pressText 水印文字
      * @param color     水印的字体颜色
-     * @param font      {@link Font} 字体相关信息，如果默认则为{@code null}
-     * @param x         修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y         修正值。 默认在中间，偏移量相对于中间偏移
+     * @param font      {@link Font} 字体相关信息,如果默认则为{@code null}
+     * @param x         修正值  默认在中间,偏移量相对于中间偏移
+     * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
      * @since 5.2.2
@@ -767,9 +767,9 @@ public class ImageUtils {
      * @param to        目标流
      * @param pressText 水印文字
      * @param color     水印的字体颜色
-     * @param font      {@link Font} 字体相关信息，如果默认则为{@code null}
-     * @param x         修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y         修正值。 默认在中间，偏移量相对于中间偏移
+     * @param font      {@link Font} 字体相关信息,如果默认则为{@code null}
+     * @param x         修正值  默认在中间,偏移量相对于中间偏移
+     * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
      * @since 5.2.2
@@ -786,9 +786,9 @@ public class ImageUtils {
      * @param destImageStream 目标图像流
      * @param pressText       水印文字
      * @param color           水印的字体颜色
-     * @param font            {@link Font} 字体相关信息，如果默认则为{@code null}
-     * @param x               修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y               修正值。 默认在中间，偏移量相对于中间偏移
+     * @param font            {@link Font} 字体相关信息,如果默认则为{@code null}
+     * @param x               修正值  默认在中间,偏移量相对于中间偏移
+     * @param y               修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
      */
@@ -803,9 +803,9 @@ public class ImageUtils {
      * @param srcImage  源图像
      * @param pressText 水印文字
      * @param color     水印的字体颜色
-     * @param font      {@link Font} 字体相关信息，如果默认则为{@code null}
-     * @param x         修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y         修正值。 默认在中间，偏移量相对于中间偏移
+     * @param font      {@link Font} 字体相关信息,如果默认则为{@code null}
+     * @param x         修正值  默认在中间,偏移量相对于中间偏移
+     * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      * @since 5.2.2
@@ -820,8 +820,8 @@ public class ImageUtils {
      * @param srcImageFile  源图像文件
      * @param destImageFile 目标图像文件
      * @param pressImage    水印图片
-     * @param x             修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y             修正值。 默认在中间，偏移量相对于中间偏移
+     * @param x             修正值  默认在中间,偏移量相对于中间偏移
+     * @param y             修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha         透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      */
     public static void pressImage(File srcImageFile, File destImageFile, java.awt.Image pressImage, int x, int y, float alpha) {
@@ -834,9 +834,9 @@ public class ImageUtils {
      *
      * @param srcStream  源图像流
      * @param destStream 目标图像流
-     * @param pressImage 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param x          修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y          修正值。 默认在中间，偏移量相对于中间偏移
+     * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param x          修正值  默认在中间,偏移量相对于中间偏移
+     * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      */
     public static void pressImage(InputStream srcStream, OutputStream destStream, java.awt.Image pressImage, int x, int y, float alpha) {
@@ -849,9 +849,9 @@ public class ImageUtils {
      *
      * @param srcStream  源图像流
      * @param destStream 目标图像流
-     * @param pressImage 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param x          修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y          修正值。 默认在中间，偏移量相对于中间偏移
+     * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param x          修正值  默认在中间,偏移量相对于中间偏移
+     * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
      */
@@ -865,9 +865,9 @@ public class ImageUtils {
      *
      * @param srcImage   源图像流
      * @param outFile    写出文件
-     * @param pressImage 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param x          修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y          修正值。 默认在中间，偏移量相对于中间偏移
+     * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param x          修正值  默认在中间,偏移量相对于中间偏移
+     * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
      * @since 5.2.2
@@ -882,9 +882,9 @@ public class ImageUtils {
      *
      * @param srcImage   源图像流
      * @param out        目标图像流
-     * @param pressImage 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param x          修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y          修正值。 默认在中间，偏移量相对于中间偏移
+     * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param x          修正值  默认在中间,偏移量相对于中间偏移
+     * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
      * @since 5.2.2
@@ -899,9 +899,9 @@ public class ImageUtils {
      *
      * @param srcImage        源图像流
      * @param destImageStream 目标图像流
-     * @param pressImage      水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param x               修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y               修正值。 默认在中间，偏移量相对于中间偏移
+     * @param pressImage      水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param x               修正值  默认在中间,偏移量相对于中间偏移
+     * @param y               修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
      */
@@ -914,9 +914,9 @@ public class ImageUtils {
      * 此方法并不关闭流
      *
      * @param srcImage   源图像流
-     * @param pressImage 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param x          修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y          修正值。 默认在中间，偏移量相对于中间偏移
+     * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param x          修正值  默认在中间,偏移量相对于中间偏移
+     * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 结果图片
      */
@@ -929,8 +929,8 @@ public class ImageUtils {
      * 此方法并不关闭流
      *
      * @param srcImage   源图像流
-     * @param pressImage 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param rectangle  矩形对象，表示矩形区域的x，y，width，height，x,y从背景图片中心计算
+     * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param rectangle  矩形对象,表示矩形区域的x,y,width,height,x,y从背景图片中心计算
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 结果图片
      */
@@ -982,7 +982,7 @@ public class ImageUtils {
 
     /**
      * 旋转图片为指定角度
-     * 此方法不会关闭输出流，输出格式为JPG
+     * 此方法不会关闭输出流,输出格式为JPG
      *
      * @param image  目标图像
      * @param degree 旋转角度
@@ -1044,7 +1044,7 @@ public class ImageUtils {
     }
 
     /**
-     * 水平翻转图像，写出格式为JPG
+     * 水平翻转图像,写出格式为JPG
      *
      * @param image 图像
      * @param out   输出
@@ -1067,10 +1067,10 @@ public class ImageUtils {
     }
 
     /**
-     * 压缩图像，输出图像只支持jpg文件
+     * 压缩图像,输出图像只支持jpg文件
      *
      * @param imageFile 图像文件
-     * @param outFile   输出文件，只支持jpg文件
+     * @param outFile   输出文件,只支持jpg文件
      * @param quality   质量
      * @throws InstrumentException IO异常
      */
@@ -1080,7 +1080,7 @@ public class ImageUtils {
 
     /**
      * {@link java.awt.Image} 转 {@link RenderedImage}
-     * 首先尝试强转，否则新建一个{@link BufferedImage}后重新绘制
+     * 首先尝试强转,否则新建一个{@link BufferedImage}后重新绘制
      *
      * @param image {@link java.awt.Image}
      * @return {@link BufferedImage}
@@ -1095,7 +1095,7 @@ public class ImageUtils {
 
     /**
      * {@link java.awt.Image} 转 {@link BufferedImage}
-     * 首先尝试强转，否则新建一个{@link BufferedImage}后重新绘制
+     * 首先尝试强转,否则新建一个{@link BufferedImage}后重新绘制
      *
      * @param image {@link java.awt.Image}
      * @return {@link BufferedImage}
@@ -1110,7 +1110,7 @@ public class ImageUtils {
 
     /**
      * {@link java.awt.Image} 转 {@link BufferedImage}
-     * 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制
+     * 如果源图片的RGB模式与目标模式一致,则直接转换,否则重新绘制
      *
      * @param image     {@link java.awt.Image}
      * @param imageType 目标图片类型
@@ -1119,7 +1119,7 @@ public class ImageUtils {
     public static BufferedImage toBufferedImage(java.awt.Image image, String imageType) {
         BufferedImage bufferedImage;
         if (false == imageType.equalsIgnoreCase(FileType.IMAGE_TYPE_PNG)) {
-            // 当目标为非PNG类图片时，源图片统一转换为RGB格式
+            // 当目标为非PNG类图片时,源图片统一转换为RGB格式
             if (image instanceof BufferedImage) {
                 bufferedImage = (BufferedImage) image;
                 if (BufferedImage.TYPE_INT_RGB != bufferedImage.getType()) {
@@ -1138,7 +1138,7 @@ public class ImageUtils {
      * 将已有Image复制新的一份出来
      *
      * @param image     {@link java.awt.Image}
-     * @param imageType 目标图片类型，{@link BufferedImage}中的常量，例如黑白等
+     * @param imageType 目标图片类型,{@link BufferedImage}中的常量,例如黑白等
      * @return {@link BufferedImage}
      * @see BufferedImage#TYPE_INT_RGB
      * @see BufferedImage#TYPE_INT_ARGB
@@ -1162,8 +1162,8 @@ public class ImageUtils {
      * 将已有Image复制新的一份出来
      *
      * @param image           {@link java.awt.Image}
-     * @param imageType       目标图片类型，{@link BufferedImage}中的常量，例如黑白等
-     * @param backgroundColor 背景色，{@code null} 表示默认背景色（黑色或者透明）
+     * @param imageType       目标图片类型,{@link BufferedImage}中的常量,例如黑白等
+     * @param backgroundColor 背景色,{@code null} 表示默认背景色（黑色或者透明）
      * @return {@link BufferedImage}
      * @see BufferedImage#TYPE_INT_RGB
      * @see BufferedImage#TYPE_INT_ARGB
@@ -1254,7 +1254,7 @@ public class ImageUtils {
 
     /**
      * 根据文件创建字体
-     * 首先尝试创建{@link Font#TRUETYPE_FONT}字体，此类字体无效则创建{@link Font#TYPE1_FONT}
+     * 首先尝试创建{@link Font#TRUETYPE_FONT}字体,此类字体无效则创建{@link Font#TYPE1_FONT}
      *
      * @param fontFile 字体文件
      * @return {@link Font}
@@ -1277,7 +1277,7 @@ public class ImageUtils {
 
     /**
      * 根据文件创建字体
-     * 首先尝试创建{@link Font#TRUETYPE_FONT}字体，此类字体无效则创建{@link Font#TYPE1_FONT}
+     * 首先尝试创建{@link Font#TRUETYPE_FONT}字体,此类字体无效则创建{@link Font#TYPE1_FONT}
      *
      * @param fontStream 字体流
      * @return {@link Font}
@@ -1374,7 +1374,7 @@ public class ImageUtils {
      * @param image           {@link java.awt.Image}
      * @param imageType       图片类型（图片扩展名）
      * @param destImageStream 写出到的目标流
-     * @return 是否成功写出，如果返回false表示未找到合适的Writer
+     * @return 是否成功写出, 如果返回false表示未找到合适的Writer
      * @throws InstrumentException IO异常
      * @since 3.1.9
      */
@@ -1388,8 +1388,8 @@ public class ImageUtils {
      * @param image           {@link java.awt.Image}
      * @param imageType       图片类型（图片扩展名）
      * @param destImageStream 写出到的目标流
-     * @param quality         质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
-     * @return 是否成功写出，如果返回false表示未找到合适的Writer
+     * @param quality         质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
+     * @return 是否成功写出, 如果返回false表示未找到合适的Writer
      * @throws InstrumentException IO异常
      */
     public static boolean write(java.awt.Image image, String imageType, ImageOutputStream destImageStream, float quality) throws InstrumentException {
@@ -1425,7 +1425,7 @@ public class ImageUtils {
      * @param image   图片
      * @param writer  {@link ImageWriter}
      * @param output  输出的Image流{@link ImageOutputStream}
-     * @param quality 质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * @param quality 质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
      * @return 是否成功写出
      */
     public static boolean write(java.awt.Image image, ImageWriter writer, ImageOutputStream output, float quality) {
@@ -1465,7 +1465,7 @@ public class ImageUtils {
     /**
      * 获得{@link ImageReader}
      *
-     * @param type 图片文件类型，例如 "jpeg" 或 "tiff"
+     * @param type 图片文件类型,例如 "jpeg" 或 "tiff"
      * @return {@link ImageReader}
      */
     public static ImageReader getReader(String type) {
@@ -1477,7 +1477,7 @@ public class ImageUtils {
     }
 
     /**
-     * 从文件中读取图片，请使用绝对路径，使用相对路径会相对于ClassPath
+     * 从文件中读取图片,请使用绝对路径,使用相对路径会相对于ClassPath
      *
      * @param imageFilePath 图片文件路径
      * @return 图片
@@ -1605,10 +1605,10 @@ public class ImageUtils {
     }
 
     /**
-     * 根据给定的Image对象和格式获取对应的{@link ImageWriter}，如果未找到合适的Writer，返回null
+     * 根据给定的Image对象和格式获取对应的{@link ImageWriter},如果未找到合适的Writer,返回null
      *
      * @param image      {@link java.awt.Image}
-     * @param formatName 图片格式，例如"jpg"、"png"
+     * @param formatName 图片格式,例如"jpg"、"png"
      * @return {@link ImageWriter}
      */
     public static ImageWriter getWriter(java.awt.Image image, String formatName) {
@@ -1618,9 +1618,9 @@ public class ImageUtils {
     }
 
     /**
-     * 根据给定的图片格式或者扩展名获取{@link ImageWriter}，如果未找到合适的Writer，返回null
+     * 根据给定的图片格式或者扩展名获取{@link ImageWriter},如果未找到合适的Writer,返回null
      *
-     * @param formatName 图片格式或扩展名，例如"jpg"、"png"
+     * @param formatName 图片格式或扩展名,例如"jpg"、"png"
      * @return {@link ImageWriter}
      */
     public static ImageWriter getWriter(String formatName) {
@@ -1640,10 +1640,10 @@ public class ImageUtils {
     }
 
     /**
-     * Color对象转16进制表示，例如#fcf6d6
+     * Color对象转16进制表示,例如#fcf6d6
      *
      * @param color {@link Color}
-     * @return 16进制的颜色值，例如#fcf6d6
+     * @return 16进制的颜色值, 例如#fcf6d6
      */
     public static String toHex(Color color) {
         String R = Integer.toHexString(color.getRed());
@@ -1656,9 +1656,9 @@ public class ImageUtils {
     }
 
     /**
-     * 16进制的颜色值转换为Color对象，例如#fcf6d6
+     * 16进制的颜色值转换为Color对象,例如#fcf6d6
      *
-     * @param hex 16进制的颜色值，例如#fcf6d6
+     * @param hex 16进制的颜色值,例如#fcf6d6
      * @return {@link Color}
      */
     public static Color hexToColor(String hex) {
@@ -1676,17 +1676,17 @@ public class ImageUtils {
     }
 
     /**
-     * 将颜色值转换成具体的颜色类型 汇集了常用的颜色集，支持以下几种形式：
+     * 将颜色值转换成具体的颜色类型 汇集了常用的颜色集,支持以下几种形式：
      *
      * <pre>
      * 1. 颜色的英文名（大小写皆可）
-     * 2. 16进制表示，例如：#fcf6d6或者$fcf6d6
-     * 3. RGB形式，例如：13,148,252
+     * 2. 16进制表示,例如：#fcf6d6或者$fcf6d6
+     * 3. RGB形式,例如：13,148,252
      * </pre>
      * <p>
      * 方法来自：com.lnwazg.kit
      *
-     * @param colorName 颜色的英文名，16进制表示或RGB表示
+     * @param colorName 颜色的英文名,16进制表示或RGB表示
      * @return {@link Color}
      */
     public static Color getColor(String colorName) {
@@ -1730,7 +1730,7 @@ public class ImageUtils {
         } else if (StringUtils.startWith(colorName, '#')) {
             return hexToColor(colorName);
         } else if (StringUtils.startWith(colorName, '$')) {
-            // 由于#在URL传输中无法传输，因此用$代替#
+            // 由于#在URL传输中无法传输,因此用$代替#
             return hexToColor("#" + colorName.substring(1));
         } else {
             // rgb值

@@ -156,7 +156,7 @@ public class Base64Decoder {
         if (octetId == octet.length) {
             return octet;
         } else {
-            // 如果有非Base64字符混入，则实际结果比解析的要短，截取之
+            // 如果有非Base64字符混入,则实际结果比解析的要短,截取之
             return (byte[]) ArrayUtils.copy(octet, new byte[octetId], octetId);
         }
     }
@@ -165,9 +165,9 @@ public class Base64Decoder {
      * 获取下一个有效的byte字符
      *
      * @param in     输入
-     * @param pos    当前位置，调用此方法后此位置保持在有效字符的下一个位置
+     * @param pos    当前位置,调用此方法后此位置保持在有效字符的下一个位置
      * @param maxPos 最大位置
-     * @return 有效字符，如果达到末尾返回
+     * @return 有效字符, 如果达到末尾返回
      */
     private static byte getNextValidDecodeByte(byte[] in, IntWrapper pos, int maxPos) {
         byte base64Byte;
@@ -185,7 +185,7 @@ public class Base64Decoder {
     }
 
     /**
-     * int包装，使之可变
+     * int包装,使之可变
      */
     private static class IntWrapper {
         int value;

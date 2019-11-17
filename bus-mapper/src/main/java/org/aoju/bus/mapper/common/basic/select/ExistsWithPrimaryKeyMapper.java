@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 public interface ExistsWithPrimaryKeyMapper<T> {
 
     /**
-     * 根据主键字段查询总数，方法参数必须包含完整的主键属性，查询条件使用等号
+     * 根据主键字段查询总数,方法参数必须包含完整的主键属性,查询条件使用等号
      *
      * @param key 对象
      * @return the boolean

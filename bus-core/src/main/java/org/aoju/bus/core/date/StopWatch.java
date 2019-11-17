@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 秒表封装
- * 此工具用于存储一组任务的耗时时间，并一次性打印对比
+ * 此工具用于存储一组任务的耗时时间,并一次性打印对比
  * 使用方法如下：
  *
  * <pre>
@@ -39,7 +39,7 @@ import java.util.List;
 public class StopWatch {
 
     /**
-     * 秒表唯一标识，用于多个秒表对象的区分
+     * 秒表唯一标识,用于多个秒表对象的区分
      */
     private final String id;
     private List<TaskInfo> taskList;
@@ -67,14 +67,14 @@ public class StopWatch {
     private long totalTimeNanos;
 
     /**
-     * 构造，不启动任何任务
+     * 构造,不启动任何任务
      */
     public StopWatch() {
         this(Normal.EMPTY);
     }
 
     /**
-     * 构造，不启动任何任务
+     * 构造,不启动任何任务
      *
      * @param id 用于标识秒表的唯一ID
      */
@@ -83,10 +83,10 @@ public class StopWatch {
     }
 
     /**
-     * 构造，不启动任何任务
+     * 构造,不启动任何任务
      *
      * @param id           用于标识秒表的唯一ID
-     * @param keepTaskList 是否在停止后保留任务，{@code false} 表示停止运行后不保留任务
+     * @param keepTaskList 是否在停止后保留任务,{@code false} 表示停止运行后不保留任务
      */
     public StopWatch(String id, boolean keepTaskList) {
         this.id = id;
@@ -96,7 +96,7 @@ public class StopWatch {
     }
 
     /**
-     * 获取{@link StopWatch} 的ID，用于多个秒表对象的区分
+     * 获取{@link StopWatch} 的ID,用于多个秒表对象的区分
      *
      * @return the ID 空字符串为
      * @see #StopWatch(String)
@@ -106,7 +106,7 @@ public class StopWatch {
     }
 
     /**
-     * 设置是否在停止后保留任务，{@code false} 表示停止运行后不保留任务
+     * 设置是否在停止后保留任务,{@code false} 表示停止运行后不保留任务
      *
      * @param keepTaskList 是否在停止后保留任务
      */
@@ -174,9 +174,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取当前任务名，{@code null} 表示无任务
+     * 获取当前任务名,{@code null} 表示无任务
      *
-     * @return 当前任务名，{@code null} 表示无任务
+     * @return 当前任务名,{@code null} 表示无任务
      * @see #isRunning()
      */
     public String currentTaskName() {
@@ -225,7 +225,7 @@ public class StopWatch {
     /**
      * 获取最后的任务对象
      *
-     * @return {@link TaskInfo} 任务对象，包括任务名和花费时间
+     * @return {@link TaskInfo} 任务对象,包括任务名和花费时间
      * @throws IllegalStateException 无任务
      */
     public TaskInfo getLastTaskInfo() throws IllegalStateException {

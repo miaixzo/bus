@@ -50,7 +50,7 @@ public class Digester {
      */
     protected byte[] salt;
     /**
-     * 加盐位置，既将盐值字符串放置在数据的index数，默认0
+     * 加盐位置,既将盐值字符串放置在数据的index数,默认0
      */
     protected int saltPosition;
     /**
@@ -72,7 +72,7 @@ public class Digester {
      * 构造
      *
      * @param algorithm 算法
-     * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
+     * @param provider  算法提供者,null表示JDK默认,可以引入Bouncy Castle等来提供更多算法支持
      */
     public Digester(String algorithm, Provider provider) {
         init(algorithm, provider);
@@ -82,7 +82,7 @@ public class Digester {
      * 初始化
      *
      * @param algorithm 算法
-     * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
+     * @param provider  算法提供者,null表示JDK默认,可以引入Bouncy Castle等来提供更多算法支持
      * @return {@link Digester}
      * @throws InstrumentException Cause by IOException
      */
@@ -111,14 +111,14 @@ public class Digester {
     }
 
     /**
-     * 设置加盐的位置，只有盐值存在时有效
-     * 加盐的位置指盐位于数据byte数组中的位置，例如：
+     * 设置加盐的位置,只有盐值存在时有效
+     * 加盐的位置指盐位于数据byte数组中的位置,例如：
      *
      * <pre>
      * data: 0123456
      * </pre>
      * <p>
-     * 则当saltPosition = 2时，盐位于data的1和2中间，既第二个空隙，既：
+     * 则当saltPosition = 2时,盐位于data的1和2中间,既第二个空隙,既：
      *
      * <pre>
      * data: 01[salt]23456
@@ -186,7 +186,7 @@ public class Digester {
     }
 
     /**
-     * 生成文件摘要，并转为16进制字符串
+     * 生成文件摘要,并转为16进制字符串
      *
      * @param data        被摘要数据
      * @param charsetName 编码
@@ -197,7 +197,7 @@ public class Digester {
     }
 
     /**
-     * 生成文件摘要，并转为16进制字符串
+     * 生成文件摘要,并转为16进制字符串
      *
      * @param data    被摘要数据
      * @param charset 编码
@@ -236,7 +236,7 @@ public class Digester {
     }
 
     /**
-     * 生成文件摘要，并转为16进制字符串
+     * 生成文件摘要,并转为16进制字符串
      * 使用默认缓存大小
      *
      * @param file 被摘要文件
@@ -247,7 +247,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，考虑加盐和重复摘要次数
+     * 生成摘要,考虑加盐和重复摘要次数
      *
      * @param data 数据bytes
      * @return 摘要bytes
@@ -255,10 +255,10 @@ public class Digester {
     public byte[] digest(byte[] data) {
         byte[] result;
         if (this.saltPosition <= 0) {
-            // 加盐在开头，自动忽略空盐值
+            // 加盐在开头,自动忽略空盐值
             result = doDigest(this.salt, data);
         } else if (this.saltPosition >= data.length) {
-            // 加盐在末尾，自动忽略空盐值
+            // 加盐在末尾,自动忽略空盐值
             result = doDigest(data, this.salt);
         } else if (ArrayUtils.isNotEmpty(this.salt)) {
             // 加盐在中间
@@ -275,7 +275,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，并转为16进制字符串
+     * 生成摘要,并转为16进制字符串
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -285,7 +285,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，使用默认缓存大小
+     * 生成摘要,使用默认缓存大小
      *
      * @param data {@link InputStream} 数据流
      * @return 摘要bytes
@@ -295,7 +295,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，并转为16进制字符串
+     * 生成摘要,并转为16进制字符串
      * 使用默认缓存大小
      *
      * @param data 被摘要数据
@@ -332,7 +332,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要，并转为16进制字符串
+     * 生成摘要,并转为16进制字符串
      * 使用默认缓存大小
      *
      * @param data         被摘要数据
@@ -353,9 +353,9 @@ public class Digester {
     }
 
     /**
-     * 获取散列长度，0表示不支持此方法
+     * 获取散列长度,0表示不支持此方法
      *
-     * @return 散列长度，0表示不支持此方法
+     * @return 散列长度, 0表示不支持此方法
      */
     public int getDigestLength() {
         return this.digest.getDigestLength();
@@ -433,7 +433,7 @@ public class Digester {
     }
 
     /**
-     * 重复计算摘要，取决于{@link #digestCount} 值
+     * 重复计算摘要,取决于{@link #digestCount} 值
      * 每次计算摘要前都会重置{@link #digest}
      *
      * @param digestData 第一次摘要过的数据

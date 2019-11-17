@@ -34,7 +34,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.util.Set;
 
 /**
- * 签名包装，{@link Signature} 包装类
+ * 签名包装,{@link Signature} 包装类
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -43,13 +43,13 @@ import java.util.Set;
 public class Sign extends Keys<Sign> {
 
     /**
-     * 签名，用于签名和验证
+     * 签名,用于签名和验证
      */
     protected Signature signature;
 
 
     /**
-     * 构造，创建新的私钥公钥对
+     * 构造,创建新的私钥公钥对
      *
      * @param algorithm 算法
      */
@@ -59,7 +59,7 @@ public class Sign extends Keys<Sign> {
 
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
      * @param privateKey 私钥Hex或Base64表示
@@ -73,7 +73,7 @@ public class Sign extends Keys<Sign> {
      * 构造
      * <p>
      * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -87,7 +87,7 @@ public class Sign extends Keys<Sign> {
      * 构造
      * <p>
      * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -102,7 +102,7 @@ public class Sign extends Keys<Sign> {
 
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm 算法
      * @param keyPair   密钥对（包括公钥和私钥）
@@ -206,7 +206,7 @@ public class Sign extends Keys<Sign> {
 
     /**
      * 设置{@link Certificate} 为PublicKey<br>
-     * 如果Certificate是X509Certificate，我们需要检查是否有密钥扩展
+     * 如果Certificate是X509Certificate,我们需要检查是否有密钥扩展
      *
      * @param certificate {@link Certificate}
      * @return this

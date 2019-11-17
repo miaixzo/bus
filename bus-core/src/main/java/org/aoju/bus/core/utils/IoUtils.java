@@ -54,7 +54,7 @@ import java.util.zip.Checksum;
 
 /**
  * IO工具类
- * IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
+ * IO工具类只是辅助流的读写,并不负责关闭流 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -118,8 +118,8 @@ public class IoUtils {
 
     /**
      * 即使被声明也不允许直接抛出
-     * 这是一种很糟糕的做饭，很容易遭到攻击
-     * 清理后捕获并重新抛出异常。参见Java Puzzlers #43。
+     * 这是一种很糟糕的做饭,很容易遭到攻击
+     * 清理后捕获并重新抛出异常 参见Java Puzzlers #43
      *
      * @param t 异常
      */
@@ -200,7 +200,7 @@ public class IoUtils {
     }
 
     /**
-     * 拷贝流，使用默认Buffer大小
+     * 拷贝流,使用默认Buffer大小
      *
      * @param in  输入流
      * @param out 输出流
@@ -280,7 +280,7 @@ public class IoUtils {
     }
 
     /**
-     * 拷贝文件流，使用NIO
+     * 拷贝文件流,使用NIO
      *
      * @param in  输入
      * @param out 输出
@@ -302,11 +302,11 @@ public class IoUtils {
     }
 
     /**
-     * 拷贝流，使用NIO，不会关闭流
+     * 拷贝流,使用NIO,不会关闭流
      *
      * @param in             {@link ReadableByteChannel}
      * @param out            {@link WritableByteChannel}
-     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
+     * @param bufferSize     缓冲大小,如果小于等于0,使用默认
      * @param streamProgress {@link StreamProgress}进度处理器
      * @return 拷贝的字节数
      * @throws InstrumentException 异常
@@ -374,9 +374,9 @@ public class IoUtils {
 
     /**
      * 获得{@link BufferedReader}
-     * 如果是{@link BufferedReader}强转返回，否则新建。如果提供的Reader为null返回null
+     * 如果是{@link BufferedReader}强转返回,否则新建 如果提供的Reader为null返回null
      *
-     * @param reader 普通Reader，如果为null返回null
+     * @param reader 普通Reader,如果为null返回null
      * @return {@link BufferedReader} or null
      * @since 3.1.9
      */
@@ -390,7 +390,7 @@ public class IoUtils {
 
     /**
      * 获得{@link PushbackReader}
-     * 如果是{@link PushbackReader}强转返回，否则新建
+     * 如果是{@link PushbackReader}强转返回,否则新建
      *
      * @param reader       普通Reader
      * @param pushBackSize 推后的byte数
@@ -445,9 +445,9 @@ public class IoUtils {
     }
 
     /**
-     * 从流中读取内容，读取完毕后并不关闭流
+     * 从流中读取内容,读取完毕后并不关闭流
      *
-     * @param in      输入流，读取完毕后并不关闭流
+     * @param in      输入流,读取完毕后并不关闭流
      * @param charset 字符集
      * @return 内容
      * @throws InstrumentException 异常
@@ -458,7 +458,7 @@ public class IoUtils {
     }
 
     /**
-     * 从流中读取内容，读到输出流中
+     * 从流中读取内容,读到输出流中
      *
      * @param in 输入流
      * @return 输出流
@@ -471,7 +471,7 @@ public class IoUtils {
     }
 
     /**
-     * 从Reader中读取String，读取完毕后并不关闭Reader
+     * 从Reader中读取String,读取完毕后并不关闭Reader
      *
      * @param reader Reader
      * @return String
@@ -502,7 +502,7 @@ public class IoUtils {
     }
 
     /**
-     * 从FileChannel中读取内容，读取完毕后并不关闭Channel
+     * 从FileChannel中读取内容,读取完毕后并不关闭Channel
      *
      * @param fileChannel 文件管道
      * @param charsetName 字符集
@@ -545,10 +545,10 @@ public class IoUtils {
     }
 
     /**
-     * 读取指定长度的byte数组，不关闭流
+     * 读取指定长度的byte数组,不关闭流
      *
-     * @param in     {@link InputStream}，为null返回null
-     * @param length 长度，小于等于0返回空byte数组
+     * @param in     {@link InputStream},为null返回null
+     * @param length 长度,小于等于0返回空byte数组
      * @return bytes
      * @throws InstrumentException 异常
      */
@@ -581,7 +581,7 @@ public class IoUtils {
      *
      * @param in          {@link InputStream}
      * @param length      长度
-     * @param toLowerCase true 传换成小写格式 ， false 传换成大写格式
+     * @param toLowerCase true 传换成小写格式 , false 传换成大写格式
      * @return 16进制字符串
      * @throws InstrumentException 异常
      */
@@ -590,7 +590,7 @@ public class IoUtils {
     }
 
     /**
-     * 从流中读取前28个byte并转换为16进制，字母部分使用大写
+     * 从流中读取前28个byte并转换为16进制,字母部分使用大写
      *
      * @param in {@link InputStream}
      * @return 16进制字符串
@@ -601,7 +601,7 @@ public class IoUtils {
     }
 
     /**
-     * 从流中读取前28个byte并转换为16进制，字母部分使用小写
+     * 从流中读取前28个byte并转换为16进制,字母部分使用小写
      *
      * @param in {@link InputStream}
      * @return 16进制字符串
@@ -612,7 +612,7 @@ public class IoUtils {
     }
 
     /**
-     * 从流中读取内容，读到输出流中
+     * 从流中读取内容,读到输出流中
      *
      * @param <T> 读取对象的类型
      * @param in  输入流
@@ -636,7 +636,7 @@ public class IoUtils {
     }
 
     /**
-     * 从流中读取内容，使用UTF-8编码
+     * 从流中读取内容,使用UTF-8编码
      *
      * @param <T>        集合类型
      * @param in         输入流
@@ -696,10 +696,10 @@ public class IoUtils {
     }
 
     /**
-     * 按行读取UTF-8编码数据，针对每行的数据做处理
+     * 按行读取UTF-8编码数据,针对每行的数据做处理
      *
      * @param in          {@link InputStream}
-     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
+     * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
      * @throws InstrumentException 异常
      * @since 3.1.1
      */
@@ -708,11 +708,11 @@ public class IoUtils {
     }
 
     /**
-     * 按行读取数据，针对每行的数据做处理
+     * 按行读取数据,针对每行的数据做处理
      *
      * @param in          {@link InputStream}
      * @param charset     {@link Charset}编码
-     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
+     * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
      * @throws InstrumentException 异常
      * @since 3.1.9
      */
@@ -721,11 +721,11 @@ public class IoUtils {
     }
 
     /**
-     * 按行读取数据，针对每行的数据做处理
-     * {@link Reader}自带编码定义，因此读取数据的编码跟随其编码。
+     * 按行读取数据,针对每行的数据做处理
+     * {@link Reader}自带编码定义,因此读取数据的编码跟随其编码
      *
      * @param reader      {@link Reader}
-     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
+     * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
      * @throws InstrumentException 异常
      */
     public static void readLines(Reader reader, LineHandler lineHandler) throws InstrumentException {
@@ -818,7 +818,7 @@ public class IoUtils {
 
     /**
      * 将{@link InputStream}转换为支持mark标记的流
-     * 若原流支持mark标记，则返回原流，否则使用{@link BufferedInputStream} 包装之
+     * 若原流支持mark标记,则返回原流,否则使用{@link BufferedInputStream} 包装之
      *
      * @param in 流
      * @return {@link InputStream}
@@ -835,7 +835,7 @@ public class IoUtils {
 
     /**
      * 转换为{@link PushbackInputStream}
-     * 如果传入的输入流已经是{@link PushbackInputStream}，强转返回，否则新建一个
+     * 如果传入的输入流已经是{@link PushbackInputStream},强转返回,否则新建一个
      *
      * @param in           {@link InputStream}
      * @param pushBackSize 推后的byte数
@@ -867,11 +867,11 @@ public class IoUtils {
     }
 
     /**
-     * 将多部分内容写到流中，自动转换为UTF-8字符串
+     * 将多部分内容写到流中,自动转换为UTF-8字符串
      *
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
-     * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
+     * @param contents   写入的内容,调用toString()方法,不包括不会自动换行
      * @throws InstrumentException 异常
      * @since 3.1.1
      */
@@ -880,12 +880,12 @@ public class IoUtils {
     }
 
     /**
-     * 将多部分内容写到流中，自动转换为字符串
+     * 将多部分内容写到流中,自动转换为字符串
      *
      * @param out         输出流
      * @param charsetName 写出的内容的字符集
      * @param isCloseOut  写入完毕是否关闭输出流
-     * @param contents    写入的内容，调用toString()方法，不包括不会自动换行
+     * @param contents    写入的内容,调用toString()方法,不包括不会自动换行
      * @throws InstrumentException 异常
      */
     public static void write(OutputStream out, String charsetName, boolean isCloseOut, Object... contents) throws InstrumentException {
@@ -893,12 +893,12 @@ public class IoUtils {
     }
 
     /**
-     * 将多部分内容写到流中，自动转换为字符串
+     * 将多部分内容写到流中,自动转换为字符串
      *
      * @param out        输出流
      * @param charset    写出的内容的字符集
      * @param isCloseOut 写入完毕是否关闭输出流
-     * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
+     * @param contents   写入的内容,调用toString()方法,不包括不会自动换行
      * @throws InstrumentException 异常
      * @since 3.1.9
      */
@@ -1000,7 +1000,7 @@ public class IoUtils {
      *
      * @param input1 第一个流
      * @param input2 第二个流
-     * @return 两个流的内容一致返回true，否则false
+     * @return 两个流的内容一致返回true, 否则false
      * @throws InstrumentException 异常
      */
     public static boolean contentEquals(InputStream input1, InputStream input2) throws InstrumentException {
@@ -1034,7 +1034,7 @@ public class IoUtils {
      *
      * @param input1 第一个reader
      * @param input2 第二个reader
-     * @return 两个流的内容一致返回true，否则false
+     * @return 两个流的内容一致返回true, 否则false
      * @throws InstrumentException 异常
      */
     public static boolean contentEquals(Reader input1, Reader input2) throws InstrumentException {
@@ -1059,12 +1059,12 @@ public class IoUtils {
     }
 
     /**
-     * 对比两个流内容是否相同，忽略EOL字符
+     * 对比两个流内容是否相同,忽略EOL字符
      * 内部会转换流为 {@link BufferedInputStream}
      *
      * @param input1 第一个流
      * @param input2 第二个流
-     * @return 两个流的内容一致返回true，否则false
+     * @return 两个流的内容一致返回true, 否则false
      * @throws InstrumentException 异常
      */
     public static boolean contentEqualsIgnoreEOL(Reader input1, Reader input2) throws InstrumentException {
@@ -1085,9 +1085,9 @@ public class IoUtils {
     }
 
     /**
-     * 计算流CRC32校验码，计算后关闭流
+     * 计算流CRC32校验码,计算后关闭流
      *
-     * @param in 文件，不能为目录
+     * @param in 文件,不能为目录
      * @return CRC32值
      * @throws InstrumentException 异常
      */
@@ -1096,7 +1096,7 @@ public class IoUtils {
     }
 
     /**
-     * 计算流的校验码，计算后关闭流
+     * 计算流的校验码,计算后关闭流
      *
      * @param in       流
      * @param checksum {@link Checksum}

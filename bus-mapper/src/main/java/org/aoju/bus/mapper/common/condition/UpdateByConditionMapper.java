@@ -38,7 +38,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
 public interface UpdateByConditionMapper<T> {
 
     /**
-     * 根据Condition条件更新实体`record`包含的全部属性，null值会被更新
+     * 根据Condition条件更新实体`record`包含的全部属性,null值会被更新
      *
      * @param record    对象
      * @param condition 条件
@@ -49,7 +49,7 @@ public interface UpdateByConditionMapper<T> {
     int updateByCondition(@Param("record") T record, @Param("condition") Object condition);
 
     /**
-     * 根据Condition条件更新实体`record`包含的全部属性，null值会被更新
+     * 根据Condition条件更新实体`record`包含的全部属性,null值会被更新
      *
      * @param record    对象
      * @param condition 条件

@@ -39,7 +39,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 页码，从1开始
+     * 页码,从1开始
      */
     private int pageNo;
     /**
@@ -71,7 +71,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      */
     private Boolean reasonable;
     /**
-     * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
+     * 当设置为true的时候,如果pagesize设置为0（或RowBounds的limit=0）,就不执行分页,返回全部结果
      */
     private Boolean pageSizeZero;
     /**
@@ -153,7 +153,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Page<E> setPageNo(int pageNo) {
-        //分页合理化，针对不合理的页码自动处理
+        //分页合理化,针对不合理的页码自动处理
         this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
@@ -191,7 +191,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         } else {
             pages = 0;
         }
-        //分页合理化，针对不合理的页码自动处理
+        //分页合理化,针对不合理的页码自动处理
         if ((reasonable != null && reasonable) && pageNo > pages) {
             if (pages != 0) {
                 pageNo = pages;
@@ -209,7 +209,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
             return this;
         }
         this.reasonable = reasonable;
-        //分页合理化，针对不合理的页码自动处理
+        //分页合理化,针对不合理的页码自动处理
         if (this.reasonable && this.pageNo <= 0) {
             this.pageNo = 1;
             calculateStartAndEndRow();
@@ -269,7 +269,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @return 结果
      */
     public Page<E> pageNo(int pageNo) {
-        //分页合理化，针对不合理的页码自动处理
+        //分页合理化,针对不合理的页码自动处理
         this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
@@ -309,7 +309,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
+     * 当设置为true的时候,如果pagesize设置为0（或RowBounds的limit=0）,就不执行分页,返回全部结果
      *
      * @param pageSizeZero 分页大小
      * @return 结果

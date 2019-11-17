@@ -455,7 +455,7 @@ public class MediaType {
     }
 
     /**
-     * 返回此媒体类型的字符集，如果该媒体类型没有指定字符集，则返回null.
+     * 返回此媒体类型的字符集,如果该媒体类型没有指定字符集,则返回null.
      *
      * @return the string
      */
@@ -464,8 +464,8 @@ public class MediaType {
     }
 
     /**
-     * 返回此媒体类型的字符集，或者{@code defaultValue}，
-     * 如果此媒体类型没有指定字符集，则当前运行时不支持该字符集
+     * 返回此媒体类型的字符集,或者{@code defaultValue},
+     * 如果此媒体类型没有指定字符集,则当前运行时不支持该字符集
      *
      * @param defaultValue 字符集
      * @return the charset
@@ -479,12 +479,12 @@ public class MediaType {
     }
 
     /**
-     * 检查此媒体类型是否与其他媒体类型兼容。
-     * 例如:image/*与image/jpeg、image/png等兼容。
-     * 忽略媒体类型参数。这个函数是可交换的
+     * 检查此媒体类型是否与其他媒体类型兼容
+     * 例如:image/*与image/jpeg、image/png等兼容
+     * 忽略媒体类型参数 这个函数是可交换的
      *
      * @param mediaType 要比较的媒体类型.
-     * @return 如果类型兼容，则为true，否则为false.
+     * @return 如果类型兼容, 则为true, 否则为false.
      */
     public boolean isCompatible(MediaType mediaType) {
         return mediaType != null

@@ -164,7 +164,7 @@ public class ErrorCode {
      * 是否包含指定名称的错误码
      *
      * @param name 错误码名称
-     * @return true：包含， false：不包含
+     * @return true：包含, false：不包含
      */
     public static boolean contains(String name) {
         return ERRORCODE_CACHE.containsKey(name);
@@ -174,7 +174,7 @@ public class ErrorCode {
      * 根据错误码名称获取错误码
      *
      * @param name 错误码名称
-     * @return 错误码对象，找不到时返回null
+     * @return 错误码对象, 找不到时返回null
      */
     public static String require(String name) {
         return ERRORCODE_CACHE.get(name);

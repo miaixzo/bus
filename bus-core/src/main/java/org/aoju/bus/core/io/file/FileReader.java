@@ -69,7 +69,7 @@ public class FileReader extends FileWrapper {
     /**
      * 构造
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param filePath 文件路径,相对路径会被转换为相对于ClassPath的路径
      * @param charset  编码
      */
     public FileReader(String filePath, Charset charset) {
@@ -79,7 +79,7 @@ public class FileReader extends FileWrapper {
     /**
      * 构造
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param filePath 文件路径,相对路径会被转换为相对于ClassPath的路径
      * @param charset  编码
      */
     public FileReader(String filePath, String charset) {
@@ -100,7 +100,7 @@ public class FileReader extends FileWrapper {
      * 构造
      * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param filePath 文件路径,相对路径会被转换为相对于ClassPath的路径
      */
     public FileReader(String filePath) {
         this(filePath, DEFAULT_CHARSET);

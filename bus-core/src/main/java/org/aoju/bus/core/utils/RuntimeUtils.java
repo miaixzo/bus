@@ -28,9 +28,9 @@ import java.util.Map;
 public class RuntimeUtils {
 
     /**
-     * 执行系统命令，使用系统默认编码
+     * 执行系统命令,使用系统默认编码
      *
-     * @param cmds 命令列表，每个元素代表一条命令
+     * @param cmds 命令列表,每个元素代表一条命令
      * @return 执行结果
      * @throws InstrumentException IO异常
      */
@@ -39,10 +39,10 @@ public class RuntimeUtils {
     }
 
     /**
-     * 执行系统命令，使用系统默认编码
+     * 执行系统命令,使用系统默认编码
      *
      * @param charset 编码
-     * @param cmds    命令列表，每个元素代表一条命令
+     * @param cmds    命令列表,每个元素代表一条命令
      * @return 执行结果
      * @throws InstrumentException 内部处理异常
      * @since 3.1.2
@@ -52,10 +52,10 @@ public class RuntimeUtils {
     }
 
     /**
-     * 执行系统命令，使用系统默认编码
+     * 执行系统命令,使用系统默认编码
      *
-     * @param cmds 命令列表，每个元素代表一条命令
-     * @return 执行结果，按行区分
+     * @param cmds 命令列表,每个元素代表一条命令
+     * @return 执行结果, 按行区分
      * @throws InstrumentException 内部处理异常
      */
     public static List<String> execForLines(String... cmds) throws InstrumentException {
@@ -63,11 +63,11 @@ public class RuntimeUtils {
     }
 
     /**
-     * 执行系统命令，使用系统默认编码
+     * 执行系统命令,使用系统默认编码
      *
      * @param charset 编码
-     * @param cmds    命令列表，每个元素代表一条命令
-     * @return 执行结果，按行区分
+     * @param cmds    命令列表,每个元素代表一条命令
+     * @return 执行结果, 按行区分
      * @throws InstrumentException 内部处理异常
      * @since 3.1.2
      */
@@ -77,7 +77,7 @@ public class RuntimeUtils {
 
     /**
      * 执行命令
-     * 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
+     * 命令带参数时参数可作为其中一个参数,也可以将命令和参数组合为一个字符串传入
      *
      * @param cmds 命令
      * @return {@link Process}
@@ -106,9 +106,9 @@ public class RuntimeUtils {
 
     /**
      * 执行命令
-     * 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
+     * 命令带参数时参数可作为其中一个参数,也可以将命令和参数组合为一个字符串传入
      *
-     * @param envp 环境变量参数，传入形式为key=value，null表示继承系统环境变量
+     * @param envp 环境变量参数,传入形式为key=value,null表示继承系统环境变量
      * @param cmds 命令
      * @return {@link Process}
      */
@@ -118,10 +118,10 @@ public class RuntimeUtils {
 
     /**
      * 执行命令
-     * 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
+     * 命令带参数时参数可作为其中一个参数,也可以将命令和参数组合为一个字符串传入
      *
-     * @param envp 环境变量参数，传入形式为key=value，null表示继承系统环境变量
-     * @param dir  执行命令所在目录（用于相对路径命令执行），null表示使用当前进程执行的目录
+     * @param envp 环境变量参数,传入形式为key=value,null表示继承系统环境变量
+     * @param dir  执行命令所在目录（用于相对路径命令执行）,null表示使用当前进程执行的目录
      * @param cmds 命令
      * @return {@link Process}
      */
@@ -145,7 +145,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取命令执行结果，使用系统默认编码，获取后销毁进程
+     * 获取命令执行结果,使用系统默认编码,获取后销毁进程
      *
      * @param process {@link Process} 进程
      * @return 命令执行结果列表
@@ -155,7 +155,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取命令执行结果，使用系统默认编码，获取后销毁进程
+     * 获取命令执行结果,使用系统默认编码,获取后销毁进程
      *
      * @param process {@link Process} 进程
      * @param charset 编码
@@ -174,7 +174,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取命令执行结果，使用系统默认编码，，获取后销毁进程
+     * 获取命令执行结果,使用系统默认编码,,获取后销毁进程
      *
      * @param process {@link Process} 进程
      * @return 命令执行结果列表
@@ -185,7 +185,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取命令执行结果，获取后销毁进程
+     * 获取命令执行结果,获取后销毁进程
      *
      * @param process {@link Process} 进程
      * @param charset 编码
@@ -204,7 +204,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取命令执行异常结果，使用系统默认编码，，获取后销毁进程
+     * 获取命令执行异常结果,使用系统默认编码,,获取后销毁进程
      *
      * @param process {@link Process} 进程
      * @return 命令执行结果列表
@@ -214,7 +214,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取命令执行异常结果，获取后销毁进程
+     * 获取命令执行异常结果,获取后销毁进程
      *
      * @param process {@link Process} 进程
      * @param charset 编码
@@ -244,7 +244,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 增加一个JVM关闭后的钩子，用于在JVM关闭时执行某些操作
+     * 增加一个JVM关闭后的钩子,用于在JVM关闭时执行某些操作
      *
      * @param hook 钩子
      */
@@ -253,7 +253,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获得完整消息，包括异常名，消息格式为：{SimpleClassName}: {ThrowableMessage}
+     * 获得完整消息,包括异常名,消息格式为：{SimpleClassName}: {ThrowableMessage}
      *
      * @param e 异常
      * @return 完整消息
@@ -266,7 +266,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获得消息，调用异常类的getMessage方法
+     * 获得消息,调用异常类的getMessage方法
      *
      * @param e 异常
      * @return 消息
@@ -308,7 +308,7 @@ public class RuntimeUtils {
 
     /**
      * 包装异常并重新抛出此异常
-     * {@link RuntimeException} 和{@link Error} 直接抛出，其它检查异常包装为{@link UndeclaredThrowableException} 后抛出
+     * {@link RuntimeException} 和{@link Error} 直接抛出,其它检查异常包装为{@link UndeclaredThrowableException} 后抛出
      *
      * @param throwable 异常
      */
@@ -324,7 +324,7 @@ public class RuntimeUtils {
 
     /**
      * 剥离反射引发的InvocationTargetException、
-     * UndeclaredThrowableException中间异常，返回业务本身的异常
+     * UndeclaredThrowableException中间异常,返回业务本身的异常
      *
      * @param wrapped 包装的异常
      * @return 剥离后的异常
@@ -554,10 +554,10 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取异常链上所有异常的集合，如果{@link Throwable} 对象没有cause，返回只有一个节点的List
-     * 如果传入null，返回空集合
+     * 获取异常链上所有异常的集合,如果{@link Throwable} 对象没有cause,返回只有一个节点的List
+     * 如果传入null,返回空集合
      *
-     * @param throwable 异常对象，可以为null
+     * @param throwable 异常对象,可以为null
      * @return 异常链中所有异常集合
      */
     public static List<Throwable> getThrowableList(Throwable throwable) {
@@ -570,12 +570,12 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取异常链中最尾端的异常，即异常最早发生的异常对象。
-     * 此方法通过调用{@link Throwable#getCause()} 直到没有cause为止，如果异常本身没有cause，返回异常本身
+     * 获取异常链中最尾端的异常,即异常最早发生的异常对象
+     * 此方法通过调用{@link Throwable#getCause()} 直到没有cause为止,如果异常本身没有cause,返回异常本身
      * 传入null返回也为null
      *
-     * @param throwable 异常对象，可能为null
-     * @return 最尾端异常，传入null参数返回也为null
+     * @param throwable 异常对象,可能为null
+     * @return 最尾端异常, 传入null参数返回也为null
      */
     public static Throwable getRootCause(final Throwable throwable) {
         final List<Throwable> list = getThrowableList(throwable);
@@ -583,7 +583,7 @@ public class RuntimeUtils {
     }
 
     /**
-     * 获取异常链中最尾端的异常的消息，
+     * 获取异常链中最尾端的异常的消息,
      * 消息格式为：{SimpleClassName}: {ThrowableMessage}
      *
      * @param th 异常

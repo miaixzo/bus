@@ -88,7 +88,7 @@ public class EachStrategy implements Complex<Object, Each> {
     }
 
     /**
-     * 快速执行多个校验器，一旦有一个校验不通过，则返回false
+     * 快速执行多个校验器,一旦有一个校验不通过,则返回false
      *
      * @param validators 校验器集合
      * @param object     校验对象

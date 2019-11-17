@@ -116,7 +116,7 @@ public abstract class OGNL {
      * 判断参数是否支持动态表名
      *
      * @param parameter Object
-     * @return true支持，false不支持
+     * @return true支持, false不支持
      */
     public static boolean isDynamicParameter(Object parameter) {
         if (parameter != null && parameter instanceof EntityTableName) {
@@ -129,7 +129,7 @@ public abstract class OGNL {
      * 判断参数是否b支持动态表名
      *
      * @param parameter Object
-     * @return true不支持，false支持
+     * @return true不支持, false支持
      */
     public static boolean isNotDynamicParameter(Object parameter) {
         return !isDynamicParameter(parameter);

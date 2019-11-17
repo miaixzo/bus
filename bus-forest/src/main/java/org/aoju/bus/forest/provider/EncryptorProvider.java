@@ -40,7 +40,7 @@ import java.io.OutputStream;
 public interface EncryptorProvider {
 
     /**
-     * 加密，将目标文件加密输出至目标文件。
+     * 加密,将目标文件加密输出至目标文件
      *
      * @param key  密钥
      * @param src  源文件
@@ -50,7 +50,7 @@ public interface EncryptorProvider {
     void encrypt(Key key, File src, File dest) throws IOException;
 
     /**
-     * 加密，将输入流加密输出至输出流。
+     * 加密,将输入流加密输出至输出流
      *
      * @param key 密钥
      * @param in  输入流
@@ -60,7 +60,7 @@ public interface EncryptorProvider {
     void encrypt(Key key, InputStream in, OutputStream out) throws IOException;
 
     /**
-     * 加密，将输入流包装成加密的输入流
+     * 加密,将输入流包装成加密的输入流
      *
      * @param key 密钥
      * @param in  输入流
@@ -70,7 +70,7 @@ public interface EncryptorProvider {
     InputStream encrypt(Key key, InputStream in) throws IOException;
 
     /**
-     * 加密，将输入流包装成加密的输出流
+     * 加密,将输入流包装成加密的输出流
      *
      * @param key 密钥
      * @param out 输出流

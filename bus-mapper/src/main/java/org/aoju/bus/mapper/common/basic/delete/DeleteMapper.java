@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.DeleteProvider;
 public interface DeleteMapper<T> {
 
     /**
-     * 根据实体属性作为条件进行删除，查询条件使用等号
+     * 根据实体属性作为条件进行删除,查询条件使用等号
      *
      * @param record 对象
      * @return 操作数量

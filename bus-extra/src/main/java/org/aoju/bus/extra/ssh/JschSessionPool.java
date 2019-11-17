@@ -49,12 +49,12 @@ public enum JschSessionPool {
      */
     private static final Object lock = new Object();
     /**
-     * SSH会话池，key：host，value：Session对象
+     * SSH会话池,key：host,value：Session对象
      */
     private Map<String, Session> sessionPool = new ConcurrentHashMap<String, Session>();
 
     /**
-     * 获取Session，不存在返回null
+     * 获取Session,不存在返回null
      *
      * @param key 键
      * @return Session
@@ -64,7 +64,7 @@ public enum JschSessionPool {
     }
 
     /**
-     * 获得一个SSH跳板机会话，重用已经使用的会话
+     * 获得一个SSH跳板机会话,重用已经使用的会话
      *
      * @param sshHost 跳板机主机
      * @param sshPort 跳板机端口
@@ -100,7 +100,7 @@ public enum JschSessionPool {
     /**
      * 关闭SSH连接会话
      *
-     * @param key 主机，格式为user@host:port
+     * @param key 主机,格式为user@host:port
      */
     public void close(String key) {
         Session session = sessionPool.get(key);

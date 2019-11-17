@@ -28,7 +28,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
 /**
- * 用于配置一些特殊的关键属性，比如bus-boot.version等,
+ * 用于配置一些特殊的关键属性,比如bus-boot.version等,
  * 将作为一个名为BusConfigurationProperties的属性源添加
  *
  * @author Kimi Liu

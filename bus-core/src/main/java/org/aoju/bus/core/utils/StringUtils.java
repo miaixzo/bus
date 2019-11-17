@@ -91,7 +91,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 重写toString方法，处理了空指针问题
+     * 重写toString方法,处理了空指针问题
      * (默认如果对象为null则替换成"")
      *
      * @param obj String类型的Object对象
@@ -102,10 +102,10 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 重写toString方法，处理了空指针问题
+     * 重写toString方法,处理了空指针问题
      *
      * @param obj          String类型的Object对象
-     * @param defaultValue 如果obj是null，则以defaultValue的值返回
+     * @param defaultValue 如果obj是null,则以defaultValue的值返回
      * @return 转换后的字符串
      */
     public static String toString(Object obj, String defaultValue) {
@@ -273,11 +273,11 @@ public class StringUtils extends TextUtils {
      * @return string
      */
     public static String byteArrayToHex(byte[] byteArray) {
-        // 首先初始化一个字符数组，用来存放每个16进制字符
+        // 首先初始化一个字符数组,用来存放每个16进制字符
         char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-        // new一个字符数组，这个就是用来组成结果字符串的（解释一下：一个byte是八位二进制，也就是2位十六进制字符（2的8次方等于16的2次方））
+        // new一个字符数组,这个就是用来组成结果字符串的（解释一下：一个byte是八位二进制,也就是2位十六进制字符（2的8次方等于16的2次方））
         char[] resultCharArray = new char[byteArray.length * 2];
-        // 遍历字节数组，通过位运算（位运算效率高），转换成字符放到字符数组中去
+        // 遍历字节数组,通过位运算（位运算效率高）,转换成字符放到字符数组中去
         int index = 0;
         for (byte b : byteArray) {
             resultCharArray[index++] = hexDigits[b >>> 4 & 0xf];
@@ -289,7 +289,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * bytes字符串转换为Byte值
-     * src Byte字符串，每个Byte之间没有分隔符
+     * src Byte字符串,每个Byte之间没有分隔符
      *
      * @param hex 字符串
      * @return byte[]
@@ -384,7 +384,7 @@ public class StringUtils extends TextUtils {
     public static String toHalfString(String input) {
         char[] c = input.toCharArray();
         for (int i = 0; i < c.length; i++) {
-            // 是否是中文空格， 单独处理
+            // 是否是中文空格, 单独处理
             if (c[i] == '\u3000') {
                 c[i] = ' ';
             }
@@ -490,12 +490,12 @@ public class StringUtils extends TextUtils {
                         sb.append(c);
                         pos = i + 6;//跳过整个Unicode符
                     } catch (NumberFormatException e) {
-                        //非法Unicode符，跳过
+                        //非法Unicode符,跳过
                         sb.append(unicode, pos, i + 2);//写入"\\u"
                         pos = i + 2;
                     }
                 } else {
-                    pos = i;//非Unicode符，结束
+                    pos = i;//非Unicode符,结束
                     break;
                 }
             }
@@ -936,7 +936,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 比较两个字符串（大小写敏感）。
+     * 比较两个字符串（大小写敏感）
      *
      * <pre>
      * equals(null, null)   = true
@@ -948,14 +948,14 @@ public class StringUtils extends TextUtils {
      *
      * @param str1 要比较的字符串1
      * @param str2 要比较的字符串2
-     * @return 如果两个字符串相同，或者都是null，则返回true
+     * @return 如果两个字符串相同, 或者都是null, 则返回true
      */
     public static boolean equals(CharSequence str1, CharSequence str2) {
         return equals(str1, str2, false);
     }
 
     /**
-     * 比较两个字符串（大小写不敏感）。
+     * 比较两个字符串（大小写不敏感）
      *
      * <pre>
      * equalsIgnoreCase(null, null)   = true
@@ -967,19 +967,19 @@ public class StringUtils extends TextUtils {
      *
      * @param str1 要比较的字符串1
      * @param str2 要比较的字符串2
-     * @return 如果两个字符串相同，或者都是null，则返回true
+     * @return 如果两个字符串相同, 或者都是null, 则返回true
      */
     public static boolean equalsIgnoreCase(CharSequence str1, CharSequence str2) {
         return equals(str1, str2, true);
     }
 
     /**
-     * 比较两个字符串是否相等。
+     * 比较两个字符串是否相等
      *
      * @param str1       要比较的字符串1
      * @param str2       要比较的字符串2
      * @param ignoreCase 是否忽略大小写
-     * @return 如果两个字符串相同，或者都是null，则返回true
+     * @return 如果两个字符串相同, 或者都是null, 则返回true
      * @since 5.2.2
      */
     public static boolean equals(CharSequence str1, CharSequence str2, boolean ignoreCase) {
@@ -988,7 +988,7 @@ public class StringUtils extends TextUtils {
             return str2 == null;
         }
         if (null == str2) {
-            // 字符串2空，字符串1非空，直接false
+            // 字符串2空,字符串1非空,直接false
             return false;
         }
 
@@ -1002,7 +1002,7 @@ public class StringUtils extends TextUtils {
     /**
      * 格式化字符串
      * 此方法只是简单将占位符 {} 按照顺序替换为参数
-     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
+     * 如果想输出 {} 使用 \\转义 { 即可,如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
      * 例：
      * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b
      * 转义{}： 	format("this is \\{} for {}", "a", "b") =》 this is \{} for a
@@ -1028,14 +1028,14 @@ public class StringUtils extends TextUtils {
             if (delimIndex == -1) {//剩余部分无占位符
                 if (handledPosition == 0) { //不带占位符的模板直接返回
                     return val;
-                } else { //字符串模板剩余部分不再包含占位符，加入剩余部分后返回结果
+                } else { //字符串模板剩余部分不再包含占位符,加入剩余部分后返回结果
                     sbuf.append(val, handledPosition, strPatternLength);
                     return sbuf.toString();
                 }
             } else {
                 if (delimIndex > 0 && val.charAt(delimIndex - 1) == Symbol.C_BACKSLASH) {//转义符
                     if (delimIndex > 1 && val.charAt(delimIndex - 2) == Symbol.C_BACKSLASH) {//双转义符
-                        //转义符之前还有一个转义符，占位符依旧有效
+                        //转义符之前还有一个转义符,占位符依旧有效
                         sbuf.append(val, handledPosition, delimIndex - 1);
                         sbuf.append(utf8Str(argArray[argIndex]));
                         handledPosition = delimIndex + 2;
@@ -1127,7 +1127,7 @@ public class StringUtils extends TextUtils {
      * 解码字节码
      *
      * @param data    字符串
-     * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+     * @param charset 字符集,如果此字段为空,则解码的结果取决于平台
      * @return 解码后的字符串
      */
     public static String str(byte[] data, Charset charset) {
@@ -1156,7 +1156,7 @@ public class StringUtils extends TextUtils {
      * 解码字节码
      *
      * @param data    字符串
-     * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+     * @param charset 字符集,如果此字段为空,则解码的结果取决于平台
      * @return 解码后的字符串
      */
     public static String str(Byte[] data, Charset charset) {
@@ -1178,7 +1178,7 @@ public class StringUtils extends TextUtils {
      * 将编码的byteBuffer数据转换为字符串
      *
      * @param data    数据
-     * @param charset 字符集，如果为空使用当前系统字符集
+     * @param charset 字符集,如果为空使用当前系统字符集
      * @return 字符串
      */
     public static String str(ByteBuffer data, String charset) {
@@ -1193,7 +1193,7 @@ public class StringUtils extends TextUtils {
      * 将编码的byteBuffer数据转换为字符串
      *
      * @param data    数据
-     * @param charset 字符集，如果为空使用当前系统字符集
+     * @param charset 字符集,如果为空使用当前系统字符集
      * @return 字符串
      */
     public static String str(ByteBuffer data, Charset charset) {
@@ -1204,7 +1204,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * {@link CharSequence} 转为字符串，null安全
+     * {@link CharSequence} 转为字符串,null安全
      *
      * @param cs {@link CharSequence}
      * @return 字符串
@@ -1240,10 +1240,10 @@ public class StringUtils extends TextUtils {
 
     /**
      * 改进JDK subString
-     * index从0开始计算，最后一个字符为-1
-     * 如果from和to位置一样，返回 ""
-     * 如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length
-     * 如果经过修正的index中from大于to，则互换
+     * index从0开始计算,最后一个字符为-1
+     * 如果from和to位置一样,返回 ""
+     * 如果from或to为负数,则按照length从后向前数位置,如果绝对值大于字符串长度,则from归到0,to归到length
+     * 如果经过修正的index中from大于to,则互换
      * abcdefgh 2 3 =》 c
      * abcdefgh 2 -3 =》 cde
      *
@@ -1290,7 +1290,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串路径，仅支持Unix分界符：/
+     * 切分字符串路径,仅支持Unix分界符：/
      *
      * @param str 被切分的字符串
      * @return 切分后的集合
@@ -1300,7 +1300,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串路径，仅支持Unix分界符：/
+     * 切分字符串路径,仅支持Unix分界符：/
      *
      * @param str   被切分的字符串
      * @param limit 限制分片数
@@ -1311,7 +1311,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串路径，仅支持Unix分界符：/
+     * 切分字符串路径,仅支持Unix分界符：/
      *
      * @param str 被切分的字符串
      * @return 切分后的集合
@@ -1321,7 +1321,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串路径，仅支持Unix分界符：/
+     * 切分字符串路径,仅支持Unix分界符：/
      *
      * @param str   被切分的字符串
      * @param limit 限制分片数
@@ -1332,7 +1332,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，去除切分后每个元素两边的空白符，去除空白项
+     * 切分字符串,去除切分后每个元素两边的空白符,去除空白项
      *
      * @param str       被切分的字符串
      * @param separator 分隔符字符
@@ -1357,7 +1357,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，去除每个元素两边空格，忽略大小写
+     * 切分字符串,去除每个元素两边空格,忽略大小写
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符串
@@ -1370,11 +1370,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，大小写敏感，去除每个元素两边空白符
+     * 切分字符串,大小写敏感,去除每个元素两边空白符
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符
-     * @param limit       限制分片数，-1不限制
+     * @param limit       限制分片数,-1不限制
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
@@ -1383,7 +1383,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，去除每个元素两边空格，忽略大小写
+     * 切分字符串,去除每个元素两边空格,忽略大小写
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符串
@@ -1397,11 +1397,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，忽略大小写
+     * 切分字符串,忽略大小写
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符
-     * @param limit       限制分片数，-1不限制
+     * @param limit       限制分片数,-1不限制
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
@@ -1412,7 +1412,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，忽略大小写
+     * 切分字符串,忽略大小写
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符串
@@ -1427,7 +1427,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，去除每个元素两边空格，忽略大小写
+     * 切分字符串,去除每个元素两边空格,忽略大小写
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符串
@@ -1596,7 +1596,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，去除切分后每个元素两边的空白符，去除空白项
+     * 切分字符串,去除切分后每个元素两边的空白符,去除空白项
      *
      * @param str       被切分的字符串
      * @param separator 分隔符字符
@@ -1622,7 +1622,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 使用空白符切分字符串
-     * 切分后的字符串两边不包含空白符，空串或空白符串并不做为元素之一
+     * 切分后的字符串两边不包含空白符,空串或空白符串并不做为元素之一
      *
      * @param str   被切分的字符串
      * @param limit 限制分片数
@@ -1644,7 +1644,7 @@ public class StringUtils extends TextUtils {
                 addToList(list, str.substring(start, i), true, true);
                 start = i + 1;//i+1同时将start与i保持一致
 
-                //检查是否超出范围（最大允许limit-1个，剩下一个留给末尾字符串）
+                //检查是否超出范围（最大允许limit-1个,剩下一个留给末尾字符串）
                 if (limit > 0 && list.size() > limit - 2) {
                     break;
                 }
@@ -1654,11 +1654,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，不去除切分后每个元素两边的空白符，不去除空白项
+     * 切分字符串,不去除切分后每个元素两边的空白符,不去除空白项
      *
      * @param str       被切分的字符串
      * @param separator 分隔符字符
-     * @param limit     限制分片数，-1不限制
+     * @param limit     限制分片数,-1不限制
      * @return 切分后的集合
      */
     public static List<String> split(CharSequence str, char separator, int limit) {
@@ -1679,7 +1679,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，不忽略大小写
+     * 切分字符串,不忽略大小写
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符串
@@ -1692,11 +1692,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切分字符串，大小写敏感
+     * 切分字符串,大小写敏感
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符
-     * @param limit       限制分片数，-1不限制
+     * @param limit       限制分片数,-1不限制
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
@@ -1707,7 +1707,7 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * 切分字符串，不忽略大小写
+     * 切分字符串,不忽略大小写
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符串
@@ -1762,7 +1762,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str         被切分的字符串
      * @param separator   分隔符字符
-     * @param limit       限制分片数，-1不限制
+     * @param limit       限制分片数,-1不限制
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
@@ -1785,7 +1785,7 @@ public class StringUtils extends TextUtils {
                 addToList(list, str.substring(start, i), isTrim, ignoreEmpty);
                 start = i + 1;//i+1同时将start与i保持一致
 
-                //检查是否超出范围（最大允许limit-1个，剩下一个留给末尾字符串）
+                //检查是否超出范围（最大允许limit-1个,剩下一个留给末尾字符串）
                 if (limit > 0 && list.size() > limit - 2) {
                     break;
                 }
@@ -1831,7 +1831,7 @@ public class StringUtils extends TextUtils {
                 addToList(list, str.substring(start, i), isTrim, ignoreEmpty);
                 start = i + separatorLen;
 
-                //检查是否超出范围（最大允许limit-1个，剩下一个留给末尾字符串）
+                //检查是否超出范围（最大允许limit-1个,剩下一个留给末尾字符串）
                 if (limit > 0 && list.size() > limit - 2) {
                     break;
                 }
@@ -1875,11 +1875,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 除去字符串头尾部的空白符，如果字符串是null，依然返回null。
+     * 除去字符串头尾部的空白符,如果字符串是null,依然返回null
      *
      * @param str  要处理的字符串
-     * @param mode -1表示trimStart，0表示trim全部， 1表示trimEnd
-     * @return 除去指定字符后的的字符串，如果原字串为null，则返回null
+     * @param mode -1表示trimStart,0表示trim全部, 1表示trimEnd
+     * @return 除去指定字符后的的字符串, 如果原字串为null, 则返回null
      */
     public static String trim(CharSequence str, int mode) {
         if (str == null) {
@@ -1924,7 +1924,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 是否以指定字符串开头
-     * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     * 如果给定的字符串和开头字符串都为null则返回true,否则任意一个值为null返回false
      *
      * @param str          被监测字符串
      * @param prefix       开头字符串
@@ -1955,7 +1955,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 是否以指定字符串开头，忽略大小写
+     * 是否以指定字符串开头,忽略大小写
      *
      * @param str    被监测字符串
      * @param prefix 开头字符串
@@ -2001,7 +2001,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str        字符串
      * @param searchChar 被查找的字符
-     * @param start      起始位置，如果小于0，从0开始查找
+     * @param start      起始位置,如果小于0,从0开始查找
      * @return 位置
      */
     public static int indexOf(final CharSequence str, char searchChar, int start) {
@@ -2017,8 +2017,8 @@ public class StringUtils extends TextUtils {
      *
      * @param str        字符串
      * @param searchChar 被查找的字符
-     * @param start      起始位置，如果小于0，从0开始查找
-     * @param end        终止位置，如果超过str.length()则默认查找到字符串末尾
+     * @param start      起始位置,如果小于0,从0开始查找
+     * @param end        终止位置,如果超过str.length()则默认查找到字符串末尾
      * @return 位置
      */
     public static int indexOf(final CharSequence str, char searchChar, int start, int end) {
@@ -2038,7 +2038,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写
+     * 指定范围内查找字符串,忽略大小写
      *
      * <pre>
      * StringUtils.indexOfIgnoreCase(null, *, *)          = -1
@@ -2130,7 +2130,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写
+     * 指定范围内查找字符串,忽略大小写
      *
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
@@ -2142,11 +2142,11 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写
+     * 指定范围内查找字符串,忽略大小写
      *
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
-     * @param fromIndex 起始位置，从后往前计数
+     * @param fromIndex 起始位置,从后往前计数
      * @return 位置
      * @since 5.2.2
      */
@@ -2159,7 +2159,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str        字符串
      * @param searchStr  需要查找位置的字符串
-     * @param fromIndex  起始位置，从后往前计数
+     * @param fromIndex  起始位置,从后往前计数
      * @param ignoreCase 是否忽略大小写
      * @return 位置
      * @since 5.2.2
@@ -2191,7 +2191,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 返回字符串 searchStr 在字符串 str 中第 ordinal 次出现的位置。
+     * 返回字符串 searchStr 在字符串 str 中第 ordinal 次出现的位置
      * 如果 str=null 或 searchStr=null 或 ordinal小于等于0 则返回-1
      *
      * <pre>
@@ -2208,8 +2208,8 @@ public class StringUtils extends TextUtils {
      * StringUtils.ordinalIndexOf("aabaabaa", "", 2)   = 0
      * </pre>
      *
-     * @param str       被检查的字符串，可以为null
-     * @param searchStr 被查找的字符串，可以为null
+     * @param str       被检查的字符串,可以为null
+     * @param searchStr 被查找的字符串,可以为null
      * @param ordinal   第几次出现的位置
      * @return 查找到的位置
      * @since 3.2.3
@@ -2234,7 +2234,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取两个字符串的不同部分（长度一致），判断截取的子串是否相同
+     * 截取两个字符串的不同部分（长度一致）,判断截取的子串是否相同
      * 任意一个字符串为null返回false
      *
      * @param str1       第一个字符串
@@ -2277,7 +2277,7 @@ public class StringUtils extends TextUtils {
      * 重复某个字符
      *
      * @param c     被重复的字符
-     * @param count 重复的数目，如果小于等于0则返回""
+     * @param count 重复的数目,如果小于等于0则返回""
      * @return 重复字符字符串
      */
     public static String repeat(char c, int count) {
@@ -2357,7 +2357,7 @@ public class StringUtils extends TextUtils {
      * 编码字符串
      *
      * @param str     字符串
-     * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+     * @param charset 字符集,如果此字段为空,则解码的结果取决于平台
      * @return 编码后的字节码
      */
     public static byte[] bytes(CharSequence str, String charset) {
@@ -2368,7 +2368,7 @@ public class StringUtils extends TextUtils {
      * 编码字符串
      *
      * @param str     字符串
-     * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+     * @param charset 字符集,如果此字段为空,则解码的结果取决于平台
      * @return 编码后的字节码
      */
     public static byte[] bytes(CharSequence str, Charset charset) {
@@ -2383,7 +2383,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将驼峰式命名的字符串转换为下划线方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。
+     * 将驼峰式命名的字符串转换为下划线方式 如果转换前的驼峰式命名的字符串为空,则返回空字符串
      * 例如：HelloWorld=》hello_world
      *
      * @param camelCaseStr 转换前的驼峰式命名的字符串
@@ -2421,7 +2421,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 删除指定字符串
-     * 是否在开始位置，否则返回源字符串
+     * 是否在开始位置,否则返回源字符串
      * A {@code null} source string will return {@code null}.
      * An empty ("") source string will return the empty string.
      * A {@code null} search string will return the source string.
@@ -2458,7 +2458,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str       被处理的字符串
      * @param preLength 去掉的长度
-     * @return 处理后的字符串，不符合规范返回null
+     * @return 处理后的字符串, 不符合规范返回null
      */
     public static String removePreAndLowerFirst(CharSequence str, int preLength) {
         if (str == null) {
@@ -2481,7 +2481,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str    被处理的字符串
      * @param prefix 前缀
-     * @return 处理后的字符串，不符合规范返回null
+     * @return 处理后的字符串, 不符合规范返回null
      */
     public static String removePreAndLowerFirst(CharSequence str, CharSequence prefix) {
         return lowerFirst(removePrefix(str, prefix));
@@ -2493,7 +2493,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str    字符串
      * @param prefix 前缀
-     * @return 切掉后的字符串，若前缀不是 preffix， 返回原字符串
+     * @return 切掉后的字符串, 若前缀不是 preffix, 返回原字符串
      */
     public static String removePrefix(CharSequence str, CharSequence prefix) {
         if (isEmpty(str) || isEmpty(prefix)) {
@@ -2512,7 +2512,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str    字符串
      * @param prefix 前缀
-     * @return 切掉后的字符串，若前缀不是 prefix， 返回原字符串
+     * @return 切掉后的字符串, 若前缀不是 prefix, 返回原字符串
      */
     public static String removePrefixIgnoreCase(CharSequence str, CharSequence prefix) {
         if (isEmpty(str) || isEmpty(prefix)) {
@@ -2531,7 +2531,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str    字符串
      * @param suffix 后缀
-     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
+     * @return 切掉后的字符串, 若后缀不是 suffix, 返回原字符串
      */
     public static String removeSuffix(CharSequence str, CharSequence suffix) {
         if (isEmpty(str) || isEmpty(suffix)) {
@@ -2670,7 +2670,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。
+     * 将下划线方式命名的字符串转换为驼峰式 如果转换前的下划线大写方式命名的字符串为空,则返回空字符串
      * 例如：hello_world=》helloWorld
      *
      * @param name 转换前的下划线大写方式命名的字符串
@@ -2704,7 +2704,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 当给定字符串为null时，转换为Empty
+     * 当给定字符串为null时,转换为Empty
      *
      * @param str 被转换的字符串
      * @return 转换后的字符串
@@ -2714,7 +2714,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 如果字符串是<code>null</code>，则返回指定默认字符串，否则返回字符串本身。
+     * 如果字符串是<code>null</code>,则返回指定默认字符串,否则返回字符串本身
      *
      * <pre>
      * nullToDefault(null, &quot;default&quot;)  = &quot;default&quot;
@@ -3396,7 +3396,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 替换字符串中的指定字符串，忽略大小写
+     * 替换字符串中的指定字符串,忽略大小写
      *
      * @param str         字符串
      * @param searchStr   被查找的字符串
@@ -3500,7 +3500,7 @@ public class StringUtils extends TextUtils {
             endExclude = strLength;
         }
         if (startInclude > endExclude) {
-            // 如果起始位置大于结束位置，不替换
+            // 如果起始位置大于结束位置,不替换
             return str(str);
         }
 
@@ -3529,10 +3529,10 @@ public class StringUtils extends TextUtils {
 
     /**
      * 替换字符字符数组中所有的字符为replacedStr
-     * 提供的chars为所有需要被替换的字符，例如："\r\n"，则"\r"和"\n"都会被替换，哪怕他们单独存在
+     * 提供的chars为所有需要被替换的字符,例如："\r\n",则"\r"和"\n"都会被替换,哪怕他们单独存在
      *
      * @param str         被检查的字符串
-     * @param chars       需要替换的字符列表，用一个字符串表示这个字符列表
+     * @param chars       需要替换的字符列表,用一个字符串表示这个字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
      * @since 5.2.2
@@ -3650,7 +3650,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 去掉字符包装，如果未被包装则返回原字符串
+     * 去掉字符包装,如果未被包装则返回原字符串
      *
      * @param str    字符串
      * @param prefix 前置字符串
@@ -3665,7 +3665,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 去掉字符包装，如果未被包装则返回原字符串
+     * 去掉字符包装,如果未被包装则返回原字符串
      *
      * @param str    字符串
      * @param prefix 前置字符
@@ -3683,7 +3683,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 去掉字符包装，如果未被包装则返回原字符串
+     * 去掉字符包装,如果未被包装则返回原字符串
      *
      * @param str             字符串
      * @param prefixAndSuffix 前置和后置字符
@@ -3760,7 +3760,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 是否以指定字符串结尾
-     * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     * 如果给定的字符串和开头字符串都为null则返回true,否则任意一个值为null返回false
      *
      * @param str          被监测字符串
      * @param suffix       结尾字符串
@@ -3791,7 +3791,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 是否以指定字符串结尾，忽略大小写
+     * 是否以指定字符串结尾,忽略大小写
      *
      * @param str    被监测字符串
      * @param suffix 结尾字符串
@@ -3840,7 +3840,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 去除两边的指定字符串，忽略大小写
+     * 去除两边的指定字符串,忽略大小写
      *
      * @param str            被处理的字符串
      * @param prefixOrSuffix 前缀或后缀
@@ -3852,7 +3852,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 去除两边的指定字符串，忽略大小写
+     * 去除两边的指定字符串,忽略大小写
      *
      * @param str    被处理的字符串
      * @param prefix 前缀
@@ -3878,7 +3878,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 如果给定字符串不是以prefix开头的，在开头补充 prefix
+     * 如果给定字符串不是以prefix开头的,在开头补充 prefix
      *
      * @param str    字符串
      * @param prefix 前缀
@@ -3898,7 +3898,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 如果给定字符串不是以suffix结尾的，在尾部补充 suffix
+     * 如果给定字符串不是以suffix结尾的,在尾部补充 suffix
      *
      * @param str    字符串
      * @param suffix 后缀
@@ -3953,7 +3953,7 @@ public class StringUtils extends TextUtils {
      *
      * @param str       字符串
      * @param testChars 检查的字符
-     * @return 字符串含有非检查的字符，返回false
+     * @return 字符串含有非检查的字符, 返回false
      */
     public static boolean containsOnly(CharSequence str, char... testChars) {
         if (false == isEmpty(str)) {
@@ -3969,7 +3969,7 @@ public class StringUtils extends TextUtils {
 
     /**
      * 给定字符串是否包含空白符（空白符包括空格、制表符、全角空格和不间断空格）
-     * 如果给定字符串为null或者""，则返回false
+     * 如果给定字符串为null或者"",则返回false
      *
      * @param str 字符串
      * @return 是否包含空白符
@@ -3992,7 +3992,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串，如果包含返回找到的第一个字符串
+     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串,如果包含返回找到的第一个字符串
      *
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
@@ -4012,7 +4012,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 是否包含特定字符，忽略大小写，如果给定两个参数都为<code>null</code>，返回true
+     * 是否包含特定字符,忽略大小写,如果给定两个参数都为<code>null</code>,返回true
      *
      * @param str     被检测字符串
      * @param testStr 被测试是否包含的字符串
@@ -4040,7 +4040,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串，如果包含返回找到的第一个字符串
+     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串,如果包含返回找到的第一个字符串
      * 忽略大小写
      *
      * @param str      指定字符串
@@ -4062,9 +4062,9 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * 截取分隔字符串之前的字符串，不包括分隔字符串
-     * 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串
-     * 如果分隔字符串为空串""，则返回空串，如果分隔字符串未找到，返回原字符串，举例如下：
+     * 截取分隔字符串之前的字符串,不包括分隔字符串
+     * 如果给定的字符串为空串（null或""）或者分隔字符串为null,返回原字符串
+     * 如果分隔字符串为空串"",则返回空串,如果分隔字符串未找到,返回原字符串,举例如下：
      *
      * <pre>
      * StringUtils.subBefore(null, *)      = null
@@ -4079,7 +4079,7 @@ public class StringUtils extends TextUtils {
      *
      * @param string          被查找的字符串
      * @param separator       分隔字符串（不包括）
-     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
+     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个）,true为选取最后一个
      * @return 切割后的字符串
      * @since 3.1.1
      */
@@ -4104,9 +4104,9 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取分隔字符串之前的字符串，不包括分隔字符串
-     * 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串
-     * 如果分隔字符串未找到，返回原字符串，举例如下：
+     * 截取分隔字符串之前的字符串,不包括分隔字符串
+     * 如果给定的字符串为空串（null或""）或者分隔字符串为null,返回原字符串
+     * 如果分隔字符串未找到,返回原字符串,举例如下：
      *
      * <pre>
      * StringUtils.subBefore(null, *)      = null
@@ -4119,7 +4119,7 @@ public class StringUtils extends TextUtils {
      *
      * @param string          被查找的字符串
      * @param separator       分隔字符串（不包括）
-     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
+     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个）,true为选取最后一个
      * @return 切割后的字符串
      */
     public static String subBefore(CharSequence string, char separator, boolean isLastSeparator) {
@@ -4139,9 +4139,9 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取分隔字符串之后的字符串，不包括分隔字符串
-     * 如果给定的字符串为空串（null或""），返回原字符串
-     * 如果分隔字符串为空串（null或""），则返回空串，如果分隔字符串未找到，返回空串，举例如下：
+     * 截取分隔字符串之后的字符串,不包括分隔字符串
+     * 如果给定的字符串为空串（null或""）,返回原字符串
+     * 如果分隔字符串为空串（null或""）,则返回空串,如果分隔字符串未找到,返回空串,举例如下：
      *
      * <pre>
      * StringUtils.subAfter(null, *)      = null
@@ -4156,7 +4156,7 @@ public class StringUtils extends TextUtils {
      *
      * @param string          被查找的字符串
      * @param separator       分隔字符串（不包括）
-     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
+     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个）,true为选取最后一个
      * @return 切割后的字符串
      * @since 3.1.1
      */
@@ -4177,9 +4177,9 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取分隔字符串之后的字符串，不包括分隔字符串
-     * 如果给定的字符串为空串（null或""），返回原字符串
-     * 如果分隔字符串为空串（null或""），则返回空串，如果分隔字符串未找到，返回空串，举例如下：
+     * 截取分隔字符串之后的字符串,不包括分隔字符串
+     * 如果给定的字符串为空串（null或""）,返回原字符串
+     * 如果分隔字符串为空串（null或""）,则返回空串,如果分隔字符串未找到,返回空串,举例如下：
      *
      * <pre>
      * StringUtils.subAfter(null, *)      = null
@@ -4192,7 +4192,7 @@ public class StringUtils extends TextUtils {
      *
      * @param string          被查找的字符串
      * @param separator       分隔字符串（不包括）
-     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
+     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个）,true为选取最后一个
      * @return 切割后的字符串
      */
     public static String subAfter(CharSequence string, char separator, boolean isLastSeparator) {
@@ -4208,7 +4208,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取指定字符串中间部分，不包括标识字符串
+     * 截取指定字符串中间部分,不包括标识字符串
      * <p>
      * 栗子：
      *
@@ -4251,7 +4251,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 截取指定字符串中间部分，不包括标识字符串
+     * 截取指定字符串中间部分,不包括标识字符串
      * <p>
      * 栗子：
      *
@@ -4279,7 +4279,7 @@ public class StringUtils extends TextUtils {
      * @param str    字符串
      * @param prefix 前缀
      * @param suffix 后缀
-     * @return 是否包围，空串不包围
+     * @return 是否包围, 空串不包围
      */
     public static boolean isSurround(CharSequence str, CharSequence prefix, CharSequence suffix) {
         if (isBlank(str)) {
@@ -4299,7 +4299,7 @@ public class StringUtils extends TextUtils {
      * @param str    字符串
      * @param prefix 前缀
      * @param suffix 后缀
-     * @return 是否包围，空串不包围
+     * @return 是否包围, 空串不包围
      */
     public static boolean isSurround(CharSequence str, char prefix, char suffix) {
         if (isBlank(str)) {
@@ -4823,10 +4823,10 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 获取字符串的长度，如果为null返回0
+     * 获取字符串的长度,如果为null返回0
      *
      * @param cs a 字符串
-     * @return 字符串的长度，如果为null返回0
+     * @return 字符串的长度, 如果为null返回0
      */
     public static int length(final CharSequence cs) {
         return cs == null ? 0 : cs.length();
@@ -4883,7 +4883,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 给定字符串中的字母是否全部为大写，判断依据如下：
+     * 给定字符串中的字母是否全部为大写,判断依据如下：
      *
      * <pre>
      * 1. 大写字母包括A-Z
@@ -4907,7 +4907,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 给定字符串中的字母是否全部为小写，判断依据如下：
+     * 给定字符串中的字母是否全部为小写,判断依据如下：
      *
      * <pre>
      * 1. 小写字母包括a-z
@@ -4942,7 +4942,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 切换给定字符串中的大小写。大写转小写，小写转大写。
+     * 切换给定字符串中的大小写 大写转小写,小写转大写
      *
      * <pre>
      * StringUtils.swapCase(null)                 = null
@@ -4974,7 +4974,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
+     * 将已有字符串填充为规定长度,如果已有字符串超过这个长度则返回这个字符串
      * 字符填充于字符串前
      *
      * @param str        被填充的字符串
@@ -4988,7 +4988,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
+     * 将已有字符串填充为规定长度,如果已有字符串超过这个长度则返回这个字符串
      * 字符填充于字符串后
      *
      * @param strVal  被填充的字符串
@@ -5002,7 +5002,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
+     * 将已有字符串填充为规定长度,如果已有字符串超过这个长度则返回这个字符串
      *
      * @param strVal  被填充的字符串
      * @param charVal 填充的字符
@@ -5223,7 +5223,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将给定字符串，变成 "xxx...xxx" 形式的字符串
+     * 将给定字符串,变成 "xxx...xxx" 形式的字符串
      *
      * @param str       字符串
      * @param maxLength 最大长度
@@ -5295,7 +5295,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 清理字符串，清理出某些不可见字符和一些sql特殊字符
+     * 清理字符串,清理出某些不可见字符和一些sql特殊字符
      *
      * @param txt 文本
      * @return {String}
@@ -5308,7 +5308,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 获取标识符，用于参数清理
+     * 获取标识符,用于参数清理
      *
      * @param param 参数
      * @return 清理后的标识符

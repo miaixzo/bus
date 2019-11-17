@@ -61,12 +61,12 @@ import java.util.concurrent.ExecutorService;
  * 其中：
  *
  * <pre>
- * <strong>TaskLauncher</strong>：定时器每分钟调用一次（如果{@link Scheduler#isMatchSecond()}为<code>true</code>每秒调用一次），
+ * <strong>TaskLauncher</strong>：定时器每分钟调用一次（如果{@link Scheduler#isMatchSecond()}为<code>true</code>每秒调用一次）,
  * 负责检查<strong>TaskTable</strong>是否有匹配到此时间运行的Task
  * </pre>
  *
  * <pre>
- * <strong>TaskExecutor</strong>：TaskLauncher匹配成功后，触发TaskExecutor执行具体的作业，执行完毕销毁
+ * <strong>TaskExecutor</strong>：TaskLauncher匹配成功后,触发TaskExecutor执行具体的作业,执行完毕销毁
  * </pre>
  *
  * @author Kimi Liu
@@ -117,7 +117,7 @@ public class Scheduler {
     private CronTimer timer;
 
     /**
-     * 获得时区，默认为 {@link TimeZone#getDefault()}
+     * 获得时区,默认为 {@link TimeZone#getDefault()}
      *
      * @return 时区
      */
@@ -138,9 +138,9 @@ public class Scheduler {
 
     /**
      * 设置是否为守护线程
-     * 如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。默认非守护线程
+     * 如果为true,则在调用{@link #stop()}方法后执行的定时任务立即结束,否则等待执行完毕才结束 默认非守护线程
      *
-     * @param on <code>true</code>为守护线程，否则非守护线程
+     * @param on <code>true</code>为守护线程,否则非守护线程
      * @return this
      * @throws InstrumentException 定时任务已经启动抛出此异常
      */
@@ -166,16 +166,16 @@ public class Scheduler {
     /**
      * 是否支持秒匹配
      *
-     * @return <code>true</code>使用，<code>false</code>不使用
+     * @return <code>true</code>使用,<code>false</code>不使用
      */
     public boolean isMatchSecond() {
         return this.matchSecond;
     }
 
     /**
-     * 设置是否支持秒匹配，默认不使用
+     * 设置是否支持秒匹配,默认不使用
      *
-     * @param isMatchSecond <code>true</code>支持，<code>false</code>不支持
+     * @param isMatchSecond <code>true</code>支持,<code>false</code>不支持
      * @return this
      */
     public Scheduler setMatchSecond(boolean isMatchSecond) {
@@ -235,7 +235,7 @@ public class Scheduler {
     }
 
     /**
-     * 新增Task，使用随机UUID
+     * 新增Task,使用随机UUID
      *
      * @param pattern {@link CronPattern}对应的String表达式
      * @param task    {@link Runnable}
@@ -246,7 +246,7 @@ public class Scheduler {
     }
 
     /**
-     * 新增Task，使用随机UUID
+     * 新增Task,使用随机UUID
      *
      * @param pattern {@link CronPattern}对应的String表达式
      * @param task    {@link Task}
@@ -261,7 +261,7 @@ public class Scheduler {
     /**
      * 新增Task
      *
-     * @param id      ID，为每一个Task定义一个ID
+     * @param id      ID,为每一个Task定义一个ID
      * @param pattern {@link CronPattern}对应的String表达式
      * @param task    {@link Runnable}
      * @return this
@@ -273,7 +273,7 @@ public class Scheduler {
     /**
      * 新增Task
      *
-     * @param id      ID，为每一个Task定义一个ID
+     * @param id      ID,为每一个Task定义一个ID
      * @param pattern {@link CronPattern}对应的String表达式
      * @param task    {@link Task}
      * @return this
@@ -285,7 +285,7 @@ public class Scheduler {
     /**
      * 新增Task
      *
-     * @param id      ID，为每一个Task定义一个ID
+     * @param id      ID,为每一个Task定义一个ID
      * @param pattern {@link CronPattern}
      * @param task    {@link Task}
      * @return this
@@ -378,7 +378,7 @@ public class Scheduler {
     /**
      * 启动
      *
-     * @param isDeamon 是否以守护线程方式启动，如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。
+     * @param isDeamon 是否以守护线程方式启动,如果为true,则在调用{@link #stop()}方法后执行的定时任务立即结束,否则等待执行完毕才结束
      * @return this
      */
     public Scheduler start(boolean isDeamon) {
@@ -414,8 +414,8 @@ public class Scheduler {
 
     /**
      * 停止定时任务
-     * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
-     * 此方法并不会清除任务表中的任务，请调用{@link #clear()} 方法清空任务或者使用{@link #stop(boolean)}方法可选是否清空
+     * 此方法调用后会将定时器进程立即结束,如果为守护线程模式,则正在执行的作业也会自动结束,否则作业线程将在执行完成后结束
+     * 此方法并不会清除任务表中的任务,请调用{@link #clear()} 方法清空任务或者使用{@link #stop(boolean)}方法可选是否清空
      *
      * @return this
      */
@@ -425,7 +425,7 @@ public class Scheduler {
 
     /**
      * 停止定时任务
-     * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
+     * 此方法调用后会将定时器进程立即结束,如果为守护线程模式,则正在执行的作业也会自动结束,否则作业线程将在执行完成后结束
      *
      * @param clearTasks 标记
      * @return this

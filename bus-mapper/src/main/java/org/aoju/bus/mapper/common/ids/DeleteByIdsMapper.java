@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.DeleteProvider;
 public interface DeleteByIdsMapper<T> {
 
     /**
-     * 根据主键字符串进行删除，类中只有存在一个带有@Id注解的字段
+     * 根据主键字符串进行删除,类中只有存在一个带有@Id注解的字段
      *
      * @param ids 如 "1,2,3,4"
      * @return 结果

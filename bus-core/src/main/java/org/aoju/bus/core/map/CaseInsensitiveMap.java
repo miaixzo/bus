@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * 忽略大小写的Map
- * 对KEY忽略大小写，get("Value")和get("value")获得的值相同，put进入的值也会被覆盖
+ * 对KEY忽略大小写,get("Value")和get("value")获得的值相同,put进入的值也会被覆盖
  *
  * @param <K> 键类型
  * @param <V> 值类型
@@ -59,7 +59,7 @@ public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {
      * @param loadFactor      加载因子
      */
     public CaseInsensitiveMap(int initialCapacity, float loadFactor) {
-        super(new HashMap<K, V>(initialCapacity, loadFactor));
+        super(new HashMap<>(initialCapacity, loadFactor));
     }
 
     /**
@@ -70,7 +70,7 @@ public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {
      */
     @Override
     protected Object customKey(Object key) {
-        if (null != key && key instanceof CharSequence) {
+        if (key instanceof CharSequence) {
             key = key.toString().toLowerCase();
         }
         return key;

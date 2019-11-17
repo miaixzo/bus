@@ -32,11 +32,11 @@ import java.util.List;
  * 使用方法:
  * String msg = Ansi.Red.and(Ansi.BgYellow).format("Hello %s", name)
  * String msg = Ansi.Blink.colorize("BOOM!")
- * 或者，可以直接使用常数:
+ * 或者,可以直接使用常数:
  * String msg = new Ansi(Ansi.ITALIC, Ansi.GREEN).format("Green money")
  * Or, even:
  * String msg = Ansi.BLUE + "scientific"
- * 注意:同时出现多种组合FG颜色或BG颜色，只有最后一个会显示
+ * 注意:同时出现多种组合FG颜色或BG颜色,只有最后一个会显示
  *
  * @author Kimi Liu
  * @version 5.2.2

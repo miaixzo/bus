@@ -62,7 +62,7 @@ public class NumberConverter extends AbstractConverter<Number> {
     /**
      * 构造
      *
-     * @param clazz 需要转换的数字类型，默认 {@link Number}
+     * @param clazz 需要转换的数字类型,默认 {@link Number}
      */
     public NumberConverter(Class<? extends Number> clazz) {
         this.targetType = (null == clazz) ? Number.class : clazz;
@@ -173,7 +173,7 @@ public class NumberConverter extends AbstractConverter<Number> {
 
     /**
      * 转换为BigDecimal
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -190,7 +190,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             return new BigDecimal((boolean) value ? 1 : 0);
         }
 
-        //对于Double类型，先要转换为String，避免精度问题
+        //对于Double类型,先要转换为String,避免精度问题
         final String valueStr = convertToStr(value);
         if (StringUtils.isBlank(valueStr)) {
             return null;
@@ -200,7 +200,7 @@ public class NumberConverter extends AbstractConverter<Number> {
 
     /**
      * 转换为BigInteger
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value 被转换的值

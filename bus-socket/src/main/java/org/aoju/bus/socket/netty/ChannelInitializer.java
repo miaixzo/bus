@@ -48,7 +48,7 @@ public class ChannelInitializer extends io.netty.channel.ChannelInitializer<Sock
         ChannelPipeline pipeline = ch.pipeline();
         //HttpServerCodec: 针对http协议进行编解码
         pipeline.addLast("httpServerCodec", new HttpServerCodec());
-        //ChunkedWriteHandler分块写处理，文件过大会将内存撑爆
+        //ChunkedWriteHandler分块写处理,文件过大会将内存撑爆
         pipeline.addLast("chunkedWriteHandler", new ChunkedWriteHandler());
         //作用是将一个Http的消息组装成一个HttpRequest或者HttpResponse, 该Handler必须放在HttpServerCodec后的后面
         pipeline.addLast("httpObjectAggregator", new HttpObjectAggregator(8192));

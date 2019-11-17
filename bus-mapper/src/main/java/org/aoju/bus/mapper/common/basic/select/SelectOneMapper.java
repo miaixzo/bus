@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 public interface SelectOneMapper<T> {
 
     /**
-     * 根据实体中的属性进行查询，只能有一个返回值，有多个结果是抛出异常，查询条件使用等号
+     * 根据实体中的属性进行查询,只能有一个返回值,有多个结果是抛出异常,查询条件使用等号
      *
      * @param record 对象
      * @return 对象

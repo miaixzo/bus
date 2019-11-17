@@ -54,7 +54,7 @@ public class Checker {
      * @param validated 被校验对象
      * @param property  校验器属性
      * @return 校验结果
-     * @throws ValidateException 如果校验环境的fastFailed设置为true， 则校验失败时立刻抛出该异常
+     * @throws ValidateException 如果校验环境的fastFailed设置为true, 则校验失败时立刻抛出该异常
      */
     public Collector object(Validated validated, Property property)
             throws ValidateException {
@@ -117,7 +117,7 @@ public class Checker {
                     collector.collect(validated.access());
                 }
             } else {
-                Logger.debug("当前被校验的对象为null， 忽略校验对象内部字段: {}", validated);
+                Logger.debug("当前被校验的对象为null, 忽略校验对象内部字段: {}", validated);
             }
         } catch (IllegalAccessException e) {
             throw new InstrumentException("无法校验指定字段", e);

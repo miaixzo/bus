@@ -46,7 +46,7 @@ public class RandomUtils {
 
     /**
      * 获取随机数生成器对象
-     * ThreadLocalRandom是JDK 7之后提供并发产生随机数，能够解决多个线程发生的竞争争夺。
+     * ThreadLocalRandom是JDK 7之后提供并发产生随机数,能够解决多个线程发生的竞争争夺
      *
      * @return {@link ThreadLocalRandom}
      * @since 3.1.9
@@ -68,7 +68,7 @@ public class RandomUtils {
     }
 
     /**
-     * 获取{@link SecureRandom}，类提供加密的强随机数生成器 (RNG)
+     * 获取{@link SecureRandom},类提供加密的强随机数生成器 (RNG)
      *
      * @return {@link SecureRandom}
      * @since 3.1.9
@@ -82,7 +82,7 @@ public class RandomUtils {
     }
 
     /**
-     * 创建{@link SecureRandom}，类提供加密的强随机数生成器 (RNG)<br>
+     * 创建{@link SecureRandom},类提供加密的强随机数生成器 (RNG)<br>
      *
      * @param seed 自定义随机种子
      * @return {@link SecureRandom}
@@ -114,7 +114,7 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数 [0,limit)
      *
-     * @param limit 限制随机数的范围，不包括这个数
+     * @param limit 限制随机数的范围,不包括这个数
      * @return 随机数
      */
     public static int randomInt(int limit) {
@@ -146,7 +146,7 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数 [0,limit)
      *
-     * @param limit 限制随机数的范围，不包括这个数
+     * @param limit 限制随机数的范围,不包括这个数
      * @return 随机数
      */
     public static long randomLong(long limit) {
@@ -178,7 +178,7 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数 [0,limit)
      *
-     * @param limit 限制随机数的范围，不包括这个数
+     * @param limit 限制随机数的范围,不包括这个数
      * @return 随机数
      * @since 3.3.0
      */
@@ -295,7 +295,7 @@ public class RandomUtils {
     }
 
     /**
-     * 随机获得列表中的一定量的不重复元素，返回Set
+     * 随机获得列表中的一定量的不重复元素,返回Set
      *
      * @param <T>        元素类型
      * @param collection 列表
@@ -370,7 +370,7 @@ public class RandomUtils {
     }
 
     /**
-     * 随机数字，数字为0~9单个数字
+     * 随机数字,数字为0~9单个数字
      *
      * @return 随机数字字符
      * @since 3.1.9
@@ -380,7 +380,7 @@ public class RandomUtils {
     }
 
     /**
-     * 随机字母或数字，小写
+     * 随机字母或数字,小写
      *
      * @return 随机字符
      * @since 3.1.9
@@ -411,11 +411,11 @@ public class RandomUtils {
     }
 
     /**
-     * 以当天为基准，随机产生一个日期
+     * 以当天为基准,随机产生一个日期
      *
-     * @param min 偏移最小天，可以为负数表示过去的时间
-     * @param max 偏移最大天，可以为负数表示过去的时间
-     * @return 随机日期（随机天，其它时间不变）
+     * @param min 偏移最小天,可以为负数表示过去的时间
+     * @param max 偏移最大天,可以为负数表示过去的时间
+     * @return 随机日期（随机天,其它时间不变）
      */
     public static DateTime randomDay(int min, int max) {
         return DateUtils.offsetDay(DateUtils.date(), randomInt(min, max));

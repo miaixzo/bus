@@ -49,7 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class LogFactory {
 
     /**
-     * 日志框架名，用于打印当前所用日志框架
+     * 日志框架名,用于打印当前所用日志框架
      */
     protected String name;
     /**
@@ -70,7 +70,7 @@ public abstract class LogFactory {
     /**
      * 决定日志实现
      * <p>
-     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     * 依次按照顺序检查日志库的jar是否被引入,如果未引入任何日志库,则检查ClassPath下的logging.properties,存在则使用JdkLogFactory,否则使用ConsoleLogFactory
      *
      * @return 日志实现类
      * @see Slf4jLogFactory
@@ -91,7 +91,7 @@ public abstract class LogFactory {
     /**
      * 决定日志实现
      * <p>
-     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     * 依次按照顺序检查日志库的jar是否被引入,如果未引入任何日志库,则检查ClassPath下的logging.properties,存在则使用JdkLogFactory,否则使用ConsoleLogFactory
      *
      * @return 日志实现类
      * @see Slf4jLogFactory
@@ -210,7 +210,7 @@ public abstract class LogFactory {
     }
 
     /**
-     * 获取日志框架名，用于打印当前所用日志框架
+     * 获取日志框架名,用于打印当前所用日志框架
      *
      * @return 日志框架名
      */
@@ -266,8 +266,8 @@ public abstract class LogFactory {
 
     /**
      * 检查日志实现是否存在
-     * 此方法仅用于检查所提供的日志相关类是否存在，当传入的日志类类不存在时抛出ClassNotFoundException
-     * 此方法的作用是在detectLogFactory方法自动检测所用日志时，如果实现类不存在，调用此方法会自动抛出异常，从而切换到下一种日志的检测。
+     * 此方法仅用于检查所提供的日志相关类是否存在,当传入的日志类类不存在时抛出ClassNotFoundException
+     * 此方法的作用是在detectLogFactory方法自动检测所用日志时,如果实现类不存在,调用此方法会自动抛出异常,从而切换到下一种日志的检测
      *
      * @param logClassName 日志实现相关类
      */

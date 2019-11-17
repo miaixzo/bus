@@ -27,11 +27,11 @@ import java.lang.reflect.Array;
 import java.util.NoSuchElementException;
 
 /**
- * 实现一个{@link java.util.Iterator} 任何数组的迭代器。
- * 数组可以是对象数组，也可以是基元数组。如果你知道
- * class是更好的选择，因为它会表现得更好。
- * 迭代器实现了一个{@link #reset}方法，允许重置
- * 如果需要，迭代器返回到开始。
+ * 实现一个{@link java.util.Iterator} 任何数组的迭代器
+ * 数组可以是对象数组,也可以是基元数组 如果你知道
+ * class是更好的选择,因为它会表现得更好
+ * 迭代器实现了一个{@link #reset}方法,允许重置
+ * 如果需要,迭代器返回到开始
  *
  * @param <E> 元素类型
  * @author Kimi Liu

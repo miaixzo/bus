@@ -41,13 +41,13 @@ import java.util.*;
  * 注意事项：
  * <ol>
  * <li>请先保证你的SQL可以执行</li>
- * <li>sql中最好直接包含order by，可以自动从sql提取</li>
- * <li>如果没有order by，可以通过入参提供，但是需要自己保证正确</li>
- * <li>如果sql有order by，可以通过orderby参数覆盖sql中的order by</li>
+ * <li>sql中最好直接包含order by,可以自动从sql提取</li>
+ * <li>如果没有order by,可以通过入参提供,但是需要自己保证正确</li>
+ * <li>如果sql有order by,可以通过orderby参数覆盖sql中的order by</li>
  * <li>order by的列名不能使用别名</li>
  * <li>表和列使用别名的时候不要使用单引号(')</li>
  * </ol>
- * 该类设计为一个独立的工具类，依赖jsqlparser,可以独立使用
+ * 该类设计为一个独立的工具类,依赖jsqlparser,可以独立使用
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -113,7 +113,7 @@ public class SqlServerParser {
         //获取分页查询的select
         Select pageSelect = getPageSelect((Select) stmt);
         String pageSql = pageSelect.toString();
-        //缓存移到外面了，所以不替换参数
+        //缓存移到外面了,所以不替换参数
         if (offset != null) {
             pageSql = pageSql.replace(START_ROW, String.valueOf(offset));
         }
@@ -136,7 +136,7 @@ public class SqlServerParser {
         }
         //这里的selectBody一定是PlainSelect
         if (((PlainSelect) selectBody).getTop() != null) {
-            throw new PageException("被分页的语句已经包含了Top，不能再通过分页插件进行分页查询!");
+            throw new PageException("被分页的语句已经包含了Top,不能再通过分页插件进行分页查询!");
         }
         //获取查询列
         List<SelectItem> selectItems = getSelectItems((PlainSelect) selectBody);
@@ -202,7 +202,7 @@ public class SqlServerParser {
         //获取最后一个plainSelect
         SelectBody setSelectBody = setOperationList.getSelects().get(setOperationList.getSelects().size() - 1);
         if (!(setSelectBody instanceof PlainSelect)) {
-            throw new PageException("目前无法处理该SQL，您可以将该SQL发送给abel533@gmail.com协助作者解决!");
+            throw new PageException("目前无法处理该SQL,您可以将该SQL发送给abel533@gmail.com协助作者解决!");
         }
         PlainSelect plainSelect = (PlainSelect) setSelectBody;
         PlainSelect selectBody = new PlainSelect();
@@ -473,21 +473,21 @@ public class SqlServerParser {
 
                 } else { // 查询列不包含别名
                     if (expression instanceof Column) {
-                        // 查询列为普通列，这时因为列在嵌套查询外时名称中不包含表名，故去除排序列的表名引用
-                        // 例（仅为解释此处逻辑，不代表最终分页结果）：
+                        // 查询列为普通列,这时因为列在嵌套查询外时名称中不包含表名,故去除排序列的表名引用
+                        // 例（仅为解释此处逻辑,不代表最终分页结果）：
                         // SELECT TEST.A FROM TEST ORDER BY TEST.A
                         // SELECT A FROM (SELECT TEST.A FROM TEST) ORDER BY A
                         ((Column) expression).setTable(null);
 
                     } else {
                         // 查询列不为普通列时（例如函数列）不支持分页
-                        // 此种情况比较难预测，简单的增加新列容易产生不可预料的结果
-                        // 而为列增加别名是非常简单的，故此要求排序复杂列必须使用别名
+                        // 此种情况比较难预测,简单的增加新列容易产生不可预料的结果
+                        // 而为列增加别名是非常简单的,故此要求排序复杂列必须使用别名
                         throw new PageException("列 \"" + expression + "\" 需要定义别名");
                     }
                 }
 
-            } else { // OrderByElement 不在查询列表中，需要自动生成一个查询列
+            } else { // OrderByElement 不在查询列表中,需要自动生成一个查询列
                 if (expression instanceof Column) { // OrderByElement 为普通列
                     Table table = ((Column) expression).getTable();
                     if (table == null) { // 表名为空
@@ -495,7 +495,7 @@ public class SqlServerParser {
                                 (allColumnsTables.size() == 1 && plainSelect.getJoins() == null) ||
                                 aliases.contains(((Column) expression).getColumnName())) {
                             // 包含`*`查询列 或者 只有一个 `t.*`列且为单表查询 或者 其实排序列是一个别名
-                            // 此时排序列其实已经包含在查询列表中了，不需做任何操作
+                            // 此时排序列其实已经包含在查询列表中了,不需做任何操作
                             continue;
                         }
 
@@ -503,7 +503,7 @@ public class SqlServerParser {
                         String tableName = table.getName();
                         if (allColumns || allColumnsTables.contains(tableName)) {
                             // 包含`*`查询列 或者 包含特定的`t.*`列
-                            // 此时排序列其实已经包含在查询列表中了，只需去除排序列的表名引
+                            // 此时排序列其实已经包含在查询列表中了,只需去除排序列的表名引
                             ((Column) expression).setTable(null);
                             continue;
                         }

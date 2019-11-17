@@ -137,8 +137,8 @@ public class SSLService {
 
     /**
      * 纯异步实现的SSL握手,
-     * 在执行doHandshake期间必须保证当前通道无数据读写正在执行。
-     * 若触发了数据读写，也应立马终止doHandshake方法
+     * 在执行doHandshake期间必须保证当前通道无数据读写正在执行
+     * 若触发了数据读写,也应立马终止doHandshake方法
      *
      * @param handshakeModel 握手信息
      */

@@ -115,7 +115,7 @@ public class Word07Writer implements Closeable {
      * 增加一个段落
      *
      * @param font  字体信息{@link Font}
-     * @param texts 段落中的文本，支持多个文本作为一个段落
+     * @param texts 段落中的文本,支持多个文本作为一个段落
      * @return this
      */
     public Word07Writer addText(Font font, String... texts) {
@@ -127,7 +127,7 @@ public class Word07Writer implements Closeable {
      *
      * @param align 段落对齐方式{@link ParagraphAlignment}
      * @param font  字体信息{@link Font}
-     * @param texts 段落中的文本，支持多个文本作为一个段落
+     * @param texts 段落中的文本,支持多个文本作为一个段落
      * @return this
      */
     public Word07Writer addText(ParagraphAlignment align, Font font, String... texts) {
@@ -154,7 +154,7 @@ public class Word07Writer implements Closeable {
     /**
      * 增加表格数据
      *
-     * @param data 表格数据，多行数据。元素表示一行数据，当为集合或者数组时，为一行；当为Map或者Bean时key表示标题，values为数据
+     * @param data 表格数据,多行数据 元素表示一行数据,当为集合或者数组时,为一行；当为Map或者Bean时key表示标题,values为数据
      * @return this
      */
     public Word07Writer addTable(Iterable<?> data) {
@@ -164,8 +164,8 @@ public class Word07Writer implements Closeable {
 
     /**
      * 将Excel Workbook刷出到预定义的文件
-     * 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
-     * 预定义文件可以通过{@link #setDestFile(File)} 方法预定义，或者通过构造定义
+     * 如果用户未自定义输出的文件,将抛出{@link NullPointerException}
+     * 预定义文件可以通过{@link #setDestFile(File)} 方法预定义,或者通过构造定义
      *
      * @return this
      * @throws InstrumentException IO异常
@@ -176,7 +176,7 @@ public class Word07Writer implements Closeable {
 
     /**
      * 将Excel Workbook刷出到文件
-     * 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
+     * 如果用户未自定义输出的文件,将抛出{@link NullPointerException}
      *
      * @param destFile 写出到的文件
      * @return this
@@ -223,7 +223,7 @@ public class Word07Writer implements Closeable {
 
     /**
      * 关闭Word文档
-     * 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
+     * 如果用户设定了目标文件,先写出目标文件后给关闭工作簿
      */
     @Override
     public void close() {

@@ -30,8 +30,8 @@ import org.aoju.bus.core.utils.StringUtils;
 import java.util.Arrays;
 
 /**
- * 一个匹配器类，可以查询它来确定一个字符数组是否存在部分匹配。
- * 如果这些还不够，您可以子类化并实现自己的匹配器。
+ * 一个匹配器类,可以查询它来确定一个字符数组是否存在部分匹配
+ * 如果这些还不够,您可以子类化并实现自己的匹配器
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -52,7 +52,7 @@ public abstract class StrMatcher {
      */
     private static final StrMatcher SPACE_MATCHER = new CharMatcher(Symbol.C_SPACE);
     /**
-     * 匹配相同的字符，即空格、制表符、换行符等.
+     * 匹配相同的字符,即空格、制表符、换行符等.
      */
     private static final StrMatcher SPLIT_MATCHER = new CharSetMatcher(" \t\n\r\f".toCharArray());
     /**
@@ -81,7 +81,7 @@ public abstract class StrMatcher {
     }
 
     /**
-     * 返回一个匹配逗号字符的匹配器。
+     * 返回一个匹配逗号字符的匹配器
      *
      * @return 逗号的匹配器
      */
@@ -90,7 +90,7 @@ public abstract class StrMatcher {
     }
 
     /**
-     * 返回一个匹配tab字符的匹配器。
+     * 返回一个匹配tab字符的匹配器
      *
      * @return tab的匹配器
      */
@@ -99,7 +99,7 @@ public abstract class StrMatcher {
     }
 
     /**
-     * 返回一个匹配空格字符的匹配器。
+     * 返回一个匹配空格字符的匹配器
      *
      * @return 空格的匹配器
      */
@@ -108,7 +108,7 @@ public abstract class StrMatcher {
     }
 
     /**
-     * 匹配相同的字符，即空格、制表符、换行符等.
+     * 匹配相同的字符,即空格、制表符、换行符等.
      *
      * @return 分割匹配器
      */
@@ -174,7 +174,7 @@ public abstract class StrMatcher {
     /**
      * 构造函数
      *
-     * @param chars 对要匹配的字符进行字符切分，null或empty不匹配任何字符
+     * @param chars 对要匹配的字符进行字符切分,null或empty不匹配任何字符
      * @return 给定字符的新匹配器[]
      */
     public static StrMatcher charSetMatcher(final char... chars) {
@@ -190,7 +190,7 @@ public abstract class StrMatcher {
     /**
      * 构造函数
      *
-     * @param chars 对要匹配的字符进行字符切分，null或empty不匹配任何字符
+     * @param chars 对要匹配的字符进行字符切分,null或empty不匹配任何字符
      * @return 给定字符的新匹配器
      */
     public static StrMatcher charSetMatcher(final String chars) {
@@ -206,7 +206,7 @@ public abstract class StrMatcher {
     /**
      * 构造函数
      *
-     * @param str 匹配的字符串为null或空，不匹配任何内容
+     * @param str 匹配的字符串为null或空,不匹配任何内容
      * @return 给定字符串返回一个新的匹配器
      */
     public static StrMatcher stringMatcher(final String str) {
@@ -217,22 +217,22 @@ public abstract class StrMatcher {
     }
 
     /**
-     * 返回匹配字符的数量，如果没有匹配，则返回0
+     * 返回匹配字符的数量,如果没有匹配,则返回0
      *
-     * @param buffer      要匹配的文本内容，不要更改
-     * @param pos         匹配的起始位置，对buffer有效
-     * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
-     * @param bufferEnd   活动缓冲区的结束索引(排除)，对缓冲区有效
-     * @return 匹配字符的数量，如果没有匹配，则返回0
+     * @param buffer      要匹配的文本内容,不要更改
+     * @param pos         匹配的起始位置,对buffer有效
+     * @param bufferStart 缓冲区中的第一个活动索引,对缓冲区有效
+     * @param bufferEnd   活动缓冲区的结束索引(排除),对缓冲区有效
+     * @return 匹配字符的数量, 如果没有匹配, 则返回0
      */
     public abstract int isMatch(char[] buffer, int pos, int bufferStart, int bufferEnd);
 
     /**
-     * 返回匹配字符的数量，如果没有匹配，则返回0
+     * 返回匹配字符的数量,如果没有匹配,则返回0
      *
-     * @param pos    匹配的起始位置，对buffer有效
-     * @param buffer 要匹配的文本内容，不要更改
-     * @return 匹配字符的数量，如果没有匹配，则返回0
+     * @param pos    匹配的起始位置,对buffer有效
+     * @param buffer 要匹配的文本内容,不要更改
+     * @return 匹配字符的数量, 如果没有匹配, 则返回0
      */
     public int isMatch(final char[] buffer, final int pos) {
         return isMatch(buffer, pos, 0, buffer.length);
@@ -255,13 +255,13 @@ public abstract class StrMatcher {
         }
 
         /**
-         * 返回给定字符是否匹配。
+         * 返回给定字符是否匹配
          *
-         * @param buffer      要匹配的文本内容，不要更改
-         * @param pos         匹配的起始位置，对buffer有效
-         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
-         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
-         * @return 匹配字符的数量，如果没有匹配，则返回0
+         * @param buffer      要匹配的文本内容,不要更改
+         * @param pos         匹配的起始位置,对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引,对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引,对缓冲区有效
+         * @return 匹配字符的数量, 如果没有匹配, 则返回0
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
@@ -285,13 +285,13 @@ public abstract class StrMatcher {
         }
 
         /**
-         * 返回给定字符是否匹配。
+         * 返回给定字符是否匹配
          *
-         * @param buffer      要匹配的文本内容，不要更改
-         * @param pos         匹配的起始位置，对buffer有效
-         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
-         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
-         * @return 匹配字符的数量，如果没有匹配，则返回0
+         * @param buffer      要匹配的文本内容,不要更改
+         * @param pos         匹配的起始位置,对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引,对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引,对缓冲区有效
+         * @return 匹配字符的数量, 如果没有匹配, 则返回0
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
@@ -315,13 +315,13 @@ public abstract class StrMatcher {
         }
 
         /**
-         * 返回给定文本是否与存储的字符串匹配。
+         * 返回给定文本是否与存储的字符串匹配
          *
-         * @param buffer      要匹配的文本内容，不要更改
-         * @param pos         匹配的起始位置，对buffer有效
-         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
-         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
-         * @return 匹配字符的数量，如果没有匹配，则返回0
+         * @param buffer      要匹配的文本内容,不要更改
+         * @param pos         匹配的起始位置,对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引,对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引,对缓冲区有效
+         * @return 匹配字符的数量, 如果没有匹配, 则返回0
          */
         @Override
         public int isMatch(final char[] buffer, int pos, final int bufferStart, final int bufferEnd) {
@@ -354,13 +354,13 @@ public abstract class StrMatcher {
         }
 
         /**
-         * 总是返回false。
+         * 总是返回false
          *
-         * @param buffer      要匹配的文本内容，不要更改
-         * @param pos         匹配的起始位置，对buffer有效
-         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
-         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
-         * @return 匹配字符的数量，如果没有匹配，则返回0
+         * @param buffer      要匹配的文本内容,不要更改
+         * @param pos         匹配的起始位置,对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引,对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引,对缓冲区有效
+         * @return 匹配字符的数量, 如果没有匹配, 则返回0
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
@@ -378,13 +378,13 @@ public abstract class StrMatcher {
         }
 
         /**
-         * 返回给定字符是否匹配。
+         * 返回给定字符是否匹配
          *
-         * @param buffer      要匹配的文本内容，不要更改
-         * @param pos         匹配的起始位置，对buffer有效
-         * @param bufferStart 缓冲区中的第一个活动索引，对缓冲区有效
-         * @param bufferEnd   活动缓冲区的结束索引，对缓冲区有效
-         * @return 匹配字符的数量，如果没有匹配，则返回0
+         * @param buffer      要匹配的文本内容,不要更改
+         * @param pos         匹配的起始位置,对buffer有效
+         * @param bufferStart 缓冲区中的第一个活动索引,对缓冲区有效
+         * @param bufferEnd   活动缓冲区的结束索引,对缓冲区有效
+         * @return 匹配字符的数量, 如果没有匹配, 则返回0
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {

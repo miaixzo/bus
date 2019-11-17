@@ -34,7 +34,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 /**
  * DES加密算法实现
- * DES全称为Data Encryption Standard，即数据加密标准，是一种使用密钥加密的块算法
+ * DES全称为Data Encryption Standard,即数据加密标准,是一种使用密钥加密的块算法
  * Java中默认实现为：DES/CBC/PKCS5Padding
  *
  * @author Kimi Liu
@@ -44,14 +44,14 @@ import javax.crypto.spec.IvParameterSpec;
 public class DES extends Symmetric {
 
     /**
-     * 构造，默认DES/CBC/PKCS5Padding，使用随机密钥
+     * 构造,默认DES/CBC/PKCS5Padding,使用随机密钥
      */
     public DES() {
         super(Algorithm.DES);
     }
 
     /**
-     * 构造，使用默认的DES/CBC/PKCS5Padding
+     * 构造,使用默认的DES/CBC/PKCS5Padding
      *
      * @param key 密钥
      */
@@ -60,7 +60,7 @@ public class DES extends Symmetric {
     }
 
     /**
-     * 构造，使用随机密钥
+     * 构造,使用随机密钥
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
@@ -74,7 +74,7 @@ public class DES extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param key     密钥,长度：8的倍数
      */
     public DES(Mode mode, Padding padding, byte[] key) {
         this(mode, padding, key, null);
@@ -85,8 +85,8 @@ public class DES extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度：8的倍数
-     * @param iv      偏移向量，加盐
+     * @param key     密钥,长度：8的倍数
+     * @param iv      偏移向量,加盐
      */
     public DES(Mode mode, Padding padding, byte[] key, byte[] iv) {
         this(mode.name(), padding.name(), key, iv);
@@ -97,7 +97,7 @@ public class DES extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param key     密钥,长度：8的倍数
      */
     public DES(Mode mode, Padding padding, SecretKey key) {
         this(mode, padding, key, null);
@@ -108,8 +108,8 @@ public class DES extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度：8的倍数
-     * @param iv      偏移向量，加盐
+     * @param key     密钥,长度：8的倍数
+     * @param iv      偏移向量,加盐
      */
     public DES(Mode mode, Padding padding, SecretKey key, IvParameterSpec iv) {
         this(mode.name(), padding.name(), key, iv);
@@ -130,7 +130,7 @@ public class DES extends Symmetric {
      *
      * @param mode    模式
      * @param padding 补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param key     密钥,长度：8的倍数
      */
     public DES(String mode, String padding, byte[] key) {
         this(mode, padding, Builder.generateKey("DES", key), null);
@@ -141,7 +141,7 @@ public class DES extends Symmetric {
      *
      * @param mode    模式
      * @param padding 补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param key     密钥,长度：8的倍数
      * @param iv      加盐
      */
     public DES(String mode, String padding, byte[] key, byte[] iv) {
@@ -153,7 +153,7 @@ public class DES extends Symmetric {
      *
      * @param mode    模式
      * @param padding 补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param key     密钥,长度：8的倍数
      */
     public DES(String mode, String padding, SecretKey key) {
         this(mode, padding, key, null);
@@ -164,7 +164,7 @@ public class DES extends Symmetric {
      *
      * @param mode    模式
      * @param padding 补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param key     密钥,长度：8的倍数
      * @param iv      加盐
      */
     public DES(String mode, String padding, SecretKey key, IvParameterSpec iv) {
@@ -185,7 +185,7 @@ public class DES extends Symmetric {
     /**
      * 设置偏移向量
      *
-     * @param iv 偏移向量，加盐
+     * @param iv 偏移向量,加盐
      * @return 自身
      */
     public DES setIv(byte[] iv) {

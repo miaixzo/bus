@@ -54,7 +54,7 @@ public class PageContext extends PageMethod implements Dialect {
     @Override
     public boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
         if (ms.getId().endsWith(CountMappedStatement.COUNT)) {
-            throw new RuntimeException("在系统中发现了多个分页插件，请检查系统配置!");
+            throw new RuntimeException("在系统中发现了多个分页插件,请检查系统配置!");
         }
         Page page = pageParams.getPage(parameterObject, rowBounds);
         if (page == null) {
@@ -105,7 +105,7 @@ public class PageContext extends PageMethod implements Dialect {
 
     @Override
     public Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds) {
-        //这个方法即使不分页也会被执行，所以要判断 null
+        //这个方法即使不分页也会被执行,所以要判断 null
         AbstractHelperDialect delegate = autoDialect.getDelegate();
         if (delegate != null) {
             return delegate.afterPage(pageList, parameterObject, rowBounds);
@@ -115,7 +115,7 @@ public class PageContext extends PageMethod implements Dialect {
 
     @Override
     public void afterAll() {
-        //这个方法即使不分页也会被执行，所以要判断 null
+        //这个方法即使不分页也会被执行,所以要判断 null
         AbstractHelperDialect delegate = autoDialect.getDelegate();
         if (delegate != null) {
             delegate.afterAll();

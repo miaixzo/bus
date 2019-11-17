@@ -56,13 +56,30 @@ public class FileType {
      * 在Jar中的路径jar的扩展名形式
      */
     public static final String JAR_PATH_EXT = ".jar!";
-
-    public static final String IMAGE_TYPE_GIF = "gif";// 图形交换格式
-    public static final String IMAGE_TYPE_JPG = "jpg";// 联合照片专家组
-    public static final String IMAGE_TYPE_JPEG = "jpeg";// 联合照片专家组
-    public static final String IMAGE_TYPE_BMP = "bmp";// 英文Bitmap（位图）的简写，它是Windows操作系统中的标准图像文件格式
-    public static final String IMAGE_TYPE_PNG = "png";// 可移植网络图形
-    public static final String IMAGE_TYPE_PSD = "psd";// Photoshop的专用格式Photoshop
+    /**
+     * 图形交换格式
+     */
+    public static final String IMAGE_TYPE_GIF = "gif";
+    /**
+     * 联合照片专家组
+     **/
+    public static final String IMAGE_TYPE_JPG = "jpg";
+    /**
+     * 联合照片专家组
+     **/
+    public static final String IMAGE_TYPE_JPEG = "jpeg";
+    /**
+     * 英文Bitmap（位图）的简写,它是Windows操作系统中的标准图像文件格式
+     **/
+    public static final String IMAGE_TYPE_BMP = "bmp";
+    /**
+     * 可移植网络图形
+     **/
+    public static final String IMAGE_TYPE_PNG = "png";
+    /**
+     * Photoshop的专用格式Photoshop
+     **/
+    public static final String IMAGE_TYPE_PSD = "psd";
     /**
      * 图片
      */
@@ -782,7 +799,7 @@ public class FileType {
      * 根据文件流的头部信息获得文件类型
      *
      * @param fileStreamHexHead 文件流头部16进制字符串
-     * @return 文件类型，未找到为<code>null</code>
+     * @return 文件类型, 未找到为<code>null</code>
      */
     public static String getType(String fileStreamHexHead) {
         for (Map.Entry<String, String> fileTypeEntry : fileTypeMap.entrySet()) {
@@ -797,7 +814,7 @@ public class FileType {
      * 根据文件流的头部信息获得文件类型
      *
      * @param in {@link InputStream}
-     * @return 类型，文件的扩展名，未找到为<code>null</code>
+     * @return 类型, 文件的扩展名, 未找到为<code>null</code>
      * @throws InstrumentException 读取流引起的异常
      */
     public static String getType(InputStream in) throws InstrumentException {
@@ -808,7 +825,7 @@ public class FileType {
      * 根据文件流的头部信息获得文件类型
      *
      * @param file 文件 {@link File}
-     * @return 类型，文件的扩展名，未找到为<code>null</code>
+     * @return 类型, 文件的扩展名, 未找到为<code>null</code>
      * @throws InstrumentException 读取文件引起的异常
      */
     public static String getType(File file) throws InstrumentException {
@@ -824,7 +841,7 @@ public class FileType {
     /**
      * 通过路径获得文件类型
      *
-     * @param path 路径，绝对路径或相对ClassPath的路径
+     * @param path 路径,绝对路径或相对ClassPath的路径
      * @return 类型
      * @throws InstrumentException 读取文件引起的异常
      */

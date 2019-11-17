@@ -25,8 +25,6 @@ package org.aoju.bus.starter;
 
 import org.aoju.bus.Version;
 import org.aoju.bus.starter.banner.BusBanner;
-import org.aoju.bus.starter.BootConsts;
-import org.aoju.bus.starter.BusListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
@@ -37,7 +35,7 @@ import org.springframework.core.env.PropertiesPropertySource;
 import java.util.Properties;
 
 /**
- * 用于配置一些特殊的关键属性，比如bus-boot.version等,
+ * 用于配置一些特殊的关键属性,比如bus-boot.version等,
  * 将作为一个名为BusConfigurationProperties的属性源添加
  *
  * @author Kimi Liu

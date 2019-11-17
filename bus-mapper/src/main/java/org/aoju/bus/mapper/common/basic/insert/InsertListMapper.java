@@ -30,7 +30,7 @@ import org.apache.ibatis.annotations.Options;
 import java.util.List;
 
 /**
- * 通用Mapper接口,特殊方法，批量插入，支持批量插入的数据库都可以使用，例如mysql,h2等
+ * 通用Mapper接口,特殊方法,批量插入,支持批量插入的数据库都可以使用,例如mysql,h2等
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -39,9 +39,9 @@ import java.util.List;
 public interface InsertListMapper<T> {
 
     /**
-     * 批量插入，支持批量插入的数据库可以使用，例如MySQL,H2等
+     * 批量插入,支持批量插入的数据库可以使用,例如MySQL,H2等
      * <p>
-     * 不支持主键策略，插入前需要设置好主键的值
+     * 不支持主键策略,插入前需要设置好主键的值
      *
      * @param list 对象列表
      * @return 操作数量
@@ -50,7 +50,7 @@ public interface InsertListMapper<T> {
     int insertList(List<T> list);
 
     /**
-     * 批量插入，支持批量插入的数据库可以使用，例如MySQL,H2等，另外该接口限制实体包含`id`属性并且必须为自增列
+     * 批量插入,支持批量插入的数据库可以使用,例如MySQL,H2等,另外该接口限制实体包含`id`属性并且必须为自增列
      *
      * @param list 对象列表
      * @return 操作数量
@@ -60,7 +60,7 @@ public interface InsertListMapper<T> {
     int insertListNoId(List<T> list);
 
     /**
-     * 插入数据，限制为实体包含`id`属性并且必须为自增列，实体配置的主键策略无效
+     * 插入数据,限制为实体包含`id`属性并且必须为自增列,实体配置的主键策略无效
      *
      * @param record 对象
      * @return 操作数量

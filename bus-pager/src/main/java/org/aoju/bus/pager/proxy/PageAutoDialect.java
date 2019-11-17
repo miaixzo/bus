@@ -64,7 +64,7 @@ public class PageAutoDialect {
         registerDialectAlias("oracle", OracleDialect.class);
         registerDialectAlias("db2", Db2Dialect.class);
         registerDialectAlias("informix", InformixDialect.class);
-        //解决 informix-sqli #129，仍然保留上面的
+        //解决 informix-sqli #129,仍然保留上面的
         registerDialectAlias("informix-sqli", InformixDialect.class);
 
         registerDialectAlias("sqlserver", SqlServerDialect.class);
@@ -77,9 +77,9 @@ public class PageAutoDialect {
         registerDialectAlias("edb", OracleDialect.class);
     }
 
-    //自动获取dialect,如果没有setProperties或setSqlUtilConfig，也可以正常进行
+    //自动获取dialect,如果没有setProperties或setSqlUtilConfig,也可以正常进行
     private boolean autoDialect = true;
-    //多数据源时，获取jdbcurl后是否关闭数据源
+    //多数据源时,获取jdbcurl后是否关闭数据源
     private boolean closeConn = true;
     //属性配置
     private Properties properties;
@@ -93,7 +93,7 @@ public class PageAutoDialect {
         dialectAliasMap.put(alias, dialectClass);
     }
 
-    //多数据动态获取时，每次需要初始化
+    //多数据动态获取时,每次需要初始化
     public void initDelegateDialect(MappedStatement ms) {
         if (delegate == null) {
             if (autoDialect) {
@@ -150,14 +150,14 @@ public class PageAutoDialect {
     private AbstractHelperDialect initDialect(String dialectClass, Properties properties) {
         AbstractHelperDialect dialect;
         if (PageFromObject.isEmpty(dialectClass)) {
-            throw new PageException("使用 PageContext 分页插件时，必须设置 general 属性");
+            throw new PageException("使用 PageContext 分页插件时,必须设置 general 属性");
         }
         try {
             Class sqlDialectClass = resloveDialectClass(dialectClass);
             if (AbstractHelperDialect.class.isAssignableFrom(sqlDialectClass)) {
                 dialect = (AbstractHelperDialect) sqlDialectClass.newInstance();
             } else {
-                throw new PageException("使用 PageContext 时，方言必须是实现 " + AbstractHelperDialect.class.getCanonicalName() + " 接口的实现类!");
+                throw new PageException("使用 PageContext 时,方言必须是实现 " + AbstractHelperDialect.class.getCanonicalName() + " 接口的实现类!");
             }
         } catch (Exception e) {
             throw new PageException("初始化 general [" + dialectClass + "]时出错:" + e.getMessage(), e);
@@ -211,11 +211,11 @@ public class PageAutoDialect {
                 return urlDialectMap.get(url);
             }
             if (PageFromObject.isEmpty(url)) {
-                throw new PageException("无法自动获取jdbcUrl，请在分页插件中配置dialect参数!");
+                throw new PageException("无法自动获取jdbcUrl,请在分页插件中配置dialect参数!");
             }
             String dialectStr = fromJdbcUrl(url);
             if (dialectStr == null) {
-                throw new PageException("无法自动获取数据库类型，请通过 helperDialect 参数指定!");
+                throw new PageException("无法自动获取数据库类型,请通过 helperDialect 参数指定!");
             }
             AbstractHelperDialect dialect = initDialect(dialectStr, properties);
             urlDialectMap.put(url, dialect);
@@ -226,12 +226,12 @@ public class PageAutoDialect {
     }
 
     public void setProperties(Properties properties) {
-        //多数据源时，获取 jdbcurl 后是否关闭数据源
+        //多数据源时,获取 jdbcurl 后是否关闭数据源
         String closeConn = properties.getProperty("closeConn");
         if (PageFromObject.isNotEmpty(closeConn)) {
             this.closeConn = Boolean.parseBoolean(closeConn);
         }
-        //使用 sqlserver2012 作为默认分页方式，这种情况在动态数据源时方便使用
+        //使用 sqlserver2012 作为默认分页方式,这种情况在动态数据源时方便使用
         String useSqlserver2012 = properties.getProperty("useSqlserver2012");
         if (PageFromObject.isNotEmpty(useSqlserver2012) && Boolean.parseBoolean(useSqlserver2012)) {
             registerDialectAlias("sqlserver", SqlServer2012Dialect.class);
@@ -243,7 +243,7 @@ public class PageAutoDialect {
             for (int i = 0; i < alias.length; i++) {
                 String[] kv = alias[i].split("=");
                 if (kv.length != 2) {
-                    throw new IllegalArgumentException("dialectAlias 参数配置错误，" +
+                    throw new IllegalArgumentException("dialectAlias 参数配置错误," +
                             "请按照 alias1=xx.dialectClass;alias2=dialectClass2 的形式进行配置!");
                 }
                 for (int j = 0; j < kv.length; j++) {
@@ -257,7 +257,7 @@ public class PageAutoDialect {
                 }
             }
         }
-        //指定的 Helper 数据库方言，和  不同
+        //指定的 Helper 数据库方言,和  不同
         String dialect = properties.getProperty("helperDialect");
         //运行时获取数据源
         String runtimeDialect = properties.getProperty("autoRuntimeDialect");

@@ -46,7 +46,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * 构造
      * <p>
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -113,7 +113,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 加密，使用UTF-8编码
+     * 加密,使用UTF-8编码
      *
      * @param data    被加密的字符串
      * @param keyType 私钥或公钥 {@link KeyType}
@@ -147,7 +147,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 编码为Base64字符串，使用UTF-8编码
+     * 编码为Base64字符串,使用UTF-8编码
      *
      * @param data    被加密的字符串
      * @param keyType 私钥或公钥 {@link KeyType}
@@ -246,7 +246,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 从Hex或Base64字符串解密，编码为UTF-8格式
+     * 从Hex或Base64字符串解密,编码为UTF-8格式
      *
      * @param data    Hex（16进制）或Base64字符串
      * @param keyType 私钥或公钥 {@link KeyType}
@@ -257,9 +257,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
+     * 解密为字符串,密文需为Hex（16进制）或Base64字符串
      *
-     * @param data    数据，Hex（16进制）或Base64字符串
+     * @param data    数据,Hex（16进制）或Base64字符串
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 解密后的密文
@@ -269,9 +269,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
+     * 解密为字符串,密文需为Hex（16进制）或Base64字符串
      *
-     * @param data    数据，Hex（16进制）或Base64字符串
+     * @param data    数据,Hex（16进制）或Base64字符串
      * @param keyType 密钥类型
      * @return 解密后的密文
      */
@@ -304,9 +304,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串，密文需为BCD格式
+     * 解密为字符串,密文需为BCD格式
      *
-     * @param data    数据，BCD格式
+     * @param data    数据,BCD格式
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 解密后的密文
@@ -316,9 +316,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串，密文需为BCD格式，编码为UTF-8格式
+     * 解密为字符串,密文需为BCD格式,编码为UTF-8格式
      *
-     * @param data    数据，BCD格式
+     * @param data    数据,BCD格式
      * @param keyType 密钥类型
      * @return 解密后的密文
      */

@@ -117,7 +117,7 @@ public class Registry {
      * 是否包含指定名称的校验器
      *
      * @param name 校验器名称
-     * @return true：包含， false：不包含
+     * @return true：包含, false：不包含
      */
     public boolean contains(String name) {
         return COMPLEX_CACHE.containsKey(name);
@@ -127,18 +127,18 @@ public class Registry {
      * 根据校验器名称获取校验器
      *
      * @param name 校验器名称
-     * @return 校验器对象，找不到时返回null
+     * @return 校验器对象, 找不到时返回null
      */
     public Object require(String name) {
         return COMPLEX_CACHE.get(name);
     }
 
     /**
-     * 优先根据校验器名称获取校验器，找不到时，根据类型获取校验器对象。
+     * 优先根据校验器名称获取校验器,找不到时,根据类型获取校验器对象
      *
      * @param name  校验器名称
      * @param clazz 校验器类型
-     * @return 校验器对象，找不到时返回null
+     * @return 校验器对象, 找不到时返回null
      */
     public Object require(String name, Class<?> clazz) {
         Object object = this.require(name);

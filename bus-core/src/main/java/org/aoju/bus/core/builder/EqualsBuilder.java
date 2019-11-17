@@ -35,7 +35,7 @@ import java.util.*;
 /**
  * <p>{@link Object#equals(Object)} 方法的构建器</p>
  *
- * <p>两个对象equals必须保证hashCode值相等，hashCode值相等不能保证一定equals</p>
+ * <p>两个对象equals必须保证hashCode值相等,hashCode值相等不能保证一定equals</p>
  *
  * <p>使用方法如下：</p>
  * <pre>
@@ -78,7 +78,7 @@ public class EqualsBuilder implements Builder<Boolean> {
     private static final ThreadLocal<Set<Pair<IDKey, IDKey>>> REGISTRY = new ThreadLocal<>();
 
     /**
-     * 是否equals，此值随着构建会变更，默认true
+     * 是否equals,此值随着构建会变更,默认true
      */
     private boolean isEquals = true;
     private boolean testTransients = false;
@@ -193,24 +193,24 @@ public class EqualsBuilder implements Builder<Boolean> {
     }
 
     /**
-     * <p>反射检查两个对象是否equals，此方法检查对象及其父对象的属性（包括私有属性）是否equals</p>
+     * <p>反射检查两个对象是否equals,此方法检查对象及其父对象的属性（包括私有属性）是否equals</p>
      *
      * @param lhs           此对象
      * @param rhs           另一个对象
-     * @param excludeFields 排除的字段集合，如果有不参与计算equals的字段加入此集合即可
-     * @return 两个对象是否equals，是返回<code>true</code>
+     * @param excludeFields 排除的字段集合,如果有不参与计算equals的字段加入此集合即可
+     * @return 两个对象是否equals, 是返回<code>true</code>
      */
     public static boolean reflectionEquals(final Object lhs, final Object rhs, final Collection<String> excludeFields) {
         return reflectionEquals(lhs, rhs, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
     }
 
     /**
-     * <p>反射检查两个对象是否equals，此方法检查对象及其父对象的属性（包括私有属性）是否equals</p>
+     * <p>反射检查两个对象是否equals,此方法检查对象及其父对象的属性（包括私有属性）是否equals</p>
      *
      * @param lhs           此对象
      * @param rhs           另一个对象
-     * @param excludeFields 排除的字段集合，如果有不参与计算equals的字段加入此集合即可
-     * @return 两个对象是否equals，是返回<code>true</code>
+     * @param excludeFields 排除的字段集合,如果有不参与计算equals的字段加入此集合即可
+     * @return 两个对象是否equals, 是返回<code>true</code>
      */
     public static boolean reflectionEquals(final Object lhs, final Object rhs, final String... excludeFields) {
         return reflectionEquals(lhs, rhs, false, null, excludeFields);

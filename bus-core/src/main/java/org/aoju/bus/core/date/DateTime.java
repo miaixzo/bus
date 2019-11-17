@@ -29,10 +29,12 @@ import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -54,7 +56,7 @@ public class DateTime extends Date {
      */
     private boolean mutable = true;
     /**
-     * 一周的第一天，默认是周一， 在设置或获得 WEEK_OF_MONTH 或 WEEK_OF_YEAR 字段时，Calendar 必须确定一个月或一年的第一个星期，以此作为参考点。
+     * 一周的第一天,默认是周一, 在设置或获得 WEEK_OF_MONTH 或 WEEK_OF_YEAR 字段时,Calendar 必须确定一个月或一年的第一个星期,以此作为参考点
      */
     private Fields.Week firstDayOfWeek = Fields.Week.MONDAY;
     /**
@@ -154,7 +156,7 @@ public class DateTime extends Date {
      * 构造
      *
      * @param dateStr    Date字符串
-     * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FastDateFormat}
+     * @param dateParser 格式化器 {@link DateParser},可以使用 {@link FastDateFormat}
      * @see Fields
      */
     public DateTime(String dateStr, DateParser dateParser) {
@@ -237,7 +239,7 @@ public class DateTime extends Date {
 
     /**
      * 获得日期的某个部分
-     * 例如获得年的部分，则使用 getField(DatePart.YEAR)
+     * 例如获得年的部分,则使用 getField(DatePart.YEAR)
      *
      * @param field 表示日期的哪个部分的枚举 {@link Fields}
      * @return 某个部分的值
@@ -248,7 +250,7 @@ public class DateTime extends Date {
 
     /**
      * 获得日期的某个部分
-     * 例如获得年的部分，则使用 getField(Calendar.YEAR)
+     * 例如获得年的部分,则使用 getField(Calendar.YEAR)
      *
      * @param field 表示日期的哪个部分的int值 {@link Calendar}
      * @return 某个部分的值
@@ -274,7 +276,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得当前日期所属季度，从1开始计数
+     * 获得当前日期所属季度,从1开始计数
      *
      * @return 第几个季度 {@link Fields}
      */
@@ -292,7 +294,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得月份，从0开始计数
+     * 获得月份,从0开始计数
      *
      * @return 月份
      */
@@ -301,8 +303,8 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得月份，从1开始计数
-     * 由于{@link Calendar} 中的月份按照0开始计数，导致某些需求容易误解，因此如果想用1表示一月，2表示二月则调用此方法
+     * 获得月份,从1开始计数
+     * 由于{@link Calendar} 中的月份按照0开始计数,导致某些需求容易误解,因此如果想用1表示一月,2表示二月则调用此方法
      *
      * @return 月份
      */
@@ -321,9 +323,9 @@ public class DateTime extends Date {
 
     /**
      * 获得指定日期是所在年份的第几周
-     * 此方法返回值与一周的第一天有关，比如：
-     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）
-     * 如果一周的第一天为周一，那这天是第一周（返回1）
+     * 此方法返回值与一周的第一天有关,比如：
+     * 2016年1月3日为周日,如果一周的第一天为周日,那这天是第二周（返回2）
+     * 如果一周的第一天为周一,那这天是第一周（返回1）
      *
      * @return 周
      */
@@ -333,9 +335,9 @@ public class DateTime extends Date {
 
     /**
      * 获得指定日期是所在月份的第几周
-     * 此方法返回值与一周的第一天有关，比如：
-     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）
-     * 如果一周的第一天为周一，那这天是第一周（返回1）
+     * 此方法返回值与一周的第一天有关,比如：
+     * 2016年1月3日为周日,如果一周的第一天为周日,那这天是第二周（返回2）
+     * 如果一周的第一天为周一,那这天是第一周（返回1）
      *
      * @return 周
      */
@@ -353,7 +355,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得指定日期是星期几，1表示周日，2表示周一
+     * 获得指定日期是星期几,1表示周日,2表示周一
      *
      * @return 星期几
      */
@@ -493,7 +495,7 @@ public class DateTime extends Date {
 
     /**
      * 转换为 {@link Date}
-     * 考虑到很多框架（例如Hibernate）的兼容性，提供此方法返回JDK原生的Date对象
+     * 考虑到很多框架（例如Hibernate）的兼容性,提供此方法返回JDK原生的Date对象
      *
      * @return {@link Date}
      * @since 5.2.2
@@ -625,8 +627,8 @@ public class DateTime extends Date {
 
     /**
      * 对象是否可变
-     * 如果为不可变对象，以下方法将返回新方法：
-     * 如果为不可变对象，{@link DateTime#setTime(long)}将抛出异常
+     * 如果为不可变对象,以下方法将返回新方法：
+     * 如果为不可变对象,{@link DateTime#setTime(long)}将抛出异常
      *
      * @return 对象是否可变
      */
@@ -635,8 +637,8 @@ public class DateTime extends Date {
     }
 
     /**
-     * 设置对象是否可变 如果为不可变对象，以下方法将返回新方法：
-     * 如果为不可变对象，{@link DateTime#setTime(long)}将抛出异常
+     * 设置对象是否可变 如果为不可变对象,以下方法将返回新方法：
+     * 如果为不可变对象,{@link DateTime#setTime(long)}将抛出异常
      *
      * @param mutable 是否可变
      * @return this
@@ -647,7 +649,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得一周的第一天，默认为周一
+     * 获得一周的第一天,默认为周一
      *
      * @return 一周的第一天
      */
@@ -657,7 +659,7 @@ public class DateTime extends Date {
 
     /**
      * 设置一周的第一天
-     * JDK的Calendar中默认一周的第一天是周日，将此默认值设置为周一
+     * JDK的Calendar中默认一周的第一天是周日,将此默认值设置为周一
      * 设置一周的第一天主要影响{@link #weekOfMonth()}和{@link #weekOfYear()} 两个方法
      *
      * @param firstDayOfWeek 一周的第一天
@@ -671,13 +673,34 @@ public class DateTime extends Date {
     }
 
     /**
+     * 获取时区ID
+     *
+     * @return 时区ID
+     * @since 5.0.5
+     */
+    public ZoneId getZoneId() {
+        return this.timeZone.toZoneId();
+    }
+
+    /**
+     * 获取时区
+     *
+     * @return 时区
+     * @since 5.0.5
+     */
+    public TimeZone getTimeZone() {
+        return this.timeZone;
+    }
+
+    /**
      * 设置时区
      *
      * @param timeZone 时区
      * @return this
+     * @since 4.1.2
      */
     public DateTime setTimeZone(TimeZone timeZone) {
-        this.timeZone = timeZone;
+        this.timeZone = ObjectUtils.defaultIfNull(timeZone, TimeZone.getDefault());
         return this;
     }
 
@@ -727,7 +750,7 @@ public class DateTime extends Date {
     /**
      * 转为字符串
      *
-     * @param format 日期格式，常用格式见： {@link Fields}
+     * @param format 日期格式,常用格式见： {@link Fields}
      * @return String
      */
     public String toString(String format) {

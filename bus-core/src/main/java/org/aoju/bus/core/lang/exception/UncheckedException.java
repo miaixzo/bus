@@ -53,7 +53,7 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 将抛出对象包裹成运行时异常，并增加自己的描述
+     * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
      * @param message 打印信息
      */
@@ -62,7 +62,7 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 将抛出对象包裹成运行时异常，并增加自己的描述
+     * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
      * @param cause 抛出对象
      */
@@ -71,7 +71,7 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 将抛出对象包裹成运行时异常，并增加自己的描述
+     * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
      * @param message 打印信息
      * @param cause   抛出对象
@@ -81,7 +81,7 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 将抛出对象包裹成运行时异常，并增加自己的描述
+     * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
      * @param errcode 错误编码
      * @param errmsg  错误提示
@@ -93,7 +93,7 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 根据格式化字符串，生成运行时异常
+     * 根据格式化字符串,生成运行时异常
      *
      * @param format 格式
      * @param args   参数
@@ -103,7 +103,7 @@ public class UncheckedException extends RuntimeException {
     }
 
     /**
-     * 将抛出对象包裹成运行时异常，并增加自己的描述
+     * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
      * @param e    抛出对象
      * @param fmt  格式

@@ -28,10 +28,10 @@ import org.aoju.bus.core.lang.Filter;
 
 /**
  * 复制器抽象类
- * 抽象复制器抽象了一个对象复制到另一个对象，通过实现{@link #copy()}方法实现复制逻辑。
+ * 抽象复制器抽象了一个对象复制到另一个对象,通过实现{@link #copy()}方法实现复制逻辑
  *
  * @param <T> 拷贝的对象
- * @param <C> 本类的类型。用于set方法返回本对象，方便流式编程
+ * @param <C> 本类的类型 用于set方法返回本对象,方便流式编程
  * @author Kimi Liu
  * @version 5.2.2
  * @since JDK 1.8+
@@ -47,7 +47,7 @@ public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<
      */
     protected T dest;
     /**
-     * 拷贝过滤器，可以过滤掉不需要拷贝的源
+     * 拷贝过滤器,可以过滤掉不需要拷贝的源
      */
     protected Filter<T> copyFilter;
 

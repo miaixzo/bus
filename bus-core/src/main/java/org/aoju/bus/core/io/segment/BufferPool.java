@@ -69,7 +69,7 @@ public class BufferPool {
      * @return 缓存页对象
      */
     public BufferPage allocateBufferPage() {
-        //轮训游标，均衡分配内存页
+        //轮训游标,均衡分配内存页
         return bufferPageList[cursor.getAndIncrement() % bufferPageList.length];
     }
 }

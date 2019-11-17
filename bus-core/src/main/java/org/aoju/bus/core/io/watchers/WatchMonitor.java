@@ -41,8 +41,8 @@ import java.util.Map;
 /**
  * 路径监听器
  * 监听器可监听目录或文件
- * 如果监听的Path不存在，则递归创建空目录然后监听此空目录
- * 递归监听目录时，并不会监听新创建的目录
+ * 如果监听的Path不存在,则递归创建空目录然后监听此空目录
+ * 递归监听目录时,并不会监听新创建的目录
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -77,15 +77,15 @@ public class WatchMonitor extends Thread implements Closeable {
     };
 
     /**
-     * 监听路径，必须为目录
+     * 监听路径,必须为目录
      */
     private Path path;
     /**
-     * 递归目录的最大深度，当小于1时不递归下层目录
+     * 递归目录的最大深度,当小于1时不递归下层目录
      */
     private int maxDepth;
     /**
-     * 监听的文件，对于单文件监听不为空
+     * 监听的文件,对于单文件监听不为空
      */
     private Path filePath;
 
@@ -153,7 +153,7 @@ public class WatchMonitor extends Thread implements Closeable {
      * </pre>
      *
      * @param path     字符串路径
-     * @param maxDepth 递归目录的最大深度，当小于2时不递归下层目录
+     * @param maxDepth 递归目录的最大深度,当小于2时不递归下层目录
      * @param events   监听事件列表
      */
     public WatchMonitor(Path path, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -179,7 +179,7 @@ public class WatchMonitor extends Thread implements Closeable {
      *
      * @param url      URL
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(URL url, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -202,7 +202,7 @@ public class WatchMonitor extends Thread implements Closeable {
      *
      * @param uri      URI
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(URI uri, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -225,7 +225,7 @@ public class WatchMonitor extends Thread implements Closeable {
      *
      * @param file     文件
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(File file, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -248,7 +248,7 @@ public class WatchMonitor extends Thread implements Closeable {
      *
      * @param path     路径
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(String path, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -271,7 +271,7 @@ public class WatchMonitor extends Thread implements Closeable {
      *
      * @param path     路径
      * @param events   监听事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(Path path, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -279,7 +279,7 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param uri     URI
      * @param watcher {@link Watcher}
@@ -290,7 +290,7 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param url     URL
      * @param watcher {@link Watcher}
@@ -305,7 +305,7 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param file    被监听文件
      * @param watcher {@link Watcher}
@@ -316,7 +316,7 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param path    路径
      * @param watcher {@link Watcher}
@@ -327,7 +327,7 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param path    路径
      * @param watcher {@link Watcher}
@@ -343,11 +343,11 @@ public class WatchMonitor extends Thread implements Closeable {
      * 初始化
      * 初始化包括：
      * <pre>
-     * 1、解析传入的路径，判断其为目录还是文件
+     * 1、解析传入的路径,判断其为目录还是文件
      * 2、创建{@link WatchService} 对象
      * </pre>
      *
-     * @throws InstrumentException 监听异常，IO异常时抛出此异常
+     * @throws InstrumentException 监听异常,IO异常时抛出此异常
      */
     public void init() throws InstrumentException {
         //获取目录或文件路径
@@ -355,7 +355,7 @@ public class WatchMonitor extends Thread implements Closeable {
             final Path lastPathEle = FileUtils.getLastPathEle(this.path);
             if (null != lastPathEle) {
                 final String lastPathEleStr = lastPathEle.toString();
-                //带有点表示有扩展名，按照未创建的文件对待。Linux下.d的为目录，排除之
+                //带有点表示有扩展名,按照未创建的文件对待 Linux下.d的为目录,排除之
                 if (StringUtils.contains(lastPathEleStr, Symbol.C_DOT) && false == StringUtils.endWithIgnoreCase(lastPathEleStr, ".d")) {
                     this.filePath = this.path;
                     this.path = this.filePath.getParent();
@@ -400,17 +400,17 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 开始监听事件，阻塞当前进程
+     * 开始监听事件,阻塞当前进程
      */
     public void watch() {
         watch(this.watcher);
     }
 
     /**
-     * 开始监听事件，阻塞当前进程
+     * 开始监听事件,阻塞当前进程
      *
      * @param watcher 监听
-     * @throws InstrumentException 监听异常，如果监听关闭抛出此异常
+     * @throws InstrumentException 监听异常,如果监听关闭抛出此异常
      */
     public void watch(Watcher watcher) throws InstrumentException {
         if (isClosed) {
@@ -449,8 +449,8 @@ public class WatchMonitor extends Thread implements Closeable {
     }
 
     /**
-     * 当监听目录时，监听目录的最大深度
-     * 当设置值为1（或小于1）时，表示不递归监听子目录
+     * 当监听目录时,监听目录的最大深度
+     * 当设置值为1（或小于1）时,表示不递归监听子目录
      * 例如设置：
      * <pre>
      * maxDepth &lt;= 1 表示只监听当前目录
@@ -458,7 +458,7 @@ public class WatchMonitor extends Thread implements Closeable {
      * maxDepth = 3 表示监听当前目录以及下层
      * </pre>
      *
-     * @param maxDepth 最大深度，当设置值为1（或小于1）时，表示不递归监听子目录，监听所有子目录请传{@link Integer#MAX_VALUE}
+     * @param maxDepth 最大深度,当设置值为1（或小于1）时,表示不递归监听子目录,监听所有子目录请传{@link Integer#MAX_VALUE}
      * @return this
      */
     public WatchMonitor setMaxDepth(int maxDepth) {
@@ -506,7 +506,7 @@ public class WatchMonitor extends Thread implements Closeable {
             }
         } catch (IOException e) {
             if (e instanceof AccessDeniedException) {
-                //对于禁止访问的目录，跳过监听
+                //对于禁止访问的目录,跳过监听
                 return;
             }
             throw new InstrumentException(e);

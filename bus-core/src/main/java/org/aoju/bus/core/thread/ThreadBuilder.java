@@ -49,7 +49,7 @@ public class ThreadBuilder implements Builder<ThreadFactory> {
      */
     private String namePrefix;
     /**
-     * 是否守护线程，默认false
+     * 是否守护线程,默认false
      */
     private Boolean daemon;
     /**
@@ -118,7 +118,7 @@ public class ThreadBuilder implements Builder<ThreadFactory> {
     }
 
     /**
-     * 设置线程名前缀，例如设置前缀为Thread-thread-，则线程名为Thread-thread-1之类。
+     * 设置线程名前缀,例如设置前缀为Thread-thread-,则线程名为Thread-thread-1之类
      *
      * @param namePrefix 线程名前缀
      * @return this

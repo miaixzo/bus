@@ -31,8 +31,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * 计算其提供的全部字节流的散列的源。若要使用，请创建
- * 使用您首选的哈希算法实例。通过读取源文件的所有字节来耗尽源文件
+ * 计算其提供的全部字节流的散列的源 若要使用,请创建
+ * 使用您首选的哈希算法实例 通过读取源文件的所有字节来耗尽源文件
  * 然后调用{@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu

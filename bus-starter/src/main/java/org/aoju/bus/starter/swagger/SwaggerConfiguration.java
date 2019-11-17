@@ -81,7 +81,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
                 .name("X-Access-Token") // 参数名
                 .defaultValue("") // 默认值
                 .description("X-Access-Token格式为:" + ObjectID.id()).modelRef(new ModelRef("string"))// 指定参数值的类型
-                .required(false).build(); // 非必需，这里是全局配置，然而在登陆的时候是不用验证的
+                .required(false).build(); // 非必需,这里是全局配置,然而在登陆的时候是不用验证的
         List<Parameter> aParameters = new ArrayList();
         aParameters.add(aParameterBuilder.build());
         return new Docket(DocumentationType.SWAGGER_2)

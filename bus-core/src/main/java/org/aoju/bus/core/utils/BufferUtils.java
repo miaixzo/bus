@@ -105,7 +105,7 @@ public class BufferUtils {
 
     /**
      * 读取指定长度的bytes
-     * 如果长度不足，则读取剩余部分，此时buffer必须为读模式
+     * 如果长度不足,则读取剩余部分,此时buffer必须为读模式
      *
      * @param buffer    ByteBuffer
      * @param maxLength 最大长度
@@ -136,17 +136,17 @@ public class BufferUtils {
     }
 
     /**
-     * 一行的末尾位置，查找位置时位移ByteBuffer到结束位置
+     * 一行的末尾位置,查找位置时位移ByteBuffer到结束位置
      *
      * @param buffer {@link ByteBuffer}
-     * @return 末尾位置，未找到或达到最大长度返回-1
+     * @return 末尾位置, 未找到或达到最大长度返回-1
      */
     public static int lineEnd(ByteBuffer buffer) {
         return lineEnd(buffer, buffer.remaining());
     }
 
     /**
-     * 一行的末尾位置，查找位置时位移ByteBuffer到结束位置
+     * 一行的末尾位置,查找位置时位移ByteBuffer到结束位置
      * 支持的换行符如下：
      * <pre>
      * 1. \r\n
@@ -155,7 +155,7 @@ public class BufferUtils {
      *
      * @param buffer    {@link ByteBuffer}
      * @param maxLength 读取最大长度
-     * @return 末尾位置，未找到或达到最大长度返回-1
+     * @return 末尾位置, 未找到或达到最大长度返回-1
      */
     public static int lineEnd(ByteBuffer buffer, int maxLength) {
         int primitivePosition = buffer.position();
@@ -175,20 +175,20 @@ public class BufferUtils {
             }
 
             if (charIndex - primitivePosition > maxLength) {
-                //查找到尽头，未找到，还原位置
+                //查找到尽头,未找到,还原位置
                 buffer.position(primitivePosition);
                 throw new IndexOutOfBoundsException(StringUtils.format("Position is out of maxLength: {}", maxLength));
             }
         }
 
-        //查找到buffer尽头，未找到，还原位置
+        //查找到buffer尽头,未找到,还原位置
         buffer.position(primitivePosition);
         //读到结束位置
         return -1;
     }
 
     /**
-     * 读取一行，如果buffer中最后一部分并非完整一行，则返回null
+     * 读取一行,如果buffer中最后一部分并非完整一行,则返回null
      * 支持的换行符如下：
      * <pre>
      * 1. \r\n

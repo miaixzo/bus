@@ -31,8 +31,8 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * 线程同步结束器
- * 在完成一组正在其他线程中执行的操作之前，
- * 它允许一个或多个线程一直等待。
+ * 在完成一组正在其他线程中执行的操作之前,
+ * 它允许一个或多个线程一直等待
  * 不能保证同时开始
  *
  * @author Kimi Liu
@@ -64,7 +64,7 @@ public class SyncFinisher {
     }
 
     /**
-     * 等待所有Worker工作结束，否则阻塞
+     * 等待所有Worker工作结束,否则阻塞
      *
      * @throws InterruptedException 用户中断
      */
@@ -91,7 +91,7 @@ public class SyncFinisher {
     }
 
     /**
-     * 工作者，为一个线程
+     * 工作者,为一个线程
      */
     public abstract class Worker extends Thread {
 

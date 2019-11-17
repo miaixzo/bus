@@ -5,7 +5,7 @@ import java.util.*;
 
 /**
  * 有界优先队列<br>
- * 按照给定的排序规则，排序元素，当队列满时，
+ * 按照给定的排序规则,排序元素,当队列满时,
  * 按照给定的排序规则淘汰末尾元素
  *
  * @author Kimi Liu
@@ -52,7 +52,7 @@ public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
     }
 
     /**
-     * 加入元素，当队列满时，淘汰末尾元素
+     * 加入元素,当队列满时,淘汰末尾元素
      *
      * @param e 元素
      * @return 加入成功与否
@@ -64,7 +64,7 @@ public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
             if (this.comparator().compare(e, head) <= 0) {
                 return true;
             }
-            //当队列满时，就要淘汰顶端队列
+            //当队列满时,就要淘汰顶端队列
             poll();
         }
         return super.offer(e);

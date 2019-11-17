@@ -26,7 +26,7 @@ package org.aoju.bus.health;
 import org.aoju.bus.core.consts.System;
 
 /**
- * 代表Java Virtual Machine Implementation的信息。
+ * 代表Java Virtual Machine Implementation的信息
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -35,59 +35,59 @@ import org.aoju.bus.core.consts.System;
 public class JvmInfo {
 
     /**
-     * 取得当前JVM impl.的名称（取自系统属性：<code>java.vm.name</code>）。
+     * 取得当前JVM impl.的名称（取自系统属性：<code>java.vm.name</code>）
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"Java HotSpot(TM) Client VM"</code>
      * </p>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
      */
     public final String getName() {
         return HealthUtils.get(System.VM_NAME, false);
     }
 
     /**
-     * 取得当前JVM impl.的版本（取自系统属性：<code>java.vm.version</code>）。
+     * 取得当前JVM impl.的版本（取自系统属性：<code>java.vm.version</code>）
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"1.4.2-b28"</code>
      * </p>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
      */
     public final String getVersion() {
         return HealthUtils.get(System.VM_VERSION, false);
     }
 
     /**
-     * 取得当前JVM impl.的厂商（取自系统属性：<code>java.vm.vendor</code>）。
+     * 取得当前JVM impl.的厂商（取自系统属性：<code>java.vm.vendor</code>）
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
      * </p>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
      */
     public final String getVendor() {
         return HealthUtils.get(System.VM_VENDOR, false);
     }
 
     /**
-     * 取得当前JVM impl.的信息（取自系统属性：<code>java.vm.info</code>）。
+     * 取得当前JVM impl.的信息（取自系统属性：<code>java.vm.info</code>）
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"mixed mode"</code>
      * </p>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
      */
     public final String getInfo() {
         return HealthUtils.get(System.VM_INFO, false);
     }
 
     /**
-     * 将Java Virutal Machine Implementation的信息转换成字符串。
+     * 将Java Virutal Machine Implementation的信息转换成字符串
      *
      * @return JVM impl.的字符串表示
      */

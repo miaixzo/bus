@@ -28,11 +28,11 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 在放弃一项任务之前要花多少时间的策略。当一个任务
- * 超时时，它处于未指定的状态，应该被放弃。
- * 例如，如果从源读取超时，则应关闭该源并
- * 稍后应重试读取。如果向接收器写入超时，也是一样
- * 适用规则:关闭洗涤槽，稍后重试。
+ * 在放弃一项任务之前要花多少时间的策略 当一个任务
+ * 超时时,它处于未指定的状态,应该被放弃
+ * 例如,如果从源读取超时,则应关闭该源并
+ * 稍后应重试读取 如果向接收器写入超时,也是一样
+ * 适用规则:关闭洗涤槽,稍后重试
  *
  * <h3>Timeouts and Deadlines</h3>
  * This class offers two complementary controls to define a timeout policy.

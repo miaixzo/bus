@@ -64,7 +64,7 @@ public class ReflectUtils {
 
     /**
      * 调用Getter方法.
-     * 支持多级，如：对象名.对象名.方法
+     * 支持多级,如：对象名.对象名.方法
      *
      * @param obj  对象
      * @param name 属性名
@@ -80,8 +80,8 @@ public class ReflectUtils {
     }
 
     /**
-     * 调用Setter方法, 仅匹配方法名。
-     * 支持多级，如：对象名.对象名.方法
+     * 调用Setter方法, 仅匹配方法名
+     * 支持多级,如：对象名.对象名.方法
      *
      * @param obj   对象
      * @param name  属性名
@@ -143,8 +143,8 @@ public class ReflectUtils {
 
     /**
      * 直接调用对象方法, 无视private/protected修饰符.
-     * 用于一次性调用的情况，否则应使用getAccessibleMethod()函数获得Method后反复调用.
-     * 同时匹配方法名+参数类型，
+     * 用于一次性调用的情况,否则应使用getAccessibleMethod()函数获得Method后反复调用.
+     * 同时匹配方法名+参数类型,
      *
      * @param obj   对象
      * @param name  方法名
@@ -167,9 +167,9 @@ public class ReflectUtils {
     }
 
     /**
-     * 直接调用对象方法, 无视private/protected修饰符，
-     * 用于一次性调用的情况，否则应使用getAccessibleMethodByName()函数获得Method后反复调用.
-     * 只匹配函数名，如果有多个同名函数调用第一个。
+     * 直接调用对象方法, 无视private/protected修饰符,
+     * 用于一次性调用的情况,否则应使用getAccessibleMethodByName()函数获得Method后反复调用.
+     * 只匹配函数名,如果有多个同名函数调用第一个
      *
      * @param obj  对象
      * @param name 方法
@@ -215,7 +215,7 @@ public class ReflectUtils {
     /**
      * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问.
      * 如向上转型到Object仍无法找到, 返回null.
-     * 匹配函数名+参数类型。
+     * 匹配函数名+参数类型
      * <p>
      * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
      *
@@ -242,7 +242,7 @@ public class ReflectUtils {
     /**
      * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问.
      * 如向上转型到Object仍无法找到, 返回null.
-     * 只匹配函数名。
+     * 只匹配函数名
      * <p>
      * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
      *
@@ -264,7 +264,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 改变private/protected的方法为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
+     * 改变private/protected的方法为public,尽量不调用实际改动的语句,避免JDK的SecurityManager抱怨
      *
      * @param method 方法
      */
@@ -276,7 +276,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 改变private/protected的成员变量为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
+     * 改变private/protected的成员变量为public,尽量不调用实际改动的语句,避免JDK的SecurityManager抱怨
      *
      * @param field 对象
      */
@@ -376,8 +376,8 @@ public class ReflectUtils {
      *
      * @param <T>            对象类型
      * @param clazz          类
-     * @param parameterTypes 参数类型，只要任何一个参数是指定参数的父类或接口或相等即可
-     * @return 构造方法，如果未找到返回null
+     * @param parameterTypes 参数类型,只要任何一个参数是指定参数的父类或接口或相等即可
+     * @return 构造方法, 如果未找到返回null
      */
     public static <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... parameterTypes) {
         if (null == clazz) {
@@ -415,7 +415,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获得一个类中所有字段列表，直接反射获取，无缓存
+     * 获得一个类中所有字段列表,直接反射获取,无缓存
      *
      * @param beanClass 类
      * @return 字段列表
@@ -427,7 +427,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 查找指定类中的所有字段（包括非public字段），也包括父类和Object类的字段， 字段不存在则返回null
+     * 查找指定类中的所有字段（包括非public字段）,也包括父类和Object类的字段, 字段不存在则返回null
      *
      * @param beanClass 被查找字段的类,不能为null
      * @param name      字段名
@@ -447,7 +447,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获得一个类中所有字段列表，包括其父类中的字段
+     * 获得一个类中所有字段列表,包括其父类中的字段
      *
      * @param beanClass 类
      * @return 字段列表
@@ -464,7 +464,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获得一个类中所有字段列表，直接反射获取，无缓存
+     * 获得一个类中所有字段列表,直接反射获取,无缓存
      *
      * @param beanClass           类
      * @param withSuperClassFieds 是否包括父类的字段列表
@@ -532,7 +532,7 @@ public class ReflectUtils {
      *
      * @param obj       对象
      * @param fieldName 字段名
-     * @param value     值，值类型必须与字段类型匹配，不会自动转换对象类型
+     * @param value     值,值类型必须与字段类型匹配,不会自动转换对象类型
      * @throws InstrumentException 包装IllegalAccessException异常
      */
     public static void setFieldValue(Object obj, String fieldName, Object value) throws InstrumentException {
@@ -546,7 +546,7 @@ public class ReflectUtils {
      *
      * @param obj   对象
      * @param field 字段
-     * @param value 值，值类型必须与字段类型匹配，不会自动转换对象类型
+     * @param value 值,值类型必须与字段类型匹配,不会自动转换对象类型
      * @throws InstrumentException UtilException 包装IllegalAccessException异常
      */
     public static void setFieldValue(Object obj, Field field, Object value) throws InstrumentException {
@@ -562,10 +562,10 @@ public class ReflectUtils {
     }
 
     /**
-     * 查找指定对象中的所有方法（包括非public方法），也包括父对象和Object类的方法
+     * 查找指定对象中的所有方法（包括非public方法）,也包括父对象和Object类的方法
      *
-     * @param obj        被查找的对象，如果为{@code null}返回{@code null}
-     * @param methodName 方法名，如果为空字符串返回{@code null}
+     * @param obj        被查找的对象,如果为{@code null}返回{@code null}
+     * @param methodName 方法名,如果为空字符串返回{@code null}
      * @param args       参数
      * @return 方法
      * @throws SecurityException 无访问权限抛出异常
@@ -578,11 +578,11 @@ public class ReflectUtils {
     }
 
     /**
-     * 忽略大小写查找指定方法，如果找不到对应的方法则返回null
+     * 忽略大小写查找指定方法,如果找不到对应的方法则返回null
      *
-     * @param clazz      类，如果为{@code null}返回{@code null}
-     * @param methodName 方法名，如果为空字符串返回{@code null}
-     * @param paramTypes 参数类型，指定参数类型如果是方法的子类也算
+     * @param clazz      类,如果为{@code null}返回{@code null}
+     * @param methodName 方法名,如果为空字符串返回{@code null}
+     * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      * @since 5.2.2
@@ -594,9 +594,9 @@ public class ReflectUtils {
     /**
      * 查找指定方法 如果找不到对应的方法则返回null
      *
-     * @param clazz      类，如果为{@code null}返回{@code null}
-     * @param methodName 方法名，如果为空字符串返回{@code null}
-     * @param paramTypes 参数类型，指定参数类型如果是方法的子类也算
+     * @param clazz      类,如果为{@code null}返回{@code null}
+     * @param methodName 方法名,如果为空字符串返回{@code null}
+     * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
@@ -607,10 +607,10 @@ public class ReflectUtils {
     /**
      * 查找指定方法 如果找不到对应的方法则返回null
      *
-     * @param clazz      类，如果为{@code null}返回{@code null}
+     * @param clazz      类,如果为{@code null}返回{@code null}
      * @param ignoreCase 是否忽略大小写
-     * @param methodName 方法名，如果为空字符串返回{@code null}
-     * @param paramTypes 参数类型，指定参数类型如果是方法的子类也算
+     * @param methodName 方法名,如果为空字符串返回{@code null}
+     * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      * @since 5.2.2
@@ -678,7 +678,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获得一个类中所有方法列表，包括其父类中的方法
+     * 获得一个类中所有方法列表,包括其父类中的方法
      *
      * @param beanClass 类
      * @return 方法列表
@@ -695,7 +695,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获得一个类中所有方法列表，直接反射获取，无缓存
+     * 获得一个类中所有方法列表,直接反射获取,无缓存
      *
      * @param beanClass             类
      * @param withSuperClassMethods 是否包括父类的方法列表
@@ -803,7 +803,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 尝试遍历并调用此类的所有构造方法，直到构造成功并返回
+     * 尝试遍历并调用此类的所有构造方法,直到构造成功并返回
      *
      * @param <T>       对象类型
      * @param beanClass 被构造的类
@@ -854,11 +854,11 @@ public class ReflectUtils {
      *
      * <pre>
      * 1. 参数个数是否与方法参数个数一致
-     * 2. 如果某个参数为null但是方法这个位置的参数为原始类型，则赋予原始类型默认值
+     * 2. 如果某个参数为null但是方法这个位置的参数为原始类型,则赋予原始类型默认值
      * </pre>
      *
      * @param <T>    返回对象类型
-     * @param obj    对象，如果执行静态方法，此值为null
+     * @param obj    对象,如果执行静态方法,此值为null
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
@@ -872,7 +872,7 @@ public class ReflectUtils {
             for (int i = 0; i < args.length; i++) {
                 type = types[i];
                 if (type.isPrimitive() && null == args[i]) {
-                    // 参数是原始类型，而传入参数为null时赋予默认值
+                    // 参数是原始类型,而传入参数为null时赋予默认值
                     args[i] = ClassUtils.getDefaultValue(type);
                 }
             }
@@ -885,7 +885,7 @@ public class ReflectUtils {
      * 执行方法
      *
      * @param <T>    返回对象类型
-     * @param obj    对象，如果执行静态方法，此值为null
+     * @param obj    对象,如果执行静态方法,此值为null
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
@@ -946,8 +946,8 @@ public class ReflectUtils {
     /**
      * 设置方法为可访问（私有方法可以被外部调用）
      *
-     * @param <T>              AccessibleObject的子类，比如Class、Method、Field等
-     * @param accessibleObject 可设置访问权限的对象，比如Class、Method、Field等
+     * @param <T>              AccessibleObject的子类,比如Class、Method、Field等
+     * @param accessibleObject 可设置访问权限的对象,比如Class、Method、Field等
      * @return 被设置可访问的对象
      */
     public static <T extends AccessibleObject> T setAccessible(T accessibleObject) {

@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 对象的全局唯一标识符<p>
- * 由12个字节组成，分割如下:
+ * 由12个字节组成,分割如下:
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -262,7 +262,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
     }
 
     /**
-     * 获取生成的机器ID，标识机器/进程/类 加载程序
+     * 获取生成的机器ID,标识机器/进程/类 加载程序
      *
      * @return the int
      */

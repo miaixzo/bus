@@ -31,7 +31,7 @@ import java.util.TimeZone;
 
 /**
  * <p>
- * FastDateFormat 是一个线程安全的 {@link java.text.SimpleDateFormat} 实现。
+ * FastDateFormat 是一个线程安全的 {@link java.text.SimpleDateFormat} 实现
  * </p>
  *
  * <p>
@@ -102,7 +102,7 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例，使用默认格式和地区
+     * 获得 {@link FastDateFormat} 实例,使用默认格式和地区
      *
      * @return {@link FastDateFormat}
      */
@@ -111,7 +111,7 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例，使用默认地区
+     * 获得 {@link FastDateFormat} 实例,使用默认地区
      * 支持缓存
      *
      * @param pattern 使用{@link java.text.SimpleDateFormat} 相同的日期格式

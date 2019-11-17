@@ -29,7 +29,7 @@ import org.aoju.bus.mapper.builder.SqlSourceBuilder;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
- * SqlServerProvider实现类，特殊方法实现类
+ * SqlServerProvider实现类,特殊方法实现类
  *
  * @author Kimi Liu
  * @version 5.2.2

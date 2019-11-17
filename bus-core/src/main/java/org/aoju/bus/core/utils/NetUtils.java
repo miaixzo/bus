@@ -47,11 +47,11 @@ public class NetUtils {
     public final static String LOCAL_IP = "127.0.0.1";
 
     /**
-     * 默认最小端口，1024
+     * 默认最小端口,1024
      */
     public static final int PORT_RANGE_MIN = 1024;
     /**
-     * 默认最大端口，65535
+     * 默认最大端口,65535
      */
     public static final int PORT_RANGE_MAX = 0xFFFF;
 
@@ -66,7 +66,7 @@ public class NetUtils {
         // 直接右移24位
         sb.append((longIP >>> 24));
         sb.append(".");
-        // 将高8位置0，然后右移16位
+        // 将高8位置0,然后右移16位
         sb.append(((longIP & 0x00FFFFFF) >>> 16));
         sb.append(".");
         sb.append(((longIP & 0x0000FFFF) >>> 8));
@@ -132,7 +132,7 @@ public class NetUtils {
 
     /**
      * 查找1024~65535范围内的可用端口
-     * 此方法只检测给定范围内的随机一个端口，检测65535-1024次
+     * 此方法只检测给定范围内的随机一个端口,检测65535-1024次
      * 来自org.springframework.util.SocketUtils
      *
      * @return 可用的端口
@@ -142,8 +142,8 @@ public class NetUtils {
     }
 
     /**
-     * 查找指定范围内的可用端口，最大值为65535
-     * 此方法只检测给定范围内的随机一个端口，检测65535-minPort次
+     * 查找指定范围内的可用端口,最大值为65535
+     * 此方法只检测给定范围内的随机一个端口,检测65535-minPort次
      * 来自org.springframework.util.SocketUtils
      *
      * @param minPort 端口最小值（包含）
@@ -155,7 +155,7 @@ public class NetUtils {
 
     /**
      * 查找指定范围内的可用端口
-     * 此方法只检测给定范围内的随机一个端口，检测maxPort-minPort次
+     * 此方法只检测给定范围内的随机一个端口,检测maxPort-minPort次
      * 来自org.springframework.util.SocketUtils
      *
      * @param minPort 端口最小值（包含）
@@ -197,7 +197,7 @@ public class NetUtils {
 
     /**
      * 判定是否为内网IP
-     * 私有IP：A类 10.0.0.0-10.255.255.255 B类 172.16.0.0-172.31.255.255 C类 192.168.0.0-192.168.255.255 当然，还有127这个网段是环回地址
+     * 私有IP：A类 10.0.0.0-10.255.255.255 B类 172.16.0.0-172.31.255.255 C类 192.168.0.0-192.168.255.255 当然,还有127这个网段是环回地址
      *
      * @param ipAddress IP地址
      * @return 是否为内网IP
@@ -222,7 +222,7 @@ public class NetUtils {
     /**
      * 相对URL转换为绝对URL
      *
-     * @param absoluteBasePath 基准路径，绝对
+     * @param absoluteBasePath 基准路径,绝对
      * @param relativePath     相对路径
      * @return 绝对URL
      */
@@ -257,7 +257,7 @@ public class NetUtils {
 
     /**
      * 构建InetSocketAddress
-     * 当host中包含端口时（用“：”隔开），使用host中的端口，否则使用默认端口
+     * 当host中包含端口时（用“：”隔开）,使用host中的端口,否则使用默认端口
      * 给定host为空时使用本地host（127.0.0.1）
      *
      * @param host        Host
@@ -301,7 +301,7 @@ public class NetUtils {
     /**
      * 获取本机所有网卡
      *
-     * @return 所有网卡，异常返回<code>null</code>
+     * @return 所有网卡, 异常返回<code>null</code>
      * @since 3.0.1
      */
     public static Collection<NetworkInterface> getNetworkInterfaces() {
@@ -317,7 +317,7 @@ public class NetUtils {
 
     /**
      * 获得本机的IPv4地址列表
-     * 返回的IP列表有序，按照系统设备顺序
+     * 返回的IP列表有序,按照系统设备顺序
      *
      * @return IP地址列表 {@link LinkedHashSet}
      */
@@ -335,7 +335,7 @@ public class NetUtils {
 
     /**
      * 获得本机的IPv6地址列表
-     * 返回的IP列表有序，按照系统设备顺序
+     * 返回的IP列表有序,按照系统设备顺序
      *
      * @return IP地址列表 {@link LinkedHashSet}
      */
@@ -368,7 +368,7 @@ public class NetUtils {
 
     /**
      * 获得本机的IP地址列表（包括Ipv4和Ipv6）
-     * 返回的IP列表有序，按照系统设备顺序
+     * 返回的IP列表有序,按照系统设备顺序
      *
      * @return IP地址列表 {@link LinkedHashSet}
      */
@@ -380,7 +380,7 @@ public class NetUtils {
     /**
      * 获取所有满足过滤条件的本地IP地址对象
      *
-     * @param addressFilter 过滤器，null表示不过滤，获取所有地址
+     * @param addressFilter 过滤器,null表示不过滤,获取所有地址
      * @return 过滤后的地址对象列表
      */
     public static LinkedHashSet<InetAddress> localAddressList(Filter<InetAddress> addressFilter) {
@@ -412,13 +412,13 @@ public class NetUtils {
     }
 
     /**
-     * 获取本机网卡IP地址，这个地址为所有网卡中非回路地址的第一个
-     * 如果获取失败调用 {@link InetAddress#getLocalHost()}方法获取。
-     * 此方法不会抛出异常，获取失败将返回<code>null</code>
+     * 获取本机网卡IP地址,这个地址为所有网卡中非回路地址的第一个
+     * 如果获取失败调用 {@link InetAddress#getLocalHost()}方法获取
+     * 此方法不会抛出异常,获取失败将返回<code>null</code>
      * <p>
      * 参考：http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
      *
-     * @return 本机网卡IP地址，获取失败返回<code>null</code>
+     * @return 本机网卡IP地址, 获取失败返回<code>null</code>
      * @since 3.0.7
      */
     public static String getLocalhostStr() {
@@ -430,25 +430,25 @@ public class NetUtils {
     }
 
     /**
-     * 获取本机网卡IP地址，规则如下：
+     * 获取本机网卡IP地址,规则如下：
      *
      * <pre>
-     * 1. 查找所有网卡地址，必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址
-     * 2. 如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址
+     * 1. 查找所有网卡地址,必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址
+     * 2. 如果无满足要求的地址,调用 {@link InetAddress#getLocalHost()} 获取地址
      * </pre>
      * <p>
-     * 此方法不会抛出异常，获取失败将返回<code>null</code>
+     * 此方法不会抛出异常,获取失败将返回<code>null</code>
      *
-     * @return 本机网卡IP地址，获取失败返回<code>null</code>
+     * @return 本机网卡IP地址, 获取失败返回<code>null</code>
      * @since 3.0.1
      */
     public static InetAddress getLocalhost() {
         final LinkedHashSet<InetAddress> localAddressList = localAddressList(new Filter<InetAddress>() {
             @Override
             public boolean accept(InetAddress address) {
-                // 非loopback地址，指127.*.*.*的地址
+                // 非loopback地址,指127.*.*.*的地址
                 return false == address.isLoopbackAddress()
-                        // 非地区本地地址，指10.0.0.0 ~ 10.255.255.255、172.16.0.0 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
+                        // 非地区本地地址,指10.0.0.0 ~ 10.255.255.255、172.16.0.0 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
                         && false == address.isSiteLocalAddress()
                         // 需为IPV4地址
                         && address instanceof Inet4Address;
@@ -479,10 +479,10 @@ public class NetUtils {
     }
 
     /**
-     * 获得指定地址信息中的MAC地址，使用分隔符“-”
+     * 获得指定地址信息中的MAC地址,使用分隔符“-”
      *
      * @param inetAddress {@link InetAddress}
-     * @return MAC地址，用-分隔
+     * @return MAC地址, 用-分隔
      */
     public static String getMacAddress(InetAddress inetAddress) {
         return getMacAddress(inetAddress, "-");
@@ -492,8 +492,8 @@ public class NetUtils {
      * 获得指定地址信息中的MAC地址
      *
      * @param inetAddress {@link InetAddress}
-     * @param separator   分隔符，推荐使用“-”或者“:”
-     * @return MAC地址，用-分隔
+     * @param separator   分隔符,推荐使用“-”或者“:”
+     * @return MAC地址, 用-分隔
      */
     public static String getMacAddress(InetAddress inetAddress, String separator) {
         if (null == inetAddress) {
@@ -525,8 +525,8 @@ public class NetUtils {
     /**
      * 创建 {@link InetSocketAddress}
      *
-     * @param host 域名或IP地址，空表示任意地址
-     * @param port 端口，0表示系统分配临时端口
+     * @param host 域名或IP地址,空表示任意地址
+     * @param port 端口,0表示系统分配临时端口
      * @return {@link InetSocketAddress}
      * @since 3.3.0
      */
@@ -628,7 +628,7 @@ public class NetUtils {
     }
 
     /**
-     * 检测给定字符串是否为未知，多用于检测HTTP请求相关
+     * 检测给定字符串是否为未知,多用于检测HTTP请求相关
      *
      * @param checkString 被检测的字符串
      * @return 是否未知

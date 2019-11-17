@@ -42,7 +42,7 @@ import java.util.*;
  * Bean工具类
  *
  * <p>
- * 把一个拥有对属性进行set和get方法的类，我们就可以称之为JavaBean。
+ * 把一个拥有对属性进行set和get方法的类,我们就可以称之为JavaBean
  * </p>
  *
  * @author Kimi Liu
@@ -156,7 +156,7 @@ public class BeanUtils {
     }
 
     /**
-     * 获得字段名和字段描述Map，获得的结果会缓存在 {@link BeanInfoCache}中
+     * 获得字段名和字段描述Map,获得的结果会缓存在 {@link BeanInfoCache}中
      *
      * @param clazz      Bean类
      * @param ignoreCase 是否忽略大小写
@@ -172,7 +172,7 @@ public class BeanUtils {
     }
 
     /**
-     * 获得字段名和字段描述Map。内部使用，直接获取Bean类的PropertyDescriptor
+     * 获得字段名和字段描述Map 内部使用,直接获取Bean类的PropertyDescriptor
      *
      * @param clazz      Bean类
      * @param ignoreCase 是否忽略大小写
@@ -190,7 +190,7 @@ public class BeanUtils {
     }
 
     /**
-     * 获得Bean类属性描述，大小写敏感
+     * 获得Bean类属性描述,大小写敏感
      *
      * @param clazz     Bean类
      * @param fieldName 字段名
@@ -214,11 +214,11 @@ public class BeanUtils {
     }
 
     /**
-     * 获得字段值，通过反射直接获得字段值，并不调用getXXX方法
-     * 对象同样支持Map类型，fieldNameOrIndex即为key
+     * 获得字段值,通过反射直接获得字段值,并不调用getXXX方法
+     * 对象同样支持Map类型,fieldNameOrIndex即为key
      *
      * @param bean             Bean对象
-     * @param fieldNameOrIndex 字段名或序号，序号支持负数
+     * @param fieldNameOrIndex 字段名或序号,序号支持负数
      * @return 字段值
      */
     public static Object getFieldValue(Object bean, String fieldNameOrIndex) {
@@ -238,11 +238,11 @@ public class BeanUtils {
     }
 
     /**
-     * 设置字段值，，通过反射设置字段值，并不调用setXXX方法
-     * 对象同样支持Map类型，fieldNameOrIndex即为key
+     * 设置字段值,,通过反射设置字段值,并不调用setXXX方法
+     * 对象同样支持Map类型,fieldNameOrIndex即为key
      *
      * @param bean             Bean
-     * @param fieldNameOrIndex 字段名或序号，序号支持负数
+     * @param fieldNameOrIndex 字段名或序号,序号支持负数
      * @param value            值
      */
     public static void setFieldValue(Object bean, String fieldNameOrIndex, Object value) {
@@ -261,8 +261,8 @@ public class BeanUtils {
     /**
      * 解析Bean中的属性值
      *
-     * @param bean       Bean对象，支持Map、List、Collection、Array
-     * @param expression 表达式，例如：person.friend[5].name
+     * @param bean       Bean对象,支持Map、List、Collection、Array
+     * @param expression 表达式,例如：person.friend[5].name
      * @return Bean属性值
      * @see BeanPath#get(Object)
      * @since 3.0.7
@@ -274,8 +274,8 @@ public class BeanUtils {
     /**
      * 解析Bean中的属性值
      *
-     * @param bean       Bean对象，支持Map、List、Collection、Array
-     * @param expression 表达式，例如：person.friend[5].name
+     * @param bean       Bean对象,支持Map、List、Collection、Array
+     * @param expression 表达式,例如：person.friend[5].name
      * @param value      值
      * @see BeanPath#get(Object)
      */
@@ -337,7 +337,7 @@ public class BeanUtils {
     }
 
     /**
-     * 使用Map填充Bean对象，可配置将下划线转换为驼峰
+     * 使用Map填充Bean对象,可配置将下划线转换为驼峰
      *
      * @param <T>           Bean类型
      * @param map           Map
@@ -351,7 +351,7 @@ public class BeanUtils {
     }
 
     /**
-     * 使用Map填充Bean对象，忽略大小写
+     * 使用Map填充Bean对象,忽略大小写
      *
      * @param <T>           Bean类型
      * @param map           Map
@@ -417,7 +417,7 @@ public class BeanUtils {
      * @param <T>           Bean类型
      * @param beanClass     Bean Class
      * @param valueProvider 值提供者
-     * @param copyOptions   拷贝选项，见 {@link CopyOptions}
+     * @param copyOptions   拷贝选项,见 {@link CopyOptions}
      * @return Bean
      */
     public static <T> T toBean(Class<T> beanClass, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
@@ -430,7 +430,7 @@ public class BeanUtils {
      * @param <T>           Bean类型
      * @param bean          Bean
      * @param valueProvider 值提供者
-     * @param copyOptions   拷贝选项，见 {@link CopyOptions}
+     * @param copyOptions   拷贝选项,见 {@link CopyOptions}
      * @return Bean
      */
     public static <T> T fillBean(T bean, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
@@ -442,7 +442,7 @@ public class BeanUtils {
     }
 
     /**
-     * 对象转Map，不进行驼峰转下划线，不忽略值为空的字段
+     * 对象转Map,不进行驼峰转下划线,不忽略值为空的字段
      *
      * @param bean bean对象
      * @return Map
@@ -489,18 +489,18 @@ public class BeanUtils {
 
     /**
      * 对象转Map
-     * 通过实现{@link Editor} 可以自定义字段值，如果这个Editor返回null则忽略这个字段，以便实现：
+     * 通过实现{@link Editor} 可以自定义字段值,如果这个Editor返回null则忽略这个字段,以便实现：
      *
      * <pre>
-     * 1. 字段筛选，可以去除不需要的字段
-     * 2. 字段变换，例如实现驼峰转下划线
+     * 1. 字段筛选,可以去除不需要的字段
+     * 2. 字段变换,例如实现驼峰转下划线
      * 3. 自定义字段前缀或后缀等等
      * </pre>
      *
      * @param bean            bean对象
      * @param targetMap       目标的Map
      * @param ignoreNullValue 是否忽略值为空的字段
-     * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key
+     * @param keyEditor       属性字段（Map的key）编辑器,用于筛选、编辑key
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
@@ -548,7 +548,7 @@ public class BeanUtils {
 
     /**
      * 复制Bean对象属性
-     * 限制类用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
+     * 限制类用于限制拷贝的属性,例如一个类我只想复制其父类的一些属性,就可以将editable设置为父类
      *
      * @param source           源Bean对象
      * @param target           目标Bean对象
@@ -571,11 +571,11 @@ public class BeanUtils {
 
     /**
      * 复制Bean对象属性
-     * 限制类用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
+     * 限制类用于限制拷贝的属性,例如一个类我只想复制其父类的一些属性,就可以将editable设置为父类
      *
      * @param source      源Bean对象
      * @param target      目标Bean对象
-     * @param copyOptions 拷贝选项，见 {@link CopyOptions}
+     * @param copyOptions 拷贝选项,见 {@link CopyOptions}
      */
     public static void copyProperties(Object source, Object target, CopyOptions copyOptions) {
         if (null == copyOptions) {
@@ -586,12 +586,12 @@ public class BeanUtils {
 
     /**
      * 给定的Bean的类名是否匹配指定类名字符串
-     * 如果isSimple为{@code false}，则只匹配类名而忽略包名
-     * 如果isSimple为{@code true}，则匹配包括包名的全类名
+     * 如果isSimple为{@code false},则只匹配类名而忽略包名
+     * 如果isSimple为{@code true},则匹配包括包名的全类名
      *
      * @param bean          Bean
      * @param beanClassName Bean的类名
-     * @param isSimple      是否只匹配类名而忽略包名，true表示忽略包名
+     * @param isSimple      是否只匹配类名而忽略包名,true表示忽略包名
      * @return 是否匹配
      */
     public static boolean isMatchName(Object bean, String beanClassName, boolean isSimple) {
@@ -599,9 +599,9 @@ public class BeanUtils {
     }
 
     /**
-     * 把Bean里面的String属性做trim操作。
+     * 把Bean里面的String属性做trim操作
      * <p>
-     * 通常bean直接用来绑定页面的input，用户的输入可能首尾存在空格，通常保存数据库前需要把首尾空格去掉
+     * 通常bean直接用来绑定页面的input,用户的输入可能首尾存在空格,通常保存数据库前需要把首尾空格去掉
      *
      * @param <T>          Bean类型
      * @param bean         Bean对象
@@ -625,7 +625,7 @@ public class BeanUtils {
                 if (null != val) {
                     final String trimVal = StringUtils.trim(val);
                     if (false == val.equals(trimVal)) {
-                        // Field Value不为null，且首尾有空格才处理
+                        // Field Value不为null,且首尾有空格才处理
                         ReflectUtils.setFieldValue(bean, field, trimVal);
                     }
                 }
@@ -636,10 +636,10 @@ public class BeanUtils {
     }
 
     /**
-     * 判断Bean是否为空对象，空对象表示本身为<code>null</code>或者所有属性都为<code>null</code>
+     * 判断Bean是否为空对象,空对象表示本身为<code>null</code>或者所有属性都为<code>null</code>
      *
      * @param bean Bean对象
-     * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
+     * @return 是否为空, <code>true</code> - 空 / <code>false</code> - 非空
      */
     public static boolean isEmpty(Object bean) {
         if (null != bean) {
@@ -657,7 +657,7 @@ public class BeanUtils {
      * 对象本身为<code>null</code>也返回true
      *
      * @param bean Bean对象
-     * @return 是否包含值为<code>null</code>的属性，<code>true</code> - 包含 / <code>false</code> - 不包含
+     * @return 是否包含值为<code>null</code>的属性,<code>true</code> - 包含 / <code>false</code> - 不包含
      */
     public static boolean hasNullField(Object bean) {
         if (null == bean) {

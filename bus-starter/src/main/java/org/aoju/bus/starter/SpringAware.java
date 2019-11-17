@@ -102,7 +102,7 @@ public class SpringAware implements ApplicationContextAware {
     }
 
     /**
-     * 依据类型获取所有子类(key为spring的id，value为对象实例)
+     * 依据类型获取所有子类(key为spring的id,value为对象实例)
      *
      * @param <T>          对象
      * @param requiredType 类型

@@ -66,7 +66,7 @@ public class LocaleMessage {
      * @return 返回获取到的结果
      */
     public String getMessage(String code, Object[] args, String defaultMessage) {
-        //这里使用比较方便的方法，不依赖request.
+        //这里使用比较方便的方法,不依赖request.
         return messageSource.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
     }
 

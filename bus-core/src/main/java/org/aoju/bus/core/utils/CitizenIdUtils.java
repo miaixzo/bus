@@ -43,11 +43,11 @@ import java.util.Map;
 public class CitizenIdUtils {
 
     /**
-     * 中国公民身份证号码最小长度。
+     * 中国公民身份证号码最小长度
      */
     private static final int CHINA_ID_MIN_LENGTH = 15;
     /**
-     * 中国公民身份证号码最大长度。
+     * 中国公民身份证号码最大长度
      */
     private static final int CHINA_ID_MAX_LENGTH = 18;
     /**
@@ -132,9 +132,9 @@ public class CitizenIdUtils {
         twFirstCode.put("O", 35);
 
         hkFirstCode.put("A", 1);// 持证人拥有香港居留权
-        hkFirstCode.put("B", 2);// 持证人所报称的出生日期或地点自首次登记以后，曾作出更改
+        hkFirstCode.put("B", 2);// 持证人所报称的出生日期或地点自首次登记以后,曾作出更改
         hkFirstCode.put("C", 3);// 持证人登记领证时在香港的居留受到入境事务处处长的限制
-        hkFirstCode.put("N", 14);// 持证人所报的姓名自首次登记以后，曾作出更改
+        hkFirstCode.put("N", 14);// 持证人所报的姓名自首次登记以后,曾作出更改
         hkFirstCode.put("O", 15);// 持证人报称在香港、澳门及中国以外其他地区或国家出生
         hkFirstCode.put("R", 18);// 持证人拥有香港入境权
         hkFirstCode.put("U", 21);// 持证人登记领证时在香港的居留不受入境事务处处长的限制
@@ -161,7 +161,7 @@ public class CitizenIdUtils {
             // 获取出生年(完全表现形式,如：2010)
             int sYear = DateUtils.year(birthDate);
             if (sYear > 2000) {
-                // 2000年之后不存在15位身份证号，此处用于修复此问题的判断
+                // 2000年之后不存在15位身份证号,此处用于修复此问题的判断
                 sYear -= 100;
             }
             idCard18 = new StringBuilder().append(idCard, 0, 6).append(sYear).append(idCard.substring(8));
@@ -177,7 +177,7 @@ public class CitizenIdUtils {
     /**
      * 是否有效身份证号
      *
-     * @param idCard 身份证号，支持18位、15位和港澳台的10位
+     * @param idCard 身份证号,支持18位、15位和港澳台的10位
      * @return 是否有效
      */
     public static boolean isValidCard(String idCard) {
@@ -188,7 +188,7 @@ public class CitizenIdUtils {
                 return isvalidCard18(idCard);
             case 15:// 15位身份证
                 return isvalidCard15(idCard);
-            case 10: {// 10位身份证，港澳台地区
+            case 10: {// 10位身份证,港澳台地区
                 String[] cardval = isValidCard10(idCard);
                 return null != cardval && cardval[2].equals("true");
             }
@@ -201,10 +201,10 @@ public class CitizenIdUtils {
      * <p>
      * 判断18位身份证的合法性
      * </p>
-     * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定，公民身份号码是特征组合码，由十七位数字本体码和一位数字校验码组成。
-     * 排列顺序从左至右依次为：六位数字地址码，八位数字出生日期码，三位数字顺序码和一位数字校验码。
+     * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定,公民身份号码是特征组合码,由十七位数字本体码和一位数字校验码组成
+     * 排列顺序从左至右依次为：六位数字地址码,八位数字出生日期码,三位数字顺序码和一位数字校验码
      * <p>
-     * 顺序码: 表示在同一地址码所标识的区域范围内，对同年、同月、同 日出生的人编定的顺序号，顺序码的奇数分配给男性，偶数分配 给女性。
+     * 顺序码: 表示在同一地址码所标识的区域范围内,对同年、同月、同 日出生的人编定的顺序号,顺序码的奇数分配给男性,偶数分配 给女性
      * </p>
      * <ol>
      * <li>第1、2位数字表示：所在省份的代码</li>
@@ -212,17 +212,17 @@ public class CitizenIdUtils {
      * <li>第5、6位数字表示：所在区县的代码</li>
      * <li>第7~14位数字表示：出生年、月、日</li>
      * <li>第15、16位数字表示：所在地的派出所的代码</li>
-     * <li>第17位数字表示性别：奇数表示男性，偶数表示女性</li>
-     * <li>第18位数字是校检码，用来检验身份证的正确性。校检码可以是0~9的数字，有时也用x表示</li>
+     * <li>第17位数字表示性别：奇数表示男性,偶数表示女性</li>
+     * <li>第18位数字是校检码,用来检验身份证的正确性 校检码可以是0~9的数字,有时也用x表示</li>
      * </ol>
      * <p>
      * 第十八位数字(校验码)的计算方法为：
      * <ol>
-     * <li>将前面的身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2</li>
+     * <li>将前面的身份证号码17位数分别乘以不同的系数 从第一位到第十七位的系数分别为：7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2</li>
      * <li>将这17位数字和系数相乘的结果相加</li>
-     * <li>用加出来和除以11，看余数是多少</li>
-     * <li>余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字。其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3 2</li>
-     * <li>通过上面得知如果余数是2，就会在身份证的第18位数字上出现罗马数字的Ⅹ。如果余数是10，身份证的最后一位号码就是2</li>
+     * <li>用加出来和除以11,看余数是多少</li>
+     * <li>余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字 其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3 2</li>
+     * <li>通过上面得知如果余数是2,就会在身份证的第18位数字上出现罗马数字的Ⅹ 如果余数是10,身份证的最后一位号码就是2</li>
      * </ol>
      *
      * @param idCard 待验证的身份证
@@ -342,12 +342,12 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 验证香港身份证号码(存在Bug，部份特殊身份证无法检查)
+     * 验证香港身份证号码(存在Bug,部份特殊身份证无法检查)
      * <p>
-     * 身份证前2位为英文字符，如果只出现一个英文字符则表示第一位是空格，对应数字58 前2位英文字符A-Z分别对应数字10-35 最后一位校验码为0-9的数字加上字符"A"，"A"代表10
+     * 身份证前2位为英文字符,如果只出现一个英文字符则表示第一位是空格,对应数字58 前2位英文字符A-Z分别对应数字10-35 最后一位校验码为0-9的数字加上字符"A","A"代表10
      * </p>
      * <p>
-     * 将身份证号码全部转换为数字，分别对应乘9-1相加的总和，整除11则证件号码有效
+     * 将身份证号码全部转换为数字,分别对应乘9-1相加的总和,整除11则证件号码有效
      * </p>
      *
      * @param idCard 身份证号码
@@ -379,7 +379,7 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取生日，只支持15或18位身份证号码
+     * 根据身份编号获取生日,只支持15或18位身份证号码
      *
      * @param idCard 身份编号
      * @return 生日(yyyyMMdd)
@@ -390,7 +390,7 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取生日，只支持15或18位身份证号码
+     * 根据身份编号获取生日,只支持15或18位身份证号码
      *
      * @param idCard 身份编号
      * @return 生日(yyyyMMdd)
@@ -406,7 +406,7 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 从身份证号码中获取生日日期，只支持15或18位身份证号码
+     * 从身份证号码中获取生日日期,只支持15或18位身份证号码
      *
      * @param idCard 身份证号码
      * @return 日期
@@ -417,7 +417,7 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取年龄，只支持15或18位身份证号码
+     * 根据身份编号获取年龄,只支持15或18位身份证号码
      *
      * @param idCard 身份编号
      * @return 年龄
@@ -427,10 +427,10 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取指定日期当时的年龄年龄，只支持15或18位身份证号码
+     * 根据身份编号获取指定日期当时的年龄年龄,只支持15或18位身份证号码
      *
      * @param idCard        身份编号
-     * @param dateToCompare 以此日期为界，计算年龄。
+     * @param dateToCompare 以此日期为界,计算年龄
      * @return 年龄
      */
     public static int getAgeByIdCard(String idCard, Date dateToCompare) {
@@ -439,7 +439,7 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取生日年，只支持15或18位身份证号码
+     * 根据身份编号获取生日年,只支持15或18位身份证号码
      *
      * @param idCard 身份编号
      * @return 生日(yyyy)
@@ -455,7 +455,7 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取生日月，只支持15或18位身份证号码
+     * 根据身份编号获取生日月,只支持15或18位身份证号码
      *
      * @param idCard 身份编号
      * @return 生日(MM)
@@ -471,7 +471,7 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取生日天，只支持15或18位身份证号码
+     * 根据身份编号获取生日天,只支持15或18位身份证号码
      *
      * @param idCard 身份编号
      * @return 生日(dd)
@@ -487,10 +487,10 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取性别，只支持15或18位身份证号码
+     * 根据身份编号获取性别,只支持15或18位身份证号码
      *
      * @param idCard 身份编号
-     * @return 性别(1 : 男 ， 0 : 女)
+     * @return 性别(1 : 男, 0 : 女)
      */
     public static int getGenderByIdCard(String idCard) {
         Assert.notBlank(idCard);
@@ -513,10 +513,10 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 根据身份编号获取户籍省份，只支持15或18位身份证号码
+     * 根据身份编号获取户籍省份,只支持15或18位身份证号码
      *
      * @param idCard 身份编码
-     * @return 省级编码。
+     * @return 省级编码
      */
     public static String getProvinceByIdCard(String idCard) {
         int len = idCard.length();
@@ -588,10 +588,10 @@ public class CitizenIdUtils {
     }
 
     /**
-     * 将身份证的每位和对应位的加权因子相乘之后，再得到和值
+     * 将身份证的每位和对应位的加权因子相乘之后,再得到和值
      *
      * @param iArr
-     * @return 身份证编码。
+     * @return 身份证编码
      */
     private static int getPowerSum(char[] iArr) {
         int iSum = 0;

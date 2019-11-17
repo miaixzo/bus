@@ -83,7 +83,7 @@ public class UriUtils {
     }
 
     /**
-     * 将URL字符串转换为URL对象，并做必要验证
+     * 将URL字符串转换为URL对象,并做必要验证
      *
      * @param urlStr URL字符串
      * @return URL
@@ -93,7 +93,7 @@ public class UriUtils {
     }
 
     /**
-     * 将URL字符串转换为URL对象，并做必要验证
+     * 将URL字符串转换为URL对象,并做必要验证
      *
      * @param urlStr  URL字符串
      * @param handler {@link URLStreamHandler}
@@ -101,7 +101,7 @@ public class UriUtils {
      */
     public static URL toUrlForHttp(String urlStr, URLStreamHandler handler) {
         Assert.notBlank(urlStr, "Url is blank !");
-        // 去掉url中的空白符，防止空白符导致的异常
+        // 去掉url中的空白符,防止空白符导致的异常
         urlStr = StringUtils.cleanBlank(urlStr);
         return UriUtils.url(urlStr, handler);
     }
@@ -130,7 +130,7 @@ public class UriUtils {
     }
 
     /**
-     * 获得URL，常用于使用绝对路径时的情况
+     * 获得URL,常用于使用绝对路径时的情况
      *
      * @param file URL对应的文件对象
      * @return URL
@@ -146,7 +146,7 @@ public class UriUtils {
     }
 
     /**
-     * 获得URL，常用于使用绝对路径时的情况
+     * 获得URL,常用于使用绝对路径时的情况
      *
      * @param files URL对应的文件对象
      * @return URL
@@ -169,7 +169,7 @@ public class UriUtils {
      * 格式化URL链接
      *
      * @param url 需要格式化的URL
-     * @return 格式化后的URL，如果提供了null或者空串，返回null
+     * @return 格式化后的URL, 如果提供了null或者空串, 返回null
      * @see #normalize(String)
      */
     public static String formatUrl(String url) {
@@ -200,8 +200,8 @@ public class UriUtils {
     }
 
     /**
-     * 编码URL，默认使用UTF-8编码
-     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     * 编码URL,默认使用UTF-8编码
+     * 将需要转换的内容（ASCII码形式之外的内容）,用十六进制表示法转换出来,并在之前加上%开头
      *
      * @param url URL
      * @return 编码后的URL
@@ -213,8 +213,8 @@ public class UriUtils {
     }
 
     /**
-     * 编码URL，默认使用UTF-8编码
-     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     * 编码URL,默认使用UTF-8编码
+     * 将需要转换的内容（ASCII码形式之外的内容）,用十六进制表示法转换出来,并在之前加上%开头
      *
      * @param url URL
      * @return 编码后的URL
@@ -225,7 +225,7 @@ public class UriUtils {
 
     /**
      * 编码URL
-     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     * 将需要转换的内容（ASCII码形式之外的内容）,用十六进制表示法转换出来,并在之前加上%开头
      *
      * @param url     URL
      * @param charset 编码
@@ -258,7 +258,7 @@ public class UriUtils {
 
     /**
      * 从URL对象中获取不被编码的路径Path
-     * 对于本地路径，URL对象的getPath方法对于包含中文或空格时会被编码，导致本读路径读取错误。
+     * 对于本地路径,URL对象的getPath方法对于包含中文或空格时会被编码,导致本读路径读取错误
      * 此方法将URL转为URI后获取路径用于解决路径被编码的问题
      *
      * @param url {@link URL}
@@ -396,7 +396,7 @@ public class UriUtils {
     }
 
     /**
-     * 标准化URL字符串，包括：
+     * 标准化URL字符串,包括：
      * <pre>
      * 1. 多个/替换为一个
      * </pre>
@@ -897,12 +897,12 @@ public class UriUtils {
     }
 
     /**
-     * 对URL参数做编码，只编码键和值<br>
-     * 提供的值可以是url附带参数，但是不能只是url
+     * 对URL参数做编码,只编码键和值<br>
+     * 提供的值可以是url附带参数,但是不能只是url
      *
-     * <p>注意，此方法只能标准化整个URL，并不适合于单独编码参数值</p>
+     * <p>注意,此方法只能标准化整个URL,并不适合于单独编码参数值</p>
      *
-     * @param paramsStr url参数，可以包含url本身
+     * @param paramsStr url参数,可以包含url本身
      * @param charset   编码
      * @return 编码后的url和参数
      */
@@ -911,7 +911,7 @@ public class UriUtils {
             return Normal.EMPTY;
         }
 
-        String urlPart = null; // url部分，不包括问号
+        String urlPart = null; // url部分,不包括问号
         String paramPart; // 参数部分
         int pathEndPos = paramsStr.indexOf('?');
         if (pathEndPos > -1) {
@@ -919,7 +919,7 @@ public class UriUtils {
             urlPart = StringUtils.subPre(paramsStr, pathEndPos);
             paramPart = StringUtils.subSuf(paramsStr, pathEndPos + 1);
             if (StringUtils.isBlank(paramPart)) {
-                // 无参数，返回url
+                // 无参数,返回url
                 return urlPart;
             }
         } else {
@@ -933,9 +933,9 @@ public class UriUtils {
     }
 
     /**
-     * 标准化参数字符串，即URL中？后的部分
+     * 标准化参数字符串,即URL中？后的部分
      *
-     * <p>注意，此方法只能标准化整个URL，并不适合于单独编码参数值</p>
+     * <p>注意,此方法只能标准化整个URL,并不适合于单独编码参数值</p>
      *
      * @param paramPart 参数字符串
      * @param charset   编码
@@ -952,14 +952,14 @@ public class UriUtils {
             c = paramPart.charAt(i);
             if (c == '=') { // 键值对的分界点
                 if (null == name) {
-                    // 只有=前未定义name时被当作键值分界符，否则做为普通字符
+                    // 只有=前未定义name时被当作键值分界符,否则做为普通字符
                     name = (pos == i) ? Normal.EMPTY : paramPart.substring(pos, i);
                     pos = i + 1;
                 }
             } else if (c == '&') { // 参数对的分界点
                 if (pos != i) {
                     if (null == name) {
-                        // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                        // 对于像&a&这类无参数值的字符串,我们将name为a的值设为""
                         name = paramPart.substring(pos, i);
                         builder.append(UriUtils.encodeQuery(name, charset)).append('=');
                     } else {
@@ -992,7 +992,7 @@ public class UriUtils {
 
     /**
      * 将Map形式的Form表单数据转换为Url参数形式<br>
-     * paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""）<br>
+     * paramMap中如果key为空（null和""）会被忽略,如果value为null,会被做为空白符（""）<br>
      * 会自动url编码键和值
      *
      * <pre>
@@ -1092,7 +1092,7 @@ public class UriUtils {
                 pos = i + 1;
             } else if (c == '&') { // 参数对的分界点
                 if (null == name && pos != i) {
-                    // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                    // 对于像&a&这类无参数值的字符串,我们将name为a的值设为""
                     addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
                 } else if (name != null) {
                     addParam(map, name, params.substring(pos, i), charset);
@@ -1118,7 +1118,7 @@ public class UriUtils {
 
     /**
      * 将表单数据加到URL中（用于GET表单提交）<br>
-     * 表单的键值对会被url编码，但是url中原参数不会被编码
+     * 表单的键值对会被url编码,但是url中原参数不会被编码
      *
      * @param url            URL
      * @param form           表单数据

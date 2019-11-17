@@ -59,7 +59,7 @@ public class TaskExecutorManager {
         synchronized (this.executors) {
             this.executors.add(executor);
         }
-        // 子线程是否为deamon线程取决于父线程，因此此处无需显示调用
+        // 子线程是否为deamon线程取决于父线程,因此此处无需显示调用
         // executor.setDaemon(this.scheduler.daemon);
 //		executor.start();
         this.scheduler.threadExecutor.execute(executor);
@@ -67,7 +67,7 @@ public class TaskExecutorManager {
     }
 
     /**
-     * 执行器执行完毕调用此方法，将执行器从执行器列表移除
+     * 执行器执行完毕调用此方法,将执行器从执行器列表移除
      *
      * @param executor 执行器 {@link TaskExecutor}
      * @return this

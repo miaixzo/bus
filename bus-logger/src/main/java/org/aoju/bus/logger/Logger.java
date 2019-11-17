@@ -28,7 +28,7 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.level.Level;
 
 /**
- * 静态日志类，用于在不引入日志对象的情况下打印日志
+ * 静态日志类,用于在不引入日志对象的情况下打印日志
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -43,10 +43,10 @@ public final class Logger {
     }
 
     /**
-     * Trace等级日志，小于debug
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
+     * Trace等级日志,小于debug
+     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void trace(String format, Object... arguments) {
@@ -54,10 +54,10 @@ public final class Logger {
     }
 
     /**
-     * Trace等级日志，小于Debug
+     * Trace等级日志,小于Debug
      *
      * @param log       日志对象
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void trace(Log log, String format, Object... arguments) {
@@ -65,10 +65,10 @@ public final class Logger {
     }
 
     /**
-     * Debug等级日志，小于Info
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
+     * Debug等级日志,小于Info
+     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void debug(String format, Object... arguments) {
@@ -76,10 +76,10 @@ public final class Logger {
     }
 
     /**
-     * Debug等级日志，小于Info
+     * Debug等级日志,小于Info
      *
      * @param log       日志对象
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void debug(Log log, String format, Object... arguments) {
@@ -87,10 +87,10 @@ public final class Logger {
     }
 
     /**
-     * Info等级日志，小于Warn
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
+     * Info等级日志,小于Warn
+     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void info(String format, Object... arguments) {
@@ -98,10 +98,10 @@ public final class Logger {
     }
 
     /**
-     * Info等级日志，小于Warn
+     * Info等级日志,小于Warn
      *
      * @param log       日志对象
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void info(Log log, String format, Object... arguments) {
@@ -109,10 +109,10 @@ public final class Logger {
     }
 
     /**
-     * Warn等级日志，小于Error
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
+     * Warn等级日志,小于Error
+     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void warn(String format, Object... arguments) {
@@ -120,11 +120,11 @@ public final class Logger {
     }
 
     /**
-     * Warn等级日志，小于Error
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
+     * Warn等级日志,小于Error
+     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
      * @param e         需在日志中堆栈打印的异常
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void warn(Throwable e, String format, Object... arguments) {
@@ -132,10 +132,10 @@ public final class Logger {
     }
 
     /**
-     * Warn等级日志，小于Error
+     * Warn等级日志,小于Error
      *
      * @param log       日志对象
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void warn(Log log, String format, Object... arguments) {
@@ -143,11 +143,11 @@ public final class Logger {
     }
 
     /**
-     * Warn等级日志，小于Error
+     * Warn等级日志,小于Error
      *
      * @param log       日志对象
      * @param e         需在日志中堆栈打印的异常
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void warn(Log log, Throwable e, String format, Object... arguments) {
@@ -156,7 +156,7 @@ public final class Logger {
 
     /**
      * Error等级日志
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
+     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
      * @param e 需在日志中堆栈打印的异常
      */
@@ -166,9 +166,9 @@ public final class Logger {
 
     /**
      * Error等级日志
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
+     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void error(String format, Object... arguments) {
@@ -177,10 +177,10 @@ public final class Logger {
 
     /**
      * Error等级日志
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！！
+     * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
      * @param e         需在日志中堆栈打印的异常
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void error(Throwable e, String format, Object... arguments) {
@@ -201,7 +201,7 @@ public final class Logger {
      * Error等级日志
      *
      * @param log       日志对象
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void error(Log log, String format, Object... arguments) {
@@ -213,7 +213,7 @@ public final class Logger {
      *
      * @param log       日志对象
      * @param e         需在日志中堆栈打印的异常
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void error(Log log, Throwable e, String format, Object... arguments) {
@@ -225,7 +225,7 @@ public final class Logger {
      *
      * @param level     日志级别
      * @param t         需在日志中堆栈打印的异常
-     * @param format    格式文本，{} 代表变量
+     * @param format    格式文本,{} 代表变量
      * @param arguments 变量对应的参数
      */
     public static void log(Level level, Throwable t, String format, Object... arguments) {
@@ -253,7 +253,7 @@ public final class Logger {
     }
 
     /**
-     * @return 获得日志，自动判定日志发出者
+     * @return 获得日志, 自动判定日志发出者
      */
     public static Log get() {
         return LogFactory.get(CallerUtils.getCallers());

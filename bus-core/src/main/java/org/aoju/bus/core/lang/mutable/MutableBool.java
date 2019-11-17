@@ -36,7 +36,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
     private boolean value;
 
     /**
-     * 构造，默认值0
+     * 构造,默认值0
      */
     public MutableBool() {
         super();
@@ -91,7 +91,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
      * </ol>
      *
      * @param obj 比对的对象
-     * @return 相同返回<code>true</code>，否则 <code>false</code>
+     * @return 相同返回<code>true</code>,否则 <code>false</code>
      */
     @Override
     public boolean equals(final Object obj) {
@@ -110,7 +110,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
      * 比较
      *
      * @param other 其它 {@link MutableBool} 对象
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      */
     @Override
     public int compareTo(final MutableBool other) {

@@ -100,9 +100,9 @@ public class GitlabProvider extends DefaultProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      * @since 2.0.1
      */

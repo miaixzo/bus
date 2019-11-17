@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 public interface SelectCountMapper<T> {
 
     /**
-     * 根据实体中的属性查询总数，查询条件使用等号
+     * 根据实体中的属性查询总数,查询条件使用等号
      *
      * @param record 对象
      * @return 对象

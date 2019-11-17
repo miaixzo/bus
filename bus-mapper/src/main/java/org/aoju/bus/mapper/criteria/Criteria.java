@@ -259,7 +259,7 @@ public class Criteria {
     }
 
     /**
-     * 手写左边条件，右边用value值
+     * 手写左边条件,右边用value值
      *
      * @param condition 例如 "length(countryname)="
      * @param value     例如 5
@@ -293,7 +293,7 @@ public class Criteria {
     }
 
     /**
-     * 将此对象的所有字段参数作为相等查询条件，如果字段为 null，则为 is null
+     * 将此对象的所有字段参数作为相等查询条件,如果字段为 null,则为 is null
      *
      * @param param 参数对象
      * @return the Criteria
@@ -414,7 +414,7 @@ public class Criteria {
     }
 
     /**
-     * 手写左边条件，右边用value值
+     * 手写左边条件,右边用value值
      *
      * @param condition 例如 "length(countryname)="
      * @param value     例如 5
@@ -448,7 +448,7 @@ public class Criteria {
     }
 
     /**
-     * 将此对象的所有字段参数作为相等查询条件，如果字段为 null，则为 is null
+     * 将此对象的所有字段参数作为相等查询条件,如果字段为 null,则为 is null
      *
      * @param param 参数对象
      * @return the Criteria

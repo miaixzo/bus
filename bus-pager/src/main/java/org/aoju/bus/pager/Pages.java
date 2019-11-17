@@ -43,7 +43,7 @@ public class Pages<T> extends PageSerializable<T> {
     //当前页的数量
     private int size;
 
-    //由于startRow和endRow不常用，这里说个具体的用法
+    //由于startRow和endRow不常用,这里说个具体的用法
     //可以在页面中"显示startRow到endRow 共size条数据"
 
     //当前页面第一个元素在数据库中的行号
@@ -102,7 +102,7 @@ public class Pages<T> extends PageSerializable<T> {
 
             this.pages = page.getPages();
             this.size = page.size();
-            //由于结果是>startRow的，所以实际的需要+1
+            //由于结果是>startRow的,所以实际的需要+1
             if (this.size == 0) {
                 this.startRow = 0;
                 this.endRow = 0;
@@ -124,7 +124,7 @@ public class Pages<T> extends PageSerializable<T> {
             this.navigatePages = navigatePages;
             //计算导航页
             calcNavigatepageNums();
-            //计算前后页，第一页，最后一页
+            //计算前后页,第一页,最后一页
             calcPage();
             //判断页面边界
             judgePageBoudary();
@@ -176,7 +176,7 @@ public class Pages<T> extends PageSerializable<T> {
     }
 
     /**
-     * 计算前后页，第一页，最后一页
+     * 计算前后页,第一页,最后一页
      */
     private void calcPage() {
         if (navigatepageNums != null && navigatepageNums.length > 0) {

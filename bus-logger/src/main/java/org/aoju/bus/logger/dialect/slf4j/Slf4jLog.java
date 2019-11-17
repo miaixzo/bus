@@ -43,7 +43,7 @@ public class Slf4jLog extends AbstractAware {
 
     private final transient Logger logger;
     /**
-     * 是否为 LocationAwareLogger ，用于判断是否可以传递FQCN
+     * 是否为 LocationAwareLogger ,用于判断是否可以传递FQCN
      */
     private final boolean isLocationAwareLogger;
 
@@ -63,7 +63,7 @@ public class Slf4jLog extends AbstractAware {
     /**
      * 获取Slf4j Logger对象
      *
-     * @param clazz 打印日志所在类，当为{@code null}时使用“null”表示
+     * @param clazz 打印日志所在类,当为{@code null}时使用“null”表示
      * @return {@link Logger}
      */
     private static Logger getSlf4jLogger(Class<?> clazz) {
@@ -180,15 +180,15 @@ public class Slf4jLog extends AbstractAware {
 
     /**
      * 打印日志
-     * 此方法用于兼容底层日志实现，通过传入当前包装类名，以解决打印日志中行号错误问题
+     * 此方法用于兼容底层日志实现,通过传入当前包装类名,以解决打印日志中行号错误问题
      *
      * @param logger      {@link LocationAwareLogger} 实现
-     * @param fqcn        完全限定类名(Fully Qualified Class Name)，用于纠正定位错误行号
-     * @param level_int   日志级别，使用LocationAwareLogger中的常量
+     * @param fqcn        完全限定类名(Fully Qualified Class Name),用于纠正定位错误行号
+     * @param level_int   日志级别,使用LocationAwareLogger中的常量
      * @param t           异常
      * @param msgTemplate 消息模板
      * @param arguments   参数
-     * @return 是否支持 LocationAwareLogger对象，如果不支持需要日志方法调用被包装类的相应方法
+     * @return 是否支持 LocationAwareLogger对象,如果不支持需要日志方法调用被包装类的相应方法
      */
     private void locationAwareLog(LocationAwareLogger logger, String fqcn, int level_int, Throwable t, String msgTemplate, Object[] arguments) {
         logger.log(null, fqcn, level_int, StringUtils.format(msgTemplate, arguments), null, t);

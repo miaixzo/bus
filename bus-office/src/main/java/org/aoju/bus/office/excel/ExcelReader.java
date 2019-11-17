@@ -67,8 +67,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 构造
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
-     * @param sheetIndex    sheet序号，0表示第一个sheet
+     * @param excelFilePath Excel文件路径,绝对路径或相对于ClassPath路径
+     * @param sheetIndex    sheet序号,0表示第一个sheet
      */
     public ExcelReader(String excelFilePath, int sheetIndex) {
         this(FileUtils.file(excelFilePath), sheetIndex);
@@ -78,7 +78,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 构造
      *
      * @param bookFile   Excel文件
-     * @param sheetIndex sheet序号，0表示第一个sheet
+     * @param sheetIndex sheet序号,0表示第一个sheet
      */
     public ExcelReader(File bookFile, int sheetIndex) {
         this(BookUtils.createBook(bookFile), sheetIndex);
@@ -88,7 +88,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 构造
      *
      * @param bookFile  Excel文件
-     * @param sheetName sheet名，第一个默认是sheet1
+     * @param sheetName sheet名,第一个默认是sheet1
      */
     public ExcelReader(File bookFile, String sheetName) {
         this(BookUtils.createBook(bookFile), sheetName);
@@ -98,7 +98,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 构造
      *
      * @param bookStream     Excel文件的流
-     * @param sheetIndex     sheet序号，0表示第一个sheet
+     * @param sheetIndex     sheet序号,0表示第一个sheet
      * @param closeAfterRead 读取结束是否关闭流
      */
     public ExcelReader(InputStream bookStream, int sheetIndex, boolean closeAfterRead) {
@@ -109,7 +109,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 构造
      *
      * @param bookStream     Excel文件的流
-     * @param sheetName      sheet名，第一个默认是sheet1
+     * @param sheetName      sheet名,第一个默认是sheet1
      * @param closeAfterRead 读取结束是否关闭流
      */
     public ExcelReader(InputStream bookStream, String sheetName, boolean closeAfterRead) {
@@ -120,7 +120,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 构造
      *
      * @param book       {@link Workbook} 表示一个Excel文件
-     * @param sheetIndex sheet序号，0表示第一个sheet
+     * @param sheetIndex sheet序号,0表示第一个sheet
      */
     public ExcelReader(Workbook book, int sheetIndex) {
         this(book.getSheetAt(sheetIndex));
@@ -130,7 +130,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 构造
      *
      * @param book      {@link Workbook} 表示一个Excel文件
-     * @param sheetName sheet名，第一个默认是sheet1
+     * @param sheetName sheet名,第一个默认是sheet1
      */
     public ExcelReader(Workbook book, String sheetName) {
         this(book.getSheet(sheetName));
@@ -167,7 +167,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
 
     /**
      * 设置单元格值处理逻辑
-     * 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
+     * 当Excel中的值并不能满足我们的读取要求时,通过传入一个编辑接口,可以对单元格值自定义,例如对数字和日期类型值转换为字符串等
      *
      * @param cellEditor 单元格值处理接口
      * @return this
@@ -223,7 +223,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 读取工作簿中指定的Sheet的所有行列数据
      *
-     * @return 行的集合，一行使用List表示
+     * @return 行的集合, 一行使用List表示
      */
     public List<List<Object>> read() {
         return read(0);
@@ -232,8 +232,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 读取工作簿中指定的Sheet
      *
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @return 行的集合，一行使用List表示
+     * @param startRowIndex 起始行（包含,从0开始计数）
+     * @return 行的集合, 一行使用List表示
      */
     public List<List<Object>> read(int startRowIndex) {
         return read(startRowIndex, Integer.MAX_VALUE);
@@ -242,9 +242,9 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 读取工作簿中指定的Sheet
      *
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @param endRowIndex   结束行（包含，从0开始计数）
-     * @return 行的集合，一行使用List表示
+     * @param startRowIndex 起始行（包含,从0开始计数）
+     * @param endRowIndex   结束行（包含,从0开始计数）
+     * @return 行的集合, 一行使用List表示
      */
     public List<List<Object>> read(int startRowIndex, int endRowIndex) {
         checkNotClosed();
@@ -273,8 +273,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取Excel为Map的列表，读取所有行，默认第一行做为标题，数据从第二行开始
-     * Map表示一行，标题为key，单元格内容为value
+     * 读取Excel为Map的列表,读取所有行,默认第一行做为标题,数据从第二行开始
+     * Map表示一行,标题为key,单元格内容为value
      *
      * @return Map的列表
      */
@@ -284,11 +284,11 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
 
     /**
      * 读取Excel为Map的列表
-     * Map表示一行，标题为key，单元格内容为value
+     * Map表示一行,标题为key,单元格内容为value
      *
-     * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param endRowIndex    读取结束行（包含，从0开始计数）
+     * @param headerRowIndex 标题所在行,如果标题行在读取的内容行中间,这行做为数据将忽略
+     * @param startRowIndex  起始行（包含,从0开始计数）
+     * @param endRowIndex    读取结束行（包含,从0开始计数）
      * @return Map的列表
      */
     public List<Map<String, Object>> read(int headerRowIndex, int startRowIndex, int endRowIndex) {
@@ -325,7 +325,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取Excel为Bean的列表，读取所有行，默认第一行做为标题，数据从第二行开始
+     * 读取Excel为Bean的列表,读取所有行,默认第一行做为标题,数据从第二行开始
      *
      * @param <T>      Bean类型
      * @param beanType 每行对应Bean的类型
@@ -339,8 +339,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 读取Excel为Bean的列表
      *
      * @param <T>            Bean类型
-     * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略，，从0开始计数
-     * @param startRowIndex  起始行（包含，从0开始计数）
+     * @param headerRowIndex 标题所在行,如果标题行在读取的内容行中间,这行做为数据将忽略,,从0开始计数
+     * @param startRowIndex  起始行（包含,从0开始计数）
      * @param beanType       每行对应Bean的类型
      * @return Map的列表
      */
@@ -352,9 +352,9 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 读取Excel为Bean的列表
      *
      * @param <T>            Bean类型
-     * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略，，从0开始计数
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param endRowIndex    读取结束行（包含，从0开始计数）
+     * @param headerRowIndex 标题所在行,如果标题行在读取的内容行中间,这行做为数据将忽略,,从0开始计数
+     * @param startRowIndex  起始行（包含,从0开始计数）
+     * @param endRowIndex    读取结束行（包含,从0开始计数）
      * @param beanType       每行对应Bean的类型
      * @return Map的列表
      */
@@ -404,7 +404,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 读取某一行数据
      *
-     * @param rowIndex 行号，从0开始
+     * @param rowIndex 行号,从0开始
      * @return 一行数据
      */
     public List<Object> readRow(int rowIndex) {
@@ -414,9 +414,9 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 读取某个单元格的值
      *
-     * @param x X坐标，从0计数，既列号
-     * @param y Y坐标，从0计数，既行号
-     * @return 值，如果单元格无值返回null
+     * @param x X坐标,从0计数,既列号
+     * @param y Y坐标,从0计数,既行号
+     * @return 值, 如果单元格无值返回null
      */
     public Object readCellValue(int x, int y) {
         return CellUtils.getCellValue(getCell(x, y), this.cellEditor);
@@ -424,7 +424,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
 
     /**
      * 获取Excel写出器
-     * 在读取Excel并做一定编辑后，获取写出器写出
+     * 在读取Excel并做一定编辑后,获取写出器写出
      *
      * @return {@link ExcelWriter}
      */
@@ -443,7 +443,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 转换标题别名，如果没有别名则使用原标题，当标题为空时，列号对应的字母便是header
+     * 转换标题别名,如果没有别名则使用原标题,当标题为空时,列号对应的字母便是header
      *
      * @param headerList 原标题列表
      * @return 转换别名列表
@@ -462,10 +462,10 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 转换标题别名，如果没有别名则使用原标题，当标题为空时，列号对应的字母便是header
+     * 转换标题别名,如果没有别名则使用原标题,当标题为空时,列号对应的字母便是header
      *
      * @param headerObj 原标题
-     * @param index     标题所在列号，当标题为空时，列号对应的字母便是header
+     * @param index     标题所在列号,当标题为空时,列号对应的字母便是header
      * @return 转换别名列表
      */
     private String aliasHeader(Object headerObj, int index) {

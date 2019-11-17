@@ -35,7 +35,7 @@ public class Comparables<E extends Comparable<? super E>> implements Comparator<
      *
      * @param obj1 被比较的第一个对象
      * @param obj2 the second object to compare
-     * @return obj1小返回负数，大返回正数，否则返回0
+     * @return obj1小返回负数, 大返回正数, 否则返回0
      */
     @Override
     public int compare(final E obj1, final E obj2) {

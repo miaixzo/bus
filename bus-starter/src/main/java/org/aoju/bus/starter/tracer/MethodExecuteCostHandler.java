@@ -68,7 +68,7 @@ public class MethodExecuteCostHandler {
                 //耗时
                 long cost = System.currentTimeMillis() - startTime;
 
-                //当设置了超时时间，但耗时小于超时时间，不进行日志打印，直接返回 （只有耗时大于超时时间才进行日志打印）
+                //当设置了超时时间,但耗时小于超时时间,不进行日志打印,直接返回 （只有耗时大于超时时间才进行日志打印）
                 if (tacerCostLogger.timeout() != -1 && cost < tacerCostLogger.timeout()) {
                     return obj;
                 }
@@ -76,7 +76,7 @@ public class MethodExecuteCostHandler {
                 //方法名
                 String methodName = null;
                 if (StringUtils.isEmpty(tacerCostLogger.methodName())) {
-                    //当methodName为默认值时，用signature(原方法名)代替
+                    //当methodName为默认值时,用signature(原方法名)代替
                     methodName = pjp.getSignature().toString();
                 } else if (tacerCostLogger.methodName() != null) {
                     //有值则用值

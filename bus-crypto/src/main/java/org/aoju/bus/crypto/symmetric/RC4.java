@@ -80,7 +80,7 @@ public class RC4 {
     }
 
     /**
-     * 加密，使用默认编码：UTF-8
+     * 加密,使用默认编码：UTF-8
      *
      * @param message 消息
      * @return 密文
@@ -145,7 +145,7 @@ public class RC4 {
     }
 
     /**
-     * 解密，使用默认编码UTF-8
+     * 解密,使用默认编码UTF-8
      *
      * @param message 消息
      * @return 明文
@@ -156,7 +156,7 @@ public class RC4 {
     }
 
     /**
-     * 加密或解密指定值，调用此方法前需初始化密钥
+     * 加密或解密指定值,调用此方法前需初始化密钥
      *
      * @param msg 要加密或解密的消息
      * @return 加密或解密后的值

@@ -31,7 +31,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 线程创建工厂类，此工厂可选配置：
+ * 线程创建工厂类,此工厂可选配置：
  *
  * <pre>
  * 1. 自定义线程命名前缀
@@ -79,7 +79,7 @@ public class NamedThreadFactory implements ThreadFactory {
      * 构造
      *
      * @param prefix      线程名前缀
-     * @param threadGroup 线程组，可以为null
+     * @param threadGroup 线程组,可以为null
      * @param isDeamon    是否守护线程
      */
     public NamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon) {
@@ -90,7 +90,7 @@ public class NamedThreadFactory implements ThreadFactory {
      * 构造
      *
      * @param prefix      线程名前缀
-     * @param threadGroup 线程组，可以为null
+     * @param threadGroup 线程组,可以为null
      * @param isDeamon    是否守护线程
      * @param handler     未捕获异常处理
      */

@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 定时任务表
- * 任务表将ID、表达式、任务一一对应，定时任务执行过程中，会周期性检查定时任务表中的所有任务表达式匹配情况，从而执行其对应的任务
+ * 任务表将ID、表达式、任务一一对应,定时任务执行过程中,会周期性检查定时任务表中的所有任务表达式匹配情况,从而执行其对应的任务
  * 任务的添加、移除使用读写锁保证线程安全性
  *
  * @author Kimi Liu
@@ -115,7 +115,7 @@ public class TaskTable {
      *
      * @param id      Task的ID
      * @param pattern 新的表达式
-     * @return 是否更新成功，如果id对应的规则不存在则不更新
+     * @return 是否更新成功, 如果id对应的规则不存在则不更新
      */
     public boolean updatePattern(String id, CronPattern pattern) {
         final Lock writeLock = lock.writeLock();
@@ -182,9 +182,9 @@ public class TaskTable {
     }
 
     /**
-     * 任务表大小，加入的任务数
+     * 任务表大小,加入的任务数
      *
-     * @return 任务表大小，加入的任务数
+     * @return 任务表大小, 加入的任务数
      */
     public int size() {
         return this.size;
@@ -215,7 +215,7 @@ public class TaskTable {
     }
 
     /**
-     * 如果时间匹配则执行相应的Task，带读锁
+     * 如果时间匹配则执行相应的Task,带读锁
      *
      * @param millis 时间毫秒
      */
@@ -230,7 +230,7 @@ public class TaskTable {
     }
 
     /**
-     * 如果时间匹配则执行相应的Task，无锁
+     * 如果时间匹配则执行相应的Task,无锁
      *
      * @param millis 时间毫秒
      * @since 3.1.1

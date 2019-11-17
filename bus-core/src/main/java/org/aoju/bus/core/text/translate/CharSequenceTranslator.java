@@ -44,8 +44,8 @@ public abstract class CharSequenceTranslator {
     }
 
     /**
-     * 将一组由int索引表示的代码点转换为CharSequence，
-     * 转换成另一组代码点。必须返回所使用的代码点数量，
+     * 将一组由int索引表示的代码点转换为CharSequence,
+     * 转换成另一组代码点 必须返回所使用的代码点数量,
      *
      * @param input 正在翻译的CharSequence
      * @param index int表示当前翻译点

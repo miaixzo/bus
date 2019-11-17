@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取
+ * Excel2003格式的事件-用户模型方式读取器,统一将此归类为Sax读取
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -52,7 +52,7 @@ import java.util.List;
 public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> implements HSSFListener {
 
     /**
-     * 如果为公式，true表示输出公式计算后的结果值，false表示输出公式本身
+     * 如果为公式,true表示输出公式计算后的结果值,false表示输出公式本身
      */
     private boolean isOutputFormulaValues = true;
 
@@ -61,7 +61,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
      */
     private SheetRecordCollectingListener workbookBuildingListener;
     /**
-     * 子工作簿，用于公式计算
+     * 子工作簿,用于公式计算
      */
     private HSSFWorkbook stubWorkbook;
 
@@ -73,7 +73,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
     private FormatTrackingHSSFListener formatListener;
 
     /**
-     * Sheet边界记录，此Record中可以获得Sheet名
+     * Sheet边界记录,此Record中可以获得Sheet名
      */
     private List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
     private List<Object> rowCellList = new ArrayList<>();
 
     /**
-     * 自定义需要处理的sheet编号，如果-1表示处理所有sheet
+     * 自定义需要处理的sheet编号,如果-1表示处理所有sheet
      */
     private int rid = -1;
     // 当前表索引
@@ -149,7 +149,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
     }
 
     /**
-     * 获得Sheet序号，如果处理所有sheet，获得最大的Sheet序号，从0开始
+     * 获得Sheet序号,如果处理所有sheet,获得最大的Sheet序号,从0开始
      *
      * @return sheet序号
      */
@@ -158,7 +158,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
     }
 
     /**
-     * 获得Sheet名，如果处理所有sheet，获得后一个Sheet名，从0开始
+     * 获得Sheet名,如果处理所有sheet,获得后一个Sheet名,从0开始
      *
      * @return Sheet名
      */
@@ -170,7 +170,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
     }
 
     /**
-     * HSSFListener 监听方法，处理 Record
+     * HSSFListener 监听方法,处理 Record
      *
      * @param record 记录
      */
@@ -182,7 +182,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
         }
 
         if (record instanceof BoundSheetRecord) {
-            // Sheet边界记录，此Record中可以获得Sheet名
+            // Sheet边界记录,此Record中可以获得Sheet名
             boundSheetRecords.add((BoundSheetRecord) record);
         } else if (record instanceof SSTRecord) {
             // 静态字符串表
@@ -190,7 +190,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
         } else if (record instanceof BOFRecord) {
             BOFRecord bofRecord = (BOFRecord) record;
             if (bofRecord.getType() == BOFRecord.TYPE_WORKSHEET) {
-                // 如果有需要，则建立子工作薄
+                // 如果有需要,则建立子工作薄
                 if (workbookBuildingListener != null && stubWorkbook == null) {
                     stubWorkbook = workbookBuildingListener.getStubHSSFWorkbook();
                 }
@@ -278,7 +278,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
                 } else {
                     double numValue = numrec.getValue();
                     final long longPart = (long) numValue;
-                    // 对于无小数部分的数字类型，转为Long，否则保留原数字
+                    // 对于无小数部分的数字类型,转为Long,否则保留原数字
                     if (longPart == numValue) {
                         value = longPart;
                     } else {
@@ -295,12 +295,12 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
     }
 
     /**
-     * 处理行结束后的操作，{@link LastCellOfRowDummyRecord}是行结束的标识Record
+     * 处理行结束后的操作,{@link LastCellOfRowDummyRecord}是行结束的标识Record
      *
      * @param lastCell 行结束的标识Record
      */
     private void processLastCell(LastCellOfRowDummyRecord lastCell) {
-        // 每行结束时， 调用handle() 方法
+        // 每行结束时, 调用handle() 方法
         this.rowHandler.handle(curRid, lastCell.getRow(), this.rowCellList);
         // 清空行Cache
         this.rowCellList.clear();

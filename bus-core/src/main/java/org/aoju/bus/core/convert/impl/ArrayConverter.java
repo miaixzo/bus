@@ -37,7 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 数组转换器，包括原始类型数组
+ * 数组转换器,包括原始类型数组
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -137,14 +137,14 @@ public class ArrayConverter extends AbstractConverter<Object> {
                 i++;
             }
         } else if (value instanceof Iterable) {
-            // 可循环对象转数组，可循环对象无法获取长度，因此先转为List后转为数组
+            // 可循环对象转数组,可循环对象无法获取长度,因此先转为List后转为数组
             final List<?> list = IterUtils.toList((Iterable<?>) value);
             result = Array.newInstance(targetComponentType, list.size());
             for (int i = 0; i < list.size(); i++) {
                 Array.set(result, i, converter.convert(targetComponentType, list.get(i)));
             }
         } else if (value instanceof Iterator) {
-            // 可循环对象转数组，可循环对象无法获取长度，因此先转为List后转为数组
+            // 可循环对象转数组,可循环对象无法获取长度,因此先转为List后转为数组
             final List<?> list = IterUtils.toList((Iterator<?>) value);
             result = Array.newInstance(targetComponentType, list.size());
             for (int i = 0; i < list.size(); i++) {
@@ -162,7 +162,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
      * 单元素数组
      *
      * @param value 被转换的值
-     * @return 数组，只包含一个元素
+     * @return 数组, 只包含一个元素
      */
     private Object[] convertToSingleElementArray(Object value) {
         final Object[] singleElementArray = ArrayUtils.newArray(targetComponentType, 1);

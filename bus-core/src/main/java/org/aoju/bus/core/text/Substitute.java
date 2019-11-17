@@ -76,7 +76,7 @@ public class Substitute {
      */
     private boolean enableSubstitutionInVariables;
     /**
-     * 是否应该保留转义。默认false;
+     * 是否应该保留转义 默认false;
      */
     private boolean preserveEscapes = false;
 
@@ -88,8 +88,8 @@ public class Substitute {
     }
 
     /**
-     * 创建一个新实例并初始化它。对变量使用默认值
-     * 前缀和后缀以及转义字符。
+     * 创建一个新实例并初始化它 对变量使用默认值
+     * 前缀和后缀以及转义字符
      *
      * @param <V>      映射中值的类型
      * @param valueMap 带有变量值的映射可能为null
@@ -99,12 +99,12 @@ public class Substitute {
     }
 
     /**
-     * 创建一个新实例并初始化它。使用默认转义字符。
+     * 创建一个新实例并初始化它 使用默认转义字符
      *
      * @param <V>      映射中值的类型
      * @param valueMap 带有变量值的映射可能为null
-     * @param prefix   变量的前缀，而不是null
-     * @param suffix   变量的后缀，而不是null
+     * @param prefix   变量的前缀,而不是null
+     * @param suffix   变量的后缀,而不是null
      */
     public <V> Substitute(final Map<String, V> valueMap, final String prefix, final String suffix) {
         this(StrLookup.mapLookup(valueMap), prefix, suffix, Symbol.C_DOLLAR);
@@ -115,8 +115,8 @@ public class Substitute {
      *
      * @param <V>      映射中值的类型
      * @param valueMap 带有变量值的映射可能为null
-     * @param prefix   变量的前缀，而不是null
-     * @param suffix   变量的后缀，而不是null
+     * @param prefix   变量的前缀,而不是null
+     * @param suffix   变量的后缀,而不是null
      * @param escape   转义字符
      */
     public <V> Substitute(final Map<String, V> valueMap, final String prefix, final String suffix,
@@ -129,8 +129,8 @@ public class Substitute {
      *
      * @param <V>       映射中值的类型
      * @param valueMap  带有变量值的映射可能为null
-     * @param prefix    变量的前缀，而不是null
-     * @param suffix    变量的后缀，而不是null
+     * @param prefix    变量的前缀,而不是null
+     * @param suffix    变量的后缀,而不是null
      * @param escape    转义字符
      * @param delimiter 变量默认值分隔符可以为空
      */
@@ -152,8 +152,8 @@ public class Substitute {
      * 创建一个新实例并初始化.
      *
      * @param resolver 变量解析器可以为空
-     * @param prefix   变量的前缀，而不是null
-     * @param suffix   变量的后缀，而不是null
+     * @param prefix   变量的前缀,而不是null
+     * @param suffix   变量的后缀,而不是null
      * @param escape   转义字符
      */
     public Substitute(final StrLookup<?> resolver, final String prefix, final String suffix,
@@ -169,8 +169,8 @@ public class Substitute {
      * 创建一个新实例并初始化.
      *
      * @param resolver  变量解析器可以为空
-     * @param prefix    变量的前缀，而不是null
-     * @param suffix    变量的后缀，而不是null
+     * @param prefix    变量的前缀,而不是null
+     * @param suffix    变量的后缀,而不是null
      * @param escape    转义字符
      * @param delimiter 变量默认值分隔符可以为空
      */
@@ -186,9 +186,9 @@ public class Substitute {
     /**
      * 创建一个新实例并初始化.
      *
-     * @param resolver      变量解析器，可以为空
-     * @param prefixMatcher 前缀解析器，而不是null
-     * @param suffixMatcher 后缀解析器，而不是null
+     * @param resolver      变量解析器,可以为空
+     * @param prefixMatcher 前缀解析器,而不是null
+     * @param suffixMatcher 后缀解析器,而不是null
      * @param escape        转义转义字符
      */
     public Substitute(
@@ -200,9 +200,9 @@ public class Substitute {
     /**
      * 创建一个新实例并初始化.
      *
-     * @param resolver      变量解析器，可以为空
-     * @param prefixMatcher 前缀解析器，而不是null
-     * @param suffixMatcher 后缀解析器，而不是null
+     * @param resolver      变量解析器,可以为空
+     * @param prefixMatcher 前缀解析器,而不是null
+     * @param suffixMatcher 后缀解析器,而不是null
      * @param escape        转义转义字符
      * @param delimiter     变量默认值分隔符可以为空
      */
@@ -231,13 +231,13 @@ public class Substitute {
 
     /**
      * 将给定源对象中出现的所有变量替换
-     * 它们在映射中匹配的值。这种方法允许指定自定义变量前缀和后缀
+     * 它们在映射中匹配的值 这种方法允许指定自定义变量前缀和后缀
      *
      * @param <V>      映射中值的类型
      * @param source   包含要替换的变量的源文本
      * @param valueMap 映射的值可能为空
-     * @param prefix   变量的前缀，而不是null
-     * @param suffix   变量的后缀，而不是null
+     * @param prefix   变量的前缀,而不是null
+     * @param suffix   变量的后缀,而不是null
      * @return 替换操作的结果
      */
     public static <V> String replace(final Object source, final Map<String, V> valueMap, final String prefix, final String suffix) {
@@ -267,7 +267,7 @@ public class Substitute {
 
     /**
      * 替换给定源对象中出现的所有变量
-     * 它们在系统属性中匹配的值。
+     * 它们在系统属性中匹配的值
      *
      * @param source 包含要替换的变量的源文本
      * @return 返回替换操作的结果
@@ -278,7 +278,7 @@ public class Substitute {
 
     /**
      * 用匹配的值替换所有出现的变量
-     * 从使用给定源字符串作为模板的解析器。
+     * 从使用给定源字符串作为模板的解析器
      *
      * @param source 获取要替换的字符串
      * @return 替换操作的结果
@@ -315,8 +315,8 @@ public class Substitute {
 
     /**
      * 用匹配的值替换所有出现的变量
-     * 从使用给定源数组作为模板的解析器。
-     * 该方法不改变数组。
+     * 从使用给定源数组作为模板的解析器
+     * 该方法不改变数组
      *
      * @param source 获取要替换的字符数组的源代码
      * @return 返回替换操作的结果
@@ -366,7 +366,7 @@ public class Substitute {
     /**
      * 用匹配的值替换所有出现的变量
      *
-     * @param source 源缓冲区用作模板，没有更改
+     * @param source 源缓冲区用作模板,没有更改
      * @param offset 偏移数组中的起始偏移必须有效
      * @param length 要处理的数组中的长度必须是有效的
      * @return 返回替换操作的结果
@@ -383,7 +383,7 @@ public class Substitute {
     /**
      * 用匹配的值替换所有出现的变量
      *
-     * @param source 源缓冲区用作模板，没有更改
+     * @param source 源缓冲区用作模板,没有更改
      * @return 返回替换操作的结果
      */
     public String replace(final CharSequence source) {
@@ -556,7 +556,7 @@ public class Substitute {
     /**
      * 替换变量的内部方法
      *
-     * @param buffer 要替换为的字符串生成器，而不是null
+     * @param buffer 要替换为的字符串生成器,而不是null
      * @param offset 构造器中的起始偏移量必须有效
      * @param length 要处理的构建器中的长度必须是有效的
      * @return true/false
@@ -568,11 +568,11 @@ public class Substitute {
     /**
      * 多层插值的递归处理程序
      *
-     * @param buffer         要替换为的字符串生成器，而不是null
+     * @param buffer         要替换为的字符串生成器,而不是null
      * @param offset         构造器中的起始偏移量必须有效
      * @param length         要处理的构建器中的长度必须是有效的
      * @param priorVariables 保存被替换变量的堆栈可以为空
-     * @return 发生的长度更改，除非priorVariables在int时为null 表示布尔标志，表示是否发生了更改
+     * @return 发生的长度更改, 除非priorVariables在int时为null 表示布尔标志,表示是否发生了更改
      */
     private int substitute(final StrBuilder buffer, final int offset, final int length, List<String> priorVariables) {
         final StrMatcher pfxMatcher = getVariablePrefixMatcher();
@@ -718,13 +718,13 @@ public class Substitute {
 
     /**
      * 解析变量值的内部方法
-     * {@link #getVariableResolver()}，其中变量名作为键。
+     * {@link #getVariableResolver()},其中变量名作为键
      *
-     * @param variableName 变量名，而不是null
-     * @param buf          是发生替换的缓冲区，而不是null
-     * @param startPos     变量的起始位置，包括前缀，有效
-     * @param endPos       变量的结束位置，包括后缀，有效
-     * @return 返回变量的值，如果变量未知，则null
+     * @param variableName 变量名,而不是null
+     * @param buf          是发生替换的缓冲区,而不是null
+     * @param startPos     变量的起始位置,包括前缀,有效
+     * @param endPos       变量的结束位置,包括后缀,有效
+     * @return 返回变量的值, 如果变量未知, 则null
      */
     protected String resolveVariable(final String variableName, final StrBuilder buf, final int startPos, final int endPos) {
         final StrLookup<?> resolver = getVariableResolver();
@@ -745,7 +745,7 @@ public class Substitute {
 
     /**
      * 设置转义字符
-     * 如果该字符放在源中的变量引用之前，这个变量将被忽略。
+     * 如果该字符放在源中的变量引用之前,这个变量将被忽略
      *
      * @param escapeCharacter 转义字符(0表示禁用转义)
      */
@@ -763,10 +763,10 @@ public class Substitute {
     }
 
     /**
-     * 设置当前使用的变量前缀匹配器。
+     * 设置当前使用的变量前缀匹配器
      *
-     * @param prefixMatcher 前缀匹配器，null被忽略
-     * @return this，以启用链接
+     * @param prefixMatcher 前缀匹配器,null被忽略
+     * @return this, 以启用链接
      */
     public Substitute setVariablePrefixMatcher(final StrMatcher prefixMatcher) {
         if (prefixMatcher == null) {
@@ -780,7 +780,7 @@ public class Substitute {
      * 设置要使用的变量前缀
      *
      * @param prefix 要使用的前缀字符
-     * @return this，以启用链接
+     * @return this, 以启用链接
      */
     public Substitute setVariablePrefix(final char prefix) {
         return setVariablePrefixMatcher(StrMatcher.charMatcher(prefix));
@@ -789,8 +789,8 @@ public class Substitute {
     /**
      * 设置要使用的变量前缀
      *
-     * @param prefix 变量的前缀，而不是null
-     * @return this，以启用链接
+     * @param prefix 变量的前缀,而不是null
+     * @return this, 以启用链接
      */
     public Substitute setVariablePrefix(final String prefix) {
         if (prefix == null) {
@@ -812,8 +812,8 @@ public class Substitute {
     /**
      * 设置当前使用的变量后缀匹配器
      *
-     * @param suffixMatcher 后缀匹配器，null被忽略
-     * @return this，以启用链接
+     * @param suffixMatcher 后缀匹配器,null被忽略
+     * @return this, 以启用链接
      */
     public Substitute setVariableSuffixMatcher(final StrMatcher suffixMatcher) {
         if (suffixMatcher == null) {
@@ -827,7 +827,7 @@ public class Substitute {
      * 设置要使用的变量后缀
      *
      * @param suffix 要使用的后缀字符
-     * @return this，以启用链接
+     * @return this, 以启用链接
      */
     public Substitute setVariableSuffix(final char suffix) {
         return setVariableSuffixMatcher(StrMatcher.charMatcher(suffix));
@@ -836,8 +836,8 @@ public class Substitute {
     /**
      * 设置要使用的变量后缀
      *
-     * @param suffix 变量的后缀，而不是null
-     * @return this，以启用链接
+     * @param suffix 变量的后缀,而不是null
+     * @return this, 以启用链接
      */
     public Substitute setVariableSuffix(final String suffix) {
         if (suffix == null) {
@@ -863,7 +863,7 @@ public class Substitute {
      * 设置要使用的变量默认值分隔符
      *
      * @param valueDelimiter 要使用的变量默认值分隔符字符串可以为null或空
-     * @return this，以启用链接
+     * @return this, 以启用链接
      */
     public Substitute setValueDelimiter(final String valueDelimiter) {
         if (StringUtils.isEmpty(valueDelimiter)) {

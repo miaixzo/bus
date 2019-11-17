@@ -32,7 +32,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
 /**
  * 签约协议号脱敏方式
  * 19031317273364059018
- * 签约协议号脱敏格式为前6位后6位保留明文，中间脱敏
+ * 签约协议号脱敏格式为前6位后6位保留明文,中间脱敏
  *
  * @author Kimi Liu
  * @version 5.2.2

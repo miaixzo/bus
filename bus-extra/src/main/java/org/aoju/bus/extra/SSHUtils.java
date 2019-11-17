@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * SSH2工具类
- * 它允许你连接到一个SSH服务器，并且可以使用端口转发，X11转发，文件传输等。
+ * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -60,7 +60,7 @@ public class SSHUtils {
     private static final AtomicInteger port = new AtomicInteger(10000);
 
     /**
-     * 生成一个本地端口，用于远程端口映射
+     * 生成一个本地端口,用于远程端口映射
      *
      * @return 未被使用的本地端口
      */
@@ -73,7 +73,7 @@ public class SSHUtils {
     }
 
     /**
-     * 获得一个SSH会话，重用已经使用的会话
+     * 获得一个SSH会话,重用已经使用的会话
      *
      * @param sshHost 主机
      * @param sshPort 端口
@@ -122,7 +122,7 @@ public class SSHUtils {
         try {
             session = new JSch().getSession(sshUser, sshHost, sshPort);
             session.setPassword(sshPass);
-            // 设置第一次登陆的时候提示，可选值：(ask | yes | no)
+            // 设置第一次登陆的时候提示,可选值：(ask | yes | no)
             session.setConfig("StrictHostKeyChecking", "no");
         } catch (JSchException e) {
             throw new InstrumentException(e);
@@ -131,7 +131,7 @@ public class SSHUtils {
     }
 
     /**
-     * 绑定端口到本地。 一个会话可绑定多个端口
+     * 绑定端口到本地  一个会话可绑定多个端口
      *
      * @param session    需要绑定端口的SSH会话
      * @param remoteHost 远程主机
@@ -169,7 +169,7 @@ public class SSHUtils {
     }
 
     /**
-     * 打开SSH会话，并绑定远程端口到本地的一个随机端口
+     * 打开SSH会话,并绑定远程端口到本地的一个随机端口
      *
      * @param sshConn    SSH连接信息对象
      * @param remoteHost 远程主机
@@ -234,7 +234,7 @@ public class SSHUtils {
      * 打开Channel连接
      *
      * @param session     Session会话
-     * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
+     * @param channelType 通道类型,可以是shell或sftp等,见{@link ChannelType}
      * @return {@link Channel}
      */
     public static Channel openChannel(Session session, ChannelType channelType) {
@@ -251,7 +251,7 @@ public class SSHUtils {
      * 创建Channel连接
      *
      * @param session     Session会话
-     * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
+     * @param channelType 通道类型,可以是shell或sftp等,见{@link ChannelType}
      * @return {@link Channel}
      */
     public static Channel createChannel(Session session, ChannelType channelType) {
@@ -337,7 +337,7 @@ public class SSHUtils {
     /**
      * 关闭SSH连接会话
      *
-     * @param key 主机，格式为user@host:port
+     * @param key 主机,格式为user@host:port
      */
     public static void close(String key) {
         JschSessionPool.INSTANCE.close(key);

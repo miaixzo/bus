@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 
 /**
  * JDK8中新加入的java.time包对象解析转换器<br>
- * 通过反射调用“parse方法”，支持的对象包括：
+ * 通过反射调用“parse方法”,支持的对象包括：
  *
  * <pre>
  * java.time.LocalDateTime

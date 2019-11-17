@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 组合，即C(n, m)
+ * 组合,即C(n, m)
  * 排列组合相关类
  *
  * @author Kimi Liu
@@ -42,7 +42,7 @@ public class Combination {
     private String[] datas;
 
     /**
-     * 组合，即C(n, m)
+     * 组合,即C(n, m)
      * 排列组合相关类
      *
      * @param datas 用于组合的数据
@@ -52,7 +52,7 @@ public class Combination {
     }
 
     /**
-     * 计算组合数，即C(n, m) = n!/((n-m)! * m!)
+     * 计算组合数,即C(n, m) = n!/((n-m)! * m!)
      *
      * @param n 总数
      * @param m 选择的个数
@@ -69,7 +69,7 @@ public class Combination {
     }
 
     /**
-     * 计算组合总数，即C(n, 1) + C(n, 2) + C(n, 3)...
+     * 计算组合总数,即C(n, 1) + C(n, 2) + C(n, 3)...
      *
      * @param n 总数
      * @return 组合数
@@ -112,13 +112,13 @@ public class Combination {
      *
      * @param dataIndex   待选开始索引
      * @param resultList  前面（resultIndex-1）个的组合结果
-     * @param resultIndex 选择索引，从0开始
+     * @param resultIndex 选择索引,从0开始
      * @param result      待选列表
      */
     private void select(int dataIndex, String[] resultList, int resultIndex, List<String[]> result) {
         int resultLen = resultList.length;
         int resultCount = resultIndex + 1;
-        if (resultCount > resultLen) { // 全部选择完时，输出组合结果
+        if (resultCount > resultLen) { // 全部选择完时,输出组合结果
             result.add(Arrays.copyOf(resultList, resultList.length));
             return;
         }

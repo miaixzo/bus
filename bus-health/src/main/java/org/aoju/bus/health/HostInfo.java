@@ -29,7 +29,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 
 /**
- * 代表当前主机的信息。
+ * 代表当前主机的信息
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -59,7 +59,7 @@ public class HostInfo {
     }
 
     /**
-     * 取得当前主机信息。
+     * 取得当前主机信息
      *
      * @return 主机地址信息
      * @throws UnknownHostException 异常
@@ -75,10 +75,10 @@ public class HostInfo {
                     InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
                     if (!inetAddr.isLoopbackAddress()) {// 排除loopback类型地址
                         if (inetAddr.isSiteLocalAddress()) {
-                            /** 如果是site-local地址，就是它了 */
+                            /** 如果是site-local地址,就是它了 */
                             return inetAddr;
                         } else if (inetAddress == null) {
-                            /** site-local类型的地址未被发现，先记录候选地址 */
+                            /** site-local类型的地址未被发现,先记录候选地址 */
                             inetAddress = inetAddr;
                         }
                     }
@@ -101,7 +101,7 @@ public class HostInfo {
     }
 
     /**
-     * 取得当前主机的名称。
+     * 取得当前主机的名称
      *
      * <p>
      * 例如：<code>"webserver1"</code>
@@ -114,7 +114,7 @@ public class HostInfo {
     }
 
     /**
-     * 取得当前主机的地址。
+     * 取得当前主机的地址
      *
      * <p>
      * 例如：<code>"192.168.0.1"</code>
@@ -127,7 +127,7 @@ public class HostInfo {
     }
 
     /**
-     * 将当前主机的信息转换成字符串。
+     * 将当前主机的信息转换成字符串
      *
      * @return 主机信息的字符串表示
      */

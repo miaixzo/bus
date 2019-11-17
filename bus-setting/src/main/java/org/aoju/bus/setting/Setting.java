@@ -48,14 +48,14 @@ import java.nio.file.WatchEvent;
 import java.util.*;
 
 /**
- * 设置工具类。 用于支持设置（配置）文件
- * BasicSetting用于替换Properties类，提供功能更加强大的配置文件，同时对Properties文件向下兼容
+ * 设置工具类  用于支持设置（配置）文件
+ * BasicSetting用于替换Properties类,提供功能更加强大的配置文件,同时对Properties文件向下兼容
  *
  * <pre>
- *  1、支持变量，默认变量命名为 ${变量名}，变量只能识别读入行的变量，例如第6行的变量在第三行无法读取
- *  2、支持分组，分组为中括号括起来的内容，中括号以下的行都为此分组的内容，无分组相当于空字符分组，若某个key是name，加上分组后的键相当于group.name
- *  3、注释以#开头，但是空行和不带“=”的行也会被跳过，但是建议加#
- *  4、store方法不会保存注释内容，慎重使用
+ *  1、支持变量,默认变量命名为 ${变量名},变量只能识别读入行的变量,例如第6行的变量在第三行无法读取
+ *  2、支持分组,分组为中括号括起来的内容,中括号以下的行都为此分组的内容,无分组相当于空字符分组,若某个key是name,加上分组后的键相当于group.name
+ *  3、注释以#开头,但是空行和不带“=”的行也会被跳过,但是建议加#
+ *  4、store方法不会保存注释内容,慎重使用
  * </pre>
  *
  * @author Kimi Liu
@@ -111,7 +111,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * 构造,使用相对于Class文件根目录的相对路径
      *
      * @param path          相对路径或绝对路径
      * @param charset       字符集
@@ -135,7 +135,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 构造，相对于classes读取文件
+     * 构造,相对于classes读取文件
      *
      * @param path          相对ClassPath路径或绝对路径
      * @param clazz         基准类
@@ -238,9 +238,9 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 获取并删除键值对，当指定键对应值非空时，返回并删除这个值，后边的键对应的值不再查找
+     * 获取并删除键值对,当指定键对应值非空时,返回并删除这个值,后边的键对应的值不再查找
      *
-     * @param keys 键列表，常用于别名
+     * @param keys 键列表,常用于别名
      * @return 值
      * @since 3.1.9
      */
@@ -256,9 +256,9 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 获取并删除键值对，当指定键对应值非空时，返回并删除这个值，后边的键对应的值不再查找
+     * 获取并删除键值对,当指定键对应值非空时,返回并删除这个值,后边的键对应的值不再查找
      *
-     * @param keys 键列表，常用于别名
+     * @param keys 键列表,常用于别名
      * @return 字符串值
      * @since 3.1.9
      */
@@ -274,7 +274,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 获得指定分组的所有键值对，此方法获取的是原始键值对，获取的键值对可以被修改
+     * 获得指定分组的所有键值对,此方法获取的是原始键值对,获取的键值对可以被修改
      *
      * @param group 分组
      * @return map
@@ -320,7 +320,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置
+     * 持久化当前设置,会覆盖掉之前的设置
      * 持久化不会保留之前的分组
      *
      * @param absolutePath 设置文件的绝对路径
@@ -333,7 +333,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 转换为Properties对象，原分组变为前缀
+     * 转换为Properties对象,原分组变为前缀
      *
      * @return Properties对象
      */
@@ -369,7 +369,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
 
     /**
      * 设置变量的正则
-     * 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
+     * 正则只能有一个group表示变量本身,剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
      *
      * @param regex 正则
      */
@@ -413,11 +413,11 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 获取分组对应的值，如果分组不存在或者值不存在则返回null
+     * 获取分组对应的值,如果分组不存在或者值不存在则返回null
      *
      * @param group 分组
      * @param key   键
-     * @return 值，如果分组不存在或者值不存在则返回null
+     * @return 值, 如果分组不存在或者值不存在则返回null
      */
     public String get(String group, String key) {
         return this.groupedMap.get(group, key);
@@ -429,7 +429,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param group 分组
      * @param key   键
      * @param value 值
-     * @return 此key之前存在的值，如果没有返回null
+     * @return 此key之前存在的值, 如果没有返回null
      */
     public String put(String group, String key, String value) {
         return this.groupedMap.put(group, key, value);
@@ -440,7 +440,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      *
      * @param group 分组
      * @param key   键
-     * @return 被删除的值，如果值不存在，返回null
+     * @return 被删除的值, 如果值不存在, 返回null
      */
     public String remove(String group, Object key) {
         return this.groupedMap.remove(group, Convert.toString(key));

@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
- * 抽象FTP类，用于定义通用的FTP方法
+ * 抽象FTP类,用于定义通用的FTP方法
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -53,7 +53,7 @@ public abstract class AbstractFtp implements Closeable {
     protected Charset charset;
 
     /**
-     * 是否包含指定字符串，忽略大小写
+     * 是否包含指定字符串,忽略大小写
      *
      * @param names      文件或目录名列表
      * @param nameToFind 要查找的文件或目录名
@@ -75,7 +75,7 @@ public abstract class AbstractFtp implements Closeable {
     }
 
     /**
-     * 如果连接超时的话，重新进行连接
+     * 如果连接超时的话,重新进行连接
      *
      * @return this
      */
@@ -127,7 +127,7 @@ public abstract class AbstractFtp implements Closeable {
     }
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历
+     * 遍历某个目录下所有文件和目录,不会递归遍历
      *
      * @param path 需要遍历的目录
      * @return 文件和目录列表
@@ -151,16 +151,16 @@ public abstract class AbstractFtp implements Closeable {
     public abstract boolean delDir(String dirPath);
 
     /**
-     * 创建指定文件夹及其父目录，从根目录开始创建，创建完成后回到默认的工作目录
+     * 创建指定文件夹及其父目录,从根目录开始创建,创建完成后回到默认的工作目录
      *
-     * @param dir 文件夹路径，绝对路径
+     * @param dir 文件夹路径,绝对路径
      */
     public void mkDirs(String dir) {
         final String[] dirs = StringUtils.trim(dir).split("[\\\\/]+");
 
         final String now = pwd();
         if (dirs.length > 0 && StringUtils.isEmpty(dirs[0])) {
-            //首位为空，表示以/开头
+            //首位为空,表示以/开头
             this.cd(Symbol.SLASH);
         }
         for (int i = 0; i < dirs.length; i++) {
@@ -177,7 +177,7 @@ public abstract class AbstractFtp implements Closeable {
     }
 
     /**
-     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与srcFilePath文件名相同。覆盖模式
+     * 将本地文件上传到目标服务器,目标文件名为destPath,若destPath为目录,则目标文件名将与srcFilePath文件名相同 覆盖模式
      *
      * @param srcFilePath 本地文件路径
      * @param destFile    目标文件

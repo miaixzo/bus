@@ -26,7 +26,7 @@ package org.aoju.bus.extra.mail;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
- * 全局邮件帐户，依赖于邮件配置文件{@link MailAccount#MAIL_SETTING_PATH}或{@link MailAccount#MAIL_SETTING_PATH2}
+ * 全局邮件帐户,依赖于邮件配置文件{@link MailAccount#MAIL_SETTING_PATH}或{@link MailAccount#MAIL_SETTING_PATH2}
  *
  * @author Kimi Liu
  * @version 5.2.2

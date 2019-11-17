@@ -55,14 +55,14 @@ public class CollUtils {
 
     /**
      * 两个集合的并集
-     * 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留最多的个数
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c, c, c]，此结果中只保留了三个c
+     * 针对一个集合中存在多个相同元素的情况,计算两个集合中此元素的个数,保留最多的个数
+     * 例如：集合1：[a, b, c, c, c],集合2：[a, b, c, c]
+     * 结果：[a, b, c, c, c],此结果中只保留了三个c
      *
      * @param <T>   集合元素类型
      * @param coll1 集合1
      * @param coll2 集合2
-     * @return 并集的集合，返回 {@link ArrayList}
+     * @return 并集的集合, 返回 {@link ArrayList}
      */
     public static <T> Collection<T> union(final Collection<T> coll1, final Collection<T> coll2) {
         final ArrayList<T> list = new ArrayList<>();
@@ -88,15 +88,15 @@ public class CollUtils {
 
     /**
      * 多个集合的并集
-     * 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留最多的个数
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c, c, c]，此结果中只保留了三个c
+     * 针对一个集合中存在多个相同元素的情况,计算两个集合中此元素的个数,保留最多的个数
+     * 例如：集合1：[a, b, c, c, c],集合2：[a, b, c, c]
+     * 结果：[a, b, c, c, c],此结果中只保留了三个c
      *
      * @param <T>        集合元素类型
      * @param coll1      集合1
      * @param coll2      集合2
      * @param otherColls 其它集合
-     * @return 并集的集合，返回 {@link ArrayList}
+     * @return 并集的集合, 返回 {@link ArrayList}
      */
     public static <T> Collection<T> union(final Collection<T> coll1, final Collection<T> coll2, final Collection<T>... otherColls) {
         Collection<T> union = union(coll1, coll2);
@@ -108,14 +108,14 @@ public class CollUtils {
 
     /**
      * 两个集合的交集
-     * 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留最少的个数
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c, c]，此结果中只保留了两个c
+     * 针对一个集合中存在多个相同元素的情况,计算两个集合中此元素的个数,保留最少的个数
+     * 例如：集合1：[a, b, c, c, c],集合2：[a, b, c, c]
+     * 结果：[a, b, c, c],此结果中只保留了两个c
      *
      * @param <T>   集合元素类型
      * @param coll1 集合1
      * @param coll2 集合2
-     * @return 交集的集合，返回 {@link ArrayList}
+     * @return 交集的集合, 返回 {@link ArrayList}
      */
     public static <T> Collection<T> intersection(final Collection<T> coll1, final Collection<T> coll2) {
         final ArrayList<T> list = new ArrayList<>();
@@ -136,15 +136,15 @@ public class CollUtils {
 
     /**
      * 多个集合的交集
-     * 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留最少的个数
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c, c]，此结果中只保留了两个c
+     * 针对一个集合中存在多个相同元素的情况,计算两个集合中此元素的个数,保留最少的个数
+     * 例如：集合1：[a, b, c, c, c],集合2：[a, b, c, c]
+     * 结果：[a, b, c, c],此结果中只保留了两个c
      *
      * @param <T>        集合元素类型
      * @param coll1      集合1
      * @param coll2      集合2
      * @param otherColls 其它集合
-     * @return 并集的集合，返回 {@link ArrayList}
+     * @return 并集的集合, 返回 {@link ArrayList}
      */
     public static <T> Collection<T> intersection(final Collection<T> coll1, final Collection<T> coll2, final Collection<T>... otherColls) {
         Collection<T> intersection = intersection(coll1, coll2);
@@ -162,16 +162,16 @@ public class CollUtils {
 
     /**
      * 两个集合的差集
-     * 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留两个集合中此元素个数差的个数
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[c]，此结果中只保留了一个
-     * 任意一个集合为空，返回另一个集合
+     * 针对一个集合中存在多个相同元素的情况,计算两个集合中此元素的个数,保留两个集合中此元素个数差的个数
+     * 例如：集合1：[a, b, c, c, c],集合2：[a, b, c, c]
+     * 结果：[c],此结果中只保留了一个
+     * 任意一个集合为空,返回另一个集合
      * 两个集合无交集则返回两个集合的组合
      *
      * @param <T>   集合元素类型
      * @param coll1 集合1
      * @param coll2 集合2
-     * @return 差集的集合，返回 {@link ArrayList}
+     * @return 差集的集合, 返回 {@link ArrayList}
      */
     public static <T> Collection<T> disjunction(final Collection<T> coll1, final Collection<T> coll2) {
         if (isEmpty(coll1)) {
@@ -197,12 +197,12 @@ public class CollUtils {
     }
 
     /**
-     * 检查给定数组是否包含给定元素。
+     * 检查给定数组是否包含给定元素
      *
      * @param array   数组要检查的数组
      * @param element 要查找的元素
      * @param <T>     通用标签
-     * @return 如果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
+     * @return 如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
      */
     public static <T> boolean contains(T[] array, final T element) {
         if (array == null) {
@@ -212,11 +212,11 @@ public class CollUtils {
     }
 
     /**
-     * 判断指定集合是否包含指定值，如果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
+     * 判断指定集合是否包含指定值,如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
      *
      * @param collection 集合
      * @param value      需要查找的值
-     * @return 如果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
+     * @return 如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
      */
     public static boolean contains(final Collection<?> collection, Object value) {
         return isNotEmpty(collection) && collection.contains(value);
@@ -261,7 +261,7 @@ public class CollUtils {
     }
 
     /**
-     * 其中一个集合在另一个集合中是否至少包含一个元素，既是两个集合是否至少有一个共同的元素
+     * 其中一个集合在另一个集合中是否至少包含一个元素,既是两个集合是否至少有一个共同的元素
      *
      * @param coll1 集合1
      * @param coll2 集合2
@@ -291,7 +291,7 @@ public class CollUtils {
 
     /**
      * 根据集合返回一个元素计数的 {@link Map}
-     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value
+     * 所谓元素计数就是假如这个集合中某个元素出现了n次,那将这个元素做为key,n做为value
      * 例如：[a,b,c,c,c] 得到：
      * a: 1
      * b: 1
@@ -308,7 +308,7 @@ public class CollUtils {
 
     /**
      * 以 conjunction 为分隔符将集合转换为字符串
-     * 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     * 如果集合元素为数组、{@link Iterable}或{@link Iterator},则递归组合其为字符串
      *
      * @param <T>         集合元素类型
      * @param iterable    {@link Iterable}
@@ -322,7 +322,7 @@ public class CollUtils {
 
     /**
      * 以 conjunction 为分隔符将集合转换为字符串
-     * 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     * 如果集合元素为数组、{@link Iterable}或{@link Iterator},则递归组合其为字符串
      *
      * @param <T>         集合元素类型
      * @param iterator    集合
@@ -409,8 +409,8 @@ public class CollUtils {
      *
      * @param <K>     Key类型
      * @param <V>     Value类型
-     * @param size    初始大小，由于默认负载因子0.75，传入的size会实际初始大小为size / 0.75
-     * @param isOrder Map的Key是否有序，有序返回 {@link LinkedHashMap}，否则返回 {@link HashMap}
+     * @param size    初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
+     * @param isOrder Map的Key是否有序,有序返回 {@link LinkedHashMap},否则返回 {@link HashMap}
      * @return HashMap对象
      * @see MapUtils#newHashMap(int, boolean)
      * @since 3.0.4
@@ -424,7 +424,7 @@ public class CollUtils {
      *
      * @param <K>  Key类型
      * @param <V>  Value类型
-     * @param size 初始大小，由于默认负载因子0.75，传入的size会实际初始大小为size / 0.75
+     * @param size 初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
      * @return HashMap对象
      */
     public static <K, V> HashMap<K, V> newHashMap(int size) {
@@ -457,7 +457,7 @@ public class CollUtils {
      * 新建一个HashSet
      *
      * @param <T>      集合元素类型
-     * @param isSorted 是否有序，有序返回 {@link LinkedHashSet}，否则返回 {@link HashSet}
+     * @param isSorted 是否有序,有序返回 {@link LinkedHashSet},否则返回 {@link HashSet}
      * @param ts       元素数组
      * @return HashSet对象
      */
@@ -488,8 +488,8 @@ public class CollUtils {
      * 新建一个HashSet
      *
      * @param <T>        集合元素类型
-     * @param isSorted   是否有序，有序返回 {@link LinkedHashSet}，否则返回{@link HashSet}
-     * @param collection 集合，用于初始化Set
+     * @param isSorted   是否有序,有序返回 {@link LinkedHashSet},否则返回{@link HashSet}
+     * @param collection 集合,用于初始化Set
      * @return HashSet对象
      */
     public static <T> HashSet<T> newHashSet(boolean isSorted, Collection<T> collection) {
@@ -500,7 +500,7 @@ public class CollUtils {
      * 新建一个HashSet
      *
      * @param <T>      集合元素类型
-     * @param isSorted 是否有序，有序返回 {@link LinkedHashSet}，否则返回{@link HashSet}
+     * @param isSorted 是否有序,有序返回 {@link LinkedHashSet},否则返回{@link HashSet}
      * @param iter     {@link Iterator}
      * @return HashSet对象
      */
@@ -519,7 +519,7 @@ public class CollUtils {
      * 新建一个HashSet
      *
      * @param <T>        集合元素类型
-     * @param isSorted   是否有序，有序返回 {@link LinkedHashSet}，否则返回{@link HashSet}
+     * @param isSorted   是否有序,有序返回 {@link LinkedHashSet},否则返回{@link HashSet}
      * @param enumration {@link Enumeration}
      * @return HashSet对象
      */
@@ -727,7 +727,7 @@ public class CollUtils {
 
     /**
      * 新建{@link BlockingQueue}
-     * 在队列为空时，获取元素的线程会等待队列变为非空。当队列满时，存储元素的线程会等待队列可用。
+     * 在队列为空时,获取元素的线程会等待队列变为非空 当队列满时,存储元素的线程会等待队列可用
      *
      * @param <T>      对象
      * @param capacity 容量
@@ -776,7 +776,7 @@ public class CollUtils {
             list = new LinkedList<>();
         }
 
-        // Others，直接实例化
+        // Others,直接实例化
         else {
             try {
                 list = (Collection<T>) ReflectUtils.newInstance(collectionType);
@@ -825,7 +825,7 @@ public class CollUtils {
      * @param list  被截取的数组
      * @param start 开始位置（包含）
      * @param end   结束位置（不包含）
-     * @return 截取后的数组，当开始位置超过最大时，返回空的List
+     * @return 截取后的数组, 当开始位置超过最大时, 返回空的List
      */
     public static <T> List<T> sub(List<T> list, int start, int end) {
         return sub(list, start, end, 1);
@@ -839,7 +839,7 @@ public class CollUtils {
      * @param start 开始位置（包含）
      * @param end   结束位置（不包含）
      * @param step  步进
-     * @return 截取后的数组，当开始位置超过最大时，返回空的List
+     * @return 截取后的数组, 当开始位置超过最大时, 返回空的List
      */
     public static <T> List<T> sub(List<T> list, int start, int end, int step) {
         if (list == null || list.isEmpty()) {
@@ -886,7 +886,7 @@ public class CollUtils {
      * @param collection 被截取的数组
      * @param start      开始位置（包含）
      * @param end        结束位置（不包含）
-     * @return 截取后的数组，当开始位置超过最大时，返回null
+     * @return 截取后的数组, 当开始位置超过最大时, 返回null
      */
     public static <T> List<T> sub(Collection<T> collection, int start, int end) {
         return sub(collection, start, end, 1);
@@ -900,7 +900,7 @@ public class CollUtils {
      * @param start 开始位置（包含）
      * @param end   结束位置（不包含）
      * @param step  步进
-     * @return 截取后的数组，当开始位置超过最大时，返回空集合
+     * @return 截取后的数组, 当开始位置超过最大时, 返回空集合
      */
     public static <T> List<T> sub(Collection<T> list, int start, int end, int step) {
         if (list == null || list.isEmpty()) {
@@ -911,7 +911,7 @@ public class CollUtils {
     }
 
     /**
-     * 对集合按照指定长度分段，每一个段为单独的集合，返回这个集合的列表
+     * 对集合按照指定长度分段,每一个段为单独的集合,返回这个集合的列表
      *
      * @param <T>        集合元素类型
      * @param collection 集合
@@ -935,11 +935,11 @@ public class CollUtils {
 
     /**
      * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象，返回集合中为修改后的对象
+     * 1、过滤出需要的对象,如果返回null表示这个元素对象抛弃
+     * 2、修改元素对象,返回集合中为修改后的对象
      * </pre>
      *
      * @param <T>        集合元素类型
@@ -952,7 +952,7 @@ public class CollUtils {
         try {
             collection2.clear();
         } catch (UnsupportedOperationException e) {
-            // 克隆后的对象不支持清空，说明为不可变集合对象，使用默认的ArrayList保存结果
+            // 克隆后的对象不支持清空,说明为不可变集合对象,使用默认的ArrayList保存结果
             collection2 = new ArrayList<>();
         }
 
@@ -968,11 +968,11 @@ public class CollUtils {
 
     /**
      * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象，返回集合中为修改后的对象
+     * 1、过滤出需要的对象,如果返回null表示这个元素对象抛弃
+     * 2、修改元素对象,返回集合中为修改后的对象
      * </pre>
      *
      * @param <T>    集合元素类型
@@ -994,10 +994,10 @@ public class CollUtils {
 
     /**
      * 过滤
-     * 过滤过程通过传入的Filter实现来过滤返回需要的元素内容，这个Filter实现可以实现以下功能：
+     * 过滤过程通过传入的Filter实现来过滤返回需要的元素内容,这个Filter实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，{@link Filter#accept(Object)}方法返回true的对象将被加入结果集合中
+     * 1、过滤出需要的对象,{@link Filter#accept(Object)}方法返回true的对象将被加入结果集合中
      * </pre>
      *
      * @param <T>        集合元素类型
@@ -1011,7 +1011,7 @@ public class CollUtils {
         try {
             collection2.clear();
         } catch (UnsupportedOperationException e) {
-            // 克隆后的对象不支持清空，说明为不可变集合对象，使用默认的ArrayList保存结果
+            // 克隆后的对象不支持清空,说明为不可变集合对象,使用默认的ArrayList保存结果
             collection2 = new ArrayList<>();
         }
 
@@ -1025,10 +1025,10 @@ public class CollUtils {
 
     /**
      * 过滤
-     * 过滤过程通过传入的Filter实现来过滤返回需要的元素内容，这个Filter实现可以实现以下功能：
+     * 过滤过程通过传入的Filter实现来过滤返回需要的元素内容,这个Filter实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，{@link Filter#accept(Object)}方法返回true的对象将被加入结果集合中
+     * 1、过滤出需要的对象,{@link Filter#accept(Object)}方法返回true的对象将被加入结果集合中
      * </pre>
      *
      * @param <T>    集合元素类型
@@ -1113,7 +1113,7 @@ public class CollUtils {
 
     /**
      * 通过Editor抽取集合元素中的某些值返回为新列表
-     * 例如提供的是一个Bean列表，通过Editor接口实现获取某个字段值，返回这个字段值组成的新列表
+     * 例如提供的是一个Bean列表,通过Editor接口实现获取某个字段值,返回这个字段值组成的新列表
      *
      * @param collection 原集合
      * @param editor     编辑器
@@ -1154,7 +1154,7 @@ public class CollUtils {
      *
      * @param <T>        集合元素类型
      * @param collection 集合
-     * @param filter     过滤器，满足过滤条件的第一个元素将被返回
+     * @param filter     过滤器,满足过滤条件的第一个元素将被返回
      * @return 满足过滤条件的第一个元素
      * @since 3.1.9
      */
@@ -1171,12 +1171,12 @@ public class CollUtils {
 
     /**
      * 查找第一个匹配元素对象
-     * 如果集合元素是Map，则比对键和值是否相同，相同则返回
-     * 如果为普通Bean，则通过反射比对元素字段名对应的字段值是否相同，相同则返回
+     * 如果集合元素是Map,则比对键和值是否相同,相同则返回
+     * 如果为普通Bean,则通过反射比对元素字段名对应的字段值是否相同,相同则返回
      * 如果给定字段值参数是{@code null} 且元素对象中的字段值也为{@code null}则认为相同
      *
      * @param <T>        集合元素类型
-     * @param collection 集合，集合元素可以是Bean或者Map
+     * @param collection 集合,集合元素可以是Bean或者Map
      * @param fieldName  集合元素对象的字段名或map的键
      * @param fieldValue 集合元素对象的字段值或map的值
      * @return 满足条件的第一个元素
@@ -1201,11 +1201,11 @@ public class CollUtils {
 
     /**
      * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象，返回集合中为修改后的对象
+     * 1、过滤出需要的对象,如果返回null表示这个元素对象抛弃
+     * 2、修改元素对象,返回集合中为修改后的对象
      * </pre>
      *
      * @param <K>    Key类型
@@ -1221,11 +1221,11 @@ public class CollUtils {
 
     /**
      * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象，返回集合中为修改后的对象
+     * 1、过滤出需要的对象,如果返回null表示这个元素对象抛弃
+     * 2、修改元素对象,返回集合中为修改后的对象
      * </pre>
      *
      * @param <K>    Key类型
@@ -1245,7 +1245,7 @@ public class CollUtils {
      *
      * @param <T>      集合元素类型
      * @param iterable {@link Iterable}
-     * @param matcher  匹配器，为空则全部匹配
+     * @param matcher  匹配器,为空则全部匹配
      * @return 匹配数量
      */
     public static <T> int count(Iterable<T> iterable, Matcher<T> matcher) {
@@ -1369,7 +1369,7 @@ public class CollUtils {
     /**
      * 是否包含{@code null}元素
      *
-     * @param iterable 被检查的Iterable对象，如果为{@code null} 返回false
+     * @param iterable 被检查的Iterable对象,如果为{@code null} 返回false
      * @return 是否包含{@code null}元素
      * @see IterUtils#hasNull(Iterable)
      * @since 3.0.7
@@ -1384,7 +1384,7 @@ public class CollUtils {
      * keys = a,b,c,d
      * values = 1,2,3,4
      * delimiter = , 则得到的Map是 {a=1, b=2, c=3, d=4}
-     * 如果两个数组长度不同，则只对应最短部分
+     * 如果两个数组长度不同,则只对应最短部分
      *
      * @param keys      键列表
      * @param values    值列表
@@ -1398,12 +1398,12 @@ public class CollUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数），返回Map无序
+     * 映射键值（参考Python的zip()函数）,返回Map无序
      * 例如：
      * keys = a,b,c,d
      * values = 1,2,3,4
      * delimiter = , 则得到的Map是 {a=1, b=2, c=3, d=4}
-     * 如果两个数组长度不同，则只对应最短部分
+     * 如果两个数组长度不同,则只对应最短部分
      *
      * @param keys      键列表
      * @param values    值列表
@@ -1420,7 +1420,7 @@ public class CollUtils {
      * keys = [a,b,c,d]
      * values = [1,2,3,4]
      * 则得到的Map是 {a=1, b=2, c=3, d=4}
-     * 如果两个数组长度不同，则只对应最短部分
+     * 如果两个数组长度不同,则只对应最短部分
      *
      * @param <K>    键类型
      * @param <V>    值类型
@@ -1459,13 +1459,13 @@ public class CollUtils {
     }
 
     /**
-     * 将数组转换为Map（HashMap），支持数组元素类型为：
+     * 将数组转换为Map（HashMap）,支持数组元素类型为：
      *
      * <pre>
      * Map.Entry
-     * 长度大于1的数组（取前两个值），如果不满足跳过此元素
-     * Iterable 长度也必须大于1（取前两个值），如果不满足跳过此元素
-     * Iterator 长度也必须大于1（取前两个值），如果不满足跳过此元素
+     * 长度大于1的数组（取前两个值）,如果不满足跳过此元素
+     * Iterable 长度也必须大于1（取前两个值）,如果不满足跳过此元素
+     * Iterator 长度也必须大于1（取前两个值）,如果不满足跳过此元素
      * </pre>
      *
      * <pre>
@@ -1477,7 +1477,7 @@ public class CollUtils {
      * <p>
      * 参考：commons-lang
      *
-     * @param array 数组。元素类型为Map.Entry、数组、Iterable、Iterator
+     * @param array 数组 元素类型为Map.Entry、数组、Iterable、Iterator
      * @return {@link HashMap}
      * @see MapUtils#of(Object[])
      */
@@ -1542,7 +1542,7 @@ public class CollUtils {
 
     /**
      * {@link Iterable}转为{@link Collection}
-     * 首先尝试强转，强转失败则构建一个新的{@link ArrayList}
+     * 首先尝试强转,强转失败则构建一个新的{@link ArrayList}
      *
      * @param <E>      集合元素类型
      * @param iterable {@link Iterable}
@@ -1554,7 +1554,7 @@ public class CollUtils {
     }
 
     /**
-     * 行转列，合并相同的键，值合并为列表
+     * 行转列,合并相同的键,值合并为列表
      * 将Map列表中相同key的值组成列表做为Map的value
      * 是{@link #toMapList(Map)}的逆方法
      * 比如传入数据：
@@ -1589,7 +1589,7 @@ public class CollUtils {
     }
 
     /**
-     * 列转行。将Map中值列表分别按照其位置与key组成新的map。
+     * 列转行 将Map中值列表分别按照其位置与key组成新的map
      * 是{@link #toListMap(Iterable)}的逆方法
      * 比如传入数据：
      *
@@ -1624,11 +1624,11 @@ public class CollUtils {
 
     /**
      * 将指定对象全部加入到集合中
-     * 提供的对象如果为集合类型，会自动转换为目标元素类型
+     * 提供的对象如果为集合类型,会自动转换为目标元素类型
      *
      * @param <T>        元素类型
      * @param collection 被加入的集合
-     * @param value      对象，可能为Iterator、Iterable、Enumeration、Array
+     * @param value      对象,可能为Iterator、Iterable、Enumeration、Array
      * @return 被加入集合
      */
     public static <T> Collection<T> addAll(Collection<T> collection, Object value) {
@@ -1637,12 +1637,12 @@ public class CollUtils {
 
     /**
      * 将指定对象全部加入到集合中
-     * 提供的对象如果为集合类型，会自动转换为目标元素类型
+     * 提供的对象如果为集合类型,会自动转换为目标元素类型
      *
      * @param <T>         元素类型
      * @param collection  被加入的集合
-     * @param value       对象，可能为Iterator、Iterable、Enumeration、Array，或者与集合元素类型一致
-     * @param elementType 元素类型，为空时，使用Object类型来接纳所有类型
+     * @param value       对象,可能为Iterator、Iterable、Enumeration、Array,或者与集合元素类型一致
+     * @param elementType 元素类型,为空时,使用Object类型来接纳所有类型
      * @return 被加入集合
      */
     public static <T> Collection<T> addAll(Collection<T> collection, Object value, Type elementType) {
@@ -1650,7 +1650,7 @@ public class CollUtils {
             return collection;
         }
         if (null == elementType) {
-            // 元素类型为空时，使用Object类型来接纳所有类型
+            // 元素类型为空时,使用Object类型来接纳所有类型
             elementType = Object.class;
         } else {
             final Class<?> elementRowType = TypeUtils.getClass(elementType);
@@ -1750,7 +1750,7 @@ public class CollUtils {
     }
 
     /**
-     * 将另一个列表中的元素加入到列表中，如果列表中已经存在此元素则忽略之
+     * 将另一个列表中的元素加入到列表中,如果列表中已经存在此元素则忽略之
      *
      * @param <T>       集合元素类型
      * @param list      列表
@@ -1767,12 +1767,12 @@ public class CollUtils {
     }
 
     /**
-     * 获取集合中指定下标的元素值，下标可以为负数，例如-1表示最后一个元素
-     * 如果元素越界，返回null
+     * 获取集合中指定下标的元素值,下标可以为负数,例如-1表示最后一个元素
+     * 如果元素越界,返回null
      *
      * @param <T>        元素类型
      * @param collection 集合
-     * @param index      下标，支持负数
+     * @param index      下标,支持负数
      * @return 元素值
      */
     public static <T> T get(Collection<T> collection, int index) {
@@ -1804,11 +1804,11 @@ public class CollUtils {
     }
 
     /**
-     * 获取集合中指定多个下标的元素值，下标可以为负数，例如-1表示最后一个元素
+     * 获取集合中指定多个下标的元素值,下标可以为负数,例如-1表示最后一个元素
      *
      * @param <T>        元素类型
      * @param collection 集合
-     * @param indexes    下标，支持负数
+     * @param indexes    下标,支持负数
      * @return 元素值列表
      */
     public static <T> List<T> getAny(Collection<T> collection, int... indexes) {
@@ -1875,7 +1875,7 @@ public class CollUtils {
      * 获得{@link Iterable}对象的元素类型（通过第一个非空元素判断）
      *
      * @param iterable {@link Iterable}
-     * @return 元素类型，当列表为空或元素全部为null时，返回null
+     * @return 元素类型, 当列表为空或元素全部为null时, 返回null
      * @see IterUtils#getElementType(Iterable)
      */
     public static Class<?> getElementType(Iterable<?> iterable) {
@@ -1886,7 +1886,7 @@ public class CollUtils {
      * 获得{@link Iterator}对象的元素类型（通过第一个非空元素判断）
      *
      * @param iterator {@link Iterator}
-     * @return 元素类型，当列表为空或元素全部为null时，返回null
+     * @return 元素类型, 当列表为空或元素全部为null时, 返回null
      * @see IterUtils#getElementType(Iterator)
      */
     public static Class<?> getElementType(Iterator<?> iterator) {
@@ -1895,7 +1895,7 @@ public class CollUtils {
 
     /**
      * 从Map中获取指定键列表对应的值列表
-     * 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * 如果key在map中不存在或key对应值为null,则返回值列表对应位置的值也为null
      *
      * @param <K>  键类型
      * @param <V>  值类型
@@ -1913,7 +1913,7 @@ public class CollUtils {
 
     /**
      * 从Map中获取指定键列表对应的值列表
-     * 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * 如果key在map中不存在或key对应值为null,则返回值列表对应位置的值也为null
      *
      * @param <K>  键类型
      * @param <V>  值类型
@@ -1928,7 +1928,7 @@ public class CollUtils {
 
     /**
      * 从Map中获取指定键列表对应的值列表
-     * 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * 如果key在map中不存在或key对应值为null,则返回值列表对应位置的值也为null
      *
      * @param <K>  键类型
      * @param <V>  值类型
@@ -1950,7 +1950,7 @@ public class CollUtils {
      * 实现分页取局部
      *
      * @param <T>        集合元素类型
-     * @param pageNo     页码，从1开始计数，0和1效果相同
+     * @param pageNo     页码,从1开始计数,0和1效果相同
      * @param pageSize   每页的条目数
      * @param comparator 比较器
      * @param colls      集合数组
@@ -1972,7 +1972,7 @@ public class CollUtils {
      * 对指定List分页取值
      *
      * @param <T>      集合元素类型
-     * @param pageNo   页码，从1开始计数，0和1效果相同
+     * @param pageNo   页码,从1开始计数,0和1效果相同
      * @param pageSize 每页的条目数
      * @param list     列表
      * @return 分页后的段落内容
@@ -2000,7 +2000,7 @@ public class CollUtils {
     }
 
     /**
-     * 排序集合，排序不会修改原集合
+     * 排序集合,排序不会修改原集合
      *
      * @param <T>        集合元素类型
      * @param collection 集合
@@ -2014,7 +2014,7 @@ public class CollUtils {
     }
 
     /**
-     * 针对List排序，排序会修改原List
+     * 针对List排序,排序会修改原List
      *
      * @param <T>  元素类型
      * @param list 被排序的List
@@ -2044,7 +2044,7 @@ public class CollUtils {
     }
 
     /**
-     * 通过Entry排序，可以按照键排序，也可以按照值排序，亦或者两者综合排序
+     * 通过Entry排序,可以按照键排序,也可以按照值排序,亦或者两者综合排序
      *
      * @param <K>             键类型
      * @param <V>             值类型
@@ -2065,7 +2065,7 @@ public class CollUtils {
     }
 
     /**
-     * 通过Entry排序，可以按照键排序，也可以按照值排序，亦或者两者综合排序
+     * 通过Entry排序,可以按照键排序,也可以按照值排序,亦或者两者综合排序
      *
      * @param <K>        键类型
      * @param <V>        值类型
@@ -2105,7 +2105,7 @@ public class CollUtils {
     }
 
     /**
-     * 循环遍历 {@link Iterator}，使用{@link Consumer} 接受遍历的每条数据，并针对每条数据做处理
+     * 循环遍历 {@link Iterator},使用{@link Consumer} 接受遍历的每条数据,并针对每条数据做处理
      *
      * @param <T>      集合元素类型
      * @param iterator {@link Iterator}
@@ -2120,7 +2120,7 @@ public class CollUtils {
     }
 
     /**
-     * 循环遍历 {@link Enumeration}，使用{@link Consumer} 接受遍历的每条数据，并针对每条数据做处理
+     * 循环遍历 {@link Enumeration},使用{@link Consumer} 接受遍历的每条数据,并针对每条数据做处理
      *
      * @param <T>         集合元素类型
      * @param enumeration {@link Enumeration}
@@ -2135,7 +2135,7 @@ public class CollUtils {
     }
 
     /**
-     * 循环遍历Map，使用{@link KVConsumer} 接受遍历的每条数据，并针对每条数据做处理
+     * 循环遍历Map,使用{@link KVConsumer} 接受遍历的每条数据,并针对每条数据做处理
      *
      * @param <K>        Key类型
      * @param <V>        Value类型
@@ -2151,11 +2151,11 @@ public class CollUtils {
     }
 
     /**
-     * 分组，按照{@link Hash}接口定义的hash算法，集合中的元素放入hash值对应的子列表中
+     * 分组,按照{@link Hash}接口定义的hash算法,集合中的元素放入hash值对应的子列表中
      *
      * @param <T>        元素类型
      * @param collection 被分组的集合
-     * @param hash       Hash值算法，决定元素放在第几个分组的规则
+     * @param hash       Hash值算法,决定元素放在第几个分组的规则
      * @return 分组后的集合
      */
     public static <T> List<List<T>> group(Collection<T> collection, Hash<T> hash) {
@@ -2164,7 +2164,7 @@ public class CollUtils {
             return result;
         }
         if (null == hash) {
-            // 默认hash算法，按照元素的hashCode分组
+            // 默认hash算法,按照元素的hashCode分组
             hash = new Hash<T>() {
                 @Override
                 public int hash(T t) {
@@ -2198,7 +2198,7 @@ public class CollUtils {
      * Map的键和值互换
      *
      * @param <T> 对象
-     * @param map Map对象，键值类型必须一致
+     * @param map Map对象,键值类型必须一致
      * @return 互换后的Map
      */
     public static <T> Map<T, T> reverse(Map<T, T> map) {
@@ -2227,7 +2227,7 @@ public class CollUtils {
     }
 
     /**
-     * 反序给定List，会在原List基础上直接修改
+     * 反序给定List,会在原List基础上直接修改
      *
      * @param <T>  元素类型
      * @param list 被反转的List
@@ -2239,7 +2239,7 @@ public class CollUtils {
     }
 
     /**
-     * 反序给定List，会创建一个新的List，原List数据不变
+     * 反序给定List,会创建一个新的List,原List数据不变
      *
      * @param <T>  元素类型
      * @param list 被反转的List
@@ -2252,12 +2252,12 @@ public class CollUtils {
 
     /**
      * 对list的元素按照多个属性名称排序,
-     * list元素的属性可以是数字（byte、short、int、long、float、double等，支持正数、负数、0）、char、String、java.util.Date
+     * list元素的属性可以是数字（byte、short、int、long、float、double等,支持正数、负数、0）、char、String、java.util.Date
      *
      * @param <E>  对象
      * @param list 集合
      * @param name list元素的属性名称
-     * @param asc  true升序，false降序
+     * @param asc  true升序,false降序
      */
     public static <E> void sort(List<E> list, final boolean asc, final String... name) {
         Collections.sort(list, new Comparator<E>() {
@@ -2285,7 +2285,7 @@ public class CollUtils {
      * @param <E>  对象
      * @param list 集合
      * @param name 参数数组
-     * @param type 每个属性对应的升降序数组， true升序，false降序
+     * @param type 每个属性对应的升降序数组, true升序,false降序
      */
 
     public static <E> void sort(List<E> list, final String[] name, final boolean[] type) {
@@ -2314,7 +2314,7 @@ public class CollUtils {
      * 对2个对象按照指定属性名称进行排序
      *
      * @param name 属性名称
-     * @param asc  true升序，false降序
+     * @param asc  true升序,false降序
      * @param a    对象
      * @param b    对象
      * @return
@@ -2356,7 +2356,7 @@ public class CollUtils {
         Field field = FieldUtils.getField(obj.getClass(), fieldName);
         boolean accessible = field.isAccessible();
         if (!accessible) {
-            // 如果是private,protected修饰的属性，需要修改为可以访问的
+            // 如果是private,protected修饰的属性,需要修改为可以访问的
             field.setAccessible(true);
             obj = field.get(obj);
             // 还原private,protected属性的访问性质
@@ -2367,7 +2367,7 @@ public class CollUtils {
     }
 
     /**
-     * 设置或增加元素。当index小于List的长度时，替换指定位置的值，否则在尾部追加
+     * 设置或增加元素 当index小于List的长度时,替换指定位置的值,否则在尾部追加
      *
      * @param <T>     对象
      * @param list    List列表
@@ -2388,13 +2388,12 @@ public class CollUtils {
      * 将页数和每页条目数转换为开始位置和结束位置
      * 此方法用于不包括结束位置的分页方法
      * 例如：
-     * 页码：1，每页10 =》 [0, 10]
-     * 页码：2，每页10 =》 [10, 20]
-     * 。。。
+     * 页码：1,每页10 =》 [0, 10]
+     * 页码：2,每页10 =》 [10, 20]
      *
      * @param pageNo   页码（从1计数）
      * @param pageSize 每页条目数
-     * @return 第一个数为开始位置，第二个数为结束位置
+     * @return 第一个数为开始位置, 第二个数为结束位置
      */
     public static int[] transToStartEnd(int pageNo, int pageSize) {
         if (pageNo < 1) {
@@ -2427,7 +2426,7 @@ public class CollUtils {
 
     /**
      * 分页彩虹算法
-     * 通过传入的信息，生成一个分页列表显示
+     * 通过传入的信息,生成一个分页列表显示
      *
      * @param currentPage  当前页
      * @param pageCount    总页数
@@ -2559,7 +2558,7 @@ public class CollUtils {
     }
 
     /**
-     * 针对两个参数做相应的操作，例如Map中的KEY和VALUE
+     * 针对两个参数做相应的操作,例如Map中的KEY和VALUE
      *
      * @param <K> KEY类型
      * @param <V> VALUE类型

@@ -50,10 +50,10 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * 转换器登记中心
  * <p>
- * 将各种类型Convert对象放入登记中心，通过convert方法查找目标类型对应的转换器，将被转换对象转换之。
+ * 将各种类型Convert对象放入登记中心,通过convert方法查找目标类型对应的转换器,将被转换对象转换之
  * </p>
  * <p>
- * 在此类中，存放着默认转换器和自定义转换器，默认转换器预定义的一些转换器，自定义转换器存放用户自定的转换器。
+ * 在此类中,存放着默认转换器和自定义转换器,默认转换器预定义的一些转换器,自定义转换器存放用户自定的转换器
  * </p>
  *
  * @author Kimi Liu
@@ -88,7 +88,7 @@ public class ConverterRegistry {
      * 登记自定义转换器
      *
      * @param type           转换的目标类型
-     * @param converterClass 转换器类，必须有默认构造方法
+     * @param converterClass 转换器类,必须有默认构造方法
      * @return {@link ConverterRegistry}
      */
     public ConverterRegistry putCustom(Type type, Class<? extends Converter<?>> converterClass) {
@@ -183,7 +183,7 @@ public class ConverterRegistry {
         }
         final Class<T> rowType = (Class<T>) TypeUtils.getClass(type);
 
-        // 特殊类型转换，包括Collection、Map、强转、Array等
+        // 特殊类型转换,包括Collection、Map、强转、Array等
         final T result = convertSpecial(type, rowType, value, defaultValue);
         if (null != result) {
             return result;
@@ -225,7 +225,7 @@ public class ConverterRegistry {
      * @param <T>   转换的目标类型（转换器转换到的类型）
      * @param type  类型
      * @param value 值
-     * @return 转换后的值，默认为<code>null</code>
+     * @return 转换后的值, 默认为<code>null</code>
      * @throws InstrumentException 转换器不存在
      */
     public <T> T convert(Type type, Object value) throws InstrumentException {
@@ -353,11 +353,11 @@ public class ConverterRegistry {
     }
 
     /**
-     * 类级的内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例 没有绑定关系，而且只有被调用到才会装载，从而实现了延迟加载
+     * 类级的内部类,也就是静态的成员式内部类,该内部类的实例与外部类的实例 没有绑定关系,而且只有被调用到才会装载,从而实现了延迟加载
      */
     private static class SingletonHolder {
         /**
-         * 静态初始化器，由JVM来保证线程安全
+         * 静态初始化器,由JVM来保证线程安全
          */
         private static ConverterRegistry instance = new ConverterRegistry();
     }

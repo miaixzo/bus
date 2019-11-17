@@ -37,7 +37,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
 public interface UpdateByPrimaryKeyMapper<T> {
 
     /**
-     * 根据主键更新实体全部字段，null值会被更新
+     * 根据主键更新实体全部字段,null值会被更新
      *
      * @param record 对象
      * @return 操作数量

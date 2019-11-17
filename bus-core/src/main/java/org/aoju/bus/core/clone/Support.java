@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * <p>
- * 克隆支持类，提供默认的克隆方法
+ * 克隆支持类,提供默认的克隆方法
  * </p>
  *
  * @param <T> 继承类的类型

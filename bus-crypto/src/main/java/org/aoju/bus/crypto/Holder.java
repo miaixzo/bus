@@ -43,7 +43,7 @@ public class Holder {
 
     /**
      * 创建Bouncy Castle 提供者
-     * 如果用户未引入bouncycastle库，则此方法抛出{@link NoClassDefFoundError} 异常
+     * 如果用户未引入bouncycastle库,则此方法抛出{@link NoClassDefFoundError} 异常
      *
      * @return {@link Provider}
      */
@@ -53,7 +53,7 @@ public class Holder {
 
     /**
      * 设置是否使用Bouncy Castle库
-     * 如果设置为false，表示强制关闭Bouncy Castle而使用JDK
+     * 如果设置为false,表示强制关闭Bouncy Castle而使用JDK
      *
      * @param isUseBouncyCastle 是否自定义
      */

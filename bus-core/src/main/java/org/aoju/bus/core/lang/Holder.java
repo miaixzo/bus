@@ -26,7 +26,7 @@ package org.aoju.bus.core.lang;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 
 /**
- * 为不可变的对象引用提供一个可变的包装，在java中支持引用传递。
+ * 为不可变的对象引用提供一个可变的包装,在java中支持引用传递
  *
  * @param <T> 所持有值类型
  * @author Kimi Liu
@@ -54,10 +54,10 @@ public final class Holder<T> extends MutableObject<T> {
     }
 
     /**
-     * 新建Holder类，持有指定值，当值为空时抛出空指针异常
+     * 新建Holder类,持有指定值,当值为空时抛出空指针异常
      *
      * @param <T>   被持有的对象类型
-     * @param value 值，不能为空
+     * @param value 值,不能为空
      * @return Holder
      */
     public static <T> Holder<T> of(T value) throws NullPointerException {

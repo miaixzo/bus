@@ -47,7 +47,7 @@ import java.io.OutputStream;
 public class ExcelUtils {
 
     /**
-     * 通过Sax方式读取Excel，同时支持03和07格式
+     * 通过Sax方式读取Excel,同时支持03和07格式
      *
      * @param path       Excel文件路径
      * @param sheetIndex sheet序号
@@ -65,7 +65,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 通过Sax方式读取Excel，同时支持03和07格式
+     * 通过Sax方式读取Excel,同时支持03和07格式
      *
      * @param file       Excel文件
      * @param sheetIndex sheet序号
@@ -83,7 +83,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 通过Sax方式读取Excel，同时支持03和07格式
+     * 通过Sax方式读取Excel,同时支持03和07格式
      *
      * @param in         Excel流
      * @param sheetIndex sheet序号
@@ -103,7 +103,7 @@ public class ExcelUtils {
      * Sax方式读取Excel07
      *
      * @param in         输入流
-     * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
+     * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
      * @since 5.2.2
@@ -120,7 +120,7 @@ public class ExcelUtils {
      * Sax方式读取Excel07
      *
      * @param file       文件
-     * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
+     * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
      * @since 5.2.2
@@ -137,7 +137,7 @@ public class ExcelUtils {
      * Sax方式读取Excel07
      *
      * @param path       路径
-     * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
+     * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
      * @since 5.2.2
@@ -154,7 +154,7 @@ public class ExcelUtils {
      * Sax方式读取Excel03
      *
      * @param in         输入流
-     * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
+     * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
      * @since 5.2.2
@@ -171,7 +171,7 @@ public class ExcelUtils {
      * Sax方式读取Excel03
      *
      * @param file       文件
-     * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
+     * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel03SaxReader}
      * @since 5.2.2
@@ -188,7 +188,7 @@ public class ExcelUtils {
      * Sax方式读取Excel03
      *
      * @param path       路径
-     * @param sheetIndex Sheet索引，-1表示全部Sheet, 0表示第一个Sheet
+     * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel03SaxReader}
      * @since 5.2.2
@@ -202,10 +202,10 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 默认调用第一个sheet
      *
-     * @param bookFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param bookFilePath Excel文件路径,绝对路径或相对于ClassPath路径
      * @return {@link ExcelReader}
      * @since 3.1.1
      */
@@ -214,7 +214,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 默认调用第一个sheet
      *
      * @param bookFile Excel文件
@@ -225,10 +225,10 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      *
-     * @param bookFilePath Excel文件路径，绝对路径或相对于ClassPath路径
-     * @param sheetIndex   sheet序号，0表示第一个sheet
+     * @param bookFilePath Excel文件路径,绝对路径或相对于ClassPath路径
+     * @param sheetIndex   sheet序号,0表示第一个sheet
      * @return {@link ExcelReader}
      * @since 3.1.1
      */
@@ -241,10 +241,10 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      *
      * @param bookFile   Excel文件
-     * @param sheetIndex sheet序号，0表示第一个sheet
+     * @param sheetIndex sheet序号,0表示第一个sheet
      * @return {@link ExcelReader}
      */
     public static ExcelReader getReader(File bookFile, int sheetIndex) {
@@ -256,10 +256,10 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      *
      * @param bookFile  Excel文件
-     * @param sheetName sheet名，第一个默认是sheet1
+     * @param sheetName sheet名,第一个默认是sheet1
      * @return {@link ExcelReader}
      */
     public static ExcelReader getReader(File bookFile, String sheetName) {
@@ -271,8 +271,8 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
-     * 默认调用第一个sheet，读取结束自动关闭流
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 默认调用第一个sheet,读取结束自动关闭流
      *
      * @param bookStream Excel文件的流
      * @return {@link ExcelReader}
@@ -282,7 +282,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 默认调用第一个sheet
      *
      * @param bookStream     Excel文件的流
@@ -298,11 +298,11 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 读取结束自动关闭流
      *
      * @param bookStream Excel文件的流
-     * @param sheetIndex sheet序号，0表示第一个sheet
+     * @param sheetIndex sheet序号,0表示第一个sheet
      * @return {@link ExcelReader}
      */
     public static ExcelReader getReader(InputStream bookStream, int sheetIndex) {
@@ -314,10 +314,10 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      *
      * @param bookStream     Excel文件的流
-     * @param sheetIndex     sheet序号，0表示第一个sheet
+     * @param sheetIndex     sheet序号,0表示第一个sheet
      * @param closeAfterRead 读取结束是否关闭流
      * @return {@link ExcelReader}
      */
@@ -330,11 +330,11 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      * 读取结束自动关闭流
      *
      * @param bookStream Excel文件的流
-     * @param sheetName  sheet名，第一个默认是sheet1
+     * @param sheetName  sheet名,第一个默认是sheet1
      * @return {@link ExcelReader}
      */
     public static ExcelReader getReader(InputStream bookStream, String sheetName) {
@@ -346,10 +346,10 @@ public class ExcelUtils {
     }
 
     /**
-     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
      *
      * @param bookStream     Excel文件的流
-     * @param sheetName      sheet名，第一个默认是sheet1
+     * @param sheetName      sheet名,第一个默认是sheet1
      * @param closeAfterRead 读取结束是否关闭流
      * @return {@link ExcelReader}
      */
@@ -362,9 +362,9 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link ExcelWriter}，默认写出到第一个sheet
-     * 不传入写出的Excel文件路径，只能调用{@link ExcelWriter#flush(OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
+     * 获得{@link ExcelWriter},默认写出到第一个sheet
+     * 不传入写出的Excel文件路径,只能调用{@link ExcelWriter#flush(OutputStream)}方法写出到流
+     * 若写出到文件,还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件,然后调用{@link ExcelWriter#flush()}方法写出到文件
      *
      * @return {@link ExcelWriter}
      * @since 5.2.2
@@ -378,9 +378,9 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link ExcelWriter}，默认写出到第一个sheet
-     * 不传入写出的Excel文件路径，只能调用{@link ExcelWriter#flush(OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
+     * 获得{@link ExcelWriter},默认写出到第一个sheet
+     * 不传入写出的Excel文件路径,只能调用{@link ExcelWriter#flush(OutputStream)}方法写出到流
+     * 若写出到文件,还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件,然后调用{@link ExcelWriter#flush()}方法写出到文件
      *
      * @param isXlsx 是否为xlsx格式
      * @return {@link ExcelWriter}
@@ -395,7 +395,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link ExcelWriter}，默认写出到第一个sheet
+     * 获得{@link ExcelWriter},默认写出到第一个sheet
      *
      * @param destFilePath 目标文件路径
      * @return {@link ExcelWriter}
@@ -409,7 +409,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link ExcelWriter}，默认写出到第一个sheet，名字为sheet1
+     * 获得{@link ExcelWriter},默认写出到第一个sheet,名字为sheet1
      *
      * @param destFile 目标文件
      * @return {@link ExcelWriter}
@@ -453,9 +453,9 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link BigExcelWriter}，默认写出到第一个sheet
-     * 不传入写出的Excel文件路径，只能调用{@link BigExcelWriter#flush(OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
+     * 获得{@link BigExcelWriter},默认写出到第一个sheet
+     * 不传入写出的Excel文件路径,只能调用{@link BigExcelWriter#flush(OutputStream)}方法写出到流
+     * 若写出到文件,还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件,然后调用{@link BigExcelWriter#flush()}方法写出到文件
      *
      * @return {@link BigExcelWriter}
      */
@@ -468,9 +468,9 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link BigExcelWriter}，默认写出到第一个sheet
-     * 不传入写出的Excel文件路径，只能调用{@link BigExcelWriter#flush(OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
+     * 获得{@link BigExcelWriter},默认写出到第一个sheet
+     * 不传入写出的Excel文件路径,只能调用{@link BigExcelWriter#flush(OutputStream)}方法写出到流
+     * 若写出到文件,还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件,然后调用{@link BigExcelWriter#flush()}方法写出到文件
      *
      * @param rowAccessWindowSize 在内存中的行数
      * @return {@link BigExcelWriter}
@@ -484,7 +484,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link BigExcelWriter}，默认写出到第一个sheet
+     * 获得{@link BigExcelWriter},默认写出到第一个sheet
      *
      * @param destFilePath 目标文件路径
      * @return {@link BigExcelWriter}
@@ -498,7 +498,7 @@ public class ExcelUtils {
     }
 
     /**
-     * 获得{@link BigExcelWriter}，默认写出到第一个sheet，名字为sheet1
+     * 获得{@link BigExcelWriter},默认写出到第一个sheet,名字为sheet1
      *
      * @param destFile 目标文件
      * @return {@link BigExcelWriter}

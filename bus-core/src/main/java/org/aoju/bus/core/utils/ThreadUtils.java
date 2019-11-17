@@ -60,7 +60,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 获得一个新的线程池，只有单个线程
+     * 获得一个新的线程池,只有单个线程
      *
      * @return ExecutorService
      */
@@ -70,7 +70,7 @@ public class ThreadUtils {
 
     /**
      * 获得一个新的线程池
-     * 如果maximumPoolSize =》 corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
+     * 如果maximumPoolSize =》 corePoolSize,在没有新任务加入的情况下,多出的线程将最多保留60s
      *
      * @param corePoolSize    初始线程池大小
      * @param maximumPoolSize 最大线程池大小
@@ -82,13 +82,13 @@ public class ThreadUtils {
 
     /**
      * 获得一个新的线程池
-     * 传入阻塞系数，线程池的大小计算公式为：CPU可用核心数 / (1 - 阻塞因子)
+     * 传入阻塞系数,线程池的大小计算公式为：CPU可用核心数 / (1 - 阻塞因子)
      * Blocking Coefficient(阻塞系数) = 阻塞时间／（阻塞时间+使用CPU的时间）
-     * 计算密集型任务的阻塞系数为0，而IO密集型任务的阻塞系数则接近于1。
+     * 计算密集型任务的阻塞系数为0,而IO密集型任务的阻塞系数则接近于1
      * <p>
      * see: http://blog.csdn.net/partner4java/article/details/9417663
      *
-     * @param blockingCoefficient 阻塞系数，阻塞因子介于0~1之间的数，阻塞因子越大，线程池中的线程数越多。
+     * @param blockingCoefficient 阻塞系数,阻塞因子介于0~1之间的数,阻塞因子越大,线程池中的线程数越多
      * @return {@link ThreadPoolExecutor}
      * @since 3.1.9
      */
@@ -115,7 +115,7 @@ public class ThreadUtils {
      * 执行异步方法
      *
      * @param runnable 需要执行的方法体
-     * @param isDeamon 是否守护线程。守护线程会在主线程结束后自动结束
+     * @param isDeamon 是否守护线程 守护线程会在主线程结束后自动结束
      * @return 执行的方法体
      */
     public static Runnable excAsync(final Runnable runnable, boolean isDeamon) {
@@ -133,7 +133,7 @@ public class ThreadUtils {
 
     /**
      * 执行有返回值的异步方法
-     * Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
+     * Future代表一个异步执行的操作,通过get()方法可以获得操作的结果,如果异步操作还没有完成,则,get()会使当前线程阻塞
      *
      * @param <T>  回调对象类型
      * @param task {@link Callable}
@@ -145,7 +145,7 @@ public class ThreadUtils {
 
     /**
      * 执行有返回值的异步方法
-     * Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
+     * Future代表一个异步执行的操作,通过get()方法可以获得操作的结果,如果异步操作还没有完成,则,get()会使当前线程阻塞
      *
      * @param runnable 可运行对象
      * @return {@link Future}
@@ -156,8 +156,8 @@ public class ThreadUtils {
     }
 
     /**
-     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。
-     * 若未完成，则会阻塞
+     * 新建一个CompletionService,调用其submit方法可以异步执行多个任务,最后调用take方法按照完成的顺序获得其结果
+     * 若未完成,则会阻塞
      *
      * @param <T> 回调对象类型
      * @return CompletionService
@@ -167,8 +167,8 @@ public class ThreadUtils {
     }
 
     /**
-     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。
-     * 若未完成，则会阻塞
+     * 新建一个CompletionService,调用其submit方法可以异步执行多个任务,最后调用take方法按照完成的顺序获得其结果
+     * 若未完成,则会阻塞
      *
      * @param <T>      回调对象类型
      * @param executor 执行器 {@link ExecutorService}
@@ -179,7 +179,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 新建一个CountDownLatch，一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。
+     * 新建一个CountDownLatch,一个同步辅助类,在完成一组正在其他线程中执行的操作之前,它允许一个或多个线程一直等待
      *
      * @param threadCount 线程数量
      * @return CountDownLatch
@@ -189,7 +189,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 创建新线程，非守护线程，正常优先级，线程组与当前线程的线程组一致
+     * 创建新线程,非守护线程,正常优先级,线程组与当前线程的线程组一致
      *
      * @param runnable {@link Runnable}
      * @param name     线程名
@@ -223,7 +223,7 @@ public class ThreadUtils {
      *
      * @param timeout  挂起的时长
      * @param timeUnit 时长单位
-     * @return 被中断返回false，否则true
+     * @return 被中断返回false, 否则true
      */
     public static boolean sleep(Number timeout, TimeUnit timeUnit) {
         try {
@@ -238,7 +238,7 @@ public class ThreadUtils {
      * 挂起当前线程
      *
      * @param millis 挂起的毫秒数
-     * @return 被中断返回false，否则true
+     * @return 被中断返回false, 否则true
      */
     public static boolean sleep(Number millis) {
         if (millis == null) {
@@ -254,10 +254,10 @@ public class ThreadUtils {
     }
 
     /**
-     * 考虑{@link Thread#sleep(long)}方法有可能时间不足给定毫秒数，此方法保证sleep时间不小于给定的毫秒数
+     * 考虑{@link Thread#sleep(long)}方法有可能时间不足给定毫秒数,此方法保证sleep时间不小于给定的毫秒数
      *
      * @param millis 给定的sleep时间
-     * @return 被中断返回false，否则true
+     * @return 被中断返回false, 否则true
      * @see ThreadUtils#sleep(Number)
      */
     public static boolean safeSleep(Number millis) {
@@ -321,7 +321,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 结束线程，调用此方法后，线程将抛出 {@link InterruptedException}异常
+     * 结束线程,调用此方法后,线程将抛出 {@link InterruptedException}异常
      *
      * @param thread 线程
      * @param isJoin 是否等待结束
@@ -363,7 +363,7 @@ public class ThreadUtils {
 
     /**
      * 获取JVM中与当前线程同组的所有线程
-     * 使用数组二次拷贝方式，防止在线程列表获取过程中线程终止
+     * 使用数组二次拷贝方式,防止在线程列表获取过程中线程终止
      * from Voovan
      *
      * @param group 线程组
@@ -418,7 +418,7 @@ public class ThreadUtils {
      * 创建线程工厂
      *
      * @param prefix      线程名前缀
-     * @param threadGroup 线程组，可以为null
+     * @param threadGroup 线程组,可以为null
      * @param isDeamon    是否守护线程
      * @return the object
      */
@@ -430,7 +430,7 @@ public class ThreadUtils {
      * 创建线程工厂
      *
      * @param prefix      线程名前缀
-     * @param threadGroup 线程组，可以为null
+     * @param threadGroup 线程组,可以为null
      * @param isDeamon    是否守护线程
      * @param handler     未捕获异常处理
      * @return the object
@@ -440,7 +440,7 @@ public class ThreadUtils {
     }
 
     /**
-     * 阻塞当前线程，保证在main方法中执行不被退出
+     * 阻塞当前线程,保证在main方法中执行不被退出
      *
      * @param obj 对象所在线程
      */

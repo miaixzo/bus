@@ -161,7 +161,7 @@ public class HttpClient extends Client {
      * @param maxRequestsPerHost 主机最大请求
      * @param maxIdleConnections 最大连接
      * @param keepAliveDuration  链接时长
-     * @param sslSocketFactory   抽象类，扩展自SocketFactory, SSLSocket的工厂
+     * @param sslSocketFactory   抽象类,扩展自SocketFactory, SSLSocket的工厂
      * @param x509TrustManager   证书信任管理器
      * @param hostnameVerifier   主机名校验信息
      */
@@ -243,7 +243,7 @@ public class HttpClient extends Client {
     }
 
     /**
-     * 异步get请求，回调
+     * 异步get请求,回调
      *
      * @param url     URL地址
      * @param isAsync 是否异步
@@ -295,7 +295,7 @@ public class HttpClient extends Client {
     }
 
     /**
-     * 异步处理的GET请求，自定义请求类型
+     * 异步处理的GET请求,自定义请求类型
      *
      * @param url      URL地址 String
      * @param callback 回调信息 callback
@@ -307,7 +307,7 @@ public class HttpClient extends Client {
     }
 
     /**
-     * 异步处理的POST请求，自定义请求类型
+     * 异步处理的POST请求,自定义请求类型
      *
      * @param url      URL地址 String
      * @param queryMap 查询参数 Map

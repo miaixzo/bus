@@ -61,7 +61,7 @@ public class DesktopUtils {
 
     /**
      * 设置默认的延迟时间<br>
-     * 当按键执行完后的等待时间，也可以用ThreadUtil.sleep方法代替
+     * 当按键执行完后的等待时间,也可以用ThreadUtil.sleep方法代替
      *
      * @param delayMillis 等待毫秒数
      */
@@ -102,7 +102,7 @@ public class DesktopUtils {
     /**
      * 模拟鼠标滚轮滚动
      *
-     * @param wheelAmt 滚动数，负数表示向前滚动，正数向后滚动
+     * @param wheelAmt 滚动数,负数表示向前滚动,正数向后滚动
      */
     public static void mouseWheel(int wheelAmt) {
         robot.mouseWheel(wheelAmt);
@@ -113,7 +113,7 @@ public class DesktopUtils {
      * 模拟键盘点击<br>
      * 包括键盘的按下和释放
      *
-     * @param keyCodes 按键码列表，见{@link java.awt.event.KeyEvent}
+     * @param keyCodes 按键码列表,见{@link java.awt.event.KeyEvent}
      */
     public static void keyClick(int... keyCodes) {
         for (int keyCode : keyCodes) {

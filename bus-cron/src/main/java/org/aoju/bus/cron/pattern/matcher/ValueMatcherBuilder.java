@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ValueMatcher} 构建器，用于构建表达式中每一项的匹配器
+ * {@link ValueMatcher} 构建器,用于构建表达式中每一项的匹配器
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -54,7 +54,7 @@ public class ValueMatcherBuilder {
      */
     public static ValueMatcher build(String value, ValueParser parser) {
         if (isMatchAllStr(value)) {
-            //兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
+            //兼容Quartz的"?"表达式,不会出现互斥情况,与"*"作用相同
             return new AlwaysTrueValueMatcher();
         }
 
@@ -64,10 +64,10 @@ public class ValueMatcherBuilder {
         }
 
         if (parser instanceof DayOfMonthValueParser) {
-            //考虑每月的天数不同，且存在闰年情况，日匹配单独使用
+            //考虑每月的天数不同,且存在闰年情况,日匹配单独使用
             return new DayOfMonthValueMatcher(values);
         } else if (parser instanceof YearValueParser) {
-            //考虑年数字太大，不适合boolean数组，单独使用列表遍历匹配
+            //考虑年数字太大,不适合boolean数组,单独使用列表遍历匹配
             return new YearValueMatcher(values);
         } else {
             return new BoolArrayValueMatcher(values);
@@ -148,7 +148,7 @@ public class ValueMatcherBuilder {
 
         // 全部匹配形式
         if (value.length() <= 2) {
-            //根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
+            //根据步进的第一个数字确定起始时间,类似于 12/3则从12（秒、分等）开始
             int minValue = parser.getMin();
             if (false == isMatchAllStr(value)) {
                 try {
@@ -157,7 +157,7 @@ public class ValueMatcherBuilder {
                     throw new InstrumentException("Invalid field value: [{}]", value);
                 }
             } else {
-                //在全匹配模式下，如果步进不存在，表示步进为1
+                //在全匹配模式下,如果步进不存在,表示步进为1
                 if (step < 1) {
                     step = 1;
                 }
@@ -192,15 +192,15 @@ public class ValueMatcherBuilder {
             final int v1 = parser.parse(parts.get(0));
             final int v2 = parser.parse(parts.get(1));
             if (step < 1) {
-                //在range模式下，如果步进不存在，表示步进为1
+                //在range模式下,如果步进不存在,表示步进为1
                 step = 1;
             }
-            if (v1 < v2) {// 正常范围，例如：2-5
+            if (v1 < v2) {// 正常范围,例如：2-5
                 NumberUtils.appendRange(v1, v2, step, results);
-            } else if (v1 > v2) {// 逆向范围，反选模式，例如：5-2
+            } else if (v1 > v2) {// 逆向范围,反选模式,例如：5-2
                 NumberUtils.appendRange(v1, parser.getMax(), step, results);
                 NumberUtils.appendRange(parser.getMin(), v2, step, results);
-            } else {// v1 == v2，此时与单值模式一致
+            } else {// v1 == v2,此时与单值模式一致
                 if (step > 0) {//类似 20/2的形式
                     NumberUtils.appendRange(v1, parser.getMax(), step, results);
                 } else {

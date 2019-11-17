@@ -185,13 +185,13 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      * 执行拷贝
      * 拷贝规则为：
      * <pre>
-     * 1、源为文件，目标为已存在目录，则拷贝到目录下，文件名不变
-     * 2、源为文件，目标为不存在路径，则目标以文件对待（自动创建父级目录）比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名
-     * 3、源为文件，目标是一个已存在的文件，则当{@link #setOverride(boolean)}设为true时会被覆盖，默认不覆盖
-     * 4、源为目录，目标为已存在目录，当{@link #setCopyContentIfDir(boolean)}为true时，只拷贝目录中的内容到目标目录中，否则整个源目录连同其目录拷贝到目标目录中
-     * 5、源为目录，目标为不存在路径，则自动创建目标为新目录，然后按照规则4复制
-     * 6、源为目录，目标为文件，抛出IO异常
-     * 7、源路径和目标路径相同时，抛出IO异常
+     * 1、源为文件,目标为已存在目录,则拷贝到目录下,文件名不变
+     * 2、源为文件,目标为不存在路径,则目标以文件对待（自动创建父级目录）比如：/dest/aaa,如果aaa不存在,则aaa被当作文件名
+     * 3、源为文件,目标是一个已存在的文件,则当{@link #setOverride(boolean)}设为true时会被覆盖,默认不覆盖
+     * 4、源为目录,目标为已存在目录,当{@link #setCopyContentIfDir(boolean)}为true时,只拷贝目录中的内容到目标目录中,否则整个源目录连同其目录拷贝到目标目录中
+     * 5、源为目录,目标为不存在路径,则自动创建目标为新目录,然后按照规则4复制
+     * 6、源为目录,目标为文件,抛出IO异常
+     * 7、源路径和目标路径相同时,抛出IO异常
      * </pre>
      *
      * @return 拷贝后目标的文件或目录
@@ -213,7 +213,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
 
         if (src.isDirectory()) {// 复制目录
             if (dest.exists() && false == dest.isDirectory()) {
-                //源为目录，目标为文件，抛出IO异常
+                //源为目录,目标为文件,抛出IO异常
                 throw new InstrumentException("Src is a directory but dest is a file!");
             }
             final File subDest = isCopyContentIfDir ? dest : FileUtils.mkdir(FileUtils.file(dest, src.getName()));
@@ -225,8 +225,8 @@ public class FileCopier extends Duplicate<File, FileCopier> {
     }
 
     /**
-     * 拷贝目录内容，只用于内部，不做任何安全检查
-     * 拷贝内容的意思为源目录下的所有文件和目录拷贝到另一个目录下，而不拷贝源目录本身
+     * 拷贝目录内容,只用于内部,不做任何安全检查
+     * 拷贝内容的意思为源目录下的所有文件和目录拷贝到另一个目录下,而不拷贝源目录本身
      *
      * @param src  源目录
      * @param dest 目标目录
@@ -239,7 +239,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
         }
 
         if (false == dest.exists()) {
-            //目标为不存在路径，创建为目录
+            //目标为不存在路径,创建为目录
             dest.mkdirs();
         } else if (false == dest.isDirectory()) {
             throw new InstrumentException(StringUtils.format("Src [{}] is a directory but dest [{}] is a file!", src.getPath(), dest.getPath()));
@@ -261,15 +261,15 @@ public class FileCopier extends Duplicate<File, FileCopier> {
     }
 
     /**
-     * 拷贝文件，只用于内部，不做任何安全检查
+     * 拷贝文件,只用于内部,不做任何安全检查
      * 情况如下：
      * <pre>
-     * 1、如果目标是一个不存在的路径，则目标以文件对待（自动创建父级目录）比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名
-     * 2、如果目标是一个已存在的目录，则文件拷贝到此目录下，文件名与原文件名一致
+     * 1、如果目标是一个不存在的路径,则目标以文件对待（自动创建父级目录）比如：/dest/aaa,如果aaa不存在,则aaa被当作文件名
+     * 2、如果目标是一个已存在的目录,则文件拷贝到此目录下,文件名与原文件名一致
      * </pre>
      *
-     * @param src  源文件，必须为文件
-     * @param dest 目标文件，如果非覆盖模式必须为目录
+     * @param src  源文件,必须为文件
+     * @param dest 目标文件,如果非覆盖模式必须为目录
      * @throws InstrumentException IO异常
      */
     private void internalCopyFile(File src, File dest) throws InstrumentException {
@@ -278,10 +278,10 @@ public class FileCopier extends Duplicate<File, FileCopier> {
             return;
         }
 
-        // 如果已经存在目标文件，切为不覆盖模式，跳过之
+        // 如果已经存在目标文件,切为不覆盖模式,跳过之
         if (dest.exists()) {
             if (dest.isDirectory()) {
-                //目标为目录，目录下创建同名文件
+                //目标为目录,目录下创建同名文件
                 dest = new File(dest, src.getName());
             }
 

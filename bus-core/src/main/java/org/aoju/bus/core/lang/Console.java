@@ -29,7 +29,7 @@ import java.util.Scanner;
 
 /**
  * 命令行（控制台）工具方法类
- * 此类主要针对{@link System#out} 和 {@link System#err} 做封装。
+ * 此类主要针对{@link System#out} 和 {@link System#err} 做封装
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -46,7 +46,7 @@ public class Console {
 
     /**
      * 打印控制台日志
-     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * 如果传入打印对象为{@link Throwable}对象,那么同时打印堆栈
      *
      * @param obj 要打印的对象
      */
@@ -72,7 +72,7 @@ public class Console {
     /**
      * 打印控制台日志
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param template 文本模板,被替换的部分用 {} 表示
      * @param values   值
      */
     public static void log(String template, Object... values) {
@@ -82,7 +82,7 @@ public class Console {
     /**
      * 打印控制台日志
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param template 文本模板,被替换的部分用 {} 表示
      * @param values   值
      * @since 3.3.1
      */
@@ -94,7 +94,7 @@ public class Console {
      * 打印控制台日志
      *
      * @param t        异常对象
-     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param template 文本模板,被替换的部分用 {} 表示
      * @param values   值
      */
     public static void log(Throwable t, String template, Object... values) {
@@ -105,14 +105,14 @@ public class Console {
     }
 
     /**
-     * 同 System.System.err.println()方法，打印控制台日志
+     * 同 System.System.err.println()方法,打印控制台日志
      */
     public static void error() {
         System.err.println();
     }
 
     /**
-     * 同 System.System.err.println()方法，打印控制台日志
+     * 同 System.System.err.println()方法,打印控制台日志
      *
      * @param obj 要打印的对象
      */
@@ -126,9 +126,9 @@ public class Console {
     }
 
     /**
-     * 同 System.System.err.println()方法，打印控制台日志
+     * 同 System.System.err.println()方法,打印控制台日志
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param template 文本模板,被替换的部分用 {} 表示
      * @param values   值
      */
     public static void error(String template, Object... values) {
@@ -136,10 +136,10 @@ public class Console {
     }
 
     /**
-     * 同 System.System.err.println()方法，打印控制台日志
+     * 同 System.System.err.println()方法,打印控制台日志
      *
      * @param t        异常对象
-     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param template 文本模板,被替换的部分用 {} 表示
      * @param values   值
      */
     public static void error(Throwable t, String template, Object... values) {

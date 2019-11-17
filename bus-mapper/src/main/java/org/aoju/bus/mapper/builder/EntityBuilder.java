@@ -132,7 +132,7 @@ public class EntityBuilder {
         for (EntityColumn entityColumn : columnList) {
             selectBuilder.append(entityColumn.getColumn());
             if (!skipAlias && !entityColumn.getColumn().equalsIgnoreCase(entityColumn.getProperty())) {
-                //不等的时候分几种情况，例如`DESC`
+                //不等的时候分几种情况,例如`DESC`
                 if (entityColumn.getColumn().substring(1, entityColumn.getColumn().length() - 1).equalsIgnoreCase(entityColumn.getProperty())) {
                     selectBuilder.append(",");
                 } else {
@@ -157,7 +157,7 @@ public class EntityBuilder {
             return;
         }
         Style style = config.getStyle();
-        //style，该注解优先于全局配置
+        //style,该注解优先于全局配置
         if (entityClass.isAnnotationPresent(NameStyle.class)) {
             NameStyle nameStyle = entityClass.getAnnotation(NameStyle.class);
             style = nameStyle.value();
@@ -187,8 +187,8 @@ public class EntityBuilder {
             fields = FieldSourceBuilder.getFields(entityClass);
         }
         for (EntityField field : fields) {
-            //如果启用了简单类型，就做简单类型校验，如果不是简单类型，直接跳过
-            //5.2.2 如果启用了枚举作为简单类型，就不会自动忽略枚举类型
+            //如果启用了简单类型,就做简单类型校验,如果不是简单类型,直接跳过
+            //5.2.2 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
             if (config.isUseSimpleType() &&
                     !(SimpleType.isSimpleType(field.getJavaType())
                             ||
@@ -219,7 +219,7 @@ public class EntityBuilder {
         }
         //Id
         EntityColumn entityColumn = new EntityColumn(entityTable);
-        //记录 field 信息，方便后续扩展使用
+        //记录 field 信息,方便后续扩展使用
         entityColumn.setEntityField(field);
         if (field.isAnnotationPresent(Id.class)) {
             entityColumn.setId(true);
@@ -266,7 +266,7 @@ public class EntityBuilder {
                 entityColumn.setOrderBy(orderBy.value());
             }
         }
-        //主键策略 - Oracle序列，MySql自动增长，UUID
+        //主键策略 - Oracle序列,MySql自动增长,UUID
         if (field.isAnnotationPresent(SequenceGenerator.class)) {
             SequenceGenerator sequenceGenerator = field.getAnnotation(SequenceGenerator.class);
             if (sequenceGenerator.sequenceName().equals("")) {

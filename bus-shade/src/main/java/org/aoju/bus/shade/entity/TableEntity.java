@@ -150,7 +150,7 @@ public class TableEntity implements Serializable {
             pstemt.close();
             con.close();
             if (null == columns || columns.size() == 0) {
-                throw new RuntimeException("未能读取到表或表中的字段。请检查链接url，数据库账户，数据库密码，查询的数据名、是否正确。");
+                throw new RuntimeException("未能读取到表或表中的字段 请检查链接url,数据库账户,数据库密码,查询的数据名、是否正确 ");
             }
             return bi;
         } catch (Exception e) {

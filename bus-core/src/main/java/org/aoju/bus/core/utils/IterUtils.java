@@ -81,7 +81,7 @@ public class IterUtils {
     /**
      * 是否包含{@code null}元素
      *
-     * @param iter 被检查的{@link Iterable}对象，如果为{@code null} 返回false
+     * @param iter 被检查的{@link Iterable}对象,如果为{@code null} 返回false
      * @return 是否包含{@code null}元素
      */
     public static boolean hasNull(Iterable<?> iter) {
@@ -91,7 +91,7 @@ public class IterUtils {
     /**
      * 是否包含{@code null}元素
      *
-     * @param iter 被检查的{@link Iterator}对象，如果为{@code null} 返回false
+     * @param iter 被检查的{@link Iterator}对象,如果为{@code null} 返回false
      * @return 是否包含{@code null}元素
      */
     public static boolean hasNull(Iterator<?> iter) {
@@ -110,7 +110,7 @@ public class IterUtils {
     /**
      * 是否全部元素为null
      *
-     * @param iter iter 被检查的{@link Iterable}对象，如果为{@code null} 返回true
+     * @param iter iter 被检查的{@link Iterable}对象,如果为{@code null} 返回true
      * @return 是否全部元素为null
      * @since 3.3.0
      */
@@ -121,7 +121,7 @@ public class IterUtils {
     /**
      * 是否全部元素为null
      *
-     * @param iter iter 被检查的{@link Iterator}对象，如果为{@code null} 返回true
+     * @param iter iter 被检查的{@link Iterator}对象,如果为{@code null} 返回true
      * @return 是否全部元素为null
      * @since 3.3.0
      */
@@ -140,14 +140,14 @@ public class IterUtils {
 
     /**
      * 根据集合返回一个元素计数的 {@link Map}
-     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value
+     * 所谓元素计数就是假如这个集合中某个元素出现了n次,那将这个元素做为key,n做为value
      * 例如：[a,b,c,c,c] 得到：
      * a: 1
      * b: 1
      * c: 3
      *
      * @param <T>  集合元素类型
-     * @param iter {@link Iterable}，如果为null返回一个空的Map
+     * @param iter {@link Iterable},如果为null返回一个空的Map
      * @return {@link Map}
      */
     public static <T> Map<T, Integer> countMap(Iterable<T> iter) {
@@ -156,14 +156,14 @@ public class IterUtils {
 
     /**
      * 根据集合返回一个元素计数的 {@link Map}
-     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value
+     * 所谓元素计数就是假如这个集合中某个元素出现了n次,那将这个元素做为key,n做为value
      * 例如：[a,b,c,c,c] 得到：
      * a: 1
      * b: 1
      * c: 3
      *
      * @param <T>  集合元素类型
-     * @param iter {@link Iterator}，如果为null返回一个空的Map
+     * @param iter {@link Iterator},如果为null返回一个空的Map
      * @return {@link Map}
      */
     public static <T> Map<T, Integer> countMap(Iterator<T> iter) {
@@ -185,10 +185,10 @@ public class IterUtils {
     }
 
     /**
-     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况
+     * 字段值与列表值对应的Map,常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况
      * 例如：车牌号 =》车
      *
-     * @param <K>       字段名对应值得类型，不确定请使用Object
+     * @param <K>       字段名对应值得类型,不确定请使用Object
      * @param <V>       对象类型
      * @param iter      对象列表
      * @param fieldName 字段名（会通过反射获取其值）
@@ -199,10 +199,10 @@ public class IterUtils {
     }
 
     /**
-     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况
+     * 字段值与列表值对应的Map,常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况
      * 例如：车牌号 =》车
      *
-     * @param <K>       字段名对应值得类型，不确定请使用Object
+     * @param <K>       字段名对应值得类型,不确定请使用Object
      * @param <V>       对象类型
      * @param iter      对象列表
      * @param fieldName 字段名（会通过反射获取其值）
@@ -223,8 +223,8 @@ public class IterUtils {
     /**
      * 两个字段值组成新的Map
      *
-     * @param <K>               字段名对应值得类型，不确定请使用Object
-     * @param <V>               值类型，不确定使用Object
+     * @param <K>               字段名对应值得类型,不确定请使用Object
+     * @param <V>               值类型,不确定使用Object
      * @param iter              对象列表
      * @param fieldNameForKey   做为键的字段名（会通过反射获取其值）
      * @param fieldNameForValue 做为值的字段名（会通过反射获取其值）
@@ -243,7 +243,7 @@ public class IterUtils {
     }
 
     /**
-     * 获取指定Bean列表中某个字段，生成新的列表
+     * 获取指定Bean列表中某个字段,生成新的列表
      *
      * @param <V>       对象类型
      * @param iter      对象列表
@@ -283,8 +283,8 @@ public class IterUtils {
      * @param <T>         集合元素类型
      * @param iterable    {@link Iterable}
      * @param conjunction 分隔符
-     * @param prefix      每个元素添加的前缀，null表示不添加
-     * @param suffix      每个元素添加的后缀，null表示不添加
+     * @param prefix      每个元素添加的前缀,null表示不添加
+     * @param suffix      每个元素添加的后缀,null表示不添加
      * @return 连接后的字符串
      */
     public static <T> String join(Iterable<T> iterable, CharSequence conjunction, String prefix, String suffix) {
@@ -296,7 +296,7 @@ public class IterUtils {
 
     /**
      * 以 conjunction 为分隔符将集合转换为字符串
-     * 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     * 如果集合元素为数组、{@link Iterable}或{@link Iterator},则递归组合其为字符串
      *
      * @param <T>         集合元素类型
      * @param iterator    集合
@@ -309,13 +309,13 @@ public class IterUtils {
 
     /**
      * 以 conjunction 为分隔符将集合转换为字符串
-     * 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     * 如果集合元素为数组、{@link Iterable}或{@link Iterator},则递归组合其为字符串
      *
      * @param <T>         集合元素类型
      * @param iterator    集合
      * @param conjunction 分隔符
-     * @param prefix      每个元素添加的前缀，null表示不添加
-     * @param suffix      每个元素添加的后缀，null表示不添加
+     * @param prefix      每个元素添加的前缀,null表示不添加
+     * @param suffix      每个元素添加的后缀,null表示不添加
      * @return 连接后的字符串
      */
     public static <T> String join(Iterator<T> iterator, CharSequence conjunction, String prefix, String suffix) {
@@ -367,8 +367,8 @@ public class IterUtils {
 
     /**
      * 将键列表和值列表转换为Map
-     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。
-     * 如果值多于键，忽略多余的值。
+     * 以键为准,值与键位置需对应 如果键元素数多于值元素,多余部分值用null代替
+     * 如果值多于键,忽略多余的值
      *
      * @param <K>    键类型
      * @param <V>    值类型
@@ -383,8 +383,8 @@ public class IterUtils {
 
     /**
      * 将键列表和值列表转换为Map
-     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。
-     * 如果值多于键，忽略多余的值。
+     * 以键为准,值与键位置需对应 如果键元素数多于值元素,多余部分值用null代替
+     * 如果值多于键,忽略多余的值
      *
      * @param <K>     键类型
      * @param <V>     值类型
@@ -399,8 +399,8 @@ public class IterUtils {
 
     /**
      * 将键列表和值列表转换为Map
-     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。
-     * 如果值多于键，忽略多余的值。
+     * 以键为准,值与键位置需对应 如果键元素数多于值元素,多余部分值用null代替
+     * 如果值多于键,忽略多余的值
      *
      * @param <K>    键类型
      * @param <V>    值类型
@@ -415,8 +415,8 @@ public class IterUtils {
 
     /**
      * 将键列表和值列表转换为Map
-     * 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。
-     * 如果值多于键，忽略多余的值。
+     * 以键为准,值与键位置需对应 如果键元素数多于值元素,多余部分值用null代替
+     * 如果值多于键,忽略多余的值
      *
      * @param <K>     键类型
      * @param <V>     值类型
@@ -437,7 +437,7 @@ public class IterUtils {
 
     /**
      * Iterator转List
-     * 不判断，直接生成新的List
+     * 不判断,直接生成新的List
      *
      * @param <E>  元素类型
      * @param iter {@link Iterator}
@@ -449,7 +449,7 @@ public class IterUtils {
 
     /**
      * Iterator转List
-     * 不判断，直接生成新的List
+     * 不判断,直接生成新的List
      *
      * @param <E>  元素类型
      * @param iter {@link Iterator}
@@ -509,10 +509,10 @@ public class IterUtils {
 
     /**
      * 获得{@link Iterable}对象的元素类型（通过第一个非空元素判断）
-     * 注意，此方法至少会调用多次next方法
+     * 注意,此方法至少会调用多次next方法
      *
      * @param iterable {@link Iterable}
-     * @return 元素类型，当列表为空或元素全部为null时，返回null
+     * @return 元素类型, 当列表为空或元素全部为null时, 返回null
      */
     public static Class<?> getElementType(Iterable<?> iterable) {
         if (null != iterable) {
@@ -524,10 +524,10 @@ public class IterUtils {
 
     /**
      * 获得{@link Iterator}对象的元素类型（通过第一个非空元素判断）
-     * 注意，此方法至少会调用多次next方法
+     * 注意,此方法至少会调用多次next方法
      *
      * @param iterator {@link Iterator}
-     * @return 元素类型，当列表为空或元素全部为null时，返回null
+     * @return 元素类型, 当列表为空或元素全部为null时, 返回null
      */
     public static Class<?> getElementType(Iterator<?> iterator) {
         List<Object> eleList = new LinkedList<>();

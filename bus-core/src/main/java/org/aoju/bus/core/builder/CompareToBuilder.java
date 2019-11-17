@@ -36,7 +36,7 @@ import java.util.Comparator;
  * 用于构建 {@link java.lang.Comparable#compareTo(Object)} 方法的辅助工具
  *
  * <p>
- * 在Bean对象中，所有相关字段都参与比对，继承的字段不参与。使用方法如下：
+ * 在Bean对象中,所有相关字段都参与比对,继承的字段不参与 使用方法如下：
  *
  * <pre>
  * public class MyClass {
@@ -58,10 +58,10 @@ import java.util.Comparator;
  * }
  * </pre>
  * <p>
- * 字段值按照顺序比较，如果某个字段返回非0结果，比较终止，使用{@code toComparison()}返回结果，后续比较忽略。
+ * 字段值按照顺序比较,如果某个字段返回非0结果,比较终止,使用{@code toComparison()}返回结果,后续比较忽略
  *
  * <p>
- * 也可以使用{@link #reflectionCompare(Object, Object) reflectionCompare} 方法通过反射比较字段，使用方法如下：
+ * 也可以使用{@link #reflectionCompare(Object, Object) reflectionCompare} 方法通过反射比较字段,使用方法如下：
  *
  * <pre>
  * public int compareTo(Object o) {
@@ -81,7 +81,7 @@ public class CompareToBuilder implements Builder<Integer> {
     private int comparison;
 
     /**
-     * 构造，构造后调用append方法增加比较项，然后调用{@link #toComparison()}获取结果
+     * 构造,构造后调用append方法增加比较项,然后调用{@link #toComparison()}获取结果
      */
     public CompareToBuilder() {
         super();
@@ -89,7 +89,7 @@ public class CompareToBuilder implements Builder<Integer> {
     }
 
     /**
-     * 通过反射比较两个Bean对象，对象字段可以为private。比较规则如下：
+     * 通过反射比较两个Bean对象,对象字段可以为private 比较规则如下：
      *
      * <ul>
      * <li>static字段不比较</li>
@@ -98,7 +98,7 @@ public class CompareToBuilder implements Builder<Integer> {
      * </ul>
      *
      * <p>
-     * 如果被比较的两个对象都为<code>null</code>，被认为相同。
+     * 如果被比较的两个对象都为<code>null</code>,被认为相同
      *
      * @param left  第一个对象
      * @param right 第二个对象
@@ -269,7 +269,7 @@ public class CompareToBuilder implements Builder<Integer> {
     }
 
     /**
-     * 附加到builder，比较left/right使用clazz.
+     * 附加到builder,比较left/right使用clazz.
      *
      * @param left          数值
      * @param right         数值
@@ -304,7 +304,7 @@ public class CompareToBuilder implements Builder<Integer> {
     }
 
     /**
-     * 附加到 builder compareTo(Object) 超类的结果。
+     * 附加到 builder compareTo(Object) 超类的结果
      *
      * @param superCompareTo 调用 <code>super.compareTo(Object)</code>结果
      * @return this - object
@@ -322,8 +322,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(Object, Object)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -340,8 +340,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(Object, Object, Comparator)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -533,8 +533,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(Object, Object)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -551,8 +551,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(Object, Object, Comparator)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -591,8 +591,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(long, long)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -630,8 +630,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(int, int)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -669,8 +669,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(short, short)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -708,8 +708,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(char, char)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -747,8 +747,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(byte, byte)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -786,8 +786,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(double, double)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -825,8 +825,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(float, float)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -864,8 +864,8 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * <ol>
      * <li>使用==检查数组是否相同</li>
-     * <li>检查是否为null， null小于非null</li>
-     * <li>检查数组长度，长度较短的数组小于长度较长的数组</li>
+     * <li>检查是否为null, null小于非null</li>
+     * <li>检查数组长度,长度较短的数组小于长度较长的数组</li>
      * <li>使用{@link #append(boolean, boolean)}逐个元素检查数组内容</li>
      * </ol>
      *
@@ -900,7 +900,7 @@ public class CompareToBuilder implements Builder<Integer> {
 
     /**
      * 返回一个负整数、一个正整数或零
-     * builder判断左边小于、大于或等于右边。
+     * builder判断左边小于、大于或等于右边
      *
      * @return 比较结果
      * @see #build()
@@ -911,7 +911,7 @@ public class CompareToBuilder implements Builder<Integer> {
 
     /**
      * 返回一个负整数、一个正整数或零
-     * builder判断左边小于、大于或等于右边。
+     * builder判断左边小于、大于或等于右边
      *
      * @return 最终的比较结果为整数
      * @see #toComparison()

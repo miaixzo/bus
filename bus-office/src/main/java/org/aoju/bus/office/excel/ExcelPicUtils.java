@@ -26,8 +26,8 @@ package org.aoju.bus.office.excel;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ooxml.POIXMLDocumentPart;
 import org.apache.poi.ss.usermodel.PictureData;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.*;
@@ -51,7 +51,7 @@ public class ExcelPicUtils {
      *
      * @param workbook   工作簿{@link Workbook}
      * @param sheetIndex sheet的索引
-     * @return 图片映射，键格式：行_列，值：{@link PictureData}
+     * @return 图片映射, 键格式：行_列,值：{@link PictureData}
      */
     public static Map<String, PictureData> getPicMap(Workbook workbook, int sheetIndex) {
         Assert.notNull(workbook, "Workbook must be not null !");
@@ -73,7 +73,7 @@ public class ExcelPicUtils {
      *
      * @param workbook   工作簿{@link Workbook}
      * @param sheetIndex sheet的索引
-     * @return 图片映射，键格式：行_列，值：{@link PictureData}
+     * @return 图片映射, 键格式：行_列,值：{@link PictureData}
      */
     private static Map<String, PictureData> getPicMapXls(HSSFWorkbook workbook, int sheetIndex) {
         final Map<String, PictureData> picMap = new HashMap<>();
@@ -98,7 +98,7 @@ public class ExcelPicUtils {
      *
      * @param workbook   工作簿{@link Workbook}
      * @param sheetIndex sheet的索引
-     * @return 图片映射，键格式：行_列，值：{@link PictureData}
+     * @return 图片映射, 键格式：行_列,值：{@link PictureData}
      */
     private static Map<String, PictureData> getPicMapXlsx(XSSFWorkbook workbook, int sheetIndex) {
         final Map<String, PictureData> sheetIndexPicMap = new HashMap<String, PictureData>();

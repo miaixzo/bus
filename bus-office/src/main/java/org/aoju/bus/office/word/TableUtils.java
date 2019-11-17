@@ -47,7 +47,7 @@ import java.util.Map;
 public class TableUtils {
 
     /**
-     * 创建空表，只有一行
+     * 创建空表,只有一行
      *
      * @param doc {@link XWPFDocument}
      * @return {@link XWPFTable}
@@ -68,7 +68,7 @@ public class TableUtils {
         XWPFTable table = doc.createTable();
 
         if (IterUtils.isEmpty(data)) {
-            // 数据为空，返回空表
+            // 数据为空,返回空表
             return table;
         }
 
@@ -86,7 +86,7 @@ public class TableUtils {
      *
      * @param row              行
      * @param rowBean          行数据
-     * @param isWriteKeyAsHead 如果为Map或者Bean，是否写标题
+     * @param isWriteKeyAsHead 如果为Map或者Bean,是否写标题
      */
     public static void writeRow(XWPFTableRow row, Object rowBean, boolean isWriteKeyAsHead) {
         if (rowBean instanceof Iterable) {
@@ -142,10 +142,10 @@ public class TableUtils {
 
     /**
      * 获取或创建新行
-     * 存在则直接返回，不存在创建新的行
+     * 存在则直接返回,不存在创建新的行
      *
      * @param table {@link XWPFTable}
-     * @param index 索引（行号），从0开始
+     * @param index 索引（行号）,从0开始
      * @return {@link XWPFTableRow}
      */
     public static XWPFTableRow getOrCreateRow(XWPFTable table, int index) {
@@ -159,10 +159,10 @@ public class TableUtils {
 
     /**
      * 获取或创建新单元格
-     * 存在则直接返回，不存在创建新的单元格
+     * 存在则直接返回,不存在创建新的单元格
      *
      * @param row   {@link XWPFTableRow} 行
-     * @param index index 索引（列号），从0开始
+     * @param index index 索引（列号）,从0开始
      * @return {@link XWPFTableCell}
      */
     public static XWPFTableCell getOrCreateCell(XWPFTableRow row, int index) {

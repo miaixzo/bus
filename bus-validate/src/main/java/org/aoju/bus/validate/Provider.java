@@ -50,8 +50,8 @@ public class Provider {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>    对象
      * @param object 原始对象
@@ -64,8 +64,8 @@ public class Provider {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>     对象
      * @param object  原始对象
@@ -79,8 +79,8 @@ public class Provider {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -94,8 +94,8 @@ public class Provider {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -110,8 +110,8 @@ public class Provider {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param field       当前属性
@@ -170,7 +170,7 @@ public class Provider {
      *
      * @param group 当前校验组
      * @param list  校验环境中校验组属性
-     * @return true：当前校验组中为空，或任意一个组环境存在于校验环境中
+     * @return true：当前校验组中为空,或任意一个组环境存在于校验环境中
      */
     public static boolean isGroup(String[] group, List<String> list) {
         if (group == null || group.length == 0) {

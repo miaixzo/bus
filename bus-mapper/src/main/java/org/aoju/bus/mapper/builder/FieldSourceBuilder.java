@@ -67,7 +67,7 @@ public class FieldSourceBuilder {
     }
 
     /**
-     * 获取全部的属性，通过方法名获取
+     * 获取全部的属性,通过方法名获取
      *
      * @param entityClass 对象
      * @return 结果
@@ -77,7 +77,7 @@ public class FieldSourceBuilder {
     }
 
     /**
-     * 获取全部的属性，包含字段和方法
+     * 获取全部的属性,包含字段和方法
      *
      * @param entityClass 对象
      * @return 结果
@@ -85,7 +85,7 @@ public class FieldSourceBuilder {
     public static List<EntityField> getAll(Class<?> entityClass) {
         List<EntityField> fields = fieldHelper.getFields(entityClass);
         List<EntityField> properties = fieldHelper.getProperties(entityClass);
-        //拼到一起，名字相同的合并
+        //拼到一起,名字相同的合并
         List<EntityField> all = new ArrayList<EntityField>();
         Set<EntityField> usedSet = new HashSet<EntityField>();
         for (EntityField field : fields) {
@@ -137,7 +137,7 @@ public class FieldSourceBuilder {
         List<EntityField> getFields(Class<?> entityClass);
 
         /**
-         * 获取全部的属性，通过方法名获取
+         * 获取全部的属性,通过方法名获取
          *
          * @param entityClass 对象
          * @return 结果
@@ -173,7 +173,7 @@ public class FieldSourceBuilder {
         }
 
         /**
-         * 获取全部的Field，仅仅通过Field获取
+         * 获取全部的Field,仅仅通过Field获取
          *
          * @param entityClass 对象
          * @param fieldList
@@ -194,7 +194,7 @@ public class FieldSourceBuilder {
             int index = 0;
             for (int i = 0; i < fields.length; i++) {
                 Field field = fields[i];
-                //排除静态字段，解决bug#2
+                //排除静态字段,解决bug#2
                 if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
                     if (level.intValue() != 0) {
                         //将父类的字段放在前面

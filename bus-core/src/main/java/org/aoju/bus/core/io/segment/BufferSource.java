@@ -29,8 +29,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 
 /**
- * 内部保存一个缓冲区，以便调用者可以在没有性能的情况下进行少量读取
- * 它还允许客户端提前读取，在消费之前进行必要的缓冲输入
+ * 内部保存一个缓冲区,以便调用者可以在没有性能的情况下进行少量读取
+ * 它还允许客户端提前读取,在消费之前进行必要的缓冲输入
  *
  * @author Kimi Liu
  * @version 5.2.2

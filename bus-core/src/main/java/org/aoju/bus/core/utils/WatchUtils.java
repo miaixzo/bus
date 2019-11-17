@@ -59,7 +59,7 @@ public class WatchUtils {
      *
      * @param url      URL
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(URL url, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -82,7 +82,7 @@ public class WatchUtils {
      *
      * @param uri      URI
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(URI uri, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -105,7 +105,7 @@ public class WatchUtils {
      *
      * @param file     文件
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(File file, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -128,7 +128,7 @@ public class WatchUtils {
      *
      * @param path     路径
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(String path, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -151,7 +151,7 @@ public class WatchUtils {
      *
      * @param path     路径
      * @param events   监听事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(Path path, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -159,7 +159,7 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param url     URL
      * @param watcher {@link Watcher}
@@ -170,10 +170,10 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param url      URL
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
@@ -182,7 +182,7 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param uri     URI
      * @param watcher {@link Watcher}
@@ -193,10 +193,10 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param uri      URI
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
@@ -205,7 +205,7 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param file    被监听文件
      * @param watcher {@link Watcher}
@@ -216,10 +216,10 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param file     被监听文件
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
@@ -228,7 +228,7 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param path    路径
      * @param watcher {@link Watcher}
@@ -239,10 +239,10 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param path     路径
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */
@@ -251,7 +251,7 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param path    路径
      * @param watcher {@link Watcher}
@@ -262,10 +262,10 @@ public class WatchUtils {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param path     路径
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @param watcher  {@link Watcher}
      * @return {@link WatchMonitor}
      */

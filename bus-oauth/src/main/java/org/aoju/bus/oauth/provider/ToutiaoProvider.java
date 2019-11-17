@@ -90,9 +90,9 @@ public class ToutiaoProvider extends DefaultProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      * @since 1.9.3
      */
@@ -154,24 +154,24 @@ public class ToutiaoProvider extends DefaultProvider {
     public enum Error {
         /**
          * 0：正常；
-         * other：调用异常，具体异常内容见{@code desc}
+         * other：调用异常,具体异常内容见{@code desc}
          */
         EC0("0", "接口调用成功"),
-        EC1("1", "API配置错误，未传入Client Key"),
-        EC2("2", "API配置错误，Client Key错误，请检查是否和开放平台的ClientKey一致"),
+        EC1("1", "API配置错误,未传入Client Key"),
+        EC2("2", "API配置错误,Client Key错误,请检查是否和开放平台的ClientKey一致"),
         EC3("3", "没有授权信息"),
         EC4("4", "响应类型错误"),
         EC5("5", "授权类型错误"),
         EC6("6", "client_secret错误"),
         EC7("7", "authorize_code过期"),
         EC8("8", "指定url的scheme不是https"),
-        EC9("9", "接口内部错误，请联系头条技术"),
+        EC9("9", "接口内部错误,请联系头条技术"),
         EC10("10", "access_token过期"),
         EC11("11", "缺少access_token"),
         EC12("12", "参数缺失"),
         EC13("13", "url错误"),
         EC21("21", "域名与登记域名不匹配"),
-        EC999("999", "未知错误，请联系头条技术");
+        EC999("999", "未知错误,请联系头条技术");
 
         private String code;
         private String desc;

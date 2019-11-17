@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 默认的HMAC算法实现引擎，使用{@link Mac} 实现摘要<br>
+ * 默认的HMAC算法实现引擎,使用{@link Mac} 实现摘要<br>
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu

@@ -28,7 +28,7 @@ import org.aoju.bus.sensitive.Builder;
 import java.lang.annotation.*;
 
 /**
- * 数据脱敏，具体如下:
+ * 数据脱敏,具体如下:
  * 1.数据库级别脱敏加密
  * SensitiveResultSetHandler 解密脱敏
  * SensitiveStatementHandler 脱敏加密

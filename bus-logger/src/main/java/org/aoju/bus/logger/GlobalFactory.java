@@ -32,7 +32,7 @@ import org.aoju.bus.logger.dialect.slf4j.Slf4jLogFactory;
 
 /**
  * 全局日志工厂类
- * 用于减少日志工厂创建，减少日志库探测
+ * 用于减少日志工厂创建,减少日志库探测
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -44,7 +44,7 @@ public class GlobalFactory {
     private static volatile LogFactory currentLogFactory;
 
     /**
-     * 获取单例日志工厂类，如果不存在创建之
+     * 获取单例日志工厂类,如果不存在创建之
      *
      * @return 当前使用的日志工厂
      */

@@ -24,7 +24,7 @@
 package org.aoju.bus.core.thread;
 
 /**
- * 带有Name标识的 {@link InheritableThreadLocal}，
+ * 带有Name标识的 {@link InheritableThreadLocal},
  * 调用toString返回name
  *
  * @param <T> 值类型

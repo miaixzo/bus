@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 判断数字在int范围内
  *
  * <p>
- * 默认被校验对象是null时，通过校验
+ * 默认被校验对象是null时,通过校验
  * </P>
  *
  * @author Kimi Liu

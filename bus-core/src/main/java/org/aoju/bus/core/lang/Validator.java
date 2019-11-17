@@ -100,7 +100,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为空，为空时抛出异常
+     * 验证是否为空,为空时抛出异常
      * 对于String类型判定是否为empty(null 或 "")
      *
      * @param value    值
@@ -126,7 +126,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否相等，不相等抛出异常
+     * 验证是否相等,不相等抛出异常
      *
      * @param t1       对象1
      * @param t2       对象2
@@ -140,7 +140,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否不等，相等抛出异常
+     * 验证是否不等,相等抛出异常
      *
      * @param t1       对象1
      * @param t2       对象2
@@ -247,8 +247,8 @@ public class Validator {
      * 验证是否为给定长度范围的英文字母 、数字和下划线
      *
      * @param value 值
-     * @param min   最小长度，负数自动识别为0
-     * @param max   最大长度，0或负数表示不限制最大长度
+     * @param min   最小长度,负数自动识别为0
+     * @param max   最大长度,0或负数表示不限制最大长度
      * @return 是否为给定长度范围的英文字母 、数字和下划线
      */
     public static boolean isGeneral(String value, int min, int max) {
@@ -266,8 +266,8 @@ public class Validator {
      * 验证是否为给定长度范围的英文字母 、数字和下划线
      *
      * @param value    值
-     * @param min      最小长度，负数自动识别为0
-     * @param max      最大长度，0或负数表示不限制最大长度
+     * @param min      最小长度,负数自动识别为0
+     * @param max      最大长度,0或负数表示不限制最大长度
      * @param errorMsg 验证错误的信息
      * @throws InstrumentException 验证异常
      */
@@ -281,7 +281,7 @@ public class Validator {
      * 验证是否为给定最小长度的英文字母 、数字和下划线
      *
      * @param value 值
-     * @param min   最小长度，负数自动识别为0
+     * @param min   最小长度,负数自动识别为0
      * @return 是否为给定最小长度的英文字母 、数字和下划线
      */
     public static boolean isGeneral(String value, int min) {
@@ -292,7 +292,7 @@ public class Validator {
      * 验证是否为给定最小长度的英文字母 、数字和下划线
      *
      * @param value    值
-     * @param min      最小长度，负数自动识别为0
+     * @param min      最小长度,负数自动识别为0
      * @param errorMsg 验证错误的信息
      * @throws InstrumentException 验证异常
      */
@@ -301,10 +301,10 @@ public class Validator {
     }
 
     /**
-     * 判断字符串是否全部为字母组成，包括大写和小写字母和汉字
+     * 判断字符串是否全部为字母组成,包括大写和小写字母和汉字
      *
      * @param value 值
-     * @return 是否全部为字母组成，包括大写和小写字母和汉字
+     * @return 是否全部为字母组成, 包括大写和小写字母和汉字
      * @since 3.3.0
      */
     public static boolean isLetter(String value) {
@@ -317,7 +317,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否全部为字母组成，包括大写和小写字母和汉字
+     * 验证是否全部为字母组成,包括大写和小写字母和汉字
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息

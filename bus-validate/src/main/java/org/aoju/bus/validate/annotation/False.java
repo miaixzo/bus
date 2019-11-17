@@ -42,7 +42,7 @@ import java.lang.annotation.*;
 public @interface False {
 
     /**
-     * 当参数为null时，是否允许通过校验。true：校验通过
+     * 当参数为null时,是否允许通过校验 true：校验通过
      *
      * @return the boolean
      */

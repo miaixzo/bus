@@ -29,7 +29,7 @@ import org.aoju.bus.validate.strategy.NotBlankStrategy;
 import java.lang.annotation.*;
 
 /**
- * 字符串不为空，不为null校验
+ * 字符串不为空,不为null校验
  *
  * @author Kimi Liu
  * @version 5.2.2

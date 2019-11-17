@@ -29,7 +29,7 @@ import org.aoju.bus.mapper.builder.SqlSourceBuilder;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
- * ConditionProvider实现类，基础方法实现类
+ * ConditionProvider实现类,基础方法实现类
  *
  * @author Kimi Liu
  * @version 5.2.2

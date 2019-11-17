@@ -57,14 +57,14 @@ public class Context {
     private String redirectUri;
 
     /**
-     * 支付宝公钥：当选择支付宝登录时，该值可用
+     * 支付宝公钥：当选择支付宝登录时,该值可用
      * 对应“RSA2(SHA256)密钥”中的“支付宝公钥”
      */
     private String alipayPublicKey;
 
     /**
-     * 是否需要申请unionid，目前只针对qq登录
-     * 注：qq授权登录时，获取unionid需要单独发送邮件申请权限。如果个人开发者账号中申请了该权限，可以将该值置为true，在获取openId时就会同步获取unionId
+     * 是否需要申请unionid,目前只针对qq登录
+     * 注：qq授权登录时,获取unionid需要单独发送邮件申请权限 如果个人开发者账号中申请了该权限,可以将该值置为true,在获取openId时就会同步获取unionId
      * 参考链接：http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D
      * <p>
      * 1.7.1版本新增参数
@@ -80,7 +80,7 @@ public class Context {
     private String stackOverflowKey;
 
     /**
-     * 企业微信，授权方的网页应用ID
+     * 企业微信,授权方的网页应用ID
      *
      * @since 2.0.0
      */

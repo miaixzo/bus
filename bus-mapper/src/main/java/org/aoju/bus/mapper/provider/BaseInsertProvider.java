@@ -36,7 +36,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import java.util.Set;
 
 /**
- * BaseInsertProvider实现类，基础方法实现类
+ * BaseInsertProvider实现类,基础方法实现类
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -49,7 +49,7 @@ public class BaseInsertProvider extends MapperTemplate {
     }
 
     /**
-     * 插入全部,这段代码比较复杂，这里举个例子
+     * 插入全部,这段代码比较复杂,这里举个例子
      * CountryU生成的insert方法结构如下：
      * <pre>
      * &lt;bind name="countryname_bind" value='@java.util.UUID@randomUUID().toString().replace("-", "")'/&gt;
@@ -84,8 +84,8 @@ public class BaseInsertProvider extends MapperTemplate {
                 //这种情况下,如果原先的字段有值,需要先缓存起来,否则就一定会使用自动增长
                 //这是一个bind节点
                 sql.append(SqlSourceBuilder.getBindCache(column));
-                //如果是Identity列，就需要插入selectKey
-                //如果已经存在Identity列，抛出异常
+                //如果是Identity列,就需要插入selectKey
+                //如果已经存在Identity列,抛出异常
                 if (hasIdentityKey) {
                     //jdbc类型只需要添加一次
                     if (null != column.getGenerator() && "JDBC".equals(column.getGenerator())) {
@@ -97,7 +97,7 @@ public class BaseInsertProvider extends MapperTemplate {
                 SelectKey.newSelectKeyMappedStatement(ms, column, entityClass, isBEFORE(), getIDENTITY(column));
                 hasIdentityKey = true;
             } else if (column.isUuid()) {
-                //uuid的情况，直接插入bind节点
+                //uuid的情况,直接插入bind节点
                 sql.append(SqlSourceBuilder.getBindValue(column, getUUID()));
             }
         }
@@ -108,7 +108,7 @@ public class BaseInsertProvider extends MapperTemplate {
             if (!column.isInsertable()) {
                 continue;
             }
-            //优先使用传入的属性值,当原属性property!=null时，用原属性
+            //优先使用传入的属性值,当原属性property!=null时,用原属性
             //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
             if (column.isIdentity()) {
                 sql.append(SqlSourceBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", ",")));
@@ -116,7 +116,7 @@ public class BaseInsertProvider extends MapperTemplate {
                 //其他情况值仍然存在原property中
                 sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
             }
-            //当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
+            //当属性为null时,如果存在主键策略,会自动获取值,如果不存在,则使用null
             //序列的情况
             if (Assert.isNotEmpty(column.getSequenceName())) {
                 sql.append(SqlSourceBuilder.getIfIsNull(column, getSeqNextVal(column) + " ,", false));
@@ -125,7 +125,7 @@ public class BaseInsertProvider extends MapperTemplate {
             } else if (column.isUuid()) {
                 sql.append(SqlSourceBuilder.getIfIsNull(column, column.getColumnHolder(null, "_bind", ","), isNotEmpty()));
             } else {
-                //当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
+                //当null的时候,如果不指定jdbcType,oracle可能会报异常,指定VARCHAR不影响其他
                 sql.append(SqlSourceBuilder.getIfIsNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
             }
         }
@@ -134,7 +134,7 @@ public class BaseInsertProvider extends MapperTemplate {
     }
 
     /**
-     * 插入不为null的字段,这段代码比较复杂，这里举个例子
+     * 插入不为null的字段,这段代码比较复杂,这里举个例子
      * CountryU生成的insertSelective方法结构如下：
      * <pre>
      * &lt;bind name="countryname_bind" value='@java.util.UUID@randomUUID().toString().replace("-", "")'/&gt;
@@ -175,8 +175,8 @@ public class BaseInsertProvider extends MapperTemplate {
                 //这种情况下,如果原先的字段有值,需要先缓存起来,否则就一定会使用自动增长
                 //这是一个bind节点
                 sql.append(SqlSourceBuilder.getBindCache(column));
-                //如果是Identity列，就需要插入selectKey
-                //如果已经存在Identity列，抛出异常
+                //如果是Identity列,就需要插入selectKey
+                //如果已经存在Identity列,抛出异常
                 if (hasIdentityKey) {
                     //jdbc类型只需要添加一次
                     if (column.getGenerator() != null && column.getGenerator().equals("JDBC")) {
@@ -188,7 +188,7 @@ public class BaseInsertProvider extends MapperTemplate {
                 SelectKey.newSelectKeyMappedStatement(ms, column, entityClass, isBEFORE(), getIDENTITY(column));
                 hasIdentityKey = true;
             } else if (column.isUuid()) {
-                //uuid的情况，直接插入bind节点
+                //uuid的情况,直接插入bind节点
                 sql.append(SqlSourceBuilder.getBindValue(column, getUUID()));
             }
         }
@@ -210,7 +210,7 @@ public class BaseInsertProvider extends MapperTemplate {
             if (!column.isInsertable()) {
                 continue;
             }
-            //优先使用传入的属性值,当原属性property!=null时，用原属性
+            //优先使用传入的属性值,当原属性property!=null时,用原属性
             //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
             if (column.isIdentity()) {
                 sql.append(SqlSourceBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", ",")));
@@ -218,7 +218,7 @@ public class BaseInsertProvider extends MapperTemplate {
                 //其他情况值仍然存在原property中
                 sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
             }
-            //当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
+            //当属性为null时,如果存在主键策略,会自动获取值,如果不存在,则使用null
             //序列的情况
             if (Assert.isNotEmpty(column.getSequenceName())) {
                 sql.append(SqlSourceBuilder.getIfIsNull(column, getSeqNextVal(column) + " ,", isNotEmpty()));

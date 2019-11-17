@@ -46,9 +46,9 @@ import java.util.List;
 public class ResourceUtils {
 
     /**
-     * 读取Classpath下的资源为字符串，使用UTF-8编码
+     * 读取Classpath下的资源为字符串,使用UTF-8编码
      *
-     * @param resource 资源路径，使用相对ClassPath的路径
+     * @param resource 资源路径,使用相对ClassPath的路径
      * @return 资源内容
      * @since 3.1.1
      */
@@ -59,7 +59,7 @@ public class ResourceUtils {
     /**
      * 读取Classpath下的资源为字符串
      *
-     * @param resource 资源路径，使用相对ClassPath的路径
+     * @param resource 资源路径,使用相对ClassPath的路径
      * @param charset  编码
      * @return 资源内容
      * @since 3.1.1
@@ -81,7 +81,7 @@ public class ResourceUtils {
     }
 
     /**
-     * 从ClassPath资源中获取{@link InputStream}，当资源不存在时返回null
+     * 从ClassPath资源中获取{@link InputStream},当资源不存在时返回null
      *
      * @param resurce ClassPath资源
      * @return {@link InputStream}
@@ -109,7 +109,7 @@ public class ResourceUtils {
 
     /**
      * 获得资源的URL
-     * 路径用/分隔，例如:
+     * 路径用/分隔,例如:
      *
      * <pre>
      * config/a/db.config
@@ -125,7 +125,7 @@ public class ResourceUtils {
 
     /**
      * 获取指定路径下的资源列表
-     * 路径格式必须为目录格式,用/分隔，例如:
+     * 路径格式必须为目录格式,用/分隔,例如:
      *
      * <pre>
      * config/a
@@ -147,7 +147,7 @@ public class ResourceUtils {
 
     /**
      * 获取指定路径下的资源Iterator
-     * 路径格式必须为目录格式,用/分隔，例如:
+     * 路径格式必须为目录格式,用/分隔,例如:
      *
      * <pre>
      * config/a
@@ -171,7 +171,7 @@ public class ResourceUtils {
      * 获得资源相对路径对应的URL
      *
      * @param resource  资源相对路径
-     * @param baseClass 基准Class，获得的相对路径相对于此Class所在路径，如果为{@code null}则相对ClassPath
+     * @param baseClass 基准Class,获得的相对路径相对于此Class所在路径,如果为{@code null}则相对ClassPath
      * @return {@link URL}
      */
     public static URL getResource(String resource, Class<?> baseClass) {
@@ -180,9 +180,9 @@ public class ResourceUtils {
 
     /**
      * 获取{@link Resource} 资源对象
-     * 如果提供路径为绝对路径，返回{@link FileResource}，否则返回{@link ClassPathResource}
+     * 如果提供路径为绝对路径,返回{@link FileResource},否则返回{@link ClassPathResource}
      *
-     * @param path 路径，可以是绝对路径，也可以是相对路径
+     * @param path 路径,可以是绝对路径,也可以是相对路径
      * @return {@link Resource} 资源对象
      * @since 5.2.2
      */

@@ -27,7 +27,7 @@ import org.aoju.bus.cron.task.Task;
 
 /**
  * 作业执行器
- * 执行具体的作业，执行完毕销毁
+ * 执行具体的作业,执行完毕销毁
  *
  * @author Kimi Liu
  * @version 5.2.2

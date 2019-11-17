@@ -38,7 +38,7 @@ public class NumberWord {
     /**
      * 将阿拉伯数字转为英文表达式
      *
-     * @param x 阿拉伯数字，可以为{@link Number}对象，也可以是普通对象，最后会使用字符串方式处理
+     * @param x 阿拉伯数字,可以为{@link Number}对象,也可以是普通对象,最后会使用字符串方式处理
      * @return 英文表达式
      */
     public static String format(Object x) {
@@ -58,7 +58,7 @@ public class NumberWord {
     private static String format(String x) {
         int z = x.indexOf("."); // 取小数点位置
         String lstr = "", rstr = "";
-        if (z > -1) { // 看是否有小数，如果有，则分别取左边和右边
+        if (z > -1) { // 看是否有小数,如果有,则分别取左边和右边
             lstr = x.substring(0, z);
             rstr = x.substring(z + 1);
         } else {
@@ -86,7 +86,7 @@ public class NumberWord {
                     lm = transThree(a[i]) + " " + parseMore(String.valueOf(i)) + " " + lm; // 加:
                     // thousand、million、billion
                 } else {
-                    lm = transThree(a[i]); // 防止i=0时， 在多加两个空格.
+                    lm = transThree(a[i]); // 防止i=0时, 在多加两个空格.
                 }
             } else {
                 lm += transThree(a[i]);

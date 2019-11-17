@@ -31,7 +31,7 @@ import java.lang.annotation.*;
 /**
  * 正则表达式校验
  * <p>
- * 默认被校验对象是null时，通过校验
+ * 默认被校验对象是null时,通过校验
  * </P>
  *
  * @author Kimi Liu
@@ -48,9 +48,9 @@ public @interface Regex {
     String pattern() default "";
 
     /**
-     * 如果长度为0，判断能否通过校验。
+     * 如果长度为0,判断能否通过校验
      * 默认为false
-     * true：表示长度为零，默认通过校验；false：表示长度为0，仍然要进行正则验证
+     * true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行正则验证
      *
      * @return the boolean
      */

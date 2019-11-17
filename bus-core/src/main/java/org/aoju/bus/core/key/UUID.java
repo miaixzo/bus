@@ -31,9 +31,9 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 /**
- * 提供通用唯一识别码（universally unique identifier）（UUID）实现，UUID表示一个128位的值。
- * 此类拷贝自java.util.UUID，用于生成不带-的UUID字符串
- * 这些通用标识符具有不同的变体。此类的方法用于操作 Leach-Salz 变体，不过构造方法允许创建任何 UUID 变体（将在下面进行描述）。
+ * 提供通用唯一识别码（universally unique identifier）（UUID）实现,UUID表示一个128位的值
+ * 此类拷贝自java.util.UUID,用于生成不带-的UUID字符串
+ * 这些通用标识符具有不同的变体 此类的方法用于操作 Leach-Salz 变体,不过构造方法允许创建任何 UUID 变体（将在下面进行描述）
  * 变体 2 (Leach-Salz) UUID 的布局如下： long 型数据的最高有效位由以下无符号字段组成：
  *
  * <pre>
@@ -49,9 +49,9 @@ import java.util.Random;
  * 0x3FFF000000000000 clock_seq
  * 0x0000FFFFFFFFFFFF node
  * </pre>
- * variant 字段包含一个表示 UUID 布局的值。以上描述的位布局仅在 UUID 的 variant 值为 2（表示 Leach-Salz 变体）时才有效。
- * version 字段保存描述此 UUID 类型的值。有 4 种不同的基本 UUID 类型：基于时间的 UUID、DCE 安全 UUID、基于名称的 UUID 和随机生成的 UUID。
- * 这些类型的 version 值分别为 1、2、3 和 4。
+ * variant 字段包含一个表示 UUID 布局的值 以上描述的位布局仅在 UUID 的 variant 值为 2（表示 Leach-Salz 变体）时才有效
+ * version 字段保存描述此 UUID 类型的值 有 4 种不同的基本 UUID 类型：基于时间的 UUID、DCE 安全 UUID、基于名称的 UUID 和随机生成的 UUID
+ * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -89,7 +89,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 使用指定的数据构造新的 UUID。
+     * 使用指定的数据构造新的 UUID
      *
      * @param mostSigBits  用于 {@code UUID} 的最高有效 64 位
      * @param leastSigBits 用于 {@code UUID} 的最低有效 64 位
@@ -100,7 +100,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 根据一个范围，生成一个随机的整数
+     * 根据一个范围,生成一个随机的整数
      *
      * @param min 最小值（包括）
      * @param max 最大值（包括）
@@ -111,7 +111,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 获取类型 4（伪随机生成的）UUID 的静态工厂。 使用加密的本地线程伪随机数生成器生成该 UUID。
+     * 获取类型 4（伪随机生成的）UUID 的静态工厂  使用加密的本地线程伪随机数生成器生成该 UUID
      *
      * @return 随机生成的 {@code UUID}
      */
@@ -120,7 +120,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 获取类型 4（伪随机生成的）UUID 的静态工厂。 使用加密的强伪随机数生成器生成该 UUID。
+     * 获取类型 4（伪随机生成的）UUID 的静态工厂  使用加密的强伪随机数生成器生成该 UUID
      *
      * @return 随机生成的 {@code UUID}
      */
@@ -129,9 +129,9 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 获取类型 4（伪随机生成的）UUID 的静态工厂。 使用加密的强伪随机数生成器生成该 UUID。
+     * 获取类型 4（伪随机生成的）UUID 的静态工厂  使用加密的强伪随机数生成器生成该 UUID
      *
-     * @param isSecure 是否使用{@link SecureRandom}如果是可以获得更安全的随机码，否则可以得到更好的性能
+     * @param isSecure 是否使用{@link SecureRandom}如果是可以获得更安全的随机码,否则可以得到更好的性能
      * @return 随机生成的 {@code UUID}
      */
     public static UUID randomUUID(boolean isSecure) {
@@ -147,9 +147,9 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 根据指定的字节数组获取类型 3（基于名称的）UUID 的静态工厂。
+     * 根据指定的字节数组获取类型 3（基于名称的）UUID 的静态工厂
      *
-     * @param name 用于构造 UUID 的字节数组。
+     * @param name 用于构造 UUID 的字节数组
      * @return 根据指定数组生成的 {@code UUID}
      */
     public static UUID nameUUIDFromBytes(byte[] name) {
@@ -168,7 +168,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 根据 {@link #toString()} 方法中描述的字符串标准表示形式创建{@code UUID}。
+     * 根据 {@link #toString()} 方法中描述的字符串标准表示形式创建{@code UUID}
      *
      * @param name 指定 {@code UUID} 字符串
      * @return 具有指定值的 {@code UUID}
@@ -209,25 +209,25 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 返回此 UUID 的 128 位值中的最低有效 64 位。
+     * 返回此 UUID 的 128 位值中的最低有效 64 位
      *
-     * @return 此 UUID 的 128 位值中的最低有效 64 位。
+     * @return 此 UUID 的 128 位值中的最低有效 64 位
      */
     public long getLeastSignificantBits() {
         return leastSigBits;
     }
 
     /**
-     * 返回此 UUID 的 128 位值中的最高有效 64 位。
+     * 返回此 UUID 的 128 位值中的最高有效 64 位
      *
-     * @return 此 UUID 的 128 位值中最高有效 64 位。
+     * @return 此 UUID 的 128 位值中最高有效 64 位
      */
     public long getMostSignificantBits() {
         return mostSigBits;
     }
 
     /**
-     * 与此 {@code UUID} 相关联的版本号. 版本号描述此 {@code UUID} 是如何生成的。
+     * 与此 {@code UUID} 相关联的版本号. 版本号描述此 {@code UUID} 是如何生成的
      * <p>
      * 版本号具有以下含意:
      * <ul>
@@ -245,13 +245,13 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 与此 {@code UUID} 相关联的变体号。变体号描述 {@code UUID} 的布局。
+     * 与此 {@code UUID} 相关联的变体号 变体号描述 {@code UUID} 的布局
      * <p>
      * 变体号具有以下含意：
      * <ul>
      * <li>0 为 NCS 向后兼容保留
      * <li>2 <a href="http://www.ietf.org/rfc/rfc4122.txt">IETF&nbsp;RFC&nbsp;4122</a>(Leach-Salz), 用于此类
-     * <li>6 保留，微软向后兼容
+     * <li>6 保留,微软向后兼容
      * <li>7 保留供以后定义使用
      * </ul>
      *
@@ -267,18 +267,18 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 与此 UUID 相关联的时间戳值。
+     * 与此 UUID 相关联的时间戳值
      *
      * <p>
-     * 60 位的时间戳值根据此 {@code UUID} 的 time_low、time_mid 和 time_hi 字段构造。
-     * 所得到的时间戳以 100 毫微秒为单位，从 UTC（通用协调时间） 1582 年 10 月 15 日零时开始。
+     * 60 位的时间戳值根据此 {@code UUID} 的 time_low、time_mid 和 time_hi 字段构造
+     * 所得到的时间戳以 100 毫微秒为单位,从 UTC（通用协调时间） 1582 年 10 月 15 日零时开始
      *
      * <p>
-     * 时间戳值仅在在基于时间的 UUID（其 version 类型为 1）中才有意义。
-     * 如果此 {@code UUID} 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
+     * 时间戳值仅在在基于时间的 UUID（其 version 类型为 1）中才有意义
+     * 如果此 {@code UUID} 不是基于时间的 UUID,则此方法抛出 UnsupportedOperationException
      *
      * @return the long
-     * @throws UnsupportedOperationException 如果此 {@code UUID} 不是 version 为 1 的 UUID。
+     * @throws UnsupportedOperationException 如果此 {@code UUID} 不是 version 为 1 的 UUID
      */
     public long timestamp() throws UnsupportedOperationException {
         checkTimeBase();
@@ -288,12 +288,12 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 与此 UUID 相关联的时钟序列值。
+     * 与此 UUID 相关联的时钟序列值
      *
      * <p>
-     * 14 位的时钟序列值根据此 UUID 的 clock_seq 字段构造。clock_seq 字段用于保证在基于时间的 UUID 中的时间唯一性。
+     * 14 位的时钟序列值根据此 UUID 的 clock_seq 字段构造 clock_seq 字段用于保证在基于时间的 UUID 中的时间唯一性
      * <p>
-     * {@code clockSequence} 值仅在基于时间的 UUID（其 version 类型为 1）中才有意义。 如果此 UUID 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
+     * {@code clockSequence} 值仅在基于时间的 UUID（其 version 类型为 1）中才有意义  如果此 UUID 不是基于时间的 UUID,则此方法抛出 UnsupportedOperationException
      *
      * @return 此 {@code UUID} 的时钟序列
      * @throws UnsupportedOperationException 如果此 UUID 的 version 不为 1
@@ -304,13 +304,13 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 与此 UUID 相关的节点值。
+     * 与此 UUID 相关的节点值
      *
      * <p>
-     * 48 位的节点值根据此 UUID 的 node 字段构造。此字段旨在用于保存机器的 IEEE 802 地址，该地址用于生成此 UUID 以保证空间唯一性。
+     * 48 位的节点值根据此 UUID 的 node 字段构造 此字段旨在用于保存机器的 IEEE 802 地址,该地址用于生成此 UUID 以保证空间唯一性
      * <p>
-     * 节点值仅在基于时间的 UUID（其 version 类型为 1）中才有意义。
-     * 如果此 UUID 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
+     * 节点值仅在基于时间的 UUID（其 version 类型为 1）中才有意义
+     * 如果此 UUID 不是基于时间的 UUID,则此方法抛出 UnsupportedOperationException
      *
      * @return 此 {@code UUID} 的节点值
      * @throws UnsupportedOperationException 如果此 UUID 的 version 不为 1
@@ -323,7 +323,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     // Object Inherited Methods
 
     /**
-     * 返回此{@code UUID} 的字符串表现形式。
+     * 返回此{@code UUID} 的字符串表现形式
      *
      * <p>
      * UUID 的字符串表示形式由此 BNF 描述：
@@ -350,7 +350,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 返回此{@code UUID} 的字符串表现形式。
+     * 返回此{@code UUID} 的字符串表现形式
      *
      * <p>
      * UUID 的字符串表示形式由此 BNF 描述：
@@ -368,7 +368,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * }
      * </pre>
      *
-     * @param isSimple 是否简单模式，简单模式为不带'-'的UUID字符串
+     * @param isSimple 是否简单模式,简单模式为不带'-'的UUID字符串
      * @return 此{@code UUID} 的字符串表现形式
      */
     public String toString(boolean isSimple) {
@@ -400,9 +400,9 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 返回此 UUID 的哈希码。
+     * 返回此 UUID 的哈希码
      *
-     * @return UUID 的哈希码值。
+     * @return UUID 的哈希码值
      */
     public int hashCode() {
         long hilo = mostSigBits ^ leastSigBits;
@@ -410,12 +410,12 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 将此对象与指定对象比较。
+     * 将此对象与指定对象比较
      * <p>
-     * 当且仅当参数不为 {@code null}、而是一个 UUID 对象、具有与此 UUID 相同的 varriant、包含相同的值（每一位均相同）时，结果才为 {@code true}。
+     * 当且仅当参数不为 {@code null}、而是一个 UUID 对象、具有与此 UUID 相同的 varriant、包含相同的值（每一位均相同）时,结果才为 {@code true}
      *
      * @param obj 要与之比较的对象
-     * @return 如果对象相同，则返回 {@code true}；否则返回 {@code false}
+     * @return 如果对象相同, 则返回 {@code true}；否则返回 {@code false}
      */
     public boolean equals(Object obj) {
         if ((null == obj) || (obj.getClass() != UUID.class)) {
@@ -427,13 +427,13 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
 
     /**
-     * 将此 UUID 与指定的 UUID 比较。
+     * 将此 UUID 与指定的 UUID 比较
      *
      * <p>
-     * 如果两个 UUID 不同，且第一个 UUID 的最高有效字段大于第二个 UUID 的对应字段，则第一个 UUID 大于第二个 UUID。
+     * 如果两个 UUID 不同,且第一个 UUID 的最高有效字段大于第二个 UUID 的对应字段,则第一个 UUID 大于第二个 UUID
      *
      * @param val 与此 UUID 比较的 UUID
-     * @return 在此 UUID 小于、等于或大于 val 时，分别返回 -1、0 或 1。
+     * @return 在此 UUID 小于、等于或大于 val 时,分别返回 -1、0 或 1
      */
     public int compareTo(UUID val) {
         // The ordering is intentionally set up so that the UUIDs

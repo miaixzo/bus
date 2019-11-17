@@ -26,7 +26,7 @@ package org.aoju.bus.health;
 import org.aoju.bus.core.consts.System;
 
 /**
- * 代表Java Implementation的信息。
+ * 代表Java Implementation的信息
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -51,12 +51,12 @@ public class JavaInfo {
     private final boolean IS_JAVA_1_8 = getJavaVersionMatches("1.8");
 
     /**
-     * 取得当前Java impl.的版本（取自系统属性：<code>java.version</code>）。
+     * 取得当前Java impl.的版本（取自系统属性：<code>java.version</code>）
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"1.4.2"</code>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
      * @since Java 1.1
      */
     public final String getVersion() {
@@ -64,34 +64,34 @@ public class JavaInfo {
     }
 
     /**
-     * 取得当前Java impl.的版本（取自系统属性：<code>java.version</code>）。
+     * 取得当前Java impl.的版本（取自系统属性：<code>java.version</code>）
      *
      * <p>
      * 例如：
      *
      * <ul>
-     * <li>JDK 1.2：<code>1.2f</code>。</li>
+     * <li>JDK 1.2：<code>1.2f</code> </li>
      * <li>JDK 1.3.1：<code>1.31f</code></li>
      * </ul>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>0</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>0</code>
      */
     public final float getVersionFloat() {
         return JAVA_VERSION_FLOAT;
     }
 
     /**
-     * 取得当前Java impl.的版本（取自系统属性：<code>java.version</code>）。
+     * 取得当前Java impl.的版本（取自系统属性：<code>java.version</code>）
      *
      * <p>
      * 例如：
      *
      * <ul>
-     * <li>JDK 1.2：<code>120</code>。</li>
+     * <li>JDK 1.2：<code>120</code> </li>
      * <li>JDK 1.3.1：<code>131</code></li>
      * </ul>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>0</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>0</code>
      * @since Java 1.1
      */
     public final int getVersionInt() {
@@ -99,7 +99,7 @@ public class JavaInfo {
     }
 
     /**
-     * 取得当前Java impl.的版本的<code>float</code>值。
+     * 取得当前Java impl.的版本的<code>float</code>值
      *
      * @return Java版本的<code>float</code>值或<code>0</code>
      */
@@ -118,7 +118,7 @@ public class JavaInfo {
     }
 
     /**
-     * 取得当前Java impl.的版本的<code>int</code>值。
+     * 取得当前Java impl.的版本的<code>int</code>值
      *
      * @return Java版本的<code>int</code>值或<code>0</code>
      */
@@ -141,12 +141,12 @@ public class JavaInfo {
     }
 
     /**
-     * 取得当前Java impl.的厂商（取自系统属性：<code>java.vendor</code>）。
+     * 取得当前Java impl.的厂商（取自系统属性：<code>java.vendor</code>）
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
      * @since Java 1.1
      */
     public final String getVendor() {
@@ -154,12 +154,12 @@ public class JavaInfo {
     }
 
     /**
-     * 取得当前Java impl.的厂商网站的URL（取自系统属性：<code>java.vendor.url</code>）。
+     * 取得当前Java impl.的厂商网站的URL（取自系统属性：<code>java.vendor.url</code>）
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"http://java.sun.com/"</code>
      *
-     * @return 属性值，如果不能取得（因为Java安全限制）或值不存在，则返回<code>null</code>。
+     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
      * @since Java 1.1
      */
     public final String getVendorURL() {
@@ -167,106 +167,106 @@ public class JavaInfo {
     }
 
     /**
-     * 判断当前Java的版本。
+     * 判断当前Java的版本
      *
      * <p>
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制）,则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.1，则返回<code>true</code>
+     * @return 如果当前Java版本为1.1, 则返回<code>true</code>
      */
     public final boolean isJava11() {
         return IS_JAVA_1_1;
     }
 
     /**
-     * 判断当前Java的版本。
+     * 判断当前Java的版本
      *
      * <p>
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制）,则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.2，则返回<code>true</code>
+     * @return 如果当前Java版本为1.2, 则返回<code>true</code>
      */
     public final boolean isJava12() {
         return IS_JAVA_1_2;
     }
 
     /**
-     * 判断当前Java的版本。
+     * 判断当前Java的版本
      *
      * <p>
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制）,则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.3，则返回<code>true</code>
+     * @return 如果当前Java版本为1.3, 则返回<code>true</code>
      */
     public final boolean isJava13() {
         return IS_JAVA_1_3;
     }
 
     /**
-     * 判断当前Java的版本。
+     * 判断当前Java的版本
      *
      * <p>
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制）,则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.4，则返回<code>true</code>
+     * @return 如果当前Java版本为1.4, 则返回<code>true</code>
      */
     public final boolean isJava14() {
         return IS_JAVA_1_4;
     }
 
     /**
-     * 判断当前Java的版本。
+     * 判断当前Java的版本
      *
      * <p>
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制）,则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.5，则返回<code>true</code>
+     * @return 如果当前Java版本为1.5, 则返回<code>true</code>
      */
     public final boolean isJava15() {
         return IS_JAVA_1_5;
     }
 
     /**
-     * 判断当前Java的版本。
+     * 判断当前Java的版本
      *
      * <p>
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制）,则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.6，则返回<code>true</code>
+     * @return 如果当前Java版本为1.6, 则返回<code>true</code>
      */
     public final boolean isJava16() {
         return IS_JAVA_1_6;
     }
 
     /**
-     * 判断当前Java的版本。
+     * 判断当前Java的版本
      *
      * <p>
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制）,则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.7，则返回<code>true</code>
+     * @return 如果当前Java版本为1.7, 则返回<code>true</code>
      */
     public final boolean isJava17() {
         return IS_JAVA_1_7;
     }
 
     /**
-     * 判断当前Java的版本。
+     * 判断当前Java的版本
      *
      * <p>
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制）,则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.8，则返回<code>true</code>
+     * @return 如果当前Java版本为1.8, 则返回<code>true</code>
      */
     public final boolean isJava18() {
         return IS_JAVA_1_8;
     }
 
     /**
-     * 匹配当前Java的版本。
+     * 匹配当前Java的版本
      *
      * @param versionPrefix Java版本前缀
-     * @return 如果版本匹配，则返回<code>true</code>
+     * @return 如果版本匹配, 则返回<code>true</code>
      */
     private final boolean getJavaVersionMatches(String versionPrefix) {
         if (JAVA_VERSION == null) {
@@ -277,7 +277,7 @@ public class JavaInfo {
     }
 
     /**
-     * 判定当前Java的版本是否大于等于指定的版本号。
+     * 判定当前Java的版本是否大于等于指定的版本号
      *
      * <p>
      * 例如：
@@ -289,14 +289,14 @@ public class JavaInfo {
      * </ul>
      *
      * @param requiredVersion 需要的版本
-     * @return 如果当前Java版本大于或等于指定的版本，则返回<code>true</code>
+     * @return 如果当前Java版本大于或等于指定的版本, 则返回<code>true</code>
      */
     public final boolean isJavaVersionAtLeast(float requiredVersion) {
         return getVersionFloat() >= requiredVersion;
     }
 
     /**
-     * 判定当前Java的版本是否大于等于指定的版本号。
+     * 判定当前Java的版本是否大于等于指定的版本号
      *
      * <p>
      * 例如：
@@ -307,14 +307,14 @@ public class JavaInfo {
      * </ul>
      *
      * @param requiredVersion 需要的版本
-     * @return 如果当前Java版本大于或等于指定的版本，则返回<code>true</code>
+     * @return 如果当前Java版本大于或等于指定的版本, 则返回<code>true</code>
      */
     public final boolean isJavaVersionAtLeast(int requiredVersion) {
         return getVersionInt() >= requiredVersion;
     }
 
     /**
-     * 将Java Implementation的信息转换成字符串。
+     * 将Java Implementation的信息转换成字符串
      *
      * @return JVM impl.的字符串表示
      */

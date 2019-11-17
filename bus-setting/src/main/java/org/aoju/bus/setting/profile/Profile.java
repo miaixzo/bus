@@ -34,10 +34,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Profile可以让我们定义一系列的配置信息，然后指定其激活条件。
+ * Profile可以让我们定义一系列的配置信息,然后指定其激活条件
  * 此类中我们规范一套规则如下：
- * 默认的，我们读取${classpath}/default下的配置文件(*.setting文件)，当调用setProfile方法时，指定一个profile，即可读取其目录下的配置文件。
- * 比如我们定义几个profile：test，develop，production，分别代表测试环境、开发环境和线上环境，我希望读取数据库配置文件db.setting，那么：
+ * 默认的,我们读取${classpath}/default下的配置文件(*.setting文件),当调用setProfile方法时,指定一个profile,即可读取其目录下的配置文件
+ * 比如我们定义几个profile：test,develop,production,分别代表测试环境、开发环境和线上环境,我希望读取数据库配置文件db.setting,那么：
  * <ol>
  * <li>test =》 ${classpath}/test/db.setting</li>
  * <li>develop =》 ${classpath}/develop/db.setting</li>
@@ -73,14 +73,14 @@ public class Profile implements Serializable {
     private Map<String, Setting> settingMap = new ConcurrentHashMap<>();
 
     /**
-     * 默认构造，环境使用默认的：default，编码UTF-8，不使用变量
+     * 默认构造,环境使用默认的：default,编码UTF-8,不使用变量
      */
     public Profile() {
         this(DEFAULT_PROFILE);
     }
 
     /**
-     * 构造，编码UTF-8，不使用变量
+     * 构造,编码UTF-8,不使用变量
      *
      * @param profile 环境
      */
@@ -105,7 +105,7 @@ public class Profile implements Serializable {
     /**
      * 获取当前环境下的配置文件
      *
-     * @param name 文件名，如果没有扩展名，默认为.setting
+     * @param name 文件名,如果没有扩展名,默认为.setting
      * @return 当前环境下配置文件
      */
     public Setting getSetting(String name) {

@@ -55,7 +55,7 @@ public class OrderByParser {
             List<OrderByElement> orderByElements = extraOrderBy(selectBody);
             String defaultOrderBy = PlainSelect.orderByToString(orderByElements);
             if (defaultOrderBy.indexOf('?') != -1) {
-                throw new PageException("原SQL[" + sql + "]中的order by包含参数，因此不能使用OrderBy插件进行修改!");
+                throw new PageException("原SQL[" + sql + "]中的order by包含参数,因此不能使用OrderBy插件进行修改!");
             }
             //新的sql
             sql = select.toString();

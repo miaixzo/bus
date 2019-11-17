@@ -49,7 +49,7 @@ public class CollectionConverter implements Converter<Collection<?>> {
     private final Type elementType;
 
     /**
-     * 构造，默认集合类型使用{@link Collection}
+     * 构造,默认集合类型使用{@link Collection}
      */
     public CollectionConverter() {
         this(Collection.class);

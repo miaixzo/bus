@@ -125,24 +125,24 @@ public class ExcelSaxUtils {
     /**
      * 计算两个单元格之间的单元格数目(同一行)
      *
-     * @param preRef 前一个单元格位置，例如A1
-     * @param ref    当前单元格位置，例如A8
+     * @param preRef 前一个单元格位置,例如A1
+     * @param ref    当前单元格位置,例如A8
      * @return 同一行中两个单元格之间的空单元格数
      */
     public static int countNullCell(String preRef, String ref) {
-        // excel2007最大行数是1048576，最大列数是16384，最后一列列名是XFD
-        // 数字代表列，去掉列信息
+        // excel2007最大行数是1048576,最大列数是16384,最后一列列名是XFD
+        // 数字代表列,去掉列信息
         String preXfd = StringUtils.nullToDefault(preRef, "@").replaceAll("\\d+", "");
         String xfd = StringUtils.nullToDefault(ref, "@").replaceAll("\\d+", "");
 
-        // A表示65，@表示64，如果A算作1，那@代表0
+        // A表示65,@表示64,如果A算作1,那@代表0
         // 填充最大位数3
         preXfd = StringUtils.fillBefore(preXfd, CELL_FILL_CHAR, MAX_CELL_BIT);
         xfd = StringUtils.fillBefore(xfd, CELL_FILL_CHAR, MAX_CELL_BIT);
 
         char[] preLetter = preXfd.toCharArray();
         char[] letter = xfd.toCharArray();
-        // 用字母表示则最多三位，每26个字母进一位
+        // 用字母表示则最多三位,每26个字母进一位
         int res = (letter[0] - preLetter[0]) * 26 * 26 + (letter[1] - preLetter[1]) * 26 + (letter[2] - preLetter[2]);
         return res - 1;
     }
@@ -162,7 +162,7 @@ public class ExcelSaxUtils {
      *
      * @param value        值
      * @param numFmtString 格式
-     * @return 数字，可以是Double、Long
+     * @return 数字, 可以是Double、Long
      */
     private static Number getNumberValue(String value, String numFmtString) {
         if (StringUtils.isBlank(value)) {
@@ -173,7 +173,7 @@ public class ExcelSaxUtils {
         if (null != numFmtString && numFmtString.indexOf(Symbol.C_DOT) < 0) {
             final long longPart = (long) numValue;
             if (longPart == numValue) {
-                // 对于无小数部分的数字类型，转为Long
+                // 对于无小数部分的数字类型,转为Long
                 return longPart;
             }
         }

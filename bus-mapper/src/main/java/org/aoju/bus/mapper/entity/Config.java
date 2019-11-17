@@ -51,26 +51,26 @@ public class Config {
     private String catalog;
     private String schema;
     private boolean BEFORE;
-    //校验调用方法时，Condition(entityClass)和Mapper<EntityClass>是否一致
+    //校验调用方法时,Condition(entityClass)和Mapper<EntityClass>是否一致
     private boolean checkEntityClass;
     //使用简单类型
     private boolean useSimpleType = true;
 
     private boolean enumAsSimpleType;
     /**
-     * 是否支持方法上的注解，默认false
+     * 是否支持方法上的注解,默认false
      */
     private boolean enableMethodAnnotation;
     /**
-     * 对于一般的getAllIfColumnNode，是否判断!=''，默认不判断
+     * 对于一般的getAllIfColumnNode,是否判断!='',默认不判断
      */
     private boolean notEmpty;
     /**
-     * 字段转换风格，默认驼峰转下划线
+     * 字段转换风格,默认驼峰转下划线
      */
     private Style style;
     /**
-     * 处理关键字，默认空，mysql可以设置为 `{0}`, sqlserver 为 [{0}]，{0} 代表的列名
+     * 处理关键字,默认空,mysql可以设置为 `{0}`, sqlserver 为 [{0}],{0} 代表的列名
      */
     private String wrapKeyword = "";
 
@@ -79,7 +79,7 @@ public class Config {
     }
 
     /**
-     * 设置全局的catalog,默认为空，如果设置了值，操作表时的sql会是catalog.tablename
+     * 设置全局的catalog,默认为空,如果设置了值,操作表时的sql会是catalog.tablename
      *
      * @param catalog string
      */
@@ -115,7 +115,7 @@ public class Config {
     }
 
     /**
-     * 获取表前缀，带catalog或schema
+     * 获取表前缀,带catalog或schema
      *
      * @return string
      */
@@ -134,7 +134,7 @@ public class Config {
     }
 
     /**
-     * 设置全局的schema,默认为空，如果设置了值，操作表时的sql会是schema.tablename
+     * 设置全局的schema,默认为空,如果设置了值,操作表时的sql会是schema.tablename
      * 如果同时设置了catalog,优先使用catalog.tablename
      *
      * @param schema schema
@@ -156,8 +156,8 @@ public class Config {
     }
 
     /**
-     * 序列的获取规则,使用{num}格式化参数，默认值为{0}.nextval，针对Oracle
-     * 可选参数一共3个，对应0,1,2,3分别为SequenceName，ColumnName, PropertyName，TableName
+     * 序列的获取规则,使用{num}格式化参数,默认值为{0}.nextval,针对Oracle
+     * 可选参数一共3个,对应0,1,2,3分别为SequenceName,ColumnName, PropertyName,TableName
      *
      * @param seqFormat sql
      */
@@ -323,13 +323,13 @@ public class Config {
         this.notEmpty = Boolean.valueOf(properties.getProperty("notEmpty"));
         this.enableMethodAnnotation = Boolean.valueOf(properties.getProperty("enableMethodAnnotation"));
         this.checkEntityClass = Boolean.valueOf(properties.getProperty("checkEntityClass"));
-        //默认值 true，所以要特殊判断
+        //默认值 true,所以要特殊判断
         String useSimpleTypeStr = properties.getProperty("useSimpleType");
         if (Assert.isNotEmpty(useSimpleTypeStr)) {
             this.useSimpleType = Boolean.valueOf(useSimpleTypeStr);
         }
         this.enumAsSimpleType = Boolean.valueOf(properties.getProperty("enumAsSimpleType"));
-        //注册新的基本类型，以逗号隔开，使用全限定类名
+        //注册新的基本类型,以逗号隔开,使用全限定类名
         String simpleTypes = properties.getProperty("simpleTypes");
         if (Assert.isNotEmpty(simpleTypes)) {
             SimpleType.registerSimpleType(simpleTypes);

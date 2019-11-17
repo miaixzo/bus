@@ -62,5 +62,5 @@ public abstract class AbstractSerializer implements BaseSerializer {
             return null;
         }
     }
-    
+
 }

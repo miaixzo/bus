@@ -31,7 +31,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * 可复用的字符串生成器，非线程安全
+ * 可复用的字符串生成器,非线程安全
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -48,7 +48,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      */
     private char[] value;
     /**
-     * 当前指针位置，或者叫做已经加入的字符数，此位置总在最后一个字符之后
+     * 当前指针位置,或者叫做已经加入的字符数,此位置总在最后一个字符之后
      */
     private int position;
 
@@ -140,7 +140,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
             newStrA = removeSign(strA);
             newStrB = removeSign(strB);
         }
-        // 用较大的字符串长度作为分母，相似子串作为分子计算出字串相似度
+        // 用较大的字符串长度作为分母,相似子串作为分子计算出字串相似度
         int temp = Math.max(newStrA.length(), newStrB.length());
         int temp2 = longestCommonSubstring(newStrA, newStrB).length();
         return NumberUtils.div(temp2, temp);
@@ -159,14 +159,14 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 将字符串的所有数据依次写成一行，去除无意义字符串
+     * 将字符串的所有数据依次写成一行,去除无意义字符串
      *
      * @param str 字符串
      * @return 处理后的字符串
      */
     private static String removeSign(String str) {
         StringBuilder sb = new StringBuilder(str.length());
-        // 遍历字符串str,如果是汉字数字或字母，则追加到ab上面
+        // 遍历字符串str,如果是汉字数字或字母,则追加到ab上面
         int length = str.length();
         for (int i = 0; i < length; i++) {
             sb.append(charReg(str.charAt(i)));
@@ -175,10 +175,10 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 判断字符是否为汉字，数字和字母， 因为对符号进行相似度比较没有实际意义，故符号不加入考虑范围。
+     * 判断字符是否为汉字,数字和字母, 因为对符号进行相似度比较没有实际意义,故符号不加入考虑范围
      *
      * @param charValue 字符
-     * @return 是否为汉字，数字和字母
+     * @return 是否为汉字, 数字和字母
      */
     private static boolean charReg(char charValue) {
         return (charValue >= 0x4E00 && charValue <= 0XFFF) || //
@@ -188,7 +188,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 求公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
+     * 求公共子串,采用动态规划算法  其不要求所求得的字符在所给的字符串中是连续的
      *
      * @param strA 字符串1
      * @param strB 字符串2
@@ -200,7 +200,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
         int m = chars_strA.length;
         int n = chars_strB.length;
 
-        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_strA和chars_strB的对应位相同，则matrix[i][j]的值为左上角的值加1， 否则，matrix[i][j]的值等于左上方最近两个位置的较大值， 矩阵中其余各点的值为0.
+        // 初始化矩阵数据,matrix[0][0]的值为0, 如果字符数组chars_strA和chars_strB的对应位相同,则matrix[i][j]的值为左上角的值加1, 否则,matrix[i][j]的值等于左上方最近两个位置的较大值, 矩阵中其余各点的值为0.
         int[][] matrix = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
@@ -212,7 +212,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
             }
         }
 
-        // 矩阵中，如果matrix[m][n]的值不等于matrix[m-1][n]的值也不等于matrix[m][n-1]的值， 则matrix[m][n]对应的字符为相似字符元，并将其存入result数组中。
+        // 矩阵中,如果matrix[m][n]的值不等于matrix[m-1][n]的值也不等于matrix[m][n-1]的值, 则matrix[m][n]对应的字符为相似字符元,并将其存入result数组中
         char[] result = new char[matrix[m][n]];
         int currentIndex = result.length - 1;
         while (matrix[m][n] != 0) {
@@ -231,7 +231,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 追加对象，对象会被转换为字符串
+     * 追加对象,对象会被转换为字符串
      *
      * @param obj 对象
      * @return this
@@ -287,7 +287,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 追加对象，对象会被转换为字符串
+     * 追加对象,对象会被转换为字符串
      *
      * @param index 位置
      * @param obj   对象
@@ -316,8 +316,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
 
     /**
      * 指定位置插入数据
-     * 如果插入位置为当前位置，则定义为追加
-     * 如果插入位置大于当前位置，则中间部分补充空格
+     * 如果插入位置为当前位置,则定义为追加
+     * 如果插入位置大于当前位置,则中间部分补充空格
      *
      * @param index 插入位置
      * @param src   源数组
@@ -332,8 +332,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
 
     /**
      * 指定位置插入数据
-     * 如果插入位置为当前位置，则定义为追加
-     * 如果插入位置大于当前位置，则中间部分补充空格
+     * 如果插入位置为当前位置,则定义为追加
+     * 如果插入位置大于当前位置,则中间部分补充空格
      *
      * @param index  插入位置
      * @param src    源数组
@@ -351,7 +351,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
         if (srcPos < 0) {
             srcPos = 0;
         } else if (srcPos + length > src.length) {
-            // 长度越界，只截取最大长度
+            // 长度越界,只截取最大长度
             length = src.length - srcPos;
         }
 
@@ -364,8 +364,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
 
     /**
      * 指定位置插入字符串的某个部分
-     * 如果插入位置为当前位置，则定义为追加
-     * 如果插入位置大于当前位置，则中间部分补充空格
+     * 如果插入位置为当前位置,则定义为追加
+     * 如果插入位置大于当前位置,则中间部分补充空格
      *
      * @param index 位置
      * @param csq   字符串
@@ -396,8 +396,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
 
     /**
      * 指定位置插入字符串的某个部分
-     * 如果插入位置为当前位置，则定义为追加
-     * 如果插入位置大于当前位置，则中间部分补充空格
+     * 如果插入位置为当前位置,则定义为追加
+     * 如果插入位置大于当前位置,则中间部分补充空格
      *
      * @param index 位置
      * @param csq   字符串
@@ -479,7 +479,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 删除全部字符，位置归零
+     * 删除全部字符,位置归零
      *
      * @return this
      */
@@ -488,7 +488,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     }
 
     /**
-     * 删除全部字符，位置归零
+     * 删除全部字符,位置归零
      *
      * @return this
      */
@@ -499,9 +499,9 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
 
     /**
      * 删除到指定位置
-     * 如果新位置小于等于0，则删除全部
+     * 如果新位置小于等于0,则删除全部
      *
-     * @param newPosition 新的位置，不包括这个位置
+     * @param newPosition 新的位置,不包括这个位置
      * @return this
      */
     public TextUtils delTo(int newPosition) {
@@ -545,7 +545,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     /**
      * 生成字符串
      *
-     * @param isReset 是否重置，重置后相当于空的构建器
+     * @param isReset 是否重置,重置后相当于空的构建器
      * @return 生成的字符串
      */
     public String toString(boolean isReset) {
@@ -624,17 +624,17 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     private void moveDataAfterIndex(int index, int length) {
         ensureCapacity(Math.max(this.position, index) + length);
         if (index < this.position) {
-            // 插入位置在已有数据范围内，后移插入位置之后的数据
+            // 插入位置在已有数据范围内,后移插入位置之后的数据
             System.arraycopy(this.value, index, this.value, index + length, this.position - index);
         } else if (index > this.position) {
-            // 插入位置超出范围，则当前位置到index清除为空格
+            // 插入位置超出范围,则当前位置到index清除为空格
             Arrays.fill(this.value, this.position, index, Symbol.C_SPACE);
         }
         // 不位移
     }
 
     /**
-     * 确认容量是否够用，不够用则扩展容量
+     * 确认容量是否够用,不够用则扩展容量
      *
      * @param minimumCapacity 最小容量
      */
@@ -646,7 +646,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
 
     /**
      * 扩展容量
-     * 首先对容量进行二倍扩展，如果小于最小容量，则扩展为最小容量
+     * 首先对容量进行二倍扩展,如果小于最小容量,则扩展为最小容量
      *
      * @param minimumCapacity 需要扩展的最小容量
      */

@@ -51,7 +51,7 @@ import java.util.HashMap;
 public class QrCodeUtils {
 
     /**
-     * 生成PNG格式的二维码图片，以byte[]形式表示
+     * 生成PNG格式的二维码图片,以byte[]形式表示
      *
      * @param content 内容
      * @param width   宽度
@@ -65,10 +65,10 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成PNG格式的二维码图片，以byte[]形式表示
+     * 生成PNG格式的二维码图片,以byte[]形式表示
      *
      * @param content 内容
-     * @param config  二维码配置，包括长、宽、边距、颜色等
+     * @param config  二维码配置,包括长、宽、边距、颜色等
      * @return 图片的byte[]
      */
     public static byte[] generatePng(String content, QrConfig config) {
@@ -78,12 +78,12 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码到文件，二维码图片格式取决于文件的扩展名
+     * 生成二维码到文件,二维码图片格式取决于文件的扩展名
      *
      * @param content    文本内容
      * @param width      宽度
      * @param height     高度
-     * @param targetFile 目标文件，扩展名决定输出格式
+     * @param targetFile 目标文件,扩展名决定输出格式
      * @return 目标文件
      */
     public static File generate(String content, int width, int height, File targetFile) {
@@ -93,11 +93,11 @@ public class QrCodeUtils {
     }
 
     /**
-     * 生成二维码到文件，二维码图片格式取决于文件的扩展名
+     * 生成二维码到文件,二维码图片格式取决于文件的扩展名
      *
      * @param content    文本内容
-     * @param config     二维码配置，包括长、宽、边距、颜色等
-     * @param targetFile 目标文件，扩展名决定输出格式
+     * @param config     二维码配置,包括长、宽、边距、颜色等
+     * @param targetFile 目标文件,扩展名决定输出格式
      * @return 目标文件
      */
     public static File generate(String content, QrConfig config, File targetFile) {
@@ -112,7 +112,7 @@ public class QrCodeUtils {
      * @param content   文本内容
      * @param width     宽度
      * @param height    高度
-     * @param imageType 图片类型（图片扩展名），见{@link ImageUtils}
+     * @param imageType 图片类型（图片扩展名）,见{@link ImageUtils}
      * @param out       目标流
      */
     public static void generate(String content, int width, int height, String imageType, OutputStream out) {
@@ -124,8 +124,8 @@ public class QrCodeUtils {
      * 生成二维码到输出流
      *
      * @param content   文本内容
-     * @param config    二维码配置，包括长、宽、边距、颜色等
-     * @param imageType 图片类型（图片扩展名），见{@link ImageUtils}
+     * @param config    二维码配置,包括长、宽、边距、颜色等
+     * @param imageType 图片类型（图片扩展名）,见{@link ImageUtils}
      * @param out       目标流
      */
     public static void generate(String content, QrConfig config, String imageType, OutputStream out) {
@@ -149,7 +149,7 @@ public class QrCodeUtils {
      * 生成二维码或条形码图片
      *
      * @param content 文本内容
-     * @param format  格式，可选二维码或者条形码
+     * @param format  格式,可选二维码或者条形码
      * @param width   宽度
      * @param height  高度
      * @return 二维码图片（黑白）
@@ -162,7 +162,7 @@ public class QrCodeUtils {
      * 生成二维码图片
      *
      * @param content 文本内容
-     * @param config  二维码配置，包括长、宽、边距、颜色等
+     * @param config  二维码配置,包括长、宽、边距、颜色等
      * @return 二维码图片（黑白）
      */
     public static BufferedImage generate(String content, QrConfig config) {
@@ -174,8 +174,8 @@ public class QrCodeUtils {
      * 只有二维码时QrConfig中的图片才有效
      *
      * @param content 文本内容
-     * @param format  格式，可选二维码、条形码等
-     * @param config  二维码配置，包括长、宽、边距、颜色等
+     * @param format  格式,可选二维码、条形码等
+     * @param config  二维码配置,包括长、宽、边距、颜色等
      * @return 二维码图片（黑白）
      */
     public static BufferedImage generate(String content, BarcodeFormat format, QrConfig config) {
@@ -222,7 +222,7 @@ public class QrCodeUtils {
      * 将文本内容编码为二维码
      *
      * @param content 文本内容
-     * @param config  二维码配置，包括长、宽、边距、颜色等
+     * @param config  二维码配置,包括长、宽、边距、颜色等
      * @return {@link BitMatrix}
      */
     public static BitMatrix encode(String content, QrConfig config) {
@@ -247,7 +247,7 @@ public class QrCodeUtils {
      *
      * @param content 文本内容
      * @param format  格式枚举
-     * @param config  二维码配置，包括长、宽、边距、颜色等
+     * @param config  二维码配置,包括长、宽、边距、颜色等
      * @return {@link BitMatrix}
      */
     public static BitMatrix encode(String content, BarcodeFormat format, QrConfig config) {
@@ -301,7 +301,7 @@ public class QrCodeUtils {
      *
      * @param image         {@link java.awt.Image} 二维码图片
      * @param isTryHarder   是否优化精度
-     * @param isPureBarcode 是否使用复杂模式，扫描带logo的二维码设为true
+     * @param isPureBarcode 是否使用复杂模式,扫描带logo的二维码设为true
      * @return 解码后的文本
      */
     public static String decode(java.awt.Image image, boolean isTryHarder, boolean isPureBarcode) {
@@ -315,7 +315,7 @@ public class QrCodeUtils {
         hints.put(DecodeHintType.CHARACTER_SET, Charset.UTF_8);
         // 优化精度
         hints.put(DecodeHintType.TRY_HARDER, Boolean.valueOf(isTryHarder));
-        // 复杂模式，开启PURE_BARCODE模式
+        // 复杂模式,开启PURE_BARCODE模式
         hints.put(DecodeHintType.PURE_BARCODE, Boolean.valueOf(isPureBarcode));
         Result result;
         try {

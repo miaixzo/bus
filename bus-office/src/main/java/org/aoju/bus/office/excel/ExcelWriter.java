@@ -38,11 +38,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Excel 写入器
- * 此工具用于通过POI将数据写出到Excel，此对象可完成以下两个功能
+ * 此工具用于通过POI将数据写出到Excel,此对象可完成以下两个功能
  *
  * <pre>
- * 1. 编辑已存在的Excel，可写出原Excel文件，也可写出到其它地方（到文件或到流）
- * 2. 新建一个空的Excel工作簿，完成数据填充后写出（到文件或到流）
+ * 1. 编辑已存在的Excel,可写出原Excel文件,也可写出到其它地方（到文件或到流）
+ * 2. 新建一个空的Excel工作簿,完成数据填充后写出（到文件或到流）
  * </pre>
  *
  * @author Kimi Liu
@@ -72,14 +72,14 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     private Comparator<String> aliasComparator;
     /**
-     * 样式集，定义不同类型数据样式
+     * 样式集,定义不同类型数据样式
      */
     private StyleSet styleSet;
 
     /**
-     * 构造，默认生成xls格式的Excel文件
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * 构造,默认生成xls格式的Excel文件
+     * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
+     * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
      *
      * @since 5.2.2
      */
@@ -89,8 +89,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 构造
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
-     * 若写出到文件，需要调用{@link #flush(File)} 写出到文件
+     * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
+     * 若写出到文件,需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx 是否为xlsx格式
      * @since 5.2.2
@@ -100,9 +100,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 构造，默认写出到第一个sheet，第一个sheet名为sheet1
+     * 构造,默认写出到第一个sheet,第一个sheet名为sheet1
      *
-     * @param destFilePath 目标文件路径，可以不存在
+     * @param destFilePath 目标文件路径,可以不存在
      */
     public ExcelWriter(String destFilePath) {
         this(destFilePath, null);
@@ -110,11 +110,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 构造
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
-     * 若写出到文件，需要调用{@link #flush(File)} 写出到文件
+     * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
+     * 若写出到文件,需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx    是否为xlsx格式
-     * @param sheetName sheet名，第一个sheet名并写出到此sheet，例如sheet1
+     * @param sheetName sheet名,第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(boolean isXlsx, String sheetName) {
         this(BookUtils.createBook(isXlsx), sheetName);
@@ -123,17 +123,17 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 构造
      *
-     * @param destFilePath 目标文件路径，可以不存在
-     * @param sheetName    sheet名，第一个sheet名并写出到此sheet，例如sheet1
+     * @param destFilePath 目标文件路径,可以不存在
+     * @param sheetName    sheet名,第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(String destFilePath, String sheetName) {
         this(FileUtils.file(destFilePath), sheetName);
     }
 
     /**
-     * 构造，默认写出到第一个sheet，第一个sheet名为sheet1
+     * 构造,默认写出到第一个sheet,第一个sheet名为sheet1
      *
-     * @param destFile 目标文件，可以不存在
+     * @param destFile 目标文件,可以不存在
      */
     public ExcelWriter(File destFile) {
         this(destFile, null);
@@ -142,8 +142,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 构造
      *
-     * @param destFile  目标文件，可以不存在
-     * @param sheetName sheet名，做为第一个sheet名并写出到此sheet，例如sheet1
+     * @param destFile  目标文件,可以不存在
+     * @param sheetName sheet名,做为第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(File destFile, String sheetName) {
         this(destFile.exists() ? BookUtils.createBook(FileUtils.getInputStream(destFile), true) : BookUtils.createBook(StringUtils.endWithIgnoreCase(destFile.getName(), ".xlsx")), sheetName);
@@ -152,11 +152,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 构造
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
+     * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
      *
      * @param workbook  {@link Workbook}
-     * @param sheetName sheet名，做为第一个sheet名并写出到此sheet，例如sheet1
+     * @param sheetName sheet名,做为第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(Workbook workbook, String sheetName) {
         this(BookUtils.getOrCreateSheet(workbook, sheetName));
@@ -164,8 +164,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 构造
-     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
+     * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
      *
      * @param sheet {@link Sheet}
      */
@@ -189,7 +189,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 重置Writer，包括：
+     * 重置Writer,包括：
      *
      * <pre>
      * 1. 当前行游标归零
@@ -217,7 +217,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 重命名sheet
      *
-     * @param sheet     sheet需要，0表示第一个sheet
+     * @param sheet     sheet需要,0表示第一个sheet
      * @param sheetName 新的sheet名
      * @return this
      */
@@ -227,8 +227,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置所有列为自动宽度，不考虑合并单元格
-     * 此方法必须在指定列数据完全写出后调用才有效。
+     * 设置所有列为自动宽度,不考虑合并单元格
+     * 此方法必须在指定列数据完全写出后调用才有效
      * 列数计算是通过第一行计算的
      *
      * @return this
@@ -242,10 +242,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置某列为自动宽度，不考虑合并单元格
-     * 此方法必须在指定列数据完全写出后调用才有效。
+     * 设置某列为自动宽度,不考虑合并单元格
+     * 此方法必须在指定列数据完全写出后调用才有效
      *
-     * @param columnIndex 第几列，从0计数
+     * @param columnIndex 第几列,从0计数
      * @return this
      */
     public ExcelWriter autoSizeColumn(int columnIndex) {
@@ -255,9 +255,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 设置某列为自动宽度
-     * 此方法必须在指定列数据完全写出后调用才有效。
+     * 此方法必须在指定列数据完全写出后调用才有效
      *
-     * @param columnIndex    第几列，从0计数
+     * @param columnIndex    第几列,从0计数
      * @param useMergedCells 是否适用于合并单元格
      * @return this
      * @since 3.3.0
@@ -268,7 +268,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 获取样式集，样式集可以自定义包括：
+     * 获取样式集,样式集可以自定义包括：
      *
      * <pre>
      * 1. 头部样式
@@ -284,9 +284,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置样式集，如果不使用样式，传入{@code null}
+     * 设置样式集,如果不使用样式,传入{@code null}
      *
-     * @param styleSet 样式集，{@code null}表示无样式
+     * @param styleSet 样式集,{@code null}表示无样式
      * @return this
      */
     public ExcelWriter setStyleSet(StyleSet styleSet) {
@@ -295,7 +295,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 获取头部样式，获取样式后可自定义样式
+     * 获取头部样式,获取样式后可自定义样式
      *
      * @return 头部样式
      */
@@ -304,7 +304,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 获取单元格样式，获取样式后可自定义样式
+     * 获取单元格样式,获取样式后可自定义样式
      *
      * @return 单元格样式
      */
@@ -375,7 +375,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置标题别名，key为Map中的key，value为别名
+     * 设置标题别名,key为Map中的key,value为别名
      *
      * @param headerAlias 标题别名
      * @return this
@@ -387,7 +387,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 清空标题别名，key为Map中的key，value为别名
+     * 清空标题别名,key为Map中的key,value为别名
      *
      * @return this
      */
@@ -397,7 +397,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置是否只保留别名中的字段值，如果为true，则不设置alias的字段将不被输出，false表示原样输出
+     * 设置是否只保留别名中的字段值,如果为true,则不设置alias的字段将不被输出,false表示原样输出
      *
      * @param isOnlyAlias 是否只保留别名中的字段值
      * @return this
@@ -425,9 +425,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置列宽（单位为一个字符的宽度，例如传入width为10，表示10个字符的宽度）
+     * 设置列宽（单位为一个字符的宽度,例如传入width为10,表示10个字符的宽度）
      *
-     * @param columnIndex 列号（从0开始计数，-1表示所有列的默认宽度）
+     * @param columnIndex 列号（从0开始计数,-1表示所有列的默认宽度）
      * @param width       宽度（单位1~256个字符宽度）
      * @return this
      */
@@ -441,9 +441,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置行高，值为一个点的高度
+     * 设置行高,值为一个点的高度
      *
-     * @param rownum 行号（从0开始计数，-1表示所有行的默认高度）
+     * @param rownum 行号（从0开始计数,-1表示所有行的默认高度）
      * @param height 高度
      * @return this
      */
@@ -464,7 +464,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      *
      * @param text     页脚的文本
      * @param align    对齐方式枚举 {@link Align}
-     * @param isFooter 是否为页脚，false表示页眉，true表示页脚
+     * @param isFooter 是否为页脚,false表示页眉,true表示页脚
      * @return this
      */
     public ExcelWriter setHeaderOrFooter(String text, Align align, boolean isFooter) {
@@ -487,7 +487,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 合并当前行的单元格
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
+     * 样式为默认标题样式,可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn 合并到的最后一个列号
      * @return this
@@ -497,9 +497,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 合并当前行的单元格，并写入对象到单元格
-     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
+     * 合并当前行的单元格,并写入对象到单元格
+     * 如果写到单元格中的内容非null,行号自动+1,否则当前行号不变
+     * 样式为默认标题样式,可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn 合并到的最后一个列号
      * @param content    合并单元格后的内容
@@ -510,9 +510,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 合并某行的单元格，并写入对象到单元格
-     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
+     * 合并某行的单元格,并写入对象到单元格
+     * 如果写到单元格中的内容非null,行号自动+1,否则当前行号不变
+     * 样式为默认标题样式,可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param lastColumn       合并到的最后一个列号
      * @param content          合并单元格后的内容
@@ -533,9 +533,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 合并某行的单元格，并写入对象到单元格
-     * 如果写到单元格中的内容非null，行号自动+1，否则当前行号不变
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
+     * 合并某行的单元格,并写入对象到单元格
+     * 如果写到单元格中的内容非null,行号自动+1,否则当前行号不变
+     * 样式为默认标题样式,可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param firstRow         第一行
      * @param lastRow          最后一行
@@ -560,19 +560,19 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
-     * 默认的，当当前行号为0时，写出标题（如果为Map或Bean），否则不写标题
+     * 写出数据,本方法只是将数据写入Workbook中的Sheet,并不写出到文件
+     * 写出的起始行为当前行号,可使用{@link #getCurrentRow()}方法调用,根据写出的的行数,当前行号自动增加
+     * 样式为默认样式,可使用{@link #getCellStyle()}方法调用后自定义默认样式
+     * 默认的,当当前行号为0时,写出标题（如果为Map或Bean）,否则不写标题
      *
      * <p>
      * data中元素支持的类型有：
      *
      * <pre>
-     * 1. Iterable，既元素为一个集合，元素被当作一行，data表示多行
-     * 2. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行
-     * 3. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行
-     * 4. 其它类型，按照基本类型输出（例如字符串）
+     * 1. Iterable,既元素为一个集合,元素被当作一行,data表示多行
+     * 2. Map,既元素为一个Map,第一个Map的keys作为首行,剩下的行为Map的values,data表示多行
+     * 3. Bean,既元素为一个Bean,第一个Bean的字段名列表会作为首行,剩下的行为Bean的字段值列表,data表示多行
+     * 4. 其它类型,按照基本类型输出（例如字符串）
      * </pre>
      *
      * @param data 数据
@@ -583,18 +583,18 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
+     * 写出数据,本方法只是将数据写入Workbook中的Sheet,并不写出到文件
+     * 写出的起始行为当前行号,可使用{@link #getCurrentRow()}方法调用,根据写出的的行数,当前行号自动增加
+     * 样式为默认样式,可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * <p>
      * data中元素支持的类型有：
      *
      * <pre>
-     * 1. Iterable，既元素为一个集合，元素被当作一行，data表示多行
-     * 2. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行
-     * 3. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行
-     * 4. 其它类型，按照基本类型输出（例如字符串）
+     * 1. Iterable,既元素为一个集合,元素被当作一行,data表示多行
+     * 2. Map,既元素为一个Map,第一个Map的keys作为首行,剩下的行为Map的values,data表示多行
+     * 3. Bean,既元素为一个Bean,第一个Bean的字段名列表会作为首行,剩下的行为Bean的字段值列表,data表示多行
+     * 4. 其它类型,按照基本类型输出（例如字符串）
      * </pre>
      *
      * @param data             数据
@@ -614,18 +614,18 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动增加
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
+     * 写出数据,本方法只是将数据写入Workbook中的Sheet,并不写出到文件
+     * 写出的起始行为当前行号,可使用{@link #getCurrentRow()}方法调用,根据写出的的行数,当前行号自动增加
+     * 样式为默认样式,可使用{@link #getCellStyle()}方法调用后自定义默认样式
      * data中元素支持的类型有：
      *
      * <p>
-     * 1. Map，既元素为一个Map，第一个Map的keys作为首行，剩下的行为Map的values，data表示多行
-     * 2. Bean，既元素为一个Bean，第一个Bean的字段名列表会作为首行，剩下的行为Bean的字段值列表，data表示多行
+     * 1. Map,既元素为一个Map,第一个Map的keys作为首行,剩下的行为Map的values,data表示多行
+     * 2. Bean,既元素为一个Bean,第一个Bean的字段名列表会作为首行,剩下的行为Bean的字段值列表,data表示多行
      * </p>
      *
      * @param data       数据
-     * @param comparator 比较器，用于字段名的排序
+     * @param comparator 比较器,用于字段名的排序
      * @return this
      * @since 3.2.3
      */
@@ -650,9 +650,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 写出一行标题数据
-     * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
+     * 本方法只是将数据写入Workbook中的Sheet,并不写出到文件
+     * 写出的起始行为当前行号,可使用{@link #getCurrentRow()}方法调用,根据写出的的行数,当前行号自动+1
+     * 样式为默认标题样式,可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
      *
      * @param rowData 一行的数据
      * @return this
@@ -664,16 +664,16 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 写出一行，根据rowBean数据类型不同，写出情况如下：
+     * 写出一行,根据rowBean数据类型不同,写出情况如下：
      *
      * <pre>
-     * 1、如果为Iterable，直接写出一行
-     * 2、如果为Map，isWriteKeyAsHead为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
-     * 3、如果为Bean，转为Map写出，isWriteKeyAsHead为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
+     * 1、如果为Iterable,直接写出一行
+     * 2、如果为Map,isWriteKeyAsHead为true写出两行,Map的keys做为一行,values做为第二行,否则只写出一行values
+     * 3、如果为Bean,转为Map写出,isWriteKeyAsHead为true写出两行,Map的keys做为一行,values做为第二行,否则只写出一行values
      * </pre>
      *
      * @param rowBean          写出的Bean
-     * @param isWriteKeyAsHead 为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
+     * @param isWriteKeyAsHead 为true写出两行,Map的keys做为一行,values做为第二行,否则只写出一行values
      * @return this
      * @see #writeRow(Iterable)
      * @see #writeRow(Map, boolean)
@@ -704,17 +704,17 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 将一个Map写入到Excel，isWriteKeyAsHead为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
-     * 如果rowMap为空（包括null），则写出空行
+     * 将一个Map写入到Excel,isWriteKeyAsHead为true写出两行,Map的keys做为一行,values做为第二行,否则只写出一行values
+     * 如果rowMap为空（包括null）,则写出空行
      *
-     * @param rowMap           写出的Map，为空（包括null），则写出空行
-     * @param isWriteKeyAsHead 为true写出两行，Map的keys做为一行，values做为第二行，否则只写出一行values
+     * @param rowMap           写出的Map,为空（包括null）,则写出空行
+     * @param isWriteKeyAsHead 为true写出两行,Map的keys做为一行,values做为第二行,否则只写出一行values
      * @return this
      */
     public ExcelWriter writeRow(Map<?, ?> rowMap, boolean isWriteKeyAsHead) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         if (MapUtils.isEmpty(rowMap)) {
-            // 如果写出数据为null或空，跳过当前行
+            // 如果写出数据为null或空,跳过当前行
             return passCurrentRow();
         }
 
@@ -729,9 +729,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 写出一行数据
-     * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
-     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
-     * 样式为默认样式，可使用{@link #getCellStyle()}方法调用后自定义默认样式
+     * 本方法只是将数据写入Workbook中的Sheet,并不写出到文件
+     * 写出的起始行为当前行号,可使用{@link #getCurrentRow()}方法调用,根据写出的的行数,当前行号自动+1
+     * 样式为默认样式,可使用{@link #getCellStyle()}方法调用后自定义默认样式
      *
      * @param rowData 一行的数据
      * @return this
@@ -743,10 +743,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 给指定单元格赋值，使用默认单元格样式
+     * 给指定单元格赋值,使用默认单元格样式
      *
-     * @param x     X坐标，从0计数，既列号
-     * @param y     Y坐标，从0计数，既行号
+     * @param x     X坐标,从0计数,既列号
+     * @param y     Y坐标,从0计数,既行号
      * @param value 值
      * @return this
      */
@@ -767,8 +767,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 将Excel Workbook刷出到预定义的文件
-     * 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
-     * 预定义文件可以通过{@link #setDestFile(File)} 方法预定义，或者通过构造定义
+     * 如果用户未自定义输出的文件,将抛出{@link NullPointerException}
+     * 预定义文件可以通过{@link #setDestFile(File)} 方法预定义,或者通过构造定义
      *
      * @return this
      * @throws InstrumentException IO异常
@@ -779,7 +779,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 将Excel Workbook刷出到文件
-     * 如果用户未自定义输出的文件，将抛出{@link InstrumentException}
+     * 如果用户未自定义输出的文件,将抛出{@link InstrumentException}
      *
      * @param destFile 写出到的文件
      * @return this
@@ -826,7 +826,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 关闭工作簿
-     * 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
+     * 如果用户设定了目标文件,先写出目标文件后给关闭工作簿
      */
     @Override
     public void close() {
@@ -848,7 +848,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 为指定的key列表添加标题别名，如果没有定义key的别名，在onlyAlias为false时使用原key
+     * 为指定的key列表添加标题别名,如果没有定义key的别名,在onlyAlias为false时使用原key
      *
      * @param rowMap 键列表
      * @return 别名列表
@@ -874,7 +874,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 获取单例的别名比较器，比较器的顺序为别名加入的顺序
+     * 获取单例的别名比较器,比较器的顺序为别名加入的顺序
      *
      * @return Comparator
      */
@@ -898,7 +898,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         /**
          * 构造
          *
-         * @param objs 参与排序的数组，数组的元素位置决定了对象的排序先后
+         * @param objs 参与排序的数组,数组的元素位置决定了对象的排序先后
          */
         public IndexedComparator(T... objs) {
             this.array = objs;
@@ -916,12 +916,12 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         }
 
         /**
-         * {@code null}安全的对象比较，{@code null}对象排在末尾
+         * {@code null}安全的对象比较,{@code null}对象排在末尾
          *
          * @param <T> 被比较对象类型
-         * @param c1  对象1，可以为{@code null}
-         * @param c2  对象2，可以为{@code null}
-         * @return 比较结果，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
+         * @param c1  对象1,可以为{@code null}
+         * @param c2  对象2,可以为{@code null}
+         * @return 比较结果, 如果c1 &lt; c2,返回数小于0,c1==c2返回0,c1 &gt; c2 大于0
          * @see java.util.Comparator#compare(Object, Object)
          */
         public <T extends Comparable<? super T>> int compare(T c1, T c2) {
@@ -932,10 +932,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
          * {@code null}安全的对象比较
          *
          * @param <T>           被比较对象类型（必须实现Comparable接口）
-         * @param c1            对象1，可以为{@code null}
-         * @param c2            对象2，可以为{@code null}
+         * @param c1            对象1,可以为{@code null}
+         * @param c2            对象2,可以为{@code null}
          * @param isNullGreater 当被比较对象为null时是否排在前面
-         * @return 比较结果，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
+         * @return 比较结果, 如果c1 &lt; c2,返回数小于0,c1==c2返回0,c1 &gt; c2 大于0
          * @see java.util.Comparator#compare(Object, Object)
          */
         public <T extends Comparable<? super T>> int compare(T c1, T c2, boolean isNullGreater) {
@@ -950,7 +950,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         }
 
         /**
-         * 自然比较两个对象的大小，比较规则如下：
+         * 自然比较两个对象的大小,比较规则如下：
          *
          * <pre>
          * 1、如果实现Comparable调用compareTo比较
@@ -962,7 +962,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
          * @param o1            对象1
          * @param o2            对象2
          * @param isNullGreater null值是否做为最大值
-         * @return 比较结果，如果o1 &lt; o2，返回数小于0，o1==o2返回0，o1 &gt; o2 大于0
+         * @return 比较结果, 如果o1 &lt; o2,返回数小于0,o1==o2返回0,o1 &gt; o2 大于0
          */
         public <T> int compare(T o1, T o2, boolean isNullGreater) {
             if (o1 == o2) {
@@ -974,7 +974,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             }
 
             if (o1 instanceof Comparable && o2 instanceof Comparable) {
-                //如果bean可比较，直接比较bean
+                //如果bean可比较,直接比较bean
                 return ((Comparable) o1).compareTo(o2);
             }
 

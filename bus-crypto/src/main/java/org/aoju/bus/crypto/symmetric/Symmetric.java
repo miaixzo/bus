@@ -41,9 +41,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 对称加密算法
- * 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
- * 收信方收到密文后，若想解读原文，则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密，才能使其恢复成可读明文。
- * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
+ * 在对称加密算法中,数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后,使其变成复杂的加密密文发送出去
+ * 收信方收到密文后,若想解读原文,则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密,才能使其恢复成可读明文
+ * 在对称加密算法中,使用的密钥只有一个,发收信双方都使用这个密钥对数据进行加密和解密,这就要求解密方事先必须知道加密密钥
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -71,9 +71,9 @@ public class Symmetric {
 
 
     /**
-     * 构造，使用随机密钥
+     * 构造,使用随机密钥
      *
-     * @param algorithm 算法，可以是"algorithm/mode/padding"或者"algorithm"
+     * @param algorithm 算法,可以是"algorithm/mode/padding"或者"algorithm"
      */
     public Symmetric(String algorithm) {
         this(algorithm, (byte[]) null);
@@ -105,7 +105,7 @@ public class Symmetric {
      *
      * @param algorithm  算法
      * @param key        密钥
-     * @param paramsSpec 算法参数，例如加盐等
+     * @param paramsSpec 算法参数,例如加盐等
      * @since 3.3.0
      */
     public Symmetric(String algorithm, SecretKey key, AlgorithmParameterSpec paramsSpec) {
@@ -119,7 +119,7 @@ public class Symmetric {
      * 初始化
      *
      * @param algorithm 算法
-     * @param key       密钥，如果为<code>null</code>自动生成一个key
+     * @param key       密钥,如果为<code>null</code>自动生成一个key
      * @return {@link Symmetric}
      */
     public Symmetric init(String algorithm, SecretKey key) {
@@ -131,7 +131,7 @@ public class Symmetric {
             this.params = new PBEParameterSpec(RandomUtils.randomBytes(8), 100);
         }
 
-        // 检查是否为ZeroPadding，是则替换为NoPadding，并标记以便单独处理
+        // 检查是否为ZeroPadding,是则替换为NoPadding,并标记以便单独处理
         if (algorithm.contains(Padding.ZeroPadding.name())) {
             algorithm = StringUtils.replace(algorithm, Padding.ZeroPadding.name(), Padding.NoPadding.name());
             this.isZeroPadding = true;
@@ -142,7 +142,7 @@ public class Symmetric {
     }
 
     /**
-     * 设置 {@link AlgorithmParameterSpec}，通常用于加盐或偏移向量
+     * 设置 {@link AlgorithmParameterSpec},通常用于加盐或偏移向量
      *
      * @param params {@link AlgorithmParameterSpec}
      * @return 自身
@@ -261,7 +261,7 @@ public class Symmetric {
     }
 
     /**
-     * 加密，使用UTF-8编码
+     * 加密,使用UTF-8编码
      *
      * @param data 被加密的字符串
      * @return 加密后的bytes
@@ -271,7 +271,7 @@ public class Symmetric {
     }
 
     /**
-     * 加密，使用UTF-8编码
+     * 加密,使用UTF-8编码
      *
      * @param data 被加密的字符串
      * @return 加密后的Hex
@@ -281,7 +281,7 @@ public class Symmetric {
     }
 
     /**
-     * 加密，使用UTF-8编码
+     * 加密,使用UTF-8编码
      *
      * @param data 被加密的字符串
      * @return 加密后的Base64
@@ -361,7 +361,7 @@ public class Symmetric {
     }
 
     /**
-     * 解密为字符串，默认UTF-8编码
+     * 解密为字符串,默认UTF-8编码
      *
      * @param bytes 被解密的bytes
      * @return 解密后的String
@@ -373,7 +373,7 @@ public class Symmetric {
     /**
      * 解密Hex（16进制）或Base64表示的字符串
      *
-     * @param data 被解密的String，必须为16进制字符串或Base64表示形式
+     * @param data 被解密的String,必须为16进制字符串或Base64表示形式
      * @return 解密后的bytes
      */
     public byte[] decrypt(String data) {
@@ -392,7 +392,7 @@ public class Symmetric {
     }
 
     /**
-     * 解密Hex表示的字符串，默认UTF-8编码
+     * 解密Hex表示的字符串,默认UTF-8编码
      *
      * @param data 被解密的String
      * @return 解密后的String
@@ -402,7 +402,7 @@ public class Symmetric {
     }
 
     /**
-     * 解密，不会关闭流
+     * 解密,不会关闭流
      *
      * @param data 被解密的bytes
      * @return 解密后的bytes
@@ -412,7 +412,7 @@ public class Symmetric {
     }
 
     /**
-     * 解密，不会关闭流
+     * 解密,不会关闭流
      *
      * @param data    被解密的InputStream
      * @param charset 解密后的charset
@@ -454,14 +454,14 @@ public class Symmetric {
      * 数据按照blockSize的整数倍长度填充填充0
      *
      * <p>
-     * 在{@link Padding#ZeroPadding} 模式下，且数据长度不是blockSize的整数倍才有效，否则返回原数据
+     * 在{@link Padding#ZeroPadding} 模式下,且数据长度不是blockSize的整数倍才有效,否则返回原数据
      *
      * <p>
      * 见：https://blog.csdn.net/OrangeJack/article/details/82913804
      *
      * @param data      数据
      * @param blockSize 块大小
-     * @return 填充后的数据，如果isZeroPadding为false或长度刚好，返回原数据
+     * @return 填充后的数据, 如果isZeroPadding为false或长度刚好, 返回原数据
      */
     private byte[] paddingDataWithZero(byte[] data, int blockSize) {
         if (this.isZeroPadding) {
@@ -469,7 +469,7 @@ public class Symmetric {
             // 按照块拆分后的数据中多余的数据
             final int remainLength = length % blockSize;
             if (remainLength > 0) {
-                // 新长度为blockSize的整数倍，多余部分填充0
+                // 新长度为blockSize的整数倍,多余部分填充0
                 return ArrayUtils.resize(data, length + blockSize - remainLength);
             }
         }
@@ -477,21 +477,21 @@ public class Symmetric {
     }
 
     /**
-     * 数据按照blockSize去除填充部分，用于解密
+     * 数据按照blockSize去除填充部分,用于解密
      *
      * <p>
-     * 在{@link Padding#ZeroPadding} 模式下，且数据长度不是blockSize的整数倍才有效，否则返回原数据
+     * 在{@link Padding#ZeroPadding} 模式下,且数据长度不是blockSize的整数倍才有效,否则返回原数据
      *
      * @param data      数据
      * @param blockSize 块大小
-     * @return 去除填充后的数据，如果isZeroPadding为false或长度刚好，返回原数据
+     * @return 去除填充后的数据, 如果isZeroPadding为false或长度刚好, 返回原数据
      */
     private byte[] removePadding(byte[] data, int blockSize) {
         if (this.isZeroPadding) {
             final int length = data.length;
             final int remainLength = length % blockSize;
             if (remainLength == 0) {
-                // 解码后的数据正好是块大小的整数倍，说明可能存在补0的情况，去掉末尾所有的0
+                // 解码后的数据正好是块大小的整数倍,说明可能存在补0的情况,去掉末尾所有的0
                 int i = length - 1;
                 while (i >= 0 && 0 == data[i]) {
                     i--;

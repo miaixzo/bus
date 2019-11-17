@@ -51,7 +51,7 @@ public class GlobalProfile {
     /**
      * 获得全局的当前环境下对应的配置文件
      *
-     * @param settingName 配置文件名，可以忽略默认后者（.setting）
+     * @param settingName 配置文件名,可以忽略默认后者（.setting）
      * @return {@link Setting}
      */
     public static Setting getSetting(String settingName) {

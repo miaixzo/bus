@@ -145,7 +145,7 @@ public abstract class PageMethod {
      * @param pageSize     每页显示数量
      * @param count        是否进行count查询
      * @param reasonable   分页合理化,null时用默认配置
-     * @param pageSizeZero true且pageSize=0时返回全部结果，false时分页,null时用默认配置
+     * @param pageSizeZero true且pageSize=0时返回全部结果,false时分页,null时用默认配置
      * @return 结果
      */
     public static <E> Page<E> startPage(int pageNum, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) {
@@ -165,7 +165,7 @@ public abstract class PageMethod {
      * 开始分页
      *
      * @param <E>    对象
-     * @param offset 起始位置，偏移位置
+     * @param offset 起始位置,偏移位置
      * @param limit  每页显示数量
      * @return 结果
      */
@@ -177,7 +177,7 @@ public abstract class PageMethod {
      * 开始分页
      *
      * @param <E>    对象
-     * @param offset 起始位置，偏移位置
+     * @param offset 起始位置,偏移位置
      * @param limit  每页显示数量
      * @param count  是否进行count查询
      * @return 结果
@@ -216,7 +216,7 @@ public abstract class PageMethod {
      * @param properties 插件属性
      */
     protected static void setStaticProperties(Properties properties) {
-        //defaultCount，这是一个全局生效的参数，多数据源时也是统一的行为
+        //defaultCount,这是一个全局生效的参数,多数据源时也是统一的行为
         if (properties != null) {
             DEFAULT_COUNT = Boolean.valueOf(properties.getProperty("defaultCount", "true"));
         }

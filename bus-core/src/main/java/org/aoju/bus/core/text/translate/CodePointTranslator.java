@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * 帮助器子类到CharSequenceTranslator，
+ * 帮助器子类到CharSequenceTranslator,
  * 以支持翻译一次最多替换一个字符.
  *
  * @author Kimi Liu

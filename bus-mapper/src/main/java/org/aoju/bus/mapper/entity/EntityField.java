@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * 封装字段和方法，统一调用某些方法
+ * 封装字段和方法,统一调用某些方法
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -64,7 +64,7 @@ public class EntityField {
     }
 
     /**
-     * 先创建field，然后可以通过该方法获取property等属性
+     * 先创建field,然后可以通过该方法获取property等属性
      *
      * @param other field
      */

@@ -29,10 +29,10 @@ import org.aoju.bus.validate.strategy.ReflectStrategy;
 import java.lang.annotation.*;
 
 /**
- * 通过反射调用被校验参数，并判断反射方法的结果
+ * 通过反射调用被校验参数,并判断反射方法的结果
  *
  * <p>
- * 默认被校验对象是null时，通过校验
+ * 默认被校验对象是null时,通过校验
  * </P>
  *
  * @author Kimi Liu
@@ -60,7 +60,7 @@ public @interface Reflect {
     String method();
 
     /**
-     * 校验器名称数组，将会校验反射的执行结果
+     * 校验器名称数组,将会校验反射的执行结果
      *
      * @return the array
      */

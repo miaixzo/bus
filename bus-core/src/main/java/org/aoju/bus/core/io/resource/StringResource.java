@@ -34,7 +34,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
- * 字符串资源，字符串做为资源
+ * 字符串资源,字符串做为资源
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -47,7 +47,7 @@ public class StringResource implements Resource {
     private Charset charset;
 
     /**
-     * 构造，使用UTF8编码
+     * 构造,使用UTF8编码
      *
      * @param data 资源数据
      */
@@ -56,7 +56,7 @@ public class StringResource implements Resource {
     }
 
     /**
-     * 构造，使用UTF8编码
+     * 构造,使用UTF8编码
      *
      * @param data 资源数据
      * @param name 资源名称

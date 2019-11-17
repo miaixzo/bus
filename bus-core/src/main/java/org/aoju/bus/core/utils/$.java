@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 /**
- * 工具包集合，工具类快捷方式
+ * 工具包集合,工具类快捷方式
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class $ {
 
     /**
-     * 断言，必须不能为 null
+     * 断言,必须不能为 null
      *
      * @param obj the object reference to check for nullity
      * @param <T> the type of the reference
@@ -25,7 +25,7 @@ public class $ {
     }
 
     /**
-     * 断言，必须不能为 null
+     * 断言,必须不能为 null
      *
      * @param obj     the object reference to check for nullity
      * @param message detail message to be used in the event that a {@code
@@ -39,7 +39,7 @@ public class $ {
     }
 
     /**
-     * 断言，必须不能为 null
+     * 断言,必须不能为 null
      *
      * @param obj             the object reference to check for nullity
      * @param messageSupplier supplier of the detail message to be
@@ -249,7 +249,7 @@ public class $ {
     }
 
     /**
-     * 清理字符串，清理出某些不可见字符和一些sql特殊字符
+     * 清理字符串,清理出某些不可见字符和一些sql特殊字符
      *
      * @param txt 文本
      * @return {String}
@@ -259,7 +259,7 @@ public class $ {
     }
 
     /**
-     * 获取标识符，用于参数清理
+     * 获取标识符,用于参数清理
      *
      * @param param 参数
      * @return 清理后的标识符
@@ -293,7 +293,7 @@ public class $ {
     }
 
     /**
-     * 比较两个对象是否不相等。<br>
+     * 比较两个对象是否不相等 <br>
      *
      * @param o1 对象1
      * @param o2 对象2
@@ -314,7 +314,7 @@ public class $ {
     }
 
     /**
-     * 如果对象为null，返回默认值
+     * 如果对象为null,返回默认值
      *
      * @param object       Object
      * @param defaultValue 默认值

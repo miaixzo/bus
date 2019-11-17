@@ -35,7 +35,7 @@ import org.aoju.bus.core.consts.Normal;
 public class Caesar {
 
     /**
-     * 传入明文，加密得到密文
+     * 传入明文,加密得到密文
      *
      * @param message 加密的消息
      * @param offset  偏移量

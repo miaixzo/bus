@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 public interface SelectByPrimaryKeyMapper<T> {
 
     /**
-     * 根据主键字段进行查询，方法参数必须包含完整的主键属性，查询条件使用等号
+     * 根据主键字段进行查询,方法参数必须包含完整的主键属性,查询条件使用等号
      *
      * @param key 对象
      * @return 对象

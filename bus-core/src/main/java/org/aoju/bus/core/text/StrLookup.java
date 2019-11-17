@@ -47,34 +47,34 @@ public abstract class StrLookup<V> {
     }
 
     /**
-     * 返回一个新的查找，该查找使用当前的副本
-     * 如果安全管理器阻塞了对系统属性的访问，
-     * 则null将阻塞每次查找都返回。
+     * 返回一个新的查找,该查找使用当前的副本
+     * 如果安全管理器阻塞了对系统属性的访问,
+     * 则null将阻塞每次查找都返回
      *
-     * @return 使用系统属性返回查找，而不是null
+     * @return 使用系统属性返回查找, 而不是null
      */
     public static StrLookup<String> systemPropertiesLookup() {
         return SYSTEM_PROPERTIES_LOOKUP;
     }
 
     /**
-     * 返回使用映射查找值的查找。
-     * 如果映射为null，那么每次查找都会返回null
+     * 返回使用映射查找值的查找
+     * 如果映射为null,那么每次查找都会返回null
      * 使用toString()将映射结果对象转换为字符串
      *
      * @param <V> 查找支持的值的类型
-     * @param map 映射键值的映射，可以为空
-     * @return 使用映射的查找，而不是null
+     * @param map 映射键值的映射,可以为空
+     * @return 使用映射的查找, 而不是null
      */
     public static <V> StrLookup<V> mapLookup(final Map<String, V> map) {
         return new MapStrLookup<V>(map);
     }
 
     /**
-     * 查找字符串值的字符串键。
+     * 查找字符串值的字符串键
      *
      * @param key 要查找的键可以为空
-     * @return 匹配值，如果没有匹配则为空
+     * @return 匹配值, 如果没有匹配则为空
      */
     public abstract String lookup(String key);
 
@@ -98,12 +98,12 @@ public abstract class StrLookup<V> {
         }
 
         /**
-         * 使用映射查找字符串值的字符串键。
-         * 如果映射为null，则返回null。
-         * 使用toString()将映射结果对象转换为字符串。
+         * 使用映射查找字符串值的字符串键
+         * 如果映射为null,则返回null
+         * 使用toString()将映射结果对象转换为字符串
          *
          * @param key 要查找的键可以为空
-         * @return 匹配值，如果没有匹配则为空
+         * @return 匹配值, 如果没有匹配则为空
          */
         @Override
         public String lookup(final String key) {

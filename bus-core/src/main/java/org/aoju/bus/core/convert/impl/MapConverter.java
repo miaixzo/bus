@@ -57,7 +57,7 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
     private final Type valueType;
 
     /**
-     * 构造，Map的key和value泛型类型自动获取
+     * 构造,Map的key和value泛型类型自动获取
      *
      * @param mapType Map类型
      */

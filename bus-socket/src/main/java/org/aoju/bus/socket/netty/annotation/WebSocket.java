@@ -36,7 +36,7 @@ import java.lang.annotation.*;
 public @interface WebSocket {
 
     /**
-     * 订阅主题，topic
+     * 订阅主题,topic
      *
      * @return the string
      */

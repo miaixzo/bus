@@ -30,10 +30,10 @@ import org.aoju.bus.validate.strategy.InEnumStrategy;
 import java.lang.annotation.*;
 
 /**
- * 校验对象在枚举中，默认将对象与枚举名称匹配。
+ * 校验对象在枚举中,默认将对象与枚举名称匹配
  *
  * <p>
- * 默认被校验对象是null时，通过校验
+ * 默认被校验对象是null时,通过校验
  * </P>
  *
  * @author Kimi Liu
@@ -55,7 +55,7 @@ public @interface InEnum {
     Class<? extends Enum> enumClass();
 
     /**
-     * 枚举中的方法，将枚举方法的结果与被校验参数进行equals判断校验结果
+     * 枚举中的方法,将枚举方法的结果与被校验参数进行equals判断校验结果
      *
      * @return the string
      */

@@ -61,7 +61,7 @@ public class FtpUtils extends AbstractFtp {
     private FtpMode mode;
 
     /**
-     * 构造，匿名登录
+     * 构造,匿名登录
      *
      * @param host 域名或IP
      */
@@ -70,7 +70,7 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 构造，匿名登录
+     * 构造,匿名登录
      *
      * @param host 域名或IP
      * @param port 端口
@@ -184,7 +184,7 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 设置FTP连接模式，可选主动和被动模式
+     * 设置FTP连接模式,可选主动和被动模式
      *
      * @param mode 模式枚举
      * @return this
@@ -203,9 +203,9 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 如果连接超时的话，重新进行连接
-     * 经测试，当连接超时时，client.isConnected()仍然返回ture，无法判断是否连接超时
-     * 因此，通过发送pwd命令的方式，检查连接是否超时
+     * 如果连接超时的话,重新进行连接
+     * 经测试,当连接超时时,client.isConnected()仍然返回ture,无法判断是否连接超时
+     * 因此,通过发送pwd命令的方式,检查连接是否超时
      *
      * @return this
      */
@@ -267,7 +267,7 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历
+     * 遍历某个目录下所有文件和目录,不会递归遍历
      *
      * @param path 目录
      * @return 文件或目录列表
@@ -372,7 +372,7 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 上传文件到指定目录，可选：
+     * 上传文件到指定目录,可选：
      *
      * <pre>
      * 1. path为null或""上传到当前路径
@@ -380,7 +380,7 @@ public class FtpUtils extends AbstractFtp {
      * 3. path为绝对路径则上传到此路径
      * </pre>
      *
-     * @param path 服务端路径，可以为{@code null} 或者相对路径或绝对路径
+     * @param path 服务端路径,可以为{@code null} 或者相对路径或绝对路径
      * @param file 文件
      * @return 是否上传成功
      */
@@ -391,7 +391,7 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 上传文件到指定目录，可选：
+     * 上传文件到指定目录,可选：
      *
      * <pre>
      * 1. path为null或""上传到当前路径
@@ -400,7 +400,7 @@ public class FtpUtils extends AbstractFtp {
      * </pre>
      *
      * @param file     文件
-     * @param path     服务端路径，可以为{@code null} 或者相对路径或绝对路径
+     * @param path     服务端路径,可以为{@code null} 或者相对路径或绝对路径
      * @param fileName 自定义在服务端保存的文件名
      * @return 是否上传成功
      */
@@ -413,7 +413,7 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 上传文件到指定目录，可选：
+     * 上传文件到指定目录,可选：
      *
      * <pre>
      * 1. path为null或""上传到当前路径
@@ -421,7 +421,7 @@ public class FtpUtils extends AbstractFtp {
      * 3. path为绝对路径则上传到此路径
      * </pre>
      *
-     * @param path       服务端路径，可以为{@code null} 或者相对路径或绝对路径
+     * @param path       服务端路径,可以为{@code null} 或者相对路径或绝对路径
      * @param fileName   文件名
      * @param fileStream 文件流
      * @return 是否上传成功

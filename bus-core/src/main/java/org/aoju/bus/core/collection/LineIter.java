@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 
 /**
  * 将Reader包装为一个按照行读取的Iterator
- * 此对象遍历结束后，应关闭之，推荐使用方式:
+ * 此对象遍历结束后,应关闭之,推荐使用方式:
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -48,7 +48,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
     /**
      * 构造
      *
-     * @param reader {@link Reader}对象，不能为null
+     * @param reader {@link Reader}对象,不能为null
      * @throws IllegalArgumentException reader为null抛出此异常
      */
     public LineIter(Reader reader) throws IllegalArgumentException {
@@ -58,7 +58,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
 
 
     /**
-     * 判断{@link Reader}是否可以存在下一行。 If there is an <code>IOException</code> then {@link #close()} will be called on this instance.
+     * 判断{@link Reader}是否可以存在下一行  If there is an <code>IOException</code> then {@link #close()} will be called on this instance.
      *
      * @return {@code true} 表示有更多行
      * @throws InstrumentException 内部异常
@@ -135,7 +135,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
     }
 
     /**
-     * 重写此方法来判断是否每一行都被返回，默认全部为true
+     * 重写此方法来判断是否每一行都被返回,默认全部为true
      *
      * @param line 需要验证的行
      * @return 是否通过验证

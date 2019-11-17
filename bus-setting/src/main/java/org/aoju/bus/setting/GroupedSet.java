@@ -37,8 +37,8 @@ import java.util.*;
 
 /**
  * 分组化的Set集合类
- * 在配置文件中可以用中括号分隔不同的分组，每个分组会放在独立的Set中，用group区别
- * 无分组的集合和`[]`分组集合会合并成员，重名的分组也会合并成员
+ * 在配置文件中可以用中括号分隔不同的分组,每个分组会放在独立的Set中,用group区别
+ * 无分组的集合和`[]`分组集合会合并成员,重名的分组也会合并成员
  * 分组配置文件如下：
  *
  * <pre>
@@ -60,7 +60,7 @@ import java.util.*;
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
     /**
-     * 注释符号（当有此符号在行首，表示此行为注释）
+     * 注释符号（当有此符号在行首,表示此行为注释）
      */
     private final static String COMMENT_FLAG_PRE = "#";
     /**
@@ -88,7 +88,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * 构造,使用相对于Class文件根目录的相对路径
      *
      * @param pathBaseClassLoader 相对路径（相对于当前项目的classes路径）
      * @param charset             字符集
@@ -123,7 +123,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 构造，相对于classes读取文件
+     * 构造,相对于classes读取文件
      *
      * @param path    相对路径
      * @param clazz   基准类
@@ -208,7 +208,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 加载设置文件。 此方法不会关闭流对象
+     * 加载设置文件  此方法不会关闭流对象
      *
      * @param settingStream 文件流
      * @return 加载成功与否
@@ -234,13 +234,13 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
                     // 空行和注释忽略
                     continue;
                 } else if (line.startsWith(Symbol.BACKSLASH + COMMENT_FLAG_PRE)) {
-                    // 对于值中出现开头为#的字符串，需要转义处理，在此做反转义
+                    // 对于值中出现开头为#的字符串,需要转义处理,在此做反转义
                     line = line.substring(1);
                 }
 
                 // 记录分组名
                 if (line.charAt(0) == GROUP_SURROUND[0] && line.charAt(line.length() - 1) == GROUP_SURROUND[1]) {
-                    // 开始新的分组取值，当出现重名分组时候，合并分组值
+                    // 开始新的分组取值,当出现重名分组时候,合并分组值
                     group = line.substring(1, line.length() - 1).trim();
                     valueSet = super.get(group);
                     if (null == valueSet) {
@@ -252,7 +252,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
                 // 添加值
                 if (null == valueSet) {
-                    // 当出现无分组值的时候，会导致valueSet为空，此时group为""
+                    // 当出现无分组值的时候,会导致valueSet为空,此时group为""
                     valueSet = new LinkedHashSet<String>();
                     super.put(Normal.EMPTY, valueSet);
                 }
@@ -293,7 +293,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
     /**
      * 是否在给定分组的集合中包含指定值
-     * 如果给定分组对应集合不存在，则返回false
+     * 如果给定分组对应集合不存在,则返回false
      *
      * @param group       分组名
      * @param value       测试的值
@@ -319,7 +319,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
     /**
      * 是否在给定分组的集合中全部包含指定值集合
-     * 如果给定分组对应集合不存在，则返回false
+     * 如果给定分组对应集合不存在,则返回false
      *
      * @param group  分组名
      * @param values 测试的值集合

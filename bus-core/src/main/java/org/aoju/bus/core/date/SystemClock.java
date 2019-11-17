@@ -32,9 +32,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * 系统时钟
  * 高并发场景下System.currentTimeMillis()的性能问题的优化
- * System.currentTimeMillis()的调用比new一个普通对象要耗时的多（具体耗时高出多少我还没测试过，有人说是100倍左右）
+ * System.currentTimeMillis()的调用比new一个普通对象要耗时的多（具体耗时高出多少我还没测试过,有人说是100倍左右）
  * System.currentTimeMillis()之所以慢是因为去跟系统打了一次交道
- * 后台定时更新时钟，JVM退出时，线程自动回收
+ * 后台定时更新时钟,JVM退出时,线程自动回收
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class SystemClock {
 
     /**
-     * 时钟更新间隔，单位毫秒
+     * 时钟更新间隔,单位毫秒
      */
     private final long period;
     /**

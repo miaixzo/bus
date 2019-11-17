@@ -31,7 +31,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 收货地址脱敏处理类
- * 地址只显示到地区，不显示详细地址；我们要对个人信息增强保护
+ * 地址只显示到地区,不显示详细地址；我们要对个人信息增强保护
  * 例子：北京市海淀区****
  *
  * @author Kimi Liu

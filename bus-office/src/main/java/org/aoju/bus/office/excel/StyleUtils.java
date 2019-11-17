@@ -129,7 +129,7 @@ public class StyleUtils {
      * @param workbook {@link Workbook}
      * @param color    字体颜色
      * @param fontSize 字体大小
-     * @param fontName 字体名称，可以为null使用默认字体
+     * @param fontName 字体名称,可以为null使用默认字体
      * @return {@link Font}
      */
     public static Font createFont(Workbook workbook, short color, short fontSize, String fontName) {
@@ -143,7 +143,7 @@ public class StyleUtils {
      * @param font     字体{@link Font}
      * @param color    字体颜色
      * @param fontSize 字体大小
-     * @param fontName 字体名称，可以为null使用默认字体
+     * @param fontName 字体名称,可以为null使用默认字体
      * @return {@link Font}
      */
     public static Font setFontStyle(Font font, short color, short fontSize, String fontName) {
@@ -164,7 +164,7 @@ public class StyleUtils {
      *
      * <pre>
      * 1. 文字上下左右居中
-     * 2. 细边框，黑色
+     * 2. 细边框,黑色
      * </pre>
      *
      * @param workbook {@link Workbook} 工作簿

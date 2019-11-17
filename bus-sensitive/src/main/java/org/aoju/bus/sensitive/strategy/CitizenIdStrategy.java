@@ -35,7 +35,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * <p>
  * 脱敏规则：123002**********01
  * <p>
- * 只保留前6位和后2位，其他用*代替。
+ * 只保留前6位和后2位,其他用*代替
  *
  * @author Kimi Liu
  * @version 5.2.2

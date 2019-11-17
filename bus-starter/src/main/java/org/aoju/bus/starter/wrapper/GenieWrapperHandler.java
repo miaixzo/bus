@@ -38,8 +38,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 允许定制处理程序执行链的工作流，可以注册任何数量的现有或自定义拦截器
- * 对于某些处理程序组，添加常见的预处理行为不需要修改每个处理程序实现
+ * 允许定制处理程序执行链的工作流,可以注册任何数量的现有或自定义拦截器
+ * 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -85,14 +85,14 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
-     * 业务处理器处理请求之前被调用，对用户的request进行处理，若返回值为true，
-     * 则继续调用后续的拦截器和目标方法；若返回值为false， 则终止请求；
-     * 这里可以加上登录校验，权限拦截、请求限流等
+     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true,
+     * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求；
+     * 这里可以加上登录校验,权限拦截、请求限流等
      *
      * @param request  当前的HTTP请求
      * @param response 当前的HTTP响应
      * @param handler  执行的处理程序
-     * @return 如果执行链应该继续执行，则为:true 否则:false
+     * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -111,13 +111,13 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
-     * 拦截处理程序的执行。实际上是在HandlerAdapter之后调用的
-     * 调用处理程序，但在DispatcherServlet呈现视图之前。
-     * 可以通过给定的ModelAndView向视图公开额外的模型对象。
-     * DispatcherServlet在一个执行链中处理一个处理程序，由
-     * 任意数量的拦截器，处理程序本身在最后。
-     * 使用这种方法，每个拦截器可以对一个执行进行后处理，
-     * 按执行链的相反顺序应用。
+     * 拦截处理程序的执行 实际上是在HandlerAdapter之后调用的
+     * 调用处理程序,但在DispatcherServlet呈现视图之前
+     * 可以通过给定的ModelAndView向视图公开额外的模型对象
+     * DispatcherServlet在一个执行链中处理一个处理程序,由
+     * 任意数量的拦截器,处理程序本身在最后
+     * 使用这种方法,每个拦截器可以对一个执行进行后处理,
+     * 按执行链的相反顺序应用
      *
      * @param request      当前的HTTP请求
      * @param response     当前的HTTP响应
@@ -129,11 +129,11 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
-     * 完成请求处理后回调，将调用处理程序执行的任何结果，
+     * 完成请求处理后回调,将调用处理程序执行的任何结果,
      * 因此允许进行适当的资源清理等
      * 注意:只有在拦截器的{@code preHandle} 方法返回{@code true}
-     * 与{@code postHandle}方法一样，将在每个方法上调用该方法,
-     * 在链中的拦截器的顺序是相反的，所以第一个拦截器是最后调用的
+     * 与{@code postHandle}方法一样,将在每个方法上调用该方法,
+     * 在链中的拦截器的顺序是相反的,所以第一个拦截器是最后调用的
      *
      * @param request   当前的HTTP请求
      * @param response  当前的HTTP响应

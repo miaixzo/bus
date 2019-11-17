@@ -104,7 +104,7 @@ public final class Registry {
     public static StrategyProvider require(final Class<? extends Annotation> annotationClass) {
         StrategyProvider strategy = STRATEGY_CACHE.get(annotationClass);
         if (ObjectUtils.isEmpty(strategy)) {
-            throw new InstrumentException("不支持的系统内置方法，用户请勿在自定义注解中使用[BuiltInStrategy]!");
+            throw new InstrumentException("不支持的系统内置方法,用户请勿在自定义注解中使用[BuiltInStrategy]!");
         }
         return strategy;
     }
@@ -136,7 +136,7 @@ public final class Registry {
      * 是否包含指定名称策略
      *
      * @param name 策略名称
-     * @return true：包含， false：不包含
+     * @return true：包含, false：不包含
      */
     public boolean contains(String name) {
         return STRATEGY_CACHE.containsKey(name);

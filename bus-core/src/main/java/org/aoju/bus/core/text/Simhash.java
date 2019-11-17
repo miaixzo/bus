@@ -7,10 +7,10 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * 局部敏感hash，用于海量文本去重
+ * 局部敏感hash,用于海量文本去重
  *
  * <p>
- * 局部敏感hash定义：假定两个字符串具有一定的相似性，在hash之后，仍然能保持这种相似性，就称之为局部敏感hash。
+ * 局部敏感hash定义：假定两个字符串具有一定的相似性,在hash之后,仍然能保持这种相似性,就称之为局部敏感hash
  * </p>
  *
  * @author Kimi Liu
@@ -21,17 +21,17 @@ public class Simhash {
 
     private final int bitNum = 64;
     /**
-     * 存储段数，默认按照4段进行simhash存储
+     * 存储段数,默认按照4段进行simhash存储
      */
     private final int fracCount;
     private final int fracBitNum;
     /**
-     * 汉明距离的衡量标准，小于此距离标准表示相似
+     * 汉明距离的衡量标准,小于此距离标准表示相似
      */
     private final int hammingThresh;
 
     /**
-     * 按照分段存储simhash，查找更快速
+     * 按照分段存储simhash,查找更快速
      */
     private List<Map<String, List<Long>>> storage;
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -67,7 +67,7 @@ public class Simhash {
      */
     public long hash(Collection<? extends CharSequence> segList) {
         final int bitNum = this.bitNum;
-        // 按照词语的hash值，计算simHashWeight(低位对齐)
+        // 按照词语的hash值,计算simHashWeight(低位对齐)
         final int[] weight = new int[bitNum];
         long wordHash;
         for (CharSequence seg : segList) {

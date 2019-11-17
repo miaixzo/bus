@@ -26,7 +26,7 @@ package org.aoju.bus.core.lang;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
- * 调用者。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
+ * 调用者 可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -59,7 +59,7 @@ public class Caller {
     }
 
     /**
-     * 获得调用者，指定第几级调用者
+     * 获得调用者,指定第几级调用者
      * 调用者层级关系：
      * <pre>
      * 0 {@link Caller}
@@ -68,7 +68,7 @@ public class Caller {
      * ...
      * </pre>
      *
-     * @param depth 层级。0表示{@link Caller}本身，1表示调用{@link Caller}的类，2表示调用者的调用者，依次类推
+     * @param depth 层级 0表示{@link Caller}本身,1表示调用{@link Caller}的类,2表示调用者的调用者,依次类推
      * @return 第几级调用者
      */
     public static Class<?> getCaller(int depth) {
@@ -122,7 +122,7 @@ public class Caller {
         Class<?> getCallerCaller();
 
         /**
-         * 获得调用者，指定第几级调用者
+         * 获得调用者,指定第几级调用者
          * 调用者层级关系：
          * <pre>
          * 0 {@link Caller}
@@ -131,7 +131,7 @@ public class Caller {
          * ...
          * </pre>
          *
-         * @param depth 层级。0表示{@link Caller}本身，1表示调用{@link Caller}的类，2表示调用者的调用者，依次类推
+         * @param depth 层级 0表示{@link Caller}本身,1表示调用{@link Caller}的类,2表示调用者的调用者,依次类推
          * @return 第几级调用者
          */
         Class<?> getCaller(int depth);
@@ -185,7 +185,7 @@ public class Caller {
     }
 
     /**
-     * 通过StackTrace方式获取调用者。此方式效率最低，不推荐使用
+     * 通过StackTrace方式获取调用者 此方式效率最低,不推荐使用
      *
      * @author Kimi Liu
      */

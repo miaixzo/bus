@@ -48,8 +48,8 @@ public class DefaultCache implements Cache {
 
     /**
      * 默认缓存过期时间：3分钟
-     * 鉴于授权过程中，根据个人的操作习惯，或者授权平台的不同（google等），每个授权流程的耗时也有差异，不过单个授权流程一般不会太长
-     * 本缓存工具默认的过期时间设置为3分钟，即程序默认认为3分钟内的授权有效，超过3分钟则默认失效，失效后删除
+     * 鉴于授权过程中,根据个人的操作习惯,或者授权平台的不同（google等）,每个授权流程的耗时也有差异,不过单个授权流程一般不会太长
+     * 本缓存工具默认的过期时间设置为3分钟,即程序默认认为3分钟内的授权有效,超过3分钟则默认失效,失效后删除
      */
     public static long timeout = 3 * 60 * 1000;
 
@@ -121,10 +121,10 @@ public class DefaultCache implements Cache {
     }
 
     /**
-     * 是否存在key，如果对应key的value值已过期，也返回false
+     * 是否存在key,如果对应key的value值已过期,也返回false
      *
      * @param key 缓存KEY
-     * @return true：存在key，并且value没过期；false：key不存在或者已过期
+     * @return true：存在key,并且value没过期；false：key不存在或者已过期
      */
     @Override
     public boolean containsKey(String key) {
@@ -155,7 +155,7 @@ public class DefaultCache implements Cache {
     /**
      * 定时清理
      *
-     * @param delay 间隔时长，单位毫秒
+     * @param delay 间隔时长,单位毫秒
      */
     public void schedulePrune(long delay) {
         CacheScheduler.INSTANCE.schedule(this::pruneCache, delay);

@@ -59,12 +59,12 @@ public class UnicodeUtils {
                     sb.append(c);
                     pos = i + 6;//跳过整个Unicode符
                 } catch (NumberFormatException e) {
-                    //非法Unicode符，跳过
+                    //非法Unicode符,跳过
                     sb.append(unicode, pos, i + 2);//写入"\\u"
                     pos = i + 2;
                 }
             } else {
-                pos = i;//非Unicode符，结束
+                pos = i;//非Unicode符,结束
                 break;
             }
         }

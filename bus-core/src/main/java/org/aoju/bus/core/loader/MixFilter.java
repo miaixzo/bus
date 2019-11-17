@@ -29,7 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * 复合过滤器,实际上内部维护一个过滤器的{@link LinkedHashSet}集合，提供添加/删除以及链式拼接的方法来混合多个子过滤器，该过滤器的具体逻辑由子类拓展。
+ * 复合过滤器,实际上内部维护一个过滤器的{@link LinkedHashSet}集合,提供添加/删除以及链式拼接的方法来混合多个子过滤器,该过滤器的具体逻辑由子类拓展
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -68,8 +68,8 @@ public abstract class MixFilter implements Filter {
     }
 
     /**
-     * 支持采用链式调用的方式混合多个过滤器，其内部调用{@link MixFilter#add(Filter)}且返回this.
-     * 该方法设计成abstract其用意是强制子类将方法的返回值类型替换成自身类型。
+     * 支持采用链式调用的方式混合多个过滤器,其内部调用{@link MixFilter#add(Filter)}且返回this.
+     * 该方法设计成abstract其用意是强制子类将方法的返回值类型替换成自身类型
      *
      * @param filter 过滤器
      * @return this

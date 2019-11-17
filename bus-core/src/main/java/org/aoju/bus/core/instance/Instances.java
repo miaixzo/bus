@@ -75,7 +75,7 @@ public final class Instances {
     }
 
     /**
-     * {@link ThreadSafe} 线程安全标示的使用单例，或者使用多例
+     * {@link ThreadSafe} 线程安全标示的使用单例,或者使用多例
      *
      * @param clazz class
      * @param <T>   泛型

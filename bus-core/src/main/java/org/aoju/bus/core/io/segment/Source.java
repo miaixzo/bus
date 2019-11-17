@@ -27,10 +27,10 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * 提供一个字节流。使用此接口从任何地方读取数据
- * 它的位置:来自网络、存储或内存中的缓冲区。来源可能
- * 分层以转换提供的数据，例如解压、解密或
- * 移除协议框架。
+ * 提供一个字节流 使用此接口从任何地方读取数据
+ * 它的位置:来自网络、存储或内存中的缓冲区 来源可能
+ * 分层以转换提供的数据,例如解压、解密或
+ * 移除协议框架
  *
  * <h3>Interop with InputStream</h3>
  * {@link BufferSource#inputStream} to adapt a source to an {@code

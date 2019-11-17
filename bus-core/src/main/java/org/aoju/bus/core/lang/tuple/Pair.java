@@ -32,12 +32,12 @@ import java.util.Objects;
 /**
  * 由两个元素组成
  * <p>
- * 这个类是一个定义基本API的抽象实现。
- * 它表示元素为“left”和“right”。它还实现了
- * {@code Map.Entry}接口，其中键为'left'，值为'right'.
- * 子类实现可以是可变的，也可以是不可变的。
- * 但是，对可能存储的存储对象的类型没有限制。
- * 如果可变对象存储在对中，那么对本身就会有效地变成可变的。
+ * 这个类是一个定义基本API的抽象实现
+ * 它表示元素为“left”和“right” 它还实现了
+ * {@code Map.Entry}接口,其中键为'left',值为'right'.
+ * 子类实现可以是可变的,也可以是不可变的
+ * 但是,对可能存储的存储对象的类型没有限制
+ * 如果可变对象存储在对中,那么对本身就会有效地变成可变的
  *
  * @param <L> the left element type
  * @param <R> the right element type

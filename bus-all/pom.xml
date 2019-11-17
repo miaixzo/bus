@@ -69,7 +69,7 @@
         <!--bus-pager-->
         <jsqlparser.version>2.0</jsqlparser.version>
         <!--bus-office-->
-        <poi.version>3.17</poi.version>
+        <poi.version>4.1.1</poi.version>
         <xerces.version>2.12.0</xerces.version>
         <!--bus-proxy-->
         <javassist.version>3.21.0-GA</javassist.version>

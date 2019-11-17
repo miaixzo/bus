@@ -47,7 +47,7 @@ public class Convert {
 
     /**
      * 转换为字符串
-     * 如果给定的值为null，或者转换失败，返回默认值
+     * 如果给定的值为null,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -60,7 +60,7 @@ public class Convert {
 
     /**
      * 转换为字符串
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为<code>null</code>,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -83,7 +83,7 @@ public class Convert {
 
     /**
      * 转换为字符
-     * 如果给定的值为null，或者转换失败，返回默认值
+     * 如果给定的值为null,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -96,7 +96,7 @@ public class Convert {
 
     /**
      * 转换为字符
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为<code>null</code>,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -119,7 +119,7 @@ public class Convert {
 
     /**
      * 转换为byte
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值
+     * 如果给定的值为<code>null</code>,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -132,7 +132,7 @@ public class Convert {
 
     /**
      * 转换为byte
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为<code>null</code>,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -155,7 +155,7 @@ public class Convert {
 
     /**
      * 转换为Short
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值
+     * 如果给定的值为<code>null</code>,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -168,7 +168,7 @@ public class Convert {
 
     /**
      * 转换为Short
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为<code>null</code>,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -191,7 +191,7 @@ public class Convert {
 
     /**
      * 转换为Number
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -204,7 +204,7 @@ public class Convert {
 
     /**
      * 转换为Number
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为空,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -227,7 +227,7 @@ public class Convert {
 
     /**
      * 转换为int
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -240,7 +240,7 @@ public class Convert {
 
     /**
      * 转换为int
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为<code>null</code>,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -262,7 +262,7 @@ public class Convert {
 
     /**
      * 转换为long
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -275,7 +275,7 @@ public class Convert {
 
     /**
      * 转换为long
-     * 如果给定的值为<code>null</code>，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为<code>null</code>,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -297,7 +297,7 @@ public class Convert {
 
     /**
      * 转换为double
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -310,7 +310,7 @@ public class Convert {
 
     /**
      * 转换为double
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为空,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -332,7 +332,7 @@ public class Convert {
 
     /**
      * 转换为Float
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -345,7 +345,7 @@ public class Convert {
 
     /**
      * 转换为Float
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为空,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -367,7 +367,7 @@ public class Convert {
 
     /**
      * 转换为boolean
-     * String支持的值为：true、false、yes、ok、no，1,0 如果给定的值为空，或者转换失败，返回默认值
+     * String支持的值为：true、false、yes、ok、no,1,0 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -380,7 +380,7 @@ public class Convert {
 
     /**
      * 转换为boolean
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为空,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -402,7 +402,7 @@ public class Convert {
 
     /**
      * 转换为BigInteger
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -415,7 +415,7 @@ public class Convert {
 
     /**
      * 转换为BigInteger
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为空,或者转换失败,返回默认值<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -427,7 +427,7 @@ public class Convert {
 
     /**
      * 转换为BigDecimal
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -440,7 +440,7 @@ public class Convert {
 
     /**
      * 转换为BigDecimal
-     * 如果给定的值为空，或者转换失败，返回null
+     * 如果给定的值为空,或者转换失败,返回null
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -452,7 +452,7 @@ public class Convert {
 
     /**
      * 转换为Date
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      * 转换失败不会报错
      *
      * @param value        被转换的值
@@ -465,7 +465,7 @@ public class Convert {
 
     /**
      * 转换为Date
-     * 如果给定的值为空，或者转换失败，返回<code>null</code>
+     * 如果给定的值为空,或者转换失败,返回<code>null</code>
      * 转换失败不会报错
      *
      * @param value 被转换的值
@@ -477,7 +477,7 @@ public class Convert {
 
     /**
      * 转换为Enum对象
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 如果给定的值为空,或者转换失败,返回默认值
      *
      * @param <E>          枚举类型
      * @param clazz        Enum的Class
@@ -491,7 +491,7 @@ public class Convert {
 
     /**
      * 转换为Enum对象
-     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code>
+     * 如果给定的值为空,或者转换失败,返回默认值<code>null</code>
      *
      * @param <E>   枚举类型
      * @param clazz Enum的Class
@@ -515,7 +515,7 @@ public class Convert {
     }
 
     /**
-     * 转换为ArrayList，元素类型默认Object
+     * 转换为ArrayList,元素类型默认Object
      *
      * @param value 被转换的值
      * @return {@link List}
@@ -537,7 +537,7 @@ public class Convert {
     }
 
     /**
-     * 转换值为指定类型，类型采用字符串表示
+     * 转换值为指定类型,类型采用字符串表示
      *
      * @param <T>       目标类型
      * @param className 类的字符串表示
@@ -664,7 +664,7 @@ public class Convert {
             }
 
             if (c[i] == '\u3000' || c[i] == '\u00a0' || c[i] == '\u2007' || c[i] == '\u202F') {
-                // \u3000是中文全角空格，\u00a0、\u2007、\u202F是不间断空格
+                // \u3000是中文全角空格,\u00a0、\u2007、\u202F是不间断空格
                 c[i] = ' ';
             } else if (c[i] > '\uFF00' && c[i] < '\uFF5F') {
                 c[i] = (char) (c[i] - 65248);
@@ -676,7 +676,7 @@ public class Convert {
     }
 
     /**
-     * 字符串转换成十六进制字符串，结果为小写
+     * 字符串转换成十六进制字符串,结果为小写
      *
      * @param str     待转换的ASCII字符串
      * @param charset 编码
@@ -699,7 +699,7 @@ public class Convert {
     /**
      * Hex字符串转换为Byte值
      *
-     * @param src Byte字符串，每个Byte之间没有分隔符
+     * @param src Byte字符串,每个Byte之间没有分隔符
      * @return byte[]
      */
     public static byte[] hexToBytes(String src) {
@@ -741,7 +741,7 @@ public class Convert {
 
     /**
      * 给定字符串转换字符编码
-     * 如果参数为空，则返回原字符串，不报错。
+     * 如果参数为空,则返回原字符串,不报错
      *
      * @param str           被转码的字符串
      * @param sourceCharset 原字符集
@@ -772,7 +772,7 @@ public class Convert {
     }
 
     /**
-     * 原始类转为包装类，非原始类返回原类
+     * 原始类转为包装类,非原始类返回原类
      *
      * @param clazz 原始类
      * @return 包装类
@@ -784,7 +784,7 @@ public class Convert {
     }
 
     /**
-     * 包装类转为原始类，非包装类返回原类
+     * 包装类转为原始类,非包装类返回原类
      *
      * @param clazz 包装类
      * @return 原始类

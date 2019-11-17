@@ -69,7 +69,7 @@ public class FileWriter extends FileWrapper {
     /**
      * 构造
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param filePath 文件路径,相对路径会被转换为相对于ClassPath的路径
      * @param charset  编码
      */
     public FileWriter(String filePath, Charset charset) {
@@ -79,8 +79,8 @@ public class FileWriter extends FileWrapper {
     /**
      * 构造
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
-     * @param charset  编码，使用 {@link CharsetUtils#charset(String)}
+     * @param filePath 文件路径,相对路径会被转换为相对于ClassPath的路径
+     * @param charset  编码,使用 {@link CharsetUtils#charset(String)}
      */
     public FileWriter(String filePath, String charset) {
         this(FileUtils.file(filePath), CharsetUtils.charset(charset));
@@ -100,7 +100,7 @@ public class FileWriter extends FileWrapper {
      * 构造
      * 编码使用 {@link FileWrapper#DEFAULT_CHARSET}
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param filePath 文件路径,相对路径会被转换为相对于ClassPath的路径
      */
     public FileWriter(String filePath) {
         this(filePath, DEFAULT_CHARSET);
@@ -150,7 +150,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将String写入文件，覆盖模式
+     * 将String写入文件,覆盖模式
      *
      * @param content 写入的内容
      * @return 目标文件
@@ -161,7 +161,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将String写入文件，追加模式
+     * 将String写入文件,追加模式
      *
      * @param content 写入的内容
      * @return 写入的文件
@@ -172,7 +172,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将列表写入文件，覆盖模式
+     * 将列表写入文件,覆盖模式
      *
      * @param <T>  集合元素类型
      * @param list 列表
@@ -184,7 +184,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将列表写入文件，追加模式
+     * 将列表写入文件,追加模式
      *
      * @param <T>  集合元素类型
      * @param list 列表
@@ -233,10 +233,10 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将Map写入文件，每个键值对为一行，一行中键与值之间使用kvSeparator分隔
+     * 将Map写入文件,每个键值对为一行,一行中键与值之间使用kvSeparator分隔
      *
      * @param map         Map
-     * @param kvSeparator 键和值之间的分隔符，如果传入null使用默认分隔符" = "
+     * @param kvSeparator 键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend    是否追加
      * @return 目标文件
      * @throws InstrumentException IO异常
@@ -246,11 +246,11 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将Map写入文件，每个键值对为一行，一行中键与值之间使用kvSeparator分隔
+     * 将Map写入文件,每个键值对为一行,一行中键与值之间使用kvSeparator分隔
      *
      * @param map           Map
      * @param lineSeparator 换行符枚举（Windows、Mac或Linux换行符）
-     * @param kvSeparator   键和值之间的分隔符，如果传入null使用默认分隔符" = "
+     * @param kvSeparator   键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend      是否追加
      * @return 目标文件
      * @throws InstrumentException IO异常
@@ -325,7 +325,7 @@ public class FileWriter extends FileWrapper {
      * 将流的内容写入文件
      * 此方法不会关闭输入流
      *
-     * @param in 输入流，不关闭
+     * @param in 输入流,不关闭
      * @return dest
      * @throws InstrumentException IO异常
      */
@@ -372,7 +372,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 获得一个打印写入对象，可以有print
+     * 获得一个打印写入对象,可以有print
      *
      * @param isAppend 是否追加
      * @return 打印对象

@@ -24,11 +24,11 @@
 package org.aoju.bus.core.lang;
 
 /**
- * 编辑器接口，常用于对于集合中的元素做统一编辑
+ * 编辑器接口,常用于对于集合中的元素做统一编辑
  * 此编辑器两个作用：
  *
  * <pre>
- * 1、如果返回值为null，表示此值被抛弃
+ * 1、如果返回值为null,表示此值被抛弃
  * 2、对对象做修改
  * </pre>
  *
@@ -43,7 +43,7 @@ public interface Editor<T> {
      * 修改过滤后的结果
      *
      * @param t 被过滤的对象
-     * @return 修改后的对象，如果被过滤返回null
+     * @return 修改后的对象, 如果被过滤返回null
      */
     T edit(T t);
 

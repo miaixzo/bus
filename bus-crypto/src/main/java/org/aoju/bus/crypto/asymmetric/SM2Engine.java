@@ -40,7 +40,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 /**
- * SM2加密解密引擎，来自Bouncy Castle库的SM2Engine类改造<br>
+ * SM2加密解密引擎,来自Bouncy Castle库的SM2Engine类改造<br>
  * SM2加密后的数据格式为（两种模式）：
  *
  * <pre>
@@ -76,7 +76,7 @@ public class SM2Engine {
     /**
      * 构造
      *
-     * @param mode SM2密钥生成模式，可选C1C2C3和C1C3C2
+     * @param mode SM2密钥生成模式,可选C1C2C3和C1C3C2
      */
     public SM2Engine(SM2Mode mode) {
         this(new SM3Digest(), mode);
@@ -95,7 +95,7 @@ public class SM2Engine {
      * 构造
      *
      * @param digest 摘要算法啊
-     * @param mode   SM2密钥生成模式，可选C1C2C3和C1C3C2
+     * @param mode   SM2密钥生成模式,可选C1C2C3和C1C3C2
      */
     public SM2Engine(Digest digest, SM2Mode mode) {
         this.digest = digest;
@@ -106,7 +106,7 @@ public class SM2Engine {
      * 初始化引擎
      *
      * @param forEncryption 是否为加密模式
-     * @param param         {@link CipherParameters}，此处应为{@link ParametersWithRandom}（加密时）或{@link ECKeyParameters}（解密时）
+     * @param param         {@link CipherParameters},此处应为{@link ParametersWithRandom}（加密时）或{@link ECKeyParameters}（解密时）
      */
     public void init(boolean forEncryption, CipherParameters param) {
         this.forEncryption = forEncryption;
@@ -138,7 +138,7 @@ public class SM2Engine {
     }
 
     /**
-     * 处理块，包括加密和解密
+     * 处理块,包括加密和解密
      *
      * @param in    数据
      * @param inOff 数据开始位置
@@ -194,7 +194,7 @@ public class SM2Engine {
             kdf(kPB, c2);
         } while (notEncrypted(c2, in, inOff));
 
-        // 杂凑值，效验数据
+        // 杂凑值,效验数据
         byte[] c3 = new byte[digest.getDigestSize()];
 
         addFieldElement(kPB.getAffineXCoord());
@@ -213,7 +213,7 @@ public class SM2Engine {
     }
 
     /**
-     * 解密，只支持私钥解密
+     * 解密,只支持私钥解密
      *
      * @param in    密文
      * @param inOff 位置
@@ -362,7 +362,7 @@ public class SM2Engine {
 
     /**
      * SM2算法模式<br>
-     * 在SM2算法中，C1C2C3为旧标准模式，C1C3C2为新标准模式
+     * 在SM2算法中,C1C2C3为旧标准模式,C1C3C2为新标准模式
      */
     public static enum SM2Mode {
         C1C2C3, C1C3C2

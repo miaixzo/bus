@@ -69,8 +69,8 @@ public class Builder {
     }
 
     /**
-     * 如果给定字符串{@code str}中不包含{@code appendStr}，则在{@code str}后追加{@code appendStr}；
-     * 如果已包含{@code appendStr}，则在{@code str}后追加{@code otherwise}
+     * 如果给定字符串{@code str}中不包含{@code appendStr},则在{@code str}后追加{@code appendStr}；
+     * 如果已包含{@code appendStr},则在{@code str}后追加{@code otherwise}
      *
      * @param str       给定的字符串
      * @param appendStr 需要追加的内容
@@ -88,7 +88,7 @@ public class Builder {
     }
 
     /**
-     * map转字符串，转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
+     * map转字符串,转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
      *
      * @param params 待转换的map
      * @param encode 是否转码
@@ -168,7 +168,7 @@ public class Builder {
     public enum Status {
         /**
          * 2000：正常；
-         * other：调用异常，具体异常内容见{@code msg}
+         * other：调用异常,具体异常内容见{@code msg}
          */
         SUCCESS("2000", "Success"),
         FAILURE("5000", "Failure"),

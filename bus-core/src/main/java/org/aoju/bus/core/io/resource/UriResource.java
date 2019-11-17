@@ -59,7 +59,7 @@ public class UriResource implements Resource {
     /**
      * 构造
      *
-     * @param url  URL，允许为空
+     * @param url  URL,允许为空
      * @param name 资源名称
      */
     public UriResource(URL url, String name) {

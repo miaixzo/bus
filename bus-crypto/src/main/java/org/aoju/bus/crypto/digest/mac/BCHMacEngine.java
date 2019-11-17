@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * BouncyCastle的HMAC算法实现引擎，使用{@link Mac} 实现摘要<br>
+ * BouncyCastle的HMAC算法实现引擎,使用{@link Mac} 实现摘要<br>
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
@@ -49,7 +49,7 @@ public class BCHMacEngine implements MacEngine {
     /**
      * 构造
      *
-     * @param digest 摘要算法，为{@link Digest} 的接口实现
+     * @param digest 摘要算法,为{@link Digest} 的接口实现
      * @param key    密钥
      */
     public BCHMacEngine(Digest digest, byte[] key) {
@@ -60,7 +60,7 @@ public class BCHMacEngine implements MacEngine {
      * 构造
      *
      * @param digest 摘要算法
-     * @param params 参数，例如密钥可以用{@link KeyParameter}
+     * @param params 参数,例如密钥可以用{@link KeyParameter}
      */
     public BCHMacEngine(Digest digest, CipherParameters params) {
         init(digest, params);
@@ -70,7 +70,7 @@ public class BCHMacEngine implements MacEngine {
      * 初始化
      *
      * @param digest 摘要算法
-     * @param params 参数，例如密钥可以用{@link KeyParameter}
+     * @param params 参数,例如密钥可以用{@link KeyParameter}
      * @return this
      */
     public BCHMacEngine init(Digest digest, CipherParameters params) {

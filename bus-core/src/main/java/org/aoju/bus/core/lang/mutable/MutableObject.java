@@ -40,7 +40,7 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
     private T value;
 
     /**
-     * 构造，空值
+     * 构造,空值
      */
     public MutableObject() {
         super();

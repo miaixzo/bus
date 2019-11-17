@@ -53,7 +53,7 @@ import java.util.*;
 public class ClassUtils {
 
     /**
-     * 原始类型名和其class对应表，例如：int =》 int.class
+     * 原始类型名和其class对应表,例如：int =》 int.class
      */
     private static final Map<String, Class<?>> primitiveWrapperMap = new HashMap<>();
     private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<>();
@@ -82,8 +82,8 @@ public class ClassUtils {
      * {@code null}安全的获取对象类型
      *
      * @param <T> 对象类型
-     * @param obj 对象，如果为{@code null} 返回{@code null}
-     * @return 对象类型，提供对象如果为{@code null} 返回{@code null}
+     * @param obj 对象,如果为{@code null} 返回{@code null}
+     * @return 对象类型, 提供对象如果为{@code null} 返回{@code null}
      */
     public static <T> Class<T> getClass(T obj) {
         return ((null == obj) ? null : (Class<T>) obj.getClass());
@@ -93,7 +93,7 @@ public class ClassUtils {
      * 获取类名
      *
      * @param obj      获取类名对象
-     * @param isSimple 是否简单类名，如果为true，返回不带包名的类名
+     * @param isSimple 是否简单类名,如果为true,返回不带包名的类名
      * @return 类名
      * @since 3.0.7
      */
@@ -116,7 +116,7 @@ public class ClassUtils {
      * </pre>
      *
      * @param clazz    类
-     * @param isSimple 是否简单类名，如果为true，返回不带包名的类名
+     * @param isSimple 是否简单类名,如果为true,返回不带包名的类名
      * @return 类名
      * @since 3.0.7
      */
@@ -130,7 +130,7 @@ public class ClassUtils {
     /**
      * 获得对象数组的类数组
      *
-     * @param objects 对象数组，如果数组中存在{@code null}元素，则此元素被认为是Object类型
+     * @param objects 对象数组,如果数组中存在{@code null}元素,则此元素被认为是Object类型
      * @return 类数组
      */
     public static Class<?>[] getClasses(Object... objects) {
@@ -147,7 +147,7 @@ public class ClassUtils {
      * 指定类是否与给定的类名相同
      *
      * @param clazz      类
-     * @param className  类名，可以是全类名（包含包名），也可以是简单类名（不包含包名）
+     * @param className  类名,可以是全类名（包含包名）,也可以是简单类名（不包含包名）
      * @param ignoreCase 是否忽略大小写
      * @return 指定类是否与给定的类名相同
      * @since 3.0.7
@@ -280,7 +280,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获得声明的所有方法，包括本类及其父类和接口的所有方法和Object类的方法
+     * 获得声明的所有方法,包括本类及其父类和接口的所有方法和Object类的方法
      *
      * @param clazz 类
      * @return 方法数组
@@ -290,7 +290,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定对象中的所有方法（包括非public方法），也包括父对象和Object类的方法
+     * 查找指定对象中的所有方法（包括非public方法）,也包括父对象和Object类的方法
      *
      * @param obj        被查找的对象
      * @param methodName 方法名
@@ -303,7 +303,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定类中的所有方法（包括非public方法），也包括父类和Object类的方法 找不到方法会返回null
+     * 查找指定类中的所有方法（包括非public方法）,也包括父类和Object类的方法 找不到方法会返回null
      *
      * @param clazz          被查找的类
      * @param methodName     方法名
@@ -316,7 +316,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定类中的所有字段（包括非public字段）， 字段不存在则返回null
+     * 查找指定类中的所有字段（包括非public字段）, 字段不存在则返回null
      *
      * @param clazz     被查找字段的类
      * @param fieldName 字段名
@@ -349,7 +349,7 @@ public class ClassUtils {
     }
 
     /**
-     * @return 获得Java ClassPath路径，不包括 jre
+     * @return 获得Java ClassPath路径,不包括 jre
      */
     public static String[] getJavaClassPaths() {
         String[] classPaths = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
@@ -357,7 +357,7 @@ public class ClassUtils {
     }
 
     /**
-     * 比较判断types1和types2两组类，如果types1中所有的类都与types2对应位置的类相同，或者是其父类或接口，则返回true
+     * 比较判断types1和types2两组类,如果types1中所有的类都与types2对应位置的类相同,或者是其父类或接口,则返回true
      *
      * @param types1 类组1
      * @param types2 类组2
@@ -390,13 +390,13 @@ public class ClassUtils {
 
     /**
      * 执行方法<br>
-     * 可执行Private方法，也可执行static方法<br>
-     * 执行非static方法时，必须满足对象有默认构造方法<br>
-     * 非单例模式，如果是非静态方法，每次创建一个新对象
+     * 可执行Private方法,也可执行static方法<br>
+     * 执行非static方法时,必须满足对象有默认构造方法<br>
+     * 非单例模式,如果是非静态方法,每次创建一个新对象
      *
      * @param <T>                     对象类型
-     * @param classNameWithMethodName 类名和方法名表达式，类名与方法名用<code>.</code>或<code>#</code>连接 例如：com.xiaoleilu.hutool.StrUtil.isEmpty 或 com.xiaoleilu.hutool.StrUtil#isEmpty
-     * @param args                    参数，必须严格对应指定方法的参数类型和数量
+     * @param classNameWithMethodName 类名和方法名表达式,类名与方法名用<code>.</code>或<code>#</code>连接 例如：com.xiaoleilu.hutool.StrUtil.isEmpty 或 com.xiaoleilu.hutool.StrUtil#isEmpty
+     * @param args                    参数,必须严格对应指定方法的参数类型和数量
      * @return 返回结果
      */
     public static <T> T invoke(String classNameWithMethodName, Object[] args) {
@@ -405,13 +405,13 @@ public class ClassUtils {
 
     /**
      * 执行方法<br>
-     * 可执行Private方法，也可执行static方法<br>
-     * 执行非static方法时，必须满足对象有默认构造方法<br>
+     * 可执行Private方法,也可执行static方法<br>
+     * 执行非static方法时,必须满足对象有默认构造方法<br>
      *
      * @param <T>                     对象类型
-     * @param classNameWithMethodName 类名和方法名表达式，例如：com.xiaoleilu.hutool.StrUtil#isEmpty或com.xiaoleilu.hutool.StrUtil.isEmpty
-     * @param isSingleton             是否为单例对象，如果此参数为false，每次执行方法时创建一个新对象
-     * @param args                    参数，必须严格对应指定方法的参数类型和数量
+     * @param classNameWithMethodName 类名和方法名表达式,例如：com.xiaoleilu.hutool.StrUtil#isEmpty或com.xiaoleilu.hutool.StrUtil.isEmpty
+     * @param isSingleton             是否为单例对象,如果此参数为false,每次执行方法时创建一个新对象
+     * @param args                    参数,必须严格对应指定方法的参数类型和数量
      * @return 返回结果
      */
     public static <T> T invoke(String classNameWithMethodName, boolean isSingleton, Object... args) {
@@ -435,14 +435,14 @@ public class ClassUtils {
 
     /**
      * 执行方法<br>
-     * 可执行Private方法，也可执行static方法<br>
-     * 执行非static方法时，必须满足对象有默认构造方法<br>
-     * 非单例模式，如果是非静态方法，每次创建一个新对象
+     * 可执行Private方法,也可执行static方法<br>
+     * 执行非static方法时,必须满足对象有默认构造方法<br>
+     * 非单例模式,如果是非静态方法,每次创建一个新对象
      *
      * @param <T>        对象类型
-     * @param className  类名，完整类路径
+     * @param className  类名,完整类路径
      * @param methodName 方法名
-     * @param args       参数，必须严格对应指定方法的参数类型和数量
+     * @param args       参数,必须严格对应指定方法的参数类型和数量
      * @return 返回结果
      */
     public static <T> T invoke(String className, String methodName, Object[] args) {
@@ -451,14 +451,14 @@ public class ClassUtils {
 
     /**
      * 执行方法<br>
-     * 可执行Private方法，也可执行static方法<br>
-     * 执行非static方法时，必须满足对象有默认构造方法<br>
+     * 可执行Private方法,也可执行static方法<br>
+     * 执行非static方法时,必须满足对象有默认构造方法<br>
      *
      * @param <T>         对象类型
-     * @param className   类名，完整类路径
+     * @param className   类名,完整类路径
      * @param methodName  方法名
-     * @param isSingleton 是否为单例对象，如果此参数为false，每次执行方法时创建一个新对象
-     * @param args        参数，必须严格对应指定方法的参数类型和数量
+     * @param isSingleton 是否为单例对象,如果此参数为false,每次执行方法时创建一个新对象
+     * @param args        参数,必须严格对应指定方法的参数类型和数量
      * @return 返回结果
      */
     public static <T> T invoke(String className, String methodName, boolean isSingleton, Object... args) {
@@ -533,7 +533,7 @@ public class ClassUtils {
     /**
      * 检查目标类是否可以从原类转化
      * 转化包括：
-     * 1、原类是对象，目标类型是原类型实现的接口
+     * 1、原类是对象,目标类型是原类型实现的接口
      * 2、目标类型是原类型的父类
      * 3、两者是原始类型或者包装类型（相互转换）
      *
@@ -548,7 +548,7 @@ public class ClassUtils {
     /**
      * 检查目标类是否可以从原类转化
      * 转化包括：
-     * 1、原类是对象，目标类型是原类型实现的接口
+     * 1、原类是对象,目标类型是原类型实现的接口
      * 2、目标类型是原类型的父类
      * 3、两者是原始类型或者包装类型（相互转换）
      *
@@ -563,7 +563,7 @@ public class ClassUtils {
     /**
      * 检查目标类是否可以从原类转化
      * 转化包括：
-     * 1、原类是对象，目标类型是原类型实现的接口
+     * 1、原类是对象,目标类型是原类型实现的接口
      * 2、目标类型是原类型的父类
      * 3、两者是原始类型或者包装类型（相互转换）
      *
@@ -782,7 +782,7 @@ public class ClassUtils {
     /**
      * 获得给定类的第一个泛型参数
      *
-     * @param clazz 被检查的类，必须是已经确定泛型类型的类
+     * @param clazz 被检查的类,必须是已经确定泛型类型的类
      * @return {@link Class}
      */
     public static Class<?> getTypeArgument(Class<?> clazz) {
@@ -792,8 +792,8 @@ public class ClassUtils {
     /**
      * 获得给定类的泛型参数
      *
-     * @param clazz 被检查的类，必须是已经确定泛型类型的类
-     * @param index 泛型类型的索引号，既第几个泛型类型
+     * @param clazz 被检查的类,必须是已经确定泛型类型的类
+     * @param index 泛型类型的索引号,既第几个泛型类型
      * @return {@link Class}
      */
     public static Class<?> getTypeArgument(Class<?> clazz, int index) {
@@ -839,7 +839,7 @@ public class ClassUtils {
      * 获取指定类型分的默认值
      * 默认值规则为：
      * <pre>
-     * 1、如果为原始类型，返回0
+     * 1、如果为原始类型,返回0
      * 2、非原始类型返回{@code null}
      * </pre>
      *
@@ -905,7 +905,7 @@ public class ClassUtils {
     }
 
     /**
-     * 对象转Map，不进行驼峰转下划线，不忽略值为空的字段
+     * 对象转Map,不进行驼峰转下划线,不忽略值为空的字段
      *
      * @param bean bean对象
      * @return Map
@@ -952,18 +952,18 @@ public class ClassUtils {
 
     /**
      * 对象转Map
-     * 通过实现{@link Editor} 可以自定义字段值，如果这个Editor返回null则忽略这个字段，以便实现：
+     * 通过实现{@link Editor} 可以自定义字段值,如果这个Editor返回null则忽略这个字段,以便实现：
      *
      * <pre>
-     * 1. 字段筛选，可以去除不需要的字段
-     * 2. 字段变换，例如实现驼峰转下划线
+     * 1. 字段筛选,可以去除不需要的字段
+     * 2. 字段变换,例如实现驼峰转下划线
      * 3. 自定义字段前缀或后缀等等
      * </pre>
      *
      * @param bean            bean对象
      * @param targetMap       目标的Map
      * @param ignoreNullValue 是否忽略值为空的字段
-     * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key
+     * @param keyEditor       属性字段（Map的key）编辑器,用于筛选、编辑key
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
@@ -1033,7 +1033,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获得ClassPath，将编码后的中文路径解码为原字符
+     * 获得ClassPath,将编码后的中文路径解码为原字符
      * 这个ClassPath路径会文件路径被标准化处理
      *
      * @return ClassPath
@@ -1043,7 +1043,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获得ClassPath，这个ClassPath路径会文件路径被标准化处理
+     * 获得ClassPath,这个ClassPath路径会文件路径被标准化处理
      *
      * @param isEncoded 是否编码路径中的中文
      * @return ClassPath
@@ -1065,7 +1065,7 @@ public class ClassUtils {
 
     /**
      * 获得资源的URL
-     * 路径用/分隔，例如:
+     * 路径用/分隔,例如:
      *
      * <pre>
      * config/a/db.config
@@ -1087,7 +1087,7 @@ public class ClassUtils {
      * @param <T>           Bean类型
      * @param bean          Bean
      * @param valueProvider 值提供者
-     * @param copyOptions   拷贝选项，见 {@link CopyOptions}
+     * @param copyOptions   拷贝选项,见 {@link CopyOptions}
      * @return Bean
      */
     public static <T> T fillBean(T bean, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
@@ -1108,13 +1108,13 @@ public class ClassUtils {
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader并初始化类（调用static模块内容和初始化static属性）
-     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
+     * 加载类,通过传入类的字符串,返回其对应的类名,使用默认ClassLoader并初始化类（调用static模块内容和初始化static属性）
+     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法,支持以下几类类名的加载：
      *
      * <pre>
-     * 1、原始类型，例如：int
-     * 2、数组类型，例如：int[]、Long[]、String[]
-     * 3、内部类，例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
+     * 1、原始类型,例如：int
+     * 2、数组类型,例如：int[]、Long[]、String[]
+     * 3、内部类,例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
      * </pre>
      *
      * @param <T>  对象
@@ -1127,13 +1127,13 @@ public class ClassUtils {
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader
-     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
+     * 加载类,通过传入类的字符串,返回其对应的类名,使用默认ClassLoader
+     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法,支持以下几类类名的加载：
      *
      * <pre>
-     * 1、原始类型，例如：int
-     * 2、数组类型，例如：int[]、Long[]、String[]
-     * 3、内部类，例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
+     * 1、原始类型,例如：int
+     * 2、数组类型,例如：int[]、Long[]、String[]
+     * 3、内部类,例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
      * </pre>
      *
      * @param <T>           对象
@@ -1147,19 +1147,19 @@ public class ClassUtils {
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名
-     * 此方法支持缓存，第一次被加载的类之后会读取缓存中的类
+     * 加载类,通过传入类的字符串,返回其对应的类名
+     * 此方法支持缓存,第一次被加载的类之后会读取缓存中的类
      * 加载失败的原因可能是此类不存在或其关联引用类不存在
-     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
+     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法,支持以下几类类名的加载：
      *
      * <pre>
-     * 1、原始类型，例如：int
-     * 2、数组类型，例如：int[]、Long[]、String[]
-     * 3、内部类，例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
+     * 1、原始类型,例如：int
+     * 2、数组类型,例如：int[]、Long[]、String[]
+     * 3、内部类,例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
      * </pre>
      *
      * @param name          类名
-     * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
+     * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
      * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
      * @return 类名对应的类
      * @throws InstrumentException 没有类名对应的类时抛出此异常
@@ -1199,7 +1199,7 @@ public class ClassUtils {
             try {
                 clazz = Class.forName(name, isInitialized, classLoader);
             } catch (ClassNotFoundException ex) {
-                // 尝试获取内部类，例如java.lang.Thread.State =》java.lang.Thread$State
+                // 尝试获取内部类,例如java.lang.Thread.State =》java.lang.Thread$State
                 clazz = tryLoadInnerClass(name, classLoader, isInitialized);
                 if (null == clazz) {
                     throw new InstrumentException(ex);
@@ -1212,9 +1212,9 @@ public class ClassUtils {
     }
 
     /**
-     * 加载原始类型的类。包括原始类型、原始类型数组和void
+     * 加载原始类型的类 包括原始类型、原始类型数组和void
      *
-     * @param name 原始类型名，比如 int
+     * @param name 原始类型名,比如 int
      * @return 原始类型类
      */
     public static Class<?> loadPrimitiveClass(String name) {
@@ -1229,7 +1229,7 @@ public class ClassUtils {
     }
 
     /**
-     * 创建新的{@link JarLoaders}，并使用此Classloader加载目录下的class文件和jar文件
+     * 创建新的{@link JarLoaders},并使用此Classloader加载目录下的class文件和jar文件
      *
      * @param jarOrDir jar文件或者包含jar和class文件的目录
      * @return {@link JarLoaders}
@@ -1254,8 +1254,8 @@ public class ClassUtils {
     }
 
     /**
-     * 指定类是否被提供，使用默认ClassLoader
-     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类，如果加载失败返回false
+     * 指定类是否被提供,使用默认ClassLoader
+     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类,如果加载失败返回false
      * 加载失败的原因可能是此类不存在或其关联引用类不存在
      *
      * @param className 类名
@@ -1267,7 +1267,7 @@ public class ClassUtils {
 
     /**
      * 指定类是否被提供
-     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类，如果加载失败返回false
+     * 通过调用{@link #loadClass(String, ClassLoader, boolean)}方法尝试加载指定类名的类,如果加载失败返回false
      * 加载失败的原因可能是此类不存在或其关联引用类不存在
      *
      * @param className   类名
@@ -1284,22 +1284,22 @@ public class ClassUtils {
     }
 
     /**
-     * 尝试转换并加载内部类，例如java.lang.Thread.State =》java.lang.Thread$State
+     * 尝试转换并加载内部类,例如java.lang.Thread.State =》java.lang.Thread$State
      *
      * @param name          类名
-     * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
+     * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
      * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
      * @return 类名对应的类
      */
     private static Class<?> tryLoadInnerClass(String name, ClassLoader classLoader, boolean isInitialized) {
-        // 尝试获取内部类，例如java.lang.Thread.State =》java.lang.Thread$State
+        // 尝试获取内部类,例如java.lang.Thread.State =》java.lang.Thread$State
         final int lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
-        if (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位，因此>0
+        if (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位,因此>0
             final String innerClassName = name.substring(0, lastDotIndex) + Symbol.C_DOLLAR + name.substring(lastDotIndex + 1);
             try {
                 return Class.forName(innerClassName, isInitialized, classLoader);
             } catch (ClassNotFoundException ex2) {
-                // 尝试获取内部类失败时，忽略之。
+                // 尝试获取内部类失败时,忽略之
             }
         }
         return null;
@@ -1879,7 +1879,7 @@ public class ClassUtils {
     /**
      * 获取类所有的字段信息
      * ps: 这个方法有个问题 如果子类和父类有相同的字段 会不会重复
-     * 1. 还会获取到 serialVersionUID 这个字段。
+     * 1. 还会获取到 serialVersionUID 这个字段
      *
      * @param clazz 类
      * @return 字段列表

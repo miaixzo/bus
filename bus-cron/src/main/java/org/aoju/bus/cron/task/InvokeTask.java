@@ -32,8 +32,8 @@ import java.lang.reflect.Method;
 
 /**
  * 反射执行任务
- * 通过传入类名#方法名，通过反射执行相应的方法
- * 如果是静态方法直接执行，如果是对象方法，需要类有默认的构造方法。
+ * 通过传入类名#方法名,通过反射执行相应的方法
+ * 如果是静态方法直接执行,如果是对象方法,需要类有默认的构造方法
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -48,7 +48,7 @@ public class InvokeTask implements Task {
     /**
      * 构造
      *
-     * @param classNameWithMethodName 类名与方法名的字符串表示，方法名和类名使用#隔开或者.隔开
+     * @param classNameWithMethodName 类名与方法名的字符串表示,方法名和类名使用#隔开或者.隔开
      */
     public InvokeTask(String classNameWithMethodName) {
         int splitIndex = classNameWithMethodName.lastIndexOf('#');

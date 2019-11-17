@@ -50,7 +50,7 @@ public class BookUtils {
     /**
      * 创建或加载工作簿
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param excelFilePath Excel文件路径,绝对路径或相对于ClassPath路径
      * @return {@link Workbook}
      * @since 3.1.1
      */
@@ -69,10 +69,10 @@ public class BookUtils {
     }
 
     /**
-     * 创建或加载工作簿，只读模式
+     * 创建或加载工作簿,只读模式
      *
      * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @param password  Excel工作簿密码,如果无密码传{@code null}
      * @return {@link Workbook}
      */
     public static Workbook createBook(File excelFile, String password) {
@@ -115,7 +115,7 @@ public class BookUtils {
     }
 
     /**
-     * 根据文件类型创建新的工作簿，文件路径
+     * 根据文件类型创建新的工作簿,文件路径
      *
      * @param isXlsx 是否为xlsx格式的Excel
      * @return {@link Workbook}
@@ -133,7 +133,7 @@ public class BookUtils {
     /**
      * 创建或加载SXSSFWorkbook工作簿
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param excelFilePath Excel文件路径,绝对路径或相对于ClassPath路径
      * @return {@link SXSSFWorkbook}
      */
     public static SXSSFWorkbook createSXSSFBook(String excelFilePath) {
@@ -151,10 +151,10 @@ public class BookUtils {
     }
 
     /**
-     * 创建或加载SXSSFWorkbook工作簿，只读模式
+     * 创建或加载SXSSFWorkbook工作簿,只读模式
      *
      * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @param password  Excel工作簿密码,如果无密码传{@code null}
      * @return {@link SXSSFWorkbook}
      */
     public static SXSSFWorkbook createSXSSFBook(File excelFile, String password) {
@@ -185,7 +185,7 @@ public class BookUtils {
     }
 
     /**
-     * 创建SXSSFWorkbook，用于大批量数据写出
+     * 创建SXSSFWorkbook,用于大批量数据写出
      *
      * @return {@link SXSSFWorkbook}
      */
@@ -194,7 +194,7 @@ public class BookUtils {
     }
 
     /**
-     * 创建SXSSFWorkbook，用于大批量数据写出
+     * 创建SXSSFWorkbook,用于大批量数据写出
      *
      * @param rowAccessWindowSize 在内存中的行数
      * @return {@link Workbook}
@@ -204,7 +204,7 @@ public class BookUtils {
     }
 
     /**
-     * 将Excel Workbook刷出到输出流，不关闭流
+     * 将Excel Workbook刷出到输出流,不关闭流
      *
      * @param book {@link Workbook}
      * @param out  输出流
@@ -221,7 +221,7 @@ public class BookUtils {
 
     /**
      * 获取或者创建sheet表
-     * 如果sheet表在Workbook中已经存在，则获取之，否则创建之
+     * 如果sheet表在Workbook中已经存在,则获取之,否则创建之
      *
      * @param book      工作簿{@link Workbook}
      * @param sheetName 工作表名

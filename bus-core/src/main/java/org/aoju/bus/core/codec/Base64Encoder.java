@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
 public class Base64Encoder {
 
     /**
-     * 编码为Base64，非URL安全的
+     * 编码为Base64,非URL安全的
      *
      * @param arr     被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
@@ -48,7 +48,7 @@ public class Base64Encoder {
     }
 
     /**
-     * 编码为Base64，URL安全的
+     * 编码为Base64,URL安全的
      *
      * @param arr     被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
@@ -70,7 +70,7 @@ public class Base64Encoder {
     }
 
     /**
-     * base64编码，URL安全
+     * base64编码,URL安全
      *
      * @param source 被编码的base64字符串
      * @return 被加密后的字符串
@@ -115,7 +115,7 @@ public class Base64Encoder {
     }
 
     /**
-     * base64编码，URL安全的
+     * base64编码,URL安全的
      *
      * @param source  被编码的base64字符串
      * @param charset 字符集
@@ -159,7 +159,7 @@ public class Base64Encoder {
     }
 
     /**
-     * base64编码，URL安全的
+     * base64编码,URL安全的
      *
      * @param source  被编码的base64字符串
      * @param charset 字符集
@@ -182,7 +182,7 @@ public class Base64Encoder {
     }
 
     /**
-     * base64编码，URL安全的
+     * base64编码,URL安全的
      *
      * @param source  被编码的base64字符串
      * @param charset 字符集
@@ -194,11 +194,11 @@ public class Base64Encoder {
     }
 
     /**
-     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串。
+     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串
      *
      * @param buffer    被编码的数组
      * @param charset   字符集
-     * @param isUrlSafe 是否使用URL安全字符，一般为<code>false</code>
+     * @param isUrlSafe 是否使用URL安全字符,一般为<code>false</code>
      * @return 编码后的字符串
      */
     public static String encodeBuffer(byte[] buffer, boolean isUrlSafe, Charset charset) {
@@ -206,10 +206,10 @@ public class Base64Encoder {
     }
 
     /**
-     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串。
+     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串
      *
      * @param buffer    被编码的数组
-     * @param isUrlSafe 是否使用URL安全字符，一般为<code>false</code>
+     * @param isUrlSafe 是否使用URL安全字符,一般为<code>false</code>
      * @return 编码后的字符串
      */
     public static String encodeBuffer(byte[] buffer, boolean isUrlSafe) {
@@ -217,7 +217,7 @@ public class Base64Encoder {
     }
 
     /**
-     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串。
+     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串
      *
      * @param buffer  被编码的数组
      * @param charset 字符集
@@ -228,7 +228,7 @@ public class Base64Encoder {
     }
 
     /**
-     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串。
+     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串
      *
      * @param buffer 被编码的数组
      * @return 编码后的字符串
@@ -239,11 +239,11 @@ public class Base64Encoder {
 
     /**
      * 编码为Base64
-     * 如果isMultiLine为<code>true</code>，则每76个字符一个换行符，否则在一行显示
+     * 如果isMultiLine为<code>true</code>,则每76个字符一个换行符,否则在一行显示
      *
      * @param arr         被编码的数组
      * @param isMultiLine 在76个char之后是CRLF还是EOF
-     * @param isUrlSafe   是否使用URL安全字符，一般为<code>false</code>
+     * @param isUrlSafe   是否使用URL安全字符,一般为<code>false</code>
      * @return 编码后的bytes
      */
     public static byte[] encode(byte[] arr, boolean isMultiLine, boolean isUrlSafe) {
@@ -286,7 +286,7 @@ public class Base64Encoder {
             dest[destlen - 3] = encodeTable[(i >>> 6) & 0x3f];
 
             if (isUrlSafe) {
-                // 在URL Safe模式下，=为URL中的关键字符，不需要补充。空余的byte位要去掉。
+                // 在URL Safe模式下,=为URL中的关键字符,不需要补充 空余的byte位要去掉
                 int urlSafeLen = destlen - 2;
                 if (2 == left) {
                     dest[destlen - 2] = encodeTable[i & 0x3f];

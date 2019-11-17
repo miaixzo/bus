@@ -101,9 +101,9 @@ abstract class FormatCache<F extends Format> {
     /**
      * 使用 pattern, time zone and locale 获得对应的 格式化器
      *
-     * @param pattern  非空日期格式，使用与 {@link SimpleDateFormat}相同格式
-     * @param timeZone 时区，默认当前时区
-     * @param locale   地区，默认使用当前地区
+     * @param pattern  非空日期格式,使用与 {@link SimpleDateFormat}相同格式
+     * @param timeZone 时区,默认当前时区
+     * @param locale   地区,默认使用当前地区
      * @return 格式化器
      * @throws IllegalArgumentException pattern 无效或<criteria>null</criteria>
      */
@@ -134,9 +134,9 @@ abstract class FormatCache<F extends Format> {
     /**
      * 创建格式化器
      *
-     * @param pattern  非空日期格式，使用与 {@link SimpleDateFormat}相同格式
-     * @param timeZone 时区，默认当前时区
-     * @param locale   地区，默认使用当前地区
+     * @param pattern  非空日期格式,使用与 {@link SimpleDateFormat}相同格式
+     * @param timeZone 时区,默认当前时区
+     * @param locale   地区,默认使用当前地区
      * @return 格式化器
      * @throws IllegalArgumentException pattern 无效或<criteria>null</criteria>
      */

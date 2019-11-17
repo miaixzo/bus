@@ -49,7 +49,7 @@ public class MapUtils {
      */
     public static final int DEFAULT_INITIAL_CAPACITY = 16;
     /**
-     * 默认增长因子，当Map的size达到 容量*增长因子时，开始扩充Map
+     * 默认增长因子,当Map的size达到 容量*增长因子时,开始扩充Map
      */
     public static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
@@ -89,8 +89,8 @@ public class MapUtils {
      *
      * @param <K>     Key类型
      * @param <V>     Value类型
-     * @param size    初始大小，由于默认负载因子0.75，传入的size会实际初始大小为size / 0.75
-     * @param isOrder Map的Key是否有序，有序返回 {@link LinkedHashMap}，否则返回 {@link HashMap}
+     * @param size    初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
+     * @param isOrder Map的Key是否有序,有序返回 {@link LinkedHashMap},否则返回 {@link HashMap}
      * @return HashMap对象
      * @since 3.0.4
      */
@@ -104,7 +104,7 @@ public class MapUtils {
      *
      * @param <K>  Key类型
      * @param <V>  Value类型
-     * @param size 初始大小，由于默认负载因子0.75，传入的size会实际初始大小为size / 0.75
+     * @param size 初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
      * @return HashMap对象
      */
     public static <K, V> HashMap<K, V> newHashMap(int size) {
@@ -116,7 +116,7 @@ public class MapUtils {
      *
      * @param <K>     Key类型
      * @param <V>     Value类型
-     * @param isOrder Map的Key是否有序，有序返回 {@link LinkedHashMap}，否则返回 {@link HashMap}
+     * @param isOrder Map的Key是否有序,有序返回 {@link LinkedHashMap},否则返回 {@link HashMap}
      * @return HashMap对象
      */
     public static <K, V> HashMap<K, V> newHashMap(boolean isOrder) {
@@ -124,7 +124,7 @@ public class MapUtils {
     }
 
     /**
-     * 新建TreeMap，Key有序的Map
+     * 新建TreeMap,Key有序的Map
      *
      * @param <K>        Key类型
      * @param <V>        Value类型
@@ -137,7 +137,7 @@ public class MapUtils {
     }
 
     /**
-     * 新建TreeMap，Key有序的Map
+     * 新建TreeMap,Key有序的Map
      *
      * @param <K>        Key类型
      * @param <V>        Value类型
@@ -205,13 +205,13 @@ public class MapUtils {
     }
 
     /**
-     * 将数组转换为Map（HashMap），支持数组元素类型为：
+     * 将数组转换为Map（HashMap）,支持数组元素类型为：
      *
      * <pre>
      * Map.Entry
-     * 长度大于1的数组（取前两个值），如果不满足跳过此元素
-     * Iterable 长度也必须大于1（取前两个值），如果不满足跳过此元素
-     * Iterator 长度也必须大于1（取前两个值），如果不满足跳过此元素
+     * 长度大于1的数组（取前两个值）,如果不满足跳过此元素
+     * Iterable 长度也必须大于1（取前两个值）,如果不满足跳过此元素
+     * Iterator 长度也必须大于1（取前两个值）,如果不满足跳过此元素
      * </pre>
      *
      * <pre>
@@ -223,7 +223,7 @@ public class MapUtils {
      * <p>
      * 参考：commons-lang
      *
-     * @param array 数组。元素类型为Map.Entry、数组、Iterable、Iterator
+     * @param array 数组 元素类型为Map.Entry、数组、Iterable、Iterator
      * @return {@link HashMap}
      */
     public static HashMap<Object, Object> of(Object[] array) {
@@ -267,7 +267,7 @@ public class MapUtils {
     }
 
     /**
-     * 行转列，合并相同的键，值合并为列表
+     * 行转列,合并相同的键,值合并为列表
      * 将Map列表中相同key的值组成列表做为Map的value
      * 是{@link #toMapList(Map)}的逆方法
      * 比如传入数据：
@@ -323,7 +323,7 @@ public class MapUtils {
     }
 
     /**
-     * 列转行。将Map中值列表分别按照其位置与key组成新的map。
+     * 列转行 将Map中值列表分别按照其位置与key组成新的map
      * 是{@link #toListMap(Iterable)}的逆方法
      * 比如传入数据：
      *
@@ -357,7 +357,7 @@ public class MapUtils {
             return resultList;
         }
 
-        boolean isEnd = true;// 是否结束。标准是元素列表已耗尽
+        boolean isEnd = true;// 是否结束 标准是元素列表已耗尽
         int index = 0;// 值索引
         Map<K, V> map;
         do {
@@ -371,7 +371,7 @@ public class MapUtils {
                 if (index < vListSize) {
                     map.put(entry.getKey(), vList.get(index));
                     if (index != vListSize - 1) {
-                        // 当值列表中还有更多值（非最后一个），继续循环
+                        // 当值列表中还有更多值（非最后一个）,继续循环
                         isEnd = false;
                     }
                 }
@@ -387,7 +387,7 @@ public class MapUtils {
 
     /**
      * 将已知Map转换为key为驼峰风格的Map
-     * 如果KEY为非String类型，保留原值
+     * 如果KEY为非String类型,保留原值
      *
      * @param <K> Key类型
      * @param <V> Value类型
@@ -400,7 +400,7 @@ public class MapUtils {
     }
 
     /**
-     * 将键值对转换为二维数组，第一维是key，第二纬是value
+     * 将键值对转换为二维数组,第一维是key,第二纬是value
      *
      * @param map Map
      * @return 数组
@@ -438,7 +438,7 @@ public class MapUtils {
     }
 
     /**
-     * 将map转成字符串，忽略null的键和值
+     * 将map转成字符串,忽略null的键和值
      *
      * @param <K>               键类型
      * @param <V>               值类型
@@ -481,11 +481,11 @@ public class MapUtils {
 
     /**
      * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象，返回集合中为修改后的对象
+     * 1、过滤出需要的对象,如果返回null表示这个元素对象抛弃
+     * 2、修改元素对象,返回集合中为修改后的对象
      * </pre>
      *
      * @param <K>    Key类型
@@ -513,11 +513,11 @@ public class MapUtils {
 
     /**
      * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象，返回集合中为修改后的对象
+     * 1、过滤出需要的对象,如果返回null表示这个元素对象抛弃
+     * 2、修改元素对象,返回集合中为修改后的对象
      * </pre>
      *
      * @param <K>    Key类型
@@ -543,13 +543,13 @@ public class MapUtils {
     }
 
     /**
-     * 过滤Map保留指定键值对，如果键不存在跳过
+     * 过滤Map保留指定键值对,如果键不存在跳过
      *
      * @param <K>  Key类型
      * @param <V>  Value类型
      * @param map  原始Map
      * @param keys 键列表
-     * @return Map 结果，结果的Map类型与原Map保持一致
+     * @return Map 结果,结果的Map类型与原Map保持一致
      */
     public static <K, V> Map<K, V> filter(Map<K, V> map, K... keys) {
         final Map<K, V> map2 = ObjectUtils.clone(map);
@@ -570,7 +570,7 @@ public class MapUtils {
      * Map的键和值互换
      *
      * @param <T> 键和值类型
-     * @param map Map对象，键值类型必须一致
+     * @param map Map对象,键值类型必须一致
      * @return 互换后的Map
      * @since 5.2.2
      */
@@ -600,7 +600,7 @@ public class MapUtils {
     }
 
     /**
-     * 排序已有Map，Key有序的Map，使用默认Key排序方式（字母顺序）
+     * 排序已有Map,Key有序的Map,使用默认Key排序方式（字母顺序）
      *
      * @param <K> Key类型
      * @param <V> Value类型
@@ -613,7 +613,7 @@ public class MapUtils {
     }
 
     /**
-     * 排序已有Map，Key有序的Map
+     * 排序已有Map,Key有序的Map
      *
      * @param <K>        Key类型
      * @param <V>        Value类型
@@ -625,7 +625,7 @@ public class MapUtils {
     public static <K, V> TreeMap<K, V> sort(Map<K, V> map, Comparator<? super K> comparator) {
         TreeMap<K, V> result;
         if (map instanceof TreeMap) {
-            // 已经是可排序Map，此时只有比较器一致才返回原map
+            // 已经是可排序Map,此时只有比较器一致才返回原map
             result = (TreeMap<K, V>) map;
             if (null == comparator || comparator.equals(result.comparator())) {
                 return result;
@@ -639,7 +639,7 @@ public class MapUtils {
 
     /**
      * 创建代理Map
-     * {@link MapProxy}对Map做一次包装，提供各种getXXX方法
+     * {@link MapProxy}对Map做一次包装,提供各种getXXX方法
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
@@ -692,7 +692,7 @@ public class MapUtils {
      * @param <V>  Value类型
      * @param map  Map
      * @param keys 键列表
-     * @return 新Map，只包含指定的key
+     * @return 新Map, 只包含指定的key
      */
     public static <K, V> Map<K, V> getAny(Map<K, V> map, final K... keys) {
         return filter(map, new Filter<Entry<K, V>>() {
@@ -705,7 +705,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为字符串
+     * 获取Map指定key的值,并转换为字符串
      *
      * @param map Map
      * @param key 键
@@ -716,7 +716,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为Integer
+     * 获取Map指定key的值,并转换为Integer
      *
      * @param map Map
      * @param key 键
@@ -727,7 +727,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为Double
+     * 获取Map指定key的值,并转换为Double
      *
      * @param map Map
      * @param key 键
@@ -738,7 +738,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为Float
+     * 获取Map指定key的值,并转换为Float
      *
      * @param map Map
      * @param key 键
@@ -749,7 +749,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为Short
+     * 获取Map指定key的值,并转换为Short
      *
      * @param map Map
      * @param key 键
@@ -760,7 +760,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为Bool
+     * 获取Map指定key的值,并转换为Bool
      *
      * @param map Map
      * @param key 键
@@ -771,7 +771,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为Character
+     * 获取Map指定key的值,并转换为Character
      *
      * @param map Map
      * @param key 键
@@ -782,7 +782,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为Long
+     * 获取Map指定key的值,并转换为Long
      *
      * @param map Map
      * @param key 键
@@ -793,7 +793,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为{@link Date}
+     * 获取Map指定key的值,并转换为{@link Date}
      *
      * @param map Map
      * @param key 键
@@ -804,7 +804,7 @@ public class MapUtils {
     }
 
     /**
-     * 获取Map指定key的值，并转换为指定类型
+     * 获取Map指定key的值,并转换为指定类型
      *
      * @param <T>  目标值类型
      * @param map  Map
@@ -818,8 +818,8 @@ public class MapUtils {
 
     /**
      * 重命名键
-     * 实现方式为一处然后重新put，当旧的key不存在直接返回
-     * 当新的key存在，抛出{@link IllegalArgumentException} 异常
+     * 实现方式为一处然后重新put,当旧的key不存在直接返回
+     * 当新的key存在,抛出{@link IllegalArgumentException} 异常
      *
      * @param <K>    Key类型
      * @param <V>    Value类型

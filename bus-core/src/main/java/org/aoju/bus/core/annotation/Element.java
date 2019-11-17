@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 组合注解 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。
- * 核心实现使用了递归获取指定元素上的注解以及注解的注解，以实现复合注解的获取。
+ * 组合注解 对JDK的原生注解机制做一个增强,支持类似Spring的组合注解
+ * 核心实现使用了递归获取指定元素上的注解以及注解的注解,以实现复合注解的获取
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -115,7 +115,7 @@ public class Element implements AnnotatedElement {
     }
 
     /**
-     * 进行递归解析注解，直到全部都是元注解为止
+     * 进行递归解析注解,直到全部都是元注解为止
      *
      * @param annotations Class, Method, Field等
      */
@@ -132,7 +132,7 @@ public class Element implements AnnotatedElement {
     }
 
     /**
-     * 进行递归解析注解，直到全部都是元注解为止
+     * 进行递归解析注解,直到全部都是元注解为止
      *
      * @param annotations Class, Method, Field等
      */

@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * 动态Bean，通过反射对Bean的相关方法做操作
+ * 动态Bean,通过反射对Bean的相关方法做操作
  * 支持Map和普通Bean
  *
  * @author Kimi Liu
@@ -119,7 +119,7 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
     }
 
     /**
-     * 获得字段对应值，获取异常返回{@code null}
+     * 获得字段对应值,获取异常返回{@code null}
      *
      * @param <T>       属性值类型
      * @param fieldName 字段名
@@ -163,7 +163,7 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
      *
      * @param methodName 方法名
      * @param params     参数
-     * @return 执行结果，可能为null
+     * @return 执行结果, 可能为null
      */
     public Object invoke(String methodName, Object... params) {
         return ReflectUtils.invoke(this.bean, methodName, params);

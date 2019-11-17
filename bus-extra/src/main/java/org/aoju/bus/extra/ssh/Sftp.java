@@ -43,9 +43,9 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议。可以为传输文件提供一种安全的加密方法。
- * SFTP 为 SSH的一部份，是一种传输文件到服务器的安全方式。SFTP是使用加密传输认证信息和传输的数据，所以，使用SFTP是非常安全的。
- * 但是，由于这种传输方式使用了加密/解密技术，所以传输效率比普通的FTP要低得多，如果您对网络安全性要求更高时，可以使用SFTP代替FTP。
+ * SFTP是Secure File Transfer Protocol的缩写,安全文件传送协议 可以为传输文件提供一种安全的加密方法
+ * SFTP 为 SSH的一部份,是一种传输文件到服务器的安全方式 SFTP是使用加密传输认证信息和传输的数据,所以,使用SFTP是非常安全的
+ * 但是,由于这种传输方式使用了加密/解密技术,所以传输效率比普通的FTP要低得多,如果您对网络安全性要求更高时,可以使用SFTP代替FTP
  *
  * <p>
  * 此类为基于jsch的SFTP实现
@@ -204,7 +204,7 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件或目录，不会递归遍历
+     * 遍历某个目录下所有文件或目录,不会递归遍历
      *
      * @param path 遍历某个目录下所有文件或目录
      * @return 目录或文件名列表
@@ -215,7 +215,7 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有目录，不会递归遍历
+     * 遍历某个目录下所有目录,不会递归遍历
      *
      * @param path 遍历某个目录下所有目录
      * @return 目录名列表
@@ -230,7 +230,7 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件，不会递归遍历
+     * 遍历某个目录下所有文件,不会递归遍历
      *
      * @param path 遍历某个目录下所有文件
      * @return 文件名列表
@@ -245,10 +245,10 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件或目录，不会递归遍历
+     * 遍历某个目录下所有文件或目录,不会递归遍历
      *
      * @param path   遍历某个目录下所有文件或目录
-     * @param filter 文件或目录过滤器，可以实现过滤器返回自己需要的文件或目录名列表
+     * @param filter 文件或目录过滤器,可以实现过滤器返回自己需要的文件或目录名列表
      * @return 目录或文件名列表
      */
     public List<String> ls(String path, final Filter<LsEntry> filter) {
@@ -283,7 +283,7 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
-     * 打开指定目录，如果指定路径非目录或不存在返回false
+     * 打开指定目录,如果指定路径非目录或不存在返回false
      *
      * @param directory directory
      * @return 是否打开目录
@@ -368,10 +368,10 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
-     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与srcFilePath文件名相同。覆盖模式
+     * 将本地文件上传到目标服务器,目标文件名为destPath,若destPath为目录,则目标文件名将与srcFilePath文件名相同 覆盖模式
      *
      * @param srcFilePath 本地文件路径
-     * @param destPath    目标路径，
+     * @param destPath    目标路径,
      * @return this
      */
     public Sftp put(String srcFilePath, String destPath) {
@@ -379,10 +379,10 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
-     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与srcFilePath文件名相同。
+     * 将本地文件上传到目标服务器,目标文件名为destPath,若destPath为目录,则目标文件名将与srcFilePath文件名相同
      *
      * @param srcFilePath 本地文件路径
-     * @param destPath    目标路径，
+     * @param destPath    目标路径,
      * @param mode        {@link Mode} 模式
      * @return this
      */
@@ -427,15 +427,15 @@ public class Sftp extends AbstractFtp {
      */
     public static enum Mode {
         /**
-         * 完全覆盖模式，这是JSch的默认文件传输模式，即如果目标文件已经存在，传输的文件将完全覆盖目标文件，产生新的文件。
+         * 完全覆盖模式,这是JSch的默认文件传输模式,即如果目标文件已经存在,传输的文件将完全覆盖目标文件,产生新的文件
          */
         OVERWRITE,
         /**
-         * 恢复模式，如果文件已经传输一部分，这时由于网络或其他任何原因导致文件传输中断，如果下一次传输相同的文件，则会从上一次中断的地方续传。
+         * 恢复模式,如果文件已经传输一部分,这时由于网络或其他任何原因导致文件传输中断,如果下一次传输相同的文件,则会从上一次中断的地方续传
          */
         RESUME,
         /**
-         * 追加模式，如果目标文件已存在，传输的文件将在目标文件后追加。
+         * 追加模式,如果目标文件已存在,传输的文件将在目标文件后追加
          */
         APPEND;
     }

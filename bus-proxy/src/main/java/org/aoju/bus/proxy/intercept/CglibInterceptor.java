@@ -43,7 +43,7 @@ public class CglibInterceptor implements MethodInterceptor {
             try {
                 result = proxy.invokeSuper(obj, args);
             } catch (InvocationTargetException e) {
-                // 异常回调（只捕获业务代码导致的异常，而非反射导致的异常）
+                // 异常回调（只捕获业务代码导致的异常,而非反射导致的异常）
                 if (aspect.afterException(target, method, args, e.getTargetException())) {
                     throw e;
                 }

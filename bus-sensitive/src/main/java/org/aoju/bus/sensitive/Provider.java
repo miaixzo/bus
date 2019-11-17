@@ -106,9 +106,9 @@ public class Provider<T> {
 
     /**
      * 对象进行脱敏操作
-     * 原始对象不变，返回脱敏后的新对象
+     * 原始对象不变,返回脱敏后的新对象
      * 1. 为什么这么设计？
-     * 不能因为脱敏，就导致代码中的对象被改变。否则代码逻辑会出现问题。
+     * 不能因为脱敏,就导致代码中的对象被改变 否则代码逻辑会出现问题
      *
      * @param object     原始对象
      * @param annotation 注解信息
@@ -130,7 +130,7 @@ public class Provider<T> {
         final Context context = new Context();
 
         if (clone) {
-            // 2. 深度复制，不改变原始对象
+            // 2. 深度复制,不改变原始对象
             T copy = clone(object);
             handleClassField(context, copy, clazz);
             return copy;
@@ -174,7 +174,7 @@ public class Provider<T> {
     private void handleClassField(final Context context,
                                   final Object copyObject,
                                   final Class clazz) {
-        // 每一个实体对应的字段，只对当前 clazz 生效。
+        // 每一个实体对应的字段,只对当前 clazz 生效
         List<Field> fieldList = ClassUtils.getAllFieldList(clazz);
         context.setAllFieldList(fieldList);
         context.setCurrentObject(copyObject);
@@ -204,13 +204,13 @@ public class Provider<T> {
                             Object firstArrayEntry = arrays[0];
                             final Class entryFieldClass = firstArrayEntry.getClass();
 
-                            //1. 如果需要特殊处理，则循环特殊处理
+                            //1. 如果需要特殊处理,则循环特殊处理
                             if (needHandleEntryType(entryFieldClass)) {
                                 for (Object arrayEntry : arrays) {
                                     handleClassField(context, arrayEntry, entryFieldClass);
                                 }
                             } else {
-                                //2, 基础值，直接循环设置即可
+                                //2, 基础值,直接循环设置即可
                                 final int arrayLength = arrays.length;
                                 Object newArray = Array.newInstance(entryFieldClass, arrayLength);
                                 for (int i = 0; i < arrayLength; i++) {
@@ -228,13 +228,13 @@ public class Provider<T> {
                             Object firstCollectionEntry = entryCollection.iterator().next();
                             Class collectionEntryClass = firstCollectionEntry.getClass();
 
-                            //1. 如果需要特殊处理，则循环特殊处理
+                            //1. 如果需要特殊处理,则循环特殊处理
                             if (needHandleEntryType(collectionEntryClass)) {
                                 for (Object collectionEntry : entryCollection) {
                                     handleClassField(context, collectionEntry, collectionEntryClass);
                                 }
                             } else {
-                                //2, 基础值，直接循环设置即可
+                                //2, 基础值,直接循环设置即可
                                 List<Object> newResultList = new ArrayList<>(entryCollection.size());
                                 for (Object entry : entryCollection) {
                                     Object result = handleSensitiveEntry(context, entry, field);
@@ -244,8 +244,8 @@ public class Provider<T> {
                             }
                         }
                     } else {
-                        // 1. 常见的基本类型，不做处理
-                        // 2. 如果为 map，暂时不支持处理。后期可以考虑支持 value 的脱敏，或者 key 的脱敏
+                        // 1. 常见的基本类型,不做处理
+                        // 2. 如果为 map,暂时不支持处理 后期可以考虑支持 value 的脱敏,或者 key 的脱敏
                         // 3. 其他
                         // 处理单个字段脱敏信息
                         handleSensitive(context, copyObject, field);
@@ -263,7 +263,7 @@ public class Provider<T> {
     /**
      * 处理需脱敏的单个对象
      * <p>
-     * 1. 为了简化操作，所有的自定义注解使用多个，不生效。
+     * 1. 为了简化操作,所有的自定义注解使用多个,不生效
      * 2. 生效顺序如下：
      * （1）Sensitive
      * （2）系统内置自定义注解

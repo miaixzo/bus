@@ -73,7 +73,7 @@ public abstract class CountExecutor {
     }
 
     /**
-     * 尝试获取已经存在的在 MS，提供对手写count和page的支持
+     * 尝试获取已经存在的在 MS,提供对手写count和page的支持
      *
      * @param configuration 配置
      * @param msId          标识
@@ -90,7 +90,7 @@ public abstract class CountExecutor {
     }
 
     /**
-     * 执行手动设置的 count 查询，该查询支持的参数必须和被分页的方法相同
+     * 执行手动设置的 count 查询,该查询支持的参数必须和被分页的方法相同
      *
      * @param executor      执行者
      * @param countMs       MappedStatement
@@ -133,7 +133,7 @@ public abstract class CountExecutor {
         String countSql = dialect.getCountSql(countMs, boundSql, parameter, rowBounds, countKey);
         //countKey.update(countSql);
         BoundSql countBoundSql = new BoundSql(countMs.getConfiguration(), countSql, boundSql.getParameterMappings(), parameter);
-        //当使用动态 SQL 时，可能会产生临时的参数，这些参数需要手动设置到新的 BoundSql 中
+        //当使用动态 SQL 时,可能会产生临时的参数,这些参数需要手动设置到新的 BoundSql 中
         for (String key : additionalParameters.keySet()) {
             countBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
         }
@@ -179,7 +179,7 @@ public abstract class CountExecutor {
             //执行分页查询
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, pageKey, pageBoundSql);
         } else {
-            //不执行分页的情况下，也不执行内存分页
+            //不执行分页的情况下,也不执行内存分页
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, boundSql);
         }
     }

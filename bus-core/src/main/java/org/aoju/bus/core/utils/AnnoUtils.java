@@ -59,7 +59,7 @@ public class AnnoUtils {
     /**
      * 获取指定注解
      *
-     * @param annotationEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationEle {@link AnnotatedElement},可以是Class、Method、Field、Constructor、ReflectPermission
      * @param isCombination boolean
      * @return 注解对象
      */
@@ -71,7 +71,7 @@ public class AnnoUtils {
      * 获取指定注解
      *
      * @param <A>            注解类型
-     * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationEle  {@link AnnotatedElement},可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
      * @return 注解对象
      */
@@ -84,7 +84,7 @@ public class AnnoUtils {
      * 如果无指定的属性方法返回null
      *
      * @param <T>            注解值类型
-     * @param annotationEle  {@link AccessibleObject}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationEle  {@link AccessibleObject},可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
      * @return 注解对象
      */
@@ -97,9 +97,9 @@ public class AnnoUtils {
      * 如果无指定的属性方法返回null
      *
      * @param <T>            注解值类型
-     * @param annotationEle  {@link AccessibleObject}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationEle  {@link AccessibleObject},可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
-     * @param propertyName   属性名，例如注解中定义了name()方法，则 此处传入name
+     * @param propertyName   属性名,例如注解中定义了name()方法,则 此处传入name
      * @return 注解对象
      */
     public static <T> T getAnnotationValue(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType, String propertyName) {
@@ -119,7 +119,7 @@ public class AnnoUtils {
      * 获取指定注解中所有属性值
      * 如果无指定的属性方法返回null
      *
-     * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationEle  {@link AnnotatedElement},可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
      * @return 注解对象
      */
@@ -150,7 +150,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 获取注解类的保留时间，可选值 SOURCE（源码时），CLASS（编译时），RUNTIME（运行时），默认为 CLASS
+     * 获取注解类的保留时间,可选值 SOURCE（源码时）,CLASS（编译时）,RUNTIME（运行时）,默认为 CLASS
      *
      * @param annotationType 注解类
      * @return 保留时间枚举
@@ -164,7 +164,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 获取注解类可以用来修饰哪些程序元素，如 TYPE, METHOD, CONSTRUCTOR, FIELD, PARAMETER 等
+     * 获取注解类可以用来修饰哪些程序元素,如 TYPE, METHOD, CONSTRUCTOR, FIELD, PARAMETER 等
      *
      * @param annotationType 注解类
      * @return 注解修饰的程序元素数组
@@ -196,7 +196,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 是否可以被继承，默认为 false
+     * 是否可以被继承,默认为 false
      *
      * @param annotationType 注解类
      * @return 是否会保存到 Javadoc 文档中

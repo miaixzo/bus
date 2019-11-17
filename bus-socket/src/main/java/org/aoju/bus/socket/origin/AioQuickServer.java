@@ -52,8 +52,8 @@ import java.util.concurrent.TimeUnit;
 public class AioQuickServer<T> {
 
     /**
-     * Server端服务配置。
-     * <p>调用AioQuickServer的各setXX()方法，都是为了设置config的各配置项</p>
+     * Server端服务配置
+     * <p>调用AioQuickServer的各setXX()方法,都是为了设置config的各配置项</p>
      */
     protected ServerConfig<T> config = new ServerConfig<>();
     protected BufferPool bufferPool;
@@ -277,7 +277,7 @@ public class AioQuickServer<T> {
     /**
      * 是否启用控制台Banner打印
      *
-     * @param bannerEnabled true:启用，false:禁用
+     * @param bannerEnabled true:启用,false:禁用
      * @return the object
      */
     public final AioQuickServer<T> setBannerEnabled(boolean bannerEnabled) {
@@ -286,7 +286,7 @@ public class AioQuickServer<T> {
     }
 
     /**
-     * 设置Socket的TCP参数配置。
+     * 设置Socket的TCP参数配置
      * <p>
      * AIO客户端的有效可选范围为：
      * 2. StandardSocketOptions.SO_RCVBUF

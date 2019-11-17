@@ -81,10 +81,10 @@ public class Condition implements EntityTableName {
     }
 
     /**
-     * 带exists参数的构造方法，默认notNull为false，允许为空
+     * 带exists参数的构造方法,默认notNull为false,允许为空
      *
      * @param clazz  对象
-     * @param exists - true时，如果字段不存在就抛出异常，false时，如果不存在就不使用该字段的条件
+     * @param exists - true时,如果字段不存在就抛出异常,false时,如果不存在就不使用该字段的条件
      */
     public Condition(Class<?> clazz, boolean exists) {
         this(clazz, exists, false);
@@ -94,8 +94,8 @@ public class Condition implements EntityTableName {
      * 带exists参数的构造方法
      *
      * @param entityClass 对象
-     * @param exists      - true时，如果字段不存在就抛出异常，false时，如果不存在就不使用该字段的条件
-     * @param notNull     - true时，如果值为空，就会抛出异常，false时，如果为空就不使用该字段的条件
+     * @param exists      - true时,如果字段不存在就抛出异常,false时,如果不存在就不使用该字段的条件
+     * @param notNull     - true时,如果值为空,就会抛出异常,false时,如果为空就不使用该字段的条件
      */
     public Condition(Class<?> entityClass, boolean exists, boolean notNull) {
         this.exists = exists;
@@ -134,7 +134,7 @@ public class Condition implements EntityTableName {
     }
 
     /**
-     * 排除查询字段，优先级低于 selectProperties
+     * 排除查询字段,优先级低于 selectProperties
      *
      * @param properties 属性名的可变参数
      * @return Condition
@@ -148,7 +148,7 @@ public class Condition implements EntityTableName {
                 if (propertyMap.containsKey(property)) {
                     this.excludeColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
+                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\',或该属性被@Transient注释！");
                 }
             }
         }
@@ -170,7 +170,7 @@ public class Condition implements EntityTableName {
                 if (propertyMap.containsKey(property)) {
                     this.selectColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
+                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\',或该属性被@Transient注释！");
                 }
             }
         }

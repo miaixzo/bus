@@ -25,10 +25,10 @@ public class MessageMatcher {
     /**
      * 验证客户端消息的主题和类型
      *
-     * @param pattern 与message的destination属性匹配的模板，可以是通配符
+     * @param pattern 与message的destination属性匹配的模板,可以是通配符
      * @param message 客户端消息
      * @param type    消息类型
-     * @return {@code true} 验证成功，{@code false} 验证失败
+     * @return {@code true} 验证成功,{@code false} 验证失败
      */
     public boolean matches(String pattern, String type, MessageFrom message) {
         if (!Objects.equals(type, message.getType())) {

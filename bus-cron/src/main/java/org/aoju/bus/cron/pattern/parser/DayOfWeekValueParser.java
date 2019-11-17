@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * 星期值处理
- * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
+ * 1表示星期一,2表示星期二,依次类推,0和7都可以表示星期日
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -46,7 +46,7 @@ public class DayOfWeekValueParser extends SimpleValueParser {
 
     /**
      * 对于星期提供转换
-     * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
+     * 1表示星期一,2表示星期二,依次类推,0和7都可以表示星期日
      */
     @Override
     public int parse(String value) throws InstrumentException {

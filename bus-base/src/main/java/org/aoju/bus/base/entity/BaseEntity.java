@@ -106,12 +106,12 @@ public class BaseEntity extends Tracer {
     }
 
     /**
-     * 根据主键属性，判断主键是否值为空
+     * 根据主键属性,判断主键是否值为空
      *
      * @param <T>    对象
      * @param entity 反射对象
      * @param field  属性
-     * @return 主键为空，则返回false；主键有值，返回true
+     * @return 主键为空, 则返回false；主键有值,返回true
      */
     public <T> boolean isPKNotNull(T entity, String field) {
         if (!ReflectUtils.hasField(entity, field)) {

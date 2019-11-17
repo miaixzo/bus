@@ -27,7 +27,7 @@ import org.aoju.bus.office.excel.cell.CellEditor;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * POI中NUMRIC类型的值默认返回的是Double类型，此编辑器用于转换其为int型
+ * POI中NUMRIC类型的值默认返回的是Double类型,此编辑器用于转换其为int型
  *
  * @author Kimi Liu
  * @version 5.2.2

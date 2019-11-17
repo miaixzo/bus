@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * 版本比较器
  * 比较两个版本的大小
- * 排序时版本从小到大排序，既比较时小版本在前，大版本在后
- * 支持如：1.3.20.8，6.82.20160101，8.5a/8.5c等版本形式
+ * 排序时版本从小到大排序,既比较时小版本在前,大版本在后
+ * 支持如：1.3.20.8,6.82.20160101,8.5a/8.5c等版本形式
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -55,7 +55,7 @@ public class VersionCompare implements Comparator<String>, Serializable {
         }
         if (version1 == null && version2 == null) {
             return 0;
-        } else if (version1 == null) {// null视为最小版本，排在前
+        } else if (version1 == null) {// null视为最小版本,排在前
             return -1;
         } else if (version2 == null) {
             return 1;
@@ -77,7 +77,7 @@ public class VersionCompare implements Comparator<String>, Serializable {
                 diff = v1.compareTo(v2);
             }
             if (diff != 0) {
-                //已有结果，结束
+                //已有结果,结束
                 break;
             }
         }

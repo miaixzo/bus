@@ -42,10 +42,10 @@ public class Proxy {
     public final java.net.Proxy.Type type;
 
     /**
-     * @param hostAddress 服务器域名或IP，比如aoju.org, 192.168.1.1
+     * @param hostAddress 服务器域名或IP,比如aoju.org, 192.168.1.1
      * @param port        端口
-     * @param user        用户名，无则填null
-     * @param password    用户密码，无则填null
+     * @param user        用户名,无则填null
+     * @param password    用户密码,无则填null
      * @param type        代理类型
      */
     public Proxy(String hostAddress, int port, String user, String password, java.net.Proxy.Type type) {

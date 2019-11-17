@@ -3,7 +3,7 @@ package org.aoju.bus.core.map;
 import java.util.Map;
 
 /**
- * 自定义键的Map，默认HashMap实现
+ * 自定义键的Map,默认HashMap实现
  *
  * @param <K> 键类型
  * @param <V> 值类型
@@ -15,7 +15,7 @@ public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
 
     /**
      * 构造
-     * 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
+     * 通过传入一个Map从而确定Map的类型,子类需创建一个空的Map,而非传入一个已有Map,否则值可能会被修改
      *
      * @param m Map 被包装的Map
      * @since 3.1.9

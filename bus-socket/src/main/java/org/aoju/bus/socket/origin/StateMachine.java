@@ -26,9 +26,9 @@ package org.aoju.bus.socket.origin;
 import java.nio.ByteBuffer;
 
 /**
- * 列举了当前所关注的各类状态枚举。
+ * 列举了当前所关注的各类状态枚举
  * <p>
- * 当前枚举的各状态机事件在发生后都会及时触发{@link Message#stateEvent(AioSession, StateMachine, Throwable)}方法。因此用户在实现的{@linkplain Message}接口中可对自己关心的状态机事件进行处理。
+ * 当前枚举的各状态机事件在发生后都会及时触发{@link Message#stateEvent(AioSession, StateMachine, Throwable)}方法 因此用户在实现的{@linkplain Message}接口中可对自己关心的状态机事件进行处理
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -44,43 +44,43 @@ public enum StateMachine {
      * 读通道已被关闭
      * 通常由以下几种情况会触发该状态：
      * <ol>
-     * <li>对端主动关闭write通道，致使本通常满足了EOF条件</li>
+     * <li>对端主动关闭write通道,致使本通常满足了EOF条件</li>
      * <li>当前AioSession处理完读操作后检测到自身正处于{@link StateMachine#SESSION_CLOSING}状态</li>
      * </ol>
      *
-     * <b>未来该状态机可能会废除，并转移至NetMonitor</b>
+     * <b>未来该状态机可能会废除,并转移至NetMonitor</b>
      */
     INPUT_SHUTDOWN,
     /**
-     * 业务处理异常。
-     * 执行{@link Message#process(AioSession, Object)}期间发生用户未捕获的异常。
+     * 业务处理异常
+     * 执行{@link Message#process(AioSession, Object)}期间发生用户未捕获的异常
      */
     PROCESS_EXCEPTION,
 
     /**
      * 协议解码异常
-     * 执行{@link Protocol#decode(ByteBuffer, AioSession)}期间发生未捕获的异常。
+     * 执行{@link Protocol#decode(ByteBuffer, AioSession)}期间发生未捕获的异常
      */
     DECODE_EXCEPTION,
     /**
      * 读操作异常
      * 在底层服务执行read操作期间因发生异常情况出发了{@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}
-     * <b>未来该状态机可能会废除，并转移至NetMonitor</b>
+     * <b>未来该状态机可能会废除,并转移至NetMonitor</b>
      */
     INPUT_EXCEPTION,
     /**
-     * 写操作异常。
+     * 写操作异常
      * 在底层服务执行write操作期间因发生异常情况出发了{@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}
-     * <b>未来该状态机可能会废除，并转移至NetMonitor</b>
+     * <b>未来该状态机可能会废除,并转移至NetMonitor</b>
      */
     OUTPUT_EXCEPTION,
     /**
      * 会话正在关闭中
-     * 执行了{@link AioSession#close(boolean)}方法，并且当前还存在待输出的数据
+     * 执行了{@link AioSession#close(boolean)}方法,并且当前还存在待输出的数据
      */
     SESSION_CLOSING,
     /**
-     * 会话关闭成功。
+     * 会话关闭成功
      * AioSession关闭成功
      */
     SESSION_CLOSED,

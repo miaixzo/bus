@@ -41,11 +41,11 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     private int size = -1;
 
     /**
-     * 获取分组对应的值，如果分组不存在或者值不存在则返回null
+     * 获取分组对应的值,如果分组不存在或者值不存在则返回null
      *
      * @param group 分组
      * @param key   键
-     * @return 值，如果分组不存在或者值不存在则返回null
+     * @return 值, 如果分组不存在或者值不存在则返回null
      */
     public String get(String group, String key) {
         LinkedHashMap<String, String> map = this.get(StringUtils.nullToEmpty(group));
@@ -76,7 +76,7 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @param group 分组
      * @param key   键
      * @param value 值
-     * @return 此key之前存在的值，如果没有返回null
+     * @return 此key之前存在的值, 如果没有返回null
      */
     public String put(String group, String key, String value) {
         group = StringUtils.nullToEmpty(group).trim();
@@ -108,7 +108,7 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      *
      * @param group 分组
      * @param key   键
-     * @return 被删除的值，如果值不存在，返回null
+     * @return 被删除的值, 如果值不存在, 返回null
      */
     public String remove(String group, String key) {
         group = StringUtils.nullToEmpty(group).trim();
@@ -135,9 +135,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 是否为空，如果多个分组同时为空，也按照空处理
+     * 是否为空,如果多个分组同时为空,也按照空处理
      *
-     * @return 是否为空，如果多个分组同时为空，也按照空处理
+     * @return 是否为空, 如果多个分组同时为空, 也按照空处理
      */
     public boolean isEmpty() {
         return this.size() == 0;

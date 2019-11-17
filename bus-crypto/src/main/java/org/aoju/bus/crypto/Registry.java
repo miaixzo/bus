@@ -90,7 +90,7 @@ public final class Registry {
      * 是否包含指定名称算法
      *
      * @param name 组件名称
-     * @return true：包含， false：不包含
+     * @return true：包含, false：不包含
      */
     public boolean contains(String name) {
         return ALGORITHM_CACHE.containsKey(name);

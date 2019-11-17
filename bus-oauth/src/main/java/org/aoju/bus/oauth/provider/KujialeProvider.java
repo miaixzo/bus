@@ -54,10 +54,10 @@ public class KujialeProvider extends DefaultProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      * 默认只向用户请求用户信息授权
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      * @since 2.0.1
      */
@@ -69,8 +69,8 @@ public class KujialeProvider extends DefaultProvider {
     /**
      * 请求授权url
      *
-     * @param state    state 验证授权流程的参数，可以防止csrf
-     * @param scopeStr 请求用户授权时向用户显示的可进行授权的列表。如果要填写多个接口名称，请用逗号隔开
+     * @param state    state 验证授权流程的参数,可以防止csrf
+     * @param scopeStr 请求用户授权时向用户显示的可进行授权的列表 如果要填写多个接口名称,请用逗号隔开
      *                 参考https://open.kujiale.com/open/apps/2/docs?doc_id=95#Step1%EF%BC%9A%E8%8E%B7%E5%8F%96Authorization%20Code参数表内的scope字段
      * @return authorize url
      */
@@ -133,7 +133,7 @@ public class KujialeProvider extends DefaultProvider {
     }
 
     /**
-     * 获取酷家乐的openId，此id在当前client范围内可以唯一识别授权用户
+     * 获取酷家乐的openId,此id在当前client范围内可以唯一识别授权用户
      *
      * @param token 通过{@link KujialeProvider#getAccessToken(Callback)}获取到的{@code authToken}
      * @return openId

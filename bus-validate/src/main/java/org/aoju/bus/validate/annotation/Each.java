@@ -30,13 +30,13 @@ import org.aoju.bus.validate.validators.Complex;
 import java.lang.annotation.*;
 
 /**
- * 对数组、集合、Map元素进行校验， 注意，Map对象，只校验内部的值列表
+ * 对数组、集合、Map元素进行校验, 注意,Map对象,只校验内部的值列表
  *
  * <p>
- * 对象为null， 忽略校验
+ * 对象为null, 忽略校验
  * </P>
  * <p>
- * 如果不是数组或集合、Map，则忽略校验
+ * 如果不是数组或集合、Map,则忽略校验
  * </P>
  *
  * @author Kimi Liu
@@ -50,14 +50,14 @@ import java.lang.annotation.*;
 public @interface Each {
 
     /**
-     * 校验器名称数组，优先使用校验器名称中的校验器，并忽略校验器类中的校验器
+     * 校验器名称数组,优先使用校验器名称中的校验器,并忽略校验器类中的校验器
      *
      * @return the array
      */
     String[] value() default {};
 
     /**
-     * 校验器类数组， 当校验器名称数组为空时，使用校验器类数组中的校验器
+     * 校验器类数组, 当校验器名称数组为空时,使用校验器类数组中的校验器
      *
      * @return the object
      */

@@ -30,10 +30,10 @@ import java.util.Map;
 /**
  * 属性拷贝选项
  * 包括：
- * 1、限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，
- * 例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
- * 2、是否忽略空值，当源对象的值为null时，true: 忽略，false: 注入
- * 3、忽略的属性列表，设置一个属性列表，不拷贝这些属性值
+ * 1、限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性,
+ * 例如一个类我只想复制其父类的一些属性,就可以将editable设置为父类
+ * 2、是否忽略空值,当源对象的值为null时,true: 忽略,false: 注入
+ * 3、忽略的属性列表,设置一个属性列表,不拷贝这些属性值
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -42,15 +42,15 @@ import java.util.Map;
 public class CopyOptions {
 
     /**
-     * 限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
+     * 限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性,例如一个类我只想复制其父类的一些属性,就可以将editable设置为父类
      */
     protected Class<?> editable;
     /**
-     * 是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
+     * 是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
      */
     protected boolean ignoreNullValue;
     /**
-     * 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
+     * 忽略的目标对象中属性列表,设置一个属性列表,不拷贝这些属性值
      */
     protected String[] ignoreProperties;
     /**
@@ -62,7 +62,7 @@ public class CopyOptions {
      */
     protected boolean ignoreCase;
     /**
-     * 拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
+     * 拷贝属性的字段映射,用于不同的属性之前拷贝做对应表用
      */
     protected Map<String, String> fieldMapping;
 
@@ -75,9 +75,9 @@ public class CopyOptions {
     /**
      * 构造拷贝选项
      *
-     * @param editable         限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
-     * @param ignoreNullValue  是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
-     * @param ignoreProperties 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
+     * @param editable         限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性
+     * @param ignoreNullValue  是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
+     * @param ignoreProperties 忽略的目标对象中属性列表,设置一个属性列表,不拷贝这些属性值
      */
     public CopyOptions(Class<?> editable, boolean ignoreNullValue, String... ignoreProperties) {
         this.editable = editable;
@@ -97,9 +97,9 @@ public class CopyOptions {
     /**
      * 创建拷贝选项
      *
-     * @param editable         限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
-     * @param ignoreNullValue  是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
-     * @param ignoreProperties 忽略的属性列表，设置一个属性列表，不拷贝这些属性值
+     * @param editable         限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性
+     * @param ignoreNullValue  是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
+     * @param ignoreProperties 忽略的属性列表,设置一个属性列表,不拷贝这些属性值
      * @return 拷贝选项
      */
     public static CopyOptions create(Class<?> editable, boolean ignoreNullValue, String... ignoreProperties) {
@@ -107,7 +107,7 @@ public class CopyOptions {
     }
 
     /**
-     * 设置限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
+     * 设置限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性
      *
      * @param editable 限制的类或接口
      * @return CopyOptions
@@ -118,9 +118,9 @@ public class CopyOptions {
     }
 
     /**
-     * 设置是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
+     * 设置是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
      *
-     * @param ignoreNullVall 是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
+     * @param ignoreNullVall 是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
      * @return CopyOptions
      */
     public CopyOptions setIgnoreNullValue(boolean ignoreNullVall) {
@@ -129,9 +129,9 @@ public class CopyOptions {
     }
 
     /**
-     * 设置忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
+     * 设置忽略的目标对象中属性列表,设置一个属性列表,不拷贝这些属性值
      *
-     * @param ignoreProperties 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
+     * @param ignoreProperties 忽略的目标对象中属性列表,设置一个属性列表,不拷贝这些属性值
      * @return CopyOptions
      */
     public CopyOptions setIgnoreProperties(String... ignoreProperties) {
@@ -162,9 +162,9 @@ public class CopyOptions {
     }
 
     /**
-     * 设置拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
+     * 设置拷贝属性的字段映射,用于不同的属性之前拷贝做对应表用
      *
-     * @param fieldMapping 拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
+     * @param fieldMapping 拷贝属性的字段映射,用于不同的属性之前拷贝做对应表用
      * @return CopyOptions
      */
     public CopyOptions setFieldMapping(Map<String, String> fieldMapping) {

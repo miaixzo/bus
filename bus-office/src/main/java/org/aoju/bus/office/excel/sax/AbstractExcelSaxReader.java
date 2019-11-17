@@ -30,9 +30,9 @@ import java.io.File;
 import java.io.InputStream;
 
 /**
- * 抽象的Sax方式Excel读取器，提供一些共用方法
+ * 抽象的Sax方式Excel读取器,提供一些共用方法
  *
- * @param <T> 子对象类型，用于标记返回值this
+ * @param <T> 子对象类型,用于标记返回值this
  * @author Kimi Liu
  * @version 5.2.2
  * @since JDK 1.8+

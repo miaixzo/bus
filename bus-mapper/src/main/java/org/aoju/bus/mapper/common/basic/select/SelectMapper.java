@@ -38,7 +38,7 @@ import java.util.List;
 public interface SelectMapper<T> {
 
     /**
-     * 根据实体中的属性值进行查询，查询条件使用等号
+     * 根据实体中的属性值进行查询,查询条件使用等号
      *
      * @param record 对象
      * @return 对象

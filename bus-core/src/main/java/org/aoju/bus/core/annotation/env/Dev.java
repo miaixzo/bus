@@ -27,7 +27,7 @@ import java.lang.annotation.*;
 
 /**
  * 开发环境
- * 表示当前方法禁止用于生产环境，仅可用于开发测试。
+ * 表示当前方法禁止用于生产环境,仅可用于开发测试
  *
  * @author Kimi Liu
  * @version 5.2.2

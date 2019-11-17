@@ -33,9 +33,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * 一个接收器，计算它接受的全部字节流的哈希值。若要使用，请创建
- * 使用您首选的哈希算法实例。将所有数据写入接收器，然后调用
- * {@link #hash()}来计算最终的哈希值。
+ * 一个接收器,计算它接受的全部字节流的哈希值 若要使用,请创建
+ * 使用您首选的哈希算法实例 将所有数据写入接收器,然后调用
+ * {@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu
  * @version 5.2.2

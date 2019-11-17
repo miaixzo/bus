@@ -61,7 +61,7 @@ public abstract class AbstractProvider implements StrategyProvider {
             }
             return resultBuilder.toString();
         }
-        // 仅有两个字符，不能采用遮挡中间的做法
+        // 仅有两个字符,不能采用遮挡中间的做法
         if (length == 2) {
             return resultBuilder.append(rawVal, 0, 1)
                     .append(shadow).toString();

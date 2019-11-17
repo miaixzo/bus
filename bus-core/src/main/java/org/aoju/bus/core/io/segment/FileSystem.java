@@ -30,10 +30,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * 访问分层数据存储上的读写文件。大多数调用者应该使用{@link #SYSTEM}
- * 实现，它使用主机的本地文件系统。备用
+ * 访问分层数据存储上的读写文件 大多数调用者应该使用{@link #SYSTEM}
+ * 实现,它使用主机的本地文件系统 备用
  * 实现可用于注入错误(用于测试)或转换存储的数据(用于添加)
- * 例如加密)。
+ * 例如加密)
  *
  * @author Kimi Liu
  * @version 5.2.2

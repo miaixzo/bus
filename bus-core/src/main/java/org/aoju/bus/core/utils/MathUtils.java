@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * 数学相关方法工具类
- * 此工具类与{@link NumberUtils}属于一类工具，NumberUtil偏向于简单数学计算的封装，MathUtil偏向复杂数学计算
+ * 此工具类与{@link NumberUtils}属于一类工具,NumberUtil偏向于简单数学计算的封装,MathUtil偏向复杂数学计算
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -39,7 +39,7 @@ import java.util.List;
 public class MathUtils {
 
     /**
-     * 计算排列数，即A(n, m) = n!/(n-m)!
+     * 计算排列数,即A(n, m) = n!/(n-m)!
      *
      * @param n 总数
      * @param m 选择的个数
@@ -50,7 +50,7 @@ public class MathUtils {
     }
 
     /**
-     * 计算排列数，即A(n, n) = n!
+     * 计算排列数,即A(n, n) = n!
      *
      * @param n 总数
      * @return 排列数
@@ -81,7 +81,7 @@ public class MathUtils {
     }
 
     /**
-     * 计算组合数，即C(n, m) = n!/((n-m)! * m!)
+     * 计算组合数,即C(n, m) = n!/((n-m)! * m!)
      *
      * @param n 总数
      * @param m 选择的个数

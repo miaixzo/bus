@@ -54,7 +54,7 @@ public class WeChatEEProvider extends DefaultProvider {
     }
 
     /**
-     * 微信的特殊性，此时返回的信息同时包含 openid 和 access_token
+     * 微信的特殊性,此时返回的信息同时包含 openid 和 access_token
      *
      * @param Callback 回调返回的参数
      * @return 所有信息
@@ -77,7 +77,7 @@ public class WeChatEEProvider extends DefaultProvider {
         String response = doGetUserInfo(token);
         JSONObject object = this.checkResponse(response);
 
-        // 返回 OpenId 或其他，均代表非当前企业用户，不支持
+        // 返回 OpenId 或其他,均代表非当前企业用户,不支持
         if (!object.containsKey("UserId")) {
             throw new InstrumentException(Builder.Status.UNIDENTIFIED_PLATFORM.getCode());
         }
@@ -104,7 +104,7 @@ public class WeChatEEProvider extends DefaultProvider {
      * 校验请求结果
      *
      * @param response 请求结果
-     * @return 如果请求结果正常，则返回JSONObject
+     * @return 如果请求结果正常, 则返回JSONObject
      */
     private JSONObject checkResponse(String response) {
         JSONObject object = JSONObject.parseObject(response);
@@ -116,7 +116,7 @@ public class WeChatEEProvider extends DefaultProvider {
     }
 
     /**
-     * 获取用户的实际性别，0表示未定义，1表示男性，2表示女性
+     * 获取用户的实际性别,0表示未定义,1表示男性,2表示女性
      *
      * @param userDetail 用户详情
      * @return 用户性别
@@ -130,9 +130,9 @@ public class WeChatEEProvider extends DefaultProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      * @since 1.9.3
      */

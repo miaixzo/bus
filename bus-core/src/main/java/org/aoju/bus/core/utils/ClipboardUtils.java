@@ -49,8 +49,8 @@ public class ClipboardUtils {
     /**
      * 获取剪贴板内容
      *
-     * @param flavor 数据元信息，标识数据类型
-     * @return 剪贴板内容，类型根据flavor不同而不同
+     * @param flavor 数据元信息,标识数据类型
+     * @return 剪贴板内容, 类型根据flavor不同而不同
      */
     public static Object get(DataFlavor flavor) {
         return get(getClipboard().getContents(null), flavor);
@@ -60,8 +60,8 @@ public class ClipboardUtils {
      * 获取剪贴板内容
      *
      * @param content {@link Transferable}
-     * @param flavor  数据元信息，标识数据类型
-     * @return 剪贴板内容，类型根据flavor不同而不同
+     * @param flavor  数据元信息,标识数据类型
+     * @return 剪贴板内容, 类型根据flavor不同而不同
      */
     public static Object get(Transferable content, DataFlavor flavor) {
         if (null != content && content.isDataFlavorSupported(flavor)) {
@@ -155,7 +155,7 @@ public class ClipboardUtils {
      * 监听剪贴板修改事件
      *
      * @param tryCount 尝试获取剪贴板内容的次数
-     * @param delay    响应延迟，当从第二次开始，延迟一定毫秒数等待剪贴板可以获取
+     * @param delay    响应延迟,当从第二次开始,延迟一定毫秒数等待剪贴板可以获取
      * @param listener 监听处理接口
      * @param sync     是否同步阻塞
      * @see ClipboardMonitor#listen(boolean)

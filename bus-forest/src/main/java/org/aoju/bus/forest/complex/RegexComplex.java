@@ -53,7 +53,7 @@ public abstract class RegexComplex<E> implements Complex<E> {
     }
 
     /**
-     * 将记录转换成字符串形式，用于模式匹配。
+     * 将记录转换成字符串形式,用于模式匹配
      *
      * @param entry 记录
      * @return 记录的字符串表达形式

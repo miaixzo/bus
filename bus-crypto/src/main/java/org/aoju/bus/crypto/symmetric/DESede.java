@@ -33,9 +33,9 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 /**
- * DESede是由DES对称加密算法改进后的一种对称加密算法，又名3DES、TripleDES
+ * DESede是由DES对称加密算法改进后的一种对称加密算法,又名3DES、TripleDES
  * 使用 168 位的密钥对资料进行三次加密的一种机制；它通常（但非始终）提供极其强大的安全性
- * 如果三个 56 位的子元素都相同，则三重 DES 向后兼容 DES
+ * 如果三个 56 位的子元素都相同,则三重 DES 向后兼容 DES
  * Java中默认实现为：DESede/ECB/PKCS5Padding
  *
  * @author Kimi Liu
@@ -45,14 +45,14 @@ import javax.crypto.spec.IvParameterSpec;
 public class DESede extends Symmetric {
 
     /**
-     * 构造，默认DESede/ECB/PKCS5Padding，使用随机密钥
+     * 构造,默认DESede/ECB/PKCS5Padding,使用随机密钥
      */
     public DESede() {
         super(Algorithm.DESede);
     }
 
     /**
-     * 构造，使用默认的DESede/ECB/PKCS5Padding
+     * 构造,使用默认的DESede/ECB/PKCS5Padding
      *
      * @param key 密钥
      */
@@ -61,7 +61,7 @@ public class DESede extends Symmetric {
     }
 
     /**
-     * 构造，使用随机密钥
+     * 构造,使用随机密钥
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
@@ -75,7 +75,7 @@ public class DESede extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度24位
+     * @param key     密钥,长度24位
      */
     public DESede(Mode mode, Padding padding, byte[] key) {
         this(mode, padding, key, null);
@@ -86,8 +86,8 @@ public class DESede extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度24位
-     * @param iv      偏移向量，加盐
+     * @param key     密钥,长度24位
+     * @param iv      偏移向量,加盐
      * @since 3.3.0
      */
     public DESede(Mode mode, Padding padding, byte[] key, byte[] iv) {
@@ -99,7 +99,7 @@ public class DESede extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度24位
+     * @param key     密钥,长度24位
      * @since 3.3.0
      */
     public DESede(Mode mode, Padding padding, SecretKey key) {
@@ -111,8 +111,8 @@ public class DESede extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度24位
-     * @param iv      偏移向量，加盐
+     * @param key     密钥,长度24位
+     * @param iv      偏移向量,加盐
      * @since 3.3.0
      */
     public DESede(Mode mode, Padding padding, SecretKey key, IvParameterSpec iv) {
@@ -134,7 +134,7 @@ public class DESede extends Symmetric {
      *
      * @param mode    模式
      * @param padding 补码方式
-     * @param key     密钥，长度24位
+     * @param key     密钥,长度24位
      */
     public DESede(String mode, String padding, byte[] key) {
         this(mode, padding, key, null);
@@ -145,7 +145,7 @@ public class DESede extends Symmetric {
      *
      * @param mode    模式
      * @param padding 补码方式
-     * @param key     密钥，长度24位
+     * @param key     密钥,长度24位
      * @param iv      加盐
      */
     public DESede(String mode, String padding, byte[] key, byte[] iv) {
@@ -189,7 +189,7 @@ public class DESede extends Symmetric {
     /**
      * 设置偏移向量
      *
-     * @param iv 偏移向量，加盐
+     * @param iv 偏移向量,加盐
      * @return 自身
      * @since 3.3.0
      */

@@ -28,7 +28,7 @@ import org.aoju.bus.core.utils.ThreadUtils;
 
 /**
  * 定时任务计时器
- * 计时器线程每隔一分钟检查一次任务列表，一旦匹配到执行对应的Task
+ * 计时器线程每隔一分钟检查一次任务列表,一旦匹配到执行对应的Task
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -72,11 +72,11 @@ public class CronTimer extends Thread {
             nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
             sleep = nextTime - System.currentTimeMillis();
             if (sleep > 0 && false == ThreadUtils.safeSleep(sleep)) {
-                //等待直到下一个时间点，如果被中断直接退出Timer
+                //等待直到下一个时间点,如果被中断直接退出Timer
                 break;
             }
 
-            //执行点，时间记录为执行开始的时间，而非结束时间
+            //执行点,时间记录为执行开始的时间,而非结束时间
             thisTime = System.currentTimeMillis();
             spawnLauncher(thisTime);
         }

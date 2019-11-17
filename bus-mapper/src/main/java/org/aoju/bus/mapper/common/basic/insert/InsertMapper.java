@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.InsertProvider;
 public interface InsertMapper<T> {
 
     /**
-     * 保存一个实体，null的属性也会保存，不会使用数据库默认值
+     * 保存一个实体,null的属性也会保存,不会使用数据库默认值
      *
      * @param record 对象
      * @return 操作数量

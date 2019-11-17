@@ -57,7 +57,7 @@ public abstract class AbstractRowBoundsDialect extends AbstractDialect {
 
     @Override
     public boolean afterCount(long count, Object parameterObject, RowBounds rowBounds) {
-        //由于 beforeCount 校验，这里一定是 PageRowBounds
+        //由于 beforeCount 校验,这里一定是 PageRowBounds
         ((PageRowBounds) rowBounds).setTotal(count);
         return count > 0;
     }

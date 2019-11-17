@@ -53,8 +53,8 @@ public class EmojiUtils {
     /**
      * 通过tag方式获取对应的所有Emoji表情
      *
-     * @param tag tag标签，例如“happy”
-     * @return Emoji表情集合，如果找不到返回null
+     * @param tag tag标签,例如“happy”
+     * @return Emoji表情集合, 如果找不到返回null
      */
     public static Set<Emoji> getByTag(String tag) {
         return EmojiManager.getForTag(tag);
@@ -63,8 +63,8 @@ public class EmojiUtils {
     /**
      * 通过别名获取Emoji
      *
-     * @param alias 别名，例如“smile”
-     * @return Emoji对象，如果找不到返回null
+     * @param alias 别名,例如“smile”
+     * @return Emoji对象, 如果找不到返回null
      */
     public static Emoji get(String alias) {
         return EmojiManager.getForAlias(alias);
@@ -94,17 +94,17 @@ public class EmojiUtils {
      * 例如： <code>😄</code> 转换为 <code>:smile:</code>
      *
      * <p>
-     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#PARSE}，则别名后会增加"|"并追加fitzpatrick类型
+     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#PARSE},则别名后会增加"|"并追加fitzpatrick类型
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy|type_6:</code>
      *
      * <p>
-     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#REMOVE}，则别名后的"|"和类型将被去除
+     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#REMOVE},则别名后的"|"和类型将被去除
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy:</code>
      *
      * <p>
-     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#IGNORE}，则别名后的类型将被忽略
+     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#IGNORE},则别名后的类型将被忽略
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy:🏿</code>
      *
@@ -116,7 +116,7 @@ public class EmojiUtils {
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为别名表现形式（两个":"包围的格式），别名后会增加"|"并追加fitzpatrick类型
+     * 将字符串中的Unicode Emoji字符转换为别名表现形式（两个":"包围的格式）,别名后会增加"|"并追加fitzpatrick类型
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy|type_6:</code>
      *

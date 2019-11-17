@@ -72,8 +72,8 @@ public final class Builder {
     /**
      * 脱敏对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param object 原始对象
      * @param <T>    泛型
@@ -86,8 +86,8 @@ public final class Builder {
     /**
      * 脱敏对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param object 原始对象
      * @param clone  是否克隆
@@ -101,8 +101,8 @@ public final class Builder {
     /**
      * 脱敏对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param object     原始对象
      * @param annotation 注解信息
@@ -116,8 +116,8 @@ public final class Builder {
     /**
      * 脱敏对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param object     原始对象
      * @param annotation 注解信息
@@ -131,7 +131,7 @@ public final class Builder {
 
     /**
      * 返回脱敏后的对象 json
-     * null 对象，返回字符串 "null"
+     * null 对象,返回字符串 "null"
      *
      * @param object 对象
      * @return 结果 json

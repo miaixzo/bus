@@ -53,7 +53,7 @@ public class BeanCopier<T> implements Copier<T> {
     /**
      * 构造
      *
-     * @param source      来源对象，可以是Bean或者Map
+     * @param source      来源对象,可以是Bean或者Map
      * @param dest        目标Bean对象
      * @param copyOptions 拷贝属性选项
      */
@@ -67,7 +67,7 @@ public class BeanCopier<T> implements Copier<T> {
      * 创建BeanCopier
      *
      * @param <T>         目标Bean类型
-     * @param source      来源对象，可以是Bean或者Map
+     * @param source      来源对象,可以是Bean或者Map
      * @param dest        目标Bean对象
      * @param copyOptions 拷贝属性选项
      * @return BeanCopier
@@ -81,7 +81,7 @@ public class BeanCopier<T> implements Copier<T> {
      *
      * @param mapping   反向映射Map
      * @param fieldName 字段名
-     * @return 映射值，无对应值返回字段名
+     * @return 映射值, 无对应值返回字段名
      */
     private static String mappingKey(Map<String, String> mapping, String fieldName) {
         if (MapUtils.isEmpty(mapping)) {
@@ -181,10 +181,10 @@ public class BeanCopier<T> implements Copier<T> {
                     continue;
                 }
                 if (null == value && copyOptions.ignoreNullValue) {
-                    continue;// 当允许跳过空时，跳过
+                    continue;// 当允许跳过空时,跳过
                 }
                 if (bean.equals(value)) {
-                    continue;// 值不能为bean本身，防止循环引用
+                    continue;// 值不能为bean本身,防止循环引用
                 }
                 targetMap.put(mappingKey(copyOptions.fieldMapping, key), value);
             }
@@ -238,19 +238,19 @@ public class BeanCopier<T> implements Copier<T> {
             }
             value = valueProvider.value(providerKey, TypeUtils.getFirstParamType(setterMethod));
             if (null == value && copyOptions.ignoreNullValue) {
-                continue;// 当允许跳过空时，跳过
+                continue;// 当允许跳过空时,跳过
             }
             if (bean.equals(value)) {
-                continue;// 值不能为bean本身，防止循环引用
+                continue;// 值不能为bean本身,防止循环引用
             }
 
             try {
-                // valueProvider在没有对值做转换且当类型不匹配的时候，执行默认转换
+                // valueProvider在没有对值做转换且当类型不匹配的时候,执行默认转换
                 propClass = prop.getFieldClass();
                 if (false == propClass.isInstance(value)) {
                     value = Convert.convert(propClass, value);
                     if (null == value && copyOptions.ignoreNullValue) {
-                        continue;// 当允许跳过空时，跳过
+                        continue;// 当允许跳过空时,跳过
                     }
                 }
 

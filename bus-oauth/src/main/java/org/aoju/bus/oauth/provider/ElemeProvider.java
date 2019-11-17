@@ -44,7 +44,7 @@ import java.util.Map;
 /**
  * 饿了么
  * <p>
- * 注：集成的是正式环境，非沙箱环境
+ * 注：集成的是正式环境,非沙箱环境
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -89,7 +89,7 @@ public class ElemeProvider extends DefaultProvider {
         Map<String, Object> parameters = new HashMap<>();
         // 获取商户账号信息的API接口名称
         String action = "eleme.user.getUser";
-        // 时间戳，单位秒。API服务端允许客户端请求最大时间误差为正负5分钟。
+        // 时间戳,单位秒 API服务端允许客户端请求最大时间误差为正负5分钟
         final long timestamp = System.currentTimeMillis();
         // 公共参数
         Map<String, String> metasHashMap = new HashMap<>();

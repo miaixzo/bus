@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 字符串、数组、集合的长度校验
  *
  * <p>
- * 默认被校验对象是null时，通过校验
+ * 默认被校验对象是null时,通过校验
  * </P>
  *
  * @author Kimi Liu
@@ -54,7 +54,7 @@ public @interface Length {
     int min() default Integer.MIN_VALUE;
 
     /**
-     * 最大长度，大于等于
+     * 最大长度,大于等于
      *
      * @return the int
      */
@@ -62,9 +62,9 @@ public @interface Length {
     int max() default Integer.MAX_VALUE;
 
     /**
-     * 如果长度为0，判断能否通过校验。
+     * 如果长度为0,判断能否通过校验
      * 默认为false
-     * true：表示长度为零，默认通过校验；false：表示长度为0，仍然要进行长度验证
+     * true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行长度验证
      *
      * @return the boolean
      */

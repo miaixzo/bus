@@ -26,9 +26,9 @@ package org.aoju.bus.validate.annotation;
 import java.lang.annotation.*;
 
 /**
- * 标记注解，是否校验对象内部。
+ * 标记注解,是否校验对象内部
  * <p>
- * 在方法参数或对象类型或字段上可以使用，表示遇到校验器遇到该对象时，会尝试校验对象内部的所有字段
+ * 在方法参数或对象类型或字段上可以使用,表示遇到校验器遇到该对象时,会尝试校验对象内部的所有字段
  * </P>
  *
  * @author Kimi Liu

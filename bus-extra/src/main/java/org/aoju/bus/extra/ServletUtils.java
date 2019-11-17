@@ -76,7 +76,7 @@ public class ServletUtils {
 
     /**
      * 获取请求体
-     * 调用该方法后，getParam方法将失效
+     * 调用该方法后,getParam方法将失效
      *
      * @param request {@link ServletRequest}
      * @return 获得请求体
@@ -91,7 +91,7 @@ public class ServletUtils {
 
     /**
      * 获取请求体byte[]
-     * 调用该方法后，getParam方法将失效
+     * 调用该方法后,getParam方法将失效
      *
      * @param request {@link ServletRequest}
      * @return 获得请求体byte[]
@@ -124,7 +124,7 @@ public class ServletUtils {
                     // 使用类名前缀尝试查找值
                     value = request.getParameter(beanName + Symbol.DOT + key);
                     if (StringUtils.isEmpty(value)) {
-                        // 此处取得的值为空时跳过，包括null和""
+                        // 此处取得的值为空时跳过,包括null和""
                         value = null;
                     }
                 }
@@ -133,7 +133,7 @@ public class ServletUtils {
 
             @Override
             public boolean containsKey(String key) {
-                // 对于Servlet来说，返回值null意味着无此参数
+                // 对于Servlet来说,返回值null意味着无此参数
                 return (null != request.getParameter(key)) || (null != request.getParameter(beanName + Symbol.DOT + key));
             }
         }, copyOptions);
@@ -177,11 +177,11 @@ public class ServletUtils {
      *
      * <p>
      * otherHeaderNames参数用于自定义检测的Header
-     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     * 需要注意的是,使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息,否则容易造成IP伪造
      * </p>
      *
      * @param request          请求对象{@link HttpServletRequest}
-     * @param otherHeaderNames 其他自定义头文件，通常在Http服务器（例如Nginx）中配置
+     * @param otherHeaderNames 其他自定义头文件,通常在Http服务器（例如Nginx）中配置
      * @return IP地址
      */
     public static String getClientIP(HttpServletRequest request, String... otherHeaderNames) {
@@ -198,11 +198,11 @@ public class ServletUtils {
      *
      * <p>
      * headerNames参数用于自定义检测的Header
-     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     * 需要注意的是,使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息,否则容易造成IP伪造
      * </p>
      *
      * @param request     请求对象{@link HttpServletRequest}
-     * @param headerNames 自定义头，通常在Http服务器（例如Nginx）中配置
+     * @param headerNames 自定义头,通常在Http服务器（例如Nginx）中配置
      * @return IP地址
      */
     public static String getClientIPByHeader(HttpServletRequest request, String... headerNames) {
@@ -296,10 +296,10 @@ public class ServletUtils {
     }
 
     /**
-     * 是否为Multipart类型表单，此类型表单用于文件上传
+     * 是否为Multipart类型表单,此类型表单用于文件上传
      *
      * @param request 请求对象{@link HttpServletRequest}
-     * @return 是否为Multipart类型表单，此类型表单用于文件上传
+     * @return 是否为Multipart类型表单, 此类型表单用于文件上传
      */
     public static boolean isMultipart(HttpServletRequest request) {
         if (false == isPostMethod(request)) {
@@ -342,7 +342,7 @@ public class ServletUtils {
             return null;
         }
         for (Cookie cookie : cookies) {
-            cookieMap.put(cookie.getName().toLowerCase(), cookie);
+            cookieMap.put(cookie.getName(), cookie);
         }
         return cookieMap;
     }
@@ -518,7 +518,7 @@ public class ServletUtils {
      *
      * @param response 响应对象{@link HttpServletResponse}
      * @param name     名
-     * @param value    值，可以是String，Date， int
+     * @param value    值,可以是String,Date, int
      */
     public static void setHeader(HttpServletResponse response, String name, Object value) {
         if (value instanceof String) {
@@ -553,7 +553,7 @@ public class ServletUtils {
     }
 
     /**
-     * 检测给定字符串是否为未知，多用于检测HTTP请求相关
+     * 检测给定字符串是否为未知,多用于检测HTTP请求相关
      *
      * @param checkString 被检测的字符串
      * @return 是否未知

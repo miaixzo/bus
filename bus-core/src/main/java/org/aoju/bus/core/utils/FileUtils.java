@@ -87,7 +87,7 @@ public class FileUtils {
             reader = new BufferedReader(new java.io.FileReader(file));
             String tempString = null;
             String all = "";
-            // 一次读入一行，直到读入null为文件结束
+            // 一次读入一行,直到读入null为文件结束
             while ((tempString = reader.readLine()) != null) {
                 // 显示行号
                 all += tempString;
@@ -133,7 +133,7 @@ public class FileUtils {
      * 目录：里面没有文件时为空 文件：文件大小为0时为空
      *
      * @param file 文件
-     * @return 是否为空，当提供非目录时，返回false
+     * @return 是否为空, 当提供非目录时, 返回false
      */
     public static boolean isEmpty(File file) {
         if (null == file) {
@@ -154,7 +154,7 @@ public class FileUtils {
      * 目录是否为空
      *
      * @param file 目录
-     * @return 是否为空，当提供非目录时，返回false
+     * @return 是否为空, 当提供非目录时, 返回false
      */
     public static boolean isNotEmpty(File file) {
         return false == isEmpty(file);
@@ -187,10 +187,10 @@ public class FileUtils {
 
     /**
      * 递归遍历目录以及子目录中的所有文件
-     * 如果提供file为文件，直接返回过滤结果
+     * 如果提供file为文件,直接返回过滤结果
      *
      * @param path       当前遍历文件或目录的路径
-     * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录
+     * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
      * @since 5.2.2
      */
@@ -200,10 +200,10 @@ public class FileUtils {
 
     /**
      * 递归遍历目录以及子目录中的所有文件
-     * 如果提供file为文件，直接返回过滤结果
+     * 如果提供file为文件,直接返回过滤结果
      *
      * @param file       当前遍历文件或目录
-     * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录
+     * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
      */
     public static List<File> loopFiles(File file, FileFilter fileFilter) {
@@ -256,7 +256,7 @@ public class FileUtils {
      * 不会扫描子目录
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
-     * @return 文件路径列表（如果是jar中的文件，则给定类似.jar!/xxx/xxx的路径）
+     * @return 文件路径列表（如果是jar中的文件,则给定类似.jar!/xxx/xxx的路径）
      * @throws InstrumentException 异常
      */
     public static List<String> listFileNames(String path) throws InstrumentException {
@@ -305,7 +305,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建File对象，相当于调用new File()，不做任何处理
+     * 创建File对象,相当于调用new File(),不做任何处理
      *
      * @param path 文件路径
      * @return File
@@ -315,7 +315,7 @@ public class FileUtils {
     }
 
     /**
-     * 创建File对象，自动识别相对或绝对路径，相对路径将自动从ClassPath下寻找
+     * 创建File对象,自动识别相对或绝对路径,相对路径将自动从ClassPath下寻找
      *
      * @param path 文件路径
      * @return File
@@ -329,7 +329,7 @@ public class FileUtils {
 
     /**
      * 创建File对象
-     * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param parent 父目录
      * @param path   文件路径
@@ -341,7 +341,7 @@ public class FileUtils {
 
     /**
      * 创建File对象
-     * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param parent 父文件对象
      * @param path   文件路径
@@ -356,7 +356,7 @@ public class FileUtils {
 
     /**
      * 通过多层目录参数创建文件
-     * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param directory 父目录
      * @param names     元素名（多层目录名）
@@ -461,7 +461,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断文件是否存在，如果path为null，则返回false
+     * 判断文件是否存在,如果path为null,则返回false
      *
      * @param path 文件路径
      * @return 如果存在返回true
@@ -471,7 +471,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断文件是否存在，如果file为null，则返回false
+     * 判断文件是否存在,如果file为null,则返回false
      *
      * @param file 文件
      * @return 如果存在返回true
@@ -533,11 +533,11 @@ public class FileUtils {
 
     /**
      * 计算目录或文件的总大小
-     * 当给定对象为文件时，直接调用 {@link File#length()}
-     * 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回
+     * 当给定对象为文件时,直接调用 {@link File#length()}
+     * 当给定对象为目录时,遍历目录下的所有文件和目录,递归计算其大小,求和返回
      *
      * @param file 目录或文件
-     * @return 总大小，bytes长度
+     * @return 总大小, bytes长度
      */
     public static long size(File file) {
         Assert.notNull(file, "file argument is null !");
@@ -589,11 +589,11 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件及其父目录,如果这个文件存在,直接返回这个文件
+     * 此方法不对File对象类型做判断,如果File不存在,无法判断其类型
      *
-     * @param fullFilePath 文件的全路径，使用POSIX风格
-     * @return 文件，若路径为null，返回null
+     * @param fullFilePath 文件的全路径,使用POSIX风格
+     * @return 文件, 若路径为null, 返回null
      * @throws InstrumentException 异常
      */
     public static File touch(String fullFilePath) throws InstrumentException {
@@ -604,11 +604,11 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件及其父目录,如果这个文件存在,直接返回这个文件
+     * 此方法不对File对象类型做判断,如果File不存在,无法判断其类型
      *
      * @param file 文件对象
-     * @return 文件，若路径为null，返回null
+     * @return 文件, 若路径为null, 返回null
      * @throws InstrumentException 异常
      */
     public static File touch(File file) throws InstrumentException {
@@ -627,8 +627,8 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件及其父目录,如果这个文件存在,直接返回这个文件
+     * 此方法不对File对象类型做判断,如果File不存在,无法判断其类型
      *
      * @param parent 父文件对象
      * @param path   文件路径
@@ -640,8 +640,8 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件及其父目录,如果这个文件存在,直接返回这个文件
+     * 此方法不对File对象类型做判断,如果File不存在,无法判断其类型
      *
      * @param parent 父文件对象
      * @param path   文件路径
@@ -667,9 +667,9 @@ public class FileUtils {
     }
 
     /**
-     * 创建父文件夹，如果存在直接返回此文件夹
+     * 创建父文件夹,如果存在直接返回此文件夹
      *
-     * @param path 文件夹路径，使用POSIX格式，无论哪个平台
+     * @param path 文件夹路径,使用POSIX格式,无论哪个平台
      * @return 创建的目录
      */
     public static File mkParentDirs(String path) {
@@ -681,7 +681,7 @@ public class FileUtils {
 
     /**
      * 删除文件或者文件夹
-     * 路径如果为相对路径，会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
+     * 路径如果为相对路径,会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空,如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param fullFileOrDirPath 文件或者目录的路径
@@ -694,7 +694,7 @@ public class FileUtils {
 
     /**
      * 删除文件或者文件夹
-     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
+     * 注意：删除文件夹时不会判断文件夹是否为空,如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param file 文件对象
@@ -719,7 +719,7 @@ public class FileUtils {
 
     /**
      * 清空文件夹
-     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
+     * 注意：清空文件夹时不会判断文件夹是否为空,如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param dirPath 文件夹路径
@@ -732,7 +732,7 @@ public class FileUtils {
 
     /**
      * 清空文件夹
-     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
+     * 注意：清空文件夹时不会判断文件夹是否为空,如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param directory 文件夹
@@ -757,10 +757,10 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件夹，如果存在直接返回此文件夹
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件夹,如果存在直接返回此文件夹
+     * 此方法不对File对象类型做判断,如果File不存在,无法判断其类型
      *
-     * @param dirPath 文件夹路径，使用POSIX格式，无论哪个平台
+     * @param dirPath 文件夹路径,使用POSIX格式,无论哪个平台
      * @return 创建的目录
      */
     public static File mkdir(String dirPath) {
@@ -772,8 +772,8 @@ public class FileUtils {
     }
 
     /**
-     * 创建文件夹，会递归自动创建其不存在的父文件夹，如果存在直接返回此文件夹
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件夹,会递归自动创建其不存在的父文件夹,如果存在直接返回此文件夹
+     * 此方法不对File对象类型做判断,如果File不存在,无法判断其类型
      *
      * @param dir 目录
      * @return 创建的目录
@@ -805,7 +805,7 @@ public class FileUtils {
      * 创建后的文件名为 prefix[Randon].tmp
      *
      * @param dir       临时文件创建的所在目录
-     * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
+     * @param isReCreat 是否重新创建文件（删掉原来的,创建新的）
      * @return 临时文件
      * @throws InstrumentException 异常
      */
@@ -817,10 +817,10 @@ public class FileUtils {
      * 创建临时文件
      * 创建后的文件名为 prefix[Randon].suffix From com.jodd.io.FileUtils
      *
-     * @param prefix    前缀，至少3个字符
-     * @param suffix    后缀，如果null则使用默认.tmp
+     * @param prefix    前缀,至少3个字符
+     * @param suffix    后缀,如果null则使用默认.tmp
      * @param dir       临时文件创建的所在目录
-     * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
+     * @param isReCreat 是否重新创建文件（删掉原来的,创建新的）
      * @return 临时文件
      * @throws InstrumentException 异常
      */
@@ -846,7 +846,7 @@ public class FileUtils {
      * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件
      *
      * @param src     源文件路径
-     * @param dest    目标文件或目录路径，如果为目录使用与源文件相同的文件名
+     * @param dest    目标文件或目录路径,如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return File
      * @throws InstrumentException 异常
@@ -861,7 +861,7 @@ public class FileUtils {
      * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件
      *
      * @param src     源文件
-     * @param dest    目标文件或目录，如果为目录使用与源文件相同的文件名
+     * @param dest    目标文件或目录,如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return 目标文件
      * @throws InstrumentException 异常
@@ -883,7 +883,7 @@ public class FileUtils {
      * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件
      *
      * @param src     源文件路径
-     * @param dest    目标文件或目录，如果为目录使用与源文件相同的文件名
+     * @param dest    目标文件或目录,如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return Path
      * @throws InstrumentException 异常
@@ -902,10 +902,10 @@ public class FileUtils {
 
     /**
      * 复制文件或目录
-     * 如果目标文件为目录，则将源文件以相同文件名拷贝到目标目录
+     * 如果目标文件为目录,则将源文件以相同文件名拷贝到目标目录
      *
      * @param srcPath    源文件或目录
-     * @param destPath   目标文件或目录，目标不存在会自动创建（目录、文件都创建）
+     * @param destPath   目标文件或目录,目标不存在会自动创建（目录、文件都创建）
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
      * @throws InstrumentException 异常
@@ -919,13 +919,13 @@ public class FileUtils {
      * 情况如下：
      *
      * <pre>
-     * 1、src和dest都为目录，则将src目录及其目录下所有文件目录拷贝到dest下
-     * 2、src和dest都为文件，直接复制，名字为dest
-     * 3、src为文件，dest为目录，将src拷贝到dest目录下
+     * 1、src和dest都为目录,则将src目录及其目录下所有文件目录拷贝到dest下
+     * 2、src和dest都为文件,直接复制,名字为dest
+     * 3、src为文件,dest为目录,将src拷贝到dest目录下
      * </pre>
      *
      * @param src        源文件
-     * @param dest       目标文件或目录，目标不存在会自动创建（目录、文件都创建）
+     * @param dest       目标文件或目录,目标不存在会自动创建（目录、文件都创建）
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
      * @throws InstrumentException 异常
@@ -939,13 +939,13 @@ public class FileUtils {
      * 情况如下：
      *
      * <pre>
-     * 1、src和dest都为目录，则讲src下所有文件目录拷贝到dest下
-     * 2、src和dest都为文件，直接复制，名字为dest
-     * 3、src为文件，dest为目录，将src拷贝到dest目录下
+     * 1、src和dest都为目录,则讲src下所有文件目录拷贝到dest下
+     * 2、src和dest都为文件,直接复制,名字为dest
+     * 3、src为文件,dest为目录,将src拷贝到dest目录下
      * </pre>
      *
      * @param src        源文件
-     * @param dest       目标文件或目录，目标不存在会自动创建（目录、文件都创建）
+     * @param dest       目标文件或目录,目标不存在会自动创建（目录、文件都创建）
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
      * @throws InstrumentException 异常
@@ -959,13 +959,13 @@ public class FileUtils {
      * 情况如下：
      *
      * <pre>
-     * 1、src和dest都为目录，则讲src下所有文件（包括子目录）拷贝到dest下
-     * 2、src和dest都为文件，直接复制，名字为dest
-     * 3、src为文件，dest为目录，将src拷贝到dest目录下
+     * 1、src和dest都为目录,则讲src下所有文件（包括子目录）拷贝到dest下
+     * 2、src和dest都为文件,直接复制,名字为dest
+     * 3、src为文件,dest为目录,将src拷贝到dest目录下
      * </pre>
      *
      * @param src        源文件
-     * @param dest       目标文件或目录，目标不存在会自动创建（目录、文件都创建）
+     * @param dest       目标文件或目录,目标不存在会自动创建（目录、文件都创建）
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
      * @throws InstrumentException 异常
@@ -979,7 +979,7 @@ public class FileUtils {
      *
      * @param src        源文件或者目录
      * @param dest       目标文件或者目录
-     * @param isOverride 是否覆盖目标，只有目标为文件才覆盖
+     * @param isOverride 是否覆盖目标,只有目标为文件才覆盖
      * @throws InstrumentException 异常
      */
     public static void move(File src, File dest, boolean isOverride) throws InstrumentException {
@@ -988,7 +988,7 @@ public class FileUtils {
             throw new InstrumentException("File not found: " + src);
         }
 
-        // 来源为文件夹，目标为文件
+        // 来源为文件夹,目标为文件
         if (src.isDirectory() && dest.isFile()) {
             throw new InstrumentException(StringUtils.format("Can not move directory [{}] to file [{}]", src, dest));
         }
@@ -997,13 +997,13 @@ public class FileUtils {
             dest.delete();
         }
 
-        // 来源为文件，目标为文件夹
+        // 来源为文件,目标为文件夹
         if (src.isFile() && dest.isDirectory()) {
             dest = new File(dest, src.getName());
         }
 
         if (false == src.renameTo(dest)) {
-            // 在文件系统不同的情况下，renameTo会失败，此时使用copy，然后删除原文件
+            // 在文件系统不同的情况下,renameTo会失败,此时使用copy,然后删除原文件
             try {
                 copy(src, dest, isOverride);
                 src.delete();
@@ -1015,23 +1015,23 @@ public class FileUtils {
     }
 
     /**
-     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名
+     * 修改文件或目录的文件名,不变更路径,只是简单修改文件名
      * 重命名有两种模式：
-     * 1、isRetainExt为true时，保留原扩展名：
+     * 1、isRetainExt为true时,保留原扩展名：
      *
      * <pre>
      * FileUtils.rename(file, "aaa", true) xx/xx.png =》xx/aaa.png
      * </pre>
      * <p>
-     * 2、isRetainExt为false时，不保留原扩展名，需要在newName中
+     * 2、isRetainExt为false时,不保留原扩展名,需要在newName中
      *
      * <pre>
      * FileUtils.rename(file, "aaa.jpg", false) xx/xx.png =》xx/aaa.jpg
      * </pre>
      *
      * @param file        被修改的文件
-     * @param newName     新的文件名，包括扩展名
-     * @param isRetainExt 是否保留原文件的扩展名，如果保留，则newName不需要加扩展名
+     * @param newName     新的文件名,包括扩展名
+     * @param isRetainExt 是否保留原文件的扩展名,如果保留,则newName不需要加扩展名
      * @param isOverride  是否覆盖目标文件
      * @return 目标文件
      * @since 3.1.9
@@ -1053,7 +1053,7 @@ public class FileUtils {
      * 获取规范的绝对路径
      *
      * @param file 文件
-     * @return 规范绝对路径，如果传入file为null，返回null
+     * @return 规范绝对路径, 如果传入file为null, 返回null
      */
     public static String getCanonicalPath(File file) {
         if (null == file) {
@@ -1098,9 +1098,9 @@ public class FileUtils {
     }
 
     /**
-     * 获取绝对路径，相对于ClassPath的目录
-     * 如果给定就是绝对路径，则返回原路径，原路径把所有\替换为/
-     * 兼容Spring风格的路径表示，例如：classpath:config/example.setting也会被识别后转换
+     * 获取绝对路径,相对于ClassPath的目录
+     * 如果给定就是绝对路径,则返回原路径,原路径把所有\替换为/
+     * 兼容Spring风格的路径表示,例如：classpath:config/example.setting也会被识别后转换
      *
      * @param path 相对路径
      * @return 绝对路径
@@ -1129,7 +1129,7 @@ public class FileUtils {
 
     /**
      * 给定路径已经是绝对路径
-     * 此方法并没有针对路径做标准化，建议先执行{@link #normalize(String)}方法标准化路径后判断
+     * 此方法并没有针对路径做标准化,建议先执行{@link #normalize(String)}方法标准化路径后判断
      *
      * @param path 需要检查的Path
      * @return 是否已经是绝对路径
@@ -1142,7 +1142,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断是否为目录，如果path为null，则返回false
+     * 判断是否为目录,如果path为null,则返回false
      *
      * @param path 文件路径
      * @return 如果为目录true
@@ -1152,7 +1152,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断是否为目录，如果file为null，则返回false
+     * 判断是否为目录,如果file为null,则返回false
      *
      * @param file 文件
      * @return 如果为目录true
@@ -1162,7 +1162,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断是否为目录，如果file为null，则返回false
+     * 判断是否为目录,如果file为null,则返回false
      *
      * @param path          {@link Path}
      * @param isFollowLinks 是否追踪到软链对应的真实地址
@@ -1178,7 +1178,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断是否为文件，如果path为null，则返回false
+     * 判断是否为文件,如果path为null,则返回false
      *
      * @param path 文件路径
      * @return 如果为文件true
@@ -1188,7 +1188,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断是否为文件，如果file为null，则返回false
+     * 判断是否为文件,如果file为null,则返回false
      *
      * @param file 文件
      * @return 如果为文件true
@@ -1198,7 +1198,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断是否为文件，如果file为null，则返回false
+     * 判断是否为文件,如果file为null,则返回false
      *
      * @param path          文件
      * @param isFollowLinks 是否跟踪软链（快捷方式）
@@ -1214,7 +1214,7 @@ public class FileUtils {
 
     /**
      * 检查两个文件是否是同一个文件
-     * 所谓文件相同，是指File对象是否指向同一个文件或文件夹
+     * 所谓文件相同,是指File对象是否指向同一个文件或文件夹
      *
      * @param file1 文件1
      * @param file2 文件2
@@ -1228,7 +1228,7 @@ public class FileUtils {
         if (false == file1.exists() || false == file2.exists()) {
             // 两个文件都不存在判断其路径是否相同
             return false == file1.exists() && false == file2.exists() && pathEquals(file1, file2);
-            // 对于一个存在一个不存在的情况，一定不相同
+            // 对于一个存在一个不存在的情况,一定不相同
         }
         try {
             return Files.isSameFile(file1.toPath(), file2.toPath());
@@ -1239,12 +1239,12 @@ public class FileUtils {
 
     /**
      * 比较两个文件内容是否相同
-     * 首先比较长度，长度一致再比较内容
+     * 首先比较长度,长度一致再比较内容
      * 此方法来自Apache Commons io
      *
      * @param file1 文件1
      * @param file2 文件2
-     * @return 两个文件内容一致返回true，否则false
+     * @return 两个文件内容一致返回true, 否则false
      * @throws InstrumentException 异常
      */
     public static boolean contentEquals(File file1, File file2) throws InstrumentException {
@@ -1254,7 +1254,7 @@ public class FileUtils {
         }
 
         if (false == file1Exists) {
-            // 两个文件都不存在，返回true
+            // 两个文件都不存在,返回true
             return true;
         }
 
@@ -1288,12 +1288,12 @@ public class FileUtils {
 
     /**
      * 比较两个文件内容是否相同
-     * 首先比较长度，长度一致再比较内容，比较内容采用按行读取，每行比较
+     * 首先比较长度,长度一致再比较内容,比较内容采用按行读取,每行比较
      * 此方法来自Apache Commons io
      *
      * @param file1   文件1
      * @param file2   文件2
-     * @param charset 编码，null表示使用平台默认编码 两个文件内容一致返回true，否则false
+     * @param charset 编码,null表示使用平台默认编码 两个文件内容一致返回true,否则false
      * @return the boolean
      * @throws InstrumentException 异常
      */
@@ -1304,7 +1304,7 @@ public class FileUtils {
         }
 
         if (!file1Exists) {
-            // 两个文件都不存在，返回true
+            // 两个文件都不存在,返回true
             return true;
         }
 
@@ -1332,7 +1332,7 @@ public class FileUtils {
 
     /**
      * 文件路径是否相同
-     * 取两个文件的绝对路径比较，在Windows下忽略大小写，在Linux下不忽略。
+     * 取两个文件的绝对路径比较,在Windows下忽略大小写,在Linux下不忽略
      *
      * @param file1 文件1
      * @param file2 文件2
@@ -1388,7 +1388,7 @@ public class FileUtils {
 
     /**
      * 判断文件是否被改动
-     * 如果文件对象为 null 或者文件不存在，被视为改动
+     * 如果文件对象为 null 或者文件不存在,被视为改动
      *
      * @param file           文件对象
      * @param lastModifyTime 上次的改动时间
@@ -1403,12 +1403,12 @@ public class FileUtils {
 
     /**
      * 修复路径
-     * 如果原路径尾部有分隔符，则保留为标准分隔符（/），否则不保留
+     * 如果原路径尾部有分隔符,则保留为标准分隔符（/）,否则不保留
      * <ol>
      * <li>1. 统一用 /</li>
      * <li>2. 多个 / 转换为一个 /</li>
      * <li>3. 去除两边空格</li>
-     * <li>4. .. 和 . 转换为绝对路径，当..多于已有路径时，直接返回根路径</li>
+     * <li>4. .. 和 . 转换为绝对路径,当..多于已有路径时,直接返回根路径</li>
      * </ol>
      * <p>
      * 栗子：
@@ -1439,7 +1439,7 @@ public class FileUtils {
             return null;
         }
 
-        // 兼容Spring风格的ClassPath路径，去除前缀，不区分大小写
+        // 兼容Spring风格的ClassPath路径,去除前缀,不区分大小写
         String pathToUse = StringUtils.removePrefixIgnoreCase(path, "classpath:");
         // 去除file:前缀
         pathToUse = StringUtils.removePrefixIgnoreCase(pathToUse, "file:");
@@ -1475,7 +1475,7 @@ public class FileUtils {
         for (int i = pathList.size() - 1; i >= 0; i--) {
             element = pathList.get(i);
             if (Symbol.DOT.equals(element)) {
-                // 当前目录，丢弃
+                // 当前目录,丢弃
             } else if (Symbol.DOUBLE_DOT.equals(element)) {
                 tops++;
             } else {
@@ -1515,7 +1515,7 @@ public class FileUtils {
     }
 
     /**
-     * 获得相对子路径，忽略大小写
+     * 获得相对子路径,忽略大小写
      * <p>
      * 栗子：
      *
@@ -1542,10 +1542,10 @@ public class FileUtils {
     }
 
     /**
-     * 获取指定位置的子路径部分，支持负数，例如index为-1表示从后数第一个节点位置
+     * 获取指定位置的子路径部分,支持负数,例如index为-1表示从后数第一个节点位置
      *
      * @param path  路径
-     * @param index 路径节点位置，支持负数（负数从后向前计数）
+     * @param index 路径节点位置,支持负数（负数从后向前计数）
      * @return 获取的子路径
      * @since 3.1.9
      */
@@ -1565,7 +1565,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取指定位置的子路径部分，支持负数，例如起始为-1表示从后数第一个节点位置
+     * 获取指定位置的子路径部分,支持负数,例如起始为-1表示从后数第一个节点位置
      *
      * @param path      路径
      * @param fromIndex 起始路径节点（包括）
@@ -1694,7 +1694,7 @@ public class FileUtils {
             }
             if (0 == begin || begin > end) {
                 if (CharUtils.isFileSeparator(c)) {
-                    //查找最后一个路径分隔符（/或者\），如果这个分隔符在.之后，则继续查找，否则结束
+                    //查找最后一个路径分隔符（/或者\）,如果这个分隔符在.之后,则继续查找,否则结束
                     begin = i + 1;
                     break;
                 }
@@ -1705,7 +1705,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取文件扩展名，扩展名不带“.”
+     * 获取文件扩展名,扩展名不带“.”
      *
      * @param file 文件
      * @return 扩展名
@@ -1721,7 +1721,7 @@ public class FileUtils {
     }
 
     /**
-     * 获得文件的扩展名，扩展名不带“.”
+     * 获得文件的扩展名,扩展名不带“.”
      *
      * @param fileName 文件名
      * @return 扩展名
@@ -1741,7 +1741,7 @@ public class FileUtils {
     }
 
     /**
-     * 判断文件路径是否有指定后缀，忽略大小写
+     * 判断文件路径是否有指定后缀,忽略大小写
      * 常用语判断扩展名
      *
      * @param file   文件或目录
@@ -1756,7 +1756,7 @@ public class FileUtils {
      * 根据文件流的头部信息获得文件类型
      *
      * @param file 文件 {@link File}
-     * @return 类型，文件的扩展名，未找到为<code>null</code>
+     * @return 类型, 文件的扩展名, 未找到为<code>null</code>
      * @throws InstrumentException 异常
      * @see FileType#getType(File)
      */
@@ -1824,7 +1824,7 @@ public class FileUtils {
     }
 
     /**
-     * 获得BOM输入流，用于处理带BOM头的文件
+     * 获得BOM输入流,用于处理带BOM头的文件
      *
      * @param file 文件
      * @return 输入流
@@ -2093,7 +2093,7 @@ public class FileUtils {
     }
 
     /**
-     * 从文件中读取每一行数据，数据编码为UTF-8
+     * 从文件中读取每一行数据,数据编码为UTF-8
      *
      * @param <T>        集合类型
      * @param file       文件路径
@@ -2135,7 +2135,7 @@ public class FileUtils {
     }
 
     /**
-     * 从文件中读取每一行数据，编码为UTF-8
+     * 从文件中读取每一行数据,编码为UTF-8
      *
      * @param <T>        集合类型
      * @param url        文件的URL
@@ -2220,7 +2220,7 @@ public class FileUtils {
     }
 
     /**
-     * 从文件中读取每一行数据，编码为UTF-8
+     * 从文件中读取每一行数据,编码为UTF-8
      *
      * @param path 文件路径
      * @return 文件中的每行内容的集合List
@@ -2293,7 +2293,7 @@ public class FileUtils {
     }
 
     /**
-     * 按行处理文件内容，编码为UTF-8
+     * 按行处理文件内容,编码为UTF-8
      *
      * @param file        文件
      * @param lineHandler {@link LineHandler}行处理器
@@ -2460,7 +2460,7 @@ public class FileUtils {
     /**
      * 获得一个输出流对象
      *
-     * @param path 输出到的文件路径，绝对路径
+     * @param path 输出到的文件路径,绝对路径
      * @return 输出流对象
      * @throws InstrumentException 异常
      */
@@ -2471,7 +2471,7 @@ public class FileUtils {
     /**
      * 获得一个带缓存的写入对象
      *
-     * @param path        输出路径，绝对路径
+     * @param path        输出路径,绝对路径
      * @param charsetName 字符集
      * @param isAppend    是否追加
      * @return BufferedReader对象
@@ -2484,7 +2484,7 @@ public class FileUtils {
     /**
      * 获得一个带缓存的写入对象
      *
-     * @param path     输出路径，绝对路径
+     * @param path     输出路径,绝对路径
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return BufferedReader对象
@@ -2521,9 +2521,9 @@ public class FileUtils {
     }
 
     /**
-     * 获得一个打印写入对象，可以有print
+     * 获得一个打印写入对象,可以有print
      *
-     * @param path     输出路径，绝对路径
+     * @param path     输出路径,绝对路径
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
@@ -2534,9 +2534,9 @@ public class FileUtils {
     }
 
     /**
-     * 获得一个打印写入对象，可以有print
+     * 获得一个打印写入对象,可以有print
      *
-     * @param path     输出路径，绝对路径
+     * @param path     输出路径,绝对路径
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
@@ -2547,7 +2547,7 @@ public class FileUtils {
     }
 
     /**
-     * 获得一个打印写入对象，可以有print
+     * 获得一个打印写入对象,可以有print
      *
      * @param file     文件
      * @param charset  字符集
@@ -2575,7 +2575,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，覆盖模式，字符集为UTF-8
+     * 将String写入文件,覆盖模式,字符集为UTF-8
      *
      * @param content 写入的内容
      * @param path    文件路径
@@ -2587,7 +2587,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，覆盖模式，字符集为UTF-8
+     * 将String写入文件,覆盖模式,字符集为UTF-8
      *
      * @param content 写入的内容
      * @param file    文件
@@ -2599,7 +2599,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，覆盖模式
+     * 将String写入文件,覆盖模式
      *
      * @param content 写入的内容
      * @param path    文件路径
@@ -2612,7 +2612,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，覆盖模式
+     * 将String写入文件,覆盖模式
      *
      * @param content 写入的内容
      * @param path    文件路径
@@ -2625,7 +2625,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，覆盖模式
+     * 将String写入文件,覆盖模式
      *
      * @param content 写入的内容
      * @param file    文件
@@ -2638,7 +2638,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，覆盖模式
+     * 将String写入文件,覆盖模式
      *
      * @param content 写入的内容
      * @param file    文件
@@ -2651,7 +2651,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，UTF-8编码追加模式
+     * 将String写入文件,UTF-8编码追加模式
      *
      * @param content 写入的内容
      * @param path    文件路径
@@ -2664,7 +2664,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，追加模式
+     * 将String写入文件,追加模式
      *
      * @param content 写入的内容
      * @param path    文件路径
@@ -2677,7 +2677,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，追加模式
+     * 将String写入文件,追加模式
      *
      * @param content 写入的内容
      * @param path    文件路径
@@ -2690,7 +2690,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，UTF-8编码追加模式
+     * 将String写入文件,UTF-8编码追加模式
      *
      * @param content 写入的内容
      * @param file    文件
@@ -2703,7 +2703,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，追加模式
+     * 将String写入文件,追加模式
      *
      * @param content 写入的内容
      * @param file    文件
@@ -2716,7 +2716,7 @@ public class FileUtils {
     }
 
     /**
-     * 将String写入文件，追加模式
+     * 将String写入文件,追加模式
      *
      * @param content 写入的内容
      * @param file    文件
@@ -2729,7 +2729,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，覆盖模式，编码为UTF-8
+     * 将列表写入文件,覆盖模式,编码为UTF-8
      *
      * @param <T>  集合元素类型
      * @param list 列表
@@ -2743,7 +2743,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，覆盖模式，编码为UTF-8
+     * 将列表写入文件,覆盖模式,编码为UTF-8
      *
      * @param <T>  集合元素类型
      * @param list 列表
@@ -2757,7 +2757,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，覆盖模式
+     * 将列表写入文件,覆盖模式
      *
      * @param <T>     集合元素类型
      * @param list    列表
@@ -2771,7 +2771,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，覆盖模式
+     * 将列表写入文件,覆盖模式
      *
      * @param <T>     集合元素类型
      * @param list    列表
@@ -2785,7 +2785,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，覆盖模式
+     * 将列表写入文件,覆盖模式
      *
      * @param <T>     集合元素类型
      * @param list    列表
@@ -2799,7 +2799,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，覆盖模式
+     * 将列表写入文件,覆盖模式
      *
      * @param <T>     集合元素类型
      * @param list    列表
@@ -2813,7 +2813,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，追加模式
+     * 将列表写入文件,追加模式
      *
      * @param <T>  集合元素类型
      * @param list 列表
@@ -2827,7 +2827,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，追加模式
+     * 将列表写入文件,追加模式
      *
      * @param <T>  集合元素类型
      * @param list 列表
@@ -2841,7 +2841,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，追加模式
+     * 将列表写入文件,追加模式
      *
      * @param <T>     集合元素类型
      * @param list    列表
@@ -2855,7 +2855,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，追加模式
+     * 将列表写入文件,追加模式
      *
      * @param <T>     集合元素类型
      * @param list    列表
@@ -2870,7 +2870,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，追加模式
+     * 将列表写入文件,追加模式
      *
      * @param <T>     集合元素类型
      * @param list    列表
@@ -2884,7 +2884,7 @@ public class FileUtils {
     }
 
     /**
-     * 将列表写入文件，追加模式
+     * 将列表写入文件,追加模式
      *
      * @param <T>     集合元素类型
      * @param list    列表
@@ -2959,11 +2959,11 @@ public class FileUtils {
     }
 
     /**
-     * 将Map写入文件，每个键值对为一行，一行中键与值之间使用kvSeparator分隔
+     * 将Map写入文件,每个键值对为一行,一行中键与值之间使用kvSeparator分隔
      *
      * @param map         Map
      * @param file        文件
-     * @param kvSeparator 键和值之间的分隔符，如果传入null使用默认分隔符" = "
+     * @param kvSeparator 键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend    是否追加
      * @return 目标文件
      * @throws InstrumentException 异常
@@ -2973,12 +2973,12 @@ public class FileUtils {
     }
 
     /**
-     * 将Map写入文件，每个键值对为一行，一行中键与值之间使用kvSeparator分隔
+     * 将Map写入文件,每个键值对为一行,一行中键与值之间使用kvSeparator分隔
      *
      * @param map         Map
      * @param file        文件
      * @param charset     字符集编码
-     * @param kvSeparator 键和值之间的分隔符，如果传入null使用默认分隔符" = "
+     * @param kvSeparator 键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend    是否追加
      * @return 目标文件
      * @throws InstrumentException 异常
@@ -3101,10 +3101,10 @@ public class FileUtils {
 
     /**
      * 转换文件编码
-     * 此方法用于转换文件编码，读取的文件实际编码必须与指定的srcCharset编码一致，否则导致乱码
+     * 此方法用于转换文件编码,读取的文件实际编码必须与指定的srcCharset编码一致,否则导致乱码
      *
      * @param file        文件
-     * @param srcCharset  原文件的编码，必须与文件内容的编码保持一致
+     * @param srcCharset  原文件的编码,必须与文件内容的编码保持一致
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
      * @since 3.1.9
@@ -3129,9 +3129,9 @@ public class FileUtils {
     }
 
     /**
-     * 清除文件名中的在Windows下不支持的非法字符，包括： \ / : * ? " &lt; &gt; |
+     * 清除文件名中的在Windows下不支持的非法字符,包括： \ / : * ? " &lt; &gt; |
      *
-     * @param fileName 文件名（必须不包括路径，否则路径符将被替换）
+     * @param fileName 文件名（必须不包括路径,否则路径符将被替换）
      * @return 清理后的文件名
      * @since 3.3.1
      */
@@ -3140,9 +3140,9 @@ public class FileUtils {
     }
 
     /**
-     * 文件名中是否包含在Windows下不支持的非法字符，包括： \ / : * ? " &lt; &gt; |
+     * 文件名中是否包含在Windows下不支持的非法字符,包括： \ / : * ? " &lt; &gt; |
      *
-     * @param fileName 文件名（必须不包括路径，否则路径符将被替换）
+     * @param fileName 文件名（必须不包括路径,否则路径符将被替换）
      * @return 是否包含非法字符
      * @since 3.3.1
      */
@@ -3153,7 +3153,7 @@ public class FileUtils {
     /**
      * 计算文件CRC32校验码
      *
-     * @param file 文件，不能为目录
+     * @param file 文件,不能为目录
      * @return CRC32值
      * @throws InstrumentException 异常
      */
@@ -3164,7 +3164,7 @@ public class FileUtils {
     /**
      * 计算文件校验码
      *
-     * @param file     文件，不能为目录
+     * @param file     文件,不能为目录
      * @param checksum {@link Checksum}
      * @return Checksum
      * @throws InstrumentException 异常
@@ -3183,7 +3183,7 @@ public class FileUtils {
 
     /**
      * 获取Web项目下的web root路径
-     * 原理是首先获取ClassPath路径，由于在web项目中ClassPath位于 WEB-INF/classes/下，故向上获取两级目录即可。
+     * 原理是首先获取ClassPath路径,由于在web项目中ClassPath位于 WEB-INF/classes/下,故向上获取两级目录即可
      *
      * @return web root路径
      */
@@ -3207,7 +3207,7 @@ public class FileUtils {
      *
      * @param filePath 目录或文件路径
      * @param level    层级
-     * @return 路径File，如果不存在返回null
+     * @return 路径File, 如果不存在返回null
      */
     public static String getParent(String filePath, int level) {
         final File parent = getParent(file(filePath), level);
@@ -3230,7 +3230,7 @@ public class FileUtils {
      *
      * @param file  目录或文件
      * @param level 层级
-     * @return 路径File，如果不存在返回null
+     * @return 路径File, 如果不存在返回null
      */
     public static File getParent(File file, int level) {
         if (level < 1 || null == file) {
@@ -3250,7 +3250,7 @@ public class FileUtils {
     }
 
     /**
-     * 检查父完整路径是否为自路径的前半部分，如果不是说明不是子路径，可能存在slip注入。
+     * 检查父完整路径是否为自路径的前半部分,如果不是说明不是子路径,可能存在slip注入
      * <p>
      * 见http://blog.nsfocus.net/zip-slip-2/
      *

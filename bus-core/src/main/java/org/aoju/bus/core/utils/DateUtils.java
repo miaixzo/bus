@@ -168,7 +168,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 当前时间，格式 yyyy-MM-dd HH:mm:ss
+     * 当前时间,格式 yyyy-MM-dd HH:mm:ss
      *
      * @return 当前时间的标准形式字符串
      */
@@ -206,7 +206,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得指定日期所属季度，从1开始计数
+     * 获得指定日期所属季度,从1开始计数
      *
      * @param date 日期
      * @return 第几个季度
@@ -226,10 +226,10 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得月份，从0开始计数
+     * 获得月份,从0开始计数
      *
      * @param date 日期
-     * @return 月份，从0开始计数
+     * @return 月份, 从0开始计数
      */
     public static int month(Date date) {
         return DateTime.of(date).month();
@@ -276,7 +276,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获得指定日期是星期几，1表示周日，2表示周一
+     * 获得指定日期是星期几,1表示周日,2表示周一
      *
      * @param date 日期
      * @return 天
@@ -447,7 +447,7 @@ public class DateUtils extends Fields {
      * 格式：[20131]表示2013年第一季度
      *
      * @param date 日期
-     * @return Quarter ，类似于 20132
+     * @return Quarter ,类似于 20132
      */
     public static String yearAndQuarter(Date date) {
         return yearAndQuarter(calendar(date));
@@ -455,10 +455,10 @@ public class DateUtils extends Fields {
 
 
     /**
-     * 按照给定的通配模式 YYYY-MM-DD HH:MM:SS ，将时间格式化成相应的字符串
+     * 按照给定的通配模式 YYYY-MM-DD HH:MM:SS ,将时间格式化成相应的字符串
      *
      * @param date 待格式化的时间
-     * @return 格式化成功返回成功后的字符串，失败返回<b>null</b>
+     * @return 格式化成功返回成功后的字符串, 失败返回<b>null</b>
      */
     public static String format(Date date) {
         if (date != null) {
@@ -472,14 +472,22 @@ public class DateUtils extends Fields {
      * 根据特定格式格式化日期
      *
      * @param date   被格式化的日期
-     * @param format 日期格式，常用格式见： {@link Fields}
+     * @param format 日期格式,常用格式见： {@link Fields}
      * @return 格式化后的字符串
      */
     public static String format(Date date, String format) {
         if (null == date || StringUtils.isBlank(format)) {
             return null;
         }
-        return format(date, FastDateFormat.getInstance(format));
+
+        final SimpleDateFormat sdf = new SimpleDateFormat(format);
+        if (date instanceof DateTime) {
+            final TimeZone timeZone = ((DateTime) date).getTimeZone();
+            if (null != timeZone) {
+                sdf.setTimeZone(timeZone);
+            }
+        }
+        return format(date, sdf);
     }
 
     /**
@@ -511,12 +519,12 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 按照给定的通配模式，格式化成相应的时间字符串
+     * 按照给定的通配模式,格式化成相应的时间字符串
      *
      * @param srcDate     原始时间字符串
      * @param srcPattern  原始时间通配符
      * @param destPattern 格式化成的时间通配符
-     * @return 格式化成功返回成功后的字符串，失败返回<b>""</b>
+     * @return 格式化成功返回成功后的字符串, 失败返回<b>""</b>
      */
     public static String format(String srcDate, String srcPattern, String destPattern) {
         try {
@@ -638,7 +646,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 将日期字符串转换为{@link DateTime}对象，格式：
+     * 将日期字符串转换为{@link DateTime}对象,格式：
      * <ol>
      * <li>yyyy-MM-dd HH:mm:ss</li>
      * <li>yyyy/MM/dd HH:mm:ss</li>
@@ -723,7 +731,7 @@ public class DateUtils extends Fields {
      * 将特定格式的日期转换为Date对象
      *
      * @param dateStr 特定格式的日期
-     * @param format  格式，例如yyyy-MM-dd
+     * @param format  格式,例如yyyy-MM-dd
      * @return 日期对象
      */
     public static DateTime parse(String dateStr, String format) {
@@ -742,7 +750,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 解析时间，格式HH:mm:ss，默认为1970-01-01
+     * 解析时间,格式HH:mm:ss,默认为1970-01-01
      *
      * @param timeString 标准形式的日期字符串
      * @return 日期对象
@@ -764,7 +772,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 解析时间，格式HH:mm:ss，日期默认为今天
+     * 解析时间,格式HH:mm:ss,日期默认为今天
      *
      * @param timeString 标准形式的日期字符串
      * @return 日期对象
@@ -776,7 +784,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 解析UTC时间，格式为：yyyy-MM-dd'T'HH:mm:ss'Z
+     * 解析UTC时间,格式为：yyyy-MM-dd'T'HH:mm:ss'Z
      *
      * @param utcString UTC时间
      * @return 日期对象
@@ -864,7 +872,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获取某周的开始时间，周一定为一周的开始时间
+     * 获取某周的开始时间,周一定为一周的开始时间
      *
      * @param calendar           日期 {@link Calendar}
      * @param isMondayAsFirstDay 是否周一做为一周的第一天（false表示周日做为第一天）
@@ -882,7 +890,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 获取某周的结束时间，周日定为一周的结束
+     * 获取某周的结束时间,周日定为一周的结束
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -1098,7 +1106,7 @@ public class DateUtils extends Fields {
      * 偏移毫秒数
      *
      * @param date   日期
-     * @param offset 偏移毫秒数，正数向未来偏移，负数向历史偏移
+     * @param offset 偏移毫秒数,正数向未来偏移,负数向历史偏移
      * @return 偏移后的日期
      */
     public static DateTime offsetMillisecond(Date date, int offset) {
@@ -1109,7 +1117,7 @@ public class DateUtils extends Fields {
      * 偏移秒数
      *
      * @param date   日期
-     * @param offset 偏移秒数，正数向未来偏移，负数向历史偏移
+     * @param offset 偏移秒数,正数向未来偏移,负数向历史偏移
      * @return 偏移后的日期
      */
     public static DateTime offsetSecond(Date date, int offset) {
@@ -1120,7 +1128,7 @@ public class DateUtils extends Fields {
      * 偏移分钟
      *
      * @param date   日期
-     * @param offset 偏移分钟数，正数向未来偏移，负数向历史偏移
+     * @param offset 偏移分钟数,正数向未来偏移,负数向历史偏移
      * @return 偏移后的日期
      */
     public static DateTime offsetMinute(Date date, int offset) {
@@ -1131,7 +1139,7 @@ public class DateUtils extends Fields {
      * 偏移小时
      *
      * @param date   日期
-     * @param offset 偏移小时数，正数向未来偏移，负数向历史偏移
+     * @param offset 偏移小时数,正数向未来偏移,负数向历史偏移
      * @return 偏移后的日期
      */
     public static DateTime offsetHour(Date date, int offset) {
@@ -1142,7 +1150,7 @@ public class DateUtils extends Fields {
      * 偏移天
      *
      * @param date   日期
-     * @param offset 偏移天数，正数向未来偏移，负数向历史偏移
+     * @param offset 偏移天数,正数向未来偏移,负数向历史偏移
      * @return 偏移后的日期
      */
     public static DateTime offsetDay(Date date, int offset) {
@@ -1153,7 +1161,7 @@ public class DateUtils extends Fields {
      * 偏移周
      *
      * @param date   日期
-     * @param offset 偏移周数，正数向未来偏移，负数向历史偏移
+     * @param offset 偏移周数,正数向未来偏移,负数向历史偏移
      * @return 偏移后的日期
      */
     public static DateTime offsetWeek(Date date, int offset) {
@@ -1164,7 +1172,7 @@ public class DateUtils extends Fields {
      * 偏移月
      *
      * @param date   日期
-     * @param offset 偏移月数，正数向未来偏移，负数向历史偏移
+     * @param offset 偏移月数,正数向未来偏移,负数向历史偏移
      * @return 偏移后的日期
      */
     public static DateTime offsetMonth(Date date, int offset) {
@@ -1176,7 +1184,7 @@ public class DateUtils extends Fields {
      *
      * @param date      基准日期
      * @param dateField 偏移的粒度大小（小时、天、月等）
-     * @param offset    偏移量，正数为向后偏移，负数为向前偏移
+     * @param offset    偏移量,正数为向后偏移,负数为向前偏移
      * @return 偏移后的日期
      */
     public static DateTime offset(Date date, Fields.DateField dateField, int offset) {
@@ -1187,7 +1195,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 判断两个日期相差的时长，只保留绝对值
+     * 判断两个日期相差的时长,只保留绝对值
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
@@ -1228,9 +1236,9 @@ public class DateUtils extends Fields {
      * 判断两个日期相差的天数
      *
      * <pre>
-     * 有时候我们计算相差天数的时候需要忽略时分秒。
+     * 有时候我们计算相差天数的时候需要忽略时分秒
      * 比如：2016-02-01 23:59:59和2016-02-02 00:00:00相差一秒
-     * 如果isReset为false相差天数为0。
+     * 如果isReset为false相差天数为0
      * 如果isReset为true相差天数将被计算为1
      * </pre>
      *
@@ -1250,7 +1258,7 @@ public class DateUtils extends Fields {
 
     /**
      * 计算两个日期相差月数
-     * 在非重置情况下，如果起始日期的天小于结束日期的天，月数要少算1（不足1个月）
+     * 在非重置情况下,如果起始日期的天小于结束日期的天,月数要少算1（不足1个月）
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
@@ -1263,7 +1271,7 @@ public class DateUtils extends Fields {
 
     /**
      * 计算两个日期相差年数
-     * 在非重置情况下，如果起始日期的月小于结束日期的月，年数要少算1（不足1年）
+     * 在非重置情况下,如果起始日期的月小于结束日期的月,年数要少算1（不足1年）
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
@@ -1279,7 +1287,7 @@ public class DateUtils extends Fields {
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
-     * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级
+     * @param level     级别,按照天、小时、分、秒、毫秒分为5个等级
      * @return XX天XX小时XX分XX秒
      */
     public static String formatBetween(Date beginDate, Date endDate, Fields.Level level) {
@@ -1287,7 +1295,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 格式化日期间隔输出，精确到毫秒
+     * 格式化日期间隔输出,精确到毫秒
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
@@ -1302,7 +1310,7 @@ public class DateUtils extends Fields {
      * 格式化日期间隔输出
      *
      * @param betweenMs 日期间隔
-     * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级
+     * @param level     级别,按照天、小时、分、秒、毫秒分为5个等级
      * @return XX天XX小时XX分XX秒XX毫秒
      */
     public static String formatBetween(long betweenMs, Fields.Level level) {
@@ -1310,7 +1318,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 格式化日期间隔输出，精确到毫秒
+     * 格式化日期间隔输出,精确到毫秒
      *
      * @param betweenMs 日期间隔
      * @return XX天XX小时XX分XX秒XX毫秒
@@ -1338,20 +1346,20 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 计时，常用于记录某段代码的执行时间，单位：纳秒
+     * 计时,常用于记录某段代码的执行时间,单位：纳秒
      *
      * @param preTime 之前记录的时间
-     * @return 时间差，纳秒
+     * @return 时间差, 纳秒
      */
     public static long spendNt(long preTime) {
         return System.nanoTime() - preTime;
     }
 
     /**
-     * 计时，常用于记录某段代码的执行时间，单位：毫秒
+     * 计时,常用于记录某段代码的执行时间,单位：毫秒
      *
      * @param preTime 之前记录的时间
-     * @return 时间差，毫秒
+     * @return 时间差, 毫秒
      */
     public static long spendMs(long preTime) {
         return System.currentTimeMillis() - preTime;
@@ -1394,7 +1402,7 @@ public class DateUtils extends Fields {
 
     /**
      * 计时器
-     * 计算某个过程花费的时间，精确到毫秒
+     * 计算某个过程花费的时间,精确到毫秒
      *
      * @return Timer
      */
@@ -1419,7 +1427,7 @@ public class DateUtils extends Fields {
      * @param startDate   开始时间
      * @param dateField   时间单位
      * @param timeLength  时长
-     * @param checkedDate 被比较的时间。如果经过时长后的时间晚于被检查的时间，就表示过期
+     * @param checkedDate 被比较的时间 如果经过时长后的时间晚于被检查的时间,就表示过期
      * @return 是否过期
      * @since 3.1.1
      */
@@ -1474,7 +1482,7 @@ public class DateUtils extends Fields {
 
 
     /**
-     * 生日转为年龄，计算法定年龄
+     * 生日转为年龄,计算法定年龄
      *
      * @param birthDay 生日
      * @return 年龄
@@ -1521,7 +1529,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 计算相对于dateToCompare的年龄，长用于计算指定生日在某年的年龄
+     * 计算相对于dateToCompare的年龄,长用于计算指定生日在某年的年龄
      *
      * @param birthDay      生日
      * @param dateToCompare 需要对比的日期
@@ -2221,7 +2229,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，加上/减去(负数)N年
+     * 原有时间基础上,加上/减去(负数)N年
      *
      * @param date   日期
      * @param amount 年份
@@ -2232,7 +2240,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，加上/减去(负数)N月
+     * 原有时间基础上,加上/减去(负数)N月
      *
      * @param date   日期
      * @param amount 月份
@@ -2243,7 +2251,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，加上/减去(负数)N周
+     * 原有时间基础上,加上/减去(负数)N周
      *
      * @param date   日期
      * @param amount 周
@@ -2254,7 +2262,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，加上/减去(负数)N天
+     * 原有时间基础上,加上/减去(负数)N天
      *
      * @param date   日期
      * @param amount 天
@@ -2265,7 +2273,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，加上/减去(负数)N小时
+     * 原有时间基础上,加上/减去(负数)N小时
      *
      * @param date   日期
      * @param amount 小时
@@ -2276,7 +2284,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，加上/减去(负数)N分钟
+     * 原有时间基础上,加上/减去(负数)N分钟
      *
      * @param date   日期
      * @param amount 分钟
@@ -2287,7 +2295,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，加上/减去(负数)N秒
+     * 原有时间基础上,加上/减去(负数)N秒
      *
      * @param date   日期
      * @param amount 秒
@@ -2298,7 +2306,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，加上/减去(负数)N毫秒
+     * 原有时间基础上,加上/减去(负数)N毫秒
      *
      * @param date   日期
      * @param amount 毫秒
@@ -2324,7 +2332,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，设置加上/减去(负数)N年
+     * 原有时间基础上,设置加上/减去(负数)N年
      *
      * @param date   时间
      * @param amount 数量
@@ -2335,7 +2343,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，设置加上/减去(负数)N月
+     * 原有时间基础上,设置加上/减去(负数)N月
      *
      * @param date   时间
      * @param amount 数量
@@ -2347,7 +2355,7 @@ public class DateUtils extends Fields {
 
 
     /**
-     * 原有时间基础上，设置N天
+     * 原有时间基础上,设置N天
      *
      * @param date   日期
      * @param amount 天
@@ -2358,7 +2366,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，设置N小时
+     * 原有时间基础上,设置N小时
      *
      * @param date   日期
      * @param amount 小时
@@ -2369,7 +2377,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，设置N分钟
+     * 原有时间基础上,设置N分钟
      *
      * @param date   日期
      * @param amount 小时
@@ -2380,7 +2388,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，设置N秒
+     * 原有时间基础上,设置N秒
      *
      * @param date   日期
      * @param amount 小时
@@ -2391,7 +2399,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 原有时间基础上，设置N毫秒
+     * 原有时间基础上,设置N毫秒
      *
      * @param date   日期
      * @param amount 小时
@@ -2418,7 +2426,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 将{@code Date}转换为{@code Calendar}。
+     * 将{@code Date}转换为{@code Calendar}
      *
      * @param date 日期转换为日历的日期
      * @return 创建的日历
@@ -2447,7 +2455,7 @@ public class DateUtils extends Fields {
     /**
      * 校验日期格式,日期不能早于当前天
      *
-     * @param dptDate 日期，仅需包含年月日
+     * @param dptDate 日期,仅需包含年月日
      * @param pattern 日期转移格式
      * @return true/false
      */
@@ -2462,9 +2470,9 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 校验日期格式,日期不能早于当前天， 默认日期转义格式：yyyy-MM-dd
+     * 校验日期格式,日期不能早于当前天, 默认日期转义格式：yyyy-MM-dd
      *
-     * @param dptDate 日期，仅需包含年月日
+     * @param dptDate 日期,仅需包含年月日
      * @return true/false
      */
     public static boolean isDate(String dptDate) {
@@ -2472,7 +2480,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 校验前面的日期go，是否早于或者等于后面的日期back
+     * 校验前面的日期go,是否早于或者等于后面的日期back
      *
      * @param go      日期1
      * @param back    日期2
@@ -2492,7 +2500,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 校验前面的日期go，是否早于或者等于后面的日期back
+     * 校验前面的日期go,是否早于或者等于后面的日期back
      *
      * @param go   日期1
      * @param back 日期2
@@ -2578,7 +2586,7 @@ public class DateUtils extends Fields {
     /**
      * 通过生日计算星座
      *
-     * @param month 月，从0开始计数
+     * @param month 月,从0开始计数
      * @param day   天
      * @return 星座名
      */
@@ -2589,7 +2597,7 @@ public class DateUtils extends Fields {
     /**
      * 通过生日计算星座
      *
-     * @param month 月，从0开始计数，见{@link Fields.Month#getValue()}
+     * @param month 月,从0开始计数,见{@link Fields.Month#getValue()}
      * @param day   天
      * @return 星座名
      */
@@ -2598,7 +2606,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 通过生日计算生肖，只计算1900年后出生的人
+     * 通过生日计算生肖,只计算1900年后出生的人
      *
      * @param date 出生日期（年需农历）
      * @return 星座名
@@ -2608,7 +2616,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 通过生日计算生肖，只计算1900年后出生的人
+     * 通过生日计算生肖,只计算1900年后出生的人
      *
      * @param calendar 出生日期（年需农历）
      * @return 星座名
@@ -2621,7 +2629,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 计算生肖，只计算1900年后出生的人
+     * 计算生肖,只计算1900年后出生的人
      *
      * @param year 农历年
      * @return 生肖名
@@ -2644,7 +2652,7 @@ public class DateUtils extends Fields {
     }
 
     /**
-     * 纳秒转秒，保留小数
+     * 纳秒转秒,保留小数
      *
      * @param duration 时长
      * @return 秒

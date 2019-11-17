@@ -28,7 +28,7 @@ import org.aoju.bus.core.utils.DateUtils;
 
 /**
  * 计时器
- * 计算某个过程花费的时间，精确到毫秒
+ * 计算某个过程花费的时间,精确到毫秒
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -79,7 +79,7 @@ public class TimeInterval {
 
     /**
      * 从开始到当前的间隔时间（毫秒数）
-     * 如果使用纳秒计时，返回纳秒差，否则返回毫秒差
+     * 如果使用纳秒计时,返回纳秒差,否则返回毫秒差
      *
      * @return 从开始到当前的间隔时间（毫秒数）
      */
@@ -97,45 +97,45 @@ public class TimeInterval {
     }
 
     /**
-     * 从开始到当前的间隔秒数，取绝对值
+     * 从开始到当前的间隔秒数,取绝对值
      *
-     * @return 从开始到当前的间隔秒数，取绝对值
+     * @return 从开始到当前的间隔秒数, 取绝对值
      */
     public long intervalSecond() {
         return intervalMs() / Fields.Unit.SECOND.getMillis();
     }
 
     /**
-     * 从开始到当前的间隔分钟数，取绝对值
+     * 从开始到当前的间隔分钟数,取绝对值
      *
-     * @return 从开始到当前的间隔分钟数，取绝对值
+     * @return 从开始到当前的间隔分钟数, 取绝对值
      */
     public long intervalMinute() {
         return intervalMs() / Fields.Unit.MINUTE.getMillis();
     }
 
     /**
-     * 从开始到当前的间隔小时数，取绝对值
+     * 从开始到当前的间隔小时数,取绝对值
      *
-     * @return 从开始到当前的间隔小时数，取绝对值
+     * @return 从开始到当前的间隔小时数, 取绝对值
      */
     public long intervalHour() {
         return intervalMs() / Fields.Unit.HOUR.getMillis();
     }
 
     /**
-     * 从开始到当前的间隔天数，取绝对值
+     * 从开始到当前的间隔天数,取绝对值
      *
-     * @return 从开始到当前的间隔天数，取绝对值
+     * @return 从开始到当前的间隔天数, 取绝对值
      */
     public long intervalDay() {
         return intervalMs() / Fields.Unit.DAY.getMillis();
     }
 
     /**
-     * 从开始到当前的间隔周数，取绝对值
+     * 从开始到当前的间隔周数,取绝对值
      *
-     * @return 从开始到当前的间隔周数，取绝对值
+     * @return 从开始到当前的间隔周数, 取绝对值
      */
     public long intervalWeek() {
         return intervalMs() / Fields.Unit.WEEK.getMillis();

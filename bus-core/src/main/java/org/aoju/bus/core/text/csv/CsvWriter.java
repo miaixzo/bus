@@ -54,7 +54,7 @@ public final class CsvWriter implements Closeable, Flushable {
     private boolean newline = true;
 
     /**
-     * 构造，覆盖已有文件（如果存在），默认编码UTF-8
+     * 构造,覆盖已有文件（如果存在）,默认编码UTF-8
      *
      * @param filePath File CSV文件路径
      */
@@ -63,7 +63,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 构造，覆盖已有文件（如果存在），默认编码UTF-8
+     * 构造,覆盖已有文件（如果存在）,默认编码UTF-8
      *
      * @param file File CSV文件
      */
@@ -72,7 +72,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 构造，覆盖已有文件（如果存在）
+     * 构造,覆盖已有文件（如果存在）
      *
      * @param filePath File CSV文件路径
      * @param charset  编码
@@ -82,7 +82,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 构造，覆盖已有文件（如果存在）
+     * 构造,覆盖已有文件（如果存在）
      *
      * @param file    File CSV文件
      * @param charset 编码
@@ -119,7 +119,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param filePath CSV文件路径
      * @param charset  编码
      * @param isAppend 是否追加
-     * @param config   写出配置，null则使用默认配置
+     * @param config   写出配置,null则使用默认配置
      */
     public CsvWriter(String filePath, Charset charset, boolean isAppend, CsvWriteConfig config) {
         this(FileUtils.file(filePath), charset, isAppend, config);
@@ -131,14 +131,14 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param file     CSV文件
      * @param charset  编码
      * @param isAppend 是否追加
-     * @param config   写出配置，null则使用默认配置
+     * @param config   写出配置,null则使用默认配置
      */
     public CsvWriter(File file, Charset charset, boolean isAppend, CsvWriteConfig config) {
         this(FileUtils.getWriter(file, charset, isAppend), config);
     }
 
     /**
-     * 构造，使用默认配置
+     * 构造,使用默认配置
      *
      * @param writer {@link Writer}
      */
@@ -150,7 +150,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * 构造
      *
      * @param writer Writer
-     * @param config 写出配置，null则使用默认配置
+     * @param config 写出配置,null则使用默认配置
      */
     public CsvWriter(Writer writer, CsvWriteConfig config) {
         this.writer = (writer instanceof BufferedWriter) ? writer : new BufferedWriter(writer);
@@ -158,9 +158,9 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 设置是否始终使用文本分隔符，文本包装符，默认false，按需添加
+     * 设置是否始终使用文本分隔符,文本包装符,默认false,按需添加
      *
-     * @param alwaysDelimitText 是否始终使用文本分隔符，文本包装符，默认false，按需添加
+     * @param alwaysDelimitText 是否始终使用文本分隔符,文本包装符,默认false,按需添加
      */
     public void setAlwaysDelimitText(boolean alwaysDelimitText) {
         this.setAlwaysDelimitText(alwaysDelimitText);
@@ -238,7 +238,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 追加一行，末尾会自动换行，但是追加前不会换行
+     * 追加一行,末尾会自动换行,但是追加前不会换行
      *
      * @param fields 字段列表 ({@code null} 值会被做为空值追加)
      * @throws InstrumentException IO异常
@@ -252,7 +252,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 追加一行，末尾会自动换行，但是追加前不会换行
+     * 追加一行,末尾会自动换行,但是追加前不会换行
      *
      * @param fields 字段列表 ({@code null} 值会被做为空值追加)
      * @throws IOException IO异常
@@ -268,9 +268,9 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 在当前行追加字段值，自动添加字段分隔符，如果有必要，自动包装字段
+     * 在当前行追加字段值,自动添加字段分隔符,如果有必要,自动包装字段
      *
-     * @param value 字段值，{@code null} 会被做为空串写出
+     * @param value 字段值,{@code null} 会被做为空串写出
      * @throws IOException IO异常
      */
     private void appendField(final String value) throws IOException {

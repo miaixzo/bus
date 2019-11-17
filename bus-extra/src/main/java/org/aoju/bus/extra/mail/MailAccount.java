@@ -75,12 +75,12 @@ public class MailAccount implements Serializable {
      */
     private String pass;
     /**
-     * 发送方，遵循RFC-822标准
+     * 发送方,遵循RFC-822标准
      */
     private String from;
 
     /**
-     * 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * 是否打开调试模式,调试模式会显示与邮件服务器通信过程,默认不开启
      */
     private boolean debug;
     /**
@@ -88,12 +88,12 @@ public class MailAccount implements Serializable {
      */
     private Charset charset = org.aoju.bus.core.consts.Charset.UTF_8;
     /**
-     * 对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名）
+     * 对于超长参数是否切分为多份,默认为false（国内邮箱附件不支持切分的附件名）
      */
     private boolean splitlongparameters;
 
     /**
-     * 使用 STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
+     * 使用 STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接（TLS或SSL）, 而不是使用一个单独的加密通信端口
      */
     private boolean startttlsEnable = false;
     /**
@@ -109,16 +109,16 @@ public class MailAccount implements Serializable {
      */
     private boolean socketFactoryFallback;
     /**
-     * 指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * 指定的端口连接到在使用指定的套接字工厂 如果没有设置,将使用默认端口
      */
     private int socketFactoryPort = 465;
 
     /**
-     * SMTP超时时长，单位毫秒，缺省值不超时
+     * SMTP超时时长,单位毫秒,缺省值不超时
      */
     private long timeout;
     /**
-     * Socket连接超时值，单位毫秒，缺省值不超时
+     * Socket连接超时值,单位毫秒,缺省值不超时
      */
     private long connectionTimeout;
 
@@ -247,18 +247,18 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取发送方，遵循RFC-822标准
+     * 获取发送方,遵循RFC-822标准
      *
-     * @return 发送方，遵循RFC-822标准
+     * @return 发送方, 遵循RFC-822标准
      */
     public String getFrom() {
         return from;
     }
 
     /**
-     * 设置发送方，遵循RFC-822标准
+     * 设置发送方,遵循RFC-822标准
      *
-     * @param from 发送方，遵循RFC-822标准
+     * @param from 发送方,遵循RFC-822标准
      * @return this
      */
     public MailAccount setFrom(String from) {
@@ -267,18 +267,18 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * 是否打开调试模式,调试模式会显示与邮件服务器通信过程,默认不开启
      *
-     * @return 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * @return 是否打开调试模式, 调试模式会显示与邮件服务器通信过程, 默认不开启
      */
     public boolean isDebug() {
         return debug;
     }
 
     /**
-     * 设置是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * 设置是否打开调试模式,调试模式会显示与邮件服务器通信过程,默认不开启
      *
-     * @param debug 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * @param debug 是否打开调试模式,调试模式会显示与邮件服务器通信过程,默认不开启
      * @return MailAccount
      */
     public MailAccount setDebug(boolean debug) {
@@ -307,7 +307,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名）
+     * 对于超长参数是否切分为多份,默认为false（国内邮箱附件不支持切分的附件名）
      *
      * @return 对于超长参数是否切分为多份
      */
@@ -316,7 +316,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名）
+     * 设置对于超长参数是否切分为多份,默认为false（国内邮箱附件不支持切分的附件名）
      *
      * @param splitlongparameters 对于超长参数是否切分为多份
      */
@@ -325,7 +325,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 是否使用 STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
+     * 是否使用 STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接（TLS或SSL）, 而不是使用一个单独的加密通信端口
      *
      * @return 是否使用 STARTTLS安全连接
      */
@@ -334,7 +334,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置是否使用STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
+     * 设置是否使用STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接（TLS或SSL）, 而不是使用一个单独的加密通信端口
      *
      * @param startttlsEnable 是否使用STARTTLS安全连接
      * @return this
@@ -405,18 +405,18 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * 获取指定的端口连接到在使用指定的套接字工厂 如果没有设置,将使用默认端口
      *
-     * @return 指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * @return 指定的端口连接到在使用指定的套接字工厂 如果没有设置,将使用默认端口
      */
     public int getSocketFactoryPort() {
         return socketFactoryPort;
     }
 
     /**
-     * 指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * 指定的端口连接到在使用指定的套接字工厂 如果没有设置,将使用默认端口
      *
-     * @param socketFactoryPort 指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * @param socketFactoryPort 指定的端口连接到在使用指定的套接字工厂 如果没有设置,将使用默认端口
      * @return this
      */
     public MailAccount setSocketFactoryPort(int socketFactoryPort) {
@@ -425,9 +425,9 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置SMTP超时时长，单位毫秒，缺省值不超时
+     * 设置SMTP超时时长,单位毫秒,缺省值不超时
      *
-     * @param timeout SMTP超时时长，单位毫秒，缺省值不超时
+     * @param timeout SMTP超时时长,单位毫秒,缺省值不超时
      * @return this
      */
     public MailAccount setTimeout(long timeout) {
@@ -436,9 +436,9 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置Socket连接超时值，单位毫秒，缺省值不超时
+     * 设置Socket连接超时值,单位毫秒,缺省值不超时
      *
-     * @param connectionTimeout Socket连接超时值，单位毫秒，缺省值不超时
+     * @param connectionTimeout Socket连接超时值,单位毫秒,缺省值不超时
      * @return this
      */
     public MailAccount setConnectionTimeout(long connectionTimeout) {
@@ -470,11 +470,11 @@ public class MailAccount implements Serializable {
         p.put(MAIL_DEBUG, String.valueOf(this.debug));
 
         if (this.startttlsEnable) {
-            //STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
+            //STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接（TLS或SSL）, 而不是使用一个单独的加密通信端口
             p.put(STARTTTLS_ENABLE, String.valueOf(this.startttlsEnable));
 
             if (null == this.sslEnable) {
-                //为了兼容旧版本，当用户没有此项配置时，按照startttlsEnable开启状态时对待
+                //为了兼容旧版本,当用户没有此项配置时,按照startttlsEnable开启状态时对待
                 this.sslEnable = true;
             }
         }
@@ -490,7 +490,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 如果某些值为null，使用默认值
+     * 如果某些值为null,使用默认值
      *
      * @return this
      */
@@ -499,19 +499,19 @@ public class MailAccount implements Serializable {
         final String fromAddress = InternalMail.parseFirstAddress(this.from, this.charset).getAddress();
 
         if (StringUtils.isBlank(this.host)) {
-            // 如果SMTP地址为空，默认使用smtp.<发件人邮箱后缀>
+            // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
             this.host = StringUtils.format("smtp.{}", StringUtils.subSuf(fromAddress, fromAddress.indexOf('@') + 1));
         }
         if (StringUtils.isBlank(user)) {
-            // 如果用户名为空，默认为发件人邮箱前缀
+            // 如果用户名为空,默认为发件人邮箱前缀
             this.user = StringUtils.subPre(fromAddress, fromAddress.indexOf('@'));
         }
         if (null == this.auth) {
-            // 如果密码非空白，则使用认证模式
+            // 如果密码非空白,则使用认证模式
             this.auth = (false == StringUtils.isBlank(this.pass));
         }
         if (null == this.port) {
-            // 端口在SSL状态下默认与socketFactoryPort一致，非SSL状态下默认为25
+            // 端口在SSL状态下默认与socketFactoryPort一致,非SSL状态下默认为25
             this.port = (null != this.sslEnable && this.sslEnable) ? this.socketFactoryPort : 25;
         }
         if (null == this.charset) {

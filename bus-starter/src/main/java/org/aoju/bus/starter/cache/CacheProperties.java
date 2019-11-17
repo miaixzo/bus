@@ -50,11 +50,11 @@ public class CacheProperties {
      */
     private Map<String, Cache> map;
     /**
-     * 缓存前缀，目前只对redis缓存生效，默认 OAUTH::STATE::
+     * 缓存前缀,目前只对redis缓存生效,默认 OAUTH::STATE::
      */
     private String prefix;
     /**
-     * 超时时长，目前只对redis缓存生效，默认3分钟
+     * 超时时长,目前只对redis缓存生效,默认3分钟
      */
     private String timeout;
 

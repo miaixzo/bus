@@ -25,7 +25,7 @@ package org.aoju.bus.core.io;
 
 /**
  * 代码移植自<a href="https://github.com/biezhi/blade">blade</a>
- * 快速缓冲，将数据存放在缓冲集中，取代以往的单一数组
+ * 快速缓冲,将数据存放在缓冲集中,取代以往的单一数组
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -71,7 +71,7 @@ public class FastByteBuffer {
     }
 
     /**
-     * 分配下一个缓冲区，不会小于1024
+     * 分配下一个缓冲区,不会小于1024
      *
      * @param newSize 理想缓冲区字节数
      */

@@ -27,7 +27,7 @@ import org.aoju.bus.cron.TaskExecutor;
 
 /**
  * 定时任务监听接口
- * 通过实现此接口，实现对定时任务的各个环节做监听
+ * 通过实现此接口,实现对定时任务的各个环节做监听
  *
  * @author Kimi Liu
  * @version 5.2.2

@@ -32,9 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Excel基础类，用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
+ * Excel基础类,用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
  *
- * @param <T> 子类类型，用于返回this
+ * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
  * @version 5.2.2
  * @since JDK 1.8+
@@ -121,8 +121,8 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之。
-     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet。
+     * 自定义需要读取或写出的Sheet,如果给定的sheet不存在,创建之
+     * 在读取中,此方法用于切换读取的sheet,在写出时,此方法用于新建或者切换sheet
      *
      * @param sheetName sheet名
      * @return this
@@ -136,10 +136,10 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）
-     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
+     * 自定义需要读取或写出的Sheet,如果给定的sheet不存在,创建之（命名为默认）
+     * 在读取中,此方法用于切换读取的sheet,在写出时,此方法用于新建或者切换sheet
      *
-     * @param sheetIndex sheet序号，从0开始计数
+     * @param sheetIndex sheet序号,从0开始计数
      * @return this
      */
     public T setSheet(int sheetIndex) {
@@ -155,10 +155,10 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取指定坐标单元格，单元格不存在时返回<code>null</code>
+     * 获取指定坐标单元格,单元格不存在时返回<code>null</code>
      *
-     * @param x X坐标，从0计数，既列号
-     * @param y Y坐标，从0计数，既行号
+     * @param x X坐标,从0计数,既列号
+     * @param y Y坐标,从0计数,既行号
      * @return {@link Cell}
      */
     public Cell getCell(int x, int y) {
@@ -168,8 +168,8 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     /**
      * 获取或创建指定坐标单元格
      *
-     * @param x X坐标，从0计数，既列号
-     * @param y Y坐标，从0计数，既行号
+     * @param x X坐标,从0计数,既列号
+     * @param y Y坐标,从0计数,既行号
      * @return {@link Cell}
      */
     public Cell getOrCreateCell(int x, int y) {
@@ -177,10 +177,10 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回<code>null</code>
+     * 获取指定坐标单元格,如果isCreateIfNotExist为false,则在单元格不存在时返回<code>null</code>
      *
-     * @param x                  X坐标，从0计数，既列号
-     * @param y                  Y坐标，从0计数，既行号
+     * @param x                  X坐标,从0计数,既列号
+     * @param y                  Y坐标,从0计数,既行号
      * @param isCreateIfNotExist 单元格不存在时是否创建
      * @return {@link Cell}
      */
@@ -195,7 +195,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     /**
      * 获取或者创建行
      *
-     * @param y Y坐标，从0计数，既行号
+     * @param y Y坐标,从0计数,既行号
      * @return {@link Row}
      */
     public Row getOrCreateRow(int y) {
@@ -203,10 +203,10 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
+     * 为指定单元格获取或者创建样式,返回样式后可以设置样式内容
      *
-     * @param x X坐标，从0计数，既列号
-     * @param y Y坐标，从0计数，既行号
+     * @param x X坐标,从0计数,既列号
+     * @param y Y坐标,从0计数,既行号
      * @return {@link CellStyle}
      */
     public CellStyle getOrCreateCellStyle(int x, int y) {
@@ -220,9 +220,9 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取或创建某一行的样式，返回样式后可以设置样式内容
+     * 获取或创建某一行的样式,返回样式后可以设置样式内容
      *
-     * @param y Y坐标，从0计数，既行号
+     * @param y Y坐标,从0计数,既行号
      * @return {@link CellStyle}
      */
     public CellStyle getOrCreateRowStyle(int y) {
@@ -236,9 +236,9 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取或创建某一行的样式，返回样式后可以设置样式内容
+     * 获取或创建某一行的样式,返回样式后可以设置样式内容
      *
-     * @param x X坐标，从0计数，既列号
+     * @param x X坐标,从0计数,既列号
      * @return {@link CellStyle}
      */
     public CellStyle getOrCreateColumnStyle(int x) {
@@ -251,7 +251,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取总行数，计算方法为：
+     * 获取总行数,计算方法为：
      *
      * <pre>
      * 最后一行序号 + 1
@@ -264,7 +264,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取有记录的行数，计算方法为：
+     * 获取有记录的行数,计算方法为：
      *
      * <pre>
      * 最后一行序号 - 第一行序号 + 1
@@ -277,7 +277,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取第一行总列数，计算方法为：
+     * 获取第一行总列数,计算方法为：
      *
      * <pre>
      * 最后一列序号 + 1
@@ -290,7 +290,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取总列数，计算方法为：
+     * 获取总列数,计算方法为：
      *
      * <pre>
      * 最后一列序号 + 1
@@ -305,7 +305,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
 
     /**
      * 关闭工作簿
-     * 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
+     * 如果用户设定了目标文件,先写出目标文件后给关闭工作簿
      */
     @Override
     public void close() {

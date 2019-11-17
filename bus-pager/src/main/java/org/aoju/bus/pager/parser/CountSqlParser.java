@@ -35,7 +35,7 @@ import org.aoju.bus.pager.plugin.PageFromObject;
 import java.util.*;
 
 /**
- * sql解析类，提供更智能的count查询sql
+ * sql解析类,提供更智能的count查询sql
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -46,7 +46,7 @@ public class CountSqlParser {
     public static final String KEEP_ORDERBY = "/*keep orderby*/";
     private static final Alias TABLE_ALIAS;
     /**
-     * 聚合函数，以下列函数开头的都认为是聚合函数
+     * 聚合函数,以下列函数开头的都认为是聚合函数
      */
     private static final Set<String> AGGREGATE_FUNCTIONS = new HashSet<String>(Arrays.asList(
             ("APPROX_COUNT_DISTINCT," +
@@ -140,7 +140,7 @@ public class CountSqlParser {
     private final Set<String> falseFunctions = Collections.synchronizedSet(new HashSet<String>());
 
     /**
-     * 添加到聚合函数，可以是逗号隔开的多个函数前缀
+     * 添加到聚合函数,可以是逗号隔开的多个函数前缀
      *
      * @param functions 函数
      */
@@ -167,13 +167,13 @@ public class CountSqlParser {
      * 获取智能的countSql
      *
      * @param sql  sql
-     * @param name 列名，默认 0
+     * @param name 列名,默认 0
      * @return the string
      */
     public String getSmartCountSql(String sql, String name) {
         //解析SQL
         Statement stmt = null;
-        //特殊sql不需要去掉order by时，使用注释前缀
+        //特殊sql不需要去掉order by时,使用注释前缀
         if (sql.indexOf(KEEP_ORDERBY) >= 0) {
             return getSimpleCountSql(sql, name);
         }
@@ -189,7 +189,7 @@ public class CountSqlParser {
             //处理body-去order by
             processSelectBody(selectBody);
         } catch (Exception e) {
-            //当 sql 包含 group by 时，不去除 order by
+            //当 sql 包含 group by 时,不去除 order by
             return getSimpleCountSql(sql, name);
         }
         //处理with-去order by
@@ -267,11 +267,11 @@ public class CountSqlParser {
             return false;
         }
         for (SelectItem item : select.getSelectItems()) {
-            //select列中包含参数的时候不可以，否则会引起参数个数错误
+            //select列中包含参数的时候不可以,否则会引起参数个数错误
             if (item.toString().contains("?")) {
                 return false;
             }
-            //如果查询列中包含函数，也不可以，函数可能会聚合列
+            //如果查询列中包含函数,也不可以,函数可能会聚合列
             if (item instanceof SelectExpressionItem) {
                 Expression expression = ((SelectExpressionItem) item).getExpression();
                 if (expression instanceof Function) {
@@ -398,7 +398,7 @@ public class CountSqlParser {
     }
 
     /**
-     * 判断Orderby是否包含参数，有参数的不能去
+     * 判断Orderby是否包含参数,有参数的不能去
      *
      * @param orderByElements OrderByElement
      * @return the boolean

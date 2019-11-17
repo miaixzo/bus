@@ -29,7 +29,7 @@ import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 
 /**
- * 公共接口，所有平台的都需要实现该接口
+ * 公共接口,所有平台的都需要实现该接口
  * {@link Provider#authorize(String)}
  * {@link Provider#login(Callback)}
  * {@link Provider#revoke(AccToken)}
@@ -42,9 +42,9 @@ import org.aoju.bus.oauth.magic.Message;
 public interface Provider {
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      */
     default String authorize(String state) {

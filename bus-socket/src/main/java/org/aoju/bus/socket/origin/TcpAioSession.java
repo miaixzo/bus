@@ -37,10 +37,10 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 /**
- * AIO传输层会话。
+ * AIO传输层会话
  *
  * <p>
- * AioSession为最核心的类，封装{@link AsynchronousSocketChannel} API接口，简化IO操作。
+ * AioSession为最核心的类,封装{@link AsynchronousSocketChannel} API接口,简化IO操作
  * </p>
  * <p>
  * 其中开放给用户使用的接口为：
@@ -70,7 +70,7 @@ class TcpAioSession<T> extends AioSession<T> {
      */
     protected AsynchronousSocketChannel channel;
     /**
-     * 读缓冲。
+     * 读缓冲
      * <p>大小取决于AioQuickClient/AioQuickServer设置的setReadBufferSize</p>
      */
     protected VirtualBuffer readBuffer;
@@ -184,8 +184,8 @@ class TcpAioSession<T> extends AioSession<T> {
     }
 //
 //    /**
-//     * 强制关闭当前AIOSession。
-//     * <p>若此时还存留待输出的数据，则会导致该部分数据丢失</p>
+//     * 强制关闭当前AIOSession
+//     * <p>若此时还存留待输出的数据,则会导致该部分数据丢失</p>
 //     */
 //    public final void close() {
 //        close(true);
@@ -359,12 +359,12 @@ class TcpAioSession<T> extends AioSession<T> {
     }
 
     /**
-     * 获得数据输入流对象。
+     * 获得数据输入流对象
      * <p>
-     * faster模式下调用该方法会触发UnsupportedOperationException异常。
+     * faster模式下调用该方法会触发UnsupportedOperationException异常
      * </p>
      * <p>
-     * MessageProcessor采用异步处理消息的方式时，调用该方法可能会出现异常。
+     * MessageProcessor采用异步处理消息的方式时,调用该方法可能会出现异常
      * </p>
      */
     public InputStream getInputStream() throws IOException {

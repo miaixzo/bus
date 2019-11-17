@@ -56,7 +56,7 @@ public class AutoValidateAdvice {
                 method = proxyChain.getTarget().getClass().getDeclaredMethod(method.getName(),
                         method.getParameterTypes());
             } catch (NoSuchMethodException e) {
-                Logger.info("无法在实现类中找到指定的方法，所以无法实现校验器验证，method：" + method.getName());
+                Logger.info("无法在实现类中找到指定的方法,所以无法实现校验器验证,method：" + method.getName());
                 return proxyChain.doProxyChain(agruements);
             }
         }

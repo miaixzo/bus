@@ -44,7 +44,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     private RejectedExecutionHandler handler;
 
     /**
-     * 创建ExecutorBuilder，开始构建
+     * 创建ExecutorBuilder,开始构建
      *
      * @return {@link ExecutorBuilder}
      */
@@ -80,7 +80,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置初始池大小，默认0
+     * 设置初始池大小,默认0
      *
      * @param corePoolSize 初始池大小
      * @return this
@@ -102,7 +102,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置线程存活时间，既当池中线程多于初始大小时，多出的线程保留的时长
+     * 设置线程存活时间,既当池中线程多于初始大小时,多出的线程保留的时长
      *
      * @param keepAliveTime 线程存活时间
      * @param unit          单位
@@ -113,9 +113,9 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置线程存活时间，既当池中线程多于初始大小时，多出的线程保留的时长，单位纳秒
+     * 设置线程存活时间,既当池中线程多于初始大小时,多出的线程保留的时长,单位纳秒
      *
-     * @param keepAliveTime 线程存活时间，单位纳秒
+     * @param keepAliveTime 线程存活时间,单位纳秒
      * @return this
      */
     public ExecutorBuilder setKeepAliveTime(long keepAliveTime) {
@@ -124,12 +124,12 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置队列，用于存在未执行的线程
+     * 设置队列,用于存在未执行的线程
      * 可选队列有：
      * <pre>
-     * 1. SynchronousQueue    它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程
-     * 2. LinkedBlockingQueue 无界队列，当运行线程大于corePoolSize时始终放入此队列，此时maximumPoolSize无效
-     * 3. ArrayBlockingQueue  有界队列，相对无界队列有利于控制队列大小，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 1. SynchronousQueue    它将任务直接提交给线程而不保持它们 当运行线程小于maxPoolSize时会创建新线程
+     * 2. LinkedBlockingQueue 无界队列,当运行线程大于corePoolSize时始终放入此队列,此时maximumPoolSize无效
+     * 3. ArrayBlockingQueue  有界队列,相对无界队列有利于控制队列大小,队列满时,运行线程小于maxPoolSize时会创建新线程,否则触发异常策略
      * </pre>
      *
      * @param workQueue 队列
@@ -150,7 +150,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置线程工厂，用于自定义线程创建
+     * 设置线程工厂,用于自定义线程创建
      *
      * @param threadFactory 线程工厂
      * @return this
@@ -162,9 +162,9 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置当线程阻塞（block）时的异常处理器，所谓线程阻塞既线程池和等待队列已满，无法处理线程时采取的策略
+     * 设置当线程阻塞（block）时的异常处理器,所谓线程阻塞既线程池和等待队列已满,无法处理线程时采取的策略
      * <p>
-     * 此处可以使用JDK预定义的几种策略，见{@link RejectPolicy}枚举
+     * 此处可以使用JDK预定义的几种策略,见{@link RejectPolicy}枚举
      *
      * @param handler {@link RejectedExecutionHandler}
      * @return this

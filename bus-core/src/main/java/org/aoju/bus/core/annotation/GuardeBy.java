@@ -26,8 +26,8 @@ package org.aoju.bus.core.annotation;
 import java.lang.annotation.*;
 
 /**
- * 用来标识每个需要加锁的状态变量以及保护该变量的锁。
- * 有助于代码的维护与审查，以及一些自动化的分析工具找到潜在的安全性错误。
+ * 用来标识每个需要加锁的状态变量以及保护该变量的锁
+ * 有助于代码的维护与审查,以及一些自动化的分析工具找到潜在的安全性错误
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -40,7 +40,7 @@ import java.lang.annotation.*;
 public @interface GuardeBy {
 
     /**
-     * 指出变量由哪些锁保护。
+     * 指出变量由哪些锁保护
      *
      * @return 对应的锁信息
      */

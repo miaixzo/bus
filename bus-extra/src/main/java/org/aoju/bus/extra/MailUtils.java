@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 邮件工具类，基于javax.mail封装
+ * 邮件工具类,基于javax.mail封装
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -43,8 +43,8 @@ import java.util.List;
 public class MailUtils {
 
     /**
-     * 使用配置文件中设置的账户发送文本邮件，发送给单个或多个收件人
-     * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送文本邮件,发送给单个或多个收件人
+     * 多个收件人可以使用逗号“,”分隔,也可以通过分号“;”分隔
      *
      * @param to      收件人
      * @param subject 标题
@@ -57,8 +57,8 @@ public class MailUtils {
     }
 
     /**
-     * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人
-     * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送HTML邮件,发送给单个或多个收件人
+     * 多个收件人可以使用逗号“,”分隔,也可以通过分号“;”分隔
      *
      * @param to      收件人
      * @param subject 标题
@@ -71,8 +71,8 @@ public class MailUtils {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人
-     * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送邮件,发送单个或多个收件人
+     * 多个收件人可以使用逗号“,”分隔,也可以通过分号“;”分隔
      *
      * @param to      收件人
      * @param subject 标题
@@ -85,12 +85,12 @@ public class MailUtils {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人
-     * 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送邮件,发送单个或多个收件人
+     * 多个收件人、抄送人、密送人可以使用逗号“,”分隔,也可以通过分号“;”分隔
      *
-     * @param to      收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param cc      抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param bcc     密送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * @param to      收件人,可以使用逗号“,”分隔,也可以通过分号“;”分隔
+     * @param cc      抄送人,可以使用逗号“,”分隔,也可以通过分号“;”分隔
+     * @param bcc     密送人,可以使用逗号“,”分隔,也可以通过分号“;”分隔
      * @param subject 标题
      * @param content 正文
      * @param isHtml  是否为HTML
@@ -101,7 +101,7 @@ public class MailUtils {
     }
 
     /**
-     * 使用配置文件中设置的账户发送文本邮件，发送给多人
+     * 使用配置文件中设置的账户发送文本邮件,发送给多人
      *
      * @param tos     收件人列表
      * @param subject 标题
@@ -113,7 +113,7 @@ public class MailUtils {
     }
 
     /**
-     * 使用配置文件中设置的账户发送HTML邮件，发送给多人
+     * 使用配置文件中设置的账户发送HTML邮件,发送给多人
      *
      * @param tos     收件人列表
      * @param subject 标题
@@ -126,7 +126,7 @@ public class MailUtils {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送给多人
+     * 使用配置文件中设置的账户发送邮件,发送给多人
      *
      * @param tos     收件人列表
      * @param subject 标题
@@ -139,11 +139,11 @@ public class MailUtils {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送给多人
+     * 使用配置文件中设置的账户发送邮件,发送给多人
      *
      * @param tos     收件人列表
-     * @param ccs     抄送人列表，可以为null或空
-     * @param bccs    密送人列表，可以为null或空
+     * @param ccs     抄送人列表,可以为null或空
+     * @param bccs    密送人列表,可以为null或空
      * @param subject 标题
      * @param content 正文
      * @param isHtml  是否为HTML
@@ -157,7 +157,7 @@ public class MailUtils {
      * 发送邮件给多人
      *
      * @param mailAccount 邮件认证对象
-     * @param to          收件人，多个收件人逗号或者分号隔开
+     * @param to          收件人,多个收件人逗号或者分号隔开
      * @param subject     标题
      * @param content     正文
      * @param isHtml      是否为HTML格式
@@ -193,8 +193,8 @@ public class MailUtils {
      *
      * @param mailAccount 邮件认证对象
      * @param tos         收件人列表
-     * @param ccs         抄送人列表，可以为null或空
-     * @param bccs        密送人列表，可以为null或空
+     * @param ccs         抄送人列表,可以为null或空
+     * @param bccs        密送人列表,可以为null或空
      * @param subject     标题
      * @param content     正文
      * @param isHtml      是否为HTML格式
@@ -222,9 +222,9 @@ public class MailUtils {
     }
 
     /**
-     * 将多个联系人转为列表，分隔符为逗号或者分号
+     * 将多个联系人转为列表,分隔符为逗号或者分号
      *
-     * @param addresses 多个联系人，如果为空返回null
+     * @param addresses 多个联系人,如果为空返回null
      * @return 联系人列表
      */
     private static List<String> splitAddress(String addresses) {

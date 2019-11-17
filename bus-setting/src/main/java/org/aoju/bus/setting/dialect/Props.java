@@ -80,7 +80,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * 构造,使用相对于Class文件根目录的相对路径
      *
      * @param path 路径
      */
@@ -89,7 +89,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * 构造,使用相对于Class文件根目录的相对路径
      *
      * @param path        相对或绝对路径
      * @param charsetName 字符集
@@ -99,7 +99,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * 构造,使用相对于Class文件根目录的相对路径
      *
      * @param path    相对或绝对路径
      * @param charset 字符集
@@ -144,7 +144,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，相对于classes读取文件
+     * 构造,相对于classes读取文件
      *
      * @param path  相对路径
      * @param clazz 基准类
@@ -154,7 +154,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，相对于classes读取文件
+     * 构造,相对于classes读取文件
      *
      * @param path        相对路径
      * @param clazz       基准类
@@ -165,7 +165,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，相对于classes读取文件
+     * 构造,相对于classes读取文件
      *
      * @param path    相对路径
      * @param clazz   基准类
@@ -180,7 +180,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，使用URL读取
+     * 构造,使用URL读取
      *
      * @param propertiesUrl 属性文件路径
      */
@@ -189,7 +189,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，使用URL读取
+     * 构造,使用URL读取
      *
      * @param propertiesUrl 属性文件路径
      * @param charsetName   字符集
@@ -199,7 +199,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，使用URL读取
+     * 构造,使用URL读取
      *
      * @param propertiesUrl 属性文件路径
      * @param charset       字符集
@@ -213,7 +213,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 构造，使用URL读取
+     * 构造,使用URL读取
      *
      * @param properties 属性文件路径
      */
@@ -469,9 +469,9 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 获取并删除键值对，当指定键对应值非空时，返回并删除这个值，后边的键对应的值不再查找
+     * 获取并删除键值对,当指定键对应值非空时,返回并删除这个值,后边的键对应的值不再查找
      *
-     * @param keys 键列表，常用于别名
+     * @param keys 键列表,常用于别名
      * @return 字符串值
      */
     public String getAndRemoveStr(String... keys) {
@@ -486,7 +486,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 设置值，无给定键创建之。设置后未持久化
+     * 设置值,无给定键创建之 设置后未持久化
      *
      * @param key   属性键
      * @param value 属性值
@@ -496,10 +496,10 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置
+     * 持久化当前设置,会覆盖掉之前的设置
      *
      * @param absolutePath 设置文件的绝对路径
-     * @throws InstrumentException IO异常，可能为文件未找到
+     * @throws InstrumentException IO异常,可能为文件未找到
      */
     public void store(String absolutePath) throws InstrumentException {
         Writer writer = null;
@@ -514,7 +514,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
-     * 存储当前设置，会覆盖掉以前的设置
+     * 存储当前设置,会覆盖掉以前的设置
      *
      * @param path  相对路径
      * @param clazz 相对的类

@@ -78,9 +78,9 @@ public class AliYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers download(String bucket, String fileName) {
-        // ossObject包含文件所在的存储空间名称、文件名称、文件元信息以及一个输入流。
+        // ossObject包含文件所在的存储空间名称、文件名称、文件元信息以及一个输入流
         OSSObject ossObject = this.client.getObject(bucket, fileName);
-        // 读取文件内容。
+        // 读取文件内容
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent()))) {
             while (true) {
                 String line = reader.readLine();

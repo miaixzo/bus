@@ -52,7 +52,7 @@ public class BetweenFormat {
      * 构造
      *
      * @param betweenMs 日期间隔
-     * @param level     级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
+     * @param level     级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
      */
     public BetweenFormat(long betweenMs, Fields.Level level) {
         this(betweenMs, level, 0);
@@ -62,8 +62,8 @@ public class BetweenFormat {
      * 构造
      *
      * @param betweenMs     日期间隔
-     * @param level         级别，按照天、小时、分、秒、毫秒分为5个等级，根据传入等级，格式化到相应级别
-     * @param levelMaxCount 格式化级别的最大个数，假如级别个数为1，但是级别到秒，那只显示一个级别
+     * @param level         级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
+     * @param levelMaxCount 格式化级别的最大个数,假如级别个数为1,但是级别到秒,那只显示一个级别
      */
     public BetweenFormat(long betweenMs, Fields.Level level, int levelMaxCount) {
         this.betweenMs = betweenMs;
@@ -160,7 +160,7 @@ public class BetweenFormat {
 
     /**
      * 等级数量是否有效
-     * 有效的定义是：levelMaxCount大于0（被设置），当前等级数量没有超过这个最大值
+     * 有效的定义是：levelMaxCount大于0（被设置）,当前等级数量没有超过这个最大值
      *
      * @param levelCount 登记数量
      * @return 是否有效

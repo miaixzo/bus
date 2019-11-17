@@ -35,7 +35,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 /**
- * 字典对象，扩充了HashMap中的方法
+ * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -65,7 +65,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * 构造
      *
      * @param initialCapacity 初始容量
-     * @param loadFactor      容量增长因子，0~1，即达到容量的百分之多少时扩容
+     * @param loadFactor      容量增长因子,0~1,即达到容量的百分之多少时扩容
      */
     public Dict(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
@@ -161,7 +161,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     }
 
     /**
-     * 填充Value Object对象，忽略大小写
+     * 填充Value Object对象,忽略大小写
      *
      * @param <T>   Bean类型
      * @param clazz Value Object（或者POJO）的类
@@ -173,7 +173,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
 
     /**
      * 将值对象转换为Dict
-     * 类名会被当作表名，小写第一个字母
+     * 类名会被当作表名,小写第一个字母
      *
      * @param <T>  Bean类型
      * @param bean 值对象
@@ -187,7 +187,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
 
     /**
      * 将值对象转换为Dict
-     * 类名会被当作表名，小写第一个字母
+     * 类名会被当作表名,小写第一个字母
      *
      * @param <T>               Bean类型
      * @param bean              值对象
@@ -203,7 +203,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
 
     /**
      * 与给定实体对比并去除相同的部分
-     * 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段 version from 2.0.0
+     * 此方法用于在更新操作时避免所有字段被更新,跳过不需要更新的字段 version from 2.0.0
      *
      * @param <T>          字典对象类型
      * @param dict         字典对象
@@ -224,7 +224,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     }
 
     /**
-     * 过滤Map保留指定键值对，如果键不存在跳过
+     * 过滤Map保留指定键值对,如果键不存在跳过
      *
      * @param keys 键列表
      * @return Dict 结果
@@ -253,7 +253,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     }
 
     /**
-     * 设置列，当键或值为null时忽略
+     * 设置列,当键或值为null时忽略
      *
      * @param attr  属性
      * @param value 值

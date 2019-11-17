@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * 比较器链。此链包装了多个比较器，最终比较结果按照比较器顺序综合多个比较器结果。<br>
- * 按照比较器链的顺序分别比较，如果比较出相等则转向下一个比较器，否则直接返回<br>
+ * 比较器链 此链包装了多个比较器,最终比较结果按照比较器顺序综合多个比较器结果 <br>
+ * 按照比较器链的顺序分别比较,如果比较出相等则转向下一个比较器,否则直接返回<br>
  * 此类copy from Apache-commons-collections
  *
  * @author Kimi Liu
@@ -27,19 +27,19 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
      */
     private BitSet orderingBits;
     /**
-     * 比较器是否被锁定。锁定的比较器链不能再添加新的比较器。比较器会在开始比较时开始加锁。
+     * 比较器是否被锁定 锁定的比较器链不能再添加新的比较器 比较器会在开始比较时开始加锁
      */
     private boolean lock = false;
 
     /**
-     * 构造空的比较器链，必须至少有一个比较器，否则会在compare时抛出{@link UnsupportedOperationException}
+     * 构造空的比较器链,必须至少有一个比较器,否则会在compare时抛出{@link UnsupportedOperationException}
      */
     public CompareChain() {
         this(new ArrayList<Comparator<E>>(), new BitSet());
     }
 
     /**
-     * 构造，初始化单一比较器。比较器为正序
+     * 构造,初始化单一比较器 比较器为正序
      *
      * @param comparator 在比较器链中的第一个比较器
      */
@@ -48,10 +48,10 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 构造，初始化单一比较器。自定义正序还是反序
+     * 构造,初始化单一比较器 自定义正序还是反序
      *
      * @param comparator 在比较器链中的第一个比较器
-     * @param reverse    是否反序，true表示反序，false正序
+     * @param reverse    是否反序,true表示反序,false正序
      */
     public CompareChain(final Comparator<E> comparator, final boolean reverse) {
         chain = new ArrayList<Comparator<E>>(1);
@@ -63,7 +63,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 构造，使用已有的比较器列表
+     * 构造,使用已有的比较器列表
      *
      * @param list 比较器列表
      * @see #CompareChain(List, BitSet)
@@ -73,11 +73,11 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 构造，使用已有的比较器列表和对应的BitSet<br>
-     * BitSet中的boolean值需与list中的{@link Comparator}一一对应，true表示正序，false反序
+     * 构造,使用已有的比较器列表和对应的BitSet<br>
+     * BitSet中的boolean值需与list中的{@link Comparator}一一对应,true表示正序,false反序
      *
      * @param list {@link Comparator} 列表
-     * @param bits {@link Comparator} 列表对应的排序boolean值，true表示正序，false反序
+     * @param bits {@link Comparator} 列表对应的排序boolean值,true表示正序,false反序
      */
     public CompareChain(final List<Comparator<E>> list, final BitSet bits) {
         chain = list;
@@ -85,9 +85,9 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 在链的尾部添加比较器，使用正向排序
+     * 在链的尾部添加比较器,使用正向排序
      *
-     * @param comparator {@link Comparator} 比较器，正向
+     * @param comparator {@link Comparator} 比较器,正向
      * @return this
      */
     public CompareChain<E> addComparator(final Comparator<E> comparator) {
@@ -95,10 +95,10 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 在链的尾部添加比较器，使用给定排序方式
+     * 在链的尾部添加比较器,使用给定排序方式
      *
      * @param comparator {@link Comparator} 比较器
-     * @param reverse    是否反序，true表示正序，false反序
+     * @param reverse    是否反序,true表示正序,false反序
      * @return this
      */
     public CompareChain<E> addComparator(final Comparator<E> comparator, final boolean reverse) {
@@ -112,7 +112,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 替换指定位置的比较器，保持原排序方式
+     * 替换指定位置的比较器,保持原排序方式
      *
      * @param index      位置
      * @param comparator {@link Comparator}
@@ -124,11 +124,11 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 替换指定位置的比较器，替换指定排序方式
+     * 替换指定位置的比较器,替换指定排序方式
      *
      * @param index      位置
      * @param comparator {@link Comparator}
-     * @param reverse    是否反序，true表示正序，false反序
+     * @param reverse    是否反序,true表示正序,false反序
      * @return this
      */
     public CompareChain<E> setComparator(final int index, final Comparator<E> comparator, final boolean reverse) {
@@ -177,7 +177,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 是否已经被锁定。当开始比较时（调用compare方法）此值为true
+     * 是否已经被锁定 当开始比较时（调用compare方法）此值为true
      *
      * @return true = ComparatorChain cannot be modified; false = ComparatorChain can still be modified.
      */
@@ -197,12 +197,12 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
 
     /**
      * 执行比较<br>
-     * 按照比较器链的顺序分别比较，如果比较出相等则转向下一个比较器，否则直接返回
+     * 按照比较器链的顺序分别比较,如果比较出相等则转向下一个比较器,否则直接返回
      *
      * @param o1 第一个对象
      * @param o2 第二个对象
      * @return -1, 0, or 1
-     * @throws UnsupportedOperationException 如果比较器链为空，无法完成比较
+     * @throws UnsupportedOperationException 如果比较器链为空,无法完成比较
      */
     @Override
     public int compare(final E o1, final E o2) throws UnsupportedOperationException {
@@ -269,7 +269,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 检查比较器链是否为空，为空抛出异常
+     * 检查比较器链是否为空,为空抛出异常
      *
      * @throws UnsupportedOperationException 为空抛出此异常
      */

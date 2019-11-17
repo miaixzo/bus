@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 处理主要逻辑，最关键的一个类
+ * 处理主要逻辑,最关键的一个类
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -167,7 +167,7 @@ public class MapperBuilder {
         try {
             registerMapper(Class.forName(mapperClass));
         } catch (ClassNotFoundException e) {
-            throw new MapperException("注册通用Mapper[" + mapperClass + "]失败，找不到该通用Mapper!");
+            throw new MapperException("注册通用Mapper[" + mapperClass + "]失败,找不到该通用Mapper!");
         }
     }
 
@@ -208,7 +208,7 @@ public class MapperBuilder {
     }
 
     /**
-     * 如果当前注册的接口为空，自动注册默认接口
+     * 如果当前注册的接口为空,自动注册默认接口
      */
     public void ifEmptyRegisterDefaultInterface() {
         if (registerClass.size() == 0) {
@@ -217,7 +217,7 @@ public class MapperBuilder {
     }
 
     /**
-     * 配置完成后，执行下面的操作
+     * 配置完成后,执行下面的操作
      * 处理configuration中全部的MappedStatement
      *
      * @param configuration 配置
@@ -297,7 +297,7 @@ public class MapperBuilder {
 
     /**
      * 重新设置SqlSource
-     * 执行该方法前必须使用isMapperMethod判断，否则msIdCache会空
+     * 执行该方法前必须使用isMapperMethod判断,否则msIdCache会空
      *
      * @param ms MappedStatement
      */

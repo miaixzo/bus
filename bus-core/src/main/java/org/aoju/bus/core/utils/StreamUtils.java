@@ -60,9 +60,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将一段文本全部写入一个writer。
+     * 将一段文本全部写入一个writer
      * <p>
-     * <b style=color:red>注意</b>，它并不会关闭输出流
+     * <b style=color:red>注意</b>,它并不会关闭输出流
      *
      * @param writer 操作器
      * @param cs     文本
@@ -76,9 +76,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将一段文本全部写入一个writer。
+     * 将一段文本全部写入一个writer
      * <p>
-     * <b style=color:red>注意</b>，它会关闭输出流
+     * <b style=color:red>注意</b>,它会关闭输出流
      *
      * @param writer 输出流
      * @param cs     文本
@@ -94,9 +94,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将输入流写入一个输出流。块大小为 8192
+     * 将输入流写入一个输出流 块大小为 8192
      * <p>
-     * <b style=color:red>注意</b>，它并不会关闭输入/出流
+     * <b style=color:red>注意</b>,它并不会关闭输入/出流
      *
      * @param ops 输出流
      * @param ins 输入流
@@ -108,9 +108,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将输入流写入一个输出流。
+     * 将输入流写入一个输出流
      * <p>
-     * <b style=color:red>注意</b>，它并不会关闭输入/出流
+     * <b style=color:red>注意</b>,它并不会关闭输入/出流
      *
      * @param ops        输出流
      * @param ins        输入流
@@ -129,11 +129,11 @@ public class StreamUtils {
             bytesCount += len;
             ops.write(buf, 0, len);
         }
-        // 啥都没写，强制触发一下写
-        // 这是考虑到 walnut 的输出流实现，比如你写一个空文件
-        // 那么输入流就是空的，但是 walnut 的包裹输出流并不知道你写过了
-        // 它人你就是打开一个输出流，然后再关上，所以自然不会对内容做改动
-        // 所以这里触发一个写，它就知道，喔你要写个空喔。
+        // 啥都没写,强制触发一下写
+        // 这是考虑到 walnut 的输出流实现,比如你写一个空文件
+        // 那么输入流就是空的,但是 walnut 的包裹输出流并不知道你写过了
+        // 它人你就是打开一个输出流,然后再关上,所以自然不会对内容做改动
+        // 所以这里触发一个写,它就知道,喔你要写个空喔
         if (0 == bytesCount) {
             ops.write(buf, 0, 0);
         }
@@ -142,9 +142,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将输入流写入一个输出流。块大小为 8192
+     * 将输入流写入一个输出流 块大小为 8192
      * <p>
-     * <b style=color:red>注意</b>，它会关闭输入/出流
+     * <b style=color:red>注意</b>,它会关闭输入/出流
      *
      * @param ops 输出流
      * @param ins 输入流
@@ -162,9 +162,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将文本输入流写入一个文本输出流。块大小为 8192
+     * 将文本输入流写入一个文本输出流 块大小为 8192
      * <p>
-     * <b style=color:red>注意</b>，它并不会关闭输入/出流
+     * <b style=color:red>注意</b>,它并不会关闭输入/出流
      *
      * @param writer 输出流
      * @param reader 输入流
@@ -188,9 +188,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将文本输入流写入一个文本输出流。块大小为 8192
+     * 将文本输入流写入一个文本输出流 块大小为 8192
      * <p>
-     * <b style=color:red>注意</b>，它会关闭输入/出流
+     * <b style=color:red>注意</b>,它会关闭输入/出流
      *
      * @param writer 输出流
      * @param reader 输入流
@@ -208,9 +208,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将一个字节数组写入一个输出流。
+     * 将一个字节数组写入一个输出流
      * <p>
-     * <b style=color:red>注意</b>，它并不会关闭输出流
+     * <b style=color:red>注意</b>,它并不会关闭输出流
      *
      * @param ops   输出流
      * @param bytes 字节数组
@@ -223,9 +223,9 @@ public class StreamUtils {
     }
 
     /**
-     * 将一个字节数组写入一个输出流。
+     * 将一个字节数组写入一个输出流
      * <p>
-     * <b style=color:red>注意</b>，它会关闭输出流
+     * <b style=color:red>注意</b>,它会关闭输出流
      *
      * @param ops   输出流
      * @param bytes 字节数组
@@ -243,7 +243,7 @@ public class StreamUtils {
     /**
      * 从一个文本流中读取全部内容并返回
      * <p>
-     * <b style=color:red>注意</b>，它并不会关闭输出流
+     * <b style=color:red>注意</b>,它并不会关闭输出流
      *
      * @param reader 文本输出流
      * @return 文本内容
@@ -291,7 +291,7 @@ public class StreamUtils {
     }
 
     /**
-     * 从一个文本输入流读取所有内容，并将该流关闭
+     * 从一个文本输入流读取所有内容,并将该流关闭
      *
      * @param reader 文本输入流
      * @return 输入流所有内容
@@ -320,7 +320,7 @@ public class StreamUtils {
     /**
      * 从一个文本流中读取全部内容并写入缓冲
      * <p>
-     * <b style=color:red>注意</b>，它会关闭输出流
+     * <b style=color:red>注意</b>,它会关闭输出流
      *
      * @param reader 文本输出流
      * @param sb     输出的文本缓冲
@@ -339,7 +339,7 @@ public class StreamUtils {
     /**
      * 读取一个输入流中所有的字节
      *
-     * @param ins 输入流，必须支持 available()
+     * @param ins 输入流,必须支持 available()
      * @return 一个字节数组
      * @throws IOException 异常
      */
@@ -350,9 +350,9 @@ public class StreamUtils {
     }
 
     /**
-     * 读取一个输入流中所有的字节，并关闭输入流
+     * 读取一个输入流中所有的字节,并关闭输入流
      *
-     * @param ins 输入流，必须支持 available()
+     * @param ins 输入流,必须支持 available()
      * @return 一个字节数组
      */
     public static byte[] readBytesAndClose(InputStream ins) {
@@ -368,7 +368,7 @@ public class StreamUtils {
     }
 
     /**
-     * 关闭一个可关闭对象，可以接受 null。如果成功关闭，返回 true，发生异常 返回 false
+     * 关闭一个可关闭对象,可以接受 null 如果成功关闭,返回 true,发生异常 返回 false
      *
      * @param cb 可关闭对象
      * @return 是否成功关闭
@@ -384,7 +384,7 @@ public class StreamUtils {
     }
 
     /**
-     * 安全刷新一个可刷新的对象，可接受 null
+     * 安全刷新一个可刷新的对象,可接受 null
      *
      * @param fa 可刷新对象
      */
@@ -397,9 +397,9 @@ public class StreamUtils {
     }
 
     /**
-     * 为一个输入流包裹一个缓冲流。如果这个输入流本身就是缓冲流，则直接返回
+     * 为一个输入流包裹一个缓冲流 如果这个输入流本身就是缓冲流,则直接返回
      *
-     * @param ins 输入流。
+     * @param ins 输入流
      * @return 缓冲输入流
      */
     public static BufferedInputStream buff(InputStream ins) {
@@ -412,9 +412,9 @@ public class StreamUtils {
     }
 
     /**
-     * 为一个输出流包裹一个缓冲流。如果这个输出流本身就是缓冲流，则直接返回
+     * 为一个输出流包裹一个缓冲流 如果这个输出流本身就是缓冲流,则直接返回
      *
-     * @param ops 输出流。
+     * @param ops 输出流
      * @return 缓冲输出流
      */
     public static BufferedOutputStream buff(OutputStream ops) {
@@ -426,9 +426,9 @@ public class StreamUtils {
     }
 
     /**
-     * 为一个文本输入流包裹一个缓冲流。如果这个输入流本身就是缓冲流，则直接返回
+     * 为一个文本输入流包裹一个缓冲流 如果这个输入流本身就是缓冲流,则直接返回
      *
-     * @param reader 文本输入流。
+     * @param reader 文本输入流
      * @return 缓冲文本输入流
      */
     public static BufferedReader buffr(Reader reader) {
@@ -438,9 +438,9 @@ public class StreamUtils {
     }
 
     /**
-     * 为一个文本输出流包裹一个缓冲流。如果这个文本输出流本身就是缓冲流，则直接返回
+     * 为一个文本输出流包裹一个缓冲流 如果这个文本输出流本身就是缓冲流,则直接返回
      *
-     * @param ops 文本输出流。
+     * @param ops 文本输出流
      * @return 缓冲文本输出流
      */
     public static BufferedWriter buffw(Writer ops) {
@@ -453,7 +453,7 @@ public class StreamUtils {
      * 获取输出流
      *
      * @param path  文件路径
-     * @param klass 参考的类， -- 会用这个类的 ClassLoader
+     * @param klass 参考的类, -- 会用这个类的 ClassLoader
      * @param enc   文件路径编码
      * @return 输出流
      */

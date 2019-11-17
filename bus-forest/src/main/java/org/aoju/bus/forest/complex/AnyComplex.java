@@ -28,8 +28,8 @@ import org.aoju.bus.forest.Complex;
 import java.util.Collection;
 
 /**
- * ANY逻辑混合规则，即任意一个规则满足时就满足，
- * 当没有规则的时候，就是不满足。
+ * ANY逻辑混合规则,即任意一个规则满足时就满足,
+ * 当没有规则的时候,就是不满足
  *
  * @author Kimi Liu
  * @version 5.2.2

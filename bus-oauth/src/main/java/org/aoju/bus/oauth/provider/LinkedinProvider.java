@@ -196,7 +196,7 @@ public class LinkedinProvider extends DefaultProvider {
     }
 
     /**
-     * 获取token，适用于获取access_token和刷新token
+     * 获取token,适用于获取access_token和刷新token
      *
      * @param accessTokenUrl 实际请求token的地址
      * @return token对象
@@ -218,9 +218,9 @@ public class LinkedinProvider extends DefaultProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      * @since 1.9.3
      */

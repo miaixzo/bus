@@ -41,7 +41,7 @@ public class Graphics {
      * 创建{@link Graphics2D}
      *
      * @param image {@link BufferedImage}
-     * @param color {@link Color}背景颜色以及当前画笔颜色，{@code null}表示不设置背景色
+     * @param color {@link Color}背景颜色以及当前画笔颜色,{@code null}表示不设置背景色
      * @return {@link Graphics2D}
      */
     public static Graphics2D createGraphics(BufferedImage image, Color color) {
@@ -58,11 +58,11 @@ public class Graphics {
 
     /**
      * 获取文字居中高度的Y坐标（距离上边距距离）
-     * 此方法依赖FontMetrics，如果获取失败，默认为背景高度的1/3
+     * 此方法依赖FontMetrics,如果获取失败,默认为背景高度的1/3
      *
      * @param g                {@link Graphics2D}画笔
      * @param backgroundHeight 背景高度
-     * @return 最小高度，-1表示无法获取
+     * @return 最小高度,-1表示无法获取
      */
     public static int getCenterY(java.awt.Graphics g, int backgroundHeight) {
         // 获取允许文字最小高度
@@ -70,7 +70,7 @@ public class Graphics {
         try {
             metrics = g.getFontMetrics();
         } catch (Exception e) {
-            // 此处报告bug某些情况下会抛出IndexOutOfBoundsException，在此做容错处理
+            // 此处报告bug某些情况下会抛出IndexOutOfBoundsException,在此做容错处理
         }
         int y;
         if (null != metrics) {
@@ -82,7 +82,7 @@ public class Graphics {
     }
 
     /**
-     * 绘制字符串，使用随机颜色，默认抗锯齿
+     * 绘制字符串,使用随机颜色,默认抗锯齿
      *
      * @param g      {@link java.awt.Graphics}画笔
      * @param str    字符串
@@ -96,12 +96,12 @@ public class Graphics {
     }
 
     /**
-     * 绘制字符串，默认抗锯齿
+     * 绘制字符串,默认抗锯齿
      *
      * @param g      {@link java.awt.Graphics}画笔
      * @param str    字符串
      * @param font   字体
-     * @param color  字体颜色，{@code null} 表示使用随机颜色（每个字符单独随机）
+     * @param color  字体颜色,{@code null} 表示使用随机颜色（每个字符单独随机）
      * @param width  字符串背景的宽度
      * @param height 字符串背景的高度
      * @return 画笔对象
@@ -124,7 +124,7 @@ public class Graphics {
         int charWidth = width / len;
         for (int i = 0; i < len; i++) {
             if (null == color) {
-                // 产生随机的颜色值，让输出的每个字符的颜色值都将不同。
+                // 产生随机的颜色值,让输出的每个字符的颜色值都将不同
                 g.setColor(ImageUtils.randomColor());
             }
             g.drawString(String.valueOf(str.charAt(i)), i * charWidth, midY);

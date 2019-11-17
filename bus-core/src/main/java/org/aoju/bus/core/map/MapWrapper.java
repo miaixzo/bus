@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Map包装类，通过包装一个已有Map实现特定功能。例如自定义Key的规则或Value规则
+ * Map包装类,通过包装一个已有Map实现特定功能 例如自定义Key的规则或Value规则
  *
  * @param <K> 键类型
  * @param <V> 值类型

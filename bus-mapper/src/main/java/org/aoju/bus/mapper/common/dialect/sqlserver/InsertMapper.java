@@ -37,7 +37,7 @@ import org.apache.ibatis.annotations.Options;
 public interface InsertMapper<T> {
 
     /**
-     * 插入数据库，`null`值也会插入，不会使用列的默认值
+     * 插入数据库,`null`值也会插入,不会使用列的默认值
      *
      * @param record 对象
      * @return 结果

@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * 年匹配
- * 考虑年数字太大，不适合boolean数组，单独使用列表遍历匹配
+ * 考虑年数字太大,不适合boolean数组,单独使用列表遍历匹配
  *
  * @author Kimi Liu
  * @version 5.2.2

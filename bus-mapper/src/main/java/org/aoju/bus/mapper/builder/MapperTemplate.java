@@ -51,7 +51,7 @@ import static org.aoju.bus.mapper.reflection.Reflector.getMapperClass;
 import static org.aoju.bus.mapper.reflection.Reflector.getMethodName;
 
 /**
- * 通用Mapper模板类，扩展通用Mapper时需要继承该类
+ * 通用Mapper模板类,扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -116,7 +116,7 @@ public abstract class MapperTemplate {
     }
 
     /**
-     * 设置返回值类型 - 为了让typeHandler在select时有效，改为设置resultMap
+     * 设置返回值类型 - 为了让typeHandler在select时有效,改为设置resultMap
      *
      * @param ms          MappedStatement
      * @param entityClass 对象
@@ -169,7 +169,7 @@ public abstract class MapperTemplate {
                     ParameterizedType t = (ParameterizedType) type;
                     if (t.getRawType() == this.mapperClass || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
                         Class<?> returnType = (Class<?>) t.getActualTypeArguments()[0];
-                        //获取该类型后，第一次对该类型进行初始化
+                        //获取该类型后,第一次对该类型进行初始化
                         EntityBuilder.initEntityNameMap(returnType, mapperBuilder.getConfig());
                         entityClassMap.put(msId, returnType);
                         return returnType;
@@ -240,17 +240,17 @@ public abstract class MapperTemplate {
         }
         Method method = methodMap.get(getMethodName(ms));
         try {
-            //第一种，直接操作ms，不需要返回值
+            //第一种,直接操作ms,不需要返回值
             if (method.getReturnType() == Void.TYPE) {
                 method.invoke(this, ms);
             }
-            //第二种，返回SqlNode
+            //第二种,返回SqlNode
             else if (SqlNode.class.isAssignableFrom(method.getReturnType())) {
                 SqlNode sqlNode = (SqlNode) method.invoke(this, ms);
                 DynamicSqlSource dynamicSqlSource = new DynamicSqlSource(ms.getConfiguration(), sqlNode);
                 setSqlSource(ms, dynamicSqlSource);
             }
-            //第三种，返回xml形式的sql字符串
+            //第三种,返回xml形式的sql字符串
             else if (String.class.equals(method.getReturnType())) {
                 String xmlSql = (String) method.invoke(this, ms);
                 SqlSource sqlSource = createSqlSource(ms, xmlSql);

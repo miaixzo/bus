@@ -69,7 +69,7 @@ public interface Log extends TraceLog, DebugLog, InfoLog, WarnLog, ErrorLog {
     /**
      * 打印 ERROR 等级的日志
      *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name)，用于定位日志位置
+     * @param fqcn      完全限定类名(Fully Qualified Class Name),用于定位日志位置
      * @param level     级别
      * @param t         错误对象
      * @param format    消息模板

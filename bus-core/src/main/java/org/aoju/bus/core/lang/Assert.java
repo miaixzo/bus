@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * 断言
- * 断言某些对象或值是否符合规定，否则抛出异常。经常用于做变量检查
+ * 断言某些对象或值是否符合规定,否则抛出异常 经常用于做变量检查
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -41,14 +41,14 @@ import java.util.Map;
 public class Assert {
 
     /**
-     * 断言是否为真，如果为 {@code false} 抛出 {@code IllegalArgumentException} 异常
+     * 断言是否为真,如果为 {@code false} 抛出 {@code IllegalArgumentException} 异常
      *
      * <pre class="criteria">
      * Assert.isTrue(i &gt; 0, "The value must be greater than zero");
      * </pre>
      *
      * @param expression       波尔值
-     * @param errorMsgTemplate 错误抛出异常附带的消息模板，变量用{}代替
+     * @param errorMsgTemplate 错误抛出异常附带的消息模板,变量用{}代替
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
      */
@@ -59,7 +59,7 @@ public class Assert {
     }
 
     /**
-     * 断言是否为真，如果为 {@code false} 抛出 {@code IllegalArgumentException} 异常
+     * 断言是否为真,如果为 {@code false} 抛出 {@code IllegalArgumentException} 异常
      *
      * <pre class="criteria">
      * Assert.isTrue(i &gt; 0, "The value must be greater than zero");
@@ -73,14 +73,14 @@ public class Assert {
     }
 
     /**
-     * 断言是否为假，如果为 {@code true} 抛出 {@code IllegalArgumentException} 异常
+     * 断言是否为假,如果为 {@code true} 抛出 {@code IllegalArgumentException} 异常
      *
      * <pre class="criteria">
      * Assert.isFalse(i &lt; 0, "The value must be greater than zero");
      * </pre>
      *
      * @param expression       波尔值
-     * @param errorMsgTemplate 错误抛出异常附带的消息模板，变量用{}代替
+     * @param errorMsgTemplate 错误抛出异常附带的消息模板,变量用{}代替
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
      */
@@ -91,7 +91,7 @@ public class Assert {
     }
 
     /**
-     * 断言是否为假，如果为 {@code true} 抛出 {@code IllegalArgumentException} 异常
+     * 断言是否为假,如果为 {@code true} 抛出 {@code IllegalArgumentException} 异常
      *
      * <pre class="criteria">
      * Assert.isFalse(i &lt; 0);
@@ -105,14 +105,14 @@ public class Assert {
     }
 
     /**
-     * 断言对象是否为{@code null} ，如果不为{@code null} 抛出{@link IllegalArgumentException} 异常
+     * 断言对象是否为{@code null} ,如果不为{@code null} 抛出{@link IllegalArgumentException} 异常
      *
      * <pre class="criteria">
      * Assert.isNull(value, "The value must be null");
      * </pre>
      *
      * @param object           被检查的对象
-     * @param errorMsgTemplate 消息模板，变量使用{}表示
+     * @param errorMsgTemplate 消息模板,变量使用{}表示
      * @param params           参数列表
      * @throws IllegalArgumentException if the object is not {@code null}
      */
@@ -123,7 +123,7 @@ public class Assert {
     }
 
     /**
-     * 断言对象是否为{@code null} ，如果不为{@code null} 抛出{@link IllegalArgumentException} 异常
+     * 断言对象是否为{@code null} ,如果不为{@code null} 抛出{@link IllegalArgumentException} 异常
      *
      * <pre class="criteria">
      * Assert.isNull(value);
@@ -137,7 +137,7 @@ public class Assert {
     }
 
     /**
-     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常 Assert that an object is not {@code null} .
+     * 断言对象是否不为{@code null} ,如果为{@code null} 抛出{@link IllegalArgumentException} 异常 Assert that an object is not {@code null} .
      *
      * <pre class="criteria">
      * Assert.notNull(clazz, "The class must not be null");
@@ -145,7 +145,7 @@ public class Assert {
      *
      * @param <T>              被检查对象泛型类型
      * @param object           被检查对象
-     * @param errorMsgTemplate 错误消息模板，变量使用{}表示
+     * @param errorMsgTemplate 错误消息模板,变量使用{}表示
      * @param params           参数
      * @return 被检查后的对象
      * @throws NullPointerException if the object is {@code null}
@@ -158,7 +158,7 @@ public class Assert {
     }
 
     /**
-     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常
+     * 断言对象是否不为{@code null} ,如果为{@code null} 抛出{@link IllegalArgumentException} 异常
      *
      * <pre class="criteria">
      * Assert.notNull(clazz);
@@ -174,14 +174,14 @@ public class Assert {
     }
 
     /**
-     * 检查给定字符串是否为空，为空抛出 {@link IllegalArgumentException}
+     * 检查给定字符串是否为空,为空抛出 {@link IllegalArgumentException}
      *
      * <pre class="criteria">
      * Assert.notEmpty(name, "Name must not be empty");
      * </pre>
      *
      * @param text             被检查字符串
-     * @param errorMsgTemplate 错误消息模板，变量使用{}表示
+     * @param errorMsgTemplate 错误消息模板,变量使用{}表示
      * @param params           参数
      * @return 非空字符串
      * @throws IllegalArgumentException 被检查字符串为空
@@ -194,7 +194,7 @@ public class Assert {
     }
 
     /**
-     * 检查给定字符串是否为空，为空抛出 {@link IllegalArgumentException}
+     * 检查给定字符串是否为空,为空抛出 {@link IllegalArgumentException}
      *
      * <pre class="criteria">
      * Assert.notEmpty(name);
@@ -209,14 +209,14 @@ public class Assert {
     }
 
     /**
-     * 检查给定字符串是否为空白（null、空串或只包含空白符），为空抛出 {@link IllegalArgumentException}
+     * 检查给定字符串是否为空白（null、空串或只包含空白符）,为空抛出 {@link IllegalArgumentException}
      *
      * <pre class="criteria">
      * Assert.notBlank(name, "Name must not be blank");
      * </pre>
      *
      * @param text             被检查字符串
-     * @param errorMsgTemplate 错误消息模板，变量使用{}表示
+     * @param errorMsgTemplate 错误消息模板,变量使用{}表示
      * @param params           参数
      * @return 非空字符串
      * @throws IllegalArgumentException 被检查字符串为空白
@@ -230,7 +230,7 @@ public class Assert {
     }
 
     /**
-     * 检查给定字符串是否为空白（null、空串或只包含空白符），为空抛出 {@link IllegalArgumentException}
+     * 检查给定字符串是否为空白（null、空串或只包含空白符）,为空抛出 {@link IllegalArgumentException}
      *
      * <pre class="criteria">
      * Assert.notBlank(name, "Name must not be blank");
@@ -283,7 +283,7 @@ public class Assert {
     }
 
     /**
-     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
+     * 断言给定数组是否包含元素,数组必须不为 {@code null} 且至少包含一个元素
      *
      * <pre class="criteria">
      * Assert.notEmpty(array, "The array must have elements");
@@ -303,7 +303,7 @@ public class Assert {
     }
 
     /**
-     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
+     * 断言给定数组是否包含元素,数组必须不为 {@code null} 且至少包含一个元素
      *
      * <pre class="criteria">
      * Assert.notEmpty(array, "The array must have elements");
@@ -318,7 +318,7 @@ public class Assert {
     }
 
     /**
-     * 断言给定数组是否不包含{@code null}元素，如果数组为空或 {@code null}将被认为不包含
+     * 断言给定数组是否不包含{@code null}元素,如果数组为空或 {@code null}将被认为不包含
      *
      * <pre class="criteria">
      * Assert.noNullElements(array, "The array must have non-null elements");
@@ -339,7 +339,7 @@ public class Assert {
     }
 
     /**
-     * 断言给定数组是否不包含{@code null}元素，如果数组为空或 {@code null}将被认为不包含
+     * 断言给定数组是否不包含{@code null}元素,如果数组为空或 {@code null}将被认为不包含
      *
      * <pre class="criteria">
      * Assert.noNullElements(array);

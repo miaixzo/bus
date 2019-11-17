@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EhCache进程内缓存框架，
+ * EhCache进程内缓存框架,
  * 具有快速、精干等特点
  *
  * @author Kimi Liu

@@ -6,7 +6,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.StompSubProtocolHandler;
 
 /**
- * websocket消息拦截器，
+ * websocket消息拦截器,
  * 拦截客户端发来的消息
  *
  * @author Kimi Liu
@@ -22,7 +22,7 @@ public interface FromClientInterceptor {
      * @param message       websocket消息
      * @param outputChannel websocket消息通道
      * @param handler       stomp协议控制器
-     * @return true 执行后续操作，false 取消后续操作
+     * @return true 执行后续操作,false 取消后续操作
      */
     default boolean preHandle(WebSocketSession session, MessageFrom message, MessageChannel outputChannel, StompSubProtocolHandler handler) {
         return true;

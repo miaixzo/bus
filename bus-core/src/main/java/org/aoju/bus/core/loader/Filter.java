@@ -37,7 +37,7 @@ public interface Filter {
     /**
      * 过滤资源
      *
-     * @param name 资源名称，即相对路径
+     * @param name 资源名称,即相对路径
      * @param url  资源URL地址
      * @return true: 加载  false: 不加载
      */

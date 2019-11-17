@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * 被校验对象
  * <p>
- * 注意: 当被校验对象为null时，无法获取到对象的Class，所以不会执行对象的Class上标记的任何校验注解
+ * 注意: 当被校验对象为null时,无法获取到对象的Class,所以不会执行对象的Class上标记的任何校验注解
  * </P>
  *
  * @author Kimi Liu
@@ -89,7 +89,7 @@ public class Validated extends Provider {
      * 被校验对象
      *
      * @param object        被校验的原始对象
-     * @param parentContext 父级校验上下文，当前校验环境会继承所有父级上下文信息，除了是否校验对象内部的属性
+     * @param parentContext 父级校验上下文,当前校验环境会继承所有父级上下文信息,除了是否校验对象内部的属性
      */
     public Validated(Object object, Context parentContext) {
         this.object = object;
@@ -117,7 +117,7 @@ public class Validated extends Provider {
      *
      * @param object      被校验的原始对象
      * @param annotations 被校验对象上的所有注解
-     * @param context     父级校验上下文，当前校验环境会继承所有父级上下文信息，除了是否校验对象内部的属性
+     * @param context     父级校验上下文,当前校验环境会继承所有父级上下文信息,除了是否校验对象内部的属性
      */
     public Validated(Object object, Annotation[] annotations, Context context) {
         this.object = object;
@@ -130,7 +130,7 @@ public class Validated extends Provider {
      *
      * @param object      被校验的原始对象
      * @param annotations 被校验对象上的所有注解
-     * @param context     父级校验上下文，当前校验环境会继承所有父级上下文信息，除了是否校验对象内部的属性
+     * @param context     父级校验上下文,当前校验环境会继承所有父级上下文信息,除了是否校验对象内部的属性
      * @param field       属性信息
      */
     public Validated(Object object, Annotation[] annotations, Context context, String field) {
@@ -200,7 +200,7 @@ public class Validated extends Provider {
 
     /**
      * 执行校验
-     * 如果校验环境设置了快速失败的属性为true，那么一旦出现校验失败，则会抛出异常
+     * 如果校验环境设置了快速失败的属性为true,那么一旦出现校验失败,则会抛出异常
      *
      * @return 校验结果收集器
      */
@@ -275,11 +275,11 @@ public class Validated extends Provider {
                 }
             }
             if (ObjectUtils.isEmpty(property.getClazz()) || StringUtils.isEmpty(property.getName())) {
-                throw new InstrumentException("非法的校验注解，没有使用Complex元注解表示校验器:" + annotationType.getName());
+                throw new InstrumentException("非法的校验注解,没有使用Complex元注解表示校验器:" + annotationType.getName());
             }
             return property;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new InstrumentException("非法的校验注解，没有定义通用的校验属性:" + annotationType.getName(), e);
+            throw new InstrumentException("非法的校验注解,没有定义通用的校验属性:" + annotationType.getName(), e);
         }
     }
 

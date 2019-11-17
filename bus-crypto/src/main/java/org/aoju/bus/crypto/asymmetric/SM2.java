@@ -47,8 +47,8 @@ import java.security.PublicKey;
 import java.util.Random;
 
 /**
- * 国密SM2算法实现，基于BC库StringUtils
- * SM2算法只支持公钥加密，私钥解密
+ * 国密SM2算法实现,基于BC库StringUtils
+ * SM2算法只支持公钥加密,私钥解密
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -71,7 +71,7 @@ public class SM2 extends Safety<SM2> {
     private ECPrivateKeyParameters privateKeyParams;
 
     /**
-     * 构造，生成新的私钥公钥对
+     * 构造,生成新的私钥公钥对
      */
     public SM2() {
         this((byte[]) null, (byte[]) null);
@@ -80,7 +80,7 @@ public class SM2 extends Safety<SM2> {
     /**
      * 构造StringUtils
      * 私钥和公钥同时为空时生成一对新的私钥和公钥StringUtils
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥Hex或Base64表示
      * @param publicKey  公钥Hex或Base64表示
@@ -92,7 +92,7 @@ public class SM2 extends Safety<SM2> {
     /**
      * 构造 StringUtils
      * 私钥和公钥同时为空时生成一对新的私钥和公钥StringUtils
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
@@ -104,7 +104,7 @@ public class SM2 extends Safety<SM2> {
     /**
      * 构造 StringUtils
      * 私钥和公钥同时为空时生成一对新的私钥和公钥StringUtils
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
@@ -143,7 +143,7 @@ public class SM2 extends Safety<SM2> {
     /**
      * 初始化StringUtils
      * 私钥和公钥同时为空时生成一对新的私钥和公钥StringUtils
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
@@ -156,7 +156,7 @@ public class SM2 extends Safety<SM2> {
     /**
      * 获取密钥类型对应的加密参数对象{@link CipherParameters}
      *
-     * @param keyType Key类型枚举，包括私钥或公钥
+     * @param keyType Key类型枚举,包括私钥或公钥
      * @return {@link CipherParameters}
      */
     private CipherParameters getCipherParameters(KeyType keyType) {
@@ -191,7 +191,7 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * 加密，SM2非对称加密的结果由C1,C2,C3三部分组成，其中：
+     * 加密,SM2非对称加密的结果由C1,C2,C3三部分组成,其中：
      *
      * <pre>
      * C1 生成随机数的计算出的椭圆曲线点
@@ -222,7 +222,7 @@ public class SM2 extends Safety<SM2> {
     /**
      * 解密
      *
-     * @param data    SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
+     * @param data    SM2密文,实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 加密后的bytes
      */
@@ -246,7 +246,7 @@ public class SM2 extends Safety<SM2> {
      * 用私钥对信息生成数字签名
      *
      * @param data 加密数据
-     * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
+     * @param id   可以为null,若为null,则默认withId为字节数组:"1234567812345678".getBytes()
      * @return 签名
      */
     public byte[] sign(byte[] data, byte[] id) {
@@ -272,7 +272,7 @@ public class SM2 extends Safety<SM2> {
      *
      * @param data 数据
      * @param sign 签名
-     * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
+     * @param id   可以为null,若为null,则默认withId为字节数组:"1234567812345678".getBytes()
      * @return 是否验证通过
      */
     public boolean verify(byte[] data, byte[] sign, byte[] id) {
@@ -329,7 +329,7 @@ public class SM2 extends Safety<SM2> {
      * 初始化引擎
      *
      * @param forEncryption 是否为加密模式
-     * @param param         {@link CipherParameters}，此处应为{@link ParametersWithRandom}（加密时）或{@link ECKeyParameters}（解密时）
+     * @param param         {@link CipherParameters},此处应为{@link ParametersWithRandom}（加密时）或{@link ECKeyParameters}（解密时）
      */
     public void init(boolean forEncryption, CipherParameters param) {
         this.forEncryption = forEncryption;
@@ -361,7 +361,7 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * 处理块，包括加密和解密
+     * 处理块,包括加密和解密
      *
      * @param in    数据
      * @param inOff 数据开始位置
@@ -417,7 +417,7 @@ public class SM2 extends Safety<SM2> {
             kdf(kPB, c2);
         } while (notEncrypted(c2, in, inOff));
 
-        // 杂凑值，效验数据
+        // 杂凑值,效验数据
         byte[] c3 = new byte[digest.getDigestSize()];
 
         addFieldElement(kPB.getAffineXCoord());
@@ -436,7 +436,7 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * 解密，只支持私钥解密
+     * 解密,只支持私钥解密
      *
      * @param in    密文
      * @param inOff 位置
@@ -585,7 +585,7 @@ public class SM2 extends Safety<SM2> {
 
     /**
      * SM2算法模式<br>
-     * 在SM2算法中，C1C2C3为旧标准模式，C1C3C2为新标准模式
+     * 在SM2算法中,C1C2C3为旧标准模式,C1C3C2为新标准模式
      */
     public enum SM2Mode {
         C1C2C3, C1C3C2

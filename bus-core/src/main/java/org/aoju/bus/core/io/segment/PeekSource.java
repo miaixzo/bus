@@ -26,12 +26,12 @@ package org.aoju.bus.core.io.segment;
 import java.io.IOException;
 
 /**
- * 一个{@link Source}，它可以窥视上游的{@link BufferSource}并允许读取和
- * 展开缓冲数据而不使用它。这是通过请求额外的数据吗
- * 如果需要，则复制上游源文件，如果需要，则从上游源文件的内部缓冲区复制
+ * 一个{@link Source},它可以窥视上游的{@link BufferSource}并允许读取和
+ * 展开缓冲数据而不使用它 这是通过请求额外的数据吗
+ * 如果需要,则复制上游源文件,如果需要,则从上游源文件的内部缓冲区复制
  * 此源还维护其上游缓冲区的起始位置的快照
- * 每次读取时验证。如果从上游缓冲区读取，则此源将变为
- * 无效，在以后的读取中抛出{@link IllegalStateException}。
+ * 每次读取时验证 如果从上游缓冲区读取,则此源将变为
+ * 无效,在以后的读取中抛出{@link IllegalStateException}
  *
  * @author Kimi Liu
  * @version 5.2.2

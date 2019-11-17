@@ -42,7 +42,7 @@ import java.nio.charset.Charset;
 public interface Resource {
 
     /**
-     * 获取资源名，例如文件资源的资源名为文件名
+     * 获取资源名,例如文件资源的资源名为文件名
      *
      * @return 资源名
      */
@@ -71,7 +71,7 @@ public interface Resource {
     BufferedReader getReader(Charset charset);
 
     /**
-     * 读取资源内容，读取完毕后会关闭流
+     * 读取资源内容,读取完毕后会关闭流
      * 关闭流并不影响下一次读取
      *
      * @param charset 编码
@@ -81,7 +81,7 @@ public interface Resource {
     String readStr(Charset charset) throws InstrumentException;
 
     /**
-     * 读取资源内容，读取完毕后会关闭流
+     * 读取资源内容,读取完毕后会关闭流
      * 关闭流并不影响下一次读取
      *
      * @return 读取资源内容
@@ -90,7 +90,7 @@ public interface Resource {
     String readUtf8Str() throws InstrumentException;
 
     /**
-     * 读取资源内容，读取完毕后会关闭流
+     * 读取资源内容,读取完毕后会关闭流
      * 关闭流并不影响下一次读取
      *
      * @return 读取资源内容

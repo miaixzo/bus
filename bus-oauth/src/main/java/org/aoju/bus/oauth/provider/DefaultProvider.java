@@ -149,7 +149,7 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
-     * string字符串转map，str格式为 {@code xxx=xxx&xxx=xxx}
+     * string字符串转map,str格式为 {@code xxx=xxx&xxx=xxx}
      *
      * @param accessTokenStr 待转换的字符串
      * @return map
@@ -223,7 +223,7 @@ public abstract class DefaultProvider implements Provider {
      *
      * @param appKey     平台应用的授权key
      * @param secret     平台应用的授权密钥
-     * @param timestamp  时间戳，单位秒。API服务端允许客户端请求最大时间误差为正负5分钟。
+     * @param timestamp  时间戳,单位秒 API服务端允许客户端请求最大时间误差为正负5分钟
      * @param action     饿了么请求的api方法
      * @param token      用户授权的token
      * @param parameters 加密参数
@@ -293,7 +293,7 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
-     * 检查配置合法性。针对部分平台， 对redirect uri有特定要求。一般来说redirect uri都是http://，而对于facebook平台， redirect uri 必须是https的链接
+     * 检查配置合法性 针对部分平台, 对redirect uri有特定要求 一般来说redirect uri都是http://,而对于facebook平台, redirect uri 必须是https的链接
      *
      * @param context context
      * @param source  source
@@ -308,7 +308,7 @@ public abstract class DefaultProvider implements Provider {
         if (Registry.FACEBOOK == source && !isHttpsProtocol(redirectUri)) {
             throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
         }
-        // 支付宝在创建回调地址时，不允许使用localhost或者127.0.0.1
+        // 支付宝在创建回调地址时,不允许使用localhost或者127.0.0.1
         if (Registry.ALIPAY == source && isLocalHost(redirectUri)) {
             throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
         }
@@ -317,7 +317,7 @@ public abstract class DefaultProvider implements Provider {
     /**
      * 校验回调传回的code
      * <p>
-     * {@code v1.10.0}版本中改为传入{@code source}和{@code callback}，对于不同平台使用不同参数接受code的情况统一做处理
+     * {@code v1.10.0}版本中改为传入{@code source}和{@code callback},对于不同平台使用不同参数接受code的情况统一做处理
      *
      * @param complex  当前授权平台
      * @param callback 从第三方授权回调回来时传入的参数集合
@@ -354,8 +354,8 @@ public abstract class DefaultProvider implements Provider {
     protected abstract Object getUserInfo(AccToken token);
 
     /**
-     * 统一的登录入口。当通过{@link DefaultProvider#authorize(String)}授权成功后，会跳转到调用方的相关回调方法中
-     * 方法的入参可以使用{@code AuthCallback}，{@code AuthCallback}类中封装好了OAuth2授权回调所需要的参数
+     * 统一的登录入口 当通过{@link DefaultProvider#authorize(String)}授权成功后,会跳转到调用方的相关回调方法中
+     * 方法的入参可以使用{@code AuthCallback},{@code AuthCallback}类中封装好了OAuth2授权回调所需要的参数
      *
      * @param Callback 用于接收回调参数的实体
      * @return AuthResponse
@@ -375,7 +375,7 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
-     * 处理{@link DefaultProvider#login(Callback)} 发生异常的情况，统一响应参数
+     * 处理{@link DefaultProvider#login(Callback)} 发生异常的情况,统一响应参数
      *
      * @param e 具体的异常
      * @return AuthResponse
@@ -389,9 +389,9 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
+     * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
      * @since 1.9.3
      */
@@ -458,7 +458,7 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
-     * 获取state，如果为空， 则默认取当前日期的时间戳
+     * 获取state,如果为空, 则默认取当前日期的时间戳
      *
      * @param state 原始的state
      * @return 返回不为null的state

@@ -51,7 +51,7 @@ public class FileResource extends UriResource {
      * 构造
      *
      * @param file     文件
-     * @param fileName 文件名，如果为null获取文件本身的文件名
+     * @param fileName 文件名,如果为null获取文件本身的文件名
      */
     public FileResource(File file, String fileName) {
         super(UriUtils.getURL(file), StringUtils.isBlank(fileName) ? file.getName() : fileName);
@@ -60,7 +60,7 @@ public class FileResource extends UriResource {
     /**
      * 构造
      *
-     * @param path 文件绝对路径或相对ClassPath路径，但是这个路径不能指向一个jar包中的文件
+     * @param path 文件绝对路径或相对ClassPath路径,但是这个路径不能指向一个jar包中的文件
      */
     public FileResource(String path) {
         this(FileUtils.file(path));

@@ -50,7 +50,7 @@ public interface Caller {
     Class<?> getCallers();
 
     /**
-     * 获得调用者，指定第几级调用者 调用者层级关系：
+     * 获得调用者,指定第几级调用者 调用者层级关系：
      *
      * <pre>
      * 0 {@link CallerUtils}
@@ -59,7 +59,7 @@ public interface Caller {
      * ...
      * </pre>
      *
-     * @param depth 层级。0表示{@link CallerUtils}本身，1表示调用{@link CallerUtils}的类，2表示调用者的调用者，依次类推
+     * @param depth 层级 0表示{@link CallerUtils}本身,1表示调用{@link CallerUtils}的类,2表示调用者的调用者,依次类推
      * @return 第几级调用者
      */
     Class<?> getCaller(int depth);

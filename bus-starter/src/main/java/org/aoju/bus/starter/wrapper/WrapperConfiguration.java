@@ -117,7 +117,7 @@ public class WrapperConfiguration {
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             final String method = request.getMethod();
-            // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换，提高性能
+            // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换,提高性能
             if (Httpd.POST.equals(method) || Httpd.PATCH.equals(method) || Httpd.PUT.equals(method)) {
                 if (!(request instanceof CacheRequestWrapper)) {
                     request = new CacheRequestWrapper(request);

@@ -35,7 +35,7 @@ import java.util.*;
 
 /**
  * 拼音工具类
- * 注意：部分拼音并不准确，例如：怡
+ * 注意：部分拼音并不准确,例如：怡
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -310,7 +310,7 @@ public class PinyinUtils {
      * 将带声调的拼音格式化为相应格式的拼音
      *
      * @param str    带声调的拼音
-     * @param format 拼音格式：WITH_TONE_NUMBER--数字代表声调，WITHOUT_TONE--不带声调，WITH_TONE_MARK--带声调
+     * @param format 拼音格式：WITH_TONE_NUMBER--数字代表声调,WITHOUT_TONE--不带声调,WITH_TONE_MARK--带声调
      * @return 格式转换后的拼音
      */
     private static String[] format(String str, String format) {
@@ -328,7 +328,7 @@ public class PinyinUtils {
      * 判断某个字符是否为繁体字
      *
      * @param c 需要判断的字符
-     * @return 是繁体字返回true，否则返回false
+     * @return 是繁体字返回true, 否则返回false
      */
     public static boolean isTraditional(char c) {
         return DICT_CHINESE.containsKey(String.valueOf(c));
@@ -338,7 +338,7 @@ public class PinyinUtils {
      * 判断某个字符是否为汉字
      *
      * @param c 需要判断的字符
-     * @return 是汉字返回true，否则返回false
+     * @return 是汉字返回true, 否则返回false
      */
     public static boolean isChinese(String c) {
         String regex = "[\\u4e00-\\u9fa5]";
@@ -349,7 +349,7 @@ public class PinyinUtils {
      * 判断某个字符是否为汉字
      *
      * @param c 需要判断的字符
-     * @return 是汉字返回true，否则返回false
+     * @return 是汉字返回true, 否则返回false
      */
     public static boolean isChinese(char c) {
         String regex = "[\\u4e00-\\u9fa5]";
@@ -360,7 +360,7 @@ public class PinyinUtils {
      * 判断一个汉字是否为多音字
      *
      * @param c 汉字
-     * @return 判断结果，是汉字返回true，否则返回false
+     * @return 判断结果, 是汉字返回true, 否则返回false
      */
     public static boolean isPolyphone(char c) {
         String[] pinyinArray = convert(c);

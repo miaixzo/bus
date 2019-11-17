@@ -38,8 +38,8 @@ import java.util.List;
 
 /**
  * 定时任务工具类
- * 此工具持有一个全局{@link Scheduler}，所有定时任务在同一个调度器中执行
- * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
+ * 此工具持有一个全局{@link Scheduler},所有定时任务在同一个调度器中执行
+ * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -82,9 +82,9 @@ public final class CronUtils {
 
     /**
      * 设置是否支持秒匹配
-     * 此方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
+     * 此方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
      *
-     * @param isMatchSecond <code>true</code>支持，<code>false</code>不支持
+     * @param isMatchSecond <code>true</code>支持,<code>false</code>不支持
      */
     public static void setMatchSecond(boolean isMatchSecond) {
         scheduler.setMatchSecond(isMatchSecond);
@@ -162,7 +162,7 @@ public final class CronUtils {
     }
 
     /**
-     * 开始，非守护线程模式
+     * 开始,非守护线程模式
      *
      * @see #start(boolean)
      */
@@ -173,7 +173,7 @@ public final class CronUtils {
     /**
      * 开始
      *
-     * @param isDeamon 是否以守护线程方式启动，如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。
+     * @param isDeamon 是否以守护线程方式启动,如果为true,则在调用{@link #stop()}方法后执行的定时任务立即结束,否则等待执行完毕才结束
      */
     synchronized public static void start(boolean isDeamon) {
         if (null == crontabSetting) {
@@ -189,7 +189,7 @@ public final class CronUtils {
 
     /**
      * 重新启动定时任务
-     * 此方法会清除动态加载的任务，重新启动后，守护线程与否与之前保持一致
+     * 此方法会清除动态加载的任务,重新启动后,守护线程与否与之前保持一致
      */
     synchronized public static void restart() {
         if (null != crontabSetting) {

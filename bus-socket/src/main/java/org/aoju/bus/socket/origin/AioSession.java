@@ -66,8 +66,8 @@ public abstract class AioSession<T> {
     public abstract WriteBuffer writeBuffer();
 
     /**
-     * 强制关闭当前AIOSession。
-     * <p>若此时还存留待输出的数据，则会导致该部分数据丢失</p>
+     * 强制关闭当前AIOSession
+     * <p>若此时还存留待输出的数据,则会导致该部分数据丢失</p>
      */
     public final void close() {
         close(true);
@@ -109,7 +109,7 @@ public abstract class AioSession<T> {
     }
 
     /**
-     * 存放附件，支持任意类型
+     * 存放附件,支持任意类型
      *
      * @param <T>        对象
      * @param attachment 附件
@@ -123,12 +123,12 @@ public abstract class AioSession<T> {
     public abstract InetSocketAddress getRemoteAddress() throws IOException;
 
     /**
-     * 获得数据输入流对象。
+     * 获得数据输入流对象
      * <p>
-     * faster模式下调用该方法会触发UnsupportedOperationException异常。
+     * faster模式下调用该方法会触发UnsupportedOperationException异常
      * </p>
      * <p>
-     * MessageProcessor采用异步处理消息的方式时，调用该方法可能会出现异常。
+     * MessageProcessor采用异步处理消息的方式时,调用该方法可能会出现异常
      * </p>
      *
      * @return 输入流对象

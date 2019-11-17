@@ -36,7 +36,7 @@ import java.io.Reader;
 import java.util.*;
 
 /**
- * CSV行解析器，参考：FastCSV
+ * CSV行解析器,参考：FastCSV
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -63,7 +63,7 @@ public final class CsvParser implements Closeable {
      */
     private int bufLen;
     /**
-     * 拷贝开始的位置，一般为上一行的结束位置
+     * 拷贝开始的位置,一般为上一行的结束位置
      */
     private int copyStart;
     /**
@@ -83,7 +83,7 @@ public final class CsvParser implements Closeable {
      */
     private long lineNo;
     /**
-     * 第一行字段数，用于检查每行字段数是否一致
+     * 第一行字段数,用于检查每行字段数是否一致
      */
     private int firstLineFieldCount = -1;
     /**
@@ -99,7 +99,7 @@ public final class CsvParser implements Closeable {
      * CSV解析器
      *
      * @param reader Reader
-     * @param config 配置，null则为默认配置
+     * @param config 配置,null则为默认配置
      */
     public CsvParser(final Reader reader, CsvReadConfig config) {
         this.reader = Objects.requireNonNull(reader, "reader must not be null");
@@ -107,7 +107,7 @@ public final class CsvParser implements Closeable {
     }
 
     /**
-     * 获取头部字段列表，如果containsHeader设置为false则抛出异常
+     * 获取头部字段列表,如果containsHeader设置为false则抛出异常
      *
      * @return 头部列表
      * @throws IllegalStateException 如果不解析头部或者没有调用nextRow()方法
@@ -166,7 +166,7 @@ public final class CsvParser implements Closeable {
             //初始化标题
             if (config.containsHeader && null == header) {
                 initHeader(currentFields);
-                // 作为标题行后，此行跳过，下一行做为第一行
+                // 作为标题行后,此行跳过,下一行做为第一行
                 continue;
             }
 
@@ -211,7 +211,7 @@ public final class CsvParser implements Closeable {
 
         while (true) {
             if (bufLen == localBufPos) {
-                // 此Buffer读取结束，开始读取下一段
+                // 此Buffer读取结束,开始读取下一段
 
                 if (copyLen > 0) {
                     localCurrentField.append(localBuf, localCopyStart, copyLen);
@@ -240,7 +240,7 @@ public final class CsvParser implements Closeable {
             final char c = localBuf[localBufPos++];
 
             if (inQuotes) {
-                //引号内，做为内容，直到引号结束
+                //引号内,做为内容,直到引号结束
                 if (c == config.textDelimiter) {
                     // End of quoted text
                     inQuotes = false;

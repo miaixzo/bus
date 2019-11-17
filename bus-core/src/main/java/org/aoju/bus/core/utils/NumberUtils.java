@@ -39,7 +39,7 @@ import java.util.Set;
 /**
  * 数字工具类
  * 对于精确值计算应该使用 {@link BigDecimal}
- * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性，例如：
+ * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性,例如：
  *
  * <pre>
  * new BigDecimal(0.1)
@@ -48,7 +48,7 @@ import java.util.Set;
  * 表示的不是<strong>0.1</strong>而是<strong>0.1000000000000000055511151231257827021181583404541015625</strong>
  *
  * <p>
- * 这是因为0.1无法准确的表示为double。因此应该使用<strong>new BigDecimal(String)</strong>。
+ * 这是因为0.1无法准确的表示为double 因此应该使用<strong>new BigDecimal(String)</strong>
  * </p>
  *
  * @author Kimi Liu
@@ -108,7 +108,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的加法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param v1 被加数
      * @param v2 加数
@@ -120,7 +120,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的加法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被加值
      * @return 和
@@ -143,7 +143,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的加法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被加值
      * @return 和
@@ -166,7 +166,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的加法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被加值
      * @return 和
@@ -233,7 +233,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的减法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param v1 被减数
      * @param v2 减数
@@ -245,7 +245,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的减法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被减值
      * @return 差
@@ -268,7 +268,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的减法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被减值
      * @return 差
@@ -291,7 +291,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的减法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被减值
      * @return 差
@@ -358,7 +358,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的乘法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param v1 被乘数
      * @param v2 乘数
@@ -370,7 +370,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的乘法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被乘值
      * @return 积
@@ -404,7 +404,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的乘法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被乘值
      * @return 积
@@ -427,7 +427,7 @@ public class NumberUtils {
 
     /**
      * 提供精确的乘法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 如果传入多个值为null或者空,则返回0
      *
      * @param values 多个被乘值
      * @return 积
@@ -520,7 +520,7 @@ public class NumberUtils {
      *
      * @param v1    被除数
      * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
+     * @param scale 精确度,如果为负值,取绝对值
      * @return 两个参数的商
      */
     public static double div(float v1, float v2, int scale) {
@@ -532,7 +532,7 @@ public class NumberUtils {
      *
      * @param v1    被除数
      * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
+     * @param scale 精确度,如果为负值,取绝对值
      * @return 两个参数的商
      */
     public static double div(float v1, double v2, int scale) {
@@ -544,7 +544,7 @@ public class NumberUtils {
      *
      * @param v1    被除数
      * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
+     * @param scale 精确度,如果为负值,取绝对值
      * @return 两个参数的商
      */
     public static double div(double v1, float v2, int scale) {
@@ -556,7 +556,7 @@ public class NumberUtils {
      *
      * @param v1    被除数
      * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
+     * @param scale 精确度,如果为负值,取绝对值
      * @return 两个参数的商
      */
     public static double div(double v1, double v2, int scale) {
@@ -568,7 +568,7 @@ public class NumberUtils {
      *
      * @param v1    被除数
      * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
+     * @param scale 精确度,如果为负值,取绝对值
      * @return 两个参数的商
      * @since 3.1.9
      */
@@ -581,7 +581,7 @@ public class NumberUtils {
      *
      * @param v1    被除数
      * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
+     * @param scale 精确度,如果为负值,取绝对值
      * @return 两个参数的商
      */
     public static BigDecimal div(String v1, String v2, int scale) {
@@ -593,7 +593,7 @@ public class NumberUtils {
      *
      * @param v1           被除数
      * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
+     * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
      */
@@ -606,7 +606,7 @@ public class NumberUtils {
      *
      * @param v1           被除数
      * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
+     * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
      */
@@ -619,7 +619,7 @@ public class NumberUtils {
      *
      * @param v1           被除数
      * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
+     * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
      */
@@ -632,7 +632,7 @@ public class NumberUtils {
      *
      * @param v1           被除数
      * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
+     * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
      */
@@ -645,7 +645,7 @@ public class NumberUtils {
      *
      * @param v1           被除数
      * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
+     * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
      * @since 3.1.9
@@ -659,7 +659,7 @@ public class NumberUtils {
      *
      * @param v1           被除数
      * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
+     * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
      */
@@ -685,8 +685,8 @@ public class NumberUtils {
      * 例如保留四位小数：123.456789 =》 123.4567
      *
      * @param number       数字值
-     * @param scale        保留小数位数，如果传入小于0，则默认0
-     * @param roundingMode 保留小数的模式 {@link RoundingMode}，如果传入null则默认四舍五入
+     * @param scale        保留小数位数,如果传入小于0,则默认0
+     * @param roundingMode 保留小数的模式 {@link RoundingMode},如果传入null则默认四舍五入
      * @return 新值
      */
     public static BigDecimal round(BigDecimal number, int scale, RoundingMode roundingMode) {
@@ -706,16 +706,16 @@ public class NumberUtils {
     /**
      * 四舍六入五成双计算法
      * <p>
-     * 四舍六入五成双是一种比较精确比较科学的计数保留法，是一种数字修约规则。
+     * 四舍六入五成双是一种比较精确比较科学的计数保留法,是一种数字修约规则
      * </p>
      *
      * <pre>
      * 算法规则:
-     * 四舍六入五考虑，
-     * 五后非零就进一，
-     * 五后皆零看奇偶，
-     * 五前为偶应舍去，
-     * 五前为奇要进一。
+     * 四舍六入五考虑,
+     * 五后非零就进一,
+     * 五后皆零看奇偶,
+     * 五前为偶应舍去,
+     * 五前为奇要进一
      * </pre>
      *
      * @param number 需要科学计算的数据
@@ -729,16 +729,16 @@ public class NumberUtils {
     /**
      * 四舍六入五成双计算法
      * <p>
-     * 四舍六入五成双是一种比较精确比较科学的计数保留法，是一种数字修约规则。
+     * 四舍六入五成双是一种比较精确比较科学的计数保留法,是一种数字修约规则
      * </p>
      *
      * <pre>
      * 算法规则:
-     * 四舍六入五考虑，
-     * 五后非零就进一，
-     * 五后皆零看奇偶，
-     * 五前为偶应舍去，
-     * 五前为奇要进一。
+     * 四舍六入五考虑,
+     * 五后非零就进一,
+     * 五后皆零看奇偶,
+     * 五前为偶应舍去,
+     * 五前为奇要进一
      * </pre>
      *
      * @param value 需要科学计算的数据
@@ -750,7 +750,7 @@ public class NumberUtils {
     }
 
     /**
-     * 保留固定小数位数，舍去多余位数
+     * 保留固定小数位数,舍去多余位数
      *
      * @param number 需要科学计算的数据
      * @param scale  保留的小数位
@@ -761,7 +761,7 @@ public class NumberUtils {
     }
 
     /**
-     * 保留固定小数位数，舍去多余位数
+     * 保留固定小数位数,舍去多余位数
      *
      * @param value 需要科学计算的数据
      * @param scale 保留的小数位
@@ -775,15 +775,15 @@ public class NumberUtils {
      * 格式化double
      * 对 {@link DecimalFormat} 做封装
      *
-     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
+     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度 0 表示如果位数不足则以 0 填充,# 表示只要有可能就把数字拉上这个位置
      *                <ul>
      *                <li>0 =》 取一位整数</li>
      *                <li>0.00 =》 取一位整数和两位小数</li>
      *                <li>00.000 =》 取两位整数和三位小数</li>
      *                <li># =》 取所有整数部分</li>
-     *                <li>#.##% =》 以百分比方式计数，并取两位小数</li>
-     *                <li>#.#####E0 =》 显示为科学计数法，并取五位小数</li>
-     *                <li>,### =》 每三位以逗号进行分隔，例如：299,792,458</li>
+     *                <li>#.##% =》 以百分比方式计数,并取两位小数</li>
+     *                <li>#.#####E0 =》 显示为科学计数法,并取五位小数</li>
+     *                <li>,### =》 每三位以逗号进行分隔,例如：299,792,458</li>
      *                <li>光速大小为每秒,###米 =》 将格式嵌入文本</li>
      *                </ul>
      * @param value   值
@@ -797,15 +797,15 @@ public class NumberUtils {
      * 格式化double
      * 对 {@link DecimalFormat} 做封装
      *
-     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
+     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度 0 表示如果位数不足则以 0 填充,# 表示只要有可能就把数字拉上这个位置
      *                <ul>
      *                <li>0 =》 取一位整数</li>
      *                <li>0.00 =》 取一位整数和两位小数</li>
      *                <li>00.000 =》 取两位整数和三位小数</li>
      *                <li># =》 取所有整数部分</li>
-     *                <li>#.##% =》 以百分比方式计数，并取两位小数</li>
-     *                <li>#.#####E0 =》 显示为科学计数法，并取五位小数</li>
-     *                <li>,### =》 每三位以逗号进行分隔，例如：299,792,458</li>
+     *                <li>#.##% =》 以百分比方式计数,并取两位小数</li>
+     *                <li>#.#####E0 =》 显示为科学计数法,并取五位小数</li>
+     *                <li>,### =》 每三位以逗号进行分隔,例如：299,792,458</li>
      *                <li>光速大小为每秒,###米 =》 将格式嵌入文本</li>
      *                </ul>
      * @param value   值
@@ -817,7 +817,7 @@ public class NumberUtils {
     }
 
     /**
-     * 格式化金额输出，每三位用逗号分隔
+     * 格式化金额输出,每三位用逗号分隔
      *
      * @param value 金额
      * @return 格式化后的值
@@ -828,7 +828,7 @@ public class NumberUtils {
     }
 
     /**
-     * 格式化百分比，小数采用四舍五入方式
+     * 格式化百分比,小数采用四舍五入方式
      *
      * @param number 值
      * @param scale  保留小数位数
@@ -990,7 +990,7 @@ public class NumberUtils {
 
     /**
      * 是否是质数
-     * 质数表的质数又称素数。指整数在一个大于1的自然数中,除了1和此整数自身外,没法被其他自然数整除的数。
+     * 质数表的质数又称素数 指整数在一个大于1的自然数中,除了1和此整数自身外,没法被其他自然数整除的数
      *
      * @param n 数字
      * @return 是否是质数
@@ -1005,7 +1005,7 @@ public class NumberUtils {
     }
 
     /**
-     * 生成不重复随机数 根据给定的最小数字和最大数字，以及随机数的个数，产生指定的不重复的数组
+     * 生成不重复随机数 根据给定的最小数字和最大数字,以及随机数的个数,产生指定的不重复的数组
      *
      * @param begin 最小数字（包含该数）
      * @param end   最大数字（不包含该数）
@@ -1018,11 +1018,11 @@ public class NumberUtils {
             begin = end;
             end = temp;
         }
-        // 加入逻辑判断，确保begin<end并且size不能大于该表示范围
+        // 加入逻辑判断,确保begin<end并且size不能大于该表示范围
         if ((end - begin) < size) {
             throw new InstrumentException("Size is larger than range between begin and end!");
         }
-        // 种子你可以随意生成，但不能重复
+        // 种子你可以随意生成,但不能重复
         int[] seed = new int[end - begin];
 
         for (int i = begin; i < end; i++) {
@@ -1030,7 +1030,7 @@ public class NumberUtils {
         }
         int[] ranArr = new int[size];
         Random ran = new Random();
-        // 数量你可以自己定义。
+        // 数量你可以自己定义
         for (int i = 0; i < size; i++) {
             // 得到一个位置
             int j = ran.nextInt(seed.length - i);
@@ -1043,7 +1043,7 @@ public class NumberUtils {
     }
 
     /**
-     * 生成不重复随机数 根据给定的最小数字和最大数字，以及随机数的个数，产生指定的不重复的数组
+     * 生成不重复随机数 根据给定的最小数字和最大数字,以及随机数的个数,产生指定的不重复的数组
      *
      * @param begin 最小数字（包含该数）
      * @param end   最大数字（不包含该数）
@@ -1056,7 +1056,7 @@ public class NumberUtils {
             begin = end;
             end = temp;
         }
-        // 加入逻辑判断，确保begin<end并且size不能大于该表示范围
+        // 加入逻辑判断,确保begin<end并且size不能大于该表示范围
         if ((end - begin) < size) {
             throw new InstrumentException("Size is larger than range between begin and end!");
         }
@@ -1072,7 +1072,7 @@ public class NumberUtils {
     }
 
     /**
-     * 从0开始给定范围内的整数列表，步进为1
+     * 从0开始给定范围内的整数列表,步进为1
      *
      * @param stop 结束（包含）
      * @return 整数列表
@@ -1083,7 +1083,7 @@ public class NumberUtils {
     }
 
     /**
-     * 给定范围内的整数列表，步进为1
+     * 给定范围内的整数列表,步进为1
      *
      * @param start 开始（包含）
      * @param stop  结束（包含）
@@ -1121,7 +1121,7 @@ public class NumberUtils {
     }
 
     /**
-     * 将给定范围内的整数添加到已有集合中，步进为1
+     * 将给定范围内的整数添加到已有集合中,步进为1
      *
      * @param start  开始（包含）
      * @param stop   结束（包含）
@@ -1295,7 +1295,7 @@ public class NumberUtils {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Character#compare(char, char)
      * @since 3.0.1
      */
@@ -1308,7 +1308,7 @@ public class NumberUtils {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Double#compare(double, double)
      * @since 3.0.1
      */
@@ -1321,7 +1321,7 @@ public class NumberUtils {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Integer#compare(int, int)
      * @since 3.0.1
      */
@@ -1341,7 +1341,7 @@ public class NumberUtils {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Long#compare(long, long)
      * @since 3.0.1
      */
@@ -1361,7 +1361,7 @@ public class NumberUtils {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Short#compare(short, short)
      * @since 3.0.1
      */
@@ -1381,7 +1381,7 @@ public class NumberUtils {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Byte#compare(byte, byte)
      * @since 3.0.1
      */
@@ -1539,10 +1539,10 @@ public class NumberUtils {
 
     /**
      * 数字转字符串
-     * 调用{@link Number#toString()}，并去除尾小数点儿后多余的0
+     * 调用{@link Number#toString()},并去除尾小数点儿后多余的0
      *
      * @param number       A Number
-     * @param defaultValue 如果number参数为{@code null}，返回此默认值
+     * @param defaultValue 如果number参数为{@code null},返回此默认值
      * @return A String.
      * @since 3.1.9
      */
@@ -1552,7 +1552,7 @@ public class NumberUtils {
 
     /**
      * 数字转字符串
-     * 调用{@link Number#toString()}，并去除尾小数点儿后多余的0
+     * 调用{@link Number#toString()},并去除尾小数点儿后多余的0
      *
      * @param number A Number
      * @return A String.
@@ -1617,7 +1617,7 @@ public class NumberUtils {
     /**
      * 空转0
      *
-     * @param decimal {@link BigDecimal}，可以为{@code null}
+     * @param decimal {@link BigDecimal},可以为{@code null}
      * @return {@link BigDecimal}参数为空时返回0的值
      * @since 3.1.9
      */
@@ -1627,7 +1627,7 @@ public class NumberUtils {
     }
 
     /**
-     * 如果给定值为0，返回1，否则返回原值
+     * 如果给定值为0,返回1,否则返回原值
      *
      * @param value 值
      * @return 1或非0值
@@ -1638,7 +1638,7 @@ public class NumberUtils {
     }
 
     /**
-     * 创建{@link BigInteger}，支持16进制、10进制和8进制，如果传入空白串返回null
+     * 创建{@link BigInteger},支持16进制、10进制和8进制,如果传入空白串返回null
      * from Apache Common Lang
      *
      * @param str 数字字符串
@@ -1679,7 +1679,7 @@ public class NumberUtils {
     }
 
     /**
-     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻
+     * 判断两个数字是否相邻,例如1和2相邻,1和3不相邻
      * 判断方法为做差取绝对值判断是否为1
      *
      * @param number1 数字1
@@ -1691,7 +1691,7 @@ public class NumberUtils {
     }
 
     /**
-     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻
+     * 判断两个数字是否相邻,例如1和2相邻,1和3不相邻
      * 判断方法为做差取绝对值判断是否为1
      *
      * @param number1 数字1
@@ -1703,7 +1703,7 @@ public class NumberUtils {
     }
 
     /**
-     * 把给定的总数平均分成N份，返回每份的个数
+     * 把给定的总数平均分成N份,返回每份的个数
      * 当除以分数有余数时每份+1
      *
      * @param total     总数
@@ -1715,8 +1715,8 @@ public class NumberUtils {
     }
 
     /**
-     * 把给定的总数平均分成N份，返回每份的个数
-     * 如果isPlusOneWhenHasRem为true，则当除以分数有余数时每份+1，否则丢弃余数部分
+     * 把给定的总数平均分成N份,返回每份的个数
+     * 如果isPlusOneWhenHasRem为true,则当除以分数有余数时每份+1,否则丢弃余数部分
      *
      * @param total               总数
      * @param partCount           份数
@@ -1759,7 +1759,7 @@ public class NumberUtils {
     }
 
     /**
-     * 解析转换数字字符串为int型数字，规则如下：
+     * 解析转换数字字符串为int型数字,规则如下：
      * <pre>
      * 1、0x开头的视为16进制数字
      * 2、0开头的视为8进制数字
@@ -1767,7 +1767,7 @@ public class NumberUtils {
      * 4、其它情况按照10进制转换
      * </pre>
      *
-     * @param number 数字，支持0x开头、0开头和普通十进制
+     * @param number 数字,支持0x开头、0开头和普通十进制
      * @return int
      */
     public static int parseInt(String number) {
@@ -1785,7 +1785,7 @@ public class NumberUtils {
     }
 
     /**
-     * 解析转换数字字符串为long型数字，规则如下：
+     * 解析转换数字字符串为long型数字,规则如下：
      * <pre>
      * 1、0x开头的视为16进制数字
      * 2、0开头的视为8进制数字
@@ -1793,7 +1793,7 @@ public class NumberUtils {
      * 4、其它情况按照10进制转换
      * </pre>
      *
-     * @param number 数字，支持0x开头、0开头和普通十进制
+     * @param number 数字,支持0x开头、0开头和普通十进制
      * @return long
      */
     public static long parseLong(String number) {
@@ -1842,7 +1842,7 @@ public class NumberUtils {
     }
 
     /**
-     * 去掉数字尾部的数字标识，例如12D，44.0F，22L中的最后一个字母
+     * 去掉数字尾部的数字标识,例如12D,44.0F,22L中的最后一个字母
      *
      * @param number 数字字符串
      * @return 去掉标识的字符串

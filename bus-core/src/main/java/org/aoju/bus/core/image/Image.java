@@ -59,7 +59,7 @@ public class Image implements Serializable {
     private BufferedImage srcImage;
     private java.awt.Image targetImage;
     /**
-     * 目标图片文件格式，用于写出
+     * 目标图片文件格式,用于写出
      */
     private String targetImageType = FileType.IMAGE_TYPE_JPG;
     /**
@@ -67,7 +67,7 @@ public class Image implements Serializable {
      */
     private boolean positionBaseCentre = true;
     /**
-     * 图片输出质量，用于压缩
+     * 图片输出质量,用于压缩
      */
     private float quality = -1;
 
@@ -155,7 +155,7 @@ public class Image implements Serializable {
      *
      * @param backgroundImg 背景图片
      * @param image         要绘制的图片
-     * @param rectangle     矩形对象，表示矩形区域的x，y，width，height，x,y从背景图片中心计算
+     * @param rectangle     矩形对象,表示矩形区域的x,y,width,height,x,y从背景图片中心计算
      * @return 绘制后的背景
      */
     private static BufferedImage draw(BufferedImage backgroundImg, java.awt.Image image, Rectangle rectangle, float alpha) {
@@ -197,7 +197,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 设置目标图片文件格式，用于写出
+     * 设置目标图片文件格式,用于写出
      *
      * @param imgType 图片格式
      * @return this
@@ -221,9 +221,9 @@ public class Image implements Serializable {
     }
 
     /**
-     * 设置图片输出质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * 设置图片输出质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
      *
-     * @param quality 质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * @param quality 质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
      * @return the image
      */
     public Image setQuality(double quality) {
@@ -231,9 +231,9 @@ public class Image implements Serializable {
     }
 
     /**
-     * 设置图片输出质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * 设置图片输出质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
      *
-     * @param quality 质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * @param quality 质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
      * @return image
      */
     public Image setQuality(float quality) {
@@ -248,7 +248,7 @@ public class Image implements Serializable {
     /**
      * 缩放图像（按比例缩放）
      *
-     * @param scale 缩放比例。比例大于1时为放大，小于1大于0为缩小
+     * @param scale 缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @return this
      */
     public Image scale(float scale) {
@@ -313,12 +313,12 @@ public class Image implements Serializable {
     }
 
     /**
-     * 等比缩放图像，此方法按照按照给定的长宽等比缩放图片，按照长宽缩放比最多的一边等比缩放，空白部分填充背景色
+     * 等比缩放图像,此方法按照按照给定的长宽等比缩放图片,按照长宽缩放比最多的一边等比缩放,空白部分填充背景色
      * 缩放后默认为jpeg格式
      *
      * @param width      缩放后的宽度
      * @param height     缩放后的高度
-     * @param fixedColor 比例不对时补充的颜色，不补充为<code>null</code>
+     * @param fixedColor 比例不对时补充的颜色,不补充为<code>null</code>
      * @return this
      */
     public Image scale(int width, int height, Color fixedColor) {
@@ -327,15 +327,15 @@ public class Image implements Serializable {
         int srcWidth = srcImage.getWidth(null);
         double heightRatio = NumberUtils.div(height, srcHeight);
         double widthRatio = NumberUtils.div(width, srcWidth);
-        if (heightRatio == widthRatio) {
-            // 长宽都按照相同比例缩放时，返回缩放后的图片
-            return scale(width, height);
-        }
 
-        // 宽缩放比例多就按照宽缩放，否则按照高缩放
-        if (widthRatio < heightRatio) {
+        if (widthRatio == heightRatio) {
+            // 长宽都按照相同比例缩放时,返回缩放后的图片
+            scale(width, height);
+        } else if (widthRatio < heightRatio) {
+            // 宽缩放比例多就按照宽缩放
             scale(width, (int) (srcHeight * widthRatio));
         } else {
+            // 否则按照高缩放
             scale((int) (srcWidth * heightRatio), height);
         }
 
@@ -365,7 +365,7 @@ public class Image implements Serializable {
     /**
      * 图像切割(按指定起点坐标和宽高切割)
      *
-     * @param rectangle 矩形对象，表示矩形区域的x，y，width，height
+     * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
      * @return this
      */
     public Image cut(Rectangle rectangle) {
@@ -379,7 +379,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 图像切割为圆形(按指定起点坐标和半径切割)，填充满整个图片（直径取长宽最小值）
+     * 图像切割为圆形(按指定起点坐标和半径切割),填充满整个图片（直径取长宽最小值）
      *
      * @param x 原图的x坐标起始位置
      * @param y 原图的y坐标起始位置
@@ -394,7 +394,7 @@ public class Image implements Serializable {
      *
      * @param x      原图的x坐标起始位置
      * @param y      原图的y坐标起始位置
-     * @param radius 半径，小于0表示填充满整个图片（直径取长宽最小值）
+     * @param radius 半径,小于0表示填充满整个图片（直径取长宽最小值）
      * @return this
      */
     public Image cut(int x, int y, int radius) {
@@ -421,7 +421,7 @@ public class Image implements Serializable {
     /**
      * 图片圆角处理
      *
-     * @param arc 圆角弧度，0~1，为长宽占比
+     * @param arc 圆角弧度,0~1,为长宽占比
      * @return this
      */
     public Image round(double arc) {
@@ -473,8 +473,8 @@ public class Image implements Serializable {
      * @param pressText 水印文字
      * @param color     水印的字体颜色
      * @param font      {@link Font} 字体相关信息
-     * @param x         修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y         修正值。 默认在中间，偏移量相对于中间偏移
+     * @param x         修正值  默认在中间,偏移量相对于中间偏移
+     * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      */
@@ -507,9 +507,9 @@ public class Image implements Serializable {
     /**
      * 给图片添加图片水印
      *
-     * @param pressImage 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param x          修正值。 默认在中间，偏移量相对于中间偏移
-     * @param y          修正值。 默认在中间，偏移量相对于中间偏移
+     * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param x          修正值  默认在中间,偏移量相对于中间偏移
+     * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return this
      */
@@ -523,8 +523,8 @@ public class Image implements Serializable {
     /**
      * 给图片添加图片水印
      *
-     * @param pressImage 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
-     * @param rectangle  矩形对象，表示矩形区域的x，y，width，height，x,y从背景图片中心计算
+     * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
+     * @param rectangle  矩形对象,表示矩形区域的x,y,width,height,x,y从背景图片中心计算
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return this
      */
@@ -592,7 +592,7 @@ public class Image implements Serializable {
      * 写出图像
      *
      * @param out 写出到的目标流
-     * @return 是否成功写出，如果返回false表示未找到合适的Writer
+     * @return 是否成功写出, 如果返回false表示未找到合适的Writer
      * @throws InstrumentException IO异常
      */
     public boolean write(OutputStream out) throws InstrumentException {
@@ -603,7 +603,7 @@ public class Image implements Serializable {
      * 写出图像为PNG格式
      *
      * @param targetImageStream 写出到的目标流
-     * @return 是否成功写出，如果返回false表示未找到合适的Writer
+     * @return 是否成功写出, 如果返回false表示未找到合适的Writer
      * @throws InstrumentException IO异常
      */
     public boolean write(ImageOutputStream targetImageStream) throws InstrumentException {
@@ -620,7 +620,7 @@ public class Image implements Serializable {
      * 写出图像为目标文件扩展名对应的格式
      *
      * @param targetFile 目标文件
-     * @return 是否成功写出，如果返回false表示未找到合适的Writer
+     * @return 是否成功写出, 如果返回false表示未找到合适的Writer
      * @throws InstrumentException IO异常
      */
     public boolean write(File targetFile) throws InstrumentException {
@@ -659,7 +659,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 获取有效的源图片，首先检查上一次处理的结果图片，如无则使用用户传入的源图片
+     * 获取有效的源图片,首先检查上一次处理的结果图片,如无则使用用户传入的源图片
      *
      * @return 有效的源图片
      */

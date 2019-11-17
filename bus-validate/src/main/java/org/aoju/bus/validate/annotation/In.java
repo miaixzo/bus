@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 字符串在数组中
  *
  * <p>
- * 默认被校验对象是null时，通过校验
+ * 默认被校验对象是null时,通过校验
  * </P>
  *
  * @author Kimi Liu

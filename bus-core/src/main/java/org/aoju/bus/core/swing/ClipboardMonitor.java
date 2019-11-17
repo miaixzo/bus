@@ -52,7 +52,7 @@ public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
     private boolean isRunning;
 
     /**
-     * 构造，尝试获取剪贴板内容的次数为10，第二次之后延迟100毫秒
+     * 构造,尝试获取剪贴板内容的次数为10,第二次之后延迟100毫秒
      */
     ClipboardMonitor() {
         this(DEFAULT_TRY_COUNT, DEFAULT_DELAY);
@@ -62,7 +62,7 @@ public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
      * 构造
      *
      * @param tryCount 尝试获取剪贴板内容的次数
-     * @param delay    响应延迟，当从第二次开始，延迟一定毫秒数等待剪贴板可以获取，当tryCount小于2时无效
+     * @param delay    响应延迟,当从第二次开始,延迟一定毫秒数等待剪贴板可以获取,当tryCount小于2时无效
      */
     ClipboardMonitor(int tryCount, long delay) {
         this(tryCount, delay, ClipboardUtils.getClipboard());
@@ -72,7 +72,7 @@ public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
      * 构造
      *
      * @param tryCount  尝试获取剪贴板内容的次数
-     * @param delay     响应延迟，当从第二次开始，延迟一定毫秒数等待剪贴板可以获取，当tryCount小于2时无效
+     * @param delay     响应延迟,当从第二次开始,延迟一定毫秒数等待剪贴板可以获取,当tryCount小于2时无效
      * @param clipboard 剪贴板对象
      */
     ClipboardMonitor(int tryCount, long delay, Clipboard clipboard) {
@@ -150,7 +150,7 @@ public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
             try {
                 transferable = listener.onChange(clipboard, ObjectUtils.defaultIfNull(transferable, newContents));
             } catch (Throwable e) {
-                // 忽略事件处理异常，保证所有监听正常执行
+                // 忽略事件处理异常,保证所有监听正常执行
             }
         }
 
@@ -193,7 +193,7 @@ public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
      * 尝试获取剪贴板内容
      *
      * @param clipboard 剪贴板
-     * @return 剪贴板内容，{@code null} 表示未获取到
+     * @return 剪贴板内容,{@code null} 表示未获取到
      * @throws InterruptedException 线程中断
      */
     private Transferable tryGetContent(Clipboard clipboard) throws InterruptedException {

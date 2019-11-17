@@ -25,14 +25,14 @@ package org.aoju.bus.core.key;
 
 /**
  * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
- * 1位标识，由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0
- * 41位时间截(毫秒级)，注意，41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截)
- * 得到的值），这里的的开始时间截，一般是我们的id生成器开始使用的时间，由我们程序来指定的。
- * 41位的时间截，可以使用69年 10位的数据机器位，可以部署在1024个节点，包括5位datacenterId和5位workerId
- * 12位序列，毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号
- * 加起来刚好64位，为一个Long型。
- * SnowFlake的优点是，整体上按照时间自增排序，并且整个分布式系统内不会产生ID碰撞
- * (由数据中心ID和机器ID作区分)，并且效率较高，经测试，SnowFlake每秒能够产生26万ID左右。
+ * 1位标识,由于long基本类型在Java中是带符号的,最高位是符号位,正数是0,负数是1,所以id一般是正数,最高位是0
+ * 41位时间截(毫秒级),注意,41位时间截不是存储当前时间的时间截,而是存储时间截的差值（当前时间截 - 开始时间截)
+ * 得到的值）,这里的的开始时间截,一般是我们的id生成器开始使用的时间,由我们程序来指定的
+ * 41位的时间截,可以使用69年 10位的数据机器位,可以部署在1024个节点,包括5位datacenterId和5位workerId
+ * 12位序列,毫秒内的计数,12位的计数顺序号支持每个节点每毫秒(同一机器,同一时间截)产生4096个ID序号
+ * 加起来刚好64位,为一个Long型
+ * SnowFlake的优点是,整体上按照时间自增排序,并且整个分布式系统内不会产生ID碰撞
+ * (由数据中心ID和机器ID作区分),并且效率较高,经测试,SnowFlake每秒能够产生26万ID左右
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -56,12 +56,12 @@ public class SnowflakeID {
     private final long datacenterIdBits = 5L;
 
     /**
-     * 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
+     * 支持的最大机器id,结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
      */
     private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
 
     /**
-     * 支持的最大数据标识id，结果是31
+     * 支持的最大数据标识id,结果是31
      */
     private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
 
@@ -86,7 +86,7 @@ public class SnowflakeID {
     private final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
 
     /**
-     * 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
+     * 生成序列的掩码,这里为4095 (0b111111111111=0xfff=4095)
      */
     private final long sequenceMask = -1L ^ (-1L << sequenceBits);
 
@@ -136,13 +136,13 @@ public class SnowflakeID {
     public synchronized long nextId() {
         long timestamp = timeGen();
 
-        //如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
+        //如果当前时间小于上一次ID生成的时间戳,说明系统时钟回退过这个时候应当抛出异常
         if (timestamp < lastTimestamp) {
             throw new RuntimeException(
                     String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
 
-        //如果是同一时间生成的，则进行毫秒内序列
+        //如果是同一时间生成的,则进行毫秒内序列
         if (lastTimestamp == timestamp) {
             sequence = (sequence + 1) & sequenceMask;
             //毫秒内序列溢出
@@ -151,7 +151,7 @@ public class SnowflakeID {
                 timestamp = tilNextMillis(lastTimestamp);
             }
         }
-        //时间戳改变，毫秒内序列重置
+        //时间戳改变,毫秒内序列重置
         else {
             sequence = 0L;
         }
@@ -167,7 +167,7 @@ public class SnowflakeID {
     }
 
     /**
-     * 阻塞到下一个毫秒，直到获得新的时间戳
+     * 阻塞到下一个毫秒,直到获得新的时间戳
      *
      * @param lastTimestamp 上次生成ID的时间截
      * @return 当前时间戳

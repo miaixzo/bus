@@ -41,10 +41,10 @@ import java.util.List;
 /**
  * 默认的上下文过滤器
  * <p>
- * {@link Entry} 放在对象时，则不用特殊处理。
- * 只需要处理 集合、数组集合。
+ * {@link Entry} 放在对象时,则不用特殊处理
+ * 只需要处理 集合、数组集合
  * 注意： 和 {@link Builder#on(Object)} 的区别
- * 因为 FastJSON 本身的转换问题，如果对象中存储的是集合对象列表，会导致显示不是信息本身。
+ * 因为 FastJSON 本身的转换问题,如果对象中存储的是集合对象列表,会导致显示不是信息本身
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -81,7 +81,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
 
     @Override
     public Object process(BeanContext context, Object object, String name, Object value) {
-        // 对象为 MAP 的时候，FastJson map 对应的 context 为 NULL
+        // 对象为 MAP 的时候,FastJson map 对应的 context 为 NULL
         if (ObjectUtils.isNull(context)) {
             return value;
         }
@@ -95,7 +95,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
         sensitiveContext.setBeanClass(clazz);
         sensitiveContext.setAllFieldList(fieldList);
 
-        // 这里将缺少对于列表/集合/数组 的处理。可以单独实现。
+        // 这里将缺少对于列表/集合/数组 的处理 可以单独实现
         // 设置当前处理的字段
         Entry sensitiveEntry = field.getAnnotation(Entry.class);
         if (ObjectUtils.isNull(sensitiveEntry)) {
@@ -106,7 +106,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
         //2. 处理 @Entry 注解
         final Class fieldTypeClass = field.getType();
         if (TypeUtils.isJavaBean(fieldTypeClass)) {
-            //不作处理，因为 json 本身就会进行递归处理
+            //不作处理,因为 json 本身就会进行递归处理
             return value;
         }
         if (TypeUtils.isMap(fieldTypeClass)) {
@@ -121,7 +121,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
                 final Class entryFieldClass = firstArrayEntry.getClass();
 
                 if (isBaseType(entryFieldClass)) {
-                    //2, 基础值，直接循环设置即可
+                    //2, 基础值,直接循环设置即可
                     final int arrayLength = arrays.length;
                     Object newArray = Array.newInstance(entryFieldClass, arrayLength);
                     for (int i = 0; i < arrayLength; i++) {
@@ -142,7 +142,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
                 Object firstCollectionEntry = CollUtils.firstNotNullElem(entryCollection).get();
 
                 if (isBaseType(firstCollectionEntry.getClass())) {
-                    //2, 基础值，直接循环设置即可
+                    //2, 基础值,直接循环设置即可
                     List<Object> newResultList = new ArrayList<>(entryCollection.size());
                     for (Object entry : entryCollection) {
                         sensitiveContext.setEntry(entry);

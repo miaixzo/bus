@@ -55,7 +55,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      */
     protected char[] buffer;
     /**
-     * 当前指针位置，或者叫做已经加入的字符数，此位置总在最后一个字符之后
+     * 当前指针位置,或者叫做已经加入的字符数,此位置总在最后一个字符之后
      */
     protected int size;
     /**

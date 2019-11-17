@@ -53,7 +53,7 @@ import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.symmetric.DES;
 
 /**
- * 数据加密标准，速度较快，适用于加密大量数据的场合。
+ * 数据加密标准,速度较快,适用于加密大量数据的场合
  *
  * @author Kimi Liu
  * @version 5.2.2

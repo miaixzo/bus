@@ -65,7 +65,7 @@ public class CorsProperties {
      */
     private Boolean allowCredentials = true;
     /**
-     * 预检请求的有效期，单位为秒。有效期内，不会重复发送预检请求
+     * 预检请求的有效期,单位为秒 有效期内,不会重复发送预检请求
      */
     private Long maxAge = 1800L;
 

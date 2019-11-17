@@ -24,7 +24,7 @@
 package org.aoju.bus.storage.metric;
 
 /**
- * 缓存，用来缓存State
+ * 缓存,用来缓存State
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -41,7 +41,7 @@ public interface Cache {
     void set(String key, String value);
 
     /**
-     * 设置缓存，指定过期时间
+     * 设置缓存,指定过期时间
      *
      * @param key     缓存KEY
      * @param value   缓存内容
@@ -58,10 +58,10 @@ public interface Cache {
     String get(String key);
 
     /**
-     * 是否存在key，如果对应key的value值已过期，也返回false
+     * 是否存在key,如果对应key的value值已过期,也返回false
      *
      * @param key 缓存KEY
-     * @return true：存在key，并且value没过期；false：key不存在或者已过期
+     * @return true：存在key,并且value没过期；false：key不存在或者已过期
      */
     boolean containsKey(String key);
 

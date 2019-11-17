@@ -51,7 +51,7 @@ public class NamingRules {
     }
 
     /**
-     * 说明:获取字段名，把"_"后面字母变大写
+     * 说明:获取字段名,把"_"后面字母变大写
      *
      * @param field 字段名
      * @param named 是否为名称

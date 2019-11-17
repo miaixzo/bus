@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * {@link java.text.SimpleDateFormat} 的线程安全版本，用于解析日期字符串并转换为 {@link Date} 对象
+ * {@link java.text.SimpleDateFormat} 的线程安全版本,用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -98,7 +98,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     private static final Strategy SECOND_STRATEGY = new NumberStrategy(Calendar.SECOND);
     private static final Strategy MILLISECOND_STRATEGY = new NumberStrategy(Calendar.MILLISECOND);
     /**
-     * 世纪：2000年前为19， 之后为20
+     * 世纪：2000年前为19, 之后为20
      */
     private final int century;
     private final int startYear;

@@ -116,7 +116,7 @@ public class UdpBootstrap<Request> implements Runnable {
     }
 
     /**
-     * 开启一个UDP通道，端口号随机
+     * 开启一个UDP通道,端口号随机
      *
      * @return UDP通道
      * @throws IOException 异常

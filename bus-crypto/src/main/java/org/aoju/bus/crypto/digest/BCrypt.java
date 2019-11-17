@@ -29,9 +29,9 @@ import org.aoju.bus.core.consts.Charset;
 import java.security.SecureRandom;
 
 /**
- * BCrypt加密算法实现。
- * 由它加密的文件可在所有支持的操作系统和处理器上进行转移。
- * 它的口令必须是8至56个字符，并将在内部被转化为448位的密钥。
+ * BCrypt加密算法实现
+ * 由它加密的文件可在所有支持的操作系统和处理器上进行转移
+ * 它的口令必须是8至56个字符,并将在内部被转化为448位的密钥
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -249,7 +249,7 @@ public class BCrypt {
     }
 
     /**
-     * 生成密文，使用长度为10的加盐方式
+     * 生成密文,使用长度为10的加盐方式
      *
      * @param password 需要加密的明文
      * @return 密文
@@ -262,7 +262,7 @@ public class BCrypt {
      * 生成密文
      *
      * @param password 需要加密的明文
-     * @param salt     盐，使用{@link #gensalt()} 生成
+     * @param salt     盐,使用{@link #gensalt()} 生成
      * @return 密文
      */
     public static String hashpw(String password, String salt) {

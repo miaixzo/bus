@@ -553,7 +553,6 @@ final class Hpack {
             }
         }
 
-        // http://tools.ietf.org/html/draft-ietf-httpbis-header-compression-12#section-4.1.1
         void writeInt(int value, int prefixMask, int bits) {
             // Write the raw value for a single byte value.
             if (value < prefixMask) {

@@ -41,7 +41,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
     private short value;
 
     /**
-     * 构造，默认值0
+     * 构造,默认值0
      */
     public MutableShort() {
         super();
@@ -130,7 +130,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
     /**
      * 增加值
      *
-     * @param operand 被增加的值，非空
+     * @param operand 被增加的值,非空
      * @return this
      * @throws NullPointerException if the object is null
      */
@@ -153,7 +153,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
     /**
      * 减去值
      *
-     * @param operand 被减的值，非空
+     * @param operand 被减的值,非空
      * @return this
      * @throws NullPointerException if the object is null
      */
@@ -196,7 +196,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * </ol>
      *
      * @param obj 比对的对象
-     * @return 相同返回<code>true</code>，否则 <code>false</code>
+     * @return 相同返回<code>true</code>,否则 <code>false</code>
      */
     @Override
     public boolean equals(final Object obj) {
@@ -215,7 +215,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * 比较
      *
      * @param other 其它 {@link MutableShort} 对象
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      */
     @Override
     public int compareTo(final MutableShort other) {

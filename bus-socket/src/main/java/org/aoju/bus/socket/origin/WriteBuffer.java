@@ -91,8 +91,8 @@ public class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 按照{@link OutputStream#write(int)}规范：要写入的字节是参数 b 的八个低位。 b 的 24 个高位将被忽略
-     * 而使用该接口时容易传入非byte范围内的数据，接口定义与实际使用出现歧义的可能性较大，故建议废弃该方法，选用{@link WriteBuffer#writeByte(byte)}。
+     * 按照{@link OutputStream#write(int)}规范：要写入的字节是参数 b 的八个低位  b 的 24 个高位将被忽略
+     * 而使用该接口时容易传入非byte范围内的数据,接口定义与实际使用出现歧义的可能性较大,故建议废弃该方法,选用{@link WriteBuffer#writeByte(byte)}
      *
      * @param b byte
      * @throws IOException 如果发生 I/O 错误
@@ -201,8 +201,8 @@ public class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 写入内容并刷新缓冲区。在{@link Message#process(AioSession, Object)}执行的write操作可无需调用该方法，业务执行完毕后框架本身会自动触发flush。
-     * 调用该方法后数据会及时的输出到对端，如果再循环体中通过该方法往某个通道中写入数据将无法获得最佳性能表现，
+     * 写入内容并刷新缓冲区 在{@link Message#process(AioSession, Object)}执行的write操作可无需调用该方法,业务执行完毕后框架本身会自动触发flush
+     * 调用该方法后数据会及时的输出到对端,如果再循环体中通过该方法往某个通道中写入数据将无法获得最佳性能表现,
      *
      * @param b 待输出数据
      * @throws IOException 如果发生 I/O 错误

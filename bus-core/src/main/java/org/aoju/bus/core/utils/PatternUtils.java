@@ -45,7 +45,7 @@ public class PatternUtils {
     private static final ReentrantReadWriteLock.WriteLock writeLock = cacheLock.writeLock();
 
     /**
-     * 先从Pattern池中查找正则对应的{@link Pattern}，找不到则编译正则表达式并入池。
+     * 先从Pattern池中查找正则对应的{@link Pattern},找不到则编译正则表达式并入池
      *
      * @param regex 正则表达式
      * @return {@link Pattern}
@@ -55,7 +55,7 @@ public class PatternUtils {
     }
 
     /**
-     * 先从Pattern池中查找正则对应的{@link Pattern}，找不到则编译正则表达式并入池。
+     * 先从Pattern池中查找正则对应的{@link Pattern},找不到则编译正则表达式并入池
      *
      * @param regex 正则表达式
      * @param flags 正则标识位集合 {@link Pattern}
@@ -72,11 +72,11 @@ public class PatternUtils {
     }
 
     /**
-     * 获得匹配的字符串，获得正则中分组0的内容
+     * 获得匹配的字符串,获得正则中分组0的内容
      *
      * @param regex   匹配的正则
      * @param content 被匹配的内容
-     * @return 匹配后得到的字符串，未匹配返回null
+     * @return 匹配后得到的字符串, 未匹配返回null
      * @since 3.1.9
      */
     public static String getGroup0(String regex, String content) {
@@ -84,11 +84,11 @@ public class PatternUtils {
     }
 
     /**
-     * 获得匹配的字符串，获得正则中分组1的内容
+     * 获得匹配的字符串,获得正则中分组1的内容
      *
      * @param regex   匹配的正则
      * @param content 被匹配的内容
-     * @return 匹配后得到的字符串，未匹配返回null
+     * @return 匹配后得到的字符串, 未匹配返回null
      * @since 3.1.9
      */
     public static String getGroup1(String regex, String content) {
@@ -101,7 +101,7 @@ public class PatternUtils {
      * @param regex      匹配的正则
      * @param content    被匹配的内容
      * @param groupIndex 匹配正则的分组序号
-     * @return 匹配后得到的字符串，未匹配返回null
+     * @return 匹配后得到的字符串, 未匹配返回null
      */
     public static String get(String regex, String content, int groupIndex) {
         if (null == content || null == regex) {
@@ -112,11 +112,11 @@ public class PatternUtils {
     }
 
     /**
-     * 获得匹配的字符串，，获得正则中分组0的内容
+     * 获得匹配的字符串,,获得正则中分组0的内容
      *
      * @param pattern 编译后的正则模式
      * @param content 被匹配的内容
-     * @return 匹配后得到的字符串，未匹配返回null
+     * @return 匹配后得到的字符串, 未匹配返回null
      * @since 3.1.9
      */
     public static String getGroup0(Pattern pattern, String content) {
@@ -124,11 +124,11 @@ public class PatternUtils {
     }
 
     /**
-     * 获得匹配的字符串，，获得正则中分组1的内容
+     * 获得匹配的字符串,,获得正则中分组1的内容
      *
      * @param pattern 编译后的正则模式
      * @param content 被匹配的内容
-     * @return 匹配后得到的字符串，未匹配返回null
+     * @return 匹配后得到的字符串, 未匹配返回null
      * @since 3.1.9
      */
     public static String getGroup1(Pattern pattern, String content) {
@@ -141,7 +141,7 @@ public class PatternUtils {
      * @param pattern    编译后的正则模式
      * @param content    被匹配的内容
      * @param groupIndex 匹配正则的分组序号
-     * @return 匹配后得到的字符串，未匹配返回null
+     * @return 匹配后得到的字符串, 未匹配返回null
      */
     public static String get(Pattern pattern, String content, int groupIndex) {
         if (null == content || null == pattern) {
@@ -160,7 +160,7 @@ public class PatternUtils {
      *
      * @param pattern 编译后的正则模式
      * @param content 被匹配的内容
-     * @return 匹配后得到的字符串数组，按照分组顺序依次列出，未匹配到返回空列表，任何一个参数为null返回null
+     * @return 匹配后得到的字符串数组, 按照分组顺序依次列出, 未匹配到返回空列表, 任何一个参数为null返回null
      * @since 3.1.9
      */
     public static List<String> getAllGroups(Pattern pattern, String content) {
@@ -186,7 +186,7 @@ public class PatternUtils {
      *
      * @param pattern  匹配正则
      * @param content  被匹配的内容
-     * @param template 生成内容模板，变量 $1 表示group1的内容，以此类推
+     * @param template 生成内容模板,变量 $1 表示group1的内容,以此类推
      * @return 新字符串
      */
     public static String extractMulti(Pattern pattern, String content, String template) {
@@ -215,7 +215,7 @@ public class PatternUtils {
      *
      * @param regex    匹配正则字符串
      * @param content  被匹配的内容
-     * @param template 生成内容模板，变量 $1 表示group1的内容，以此类推
+     * @param template 生成内容模板,变量 $1 表示group1的内容,以此类推
      * @return 按照template拼接后的字符串
      */
     public static String extractMulti(String regex, String content, String template) {
@@ -274,7 +274,7 @@ public class PatternUtils {
     }
 
     /**
-     * 删除正则匹配到的内容之前的字符 如果没有找到，则返回原文
+     * 删除正则匹配到的内容之前的字符 如果没有找到,则返回原文
      *
      * @param regex   定位正则
      * @param content 被查找的内容
@@ -293,7 +293,7 @@ public class PatternUtils {
     }
 
     /**
-     * 取得内容中匹配的所有结果，获得匹配的所有结果中正则对应分组0的内容
+     * 取得内容中匹配的所有结果,获得匹配的所有结果中正则对应分组0的内容
      *
      * @param regex   正则
      * @param content 被查找的内容
@@ -305,7 +305,7 @@ public class PatternUtils {
     }
 
     /**
-     * 取得内容中匹配的所有结果，获得匹配的所有结果中正则对应分组1的内容
+     * 取得内容中匹配的所有结果,获得匹配的所有结果中正则对应分组1的内容
      *
      * @param regex   正则
      * @param content 被查找的内容
@@ -388,7 +388,7 @@ public class PatternUtils {
     }
 
     /**
-     * 计算指定字符串中，匹配pattern的个数
+     * 计算指定字符串中,匹配pattern的个数
      *
      * @param regex   正则表达式
      * @param content 被查找的内容
@@ -403,7 +403,7 @@ public class PatternUtils {
     }
 
     /**
-     * 计算指定字符串中，匹配pattern的个数
+     * 计算指定字符串中,匹配pattern的个数
      *
      * @param pattern 编译后的正则模式
      * @param content 被查找的内容
@@ -459,7 +459,7 @@ public class PatternUtils {
      *
      * @param regex   正则
      * @param content 内容
-     * @return 正则为null或者""则不检查，返回true，内容为null返回false
+     * @return 正则为null或者""则不检查,返回true,内容为null返回false
      */
     public static boolean isMatch(String regex, String content) {
         if (content == null) {
@@ -479,7 +479,7 @@ public class PatternUtils {
      *
      * @param pattern 模式
      * @param content 内容
-     * @return 正则为null或者""则不检查，返回true，内容为null返回false
+     * @return 正则为null或者""则不检查,返回true,内容为null返回false
      */
     public static boolean isMatch(Pattern pattern, String content) {
         if (content == null || pattern == null) {
@@ -491,11 +491,11 @@ public class PatternUtils {
 
     /**
      * 正则替换指定值
-     * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
+     * 通过正则查找到字符串,然后把匹配到的字符串加入到replacementTemplate中,$1表示分组1的字符串
      *
      * @param content             文本
      * @param regex               正则
-     * @param replacementTemplate 替换的文本模板，可以使用$1类似的变量提取正则匹配出的内容
+     * @param replacementTemplate 替换的文本模板,可以使用$1类似的变量提取正则匹配出的内容
      * @return 处理后的文本
      */
     public static String replaceAll(String content, String regex, String replacementTemplate) {
@@ -505,11 +505,11 @@ public class PatternUtils {
 
     /**
      * 正则替换指定值
-     * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
+     * 通过正则查找到字符串,然后把匹配到的字符串加入到replacementTemplate中,$1表示分组1的字符串
      *
      * @param content             文本
      * @param pattern             {@link Pattern}
-     * @param replacementTemplate 替换的文本模板，可以使用$1类似的变量提取正则匹配出的内容
+     * @param replacementTemplate 替换的文本模板,可以使用$1类似的变量提取正则匹配出的内容
      * @return 处理后的文本
      * @since 3.0.4
      */
@@ -539,7 +539,7 @@ public class PatternUtils {
     }
 
     /**
-     * 转义字符，将正则的关键字转义
+     * 转义字符,将正则的关键字转义
      *
      * @param c 字符
      * @return 转义后的文本
@@ -554,7 +554,7 @@ public class PatternUtils {
     }
 
     /**
-     * 转义字符串，将正则的关键字转义
+     * 转义字符串,将正则的关键字转义
      *
      * @param content 文本
      * @return 转义后的文本

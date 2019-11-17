@@ -47,12 +47,12 @@ public interface Complex<T, K> {
     }
 
     /**
-     * 根据校验器，创建相对立的一个校验器
+     * 根据校验器,创建相对立的一个校验器
      *
      * @param complex 校验器
      * @param <T>     校验对象泛型
      * @param <K>     校验器注解泛型
-     * @return 新的校验器，永远与传入参数的校验器的校验结果相反
+     * @return 新的校验器, 永远与传入参数的校验器的校验结果相反
      */
     static <T, K> Complex<T, K> not(Complex<T, K> complex) {
         return (object, anno, context) -> !complex.on(object, anno, context);
@@ -64,7 +64,7 @@ public interface Complex<T, K> {
      * @param object     被校验的对象
      * @param annotation 被校验对象的注解
      * @param context    校验环境上下文
-     * @return 校验结果，true：校验通过
+     * @return 校验结果, true：校验通过
      */
     boolean on(T object, K annotation, Context context);
 

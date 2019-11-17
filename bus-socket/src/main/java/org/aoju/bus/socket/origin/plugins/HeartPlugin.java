@@ -85,8 +85,8 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     public abstract void sendHeartRequest(AioSession<T> session) throws IOException;
 
     /**
-     * 判断当前收到的消息是否为心跳消息。
-     * 心跳请求消息与响应消息可能相同，也可能不同，因实际场景而异，故接口定义不做区分。
+     * 判断当前收到的消息是否为心跳消息
+     * 心跳请求消息与响应消息可能相同,也可能不同,因实际场景而异,故接口定义不做区分
      *
      * @param session 会话
      * @param msg     信息
@@ -105,7 +105,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
             public void run() {
                 if (session.isInvalid()) {
                     sessionMap.remove(session);
-                    Logger.info("session:{} 已失效，移除心跳任务", session);
+                    Logger.info("session:{} 已失效,移除心跳任务", session);
                     return;
                 }
                 Long lastTime = sessionMap.get(session);

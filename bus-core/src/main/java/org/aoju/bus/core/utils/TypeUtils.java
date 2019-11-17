@@ -180,7 +180,7 @@ public class TypeUtils {
 
     /**
      * 判断一个类是JDK 自带的类型
-     * jdk 自带的类，classLoader 是为空的。
+     * jdk 自带的类,classLoader 是为空的
      *
      * @param clazz 类
      * @return 是否为 java 类
@@ -213,7 +213,7 @@ public class TypeUtils {
      * 获得Type对应的原始类
      *
      * @param type {@link Type}
-     * @return 原始类，如果无法获取原始类，返回{@code null}
+     * @return 原始类, 如果无法获取原始类, 返回{@code null}
      */
     public static Class<?> getClass(Type type) {
         if (null != type) {
@@ -235,10 +235,10 @@ public class TypeUtils {
 
     /**
      * 获取方法的第一个参数类型<br>
-     * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
+     * 优先获取方法的GenericParameterTypes,如果获取不到,则获取ParameterTypes
      *
      * @param method 方法
-     * @return {@link Type}，可能为{@code null}
+     * @return {@link Type},可能为{@code null}
      * @since 3.1.2
      */
     public static Type getFirstParamType(Method method) {
@@ -249,7 +249,7 @@ public class TypeUtils {
      * 获取方法的第一个参数类
      *
      * @param method 方法
-     * @return 第一个参数类型，可能为{@code null}
+     * @return 第一个参数类型, 可能为{@code null}
      * @since 3.1.2
      */
     public static Class<?> getFirstParamClass(Method method) {
@@ -258,11 +258,11 @@ public class TypeUtils {
 
     /**
      * 获取方法的参数类型<br>
-     * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
+     * 优先获取方法的GenericParameterTypes,如果获取不到,则获取ParameterTypes
      *
      * @param method 方法
-     * @param index  第几个参数的索引，从0开始计数
-     * @return {@link Type}，可能为{@code null}
+     * @param index  第几个参数的索引,从0开始计数
+     * @return {@link Type},可能为{@code null}
      */
     public static Type getParamType(Method method, int index) {
         Type[] types = getParamTypes(method);
@@ -276,8 +276,8 @@ public class TypeUtils {
      * 获取方法的参数类
      *
      * @param method 方法
-     * @param index  第几个参数的索引，从0开始计数
-     * @return 参数类，可能为{@code null}
+     * @param index  第几个参数的索引,从0开始计数
+     * @return 参数类, 可能为{@code null}
      * @since 3.1.2
      */
     public static Class<?> getParamClass(Method method, int index) {
@@ -291,8 +291,8 @@ public class TypeUtils {
     /**
      * 获得给定类的第一个泛型参数
      *
-     * @param type 被检查的类型，必须是已经确定泛型类型的类型
-     * @return {@link Type}，可能为{@code null}
+     * @param type 被检查的类型,必须是已经确定泛型类型的类型
+     * @return {@link Type},可能为{@code null}
      */
     public static Type getTypeArgument(Type type) {
         return getTypeArgument(type, 0);
@@ -301,8 +301,8 @@ public class TypeUtils {
     /**
      * 获得给定类的泛型参数
      *
-     * @param type  被检查的类型，必须是已经确定泛型类型的类
-     * @param index 泛型类型的索引号，既第几个泛型类型
+     * @param type  被检查的类型,必须是已经确定泛型类型的类
+     * @param index 泛型类型的索引号,既第几个泛型类型
      * @return {@link Type}
      */
     public static Type getTypeArgument(Type type, int index) {
@@ -317,14 +317,14 @@ public class TypeUtils {
     /**
      * 将{@link Type} 转换为{@link ParameterizedType}<br>
      * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型<br>
-     * 一般用于获取泛型参数具体的参数类型，例如：
+     * 一般用于获取泛型参数具体的参数类型,例如：
      *
      * <pre>
      * class A&lt;T&gt;
      * class B extends A&lt;String&gt;
      * </pre>
      * <p>
-     * 通过此方法，传入B.class即可得到B{@link ParameterizedType}，从而获取到String
+     * 通过此方法,传入B.class即可得到B{@link ParameterizedType},从而获取到String
      *
      * @param type {@link Type}
      * @return {@link ParameterizedType}
@@ -340,7 +340,7 @@ public class TypeUtils {
 
     /**
      * 获取指定泛型变量对应的真实类型<br>
-     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的，因此可以通过对应关系找到泛型实现类型<br>
+     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的,因此可以通过对应关系找到泛型实现类型<br>
      * 使用此方法注意：
      *
      * <pre>
@@ -348,10 +348,10 @@ public class TypeUtils {
      * 2. typeVariable必须在superClass中声明
      * </pre>
      *
-     * @param actualType      真实类型所在类，此类中记录了泛型参数对应的实际类型
-     * @param typeDefineClass 泛型变量声明所在类或接口，此类中定义了泛型类型
-     * @param typeVariables   泛型变量，需要的实际类型对应的泛型参数
-     * @return 给定泛型参数对应的实际类型，如果无对应类型，返回null
+     * @param actualType      真实类型所在类,此类中记录了泛型参数对应的实际类型
+     * @param typeDefineClass 泛型变量声明所在类或接口,此类中定义了泛型类型
+     * @param typeVariables   泛型变量,需要的实际类型对应的泛型参数
+     * @return 给定泛型参数对应的实际类型, 如果无对应类型, 返回null
      */
     public static Type[] getActualTypes(Type actualType, Class<?> typeDefineClass, Type... typeVariables) {
         if (false == typeDefineClass.isAssignableFrom(getClass(actualType))) {
@@ -382,7 +382,7 @@ public class TypeUtils {
 
     /**
      * 获取指定泛型变量对应的真实类型<br>
-     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的，因此可以通过对应关系找到泛型实现类型<br>
+     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的,因此可以通过对应关系找到泛型实现类型<br>
      * 使用此方法注意：
      *
      * <pre>
@@ -390,9 +390,9 @@ public class TypeUtils {
      * 2. typeVariable必须在superClass中声明
      * </pre>
      *
-     * @param actualType      真实类型所在类，此类中记录了泛型参数对应的实际类型
-     * @param typeDefineClass 泛型变量声明所在类或接口，此类中定义了泛型类型
-     * @param typeVariable    泛型变量，需要的实际类型对应的泛型参数
+     * @param actualType      真实类型所在类,此类中记录了泛型参数对应的实际类型
+     * @param typeDefineClass 泛型变量声明所在类或接口,此类中定义了泛型类型
+     * @param typeVariable    泛型变量,需要的实际类型对应的泛型参数
      * @return 给定泛型参数对应的实际类型
      */
     public static Type getActualType(Type actualType, Class<?> typeDefineClass, Type typeVariable) {
@@ -474,10 +474,10 @@ public class TypeUtils {
 
     /**
      * 获取字段对应的Type类型
-     * 方法优先获取GenericType，获取不到则获取Type
+     * 方法优先获取GenericType,获取不到则获取Type
      *
      * @param field 字段
-     * @return {@link Type}，可能为{@code null}
+     * @return {@link Type},可能为{@code null}
      */
     public static Type getType(Field field) {
         if (null == field) {
@@ -494,7 +494,7 @@ public class TypeUtils {
      * 获得Field对应的原始类
      *
      * @param field {@link Field}
-     * @return 原始类，如果无法获取原始类，返回{@code null}
+     * @return 原始类, 如果无法获取原始类, 返回{@code null}
      * @since 3.1.9
      */
     public static Class<?> getClass(Field field) {
@@ -503,10 +503,10 @@ public class TypeUtils {
 
     /**
      * 获取方法的参数类型列表
-     * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
+     * 优先获取方法的GenericParameterTypes,如果获取不到,则获取ParameterTypes
      *
      * @param method 方法
-     * @return {@link Type}列表，可能为{@code null}
+     * @return {@link Type}列表,可能为{@code null}
      * @see Method#getGenericParameterTypes()
      * @see Method#getParameterTypes()
      */
@@ -533,7 +533,7 @@ public class TypeUtils {
      * 获取方法的GenericReturnType
      *
      * @param method 方法
-     * @return {@link Type}，可能为{@code null}
+     * @return {@link Type},可能为{@code null}
      * @see Method#getGenericReturnType()
      * @see Method#getReturnType()
      */
@@ -557,8 +557,8 @@ public class TypeUtils {
     /**
      * 获得给定类的第一个泛型参数
      *
-     * @param clazz 被检查的类，必须是已经确定泛型类型的类
-     * @return {@link Type}，可能为{@code null}
+     * @param clazz 被检查的类,必须是已经确定泛型类型的类
+     * @return {@link Type},可能为{@code null}
      */
     public static Type getTypeArgument(Class<?> clazz) {
         return getTypeArgument(clazz, 0);
@@ -567,8 +567,8 @@ public class TypeUtils {
     /**
      * 获得给定类的泛型参数
      *
-     * @param clazz 被检查的类，必须是已经确定泛型类型的类
-     * @param index 泛型类型的索引号，既第几个泛型类型
+     * @param clazz 被检查的类,必须是已经确定泛型类型的类
+     * @param index 泛型类型的索引号,既第几个泛型类型
      * @return {@link Type}
      */
     public static Type getTypeArgument(Class<?> clazz, int index) {

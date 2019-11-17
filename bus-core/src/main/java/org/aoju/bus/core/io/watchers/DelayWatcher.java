@@ -35,9 +35,9 @@ import java.util.Set;
 
 /**
  * 延迟观察者
- * 使用此观察者通过定义一定的延迟时间，解决{@link WatchService}多个modify的问题
- * 在监听目录或文件时，如果这个文件有修改操作，会多次触发modify方法。
- * 此类通过维护一个Set将短时间内相同文件多次modify的事件合并处理触发，从而避免以上问题。
+ * 使用此观察者通过定义一定的延迟时间,解决{@link WatchService}多个modify的问题
+ * 在监听目录或文件时,如果这个文件有修改操作,会多次触发modify方法
+ * 此类通过维护一个Set将短时间内相同文件多次modify的事件合并处理触发,从而避免以上问题
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -46,7 +46,7 @@ import java.util.Set;
 public class DelayWatcher implements Watcher {
 
     /**
-     * Path集合。此集合用于去重在指定delay内多次触发的文件Path
+     * Path集合 此集合用于去重在指定delay内多次触发的文件Path
      */
     private final Set<Path> eventSet = new HashSet<>();
     /**
@@ -54,15 +54,15 @@ public class DelayWatcher implements Watcher {
      */
     private final Watcher watcher;
     /**
-     * 延迟，单位毫秒
+     * 延迟,单位毫秒
      */
     private final long delay;
 
     /**
      * 构造
      *
-     * @param watcher 实际处理触发事件的监视器{@link Watcher}，不可以是{@link DelayWatcher}
-     * @param delay   延迟时间，单位毫秒
+     * @param watcher 实际处理触发事件的监视器{@link Watcher},不可以是{@link DelayWatcher}
+     * @param delay   延迟时间,单位毫秒
      */
     public DelayWatcher(Watcher watcher, long delay) {
         Assert.notNull(watcher);
@@ -106,11 +106,11 @@ public class DelayWatcher implements Watcher {
     private void onDelayModify(WatchEvent<?> event, Path currentPath) {
         Path eventPath = Paths.get(currentPath.toString(), event.context().toString());
         if (eventSet.contains(eventPath)) {
-            //此事件已经被触发过，后续事件忽略，等待统一处理。
+            //此事件已经被触发过,后续事件忽略,等待统一处理
             return;
         }
 
-        //事件第一次触发，此时标记事件，并启动处理线程延迟处理，处理结束后会删除标记
+        //事件第一次触发,此时标记事件,并启动处理线程延迟处理,处理结束后会删除标记
         eventSet.add(eventPath);
         startHandleModifyThread(event, currentPath);
     }

@@ -51,7 +51,7 @@ public class Arrangement {
     }
 
     /**
-     * 计算排列数，即A(n, n) = n!
+     * 计算排列数,即A(n, n) = n!
      *
      * @param n 总数
      * @return 排列数
@@ -61,7 +61,7 @@ public class Arrangement {
     }
 
     /**
-     * 计算排列数，即A(n, m) = n!/(n-m)!
+     * 计算排列数,即A(n, m) = n!/(n-m)!
      *
      * @param n 总数
      * @param m 选择的个数
@@ -75,7 +75,7 @@ public class Arrangement {
     }
 
     /**
-     * 计算排列总数，即A(n, 1) + A(n, 2) + A(n, 3)...
+     * 计算排列总数,即A(n, 1) + A(n, 2) + A(n, 3)...
      *
      * @param n 总数
      * @return 排列数
@@ -110,7 +110,7 @@ public class Arrangement {
     }
 
     /**
-     * 排列所有组合，即A(n, 1) + A(n, 2) + A(n, 3)...
+     * 排列所有组合,即A(n, 1) + A(n, 2) + A(n, 3)...
      *
      * @return 全排列结果
      */
@@ -126,12 +126,12 @@ public class Arrangement {
      * 排列选择
      *
      * @param resultList  前面（resultIndex-1）个的排列结果
-     * @param resultIndex 选择索引，从0开始
+     * @param resultIndex 选择索引,从0开始
      * @param result      最终结果
      */
     private void select(String[] resultList, int resultIndex, List<String[]> result) {
         int resultLen = resultList.length;
-        if (resultIndex >= resultLen) { // 全部选择完时，输出排列结果
+        if (resultIndex >= resultLen) { // 全部选择完时,输出排列结果
             result.add(Arrays.copyOf(resultList, resultList.length));
             return;
         }
@@ -146,7 +146,7 @@ public class Arrangement {
                     break;
                 }
             }
-            if (false == exists) { // 排列结果不存在该项，才可选择
+            if (false == exists) { // 排列结果不存在该项,才可选择
                 resultList[resultIndex] = datas[i];
                 select(resultList, resultIndex + 1, result);
             }

@@ -26,7 +26,7 @@ package org.aoju.bus.validate.annotation;
 import java.lang.annotation.*;
 
 /**
- * 标记注解，标明要被拦截的类或方法或者参数
+ * 标记注解,标明要被拦截的类或方法或者参数
  *
  * @author Kimi Liu
  * @version 5.2.2

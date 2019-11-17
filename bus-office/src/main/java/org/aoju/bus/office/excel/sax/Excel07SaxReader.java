@@ -91,17 +91,17 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     private String lastContent;
     // 单元数据类型
     private CellDataType cellDataType;
-    // 当前列坐标， 如A1，B5
+    // 当前列坐标, 如A1,B5
     private String curCoordinate;
     // 前一个列的坐标
     private String preCoordinate;
     // 行的最大列坐标
     private String maxCellCoordinate;
-    // 单元格的格式表，对应style.xml
+    // 单元格的格式表,对应style.xml
     private StylesTable stylesTable;
-    // 单元格存储格式的索引，对应style.xml中的numFmts元素的子元素索引
+    // 单元格存储格式的索引,对应style.xml中的numFmts元素的子元素索引
     private int numFmtIndex;
-    // 单元格存储的格式化字符串，nmtFmt的formateCode属性的值
+    // 单元格存储的格式化字符串,nmtFmt的formateCode属性的值
     private String numFmtString;
     // sheet的索引
     private int sheetIndex;
@@ -151,10 +151,10 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     }
 
     /**
-     * 开始读取Excel，Sheet编号从0开始计数
+     * 开始读取Excel,Sheet编号从0开始计数
      *
-     * @param opcPackage {@link OPCPackage}，Excel包
-     * @param rid        Excel中的sheet rid编号，如果为-1处理所有编号的sheet
+     * @param opcPackage {@link OPCPackage},Excel包
+     * @param rid        Excel中的sheet rid编号,如果为-1处理所有编号的sheet
      * @return this
      * @throws InstrumentException POI异常
      */
@@ -206,11 +206,11 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
 
             // 获取当前列坐标
             String tempCurCoordinate = attributes.getValue(R_ATTR);
-            // 前一列为null，则将其设置为"@",A为第一列，ascii码为65，前一列即为@，ascii码64
+            // 前一列为null,则将其设置为"@",A为第一列,ascii码为65,前一列即为@,ascii码64
             if (preCoordinate == null) {
                 preCoordinate = String.valueOf(ExcelSaxUtils.CELL_FILL_CHAR);
             } else {
-                // 存在，则前一列要设置为上一列的坐标
+                // 存在,则前一列要设置为上一列的坐标
                 preCoordinate = curCoordinate;
             }
             // 重置当前列
@@ -233,21 +233,22 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
         numFmtString = "";
         this.cellDataType = CellDataType.of(attribute.getValue(T_ATTR_VALUE));
 
-        // 获取单元格的xf索引，对应style.xml中cellXfs的子元素xf
-        final String xfIndexStr = attribute.getValue(S_ATTR_VALUE);
-        if (xfIndexStr != null) {
-            int xfIndex = Integer.parseInt(xfIndexStr);
-            XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(xfIndex);
-            numFmtIndex = xssfCellStyle.getDataFormat();
-            numFmtString = xssfCellStyle.getDataFormatString();
+        // 获取单元格的xf索引,对应style.xml中cellXfs的子元素xf
+        if (null != this.stylesTable) {
+            final String xfIndexStr = attribute.getValue(S_ATTR_VALUE);
+            if (null != xfIndexStr) {
+                int xfIndex = Integer.parseInt(xfIndexStr);
+                XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(xfIndex);
+                numFmtIndex = xssfCellStyle.getDataFormat();
+                numFmtString = xssfCellStyle.getDataFormatString();
 
-            if (numFmtString == null) {
-                numFmtString = BuiltinFormats.getBuiltinFormat(numFmtIndex);
-            } else if (CellDataType.NUMBER == this.cellDataType && org.apache.poi.ss.usermodel.DateUtil.isADateFormat(numFmtIndex, numFmtString)) {
-                cellDataType = CellDataType.DATE;
+                if (numFmtString == null) {
+                    numFmtString = BuiltinFormats.getBuiltinFormat(numFmtIndex);
+                } else if (CellDataType.NUMBER == this.cellDataType && org.apache.poi.ss.usermodel.DateUtil.isADateFormat(numFmtIndex, numFmtString)) {
+                    cellDataType = CellDataType.DATE;
+                }
             }
         }
-
     }
 
     /**
@@ -267,7 +268,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
             fillBlankCell(preCoordinate, curCoordinate, false);
             rowCellList.add(curCell++, value);
         } else if (ROW_ELEMENT.equals(qName)) {
-            // 如果是row标签，说明已经到了一行的结尾
+            // 如果是row标签,说明已经到了一行的结尾
             // 最大列坐标以第一行的为准
             if (curRow == 0) {
                 maxCellCoordinate = curCoordinate;
@@ -357,7 +358,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     }
 
     /**
-     * 填充空白单元格，如果前一个单元格大于后一个，不需要填充
+     * 填充空白单元格,如果前一个单元格大于后一个,不需要填充
      *
      * @param preCoordinate 前一个单元格坐标
      * @param curCoordinate 当前单元格坐标

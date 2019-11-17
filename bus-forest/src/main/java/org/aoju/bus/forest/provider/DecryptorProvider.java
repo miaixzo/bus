@@ -40,7 +40,7 @@ import java.io.OutputStream;
 public interface DecryptorProvider {
 
     /**
-     * 解密，将目标文件解密输出至目标文件。
+     * 解密,将目标文件解密输出至目标文件
      *
      * @param key  密钥
      * @param src  源文件
@@ -50,7 +50,7 @@ public interface DecryptorProvider {
     void decrypt(Key key, File src, File dest) throws IOException;
 
     /**
-     * 解密，将输入流解密输出至输出流。
+     * 解密,将输入流解密输出至输出流
      *
      * @param key 密钥
      * @param in  输入流
@@ -60,7 +60,7 @@ public interface DecryptorProvider {
     void decrypt(Key key, InputStream in, OutputStream out) throws IOException;
 
     /**
-     * 解密，将输入流包装成解密的输入流
+     * 解密,将输入流包装成解密的输入流
      *
      * @param key 密钥
      * @param in  输入流
@@ -70,7 +70,7 @@ public interface DecryptorProvider {
     InputStream decrypt(Key key, InputStream in) throws IOException;
 
     /**
-     * 解密，将输入流包装成解密的输出流
+     * 解密,将输入流包装成解密的输出流
      *
      * @param key 密钥
      * @param out 输出流

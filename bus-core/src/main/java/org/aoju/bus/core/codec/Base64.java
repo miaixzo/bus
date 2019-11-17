@@ -34,9 +34,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Base64工具类，提供Base64的编码和解码方案
- * base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符，
- * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示，长度比原来增加1/3。
+ * Base64工具类,提供Base64的编码和解码方案
+ * base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符,
+ * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
  * @version 5.2.2
@@ -54,7 +54,7 @@ public class Base64 {
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
     /**
-     * URL安全的编码表，将 + 和 / 替换为 - 和 _
+     * URL安全的编码表,将 + 和 / 替换为 - 和 _
      */
     public static final byte[] URL_SAFE_ENCODE_TABLE = {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -64,7 +64,7 @@ public class Base64 {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
 
     /**
-     * Base64解码表，共128位，-1表示非base64字符，-2表示padding
+     * Base64解码表,共128位,-1表示非base64字符,-2表示padding
      */
     public static final byte[] DECODE_TABLE = {
             // 0 1 2 3 4 5 6 7 8 9 A B C D E F
@@ -79,7 +79,7 @@ public class Base64 {
     };
 
     /**
-     * Base64解码表，共128位，-1表示非base64字符，-2表示padding
+     * Base64解码表,共128位,-1表示非base64字符,-2表示padding
      */
     public static final byte PADDING = -2;
 
@@ -162,7 +162,7 @@ public class Base64 {
     }
 
     /**
-     * 编码为Base64，非URL安全的
+     * 编码为Base64,非URL安全的
      *
      * @param in      被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
@@ -173,7 +173,7 @@ public class Base64 {
     }
 
     /**
-     * 编码为Base64，URL安全的
+     * 编码为Base64,URL安全的
      *
      * @param in      被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
@@ -195,7 +195,7 @@ public class Base64 {
     }
 
     /**
-     * base64编码，URL安全
+     * base64编码,URL安全
      *
      * @param source 被编码的base64字符串
      * @return 被加密后的字符串
@@ -240,7 +240,7 @@ public class Base64 {
     }
 
     /**
-     * base64编码，URL安全的
+     * base64编码,URL安全的
      *
      * @param source  被编码的base64字符串
      * @param charset 字符集
@@ -324,7 +324,7 @@ public class Base64 {
     }
 
     /**
-     * base64编码，URL安全的
+     * base64编码,URL安全的
      *
      * @param source  被编码的base64字符串
      * @param charset 字符集
@@ -347,7 +347,7 @@ public class Base64 {
     }
 
     /**
-     * base64编码，URL安全的
+     * base64编码,URL安全的
      *
      * @param source  被编码的base64字符串
      * @param charset 字符集
@@ -360,11 +360,11 @@ public class Base64 {
 
     /**
      * 编码为Base64
-     * 如果isMultiLine为 true，则每76个字符一个换行符，否则在一行显示
+     * 如果isMultiLine为 true,则每76个字符一个换行符,否则在一行显示
      *
      * @param arr         被编码的数组
      * @param isMultiLine 在76个char之后是CRLF还是EOF
-     * @param isUrlSafe   是否使用URL安全字符，一般为false
+     * @param isUrlSafe   是否使用URL安全字符,一般为false
      * @return 编码后的bytes
      */
     public static byte[] encode(byte[] arr, boolean isMultiLine, boolean isUrlSafe) {
