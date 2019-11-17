@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang.mutable;
  * 可变 <code>boolean</code> 类型
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @see Boolean
  * @since JDK 1.8+
  */

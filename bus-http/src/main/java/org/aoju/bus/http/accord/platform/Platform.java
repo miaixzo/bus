@@ -79,7 +79,7 @@ import java.util.logging.Logger;
  * <p>Supported on Android 6.0+ via {@code NetworkSecurityPolicy}.
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class Platform {

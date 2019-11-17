@@ -59,7 +59,7 @@ import java.util.Set;
  * 3.参考@FeignClient的用法</p>
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {

@@ -30,7 +30,7 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public class JdkSerializer extends AbstractSerializer {
@@ -76,8 +76,6 @@ public class JdkSerializer extends AbstractSerializer {
                         in.close();
                     }
                 } catch (IOException e) {
-                    // close stream error when deserialize
-                    // ignore
                     Logger.error(e, "close stream failed when deserialize error: ", e.getMessage());
                 }
             }

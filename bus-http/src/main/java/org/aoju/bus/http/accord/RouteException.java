@@ -32,7 +32,7 @@ import java.io.IOException;
  * have been made with alternative protocols, none of which were successful.
  *
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public final class RouteException extends RuntimeException {

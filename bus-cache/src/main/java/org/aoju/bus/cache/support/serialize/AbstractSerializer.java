@@ -23,17 +23,14 @@
  */
 package org.aoju.bus.cache.support.serialize;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.aoju.bus.logger.Logger;
 
 /**
  * @author Kimi Liu
- * @version 5.2.1
+ * @version 5.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractSerializer implements BaseSerializer {
-
-    private static final Logger logger = LoggerFactory.getLogger("com.github.jbox.serialize.BaseSerializer");
 
     protected abstract byte[] doSerialize(Object obj) throws Throwable;
 
@@ -47,7 +44,7 @@ public abstract class AbstractSerializer implements BaseSerializer {
         try {
             return doSerialize(obj);
         } catch (Throwable t) {
-            logger.error("{} serialize error.", this.getClass().getName(), t);
+            Logger.error("{} serialize error.", this.getClass().getName(), t);
             return null;
         }
     }
@@ -61,8 +58,9 @@ public abstract class AbstractSerializer implements BaseSerializer {
         try {
             return (T) doDeserialize(bytes);
         } catch (Throwable t) {
-            logger.error("{} deserialize error.", this.getClass().getName(), t);
+            Logger.error("{} deserialize error.", this.getClass().getName(), t);
             return null;
         }
     }
+    
 }
