@@ -30,7 +30,7 @@ import org.aoju.bus.mapper.common.rowbounds.SelectRowBoundsMapper;
  * 配合分页插件可以实现物理分页
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface RowBoundsMapper<T> extends

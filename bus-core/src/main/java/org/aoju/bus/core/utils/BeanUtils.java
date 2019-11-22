@@ -46,7 +46,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class BeanUtils {
@@ -631,25 +631,61 @@ public class BeanUtils {
                 }
             }
         }
-
         return bean;
     }
 
     /**
-     * 判断Bean是否为空对象,空对象表示本身为<code>null</code>或者所有属性都为<code>null</code>
+     * 判断Bean是否为空对象，空对象表示本身为<code>null</code>或者所有属性都为<code>null</code>
      *
-     * @param bean Bean对象
-     * @return 是否为空, <code>true</code> - 空 / <code>false</code> - 非空
+     * @param bean             Bean对象
+     * @param ignoreFiledNames 忽略检查的字段名
+     * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
+     * @since 4.1.10
      */
-    public static boolean isEmpty(Object bean) {
+    public static boolean isEmpty(Object bean, String... ignoreFiledNames) {
         if (null != bean) {
             for (Field field : ReflectUtils.getFields(bean.getClass())) {
-                if (null != ReflectUtils.getFieldValue(bean, field)) {
+                if ((false == ArrayUtils.contains(ignoreFiledNames, field.getName()))
+                        && null != ReflectUtils.getFieldValue(bean, field)) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    /**
+     * 判断Bean是否为非空对象，非空对象表示本身不为<code>null</code>或者含有非<code>null</code>属性的对象
+     *
+     * @param bean             Bean对象
+     * @param ignoreFiledNames 忽略检查的字段名
+     * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
+     * @since 5.0.7
+     */
+    public static boolean isNotEmpty(Object bean, String... ignoreFiledNames) {
+        return false == isEmpty(bean, ignoreFiledNames);
+    }
+
+    /**
+     * 判断Bean是否包含值为<code>null</code>的属性
+     * 对象本身为<code>null</code>也返回true
+     *
+     * @param bean             Bean对象
+     * @param ignoreFiledNames 忽略检查的字段名
+     * @return 是否包含值为<code>null</code>的属性，<code>true</code> - 包含 / <code>false</code> - 不包含
+     * @since 4.1.10
+     */
+    public static boolean hasNullField(Object bean, String... ignoreFiledNames) {
+        if (null == bean) {
+            return true;
+        }
+        for (Field field : ReflectUtils.getFields(bean.getClass())) {
+            if ((false == ArrayUtils.contains(ignoreFiledNames, field.getName()))//
+                    && null == ReflectUtils.getFieldValue(bean, field)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

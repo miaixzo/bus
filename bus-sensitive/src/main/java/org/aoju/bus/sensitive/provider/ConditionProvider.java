@@ -29,7 +29,7 @@ import org.aoju.bus.sensitive.Context;
  * 执行上下文接口
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface ConditionProvider {

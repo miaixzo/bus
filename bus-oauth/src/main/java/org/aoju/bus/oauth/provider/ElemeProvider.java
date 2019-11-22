@@ -47,7 +47,7 @@ import java.util.Map;
  * 注：集成的是正式环境,非沙箱环境
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class ElemeProvider extends DefaultProvider {

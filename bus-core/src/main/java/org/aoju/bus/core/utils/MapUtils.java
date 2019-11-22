@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class MapUtils {
@@ -572,7 +572,7 @@ public class MapUtils {
      * @param <T> 键和值类型
      * @param map Map对象,键值类型必须一致
      * @return 互换后的Map
-     * @since 5.2.2
+     * @since 5.2.3
      */
     public static <T> Map<T, T> reverse(Map<T, T> map) {
         return filter(map, new Editor<Entry<T, T>>() {
@@ -643,7 +643,7 @@ public class MapUtils {
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
-     * @since 5.2.2
+     * @since 5.2.3
      */
     public static MapProxy createProxy(Map<?, ?> map) {
         return MapProxy.create(map);

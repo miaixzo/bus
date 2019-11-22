@@ -43,7 +43,7 @@ import java.util.Map;
  * 钉钉登录
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class DingTalkProvider extends DefaultProvider {

@@ -29,7 +29,7 @@ import org.aoju.bus.proxy.Provider;
  * 常量模型
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class ConstantProvider implements Provider {

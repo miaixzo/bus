@@ -24,6 +24,7 @@
 package org.aoju.bus.extra;
 
 import com.jcraft.jsch.*;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.NetUtils;
@@ -44,7 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class SSHUtils {
@@ -105,28 +106,103 @@ public class SSHUtils {
     }
 
     /**
-     * 新建一个新的SSH会话
+     * 打开一个新的SSH会话
+     *
+     * @param sshHost        主机
+     * @param sshPort        端口
+     * @param sshUser        用户名
+     * @param privateKeyPath 私钥的路径
+     * @param passphrase     私钥文件的密码，可以为null
+     * @return SSH会话
+     */
+    public static Session openSession(String sshHost, int sshPort, String sshUser, String privateKeyPath, byte[] passphrase) {
+        final Session session = createSession(sshHost, sshPort, sshUser, privateKeyPath, passphrase);
+        try {
+            session.connect();
+        } catch (JSchException e) {
+            throw new InstrumentException(e);
+        }
+        return session;
+    }
+
+    /**
+     * 新建一个新的SSH会话，此方法并不打开会话（既不调用connect方法）
      *
      * @param sshHost 主机
      * @param sshPort 端口
-     * @param sshUser 机用户名
+     * @param sshUser 用户名，如果为null，默认root
      * @param sshPass 密码
      * @return SSH会话
+     * @since 4.5.2
      */
     public static Session createSession(String sshHost, int sshPort, String sshUser, String sshPass) {
-        if (StringUtils.isEmpty(sshHost) || sshPort < 0 || StringUtils.isEmpty(sshUser) || StringUtils.isEmpty(sshPass)) {
-            return null;
+        final JSch jsch = new JSch();
+        final Session session = createSession(jsch, sshHost, sshPort, sshUser);
+
+        if (StringUtils.isNotEmpty(sshPass)) {
+            session.setPassword(sshPass);
+        }
+
+        return session;
+    }
+
+    /**
+     * 新建一个新的SSH会话，此方法并不打开会话（既不调用connect方法）
+     *
+     * @param sshHost        主机
+     * @param sshPort        端口
+     * @param sshUser        用户名，如果为null，默认root
+     * @param privateKeyPath 私钥的路径
+     * @param passphrase     私钥文件的密码，可以为null
+     * @return SSH会话
+     * @since 5.0.0
+     */
+    public static Session createSession(String sshHost, int sshPort, String sshUser, String privateKeyPath, byte[] passphrase) {
+        Assert.notEmpty(privateKeyPath, "PrivateKey Path must be not empty!");
+
+        final JSch jsch = new JSch();
+        try {
+            jsch.addIdentity(privateKeyPath, passphrase);
+        } catch (JSchException e) {
+            throw new InstrumentException(e);
+        }
+
+        return createSession(jsch, sshHost, sshPort, sshUser);
+    }
+
+    /**
+     * 创建一个SSH会话，重用已经使用的会话
+     *
+     * @param jsch    {@link JSch}
+     * @param sshHost 主机
+     * @param sshPort 端口
+     * @param sshUser 用户名，如果为null，默认root
+     * @return {@link Session}
+     * @since 5.0.3
+     */
+    public static Session createSession(JSch jsch, String sshHost, int sshPort, String sshUser) {
+        Assert.notEmpty(sshHost, "SSH Host must be not empty!");
+        Assert.isTrue(sshPort > 0, "SSH port must be > 0");
+
+        // 默认root用户
+        if (StringUtils.isEmpty(sshUser)) {
+            sshUser = "root";
+        }
+
+        if (null == jsch) {
+            jsch = new JSch();
         }
 
         Session session;
         try {
-            session = new JSch().getSession(sshUser, sshHost, sshPort);
-            session.setPassword(sshPass);
-            // 设置第一次登陆的时候提示,可选值：(ask | yes | no)
-            session.setConfig("StrictHostKeyChecking", "no");
+            session = jsch.getSession(sshUser, sshHost, sshPort);
         } catch (JSchException e) {
             throw new InstrumentException(e);
         }
+
+        // 设置第一次登录的时候提示，可选值：(ask | yes | no)
+        session.setConfig("StrictHostKeyChecking", "no");
+
         return session;
     }
 

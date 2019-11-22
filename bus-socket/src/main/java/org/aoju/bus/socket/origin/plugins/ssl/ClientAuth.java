@@ -27,7 +27,7 @@ package org.aoju.bus.socket.origin.plugins.ssl;
  * 配置引擎请求客户端验证 此选项只对服务器模式的引擎有用
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public enum ClientAuth {

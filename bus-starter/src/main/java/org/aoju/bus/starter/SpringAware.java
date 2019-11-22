@@ -36,7 +36,7 @@ import java.util.Map;
  * 可在任何代码任何地方任何时候中取出ApplicaitonContext.
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Component

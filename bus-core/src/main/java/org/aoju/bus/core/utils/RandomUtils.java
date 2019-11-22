@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -39,7 +40,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class RandomUtils {
@@ -411,14 +412,30 @@ public class RandomUtils {
     }
 
     /**
-     * 以当天为基准,随机产生一个日期
+     * 以当天为基准，随机产生一个日期
      *
-     * @param min 偏移最小天,可以为负数表示过去的时间
-     * @param max 偏移最大天,可以为负数表示过去的时间
-     * @return 随机日期（随机天,其它时间不变）
+     * @param min 偏移最小天，可以为负数表示过去的时间（包含）
+     * @param max 偏移最大天，可以为负数表示过去的时间（不包含）
+     * @return 随机日期（随机天，其它时间不变）
      */
     public static DateTime randomDay(int min, int max) {
-        return DateUtils.offsetDay(DateUtils.date(), randomInt(min, max));
+        return randomDate(DateUtils.date(), Fields.DateField.DAY_OF_YEAR, min, max);
+    }
+
+    /**
+     * 以给定日期为基准，随机产生一个日期
+     *
+     * @param baseDate  基准日期
+     * @param dateField 偏移的时间字段，例如时、分、秒等
+     * @param min       偏移最小量，可以为负数表示过去的时间（包含）
+     * @param max       偏移最大量，可以为负数表示过去的时间（不包含）
+     * @return 随机日期
+     */
+    public static DateTime randomDate(Date baseDate, Fields.DateField dateField, int min, int max) {
+        if (null == baseDate) {
+            baseDate = DateUtils.date();
+        }
+        return DateUtils.offset(baseDate, dateField, randomInt(min, max));
     }
 
 }

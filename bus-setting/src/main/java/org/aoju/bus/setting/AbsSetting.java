@@ -29,7 +29,7 @@ import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.OptNullString;
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.io.Serializable;
@@ -39,7 +39,7 @@ import java.lang.reflect.Type;
  * Setting抽象类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public abstract class AbsSetting extends OptNullString<String>
@@ -257,20 +257,19 @@ public abstract class AbsSetting extends OptNullString<String>
     }
 
     /**
-     * 将setting中的键值关系映射到对象中,原理是调用对象对应的set方法
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法<br>
      * 只支持基本类型的转换
      *
+     * @param <T>   对象
      * @param group 分组
      * @param bean  Bean对象
      * @return Bean
      */
-    public Object toBean(final String group, Object bean) {
-        return ClassUtils.fillBean(bean, new ValueProvider<String>() {
-
+    public <T> T toBean(final String group, T bean) {
+        return BeanUtils.fillBean(bean, new ValueProvider<String>() {
             @Override
             public Object value(String key, Type valueType) {
-                final String value = getByGroup(key, group);
-                return value;
+                return getByGroup(key, group);
             }
 
             @Override
@@ -281,13 +280,14 @@ public abstract class AbsSetting extends OptNullString<String>
     }
 
     /**
-     * 将setting中的键值关系映射到对象中,原理是调用对象对应的set方法
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法<br>
      * 只支持基本类型的转换
      *
+     * @param <T>  对象
      * @param bean Bean
      * @return Bean
      */
-    public Object toBean(Object bean) {
+    public <T> T toBean(T bean) {
         return toBean(null, bean);
     }
 
