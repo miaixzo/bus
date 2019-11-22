@@ -32,7 +32,7 @@ import java.lang.annotation.Annotation;
  * 当前框架内预定义的校验器名称
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class Builder extends Validator {
@@ -80,8 +80,8 @@ public class Builder extends Validator {
 
     /**
      * 被校验对象
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>    对象
      * @param object 原始对象
@@ -93,8 +93,8 @@ public class Builder extends Validator {
 
     /**
      * 被校验对象
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>     对象
      * @param object  原始对象
@@ -108,8 +108,8 @@ public class Builder extends Validator {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -123,8 +123,8 @@ public class Builder extends Validator {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -139,8 +139,8 @@ public class Builder extends Validator {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象，避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化。
+     * 每次都创建一个新的对象,避免线程问题
+     * 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象

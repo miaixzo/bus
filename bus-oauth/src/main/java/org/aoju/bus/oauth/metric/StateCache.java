@@ -24,10 +24,10 @@
 package org.aoju.bus.oauth.metric;
 
 /**
- * State缓存接口，方便用户扩展
+ * State缓存接口,方便用户扩展
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface StateCache {
@@ -58,10 +58,10 @@ public interface StateCache {
     String get(String key);
 
     /**
-     * 是否存在key，如果对应key的value值已过期，也返回false
+     * 是否存在key,如果对应key的value值已过期,也返回false
      *
      * @param key 缓存key
-     * @return true：存在key，并且value没过期；false：key不存在或者已过期
+     * @return true：存在key,并且value没过期；false：key不存在或者已过期
      */
     boolean containsKey(String key);
 

@@ -29,7 +29,7 @@ import java.util.*;
  * CSV中一行的表示
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public final class CsvRow implements List<String> {
@@ -56,7 +56,7 @@ public final class CsvRow implements List<String> {
     }
 
     /**
-     * 获取原始行号，多行情况下为首行行号。
+     * 获取原始行号,多行情况下为首行行号
      *
      * @return the original line number 行号
      */
@@ -68,7 +68,7 @@ public final class CsvRow implements List<String> {
      * 获取标题对应的字段内容
      *
      * @param name 标题名
-     * @return 字段值，null表示无此字段值
+     * @return 字段值, null表示无此字段值
      * @throws IllegalStateException CSV文件无标题行抛出此异常
      */
     public String getByName(final String name) {

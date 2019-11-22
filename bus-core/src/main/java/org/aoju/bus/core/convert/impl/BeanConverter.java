@@ -33,7 +33,7 @@ import org.aoju.bus.core.utils.ReflectUtils;
 import java.util.Map;
 
 /**
- * Bean转换器，支持：
+ * Bean转换器,支持：
  * <pre>
  * Map =》 Bean
  * Bean =》 Bean
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @param <T> Bean类型
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class BeanConverter<T> extends AbstractConverter<T> {
@@ -51,7 +51,7 @@ public class BeanConverter<T> extends AbstractConverter<T> {
     private CopyOptions copyOptions;
 
     /**
-     * 构造，默认转换选项，注入失败的字段忽略
+     * 构造,默认转换选项,注入失败的字段忽略
      *
      * @param beanClass 转换成的目标Bean类
      */

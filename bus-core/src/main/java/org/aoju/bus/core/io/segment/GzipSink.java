@@ -32,12 +32,12 @@ import java.util.zip.Deflater;
 import static java.util.zip.Deflater.DEFAULT_COMPRESSION;
 
 /**
- * 这相当于使用{@link Deflater}同步刷新选项。
- * 该类不提供任何部分刷新机制。为获得最佳性能,
- * 只在应用程序行为需要时调用{@link #flush}。
+ * 这相当于使用{@link Deflater}同步刷新选项
+ * 该类不提供任何部分刷新机制 为获得最佳性能,
+ * 只在应用程序行为需要时调用{@link #flush}
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public final class GzipSink implements Sink {

@@ -30,12 +30,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 /**
- * 简单缓存，无超时实现，使用{@link WeakHashMap}实现缓存自动清理
+ * 简单缓存,无超时实现,使用{@link WeakHashMap}实现缓存自动清理
  *
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class SimpleCache<K, V> {

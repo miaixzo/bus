@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
  * Murmur3 32bit、64bit、128bit 哈希算法实现
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class Murmur implements Serializable {
@@ -62,7 +62,7 @@ public class Murmur implements Serializable {
      *
      * @param data   数据
      * @param length 长度
-     * @param seed   种子，默认0
+     * @param seed   种子,默认0
      * @return Hash值
      */
     public static int hash32(byte[] data, int length, int seed) {
@@ -141,7 +141,7 @@ public class Murmur implements Serializable {
      *
      * @param data   数据
      * @param length 长度
-     * @param seed   种子，默认0
+     * @param seed   种子,默认0
      * @return Hash值
      */
     public static long hash64(byte[] data, int length, int seed) {
@@ -224,7 +224,7 @@ public class Murmur implements Serializable {
      *
      * @param data   数据
      * @param length 长度
-     * @param seed   种子，默认0
+     * @param seed   种子,默认0
      * @return Hash值(2 longs)
      */
     public static long[] hash128(byte[] data, int length, int seed) {

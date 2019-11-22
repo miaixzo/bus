@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 将类或方法标记为异步
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -42,9 +42,9 @@ import java.lang.annotation.Target;
 public @interface Async {
 
     /**
-     * 当一个“public void”方法被注释为“@Async”时，
+     * 当一个“public void”方法被注释为“@Async”时,
      * 框架会通过添加一个新方法作为原始方法的副本(名称)
-     * 来增强类是调用原始方法的结果。
+     * 来增强类是调用原始方法的结果
      */
     class MethodNameTransformer {
 

@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * 版本信息
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Target({ElementType.FIELD})
@@ -43,7 +43,7 @@ import java.lang.annotation.Target;
 public @interface Version {
 
     /**
-     * 下一个版本号的算法，默认算法支持 Integer 和 Long，在原基础上 +1
+     * 下一个版本号的算法,默认算法支持 Integer 和 Long,在原基础上 +1
      *
      * @return 版本信息
      */

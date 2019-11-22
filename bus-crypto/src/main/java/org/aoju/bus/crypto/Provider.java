@@ -25,7 +25,7 @@ package org.aoju.bus.crypto;
 
 /**
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface Provider {
@@ -50,8 +50,8 @@ public interface Provider {
      * @param key     密钥, 字符串使用','分割
      *                格式: 私钥,公钥,类型
      *                示例: 5c3,5c3,PrivateKey
-     *                1. 私钥加密，公钥解密
-     *                2. 公钥加密，私钥解密
+     *                1. 私钥加密,公钥解密
+     *                2. 公钥加密,私钥解密
      * @param content 需要解密的内容
      * @return 解密结果
      */

@@ -50,7 +50,7 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Intercepts(value = {
@@ -94,13 +94,13 @@ public class SQLPerformanceHandler implements Interceptor {
                 .replaceAll("[\\s]+", " ")
                 .replaceAll("\\?", id);
         if (!CollUtils.isEmpty(parameterMappings) && parameterObject != null) {
-            // 获取类型处理器注册器，类型处理器的功能是进行java类型和数据库类型的转换
-            // 如果根据parameterObject.getClass(）可以找到对应的类型，则替换
+            // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
+            // 如果根据parameterObject.getClass(）可以找到对应的类型,则替换
             TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
             if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
                 sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(parameterObject)));
             } else {
-                // MetaObject主要是封装了originalObject对象，提供了get和set的方法
+                // MetaObject主要是封装了originalObject对象,提供了get和set的方法
                 // 主要支持对JavaBean、Collection、Map三种类型对象的操作
                 MetaObject metaObject = configuration.newMetaObject(parameterObject);
                 for (ParameterMapping parameterMapping : parameterMappings) {
@@ -112,7 +112,7 @@ public class SQLPerformanceHandler implements Interceptor {
                         Object obj = boundSql.getAdditionalParameter(propertyName);  // 该分支是动态sql
                         sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
                     } else {
-                        // 打印出缺失，提醒该参数缺失并防止错位
+                        // 打印出缺失,提醒该参数缺失并防止错位
                         sql = sql.replaceFirst(id, "缺失");
                     }
                 }

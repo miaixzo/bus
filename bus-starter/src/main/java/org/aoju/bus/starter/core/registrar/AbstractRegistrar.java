@@ -54,12 +54,12 @@ import java.util.Set;
 /**
  * <p>Title: bean注册及注解</p>
  * <p>Description:
- * 1.本地只有接口并加相关的注解，那么执行对应的切面调用方式
- * 2.本地有接口(不管是否加注解)，并也有实现类，执行实现类逻辑
+ * 1.本地只有接口并加相关的注解,那么执行对应的切面调用方式
+ * 2.本地有接口(不管是否加注解),并也有实现类,执行实现类逻辑
  * 3.参考@FeignClient的用法</p>
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public abstract class AbstractRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {

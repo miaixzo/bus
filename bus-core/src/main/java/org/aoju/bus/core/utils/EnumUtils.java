@@ -32,7 +32,7 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class EnumUtils {
@@ -64,7 +64,7 @@ public class EnumUtils {
      * 获得枚举类中各枚举对象下指定字段的值
      *
      * @param clazz     枚举类
-     * @param fieldName 字段名，最终调用getXXX方法
+     * @param fieldName 字段名,最终调用getXXX方法
      * @return 字段值列表
      */
     public static List<Object> getFieldValues(Class<? extends Enum<?>> clazz, String fieldName) {
@@ -80,12 +80,12 @@ public class EnumUtils {
     }
 
     /**
-     * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序
-     * 结果中键为枚举名，值为枚举对象
+     * 获取枚举字符串值和枚举对象的Map对应,使用LinkedHashMap保证有序
+     * 结果中键为枚举名,值为枚举对象
      *
      * @param <E>       对象
      * @param enumClass 枚举类
-     * @return 枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序
+     * @return 枚举字符串值和枚举对象的Map对应, 使用LinkedHashMap保证有序
      */
     public static <E extends Enum<E>> LinkedHashMap<String, E> getEnumMap(final Class<E> enumClass) {
         final LinkedHashMap<String, E> map = new LinkedHashMap<String, E>();
@@ -97,10 +97,10 @@ public class EnumUtils {
 
     /**
      * 获得枚举名对应指定字段值的Map
-     * 键为枚举名，值为字段值
+     * 键为枚举名,值为字段值
      *
      * @param clazz     枚举类
-     * @param fieldName 字段名，最终调用getXXX方法
+     * @param fieldName 字段名,最终调用getXXX方法
      * @return 枚举名对应指定字段值的Map
      */
     public static Map<String, Object> getNameFieldMap(Class<? extends Enum<?>> clazz, String fieldName) {

@@ -29,7 +29,7 @@ package org.aoju.bus.cron;
  * 检查完毕后启动器结束
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class TaskLauncher implements Runnable {
@@ -44,7 +44,7 @@ public class TaskLauncher implements Runnable {
 
     @Override
     public void run() {
-        //匹配秒部分由用户定义决定，始终不匹配年
+        //匹配秒部分由用户定义决定,始终不匹配年
         scheduler.taskTable.executeTaskIfMatchInternal(millis);
 
         //结束通知

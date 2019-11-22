@@ -36,7 +36,7 @@ import java.util.Properties;
  * 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public abstract class AbstractRowBoundsDialect extends AbstractDialect {
@@ -57,7 +57,7 @@ public abstract class AbstractRowBoundsDialect extends AbstractDialect {
 
     @Override
     public boolean afterCount(long count, Object parameterObject, RowBounds rowBounds) {
-        //由于 beforeCount 校验，这里一定是 PageRowBounds
+        //由于 beforeCount 校验,这里一定是 PageRowBounds
         ((PageRowBounds) rowBounds).setTotal(count);
         return count > 0;
     }

@@ -32,13 +32,13 @@ import java.util.List;
  * 通用Mapper接口,根据ids查询
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface SelectByIdsMapper<T> {
 
     /**
-     * 根据主键字符串进行查询，类中只有存在一个带有@Id注解的字段
+     * 根据主键字符串进行查询,类中只有存在一个带有@Id注解的字段
      *
      * @param ids 如 "1,2,3,4"
      * @return 结果集

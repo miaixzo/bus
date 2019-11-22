@@ -36,7 +36,7 @@ import java.util.List;
  * Excel中的行{@link Row}封装工具类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class RowUtils {
@@ -80,7 +80,7 @@ public class RowUtils {
         }
 
         if (isAllNull) {
-            // 如果每个元素都为空，则定义为空行
+            // 如果每个元素都为空,则定义为空行
             return new ArrayList<>(0);
         }
         return cellValues;
@@ -91,7 +91,7 @@ public class RowUtils {
      *
      * @param row      行
      * @param rowData  一行的数据
-     * @param styleSet 单元格样式集，包括日期等样式
+     * @param styleSet 单元格样式集,包括日期等样式
      * @param isHeader 是否为标题行
      */
     public static void writeRow(Row row, Iterable<?> rowData, StyleSet styleSet, boolean isHeader) {

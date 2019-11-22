@@ -29,7 +29,7 @@ import java.util.TimeZone;
 
 /**
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public abstract class AbstractDateBasic implements DateBasic, Serializable {
@@ -50,7 +50,7 @@ public abstract class AbstractDateBasic implements DateBasic, Serializable {
     protected final Locale locale;
 
     /**
-     * 构造，内部使用
+     * 构造,内部使用
      *
      * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone 非空时区{@link TimeZone}

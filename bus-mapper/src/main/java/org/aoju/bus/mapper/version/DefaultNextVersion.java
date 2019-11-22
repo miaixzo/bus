@@ -25,7 +25,7 @@ package org.aoju.bus.mapper.version;
 
 /**
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class DefaultNextVersion implements NextVersion {
@@ -40,7 +40,7 @@ public class DefaultNextVersion implements NextVersion {
         } else if (current instanceof Long) {
             return (Long) current + 1L;
         } else {
-            throw new VersionException("默认的 NextVersion 只支持 Integer 和 Long 类型的版本号，如果有需要请自行扩展!");
+            throw new VersionException("默认的 NextVersion 只支持 Integer 和 Long 类型的版本号,如果有需要请自行扩展!");
         }
     }
 

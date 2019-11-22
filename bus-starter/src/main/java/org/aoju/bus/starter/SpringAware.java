@@ -36,7 +36,7 @@ import java.util.Map;
  * 可在任何代码任何地方任何时候中取出ApplicaitonContext.
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Component
@@ -102,7 +102,7 @@ public class SpringAware implements ApplicationContextAware {
     }
 
     /**
-     * 依据类型获取所有子类(key为spring的id，value为对象实例)
+     * 依据类型获取所有子类(key为spring的id,value为对象实例)
      *
      * @param <T>          对象
      * @param requiredType 类型

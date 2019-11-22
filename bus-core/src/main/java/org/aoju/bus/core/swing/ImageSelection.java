@@ -8,11 +8,11 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.Serializable;
 
 /**
- * 图片转换器，用于将图片对象转换为剪贴板支持的对象<br>
+ * 图片转换器,用于将图片对象转换为剪贴板支持的对象<br>
  * 此对象也用于将图像文件和{@link DataFlavor#imageFlavor} 元信息对应
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class ImageSelection implements Transferable, Serializable {

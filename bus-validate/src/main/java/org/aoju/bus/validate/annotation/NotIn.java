@@ -32,11 +32,11 @@ import java.lang.annotation.*;
  * 校验字符串不存在数组中
  *
  * <p>
- * 默认被校验对象是null时，通过校验
+ * 默认被校验对象是null时,通过校验
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Documented

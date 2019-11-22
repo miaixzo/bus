@@ -41,7 +41,7 @@ import java.util.Map;
  * ESCAPE信息
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class EscapeCodeValues {
@@ -87,7 +87,7 @@ public class EscapeCodeValues {
      */
     public static CharSequenceTranslator ESCAPE_XML11;
     /**
-     * 取消转义XML的转换器对象。
+     * 取消转义XML的转换器对象
      */
     public static CharSequenceTranslator UNESCAPE_XML;
     /**
@@ -564,7 +564,7 @@ public class EscapeCodeValues {
     }
 
     /**
-     * 用于将转义映射转换为反转义映射。
+     * 用于将转义映射转换为反转义映射
      *
      * @param map map数组
      * @return Map倒数组
@@ -578,7 +578,7 @@ public class EscapeCodeValues {
     }
 
     /**
-     * 用于反斜杠转义项的反转义器对象。
+     * 用于反斜杠转义项的反转义器对象
      */
     static class XsiUnescaper extends CharSequenceTranslator {
 

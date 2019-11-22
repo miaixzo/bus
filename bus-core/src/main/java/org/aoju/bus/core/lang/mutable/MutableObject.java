@@ -30,7 +30,7 @@ import java.io.Serializable;
  *
  * @param <T> 可变的类型
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class MutableObject<T> implements Mutable<T>, Serializable {
@@ -40,7 +40,7 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
     private T value;
 
     /**
-     * 构造，空值
+     * 构造,空值
      */
     public MutableObject() {
         super();

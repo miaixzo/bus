@@ -40,17 +40,17 @@ import java.util.Map;
  * fastjson工具类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class JsonUtils {
 
     private static final SerializeConfig config;
     private static final SerializerFeature[] features = {SerializerFeature.WriteMapNullValue, // 输出空置字段
-            SerializerFeature.WriteNullListAsEmpty, // list字段如果为null，输出为[]，而不是null
-            SerializerFeature.WriteNullNumberAsZero, // 数值字段如果为null，输出为0，而不是null
-            SerializerFeature.WriteNullBooleanAsFalse, // Boolean字段如果为null，输出为false，而不是null
-            SerializerFeature.WriteNullStringAsEmpty // 字符类型字段如果为null，输出为""，而不是null
+            SerializerFeature.WriteNullListAsEmpty, // list字段如果为null,输出为[],而不是null
+            SerializerFeature.WriteNullNumberAsZero, // 数值字段如果为null,输出为0,而不是null
+            SerializerFeature.WriteNullBooleanAsFalse, // Boolean字段如果为null,输出为false,而不是null
+            SerializerFeature.WriteNullStringAsEmpty // 字符类型字段如果为null,输出为"",而不是null
     };
 
     static {

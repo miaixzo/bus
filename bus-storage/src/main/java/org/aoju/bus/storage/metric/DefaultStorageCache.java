@@ -27,7 +27,7 @@ package org.aoju.bus.storage.metric;
  * 默认的state缓存实现
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public enum DefaultStorageCache implements StorageCache {
@@ -78,10 +78,10 @@ public enum DefaultStorageCache implements StorageCache {
     }
 
     /**
-     * 是否存在key，如果对应key的value值已过期，也返回false
+     * 是否存在key,如果对应key的value值已过期,也返回false
      *
      * @param key 缓存key
-     * @return true：存在key，并且value没过期；false：key不存在或者已过期
+     * @return true：存在key,并且value没过期；false：key不存在或者已过期
      */
     @Override
     public boolean containsKey(String key) {

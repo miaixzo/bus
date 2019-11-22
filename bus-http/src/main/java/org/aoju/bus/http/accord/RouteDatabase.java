@@ -35,7 +35,7 @@ import java.util.Set;
  * preferred.
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public final class RouteDatabase {

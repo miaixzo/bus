@@ -30,7 +30,7 @@ import lombok.Setter;
  * 授权回调时的参数类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Getter
@@ -43,12 +43,12 @@ public class Callback {
     private String code;
 
     /**
-     * 访问AuthorizeUrl后回调时带的参数auth_code，该参数目前只使用于支付宝登录
+     * 访问AuthorizeUrl后回调时带的参数auth_code,该参数目前只使用于支付宝登录
      */
     private String auth_code;
 
     /**
-     * 访问AuthorizeUrl后回调时带的参数state，用于和请求AuthorizeUrl前的state比较，防止CSRF攻击
+     * 访问AuthorizeUrl后回调时带的参数state,用于和请求AuthorizeUrl前的state比较,防止CSRF攻击
      */
     private String state;
 

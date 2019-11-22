@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 多重校验器, 可以配置多个校验器
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Documented
@@ -43,14 +43,14 @@ import java.lang.annotation.*;
 public @interface Multi {
 
     /**
-     * 校验器名称数组，优先使用校验器名称中的校验器，并忽略校验器类中的校验器
+     * 校验器名称数组,优先使用校验器名称中的校验器,并忽略校验器类中的校验器
      *
      * @return the array
      */
     String[] value() default {};
 
     /**
-     * 校验器类数组， 当校验器名称数组为空时，使用校验器类数组中的校验器
+     * 校验器类数组, 当校验器名称数组为空时,使用校验器类数组中的校验器
      *
      * @return the object
      */

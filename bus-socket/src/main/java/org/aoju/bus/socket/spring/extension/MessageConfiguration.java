@@ -8,12 +8,12 @@ import org.springframework.web.socket.config.annotation.DelegatingWebSocketMessa
 import org.springframework.web.socket.config.annotation.WebMvcStompEndpointRegistry;
 
 /**
- * 代替{@link DelegatingWebSocketMessageBrokerConfiguration}，
+ * 代替{@link DelegatingWebSocketMessageBrokerConfiguration},
  * 使用自定义的{@link StompEndpointRegistry}
  * 代替默认的{@link WebMvcStompEndpointRegistry}
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class MessageConfiguration extends DelegatingWebSocketMessageBrokerConfiguration {

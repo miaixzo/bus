@@ -32,13 +32,13 @@ import java.util.List;
  * 通用Mapper接口,查询
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface SelectMapper<T> {
 
     /**
-     * 根据实体中的属性值进行查询，查询条件使用等号
+     * 根据实体中的属性值进行查询,查询条件使用等号
      *
      * @param record 对象
      * @return 对象

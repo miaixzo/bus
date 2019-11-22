@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  * 反射工具
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class MetaObject {
@@ -40,7 +40,7 @@ public class MetaObject {
 
     static {
         try {
-            // 高版本中的 MetaObject.forObject 有 4 个参数，低版本是 1 个
+            // 高版本中的 MetaObject.forObject 有 4 个参数,低版本是 1 个
             //先判断当前使用的是否为高版本
             Class.forName("org.apache.ibatis.reflection.ReflectorFactory");
             // 下面这个 MetaObjectWithCache 带反射的缓存信息

@@ -25,11 +25,11 @@ package org.aoju.bus.core.lang;
 
 /**
  * 替换器
- * 通过实现此接口完成指定类型对象的替换操作，替换后的目标类型依旧为指定类型
+ * 通过实现此接口完成指定类型对象的替换操作,替换后的目标类型依旧为指定类型
  *
  * @param <T> 被替换操作的类型
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface Replacer<T> {

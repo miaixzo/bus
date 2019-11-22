@@ -31,7 +31,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * 对于 {@link InstanceFactory} 的便于使用
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -75,7 +75,7 @@ public final class Instances {
     }
 
     /**
-     * {@link ThreadSafe} 线程安全标示的使用单例，或者使用多例
+     * {@link ThreadSafe} 线程安全标示的使用单例,或者使用多例
      *
      * @param clazz class
      * @param <T>   泛型

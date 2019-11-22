@@ -30,11 +30,11 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 此超时使用后台线程在超时发生时精确地执行操作。用它来
- * 在本地不支持超时的地方实现超时，例如对阻塞的套接字操作.
+ * 此超时使用后台线程在超时发生时精确地执行操作 用它来
+ * 在本地不支持超时的地方实现超时,例如对阻塞的套接字操作.
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class Awaits extends Timeout {

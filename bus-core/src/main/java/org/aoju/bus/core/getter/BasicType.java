@@ -32,7 +32,7 @@ import java.util.Date;
  * 提供一个统一的接口定义返回不同类型的值（基本类型）
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface BasicType<K> {
@@ -139,7 +139,7 @@ public interface BasicType<K> {
      * @param <E>   枚举类型
      * @param clazz Enum的Class
      * @param key   KEY
-     * @return Enum类型的值，无则返回Null
+     * @return Enum类型的值, 无则返回Null
      */
     <E extends Enum<E>> E getEnum(Class<E> clazz, K key);
 

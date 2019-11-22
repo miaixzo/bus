@@ -27,12 +27,12 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * <p>
- * 克隆支持类，提供默认的克隆方法
+ * 克隆支持类,提供默认的克隆方法
  * </p>
  *
  * @param <T> 继承类的类型
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class Support<T> implements Cloneable<T> {

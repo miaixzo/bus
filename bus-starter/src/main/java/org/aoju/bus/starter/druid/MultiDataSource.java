@@ -45,7 +45,7 @@ import java.util.Set;
  * 多数据源支持
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class MultiDataSource extends AbstractRoutingDataSource {
@@ -72,7 +72,7 @@ public class MultiDataSource extends AbstractRoutingDataSource {
     }
 
     /**
-     * 在获取key的集合，目的只是为了添加一些告警日志
+     * 在获取key的集合,目的只是为了添加一些告警日志
      */
     @Override
     public void afterPropertiesSet() {
@@ -120,7 +120,7 @@ public class MultiDataSource extends AbstractRoutingDataSource {
             for (int i = params.length - 1; i >= 0; i--) {
                 Parameter parameter = params[i];
                 if (parameter.getAnnotation(DataSource.class) != null && point.getArgs()[i] instanceof String) {
-                    //key值即该参数的值，要求该参数必须为String类型
+                    //key值即该参数的值,要求该参数必须为String类型
                     source = (String) point.getArgs()[i];
                     isDynamic = true;
                     break;

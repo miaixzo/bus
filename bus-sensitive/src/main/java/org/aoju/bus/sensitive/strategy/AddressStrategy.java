@@ -31,11 +31,11 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 收货地址脱敏处理类
- * 地址只显示到地区，不显示详细地址；我们要对个人信息增强保护
+ * 地址只显示到地区,不显示详细地址；我们要对个人信息增强保护
  * 例子：北京市海淀区****
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class AddressStrategy extends AbstractProvider {

@@ -40,11 +40,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EhCache进程内缓存框架，
+ * EhCache进程内缓存框架,
  * 具有快速、精干等特点
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class EhCache implements Cache {

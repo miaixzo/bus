@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
  * 全局公共线程池
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class GlobalThread {
@@ -96,7 +96,7 @@ public class GlobalThread {
 
     /**
      * 执行有返回值的异步方法
-     * Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
+     * Future代表一个异步执行的操作,通过get()方法可以获得操作的结果,如果异步操作还没有完成,则,get()会使当前线程阻塞
      *
      * @param <T>  执行的Task
      * @param task {@link Callable}
@@ -108,7 +108,7 @@ public class GlobalThread {
 
     /**
      * 执行有返回值的异步方法
-     * Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
+     * Future代表一个异步执行的操作,通过get()方法可以获得操作的结果,如果异步操作还没有完成,则,get()会使当前线程阻塞
      *
      * @param runnable 可运行对象
      * @return {@link Future}

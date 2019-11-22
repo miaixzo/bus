@@ -27,7 +27,7 @@ package org.aoju.bus.logger.level;
  * TRACE级别日志接口
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface TraceLog {
@@ -64,7 +64,7 @@ public interface TraceLog {
     /**
      * 打印 TRACE 等级的日志
      *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name)，用于定位日志位置
+     * @param fqcn      完全限定类名(Fully Qualified Class Name),用于定位日志位置
      * @param t         错误对象
      * @param format    消息模板
      * @param arguments 参数

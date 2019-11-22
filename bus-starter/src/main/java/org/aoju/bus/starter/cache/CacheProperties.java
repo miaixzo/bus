@@ -34,7 +34,7 @@ import java.util.Map;
  * 缓存相关配置
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Data
@@ -50,11 +50,11 @@ public class CacheProperties {
      */
     private Map<String, Cache> map;
     /**
-     * 缓存前缀，目前只对redis缓存生效，默认 OAUTH::STATE::
+     * 缓存前缀,目前只对redis缓存生效,默认 OAUTH::STATE::
      */
     private String prefix;
     /**
-     * 超时时长，目前只对redis缓存生效，默认3分钟
+     * 超时时长,目前只对redis缓存生效,默认3分钟
      */
     private String timeout;
 

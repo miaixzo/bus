@@ -31,13 +31,13 @@ import org.apache.ibatis.annotations.UpdateProvider;
  * 通用Mapper接口,更新
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface UpdateByPrimaryKeyMapper<T> {
 
     /**
-     * 根据主键更新实体全部字段，null值会被更新
+     * 根据主键更新实体全部字段,null值会被更新
      *
      * @param record 对象
      * @return 操作数量

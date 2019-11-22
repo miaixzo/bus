@@ -31,7 +31,7 @@ import org.apache.ibatis.type.TypeHandler;
  * 数据库表对应的列
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class EntityColumn {
@@ -131,7 +131,7 @@ public class EntityColumn {
         } else if (this.typeHandler != null) {
             sb.append(",typeHandler=");
             sb.append(this.typeHandler.getCanonicalName());
-        } else if (!this.javaType.isArray()) {//当类型为数组时，不设置javaType#103
+        } else if (!this.javaType.isArray()) {//当类型为数组时,不设置javaType#103
             sb.append(",javaType=");
             sb.append(javaType.getCanonicalName());
         }

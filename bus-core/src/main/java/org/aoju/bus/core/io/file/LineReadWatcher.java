@@ -38,7 +38,7 @@ import java.nio.file.WatchEvent;
  * 行处理的Watcher实现
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class LineReadWatcher extends SimpleWatcher implements Runnable {
@@ -78,7 +78,7 @@ public class LineReadWatcher extends SimpleWatcher implements Runnable {
                 // 内容长度不变时忽略此次事件
                 return;
             } else if (currentLength < position) {
-                // 如果内容变短，说明文件做了删改，回到内容末尾
+                // 如果内容变短,说明文件做了删改,回到内容末尾
                 randomAccessFile.seek(currentLength);
                 return;
             }

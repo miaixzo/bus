@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 存储服务-阿里云
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class AliYunOssProvider extends AbstractProvider {
@@ -78,9 +78,9 @@ public class AliYunOssProvider extends AbstractProvider {
 
     @Override
     public Readers download(String bucket, String fileName) {
-        // ossObject包含文件所在的存储空间名称、文件名称、文件元信息以及一个输入流。
+        // ossObject包含文件所在的存储空间名称、文件名称、文件元信息以及一个输入流
         OSSObject ossObject = this.client.getObject(bucket, fileName);
-        // 读取文件内容。
+        // 读取文件内容
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent()))) {
             while (true) {
                 String line = reader.readLine();

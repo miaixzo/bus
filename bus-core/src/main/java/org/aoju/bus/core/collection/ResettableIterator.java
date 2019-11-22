@@ -26,11 +26,11 @@ package org.aoju.bus.core.collection;
 import java.util.Iterator;
 
 /**
- * 定义一个迭代器，该迭代器可以重置为初始状态.
+ * 定义一个迭代器,该迭代器可以重置为初始状态.
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface ResettableIterator<E> extends Iterator<E> {

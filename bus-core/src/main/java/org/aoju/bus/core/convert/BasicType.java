@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 基本类型枚举包括原始类型和包装类型
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public enum BasicType {
@@ -39,11 +39,11 @@ public enum BasicType {
     BYTE, SHORT, INT, INTEGER, LONG, DOUBLE, FLOAT, BOOLEAN, CHAR, CHARACTER, STRING;
 
     /**
-     * 包装类型为Key，原始类型为Value，例如： Integer.class =》 int.class.
+     * 包装类型为Key,原始类型为Value,例如： Integer.class =》 int.class.
      */
     public static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new ConcurrentHashMap<>(8);
     /**
-     * 原始类型为Key，包装类型为Value，例如： int.class =》 Integer.class.
+     * 原始类型为Key,包装类型为Value,例如： int.class =》 Integer.class.
      */
     public static final Map<Class<?>, Class<?>> primitiveWrapperMap = new ConcurrentHashMap<>(8);
 
@@ -63,7 +63,7 @@ public enum BasicType {
     }
 
     /**
-     * 原始类转为包装类，非原始类返回原类
+     * 原始类转为包装类,非原始类返回原类
      *
      * @param clazz 原始类
      * @return 包装类
@@ -77,7 +77,7 @@ public enum BasicType {
     }
 
     /**
-     * 包装类转为原始类，非包装类返回原类
+     * 包装类转为原始类,非包装类返回原类
      *
      * @param clazz 包装类
      * @return 原始类

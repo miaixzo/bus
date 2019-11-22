@@ -27,7 +27,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Target(ElementType.TYPE)
@@ -36,7 +36,7 @@ import java.lang.annotation.*;
 public @interface WebSocket {
 
     /**
-     * 订阅主题，topic
+     * 订阅主题,topic
      *
      * @return the string
      */

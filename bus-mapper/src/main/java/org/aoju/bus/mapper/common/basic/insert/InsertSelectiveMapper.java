@@ -30,13 +30,13 @@ import org.apache.ibatis.annotations.InsertProvider;
  * 通用Mapper接口,插入
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface InsertSelectiveMapper<T> {
 
     /**
-     * 保存一个实体，null的属性不会保存，会使用数据库默认值
+     * 保存一个实体,null的属性不会保存,会使用数据库默认值
      *
      * @param record 对象
      * @return 操作数量

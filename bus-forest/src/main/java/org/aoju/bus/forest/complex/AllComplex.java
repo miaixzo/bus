@@ -29,11 +29,11 @@ import java.util.Collection;
 
 /**
  * ALL逻辑混合规则
- * 只要有一个规则不满足就立刻返回，
- * 如果没有规则的时候则认为所有规则都满足。
+ * 只要有一个规则不满足就立刻返回,
+ * 如果没有规则的时候则认为所有规则都满足
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class AllComplex<E> extends MixComplex<E> implements Complex<E> {

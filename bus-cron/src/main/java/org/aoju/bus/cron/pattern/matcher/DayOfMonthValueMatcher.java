@@ -27,10 +27,10 @@ import java.util.List;
 
 /**
  * 每月第几天匹配
- * 考虑每月的天数不同，切存在闰年情况，日匹配单独使用
+ * 考虑每月的天数不同,切存在闰年情况,日匹配单独使用
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {

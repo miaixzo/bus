@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 剪贴板字符串内容监听
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public abstract class StringListener implements ClipboardListener, Serializable {
@@ -28,11 +28,11 @@ public abstract class StringListener implements ClipboardListener, Serializable 
 
     /**
      * 剪贴板变动触发的事件方法<br>
-     * 在此事件中对剪贴板设置值无效，如若修改，需返回修改内容
+     * 在此事件中对剪贴板设置值无效,如若修改,需返回修改内容
      *
      * @param clipboard 剪贴板对象
      * @param contents  内容
-     * @return 如果对剪贴板内容做修改，则返回修改的内容，{@code null}表示保留原内容
+     * @return 如果对剪贴板内容做修改, 则返回修改的内容,{@code null}表示保留原内容
      */
     public abstract Transferable onChange(Clipboard clipboard, String contents);
 

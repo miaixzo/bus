@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * 黑名单插件,会拒绝与黑名单中的IP建立连接
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public final class BlackListPlugin<T> extends AbstractPlugin<T> {

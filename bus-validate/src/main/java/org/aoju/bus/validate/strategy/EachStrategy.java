@@ -40,7 +40,7 @@ import java.util.Map;
  * 容器元素内部校验
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class EachStrategy implements Complex<Object, Each> {
@@ -88,7 +88,7 @@ public class EachStrategy implements Complex<Object, Each> {
     }
 
     /**
-     * 快速执行多个校验器，一旦有一个校验不通过，则返回false
+     * 快速执行多个校验器,一旦有一个校验不通过,则返回false
      *
      * @param validators 校验器集合
      * @param object     校验对象

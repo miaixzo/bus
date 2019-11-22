@@ -27,13 +27,13 @@ package org.aoju.bus.core.io;
  * 行处理器
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface LineHandler {
 
     /**
-     * 处理一行数据，可以编辑后存入指定地方
+     * 处理一行数据,可以编辑后存入指定地方
      *
      * @param line 行
      */

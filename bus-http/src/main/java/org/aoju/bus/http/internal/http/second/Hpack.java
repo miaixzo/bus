@@ -43,7 +43,7 @@ import java.util.*;
  * fills, it is doubled.
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 final class Hpack {
@@ -553,7 +553,6 @@ final class Hpack {
             }
         }
 
-        // http://tools.ietf.org/html/draft-ietf-httpbis-header-compression-12#section-4.1.1
         void writeInt(int value, int prefixMask, int bits) {
             // Write the raw value for a single byte value.
             if (value < prefixMask) {

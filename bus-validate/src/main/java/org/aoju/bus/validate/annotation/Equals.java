@@ -31,11 +31,11 @@ import java.lang.annotation.*;
 /**
  * 字符串equals
  * <p>
- * 默认被校验对象是null时，通过校验
+ * 默认被校验对象是null时,通过校验
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Documented

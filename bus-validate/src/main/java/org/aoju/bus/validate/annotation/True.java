@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * boolean校验, 当校验值为true时通过校验
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Documented
@@ -42,7 +42,7 @@ import java.lang.annotation.*;
 public @interface True {
 
     /**
-     * 当参数为null时，是否允许通过校验。true：校验通过, false:校验不通过
+     * 当参数为null时,是否允许通过校验 true：校验通过, false:校验不通过
      *
      * @return the string
      */

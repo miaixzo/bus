@@ -30,7 +30,7 @@ import org.aoju.bus.sensitive.Builder;
  * 脱敏策略
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements StrategyProvider {
@@ -61,7 +61,7 @@ public abstract class AbstractProvider implements StrategyProvider {
             }
             return resultBuilder.toString();
         }
-        // 仅有两个字符，不能采用遮挡中间的做法
+        // 仅有两个字符,不能采用遮挡中间的做法
         if (length == 2) {
             return resultBuilder.append(rawVal, 0, 1)
                     .append(shadow).toString();

@@ -34,7 +34,7 @@ import java.util.Collection;
  * 各种集合类转换器
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class CollectionConverter implements Converter<Collection<?>> {
@@ -49,7 +49,7 @@ public class CollectionConverter implements Converter<Collection<?>> {
     private final Type elementType;
 
     /**
-     * 构造，默认集合类型使用{@link Collection}
+     * 构造,默认集合类型使用{@link Collection}
      */
     public CollectionConverter() {
         this(Collection.class);

@@ -43,7 +43,7 @@ import java.util.Map;
  * qq登录
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class QqProvider extends DefaultProvider {
@@ -93,8 +93,8 @@ public class QqProvider extends DefaultProvider {
     }
 
     /**
-     * 获取QQ用户的OpenId，支持自定义是否启用查询unionid的功能，如果启用查询unionid的功能，
-     * 那就需要开发者先通过邮件申请unionid功能，参考链接 {@see http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D}
+     * 获取QQ用户的OpenId,支持自定义是否启用查询unionid的功能,如果启用查询unionid的功能,
+     * 那就需要开发者先通过邮件申请unionid功能,参考链接 {@see http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D}
      *
      * @param token 通过{@link QqProvider#getAccessToken(Callback)}获取到的{@code authToken}
      * @return openId

@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Map包装类，通过包装一个已有Map实现特定功能。例如自定义Key的规则或Value规则
+ * Map包装类,通过包装一个已有Map实现特定功能 例如自定义Key的规则或Value规则
  *
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Serializable, Cloneable {

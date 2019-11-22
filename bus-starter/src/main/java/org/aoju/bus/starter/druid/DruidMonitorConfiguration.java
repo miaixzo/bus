@@ -41,7 +41,7 @@ import javax.sql.DataSource;
  * Druid 监控配置
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @ConditionalOnClass(DruidDataSource.class)
@@ -67,7 +67,7 @@ public class DruidMonitorConfiguration {
         //白名单：
         servletRegistrationBean.addInitParameter("allow", properties.getAllow());
         Logger.info("allow ---> " + properties.getAllow());
-        //IP黑名单 (存在共同时，deny优先于allow) : 如果满足deny的话提示:Sorry, you are not permitted to view this page.
+        //IP黑名单 (存在共同时,deny优先于allow) : 如果满足deny的话提示:Sorry, you are not permitted to view this page.
         servletRegistrationBean.addInitParameter("deny", properties.getDeny());
         Logger.info("deny ---> " + properties.getDeny());
         //登录查看信息的账号密码.

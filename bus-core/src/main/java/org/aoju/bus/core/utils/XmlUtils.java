@@ -50,11 +50,11 @@ import java.util.regex.Pattern;
 
 /**
  * XML工具类
- * 此工具使用w3c dom工具，不需要依赖第三方包。
+ * 此工具使用w3c dom工具,不需要依赖第三方包
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class XmlUtils {
@@ -107,7 +107,7 @@ public class XmlUtils {
      * @param <T>    对象类型
      * @param source {@link InputSource}
      * @return 对象
-     * @since 5.2.2
+     * @since 5.2.3
      */
     public static <T> T readObjectFromXml(InputSource source) {
         Object result = null;
@@ -123,7 +123,7 @@ public class XmlUtils {
 
     /**
      * 创建XML文档
-     * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，既XML在转为文本的时候才定义编码
+     * 创建的XML默认是utf8编码,修改编码的过程是在toStr和toFile方法里,既XML在转为文本的时候才定义编码
      *
      * @return XML文档
      */
@@ -150,7 +150,7 @@ public class XmlUtils {
 
     /**
      * 创建XML文档
-     * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，既XML在转为文本的时候才定义编码
+     * 创建的XML默认是utf8编码,修改编码的过程是在toStr和toFile方法里,既XML在转为文本的时候才定义编码
      *
      * @param rootElementName 根节点名称
      * @return XML文档
@@ -247,7 +247,7 @@ public class XmlUtils {
      * 将NodeList转换为Element列表
      * 非Element节点将被忽略
      *
-     * @param parentEle 父节点，如果指定将返回此节点的所有直接子节点，nul返回所有就节点
+     * @param parentEle 父节点,如果指定将返回此节点的所有直接子节点,nul返回所有就节点
      * @param nodeList  NodeList
      * @return Element列表
      */
@@ -273,7 +273,7 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 5.2.2
+     * @since 5.2.3
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -283,7 +283,7 @@ public class XmlUtils {
      * 通过XPath方式读取XML节点等信息
      *
      * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
+     * @param source     资源,可以是Docunent、Node节点等
      * @return 匹配返回类型的值
      */
     public static Element getElementByXPath(String expression, Object source) {
@@ -294,7 +294,7 @@ public class XmlUtils {
      * 通过XPath方式读取XML的NodeList
      *
      * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
+     * @param source     资源,可以是Docunent、Node节点等
      * @return NodeList
      */
     public static NodeList getNodeListByXPath(String expression, Object source) {
@@ -306,7 +306,7 @@ public class XmlUtils {
      * Xpath相关文章：https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html
      *
      * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
+     * @param source     资源,可以是Docunent、Node节点等
      * @return 匹配返回类型的值
      */
     public static Node getNodeByXPath(String expression, Object source) {
@@ -318,10 +318,10 @@ public class XmlUtils {
      * Xpath相关文章：https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html
      *
      * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
-     * @param returnType 返回类型，{@link XPathConstants}
+     * @param source     资源,可以是Docunent、Node节点等
+     * @param returnType 返回类型,{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 5.2.2
+     * @since 5.2.3
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();
@@ -475,7 +475,7 @@ public class XmlUtils {
     }
 
     /**
-     * 关闭XXE，避免漏洞攻击
+     * 关闭XXE,避免漏洞攻击
      * see: https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
      *
      * @param dbf DocumentBuilderFactory

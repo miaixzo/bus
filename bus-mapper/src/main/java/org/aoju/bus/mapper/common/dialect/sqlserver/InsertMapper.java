@@ -31,13 +31,13 @@ import org.apache.ibatis.annotations.Options;
  * 通用Mapper接口,插入
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface InsertMapper<T> {
 
     /**
-     * 插入数据库，`null`值也会插入，不会使用列的默认值
+     * 插入数据库,`null`值也会插入,不会使用列的默认值
      *
      * @param record 对象
      * @return 结果

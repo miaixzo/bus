@@ -31,12 +31,12 @@ import java.util.zip.Deflater;
 
 /**
  * <h3>Sync flush</h3>
- * 这种流体的强冲刷可能导致压缩降低。每一个
+ * 这种流体的强冲刷可能导致压缩降低 每一个
  * 调用{@link #flush}立即压缩所有当前缓存的数据;
  * 这种早期压缩可能不如执行的压缩有效
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public final class DeflaterSink implements Sink {

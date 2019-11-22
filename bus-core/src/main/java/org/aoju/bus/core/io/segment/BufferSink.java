@@ -29,11 +29,11 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 
 /**
- * 一种接收器，它在内部保存缓冲区，
+ * 一种接收器,它在内部保存缓冲区,
  * 以便调用者可以进行小的写操作没有性能损失
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface BufferSink extends Sink, WritableByteChannel {

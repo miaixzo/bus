@@ -35,7 +35,7 @@ import java.util.Set;
  * 参考 org.apache.ibatis.type.SimpleTypeRegistry
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class SimpleType {
@@ -56,7 +56,7 @@ public class SimpleType {
     private static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<Class<?>>();
 
     /**
-     * 特别注意：由于基本类型有默认值，因此在实体类中不建议使用基本类型作为数据库字段类型
+     * 特别注意：由于基本类型有默认值,因此在实体类中不建议使用基本类型作为数据库字段类型
      */
     static {
         SIMPLE_TYPE_SET.add(byte[].class);
@@ -107,7 +107,7 @@ public class SimpleType {
     }
 
     /**
-     * 注册新的类型，不存在时不抛出异常
+     * 注册新的类型,不存在时不抛出异常
      *
      * @param clazz 对象
      */

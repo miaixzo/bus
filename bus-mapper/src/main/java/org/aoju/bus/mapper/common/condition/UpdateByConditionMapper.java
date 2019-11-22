@@ -32,13 +32,13 @@ import org.apache.ibatis.annotations.UpdateProvider;
  * 通用Mapper接口,Condition查询
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface UpdateByConditionMapper<T> {
 
     /**
-     * 根据Condition条件更新实体`record`包含的全部属性，null值会被更新
+     * 根据Condition条件更新实体`record`包含的全部属性,null值会被更新
      *
      * @param record    对象
      * @param condition 条件
@@ -49,7 +49,7 @@ public interface UpdateByConditionMapper<T> {
     int updateByCondition(@Param("record") T record, @Param("condition") Object condition);
 
     /**
-     * 根据Condition条件更新实体`record`包含的全部属性，null值会被更新
+     * 根据Condition条件更新实体`record`包含的全部属性,null值会被更新
      *
      * @param record    对象
      * @param condition 条件

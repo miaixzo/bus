@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * ByteBuffer内存池
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class BufferPool {
@@ -69,7 +69,7 @@ public class BufferPool {
      * @return 缓存页对象
      */
     public BufferPage allocateBufferPage() {
-        //轮训游标，均衡分配内存页
+        //轮训游标,均衡分配内存页
         return bufferPageList[cursor.getAndIncrement() % bufferPageList.length];
     }
 }

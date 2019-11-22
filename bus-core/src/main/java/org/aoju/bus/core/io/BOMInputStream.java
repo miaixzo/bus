@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 
 /**
- * 读取带BOM头的流内容，<code>getCharset()</code>方法调用后会得到BOM头的编码，且会去除BOM头
+ * 读取带BOM头的流内容,<code>getCharset()</code>方法调用后会得到BOM头的编码,且会去除BOM头
  * <ul>
  * <li>00 00 FE FF = UTF-32, big-endian</li>
  * <li>FF FE 00 00 = UTF-32, little-endian</li>
@@ -48,7 +48,7 @@ import java.io.PushbackInputStream;
  * </code>
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class BOMInputStream extends InputStream {

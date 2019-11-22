@@ -40,7 +40,7 @@ import java.util.Properties;
  * sqlserver 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class SqlServerRowBoundsDialect extends AbstractRowBoundsDialect {
@@ -81,7 +81,7 @@ public class SqlServerRowBoundsDialect extends AbstractRowBoundsDialect {
             try {
                 this.replaceSql = (ReplaceSql) Class.forName(replaceSql).newInstance();
             } catch (Exception e) {
-                throw new RuntimeException("replaceSql 参数配置的值不符合要求，可选值为 simple 和 regex，或者是实现了 "
+                throw new RuntimeException("replaceSql 参数配置的值不符合要求,可选值为 simple 和 regex,或者是实现了 "
                         + ReplaceSql.class.getCanonicalName() + " 接口的全限定类名", e);
             }
         }

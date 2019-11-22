@@ -33,13 +33,13 @@ import java.util.List;
  * 通用Mapper接口,Condition查询
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface SelectByConditionRowBoundsMapper<T> {
 
     /**
-     * 根据Condition条件和RowBounds进行分页查询，该方法和selectByWhereAndRowBounds完全一样，只是名字改成了Condition
+     * 根据Condition条件和RowBounds进行分页查询,该方法和selectByWhereAndRowBounds完全一样,只是名字改成了Condition
      *
      * @param condition 条件
      * @param rowBounds RowBounds信息

@@ -31,10 +31,10 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
 
 /**
  * 公司开户银行联号
- * 前四位明文，后面脱敏
+ * 前四位明文,后面脱敏
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class CnapsStrategy extends AbstractProvider {

@@ -34,7 +34,7 @@ import java.util.Locale;
  * 其核心用途是转义和反转义文本
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public abstract class CharSequenceTranslator {
@@ -44,8 +44,8 @@ public abstract class CharSequenceTranslator {
     }
 
     /**
-     * 将一组由int索引表示的代码点转换为CharSequence，
-     * 转换成另一组代码点。必须返回所使用的代码点数量，
+     * 将一组由int索引表示的代码点转换为CharSequence,
+     * 转换成另一组代码点 必须返回所使用的代码点数量,
      *
      * @param input 正在翻译的CharSequence
      * @param index int表示当前翻译点

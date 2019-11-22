@@ -27,10 +27,10 @@ import java.lang.annotation.*;
 
 /**
  * 生产环境
- * 表示当前方法性能安全性各方面达标，可以用于生产环境。
+ * 表示当前方法性能安全性各方面达标,可以用于生产环境
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Inherited

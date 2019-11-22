@@ -26,10 +26,10 @@ package org.aoju.bus.cron.pattern.parser;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
- * 简易值转换器。将给定String值转为int
+ * 简易值转换器 将给定String值转为int
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class SimpleValueParser implements ValueParser {

@@ -31,7 +31,7 @@ import java.io.Serializable;
  * CSV写出配置项
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class CsvWriteConfig extends CsvConfig implements Serializable {
@@ -39,7 +39,7 @@ public class CsvWriteConfig extends CsvConfig implements Serializable {
     private static final long serialVersionUID = 5396453565371560052L;
 
     /**
-     * 是否始终使用文本分隔符，文本包装符，默认false，按需添加
+     * 是否始终使用文本分隔符,文本包装符,默认false,按需添加
      */
     protected boolean alwaysDelimitText;
     /**
@@ -57,9 +57,9 @@ public class CsvWriteConfig extends CsvConfig implements Serializable {
     }
 
     /**
-     * 设置是否始终使用文本分隔符，文本包装符，默认false，按需添加
+     * 设置是否始终使用文本分隔符,文本包装符,默认false,按需添加
      *
-     * @param alwaysDelimitText 是否始终使用文本分隔符，文本包装符，默认false，按需添加
+     * @param alwaysDelimitText 是否始终使用文本分隔符,文本包装符,默认false,按需添加
      */
     public void setAlwaysDelimitText(boolean alwaysDelimitText) {
         this.alwaysDelimitText = alwaysDelimitText;

@@ -28,7 +28,7 @@ import lombok.Data;
 
 /**
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @Data
@@ -40,7 +40,7 @@ public class SocketRequest {
     private ChannelHandlerContext context;
 
     /**
-     * 事件类型：订阅，消息，取消订阅，心跳
+     * 事件类型：订阅,消息,取消订阅,心跳
      */
     private String event;
 

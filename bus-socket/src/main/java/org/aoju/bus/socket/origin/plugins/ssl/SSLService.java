@@ -39,7 +39,7 @@ import java.security.cert.X509Certificate;
  * TLS/SSL服务
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class SSLService {
@@ -137,8 +137,8 @@ public class SSLService {
 
     /**
      * 纯异步实现的SSL握手,
-     * 在执行doHandshake期间必须保证当前通道无数据读写正在执行。
-     * 若触发了数据读写，也应立马终止doHandshake方法
+     * 在执行doHandshake期间必须保证当前通道无数据读写正在执行
+     * 若触发了数据读写,也应立马终止doHandshake方法
      *
      * @param handshakeModel 握手信息
      */

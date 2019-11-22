@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
- * 简单切面类，不做任何操作
+ * 简单切面类,不做任何操作
  * 可以继承此类实现自己需要的方法即可
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class SimpleAspect implements Aspect, Serializable {
@@ -30,7 +30,7 @@ public class SimpleAspect implements Aspect, Serializable {
      * @return 是否允许返回值（接下来的操作）
      * @see Aspect#afterException 返回true,则不会执行此操作
      * 如果
-     * @see Aspect#afterException 返回false,则无论target.method是否抛出异常，均会执行此操作
+     * @see Aspect#afterException 返回false,则无论target.method是否抛出异常,均会执行此操作
      */
     public boolean after(Object target, Method method, Object[] args) {
         return after(target, method, args, null);

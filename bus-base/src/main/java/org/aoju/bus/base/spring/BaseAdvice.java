@@ -44,7 +44,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 @ControllerAdvice
@@ -52,7 +52,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class BaseAdvice extends Controller {
 
     /**
-     * 应用到所有@RequestMapping注解方法，在其执行之前初始化数据绑定器
+     * 应用到所有@RequestMapping注解方法,在其执行之前初始化数据绑定器
      *
      * @param binder 绑定器
      */
@@ -62,7 +62,7 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 把值绑定到Model中，
+     * 把值绑定到Model中,
      * 使全局@RequestMapping可以获取到该值
      *
      * @param model 对象

@@ -28,7 +28,7 @@ package org.aoju.bus.core.utils;
  * 提供Unicode字符串和普通字符串之间的转换
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class UnicodeUtils {
@@ -59,12 +59,12 @@ public class UnicodeUtils {
                     sb.append(c);
                     pos = i + 6;//跳过整个Unicode符
                 } catch (NumberFormatException e) {
-                    //非法Unicode符，跳过
+                    //非法Unicode符,跳过
                     sb.append(unicode, pos, i + 2);//写入"\\u"
                     pos = i + 2;
                 }
             } else {
-                pos = i;//非Unicode符，结束
+                pos = i;//非Unicode符,结束
                 break;
             }
         }

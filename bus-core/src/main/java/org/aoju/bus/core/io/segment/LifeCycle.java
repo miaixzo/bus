@@ -24,11 +24,11 @@
 package org.aoju.bus.core.io.segment;
 
 /**
- * 这是避免GC搅动和零填充所必需的。
- * 这个池是一个线程安全的静态单例。
+ * 这是避免GC搅动和零填充所必需的
+ * 这个池是一个线程安全的静态单例
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public final class LifeCycle {

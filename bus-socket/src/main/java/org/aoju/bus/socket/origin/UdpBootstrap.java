@@ -41,7 +41,7 @@ import java.util.Set;
  * UDP服务启动类
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class UdpBootstrap<Request> implements Runnable {
@@ -116,7 +116,7 @@ public class UdpBootstrap<Request> implements Runnable {
     }
 
     /**
-     * 开启一个UDP通道，端口号随机
+     * 开启一个UDP通道,端口号随机
      *
      * @return UDP通道
      * @throws IOException 异常

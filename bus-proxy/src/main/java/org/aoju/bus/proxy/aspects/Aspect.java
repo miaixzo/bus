@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
  * 切面接口
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public interface Aspect {
@@ -32,7 +32,7 @@ public interface Aspect {
      * @return 是否允许返回值（接下来的操作）
      * @see Aspect#afterException 返回true,则不会执行此操作
      * 如果
-     * @see Aspect#afterException 返回false,则无论target.method是否抛出异常，均会执行此操作
+     * @see Aspect#afterException 返回false,则无论target.method是否抛出异常,均会执行此操作
      */
     boolean after(Object target, Method method, Object[] args, Object returnVal);
 

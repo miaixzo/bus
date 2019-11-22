@@ -75,6 +75,7 @@ public class GitLabApi {
     private TodosApi todosApi;
     private UserApi userApi;
     private WikisApi wikisApi;
+
     /**
      * Constructs a GitLabApi instance set up to interact with the GitLab server using the specified GitLab API version.
      *

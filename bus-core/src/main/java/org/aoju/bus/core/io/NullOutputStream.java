@@ -27,17 +27,17 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * 此OutputStream写出数据到<b>/dev/null</b>，既忽略所有数据
+ * 此OutputStream写出数据到<b>/dev/null</b>,既忽略所有数据
  * 来自 Apache Commons io
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class NullOutputStream extends OutputStream {
 
     /**
-     * 什么也不做，写出到<code>/dev/null</code>.
+     * 什么也不做,写出到<code>/dev/null</code>.
      *
      * @param b   写出的数据
      * @param off 开始位置
@@ -49,7 +49,7 @@ public class NullOutputStream extends OutputStream {
     }
 
     /**
-     * 什么也不做，写出到 <code>/dev/null</code>.
+     * 什么也不做,写出到 <code>/dev/null</code>.
      *
      * @param b 写出的数据
      */
@@ -59,7 +59,7 @@ public class NullOutputStream extends OutputStream {
     }
 
     /**
-     * 什么也不做，写出到 <code>/dev/null</code>.
+     * 什么也不做,写出到 <code>/dev/null</code>.
      *
      * @param b 写出的数据
      * @throws IOException 不抛出

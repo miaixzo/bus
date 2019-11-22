@@ -38,7 +38,7 @@ import java.util.Objects;
  * int enum 校验
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class InEnumStrategy implements Complex<Object, InEnum> {

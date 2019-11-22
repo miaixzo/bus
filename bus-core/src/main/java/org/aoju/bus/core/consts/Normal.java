@@ -32,7 +32,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class Normal {
@@ -222,8 +222,8 @@ public class Normal {
     @AllArgsConstructor
     public enum Gender {
         /**
-         * MALE/FAMALE为正常值，通过{@link Gender#getGender(String)}方法获取真实的性别
-         * UNKNOWN为容错值，部分平台不会返回用户性别，为了方便统一，使用UNKNOWN标记所有未知或不可测的用户性别信息
+         * MALE/FAMALE为正常值,通过{@link Gender#getGender(String)}方法获取真实的性别
+         * UNKNOWN为容错值,部分平台不会返回用户性别,为了方便统一,使用UNKNOWN标记所有未知或不可测的用户性别信息
          */
         MALE(1, "男"),
         FEMALE(0, "女"),

@@ -32,7 +32,7 @@ import java.util.TimeZone;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class Fields {
@@ -280,7 +280,7 @@ public class Fields {
      * 与Calendar相应值对应
      *
      * @author Kimi Liu
-     * @version 5.2.2
+     * @version 5.2.3
      * @since JDK 1.8+
      */
     public enum DateField {
@@ -322,7 +322,7 @@ public class Fields {
          */
         DAY_OF_YEAR(Calendar.DAY_OF_YEAR),
         /**
-         * 周几，1表示周日，2表示周一
+         * 周几,1表示周日,2表示周一
          *
          * @see Calendar#DAY_OF_WEEK
          */
@@ -340,13 +340,13 @@ public class Fields {
          */
         AM_PM(Calendar.AM_PM),
         /**
-         * 小时，用于12小时制
+         * 小时,用于12小时制
          *
          * @see Calendar#HOUR
          */
         HOUR(Calendar.HOUR),
         /**
-         * 小时，用于24小时制
+         * 小时,用于24小时制
          *
          * @see Calendar#HOUR
          */
@@ -418,10 +418,10 @@ public class Fields {
     }
 
     /**
-     * 日期时间单位，每个单位都是以毫秒为基数
+     * 日期时间单位,每个单位都是以毫秒为基数
      *
      * @author Kimi Liu
-     * @version 5.2.2
+     * @version 5.2.3
      * @since JDK 1.8+
      */
     public enum Unit {
@@ -470,7 +470,7 @@ public class Fields {
      * 与Calendar中的月份int值对应
      *
      * @author Kimi Liu
-     * @version 5.2.2
+     * @version 5.2.3
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -537,7 +537,7 @@ public class Fields {
          */
         DECEMBER(Calendar.DECEMBER),
         /**
-         * 十三月，仅用于农历
+         * 十三月,仅用于农历
          */
         UNDECIMBER(Calendar.UNDECIMBER);
 
@@ -608,7 +608,7 @@ public class Fields {
      * 季度枚举
      *
      * @author Kimi Liu
-     * @version 5.2.2
+     * @version 5.2.3
      * @since JDK 1.8+
      */
     public enum Quarter {
@@ -671,7 +671,7 @@ public class Fields {
      * 与Calendar中的星期int值对应
      *
      * @author Kimi Liu
-     * @version 5.2.2
+     * @version 5.2.3
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY
@@ -782,7 +782,7 @@ public class Fields {
         /**
          * 转换为中文名
          *
-         * @param weekNamePre 表示星期的前缀，例如前缀为“星期”，则返回结果为“星期一”；前缀为”周“，结果为“周一”
+         * @param weekNamePre 表示星期的前缀,例如前缀为“星期”,则返回结果为“星期一”；前缀为”周“,结果为“周一”
          * @return 星期的中文名
          */
         public String toChinese(String weekNamePre) {

@@ -28,7 +28,7 @@ package org.aoju.bus.core.utils;
  * 推荐使用FNV1算法
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class HashUtils {
@@ -199,7 +199,7 @@ public class HashUtils {
     }
 
     /**
-     * Thomas Wang的算法，整数hash
+     * Thomas Wang的算法,整数hash
      *
      * @param key 整数
      * @return hash值
@@ -441,7 +441,7 @@ public class HashUtils {
     }
 
     /**
-     * 混合hash算法，输出64位的值
+     * 混合hash算法,输出64位的值
      *
      * @param str 字符串
      * @return hash值

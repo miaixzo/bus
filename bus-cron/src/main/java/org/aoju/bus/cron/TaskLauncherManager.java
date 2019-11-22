@@ -30,7 +30,7 @@ import java.util.List;
  * 作业启动管理器
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class TaskLauncherManager {
@@ -56,7 +56,7 @@ public class TaskLauncherManager {
         synchronized (this.launchers) {
             this.launchers.add(launcher);
         }
-        //子线程是否为deamon线程取决于父线程，因此此处无需显示调用
+        //子线程是否为deamon线程取决于父线程,因此此处无需显示调用
         //launcher.setDaemon(this.scheduler.daemon);
 //		launcher.start();
         this.scheduler.threadExecutor.execute(launcher);
@@ -64,7 +64,7 @@ public class TaskLauncherManager {
     }
 
     /**
-     * 启动器启动完毕，启动完毕后从执行器列表中移除
+     * 启动器启动完毕,启动完毕后从执行器列表中移除
      *
      * @param launcher 启动器 {@link TaskLauncher}
      */

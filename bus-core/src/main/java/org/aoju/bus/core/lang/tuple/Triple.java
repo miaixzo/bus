@@ -30,17 +30,17 @@ import java.util.Objects;
 
 /**
  * 由三个元素组成的三元组
- * 这个类是一个定义基本API的抽象实现。
+ * 这个类是一个定义基本API的抽象实现
  * 表示元素为'left'、'middle'和'right'.
- * 子类实现可以是可变的，也可以是不可变的。
- * 但是，对可能存储的存储对象的类型没有限制。
- * 如果可变对象存储在三元组中，那么三元组本身就会变成可变的。
+ * 子类实现可以是可变的,也可以是不可变的
+ * 但是,对可能存储的存储对象的类型没有限制
+ * 如果可变对象存储在三元组中,那么三元组本身就会变成可变的
  *
  * @param <L> the left element type
  * @param <M> the middle element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Serializable {

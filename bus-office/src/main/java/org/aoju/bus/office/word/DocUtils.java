@@ -36,13 +36,13 @@ import java.io.IOException;
  * Word Document工具
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class DocUtils {
 
     /**
-     * 创建{@link XWPFDocument}，如果文件已存在则读取之，否则创建新的
+     * 创建{@link XWPFDocument},如果文件已存在则读取之,否则创建新的
      *
      * @param file docx文件
      * @return {@link XWPFDocument}

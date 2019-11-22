@@ -35,7 +35,7 @@ import java.awt.image.BufferedImage;
  * 此类同样在zxing-j2se包中也有提供
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public final class BufferedImageLuminanceSource extends LuminanceSource {

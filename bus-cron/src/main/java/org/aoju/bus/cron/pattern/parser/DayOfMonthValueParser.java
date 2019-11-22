@@ -27,10 +27,10 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * 每月的几号值处理
- * 每月最多31天，32和“L”都表示最后一天
+ * 每月最多31天,32和“L”都表示最后一天
  *
  * @author Kimi Liu
- * @version 5.2.2
+ * @version 5.2.3
  * @since JDK 1.8+
  */
 public class DayOfMonthValueParser extends SimpleValueParser {
