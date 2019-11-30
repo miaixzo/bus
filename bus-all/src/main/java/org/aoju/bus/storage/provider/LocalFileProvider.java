@@ -28,7 +28,7 @@ public class LocalFileProvider extends AbstractProvider {
 
     @Override
     public Readers download(String fileName) {
-        return new Readers(new File(fileName));
+        return new Readers(new File(context.getRegion() + File.separator + fileName));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class LocalFileProvider extends AbstractProvider {
     @Override
     public Readers upload(String bucket, String fileName, InputStream content) {
         try {
-            File dest = new File(bucket, fileName);
+            File dest = new File(context.getRegion() + bucket + File.separator, fileName);
             if (!new File(dest.getParent()).exists()) {
                 boolean result = new File(dest.getParent()).mkdirs();
                 if (!result) {
