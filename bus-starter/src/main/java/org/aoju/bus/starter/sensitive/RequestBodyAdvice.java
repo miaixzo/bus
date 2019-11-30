@@ -47,7 +47,7 @@ import java.lang.reflect.Type;
  * 对加了@P的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class RequestBodyAdvice extends BaseAdvice
@@ -165,7 +165,7 @@ public class RequestBodyAdvice extends BaseAdvice
                             String type,
                             String charset) throws Exception {
             if (StringUtils.isEmpty(key)) {
-                throw new NullPointerException("please check the request.crypto.decrypt");
+                throw new NullPointerException("Please check the request.crypto.decrypt");
             }
 
             this.headers = inputMessage.getHeaders();
@@ -179,6 +179,7 @@ public class RequestBodyAdvice extends BaseAdvice
                 content = content.replaceAll(" ", "+");
 
                 if (!StringUtils.isEmpty(content)) {
+                    Logger.debug("Request data decryption enabled ...");
                     String[] contents = content.split("\\|");
                     for (int k = 0; k < contents.length; k++) {
                         json.append(org.aoju.bus.crypto.Builder.decrypt(type, key, contents[k], Charset.UTF_8));

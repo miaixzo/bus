@@ -27,21 +27,21 @@ import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.In;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * IN 校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class InStrategy implements Complex<String, In> {
+public class InStrategy implements Matcher<String, In> {
 
     @Override
     public boolean on(String object, In annotation, Context context) {
         if (StringUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
         return ArrayUtils.contains(annotation.value(), object);
     }

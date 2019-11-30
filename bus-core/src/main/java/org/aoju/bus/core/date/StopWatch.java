@@ -33,7 +33,7 @@ import java.util.List;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class StopWatch {

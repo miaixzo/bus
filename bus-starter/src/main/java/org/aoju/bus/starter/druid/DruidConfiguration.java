@@ -27,6 +27,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.Maps;
 import org.aoju.bus.core.consts.Algorithm;
 import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
@@ -36,10 +37,15 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyNameAliases;
-import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
+import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
@@ -52,12 +58,13 @@ import java.util.Map;
  * 数据源配置
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @ConditionalOnClass(DruidDataSource.class)
 @EnableConfigurationProperties(DruidProperties.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
+@Import(AspectjDruidProxy.class)
 public class DruidConfiguration {
 
     private static final ConfigurationPropertyNameAliases aliases;
@@ -79,7 +86,7 @@ public class DruidConfiguration {
      */
     @Bean
     @Primary
-    public MultiDataSource dataSource() {
+    public DynamicDataSource dataSource() {
         Map defaultConfig = beanToMap(this.druidProperties);
         DataSource defaultDatasource = bind(defaultConfig);
         sourceMap.put("dataSource", defaultDatasource);
@@ -95,7 +102,7 @@ public class DruidConfiguration {
                 sourceMap.put(config.get("key").toString(), bind(config));
             }
         }
-        MultiDataSource dataSource = new MultiDataSource();
+        DynamicDataSource dataSource = new DynamicDataSource();
         dataSource.setDefaultTargetDataSource(defaultDatasource);
         dataSource.setTargetDataSources(sourceMap);
         return dataSource;
@@ -120,21 +127,14 @@ public class DruidConfiguration {
      */
     private DataSource bind(Map<String, Object> map) {
         String type = StringUtils.toString(map.get("type"));
-        try {
-            if (!StringUtils.isEmpty(type)) {
-                Class<? extends DataSource> dataSourceType = (Class<? extends DataSource>) Class.forName(type);
-                DataSourceBuilder factory = DataSourceBuilder.create()
-                        .driverClassName((String) map.get("driverClassName"))
-                        .url((String) map.get("url"))
-                        .username(StringUtils.toString(map.get("username")))
-                        .password(StringUtils.toString(map.get("password")))
-                        .type(dataSourceType);
-                return factory.build();
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("can not resolve class with type: " + type);
+        if (StringUtils.isEmpty(type)) {
+            throw new InstrumentException("The database type is empty");
         }
-        return null;
+        try {
+            return bind((Class<? extends DataSource>) Class.forName(type), map);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot resolve class with type: " + type);
+        }
     }
 
     /**
@@ -148,9 +148,6 @@ public class DruidConfiguration {
         if (bean != null) {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {
-                if ("driverClassName".equals(key)) {
-                    key = "driver-class-name";
-                }
                 Object value = beanMap.get(key);
                 if (StringUtils.isNotEmpty(this.druidProperties.getPrivateKey())) {
                     if ("url".equals(key)) {
@@ -164,10 +161,29 @@ public class DruidConfiguration {
                         beanMap.put("password", value);
                     }
                 }
-                map.put(key + "", value);
+                map.put(StringUtils.toString(key), value);
             }
         }
         return map;
+    }
+
+    /**
+     * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的，
+     * 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
+     *
+     * @param result
+     * @param properties
+     */
+    private void bind(DataSource result, Map properties) {
+        ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
+        Binder binder = new Binder(new ConfigurationPropertySource[]{source.withAliases(aliases)});
+        binder.bind(ConfigurationPropertyName.EMPTY, Bindable.ofInstance(result));
+    }
+
+    private <T extends DataSource> T bind(Class<T> clazz, Map properties) {
+        ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
+        Binder binder = new Binder(new ConfigurationPropertySource[]{source.withAliases(aliases)});
+        return binder.bind(ConfigurationPropertyName.EMPTY, Bindable.of(clazz)).get();
     }
 
 }

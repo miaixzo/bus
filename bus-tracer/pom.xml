@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-tracer</artifactId>
-    <version>5.2.3</version>
+    <version>5.2.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -16,14 +16,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.9.RELEASE</version>
+        <version>2.2.1.RELEASE</version>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <dubbo.version>2.6.6</dubbo.version>
+        <dubbo.version>2.7.3</dubbo.version>
         <servlet.version>4.0.1</servlet.version>
         <cxf.version>2.7.18</cxf.version>
         <httpclient.version>4.5.2</httpclient.version>
@@ -92,7 +92,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
+            <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
             <version>${dubbo.version}</version>
             <optional>true</optional>

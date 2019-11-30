@@ -26,16 +26,16 @@ package org.aoju.bus.validate.strategy;
 import org.aoju.bus.core.utils.BooleanUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.False;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * FALSE 校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class FalseStrategy implements Complex<Boolean, False> {
+public class FalseStrategy implements Matcher<Boolean, False> {
 
     @Override
     public boolean on(Boolean object, False annotation, Context context) {

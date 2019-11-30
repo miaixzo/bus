@@ -25,7 +25,7 @@ package org.aoju.bus.validate.annotation;
 
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.strategy.EachStrategy;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 import java.lang.annotation.*;
 
@@ -40,13 +40,13 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@org.aoju.bus.validate.annotation.Complex(value = Builder._EACH, clazz = EachStrategy.class)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+@Complex(value = Builder._EACH, clazz = EachStrategy.class)
 public @interface Each {
 
     /**
@@ -61,7 +61,7 @@ public @interface Each {
      *
      * @return the object
      */
-    Class<? extends Complex>[] classes() default {};
+    Class<? extends Matcher>[] classes() default {};
 
     /**
      * 默认使用的异常码

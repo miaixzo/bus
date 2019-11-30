@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 * @since JDK 1.8+
 */
 @Service
-@com.alibaba.dubbo.config.annotation.Service
+@org.apache.dubbo.config.annotation.Service
 public class ${entityName}ServiceImpl  extends BaseServiceImpl
 <${entityName}Mapper, ${entityName}>
 implements ${entityName}Service  {

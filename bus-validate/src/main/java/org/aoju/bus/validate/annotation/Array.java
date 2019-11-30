@@ -34,12 +34,12 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE})
 public @interface Array {
 
 }

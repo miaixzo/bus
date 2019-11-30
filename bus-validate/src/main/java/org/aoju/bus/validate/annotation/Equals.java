@@ -35,12 +35,12 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Complex(value = Builder._EQUALS, clazz = EqualsStrategy.class)
 public @interface Equals {
 
@@ -59,7 +59,7 @@ public @interface Equals {
      *
      * @return the string
      */
-    String errmsg() default "${field}字符串必须等于指定字符串:${value}";
+    String errmsg() default "${field}必须等于指定字符:${value}";
 
     /**
      * 校验器组

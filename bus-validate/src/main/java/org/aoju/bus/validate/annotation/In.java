@@ -37,12 +37,12 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Complex(value = Builder._IN, clazz = InStrategy.class)
 public @interface In {
 
@@ -61,7 +61,7 @@ public @interface In {
      *
      * @return the string
      */
-    String errmsg() default "${field}必须在指定字符串数组中: ${value}";
+    String errmsg() default "${field}必须在指定字符串中: ${value}";
 
     /**
      * 校验器组

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
-    <version>5.2.3</version>
+    <version>5.2.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -18,8 +18,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <freemarker.version>2.3.28</freemarker.version>
-        <druid.version>1.1.16</druid.version>
-        <mysql.version>8.0.15</mysql.version>
+        <druid.version>1.1.20</druid.version>
+        <mysql.version>8.0.18</mysql.version>
     </properties>
 
     <dependencies>

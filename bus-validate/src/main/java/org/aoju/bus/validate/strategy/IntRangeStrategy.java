@@ -27,7 +27,7 @@ import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.IntRange;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -38,10 +38,10 @@ import java.util.Set;
  * INT RANGE 校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class IntRangeStrategy implements Complex<Object, IntRange> {
+public class IntRangeStrategy implements Matcher<Object, IntRange> {
 
     private static Set<Class<?>> NumberTypes = new HashSet<>();
 

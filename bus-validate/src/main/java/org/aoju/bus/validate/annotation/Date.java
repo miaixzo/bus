@@ -25,6 +25,7 @@ package org.aoju.bus.validate.annotation;
 
 import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.validate.Builder;
+import org.aoju.bus.validate.strategy.DateStrategy;
 
 import java.lang.annotation.*;
 
@@ -32,12 +33,13 @@ import java.lang.annotation.*;
  * 判断是否为日期
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+@Complex(value = Builder._DATE, clazz = DateStrategy.class)
 public @interface Date {
 
     /**
@@ -59,7 +61,7 @@ public @interface Date {
      *
      * @return the string
      */
-    String errmsg() default "${field}必须指定日期格式";
+    String errmsg() default "${field}格式不正确";
 
     /**
      * 校验器组

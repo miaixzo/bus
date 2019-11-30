@@ -32,7 +32,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class Normal {
@@ -236,12 +236,12 @@ public class Normal {
             if (code == null) {
                 return UNKNOWN;
             }
-            String[] males = {"M", "男", "1", "Male"};
-            if (Arrays.asList(males).contains(code.toLowerCase())) {
+            String[] males = {"M", "男", "1", "MALE"};
+            if (Arrays.asList(males).contains(code.toUpperCase())) {
                 return MALE;
             }
-            String[] females = {"F", "女", "0", "Female"};
-            if (Arrays.asList(females).contains(code.toLowerCase())) {
+            String[] females = {"F", "女", "0", "FEMALE"};
+            if (Arrays.asList(females).contains(code.toUpperCase())) {
                 return FEMALE;
             }
             return UNKNOWN;

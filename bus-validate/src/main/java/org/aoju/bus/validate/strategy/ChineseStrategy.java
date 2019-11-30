@@ -27,23 +27,23 @@ import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.PinyinUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Chinese;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * 中文校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class ChineseStrategy implements Complex<Object, Chinese> {
+public class ChineseStrategy implements Matcher<String, Chinese> {
 
     @Override
-    public boolean on(Object object, Chinese annotation, Context context) {
+    public boolean on(String object, Chinese annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
-        return PinyinUtils.isChinese(object.toString());
+        return !PinyinUtils.isChinese(object);
     }
 
 }

@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.validate.annotation;
 
+import org.aoju.bus.validate.validators.Matcher;
+
 import java.lang.annotation.*;
 
 /**
@@ -33,12 +35,12 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE})
 public @interface Complex {
 
     /**
@@ -53,6 +55,6 @@ public @interface Complex {
      *
      * @return the object
      */
-    Class<? extends org.aoju.bus.validate.validators.Complex> clazz() default org.aoju.bus.validate.validators.Complex.class;
+    Class<? extends Matcher> clazz() default Matcher.class;
 
 }

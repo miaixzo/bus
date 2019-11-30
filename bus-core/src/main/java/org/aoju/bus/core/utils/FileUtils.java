@@ -55,7 +55,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class FileUtils {
@@ -192,7 +192,7 @@ public class FileUtils {
      * @param path       当前遍历文件或目录的路径
      * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
-     * @since 5.2.3
+     * @since 5.2.8
      */
     public static List<File> loopFiles(String path, FileFilter fileFilter) {
         return loopFiles(file(path), fileFilter);
@@ -235,7 +235,7 @@ public class FileUtils {
      *
      * @param path 当前遍历文件或目录的路径
      * @return 文件列表
-     * @since 5.2.3
+     * @since 5.2.8
      */
     public static List<File> loopFiles(String path) {
         return loopFiles(file(path));
@@ -505,6 +505,68 @@ public class FileUtils {
 
         }
         return false;
+    }
+
+    /**
+     * 获取文件名的扩展名.
+     * <p>
+     * 此方法返回文件名最后一个点之后的文本部分,点后面必须没有目录分隔符.
+     * <pre>
+     * foo.txt      -- "txt"
+     * a/b/c.jpg    -- "jpg"
+     * a/b.txt/c    -- ""
+     * a/b/c        -- ""
+     * </pre>
+     * <p>
+     * 不管运行代码的操作系统是什么，输出结果都是一样的.
+     *
+     * @param filename 检索的扩展名的文件名.
+     * @return 返回文件的扩展名或空字符串.
+     */
+    public static String getExtension(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        int index = indexOfExtension(filename);
+        if (index == -1) {
+            return "";
+        } else {
+            return filename.substring(index + 1);
+        }
+    }
+
+    /**
+     * 返回最后一个扩展分隔符的索引点.
+     *
+     * @param filename 查找最后一个路径分隔符的文件名
+     * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
+     */
+    public static int indexOfExtension(String filename) {
+        if (filename == null) {
+            return -1;
+        }
+        int extensionPos = filename.lastIndexOf(Symbol.DOT);
+        int lastSeparator = indexOfLastSeparator(filename);
+        return lastSeparator > extensionPos ? -1 : extensionPos;
+    }
+
+    /**
+     * 返回最后一个目录分隔符的索引
+     * <p>
+     * 此方法将处理Unix或Windows格式的文件。
+     * 返回最后一个正斜杠或反斜杠的位置.
+     * </p>
+     *
+     * @param filename 查找最后一个路径分隔符的文件名
+     * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
+     */
+    public static int indexOfLastSeparator(String filename) {
+        if (filename == null) {
+            return -1;
+        }
+        int lastUnixPos = filename.lastIndexOf(Symbol.SLASH);
+        int lastWindowsPos = filename.lastIndexOf(Symbol.BACKSLASH);
+        return Math.max(lastUnixPos, lastWindowsPos);
     }
 
     /**
@@ -1950,7 +2012,7 @@ public class FileUtils {
      * @param filePath 文件路径
      * @return 字节码
      * @throws InstrumentException 异常
-     * @since 5.2.3
+     * @since 5.2.8
      */
     public static byte[] readBytes(String filePath) throws InstrumentException {
         return readBytes(file(filePath));
@@ -2736,7 +2798,7 @@ public class FileUtils {
      * @param path 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.2.3
+     * @since 5.2.8
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
         return writeLines(list, path, org.aoju.bus.core.consts.Charset.UTF_8);
@@ -2750,7 +2812,7 @@ public class FileUtils {
      * @param file 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.2.3
+     * @since 5.2.8
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
         return writeLines(list, file, org.aoju.bus.core.consts.Charset.UTF_8);

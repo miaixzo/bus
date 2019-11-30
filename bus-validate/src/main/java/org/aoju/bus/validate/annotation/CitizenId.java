@@ -24,6 +24,7 @@
 package org.aoju.bus.validate.annotation;
 
 import org.aoju.bus.validate.Builder;
+import org.aoju.bus.validate.strategy.CitizenIdStrategy;
 
 import java.lang.annotation.*;
 
@@ -31,12 +32,13 @@ import java.lang.annotation.*;
  * 判断是否为身份证号码
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+@Complex(value = Builder._CITIZENID, clazz = CitizenIdStrategy.class)
 public @interface CitizenId {
 
     /**
@@ -51,7 +53,7 @@ public @interface CitizenId {
      *
      * @return the string
      */
-    String errmsg() default "${field}必须为英文";
+    String errmsg() default "${field}信息不正确";
 
     /**
      * 校验器组

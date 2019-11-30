@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.starter.dubbo;
 
-import com.alibaba.dubbo.config.*;
 import lombok.Data;
 import org.aoju.bus.starter.core.Extend;
+import org.apache.dubbo.config.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Bean;
  * swagger配置项
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Data

@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.starter.annotation;
 
-import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
-import com.alibaba.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.aoju.bus.starter.dubbo.DubboConfiguration;
+import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 
@@ -35,7 +35,7 @@ import java.lang.annotation.*;
  * Dubbo 支持
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Target({ElementType.TYPE})

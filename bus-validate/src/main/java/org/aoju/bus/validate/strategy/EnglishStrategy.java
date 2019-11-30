@@ -27,21 +27,21 @@ import org.aoju.bus.core.lang.Validator;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.English;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * 英文校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class EnglishStrategy implements Complex<Object, English> {
+public class EnglishStrategy implements Matcher<Object, English> {
 
     @Override
     public boolean on(Object object, English annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
         return Validator.isEnglish(object.toString());
     }

@@ -32,12 +32,12 @@ import java.lang.annotation.*;
  * 字符串不为空,不为null校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Complex(value = Builder._NOT_BLANK, clazz = NotBlankStrategy.class)
 public @interface NotBlank {
 
@@ -53,7 +53,7 @@ public @interface NotBlank {
      *
      * @return the string
      */
-    String errmsg() default "${field}字符串不能为空";
+    String errmsg() default "${field}不能为空";
 
     /**
      * 校验器组

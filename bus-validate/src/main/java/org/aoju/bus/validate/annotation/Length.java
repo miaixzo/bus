@@ -36,12 +36,12 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Complex(value = Builder._LENGTH, clazz = LengthStrategy.class)
 public @interface Length {
 
@@ -82,7 +82,7 @@ public @interface Length {
      *
      * @return the string
      */
-    String errmsg() default "${field}长度必须在指定范围内, 最小: ${min}, 最大: ${max}";
+    String errmsg() default "${field}长度必须在规定范围内, 最小: ${min}, 最大: ${max}";
 
     /**
      * 校验器组

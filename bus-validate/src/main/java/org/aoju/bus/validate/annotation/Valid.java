@@ -29,32 +29,34 @@ import java.lang.annotation.*;
  * 标记注解,标明要被拦截的类或方法或者参数
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 public @interface Valid {
 
     /**
-     * 校验属性 {"id","name"}
+     * 校验属性
+     * 例如: {"id","name"}
      *
      * @return the array
      */
     String[] value() default {};
 
     /**
-     * 忽略属性 {"created","creator"}
+     * 忽略属性
+     * 例如: {"created","creator"}
      *
      * @return the array
      */
     String[] skip() default {};
 
     /**
-     * 内部校验:true/false
+     * 内部校验
      *
-     * @return the boolean
+     * @return the true/false
      */
     boolean inside() default true;
 

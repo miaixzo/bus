@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.exception.NoSuchException;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.Registry;
 import org.aoju.bus.validate.annotation.Multi;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,27 +36,27 @@ import java.util.List;
  * 多规则匹配校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class MultiStrategy implements Complex<Object, Multi> {
+public class MultiStrategy implements Matcher<Object, Multi> {
 
     @Override
     public boolean on(Object object, Multi multi, Context context) {
-        List<Complex> validators = new ArrayList<>();
+        List<Matcher> validators = new ArrayList<>();
         for (String validatorName : multi.value()) {
             if (!Registry.getInstance().contains(validatorName)) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + validatorName);
             }
-            validators.add((Complex) Registry.getInstance().require(validatorName));
+            validators.add((Matcher) Registry.getInstance().require(validatorName));
         }
-        for (Class<? extends Complex> clazz : multi.classes()) {
+        for (Class<? extends Matcher> clazz : multi.classes()) {
             if (!Registry.getInstance().contains(clazz.getSimpleName())) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
             }
-            validators.add((Complex) Registry.getInstance().require(clazz.getSimpleName()));
+            validators.add((Matcher) Registry.getInstance().require(clazz.getSimpleName()));
         }
-        for (Complex validator : validators) {
+        for (Matcher validator : validators) {
             if (!validator.on(object, null, context)) {
                 return false;
             }

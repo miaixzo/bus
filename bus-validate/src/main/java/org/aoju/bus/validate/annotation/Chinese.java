@@ -24,6 +24,7 @@
 package org.aoju.bus.validate.annotation;
 
 import org.aoju.bus.validate.Builder;
+import org.aoju.bus.validate.strategy.ChineseStrategy;
 
 import java.lang.annotation.*;
 
@@ -31,12 +32,13 @@ import java.lang.annotation.*;
  * 判断是否为中文
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+@Complex(value = Builder._CHINESE, clazz = ChineseStrategy.class)
 public @interface Chinese {
 
     /**

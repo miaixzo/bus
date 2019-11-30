@@ -32,12 +32,12 @@ import java.lang.annotation.*;
  * 校验对象只能为null
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Complex(value = Builder._NULL, clazz = NullStrategy.class)
 public @interface Null {
 
@@ -53,7 +53,7 @@ public @interface Null {
      *
      * @return the string
      */
-    String errmsg() default "${field}只能为null";
+    String errmsg() default "${field}只能为空";
 
     /**
      * 校验器组

@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.Registry;
 import org.aoju.bus.validate.annotation.Reflect;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 import java.lang.reflect.Method;
 
@@ -40,15 +40,15 @@ import java.lang.reflect.Method;
  * 反射信息校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class ReflectStrategy implements Complex<Object, Reflect> {
+public class ReflectStrategy implements Matcher<Object, Reflect> {
 
     @Override
     public boolean on(Object object, Reflect annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
         Class<?> clazz = annotation.target();
         String methodName = annotation.method();
@@ -65,8 +65,8 @@ public class ReflectStrategy implements Complex<Object, Reflect> {
             if (!Registry.getInstance().contains(name)) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + name);
             }
-            Complex complex = (Complex) Registry.getInstance().require(name);
-            if (!complex.on(result, null, context)) {
+            Matcher matcher = (Matcher) Registry.getInstance().require(name);
+            if (!matcher.on(result, null, context)) {
                 return false;
             }
         }

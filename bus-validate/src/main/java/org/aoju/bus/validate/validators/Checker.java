@@ -43,7 +43,7 @@ import java.util.List;
  * 校验检查器
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class Checker {
@@ -54,7 +54,7 @@ public class Checker {
      * @param validated 被校验对象
      * @param property  校验器属性
      * @return 校验结果
-     * @throws ValidateException 如果校验环境的fastFailed设置为true, 则校验失败时立刻抛出该异常
+     * @throws ValidateException 如果校验环境的fast设置为true, 则校验失败时立刻抛出该异常
      */
     public Collector object(Validated validated, Property property)
             throws ValidateException {
@@ -133,8 +133,8 @@ public class Checker {
      * @return 校验结果
      */
     private Collector doObject(Validated validated, Property property) {
-        Complex complex = (Complex) Registry.getInstance().require(property.getName(), property.getClazz());
-        if (ObjectUtils.isEmpty(complex)) {
+        Matcher matcher = (Matcher) Registry.getInstance().require(property.getName(), property.getClazz());
+        if (ObjectUtils.isEmpty(matcher)) {
             throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s",
                     property.getName(),
                     property.getClazz() == null ? "null" : property.getClazz().getName()));
@@ -145,7 +145,7 @@ public class Checker {
         } else if (ObjectUtils.isNotEmpty(validatedTarget) && property.isArray() && Provider.isCollection(validatedTarget)) {
             return doCollection(validated, property);
         } else {
-            boolean result = complex.on(validatedTarget, property.getAnnotation(), validated.getContext());
+            boolean result = matcher.on(validatedTarget, property.getAnnotation(), validated.getContext());
             if (!result && validated.getContext().isFast()) {
                 throw Provider.resolve(property, validated.getContext());
             }

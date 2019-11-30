@@ -25,7 +25,7 @@ package org.aoju.bus.starter.core.proxy.mode;
 
 /**
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public enum ScanMode {

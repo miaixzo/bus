@@ -26,7 +26,7 @@ package org.aoju.bus.validate.strategy;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Length;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 import java.util.Collection;
 import java.util.Map;
@@ -35,15 +35,15 @@ import java.util.Map;
  * 数据长度校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class LengthStrategy implements Complex<Object, Length> {
+public class LengthStrategy implements Matcher<Object, Length> {
 
     @Override
     public boolean on(Object object, Length annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
 
         int num;

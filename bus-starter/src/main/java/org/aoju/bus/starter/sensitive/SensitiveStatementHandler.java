@@ -27,6 +27,7 @@ import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.NShield;
@@ -54,7 +55,7 @@ import java.util.Properties;
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -122,6 +123,7 @@ public class SensitiveStatementHandler implements Interceptor {
                     // 数据脱敏
                     if (Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value())
                             && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
+                        Logger.debug("Write data sensitive enabled ...");
                         value = handleSensitive(field, value);
                     }
                 }
@@ -136,8 +138,9 @@ public class SensitiveStatementHandler implements Interceptor {
                         if (Builder.ALL.equals(privacy.value()) || Builder.IN.equals(privacy.value())) {
                             SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
                             if (ObjectUtils.isEmpty(properties)) {
-                                throw new InstrumentException("please check the request.crypto.encrypt");
+                                throw new InstrumentException("Please check the request.crypto.encrypt");
                             }
+                            Logger.debug("Write data encryption enabled ...");
                             value = org.aoju.bus.crypto.Builder.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value.toString(), Charset.UTF_8);
                         }
                     }
