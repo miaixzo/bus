@@ -50,6 +50,8 @@
         <!--bus-forest-->
         <compress.version>1.19</compress.version>
         <loader.version>2.0.1.RELEASE</loader.version>
+        <!--bus-health-->
+        <jna.version>5.5.0</jna.version>
         <!--bus-limiter-->
         <redisson.version>3.11.2</redisson.version>
         <!--bus-logger-->
@@ -324,6 +326,17 @@
             <artifactId>spring-boot-loader</artifactId>
             <version>${loader.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <!--bus-health-->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>${jna.version}</version>
         </dependency>
         <!--bus-limiter-->
         <dependency>

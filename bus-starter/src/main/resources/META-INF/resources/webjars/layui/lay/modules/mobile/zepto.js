@@ -239,7 +239,7 @@ layui.define(function (exports) {
                     // is thrown if the fragment doesn't begin with <
                     if (selector[0] == '<' && fragmentRE.test(selector))
                         dom = zepto.fragment(selector, RegExp.$1, context), selector = null
-                    // If there's a context, create a collection on that context first, and select
+                        // If there's a context, create a collection on that context first, and select
                     // nodes from there
                     else if (context !== undefined) return $(context).find(selector)
                     // If it's a CSS selector, use it to select nodes.
@@ -258,7 +258,7 @@ layui.define(function (exports) {
                     // If it's a html fragment, create nodes from it
                     else if (fragmentRE.test(selector))
                         dom = zepto.fragment(selector.trim(), RegExp.$1, context), selector = null
-                    // If there's a context, create a collection on that context first, and select
+                        // If there's a context, create a collection on that context first, and select
                     // nodes from there
                     else if (context !== undefined) return $(context).find(selector)
                     // And last but no least, if it's a CSS selector, use it to select nodes.

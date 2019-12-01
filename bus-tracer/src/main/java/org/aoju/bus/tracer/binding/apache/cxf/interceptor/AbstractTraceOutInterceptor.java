@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.tracer.binding.apache.cxf.interceptor;
 
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.aoju.bus.tracer.consts.TraceConsts;
@@ -34,8 +35,6 @@ import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
 import java.util.Collections;
@@ -49,8 +48,6 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Message> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTraceOutInterceptor.class);
 
     protected final Backend backend;
 
@@ -74,7 +71,7 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
             if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(channel)) {
                 final Map<String, String> filteredParams = filterConfiguration.filterDeniedParams(backend.copyToMap(), channel);
 
-                LOGGER.debug("Interceptor handles message!");
+                Logger.debug("Interceptor handles message!");
                 if (Boolean.TRUE.equals(message.getExchange().get(Message.REST_MESSAGE))) {
                     Map<String, List<String>> responseHeaders = CastUtils.cast((Map<?, ?>) message.get(Message.PROTOCOL_HEADERS));
                     if (responseHeaders == null) {
@@ -89,7 +86,7 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
                         final SoapMessage soapMessage = (SoapMessage) message;
                         addSoapHeader(filteredParams, soapMessage);
                     } catch (NoClassDefFoundError e) {
-                        LOGGER.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to add Builder-Headers: {}", e.getMessage(), e);
+                        Logger.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to add Builder-Headers: {}", e.getMessage(), e);
                     }
                 }
             }
@@ -102,8 +99,8 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
                     new JAXBDataBinding(TpicMap.class));
             soapMessage.getHeaders().add(tpicHeader);
         } catch (JAXBException e) {
-            LOGGER.warn("Error occured during Builder soap header creation: {}", e.getMessage());
-            LOGGER.debug("Detailed exception", e);
+            Logger.warn("Error occured during Builder soap header creation: {}", e.getMessage());
+            Logger.debug("Detailed exception", e);
         }
     }
 

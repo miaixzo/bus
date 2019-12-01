@@ -19,13 +19,29 @@
         <project.compiler.version>1.8</project.compiler.version>
         <poi.version>4.1.1</poi.version>
         <xerces.version>2.12.0</xerces.version>
+        <office.version>4.1.2</office.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>bus-core</artifactId>
+            <artifactId>bus-health</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>juh</artifactId>
+            <version>${office.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>ridl</artifactId>
+            <version>${office.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>unoil</artifactId>
+            <version>${office.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>

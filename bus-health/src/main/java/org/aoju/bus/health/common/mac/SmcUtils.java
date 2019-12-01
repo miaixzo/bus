@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.health.common.mac;
 
 import com.sun.jna.NativeLong;
@@ -67,6 +67,7 @@ public class SmcUtils {
      * Map for caching info retrieved by a key necessary for subsequent calls.
      */
     private static Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
+
     private SmcUtils() {
     }
 

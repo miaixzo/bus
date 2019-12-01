@@ -63,21 +63,21 @@ import java.util.function.Supplier;
  */
 public class Systemd {
 
-    private static final Platform CURRENT_PLATFORM;
+    private static final Platform.OS _PLATFORM;
 
     static {
         if (com.sun.jna.Platform.isWindows()) {
-            CURRENT_PLATFORM = Platform.WINDOWS;
-        } else if (com.sun.jna.Platform.isLinux()) {
-            CURRENT_PLATFORM = Platform.LINUX;
-        } else if (com.sun.jna.Platform.isMac()) {
-            CURRENT_PLATFORM = Platform.MACOSX;
-        } else if (com.sun.jna.Platform.isSolaris()) {
-            CURRENT_PLATFORM = Platform.SOLARIS;
-        } else if (com.sun.jna.Platform.isFreeBSD()) {
-            CURRENT_PLATFORM = Platform.FREEBSD;
+            _PLATFORM = Platform.OS.WINDOWS;
+        } else if (Platform.isLinux()) {
+            _PLATFORM = Platform.OS.LINUX;
+        } else if (Platform.isMac()) {
+            _PLATFORM = Platform.OS.MACOSX;
+        } else if (Platform.isSolaris()) {
+            _PLATFORM = Platform.OS.SOLARIS;
+        } else if (Platform.isFreeBSD()) {
+            _PLATFORM = Platform.OS.FREEBSD;
         } else {
-            CURRENT_PLATFORM = Platform.UNKNOWN;
+            _PLATFORM = Platform.OS.UNKNOWN;
         }
     }
 
@@ -92,8 +92,8 @@ public class Systemd {
      *
      * @return Returns the currentPlatformEnum.
      */
-    public static Platform getCurrentPlatform() {
-        return CURRENT_PLATFORM;
+    public static Platform.OS getCurrentPlatform() {
+        return _PLATFORM;
     }
 
     /**
@@ -448,7 +448,7 @@ public class Systemd {
     }
 
     private OperatingSystem createOperatingSystem() {
-        switch (CURRENT_PLATFORM) {
+        switch (_PLATFORM) {
 
             case WINDOWS:
                 return new WindowsOS();
@@ -476,7 +476,7 @@ public class Systemd {
     }
 
     private HardwareLayer createHardware() {
-        switch (CURRENT_PLATFORM) {
+        switch (_PLATFORM) {
 
             case WINDOWS:
                 return new WindowsHardwareLayer();
