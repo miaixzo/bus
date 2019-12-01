@@ -1,6 +1,0 @@
-<select lay-filter="api-quick" lay-search>
-    <option value="">Search</option>
-    {{# layui.each(d.tags, function(i, tag){ layui.each(tag.paths, function(j, path){}}
-    <option value="{{ path.httpmethod }}::{{ path.path }}">{{ tag.name }} - {{ path.name }}({{ path.path }})</option>
-    {{# }); }); }}
-</select>

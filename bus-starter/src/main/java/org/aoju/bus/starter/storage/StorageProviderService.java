@@ -46,7 +46,7 @@ public class StorageProviderService {
     public final StorageCache storageCache;
 
     public Provider get(Registry type) {
-        Context context = properties.getType().get(1);
+        Context context = properties.getType().get(type);
         if (Registry.ALIYUN.equals(type)) {
             return new AliYunOssProvider(context);
         } else if (Registry.BAIDU.equals(type)) {
