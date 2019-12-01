@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  * returned by <tt>ps</tt> there is limited to 80 characters and this affects
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class LinuxProcessManager implements ProcessManager {

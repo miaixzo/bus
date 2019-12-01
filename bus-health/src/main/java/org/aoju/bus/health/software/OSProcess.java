@@ -32,7 +32,7 @@ import org.aoju.bus.logger.Logger;
  * execution that execute instructions concurrently.
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class OSProcess {

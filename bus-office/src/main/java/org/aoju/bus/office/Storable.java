@@ -40,7 +40,7 @@ import static org.aoju.bus.office.Builder.*;
 
 /**
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public abstract class Storable implements Office {

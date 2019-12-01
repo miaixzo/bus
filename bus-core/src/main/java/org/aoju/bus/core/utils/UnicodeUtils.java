@@ -28,7 +28,7 @@ package org.aoju.bus.core.utils;
  * 提供Unicode字符串和普通字符串之间的转换
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class UnicodeUtils {

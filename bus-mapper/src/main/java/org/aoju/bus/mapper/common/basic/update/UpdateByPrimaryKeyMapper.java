@@ -31,7 +31,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
  * 通用Mapper接口,更新
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public interface UpdateByPrimaryKeyMapper<T> {

@@ -32,7 +32,7 @@ import java.util.Collection;
 
 /**
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class LockResource extends AbstractLimitedResource {
