@@ -42,7 +42,7 @@ import java.net.Proxy;
  * <p>Each route is a specific selection of these options.
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public final class Route {

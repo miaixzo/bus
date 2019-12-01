@@ -24,16 +24,16 @@
 package org.aoju.bus.validate.strategy;
 
 import org.aoju.bus.validate.Context;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * 这个校验器的结果永远为true
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public final class AlwaysStrategy implements Complex {
+public final class AlwaysStrategy implements Matcher {
 
     @Override
     public boolean on(Object object, Object annotation, Context context) {

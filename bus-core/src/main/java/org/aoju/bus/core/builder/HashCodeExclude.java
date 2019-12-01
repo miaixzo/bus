@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * {@link HashCodeBuilder}.
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

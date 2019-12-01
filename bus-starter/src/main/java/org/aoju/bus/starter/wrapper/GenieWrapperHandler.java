@@ -25,7 +25,7 @@ package org.aoju.bus.starter.wrapper;
 
 import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.lang.Ansi;
-import org.aoju.bus.health.HealthUtils;
+import org.aoju.bus.health.Systemd;
 import org.aoju.bus.logger.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Component
@@ -81,7 +81,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
                 method = Ansi.BgWhite.and(Ansi.Black).format(" %s ", method);
                 break;
         }
-        Logger.info("{} {} {} {}", Ansi.isWindows ? "" : "==>", HealthUtils.getHostInfo().getAddress(), method, url);
+        Logger.info("{} {} {} {}", Ansi.isWindows ? "" : "==>", Systemd.getLocalAddress(), method, url);
     }
 
     /**

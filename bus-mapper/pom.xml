@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-mapper</artifactId>
-    <version>5.2.3</version>
+    <version>5.2.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -17,8 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <mybatis.version>3.5.2</mybatis.version>
-        <mybatis-spring.version>2.0.1</mybatis-spring.version>
+        <mybatis.version>3.5.3</mybatis.version>
+        <mybatis-spring.version>2.0.3</mybatis-spring.version>
         <persistence.version>2.2</persistence.version>
     </properties>
 

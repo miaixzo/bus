@@ -26,16 +26,16 @@ package org.aoju.bus.validate.strategy;
 import org.aoju.bus.core.utils.BooleanUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.True;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * Boolean true 校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class TrueStrategy implements Complex<Boolean, True> {
+public class TrueStrategy implements Matcher<Boolean, True> {
 
     @Override
     public boolean on(Boolean object, True annotation, Context context) {

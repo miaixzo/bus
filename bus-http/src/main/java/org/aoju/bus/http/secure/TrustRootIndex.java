@@ -27,7 +27,7 @@ import java.security.cert.X509Certificate;
 
 /**
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public interface TrustRootIndex {

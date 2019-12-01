@@ -56,7 +56,7 @@ import java.util.Map;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class ResponseBodyAdvice extends BaseAdvice
@@ -166,6 +166,7 @@ public class ResponseBodyAdvice extends BaseAdvice
         // 数据脱敏
         if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                 && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+            Logger.debug("Response data sensitive enabled ...");
             Builder.on(object, sensitive);
         }
         // 数据解密
@@ -180,8 +181,9 @@ public class ResponseBodyAdvice extends BaseAdvice
                         String value = (String) getValue(object, property);
                         if (StringUtils.isNotEmpty(value)) {
                             if (ObjectUtils.isEmpty(properties)) {
-                                throw new InstrumentException("please check the request.crypto.encrypt");
+                                throw new InstrumentException("Please check the request.crypto.encrypt");
                             }
+                            Logger.debug("Response data encryption enabled ...");
                             value = org.aoju.bus.crypto.Builder.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value, Charset.UTF_8);
                             setValue(object, new String[]{property}, new String[]{value});
                         }

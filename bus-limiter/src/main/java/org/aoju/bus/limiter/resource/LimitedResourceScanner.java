@@ -33,16 +33,18 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.MethodMetadata;
-import org.springframework.core.type.classreading.*;
+import org.springframework.core.type.classreading.AnnotationMetadataReadingVisitor;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class LimitedResourceScanner implements LimitedResourceSource {
@@ -82,19 +84,17 @@ public class LimitedResourceScanner implements LimitedResourceSource {
                             continue;
                         }
                         for (MethodMetadata metadata : methodMetadata) {
-                            MethodMetadataReadingVisitor methodVisitor = (MethodMetadataReadingVisitor) metadata;
-                            AnnotationAttributes attributes = methodVisitor.getAnnotationAttributes(parser.getSupportAnnotation().getName());
+                            AnnotationAttributes attributes = (AnnotationAttributes) metadata.getAnnotationAttributes(parser.getSupportAnnotation().getName());
                             if (attributes != null) {
-                                Annotation annotation;
                                 LimitedResource limitedResource = parser.parseLimiterAnnotation(attributes);
                                 if (limitedResource != null) {
-                                    String key = methodVisitor.getDeclaringClassName() + "#" +
-                                            methodVisitor.getMethodName() + "@"
+                                    String key = metadata.getDeclaringClassName() + "#" +
+                                            metadata.getMethodName() + "@"
                                             + parser.getSupportAnnotation().getSimpleName();
                                     limitedResourceMap.put(key, limitedResource);
                                     // add to registry
-                                    String classMethod = methodVisitor.getDeclaringClassName()
-                                            + "#" + methodVisitor.getMethodName();
+                                    String classMethod = metadata.getDeclaringClassName()
+                                            + "#" + metadata.getMethodName();
                                     if (!limitedResourceRegistry.containsKey(classMethod)) {
                                         List<LimitedResource> tempList = new ArrayList<>();
                                         tempList.add(limitedResource);

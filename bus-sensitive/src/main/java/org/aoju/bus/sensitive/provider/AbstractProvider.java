@@ -30,7 +30,7 @@ import org.aoju.bus.sensitive.Builder;
  * 脱敏策略
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements StrategyProvider {

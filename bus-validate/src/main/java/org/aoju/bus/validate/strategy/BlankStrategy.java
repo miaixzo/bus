@@ -26,17 +26,17 @@ package org.aoju.bus.validate.strategy;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Blank;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 import org.aoju.bus.validate.validators.Validator;
 
 /**
  * BLANK 校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class BlankStrategy implements Validator<String>, Complex<String, Blank> {
+public class BlankStrategy implements Validator<String>, Matcher<String, Blank> {
 
     @Override
     public boolean on(String object, Context context) {

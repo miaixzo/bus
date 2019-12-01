@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
  * 上下文配置类
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Data

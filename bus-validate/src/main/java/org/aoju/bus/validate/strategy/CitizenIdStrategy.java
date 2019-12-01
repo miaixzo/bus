@@ -27,23 +27,23 @@ import org.aoju.bus.core.utils.CitizenIdUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.CitizenId;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * 身份证号码校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class CitizenIdStrategy implements Complex<Object, CitizenId> {
+public class CitizenIdStrategy implements Matcher<String, CitizenId> {
 
     @Override
-    public boolean on(Object object, CitizenId annotation, Context context) {
+    public boolean on(String object, CitizenId annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
-        return CitizenIdUtils.isValidCard(object.toString());
+        return CitizenIdUtils.isValidCard(object);
     }
 
 }

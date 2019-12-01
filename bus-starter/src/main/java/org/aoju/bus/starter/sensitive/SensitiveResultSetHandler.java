@@ -27,6 +27,7 @@ import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
@@ -50,7 +51,7 @@ import java.util.Properties;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
@@ -107,8 +108,9 @@ public class SensitiveResultSetHandler implements Interceptor {
                                 String value = (String) objMetaObject.getValue(property);
                                 if (StringUtils.isNotEmpty(value)) {
                                     if (ObjectUtils.isEmpty(properties)) {
-                                        throw new InstrumentException("please check the request.crypto.decrypt");
+                                        throw new InstrumentException("Please check the request.crypto.decrypt");
                                     }
+                                    Logger.debug("Query data decryption enabled ...");
                                     String decryptValue = org.aoju.bus.crypto.Builder.decrypt(properties.getDecrypt().getType(), properties.getDecrypt().getKey(), value, Charset.UTF_8);
                                     objMetaObject.setValue(property, decryptValue);
                                 }
@@ -119,6 +121,7 @@ public class SensitiveResultSetHandler implements Interceptor {
                 // 数据脱敏
                 if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+                    Logger.debug("Query data sensitive enabled ...");
                     Builder.on(obj);
                 }
             }

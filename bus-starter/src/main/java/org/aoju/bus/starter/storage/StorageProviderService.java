@@ -36,7 +36,7 @@ import org.aoju.bus.storage.provider.*;
  * 存储服务提供
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
@@ -46,7 +46,7 @@ public class StorageProviderService {
     public final StorageCache storageCache;
 
     public Provider get(Registry type) {
-        Context context = properties.getType().get(1);
+        Context context = properties.getType().get(type);
         if (Registry.ALIYUN.equals(type)) {
             return new AliYunOssProvider(context);
         } else if (Registry.BAIDU.equals(type)) {

@@ -26,7 +26,7 @@ package org.aoju.bus.validate.strategy;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Regex;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 import java.util.regex.Pattern;
 
@@ -34,10 +34,10 @@ import java.util.regex.Pattern;
  * 正则匹配校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class RegexStrategy implements Complex<String, Regex> {
+public class RegexStrategy implements Matcher<String, Regex> {
 
     @Override
     public boolean on(String object, Regex regexValidate, Context context) {
@@ -45,7 +45,7 @@ public class RegexStrategy implements Complex<String, Regex> {
             return false;
         }
         if (regexValidate.zeroAble() && object.length() == 0) {
-            return true;
+            return false;
         }
         Pattern pattern = Pattern.compile(regexValidate.pattern());
         return pattern.matcher(object).matches();

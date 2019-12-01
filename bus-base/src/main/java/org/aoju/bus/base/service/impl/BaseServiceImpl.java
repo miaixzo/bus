@@ -44,7 +44,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
@@ -202,7 +202,6 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
     @Override
     public Result<T> page(T entity) {
         PageContext.startPage(entity.getPageNo(), entity.getPageSize());
-        entity.getPageNo();
         if (StringUtils.isNotEmpty(entity.getOrderBy())) {
             PageContext.orderBy(entity.getOrderBy());
         }

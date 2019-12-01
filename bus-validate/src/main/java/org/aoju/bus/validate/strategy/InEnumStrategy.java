@@ -28,7 +28,7 @@ import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.InEnum;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -38,15 +38,15 @@ import java.util.Objects;
  * int enum 校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class InEnumStrategy implements Complex<Object, InEnum> {
+public class InEnumStrategy implements Matcher<Object, InEnum> {
 
     @Override
     public boolean on(Object object, InEnum annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
         Class<? extends Enum> enumClass = annotation.enumClass();
         try {

@@ -40,7 +40,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public class ObjectUtils {
@@ -345,8 +345,7 @@ public class ObjectUtils {
      * @return boolean 返回的布尔值
      */
     public static final boolean isEmpty(Object... object) {
-        for (Object pObj :
-                object) {
+        for (Object pObj : object) {
             if (pObj == null || "".equals(pObj)) {
                 return true;
             }

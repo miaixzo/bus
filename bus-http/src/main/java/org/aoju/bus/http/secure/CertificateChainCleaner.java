@@ -42,7 +42,7 @@ import java.util.List;
  * pinning.
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 public abstract class CertificateChainCleaner {

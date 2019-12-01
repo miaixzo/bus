@@ -27,21 +27,21 @@ import org.aoju.bus.core.lang.Validator;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.IPAddress;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * IP地址校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class IPAddressStrategy implements Complex<Object, IPAddress> {
+public class IPAddressStrategy implements Matcher<Object, IPAddress> {
 
     @Override
     public boolean on(Object object, IPAddress annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
         return Validator.isIpv4(object.toString());
     }

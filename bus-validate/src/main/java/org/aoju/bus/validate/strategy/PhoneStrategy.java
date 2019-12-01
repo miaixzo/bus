@@ -27,21 +27,21 @@ import org.aoju.bus.core.lang.Validator;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Phone;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * 移动电话校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class PhoneStrategy implements Complex<Object, Phone> {
+public class PhoneStrategy implements Matcher<Object, Phone> {
 
     @Override
     public boolean on(Object object, Phone annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
         return Validator.isPhone(object.toString());
     }

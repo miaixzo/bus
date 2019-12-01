@@ -29,7 +29,7 @@ import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.Provider;
 import org.aoju.bus.validate.Registry;
 import org.aoju.bus.validate.annotation.Each;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,28 +40,28 @@ import java.util.Map;
  * 容器元素内部校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class EachStrategy implements Complex<Object, Each> {
+public class EachStrategy implements Matcher<Object, Each> {
 
     @Override
     public boolean on(Object object, Each annotation, Context context) {
         if (ObjectUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
-        List<Complex> list = new ArrayList<>();
+        List<Matcher> list = new ArrayList<>();
         for (String name : annotation.value()) {
             if (!Registry.getInstance().contains(name)) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + name);
             }
-            list.add((Complex) Registry.getInstance().require(name));
+            list.add((Matcher) Registry.getInstance().require(name));
         }
-        for (Class<? extends Complex> clazz : annotation.classes()) {
+        for (Class<? extends Matcher> clazz : annotation.classes()) {
             if (!Registry.getInstance().contains(clazz.getSimpleName())) {
                 throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
             }
-            list.add((Complex) Registry.getInstance().require(clazz.getSimpleName()));
+            list.add((Matcher) Registry.getInstance().require(clazz.getSimpleName()));
         }
 
         if (Provider.isArray(object)) {
@@ -95,8 +95,8 @@ public class EachStrategy implements Complex<Object, Each> {
      * @param context    校验上下文
      * @return 校验结果
      */
-    private boolean fastValidate(List<Complex> validators, Object object, Context context) {
-        for (Complex validator : validators) {
+    private boolean fastValidate(List<Matcher> validators, Object object, Context context) {
+        for (Matcher validator : validators) {
             if (!validator.on(object, null, context)) {
                 return false;
             }

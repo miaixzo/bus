@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.validate.annotation;
 
-
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.strategy.InEnumStrategy;
 
@@ -37,12 +36,12 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Complex(value = Builder._IN_ENUM, clazz = InEnumStrategy.class)
 public @interface InEnum {
 

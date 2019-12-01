@@ -27,21 +27,21 @@ import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.NotIn;
-import org.aoju.bus.validate.validators.Complex;
+import org.aoju.bus.validate.validators.Matcher;
 
 /**
  * NOT IN 校验
  *
  * @author Kimi Liu
- * @version 5.2.3
+ * @version 5.2.8
  * @since JDK 1.8+
  */
-public class NotInStrategy implements Complex<String, NotIn> {
+public class NotInStrategy implements Matcher<String, NotIn> {
 
     @Override
     public boolean on(String object, NotIn annotation, Context context) {
         if (StringUtils.isEmpty(object)) {
-            return true;
+            return false;
         }
         return !ArrayUtils.contains(annotation.value(), object);
     }
