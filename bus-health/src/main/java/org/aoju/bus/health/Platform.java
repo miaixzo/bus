@@ -23,9 +23,6 @@
  */
 package org.aoju.bus.health;
 
-import com.sun.jna.Native;
-
-
 /**
  * Enum of supported operating systems.
  *

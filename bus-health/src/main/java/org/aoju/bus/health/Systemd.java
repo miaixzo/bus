@@ -44,7 +44,6 @@ import java.io.PrintWriter;
 import java.lang.management.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
