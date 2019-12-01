@@ -24,19 +24,16 @@
 package org.aoju.bus.limiter.support.rate.redis;
 
 import org.aoju.bus.limiter.support.rate.RateLimiter;
+import org.aoju.bus.logger.Logger;
 import org.redisson.Redisson;
 import org.redisson.config.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class RedisRatelimiter extends RateLimiter {
-
-    private static final Logger logger = LoggerFactory.getLogger(RedisRatelimiter.class);
 
     private String limiterName;
 
@@ -49,7 +46,7 @@ public class RedisRatelimiter extends RateLimiter {
     public RedisRatelimiter(String limiterName, Config config) {
         this.limiterName = limiterName;
         this.ratelimiterRedission = new RateLimiterRedission(config);
-        logger.info("RedisRateLimiter named {} start success!", limiterName);
+        Logger.info("RedisRateLimiter named {} start success!", limiterName);
 
     }
 
@@ -69,7 +66,6 @@ public class RedisRatelimiter extends RateLimiter {
      * 继承自Redisson 实现自定义api
      */
     public static class RateLimiterRedission extends Redisson {
-
 
         public RateLimiterRedission(Config config) {
             super(config);

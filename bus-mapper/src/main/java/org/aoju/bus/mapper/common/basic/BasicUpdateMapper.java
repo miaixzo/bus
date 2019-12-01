@@ -30,7 +30,7 @@ import org.aoju.bus.mapper.common.basic.update.UpdateByPrimaryKeySelectiveMapper
  * 通用Mapper接口,基础查询
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public interface BasicUpdateMapper<T> extends

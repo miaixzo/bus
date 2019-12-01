@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.tracer.binding.apache.cxf.interceptor;
 
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.aoju.bus.tracer.consts.TraceConsts;
@@ -33,8 +34,6 @@ import org.apache.cxf.headers.Header;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -42,12 +41,11 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Message> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTraceInInterceptor.class);
     protected final Backend backend;
     private final HttpHeaderTransport httpJsonSerializer;
     private final SoapHeaderTransport httpSoapSerializer;
@@ -71,7 +69,7 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
         if (shouldHandleMessage(message)) {
             final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
 
-            LOGGER.debug("Interceptor handles message!");
+            Logger.debug("Interceptor handles message!");
             if (filterConfiguration.shouldProcessContext(channel)) {
                 if (Boolean.TRUE.equals(message.getExchange().get(Message.REST_MESSAGE))) {
                     handleHttpMessage(message, filterConfiguration);
@@ -79,7 +77,7 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
                     try {
                         handleSoapMessage((SoapMessage) message, filterConfiguration);
                     } catch (NoClassDefFoundError e) {
-                        LOGGER.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to parse Builder-Headers: {}", e.getMessage(), e);
+                        Logger.error("Should handle SOAP-message but it seems that cxf soap dependency is not on the classpath. Unable to parse Builder-Headers: {}", e.getMessage(), e);
                     }
                 }
             }

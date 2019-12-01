@@ -24,9 +24,8 @@
 package org.aoju.bus.tracer.config;
 
 import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.tracer.consts.TraceConsts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -39,7 +38,7 @@ import java.util.regex.PatternSyntaxException;
  * The default property chain may be obtained by the {@link #loadPropertyChain()} method.
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public final class PropertiesBasedTraceFilterConfiguration implements TraceFilterConfiguration {
@@ -50,7 +49,6 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
     static final String GENERATE_INVOCATION_ID = "invocationIdLength";
     static final String GENERATE_SESSION_ID = "sessionIdLength";
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertiesBasedTraceFilterConfiguration.class);
     private final PropertyChain propertyChain;
     private final String profileName;
     private final Map<String, List<Pattern>> patternCache = new ConcurrentHashMap<>();
@@ -184,8 +182,8 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
                 try {
                     trimmedPatterns.add(Pattern.compile(trimmedString));
                 } catch (PatternSyntaxException e) {
-                    logger.error("Can not compile pattern '" + trimmedString + "'. Message: " + e.getMessage() + " -- Ignore pattern");
-                    logger.debug("Detailed Exception cause: " + e.getMessage(), e);
+                    Logger.error("Can not compile pattern '" + trimmedString + "'. Message: " + e.getMessage() + " -- Ignore pattern");
+                    Logger.debug("Detailed Exception cause: " + e.getMessage(), e);
                 }
             }
         }

@@ -44,7 +44,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class DateTime extends Date {
@@ -498,7 +498,7 @@ public class DateTime extends Date {
      * 考虑到很多框架（例如Hibernate）的兼容性,提供此方法返回JDK原生的Date对象
      *
      * @return {@link Date}
-     * @since 5.2.8
+     * @since 5.2.9
      */
     public Date toJdkDate() {
         return new Date(this.getTime());

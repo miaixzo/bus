@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.health.hardware.windows;
 
 import com.sun.jna.Memory;
@@ -44,7 +44,7 @@ import java.time.LocalDate;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class WindowsPowerSource extends AbstractPowerSource {

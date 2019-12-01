@@ -36,7 +36,7 @@ import java.io.*;
  * JDK内置解密算法的解密器
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class JdkDecryptorProvider implements DecryptorProvider {

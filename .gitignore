@@ -6,6 +6,7 @@
 *.ear
 
 # intellij files
+/.idea/
 .idea/
 *.iml
 *.ipr
@@ -83,6 +84,8 @@ eclipse-build
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+.idea/*
+.idea/
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,

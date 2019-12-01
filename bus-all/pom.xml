@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.2.8</version>
+    <version>5.2.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -50,6 +50,8 @@
         <!--bus-forest-->
         <compress.version>1.19</compress.version>
         <loader.version>2.0.1.RELEASE</loader.version>
+        <!--bus-health-->
+        <jna.version>5.5.0</jna.version>
         <!--bus-limiter-->
         <redisson.version>3.11.2</redisson.version>
         <!--bus-logger-->
@@ -71,6 +73,7 @@
         <!--bus-office-->
         <poi.version>4.1.1</poi.version>
         <xerces.version>2.12.0</xerces.version>
+        <office.version>4.1.2</office.version>
         <!--bus-proxy-->
         <javassist.version>3.21.0-GA</javassist.version>
         <cglib.version>3.3.0</cglib.version>
@@ -325,6 +328,17 @@
             <version>${loader.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!--bus-health-->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
         <!--bus-limiter-->
         <dependency>
             <groupId>org.redisson</groupId>
@@ -461,6 +475,21 @@
             <artifactId>xercesImpl</artifactId>
             <version>${xerces.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>juh</artifactId>
+            <version>${office.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>ridl</artifactId>
+            <version>${office.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>unoil</artifactId>
+            <version>${office.version}</version>
         </dependency>
         <!--bus-proxy-->
         <dependency>

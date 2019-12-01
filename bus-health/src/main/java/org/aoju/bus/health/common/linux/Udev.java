@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.health.common.linux;
 
 import com.sun.jna.Library;
@@ -32,7 +32,7 @@ import com.sun.jna.PointerType;
  * Interface for talking with Udev.
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public interface Udev extends Library {

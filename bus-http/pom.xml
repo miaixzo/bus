@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-http</artifactId>
-    <version>5.2.8</version>
+    <version>5.2.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

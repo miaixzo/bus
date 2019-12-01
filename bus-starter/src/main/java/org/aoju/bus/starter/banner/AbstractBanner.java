@@ -33,7 +33,7 @@ import java.io.InputStream;
  * 旗标生成器
  *
  * @author Kimi Liu
- * @version 5.2.8
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public abstract class AbstractBanner {
