@@ -73,6 +73,7 @@
         <!--bus-office-->
         <poi.version>4.1.1</poi.version>
         <xerces.version>2.12.0</xerces.version>
+        <office.version>4.1.2</office.version>
         <!--bus-proxy-->
         <javassist.version>3.21.0-GA</javassist.version>
         <cglib.version>3.3.0</cglib.version>
@@ -474,6 +475,21 @@
             <artifactId>xercesImpl</artifactId>
             <version>${xerces.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>juh</artifactId>
+            <version>${office.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>ridl</artifactId>
+            <version>${office.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openoffice</groupId>
+            <artifactId>unoil</artifactId>
+            <version>${office.version}</version>
         </dependency>
         <!--bus-proxy-->
         <dependency>

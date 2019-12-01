@@ -56,9 +56,6 @@ public class Platform {
         return com.sun.jna.Platform.isWindowsCE();
     }
 
-    /**
-     * Returns true for any windows variant.
-     */
     public static final boolean isWindows() {
         return com.sun.jna.Platform.isWindows();
     }
