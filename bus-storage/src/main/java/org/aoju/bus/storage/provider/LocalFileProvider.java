@@ -72,7 +72,7 @@ public class LocalFileProvider extends AbstractProvider {
     @Override
     public Readers upload(String bucket, String fileName, InputStream content) {
         try {
-            File dest = new File(context.getRegion() + bucket + Symbol.SLASH, fileName);
+            File dest = new File(context.getRegion() + Symbol.SLASH + bucket + Symbol.SLASH, fileName);
             if (!new File(dest.getParent()).exists()) {
                 boolean result = new File(dest.getParent()).mkdirs();
                 if (!result) {
