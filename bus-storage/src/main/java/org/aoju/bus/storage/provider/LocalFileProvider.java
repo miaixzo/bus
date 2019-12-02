@@ -1,7 +1,5 @@
 package org.aoju.bus.storage.provider;
 
-import org.aoju.bus.core.consts.Symbol;
-import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
@@ -19,24 +17,23 @@ import java.nio.file.Path;
  * 本地文件上传
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class LocalFileProvider extends AbstractProvider {
 
     public LocalFileProvider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getRegion(), "[region] not defined");
     }
 
     @Override
     public Readers download(String fileName) {
-        return new Readers(new File(context.getRegion() + Symbol.SLASH + fileName));
+        return new Readers(new File(context.getRegion() + File.separator + fileName));
     }
 
     @Override
     public Readers download(String bucket, String fileName) {
-        return download(context.getRegion() + Symbol.SLASH + bucket + Symbol.SLASH + fileName);
+        return null;
     }
 
     @Override
@@ -72,7 +69,7 @@ public class LocalFileProvider extends AbstractProvider {
     @Override
     public Readers upload(String bucket, String fileName, InputStream content) {
         try {
-            File dest = new File(context.getRegion() + bucket + Symbol.SLASH, fileName);
+            File dest = new File(context.getRegion() + bucket + File.separator, fileName);
             if (!new File(dest.getParent()).exists()) {
                 boolean result = new File(dest.getParent()).mkdirs();
                 if (!result) {

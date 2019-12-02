@@ -37,7 +37,7 @@ import static org.aoju.bus.health.Memoizer.memoize;
  * A CPU.
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public abstract class AbstractCentralProcessor implements CentralProcessor {

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron;
 
-import org.aoju.bus.cron.factory.Task;
+import org.aoju.bus.cron.task.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +33,10 @@ import java.util.List;
  * 负责管理作业的启动、停止等
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.2.9
  * @since JDK 1.8+
  */
-public class ExecutorManager {
+public class TaskExecutorManager {
 
     protected Scheduler scheduler;
     /**
@@ -44,7 +44,7 @@ public class ExecutorManager {
      */
     private List<TaskExecutor> executors = new ArrayList<>();
 
-    public ExecutorManager(Scheduler scheduler) {
+    public TaskExecutorManager(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -72,7 +72,7 @@ public class ExecutorManager {
      * @param executor 执行器 {@link TaskExecutor}
      * @return this
      */
-    public ExecutorManager notifyExecutorCompleted(TaskExecutor executor) {
+    public TaskExecutorManager notifyExecutorCompleted(TaskExecutor executor) {
         synchronized (executors) {
             executors.remove(executor);
         }

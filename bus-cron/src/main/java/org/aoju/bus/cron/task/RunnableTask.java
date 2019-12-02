@@ -21,22 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.cron.annotation;
-
-import java.lang.annotation.*;
+package org.aoju.bus.cron.task;
 
 /**
- * annotation for cron handler
+ * {@link Runnable} 的 {@link Task}包装
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.2.9
  * @since JDK 1.8+
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface Crontab {
+public class RunnableTask implements Task {
 
-    String value() default "";
+    private Runnable runnable;
 
+    public RunnableTask(Runnable runnable) {
+        this.runnable = runnable;
+    }
+
+    @Override
+    public void execute() {
+        runnable.run();
+    }
 }

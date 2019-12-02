@@ -32,9 +32,9 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.cron.listener.TaskListener;
 import org.aoju.bus.cron.listener.TaskListenerManager;
 import org.aoju.bus.cron.pattern.CronPattern;
-import org.aoju.bus.cron.factory.InvokeTask;
-import org.aoju.bus.cron.factory.RunnableTask;
-import org.aoju.bus.cron.factory.Task;
+import org.aoju.bus.cron.task.InvokeTask;
+import org.aoju.bus.cron.task.RunnableTask;
+import org.aoju.bus.cron.task.Task;
 import org.aoju.bus.setting.Setting;
 
 import java.util.LinkedHashMap;
@@ -70,7 +70,7 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.2.9
  * @since JDK 1.8+
  */
 public class Scheduler {
@@ -89,11 +89,11 @@ public class Scheduler {
     /**
      * 启动器管理器
      */
-    protected LauncherManager launcherManager;
+    protected TaskLauncherManager taskLauncherManager;
     /**
      * 执行器管理器
      */
-    protected ExecutorManager executorManager;
+    protected TaskExecutorManager taskExecutorManager;
     /**
      * 监听管理器列表
      */
@@ -400,8 +400,8 @@ public class Scheduler {
             this.threadExecutor = ExecutorBuilder.create().useSynchronousQueue().setThreadFactory(//
                     ThreadBuilder.create().setNamePrefix("exec-cron-").setDaemon(this.daemon).build()//
             ).build();
-            this.launcherManager = new LauncherManager(this);
-            this.executorManager = new ExecutorManager(this);
+            this.taskLauncherManager = new TaskLauncherManager(this);
+            this.taskExecutorManager = new TaskExecutorManager(this);
 
             // Start CronTimer
             timer = new CronTimer(this);
