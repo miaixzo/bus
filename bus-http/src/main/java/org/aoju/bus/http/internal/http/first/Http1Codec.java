@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
  * newFixedLengthSource(0)} and may skip reading and closing that source.
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 public final class Http1Codec implements HttpCodec {

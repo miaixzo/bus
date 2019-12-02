@@ -35,7 +35,7 @@ import static java.util.Locale.US;
  * An RFC 7235 challenge.
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 public final class Challenge {

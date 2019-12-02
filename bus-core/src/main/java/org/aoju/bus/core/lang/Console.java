@@ -32,7 +32,7 @@ import java.util.Scanner;
  * 此类主要针对{@link System#out} 和 {@link System#err} 做封装
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 public class Console {

@@ -43,7 +43,7 @@ import static org.aoju.bus.tracer.config.TraceFilterConfiguration.Channel.Incomi
 
 /**
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 @WebListener("TraceServletRequestListener to read incoming TPICs into Builder backend")
