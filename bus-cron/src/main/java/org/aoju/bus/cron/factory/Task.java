@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.cron.task;
+package org.aoju.bus.cron.factory;
 
 /**
  * 定时作业接口,通过实现execute方法执行具体的任务

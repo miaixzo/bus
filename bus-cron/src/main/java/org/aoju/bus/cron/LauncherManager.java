@@ -33,7 +33,7 @@ import java.util.List;
  * @version 5.2.9
  * @since JDK 1.8+
  */
-public class TaskLauncherManager {
+public class LauncherManager {
 
     protected Scheduler scheduler;
     /**
@@ -41,7 +41,7 @@ public class TaskLauncherManager {
      */
     protected List<TaskLauncher> launchers = new ArrayList<>();
 
-    public TaskLauncherManager(Scheduler scheduler) {
+    public LauncherManager(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 

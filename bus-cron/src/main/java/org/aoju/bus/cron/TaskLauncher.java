@@ -48,6 +48,6 @@ public class TaskLauncher implements Runnable {
         scheduler.taskTable.executeTaskIfMatchInternal(millis);
 
         //结束通知
-        scheduler.taskLauncherManager.notifyLauncherCompleted(this);
+        scheduler.launcherManager.notifyLauncherCompleted(this);
     }
 }

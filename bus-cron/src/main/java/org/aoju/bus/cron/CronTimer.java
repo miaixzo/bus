@@ -96,6 +96,6 @@ public class CronTimer extends Thread {
      * @param millis 当前时间
      */
     private void spawnLauncher(final long millis) {
-        this.scheduler.taskLauncherManager.spawnLauncher(millis);
+        this.scheduler.launcherManager.spawnLauncher(millis);
     }
 }

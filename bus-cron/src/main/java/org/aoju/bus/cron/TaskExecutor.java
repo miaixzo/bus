@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron;
 
-import org.aoju.bus.cron.task.Task;
+import org.aoju.bus.cron.factory.Task;
 
 /**
  * 作业执行器
@@ -61,7 +61,7 @@ public class TaskExecutor implements Runnable {
         } catch (Exception e) {
             scheduler.listenerManager.notifyTaskFailed(this, e);
         } finally {
-            scheduler.taskExecutorManager.notifyExecutorCompleted(this);
+            scheduler.executorManager.notifyExecutorCompleted(this);
         }
     }
 }
