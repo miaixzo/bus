@@ -6,7 +6,7 @@ package org.aoju.bus.core.codec;
  * 使二进制和十进制之间的转换得以快捷的进行
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 public class BCD {

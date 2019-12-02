@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>int</code> 类型
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @see Integer
  * @since JDK 1.8+
  */

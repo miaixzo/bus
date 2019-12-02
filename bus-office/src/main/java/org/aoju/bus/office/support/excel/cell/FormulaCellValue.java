@@ -27,7 +27,7 @@ package org.aoju.bus.office.support.excel.cell;
  * 公式类型的值
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 public class FormulaCellValue implements CellValue<String> {

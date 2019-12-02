@@ -21,19 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.cron.task;
+package org.aoju.bus.cron.consts;
 
 /**
- * 定时作业接口,通过实现execute方法执行具体的任务
+ * 任务执行规则
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
-public interface Task {
+public enum ExecutorBlockStrategy {
 
     /**
-     * 执行作业
+     * 串行
      */
-    void execute();
+    SERIAL_EXECUTION("Serial execution"),
+    /**
+     * 并行
+     */
+    CONCURRENT_EXECUTION("Parallel flow"),
+    /**
+     * 丢弃
+     */
+    DISCARD_LATER("Discard Later"),
+    /**
+     * 覆盖
+     */
+    COVER_EARLY("Cover Early");
+
+    private String title;
+
+    ExecutorBlockStrategy(String title) {
+        this.title = title;
+    }
+
+    public static ExecutorBlockStrategy match(String name, ExecutorBlockStrategy defaultItem) {
+        if (name != null) {
+            for (ExecutorBlockStrategy item : ExecutorBlockStrategy.values()) {
+                if (item.name().equals(name)) {
+                    return item;
+                }
+            }
+        }
+        return defaultItem;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
 }

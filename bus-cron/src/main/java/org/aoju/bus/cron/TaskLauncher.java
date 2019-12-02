@@ -29,7 +29,7 @@ package org.aoju.bus.cron;
  * 检查完毕后启动器结束
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 public class TaskLauncher implements Runnable {
@@ -48,6 +48,6 @@ public class TaskLauncher implements Runnable {
         scheduler.taskTable.executeTaskIfMatchInternal(millis);
 
         //结束通知
-        scheduler.taskLauncherManager.notifyLauncherCompleted(this);
+        scheduler.launcherManager.notifyLauncherCompleted(this);
     }
 }

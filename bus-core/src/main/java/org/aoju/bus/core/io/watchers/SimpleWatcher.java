@@ -28,7 +28,7 @@ package org.aoju.bus.core.io.watchers;
  * 用户继承此类后实现需要监听的方法
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 public class SimpleWatcher extends IgnoreWatcher {

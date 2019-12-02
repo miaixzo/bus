@@ -27,7 +27,7 @@ package org.aoju.bus.shade.convert;
  * 获取实体类字段属性类信息接口
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
 public interface ColumnType {
