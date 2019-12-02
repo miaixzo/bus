@@ -30,10 +30,10 @@ import java.util.List;
  * 作业启动管理器
  *
  * @author Kimi Liu
- * @version 5.2.9
+ * @version 5.3.0
  * @since JDK 1.8+
  */
-public class TaskLauncherManager {
+public class LauncherManager {
 
     protected Scheduler scheduler;
     /**
@@ -41,7 +41,7 @@ public class TaskLauncherManager {
      */
     protected List<TaskLauncher> launchers = new ArrayList<>();
 
-    public TaskLauncherManager(Scheduler scheduler) {
+    public LauncherManager(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
