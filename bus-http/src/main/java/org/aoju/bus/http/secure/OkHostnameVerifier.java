@@ -37,7 +37,7 @@ import java.util.*;
  * A HostnameVerifier consistent with <a href="http://www.ietf.org/rfc/rfc2818.txt">RFC 2818</a>.
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public final class OkHostnameVerifier implements HostnameVerifier {

@@ -32,7 +32,7 @@ import java.util.Enumeration;
  * 模式匹配资源加载器
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public abstract class PatternLoader extends DelegateLoader implements Loader {

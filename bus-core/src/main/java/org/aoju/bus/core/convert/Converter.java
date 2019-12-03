@@ -27,7 +27,7 @@ package org.aoju.bus.core.convert;
  * 转换器接口,实现类型转换
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public interface Converter<T> {

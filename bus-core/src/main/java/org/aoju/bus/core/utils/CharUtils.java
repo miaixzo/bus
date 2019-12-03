@@ -30,7 +30,7 @@ import org.aoju.bus.core.consts.Symbol;
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public class CharUtils {
