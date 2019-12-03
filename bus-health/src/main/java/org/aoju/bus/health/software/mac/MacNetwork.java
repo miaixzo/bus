@@ -44,7 +44,7 @@ import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public class MacNetwork extends AbstractNetwork {

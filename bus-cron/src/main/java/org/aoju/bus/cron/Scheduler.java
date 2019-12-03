@@ -29,12 +29,12 @@ import org.aoju.bus.core.thread.ExecutorBuilder;
 import org.aoju.bus.core.thread.ThreadBuilder;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.cron.listener.TaskListener;
-import org.aoju.bus.cron.listener.TaskListenerManager;
-import org.aoju.bus.cron.pattern.CronPattern;
 import org.aoju.bus.cron.factory.InvokeTask;
 import org.aoju.bus.cron.factory.RunnableTask;
 import org.aoju.bus.cron.factory.Task;
+import org.aoju.bus.cron.listener.TaskListener;
+import org.aoju.bus.cron.listener.TaskListenerManager;
+import org.aoju.bus.cron.pattern.CronPattern;
 import org.aoju.bus.setting.Setting;
 
 import java.util.LinkedHashMap;
@@ -70,7 +70,7 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public class Scheduler {

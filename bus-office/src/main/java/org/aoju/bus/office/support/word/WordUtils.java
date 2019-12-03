@@ -29,7 +29,7 @@ import java.io.File;
  * Word工具类
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public class WordUtils {

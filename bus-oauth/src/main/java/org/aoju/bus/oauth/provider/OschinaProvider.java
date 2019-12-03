@@ -38,7 +38,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * oschina登录
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public class OschinaProvider extends DefaultProvider {

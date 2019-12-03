@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * JDK实现的动态代理切面
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public class JavassistInterceptor implements InvocationHandler, Serializable {

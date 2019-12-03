@@ -40,7 +40,7 @@ import java.util.Map;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public class LinuxDisks implements Disks {

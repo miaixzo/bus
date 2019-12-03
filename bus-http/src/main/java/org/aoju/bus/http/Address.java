@@ -42,7 +42,7 @@ import java.util.List;
  * 对于安全连接,该地址还包括SSL套接字工厂、主机名验证器和证书
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public final class Address {

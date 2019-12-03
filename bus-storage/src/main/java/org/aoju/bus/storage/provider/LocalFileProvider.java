@@ -19,7 +19,7 @@ import java.nio.file.Path;
  * 本地文件上传
  *
  * @author Kimi Liu
- * @version 5.3.0
+ * @version 5.3.1
  * @since JDK 1.8+
  */
 public class LocalFileProvider extends AbstractProvider {
@@ -72,7 +72,7 @@ public class LocalFileProvider extends AbstractProvider {
     @Override
     public Readers upload(String bucket, String fileName, InputStream content) {
         try {
-            File dest = new File(context.getRegion() + bucket + Symbol.SLASH, fileName);
+            File dest = new File(context.getRegion() + Symbol.SLASH + bucket + Symbol.SLASH, fileName);
             if (!new File(dest.getParent()).exists()) {
                 boolean result = new File(dest.getParent()).mkdirs();
                 if (!result) {
