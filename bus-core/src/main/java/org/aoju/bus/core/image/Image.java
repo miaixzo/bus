@@ -49,7 +49,7 @@ import java.nio.file.Path;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class Image implements Serializable {
@@ -61,7 +61,7 @@ public class Image implements Serializable {
     /**
      * 目标图片文件格式,用于写出
      */
-    private String targetImageType = FileType.IMAGE_TYPE_JPG;
+    private String targetImageType = FileType.TYPE_JPG;
     /**
      * 计算x,y坐标的时候是否从中心做为原始坐标开始计算
      */
@@ -201,8 +201,8 @@ public class Image implements Serializable {
      *
      * @param imgType 图片格式
      * @return this
-     * @see FileType#IMAGE_TYPE_JPG
-     * @see FileType#IMAGE_TYPE_PNG
+     * @see FileType#TYPE_JPG
+     * @see FileType#TYPE_PNG
      */
     public Image setTargetImageType(String imgType) {
         this.targetImageType = imgType;
@@ -260,7 +260,7 @@ public class Image implements Serializable {
         final java.awt.Image srcImage = getValidSrcImg();
 
         // PNG图片特殊处理
-        if (FileType.IMAGE_TYPE_PNG.equals(this.targetImageType)) {
+        if (FileType.TYPE_PNG.equals(this.targetImageType)) {
             final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance((double) scale, (double) scale), null);
             this.targetImage = op.filter(ImageUtils.toBufferedImage(srcImage), null);
         } else {
@@ -302,7 +302,7 @@ public class Image implements Serializable {
         double sx = NumberUtils.div(width, srcWidth);
         double sy = NumberUtils.div(height, srcHeight);
 
-        if (FileType.IMAGE_TYPE_PNG.equals(this.targetImageType)) {
+        if (FileType.TYPE_PNG.equals(this.targetImageType)) {
             final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(sx, sy), null);
             this.targetImage = op.filter(ImageUtils.toBufferedImage(srcImage), null);
         } else {
@@ -542,7 +542,7 @@ public class Image implements Serializable {
      *
      * @param degree 旋转角度
      * @return 旋转后的图片
-     * @since 5.3.1
+     * @since 5.3.2
      */
     public Image rotate(int degree) {
         final java.awt.Image image = getValidSrcImg();
@@ -651,7 +651,7 @@ public class Image implements Serializable {
      */
     private int getTypeInt() {
         switch (this.targetImageType) {
-            case FileType.IMAGE_TYPE_PNG:
+            case FileType.TYPE_PNG:
                 return BufferedImage.TYPE_INT_ARGB;
             default:
                 return BufferedImage.TYPE_INT_RGB;

@@ -32,7 +32,7 @@ import static org.aoju.bus.health.Memoizer.memoize;
  * HardwareAbstractionLayer
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public abstract class AbstractHardwareLayer implements HardwareLayer {

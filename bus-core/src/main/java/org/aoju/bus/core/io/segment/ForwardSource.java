@@ -29,7 +29,7 @@ import java.io.IOException;
  * 将调用转发给另一个调用的{@link Source}
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public abstract class ForwardSource implements Source {

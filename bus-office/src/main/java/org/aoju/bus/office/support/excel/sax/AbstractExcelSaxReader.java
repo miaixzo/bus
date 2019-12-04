@@ -34,7 +34,7 @@ import java.io.InputStream;
  *
  * @param <T> 子对象类型,用于标记返回值this
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public abstract class AbstractExcelSaxReader<T> implements ExcelSaxReader<T> {

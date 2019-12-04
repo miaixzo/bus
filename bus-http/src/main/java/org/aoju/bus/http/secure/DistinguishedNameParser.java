@@ -30,7 +30,7 @@ import javax.security.auth.x500.X500Principal;
  * It doesn't support values in the hex-string style.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 final class DistinguishedNameParser {

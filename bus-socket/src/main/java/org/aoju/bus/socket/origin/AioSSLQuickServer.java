@@ -34,7 +34,7 @@ import java.nio.channels.AsynchronousSocketChannel;
  * AIO服务端
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class AioSSLQuickServer<T> extends AioQuickServer<T> {

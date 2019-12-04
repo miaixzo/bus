@@ -30,7 +30,7 @@ import java.util.List;
  * 作业启动管理器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class LauncherManager {

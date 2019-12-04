@@ -23,11 +23,13 @@
  */
 package org.aoju.bus.starter.wrapper;
 
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.logger.Logger;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -37,7 +39,7 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class CacheRequestWrapper extends HttpServletRequestWrapper {
@@ -48,6 +50,20 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
 
     CacheRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
+        // 从ParameterMap获取参数，并保存以便多次获取
+        Logger.info("{}", JSON.toJSON(request.getParameterMap()).toString());
+     /*
+       this.body = request.getParameterMap().entrySet().stream()
+                .map(entry -> {
+                    String[] value = entry.getValue();
+                    if (ArrayUtils.isNotEmpty(value)) {
+                        return Arrays.stream(value).map(s -> entry.getKey() + "=" + s)
+                                .collect(Collectors.joining("&"));
+                    }
+                    return entry.getKey() + "=" + value[0];
+                }).collect(Collectors.joining("&")).getBytes();
+     */
+        // 从InputStream获取参数，并保存以便多次获取
         this.body = IoUtils.readBytes(request.getInputStream());
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.body != null ? this.body : DEFAULT_BYTE);
         // 初始 ServletInputStreamWrapper

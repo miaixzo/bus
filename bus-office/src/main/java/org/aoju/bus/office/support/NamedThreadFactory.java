@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * A {@link ThreadFactory} that allows for custom thread names
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 class NamedThreadFactory implements ThreadFactory {

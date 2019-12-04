@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型（扩展名）
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class FileType {
@@ -57,29 +57,47 @@ public class FileType {
      */
     public static final String JAR_PATH_EXT = ".jar!";
     /**
+     * 微软excel文档
+     */
+    public static final String TYPE_XLS = ".xls";
+    public static final String TYPE_XLSX = ".xlsx";
+    /**
+     * 微软word文档
+     */
+    public static final String TYPE_DOC = ".doc";
+    public static final String TYPE_DOCX = ".docx";
+    /**
+     * 微软ppt文档
+     **/
+    public static final String TYPE_PPT = ".ppt";
+    public static final String TYPE_PPTX = ".pptx";
+    public static final String TYPE_PPS = ".pps";
+    public static final String TYPE_PPSX = ".ppsx";
+    /**
+     * Photoshop的专用格式Photoshop
+     */
+    public static final String TYPE_PSD = "psd";
+    /**
      * 图形交换格式
      */
-    public static final String IMAGE_TYPE_GIF = "gif";
+    public static final String TYPE_GIF = "gif";
     /**
-     * 联合照片专家组
+     * 联合照片
      **/
-    public static final String IMAGE_TYPE_JPG = "jpg";
+    public static final String TYPE_JPG = "jpg";
     /**
-     * 联合照片专家组
+     * 联合照片
      **/
-    public static final String IMAGE_TYPE_JPEG = "jpeg";
+    public static final String TYPE_JPEG = "jpeg";
     /**
      * 英文Bitmap（位图）的简写,它是Windows操作系统中的标准图像文件格式
      **/
-    public static final String IMAGE_TYPE_BMP = "bmp";
+    public static final String TYPE_BMP = "bmp";
     /**
      * 可移植网络图形
      **/
-    public static final String IMAGE_TYPE_PNG = "png";
-    /**
-     * Photoshop的专用格式Photoshop
-     **/
-    public static final String IMAGE_TYPE_PSD = "psd";
+    public static final String TYPE_PNG = "png";
+
     /**
      * 图片
      */
@@ -123,6 +141,7 @@ public class FileType {
             put(".tiff", "image/tiff");
         }
     };
+
     /**
      * 文档
      */
@@ -349,6 +368,7 @@ public class FileType {
             put(".wmz", "application/x-ms-wmz");
         }
     };
+
     /**
      * 压缩文档
      */
@@ -364,6 +384,7 @@ public class FileType {
             put(".tar", "application/x-tar");
         }
     };
+
     /**
      * 视频
      */
@@ -414,6 +435,7 @@ public class FileType {
             put(".tts", "video/vnd.dlna.mpeg-tts");
         }
     };
+
     /**
      * 音频
      */
@@ -457,6 +479,7 @@ public class FileType {
             put(".wax", "audio/x-ms-wax");
         }
     };
+
     /**
      * 其他
      */
@@ -563,7 +586,6 @@ public class FileType {
             put(".sea", "application/octet-stream");
             put(".smi", "application/octet-stream");
             put(".snp", "application/octet-stream");
-
             put(".acx", "application/internet-property-stream");
             put(".ai", "application/postscript");
             put(".atom", "application/atom+xml");
@@ -705,72 +727,116 @@ public class FileType {
             put(".wrz", "x-world/x-vrml");
         }
     };
-    private static final Map<String, String> fileTypeMap;
+
+    /**
+     * 文件信息头
+     */
+    public final static Map<String, String> IHDR = new HashMap<String, String>() {
+        {
+            // JPEG (jpg)
+            put("ffd8ffe", "jpg");
+            // PNG (png)
+            put("89504e470d0a1a0a0000", "png");
+            // GIF (gif)
+            put("47494638396126026f01", "gif");
+            // TIFF (tif)
+            put("49492a00227105008037", "tif");
+            // 16色位图(bmp)
+            put("424d228c010000000000", "bmp");
+            // 24位位图(bmp)
+            put("424d8240090000000000", "bmp");
+            // 256色位图(bmp)
+            put("424d8e1b030000000000", "bmp");
+            // CAD (dwg)
+            put("41433130313500000000", "dwg");
+            put("3c21444f435459504520", "html");
+            put("3c21646f637479706520", "htm");
+            put("48544d4c207b0d0a0942", "css");
+            put("696b2e71623d696b2e71", "js");
+            // Rich Text Format (rtf)
+            put("7b5c727466315c616e73", "rtf");
+            // Photoshop (psd)
+            put("38425053000100000000", "psd");
+            // Email [Outlook Express 6] (eml)
+            put("46726f6d3a203d3f6762", "eml");
+            // MS Excel 注意：word、msi 和 excel的文件头一样
+            put("d0cf11e0a1b11ae10000", "doc");
+            // Visio 绘图
+            put("d0cf11e0a1b11ae10000", "vsd");
+            // MS Access (mdb)
+            put("5374616E64617264204A", "mdb");
+            put("252150532D41646F6265", "ps");
+            // Adobe Acrobat (pdf)
+            put("255044462d312e", "pdf");
+            // rmvb/rm相同
+            put("2e524d46000000120001", "rmvb");
+            // flv与f4v相同
+            put("464c5601050000000900", "flv");
+            put("00000020667479706d70", "mp4");
+            put("49443303000000002176", "mp3");
+            put("000001ba210001000180", "mpg");
+            put("3026b2758e66cf11a6d9", "wmv");
+            put("52494646e27807005741", "wav");
+            put("52494646d07d60074156", "avi");
+            put("4d546864000000060001", "mid");
+            put("526172211a0700cf9073", "rar");
+            put("235468697320636f6e66", "ini");
+            put("504B03040a0000000000", "jar");
+            put("504B0304140008000800", "jar");
+            put("504B0304140006000800", "docx");
+            put("504B0304140006000800", "xlsx");
+            put("D0CF11E0A1B11AE10", "xls");
+            put("504B0304", "zip");
+            put("4d5a9000030000000400", "exe");
+            put("3c25402070616765206c", "jsp");
+            put("4d616e69666573742d56", "mf");
+            put("3c3f786d6c2076657273", "xml");
+            put("494e5345525420494e54", "sql");
+            put("7061636b616765207765", "java");
+            put("406563686f206f66660d", "bat");
+            put("1f8b0800000000000000", "gz");
+            put("6c6f67346a2e726f6f74", "properties");
+            put("cafebabe0000002e0041", "class");
+            put("49545346030000006000", "chm");
+            put("04000000010000001300", "mxp");
+            // WPS文字wps、表格et、演示dps都是一样的
+            put("d0cf11e0a1b11ae10000", "wps");
+            put("6431303a637265617465", "torrent");
+            // Quicktime (mov)
+            put("6D6F6F76", "mov");
+            // WordPerfect (wpd)
+            put("FF575043", "wpd");
+            // Outlook Express (dbx)
+            put("CFAD12FEC5FD746F", "dbx");
+            // Outlook (pst)
+            put("2142444E", "pst");
+            // Quicken (qdf)
+            put("AC9EBD8F", "qdf");
+            // Windows Password (pwl)
+            put("E3828596", "pwl");
+            // Real Audio (ram)
+            put("2E7261FD", "ram");
+        }
+    };
+
+    /**
+     * 文件类型
+     */
+    public static Map<String, String> fileTypeMap;
 
     static {
         fileTypeMap = new ConcurrentHashMap<>();
-
-        fileTypeMap.put("ffd8ffe", "jpg"); // JPEG (jpg)
-        fileTypeMap.put("89504e470d0a1a0a0000", "png"); // PNG (png)
-        fileTypeMap.put("47494638396126026f01", "gif"); // GIF (gif)
-        fileTypeMap.put("49492a00227105008037", "tif"); // TIFF (tif)
-        fileTypeMap.put("424d228c010000000000", "bmp"); // 16色位图(bmp)
-        fileTypeMap.put("424d8240090000000000", "bmp"); // 24位位图(bmp)
-        fileTypeMap.put("424d8e1b030000000000", "bmp"); // 256色位图(bmp)
-        fileTypeMap.put("41433130313500000000", "dwg"); // CAD (dwg)
-        fileTypeMap.put("3c21444f435459504520", "html"); // HTML (html)
-        fileTypeMap.put("3c21646f637479706520", "htm"); // HTM (htm)
-        fileTypeMap.put("48544d4c207b0d0a0942", "css"); // css
-        fileTypeMap.put("696b2e71623d696b2e71", "js"); // js
-        fileTypeMap.put("7b5c727466315c616e73", "rtf"); // Rich Text Format (rtf)
-        fileTypeMap.put("38425053000100000000", "psd"); // Photoshop (psd)
-        fileTypeMap.put("46726f6d3a203d3f6762", "eml"); // Email [Outlook Express 6] (eml)
-        fileTypeMap.put("d0cf11e0a1b11ae10000", "doc"); // MS Excel 注意：word、msi 和 excel的文件头一样
-        fileTypeMap.put("d0cf11e0a1b11ae10000", "vsd"); // Visio 绘图
-        fileTypeMap.put("5374616E64617264204A", "mdb"); // MS Access (mdb)
-        fileTypeMap.put("252150532D41646F6265", "ps");
-        fileTypeMap.put("255044462d312e", "pdf"); // Adobe Acrobat (pdf)
-        fileTypeMap.put("2e524d46000000120001", "rmvb"); // rmvb/rm相同
-        fileTypeMap.put("464c5601050000000900", "flv"); // flv与f4v相同
-        fileTypeMap.put("00000020667479706d70", "mp4");
-        fileTypeMap.put("49443303000000002176", "mp3");
-        fileTypeMap.put("000001ba210001000180", "mpg"); //
-        fileTypeMap.put("3026b2758e66cf11a6d9", "wmv"); // wmv与asf相同
-        fileTypeMap.put("52494646e27807005741", "wav"); // Wave (wav)
-        fileTypeMap.put("52494646d07d60074156", "avi");
-        fileTypeMap.put("4d546864000000060001", "mid"); // MIDI (mid)
-        fileTypeMap.put("526172211a0700cf9073", "rar");// WinRAR
-        fileTypeMap.put("235468697320636f6e66", "ini");
-        fileTypeMap.put("504B03040a0000000000", "jar");
-        fileTypeMap.put("504B0304140008000800", "jar");
-        fileTypeMap.put("504B0304140006000800", "docx");// docx文件
-        fileTypeMap.put("504B0304140006000800", "xlsx");// xlsx文件
-        fileTypeMap.put("D0CF11E0A1B11AE10", "xls");// xls文件
-        fileTypeMap.put("504B0304", "zip");
-        fileTypeMap.put("4d5a9000030000000400", "exe");// 可执行文件
-        fileTypeMap.put("3c25402070616765206c", "jsp");// jsp文件
-        fileTypeMap.put("4d616e69666573742d56", "mf");// MF文件
-        fileTypeMap.put("3c3f786d6c2076657273", "xml");// xml文件
-        fileTypeMap.put("494e5345525420494e54", "sql");// xml文件
-        fileTypeMap.put("7061636b616765207765", "java");// java文件
-        fileTypeMap.put("406563686f206f66660d", "bat");// bat文件
-        fileTypeMap.put("1f8b0800000000000000", "gz");// gz文件
-        fileTypeMap.put("6c6f67346a2e726f6f74", "properties");// bat文件
-        fileTypeMap.put("cafebabe0000002e0041", "class");// bat文件
-        fileTypeMap.put("49545346030000006000", "chm");// bat文件
-        fileTypeMap.put("04000000010000001300", "mxp");// bat文件
-        fileTypeMap.put("d0cf11e0a1b11ae10000", "wps");// WPS文字wps、表格et、演示dps都是一样的
-        fileTypeMap.put("6431303a637265617465", "torrent");
-        fileTypeMap.put("6D6F6F76", "mov"); // Quicktime (mov)
-        fileTypeMap.put("FF575043", "wpd"); // WordPerfect (wpd)
-        fileTypeMap.put("CFAD12FEC5FD746F", "dbx"); // Outlook Express (dbx)
-        fileTypeMap.put("2142444E", "pst"); // Outlook (pst)
-        fileTypeMap.put("AC9EBD8F", "qdf"); // Quicken (qdf)
-        fileTypeMap.put("E3828596", "pwl"); // Windows Password (pwl)
-        fileTypeMap.put("2E7261FD", "ram"); // Real Audio (ram)
+        fileTypeMap.putAll(PICS);
+        fileTypeMap.putAll(DOCS);
+        fileTypeMap.putAll(ZIPDOCS);
+        fileTypeMap.putAll(VIDEOS);
+        fileTypeMap.putAll(AUDIOS);
+        fileTypeMap.putAll(OTHER);
+        fileTypeMap.putAll(IHDR);
     }
 
     private FileType() {
+
     }
 
     /**

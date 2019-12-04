@@ -27,7 +27,7 @@ package org.aoju.bus.office.magic;
  * 接口返回值结构
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class Message<T> {

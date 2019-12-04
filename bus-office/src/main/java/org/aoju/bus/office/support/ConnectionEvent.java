@@ -27,7 +27,7 @@ import java.util.EventObject;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 class ConnectionEvent extends EventObject {

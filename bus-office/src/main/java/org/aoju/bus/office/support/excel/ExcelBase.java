@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {

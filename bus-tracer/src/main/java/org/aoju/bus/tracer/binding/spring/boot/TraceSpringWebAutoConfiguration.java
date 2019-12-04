@@ -33,7 +33,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 @ConditionalOnClass({Builder.class, RestTemplate.class})

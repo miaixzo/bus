@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public abstract class Retryable {

@@ -45,7 +45,7 @@ import java.util.HashMap;
  * 基于Zxing的二维码工具类
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class QrCodeUtils {
@@ -60,7 +60,7 @@ public class QrCodeUtils {
      */
     public static byte[] generatePng(String content, int width, int height) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        generate(content, width, height, FileType.IMAGE_TYPE_PNG, out);
+        generate(content, width, height, FileType.TYPE_PNG, out);
         return out.toByteArray();
     }
 
@@ -73,7 +73,7 @@ public class QrCodeUtils {
      */
     public static byte[] generatePng(String content, QrConfig config) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        generate(content, config, FileType.IMAGE_TYPE_PNG, out);
+        generate(content, config, FileType.TYPE_PNG, out);
         return out.toByteArray();
     }
 

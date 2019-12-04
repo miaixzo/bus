@@ -34,11 +34,11 @@ import org.springframework.core.annotation.Order;
  * AOP切面切点
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
-@Aspect
 @Order(99)
+@Aspect
 public class AspectjValidateProxy {
 
     /**

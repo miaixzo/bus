@@ -37,7 +37,7 @@ import java.util.logging.LogManager;
  * <a href="http://java.sun.com/javase/6/docs/technotes/guides/logging/index.html">java.util.logging</a> log.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public class JdkLogFactory extends LogFactory {

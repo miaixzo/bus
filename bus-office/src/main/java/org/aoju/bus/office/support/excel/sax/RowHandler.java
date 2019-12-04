@@ -29,7 +29,7 @@ import java.util.List;
  * Sax方式读取Excel行处理器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.2
  * @since JDK 1.8+
  */
 public interface RowHandler {
