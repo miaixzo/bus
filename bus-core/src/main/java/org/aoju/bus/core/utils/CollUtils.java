@@ -1962,7 +1962,7 @@ public class CollUtils {
             list.addAll(coll);
         }
         if (null != comparator) {
-            Collections.sort(list, comparator);
+            list.sort(  comparator);
         }
 
         return page(pageNo, pageSize, list);
@@ -2008,8 +2008,8 @@ public class CollUtils {
      * @return treeSet
      */
     public static <T> List<T> sort(Collection<T> collection, Comparator<? super T> comparator) {
-        List<T> list = new ArrayList<T>(collection);
-        Collections.sort(list, comparator);
+        List<T> list = new ArrayList< >(collection);
+        list.sort(  comparator);
         return list;
     }
 
@@ -2023,7 +2023,7 @@ public class CollUtils {
      * @see Collections#sort(List, Comparator)
      */
     public static <T> List<T> sort(List<T> list, Comparator<? super T> c) {
-        Collections.sort(list, c);
+        list.sort(  c);
         return list;
     }
 
@@ -2055,7 +2055,7 @@ public class CollUtils {
      */
     public static <K, V> LinkedHashMap<K, V> sortToMap(Collection<Entry<K, V>> entryCollection, Comparator<Entry<K, V>> comparator) {
         List<Entry<K, V>> list = new LinkedList<>(entryCollection);
-        Collections.sort(list, comparator);
+        list.sort(  comparator);
 
         LinkedHashMap<K, V> result = new LinkedHashMap<>();
         for (Entry<K, V> entry : list) {
@@ -2088,20 +2088,76 @@ public class CollUtils {
      */
     public static <K, V> List<Entry<K, V>> sortEntryToList(Collection<Entry<K, V>> collection) {
         List<Entry<K, V>> list = new LinkedList<>(collection);
-        Collections.sort(list, new Comparator<Entry<K, V>>() {
-            @Override
-            public int compare(Entry<K, V> o1, Entry<K, V> o2) {
-                V v1 = o1.getValue();
-                V v2 = o2.getValue();
+        list.sort((o1, o2) -> {
+            V v1 = o1.getValue();
+            V v2 = o2.getValue();
 
-                if (v1 instanceof Comparable) {
-                    return ((Comparable) v1).compareTo(v2);
-                } else {
-                    return v1.toString().compareTo(v2.toString());
-                }
+            if (v1 instanceof Comparable) {
+                return ((Comparable) v1).compareTo(v2);
+            } else {
+                return v1.toString().compareTo(v2.toString());
             }
         });
         return list;
+    }
+
+    /**
+     * 对list的元素按照多个属性名称排序,
+     * list元素的属性可以是数字（byte、short、int、long、float、double等,支持正数、负数、0）、char、String、java.util.Date
+     *
+     * @param <E>  对象
+     * @param list 集合
+     * @param name list元素的属性名称
+     * @param asc  true升序,false降序
+     */
+    public static <E> void sort(List<E> list, final boolean asc, final String... name) {
+        Collections.sort(list, new Comparator<E>() {
+
+            public int compare(E a, E b) {
+                int ret = 0;
+                try {
+                    for (int i = 0; i < name.length; i++) {
+                        ret = sort(name[i], asc, a, b);
+                        if (0 != ret) {
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new InstrumentException(e);
+                }
+                return ret;
+            }
+        });
+    }
+
+    /**
+     * 给list的每个属性都指定是升序还是降序
+     *
+     * @param <E>  对象
+     * @param list 集合
+     * @param name 参数数组
+     * @param type 每个属性对应的升降序数组, true升序,false降序
+     */
+    public static <E> void sort(List<E> list, final String[] name, final boolean[] type) {
+        if (name.length != type.length) {
+            throw new RuntimeException("属性数组元素个数和升降序数组元素个数不相等");
+        }
+        Collections.sort(list, new Comparator<E>() {
+            public int compare(E a, E b) {
+                int ret = 0;
+                try {
+                    for (int i = 0; i < name.length; i++) {
+                        ret = sort(name[i], type[i], a, b);
+                        if (0 != ret) {
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new InstrumentException(e);
+                }
+                return ret;
+            }
+        });
     }
 
     /**
@@ -2248,66 +2304,6 @@ public class CollUtils {
     public static <T> List<T> reverseNew(List<T> list) {
         final List<T> list2 = ObjectUtils.clone(list);
         return reverse(list2);
-    }
-
-    /**
-     * 对list的元素按照多个属性名称排序,
-     * list元素的属性可以是数字（byte、short、int、long、float、double等,支持正数、负数、0）、char、String、java.util.Date
-     *
-     * @param <E>  对象
-     * @param list 集合
-     * @param name list元素的属性名称
-     * @param asc  true升序,false降序
-     */
-    public static <E> void sort(List<E> list, final boolean asc, final String... name) {
-        Collections.sort(list, new Comparator<E>() {
-
-            public int compare(E a, E b) {
-                int ret = 0;
-                try {
-                    for (int i = 0; i < name.length; i++) {
-                        ret = sort(name[i], asc, a, b);
-                        if (0 != ret) {
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    throw new InstrumentException(e);
-                }
-                return ret;
-            }
-        });
-    }
-
-    /**
-     * 给list的每个属性都指定是升序还是降序
-     *
-     * @param <E>  对象
-     * @param list 集合
-     * @param name 参数数组
-     * @param type 每个属性对应的升降序数组, true升序,false降序
-     */
-
-    public static <E> void sort(List<E> list, final String[] name, final boolean[] type) {
-        if (name.length != type.length) {
-            throw new RuntimeException("属性数组元素个数和升降序数组元素个数不相等");
-        }
-        Collections.sort(list, new Comparator<E>() {
-            public int compare(E a, E b) {
-                int ret = 0;
-                try {
-                    for (int i = 0; i < name.length; i++) {
-                        ret = sort(name[i], type[i], a, b);
-                        if (0 != ret) {
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    throw new InstrumentException(e);
-                }
-                return ret;
-            }
-        });
     }
 
     /**

@@ -65,6 +65,10 @@ public class NamedThreadFactory implements ThreadFactory {
      */
     private final UncaughtExceptionHandler handler;
 
+    public NamedThreadFactory(String prefix) {
+        this(prefix, true);
+    }
+
     /**
      * 构造
      *

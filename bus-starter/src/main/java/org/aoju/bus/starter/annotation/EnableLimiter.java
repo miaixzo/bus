@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.starter.annotation;
 
-import org.aoju.bus.starter.limiter.LimiterConfigurationSelector;
+import org.aoju.bus.starter.limiter.LimiterConfiguration;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
@@ -40,7 +40,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(LimiterConfigurationSelector.class)
+@Import(LimiterConfiguration.class)
 public @interface EnableLimiter {
 
     boolean proxyTargetClass() default false;

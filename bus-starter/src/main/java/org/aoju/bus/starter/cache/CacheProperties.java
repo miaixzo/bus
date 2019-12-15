@@ -26,6 +26,7 @@ package org.aoju.bus.starter.cache;
 import lombok.Data;
 import org.aoju.bus.cache.support.cache.Cache;
 import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.starter.druid.DruidProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -57,5 +58,8 @@ public class CacheProperties {
      * 超时时长,目前只对redis缓存生效,默认3分钟
      */
     private String timeout;
-
+    /**
+     * 存储信息
+     */
+    private DruidProperties provider;
 }

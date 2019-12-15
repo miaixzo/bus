@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.consts.Digital;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.math.BigDecimal;
@@ -1471,6 +1472,17 @@ public class NumberUtils {
     }
 
     /**
+     * 取最小值
+     *
+     * @param numberArray 数字数组
+     * @return 最小值
+     * @since 5.0.8
+     */
+    public static BigDecimal min(BigDecimal... numberArray) {
+        return ArrayUtils.min(numberArray);
+    }
+
+    /**
      * 取最大值
      *
      * @param <T>         元素类型
@@ -1870,6 +1882,420 @@ public class NumberUtils {
         // 设置最小整数位数
         nf.setMinimumIntegerDigits(length);
         return nf.format(numObj);
+    }
+
+    /**
+     * 将字符串转换为int类型
+     *
+     * <pre>
+     *   NumberUtils.toInt(null) = 0
+     *   NumberUtils.toInt("")   = 0
+     *   NumberUtils.toInt("1")  = 1
+     * </pre>
+     *
+     * @param str 要转换的字符串可以为空
+     * @return 字符串表示的整型数，如果转换失败则默认值
+     */
+    public static int toInt(final String str) {
+        return toInt(str, 0);
+    }
+
+    /**
+     * 将字符串转换为int类型，如果转换失败则返回默认值
+     *
+     * <pre>
+     *   NumberUtils.toInt(null, 1) = 1
+     *   NumberUtils.toInt("", 1)   = 1
+     *   NumberUtils.toInt("1", 0)  = 1
+     * </pre>
+     *
+     * @param str          要转换的字符串可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的int，如果转换失败则默认值
+     */
+    public static int toInt(final String str, final int defaultValue) {
+        if (str == null) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * 将字符串转换为long类型
+     *
+     * <pre>
+     *   NumberUtils.toLong(null) = 0L
+     *   NumberUtils.toLong("")   = 0L
+     *   NumberUtils.toLong("1")  = 1L
+     * </pre>
+     *
+     * @param str 要转换的字符串可以为空
+     * @return 字符串表示的long，如果转换失败则默认值
+     */
+    public static long toLong(final String str) {
+        return toLong(str, 0L);
+    }
+
+    /**
+     * 将字符串转换为long类型，如果转换失败则返回默认值
+     *
+     * <pre>
+     *   NumberUtils.toInt(null, 1) = 1
+     *   NumberUtils.toInt("", 1)   = 1
+     *   NumberUtils.toInt("1", 0)  = 1
+     * </pre>
+     *
+     * @param str          要转换的字符串可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的long，如果转换失败则默认值
+     */
+    public static long toLong(final String str, final long defaultValue) {
+        if (str == null) {
+            return defaultValue;
+        }
+        try {
+            return Long.parseLong(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * 将字符串转换为float类型
+     *
+     * <pre>
+     *   NumberUtils.toFloat(null)   = 0.0f
+     *   NumberUtils.toFloat("")     = 0.0f
+     *   NumberUtils.toFloat("1.5")  = 1.5f
+     * </pre>
+     *
+     * @param str 要转换的字符串可以为空
+     * @return 字符串表示的float，如果转换失败则默认值
+     */
+    public static float toFloat(final String str) {
+        return toFloat(str, 0.0f);
+    }
+
+    /**
+     * 将字符串转换为float类型，如果转换失败则返回默认值
+     *
+     * <pre>
+     *   NumberUtils.toFloat(null, 1.1f)   = 1.0f
+     *   NumberUtils.toFloat("", 1.1f)     = 1.1f
+     *   NumberUtils.toFloat("1.5", 0.0f)  = 1.5f
+     * </pre>
+     *
+     * @param str          要转换的字符串可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的float，如果转换失败则默认值
+     */
+    public static float toFloat(final String str, final float defaultValue) {
+        if (str == null) {
+            return defaultValue;
+        }
+        try {
+            return Float.parseFloat(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * 将字符串转换为double类型
+     *
+     * <pre>
+     *   NumberUtils.toDouble(null)   = 0.0d
+     *   NumberUtils.toDouble("")     = 0.0d
+     *   NumberUtils.toDouble("1.5")  = 1.5d
+     * </pre>
+     *
+     * @param str 要转换的字符串可以为空
+     * @return 字符串表示的double，如果转换失败则默认值
+     */
+    public static double toDouble(final String str) {
+        return toDouble(str, 0.0d);
+    }
+
+    /**
+     * 将字符串转换为double类型
+     *
+     * <pre>
+     *   NumberUtils.toDouble(null, 1.1d)   = 1.1d
+     *   NumberUtils.toDouble("", 1.1d)     = 1.1d
+     *   NumberUtils.toDouble("1.5", 0.0d)  = 1.5d
+     * </pre>
+     *
+     * @param str          要转换的字符串可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的double，如果转换失败则默认值
+     */
+    public static double toDouble(final String str, final double defaultValue) {
+        if (str == null) {
+            return defaultValue;
+        }
+        try {
+            return Double.parseDouble(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * 将BigDecimal转换为double类型
+     *
+     * <pre>
+     *   NumberUtils.toDouble(null)                     = 0.0d
+     *   NumberUtils.toDouble(BigDecimal.valudOf(8.5d)) = 8.5d
+     * </pre>
+     *
+     * @param value 要转换的字符可以为空
+     * @return 字符串表示的double，如果转换失败则默认值
+     */
+    public static double toDouble(final BigDecimal value) {
+        return toDouble(value, 0.0d);
+    }
+
+    /**
+     * 将BigDecimal转换为double类型
+     *
+     * <pre>
+     *   NumberUtils.toDouble(null, 1.1d)                     = 1.1d
+     *   NumberUtils.toDouble(BigDecimal.valudOf(8.5d), 1.1d) = 8.5d
+     * </pre>
+     *
+     * @param value        要转换的字符可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的double，如果转换失败则默认值
+     */
+    public static double toDouble(final BigDecimal value, final double defaultValue) {
+        return value == null ? defaultValue : value.doubleValue();
+    }
+
+    /**
+     * 将字符转换为byte类型
+     *
+     * <pre>
+     *   NumberUtils.toByte(null) = 0
+     *   NumberUtils.toByte("")   = 0
+     *   NumberUtils.toByte("1")  = 1
+     * </pre>
+     *
+     * @param str 要转换的字符可以为空
+     * @return 字符串表示的byte，如果转换失败则默认值
+     */
+    public static byte toByte(final String str) {
+        return toByte(str, (byte) 0);
+    }
+
+    /**
+     * 将字符转换为byte类型
+     *
+     * <pre>
+     *   NumberUtils.toByte(null, 1) = 1
+     *   NumberUtils.toByte("", 1)   = 1
+     *   NumberUtils.toByte("1", 0)  = 1
+     * </pre>
+     *
+     * @param str          要转换的字符可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的byte，如果转换失败则默认值
+     */
+    public static byte toByte(final String str, final byte defaultValue) {
+        if (str == null) {
+            return defaultValue;
+        }
+        try {
+            return Byte.parseByte(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * 将字符转换为short类型
+     *
+     * <pre>
+     *   NumberUtils.toShort(null) = 0
+     *   NumberUtils.toShort("")   = 0
+     *   NumberUtils.toShort("1")  = 1
+     * </pre>
+     *
+     * @param str 要转换的字符可以为空
+     * @return 字符串表示的short，如果转换失败则默认值
+     */
+    public static short toShort(final String str) {
+        return toShort(str, (short) 0);
+    }
+
+    /**
+     * 将字符转换为short类型
+     *
+     * <pre>
+     *   NumberUtils.toShort(null, 1) = 1
+     *   NumberUtils.toShort("", 1)   = 1
+     *   NumberUtils.toShort("1", 0)  = 1
+     * </pre>
+     *
+     * @param str          要转换的字符可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的short，如果转换失败则默认值
+     */
+    public static short toShort(final String str, final short defaultValue) {
+        if (str == null) {
+            return defaultValue;
+        }
+        try {
+            return Short.parseShort(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * 将一个BigDecimal转换为一个BigDecimal，两个刻度已经使用RoundingMode.HALF_EVEN 四舍五入.
+     * 如果提供的值为null，则BigDecimal返回0
+     *
+     * @param value 要转换的字符可以为空
+     * @return 字符串表示的BigDecimal，如果转换失败则默认值
+     */
+    public static BigDecimal toScaledBigDecimal(final BigDecimal value) {
+        return toScaledBigDecimal(value, Digital.INTEGER_TWO, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * 将一个BigDecimal转换为一个BigDecimal，两个刻度已经使用RoundingMode.HALF_EVEN 四舍五入.
+     * * 如果提供的值为null，则BigDecimal返回0.
+     *
+     * @param value        要转换的BigDecimal，可以为null.
+     * @param scale        小数点右边的位数.
+     * @param roundingMode 能够放弃精度的数值运算的舍入行为.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final BigDecimal value, final int scale, final RoundingMode roundingMode) {
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+        return value.setScale(
+                scale,
+                (roundingMode == null) ? RoundingMode.HALF_EVEN : roundingMode
+        );
+    }
+
+    /**
+     * 将一个Float转换为一个BigDecimal，两个刻度已经用RoundingMode.HALF_EVEN四舍五入了.
+     * 如果提供的值为null，则BigDecimal 返回0.
+     *
+     * @param value 要转换的Float，可以为null.
+     * @return 按比例取适当的四舍五入
+     */
+    public static BigDecimal toScaledBigDecimal(final Float value) {
+        return toScaledBigDecimal(value, Digital.INTEGER_TWO, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * 将一个Float转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO.
+     *
+     * @param value        要转换的Float，可以为null.
+     * @param scale        小数点右边的位数.
+     * @param roundingMode 能够放弃精度的数值运算的舍入行为.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final Float value, final int scale, final RoundingMode roundingMode) {
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+        return toScaledBigDecimal(
+                BigDecimal.valueOf(value),
+                scale,
+                roundingMode
+        );
+    }
+
+    /**
+     * 将一个Double转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO.
+     *
+     * @param value 要转换的Double，可以为null.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final Double value) {
+        return toScaledBigDecimal(value, Digital.INTEGER_TWO, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * 将一个Double转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO..
+     *
+     * @param value        转换的Double，可以为null.
+     * @param scale        小数点右边的位数.
+     * @param roundingMode 能够放弃精度的数值运算的舍入行为.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final Double value, final int scale, final RoundingMode roundingMode) {
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+        return toScaledBigDecimal(
+                BigDecimal.valueOf(value),
+                scale,
+                roundingMode
+        );
+    }
+
+    /**
+     * 将一个String转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO.
+     *
+     * @param value 转换的String，可以为null.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final String value) {
+        return toScaledBigDecimal(value, Digital.INTEGER_TWO, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * 将一个String转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO.
+     *
+     * @param value        转换的String，可以为null.
+     * @param scale        小数点右边的位数.
+     * @param roundingMode 能够放弃精度的数值运算的舍入行为.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final String value, final int scale, final RoundingMode roundingMode) {
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+        return toScaledBigDecimal(
+                createBigDecimal(value),
+                scale,
+                roundingMode
+        );
+    }
+
+    /**
+     * 将一个String转换为一个BigDecimal
+     *
+     * @param str a <code>String</code> to convert, may be null
+     * @return 转换后的BigDecimal(如果输入为null ， 则为null)
+     * @throws NumberFormatException 如果值不能被转换
+     */
+    public static BigDecimal createBigDecimal(final String str) {
+        if (str == null) {
+            return null;
+        }
+        if (StringUtils.isBlank(str)) {
+            throw new NumberFormatException("A blank string is not a valid number");
+        }
+        if (str.trim().startsWith("--")) {
+            throw new NumberFormatException(str + " is not a valid number.");
+        }
+        return new BigDecimal(str);
     }
 
 }

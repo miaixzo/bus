@@ -750,8 +750,8 @@ public class FileUtils {
      * @return 成功与否
      * @throws InstrumentException 异常
      */
-    public static boolean del(String fullFileOrDirPath) throws InstrumentException {
-        return del(file(fullFileOrDirPath));
+    public static boolean delete(String fullFileOrDirPath) throws InstrumentException {
+        return delete(file(fullFileOrDirPath));
     }
 
     /**
@@ -763,7 +763,7 @@ public class FileUtils {
      * @return 成功与否
      * @throws InstrumentException 异常
      */
-    public static boolean del(File file) throws InstrumentException {
+    public static boolean delete(File file) throws InstrumentException {
         if (file == null || false == file.exists()) {
             return false;
         }
@@ -809,7 +809,7 @@ public class FileUtils {
 
         final File[] files = directory.listFiles();
         for (File childFile : files) {
-            boolean isOk = del(childFile);
+            boolean isOk = delete(childFile);
             if (isOk == false) {
                 // 删除一个出错则本次删除任务失败
                 return false;
@@ -929,7 +929,6 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static File copyFile(File src, File dest, StandardCopyOption... options) throws InstrumentException {
-        // check
         Assert.notNull(src, "Source File is null !");
         if (false == src.exists()) {
             throw new InstrumentException("File not exist: " + src);
@@ -1034,6 +1033,25 @@ public class FileUtils {
      */
     public static File copyFilesFromDir(File src, File dest, boolean isOverride) throws InstrumentException {
         return FileCopier.create(src, dest).setCopyContentIfDir(true).setOnlyCopyFile(true).setOverride(isOverride).copy();
+    }
+
+    /**
+     * Copy bytes from a <code>File</code> to an <code>OutputStream</code>.
+     * <p>
+     * This method buffers the input internally, so there is no need to use a <code>BufferedInputStream</code>.
+     * </p>
+     *
+     * @param input  the <code>File</code> to read from
+     * @param output the <code>OutputStream</code> to write to
+     * @return the number of bytes copied
+     * @throws NullPointerException if the input or output is null
+     * @throws IOException          if an I/O error occurs
+     * @since 2.1
+     */
+    public static long copyFile(final File input, final OutputStream output) throws IOException {
+        try (FileInputStream fis = new FileInputStream(input)) {
+            return IoUtils.copy(fis, output);
+        }
     }
 
     /**

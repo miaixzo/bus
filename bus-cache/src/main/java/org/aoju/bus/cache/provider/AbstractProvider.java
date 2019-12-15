@@ -65,11 +65,11 @@ public abstract class AbstractProvider implements Provider {
 
     private Properties sqls;
 
-    protected AbstractProvider(String dbPath, Map<String, Object> context) {
-        InputStream resource = this.getClass().getClassLoader().getResourceAsStream("config/bus-bus-cache.yaml");
+    protected AbstractProvider(Map<String, Object> context) {
+        InputStream resource = this.getClass().getClassLoader().getResourceAsStream("config/bus-cache.yaml");
         this.sqls = new Yaml().loadAs(resource, Properties.class);
 
-        this.jdbcOperations = jdbcOperationsSupplier(dbPath, context).get();
+        this.jdbcOperations = jdbcOperationsSupplier(context).get();
         executor.submit(() -> {
             while (!isShutdown) {
                 dumpToDB(hitQueue, "hit_count");
@@ -78,15 +78,22 @@ public abstract class AbstractProvider implements Provider {
         });
     }
 
+    public AbstractProvider(String url, String username, String password) {
+        this(newHashMap(
+                "url", url,
+                "username", username,
+                "password", password
+        ));
+    }
+
     /**
      * 1. create JdbcOperations
      * 2. init db(like: load sql script, create table, init table...)
      *
-     * @param dbPath  :EmbeddedDatabase file temporary storage directory or remove database.
      * @param context :other parameters from constructor
      * @return initiated JdbOperations object
      */
-    protected abstract Supplier<JdbcOperations> jdbcOperationsSupplier(String dbPath, Map<String, Object> context);
+    protected abstract Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context);
 
     /**
      * convert DB Map Result to DataDO(Stream)
@@ -226,6 +233,18 @@ public abstract class AbstractProvider implements Provider {
         }
 
         isShutdown = true;
+    }
+
+    public static HashMap<String, Object> newHashMap(Object... keyValues) {
+        HashMap<String, Object> map = new HashMap<>(keyValues.length / 2);
+        for (int i = 0; i < keyValues.length; i += 2) {
+            String key = (String) keyValues[i];
+            Object value = keyValues[i + 1];
+
+            map.put(key, value);
+        }
+
+        return map;
     }
 
     protected static final class DataDO {

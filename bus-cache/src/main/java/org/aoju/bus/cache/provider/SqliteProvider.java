@@ -23,12 +23,10 @@
  */
 package org.aoju.bus.cache.provider;
 
-import com.google.common.base.StandardSystemProperty;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -41,20 +39,20 @@ import java.util.stream.Stream;
  */
 public class SqliteProvider extends AbstractProvider {
 
-    public SqliteProvider() {
-        this(StandardSystemProperty.USER_HOME.value() + "/.sqlite.db");
+    public SqliteProvider(Map<String, Object> context) {
+        super(context);
     }
 
-    public SqliteProvider(String dbPath) {
-        super(dbPath, Collections.emptyMap());
+    public SqliteProvider(String url, String username, String password) {
+        super(url, username, password);
     }
 
     @Override
-    protected Supplier<JdbcOperations> jdbcOperationsSupplier(String dbPath, Map<String, Object> context) {
+    protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
         return () -> {
             SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
             dataSource.setDriverClassName("org.sqlite.JDBC");
-            dataSource.setUrl(String.format("jdbc:sqlite:%s", dbPath));
+            dataSource.setUrl((String) context.get("url"));
 
             JdbcTemplate template = new JdbcTemplate(dataSource);
             template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +

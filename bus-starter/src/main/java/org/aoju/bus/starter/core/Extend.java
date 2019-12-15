@@ -58,5 +58,9 @@ public class Extend {
      * XSS/重复读取失效
      */
     public static final String WRAPPER = "extend.wrapper";
+    /**
+     * 文件在线预览
+     */
+    public static final String PREVIEW = "extend.preview";
 
 }

@@ -72,13 +72,13 @@ public class ZKProvider implements Provider {
 
     private String requirePathPrefix;
 
-    public ZKProvider(String zkServers) {
-        this(zkServers, System.getProperty("product.name", "unnamed"));
+    public ZKProvider(String zkServer) {
+        this(zkServer, System.getProperty("product.name", "unnamed"));
     }
 
-    public ZKProvider(String zkServers, String productName) {
+    public ZKProvider(String zkServer, String productName) {
         this.client = CuratorFrameworkFactory.builder()
-                .connectString(zkServers)
+                .connectString(zkServer)
                 .retryPolicy(new RetryNTimes(3, 0))
                 .namespace(NAME_SPACE)
                 .build();
@@ -102,18 +102,6 @@ public class ZKProvider implements Provider {
                 dumpToZK(requireQueue, requireCounterMap, requirePathPrefix);
             }
         });
-    }
-
-    private String processProductName(String productName) {
-        if (!productName.startsWith("/")) {
-            productName = "/" + productName;
-        }
-
-        if (!productName.endsWith("/")) {
-            productName = productName + "/";
-        }
-
-        return productName;
     }
 
     @Override
@@ -153,21 +141,6 @@ public class ZKProvider implements Provider {
         return result;
     }
 
-    private long getValue(Object value) throws Exception {
-        long result = 0L;
-        if (value != null) {
-            if (value instanceof DistributedAtomicLong) {
-                result = getValue(((DistributedAtomicLong) value).get());
-            } else if (value instanceof AtomicValue) {
-                result = (long) ((AtomicValue) value).postValue();
-            } else {
-                result = ((AtomicLong) value).get();
-            }
-        }
-
-        return result;
-    }
-
     @Override
     public void reset(String pattern) {
         hitCounterMap.computeIfPresent(pattern, this::doReset);
@@ -180,16 +153,6 @@ public class ZKProvider implements Provider {
         requireCounterMap.forEach(this::doReset);
     }
 
-    private DistributedAtomicLong doReset(String pattern, DistributedAtomicLong counter) {
-        try {
-            counter.forceSet(0L);
-        } catch (Exception e) {
-            Logger.error(e, "reset distribute counter error: ", e.getMessage());
-        }
-
-        return null;
-    }
-
     @PreDestroy
     public void tearDown() {
         while (hitQueue.size() > 0 || requireQueue.size() > 0) {
@@ -200,6 +163,28 @@ public class ZKProvider implements Provider {
         }
 
         isShutdown = true;
+    }
+
+    private String processProductName(String productName) {
+        if (!productName.startsWith("/")) {
+            productName = "/" + productName;
+        }
+
+        if (!productName.endsWith("/")) {
+            productName = productName + "/";
+        }
+
+        return productName;
+    }
+
+    private DistributedAtomicLong doReset(String pattern, DistributedAtomicLong counter) {
+        try {
+            counter.forceSet(0L);
+        } catch (Exception e) {
+            Logger.error(e, "reset distribute counter error: ", e.getMessage());
+        }
+
+        return null;
     }
 
     private void dumpToZK(BlockingQueue<CachePair<String, Integer>> queue, Map<String, DistributedAtomicLong> counterMap, String zkPrefix) {
@@ -224,6 +209,21 @@ public class ZKProvider implements Provider {
                 Logger.error(e, "dump data from queue to zookeeper error: ", e.getMessage());
             }
         });
+    }
+
+    private long getValue(Object value) throws Exception {
+        long result = 0L;
+        if (value != null) {
+            if (value instanceof DistributedAtomicLong) {
+                result = getValue(((DistributedAtomicLong) value).get());
+            } else if (value instanceof AtomicValue) {
+                result = (long) ((AtomicValue) value).postValue();
+            } else {
+                result = ((AtomicLong) value).get();
+            }
+        }
+
+        return result;
     }
 
 }

@@ -23,12 +23,12 @@
  */
 package org.aoju.bus.cache.provider;
 
+import org.aoju.bus.core.utils.StringUtils;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import javax.annotation.PreDestroy;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -41,22 +41,22 @@ import java.util.stream.Stream;
  */
 public class H2Provider extends AbstractProvider {
 
-    public H2Provider() {
-        this(System.getProperty("user.home") + "/.H2/cache");
+    public H2Provider(Map<String, Object> context) {
+        super(context);
     }
 
-    public H2Provider(String dbPath) {
-        super(dbPath, Collections.emptyMap());
+    public H2Provider(String url, String username, String password) {
+        super(url, username, password);
     }
 
     @Override
-    protected Supplier<JdbcOperations> jdbcOperationsSupplier(String dbPath, Map<String, Object> context) {
+    protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
         return () -> {
             SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
             dataSource.setDriverClassName("org.h2.Driver");
-            dataSource.setUrl(String.format("jdbc:h2:%s;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE;AUTO_SERVER=TRUE", dbPath));
-            dataSource.setUsername("cache");
-            dataSource.setPassword("cache");
+            dataSource.setUrl(StringUtils.toString(context.get("url")));
+            dataSource.setUsername(StringUtils.toString(context.get("username")));
+            dataSource.setPassword(StringUtils.toString(context.get("password")));
 
             JdbcTemplate template = new JdbcTemplate(dataSource);
             template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +
