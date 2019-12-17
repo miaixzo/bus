@@ -53,11 +53,11 @@ public class Context {
     protected String endpoint;
     /**
      * 访问key
-     **/
+     */
     protected String accessKey;
     /**
      * 访问秘钥
-     **/
+     */
     protected String secretKey;
     /**
      * 存储区域

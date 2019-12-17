@@ -62,7 +62,7 @@ public class StringResource implements Resource {
      * @param name 资源名称
      */
     public StringResource(String data, String name) {
-        this(data, name, org.aoju.bus.core.consts.Charset.UTF_8);
+        this(data, name, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

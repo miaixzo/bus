@@ -30,34 +30,30 @@ import org.aoju.bus.core.utils.TypeUtils;
 import java.lang.reflect.Type;
 
 /**
- * <p>
- * A {@code Diff} contains the differences between two {@link Diffable} class
- * fields.
- * </p>
+ * {@code Diff}包含两个{@link Diffable}类字段之间的差异
+ * 通常，{@code Diff}通过使用{@link DiffBuilder}来生成
+ * {@link DiffResult}来检索，其中包含两个对象之间的差异.
  *
- * <p>
- * Typically, {@code Diff}s are retrieved by using a {@link DiffBuilder} to
- * produce a {@link DiffResult}, containing the differences between two objects.
- * </p>
- *
- * @param <T> The type of object contained within this {@code Diff}. Differences
- *            between primitive objects are stored as their Object wrapper
- *            equivalent.
+ * @param <T> 这个{@code Diff}中包含的对象类型.
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
  */
 public abstract class Diff<T> extends Pair<T, T> {
 
+    /**
+     * 字段类型
+     */
     private final Type type;
+    /**
+     * 字段名称
+     */
     private final String fieldName;
 
     /**
-     * <p>
-     * Constructs a new {@code Diff} for the given field name.
-     * </p>
+     * 为给定的字段名构造一个新的{@code Diff}
      *
-     * @param fieldName the name of the field
+     * @param fieldName 字段的名称
      */
     protected Diff(final String fieldName) {
         this.type = ObjectUtils.defaultIfNull(
@@ -66,52 +62,19 @@ public abstract class Diff<T> extends Pair<T, T> {
         this.fieldName = fieldName;
     }
 
-    /**
-     * <p>
-     * Returns the type of the field.
-     * </p>
-     *
-     * @return the field type
-     */
     public final Type getType() {
         return type;
     }
 
-    /**
-     * <p>
-     * Returns the name of the field.
-     * </p>
-     *
-     * @return the field name
-     */
     public final String getFieldName() {
         return fieldName;
     }
 
-    /**
-     * <p>
-     * Returns a {@code String} representation of the {@code Diff}, with the
-     * following format:</p>
-     *
-     * <pre>
-     * [fieldname: left-value, right-value]
-     * </pre>
-     *
-     * @return the string representation
-     */
     @Override
     public final String toString() {
         return String.format("[%s: %s, %s]", fieldName, getLeft(), getRight());
     }
 
-    /**
-     * <p>
-     * Throws {@code UnsupportedOperationException}.
-     * </p>
-     *
-     * @param value ignored
-     * @return nothing
-     */
     @Override
     public final T setValue(final T value) {
         throw new UnsupportedOperationException("Cannot alter Diff object.");

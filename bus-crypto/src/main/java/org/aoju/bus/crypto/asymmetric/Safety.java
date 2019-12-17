@@ -120,7 +120,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 加密后的bytes
      */
     public byte[] encrypt(String data, KeyType keyType) {
-        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.consts.Charset.UTF_8), keyType);
+        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.lang.Charset.UTF_8), keyType);
     }
 
     /**
@@ -210,7 +210,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 加密后的密文
      */
     public String encryptBcd(String data, KeyType keyType) {
-        return encryptBcd(data, keyType, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encryptBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -276,7 +276,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 解密后的密文
      */
     public String decryptStr(String data, KeyType keyType) {
-        return decryptStr(data, keyType, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptStr(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -287,7 +287,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 解密后的密文
      */
     public byte[] decryptFromBcd(String data, KeyType keyType) {
-        return decryptFromBcd(data, keyType, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptFromBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -323,7 +323,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 解密后的密文
      */
     public String decryptStrFromBcd(String data, KeyType keyType) {
-        return decryptStrFromBcd(data, keyType, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptStrFromBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
 }

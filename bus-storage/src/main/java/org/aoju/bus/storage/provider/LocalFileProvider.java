@@ -1,7 +1,7 @@
 package org.aoju.bus.storage.provider;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;

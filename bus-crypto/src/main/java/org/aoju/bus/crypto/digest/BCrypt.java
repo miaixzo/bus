@@ -24,7 +24,7 @@
 package org.aoju.bus.crypto.digest;
 
 
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 
 import java.security.SecureRandom;
 

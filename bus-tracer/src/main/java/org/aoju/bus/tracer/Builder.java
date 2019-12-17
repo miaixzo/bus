@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.tracer;
 
-import org.aoju.bus.core.consts.Algorithm;
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.tracer.backend.TraceBackendProvider;
 import org.aoju.bus.tracer.consts.TraceConsts;

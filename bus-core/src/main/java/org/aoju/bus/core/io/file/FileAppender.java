@@ -62,7 +62,7 @@ public class FileAppender implements Serializable {
      * @param isNewLineMode 追加内容是否为新行
      */
     public FileAppender(File destFile, int capacity, boolean isNewLineMode) {
-        this(destFile, org.aoju.bus.core.consts.Charset.UTF_8, capacity, isNewLineMode);
+        this(destFile, org.aoju.bus.core.lang.Charset.UTF_8, capacity, isNewLineMode);
     }
 
     /**

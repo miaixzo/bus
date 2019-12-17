@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.RegEx;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

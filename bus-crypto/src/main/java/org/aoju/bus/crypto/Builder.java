@@ -24,12 +24,8 @@
 package org.aoju.bus.crypto;
 
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.consts.Algorithm;
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Validator;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 import org.aoju.bus.crypto.asymmetric.RSA;
@@ -76,6 +72,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.spec.*;
 import java.util.Map;
+import java.lang.System;
 
 
 /**
@@ -303,7 +300,7 @@ public class Builder {
     public static PemObject readPemObject(InputStream keyStream) {
         PemReader pemReader = null;
         try {
-            pemReader = new PemReader(IoUtils.getReader(keyStream, org.aoju.bus.core.consts.Charset.UTF_8));
+            pemReader = new PemReader(IoUtils.getReader(keyStream, org.aoju.bus.core.lang.Charset.UTF_8));
             return pemReader.readPemObject();
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -340,7 +337,7 @@ public class Builder {
      * @return MD5摘要
      */
     public static byte[] md5(String data) {
-        return md5(data, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return md5(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -402,7 +399,7 @@ public class Builder {
      * @return MD5摘要的16进制表示
      */
     public static String md5Hex(String data) {
-        return md5Hex(data, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return md5Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -453,7 +450,7 @@ public class Builder {
      * @return MD5摘要的16进制表示
      */
     public static String md5Hex16(String data) {
-        return md5Hex16(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return md5Hex16(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -514,7 +511,7 @@ public class Builder {
      * @return MD5摘要
      */
     public static byte[] sha1(String data) {
-        return sha1(data, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return sha1(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -565,7 +562,7 @@ public class Builder {
      * @return SHA-1摘要的16进制表示
      */
     public static String sha1Hex(String data) {
-        return sha1Hex(data, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return sha1Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -619,7 +616,7 @@ public class Builder {
      * @since 3.0.8
      */
     public static byte[] sha256(String data) {
-        return sha256(data, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return sha256(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -675,7 +672,7 @@ public class Builder {
      * @since 3.0.8
      */
     public static String sha256Hex(String data) {
-        return sha256Hex(data, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return sha256Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -798,7 +795,7 @@ public class Builder {
         SecretKey secretKey = null;
         if (algorithm.startsWith("PBE")) {
             // PBE密钥
-            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.str(key, org.aoju.bus.core.consts.Charset.UTF_8).toCharArray());
+            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.str(key, org.aoju.bus.core.lang.Charset.UTF_8).toCharArray());
         } else if (algorithm.startsWith("DES")) {
             // DES密钥
             secretKey = generateDESKey(algorithm, key);

@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.setting;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.*;
 
 import java.io.BufferedReader;
@@ -156,7 +156,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      * @param pathBaseClassLoader 相对路径（相对于当前项目的classes路径）
      */
     public GroupedSet(String pathBaseClassLoader) {
-        this(pathBaseClassLoader, org.aoju.bus.core.consts.Charset.UTF_8);
+        this(pathBaseClassLoader, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

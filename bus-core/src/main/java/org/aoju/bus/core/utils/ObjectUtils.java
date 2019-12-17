@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.FastByteArray;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
@@ -1048,9 +1048,8 @@ public class ObjectUtils {
     }
 
     /**
-     * <p>Gets the toString that would be produced by {@code Object}
-     * if a class did not override toString itself. {@code null}
-     * will return {@code null}.</p>
+     * 获取如果类没有覆盖toString本身，则{@code Object}将生成的toString.
+     * {@code null}将返回{@code null}
      *
      * <pre>
      * ObjectUtils.identityToString(null)         = null
@@ -1058,10 +1057,8 @@ public class ObjectUtils {
      * ObjectUtils.identityToString(Boolean.TRUE) = "java.lang.Boolean@7fa"
      * </pre>
      *
-     * @param object the object to create a toString for, may be
-     *               {@code null}
-     * @return the default toString text, or {@code null} if
-     * {@code null} passed in
+     * @param object 创建toString的对象可以是{@code null}
+     * @return 如果传入{@code null}，则默认的toString文本或{@code null}
      */
     public static String identityToString(final Object object) {
         if (object == null) {
@@ -1070,18 +1067,17 @@ public class ObjectUtils {
         final String name = object.getClass().getName();
         final String hexString = Integer.toHexString(System.identityHashCode(object));
         final StringBuilder builder = new StringBuilder(name.length() + 1 + hexString.length());
-        // @formatter:off
+
         builder.append(name)
                 .append(Symbol.C_AT)
                 .append(hexString);
-        // @formatter:off
+
         return builder.toString();
     }
 
     /**
-     * <p>Appends the toString that would be produced by {@code Object}
-     * if a class did not override toString itself. {@code null}
-     * will throw a NullPointerException for either of the two parameters. </p>
+     * 如果类没有覆盖toString本身，则附加由{@code Object}生成的toString.
+     * {@code null}将为这两个参数中的任何一个抛出NullPointerException
      *
      * <pre>
      * ObjectUtils.identityToString(appendable, "")            = appendable.append("java.lang.String@1e23"
@@ -1089,10 +1085,9 @@ public class ObjectUtils {
      * ObjectUtils.identityToString(appendable, Boolean.TRUE)  = appendable.append("java.lang.Boolean@7fa")
      * </pre>
      *
-     * @param appendable the appendable to append to
-     * @param object     the object to create a toString for
-     * @throws IOException if an I/O error occurs
-     * @since 3.2.0
+     * @param appendable 可以附加的信息
+     * @param object     要为其创建toString的对象
+     * @throws IOException 如果发生I/O错误
      */
     public static void identityToString(final Appendable appendable, final Object object) throws IOException {
         Assert.notNull(object, "Cannot get the toString of a null object");
@@ -1102,9 +1097,8 @@ public class ObjectUtils {
     }
 
     /**
-     * <p>Appends the toString that would be produced by {@code Object}
-     * if a class did not override toString itself. {@code null}
-     * will throw a NullPointerException for either of the two parameters. </p>
+     * 如果类没有覆盖toString本身，则附加由{@code Object}生成的toString.
+     * {@code null}将为这两个参数中的任何一个抛出NullPointerException
      *
      * <pre>
      * ObjectUtils.identityToString(builder, "")            = builder.append("java.lang.String@1e23"
@@ -1112,9 +1106,8 @@ public class ObjectUtils {
      * ObjectUtils.identityToString(builder, Boolean.TRUE)  = builder.append("java.lang.Boolean@7fa")
      * </pre>
      *
-     * @param builder the builder to append to
-     * @param object  the object to create a toString for
-     * @since 3.2.0
+     * @param builder 要附加到的生成器
+     * @param object  要为其创建toString的对象
      */
     public static void identityToString(final StrBuilder builder, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");
@@ -1127,9 +1120,8 @@ public class ObjectUtils {
     }
 
     /**
-     * <p>Appends the toString that would be produced by {@code Object}
-     * if a class did not override toString itself. {@code null}
-     * will throw a NullPointerException for either of the two parameters. </p>
+     * 如果类没有覆盖toString本身，则附加由{@code Object}生成的toString.
+     * {@code null}将为这两个参数中的任何一个抛出NullPointerException
      *
      * <pre>
      * ObjectUtils.identityToString(buf, "")            = buf.append("java.lang.String@1e23"
@@ -1137,9 +1129,8 @@ public class ObjectUtils {
      * ObjectUtils.identityToString(buf, Boolean.TRUE)  = buf.append("java.lang.Boolean@7fa")
      * </pre>
      *
-     * @param buffer the buffer to append to
-     * @param object the object to create a toString for
-     * @since 2.4.0
+     * @param buffer 要追加的缓冲区
+     * @param object 要为其创建toString的对象
      */
     public static void identityToString(final StringBuffer buffer, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");
@@ -1152,9 +1143,8 @@ public class ObjectUtils {
     }
 
     /**
-     * <p>Appends the toString that would be produced by {@code Object}
-     * if a class did not override toString itself. {@code null}
-     * will throw a NullPointerException for either of the two parameters. </p>
+     * 如果类没有覆盖toString本身，则附加由{@code Object}生成的toString.
+     * {@code null}将为这两个参数中的任何一个抛出NullPointerException
      *
      * <pre>
      * ObjectUtils.identityToString(builder, "")            = builder.append("java.lang.String@1e23"
@@ -1162,9 +1152,8 @@ public class ObjectUtils {
      * ObjectUtils.identityToString(builder, Boolean.TRUE)  = builder.append("java.lang.Boolean@7fa")
      * </pre>
      *
-     * @param builder the builder to append to
-     * @param object  the object to create a toString for
-     * @since 3.2.0
+     * @param builder 要附加到的生成器
+     * @param object  要为其创建toString的对象
      */
     public static void identityToString(final StringBuilder builder, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");
@@ -1177,14 +1166,13 @@ public class ObjectUtils {
     }
 
     /**
-     * Determine if the given objects are equal, returning {@code true} if
-     * both are {@code null} or {@code false} if only one is {@code null}.
-     * <p>Compares arrays with {@code Arrays.equals}, performing an equality
-     * check based on the array elements rather than the array reference.
+     * 确定给定的对象是否相等，如果两个对象都是{@code null}，
+     * 则返回{@code true};如果只有一个对象是{@code null}，
+     * 则返回{@code false}
      *
-     * @param o1 first Object to compare
-     * @param o2 second Object to compare
-     * @return whether the given objects are equal
+     * @param o1 第一个比较对象
+     * @param o2 第二个比较对象
+     * @return 给定对象是否相等
      * @see Object#equals(Object)
      * @see Arrays#equals
      */
@@ -1205,12 +1193,11 @@ public class ObjectUtils {
     }
 
     /**
-     * Compare the given arrays with {@code Arrays.equals}, performing an equality
-     * check based on the array elements rather than the array reference.
+     * 比较给定的数组和{@code Arrays.equals}，根据数组元素而不是数组引用执行相等性检查
      *
-     * @param o1 first array to compare
-     * @param o2 second array to compare
-     * @return whether the given objects are equal
+     * @param o1 第一个比较对象
+     * @param o2 第二个比较对象
+     * @return 给定对象是否相等
      * @see #nullSafeEquals(Object, Object)
      * @see Arrays#equals
      */
@@ -1246,14 +1233,11 @@ public class ObjectUtils {
     }
 
     /**
-     * Convert the given array (which may be a primitive array) to an
-     * object array (if necessary of primitive wrapper objects).
-     * <p>A {@code null} source value will be converted to an
-     * empty Object array.
+     * 将给定的数组(可能是原始数组)转换为对象数组(如果需要原始包装器对象)
+     * 一个{@code null}源值将被转换为一个空的对象数组.
      *
-     * @param source the (potentially primitive) array
-     * @return the corresponding object array (never {@code null})
-     * @throws IllegalArgumentException if the parameter is not an array
+     * @param source 数组
+     * @return 对应的对象数组
      */
     public static Object[] toObjectArray(Object source) {
         if (source instanceof Object[]) {

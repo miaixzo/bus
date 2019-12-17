@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
@@ -822,7 +822,7 @@ public class ZipUtils {
      * @return {@link ZipOutputStream}
      */
     private static ZipOutputStream getZipOutputStream(OutputStream out, Charset charset) {
-        charset = (null == charset) ? org.aoju.bus.core.consts.Charset.DEFAULT : charset;
+        charset = (null == charset) ? org.aoju.bus.core.lang.Charset.DEFAULT : charset;
         return new ZipOutputStream(out, charset);
     }
 

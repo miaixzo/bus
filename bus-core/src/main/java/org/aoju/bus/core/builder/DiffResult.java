@@ -24,21 +24,16 @@
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * <p>
- * A {@code DiffResult} contains a collection of the differences between two
- * {@link Diffable} objects. Typically these differences are displayed using
- * {@link #toString()} method, which returns a string describing the fields that
- * differ between the objects.
- * </p>
- * <p>
- * Use a {@link DiffBuilder} to build a {@code DiffResult} comparing two objects.
- * </p>
+ * {@code DiffResult}包含两个{@link Diffable}对象之间差异的集合。
+ * 通常，这些差异是使用{@link #toString()}方法显示的，
+ * 该方法返回一个字符串，该字符串描述对象之间不同的字段.
  *
  * @author Kimi Liu
  * @version 5.3.2
@@ -46,13 +41,7 @@ import java.util.List;
  */
 public class DiffResult implements Iterable<Diff<?>> {
 
-    /**
-     * <p>
-     * The {@code String} returned when the objects have no differences:
-     * {@value}
-     * </p>
-     */
-    public static final String OBJECTS_SAME_STRING = "";
+    public static final String OBJECTS_SAME_STRING = Normal.EMPTY;
 
     private static final String DIFFERS_STRING = "differs from";
 
@@ -62,18 +51,13 @@ public class DiffResult implements Iterable<Diff<?>> {
     private final ToStringStyle style;
 
     /**
-     * <p>
-     * Creates a {@link DiffResult} containing the differences between two
-     * objects.
-     * </p>
+     * 创建一个{@link DiffResult}，其中包含两个对象之间的差异
      *
-     * @param lhs   the left hand object
-     * @param rhs   the right hand object
-     * @param diffs the list of differences, may be empty
-     * @param style the style to use for the {@link #toString()} method. May be
-     *              {@code null}, in which case
-     *              {@link ToStringStyle#DEFAULT_STYLE} is used
-     * @throws IllegalArgumentException if {@code lhs}, {@code rhs} or {@code diffs} is {@code null}
+     * @param lhs   左边对象
+     * @param rhs   右边对象
+     * @param diffs 列表中的差异，可能是空的
+     * @param style 用于{@link #toString()}方法的样式。可能是{@code null}，
+     *              在这种情况下使用{@link ToStringStyle#DEFAULT_STYLE}
      */
     DiffResult(final Object lhs, final Object rhs, final List<Diff<?>> diffs,
                final ToStringStyle style) {
@@ -94,84 +78,27 @@ public class DiffResult implements Iterable<Diff<?>> {
     }
 
     /**
-     * <p>
-     * Returns an unmodifiable list of {@code Diff}s. The list may be empty if
-     * there were no differences between the objects.
-     * </p>
+     * 返回{@code Diff}的不可修改列表。如果对象之间没有差异，则列表可能为空
      *
-     * @return an unmodifiable list of {@code Diff}s
+     * @return 不可修改的{@code Diff}列表s
      */
     public List<Diff<?>> getDiffs() {
         return Collections.unmodifiableList(diffs);
     }
 
-    /**
-     * <p>
-     * Returns the number of differences between the two objects.
-     * </p>
-     *
-     * @return the number of differences
-     */
     public int getNumberOfDiffs() {
         return diffs.size();
     }
 
-    /**
-     * <p>
-     * Returns the style used by the {@link #toString()} method.
-     * </p>
-     *
-     * @return the style
-     */
     public ToStringStyle getToStringStyle() {
         return style;
     }
 
-    /**
-     * <p>
-     * Builds a {@code String} description of the differences contained within
-     * this {@code DiffResult}. A {@link ToStringBuilder} is used for each object
-     * and the style of the output is governed by the {@code ToStringStyle}
-     * passed to the constructor.
-     * </p>
-     *
-     * <p>
-     * If there are no differences stored in this list, the method will return
-     * {@link #OBJECTS_SAME_STRING}. Otherwise, using the example given in
-     * {@link Diffable} and {@link ToStringStyle#SHORT_PREFIX_STYLE}, an output
-     * might be:
-     * </p>
-     *
-     * <pre>
-     * Person[name=John Doe,age=32] differs from Person[name=Joe Bloggs,age=26]
-     * </pre>
-     *
-     * <p>
-     * This indicates that the objects differ in name and age, but not in
-     * smoking status.
-     * </p>
-     *
-     * <p>
-     * To use a different {@code ToStringStyle} for an instance of this class,
-     * use {@link #toString(ToStringStyle)}.
-     * </p>
-     *
-     * @return a {@code String} description of the differences.
-     */
     @Override
     public String toString() {
         return toString(style);
     }
 
-    /**
-     * <p>
-     * Builds a {@code String} description of the differences contained within
-     * this {@code DiffResult}, using the supplied {@code ToStringStyle}.
-     * </p>
-     *
-     * @param style the {@code ToStringStyle} to use when outputting the objects
-     * @return a {@code String} description of the differences.
-     */
     public String toString(final ToStringStyle style) {
         if (diffs.isEmpty()) {
             return OBJECTS_SAME_STRING;
@@ -189,13 +116,6 @@ public class DiffResult implements Iterable<Diff<?>> {
                 rhsBuilder.build());
     }
 
-    /**
-     * <p>
-     * Returns an iterator over the {@code Diff} objects contained in this list.
-     * </p>
-     *
-     * @return the iterator
-     */
     @Override
     public Iterator<Diff<?>> iterator() {
         return diffs.iterator();

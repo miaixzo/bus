@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.FastByteArray;
 import org.aoju.bus.core.io.LineHandler;
@@ -31,6 +30,7 @@ import org.aoju.bus.core.io.NullOutputStream;
 import org.aoju.bus.core.io.StreamProgress;
 import org.aoju.bus.core.io.segment.*;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
@@ -54,7 +54,8 @@ import java.util.zip.Checksum;
 
 /**
  * IO工具类
- * IO工具类只是辅助流的读写,并不负责关闭流 原因是流可能被多次读写,读写关闭后容易造成问题
+ * IO工具类只是辅助流的读写,并不负责关闭流
+ * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
  * @version 5.3.2
@@ -498,7 +499,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static String readUtf8(FileChannel fileChannel) throws InstrumentException {
-        return read(fileChannel, org.aoju.bus.core.consts.Charset.UTF_8);
+        return read(fileChannel, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -645,7 +646,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static <T extends Collection<String>> T readUtf8Lines(InputStream in, T collection) throws InstrumentException {
-        return readLines(in, org.aoju.bus.core.consts.Charset.UTF_8, collection);
+        return readLines(in, org.aoju.bus.core.lang.Charset.UTF_8, collection);
     }
 
     /**
@@ -704,7 +705,7 @@ public class IoUtils {
      * @since 3.1.1
      */
     public static void readUtf8Lines(InputStream in, LineHandler lineHandler) throws InstrumentException {
-        readLines(in, org.aoju.bus.core.consts.Charset.UTF_8, lineHandler);
+        readLines(in, org.aoju.bus.core.lang.Charset.UTF_8, lineHandler);
     }
 
     /**
@@ -876,7 +877,7 @@ public class IoUtils {
      * @since 3.1.1
      */
     public static void writeUtf8(OutputStream out, boolean isCloseOut, Object... contents) throws InstrumentException {
-        write(out, org.aoju.bus.core.consts.Charset.UTF_8, isCloseOut, contents);
+        write(out, org.aoju.bus.core.lang.Charset.UTF_8, isCloseOut, contents);
     }
 
     /**
@@ -1262,7 +1263,7 @@ public class IoUtils {
             }
 
             @Override
-            public void flush() throws IOException {
+            public void flush() {
             }
 
             @Override
@@ -1271,7 +1272,7 @@ public class IoUtils {
             }
 
             @Override
-            public void close() throws IOException {
+            public void close() {
             }
         };
     }

@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.bodys;
 
-import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.http.Call;
 import org.aoju.bus.http.Callback;
 import org.aoju.bus.http.Internal;
@@ -118,11 +118,11 @@ public abstract class ResponseBody implements Closeable {
     private Reader reader;
 
     public static ResponseBody create(MediaType contentType, String content) {
-        Charset charset = org.aoju.bus.core.consts.Charset.UTF_8;
+        Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
         if (contentType != null) {
             charset = contentType.charset();
             if (charset == null) {
-                charset = org.aoju.bus.core.consts.Charset.UTF_8;
+                charset = org.aoju.bus.core.lang.Charset.UTF_8;
                 contentType = MediaType.valueOf(contentType + "; charset=utf-8");
             }
         }
@@ -211,7 +211,7 @@ public abstract class ResponseBody implements Closeable {
 
     private Charset charset() {
         MediaType contentType = contentType();
-        return contentType != null ? contentType.charset(org.aoju.bus.core.consts.Charset.UTF_8) : org.aoju.bus.core.consts.Charset.UTF_8;
+        return contentType != null ? contentType.charset(org.aoju.bus.core.lang.Charset.UTF_8) : org.aoju.bus.core.lang.Charset.UTF_8;
     }
 
     @Override

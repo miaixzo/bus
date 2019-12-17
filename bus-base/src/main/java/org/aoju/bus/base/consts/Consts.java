@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.base.consts;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * <p>

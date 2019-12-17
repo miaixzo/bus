@@ -89,7 +89,7 @@ public final class Challenge {
             } catch (Exception ignore) {
             }
         }
-        return org.aoju.bus.core.consts.Charset.ISO_8859_1;
+        return org.aoju.bus.core.lang.Charset.ISO_8859_1;
     }
 
     @Override

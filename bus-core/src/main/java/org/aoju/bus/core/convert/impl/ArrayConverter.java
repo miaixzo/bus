@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.core.convert.impl;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.convert.ConverterRegistry;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.IterUtils;
 import org.aoju.bus.core.utils.StringUtils;

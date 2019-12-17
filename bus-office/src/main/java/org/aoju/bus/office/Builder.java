@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.office;
 
 import com.sun.star.beans.PropertyValue;
@@ -50,24 +50,6 @@ import java.util.stream.Stream;
 public final class Builder {
 
     /**
-     * 默认office 信息
-     */
-    private static final String EXECUTABLE_DEFAULT = "program/soffice.bin";
-    /**
-     * 早期 office 信息
-     */
-    private static final String EXECUTABLE_MAC = "program/soffice";
-    /**
-     * MacOS office 信息
-     */
-    private static final String EXECUTABLE_MAC_41 = "MacOS/soffice";
-
-    /**
-     * Windows office 信息
-     */
-    private static final String EXECUTABLE_WINDOWS = "program/soffice.exe";
-
-    /**
      * 连接到office的默认端口号.
      */
     public static final int DEFAULT_PORT_NUMBER = 8102;
@@ -85,7 +67,6 @@ public final class Builder {
      * 默认: 0.25秒
      */
     public static final long DEFAULT_RETRY_INTERVAL = 250L;
-
     /**
      * 执行进程调用时的默认超时(启动/终止).
      * 默认:2分钟
@@ -104,7 +85,6 @@ public final class Builder {
      * 有关OpenGL使用的默认行为.
      */
     public static final boolean DEFAULT_DISABLE_OPENGL = false;
-
     /**
      * 执行进程调用时每次尝试之间的最小延迟值(开始/终止).
      * 默认:没有延迟
@@ -115,36 +95,44 @@ public final class Builder {
      * 默认:10秒
      */
     public static final long MAX_PROCESS_RETRY_INTERVAL = 10000L;
-
     /**
      * 转换队列中任务的默认最大生存时间.
      * 默认:30秒
      */
     public static final long DEFAULT_TASK_QUEUE_TIMEOUT = 30000L;
-
     /**
      * 启动具有相同URL的office进程时的默认行为已经存在.
      */
     public static final boolean DEFAULT_KILL_EXISTING_PROCESS = true;
-
     /**
      * 处理任务时的默认超时.
      * 默认:2分钟
      */
     public static final long DEFAULT_TASK_EXECUTION_TIMEOUT = 120000L;
-
-
     public static final String ERROR_MESSAGE_STORE = "Could not store document: ";
     public static final String FILTER_DATA = "FilterData";
     public static final String FILTER_DATA_PREFIX_PARAM = "fd";
     public static final String LOAD_PROPERTIES_PREFIX_PARAM = "l";
     public static final String STORE_PROPERTIES_PREFIX_PARAM = "s";
-
     public static final long PID_NOT_FOUND = -2;
     public static final long PID_UNKNOWN = -1;
-
-
     public static final boolean DEFAULT_CLOSE_STREAM = true;
+    /**
+     * 默认office 信息
+     */
+    private static final String EXECUTABLE_DEFAULT = "program/soffice.bin";
+    /**
+     * 早期 office 信息
+     */
+    private static final String EXECUTABLE_MAC = "program/soffice";
+    /**
+     * MacOS office 信息
+     */
+    private static final String EXECUTABLE_MAC_41 = "MacOS/soffice";
+    /**
+     * Windows office 信息
+     */
+    private static final String EXECUTABLE_WINDOWS = "program/soffice.exe";
 
     /**
      * 找到最好的进程管理器，它将用于检索进程PID并通过PID杀死进程.

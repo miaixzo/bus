@@ -97,7 +97,7 @@ public class InputStreamResource implements Resource {
 
     @Override
     public String readUtf8Str() throws InstrumentException {
-        return readStr(org.aoju.bus.core.consts.Charset.UTF_8);
+        return readStr(org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     @Override

@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.codec;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.util.HashMap;

@@ -25,8 +25,8 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.HttpClient;
 import org.aoju.bus.oauth.Builder;

@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.FileType;
-import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
@@ -209,7 +209,7 @@ public class UriUtils {
      * @since 3.1.9
      */
     public static String encode(String url) throws InstrumentException {
-        return encode(url, org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8);
+        return encode(url, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -220,7 +220,7 @@ public class UriUtils {
      * @return 编码后的URL
      */
     public static String encodeAll(String url) {
-        return encodeAll(url, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encodeAll(url, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -708,7 +708,7 @@ public class UriUtils {
     }
 
     /**
-     * 应用{@link #encode(String，Charset)}到所有给定的URI变量值.
+     * 应用{@link #encode(String, Charset)}到所有给定的URI变量值.
      *
      * @param uriVariables 要编码的URI变量值
      * @return 编码的字符串
@@ -725,7 +725,7 @@ public class UriUtils {
     }
 
     /**
-     * 应用{@link #encode(String，Charset)}到所有给定的URI变量值
+     * 应用{@link #encode(String, Charset)}到所有给定的URI变量值
      *
      * @param uriVariables 要编码的URI变量值
      * @return 编码的字符串
@@ -1011,7 +1011,7 @@ public class UriUtils {
             return Normal.EMPTY;
         }
         if (null == charset) {// 默认编码为系统编码
-            charset = org.aoju.bus.core.consts.Charset.UTF_8;
+            charset = org.aoju.bus.core.lang.Charset.UTF_8;
         }
 
         final StringBuilder sb = new StringBuilder();

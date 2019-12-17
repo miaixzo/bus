@@ -36,15 +36,9 @@ import java.util.Iterator;
  */
 public class IteratorEnumeration<E> implements Enumeration<E> {
 
-    /**
-     * The iterator being decorated.
-     */
     private Iterator<? extends E> iterator;
 
-    /**
-     * Constructs a new <code>IteratorEnumeration</code> that will not function
-     * until {@link #setIterator(Iterator) setIterator} is invoked.
-     */
+
     public IteratorEnumeration() {
     }
 
@@ -58,9 +52,9 @@ public class IteratorEnumeration<E> implements Enumeration<E> {
     }
 
     /**
-     * Returns true if the underlying iterator has more elements.
+     * 如果底层迭代器有更多的元素，则返回true。
      *
-     * @return true if the underlying iterator has more elements
+     * @return 如果底层迭代器有更多的元素，则为true
      */
     @Override
     public boolean hasMoreElements() {
@@ -68,29 +62,19 @@ public class IteratorEnumeration<E> implements Enumeration<E> {
     }
 
     /**
-     * Returns the next element from the underlying iterator.
+     * 从基础迭代器返回下一个元素.
      *
-     * @return the next element from the underlying iterator.
+     * @return 底层迭代器的下一个元素.
      */
     @Override
     public E nextElement() {
         return iterator.next();
     }
 
-    /**
-     * Returns the underlying iterator.
-     *
-     * @return the underlying iterator
-     */
     public Iterator<? extends E> getIterator() {
         return iterator;
     }
 
-    /**
-     * Sets the underlying iterator.
-     *
-     * @param iterator the new underlying iterator
-     */
     public void setIterator(final Iterator<? extends E> iterator) {
         this.iterator = iterator;
     }

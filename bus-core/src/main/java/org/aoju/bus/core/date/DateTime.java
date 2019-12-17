@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.ObjectUtils;

@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.core.loader;
 
-import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.UriResource;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.utils.UriUtils;
 
 import java.io.File;

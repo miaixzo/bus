@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.forest;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.algorithm.SecureRandom;
 import org.aoju.bus.forest.algorithm.SymmetricSecureKey;

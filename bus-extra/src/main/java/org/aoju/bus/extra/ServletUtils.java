@@ -25,9 +25,9 @@ package org.aoju.bus.extra;
 
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
-import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.consts.Httpd;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Httpd;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 

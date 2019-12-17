@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.bodys;
 
-import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Internal;
 
@@ -42,11 +42,11 @@ import java.nio.charset.Charset;
 public abstract class RequestBody {
 
     public static RequestBody create(MediaType contentType, String content) {
-        Charset charset = org.aoju.bus.core.consts.Charset.UTF_8;
+        Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
         if (contentType != null) {
             charset = contentType.charset();
             if (charset == null) {
-                charset = org.aoju.bus.core.consts.Charset.UTF_8;
+                charset = org.aoju.bus.core.lang.Charset.UTF_8;
                 contentType = MediaType.valueOf(contentType + "; charset=utf-8");
             }
         }

@@ -94,7 +94,6 @@ public final class HashSource extends ForwardSource {
         if (result != -1L) {
             long start = sink.size - result;
 
-            // Find the first segment that has new bytes.
             long offset = sink.size;
             Segment s = sink.head;
             while (offset > start) {
@@ -102,7 +101,6 @@ public final class HashSource extends ForwardSource {
                 offset -= (s.limit - s.pos);
             }
 
-            // Hash that segment and all the rest until the end.
             while (offset < sink.size) {
                 int pos = (int) (s.pos + start - offset);
                 if (messageDigest != null) {

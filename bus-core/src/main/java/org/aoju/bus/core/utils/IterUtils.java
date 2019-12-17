@@ -563,11 +563,6 @@ public class IterUtils {
 
         private final Enumeration<E> e;
 
-        /**
-         * 构造
-         *
-         * @param enumeration {@link Enumeration}对象
-         */
         public EnumerationIter(Enumeration<E> enumeration) {
             this.e = enumeration;
         }
@@ -593,4 +588,5 @@ public class IterUtils {
         }
 
     }
+
 }

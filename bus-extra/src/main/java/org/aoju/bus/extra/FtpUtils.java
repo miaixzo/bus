@@ -88,7 +88,7 @@ public class FtpUtils extends AbstractFtp {
      * @param password 密码
      */
     public FtpUtils(String host, int port, String user, String password) {
-        this(host, port, user, password, org.aoju.bus.core.consts.Charset.UTF_8);
+        this(host, port, user, password, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

@@ -24,11 +24,11 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.consts.FileType;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.image.Image;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import javax.imageio.*;
@@ -49,8 +49,8 @@ import java.util.Random;
 
 /**
  * 图片处理工具类：
- * 功能：缩放图像、切割图像、旋转、图像类型转换、彩色转黑白、文字水印、图片水印等
- * 参考：http://blog.csdn.net/zhangzhikaixinya/article/details/8459400
+ * 功能：缩放图像、切割图像、旋转、图像类型转换
+ * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
  * @version 5.3.2

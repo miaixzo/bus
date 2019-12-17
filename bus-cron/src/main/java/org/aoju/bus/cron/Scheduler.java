@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.thread.ExecutorBuilder;
 import org.aoju.bus.core.thread.ThreadBuilder;

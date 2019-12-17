@@ -29,6 +29,7 @@ import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
 
@@ -44,83 +45,6 @@ import java.util.*;
  * @since JDK 1.8+
  */
 public class ArrayUtils {
-
-    /**
-     * {@code Object} array.
-     */
-    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-    /**
-     * {@code Class} array.
-     */
-    public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
-    /**
-     * {@code String} array.
-     */
-    public static final String[] EMPTY_STRING_ARRAY = new String[0];
-    /**
-     * {@code long} array.
-     */
-    public static final long[] EMPTY_LONG_ARRAY = new long[0];
-    /**
-     * {@code Long} array.
-     */
-    public static final Long[] EMPTY_LONG_OBJECT_ARRAY = new Long[0];
-    /**
-     * {@code int} array.
-     */
-    public static final int[] EMPTY_INT_ARRAY = new int[0];
-    /**
-     * {@code Integer} array.
-     */
-    public static final Integer[] EMPTY_INTEGER_OBJECT_ARRAY = new Integer[0];
-    /**
-     * {@code short} array.
-     */
-    public static final short[] EMPTY_SHORT_ARRAY = new short[0];
-    /**
-     * {@code Short} array.
-     */
-    public static final Short[] EMPTY_SHORT_OBJECT_ARRAY = new Short[0];
-    /**
-     * {@code byte} array.
-     */
-    public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-    /**
-     * {@code Byte} array.
-     */
-    public static final Byte[] EMPTY_BYTE_OBJECT_ARRAY = new Byte[0];
-    /**
-     * {@code double} array.
-     */
-    public static final double[] EMPTY_DOUBLE_ARRAY = new double[0];
-    /**
-     * {@code Double} array.
-     */
-    public static final Double[] EMPTY_DOUBLE_OBJECT_ARRAY = new Double[0];
-    /**
-     * {@code float} array.
-     */
-    public static final float[] EMPTY_FLOAT_ARRAY = new float[0];
-    /**
-     * {@code Float} array.
-     */
-    public static final Float[] EMPTY_FLOAT_OBJECT_ARRAY = new Float[0];
-    /**
-     * {@code boolean} array.
-     */
-    public static final boolean[] EMPTY_BOOLEAN_ARRAY = new boolean[0];
-    /**
-     * {@code Boolean} array.
-     */
-    public static final Boolean[] EMPTY_BOOLEAN_OBJECT_ARRAY = new Boolean[0];
-    /**
-     * {@code char} array.
-     */
-    public static final char[] EMPTY_CHAR_ARRAY = new char[0];
-    /**
-     * {@code Character} array.
-     */
-    public static final Character[] EMPTY_CHARACTER_OBJECT_ARRAY = new Character[0];
 
     /**
      * 列表或数组中没有找到元素时的索引值 : {@code -1}.
@@ -400,7 +324,7 @@ public class ArrayUtils {
      */
     public static Object[] nullToEmpty(final Object[] array) {
         if (isEmpty(array)) {
-            return EMPTY_OBJECT_ARRAY;
+            return Normal.EMPTY_OBJECT_ARRAY;
         }
         return array;
     }
@@ -413,7 +337,7 @@ public class ArrayUtils {
      */
     public static Class<?>[] nullToEmpty(final Class<?>[] array) {
         if (isEmpty(array)) {
-            return EMPTY_CLASS_ARRAY;
+            return Normal.EMPTY_CLASS_ARRAY;
         }
         return array;
     }
@@ -426,7 +350,7 @@ public class ArrayUtils {
      */
     public static String[] nullToEmpty(final String[] array) {
         if (isEmpty(array)) {
-            return EMPTY_STRING_ARRAY;
+            return Normal.EMPTY_STRING_ARRAY;
         }
         return array;
     }
@@ -439,7 +363,7 @@ public class ArrayUtils {
      */
     public static long[] nullToEmpty(final long[] array) {
         if (isEmpty(array)) {
-            return EMPTY_LONG_ARRAY;
+            return Normal.EMPTY_LONG_ARRAY;
         }
         return array;
     }
@@ -452,7 +376,7 @@ public class ArrayUtils {
      */
     public static int[] nullToEmpty(final int[] array) {
         if (isEmpty(array)) {
-            return EMPTY_INT_ARRAY;
+            return Normal.EMPTY_INT_ARRAY;
         }
         return array;
     }
@@ -465,7 +389,7 @@ public class ArrayUtils {
      */
     public static short[] nullToEmpty(final short[] array) {
         if (isEmpty(array)) {
-            return EMPTY_SHORT_ARRAY;
+            return Normal.EMPTY_SHORT_ARRAY;
         }
         return array;
     }
@@ -478,7 +402,7 @@ public class ArrayUtils {
      */
     public static char[] nullToEmpty(final char[] array) {
         if (isEmpty(array)) {
-            return EMPTY_CHAR_ARRAY;
+            return Normal.EMPTY_CHAR_ARRAY;
         }
         return array;
     }
@@ -491,7 +415,7 @@ public class ArrayUtils {
      */
     public static byte[] nullToEmpty(final byte[] array) {
         if (isEmpty(array)) {
-            return EMPTY_BYTE_ARRAY;
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         return array;
     }
@@ -504,7 +428,7 @@ public class ArrayUtils {
      */
     public static double[] nullToEmpty(final double[] array) {
         if (isEmpty(array)) {
-            return EMPTY_DOUBLE_ARRAY;
+            return Normal.EMPTY_DOUBLE_ARRAY;
         }
         return array;
     }
@@ -517,7 +441,7 @@ public class ArrayUtils {
      */
     public static float[] nullToEmpty(final float[] array) {
         if (isEmpty(array)) {
-            return EMPTY_FLOAT_ARRAY;
+            return Normal.EMPTY_FLOAT_ARRAY;
         }
         return array;
     }
@@ -530,7 +454,7 @@ public class ArrayUtils {
      */
     public static boolean[] nullToEmpty(final boolean[] array) {
         if (isEmpty(array)) {
-            return EMPTY_BOOLEAN_ARRAY;
+            return Normal.EMPTY_BOOLEAN_ARRAY;
         }
         return array;
     }
@@ -543,7 +467,7 @@ public class ArrayUtils {
      */
     public static Long[] nullToEmpty(final Long[] array) {
         if (isEmpty(array)) {
-            return EMPTY_LONG_OBJECT_ARRAY;
+            return Normal.EMPTY_LONG_OBJECT_ARRAY;
         }
         return array;
     }
@@ -556,7 +480,7 @@ public class ArrayUtils {
      */
     public static Integer[] nullToEmpty(final Integer[] array) {
         if (isEmpty(array)) {
-            return EMPTY_INTEGER_OBJECT_ARRAY;
+            return Normal.EMPTY_INTEGER_OBJECT_ARRAY;
         }
         return array;
     }
@@ -569,7 +493,7 @@ public class ArrayUtils {
      */
     public static Short[] nullToEmpty(final Short[] array) {
         if (isEmpty(array)) {
-            return EMPTY_SHORT_OBJECT_ARRAY;
+            return Normal.EMPTY_SHORT_OBJECT_ARRAY;
         }
         return array;
     }
@@ -582,7 +506,7 @@ public class ArrayUtils {
      */
     public static Character[] nullToEmpty(final Character[] array) {
         if (isEmpty(array)) {
-            return EMPTY_CHARACTER_OBJECT_ARRAY;
+            return Normal.EMPTY_CHARACTER_OBJECT_ARRAY;
         }
         return array;
     }
@@ -595,7 +519,7 @@ public class ArrayUtils {
      */
     public static Byte[] nullToEmpty(final Byte[] array) {
         if (isEmpty(array)) {
-            return EMPTY_BYTE_OBJECT_ARRAY;
+            return Normal.EMPTY_BYTE_OBJECT_ARRAY;
         }
         return array;
     }
@@ -608,7 +532,7 @@ public class ArrayUtils {
      */
     public static Double[] nullToEmpty(final Double[] array) {
         if (isEmpty(array)) {
-            return EMPTY_DOUBLE_OBJECT_ARRAY;
+            return Normal.EMPTY_DOUBLE_OBJECT_ARRAY;
         }
         return array;
     }
@@ -621,7 +545,7 @@ public class ArrayUtils {
      */
     public static Float[] nullToEmpty(final Float[] array) {
         if (isEmpty(array)) {
-            return EMPTY_FLOAT_OBJECT_ARRAY;
+            return Normal.EMPTY_FLOAT_OBJECT_ARRAY;
         }
         return array;
     }
@@ -634,7 +558,7 @@ public class ArrayUtils {
      */
     public static Boolean[] nullToEmpty(final Boolean[] array) {
         if (isEmpty(array)) {
-            return EMPTY_BOOLEAN_OBJECT_ARRAY;
+            return Normal.EMPTY_BOOLEAN_OBJECT_ARRAY;
         }
         return array;
     }
@@ -691,7 +615,7 @@ public class ArrayUtils {
         }
         final int newSize = endIndex - startIndex;
         if (newSize <= 0) {
-            return EMPTY_LONG_ARRAY;
+            return Normal.EMPTY_LONG_ARRAY;
         }
 
         final long[] subarray = new long[newSize];
@@ -720,7 +644,7 @@ public class ArrayUtils {
         }
         final int newSize = endIndex - startIndex;
         if (newSize <= 0) {
-            return EMPTY_INT_ARRAY;
+            return Normal.EMPTY_INT_ARRAY;
         }
 
         final int[] subarray = new int[newSize];
@@ -749,7 +673,7 @@ public class ArrayUtils {
         }
         final int newSize = endIndex - startIndex;
         if (newSize <= 0) {
-            return EMPTY_SHORT_ARRAY;
+            return Normal.EMPTY_SHORT_ARRAY;
         }
 
         final short[] subarray = new short[newSize];
@@ -778,7 +702,7 @@ public class ArrayUtils {
         }
         final int newSize = endIndex - startIndex;
         if (newSize <= 0) {
-            return EMPTY_CHAR_ARRAY;
+            return Normal.EMPTY_CHAR_ARRAY;
         }
 
         final char[] subarray = new char[newSize];
@@ -807,7 +731,7 @@ public class ArrayUtils {
         }
         final int newSize = endIndex - startIndex;
         if (newSize <= 0) {
-            return EMPTY_BYTE_ARRAY;
+            return Normal.EMPTY_BYTE_ARRAY;
         }
 
         final byte[] subarray = new byte[newSize];
@@ -836,7 +760,7 @@ public class ArrayUtils {
         }
         final int newSize = endIndex - startIndex;
         if (newSize <= 0) {
-            return EMPTY_DOUBLE_ARRAY;
+            return Normal.EMPTY_DOUBLE_ARRAY;
         }
 
         final double[] subarray = new double[newSize];
@@ -865,7 +789,7 @@ public class ArrayUtils {
         }
         final int newSize = endIndex - startIndex;
         if (newSize <= 0) {
-            return EMPTY_FLOAT_ARRAY;
+            return Normal.EMPTY_FLOAT_ARRAY;
         }
 
         final float[] subarray = new float[newSize];
@@ -894,7 +818,7 @@ public class ArrayUtils {
         }
         final int newSize = endIndex - startIndex;
         if (newSize <= 0) {
-            return EMPTY_BOOLEAN_ARRAY;
+            return Normal.EMPTY_BOOLEAN_ARRAY;
         }
 
         final boolean[] subarray = new boolean[newSize];
@@ -3343,7 +3267,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_CHAR_ARRAY;
+            return Normal.EMPTY_CHAR_ARRAY;
         }
         final char[] result = new char[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3365,7 +3289,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_CHAR_ARRAY;
+            return Normal.EMPTY_CHAR_ARRAY;
         }
         final char[] result = new char[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3387,7 +3311,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_CHARACTER_OBJECT_ARRAY;
+            return Normal.EMPTY_CHARACTER_OBJECT_ARRAY;
         }
         final Character[] result = new Character[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3408,7 +3332,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_LONG_ARRAY;
+            return Normal.EMPTY_LONG_ARRAY;
         }
         final long[] result = new long[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3430,7 +3354,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_LONG_ARRAY;
+            return Normal.EMPTY_LONG_ARRAY;
         }
         final long[] result = new long[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3452,7 +3376,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_LONG_OBJECT_ARRAY;
+            return Normal.EMPTY_LONG_OBJECT_ARRAY;
         }
         final Long[] result = new Long[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3474,7 +3398,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_INT_ARRAY;
+            return Normal.EMPTY_INT_ARRAY;
         }
         final int[] result = new int[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3496,7 +3420,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_INT_ARRAY;
+            return Normal.EMPTY_INT_ARRAY;
         }
         final int[] result = new int[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3518,7 +3442,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_INTEGER_OBJECT_ARRAY;
+            return Normal.EMPTY_INTEGER_OBJECT_ARRAY;
         }
         final Integer[] result = new Integer[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3540,7 +3464,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_SHORT_ARRAY;
+            return Normal.EMPTY_SHORT_ARRAY;
         }
         final short[] result = new short[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3562,7 +3486,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_SHORT_ARRAY;
+            return Normal.EMPTY_SHORT_ARRAY;
         }
         final short[] result = new short[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3584,7 +3508,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_SHORT_OBJECT_ARRAY;
+            return Normal.EMPTY_SHORT_OBJECT_ARRAY;
         }
         final Short[] result = new Short[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3606,7 +3530,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_BYTE_ARRAY;
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         final byte[] result = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3628,7 +3552,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_BYTE_ARRAY;
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         final byte[] result = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3650,7 +3574,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_BYTE_OBJECT_ARRAY;
+            return Normal.EMPTY_BYTE_OBJECT_ARRAY;
         }
         final Byte[] result = new Byte[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3672,7 +3596,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_DOUBLE_ARRAY;
+            return Normal.EMPTY_DOUBLE_ARRAY;
         }
         final double[] result = new double[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3694,7 +3618,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_DOUBLE_ARRAY;
+            return Normal.EMPTY_DOUBLE_ARRAY;
         }
         final double[] result = new double[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3716,7 +3640,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_DOUBLE_OBJECT_ARRAY;
+            return Normal.EMPTY_DOUBLE_OBJECT_ARRAY;
         }
         final Double[] result = new Double[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3738,7 +3662,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_FLOAT_ARRAY;
+            return Normal.EMPTY_FLOAT_ARRAY;
         }
         final float[] result = new float[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3760,7 +3684,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_FLOAT_ARRAY;
+            return Normal.EMPTY_FLOAT_ARRAY;
         }
         final float[] result = new float[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3782,7 +3706,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_FLOAT_OBJECT_ARRAY;
+            return Normal.EMPTY_FLOAT_OBJECT_ARRAY;
         }
         final Float[] result = new Float[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3837,7 +3761,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_BOOLEAN_ARRAY;
+            return Normal.EMPTY_BOOLEAN_ARRAY;
         }
         final boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3859,7 +3783,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_BOOLEAN_ARRAY;
+            return Normal.EMPTY_BOOLEAN_ARRAY;
         }
         final boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -3881,7 +3805,7 @@ public class ArrayUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_BOOLEAN_OBJECT_ARRAY;
+            return Normal.EMPTY_BOOLEAN_OBJECT_ARRAY;
         }
         final Boolean[] result = new Boolean[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -4096,10 +4020,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(null, null)     = null
@@ -4110,14 +4033,12 @@ public class ArrayUtils {
      * ArrayUtils.addAll(["a", "b", "c"], ["1", "2", "3"]) = ["a", "b", "c", "1", "2", "3"]
      * </pre>
      *
-     * @param <T>    the component type of the array
-     * @param array1 the first array whose elements are added to the new array, may be {@code null}
-     * @param array2 the second array whose elements are added to the new array, may be {@code null}
-     * @return The new array, {@code null} if both arrays are {@code null}.
-     * The type of the new array is the type of the first array,
-     * unless the first array is null, in which case the type is the same as the second array.
-     * @throws IllegalArgumentException if the array types are incompatible
-     * @since 2.1.0
+     * @param <T>    数组的组件类型
+     * @param array1 将元素添加到新数组的第一个数组可以是{@code null}
+     * @param array2 将元素添加到新数组的第二个数组可以是{@code null}
+     * @return T如果两个数组都是{@code null}，则为{@code null}.
+     * 新数组的类型是第一个数组的类型，除非第一个数组为空，否则类型与第二个数组相同.
+     * @throws IllegalArgumentException 如果数组类型不兼容
      */
     public static <T> T[] addAll(final T[] array1, final T... array2) {
         if (array1 == null) {
@@ -4131,27 +4052,20 @@ public class ArrayUtils {
         try {
             System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
         } catch (final ArrayStoreException ase) {
-            // Check if problem was due to incompatible types
-            /*
-             * We do this here, rather than before the copy because:
-             * - it would be a wasted check most of the time
-             * - safer, in case check turns out to be too strict
-             */
             final Class<?> type2 = array2.getClass().getComponentType();
             if (!type1.isAssignableFrom(type2)) {
                 throw new IllegalArgumentException("Cannot store " + type2.getName() + " in an array of "
                         + type1.getName(), ase);
             }
-            throw ase; // No, so rethrow original
+            throw ase;
         }
         return joinedArray;
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(array1, null)   = cloned copy of array1
@@ -4159,10 +4073,9 @@ public class ArrayUtils {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 the first array whose elements are added to the new array.
-     * @param array2 the second array whose elements are added to the new array.
-     * @return The new boolean[] array.
-     * @since 2.1.0
+     * @param array1 将元素添加到新数组中的第一个数组.
+     * @param array2 第二个数组，其元素被添加到新数组中.
+     * @return 新的 boolean[] 数组.
      */
     public static boolean[] addAll(final boolean[] array1, final boolean... array2) {
         if (array1 == null) {
@@ -4177,10 +4090,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(array1, null)   = cloned copy of array1
@@ -4188,10 +4100,9 @@ public class ArrayUtils {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 the first array whose elements are added to the new array.
-     * @param array2 the second array whose elements are added to the new array.
-     * @return The new char[] array.
-     * @since 2.1.0
+     * @param array1 将元素添加到新数组中的第一个数组.
+     * @param array2 第二个数组，其元素被添加到新数组中.
+     * @return 新的 char[] 数组.
      */
     public static char[] addAll(final char[] array1, final char... array2) {
         if (array1 == null) {
@@ -4206,10 +4117,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(array1, null)   = cloned copy of array1
@@ -4217,10 +4127,9 @@ public class ArrayUtils {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 the first array whose elements are added to the new array.
-     * @param array2 the second array whose elements are added to the new array.
-     * @return The new byte[] array.
-     * @since 2.1.0
+     * @param array1 将元素添加到新数组中的第一个数组.
+     * @param array2 第二个数组，其元素被添加到新数组中.
+     * @return 新的 byte[] 数组.
      */
     public static byte[] addAll(final byte[] array1, final byte... array2) {
         if (array1 == null) {
@@ -4235,10 +4144,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(array1, null)   = cloned copy of array1
@@ -4246,10 +4154,9 @@ public class ArrayUtils {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 the first array whose elements are added to the new array.
-     * @param array2 the second array whose elements are added to the new array.
-     * @return The new short[] array.
-     * @since 2.1.0
+     * @param array1 将元素添加到新数组中的第一个数组.
+     * @param array2 第二个数组，其元素被添加到新数组中.
+     * @return 新的 short[] 数组.
      */
     public static short[] addAll(final short[] array1, final short... array2) {
         if (array1 == null) {
@@ -4264,10 +4171,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(array1, null)   = cloned copy of array1
@@ -4275,10 +4181,9 @@ public class ArrayUtils {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 the first array whose elements are added to the new array.
-     * @param array2 the second array whose elements are added to the new array.
-     * @return The new int[] array.
-     * @since 2.1.0
+     * @param array1 将元素添加到新数组中的第一个数组.
+     * @param array2 第二个数组，其元素被添加到新数组中.
+     * @return 新的 int[] 数组.
      */
     public static int[] addAll(final int[] array1, final int... array2) {
         if (array1 == null) {
@@ -4293,10 +4198,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(array1, null)   = cloned copy of array1
@@ -4304,10 +4208,9 @@ public class ArrayUtils {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 the first array whose elements are added to the new array.
-     * @param array2 the second array whose elements are added to the new array.
-     * @return The new long[] array.
-     * @since 2.1.0
+     * @param array1 将元素添加到新数组中的第一个数组.
+     * @param array2 第二个数组，其元素被添加到新数组中.
+     * @return 新的 long[] 数组.
      */
     public static long[] addAll(final long[] array1, final long... array2) {
         if (array1 == null) {
@@ -4322,10 +4225,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(array1, null)   = cloned copy of array1
@@ -4333,10 +4235,9 @@ public class ArrayUtils {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 the first array whose elements are added to the new array.
-     * @param array2 the second array whose elements are added to the new array.
-     * @return The new float[] array.
-     * @since 2.1.0
+     * @param array1 将元素添加到新数组中的第一个数组.
+     * @param array2 第二个数组，其元素被添加到新数组中.
+     * @return 新的 float[] 数组.
      */
     public static float[] addAll(final float[] array1, final float... array2) {
         if (array1 == null) {
@@ -4351,10 +4252,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Adds all the elements of the given arrays into a new array.
-     * <p>The new array contains all of the element of {@code array1} followed
-     * by all of the elements {@code array2}. When an array is returned, it is always
-     * a new array.
+     * 将给定数组的所有元素添加到新数组中.
+     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
+     * 当一个数组被返回时，它总是一个新的数组.
      *
      * <pre>
      * ArrayUtils.addAll(array1, null)   = cloned copy of array1
@@ -4362,10 +4262,9 @@ public class ArrayUtils {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 the first array whose elements are added to the new array.
-     * @param array2 the second array whose elements are added to the new array.
-     * @return The new double[] array.
-     * @since 2.1.0
+     * @param array1 将元素添加到新数组中的第一个数组.
+     * @param array2 第二个数组，其元素被添加到新数组中.
+     * @return 新的 double[] 数组.
      */
     public static double[] addAll(final double[] array1, final double... array2) {
         if (array1 == null) {
@@ -4380,15 +4279,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element, unless the element itself is null,
-     * in which case the return type is Object[]
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，
+     * 其组件类型与元素相同，除非元素本身为空，否则返回类型为Object[]
      *
      * <pre>
      * ArrayUtils.add(null, null)      = IllegalArgumentException
@@ -4398,15 +4292,12 @@ public class ArrayUtils {
      * ArrayUtils.add(["a", "b"], "c") = ["a", "b", "c"]
      * </pre>
      *
-     * @param <T>     the component type of the array
-     * @param array   the array to "add" the element to, may be {@code null}
-     * @param element the object to add, may be {@code null}
-     * @return A new array containing the existing elements plus the new element
-     * The returned array type will be that of the input array (unless null),
-     * in which case it will have the same type as the element.
-     * If both are null, an IllegalArgumentException is thrown
-     * @throws IllegalArgumentException if both arguments are null
-     * @since 2.1.0
+     * @param <T>     数组的组件类型
+     * @param array   要“add”元素的数组可以是{@code null}
+     * @param element 要添加的对象可以是{@code null}
+     * @return 包含现有元素的新数组加上返回的新元素数组类型将是输入数组的类型(除非为空)，
+     * 在这种情况下，它将具有与元素相同的类型。如果两者都为空，则抛出IllegalArgumentException
+     * @throws IllegalArgumentException 如果两个参数都为空
      */
     public static <T> T[] add(final T[] array, final T element) {
         Class<?> type;
@@ -4423,14 +4314,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, true)          = [true]
@@ -4438,10 +4324,9 @@ public class ArrayUtils {
      * ArrayUtils.add([true, false], true) = [true, false, true]
      * </pre>
      *
-     * @param array   the array to copy and add the element to, may be {@code null}
-     * @param element the object to add at the last index of the new array
-     * @return A new array containing the existing elements plus the new element
-     * @since 2.1.0
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static boolean[] add(final boolean[] array, final boolean element) {
         final boolean[] newArray = (boolean[]) copyArrayGrow1(array, Boolean.TYPE);
@@ -4450,14 +4335,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0)   = [0]
@@ -4465,10 +4345,9 @@ public class ArrayUtils {
      * ArrayUtils.add([1, 0], 1) = [1, 0, 1]
      * </pre>
      *
-     * @param array   the array to copy and add the element to, may be {@code null}
-     * @param element the object to add at the last index of the new array
-     * @return A new array containing the existing elements plus the new element
-     * @since 2.1.0
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static byte[] add(final byte[] array, final byte element) {
         final byte[] newArray = (byte[]) copyArrayGrow1(array, Byte.TYPE);
@@ -4477,14 +4356,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, '0')       = ['0']
@@ -4492,10 +4366,9 @@ public class ArrayUtils {
      * ArrayUtils.add(['1', '0'], '1') = ['1', '0', '1']
      * </pre>
      *
-     * @param array   the array to copy and add the element to, may be {@code null}
-     * @param element the object to add at the last index of the new array
-     * @return A new array containing the existing elements plus the new element
-     * @since 2.1.0
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static char[] add(final char[] array, final char element) {
         final char[] newArray = (char[]) copyArrayGrow1(array, Character.TYPE);
@@ -4504,14 +4377,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0)   = [0]
@@ -4519,10 +4387,9 @@ public class ArrayUtils {
      * ArrayUtils.add([1, 0], 1) = [1, 0, 1]
      * </pre>
      *
-     * @param array   the array to copy and add the element to, may be {@code null}
-     * @param element the object to add at the last index of the new array
-     * @return A new array containing the existing elements plus the new element
-     * @since 2.1.0
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static double[] add(final double[] array, final double element) {
         final double[] newArray = (double[]) copyArrayGrow1(array, Double.TYPE);
@@ -4531,14 +4398,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0)   = [0]
@@ -4546,10 +4408,9 @@ public class ArrayUtils {
      * ArrayUtils.add([1, 0], 1) = [1, 0, 1]
      * </pre>
      *
-     * @param array   the array to copy and add the element to, may be {@code null}
-     * @param element the object to add at the last index of the new array
-     * @return A new array containing the existing elements plus the new element
-     * @since 2.1.0
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static float[] add(final float[] array, final float element) {
         final float[] newArray = (float[]) copyArrayGrow1(array, Float.TYPE);
@@ -4558,14 +4419,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0)   = [0]
@@ -4573,10 +4429,9 @@ public class ArrayUtils {
      * ArrayUtils.add([1, 0], 1) = [1, 0, 1]
      * </pre>
      *
-     * @param array   the array to copy and add the element to, may be {@code null}
-     * @param element the object to add at the last index of the new array
-     * @return A new array containing the existing elements plus the new element
-     * @since 2.1.0
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static int[] add(final int[] array, final int element) {
         final int[] newArray = (int[]) copyArrayGrow1(array, Integer.TYPE);
@@ -4585,14 +4440,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0)   = [0]
@@ -4600,10 +4450,9 @@ public class ArrayUtils {
      * ArrayUtils.add([1, 0], 1) = [1, 0, 1]
      * </pre>
      *
-     * @param array   the array to copy and add the element to, may be {@code null}
-     * @param element the object to add at the last index of the new array
-     * @return A new array containing the existing elements plus the new element
-     * @since 2.1.0
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static long[] add(final long[] array, final long element) {
         final long[] newArray = (long[]) copyArrayGrow1(array, Long.TYPE);
@@ -4612,14 +4461,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Copies the given array and adds the given element at the end of the new array.
-     *
-     * <p>The new array contains the same elements of the input
-     * array plus the given element in the last position. The component type of
-     * the new array is the same as that of the input array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0)   = [0]
@@ -4627,10 +4471,9 @@ public class ArrayUtils {
      * ArrayUtils.add([1, 0], 1) = [1, 0, 1]
      * </pre>
      *
-     * @param array   the array to copy and add the element to, may be {@code null}
-     * @param element the object to add at the last index of the new array
-     * @return A new array containing the existing elements plus the new element
-     * @since 2.1.0
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static short[] add(final short[] array, final short element) {
         final short[] newArray = (short[]) copyArrayGrow1(array, Short.TYPE);
@@ -4639,13 +4482,13 @@ public class ArrayUtils {
     }
 
     /**
-     * Returns a copy of the given array of size 1 greater than the argument.
-     * The last value of the array is left to the default value.
+     * 返回比参数大1的给定数组的副本.
+     * 数组的最后一个值保留为默认值.
      *
-     * @param array                 The array to copy, must not be {@code null}.
-     * @param newArrayComponentType If {@code array} is {@code null}, create a
-     *                              size 1 array of this type.
-     * @return A new copy of the array of size 1 greater than the input.
+     * @param array                 要复制的数组不能是{@code null}.
+     * @param newArrayComponentType 如果{@code数组}是{@code null}，
+     *                              则创建此类型的大小为1的数组.
+     * @return 比输入大1的数组的新副本.
      */
     private static Object copyArrayGrow1(final Object array, final Class<?> newArrayComponentType) {
         if (array != null) {
@@ -4658,17 +4501,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0, null)      = IllegalArgumentException
@@ -4678,18 +4513,14 @@ public class ArrayUtils {
      * ArrayUtils.add(["a", "b"], 3, "c") = ["a", "b", "c"]
      * </pre>
      *
-     * @param <T>     the component type of the array
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt; array.length).
-     * @throws IllegalArgumentException  if both array and element are null
-     *                                   may be removed in a future release. Please note the handling of {@code null} input arrays differs
-     *                                   in the new method: inserting {@code X} into a {@code null} array results in {@code null} not {@code X}.
+     * @param <T>     数组的组件类型
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static <T> T[] add(final T[] array, final int index, final T element) {
-        Class<?> clss = null;
+        Class<?> clss;
         if (array != null) {
             clss = array.getClass().getComponentType();
         } else if (element != null) {
@@ -4702,17 +4533,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0, true)          = [true]
@@ -4721,30 +4544,19 @@ public class ArrayUtils {
      * ArrayUtils.add([true, false], 1, true) = [true, true, false]
      * </pre>
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt; array.length).
-     *                                   may be removed in a future release. Please note the handling of {@code null} input arrays differs
-     *                                   in the new method: inserting {@code X} into a {@code null} array results in {@code null} not {@code X}.
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static boolean[] add(final boolean[] array, final int index, final boolean element) {
         return (boolean[]) add(array, index, Boolean.valueOf(element), Boolean.TYPE);
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add(null, 0, 'a')            = ['a']
@@ -4754,29 +4566,19 @@ public class ArrayUtils {
      * ArrayUtils.add(['a', 'b', 'c'], 1, 't') = ['a', 't', 'b', 'c']
      * </pre>
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt; array.length).
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static char[] add(final char[] array, final int index, final char element) {
         return (char[]) add(array, index, Character.valueOf(element), Character.TYPE);
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add([1], 0, 2)         = [2, 1]
@@ -4785,29 +4587,19 @@ public class ArrayUtils {
      * ArrayUtils.add([2, 6, 3], 2, 1)   = [2, 6, 1, 3]
      * </pre>
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt; array.length).
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static byte[] add(final byte[] array, final int index, final byte element) {
         return (byte[]) add(array, index, Byte.valueOf(element), Byte.TYPE);
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add([1], 0, 2)         = [2, 1]
@@ -4816,29 +4608,19 @@ public class ArrayUtils {
      * ArrayUtils.add([2, 6, 3], 2, 1)   = [2, 6, 1, 3]
      * </pre>
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt; array.length).
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static short[] add(final short[] array, final int index, final short element) {
         return (short[]) add(array, index, Short.valueOf(element), Short.TYPE);
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add([1], 0, 2)         = [2, 1]
@@ -4847,29 +4629,19 @@ public class ArrayUtils {
      * ArrayUtils.add([2, 6, 3], 2, 1)   = [2, 6, 1, 3]
      * </pre>
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt; array.length).
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static int[] add(final int[] array, final int index, final int element) {
         return (int[]) add(array, index, Integer.valueOf(element), Integer.TYPE);
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add([1L], 0, 2L)           = [2L, 1L]
@@ -4878,29 +4650,19 @@ public class ArrayUtils {
      * ArrayUtils.add([2L, 6L, 3L], 2, 1L)   = [2L, 6L, 1L, 3L]
      * </pre>
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt; array.length).
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static long[] add(final long[] array, final int index, final long element) {
         return (long[]) add(array, index, Long.valueOf(element), Long.TYPE);
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add([1.1f], 0, 2.2f)               = [2.2f, 1.1f]
@@ -4909,29 +4671,19 @@ public class ArrayUtils {
      * ArrayUtils.add([2.9f, 6.0f, 0.3f], 2, 1.0f)   = [2.9f, 6.0f, 1.0f, 0.3f]
      * </pre>
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt; array.length).
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static float[] add(final float[] array, final int index, final float element) {
         return (float[]) add(array, index, Float.valueOf(element), Float.TYPE);
     }
 
     /**
-     * <p>Inserts the specified element at the specified position in the array.
-     * Shifts the element currently at that position (if any) and any subsequent
-     * elements to the right (adds one to their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array plus the given element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, a new one element array is returned
-     * whose component type is the same as the element.
+     * 复制给定数组并在新数组的末尾添加给定元素.
+     * 新数组的组件类型与输入数组的组件类型相同.
+     * 如果输入数组是{@code null}，则返回一个新元素数组，其组件类型与元素相同.
      *
      * <pre>
      * ArrayUtils.add([1.1], 0, 2.2)              = [2.2, 1.1]
@@ -4940,27 +4692,24 @@ public class ArrayUtils {
      * ArrayUtils.add([2.9, 6.0, 0.3], 2, 1.0)    = [2.9, 6.0, 1.0, 0.3]
      * </pre>
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @return A new array containing the existing elements and the new element
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt; array.length).
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 包含现有元素和新元素的新数组
      */
     public static double[] add(final double[] array, final int index, final double element) {
         return (double[]) add(array, index, Double.valueOf(element), Double.TYPE);
     }
 
     /**
-     * Underlying implementation of add(array, index, element) methods.
-     * The last parameter is the class, which may not equal element.getClass
-     * for primitives.
+     * add(array, index, element) 方法的底层实现.
+     * 最后一个参数是类，它可能不等于元素element.getClass
      *
-     * @param array   the array to add the element to, may be {@code null}
-     * @param index   the position of the new object
-     * @param element the object to add
-     * @param clss    the type of the element being added
-     * @return A new array containing the existing elements and the new element
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param index   新对象的位置
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @param clss    要添加的元素的类型
+     * @return 包含现有元素和新元素的新数组
      */
     private static Object add(final Object array, final int index, final Object element, final Class<?> clss) {
         if (array == null) {
@@ -4985,17 +4734,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove(["a"], 0)           = []
@@ -5004,28 +4745,19 @@ public class ArrayUtils {
      * ArrayUtils.remove(["a", "b", "c"], 1) = ["a", "c"]
      * </pre>
      *
-     * @param <T>   the component type of the array
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
+     * @param <T>   数组的组件类型
+     * @param array 要从中删除的元素
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static <T> T[] remove(final T[] array, final int index) {
         return (T[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, "a")            = null
@@ -5035,12 +4767,10 @@ public class ArrayUtils {
      * ArrayUtils.removeElement(["a", "b", "a"], "a") = ["b", "a"]
      * </pre>
      *
-     * @param <T>     the component type of the array
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param <T>     数组的组件类型
+     * @param array   要复制并添加元素的数组可以是{@code null}
+     * @param element 要在新数组的最后一个索引处添加的对象
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static <T> T[] removeElement(final T[] array, final Object element) {
         final int index = indexOf(array, element);
@@ -5051,17 +4781,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove([true], 0)              = []
@@ -5070,28 +4792,18 @@ public class ArrayUtils {
      * ArrayUtils.remove([true, true, false], 1) = [true, false]
      * </pre>
      *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中删除的元素
+     * @param index 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static boolean[] remove(final boolean[] array, final int index) {
         return (boolean[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, true)                = null
@@ -5101,11 +4813,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElement([true, false, true], true) = [false, true]
      * </pre>
      *
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param array   要从中移除元素的数组
+     * @param element 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static boolean[] removeElement(final boolean[] array, final boolean element) {
         final int index = indexOf(array, element);
@@ -5116,17 +4826,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove([1], 0)          = []
@@ -5135,28 +4837,18 @@ public class ArrayUtils {
      * ArrayUtils.remove([1, 0, 1], 1)    = [1, 1]
      * </pre>
      *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中移除元素的数组
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static byte[] remove(final byte[] array, final int index) {
         return (byte[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1)        = null
@@ -5166,11 +4858,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElement([1, 0, 1], 1)   = [0, 1]
      * </pre>
      *
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param array   要从中移除元素的数组
+     * @param element 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static byte[] removeElement(final byte[] array, final byte element) {
         final int index = indexOf(array, element);
@@ -5181,17 +4871,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove(['a'], 0)           = []
@@ -5200,28 +4882,18 @@ public class ArrayUtils {
      * ArrayUtils.remove(['a', 'b', 'c'], 1) = ['a', 'c']
      * </pre>
      *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中移除元素的数组
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素..
      */
     public static char[] remove(final char[] array, final int index) {
         return (char[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, 'a')            = null
@@ -5231,11 +4903,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElement(['a', 'b', 'a'], 'a') = ['b', 'a']
      * </pre>
      *
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param array   要从中移除元素的数组
+     * @param element 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static char[] removeElement(final char[] array, final char element) {
         final int index = indexOf(array, element);
@@ -5246,17 +4916,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove([1.1], 0)           = []
@@ -5265,28 +4927,18 @@ public class ArrayUtils {
      * ArrayUtils.remove([2.5, 6.0, 3.8], 1) = [2.5, 3.8]
      * </pre>
      *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中移除元素的数组
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static double[] remove(final double[] array, final int index) {
         return (double[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1.1)            = null
@@ -5296,11 +4948,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElement([1.1, 2.3, 1.1], 1.1) = [2.3, 1.1]
      * </pre>
      *
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param array   要从中移除元素的数组
+     * @param element 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static double[] removeElement(final double[] array, final double element) {
         final int index = indexOf(array, element);
@@ -5311,17 +4961,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove([1.1], 0)           = []
@@ -5330,28 +4972,18 @@ public class ArrayUtils {
      * ArrayUtils.remove([2.5, 6.0, 3.8], 1) = [2.5, 3.8]
      * </pre>
      *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中移除元素的数组
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static float[] remove(final float[] array, final int index) {
         return (float[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1.1)            = null
@@ -5361,11 +4993,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElement([1.1, 2.3, 1.1], 1.1) = [2.3, 1.1]
      * </pre>
      *
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param array   要从中移除元素的数组
+     * @param element 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static float[] removeElement(final float[] array, final float element) {
         final int index = indexOf(array, element);
@@ -5376,17 +5006,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove([1], 0)         = []
@@ -5395,28 +5017,18 @@ public class ArrayUtils {
      * ArrayUtils.remove([2, 6, 3], 1)   = [2, 3]
      * </pre>
      *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中移除元素的数组
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static int[] remove(final int[] array, final int index) {
         return (int[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1)      = null
@@ -5426,11 +5038,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElement([1, 3, 1], 1) = [3, 1]
      * </pre>
      *
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param array   要从中移除元素的数组
+     * @param element 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static int[] removeElement(final int[] array, final int element) {
         final int index = indexOf(array, element);
@@ -5441,17 +5051,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove([1], 0)         = []
@@ -5460,28 +5062,18 @@ public class ArrayUtils {
      * ArrayUtils.remove([2, 6, 3], 1)   = [2, 3]
      * </pre>
      *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中移除元素的数组
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static long[] remove(final long[] array, final int index) {
         return (long[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1)      = null
@@ -5491,11 +5083,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElement([1, 3, 1], 1) = [3, 1]
      * </pre>
      *
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param array   要从中移除元素的数组
+     * @param element 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static long[] removeElement(final long[] array, final long element) {
         final int index = indexOf(array, element);
@@ -5506,17 +5096,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.remove([1], 0)         = []
@@ -5525,28 +5107,18 @@ public class ArrayUtils {
      * ArrayUtils.remove([2, 6, 3], 1)   = [2, 3]
      * </pre>
      *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中移除元素的数组
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static short[] remove(final short[] array, final int index) {
         return (short[]) remove((Object) array, index);
     }
 
     /**
-     * <p>Removes the first occurrence of the specified element from the
-     * specified array. All subsequent elements are shifted to the left
-     * (subtracts one from their indices). If the array doesn't contains
-     * such an element, no elements are removed from the array.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the first occurrence of the specified element. The component
-     * type of the returned array is always the same as that of the input
-     * array.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1)      = null
@@ -5556,11 +5128,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElement([1, 3, 1], 1) = [3, 1]
      * </pre>
      *
-     * @param array   the array to remove the element from, may be {@code null}
-     * @param element the element to be removed
-     * @return A new array containing the existing elements except the first
-     * occurrence of the specified element.
-     * @since 2.1.0
+     * @param array   要从中移除元素的数组
+     * @param element 要删除的元素
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     public static short[] removeElement(final short[] array, final short element) {
         final int index = indexOf(array, element);
@@ -5571,25 +5141,13 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the element at the specified position from the specified array.
-     * All subsequent elements are shifted to the left (subtracts one from
-     * their indices).
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
      *
-     * <p>This method returns a new array with the same elements of the input
-     * array except the element on the specified position. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
-     *
-     * @param array the array to remove the element from, may not be {@code null}
-     * @param index the position of the element to be removed
-     * @return A new array containing the existing elements except the element
-     * at the specified position.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 2.1.0
+     * @param array 要从中移除元素的数组
+     * @param index 要删除的元素的位置
+     * @return 一个新数组，包含指定位置的元素以外的现有元素.
      */
     private static Object remove(final Object array, final int index) {
         final int length = getLength(array);
@@ -5607,46 +5165,29 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll(["a", "b", "c"], 0, 2) = ["b"]
      * ArrayUtils.removeAll(["a", "b", "c"], 1, 2) = ["a"]
      * </pre>
      *
-     * @param <T>     the component type of the array
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param <T>     数组的组件类型
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static <T> T[] removeAll(final T[] array, final int... indices) {
         return (T[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, "a", "b")            = null
@@ -5657,12 +5198,10 @@ public class ArrayUtils {
      * ArrayUtils.removeElements(["a", "b", "a"], "a", "a") = ["b"]
      * </pre>
      *
-     * @param <T>    the component type of the array
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param <T>    数组的组件类型
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static <T> T[] removeElements(final T[] array, final T... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -5693,16 +5232,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5713,29 +5245,19 @@ public class ArrayUtils {
      * ArrayUtils.removeAll([2, 6, 3], 0, 1, 2) = []
      * </pre>
      *
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static byte[] removeAll(final byte[] array, final int... indices) {
         return (byte[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -5746,11 +5268,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElements([1, 3, 1], 1, 1) = [3]
      * </pre>
      *
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static byte[] removeElements(final byte[] array, final byte... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -5781,16 +5301,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5801,29 +5314,19 @@ public class ArrayUtils {
      * ArrayUtils.removeAll([2, 6, 3], 0, 1, 2) = []
      * </pre>
      *
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static short[] removeAll(final short[] array, final int... indices) {
         return (short[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -5834,11 +5337,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElements([1, 3, 1], 1, 1) = [3]
      * </pre>
      *
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static short[] removeElements(final short[] array, final short... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -5869,16 +5370,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5889,29 +5383,19 @@ public class ArrayUtils {
      * ArrayUtils.removeAll([2, 6, 3], 0, 1, 2) = []
      * </pre>
      *
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static int[] removeAll(final int[] array, final int... indices) {
         return (int[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -5922,11 +5406,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElements([1, 3, 1], 1, 1) = [3]
      * </pre>
      *
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static int[] removeElements(final int[] array, final int... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -5957,16 +5439,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5977,29 +5452,19 @@ public class ArrayUtils {
      * ArrayUtils.removeAll([2, 6, 3], 0, 1, 2) = []
      * </pre>
      *
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static char[] removeAll(final char[] array, final int... indices) {
         return (char[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -6010,11 +5475,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElements([1, 3, 1], 1, 1) = [3]
      * </pre>
      *
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static char[] removeElements(final char[] array, final char... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -6045,16 +5508,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -6065,29 +5521,19 @@ public class ArrayUtils {
      * ArrayUtils.removeAll([2, 6, 3], 0, 1, 2) = []
      * </pre>
      *
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static long[] removeAll(final long[] array, final int... indices) {
         return (long[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -6098,11 +5544,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElements([1, 3, 1], 1, 1) = [3]
      * </pre>
      *
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static long[] removeElements(final long[] array, final long... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -6133,16 +5577,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -6153,29 +5590,19 @@ public class ArrayUtils {
      * ArrayUtils.removeAll([2, 6, 3], 0, 1, 2) = []
      * </pre>
      *
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static float[] removeAll(final float[] array, final int... indices) {
         return (float[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -6186,11 +5613,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElements([1, 3, 1], 1, 1) = [3]
      * </pre>
      *
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static float[] removeElements(final float[] array, final float... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -6221,16 +5646,9 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -6241,29 +5659,19 @@ public class ArrayUtils {
      * ArrayUtils.removeAll([2, 6, 3], 0, 1, 2) = []
      * </pre>
      *
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static double[] removeAll(final double[] array, final int... indices) {
         return (double[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -6274,11 +5682,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElements([1, 3, 1], 1, 1) = [3]
      * </pre>
      *
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static double[] removeElements(final double[] array, final double... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -6309,45 +5715,28 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Removes the elements at the specified positions from the specified array.
-     * All remaining elements are shifted to the left.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except those at the specified positions. The component
-     * type of the returned array is always the same as that of the input
-     * array.
-     *
-     * <p>If the input array is {@code null}, an IndexOutOfBoundsException
-     * will be thrown, because in that case no valid index can be specified.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
      *
      * <pre>
      * ArrayUtils.removeAll([true, false, true], 0, 2) = [false]
      * ArrayUtils.removeAll([true, false, true], 1, 2) = [true]
      * </pre>
      *
-     * @param array   the array to remove the element from, may not be {@code null}
-     * @param indices the positions of the elements to be removed
-     * @return A new array containing the existing elements except those
-     * at the specified positions.
-     * @throws IndexOutOfBoundsException if any index is out of range
-     *                                   (index &lt; 0 || index &gt;= array.length), or if the array is {@code null}.
-     * @since 3.0.1
+     * @param array   要从中删除元素的数组可能不是{@code null}
+     * @param indices 要删除的元素的位置
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static boolean[] removeAll(final boolean[] array, final int... indices) {
         return (boolean[]) removeAll((Object) array, indices);
     }
 
     /**
-     * <p>Removes occurrences of specified elements, in specified quantities,
-     * from the specified array. All subsequent elements are shifted left.
-     * For any element-to-be-removed specified in greater quantities than
-     * contained in the original array, no change occurs beyond the
-     * removal of the existing matching items.
-     *
-     * <p>This method returns a new array with the same elements of the input
-     * array except for the earliest-encountered occurrences of the specified
-     * elements. The component type of the returned array is always the same
-     * as that of the input array.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
+     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
      * ArrayUtils.removeElements(null, true, false)               = null
@@ -6358,11 +5747,9 @@ public class ArrayUtils {
      * ArrayUtils.removeElements([true, false, true], true, true) = [false]
      * </pre>
      *
-     * @param array  the array to remove the element from, may be {@code null}
-     * @param values the elements to be removed
-     * @return A new array containing the existing elements except the
-     * earliest-encountered occurrences of the specified elements.
-     * @since 3.0.1
+     * @param array  要从中删除元素的数组可能不是{@code null}
+     * @param values 要删除的元素
+     * @return 一个新数组，包含指定位置之外的现有元素.
      */
     public static boolean[] removeElements(final boolean[] array, final boolean... values) {
         if (isEmpty(array) || isEmpty(values)) {
@@ -6393,21 +5780,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes multiple array elements specified by index.
+     * 删除由索引指定的多个数组元素.
      *
-     * @param array   source
-     * @param indices to remove
-     * @return new array of same type minus elements specified by unique values of {@code indices}
-     * @since 3.0.1
+     * @param array   源
+     * @param indices 删除
+     * @return 由{@code索引}的唯一值指定的相同类型的减元素的新数组
      */
-    // package protected for access by unit tests
     static Object removeAll(final Object array, final int... indices) {
         final int length = getLength(array);
-        int diff = 0; // number of distinct indexes, i.e. number of entries that will be removed
+        int diff = 0; // 不同索引的数量，即要删除的条目的数量
         final int[] clonedIndices = clone(indices);
         Arrays.sort(clonedIndices);
 
-        // identify length of result array
+        // 标识结果数组的长度
         if (isNotEmpty(clonedIndices)) {
             int i = clonedIndices.length;
             int prevIndex = length;
@@ -6424,18 +5809,19 @@ public class ArrayUtils {
             }
         }
 
-        // create result array
+        // 创建结果数组
         final Object result = Array.newInstance(array.getClass().getComponentType(), length - diff);
         if (diff < length) {
-            int end = length; // index just after last copy
-            int dest = length - diff; // number of entries so far not copied
+            // 在最后一个拷贝之后建立索引
+            int end = length;
+            // 到目前为止没有复制条目的数量
+            int dest = length - diff;
             for (int i = clonedIndices.length - 1; i >= 0; i--) {
                 final int index = clonedIndices[i];
                 if (end - index > 1) { // same as (cp > 0)
                     final int cp = end - index - 1;
                     dest -= cp;
                     System.arraycopy(array, index + 1, result, dest, cp);
-                    // Afer this copy, we still have room for dest items.
                 }
                 end = index;
             }
@@ -6447,12 +5833,11 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes multiple array elements specified by indices.
+     * 删除由索引指定的多个数组元素.
      *
-     * @param array   source
-     * @param indices to remove
-     * @return new array of same type minus elements specified by the set bits in {@code indices}
-     * @since 3.2.0
+     * @param array   源
+     * @param indices 删除
+     * @return 由{@code索引}的唯一值指定的相同类型的减元素的新数组
      */
     static Object removeAll(final Object array, final BitSet indices) {
         final int srcLength = getLength(array);
@@ -6478,13 +5863,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to the class's
-     * {@code compareTo} method.
+     * 该方法检查提供的数组是否按照类的{@code compareTo}方法排序.
      *
-     * @param array the array to check
-     * @param <T>   the datatype of the array to check, it must implement {@code Comparable}
-     * @return whether the array is sorted
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @param <T>   要检查数组的数据类型，必须实现{@code Comparable}
+     * @return 数组是否已排序
      */
     public static <T extends Comparable<? super T>> boolean isSorted(final T[] array) {
         return isSorted(array, new Comparator<T>() {
@@ -6497,13 +5880,12 @@ public class ArrayUtils {
 
 
     /**
-     * <p>This method checks whether the provided array is sorted according to the provided {@code Comparator}.
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array      the array to check
-     * @param comparator the {@code Comparator} to compare over
-     * @param <T>        the datatype of the array
-     * @return whether the array is sorted
-     * @since 3.5.0
+     * @param array      要检查的数组
+     * @param comparator 要比较的{@code Comparator}
+     * @param <T>        数组的数据类型
+     * @return 数组是否已排序
      */
     public static <T> boolean isSorted(final T[] array, final Comparator<T> comparator) {
         if (comparator == null) {
@@ -6528,11 +5910,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to natural ordering.
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array the array to check
-     * @return whether the array is sorted according to natural ordering
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @return 数组是否已排序
      */
     public static boolean isSorted(final int[] array) {
         if (array == null || array.length < 2) {
@@ -6553,11 +5934,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to natural ordering.
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array the array to check
-     * @return whether the array is sorted according to natural ordering
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @return 数组是否已排序
      */
     public static boolean isSorted(final long[] array) {
         if (array == null || array.length < 2) {
@@ -6578,11 +5958,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to natural ordering.
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array the array to check
-     * @return whether the array is sorted according to natural ordering
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @return 数组是否已排序
      */
     public static boolean isSorted(final short[] array) {
         if (array == null || array.length < 2) {
@@ -6603,11 +5982,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to natural ordering.
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array the array to check
-     * @return whether the array is sorted according to natural ordering
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @return 数组是否已排序
      */
     public static boolean isSorted(final double[] array) {
         if (array == null || array.length < 2) {
@@ -6628,11 +6006,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to natural ordering.
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array the array to check
-     * @return whether the array is sorted according to natural ordering
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @return 数组是否已排序
      */
     public static boolean isSorted(final float[] array) {
         if (array == null || array.length < 2) {
@@ -6653,11 +6030,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to natural ordering.
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array the array to check
-     * @return whether the array is sorted according to natural ordering
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @return 数组是否已排序
      */
     public static boolean isSorted(final byte[] array) {
         if (array == null || array.length < 2) {
@@ -6678,11 +6054,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to natural ordering.
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array the array to check
-     * @return whether the array is sorted according to natural ordering
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @return 数组是否已排序
      */
     public static boolean isSorted(final char[] array) {
         if (array == null || array.length < 2) {
@@ -6703,12 +6078,10 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>This method checks whether the provided array is sorted according to natural ordering
-     * ({@code false} before {@code true}).
+     * 该方法检查提供的数组是否按照提供的{@code Comparator}排序.
      *
-     * @param array the array to check
-     * @return whether the array is sorted according to natural ordering
-     * @since 3.5.0
+     * @param array 要检查的数组
+     * @return 数组是否已排序
      */
     public static boolean isSorted(final boolean[] array) {
         if (array == null || array.length < 2) {
@@ -6729,18 +6102,14 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified boolean array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static boolean[] removeAllOccurences(final boolean[] array, final boolean element) {
         int index = indexOf(array, element);
@@ -6760,18 +6129,14 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified char array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static char[] removeAllOccurences(final char[] array, final char element) {
         int index = indexOf(array, element);
@@ -6791,18 +6156,14 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified byte array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static byte[] removeAllOccurences(final byte[] array, final byte element) {
         int index = indexOf(array, element);
@@ -6822,18 +6183,14 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified short array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static short[] removeAllOccurences(final short[] array, final short element) {
         int index = indexOf(array, element);
@@ -6853,18 +6210,14 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified int array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static int[] removeAllOccurences(final int[] array, final int element) {
         int index = indexOf(array, element);
@@ -6884,18 +6237,14 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified long array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static long[] removeAllOccurences(final long[] array, final long element) {
         int index = indexOf(array, element);
@@ -6915,18 +6264,14 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified float array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static float[] removeAllOccurences(final float[] array, final float element) {
         int index = indexOf(array, element);
@@ -6946,18 +6291,14 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified double array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static double[] removeAllOccurences(final double[] array, final double element) {
         int index = indexOf(array, element);
@@ -6977,19 +6318,15 @@ public class ArrayUtils {
     }
 
     /**
-     * Removes the occurrences of the specified element from the specified array.
+     * 从指定的布尔数组中移除指定元素.
+     * 所有随后的元素都向左移动(从它们的索引中减去1).
+     * 如果数组不包含此类元素，则不会从数组中删除任何元素.
+     * 如果输入的数组是null，则返回的是null
      *
-     * <p>
-     * All subsequent elements are shifted to the left (subtracts one from their indices).
-     * If the array doesn't contains such an element, no elements are removed from the array.
-     * <code>null</code> will be returned if the input array is <code>null</code>.
-     * </p>
-     *
-     * @param <T>     the type of object in the array
-     * @param element the element to remove
-     * @param array   the input array
-     * @return A new array containing the existing elements except the occurrences of the specified element.
-     * @since 3.5.0
+     * @param <T>     对象
+     * @param element 要删除的元素
+     * @param array   输入数组
+     * @return 一个新数组，包含除指定元素之外的现有元素.
      */
     public static <T> T[] removeAllOccurences(final T[] array, final T element) {
         int index = indexOf(array, element);
@@ -7009,20 +6346,17 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Returns an array containing the string representation of each element in the argument array.</p>
+     * 返回一个数组，该数组包含参数数组中每个元素的字符串表示形式.
+     * 该方法为一个{@code null}输入数组返回{@code null}.
      *
-     * <p>This method returns {@code null} for a {@code null} input array.</p>
-     *
-     * @param array the {@code Object[]} to be processed, may be null
-     * @return {@code String[]} of the same size as the source with its element's string representation,
-     * {@code null} if null array input
-     * @throws NullPointerException if array contains {@code null}
+     * @param array 要处理的{@code Object[]} 可以为null
+     * @return {@code String[]}的大小与其元素的字符串表示形式相同，{@code null}如果是空数组输入
      */
     public static String[] toStringArray(final Object[] array) {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_STRING_ARRAY;
+            return Normal.EMPTY_STRING_ARRAY;
         }
 
         final String[] result = new String[array.length];
@@ -7034,20 +6368,18 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Returns an array containing the string representation of each element in the argument
-     * array handling {@code null} elements.</p>
+     * 返回一个数组，该数组包含处理{@code null}元素的参数数组中每个元素的字符串表示形式
+     * 该方法为一个{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.</p>
-     *
-     * @param array                the Object[] to be processed, may be null
-     * @param valueForNullElements the value to insert if {@code null} is found
-     * @return a {@code String} array, {@code null} if null array input
+     * @param array                要处理的{@code Object[]} 可以为null
+     * @param valueForNullElements 找到{@code null} 时要插入的值
+     * @return (@ code String)阵列，如果没有阵列输入
      */
     public static String[] toStringArray(final Object[] array, final String valueForNullElements) {
         if (null == array) {
             return null;
         } else if (array.length == 0) {
-            return EMPTY_STRING_ARRAY;
+            return Normal.EMPTY_STRING_ARRAY;
         }
 
         final String[] result = new String[array.length];
@@ -7094,9 +6426,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7104,12 +6435,10 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static boolean[] insert(final int index, final boolean[] array, final boolean... values) {
         if (array == null) {
@@ -7135,9 +6464,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7145,12 +6473,10 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static byte[] insert(final int index, final byte[] array, final byte... values) {
         if (array == null) {
@@ -7176,9 +6502,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7186,12 +6511,10 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static char[] insert(final int index, final char[] array, final char... values) {
         if (array == null) {
@@ -7217,9 +6540,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7227,12 +6549,10 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static double[] insert(final int index, final double[] array, final double... values) {
         if (array == null) {
@@ -7258,9 +6578,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7268,12 +6587,10 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static float[] insert(final int index, final float[] array, final float... values) {
         if (array == null) {
@@ -7299,9 +6616,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7309,12 +6625,10 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static int[] insert(final int index, final int[] array, final int... values) {
         if (array == null) {
@@ -7340,9 +6654,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7350,12 +6663,10 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static long[] insert(final int index, final long[] array, final long... values) {
         if (array == null) {
@@ -7381,9 +6692,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7391,12 +6701,10 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static short[] insert(final int index, final short[] array, final short... values) {
         if (array == null) {
@@ -7422,9 +6730,8 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Inserts elements into an array at the given index (starting from zero).</p>
-     *
-     * <p>When an array is returned, it is always a new array.</p>
+     * 将元素插入到给定索引处的数组中(从零开始)
+     * 当一个数组被返回时，它总是一个新的数组
      *
      * <pre>
      * ArrayUtils.insert(index, null, null)      = null
@@ -7432,23 +6739,13 @@ public class ArrayUtils {
      * ArrayUtils.insert(index, null, values)    = null
      * </pre>
      *
-     * @param <T>    The type of elements in {@code array} and {@code values}
-     * @param index  the position within {@code array} to insert the new values
-     * @param array  the array to insert the values into, may be {@code null}
-     * @param values the new values to insert, may be {@code null}
-     * @return The new array.
-     * @throws IndexOutOfBoundsException if {@code array} is provided
-     *                                   and either {@code index < 0} or {@code index > array.length}
+     * @param <T>    对象
+     * @param index  插入位置,此位置为对应此位置元素之前的空档
+     * @param array  已有数组
+     * @param values 要插入的新值可以是{@code null}
+     * @return 新数组.
      */
     public static <T> T[] insert(final int index, final T[] array, final T... values) {
-        /*
-         * Note on use of @SafeVarargs:
-         *
-         * By returning null when 'array' is null, we avoid returning the vararg
-         * array to the caller. We also avoid relying on the type of the vararg
-         * array, by inspecting the component type of 'array'.
-         */
-
         if (array == null) {
             return null;
         }
@@ -7473,21 +6770,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final Object[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final Object[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7496,21 +6791,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final boolean[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final boolean[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7519,21 +6812,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final byte[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final byte[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7542,21 +6833,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final char[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final char[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7565,21 +6854,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final short[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final short[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7588,21 +6875,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final int[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final int[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7611,21 +6896,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final long[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final long[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7634,21 +6917,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final float[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final float[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7657,21 +6938,19 @@ public class ArrayUtils {
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array the array to shuffle
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array 要洗牌的数组
      */
     public static void shuffle(final double[] array) {
         shuffle(array, new Random());
     }
 
     /**
-     * Randomly permutes the elements of the specified array using the Fisher-Yates algorithm.
+     * 使用Fisher-Yates算法随机遍历指定数组的元素.
      *
-     * @param array  the array to shuffle
-     * @param random the source of randomness used to permute the elements
-     * @see <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle algorithm</a>
+     * @param array  要洗牌的数组
+     * @param random 用于排列元素的随机性的来源
      */
     public static void shuffle(final double[] array, final Random random) {
         for (int i = array.length; i > 1; i--) {
@@ -7680,12 +6959,12 @@ public class ArrayUtils {
     }
 
     /**
-     * Returns whether a given array can safely be accessed at the given index.
+     * 返回是否可以在给定索引处安全地访问给定数组.
      *
-     * @param <T>   the component type of the array
-     * @param array the array to inspect, may be null
-     * @param index the index of the array to be inspected
-     * @return Whether the given index is safely-accessible in the given array
+     * @param <T>   数组的组件类型
+     * @param array 要检查的数组可能为空
+     * @param index 要检查的数组的索引
+     * @return 给定索引在给定数组中是否可安全访问
      */
     public static <T> boolean isArrayIndexValid(T[] array, int index) {
         if (getLength(array) == 0 || array.length <= index) {
@@ -7694,7 +6973,6 @@ public class ArrayUtils {
 
         return index >= 0;
     }
-
 
     /**
      * 是否包含{@code null}元素

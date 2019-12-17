@@ -29,13 +29,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation on the fields to get the summary instead of the detailed
- * information when using {@link ReflectionToStringBuilder}.
- *
- * <p>
- * Notice that not all {@link ToStringStyle} implementations support the
- * appendSummary method.
- * </p>
+ * 在使用{@link ReflectionToStringBuilder}时，
+ * 在字段上使用这个注释来获得摘要，而不是详细信息.
  *
  * @author Kimi Liu
  * @version 5.3.2

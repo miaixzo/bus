@@ -25,8 +25,8 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSON;
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.consts.Charset;
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.core.utils.UriUtils;
@@ -90,7 +90,7 @@ public abstract class DefaultProvider implements Provider {
      * @return Signature
      */
     public static String generateDingTalkSignature(String secretKey, String timestamp) {
-        byte[] signData = sign(secretKey.getBytes(org.aoju.bus.core.consts.Charset.UTF_8), timestamp.getBytes(org.aoju.bus.core.consts.Charset.UTF_8));
+        byte[] signData = sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8));
         return urlEncode(new String(Base64.encode(signData, false)));
     }
 
@@ -124,7 +124,7 @@ public abstract class DefaultProvider implements Provider {
             return "";
         }
         try {
-            String encoded = URLEncoder.encode(value, org.aoju.bus.core.consts.Charset.UTF_8.displayName());
+            String encoded = URLEncoder.encode(value, Charset.UTF_8.displayName());
             return encoded.replace("+", "%20").replace("*", "%2A").replace("~", "%7E").replace("/", "%2F");
         } catch (UnsupportedEncodingException e) {
             throw new InstrumentException("Failed To Encode Uri", e);
@@ -142,7 +142,7 @@ public abstract class DefaultProvider implements Provider {
             return "";
         }
         try {
-            return URLDecoder.decode(value, org.aoju.bus.core.consts.Charset.UTF_8.displayName());
+            return URLDecoder.decode(value, Charset.UTF_8.displayName());
         } catch (UnsupportedEncodingException e) {
             throw new InstrumentException("Failed To Decode Uri", e);
         }

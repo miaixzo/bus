@@ -66,7 +66,7 @@ public class Base64Encoder {
      * @return 被加密后的字符串
      */
     public static String encode(String source) {
-        return encode(source, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encode(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -77,7 +77,7 @@ public class Base64Encoder {
      * @since 3.1.9
      */
     public static String encodeUrlSafe(String source) {
-        return encodeUrlSafe(source, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encodeUrlSafe(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -133,7 +133,7 @@ public class Base64Encoder {
      * @return 被加密后的字符串
      */
     public static String encode(byte[] source) {
-        return encode(source, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encode(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -144,7 +144,7 @@ public class Base64Encoder {
      * @since 3.1.9
      */
     public static String encodeUrlSafe(byte[] source) {
-        return encodeUrlSafe(source, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encodeUrlSafe(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -213,7 +213,7 @@ public class Base64Encoder {
      * @return 编码后的字符串
      */
     public static String encodeBuffer(byte[] buffer, boolean isUrlSafe) {
-        return encodeBuffer(buffer, isUrlSafe, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encodeBuffer(buffer, isUrlSafe, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

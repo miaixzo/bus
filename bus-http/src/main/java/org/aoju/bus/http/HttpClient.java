@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.consts.Httpd;
-import org.aoju.bus.core.consts.MediaType;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Httpd;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.MapUtils;

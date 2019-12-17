@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
@@ -5386,7 +5386,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 按{@link character #toTitleCase(int)}
+     * 按{@link Character#toTitleCase(int)}
      * 将第一个字符更改为标题大小写.其他字符没有改变
      *
      * <pre>
@@ -5539,9 +5539,9 @@ public class StringUtils extends TextUtils {
      * StringUtils.appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
      * </pre>
      *
-     * @param str        字符串.
-     * @param suffix     附加到字符串末尾的后缀.
-     * @param suffixes   有效终止符的附加后缀(可选).
+     * @param str      字符串.
+     * @param suffix   附加到字符串末尾的后缀.
+     * @param suffixes 有效终止符的附加后缀(可选).
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
      */
     public static String appendIfMissing(final String str, final CharSequence suffix, final CharSequence... suffixes) {
@@ -5573,9 +5573,9 @@ public class StringUtils extends TextUtils {
      * StringUtils.appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
      * </pre>
      *
-     * @param str        字符串.
-     * @param suffix     附加到字符串末尾的后缀.
-     * @param suffixes   有效终止符的附加后缀(可选).
+     * @param str      字符串.
+     * @param suffix   附加到字符串末尾的后缀.
+     * @param suffixes 有效终止符的附加后缀(可选).
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
      */
     public static String appendIfMissingIgnoreCase(final String str, final CharSequence suffix, final CharSequence... suffixes) {
@@ -5631,8 +5631,8 @@ public class StringUtils extends TextUtils {
      * </pre>
      *
      * @param str      T字符串.
-     * @param prefix     在字符串开始前的前缀.
-     * @param prefixes   有效的附加前缀(可选).
+     * @param prefix   在字符串开始前的前缀.
+     * @param prefixes 有效的附加前缀(可选).
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
      */
     public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence... prefixes) {
@@ -5665,8 +5665,8 @@ public class StringUtils extends TextUtils {
      * </pre>
      *
      * @param str      T字符串.
-     * @param prefix     在字符串开始前的前缀.
-     * @param prefixes   有效的附加前缀(可选).
+     * @param prefix   在字符串开始前的前缀.
+     * @param prefixes 有效的附加前缀(可选).
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
      */
     public static String prependIfMissingIgnoreCase(final String str, final CharSequence prefix, final CharSequence... prefixes) {

@@ -182,7 +182,7 @@ public class Digester {
      * @return 摘要
      */
     public byte[] digest(String data) {
-        return digest(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return digest(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -214,7 +214,7 @@ public class Digester {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return digestHex(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

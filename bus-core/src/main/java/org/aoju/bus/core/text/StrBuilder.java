@@ -25,7 +25,7 @@ package org.aoju.bus.core.text;
 
 
 import org.aoju.bus.core.builder.Builder;
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.ArrayUtils;
 
 import java.io.IOException;

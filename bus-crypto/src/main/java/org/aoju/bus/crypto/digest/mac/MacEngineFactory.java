@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.digest.mac;
 
-import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.Builder;
 
 import javax.crypto.SecretKey;

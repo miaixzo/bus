@@ -48,46 +48,37 @@ import java.util.Objects;
 public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, R>>, Serializable {
 
     /**
-     * <p>Obtains an immutable pair of two objects inferring the generic types.</p>
+     * 获取两个推断泛型类型的对象的不可变对
+     * 这个工厂允许使用推理来创建对，以获得泛型类型
      *
-     * <p>This factory allows the pair to be created using inference to
-     * obtain the generic types.</p>
-     *
-     * @param <L>   the left element type
-     * @param <R>   the right element type
-     * @param left  the left element, may be null
-     * @param right the right element, may be null
-     * @return a pair formed from the two parameters, not null
+     * @param <L>   左元素类型
+     * @param <R>   右元素类型
+     * @param left  左值可以为null
+     * @param right 右值可以为null
+     * @return 由两个参数组成的一对，不是空
      */
     public static <L, R> Pair<L, R> of(final L left, final R right) {
         return new ImmutablePair<>(left, right);
     }
 
     /**
-     * <p>Gets the left element from this pair.</p>
+     * 从这一对中获取左元素
      *
-     * <p>When treated as a key-value pair, this is the key.</p>
-     *
-     * @return the left element, may be null
+     * @return 左边的元素可能是空的
      */
     public abstract L getLeft();
 
     /**
-     * <p>Gets the right element from this pair.</p>
+     * 从这一对中获取右元素
      *
-     * <p>When treated as a key-value pair, this is the value.</p>
-     *
-     * @return the right element, may be null
+     * @return 右边的元素可能是空的
      */
     public abstract R getRight();
 
     /**
-     * <p>Gets the key from this pair.</p>
+     * 从这对中获取密钥
      *
-     * <p>This method implements the {@code Map.Entry} interface returning the
-     * left element as the key.</p>
-     *
-     * @return the left element as the key, may be null
+     * @return 作为键的左元素可以为空
      */
     @Override
     public final L getKey() {
@@ -95,12 +86,9 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
     }
 
     /**
-     * <p>Gets the value from this pair.</p>
+     * 从这对中获取值
      *
-     * <p>This method implements the {@code Map.Entry} interface returning the
-     * right element as the value.</p>
-     *
-     * @return the right element as the value, may be null
+     * @return 右边的元素作为值，可以是null
      */
     @Override
     public R getValue() {
@@ -108,11 +96,10 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
     }
 
     /**
-     * <p>Compares the pair based on the left element followed by the right element.
-     * The types must be {@code Comparable}.</p>
+     * 比较基于左元素和右元素的对。类型必须是{@code Comparable}
      *
-     * @param other the other pair, not null
-     * @return negative if this is less, zero if equal, positive if greater
+     * @param other 另一对，不为空
+     * @return 如果这个小，就是负的;如果相等，就是零;如果大，就是正的
      */
     @Override
     public int compareTo(final Pair<L, R> other) {
@@ -121,10 +108,10 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
     }
 
     /**
-     * <p>Compares this pair to another based on the two elements.</p>
+     * 据这两个元素，将这一对与另一对进行比较
      *
-     * @param obj the object to compare to, null returns false
-     * @return true if the elements of the pair are equal
+     * @param obj 要比较的对象null返回false
+     * @return 如果这一对的元素相等，则为true
      */
     @Override
     public boolean equals(final Object obj) {
@@ -139,40 +126,17 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
         return false;
     }
 
-    /**
-     * <p>Returns a suitable hash code.
-     * The hash code follows the definition in {@code Map.Entry}.</p>
-     *
-     * @return the hash code
-     */
     @Override
     public int hashCode() {
-        // see Map.Entry API specification
         return (getKey() == null ? 0 : getKey().hashCode()) ^
                 (getValue() == null ? 0 : getValue().hashCode());
     }
 
-    /**
-     * <p>Returns a String representation of this pair using the format {@code ($left,$right)}.</p>
-     *
-     * @return a string describing this object, not null
-     */
     @Override
     public String toString() {
         return "(" + getLeft() + ',' + getRight() + ')';
     }
 
-    /**
-     * <p>Formats the receiver using the given format.</p>
-     *
-     * <p>This uses {@link java.util.Formattable} to perform the formatting. Two variables may
-     * be used to embed the left and right elements. Use {@code %1$s} for the left
-     * element (key) and {@code %2$s} for the right element (value).
-     * The default format used by {@code toString()} is {@code (%1$s,%2$s)}.</p>
-     *
-     * @param format the format string, optionally containing {@code %1$s} and {@code %2$s}, not null
-     * @return the formatted string, not null
-     */
     public String toString(final String format) {
         return String.format(format, getLeft(), getRight());
     }

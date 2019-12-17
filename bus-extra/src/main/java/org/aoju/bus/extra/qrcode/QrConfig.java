@@ -72,7 +72,7 @@ public class QrConfig {
     /**
      * 编码
      */
-    public Charset charset = org.aoju.bus.core.consts.Charset.UTF_8;
+    public Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
     /**
      * 二维码中的Logo
      */

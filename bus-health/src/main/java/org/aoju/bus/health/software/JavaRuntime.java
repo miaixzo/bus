@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.health.software;
 
-import org.aoju.bus.core.consts.System;
+import org.aoju.bus.core.lang.System;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.health.Systemd;
 

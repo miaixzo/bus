@@ -366,7 +366,7 @@ public class SSHUtils {
      */
     public static String exec(Session session, String cmd, Charset charset, OutputStream errStream) {
         if (null == charset) {
-            charset = org.aoju.bus.core.consts.Charset.UTF_8;
+            charset = org.aoju.bus.core.lang.Charset.UTF_8;
         }
         ChannelExec channel = (ChannelExec) openChannel(session, ChannelType.EXEC);
         channel.setCommand(StringUtils.bytes(cmd, charset));
@@ -376,7 +376,7 @@ public class SSHUtils {
         try {
             channel.start();
             in = channel.getInputStream();
-            return IoUtils.read(in, org.aoju.bus.core.consts.Charset.UTF_8);
+            return IoUtils.read(in, org.aoju.bus.core.lang.Charset.UTF_8);
         } catch (IOException e) {
             throw new InstrumentException(e);
         } catch (JSchException e) {

@@ -24,11 +24,10 @@
 package org.aoju.bus.core.utils;
 
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.SimpleCache;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.*;
@@ -46,6 +45,16 @@ import java.util.Set;
  * @since JDK 1.8+
  */
 public class ReflectUtils {
+
+    /**
+     * set方法前缀
+     */
+    public static final String SETTER_PREFIX = "set";
+
+    /**
+     * get方法前缀
+     */
+    public static final String GETTER_PREFIX = "get";
 
     private static final String CGLIB_CLASS_SEPARATOR = Symbol.DOLLAR + Symbol.DOLLAR;
 
@@ -73,7 +82,7 @@ public class ReflectUtils {
     public static Object invokeGetter(Object obj, String name) {
         Object object = obj;
         for (String method : StringUtils.split(name, ".")) {
-            String getterMethodName = Normal.GETTER_PREFIX + StringUtils.capitalize(method);
+            String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
         }
         return object;
@@ -92,10 +101,10 @@ public class ReflectUtils {
         String[] names = StringUtils.split(name, ".");
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
-                String getterMethodName = Normal.GETTER_PREFIX + StringUtils.capitalize(names[i]);
+                String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(names[i]);
                 object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
             } else {
-                String setterMethodName = Normal.SETTER_PREFIX + StringUtils.capitalize(names[i]);
+                String setterMethodName = SETTER_PREFIX + StringUtils.capitalize(names[i]);
                 invokeMethodByName(object, setterMethodName, new Object[]{value});
             }
         }
@@ -929,7 +938,7 @@ public class ReflectUtils {
      * @return 返回结果
      */
     public static String getGetMethodName(String fieldName) {
-        return Normal.GETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return GETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
     /**
@@ -939,7 +948,7 @@ public class ReflectUtils {
      * @return 返回结果
      */
     public static String getSetMethodName(String fieldName) {
-        return Normal.SETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return SETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
 

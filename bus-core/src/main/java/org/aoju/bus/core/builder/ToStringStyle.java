@@ -23,7 +23,8 @@
  */
 package org.aoju.bus.core.builder;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -37,26 +38,17 @@ import java.util.WeakHashMap;
 /**
  * <p>Controls <code>String</code> formatting for {@link ToStringBuilder}.
  * The main public interface is always via <code>ToStringBuilder</code>.</p>
+ * <p>
+ * 控制<code>String</code>格式{@link ToStringBuilder}.
+ * 主公共接口总是通过<code>ToStringBuilder</code>
  *
- * <p>These classes are intended to be used as <code>Singletons</code>.
- * There is no need to instantiate a new style each time. A program
- * will generally use one of the predefined constants on this class.
- * Alternatively, the {@link StandardToStringStyle} class can be used
- * to set the individual settings. Thus most styles can be achieved
- * without subclassing.</p>
- *
- * <p>If required, a subclass can override as many or as few of the
- * methods as it requires. Each object type (from <code>boolean</code>
- * to <code>long</code> to <code>Object</code> to <code>int[]</code>) has
- * its own methods to output it. Most have two versions, detail and summary.
- *
- * <p>For example, the detail version of the array based methods will
- * output the whole array, whereas the summary method will just output
- * the array length.</p>
- *
- * <p>If you want to format the output of certain objects, such as dates, you
- * must create a subclass and override a method.
+ * <p>
+ * 这些类将被用作单例(Singletons)没有必要每次都实例化新样式
+ * 程序通常会在这个类上使用一个预定义的常量。或者，可以使用
+ * {@link StandardToStringStyle}类来设置各个设置。因此，
+ * 大多数样式不需要子类化就可以实现
  * </p>
+ *
  * <pre>
  * public class MyStyle extends ToStringStyle {
  *   protected void appendDetail(StringBuffer buffer, String fieldName, Object value) {
@@ -75,8 +67,7 @@ import java.util.WeakHashMap;
 public abstract class ToStringStyle implements Serializable {
 
     /**
-     * The default toString style. Using the <code>Person</code>
-     * example from {@link ToStringBuilder}, the output would look like this:
+     * 默认的toString样式
      *
      * <pre>
      * Person@182f0db[name=John Doe,age=33,smoker=false]
@@ -84,8 +75,7 @@ public abstract class ToStringStyle implements Serializable {
      */
     public static final ToStringStyle DEFAULT_STYLE = new DefaultToStringStyle();
     /**
-     * The multi line toString style. Using the <code>Person</code>
-     * example from {@link ToStringBuilder}, the output would look like this:
+     * 多行toString样式
      *
      * <pre>
      * Person@182f0db[
@@ -97,9 +87,7 @@ public abstract class ToStringStyle implements Serializable {
      */
     public static final ToStringStyle MULTI_LINE_STYLE = new MultiLineToStringStyle();
     /**
-     * The no field names toString style. Using the
-     * <code>Person</code> example from {@link ToStringBuilder}, the output
-     * would look like this:
+     * 无字段名toString样式
      *
      * <pre>
      * Person@182f0db[John Doe,33,false]
@@ -107,19 +95,15 @@ public abstract class ToStringStyle implements Serializable {
      */
     public static final ToStringStyle NO_FIELD_NAMES_STYLE = new NoFieldNameToStringStyle();
     /**
-     * The short prefix toString style. Using the <code>Person</code> example
-     * from {@link ToStringBuilder}, the output would look like this:
+     * 短前缀toString样式
      *
      * <pre>
      * Person[name=John Doe,age=33,smoker=false]
      * </pre>
-     *
-     * @since 2.1.0
      */
     public static final ToStringStyle SHORT_PREFIX_STYLE = new ShortPrefixToStringStyle();
     /**
-     * The simple toString style. Using the <code>Person</code>
-     * example from {@link ToStringBuilder}, the output would look like this:
+     * 简单的toString样式
      *
      * <pre>
      * John Doe,33,false
@@ -127,105 +111,85 @@ public abstract class ToStringStyle implements Serializable {
      */
     public static final ToStringStyle SIMPLE_STYLE = new SimpleToStringStyle();
     /**
-     * The no class name toString style. Using the <code>Person</code>
-     * example from {@link ToStringBuilder}, the output would look like this:
+     * 没有类名的toString样式
      *
      * <pre>
      * [name=John Doe,age=33,smoker=false]
      * </pre>
-     *
-     * @since 3.5.0
      */
     public static final ToStringStyle NO_CLASS_NAME_STYLE = new NoClassNameToStringStyle();
     /**
-     * The JSON toString style. Using the <code>Person</code> example from
-     * {@link ToStringBuilder}, the output would look like this:
+     * JSON toString样式
      *
      * <pre>
      * {"name": "John Doe", "age": 33, "smoker": true}
      * </pre>
-     *
-     * <strong>Note:</strong> Since field names are mandatory in JSON, this
-     * ToStringStyle will throw an {@link UnsupportedOperationException} if no
-     * field name is passed in while appending. Furthermore This ToStringStyle
-     * will only generate valid JSON if referenced objects also produce JSON
-     * when calling {@code toString()} on them.
-     *
-     * @see <a href="http://json.org">json.org</a>
-     * @since 3.5.0
      */
     public static final ToStringStyle JSON_STYLE = new JsonToStringStyle();
+    private static final long serialVersionUID = 1L;
     /**
-     * Serialization version ID.
-     */
-    private static final long serialVersionUID = -2587890625525655916L;
-    /**
-     * <p>
-     * A registry of objects used by <code>reflectionToString</code> methods
-     * to detect cyclical object references and avoid infinite loops.
-     * </p>
+     * reflectionToString方法用于检测循环对象引用和避免无限循环的对象注册表.
      */
     private static final ThreadLocal<WeakHashMap<Object, Object>> REGISTRY =
             new ThreadLocal<>();
     /**
-     * Whether to use the field names, the default is <code>true</code>.
+     * 是否使用字段名，默认是true.
      */
     private boolean useFieldNames = true;
     /**
-     * Whether to use the class name, the default is <code>true</code>.
+     * 是否使用类名，默认为true
      */
     private boolean useClassName = true;
     /**
-     * Whether to use short class names, the default is <code>false</code>.
+     * 是否使用简短的类名，默认是false
      */
     private boolean useShortClassName = false;
     /**
-     * Whether to use the identity hash code, the default is <code>true</code>.
+     * 是否使用标识哈希码，默认为true.
      */
     private boolean useIdentityHashCode = true;
     /**
-     * The content start <code>'['</code>.
+     * 内容开始 <code>'['</code>.
      */
-    private String contentStart = "[";
+    private String contentStart = Symbol.BRACKET_LEFT;
     /**
-     * The content end <code>']'</code>.
+     * 内容结束 <code>']'</code>.
      */
-    private String contentEnd = "]";
+    private String contentEnd = Symbol.BRACKET_RIGHT;
     /**
-     * The field name value separator <code>'='</code>.
+     * 字段名值分隔符 <code>'='</code>.
      */
-    private String fieldNameValueSeparator = "=";
+    private String fieldNameValueSeparator = Symbol.EQUAL;
     /**
-     * Whether the field separator should be added before any other fields.
+     * 是否应在任何其他字段之前添加字段分隔符.
      */
     private boolean fieldSeparatorAtStart = false;
     /**
-     * Whether the field separator should be added after any other fields.
+     * 是否应在任何其他字段之后添加字段分隔符.
      */
     private boolean fieldSeparatorAtEnd = false;
     /**
-     * The field separator <code>','</code>.
+     * 字段分隔符 <code>','</code>.
      */
-    private String fieldSeparator = ",";
+    private String fieldSeparator = Symbol.COMMA;
     /**
-     * The array start <code>'{'</code>.
+     * 数字开始 <code>'{'</code>.
      */
-    private String arrayStart = "{";
+    private String arrayStart = Symbol.DELIM_LEFT;
     /**
-     * The array separator <code>','</code>.
+     * 数字分隔符 <code>','</code>.
      */
-    private String arraySeparator = ",";
+    private String arraySeparator = Symbol.COMMA;
     /**
-     * The detail for array content.
+     * 数组内容的详细信息t.
      */
     private boolean arrayContentDetail = true;
     /**
-     * The array end <code>'}'</code>.
+     * 数组结束 <code>'}'</code>.
      */
-    private String arrayEnd = "}";
+    private String arrayEnd = Symbol.DELIM_RIGHT;
     /**
-     * The value to use when fullDetail is <code>null</code>,
-     * the default value is <code>true</code>.
+     * 当fullDetail为null时使用的值，默认值true
      */
     private boolean defaultFullDetail = true;
     /**
@@ -233,64 +197,35 @@ public abstract class ToStringStyle implements Serializable {
      */
     private String nullText = "<null>";
     /**
-     * The summary size text start <code>'&lt;size'</code>.
+     * 摘要大小文本开始 <code>'&lt;size'</code>.
      */
     private String sizeStartText = "<size=";
     /**
-     * The summary size text start <code>'&gt;'</code>.
+     * 摘要大小文本结束 <code>'&gt;'</code>.
      */
     private String sizeEndText = ">";
     /**
-     * The summary object text start <code>'&lt;'</code>.
+     * 摘要大小文本开始 <code>'&lt;'</code>.
      */
     private String summaryObjectStartText = "<";
     /**
-     * The summary object text start <code>'&gt;'</code>.
+     * 摘要大小文本结束 <code>'&gt;'</code>.
      */
     private String summaryObjectEndText = ">";
 
-    /**
-     * <p>Constructor.</p>
-     */
     protected ToStringStyle() {
         super();
     }
 
-    /**
-     * <p>
-     * Returns the registry of objects being traversed by the <code>reflectionToString</code>
-     * methods in the current thread.
-     * </p>
-     *
-     * @return Set the registry of objects being traversed
-     */
     static Map<Object, Object> getRegistry() {
         return REGISTRY.get();
     }
 
-    /**
-     * <p>
-     * Returns <code>true</code> if the registry contains the given object.
-     * Used by the reflection methods to avoid infinite loops.
-     * </p>
-     *
-     * @param value The object to lookup in the registry.
-     * @return boolean <code>true</code> if the registry contains the given
-     * object.
-     */
     static boolean isRegistered(final Object value) {
         final Map<Object, Object> m = getRegistry();
         return m != null && m.containsKey(value);
     }
 
-    /**
-     * <p>
-     * Registers the given object. Used by the reflection methods to avoid
-     * infinite loops.
-     * </p>
-     *
-     * @param value The object to register.
-     */
     static void register(final Object value) {
         if (value != null) {
             final Map<Object, Object> m = getRegistry();
@@ -301,17 +236,6 @@ public abstract class ToStringStyle implements Serializable {
         }
     }
 
-    /**
-     * <p>
-     * Unregisters the given object.
-     * </p>
-     *
-     * <p>
-     * Used by the reflection methods to avoid infinite loops.
-     * </p>
-     *
-     * @param value The object to unregister.
-     */
     static void unregister(final Object value) {
         if (value != null) {
             final Map<Object, Object> m = getRegistry();
@@ -1563,11 +1487,6 @@ public abstract class ToStringStyle implements Serializable {
         return ClassUtils.getShortClassName(cls);
     }
 
-    // Setters and getters for the customizable parts of the style
-    // These methods are not expected to be overridden, except to make public
-    // (They are not public so that immutable subclasses can be written)
-
-
     /**
      * <p>Gets whether to use the class name.</p>
      *
@@ -2043,122 +1962,55 @@ public abstract class ToStringStyle implements Serializable {
         this.summaryObjectEndText = summaryObjectEndText;
     }
 
-    /**
-     * <p>Default <code>ToStringStyle</code>.</p>
-     *
-     * <p>This is an inner class rather than using
-     * <code>StandardToStringStyle</code> to ensure its immutability.</p>
-     */
     private static final class DefaultToStringStyle extends ToStringStyle {
 
-        /**
-         * Required for serialization support.
-         *
-         * @see Serializable
-         */
         private static final long serialVersionUID = 1L;
 
-        /**
-         * <p>Constructor.</p>
-         *
-         * <p>Use the static constant rather than instantiating.</p>
-         */
         DefaultToStringStyle() {
             super();
         }
 
-        /**
-         * <p>Ensure <code>Singleton</code> after serialization.</p>
-         *
-         * @return the singleton
-         */
         private Object readResolve() {
             return DEFAULT_STYLE;
         }
 
     }
 
-    /**
-     * <p><code>ToStringStyle</code> that does not print out
-     * the field names.</p>
-     *
-     * <p>This is an inner class rather than using
-     * <code>StandardToStringStyle</code> to ensure its immutability.
-     */
     private static final class NoFieldNameToStringStyle extends ToStringStyle {
 
         private static final long serialVersionUID = 1L;
 
-        /**
-         * <p>Constructor.</p>
-         *
-         * <p>Use the static constant rather than instantiating.</p>
-         */
         NoFieldNameToStringStyle() {
             super();
             this.setUseFieldNames(false);
         }
 
-        /**
-         * <p>Ensure <code>Singleton</code> after serialization.</p>
-         *
-         * @return the singleton
-         */
         private Object readResolve() {
             return NO_FIELD_NAMES_STYLE;
         }
 
     }
 
-    /**
-     * <p><code>ToStringStyle</code> that prints out the short
-     * class name and no identity hashcode.</p>
-     *
-     * <p>This is an inner class rather than using
-     * <code>StandardToStringStyle</code> to ensure its immutability.</p>
-     */
     private static final class ShortPrefixToStringStyle extends ToStringStyle {
 
         private static final long serialVersionUID = 1L;
 
-        /**
-         * <p>Constructor.</p>
-         *
-         * <p>Use the static constant rather than instantiating.</p>
-         */
         ShortPrefixToStringStyle() {
             super();
             this.setUseShortClassName(true);
             this.setUseIdentityHashCode(false);
         }
 
-        /**
-         * <p>Ensure <code>Singleton</ode> after serialization.</p>
-         *
-         * @return the singleton
-         */
         private Object readResolve() {
             return SHORT_PREFIX_STYLE;
         }
 
     }
 
-    /**
-     * <p><code>ToStringStyle</code> that does not print out the
-     * classname, identity hashcode, content start or field name.</p>
-     *
-     * <p>This is an inner class rather than using
-     * <code>StandardToStringStyle</code> to ensure its immutability.</p>
-     */
     private static final class SimpleToStringStyle extends ToStringStyle {
 
         private static final long serialVersionUID = 1L;
 
-        /**
-         * <p>Constructor.</p>
-         *
-         * <p>Use the static constant rather than instantiating.</p>
-         */
         SimpleToStringStyle() {
             super();
             this.setUseClassName(false);
@@ -2168,32 +2020,16 @@ public abstract class ToStringStyle implements Serializable {
             this.setContentEnd(Normal.EMPTY);
         }
 
-        /**
-         * <p>Ensure <code>Singleton</ode> after serialization.</p>
-         *
-         * @return the singleton
-         */
         private Object readResolve() {
             return SIMPLE_STYLE;
         }
 
     }
 
-    /**
-     * <p><code>ToStringStyle</code> that outputs on multiple lines.</p>
-     *
-     * <p>This is an inner class rather than using
-     * <code>StandardToStringStyle</code> to ensure its immutability.</p>
-     */
     private static final class MultiLineToStringStyle extends ToStringStyle {
 
         private static final long serialVersionUID = 1L;
 
-        /**
-         * <p>Constructor.</p>
-         *
-         * <p>Use the static constant rather than instantiating.</p>
-         */
         MultiLineToStringStyle() {
             super();
             this.setContentStart("[");
@@ -2202,78 +2038,34 @@ public abstract class ToStringStyle implements Serializable {
             this.setContentEnd(System.lineSeparator() + "]");
         }
 
-        /**
-         * <p>Ensure <code>Singleton</code> after serialization.</p>
-         *
-         * @return the singleton
-         */
         private Object readResolve() {
             return MULTI_LINE_STYLE;
         }
 
     }
 
-    /**
-     * <p><code>ToStringStyle</code> that does not print out the classname
-     * and identity hash code but prints content start and field names.</p>
-     *
-     * <p>This is an inner class rather than using
-     * <code>StandardToStringStyle</code> to ensure its immutability.</p>
-     */
     private static final class NoClassNameToStringStyle extends ToStringStyle {
 
         private static final long serialVersionUID = 1L;
 
-        /**
-         * <p>Constructor.</p>
-         *
-         * <p>Use the static constant rather than instantiating.</p>
-         */
         NoClassNameToStringStyle() {
             super();
             this.setUseClassName(false);
             this.setUseIdentityHashCode(false);
         }
 
-        /**
-         * <p>Ensure <code>Singleton</code> after serialization.</p>
-         *
-         * @return the singleton
-         */
         private Object readResolve() {
             return NO_CLASS_NAME_STYLE;
         }
 
     }
 
-    /**
-     * <p>
-     * <code>ToStringStyle</code> that outputs with JSON format.
-     * </p>
-     *
-     * <p>
-     * This is an inner class rather than using
-     * <code>StandardToStringStyle</code> to ensure its immutability.
-     * </p>
-     *
-     * @see <a href="http://json.org">json.org</a>
-     * @since 3.5.0
-     */
     private static final class JsonToStringStyle extends ToStringStyle {
 
         private static final long serialVersionUID = 1L;
 
         private static final String FIELD_NAME_QUOTE = "\"";
 
-        /**
-         * <p>
-         * Constructor.
-         * </p>
-         *
-         * <p>
-         * Use the static constant rather than instantiating.
-         * </p>
-         */
         JsonToStringStyle() {
             super();
 
@@ -2500,12 +2292,6 @@ public abstract class ToStringStyle implements Serializable {
                     && valueAsString.endsWith(getContentEnd());
         }
 
-        /**
-         * Appends the given String enclosed in double-quotes to the given StringBuffer.
-         *
-         * @param buffer the StringBuffer to append the value to.
-         * @param value  the value to append.
-         */
         private void appendValueAsString(final StringBuffer buffer, final String value) {
             buffer.append('"').append(EscapeUtils.escapeJson(value)).append('"');
         }
@@ -2522,13 +2308,6 @@ public abstract class ToStringStyle implements Serializable {
                     + FIELD_NAME_QUOTE);
         }
 
-        /**
-         * <p>
-         * Ensure <code>Singleton</code> after serialization.
-         * </p>
-         *
-         * @return the singleton
-         */
         private Object readResolve() {
             return JSON_STYLE;
         }

@@ -86,7 +86,7 @@ public class MailAccount implements Serializable {
     /**
      * 编码用于编码邮件正文和发送人、收件人等中文
      */
-    private Charset charset = org.aoju.bus.core.consts.Charset.UTF_8;
+    private Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
     /**
      * 对于超长参数是否切分为多份,默认为false（国内邮箱附件不支持切分的附件名）
      */
@@ -516,7 +516,7 @@ public class MailAccount implements Serializable {
         }
         if (null == this.charset) {
             // 默认UTF-8编码
-            this.charset = org.aoju.bus.core.consts.Charset.UTF_8;
+            this.charset = org.aoju.bus.core.lang.Charset.UTF_8;
         }
         return this;
     }

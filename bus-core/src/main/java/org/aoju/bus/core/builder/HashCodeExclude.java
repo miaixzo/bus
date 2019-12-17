@@ -29,9 +29,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation to exclude a field from being used by
- * the various <code>reflectionHashcode</code> methods defined on
- * {@link HashCodeBuilder}.
+ * 使用此注释可以排除字段被定义在{@link HashCodeBuilder}
+ * 上的各种reflectionHashcode方法使用.
  *
  * @author Kimi Liu
  * @version 5.3.2

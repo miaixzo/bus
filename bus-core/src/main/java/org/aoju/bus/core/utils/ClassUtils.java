@@ -27,8 +27,6 @@ import org.aoju.bus.core.beans.BeanDesc;
 import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.BasicType;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -38,6 +36,8 @@ import org.aoju.bus.core.loader.JarLoaders;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.lang.System;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.net.URI;
 import java.net.URL;
@@ -95,7 +95,6 @@ public class ClassUtils {
      * @param obj      获取类名对象
      * @param isSimple 是否简单类名,如果为true,返回不带包名的类名
      * @return 类名
-     * @since 3.0.7
      */
     public static String getClassName(Object obj, boolean isSimple) {
         if (null == obj) {
@@ -118,7 +117,6 @@ public class ClassUtils {
      * @param clazz    类
      * @param isSimple 是否简单类名,如果为true,返回不带包名的类名
      * @return 类名
-     * @since 3.0.7
      */
     public static String getClassName(Class<?> clazz, boolean isSimple) {
         if (null == clazz) {
@@ -150,7 +148,6 @@ public class ClassUtils {
      * @param className  类名,可以是全类名（包含包名）,也可以是简单类名（不包含包名）
      * @param ignoreCase 是否忽略大小写
      * @return 指定类是否与给定的类名相同
-     * @since 3.0.7
      */
     public static boolean equals(Class<?> clazz, String className, boolean ignoreCase) {
         if (null == clazz || StringUtils.isBlank(className)) {
@@ -313,25 +310,6 @@ public class ClassUtils {
      */
     public static Method getDeclaredMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) throws SecurityException {
         return ReflectUtils.getMethod(clazz, methodName, parameterTypes);
-    }
-
-    /**
-     * 查找指定类中的所有字段（包括非public字段）, 字段不存在则返回null
-     *
-     * @param clazz     被查找字段的类
-     * @param fieldName 字段名
-     * @return 字段
-     * @throws SecurityException 安全异常
-     */
-    public static Field getDeclaredField(Class<?> clazz, String fieldName) throws SecurityException {
-        if (null == clazz || StringUtils.isBlank(fieldName)) {
-            return null;
-        }
-        try {
-            return clazz.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
-            throw new InstrumentException(e);
-        }
     }
 
     /**
@@ -577,10 +555,10 @@ public class ClassUtils {
             return false;
         }
         if (classArray == null) {
-            classArray = ArrayUtils.EMPTY_CLASS_ARRAY;
+            classArray = Normal.EMPTY_CLASS_ARRAY;
         }
         if (toClassArray == null) {
-            toClassArray = ArrayUtils.EMPTY_CLASS_ARRAY;
+            toClassArray = Normal.EMPTY_CLASS_ARRAY;
         }
         for (int i = 0; i < classArray.length; i++) {
             if (!isAssignable(classArray[i], toClassArray[i], autoboxing)) {
@@ -594,11 +572,9 @@ public class ClassUtils {
         if (toClass == null) {
             return false;
         }
-        // have to check for null, as isAssignableFrom doesn't
         if (cls == null) {
             return !toClass.isPrimitive();
         }
-        //autoboxing:
         if (autoboxing) {
             if (cls.isPrimitive() && !toClass.isPrimitive()) {
                 cls = primitiveToWrapper(cls);
@@ -758,14 +734,14 @@ public class ClassUtils {
      * @return 是否为标准类
      */
     public static boolean isNormalClass(Class<?> clazz) {
-        return null != clazz //
-                && false == clazz.isInterface() //
-                && false == isAbstract(clazz) //
-                && false == clazz.isEnum() //
-                && false == clazz.isArray() //
-                && false == clazz.isAnnotation() //
-                && false == clazz.isSynthetic() //
-                && false == clazz.isPrimitive();//
+        return null != clazz
+                && false == clazz.isInterface()
+                && false == isAbstract(clazz)
+                && false == clazz.isEnum()
+                && false == clazz.isArray()
+                && false == clazz.isAnnotation()
+                && false == clazz.isSynthetic()
+                && false == clazz.isPrimitive();
     }
 
     /**
@@ -806,8 +782,7 @@ public class ClassUtils {
 
     /**
      * 获得给定类所在包的名称
-     * 例如：
-     * ClassUtils =》 org.aoju.bus.core.utils
+     * 例如：org.aoju.bus.core.utils
      *
      * @param clazz 类
      * @return 包名
@@ -1306,44 +1281,38 @@ public class ClassUtils {
     }
 
     /**
-     * Determine the name of the package of the given class,
-     * e.g. "java.lang" for the {@code java.lang.String} class.
+     * 获取给定类的包的名称.
+     * 类似{@code java.lang.String} 字符串类
      *
-     * @param clazz the class
-     * @return the package name, or the empty String if the class
-     * is defined in the default package
+     * @param clazz 类
+     * @return 包名，如果类在默认包中定义，则为空字符串
      */
     public static String getPackageName(Class<?> clazz) {
         return getPackageName(clazz.getName());
     }
 
     /**
-     * Determine the name of the package of the given fully-qualified class name,
-     * e.g. "java.lang" for the {@code java.lang.String} class name.
+     * 获取给定类的包的名称.
+     * 类似{@code java.lang.String} 字符串类.
      *
-     * @param fqClassName the fully-qualified class name
-     * @return the package name, or the empty String if the class
-     * is defined in the default package
+     * @param className 完整的类名
+     * @return 包名，如果类在默认包中定义，则为空字符串
      */
-    public static String getPackageName(String fqClassName) {
-        Assert.notNull(fqClassName, "Class name must not be null");
-        int lastDotIndex = fqClassName.lastIndexOf(Symbol.C_DOT);
-        return (lastDotIndex != -1 ? fqClassName.substring(0, lastDotIndex) : "");
+    public static String getPackageName(String className) {
+        Assert.notNull(className, "Class name must not be null");
+        int lastDotIndex = className.lastIndexOf(Symbol.C_DOT);
+        return (lastDotIndex != -1 ? className.substring(0, lastDotIndex) : "");
     }
 
     /**
-     * Replacement for {@code Class.forName()} that also returns Class instances
-     * for primitives (e.g. "int") and array class names (e.g. "String[]").
-     * Furthermore, it is also capable of resolving inner class names in Java source
-     * style (e.g. "java.lang.Thread.State" instead of "java.lang.Thread$State").
+     * 替换{@code Class. forname()}，它也返回原语的类实例(例如“int”)和数组类名(例如“[]”).
+     * 还能够以Java源代码风格解析内部类名(例如，“java.lang.Thread 用" State"代替"java.lang.Thread$State").
      *
-     * @param name        the name of the Class
-     * @param classLoader the class loader to use
-     *                    (may be {@code null}, which indicates the default class loader)
-     * @return a class instance for the supplied name
-     * @throws ClassNotFoundException if the class was not found
-     * @throws LinkageError           if the class file could not be loaded
-     * @see Class#forName(String, boolean, ClassLoader)
+     * @param name        类的名称
+     * @param classLoader 要使用的类装入器(可能是{@code null}，表示默认的类装入器)
+     * @return 提供的名称的类实例
+     * @throws ClassNotFoundException 如果没有找到该类
+     * @throws LinkageError           如果无法加载类文件
      */
     public static Class<?> forName(String name, ClassLoader classLoader)
             throws ClassNotFoundException, LinkageError {
@@ -1355,21 +1324,18 @@ public class ClassUtils {
             return clazz;
         }
 
-        // "java.lang.String[]" style arrays
         if (name.endsWith(Symbol.BRACKET)) {
             String elementClassName = name.substring(0, name.length() - Symbol.BRACKET.length());
             Class<?> elementClass = forName(elementClassName, classLoader);
             return Array.newInstance(elementClass, 0).getClass();
         }
 
-        // "[Ljava.lang.String;" style arrays
         if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(";")) {
             String elementName = name.substring(Symbol.NON_PREFIX.length(), name.length() - 1);
             Class<?> elementClass = forName(elementName, classLoader);
             return Array.newInstance(elementClass, 0).getClass();
         }
 
-        // "[[I" or "[[Ljava.lang.String;" style arrays
         if (name.startsWith(Symbol.BRACKET_LEFT)) {
             String elementName = name.substring(Symbol.BRACKET_LEFT.length());
             Class<?> elementClass = forName(elementName, classLoader);
@@ -1390,7 +1356,6 @@ public class ClassUtils {
                 try {
                     return Class.forName(innerClassName, false, clToUse);
                 } catch (ClassNotFoundException ex2) {
-                    // Swallow - let original exception get through
                 }
             }
             throw ex;
@@ -1399,8 +1364,7 @@ public class ClassUtils {
 
     public static Class<?> resolvePrimitiveClassName(String name) {
         Class<?> result = null;
-        // Most class names will be quite long, considering that they
-        // SHOULD sit in a package, so a length check is worthwhile.
+        // 大多数类名都很长，因为它们应该放在包中，所以长度检查是值得的.
         if (name != null && name.length() <= 8) {
             // Could be a primitive - likely.
             result = primitiveWrapperMap.get(name);
@@ -1413,17 +1377,13 @@ public class ClassUtils {
         try {
             cl = Thread.currentThread().getContextClassLoader();
         } catch (Throwable ex) {
-            // Cannot access thread context ClassLoader - falling back...
         }
         if (cl == null) {
-            // No thread context class loader -> use class loader of this class.
             cl = ClassUtils.class.getClassLoader();
             if (cl == null) {
-                // getClassLoader() returning null indicates the bootstrap ClassLoader
                 try {
                     cl = ClassLoader.getSystemClassLoader();
                 } catch (Throwable ex) {
-                    // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
                 }
             }
         }
@@ -1431,11 +1391,11 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Gets the class name minus the package name for an {@code Object}.</p>
+     * 获取类名减去{@code Class}的包名
      *
-     * @param object      the class to get the short name for, may be null
-     * @param valueIfNull the value to return if null
-     * @return the class name of the object without the package name, or the null value
+     * @param object      要获取其短名称的类可能为空
+     * @param valueIfNull 如果为空，返回的值
+     * @return 没有包名或空值的对象的类名
      */
     public static String getShortClassName(final Object object, final String valueIfNull) {
         if (object == null) {
@@ -1445,14 +1405,10 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Gets the class name minus the package name from a {@code Class}.</p>
+     * 从{@code Class}中获取类名减去包名.
      *
-     * <p>Consider using the Java 5 API {@link Class#getSimpleName()} instead.
-     * The one known difference is that this code will return {@code "Map.Entry"} while
-     * the {@code java.lang.Class} variant will simply return {@code "Entry"}. </p>
-     *
-     * @param cls the class to get the short name for.
-     * @return the class name without the package name or an empty string
+     * @param cls 类的短名称.
+     * @return 没有包名或空字符串的类名
      */
     public static String getShortClassName(final Class<?> cls) {
         if (cls == null) {
@@ -1462,16 +1418,10 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Gets the class name minus the package name from a String.</p>
+     * 从字符串中获取类名减去包名
      *
-     * <p>The string passed in is assumed to be a class name - it is not checked.</p>
-     *
-     * <p>Note that this method differs from Class.getSimpleName() in that this will
-     * return {@code "Map.Entry"} whilst the {@code java.lang.Class} variant will simply
-     * return {@code "Entry"}. </p>
-     *
-     * @param className the className to get the short name for
-     * @return the class name of the class without the package name or an empty string
+     * @param className 获取短名称的类名
+     * @return 没有包名或空字符串的类的类名
      */
     public static String getShortClassName(String className) {
         if (StringUtils.isEmpty(className)) {
@@ -1480,13 +1430,12 @@ public class ClassUtils {
 
         final StringBuilder arrayPrefix = new StringBuilder();
 
-        // Handle array encoding
+        // 处理数组编码
         if (className.startsWith("[")) {
             while (className.charAt(0) == '[') {
                 className = className.substring(1);
                 arrayPrefix.append("[]");
             }
-            // Strip Object type encoding
             if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';') {
                 className = className.substring(1, className.length() - 1);
             }
@@ -1507,10 +1456,10 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Null-safe version of <code>aClass.getSimpleName()</code></p>
+     * 简单的类名
      *
-     * @param cls the class for which to get the simple name; may be null
-     * @return the simple class name.
+     * @param cls 要为其获取简单名称的类;可能是零
+     * @return 简单的类名
      * @see Class#getSimpleName()
      * @since 3.0
      */
@@ -1519,11 +1468,11 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Null-safe version of <code>aClass.getSimpleName()</code></p>
+     * 简单的类名
      *
-     * @param cls         the class for which to get the simple name; may be null
-     * @param valueIfNull the value to return if null
-     * @return the simple class name or {@code valueIfNull}
+     * @param cls         要为其获取简单名称的类
+     * @param valueIfNull 如果为空，返回的值
+     * @return 简单的类名
      * @see Class#getSimpleName()
      * @since 3.0
      */
@@ -1532,10 +1481,10 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Null-safe version of <code>aClass.getSimpleName()</code></p>
+     * 简单的类名
      *
-     * @param object the object for which to get the simple class name; may be null
-     * @return the simple class name or the empty String
+     * @param object 获取简单类名的对象;可能是零
+     * @return 简单的类名
      * @see Class#getSimpleName()
      */
     public static String getSimpleName(final Object object) {
@@ -1543,11 +1492,11 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Null-safe version of <code>aClass.getSimpleName()</code></p>
+     * 简单的类名
      *
-     * @param object      the object for which to get the simple class name; may be null
-     * @param valueIfNull the value to return if <code>object</code> is <code>null</code>
-     * @return the simple class name or {@code valueIfNull}
+     * @param object      要为其获取简单名称的对象
+     * @param valueIfNull 对象或者null
+     * @return 简单的类名
      * @see Class#getSimpleName()
      * @since 3.0
      */
@@ -1556,16 +1505,11 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Converts the specified primitive Class object to its corresponding
-     * wrapper Class object.</p>
+     * 将指定的基元类对象转换为其对应的包装器类对象
      *
-     * <p>NOTE: From v2.2, this method handles {@code Void.TYPE},
-     * returning {@code Void.TYPE}.</p>
-     *
-     * @param cls the class to convert, may be null
-     * @return the wrapper class for {@code cls} or {@code cls} if
-     * {@code cls} is not a primitive. {@code null} if null input.
-     * @since 2.1.0
+     * @param cls 要转换的类可以为null
+     * @return 如果输入为{@code null},则返回{@code cls}，
+     * 否则返回{@code cls} 的包装器类
      */
     public static Class<?> primitiveToWrapper(final Class<?> cls) {
         Class<?> convertedClass = cls;
@@ -1576,14 +1520,11 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Converts the specified array of primitive Class objects to an array of
-     * its corresponding wrapper Class objects.</p>
+     * 将原语类对象的指定数组转换为其相应包装器类对象的数组
      *
-     * @param classes the class array to convert, may be null or empty
-     * @return an array which contains for each given class, the wrapper class or
-     * the original class if class is not a primitive. {@code null} if null input.
-     * Empty array if an empty array passed in.
-     * @since 2.1.0
+     * @param classes 要转换的类数组可以为空或空
+     * @return 包含每个给定类、包装器类或原始类(如果类不是原语)的数组.
+     * {@code null}如果输入为空。如果传入的是空数组，则为空数组.
      */
     public static Class<?>[] primitivesToWrappers(final Class<?>... classes) {
         if (classes == null) {
@@ -1602,38 +1543,23 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Converts the specified wrapper class to its corresponding primitive
-     * class.</p>
+     * 将指定的包装器类转换为其对应的基元类
      *
-     * <p>This method is the counter part of {@code primitiveToWrapper()}.
-     * If the passed in class is a wrapper class for a primitive type, this
-     * primitive type will be returned (e.g. {@code Integer.TYPE} for
-     * {@code Integer.class}). For other classes, or if the parameter is
-     * <b>null</b>, the return value is <b>null</b>.</p>
-     *
-     * @param cls the class to convert, may be <b>null</b>
-     * @return the corresponding primitive type if {@code cls} is a
-     * wrapper class, <b>null</b> otherwise
+     * @param cls 要转换的类，可以是null
+     * @return 对应的原类型if {@code cls}是包装类，否则null
      * @see #primitiveToWrapper(Class)
-     * @since 2.4.0
      */
     public static Class<?> wrapperToPrimitive(final Class<?> cls) {
         return wrapperPrimitiveMap.get(cls);
     }
 
     /**
-     * <p>Converts the specified array of wrapper Class objects to an array of
-     * its corresponding primitive Class objects.</p>
+     * 将包装器类对象的指定数组转换为其相应基元类对象的数组
      *
-     * <p>This method invokes {@code wrapperToPrimitive()} for each element
-     * of the passed in array.</p>
-     *
-     * @param classes the class array to convert, may be null or empty
-     * @return an array which contains for each given class, the primitive class or
-     * <b>null</b> if the original class is not a wrapper class. {@code null} if null input.
-     * Empty array if an empty array passed in.
+     * @param classes 要转换的类数组可以为空或空
+     * @return 一个数组，其中包含每个给定类的基元类或null(如果原始类不是包装类).
+     * {@code null}如果输入为空。如果传入的是空数组，则为空数组.
      * @see #wrapperToPrimitive(Class)
-     * @since 2.4.0
      */
     public static Class<?>[] wrappersToPrimitives(final Class<?>... classes) {
         if (classes == null) {
@@ -1652,17 +1578,10 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Gets a {@code List} of all interfaces implemented by the given
-     * class and its superclasses.</p>
+     * 获取由给定接口实现的所有接口的{@code List} 类及其超类.
      *
-     * <p>The order is determined by looking through each interface in turn as
-     * declared in the source file and following its hierarchy up. Then each
-     * superclass is considered in the same way. Later duplicates are ignored,
-     * so the order is maintained.</p>
-     *
-     * @param cls the class to look up, may be {@code null}
-     * @return the {@code List} of interfaces in order,
-     * {@code null} if null input
+     * @param cls 要查找的类可能是{@code null}
+     * @return 接口的{@code List}按顺序排列，{@code null}如果输入为空
      */
     public static List<Class<?>> getAllInterfaces(final Class<?> cls) {
         if (cls == null) {
@@ -1676,10 +1595,10 @@ public class ClassUtils {
     }
 
     /**
-     * Get the interfaces for the specified class.
+     * 获取指定类的接口.
      *
-     * @param cls             the class to look up, may be {@code null}
-     * @param interfacesFound the {@code Set} of interfaces for the class
+     * @param cls             要查找的类可能是{@code null}
+     * @param interfacesFound 类接口的{@code Set}
      */
     public static void getAllInterfaces(Class<?> cls, final HashSet<Class<?>> interfacesFound) {
         while (cls != null) {
@@ -1696,11 +1615,10 @@ public class ClassUtils {
     }
 
     /**
-     * <p>Gets a {@code List} of superclasses for the given class.</p>
+     * 获取给定类的超类的{@code List}.
      *
-     * @param cls the class to look up, may be {@code null}
-     * @return the {@code List} of superclasses in order going up from this one
-     * {@code null} if null input
+     * @param cls 要查找的类可能是{@code null}
+     * @return 类的{@code List}从这个{@code null}开始，如果输入为空
      */
     public static List<Class<?>> getAllSuperclasses(final Class<?> cls) {
         if (cls == null) {
@@ -1719,7 +1637,7 @@ public class ClassUtils {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
-            return ArrayUtils.EMPTY_CLASS_ARRAY;
+            return Normal.EMPTY_CLASS_ARRAY;
         }
         final Class<?>[] classes = new Class[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -1729,24 +1647,21 @@ public class ClassUtils {
     }
 
     /**
-     * Get an {@link Iterable} that can iterate over a class hierarchy in ascending (subclass to superclass) order,
-     * excluding interfaces.
+     * 获取一个{@link Iterable}，它可以按照从子类到超类的升序遍历类层次结构，不包括接口.
      *
-     * @param type the type to get the class hierarchy from
-     * @return Iterable an Iterable over the class hierarchy of the given class
-     * @since 3.2.0
+     * @param type 获取类层次结构的类型
+     * @return 可迭代的在给定类的类层次结构上的可迭代的
      */
     public static Iterable<Class<?>> hierarchy(final Class<?> type) {
         return hierarchy(type, Interfaces.EXCLUDE);
     }
 
     /**
-     * Get an {@link Iterable} that can iterate over a class hierarchy in ascending (subclass to superclass) order.
+     * 获取一个{@link Iterable}，它可以按照从子类到超类的升序遍历类层次结构.
      *
-     * @param type               the type to get the class hierarchy from
-     * @param interfacesBehavior switch indicating whether to include or exclude interfaces
-     * @return Iterable an Iterable over the class hierarchy of the given class
-     * @since 3.2.0
+     * @param type               获取类层次结构的类型
+     * @param interfacesBehavior 指示是否包含或排除接口的开关
+     * @return 可迭代的在给定类的类层次结构上的可迭代的
      */
     public static Iterable<Class<?>> hierarchy(final Class<?> type, final Interfaces interfacesBehavior) {
         final Iterable<Class<?>> classes = new Iterable<Class<?>>() {
@@ -1829,13 +1744,15 @@ public class ClassUtils {
     }
 
     /**
-     * Returns whether the given {@code type} is a primitive or primitive wrapper ({@link Boolean}, {@link Byte}, {@link Character},
-     * {@link Short}, {@link Integer}, {@link Long}, {@link Double}, {@link Float}).
+     * 返回给定的{@code type}是原始包装器还是原始包装器
+     * ({@link Boolean}， {@link Byte}， {@link Character}，
+     * {@link Short}， {@link Integer}， {@link Long}，
+     * {@link Double}， {@link Float}).
      *
-     * @param type The class to query or null.
-     * @return true if the given {@code type} is a primitive or primitive wrapper ({@link Boolean}, {@link Byte}, {@link Character},
-     * {@link Short}, {@link Integer}, {@link Long}, {@link Double}, {@link Float}).
-     * @since 3.1
+     * @param type 要查询或空的类.
+     * @return 如果给定的{@code type}是一个原始或原始包装器({@link Boolean}，
+     * {@link Byte}， {@link Character}， {@link Short}， {@link Integer}，
+     * {@link Long}， {@link Double}， {@link Float})，则为真..
      */
     public static boolean isPrimitiveOrWrapper(final Class<?> type) {
         if (type == null) {
@@ -1854,10 +1771,10 @@ public class ClassUtils {
     }
 
     /**
-     * Convert a "."-based fully qualified class name to a "/"-based resource path.
+     * 把一个'.'的类路径转换为基于'/'的类路径
      *
-     * @param className the fully qualified class name
-     * @return the corresponding resource path, pointing to the class
+     * @param className 完整雷鸣
+     * @return 对应的资源路径，指向类
      */
     public static String convertClassNameToResourcePath(String className) {
         Assert.notNull(className, "Class name must not be null");
@@ -1865,9 +1782,7 @@ public class ClassUtils {
     }
 
     /**
-     * 获取对应类的默认变量名：
-     * 1. 首字母小写
-     * String=》string
+     * 获取对应类的默认变量名
      *
      * @param className 类名称
      * @return 类的默认变量名
@@ -1934,6 +1849,1384 @@ public class ClassUtils {
             methods.add(getMethod);
         }
         return methods;
+    }
+
+    /**
+     * 调用没有参数的命名方法.
+     *
+     * <p>此方法将委托给 {@link #getMatchingAccessibleMethod(Class, String, Class[])}.</p>
+     * <p>这是包装器{@link #invokeMethod(Object object, String methodName, Object[] args, Class[] parameterTypes)}.</p>
+     *
+     * @param object     调用此对象上的方法
+     * @param methodName 具有此名称的get方法
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     * @since 3.5.0
+     */
+    public static Object invokeMethod(final Object object,
+                                      final String methodName) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        return invokeMethod(object, methodName, Normal.EMPTY_OBJECT_ARRAY, null);
+    }
+
+    /**
+     * 调用没有参数的命名方法.
+     *
+     * <p>此方法将委托给 {@link #getMatchingAccessibleMethod(Class, String, Class[])}.</p>
+     * <p>这是包装器{@link #invokeMethod(Object object, String methodName, Object[] args, Class[] parameterTypes)}.</p>
+     *
+     * @param object      调用此对象上的方法
+     * @param forceAccess 强制访问调用方法，即使该方法不可访问
+     * @param methodName  具有此名称的get方法
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     * @since 3.5.0
+     */
+    public static Object invokeMethod(final Object object,
+                                      final boolean forceAccess,
+                                      final String methodName)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        return invokeMethod(object, forceAccess, methodName, Normal.EMPTY_OBJECT_ARRAY, null);
+    }
+
+    /**
+     * 调用其参数类型与对象类型匹配的已命名方法.
+     *
+     * <p>此方法将委托给 {@link #getMatchingAccessibleMethod(Class, String, Class[])}.</p>
+     * <p>这是包装器{@link #invokeMethod(Object object, String methodName, Object[] args, Class[] parameterTypes)}.</p>
+     *
+     * @param object     调用此对象上的方法
+     * @param methodName 具有此名称的get方法
+     * @param args       参数信息
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     */
+    public static Object invokeMethod(final Object object,
+                                      final String methodName,
+                                      Object... args) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        args = ArrayUtils.nullToEmpty(args);
+        final Class<?>[] parameterTypes = toClass(args);
+        return invokeMethod(object, methodName, args, parameterTypes);
+    }
+
+    /**
+     * 调用其参数类型与对象类型匹配的已命名方法
+     *
+     * @param object      调用此对象上的方法
+     * @param forceAccess 强制访问调用方法，即使该方法不可访问
+     * @param methodName  具有此名称的get方法
+     * @param args        参数信息
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     * @since 3.5.0
+     */
+    public static Object invokeMethod(final Object object,
+                                      final boolean forceAccess,
+                                      final String methodName,
+                                      Object... args) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        args = ArrayUtils.nullToEmpty(args);
+        final Class<?>[] parameterTypes = toClass(args);
+        return invokeMethod(object, forceAccess, methodName, args, parameterTypes);
+    }
+
+    /**
+     * 调用其参数类型与对象类型匹配的已命名方法.
+     *
+     * @param object         调用此对象上的方法
+     * @param forceAccess    强制访问调用方法，即使该方法不可访问
+     * @param methodName     具有此名称的get方法
+     * @param args           参数信息
+     * @param parameterTypes 参数类型
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     * @since 3.5.0
+     */
+    public static Object invokeMethod(final Object object,
+                                      final boolean forceAccess,
+                                      final String methodName,
+                                      Object[] args, Class<?>[] parameterTypes)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        parameterTypes = ArrayUtils.nullToEmpty(parameterTypes);
+        args = ArrayUtils.nullToEmpty(args);
+
+        final String messagePrefix;
+        Method method = null;
+
+        if (forceAccess) {
+            messagePrefix = "No such method: ";
+            method = getMatchingMethod(object.getClass(),
+                    methodName, parameterTypes);
+            if (method != null && !method.isAccessible()) {
+                method.setAccessible(true);
+            }
+        } else {
+            messagePrefix = "No such accessible method: ";
+            method = getMatchingAccessibleMethod(object.getClass(),
+                    methodName, parameterTypes);
+        }
+
+        if (method == null) {
+            throw new NoSuchMethodException(messagePrefix
+                    + methodName + "() on object: "
+                    + object.getClass().getName());
+        }
+        args = toVarArgs(method, args);
+
+        return method.invoke(object, args);
+    }
+
+    /**
+     * 调用其参数类型与对象类型匹配的已命名方法.
+     *
+     * @param object         调用此对象上的方法
+     * @param methodName     具有此名称的get方法
+     * @param args           参数信息
+     * @param parameterTypes 参数类型
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     */
+    public static Object invokeMethod(final Object object,
+                                      final String methodName,
+                                      final Object[] args,
+                                      final Class<?>[] parameterTypes)
+            throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException {
+        return invokeMethod(object, false, methodName, args, parameterTypes);
+    }
+
+    /**
+     * 调用参数类型与对象类型完全匹配的方法
+     *
+     * @param object     调用此对象上的方法
+     * @param methodName 具有此名称的get方法
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     * @since 3.5.0
+     */
+    public static Object invokeExactMethod(final Object object, final String methodName) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        return invokeExactMethod(object, methodName, Normal.EMPTY_OBJECT_ARRAY, null);
+    }
+
+    /**
+     * 调用没有参数的方法
+     *
+     * @param object     调用此对象上的方法
+     * @param methodName 具有此名称的get方法
+     * @param args       参数信息
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     */
+    public static Object invokeExactMethod(final Object object,
+                                           final String methodName,
+                                           Object... args) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        args = ArrayUtils.nullToEmpty(args);
+        final Class<?>[] parameterTypes = toClass(args);
+        return invokeExactMethod(object, methodName, args, parameterTypes);
+    }
+
+    /**
+     * 调用参数类型与给定参数类型完全匹配的方法
+     *
+     * @param object         调用此对象上的方法
+     * @param methodName     具有此名称的get方法
+     * @param args           参数信息
+     * @param parameterTypes 参数类型
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     */
+    public static Object invokeExactMethod(final Object object,
+                                           final String methodName,
+                                           Object[] args,
+                                           Class<?>[] parameterTypes)
+            throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException {
+        args = ArrayUtils.nullToEmpty(args);
+        parameterTypes = ArrayUtils.nullToEmpty(parameterTypes);
+        final Method method = getAccessibleMethod(object.getClass(), methodName,
+                parameterTypes);
+        if (method == null) {
+            throw new NoSuchMethodException("No such accessible method: "
+                    + methodName + "() on object: "
+                    + object.getClass().getName());
+        }
+        return method.invoke(object, args);
+    }
+
+    /**
+     * 调用参数类型与给定参数类型完全匹配的{@code static}方法
+     *
+     * @param cls            调用该类上的静态方法
+     * @param methodName     具有此名称的get方法
+     * @param args           参数信息
+     * @param parameterTypes 参数类型
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     */
+    public static Object invokeExactStaticMethod(final Class<?> cls,
+                                                 final String methodName,
+                                                 Object[] args,
+                                                 Class<?>[] parameterTypes)
+            throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException {
+        args = ArrayUtils.nullToEmpty(args);
+        parameterTypes = ArrayUtils.nullToEmpty(parameterTypes);
+        final Method method = getAccessibleMethod(cls, methodName, parameterTypes);
+        if (method == null) {
+            throw new NoSuchMethodException("No such accessible method: "
+                    + methodName + "() on class: " + cls.getName());
+        }
+        return method.invoke(null, args);
+    }
+
+    /**
+     * 调用一个名为{@code static}的方法，该方法的参数类型与对象类型匹配
+     *
+     * @param cls        调用该类上的静态方法
+     * @param methodName 具有此名称的get方法
+     * @param args       参数信息
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     */
+    public static Object invokeStaticMethod(final Class<?> cls,
+                                            final String methodName,
+                                            Object... args) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        args = ArrayUtils.nullToEmpty(args);
+        final Class<?>[] parameterTypes = toClass(args);
+        return invokeStaticMethod(cls, methodName, args, parameterTypes);
+    }
+
+    /**
+     * 调用一个名为{@code static}的方法，该方法的参数类型与对象类型匹配
+     *
+     * @param cls            调用该类上的静态方法
+     * @param methodName     具有此名称的get方法
+     * @param args           参数信息
+     * @param parameterTypes 参数类型
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     */
+    public static Object invokeStaticMethod(final Class<?> cls,
+                                            final String methodName,
+                                            Object[] args,
+                                            Class<?>[] parameterTypes)
+            throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException {
+        args = ArrayUtils.nullToEmpty(args);
+        parameterTypes = ArrayUtils.nullToEmpty(parameterTypes);
+        final Method method = getMatchingAccessibleMethod(cls, methodName,
+                parameterTypes);
+        if (method == null) {
+            throw new NoSuchMethodException("No such accessible method: "
+                    + methodName + "() on class: " + cls.getName());
+        }
+        args = toVarArgs(method, args);
+        return method.invoke(null, args);
+    }
+
+    private static Object[] toVarArgs(final Method method, Object[] args) {
+        if (method.isVarArgs()) {
+            final Class<?>[] methodParameterTypes = method.getParameterTypes();
+            args = getVarArgs(args, methodParameterTypes);
+        }
+        return args;
+    }
+
+    /**
+     * 给定一个传递给varargs方法的参数数组，
+     * 返回一个规范形式的参数数组，
+     * 即一个声明了参数数量的数组，
+     * 其最后一个参数是varargs类型的数组
+     *
+     * @param args                 传递给varags方法的参数数组
+     * @param methodParameterTypes 方法参数类型的声明数组
+     * @return 传递给方法的可变参数数组
+     * @since 3.5.0
+     */
+    static Object[] getVarArgs(final Object[] args, final Class<?>[] methodParameterTypes) {
+        if (args.length == methodParameterTypes.length
+                && args[args.length - 1].getClass().equals(methodParameterTypes[methodParameterTypes.length - 1])) {
+            return args;
+        }
+
+        final Object[] newArgs = new Object[methodParameterTypes.length];
+        System.arraycopy(args, 0, newArgs, 0, methodParameterTypes.length - 1);
+        final Class<?> varArgComponentType = methodParameterTypes[methodParameterTypes.length - 1].getComponentType();
+        final int varArgLength = args.length - methodParameterTypes.length + 1;
+
+        Object varArgsArray = Array.newInstance(primitiveToWrapper(varArgComponentType), varArgLength);
+        System.arraycopy(args, methodParameterTypes.length - 1, varArgsArray, 0, varArgLength);
+
+        if (varArgComponentType.isPrimitive()) {
+            varArgsArray = ArrayUtils.toPrimitive(varArgsArray);
+        }
+
+        newArgs[methodParameterTypes.length - 1] = varArgsArray;
+        return newArgs;
+    }
+
+    /**
+     * 调用参数类型与对象类型完全匹配的{@code static}方法
+     *
+     * @param cls        调用该类上的静态方法
+     * @param methodName 具有此名称的get方法
+     * @param args       参数信息
+     * @return 被调用方法返回的值
+     * @throws NoSuchMethodException     如果没有这样的可访问方法
+     * @throws InvocationTargetException 包装由调用的方法引发的异常
+     * @throws IllegalAccessException    如果请求的方法不能通过反射访问
+     */
+    public static Object invokeExactStaticMethod(final Class<?> cls,
+                                                 final String methodName,
+                                                 Object... args) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        args = ArrayUtils.nullToEmpty(args);
+        final Class<?>[] parameterTypes = toClass(args);
+        return invokeExactStaticMethod(cls, methodName, args, parameterTypes);
+    }
+
+    /**
+     * 返回具有给定名称和参数的可访问方法(即可以通过反射调用的方法)
+     *
+     * @param cls            从这个类获取方法
+     * @param methodName     具有此名称的get方法
+     * @param parameterTypes 参数类型
+     * @return 访问方法
+     */
+    public static Method getAccessibleMethod(final Class<?> cls,
+                                             final String methodName,
+                                             final Class<?>... parameterTypes) {
+        try {
+            return getAccessibleMethod(cls.getMethod(methodName,
+                    parameterTypes));
+        } catch (final NoSuchMethodException e) {
+            return null;
+        }
+    }
+
+    /**
+     * 返回实现指定方法的可访问方法(即可以通过反射调用的方法)。如果找不到这样的方法，返回{@code null}
+     *
+     * @param method 我们希望调用的方法
+     * @return 访问方法
+     */
+    public static Method getAccessibleMethod(Method method) {
+        if (!MemberUtils.isAccessible(method)) {
+            return null;
+        }
+        final Class<?> cls = method.getDeclaringClass();
+        if (Modifier.isPublic(cls.getModifiers())) {
+            return method;
+        }
+        final String methodName = method.getName();
+        final Class<?>[] parameterTypes = method.getParameterTypes();
+
+        // 检查实现的接口和子接口
+        method = getAccessibleMethodFromInterfaceNest(cls, methodName,
+                parameterTypes);
+
+        // 检查超类链
+        if (method == null) {
+            method = getAccessibleMethodFromSuperclass(cls, methodName,
+                    parameterTypes);
+        }
+        return method;
+    }
+
+    /**
+     * 通过扫描超类返回可访问的方法(即可以通过反射调用的方法)
+     *
+     * @param cls            从这个类获取方法
+     * @param methodName     要调用的方法的方法名
+     * @param parameterTypes 参数类型
+     * @return 如果没有找到可访问的方法返回{@code null}
+     */
+    private static Method getAccessibleMethodFromSuperclass(final Class<?> cls,
+                                                            final String methodName,
+                                                            final Class<?>... parameterTypes) {
+        Class<?> parentClass = cls.getSuperclass();
+        while (parentClass != null) {
+            if (Modifier.isPublic(parentClass.getModifiers())) {
+                try {
+                    return parentClass.getMethod(methodName, parameterTypes);
+                } catch (final NoSuchMethodException e) {
+                    return null;
+                }
+            }
+            parentClass = parentClass.getSuperclass();
+        }
+        return null;
+    }
+
+    /**
+     * 通过扫描所有实现的接口和子接口，返回实现指定方法的可访问方法(即可以通过反射调用的方法).
+     *
+     * @param cls            从这个类获取方法
+     * @param methodName     要调用的方法的方法名
+     * @param parameterTypes 参数类型
+     * @return 如果没有找到可访问的方法返回{@code null}
+     */
+    private static Method getAccessibleMethodFromInterfaceNest(Class<?> cls,
+                                                               final String methodName,
+                                                               final Class<?>... parameterTypes) {
+
+        for (; cls != null; cls = cls.getSuperclass()) {
+
+            final Class<?>[] interfaces = cls.getInterfaces();
+            for (final Class<?> anInterface : interfaces) {
+                if (!Modifier.isPublic(anInterface.getModifiers())) {
+                    continue;
+                }
+                try {
+                    return anInterface.getDeclaredMethod(methodName,
+                            parameterTypes);
+                } catch (final NoSuchMethodException e) {
+                }
+                final Method method = getAccessibleMethodFromInterfaceNest(anInterface,
+                        methodName, parameterTypes);
+                if (method != null) {
+                    return method;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 查找与给定名称匹配且具有兼容参数的可访问方法.
+     * 相容参数是指每个方法参数都可以从给定的参数中分配
+     *
+     * @param cls            在这个类中查找方法
+     * @param methodName     使用此名称查找方法
+     * @param parameterTypes 寻找参数最一致的方法
+     * @return 访问方法
+     */
+    public static Method getMatchingAccessibleMethod(final Class<?> cls,
+                                                     final String methodName,
+                                                     final Class<?>... parameterTypes) {
+        try {
+            final Method method = cls.getMethod(methodName, parameterTypes);
+            MemberUtils.setAccessibleWorkaround(method);
+            return method;
+        } catch (final NoSuchMethodException e) {
+        }
+        Method bestMatch = null;
+        final Method[] methods = cls.getMethods();
+        for (final Method method : methods) {
+            if (method.getName().equals(methodName) &&
+                    MemberUtils.isMatchingMethod(method, parameterTypes)) {
+                final Method accessibleMethod = getAccessibleMethod(method);
+                if (accessibleMethod != null && (bestMatch == null || MemberUtils.compareMethodFit(
+                        accessibleMethod,
+                        bestMatch,
+                        parameterTypes) < 0)) {
+                    bestMatch = accessibleMethod;
+                }
+            }
+        }
+        if (bestMatch != null) {
+            MemberUtils.setAccessibleWorkaround(bestMatch);
+        }
+
+        if (bestMatch != null && bestMatch.isVarArgs() && bestMatch.getParameterTypes().length > 0 && parameterTypes.length > 0) {
+            final Class<?>[] methodParameterTypes = bestMatch.getParameterTypes();
+            final Class<?> methodParameterComponentType = methodParameterTypes[methodParameterTypes.length - 1].getComponentType();
+            final String methodParameterComponentTypeName = primitiveToWrapper(methodParameterComponentType).getName();
+            final String parameterTypeName = parameterTypes[parameterTypes.length - 1].getName();
+            final String parameterTypeSuperClassName = parameterTypes[parameterTypes.length - 1].getSuperclass().getName();
+
+            if (!methodParameterComponentTypeName.equals(parameterTypeName)
+                    && !methodParameterComponentTypeName.equals(parameterTypeSuperClassName)) {
+                return null;
+            }
+        }
+
+        return bestMatch;
+    }
+
+    /**
+     * 检索是否可访问的方法
+     *
+     * @param cls            在这个类中查找方法
+     * @param methodName     使用此名称查找方法
+     * @param parameterTypes 寻找参数最一致的方法
+     * @return 访问方法
+     */
+    public static Method getMatchingMethod(final Class<?> cls,
+                                           final String methodName,
+                                           final Class<?>... parameterTypes) {
+        Assert.notNull(cls, "Null class not allowed.");
+        Assert.notEmpty(methodName, "Null or blank methodName not allowed.");
+
+        // Address methods in superclasses
+        Method[] methodArray = cls.getDeclaredMethods();
+        final List<Class<?>> superclassList = getAllSuperclasses(cls);
+        for (final Class<?> klass : superclassList) {
+            methodArray = ArrayUtils.addAll(methodArray, klass.getDeclaredMethods());
+        }
+
+        Method inexactMatch = null;
+        for (final Method method : methodArray) {
+            if (methodName.equals(method.getName()) &&
+                    Objects.deepEquals(parameterTypes, method.getParameterTypes())) {
+                return method;
+            } else if (methodName.equals(method.getName()) &&
+                    isAssignable(parameterTypes, method.getParameterTypes(), true)) {
+                if (inexactMatch == null) {
+                    inexactMatch = method;
+                } else if (distance(parameterTypes, method.getParameterTypes())
+                        < distance(parameterTypes, inexactMatch.getParameterTypes())) {
+                    inexactMatch = method;
+                }
+            }
+
+        }
+        return inexactMatch;
+    }
+
+    /**
+     * 返回可分配参数类类型之间的继承总数
+     *
+     * @param classArray   被查找数组参数
+     * @param toClassArray 查找参数信息
+     * @return 可分配的参数类类型之间的继承总数.
+     */
+    private static int distance(final Class<?>[] classArray,
+                                final Class<?>[] toClassArray) {
+        int answer = 0;
+
+        if (!isAssignable(classArray, toClassArray, true)) {
+            return -1;
+        }
+        for (int offset = 0; offset < classArray.length; offset++) {
+            if (classArray[offset].equals(toClassArray[offset])) {
+                continue;
+            } else if (isAssignable(classArray[offset], toClassArray[offset], true)
+                    && !isAssignable(classArray[offset], toClassArray[offset], false)) {
+                answer++;
+            } else {
+                answer = answer + 2;
+            }
+        }
+
+        return answer;
+    }
+
+    /**
+     * 将被覆盖方法的层次结构向下获取到{@code result}，其中包含泛型.
+     *
+     * @param method             方法信息
+     * @param interfacesBehavior 接口，{@code null}
+     * @return 按从子类到超类的升序设置方法
+     * @since 3.2.0
+     */
+    public static Set<Method> getOverrideHierarchy(final Method method,
+                                                   final Interfaces interfacesBehavior) {
+        Assert.notNull(method);
+        final Set<Method> result = new LinkedHashSet<>();
+        result.add(method);
+
+        final Class<?>[] parameterTypes = method.getParameterTypes();
+
+        final Class<?> declaringClass = method.getDeclaringClass();
+
+        final Iterator<Class<?>> hierarchy = hierarchy(declaringClass, interfacesBehavior).iterator();
+
+        hierarchy.next();
+        hierarchyTraversal:
+        while (hierarchy.hasNext()) {
+            final Class<?> c = hierarchy.next();
+            final Method m = getMatchingAccessibleMethod(c, method.getName(), parameterTypes);
+            if (m == null) {
+                continue;
+            }
+            if (Arrays.equals(m.getParameterTypes(), parameterTypes)) {
+                result.add(m);
+                continue;
+            }
+            // 在包含接口的情况下，每次都需要获取参数
+            final Map<TypeVariable<?>, Type> typeArguments = TypeUtils.getTypeArguments(declaringClass, m.getDeclaringClass());
+            for (int i = 0; i < parameterTypes.length; i++) {
+                final Type childType = TypeUtils.unrollVariables(typeArguments, method.getGenericParameterTypes()[i]);
+                final Type parentType = TypeUtils.unrollVariables(typeArguments, m.getGenericParameterTypes()[i]);
+                if (!TypeUtils.equals(childType, parentType)) {
+                    continue hierarchyTraversal;
+                }
+            }
+            result.add(m);
+        }
+        return result;
+    }
+
+    /**
+     * 获取使用给定注释进行注释的给定类的所有类级公共方法.
+     *
+     * @param cls           要查询的 {@link Class}
+     * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
+     * @return 方法数组.
+     * @since 3.5.0
+     */
+    public static Method[] getMethodsWithAnnotation(final Class<?> cls,
+                                                    final Class<? extends Annotation> annotationCls) {
+        return getMethodsWithAnnotation(cls, annotationCls, false, false);
+    }
+
+    /**
+     * 获取使用给定注释进行注释的给定类的所有类级公共方法.
+     *
+     * @param cls           要查询的 {@link Class}
+     * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
+     * @return 方法列表
+     * @since 3.5.0
+     */
+    public static List<Method> getMethodsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
+        return getMethodsListWithAnnotation(cls, annotationCls, false, false);
+    }
+
+    /**
+     * 获取使用给定注释进行注释的给定类的所有方法.
+     *
+     * @param cls           要查询的 {@link Class}
+     * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
+     * @param searchSupers  确定是否应在给定类的整个继承层次结构中执行查找
+     * @param ignoreAccess  确定是否应该考虑非公共方法
+     * @return 方法数组
+     */
+    public static Method[] getMethodsWithAnnotation(final Class<?> cls,
+                                                    final Class<? extends Annotation> annotationCls,
+                                                    final boolean searchSupers,
+                                                    final boolean ignoreAccess) {
+        final List<Method> annotatedMethodsList = getMethodsListWithAnnotation(cls, annotationCls, searchSupers,
+                ignoreAccess);
+        return annotatedMethodsList.toArray(new Method[annotatedMethodsList.size()]);
+    }
+
+    /**
+     * 获取使用给定注释进行注释的给定类的所有方法.
+     *
+     * @param cls           要查询的 {@link Class}
+     * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
+     * @param searchSupers  确定是否应在给定类的整个继承层次结构中执行查找
+     * @param ignoreAccess  确定是否应该考虑非公共方法
+     * @return 方法数组
+     */
+    public static List<Method> getMethodsListWithAnnotation(final Class<?> cls,
+                                                            final Class<? extends Annotation> annotationCls,
+                                                            final boolean searchSupers,
+                                                            final boolean ignoreAccess) {
+        Assert.isTrue(cls != null, "The class must not be null");
+        Assert.isTrue(annotationCls != null, "The annotation class must not be null");
+        final List<Class<?>> classes = (searchSupers ? getAllSuperclassesAndInterfaces(cls) : new ArrayList<>());
+        classes.add(0, cls);
+        final List<Method> annotatedMethods = new ArrayList<>();
+        for (final Class<?> acls : classes) {
+            final Method[] methods = (ignoreAccess ? acls.getDeclaredMethods() : acls.getMethods());
+            for (final Method method : methods) {
+                if (method.getAnnotation(annotationCls) != null) {
+                    annotatedMethods.add(method);
+                }
+            }
+        }
+        return annotatedMethods;
+    }
+
+    /**
+     * 获取具有给定注释类型的注释对象，该注释类型出现在给定方法上，或可选地出现在超类和接口中的任何等效方法上。如果注释类型不存在，则返回null
+     *
+     * @param <A>           注解类型
+     * @param method        要查询的 {@link Method} to query
+     * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
+     * @param searchSupers  确定是否应在给定类的整个继承层次结构中执行查找
+     * @param ignoreAccess  确定是否应该考虑非公共方法
+     * @return 第一个匹配注释
+     */
+    public static <A extends Annotation> A getAnnotation(final Method method,
+                                                         final Class<A> annotationCls,
+                                                         final boolean searchSupers,
+                                                         final boolean ignoreAccess) {
+
+        Assert.isTrue(method != null, "The method must not be null");
+        Assert.isTrue(annotationCls != null, "The annotation class must not be null");
+        if (!ignoreAccess && !MemberUtils.isAccessible(method)) {
+            return null;
+        }
+
+        A annotation = method.getAnnotation(annotationCls);
+
+        if (annotation == null && searchSupers) {
+            final Class<?> mcls = method.getDeclaringClass();
+            final List<Class<?>> classes = getAllSuperclassesAndInterfaces(mcls);
+            for (final Class<?> acls : classes) {
+                Method equivalentMethod;
+                try {
+                    equivalentMethod = (ignoreAccess ? acls.getDeclaredMethod(method.getName(), method.getParameterTypes())
+                            : acls.getMethod(method.getName(), method.getParameterTypes()));
+                } catch (final NoSuchMethodException e) {
+                    continue;
+                }
+                annotation = equivalentMethod.getAnnotation(annotationCls);
+                if (annotation != null) {
+                    break;
+                }
+            }
+        }
+
+        return annotation;
+    }
+
+    /**
+     * 获取{@link ClassUtils#getAllSuperclasses}(Class)}
+     * 和{@link ClassUtils#getAllInterfaces}(Class)}的组合
+     *
+     * @param cls t要查找的类
+     * @return 超类和接口的组合{@code List}
+     */
+    private static List<Class<?>> getAllSuperclassesAndInterfaces(final Class<?> cls) {
+        if (cls == null) {
+            return null;
+        }
+
+        final List<Class<?>> allSuperClassesAndInterfaces = new ArrayList<>();
+        final List<Class<?>> allSuperclasses = getAllSuperclasses(cls);
+        int superClassIndex = 0;
+        final List<Class<?>> allInterfaces = getAllInterfaces(cls);
+        int interfaceIndex = 0;
+        while (interfaceIndex < allInterfaces.size() ||
+                superClassIndex < allSuperclasses.size()) {
+            Class<?> acls;
+            if (interfaceIndex >= allInterfaces.size()) {
+                acls = allSuperclasses.get(superClassIndex++);
+            } else if (superClassIndex >= allSuperclasses.size()) {
+                acls = allInterfaces.get(interfaceIndex++);
+            } else if (interfaceIndex < superClassIndex) {
+                acls = allInterfaces.get(interfaceIndex++);
+            } else if (superClassIndex < interfaceIndex) {
+                acls = allSuperclasses.get(superClassIndex++);
+            } else {
+                acls = allInterfaces.get(interfaceIndex++);
+            }
+            allSuperClassesAndInterfaces.add(acls);
+        }
+        return allSuperClassesAndInterfaces;
+    }
+
+    /**
+     * 根据名称获取可访问的{@link Field}范围
+     *
+     * @param cls       要反射的{@link Class} 不能是{@code null}
+     * @param fieldName 要获取的字段名
+     * @return 字段对象
+     */
+    public static Field getField(final Class<?> cls, final String fieldName) {
+        final Field field = getField(cls, fieldName, false);
+        MemberUtils.setAccessibleWorkaround(field);
+        return field;
+    }
+
+    /**
+     * 按名称获取可访问的{@link Field}，如果请求则中断作用域.
+     *
+     * @param cls         要反映的{@link Class}不能是{@code null}
+     * @param fieldName   要获取的字段名
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)} 方法打破范围限制.
+     *                    {@code false}将只匹配{@code public}字段
+     * @return 字段对象
+     */
+    public static Field getField(final Class<?> cls,
+                                 final String fieldName,
+                                 final boolean forceAccess) {
+        Assert.isTrue(cls != null, "The class must not be null");
+        Assert.isTrue(StringUtils.isNotBlank(fieldName), "The field name must not be blank/empty");
+
+        // 检查超类层次结构
+        for (Class<?> acls = cls; acls != null; acls = acls.getSuperclass()) {
+            try {
+                final Field field = acls.getDeclaredField(fieldName);
+                // getDeclaredField 也会检查非公共作用域，并返回准确的结果
+                if (!Modifier.isPublic(field.getModifiers())) {
+                    if (forceAccess) {
+                        field.setAccessible(true);
+                    } else {
+                        continue;
+                    }
+                }
+                return field;
+            } catch (final NoSuchFieldException ex) {
+
+            }
+        }
+        // 检查公共接口用例。如果有一个公共超超类字段隐藏在一个私有/包超类字段中，则必须手动搜索它.
+        Field match = null;
+        for (final Class<?> class1 : ClassUtils.getAllInterfaces(cls)) {
+            try {
+                final Field test = class1.getField(fieldName);
+                Assert.isTrue(match == null, "Reference to field %s is ambiguous relative to %s"
+                        + "; a matching field exists on two or more implemented interfaces.", fieldName, cls);
+                match = test;
+            } catch (final NoSuchFieldException ex) {
+            }
+        }
+        return match;
+    }
+
+    /**
+     * 查找指定类中的所有字段（包括非public字段）, 字段不存在则返回null
+     *
+     * @param clazz     被查找字段的类
+     * @param fieldName 字段名
+     * @return 属性对象
+     */
+    public static Field getDeclaredField(final Class<?> clazz, final String fieldName) {
+        return getDeclaredField(clazz, fieldName, false);
+    }
+
+    /**
+     * 按名称获取可访问的{@link Field}，如果请求则中断作用域。只考虑指定的类
+     *
+     * @param clazz       被查找字段的类
+     * @param fieldName   字段名
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}方法打破范围限制.{@code false}将只匹配{@code public}字段
+     * @return 属性对象
+     */
+    public static Field getDeclaredField(final Class<?> clazz,
+                                         final String fieldName,
+                                         final boolean forceAccess) {
+        Assert.isTrue(clazz != null, "The class must not be null");
+        Assert.isTrue(StringUtils.isNotBlank(fieldName), "The field name must not be blank/empty");
+        try {
+            // 使用getDeclaredField()只考虑指定的类
+            final Field field = clazz.getDeclaredField(fieldName);
+            if (!MemberUtils.isAccessible(field)) {
+                if (forceAccess) {
+                    field.setAccessible(true);
+                } else {
+                    return null;
+                }
+            }
+            return field;
+        } catch (final NoSuchFieldException e) {
+        }
+        return null;
+    }
+
+    /**
+     * 获取给定类及其父类的所有字段(如果有).
+     *
+     * @param cls 要查询的 {@link Class}
+     * @return 字段数组(可能为空)
+     * @since 3.2.0
+     */
+    public static Field[] getAllFields(final Class<?> cls) {
+        final List<Field> allFieldsList = getAllFieldsList(cls);
+        return allFieldsList.toArray(new Field[allFieldsList.size()]);
+    }
+
+    /**
+     * 获取给定类及其父类的所有字段(如果有).
+     *
+     * @param cls 要查询的 {@link Class}
+     * @return 字段数组(可能为空)
+     * @since 3.2.0
+     */
+    public static List<Field> getAllFieldsList(final Class<?> cls) {
+        Assert.isTrue(cls != null, "The class must not be null");
+        final List<Field> allFields = new ArrayList<>();
+        Class<?> currentClass = cls;
+        while (currentClass != null) {
+            final Field[] declaredFields = currentClass.getDeclaredFields();
+            Collections.addAll(allFields, declaredFields);
+            currentClass = currentClass.getSuperclass();
+        }
+        return allFields;
+    }
+
+    /**
+     * 获取用给定注释注释的给定类及其父类的所有字段(如果有).
+     *
+     * @param cls           要查询的 {@link Class}
+     * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
+     * @return 字段数组(可能为空)
+     * @since 3.5.0
+     */
+    public static Field[] getFieldsWithAnnotation(final Class<?> cls,
+                                                  final Class<? extends Annotation> annotationCls) {
+        final List<Field> annotatedFieldsList = getFieldsListWithAnnotation(cls, annotationCls);
+        return annotatedFieldsList.toArray(new Field[annotatedFieldsList.size()]);
+    }
+
+    /**
+     * 获取用给定注释注释的给定类及其父类的所有字段(如果有).
+     *
+     * @param cls           要查询的 {@link Class}
+     * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
+     * @return 字段列表(可能为空).
+     * @since 3.5.0
+     */
+    public static List<Field> getFieldsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
+        Assert.isTrue(annotationCls != null, "The annotation class must not be null");
+        final List<Field> allFields = getAllFieldsList(cls);
+        final List<Field> annotatedFields = new ArrayList<>();
+        for (final Field field : allFields) {
+            if (field.getAnnotation(annotationCls) != null) {
+                annotatedFields.add(field);
+            }
+        }
+        return annotatedFields;
+    }
+
+    /**
+     * 读取可访问的{@code static} {@link Field}.
+     *
+     * @param field 字段信息
+     * @return 字段值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readStaticField(final Field field) throws IllegalAccessException {
+        return readStaticField(field, false);
+    }
+
+    /**
+     * 读取一个静态 {@link Field}.
+     *
+     * @param field       字段信息
+     * @param forceAccess 是否使用 {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制
+     * @return 字段值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readStaticField(final Field field, final boolean forceAccess) throws IllegalAccessException {
+        Assert.isTrue(field != null, "The field must not be null");
+        Assert.isTrue(Modifier.isStatic(field.getModifiers()), "The field '%s' is not static", field.getName());
+        return readField(field, (Object) null, forceAccess);
+    }
+
+    /**
+     * 读取指定的{@code public static} {@link Field}。将考虑超类.
+     *
+     * @param cls       要反映的{@link Class}不能是{@code null}
+     * @param fieldName 要获取的字段名
+     * @return 字段的值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readStaticField(final Class<?> cls, final String fieldName) throws IllegalAccessException {
+        return readStaticField(cls, fieldName, false);
+    }
+
+    /**
+     * 读取指定的{@code static} {@link Field}，将考虑超类
+     *
+     * @param cls         要反映的{@link Class}不能是{@code null}
+     * @param fieldName   要获取的字段名
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制.{@code false}将只匹配{@code public}字段
+     * @return 字段对象
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readStaticField(final Class<?> cls, final String fieldName, final boolean forceAccess) throws IllegalAccessException {
+        final Field field = getField(cls, fieldName, forceAccess);
+        Assert.isTrue(field != null, "Cannot locate field '%s' on %s", fieldName, cls);
+        return readStaticField(field, false);
+    }
+
+    /**
+     * 按名称获取{@code static} {@link Field}的值。字段必须是{@code public}.只考虑指定的类
+     *
+     * @param cls       要反映的{@link Class}不能是{@code null}
+     * @param fieldName 要获取的字段名
+     * @return 字段的值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readDeclaredStaticField(final Class<?> cls, final String fieldName) throws IllegalAccessException {
+        return readDeclaredStaticField(cls, fieldName, false);
+    }
+
+    /**
+     * 按名称获取{@code static} {@link Field}的值。字段必须是{@code public}.只考虑指定的类
+     *
+     * @param cls         要反映的{@link Class}不能是{@code null}
+     * @param fieldName   要获取的字段名
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制.{@code false}将只匹配{@code public}字段
+     * @return 字段对象
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readDeclaredStaticField(final Class<?> cls, final String fieldName, final boolean forceAccess) throws IllegalAccessException {
+        final Field field = getDeclaredField(cls, fieldName, forceAccess);
+        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
+        return readStaticField(field, false);
+    }
+
+    /**
+     * 读取一个可访问的 {@link Field}.
+     *
+     * @param field  要使用的字段
+     * @param target 要调用的对象可以是{@code null}，用于{@code static}字段
+     * @return 字段值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readField(final Field field, final Object target) throws IllegalAccessException {
+        return readField(field, target, false);
+    }
+
+    /**
+     * 读取一个可访问的 {@link Field}.
+     *
+     * @param field       要使用的字段
+     * @param target      要调用的对象可以是{@code null}，用于{@code static}字段
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制.
+     * @return 字段值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readField(final Field field, final Object target, final boolean forceAccess) throws IllegalAccessException {
+        Assert.isTrue(field != null, "The field must not be null");
+        if (forceAccess && !field.isAccessible()) {
+            field.setAccessible(true);
+        } else {
+            MemberUtils.setAccessibleWorkaround(field);
+        }
+        return field.get(target);
+    }
+
+    /**
+     * Reads the named {@code public} {@link Field}. Superclasses will be considered.
+     *
+     * @param target    target      要调用的对象可以是{@code null}，用于{@code static}字段
+     * @param fieldName 要获取的字段名
+     * @return 字段值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readField(final Object target, final String fieldName) throws IllegalAccessException {
+        return readField(target, fieldName, false);
+    }
+
+    /**
+     * 读取指定的{@link Field} 将考虑超类.
+     *
+     * @param target      target      要调用的对象可以是{@code null}，用于{@code static}字段
+     * @param fieldName   要获取的字段名
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制.{@code false}将只匹配{@code public}字段
+     * @return 字段值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readField(final Object target,
+                                   final String fieldName,
+                                   final boolean forceAccess) throws IllegalAccessException {
+        Assert.isTrue(target != null, "target object must not be null");
+        final Class<?> cls = target.getClass();
+        final Field field = getField(cls, fieldName, forceAccess);
+        Assert.isTrue(field != null, "Cannot locate field %s on %s", fieldName, cls);
+        return readField(field, target, false);
+    }
+
+    /**
+     * 读取指定的{@code public} {@link Field} 只考虑指定对象的类.
+     *
+     * @param target    target      要调用的对象可以是{@code null}，用于{@code static}字段
+     * @param fieldName 要获取的字段名
+     * @return 字段值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readDeclaredField(final Object target, final String fieldName) throws IllegalAccessException {
+        return readDeclaredField(target, fieldName, false);
+    }
+
+    /**
+     * 按名称获取{@link Field}值 只考虑指定对象的类.
+     *
+     * @param target      target      要调用的对象可以是{@code null}，用于{@code static}字段
+     * @param fieldName   要获取的字段名
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制.{@code false}将只匹配{@code public}字段
+     * @return 字段值
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static Object readDeclaredField(final Object target,
+                                           final String fieldName,
+                                           final boolean forceAccess) throws IllegalAccessException {
+        Assert.isTrue(target != null, "target object must not be null");
+        final Class<?> cls = target.getClass();
+        final Field field = getDeclaredField(cls, fieldName, forceAccess);
+        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls, fieldName);
+        return readField(field, target, false);
+    }
+
+    /**
+     * 写一个{@code public static} {@link Field}.
+     *
+     * @param field 字段
+     * @param value 值
+     * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
+     */
+    public static void writeStaticField(final Field field, final Object value) throws IllegalAccessException {
+        writeStaticField(field, value, false);
+    }
+
+    /**
+     * 写一个静态方法 {@link Field}.
+     *
+     * @param field       字段
+     * @param value       值
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制 {@code false}将只匹配{@code public}字段
+     * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
+     */
+    public static void writeStaticField(final Field field,
+                                        final Object value,
+                                        final boolean forceAccess) throws IllegalAccessException {
+        Assert.isTrue(field != null, "The field must not be null");
+        Assert.isTrue(Modifier.isStatic(field.getModifiers()), "The field %s.%s is not static", field.getDeclaringClass().getName(),
+                field.getName());
+        writeField(field, (Object) null, value, forceAccess);
+    }
+
+    /**
+     * 写一个命名{@code public static} {@link Field} 将考虑超类
+     *
+     * @param cls       查找的类{@link Class}
+     * @param fieldName 字段名
+     * @param value     值
+     * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
+     */
+    public static void writeStaticField(final Class<?> cls,
+                                        final String fieldName,
+                                        final Object value) throws IllegalAccessException {
+        writeStaticField(cls, fieldName, value, false);
+    }
+
+    /**
+     * 写一个命名的{@code static} {@link Field} 将考虑超类.
+     *
+     * @param cls         查找的类{@link Class}
+     * @param fieldName   字段名
+     * @param value       值
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制 {@code false}将只匹配{@code public}字段
+     * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
+     */
+    public static void writeStaticField(final Class<?> cls,
+                                        final String fieldName,
+                                        final Object value,
+                                        final boolean forceAccess)
+            throws IllegalAccessException {
+        final Field field = getField(cls, fieldName, forceAccess);
+        Assert.isTrue(field != null, "Cannot locate field %s on %s", fieldName, cls);
+        writeStaticField(field, value, false);
+    }
+
+    /**
+     * 写一个命名 {@code public static} {@link Field} 只考虑指定的类.
+     *
+     * @param cls       查找的类{@link Class}
+     * @param fieldName 字段名
+     * @param value     值
+     * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
+     */
+    public static void writeDeclaredStaticField(final Class<?> cls,
+                                                final String fieldName,
+                                                final Object value) throws IllegalAccessException {
+        writeDeclaredStaticField(cls, fieldName, value, false);
+    }
+
+    /**
+     * 写一个命名的{@code static} {@link Field}只考虑指定的类。
+     *
+     * @param cls         查找的类{@link Class}
+     * @param fieldName   字段名
+     * @param value       值
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制 {@code false}将只匹配{@code public}字段.
+     * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
+     */
+    public static void writeDeclaredStaticField(final Class<?> cls,
+                                                final String fieldName,
+                                                final Object value,
+                                                final boolean forceAccess)
+            throws IllegalAccessException {
+        final Field field = getDeclaredField(cls, fieldName, forceAccess);
+        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
+        writeField(field, (Object) null, value, false);
+    }
+
+    /**
+     * 写一个可访问的{@link Field}.
+     *
+     * @param field  字段
+     * @param target 要调用的对象可以是{@code null}，用于{@code static}字段
+     * @param value  值
+     * @throws IllegalAccessException 如果字段或目标是{@code null}，那么该字段是不可访问的，
+     *                                或者是{@code final}，或者{@code value}是不可分配的
+     */
+    public static void writeField(final Field field,
+                                  final Object target,
+                                  final Object value) throws IllegalAccessException {
+        writeField(field, target, value, false);
+    }
+
+    /**
+     * 写一个可访问的{@link Field}.
+     *
+     * @param field       字段
+     * @param target      要调用的对象可以是{@code null}，用于{@code static}字段
+     * @param value       值
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制 {@code false}将只匹配{@code public}字段
+     * @throws IllegalAccessException 如果字段不可访问或{@code final}
+     */
+    public static void writeField(final Field field,
+                                  final Object target,
+                                  final Object value,
+                                  final boolean forceAccess)
+            throws IllegalAccessException {
+        Assert.isTrue(field != null, "The field must not be null");
+        if (forceAccess && !field.isAccessible()) {
+            field.setAccessible(true);
+        } else {
+            MemberUtils.setAccessibleWorkaround(field);
+        }
+        field.set(target, value);
+    }
+
+    /**
+     * 移除修饰符 {@link Field}.
+     *
+     * @param field 删除最后的修改器
+     * @throws IllegalArgumentException 如果字段是{@code null}
+     * @since 3.2.0
+     */
+    public static void removeFinalModifier(final Field field) {
+        removeFinalModifier(field, true);
+    }
+
+    /**
+     * 移除修饰符 {@link Field}.
+     *
+     * @param field       字段属性
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制 {@code false}将只匹配{@code public}字段.
+     * @throws IllegalArgumentException 如果字段是{@code null}
+     */
+    public static void removeFinalModifier(final Field field, final boolean forceAccess) {
+        Assert.isTrue(field != null, "The field must not be null");
+
+        try {
+            if (Modifier.isFinal(field.getModifiers())) {
+                final Field modifiersField = Field.class.getDeclaredField("modifiers");
+                final boolean doForceAccess = forceAccess && !modifiersField.isAccessible();
+                if (doForceAccess) {
+                    modifiersField.setAccessible(true);
+                }
+                try {
+                    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+                } finally {
+                    if (doForceAccess) {
+                        modifiersField.setAccessible(false);
+                    }
+                }
+            }
+        } catch (final NoSuchFieldException | IllegalAccessException ignored) {
+        }
+    }
+
+    /**
+     * 处理{@code public} {@link Field} 将考虑超类
+     *
+     * @param target    目标对象不能是{@code null}
+     * @param fieldName 要获取的字段名
+     * @param value     值信息
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static void writeField(final Object target,
+                                  final String fieldName,
+                                  final Object value) throws IllegalAccessException {
+        writeField(target, fieldName, value, false);
+    }
+
+    /**
+     * 处理{@code public} {@link Field} 将考虑超类.
+     *
+     * @param target      目标对象不能是{@code null}
+     * @param fieldName   要获取的字段名
+     * @param value       值信息
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制 {@code false}将只匹配{@code public}字段.
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static void writeField(final Object target,
+                                  final String fieldName,
+                                  final Object value,
+                                  final boolean forceAccess)
+            throws IllegalAccessException {
+        Assert.isTrue(target != null, "target object must not be null");
+        final Class<?> cls = target.getClass();
+        final Field field = getField(cls, fieldName, forceAccess);
+        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
+        writeField(field, target, value, false);
+    }
+
+    /**
+     * 写一个{@code public} {@link Field} 只考虑指定的类.
+     *
+     * @param target    目标对象不能是{@code null}
+     * @param fieldName 要获取的字段名
+     * @param value     值信息
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static void writeDeclaredField(final Object target,
+                                          final String fieldName,
+                                          final Object value) throws IllegalAccessException {
+        writeDeclaredField(target, fieldName, value, false);
+    }
+
+    /**
+     * 处理{@code public} {@link Field} 只考虑指定的类.
+     *
+     * @param target      目标对象不能是{@code null}
+     * @param fieldName   要获取的字段名
+     * @param value       值信息
+     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     *                    方法打破范围限制 {@code false}将只匹配{@code public}字段.
+     * @throws IllegalAccessException 如果字段不可访问
+     */
+    public static void writeDeclaredField(final Object target,
+                                          final String fieldName,
+                                          final Object value,
+                                          final boolean forceAccess)
+            throws IllegalAccessException {
+        Assert.isTrue(target != null, "target object must not be null");
+        final Class<?> cls = target.getClass();
+        final Field field = getDeclaredField(cls, fieldName, forceAccess);
+        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
+        writeField(field, target, value, false);
     }
 
     public enum Interfaces {

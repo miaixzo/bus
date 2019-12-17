@@ -35,27 +35,27 @@ public final class RingBuffer<T> {
 
     private static final byte READABLE = 1, READING = 1 << 1, WRITEABLE = 1 << 2, WRITING = 1 << 3;
     /**
-     * The queued items
+     * 排队的项目
      */
     private final Node<T>[] items;
     /**
-     * Main lock guarding all access
+     * 主锁保护所有入口
      */
     private final ReentrantLock lock;
     /**
-     * Condition for waiting takes
+     * 等待条件
      */
     private final Condition notEmpty;
     /**
-     * Condition for waiting puts
+     * 等待权条件
      */
     private final Condition notFull;
     /**
-     * items index for next take, poll, peek or remove
+     * 项目索引为下一次采取，投票删除
      */
     private int takeIndex;
     /**
-     * items index for next put, offer, or add
+     * 项目索引的下一个出售，出价，或增加
      */
     private int putIndex;
     private volatile boolean needFullSingle = false;
@@ -64,15 +64,6 @@ public final class RingBuffer<T> {
 
     private EventFactory<T> eventFactory;
 
-
-    /**
-     * Creates an {@code ArrayBlockingQueue} with the given (fixed)
-     * capacity and default access policy.
-     *
-     * @param capacity the capacity of this queue
-     * @param factory  the event factory
-     * @throws IllegalArgumentException if {@code capacity < 1}
-     */
     public RingBuffer(int capacity, EventFactory<T> factory) {
         if (capacity <= 0)
             throw new IllegalArgumentException();

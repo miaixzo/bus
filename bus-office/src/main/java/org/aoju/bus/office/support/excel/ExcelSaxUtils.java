@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.date.DateTime;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.office.support.excel.sax.CellDataType;

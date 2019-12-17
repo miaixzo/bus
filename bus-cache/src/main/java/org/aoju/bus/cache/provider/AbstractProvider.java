@@ -86,6 +86,18 @@ public abstract class AbstractProvider implements Provider {
         ));
     }
 
+    public static HashMap<String, Object> newHashMap(Object... keyValues) {
+        HashMap<String, Object> map = new HashMap<>(keyValues.length / 2);
+        for (int i = 0; i < keyValues.length; i += 2) {
+            String key = (String) keyValues[i];
+            Object value = keyValues[i + 1];
+
+            map.put(key, value);
+        }
+
+        return map;
+    }
+
     /**
      * 1. create JdbcOperations
      * 2. init db(like: load sql script, create table, init table...)
@@ -233,18 +245,6 @@ public abstract class AbstractProvider implements Provider {
         }
 
         isShutdown = true;
-    }
-
-    public static HashMap<String, Object> newHashMap(Object... keyValues) {
-        HashMap<String, Object> map = new HashMap<>(keyValues.length / 2);
-        for (int i = 0; i < keyValues.length; i += 2) {
-            String key = (String) keyValues[i];
-            Object value = keyValues[i + 1];
-
-            map.put(key, value);
-        }
-
-        return map;
     }
 
     protected static final class DataDO {

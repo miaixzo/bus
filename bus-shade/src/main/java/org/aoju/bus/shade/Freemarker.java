@@ -25,7 +25,7 @@ package org.aoju.bus.shade;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.shade.entity.TableEntity;
 
 import java.io.File;

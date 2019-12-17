@@ -25,10 +25,10 @@ package org.aoju.bus.setting;
 
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.OptNullString;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.StringUtils;
 

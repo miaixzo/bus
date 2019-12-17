@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.consts.Fields;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.utils.DateUtils;
 
 /**

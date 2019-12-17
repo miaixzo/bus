@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.internal.http;
 
-import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.GzipSource;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.Request;

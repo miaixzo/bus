@@ -24,12 +24,10 @@
 package org.aoju.bus.core.lang.tuple;
 
 /**
- * <p>A mutable pair consisting of two {@code Object} elements.</p>
+ * 由两个{@code Object}元素组成的可变对
  *
- * <p>Not #ThreadSafe#</p>
- *
- * @param <L> the left element type
- * @param <R> the right element type
+ * @param <L> 左元素类型
+ * @param <R> 左元素类型
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
@@ -37,31 +35,26 @@ package org.aoju.bus.core.lang.tuple;
 public class MutablePair<L, R> extends Pair<L, R> {
 
     /**
-     * Serialization version
-     */
-    private static final long serialVersionUID = 4954918890077093841L;
-
-    /**
-     * Left object
+     * 左边对象
      */
     public L left;
     /**
-     * Right object
+     * 右边对象
      */
     public R right;
 
     /**
-     * Create a new pair instance of two nulls.
+     * 创建一个包含二个空值的实例
      */
     public MutablePair() {
         super();
     }
 
     /**
-     * Create a new pair instance.
+     * 创建一个新的pair实例
      *
-     * @param left  the left value, may be null
-     * @param right the right value, may be null
+     * @param left  左值可以为null
+     * @param right 右值可以为null
      */
     public MutablePair(final L left, final R right) {
         super();
@@ -70,21 +63,17 @@ public class MutablePair<L, R> extends Pair<L, R> {
     }
 
     /**
-     * <p>Obtains a mutable pair of two objects inferring the generic types.</p>
+     * 获取两个推断泛型类型的对象的可变对
      *
-     * <p>This factory allows the pair to be created using inference to
-     * obtain the generic types.</p>
-     *
-     * @param <L>   the left element type
-     * @param <R>   the right element type
-     * @param left  the left element, may be null
-     * @param right the right element, may be null
-     * @return a pair formed from the two parameters, not null
+     * @param <L>   左元素类型
+     * @param <R>   右元素类型
+     * @param left  左值可以为null
+     * @param right 右值可以为null
+     * @return 由两个参数组成的一对
      */
     public static <L, R> MutablePair<L, R> of(final L left, final R right) {
         return new MutablePair<>(left, right);
     }
-
 
     @Override
     public L getLeft() {
@@ -92,14 +81,13 @@ public class MutablePair<L, R> extends Pair<L, R> {
     }
 
     /**
-     * Sets the left element of the pair.
+     * 设置对的左元素.
      *
-     * @param left the new value of the left element, may be null
+     * @param left 左边元素的新值可以是null
      */
     public void setLeft(final L left) {
         this.left = left;
     }
-
 
     @Override
     public R getRight() {
@@ -107,20 +95,20 @@ public class MutablePair<L, R> extends Pair<L, R> {
     }
 
     /**
-     * Sets the right element of the pair.
+     * 设置对的右元素.
      *
-     * @param right the new value of the right element, may be null
+     * @param right 右边元素的新值可以是null
      */
     public void setRight(final R right) {
         this.right = right;
     }
 
     /**
-     * Sets the {@code Map.Entry} value.
-     * This sets the right element of the pair.
+     * 设置{@code Map.Entry}的值.
+     * 这将设置对的正确元素
      *
-     * @param value the right value to set, not null
-     * @return the old value for the right element
+     * @param value 要设置的正确值，而不是null
+     * @return 右边元素的旧值
      */
     @Override
     public R setValue(final R value) {

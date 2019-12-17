@@ -27,11 +27,9 @@ package org.aoju.bus.core.builder;
 import org.aoju.bus.core.utils.ClassUtils;
 
 /**
- * <p>Works with {@link ToStringBuilder} to create a "deep" <code>toString</code>.
- * But instead a single line like the {@link RecursiveToStringStyle} this creates a multiline String
- * similar to the {@link ToStringStyle#MULTI_LINE_STYLE}.</p>
- *
- * <p>To use this class write code as follows:</p>
+ * 使用{@link ToStringBuilder}创建一个“deep”toString。
+ * 而是像{@link RecursiveToStringStyle}这样的单行，
+ * 创建类似{@link ToStringStyle#MULTI_LINE_STYLE}的多行字符串。
  *
  * <pre>
  * public class Job {
@@ -44,7 +42,6 @@ import org.aoju.bus.core.utils.ClassUtils;
  *   int age;
  *   boolean smoker;
  *   Job job;
- *
  *   ...
  *
  *   public String toString() {
@@ -53,53 +50,31 @@ import org.aoju.bus.core.utils.ClassUtils;
  * }
  * </pre>
  *
- * <p>
- * This will produce a toString of the format:
- * <code>Person@7f54[
- * &nbsp; name=Stephen,
- * &nbsp; age=29,
- * &nbsp; smoker=false,
- * &nbsp; job=Job@43cd2[
- * &nbsp; &nbsp; title=Manager
- * &nbsp;  ]
- * ]
- * </code>
- * </p>
- *
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
  */
 public class MultilineRecursiveToStringStyle extends RecursiveToStringStyle {
 
-    /**
-     * Required for serialization support.
-     *
-     * @see java.io.Serializable
-     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Indenting of inner lines.
+     * 内部线条的缩进.
      */
     private static final int INDENT = 2;
 
     /**
-     * Current indenting.
+     * 当前缩进.
      */
     private int spaces = 2;
 
-    /**
-     * Constructor.
-     */
     public MultilineRecursiveToStringStyle() {
         super();
         resetIndent();
     }
 
     /**
-     * Resets the fields responsible for the line breaks and indenting.
-     * Must be invoked after changing the {@link #spaces} value.
+     * 重置负责换行和缩进的字段。必须在更改{@link #spaces}值后调用
      */
     private void resetIndent() {
         setArrayStart("{" + System.lineSeparator() + spacer(spaces));
@@ -112,10 +87,10 @@ public class MultilineRecursiveToStringStyle extends RecursiveToStringStyle {
     }
 
     /**
-     * Creates a StringBuilder responsible for the indenting.
+     * 创建负责缩进的StringBuilder.
      *
-     * @param spaces how far to indent
-     * @return a StringBuilder with {spaces} leading space characters.
+     * @param spaces 缩进信息
+     * @return 一个以{space}开头的空格字符的StringBuilder.
      */
     private StringBuilder spacer(final int spaces) {
         final StringBuilder sb = new StringBuilder();

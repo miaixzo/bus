@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.RegEx;
+import org.aoju.bus.core.lang.RegEx;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

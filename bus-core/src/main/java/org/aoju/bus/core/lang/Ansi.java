@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.lang;
 
+import java.lang.System;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.CompareUtils;
 import org.aoju.bus.core.utils.StringUtils;
 

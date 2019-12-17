@@ -24,7 +24,7 @@
 package org.aoju.bus.core.text;
 
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.util.*;

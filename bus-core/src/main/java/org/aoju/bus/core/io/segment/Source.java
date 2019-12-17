@@ -29,12 +29,7 @@ import java.io.IOException;
 /**
  * 提供一个字节流 使用此接口从任何地方读取数据
  * 它的位置:来自网络、存储或内存中的缓冲区 来源可能
- * 分层以转换提供的数据,例如解压、解密或
- * 移除协议框架
- *
- * <h3>Interop with InputStream</h3>
- * {@link BufferSource#inputStream} to adapt a source to an {@code
- * InputStream}.
+ * 分层以转换提供的数据,例如解压、解密或移除协议框架
  *
  * @author Kimi Liu
  * @version 5.3.2
@@ -43,27 +38,26 @@ import java.io.IOException;
 public interface Source extends Closeable {
 
     /**
-     * Removes at least 1, and up to {@code byteCount} bytes from this and appends
-     * them to {@code sink}. Returns the number of bytes read, or -1 if this
-     * source is exhausted.
+     * 从中删除至少1个字节，最多为{@code byteCount}字节， 并将它们
+     * 附加到{@code sink}。返回读取的字节数，如果该源已耗尽，则返回-1
      *
-     * @param sink      Buffer
-     * @param byteCount long
+     * @param sink      缓冲
+     * @param byteCount 长度大小
      * @return the long
      * @throws IOException {@link java.io.IOException} IOException.
      */
     long read(Buffer sink, long byteCount) throws IOException;
 
     /**
-     * Returns the timeout for this source.
+     * 返回此源的超时时间.
      *
-     * @return the Timeout
+     * @return 超时时间
      */
     Timeout timeout();
 
     /**
-     * Closes this source and releases the resources held by this source. It is an
-     * error to read a closed source. It is safe to close a source more than once.
+     * 关闭此源并释放此源持有的资源.
+     * 读取闭源是一个错误。多次关闭源是安全的.
      *
      * @throws IOException {@link java.io.IOException} IOException.
      */

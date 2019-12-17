@@ -1,6 +1,6 @@
 package org.aoju.bus.starter.preview;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.core.utils.StringUtils;

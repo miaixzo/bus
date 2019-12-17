@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.zip.Deflater;
 
 /**
- * <h3>Sync flush</h3>
  * 这种流体的强冲刷可能导致压缩降低 每一个
  * 调用{@link #flush}立即压缩所有当前缓存的数据;
  * 这种早期压缩可能不如执行的压缩有效
@@ -49,11 +48,6 @@ public final class DeflaterSink implements Sink {
         this(IoUtils.buffer(sink), deflater);
     }
 
-    /**
-     * This package-private constructor shares a buffer with its trusted caller.
-     * In general we can't share a BufferedSource because the deflater holds input
-     * bytes until they are inflated.
-     */
     DeflaterSink(BufferSink sink, Deflater deflater) {
         if (sink == null) throw new IllegalArgumentException("source == null");
         if (deflater == null) throw new IllegalArgumentException("inflater == null");
@@ -65,15 +59,12 @@ public final class DeflaterSink implements Sink {
     public void write(Buffer source, long byteCount) throws IOException {
         IoUtils.checkOffsetAndCount(source.size, 0, byteCount);
         while (byteCount > 0) {
-            // Share bytes from the head segment of 'source' with the deflater.
             Segment head = source.head;
             int toDeflate = (int) Math.min(byteCount, head.limit - head.pos);
             deflater.setInput(head.data, head.pos, toDeflate);
 
-            // Deflate those bytes into sink.
             deflate(false);
 
-            // Mark those bytes as read.
             source.size -= toDeflate;
             head.pos += toDeflate;
             if (head.pos == head.limit) {
@@ -90,10 +81,6 @@ public final class DeflaterSink implements Sink {
         while (true) {
             Segment s = buffer.writableSegment(1);
 
-            // The 4-parameter overload of deflate() doesn't exist in the RI until
-            // Java 1.7, and is public (although with @hide) on Android since 2.3.
-            // The @hide tag means that this code won't compile against the Android
-            // 2.3 SDK, but it will run fine there.
             int deflated = syncFlush
                     ? deflater.deflate(s.data, s.limit, Segment.SIZE - s.limit, Deflater.SYNC_FLUSH)
                     : deflater.deflate(s.data, s.limit, Segment.SIZE - s.limit);
@@ -104,7 +91,6 @@ public final class DeflaterSink implements Sink {
                 sink.emitCompleteSegments();
             } else if (deflater.needsInput()) {
                 if (s.pos == s.limit) {
-                    // We allocated a tail segment, but didn't end up needing it. Recycle!
                     buffer.head = s.pop();
                     LifeCycle.recycle(s);
                 }
@@ -125,11 +111,9 @@ public final class DeflaterSink implements Sink {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (closed) return;
 
-        // Emit deflated data to the underlying sink. If this fails, we still need
-        // to close the deflater and the sink; otherwise we risk leaking resources.
         Throwable thrown = null;
         try {
             finishDeflate();

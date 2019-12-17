@@ -44,7 +44,7 @@ public class Base64Decoder {
      * @return 被加密后的字符串
      */
     public static String decodeStr(String source) {
-        return decodeStr(source, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decodeStr(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -76,7 +76,7 @@ public class Base64Decoder {
      * @return 被加密后的字符串
      */
     public static byte[] decode(String source) {
-        return decode(source, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decode(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

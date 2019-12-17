@@ -70,7 +70,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     /**
      * properties文件编码
      */
-    private Charset charset = org.aoju.bus.core.consts.Charset.ISO_8859_1;
+    private Charset charset = org.aoju.bus.core.lang.Charset.ISO_8859_1;
 
     /**
      * 构造
@@ -85,7 +85,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param path 路径
      */
     public Props(String path) {
-        this(path, org.aoju.bus.core.consts.Charset.ISO_8859_1);
+        this(path, org.aoju.bus.core.lang.Charset.ISO_8859_1);
     }
 
     /**
@@ -150,7 +150,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param clazz 基准类
      */
     public Props(String path, Class<?> clazz) {
-        this(path, clazz, org.aoju.bus.core.consts.Charset.ISO_8859_1);
+        this(path, clazz, org.aoju.bus.core.lang.Charset.ISO_8859_1);
     }
 
     /**

@@ -48,12 +48,11 @@ public class ByteBuffer extends ByteString {
         super(null);
         IoUtils.checkOffsetAndCount(buffer.size, 0, byteCount);
 
-        // Walk through the buffer to count how many segments we'll need.
         int offset = 0;
         int segmentCount = 0;
         for (Segment s = buffer.head; offset < byteCount; s = s.next) {
             if (s.limit == s.pos) {
-                throw new AssertionError("s.limit == s.pos"); // Empty segment. This should not happen!
+                throw new AssertionError("s.limit == s.pos");
             }
             offset += s.limit - s.pos;
             segmentCount++;
@@ -68,7 +67,7 @@ public class ByteBuffer extends ByteString {
             segments[segmentCount] = s.data;
             offset += s.limit - s.pos;
             if (offset > byteCount) {
-                offset = byteCount; // Despite sharing more bytes, only report having up to byteCount.
+                offset = byteCount;
             }
             directory[segmentCount] = offset;
             directory[segmentCount + segments.length] = s.pos;
@@ -156,13 +155,9 @@ public class ByteBuffer extends ByteString {
         return segments[segment][pos - segmentOffset + segmentPos];
     }
 
-    /**
-     * Returns the index of the segment that contains the byte at {@code pos}.
-     */
     private int segment(int pos) {
-        // Search for (pos + 1) instead of (pos) because the directory holds sizes, not indexes.
         int i = Arrays.binarySearch(directory, 0, segments.length, pos + 1);
-        return i >= 0 ? i : ~i; // If i is negative, bitflip to get the insert position.
+        return i >= 0 ? i : ~i;
     }
 
     @Override
@@ -223,7 +218,6 @@ public class ByteBuffer extends ByteString {
     public boolean rangeEquals(
             int offset, ByteString other, int otherOffset, int byteCount) {
         if (offset < 0 || offset > size() - byteCount) return false;
-        // Go segment-by-segment through this, passing arrays to other's rangeEquals().
         for (int s = segment(offset); byteCount > 0; s++) {
             int segmentOffset = s == 0 ? 0 : directory[s - 1];
             int segmentSize = directory[s] - segmentOffset;
@@ -244,7 +238,6 @@ public class ByteBuffer extends ByteString {
                 || otherOffset < 0 || otherOffset > other.length - byteCount) {
             return false;
         }
-        // Go segment-by-segment through this, comparing ranges of arrays.
         for (int s = segment(offset); byteCount > 0; s++) {
             int segmentOffset = s == 0 ? 0 : directory[s - 1];
             int segmentSize = directory[s] - segmentOffset;
@@ -269,9 +262,6 @@ public class ByteBuffer extends ByteString {
         return toByteString().lastIndexOf(other, fromIndex);
     }
 
-    /**
-     * Returns a copy as a non-segmented byte string.
-     */
     private ByteString toByteString() {
         return new ByteString(toByteArray());
     }
@@ -294,7 +284,6 @@ public class ByteBuffer extends ByteString {
         int result = hashCode;
         if (result != 0) return result;
 
-        // Equivalent to Arrays.hashCode(toByteArray()).
         result = 1;
         int segmentOffset = 0;
         for (int s = 0, segmentCount = segments.length; s < segmentCount; s++) {

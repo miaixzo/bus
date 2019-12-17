@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.consts.RegEx;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.digest;
 
-import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.Builder;
 
 import java.io.File;

@@ -38,23 +38,9 @@ import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 public class EscapeUtils {
 
     /**
-     * <p>{@code EscapeUtils} instances should NOT be constructed in
-     * standard programming.</p>
+     * 获取一个{@link Builder}.
      *
-     * <p>Instead, the class should be used as:</p>
-     * <pre>EscapeUtils.escapeJava("foo");</pre>
-     *
-     * <p>This constructor is public to permit tools that require a JavaBean
-     * instance to operate.</p>
-     */
-    public EscapeUtils() {
-        super();
-    }
-
-    /**
-     * Get a {@link Builder}.
-     *
-     * @param translator the text translator
+     * @param translator 文本转义
      * @return {@link Builder}
      */
     public static Builder builder(final CharSequenceTranslator translator) {
@@ -62,110 +48,65 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using Java String rules.</p>
+     * 使用Java字符串规则转义{@code String}中的字符
      *
-     * <p>Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.) </p>
-     *
-     * <p>So a tab becomes the characters {@code '\\'} and
-     * {@code 't'}.</p>
-     *
-     * <p>The only difference between Java strings and JavaScript strings
-     * is that in JavaScript, a single quote and forward-slash (/) are escaped.</p>
-     *
-     * <p>Example:</p>
      * <pre>
      * input string: He didn't say, "Stop!"
      * output string: He didn't say, \"Stop!\"
      * </pre>
      *
-     * @param input String to escape values in, may be null
-     * @return String with escaped values, {@code null} if null string input
+     * @param input 要转义值的字符串可以为空
+     * @return 带转义值的字符串，{@code null}如果输入为空字符串
      */
     public static final String escapeJava(final String input) {
         return new EscapeCodeValues().ESCAPE_JAVA.translate(input);
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using EcmaScript String rules.</p>
-     * <p>Escapes any values it finds into their EcmaScript String form.
-     * Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.) </p>
+     * 使用EcmaScript字符串规则转义{@code String }中的字符.
      *
-     * <p>So a tab becomes the characters {@code '\\'} and
-     * {@code 't'}.</p>
-     *
-     * <p>The only difference between Java strings and EcmaScript strings
-     * is that in EcmaScript, a single quote and forward-slash (/) are escaped.</p>
-     *
-     * <p>Note that EcmaScript is best known by the JavaScript and ActionScript dialects. </p>
-     *
-     * <p>Example:</p>
      * <pre>
      * input string: He didn't say, "Stop!"
      * output string: He didn\'t say, \"Stop!\"
      * </pre>
      *
-     * <b>Security Note.</b> We only provide backslash escaping in this method. For example, {@code '\"'} has the output
-     * {@code '\\\"'} which could result in potential issues in the case where the string being escaped is being used
-     * in an HTML tag like {@code <select onmouseover="..." />}. If you wish to have more rigorous string escaping, you
-     * may consider the
-     * <a href="https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API_JAVA">ESAPI Libraries</a>.
-     * Further, you can view the <a href="https://github.com/esapi">ESAPI GitHub Org</a>.
-     *
-     * @param input String to escape values in, may be null
-     * @return String with escaped values, {@code null} if null string input
+     * @param input 要转义值的字符串可以为空
+     * @return 带转义值的字符串，{@code null}如果输入为空字符串
      */
     public static final String escapeEcmaScript(final String input) {
         return new EscapeCodeValues().ESCAPE_ECMASCRIPT.translate(input);
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using Json String rules.</p>
-     * <p>Escapes any values it finds into their Json String form.
-     * Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.) </p>
+     * 使用Json字符串规则转义{@code String}中的字符
      *
-     * <p>So a tab becomes the characters {@code '\\'} and
-     * {@code 't'}.</p>
-     *
-     * <p>The only difference between Java strings and Json strings
-     * is that in Json, forward-slash (/) is escaped.</p>
-     *
-     * <p>See http://www.ietf.org/rfc/rfc4627.txt for further details. </p>
-     *
-     * <p>Example:</p>
      * <pre>
      * input string: He didn't say, "Stop!"
      * output string: He didn't say, \"Stop!\"
      * </pre>
      *
-     * @param input String to escape values in, may be null
-     * @return String with escaped values, {@code null} if null string input
+     * @param input 要转义值的字符串可以为空
+     * @return 带转义值的字符串，{@code null}如果输入为空字符串
      */
     public static final String escapeJson(final String input) {
         return new EscapeCodeValues().ESCAPE_JSON.translate(input);
     }
 
     /**
-     * <p>Unescapes any Java literals found in the {@code String}.
-     * For example, it will turn a sequence of {@code '\'} and
-     * {@code 'n'} into a newline character, unless the {@code '\'}
-     * is preceded by another {@code '\'}.</p>
+     * 取消在{@code String}中发现的任何Java信息的转义.
      *
-     * @param input the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
+     * @param input 要取消转义的{@code String}可以为空
+     * @return 新的未转义的{@code String}, {@code null}如果输入为空字符串
      */
     public static final String unescapeJava(final String input) {
         return new EscapeCodeValues().UNESCAPE_JAVA.translate(input);
     }
 
     /**
-     * <p>Unescapes any EcmaScript literals found in the {@code String}.</p>
+     * 取消在{@code String}中找到的任何EcmaScript文本
      *
-     * <p>For example, it will turn a sequence of {@code '\'} and {@code 'n'}
-     * into a newline character, unless the {@code '\'} is preceded by another
-     * {@code '\'}.</p>
-     *
-     * @param input the {@code String} to unescape, may be null
-     * @return A new unescaped {@code String}, {@code null} if null string input
+     * @param input 要取消转义的{@code String }可以为空
+     * @return 新的未转义的{@code String}， {@code null}如果输入为空字符串
      * @see #unescapeJava(String)
      */
     public static final String unescapeEcmaScript(final String input) {
@@ -173,14 +114,10 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Unescapes any Json literals found in the {@code String}.</p>
+     * 取消在{@code String}中找到的任何Json文本
      *
-     * <p>For example, it will turn a sequence of {@code '\'} and {@code 'n'}
-     * into a newline character, unless the {@code '\'} is preceded by another
-     * {@code '\'}.</p>
-     *
-     * @param input the {@code String} to unescape, may be null
-     * @return A new unescaped {@code String}, {@code null} if null string input
+     * @param input 要取消转义的{@code String}可以为空
+     * @return 新的未转义的{@code String}， {@code null}如果输入为空字符串
      * @see #unescapeJava(String)
      */
     public static final String unescapeJson(final String input) {
@@ -188,23 +125,10 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using HTML entities.</p>
+     * 使用HTML实体转义{@code String}中的字符
      *
-     * <p>
-     * For example:
-     * </p>
-     * <p><code>"bread" &amp; "butter"</code></p>
-     * becomes:
-     * <p>
-     * <code>&amp;quot;bread&amp;quot; &amp;amp; &amp;quot;butter&amp;quot;</code>.
-     * </p>
-     *
-     * <p>Supports all known HTML 4.0 entities, including funky accents.
-     * Note that the commonly used apostrophe escape character (&amp;apos;)
-     * is not a legal entity and so is not supported). </p>
-     *
-     * @param input the {@code String} to escape, may be null
-     * @return a new escaped {@code String}, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      * @see <a href="http://hotwired.lycos.com/webmonkey/reference/special_characters/">ISO Entities</a>
      * @see <a href="http://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
      * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>
@@ -216,72 +140,40 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using HTML entities.</p>
-     * <p>Supports only the HTML 3.0 entities. </p>
+     * 使用HTML实体转义{@code String}中的字符.
      *
-     * @param input the {@code String} to escape, may be null
-     * @return a new escaped {@code String}, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      */
     public static final String escapeHtml3(final String input) {
         return EscapeCodeValues.ESCAPE_HTML3.translate(input);
     }
 
     /**
-     * <p>Unescapes a string containing entity escapes to a string
-     * containing the actual Unicode characters corresponding to the
-     * escapes. Supports HTML 4.0 entities.</p>
+     * 将包含实体的字符串转义为包含与转义对应的实际Unicode字符的字符串。支持HTML 4.0实体
      *
-     * <p>For example, the string {@code "&lt;Fran&ccedil;ais&gt;"}
-     * will become {@code "<Fran�ais>"}</p>
-     *
-     * <p>If an entity is unrecognized, it is left alone, and inserted
-     * verbatim into the result string. e.g. {@code "&gt;&zzzz;x"} will
-     * become {@code ">&zzzz;x"}.</p>
-     *
-     * @param input the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      */
     public static final String unescapeHtml4(final String input) {
         return new EscapeCodeValues().UNESCAPE_HTML4.translate(input);
     }
 
     /**
-     * <p>Unescapes a string containing entity escapes to a string
-     * containing the actual Unicode characters corresponding to the
-     * escapes. Supports only HTML 3.0 entities.</p>
+     * 将包含实体的字符串转义为包含与转义对应的实际Unicode字符的字符串。支持HTML 4.0实体
      *
-     * @param input the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      */
     public static final String unescapeHtml3(final String input) {
         return new EscapeCodeValues().UNESCAPE_HTML3.translate(input);
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using XML entities.</p>
+     * 使用XML实体转义{@code String}中的字符
      *
-     * <p>For example: {@code "bread" & "butter"} =&gt;
-     * {@code &quot;bread&quot; &amp; &quot;butter&quot;}.
-     * </p>
-     *
-     * <p>Note that XML 1.0 is a text-only format: it cannot represent control
-     * characters or unpaired Unicode surrogate codepoints, even after escaping.
-     * {@code escapeXml10} will remove characters that do not fit in the
-     * following ranges:</p>
-     *
-     * <p>{@code #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]}</p>
-     *
-     * <p>Though not strictly necessary, {@code escapeXml10} will escape
-     * characters in the following ranges:</p>
-     *
-     * <p>{@code [#x7F-#x84] | [#x86-#x9F]}</p>
-     *
-     * <p>The returned string can be inserted into a valid XML 1.0 or XML 1.1
-     * document. If you want to allow more non-text characters in an XML 1.1
-     * document, use {@link #escapeXml11(String)}.</p>
-     *
-     * @param input the {@code String} to escape, may be null
-     * @return a new escaped {@code String}, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      * @see #unescapeXml(String)
      */
     public static String escapeXml10(final String input) {
@@ -289,28 +181,10 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using XML entities.</p>
+     * 使用XML实体转义{@code String}中的字符
      *
-     * <p>For example: {@code "bread" & "butter"} =&gt;
-     * {@code &quot;bread&quot; &amp; &quot;butter&quot;}.
-     * </p>
-     *
-     * <p>XML 1.1 can represent certain control characters, but it cannot represent
-     * the null byte or unpaired Unicode surrogate codepoints, even after escaping.
-     * {@code escapeXml11} will remove characters that do not fit in the following
-     * ranges:</p>
-     *
-     * <p>{@code [#x1-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]}</p>
-     *
-     * <p>{@code escapeXml11} will escape characters in the following ranges:</p>
-     *
-     * <p>{@code [#x1-#x8] | [#xB-#xC] | [#xE-#x1F] | [#x7F-#x84] | [#x86-#x9F]}</p>
-     *
-     * <p>The returned string can be inserted into a valid XML 1.1 document. Do not
-     * use it for XML 1.0 documents.</p>
-     *
-     * @param input the {@code String} to escape, may be null
-     * @return a new escaped {@code String}, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      * @see #unescapeXml(String)
      */
     public static String escapeXml11(final String input) {
@@ -318,18 +192,10 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Unescapes a string containing XML entity escapes to a string
-     * containing the actual Unicode characters corresponding to the
-     * escapes.</p>
+     * 将包含XML实体的字符串转义为包含与转义对应的实际Unicode字符的字符串
      *
-     * <p>Supports only the five basic XML entities (gt, lt, quot, amp, apos).
-     * Does not support DTDs or external entities.</p>
-     *
-     * <p>Note that numerical \\u Unicode codes are unescaped to their respective
-     * Unicode characters. This may change in future releases. </p>
-     *
-     * @param input the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      * @see #escapeXml10(String)
      * @see #escapeXml11(String)
      */
@@ -338,20 +204,10 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Escapes the characters in a {@code String} using XSI rules.</p>
+     * 使用XSI规则转义{@code String}中的字符
      *
-     * <p><b>Beware!</b> In most cases you don't want to escape shell commands but use multi-argument
-     * methods provided by {@link ProcessBuilder} or {@link Runtime#exec(String[])}
-     * instead.</p>
-     *
-     * <p>Example:</p>
-     * <pre>
-     * input string: He didn't say, "Stop!"
-     * output string: He\ didn\'t\ say,\ \"Stop!\"
-     * </pre>
-     *
-     * @param input String to escape values in, may be null
-     * @return String with escaped values, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      * @see <a href="http://pubs.opengroup.org/onlinepubs/7908799/xcu/chap2.html">Shell Command Language</a>
      */
     public static final String escapeXSI(final String input) {
@@ -359,10 +215,10 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Unescapes the characters in a {@code String} using XSI rules.</p>
+     * 使用XSI规则取消对{@code String}中的字符的转义
      *
-     * @param input the {@code String} to unescape, may be null
-     * @return a new unescaped {@code String}, {@code null} if null string input
+     * @param input 要转义的{@code String}可以为空
+     * @return 一个新的转义{@code String}， {@code null}如果输入为空字符串
      * @see EscapeUtils#escapeXSI(String)
      */
     public static final String unescapeXSI(final String input) {
@@ -370,9 +226,8 @@ public class EscapeUtils {
     }
 
     /**
-     * <p>Convenience wrapper for {@link StringBuilder} providing escape methods.</p>
+     * 提供转义方法的方便的{@link StringBuilder}包装器
      *
-     * <p>Example:</p>
      * <pre>
      * new Builder(ESCAPE_HTML4)
      *      .append("&lt;p&gt;")
@@ -386,30 +241,26 @@ public class EscapeUtils {
     public static final class Builder {
 
         /**
-         * StringBuilder to be used in the Builder class.
+         * 要在生成器类中使用的StringBuilder.
          */
         private final StringBuilder sb;
 
         /**
-         * CharSequenceTranslator to be used in the Builder class.
+         * 将在构建器类中使用的CharSequenceTranslator.
          */
         private final CharSequenceTranslator translator;
 
-        /**
-         * Builder constructor.
-         *
-         * @param translator a CharSequenceTranslator.
-         */
+
         private Builder(final CharSequenceTranslator translator) {
             this.sb = new StringBuilder();
             this.translator = translator;
         }
 
         /**
-         * <p>Escape {@code input} according to the given {@link CharSequenceTranslator}.</p>
+         * 根据给定的{@link CharSequenceTranslator}转义{@code input}
          *
-         * @param input the String to escape
-         * @return {@code this}, to enable chaining
+         * @param input 要转义的字符串
+         * @return {@code this}，以启用
          */
         public Builder escape(final String input) {
             sb.append(translator.translate(input));
@@ -417,10 +268,10 @@ public class EscapeUtils {
         }
 
         /**
-         * Literal append, no escaping being done.
+         * 追加字符串信息.
          *
-         * @param input the String to append
-         * @return {@code this}, to enable chaining
+         * @param input 要追加的字符串
+         * @return {@code this}，以启用
          */
         public Builder append(final String input) {
             sb.append(input);
@@ -428,9 +279,9 @@ public class EscapeUtils {
         }
 
         /**
-         * <p>Return the escaped string.</p>
+         * 返回转义字符串
          *
-         * @return the escaped string
+         * @return 转义后的字符串
          */
         @Override
         public String toString() {

@@ -451,7 +451,6 @@ public final class RealSource implements BufferSource {
             long lastBufferSize = buffer.size;
             if (source.read(buffer, Segment.SIZE) == -1) return -1L;
 
-            // Keep searching, picking up from where we left off.
             fromIndex = Math.max(fromIndex, lastBufferSize);
         }
     }

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.logger.dialect.log4j;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.AbstractAware;
 import org.apache.log4j.Level;

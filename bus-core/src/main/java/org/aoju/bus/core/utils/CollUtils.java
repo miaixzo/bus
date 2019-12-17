@@ -1962,7 +1962,7 @@ public class CollUtils {
             list.addAll(coll);
         }
         if (null != comparator) {
-            list.sort(  comparator);
+            list.sort(comparator);
         }
 
         return page(pageNo, pageSize, list);
@@ -2008,8 +2008,8 @@ public class CollUtils {
      * @return treeSet
      */
     public static <T> List<T> sort(Collection<T> collection, Comparator<? super T> comparator) {
-        List<T> list = new ArrayList< >(collection);
-        list.sort(  comparator);
+        List<T> list = new ArrayList<>(collection);
+        list.sort(comparator);
         return list;
     }
 
@@ -2023,7 +2023,7 @@ public class CollUtils {
      * @see Collections#sort(List, Comparator)
      */
     public static <T> List<T> sort(List<T> list, Comparator<? super T> c) {
-        list.sort(  c);
+        list.sort(c);
         return list;
     }
 
@@ -2055,7 +2055,7 @@ public class CollUtils {
      */
     public static <K, V> LinkedHashMap<K, V> sortToMap(Collection<Entry<K, V>> entryCollection, Comparator<Entry<K, V>> comparator) {
         List<Entry<K, V>> list = new LinkedList<>(entryCollection);
-        list.sort(  comparator);
+        list.sort(comparator);
 
         LinkedHashMap<K, V> result = new LinkedHashMap<>();
         for (Entry<K, V> entry : list) {
@@ -2349,7 +2349,7 @@ public class CollUtils {
      * @throws Exception 异常
      */
     public static Object forceGetFieldValue(Object obj, String fieldName) throws Exception {
-        Field field = FieldUtils.getField(obj.getClass(), fieldName);
+        Field field = ClassUtils.getField(obj.getClass(), fieldName);
         boolean accessible = field.isAccessible();
         if (!accessible) {
             // 如果是private,protected修饰的属性,需要修改为可以访问的

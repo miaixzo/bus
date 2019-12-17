@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.internal.suffix.SuffixDatabase;
 
 import java.net.MalformedURLException;
@@ -305,7 +305,7 @@ public final class Url {
                     encodedCharBuffer = new Buffer();
                 }
 
-                if (charset == null || charset.equals(org.aoju.bus.core.consts.Charset.UTF_8)) {
+                if (charset == null || charset.equals(org.aoju.bus.core.lang.Charset.UTF_8)) {
                     encodedCharBuffer.writeUtf8CodePoint(codePoint);
                 } else {
                     encodedCharBuffer.writeString(input, i, i + Character.charCount(codePoint), charset);
@@ -314,8 +314,8 @@ public final class Url {
                 while (!encodedCharBuffer.exhausted()) {
                     int b = encodedCharBuffer.readByte() & 0xff;
                     out.writeByte('%');
-                    out.writeByte(Normal.HEX_DIGITS[(b >> 4) & 0xf]);
-                    out.writeByte(Normal.HEX_DIGITS[b & 0xf]);
+                    out.writeByte(Normal.DIGITS_UPPER[(b >> 4) & 0xf]);
+                    out.writeByte(Normal.DIGITS_UPPER[b & 0xf]);
                 }
             } else {
                 // This character doesn't need encoding. Just copy it over.

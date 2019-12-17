@@ -25,11 +25,10 @@ package org.aoju.bus.core.lang.tuple;
 
 /**
  * 由三个{@code Object}元素组成的可变三元组
- * <p>Not #ThreadSafe#</p>
  *
- * @param <L> the left element type
- * @param <M> the middle element type
- * @param <R> the right element type
+ * @param <L> 左元素类型
+ * @param <M> 中间元素类型
+ * @param <R> 左元素类型
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
@@ -37,36 +36,31 @@ package org.aoju.bus.core.lang.tuple;
 public class MutableTriple<L, M, R> extends Triple<L, M, R> {
 
     /**
-     * Serialization version
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Left object
+     * 左边对象
      */
     public L left;
     /**
-     * Middle object
+     * 中间对象
      */
     public M middle;
     /**
-     * Right object
+     * 右边对象
      */
     public R right;
 
     /**
-     * Create a new triple instance of three nulls.
+     * 创建一个包含三个空值的新三元组实例.
      */
     public MutableTriple() {
         super();
     }
 
     /**
-     * Create a new triple instance.
+     * 创建一个新的三元组实例.
      *
-     * @param left   the left value, may be null
-     * @param middle the middle value, may be null
-     * @param right  the right value, may be null
+     * @param left   左值可以为null
+     * @param middle 中间可以为null
+     * @param right  右值可以为null
      */
     public MutableTriple(final L left, final M middle, final R right) {
         super();
@@ -76,23 +70,19 @@ public class MutableTriple<L, M, R> extends Triple<L, M, R> {
     }
 
     /**
-     * <p>Obtains a mutable triple of three objects inferring the generic types.</p>
+     * 获取由三个推断泛型类型的对象组成的可变三元组
      *
-     * <p>This factory allows the triple to be created using inference to
-     * obtain the generic types.</p>
-     *
-     * @param <L>    the left element type
-     * @param <M>    the middle element type
-     * @param <R>    the right element type
-     * @param left   the left element, may be null
-     * @param middle the middle element, may be null
-     * @param right  the right element, may be null
+     * @param <L>    左元素类型
+     * @param <M>    中间元素类型
+     * @param <R>    右元素类型
+     * @param left   左值可以为null
+     * @param middle 中间可以为null
+     * @param right  右值可以为null
      * @return a triple formed from the three parameters, not null
      */
     public static <L, M, R> MutableTriple<L, M, R> of(final L left, final M middle, final R right) {
         return new MutableTriple<>(left, middle, right);
     }
-
 
     @Override
     public L getLeft() {
@@ -100,14 +90,13 @@ public class MutableTriple<L, M, R> extends Triple<L, M, R> {
     }
 
     /**
-     * Sets the left element of the triple.
+     * 设置对的左元素.
      *
-     * @param left the new value of the left element, may be null
+     * @param left 左边元素的新值可以是null
      */
     public void setLeft(final L left) {
         this.left = left;
     }
-
 
     @Override
     public M getMiddle() {
@@ -115,14 +104,13 @@ public class MutableTriple<L, M, R> extends Triple<L, M, R> {
     }
 
     /**
-     * Sets the middle element of the triple.
+     * 设置对的中间元素.
      *
-     * @param middle the new value of the middle element, may be null
+     * @param middle 中间元素的新值可以是null
      */
     public void setMiddle(final M middle) {
         this.middle = middle;
     }
-
 
     @Override
     public R getRight() {
@@ -130,12 +118,13 @@ public class MutableTriple<L, M, R> extends Triple<L, M, R> {
     }
 
     /**
-     * Sets the right element of the triple.
+     * 设置对的右元素.
      *
-     * @param right the new value of the right element, may be null
+     * @param right 右边元素的新值可以是null
      */
     public void setRight(final R right) {
         this.right = right;
     }
+
 }
 

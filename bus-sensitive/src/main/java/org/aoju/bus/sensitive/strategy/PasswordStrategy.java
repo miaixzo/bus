@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
 

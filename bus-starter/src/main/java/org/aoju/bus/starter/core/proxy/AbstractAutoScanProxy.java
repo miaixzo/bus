@@ -133,7 +133,7 @@ public abstract class AbstractAutoScanProxy extends AbstractAutoProxyCreator {
         Logger.info("Proxy mode is {}", proxyMode);
         Logger.info("Scan mode is {}", scanMode);
         Logger.info("Expose proxy is {}", exposeProxy);
-        Logger.info("-------------------------------------------------");
+        Logger.info("------------------------------------------");
 
         // 设定全局拦截器,可以是多个
         // 如果同时设置了全局和额外的拦截器,那么它们都同时工作,全局拦截器先运行,额外拦截器后运行

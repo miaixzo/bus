@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.extra.ftp;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -42,7 +42,7 @@ import java.util.List;
  */
 public abstract class AbstractFtp implements Closeable {
 
-    public static final Charset DEFAULT_CHARSET = org.aoju.bus.core.consts.Charset.UTF_8;
+    public static final Charset DEFAULT_CHARSET = org.aoju.bus.core.lang.Charset.UTF_8;
 
     protected String host;
     protected int port;

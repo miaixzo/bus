@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.setting;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
@@ -33,6 +31,8 @@ import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.watchers.SimpleWatcher;
 import org.aoju.bus.core.io.watchers.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
@@ -107,7 +107,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param isUseVariable 是否使用变量
      */
     public Setting(String path, boolean isUseVariable) {
-        this(path, org.aoju.bus.core.consts.Charset.UTF_8, isUseVariable);
+        this(path, org.aoju.bus.core.lang.Charset.UTF_8, isUseVariable);
     }
 
     /**

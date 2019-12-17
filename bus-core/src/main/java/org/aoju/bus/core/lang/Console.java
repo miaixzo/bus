@@ -25,11 +25,12 @@ package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.utils.StringUtils;
 
+import java.lang.System;
 import java.util.Scanner;
 
 /**
  * 命令行（控制台）工具方法类
- * 此类主要针对{@link System#out} 和 {@link System#err} 做封装
+ * 此类主要针对{@link java.lang.System#out} 和 {@link java.lang.System#err} 做封装
  *
  * @author Kimi Liu
  * @version 5.3.2

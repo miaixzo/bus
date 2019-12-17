@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.*;
@@ -41,8 +41,6 @@ import java.util.Set;
 
 /**
  * 数字工具类
- * 对于精确值计算应该使用 {@link BigDecimal}
- * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性
  *
  * @author Kimi Liu
  * @version 5.3.2

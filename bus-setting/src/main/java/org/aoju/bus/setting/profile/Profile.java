@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.setting.profile;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.setting.Setting;
 
@@ -85,7 +85,7 @@ public class Profile implements Serializable {
      * @param profile 环境
      */
     public Profile(String profile) {
-        this(profile, org.aoju.bus.core.consts.Charset.UTF_8, false);
+        this(profile, org.aoju.bus.core.lang.Charset.UTF_8, false);
     }
 
     /**

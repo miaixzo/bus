@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.aoju.bus.core.consts.Httpd;
+import org.aoju.bus.core.lang.Httpd;
 import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.ObjectUtils;

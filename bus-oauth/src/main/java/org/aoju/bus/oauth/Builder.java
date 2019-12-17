@@ -28,6 +28,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.MapUtils;
@@ -118,7 +119,7 @@ public class Builder {
             return "";
         }
         try {
-            String encoded = URLEncoder.encode(value, org.aoju.bus.core.consts.Charset.UTF_8.displayName());
+            String encoded = URLEncoder.encode(value, Charset.UTF_8.displayName());
             return encoded.replace("+", "%20").replace("*", "%2A").replace("~", "%7E").replace("/", "%2F");
         } catch (UnsupportedEncodingException e) {
             throw new InstrumentException("Failed To Encode Uri", e);

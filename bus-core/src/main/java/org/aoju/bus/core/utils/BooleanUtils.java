@@ -25,6 +25,7 @@ package org.aoju.bus.core.utils;
 
 
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * Boolean类型相关工具类
@@ -34,11 +35,6 @@ import org.aoju.bus.core.convert.Convert;
  * @since JDK 1.8+
  */
 public class BooleanUtils {
-
-    /**
-     * 表示为真的字符串
-     */
-    private static final String[] TRUE_ARRAY = {"true", "yes", "y", "t", "ok", "1", "on", "是", "对", "真",};
 
     /**
      * 取相反值
@@ -114,7 +110,7 @@ public class BooleanUtils {
     public static boolean toBoolean(String valueStr) {
         if (StringUtils.isNotBlank(valueStr)) {
             valueStr = valueStr.trim().toLowerCase();
-            return ArrayUtils.contains(TRUE_ARRAY, valueStr);
+            return ArrayUtils.contains(Normal.TRUE_ARRAY, valueStr);
         }
         return false;
     }
@@ -470,14 +466,12 @@ public class BooleanUtils {
     }
 
     /**
-     * <p>Compares two {@code boolean} values. This is the same functionality as provided in Java 7.</p>
+     * 比较两个{@code boolean}值
      *
-     * @param x the first {@code boolean} to compare
-     * @param y the second {@code boolean} to compare
-     * @return the value {@code 0} if {@code x == y};
-     * a value less than {@code 0} if {@code !x && y}; and
-     * a value greater than {@code 0} if {@code x && !y}
-     * @since 3.5.0
+     * @param x 第一个要比较的{@code boolean}
+     * @param y 第二个要比较的{@code boolean}
+     * @return 值{@code 0} if {@code x == y};
+     * 小于{@code !x && y}的值;如果{@code x && !y}
      */
     public static int compare(boolean x, boolean y) {
         if (x == y) {

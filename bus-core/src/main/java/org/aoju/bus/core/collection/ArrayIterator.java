@@ -41,58 +41,53 @@ import java.util.NoSuchElementException;
 public class ArrayIterator<E> implements ResettableIterator<E> {
 
     /**
-     * The array to iterate over
+     * 数组
      */
-    final Object array;
+    private final Object array;
     /**
-     * The start index to loop from
+     * 起始位置
      */
-    final int startIndex;
+    private int startIndex;
     /**
-     * The end index to loop to
+     * 结束位置
      */
-    final int endIndex;
+    private int endIndex;
     /**
-     * The current iterator index
+     * 当前位置
      */
-    int index = 0;
+    private int index;
 
     /**
-     * Constructs an ArrayIterator that will iterate over the values in the
-     * specified array.
+     * 构造
      *
-     * @param array the array to iterate over.
-     * @throws IllegalArgumentException if <code>array</code> is not an array.
-     * @throws NullPointerException     if <code>array</code> is <code>null</code>
+     * @param array 数组
+     * @throws IllegalArgumentException array对象不为数组抛出此异常
+     * @throws NullPointerException     array对象为null
      */
     public ArrayIterator(final Object array) {
         this(array, 0);
     }
 
     /**
-     * Constructs an ArrayIterator that will iterate over the values in the
-     * specified array from a specific start index.
+     * 构造
      *
-     * @param array      the array to iterate over.
-     * @param startIndex the index to start iterating at.
-     * @throws IllegalArgumentException  if <code>array</code> is not an array.
-     * @throws NullPointerException      if <code>array</code> is <code>null</code>
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param array      数组
+     * @param startIndex 起始位置，当起始位置小于0或者大于结束位置，置为0。
+     * @throws IllegalArgumentException array对象不为数组抛出此异常
+     * @throws NullPointerException     array对象为null
      */
     public ArrayIterator(final Object array, final int startIndex) {
         this(array, startIndex, Array.getLength(array));
     }
 
     /**
-     * Construct an ArrayIterator that will iterate over a range of values
-     * in the specified array.
+     * 构造
      *
-     * @param array      the array to iterate over.
-     * @param startIndex the index to start iterating at.
-     * @param endIndex   the index to finish iterating at.
-     * @throws IllegalArgumentException  if <code>array</code> is not an array.
-     * @throws NullPointerException      if <code>array</code> is <code>null</code>
-     * @throws IndexOutOfBoundsException if either index is invalid
+     * @param array      数组
+     * @param startIndex 起始位置，当起始位置小于0或者大于结束位置，置为0。
+     * @param endIndex   结束位置，当结束位置小于0或者大于数组长度，置为数组长度。
+     * @throws IllegalArgumentException array对象不为数组抛出此异常
+     * @throws NullPointerException     array对象为null
      */
     public ArrayIterator(final Object array, final int startIndex, final int endIndex) {
         super();
@@ -110,14 +105,6 @@ public class ArrayIterator<E> implements ResettableIterator<E> {
         }
     }
 
-    /**
-     * Checks whether the index is valid or not.
-     *
-     * @param bound the index to check
-     * @param len   the length of the array
-     * @param type  the index type (for error messages)
-     * @throws IndexOutOfBoundsException if the index is invalid
-     */
     protected void checkBound(final int bound, final int len, final String type) {
         if (bound > len) {
             throw new ArrayIndexOutOfBoundsException(
@@ -133,23 +120,11 @@ public class ArrayIterator<E> implements ResettableIterator<E> {
         }
     }
 
-    /**
-     * Returns true if there are more elements to return from the array.
-     *
-     * @return true if there is a next element to return
-     */
     @Override
     public boolean hasNext() {
         return index < endIndex;
     }
 
-    /**
-     * Returns the next element in the array.
-     *
-     * @return the next element in the array
-     * @throws NoSuchElementException if all the elements in the array
-     *                                have already been returned
-     */
     @Override
     public E next() {
         if (hasNext() == false) {
@@ -158,46 +133,23 @@ public class ArrayIterator<E> implements ResettableIterator<E> {
         return (E) Array.get(array, index++);
     }
 
-    /**
-     * Throws {@link UnsupportedOperationException}.
-     *
-     * @throws UnsupportedOperationException always
-     */
     @Override
     public void remove() {
         throw new UnsupportedOperationException("remove() method is not supported");
     }
 
-    /**
-     * Gets the array that this iterator is iterating over.
-     *
-     * @return the array this iterator iterates over.
-     */
     public Object getArray() {
         return array;
     }
 
-    /**
-     * Gets the start index to loop from.
-     *
-     * @return the start index
-     */
     public int getStartIndex() {
         return this.startIndex;
     }
 
-    /**
-     * Gets the end index to loop to.
-     *
-     * @return the end index
-     */
     public int getEndIndex() {
         return this.endIndex;
     }
 
-    /**
-     * Resets the iterator back to the start index.
-     */
     @Override
     public void reset() {
         this.index = this.startIndex;

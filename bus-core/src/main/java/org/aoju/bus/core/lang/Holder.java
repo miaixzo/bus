@@ -35,8 +35,6 @@ import org.aoju.bus.core.lang.mutable.MutableObject;
  */
 public final class Holder<T> extends MutableObject<T> {
 
-    private static final long serialVersionUID = -3119568580130118011L;
-
     /**
      * 构造
      */

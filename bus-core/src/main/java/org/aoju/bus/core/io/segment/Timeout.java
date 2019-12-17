@@ -34,18 +34,15 @@ import java.util.concurrent.TimeUnit;
  * 稍后应重试读取 如果向接收器写入超时,也是一样
  * 适用规则:关闭洗涤槽,稍后重试
  *
- * <h3>Timeouts and Deadlines</h3>
- * This class offers two complementary controls to define a timeout policy.
- *
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
  */
 public class Timeout {
+
     /**
-     * An empty timeout that neither tracks nor detects timeouts. Use this when
-     * timeouts aren't necessary, such as in implementations whose operations
-     * do not block.
+     * 既不跟踪也不检测超时的空超时。在不需要超时
+     * 的情况下使用它，例如在操作不会阻塞的实现中.
      */
     public static final Timeout NONE = new Timeout() {
         @Override
@@ -59,8 +56,9 @@ public class Timeout {
         }
 
         @Override
-        public void throwIfReached() throws IOException {
+        public void throwIfReached() {
         }
+
     };
 
     /**
@@ -167,7 +165,7 @@ public class Timeout {
      */
     public void throwIfReached() throws IOException {
         if (Thread.interrupted()) {
-            Thread.currentThread().interrupt(); // Retain interrupted status.
+            Thread.currentThread().interrupt();
             throw new InterruptedIOException("interrupted");
         }
 
@@ -188,11 +186,10 @@ public class Timeout {
             long timeoutNanos = timeoutNanos();
 
             if (!hasDeadline && timeoutNanos == 0L) {
-                monitor.wait(); // There is no timeout: wait forever.
+                monitor.wait();
                 return;
             }
 
-            // Compute how long we'll wait.
             long waitNanos;
             long start = System.nanoTime();
             if (hasDeadline && timeoutNanos != 0) {
@@ -204,7 +201,6 @@ public class Timeout {
                 waitNanos = timeoutNanos;
             }
 
-            // Attempt to wait that long. This will break out early if the monitor is notified.
             long elapsedNanos = 0L;
             if (waitNanos > 0L) {
                 long waitMillis = waitNanos / 1000000L;
@@ -212,12 +208,11 @@ public class Timeout {
                 elapsedNanos = System.nanoTime() - start;
             }
 
-            // Throw if the timeout elapsed before the monitor was notified.
             if (elapsedNanos >= waitNanos) {
                 throw new InterruptedIOException("timeout");
             }
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Retain interrupted status.
+            Thread.currentThread().interrupt();
             throw new InterruptedIOException("interrupted");
         }
     }

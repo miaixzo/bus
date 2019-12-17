@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.internal.http;
 
-import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.BufferSource;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.http.bodys.ResponseBody;
 
 /**

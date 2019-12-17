@@ -27,7 +27,10 @@ import org.aoju.bus.core.convert.impl.CollectionConverter;
 import org.aoju.bus.core.convert.impl.GenericEnumConverter;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.utils.CharsetUtils;
+import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.utils.HexUtils;
+import org.aoju.bus.core.utils.StringUtils;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -725,7 +728,7 @@ public class Convert {
      * @return String 每个unicode之间无分隔符
      */
     public static String strToUnicode(String strText) {
-        return UnicodeUtils.toUnicode(strText);
+        return StringUtils.toUnicode(strText);
     }
 
     /**
@@ -733,10 +736,10 @@ public class Convert {
      *
      * @param unicode Unicode符
      * @return String 字符串
-     * @see UnicodeUtils#toString(String)
+     * @see StringUtils#unicodeToString(String)
      */
     public static String unicodeToStr(String unicode) {
-        return UnicodeUtils.toString(unicode);
+        return StringUtils.unicodeToString(unicode);
     }
 
     /**

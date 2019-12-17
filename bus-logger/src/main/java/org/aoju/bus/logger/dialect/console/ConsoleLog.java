@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.logger.dialect.console;
 
-import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.lang.Dict;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.AbstractAware;

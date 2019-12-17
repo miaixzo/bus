@@ -85,7 +85,7 @@ public class BusListener implements
     }
 
     /**
-     * config log settings
+     * 配置日志设置
      */
     private void assemblyLogSetting(ConfigurableEnvironment environment) {
         StreamSupport.stream(environment.getPropertySources().spliterator(), false)
@@ -97,9 +97,9 @@ public class BusListener implements
     }
 
     /**
-     * config required properties
+     * 配置所需的属性
      *
-     * @param environment
+     * @param environment 环境信息
      */
     private void assemblyRequireProperties(ConfigurableEnvironment environment) {
         if (StringUtils.hasText(environment.getProperty(BootConsts.BUS_NAME))) {
@@ -109,9 +109,9 @@ public class BusListener implements
     }
 
     /**
-     * Mark this environment as SOFA bootstrap environment
+     * 标记为编译引导环境
      *
-     * @param environment
+     * @param environment 环境信息
      */
     private void assemblyEnvironmentMark(ConfigurableEnvironment environment) {
         environment.getPropertySources().addFirst(
@@ -119,9 +119,9 @@ public class BusListener implements
     }
 
     /**
-     * Un-Mark this environment as SOFA bootstrap environment
+     * 取消此环境标记为沙箱引导环境
      *
-     * @param environment
+     * @param environment 环境信息
      */
     private void unAssemblyEnvironmentMark(ConfigurableEnvironment environment) {
         environment.getPropertySources().remove(BootConsts.BUS_BOOTSTRAP);

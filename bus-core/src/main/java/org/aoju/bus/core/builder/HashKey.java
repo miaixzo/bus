@@ -21,31 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.consts;
+package org.aoju.bus.core.builder;
 
 /**
- * HTTP 相关常量
+ * 包装一个身份密钥(System.identityHashCode())，以便一个对象只能等于equal()自身.
+ * 这对于消除偶尔出现的重复的identityHashCodes是必要的.
  *
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
  */
-public class Httpd {
+final class HashKey {
 
-    public static final String HTTP_PREFIX = "http://";
-    public static final String HTTPS_PREFIX = "https://";
+    private final Object value;
+    private final int id;
 
-    public final static String ALL = "ALL";
-    public final static String GET = "GET";
-    public final static String POST = "POST";
-    public final static String PUT = "PUT";
-    public final static String PATCH = "PATCH";
-    public final static String DELETE = "DELETE";
-    public final static String HEAD = "HEAD";
-    public final static String TRACE = "TRACE";
-    public final static String CONNECT = "CONNECT";
-    public final static String OPTIONS = "OPTIONS";
-    public final static String BEFORE = "BEFORE";
-    public final static String AFTER = "AFTER";
+    /**
+     * 构造函数
+     *
+     * @param _value The value
+     */
+    HashKey(final Object _value) {
+        // 这是对象哈希码
+        id = System.identityHashCode(_value);
+        // 有一些情况(LANG-459)会为不同的对象返回相同的标识哈希码。
+        // 因此，还添加了值来消除这些情况的歧义
+        value = _value;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (!(other instanceof HashKey)) {
+            return false;
+        }
+        final HashKey hashKey = (HashKey) other;
+        if (id != hashKey.id) {
+            return false;
+        }
+        return value == hashKey.value;
+    }
 
 }

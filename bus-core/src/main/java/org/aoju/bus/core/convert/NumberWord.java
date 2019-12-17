@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**

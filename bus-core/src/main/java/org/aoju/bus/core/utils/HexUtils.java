@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.awt.*;
 import java.nio.charset.Charset;
 
@@ -37,15 +39,6 @@ import java.nio.charset.Charset;
  * @since JDK 1.8+
  */
 public class HexUtils {
-
-    /**
-     * 用于建立十六进制字符的输出的小写字符数组
-     */
-    private static final char[] DIGITS_LOWER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-    /**
-     * 用于建立十六进制字符的输出的大写字符数组
-     */
-    private static final char[] DIGITS_UPPER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     /**
      * 判断给定字符串是否为16进制数
@@ -89,7 +82,7 @@ public class HexUtils {
      * @return 十六进制char[]
      */
     public static char[] encodeHex(byte[] data, boolean toLowerCase) {
-        return encodeHex(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
+        return encodeHex(data, toLowerCase ? Normal.DIGITS_LOWER : Normal.DIGITS_UPPER);
     }
 
     /**
@@ -120,7 +113,7 @@ public class HexUtils {
      * @return 十六进制String
      */
     public static String encodeHexStr(String data) {
-        return encodeHexStr(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encodeHexStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -131,7 +124,7 @@ public class HexUtils {
      * @return 十六进制String
      */
     public static String encodeHexStr(byte[] data, boolean toLowerCase) {
-        return encodeHexStr(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
+        return encodeHexStr(data, toLowerCase ? Normal.DIGITS_LOWER : Normal.DIGITS_UPPER);
     }
 
     /**
@@ -141,7 +134,7 @@ public class HexUtils {
      * @return 字符串
      */
     public static String decodeHexStr(String hexStr) {
-        return decodeHexStr(hexStr, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decodeHexStr(hexStr, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -301,10 +294,10 @@ public class HexUtils {
     public static String toUnicodeHex(char ch) {
         StringBuilder sb = new StringBuilder(6);
         sb.append("\\u");
-        sb.append(DIGITS_LOWER[(ch >> 12) & 15]);
-        sb.append(DIGITS_LOWER[(ch >> 8) & 15]);
-        sb.append(DIGITS_LOWER[(ch >> 4) & 15]);
-        sb.append(DIGITS_LOWER[(ch) & 15]);
+        sb.append(Normal.DIGITS_LOWER[(ch >> 12) & 15]);
+        sb.append(Normal.DIGITS_LOWER[(ch >> 8) & 15]);
+        sb.append(Normal.DIGITS_LOWER[(ch >> 4) & 15]);
+        sb.append(Normal.DIGITS_LOWER[(ch) & 15]);
         return sb.toString();
     }
 

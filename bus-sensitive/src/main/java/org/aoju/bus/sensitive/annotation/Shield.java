@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.sensitive.annotation;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Condition;
 import org.aoju.bus.sensitive.provider.ConditionProvider;

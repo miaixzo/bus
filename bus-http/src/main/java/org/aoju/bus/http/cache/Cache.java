@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;

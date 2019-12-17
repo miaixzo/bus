@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.aoju.bus.office.support.excel.cell.FormulaCellValue;

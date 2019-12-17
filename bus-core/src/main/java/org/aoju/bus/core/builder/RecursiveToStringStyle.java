@@ -29,9 +29,7 @@ import org.aoju.bus.core.utils.ClassUtils;
 import java.util.Collection;
 
 /**
- * <p>Works with {@link ToStringBuilder} to create a "deep" <code>toString</code>.</p>
- *
- * <p>To use this class write code as follows:</p>
+ * 使用{@link ToStringBuilder}创建一个"deep" <code>toString</code>
  *
  * <pre>
  * public class Job {
@@ -53,25 +51,14 @@ import java.util.Collection;
  * }
  * </pre>
  *
- * <p>This will produce a toString of the format:
- * <code>Person@7f54[name=Stephen,age=29,smoker=false,job=Job@43cd2[title=Manager]]</code></p>
- *
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
  */
 public class RecursiveToStringStyle extends ToStringStyle {
 
-    /**
-     * Required for serialization support.
-     *
-     * @see java.io.Serializable
-     */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * <p>Constructor.</p>
-     */
     public RecursiveToStringStyle() {
         super();
     }
@@ -95,12 +82,11 @@ public class RecursiveToStringStyle extends ToStringStyle {
     }
 
     /**
-     * Returns whether or not to recursively format the given <code>Class</code>.
-     * By default, this method always returns {@code true}, but may be overwritten by
-     * sub-classes to filter specific classes.
+     * 返回是否递归格式化给定的Class。默认情况下，这个方法总是返回{@code true}，
+     * 但是可能会被子类覆盖以过滤特定的类.
      *
-     * @param clazz The class to test.
-     * @return Whether or not to recursively format the given <code>Class</code>.
+     * @param clazz 要测试的类.
+     * @return 是否递归格式化给定的<code>Class</code>.
      */
     protected boolean accept(final Class<?> clazz) {
         return true;

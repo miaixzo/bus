@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.date.Between;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.date.TimeInterval;
@@ -31,6 +30,7 @@ import org.aoju.bus.core.date.format.BetweenFormat;
 import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Validator;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 

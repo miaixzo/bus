@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Fields;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.Validator;
 
 import java.util.Date;

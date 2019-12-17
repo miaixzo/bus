@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.consts;
+package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
@@ -68,7 +68,7 @@ public class FileType {
     public static final String TYPE_DOCX = ".docx";
     /**
      * 微软ppt文档
-     **/
+     */
     public static final String TYPE_PPT = ".ppt";
     public static final String TYPE_PPTX = ".pptx";
     public static final String TYPE_PPS = ".pps";
@@ -83,19 +83,19 @@ public class FileType {
     public static final String TYPE_GIF = "gif";
     /**
      * 联合照片
-     **/
+     */
     public static final String TYPE_JPG = "jpg";
     /**
      * 联合照片
-     **/
+     */
     public static final String TYPE_JPEG = "jpeg";
     /**
      * 英文Bitmap（位图）的简写,它是Windows操作系统中的标准图像文件格式
-     **/
+     */
     public static final String TYPE_BMP = "bmp";
     /**
      * 可移植网络图形
-     **/
+     */
     public static final String TYPE_PNG = "png";
 
     /**

@@ -31,13 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <p>
- * Assists in implementing {@link Diffable#diff(Object)} methods.
- * </p>
- *
- * <p>
- * To use this class, write code as follows:
- * </p>
+ * 协助实现{@link Diffable#diff(Object)}方法
  *
  * <pre>
  * public class Person implements Diffable&lt;Person&gt; {
@@ -57,13 +51,9 @@ import java.util.List;
  *   }
  * }
  * </pre>
- *
- * <p>
- * The {@code ToStringStyle} passed to the constructor is embedded in the
- * returned {@code DiffResult} and influences the style of the
- * {@code DiffResult.toString()} method. This style choice can be overridden by
- * calling {@link DiffResult#toString(ToStringStyle)}.
- * </p>
+ * 传递给构造函数的{@code ToStringStyle}嵌入到返回的{@code DiffResult}中，
+ * 并影响{@code DiffResult. tostring()}方法的风格。可以通过调用
+ * {@link DiffResult#toString(ToStringStyle)}覆盖此样式选择。.
  *
  * @author Kimi Liu
  * @version 5.3.2
@@ -82,30 +72,22 @@ public class DiffBuilder implements Builder<DiffResult> {
     private final ToStringStyle style;
 
     /**
-     * <p>
-     * Constructs a builder for the specified objects with the specified style.
-     * </p>
+     * 使用指定样式为指定对象构造一个生成器
+     * 如果{@code lhs == rhs}或{@code lhs.equals(rhs)}，
+     * 则构建器将不计算对{@code append(…)}的任何调用，
+     * 并在{@link #build()}执行时返回一个空的{@link DiffResult}.
      *
-     * <p>
-     * If {@code lhs == rhs} or {@code lhs.equals(rhs)} then the builder will
-     * not evaluate any calls to {@code append(...)} and will return an empty
-     * {@link DiffResult} when {@link #build()} is executed.
-     * </p>
-     *
-     * @param lhs                {@code this} object
-     * @param rhs                the object to diff against
-     * @param style              the style will use when outputting the objects, {@code null}
-     *                           uses the default
-     * @param testTriviallyEqual If true, this will test if lhs and rhs are the same or equal.
-     *                           All of the append(fieldName, lhs, rhs) methods will abort
-     *                           without creating a field {@link Diff} if the trivially equal
-     *                           test is enabled and returns true.  The result of this test
-     *                           is never changed throughout the life of this {@link DiffBuilder}.
-     * @throws IllegalArgumentException if {@code lhs} or {@code rhs} is {@code null}
-     * @since 3.5.0
+     * @param lhs                {@code this} 对象
+     * @param rhs                反对的对象
+     * @param style              当输出对象时将使用该样式，{@code null}使用默认值
+     * @param testTriviallyEqual 如果为真，这将测试lhs和rhs是否相同或相等。如果启用了简单的相等测试并返回true，
+     *                           那么所有的append(fieldName、lhs、rhs)方法都将中止，而不创建字段{@link Diff}
+     *                           这个测试的结果在{@link DiffBuilder}的整个生命周期内都不会改变。.
      */
-    public DiffBuilder(final Object lhs, final Object rhs,
-                       final ToStringStyle style, final boolean testTriviallyEqual) {
+    public DiffBuilder(final Object lhs,
+                       final Object rhs,
+                       final ToStringStyle style,
+                       final boolean testTriviallyEqual) {
 
         Assert.isTrue(lhs != null, "lhs cannot be null");
         Assert.isTrue(rhs != null, "rhs cannot be null");
@@ -115,50 +97,32 @@ public class DiffBuilder implements Builder<DiffResult> {
         this.right = rhs;
         this.style = style;
 
-        // Don't compare any fields if objects equal
         this.objectsTriviallyEqual = testTriviallyEqual && (lhs == rhs || lhs.equals(rhs));
     }
 
     /**
-     * <p>
-     * Constructs a builder for the specified objects with the specified style.
-     * </p>
+     * 使用指定样式为指定对象构造一个生成器
      *
-     * <p>
-     * If {@code lhs == rhs} or {@code lhs.equals(rhs)} then the builder will
-     * not evaluate any calls to {@code append(...)} and will return an empty
-     * {@link DiffResult} when {@link #build()} is executed.
-     * </p>
-     *
-     * <p>
-     * This delegates to {@link #DiffBuilder(Object, Object, ToStringStyle, boolean)}
-     * with the testTriviallyEqual flag enabled.
-     * </p>
-     *
-     * @param lhs   {@code this} object
-     * @param rhs   the object to diff against
-     * @param style the style will use when outputting the objects, {@code null}
-     *              uses the default
-     * @throws IllegalArgumentException if {@code lhs} or {@code rhs} is {@code null}
+     * @param lhs   {@code this} 对象
+     * @param rhs   反对的对象
+     * @param style 当输出对象时将使用该样式，{@code null}使用默认值
      */
-    public DiffBuilder(final Object lhs, final Object rhs,
+    public DiffBuilder(final Object lhs,
+                       final Object rhs,
                        final ToStringStyle style) {
-
         this(lhs, rhs, style, true);
     }
 
     /**
-     * <p>
-     * Test if two {@code boolean}s are equal.
-     * </p>
+     * 测试两个{@code boolean}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code boolean}
-     * @param rhs       the right hand {@code boolean}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code boolean}
+     * @param rhs       右边 {@code boolean}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
-    public DiffBuilder append(final String fieldName, final boolean lhs,
+    public DiffBuilder append(final String fieldName,
+                              final boolean lhs,
                               final boolean rhs) {
         validateFieldNameNotNull(fieldName);
 
@@ -184,17 +148,15 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code boolean[]}s are equal.
-     * </p>
+     * 测试两个{@code boolean[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code boolean[]}
-     * @param rhs       the right hand {@code boolean[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code boolean[]}
+     * @param rhs       右边 {@code boolean[]}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
-    public DiffBuilder append(final String fieldName, final boolean[] lhs,
+    public DiffBuilder append(final String fieldName,
+                              final boolean[] lhs,
                               final boolean[] rhs) {
         validateFieldNameNotNull(fieldName);
         if (objectsTriviallyEqual) {
@@ -219,17 +181,15 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code byte}s are equal.
-     * </p>
+     * 测试两个{@code byte}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code byte}
-     * @param rhs       the right hand {@code byte}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code byte}
+     * @param rhs       右边 {@code byte}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
-    public DiffBuilder append(final String fieldName, final byte lhs,
+    public DiffBuilder append(final String fieldName,
+                              final byte lhs,
                               final byte rhs) {
         validateFieldNameNotNull(fieldName);
         if (objectsTriviallyEqual) {
@@ -254,17 +214,15 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code byte[]}s are equal.
-     * </p>
+     * 测试两个{@code byte[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code byte[]}
-     * @param rhs       the right hand {@code byte[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code byte[]}
+     * @param rhs       右边 {@code byte[]}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
-    public DiffBuilder append(final String fieldName, final byte[] lhs,
+    public DiffBuilder append(final String fieldName,
+                              final byte[] lhs,
                               final byte[] rhs) {
         validateFieldNameNotNull(fieldName);
 
@@ -290,17 +248,15 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code char}s are equal.
-     * </p>
+     * 测试两个{@code char}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code char}
-     * @param rhs       the right hand {@code char}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code char}
+     * @param rhs       右边 {@code char}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
-    public DiffBuilder append(final String fieldName, final char lhs,
+    public DiffBuilder append(final String fieldName,
+                              final char lhs,
                               final char rhs) {
         validateFieldNameNotNull(fieldName);
 
@@ -326,13 +282,11 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code char[]}s are equal.
-     * </p>
+     * 测试两个{@code char[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code char[]}
-     * @param rhs       the right hand {@code char[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code char[]}
+     * @param rhs       右边 {@code char[]}
      * @return this
      * @throws IllegalArgumentException if field name is {@code null}
      */
@@ -362,15 +316,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code double}s are equal.
-     * </p>
+     * 测试两个{@code char[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code double}
-     * @param rhs       the right hand {@code double}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code double}
+     * @param rhs       右边 {@code double}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final double lhs,
                               final double rhs) {
@@ -398,15 +349,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code double[]}s are equal.
-     * </p>
+     * 测试两个 {@code double[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code double[]}
-     * @param rhs       the right hand {@code double[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code double[]}
+     * @param rhs       右边 {@code double[]}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final double[] lhs,
                               final double[] rhs) {
@@ -434,15 +382,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code float}s are equal.
-     * </p>
+     * 测试两个 {@code float}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code float}
-     * @param rhs       the right hand {@code float}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code float}
+     * @param rhs       右边 {@code float}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final float lhs,
                               final float rhs) {
@@ -470,15 +415,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code float[]}s are equal.
-     * </p>
+     * 测试两个 {@code float[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code float[]}
-     * @param rhs       the right hand {@code float[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code float[]}
+     * @param rhs       右边 {@code float[]}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final float[] lhs,
                               final float[] rhs) {
@@ -506,15 +448,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code int}s are equal.
-     * </p>
+     * 测试两个 {@code int}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code int}
-     * @param rhs       the right hand {@code int}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code int}
+     * @param rhs       右边 {@code int}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final int lhs,
                               final int rhs) {
@@ -542,15 +481,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code int[]}s are equal.
-     * </p>
+     * 测试两个 {@code int[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code int[]}
-     * @param rhs       the right hand {@code int[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code int[]}
+     * @param rhs       右边 {@code int[]}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final int[] lhs,
                               final int[] rhs) {
@@ -578,15 +514,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code long}s are equal.
-     * </p>
+     * 测试两个 {@code long}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code long}
-     * @param rhs       the right hand {@code long}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code long}
+     * @param rhs       右边 {@code long}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final long lhs,
                               final long rhs) {
@@ -614,15 +547,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code long[]}s are equal.
-     * </p>
+     * 测试两个 {@code long[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code long[]}
-     * @param rhs       the right hand {@code long[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code long[]}
+     * @param rhs       右边 {@code long[]}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final long[] lhs,
                               final long[] rhs) {
@@ -650,15 +580,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code short}s are equal.
-     * </p>
+     * 测试两个 {@code short}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code short}
-     * @param rhs       the right hand {@code short}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code short}
+     * @param rhs       右边 {@code short}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final short lhs,
                               final short rhs) {
@@ -686,15 +613,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code short[]}s are equal.
-     * </p>
+     * 测试两个 {@code short[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code short[]}
-     * @param rhs       the right hand {@code short[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code short[]}
+     * @param rhs       右边 {@code short[]}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final short[] lhs,
                               final short[] rhs) {
@@ -722,13 +646,11 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code Objects}s are equal.
-     * </p>
+     * 测试两个 {@code Objects}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code Object}
-     * @param rhs       the right hand {@code Object}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code Object}
+     * @param rhs       右边 {@code Object}
      * @return this
      * @throws IllegalArgumentException if field name is {@code null}
      */
@@ -779,7 +701,6 @@ public class DiffBuilder implements Builder<DiffResult> {
             return append(fieldName, (Object[]) lhs, (Object[]) rhs);
         }
 
-        // Not array type
         if (lhs != null && lhs.equals(rhs)) {
             return this;
         }
@@ -802,15 +723,12 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Test if two {@code Object[]}s are equal.
-     * </p>
+     * 测试两个 {@code Object[]}是否相等
      *
-     * @param fieldName the field name
-     * @param lhs       the left hand {@code Object[]}
-     * @param rhs       the right hand {@code Object[]}
+     * @param fieldName 字段名
+     * @param lhs       左边 {@code Object[]}
+     * @param rhs       右边 {@code Object[]}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      */
     public DiffBuilder append(final String fieldName, final Object[] lhs,
                               final Object[] rhs) {
@@ -839,15 +757,9 @@ public class DiffBuilder implements Builder<DiffResult> {
     }
 
     /**
-     * <p>
-     * Append diffs from another {@code DiffResult}.
-     * </p>
-     *
-     * <p>
-     * This method is useful if you want to compare properties which are
-     * themselves Diffable and would like to know which specific part of
-     * it is different.
-     * </p>
+     * 附加来自另一个{@code DiffResult}的差异.
+     * 如果您想要比较本身是可扩散的属性，并且想要知道它的哪一部分是不同的，
+     * 那么这个方法是很有用的.
      *
      * <pre>
      * public class Person implements Diffable&lt;Person&gt; {
@@ -865,10 +777,9 @@ public class DiffBuilder implements Builder<DiffResult> {
      * }
      * </pre>
      *
-     * @param fieldName  the field name
-     * @param diffResult the {@code DiffResult} to append
+     * @param fieldName  字段名
+     * @param diffResult 要附加的{@code DiffResult}
      * @return this
-     * @throws IllegalArgumentException if field name is {@code null}
      * @since 3.5.0
      */
     public DiffBuilder append(final String fieldName,
@@ -887,15 +798,6 @@ public class DiffBuilder implements Builder<DiffResult> {
         return this;
     }
 
-    /**
-     * <p>
-     * Builds a {@link DiffResult} based on the differences appended to this
-     * builder.
-     * </p>
-     *
-     * @return a {@code DiffResult} containing the differences between the two
-     * objects.
-     */
     @Override
     public DiffResult build() {
         return new DiffResult(left, right, diffs, style);

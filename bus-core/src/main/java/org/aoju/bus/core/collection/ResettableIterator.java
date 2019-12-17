@@ -36,8 +36,7 @@ import java.util.Iterator;
 public interface ResettableIterator<E> extends Iterator<E> {
 
     /**
-     * Resets the iterator back to the position at which the iterator
-     * was created.
+     * 将迭代器重置为创建迭代器的位置.
      */
     void reset();
 

@@ -40,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 public class Awaits extends Timeout {
 
     private static final int TIMEOUT_WRITE_SIZE = 64 * 1024;
-
     private static final long IDLE_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(60);
     private static final long IDLE_TIMEOUT_NANOS = TimeUnit.MILLISECONDS.toNanos(IDLE_TIMEOUT_MILLIS);
 
@@ -54,7 +53,6 @@ public class Awaits extends Timeout {
 
     private static synchronized void scheduleTimeout(
             Awaits node, long timeoutNanos, boolean hasDeadline) {
-        // Start the watchdog thread and create the head node when the first timeout is scheduled.
         if (head == null) {
             head = new Awaits();
             new Watchdog().start();
@@ -62,8 +60,6 @@ public class Awaits extends Timeout {
 
         long now = System.nanoTime();
         if (timeoutNanos != 0 && hasDeadline) {
-            // Compute the earliest event; either timeout or deadline. Because nanoTime can wrap around,
-            // Math.min() is undefined for absolute values, but meaningful for relative ones.
             node.timeoutAt = now + Math.min(timeoutNanos, node.deadlineNanoTime() - now);
         } else if (timeoutNanos != 0) {
             node.timeoutAt = now + timeoutNanos;
@@ -73,14 +69,13 @@ public class Awaits extends Timeout {
             throw new AssertionError();
         }
 
-        // Insert the node in sorted order.
         long remainingNanos = node.remainingNanos(now);
         for (Awaits prev = head; true; prev = prev.next) {
             if (prev.next == null || remainingNanos < prev.next.remainingNanos(now)) {
                 node.next = prev.next;
                 prev.next = node;
                 if (prev == head) {
-                    Awaits.class.notify(); // Wake up the watchdog when inserting at the front.
+                    Awaits.class.notify();
                 }
                 break;
             }
@@ -88,7 +83,6 @@ public class Awaits extends Timeout {
     }
 
     private static synchronized boolean cancelScheduledTimeout(Awaits node) {
-        // Remove the node from the linked list.
         for (Awaits prev = head; prev != null; prev = prev.next) {
             if (prev.next == node) {
                 prev.next = node.next;
@@ -97,36 +91,27 @@ public class Awaits extends Timeout {
             }
         }
 
-        // The node wasn't found in the linked list: it must have timed out!
         return true;
     }
 
     static Awaits awaitTimeout() throws InterruptedException {
-        // Get the next eligible node.
         Awaits node = head.next;
 
-        // The queue is empty. Wait until either something is enqueued or the idle timeout elapses.
         if (node == null) {
             long startNanos = System.nanoTime();
             Awaits.class.wait(IDLE_TIMEOUT_MILLIS);
-            return head.next == null && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS
-                    ? head  // The idle timeout elapsed.
-                    : null; // The situation has changed.
+            return head.next == null && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS ? head : null;
         }
 
         long waitNanos = node.remainingNanos(System.nanoTime());
 
-        // The head of the queue hasn't timed out yet. Await that.
         if (waitNanos > 0) {
-            // Waiting is made complicated by the fact that we work in nanoseconds,
-            // but the API wants (millis, nanos) in two arguments.
             long waitMillis = waitNanos / 1000000L;
             waitNanos -= (waitMillis * 1000000L);
             Awaits.class.wait(waitMillis, (int) waitNanos);
             return null;
         }
 
-        // The head of the queue has timed out. Remove it.
         head.next = node.next;
         node.next = null;
         return node;
@@ -137,7 +122,7 @@ public class Awaits extends Timeout {
         long timeoutNanos = timeoutNanos();
         boolean hasDeadline = hasDeadline();
         if (timeoutNanos == 0 && !hasDeadline) {
-            return; // No timeout and no deadline? Don't bother with the queue.
+            return;
         }
         inQueue = true;
         scheduleTimeout(this, timeoutNanos, hasDeadline);
@@ -164,7 +149,6 @@ public class Awaits extends Timeout {
                 IoUtils.checkOffsetAndCount(source.size, 0, byteCount);
 
                 while (byteCount > 0L) {
-                    // Count how many bytes to write. This loop guarantees we split on a segment boundary.
                     long toWrite = 0L;
                     for (Segment s = source.head; toWrite < TIMEOUT_WRITE_SIZE; s = s.next) {
                         int segmentSize = s.limit - s.pos;
@@ -175,7 +159,6 @@ public class Awaits extends Timeout {
                         }
                     }
 
-                    // Emit first write. Only this section is subject to the timeout.
                     boolean throwOnTimeout = false;
                     enter();
                     try {
@@ -273,32 +256,16 @@ public class Awaits extends Timeout {
         };
     }
 
-    /**
-     * Throws an IOException if {@code throwOnTimeout} is {@code true} and a timeout occurred. See
-     * {@link #newTimeoutException(IOException)} for the type of exception thrown.
-     */
     final void exit(boolean throwOnTimeout) throws IOException {
         boolean timedOut = exit();
         if (timedOut && throwOnTimeout) throw newTimeoutException(null);
     }
 
-    /**
-     * @param cause IOException
-     * @return IOException  either {@code cause} or an IOException that's caused by {@code cause} if a timeout
-     * occurred. See {@link #newTimeoutException(IOException)} for the type of exception
-     * returned.
-     */
     final IOException exit(IOException cause) throws IOException {
         if (!exit()) return cause;
         return newTimeoutException(cause);
     }
 
-    /**
-     * @param cause IOException
-     * @return IOException an {@link IOException} to represent a timeout. By default this method returns {@link
-     * InterruptedIOException}. If {@code cause} is non-null it is set as the cause of the
-     * returned exception.
-     */
     protected IOException newTimeoutException(IOException cause) {
         InterruptedIOException e = new InterruptedIOException("timeout");
         if (cause != null) {
@@ -320,18 +287,16 @@ public class Awaits extends Timeout {
                     synchronized (Awaits.class) {
                         timedOut = awaitTimeout();
 
-                        // Didn't find a node to interrupt. Try again.
-                        if (timedOut == null) continue;
+                        if (timedOut == null) {
+                            continue;
+                        }
 
-                        // The queue is completely empty. Let this thread exit and let another watchdog thread
-                        // get created on the next call to scheduleTimeout().
                         if (timedOut == head) {
                             head = null;
                             return;
                         }
                     }
 
-                    // Close the timed out node.
                     timedOut.timedOut();
                 } catch (InterruptedException ignored) {
                 }

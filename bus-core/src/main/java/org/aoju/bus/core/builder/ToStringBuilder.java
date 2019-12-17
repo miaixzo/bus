@@ -27,10 +27,11 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.utils.ObjectUtils;
 
 /**
- * <p>Assists in implementing {@link Object#toString()} methods.</p>
+ * 协助实现{@link Object#toString()}方法
  *
- * <p>This class enables a good and consistent <code>toString()</code> to be built for any
- * class or object. This class aims to simplify the process by:</p>
+ * <p>
+ * 这个类支持为任何类或对象构建良好且一致的<code>toString()</code>这个类的目的是通过
+ * </p>
  * <ul>
  * <li>allowing field names</li>
  * <li>handling all types consistently</li>
@@ -60,33 +61,6 @@ import org.aoju.bus.core.utils.ObjectUtils;
  * }
  * </pre>
  *
- * <p>This will produce a toString of the format:
- * <code>Person@7f54[name=Stephen,age=29,smoker=false]</code></p>
- *
- * <p>To add the superclass <code>toString</code>, use {@link #appendSuper}.
- * To append the <code>toString</code> from an object that is delegated
- * to (or any other object), use {@link #appendToString}.</p>
- *
- * <p>Alternatively, there is a method that uses reflection to determine
- * the fields to test. Because these fields are usually private, the method,
- * <code>reflectionToString</code>, uses <code>AccessibleObject.setAccessible</code> to
- * change the visibility of the fields. This will fail under a security manager,
- * unless the appropriate permissions are set up correctly. It is also
- * slower than testing explicitly.</p>
- *
- * <p>A typical invocation for this method would look like:</p>
- *
- * <pre>
- * public String toString() {
- *   return ToStringBuilder.reflectionToString(this);
- * }
- * </pre>
- *
- * <p>You can also use the builder to debug 3rd party objects:</p>
- *
- * <p>The exact format of the <code>toString</code> is determined by
- * the {@link ToStringStyle} passed into the constructor.</p>
- *
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
@@ -94,56 +68,30 @@ import org.aoju.bus.core.utils.ObjectUtils;
 public class ToStringBuilder implements Builder<String> {
 
     /**
-     * The default style of output to use, not null.
+     * 要使用的默认输出样式，而不是null.
      */
     private static volatile ToStringStyle defaultStyle = ToStringStyle.DEFAULT_STYLE;
     /**
-     * Current toString buffer, not null.
+     * 当前toString缓冲区，不为空.
      */
     private final StringBuffer buffer;
     /**
-     * The object being output, may be null.
+     * 输出的对象可以为空.
      */
     private final Object object;
     /**
-     * The style of output to use, not null.
+     * 要使用的输出样式，而不是null.
      */
     private final ToStringStyle style;
 
-    /**
-     * <p>Constructs a builder for the specified object using the default output style.</p>
-     *
-     * <p>This default style is obtained from {@link #getDefaultStyle()}.</p>
-     *
-     * @param object the Object to build a <code>toString</code> for, not recommended to be null
-     */
     public ToStringBuilder(final Object object) {
         this(object, null, null);
     }
 
-    /**
-     * <p>Constructs a builder for the specified object using the defined output style.</p>
-     *
-     * <p>If the style is <code>null</code>, the default style is used.</p>
-     *
-     * @param object the Object to build a <code>toString</code> for, not recommended to be null
-     * @param style  the style of the <code>toString</code> to create, null uses the default style
-     */
     public ToStringBuilder(final Object object, final ToStringStyle style) {
         this(object, style, null);
     }
 
-    /**
-     * <p>Constructs a builder for the specified object.</p>
-     *
-     * <p>If the style is <code>null</code>, the default style is used.</p>
-     *
-     * <p>If the buffer is <code>null</code>, a new one is created.</p>
-     *
-     * @param object the Object to build a <code>toString</code> for, not recommended to be null
-     * @param style  the style of the <code>toString</code> to create, null uses the default style
-     * @param buffer the <code>StringBuffer</code> to populate, may be null
-     */
     public ToStringBuilder(final Object object, ToStringStyle style, StringBuffer buffer) {
         if (style == null) {
             style = getDefaultStyle();

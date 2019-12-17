@@ -22,15 +22,15 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reader that is being read.
+     * 缓冲区读取.
      */
     private final BufferedReader bufferedReader;
     /**
-     * The current line.
+     * 当前行.
      */
     private String cachedLine;
     /**
-     * A flag indicating if the iterator has been fully read.
+     * 指示迭代器是否已被完全读取的标志.
      */
     private boolean finished = false;
 
@@ -58,7 +58,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
 
 
     /**
-     * 判断{@link Reader}是否可以存在下一行  If there is an <code>IOException</code> then {@link #close()} will be called on this instance.
+     * 判断{@link Reader}是否可以存在下一行.
      *
      * @return {@code true} 表示有更多行
      * @throws InstrumentException 内部异常

@@ -23,7 +23,11 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
+
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 /**
  * 字符工具类
@@ -332,6 +336,20 @@ public class CharUtils {
      */
     public static int compare(final char x, final char y) {
         return x - y;
+    }
+
+    public static char[] getChars(byte[] bytes) {
+        Charset cs = Charset.forName(org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        ByteBuffer bb = ByteBuffer.allocate(bytes.length);
+        bb.put(bytes).flip();
+        CharBuffer cb = cs.decode(bb);
+        return cb.array();
+    }
+
+    public static char byteToChar(byte[] b) {
+        int hi = (b[0] & 0xFF) << 8;
+        int lo = b[1] & 0xFF;
+        return (char) (hi | lo);
     }
 
 }

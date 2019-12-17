@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Digital;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.math.BigDecimal;
@@ -2163,7 +2163,7 @@ public class NumberUtils {
      * @return 字符串表示的BigDecimal，如果转换失败则默认值
      */
     public static BigDecimal toScaledBigDecimal(final BigDecimal value) {
-        return toScaledBigDecimal(value, Digital.INTEGER_TWO, RoundingMode.HALF_EVEN);
+        return toScaledBigDecimal(value, Normal.INTEGER_TWO, RoundingMode.HALF_EVEN);
     }
 
     /**
@@ -2193,7 +2193,7 @@ public class NumberUtils {
      * @return 按比例取适当的四舍五入
      */
     public static BigDecimal toScaledBigDecimal(final Float value) {
-        return toScaledBigDecimal(value, Digital.INTEGER_TWO, RoundingMode.HALF_EVEN);
+        return toScaledBigDecimal(value, Normal.INTEGER_TWO, RoundingMode.HALF_EVEN);
     }
 
     /**
@@ -2224,7 +2224,7 @@ public class NumberUtils {
      * @return 按比例取适当的四舍五入.
      */
     public static BigDecimal toScaledBigDecimal(final Double value) {
-        return toScaledBigDecimal(value, Digital.INTEGER_TWO, RoundingMode.HALF_EVEN);
+        return toScaledBigDecimal(value, Normal.INTEGER_TWO, RoundingMode.HALF_EVEN);
     }
 
     /**
@@ -2255,7 +2255,7 @@ public class NumberUtils {
      * @return 按比例取适当的四舍五入.
      */
     public static BigDecimal toScaledBigDecimal(final String value) {
-        return toScaledBigDecimal(value, Digital.INTEGER_TWO, RoundingMode.HALF_EVEN);
+        return toScaledBigDecimal(value, Normal.INTEGER_TWO, RoundingMode.HALF_EVEN);
     }
 
     /**

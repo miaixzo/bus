@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.codec;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * 凯撒密码实现
@@ -84,8 +84,8 @@ public class Caesar {
      * @return 加密后的字符
      */
     private static char encodeChar(char c, int offset) {
-        int position = (Normal.LETTER_LOWER_UPPER.indexOf(c) + offset) % 52;
-        return Normal.LETTER_LOWER_UPPER.charAt(position);
+        int position = (Normal.UPPER_LOWER.indexOf(c) + offset) % 52;
+        return Normal.UPPER_LOWER.charAt(position);
 
     }
 
@@ -97,11 +97,11 @@ public class Caesar {
      * @return 解密后的字符
      */
     private static char decodeChar(char c, int offset) {
-        int position = (Normal.LETTER_LOWER_UPPER.indexOf(c) - offset) % 52;
+        int position = (Normal.UPPER_LOWER.indexOf(c) - offset) % 52;
         if (position < 0) {
             position += 52;
         }
-        return Normal.LETTER_LOWER_UPPER.charAt(position);
+        return Normal.UPPER_LOWER.charAt(position);
     }
 
 }

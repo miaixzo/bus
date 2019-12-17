@@ -28,8 +28,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 /**
- * Adapter to make {@link Enumeration Enumeration} instances appear
- * to be {@link Iterator Iterator} instances.
+ * 适配器使{@link  Enumeration Enumeration}
+ * 实例显示为{@link Iterator Iterator}实例.
  *
  * @param <E> 元素类型
  * @author Kimi Liu
@@ -39,42 +39,40 @@ import java.util.Iterator;
 public class EnumerationIterator<E> implements Iterator<E> {
 
     /**
-     * The collection to remove elements from
+     * 要从中删除元素的集合
      */
     private final Collection<? super E> collection;
     /**
-     * The enumeration being converted
+     * 正在转换的枚举
      */
     private Enumeration<? extends E> enumeration;
     /**
-     * The last object retrieved
+     * 最后检索到的对象
      */
     private E last;
 
     /**
-     * Constructs a new <code>EnumerationIterator</code> that will not
-     * function until {@link #setEnumeration(Enumeration)} is called.
+     * 构造一个新的EnumerationIterator，
+     * 在调用{@link #setEnumeration(Enumeration)}之前不会起作用.
      */
     public EnumerationIterator() {
         this(null, null);
     }
 
     /**
-     * Constructs a new <code>EnumerationIterator</code> that provides
-     * an iterator view of the given enumeration.
+     * 构造一个新的EnumerationIterator，提供给定枚举的迭代器视图.
      *
-     * @param enumeration the enumeration to use
+     * @param enumeration 要使用的枚举
      */
     public EnumerationIterator(final Enumeration<? extends E> enumeration) {
         this(enumeration, null);
     }
 
     /**
-     * Constructs a new <code>EnumerationIterator</code> that will remove
-     * elements from the specified collection.
+     * 构造一个新的EnumerationIterator，它将从指定集合中删除元素.
      *
-     * @param enumeration the enumeration to use
-     * @param collection  the collection to remove elements from
+     * @param enumeration 要使用的枚举
+     * @param collection  要从中删除元素的集合
      */
     public EnumerationIterator(final Enumeration<? extends E> enumeration, final Collection<? super E> collection) {
         super();
@@ -83,39 +81,17 @@ public class EnumerationIterator<E> implements Iterator<E> {
         this.last = null;
     }
 
-    /**
-     * Returns true if the underlying enumeration has more elements.
-     *
-     * @return true if the underlying enumeration has more elements
-     * @throws NullPointerException if the underlying enumeration is null
-     */
     @Override
     public boolean hasNext() {
         return enumeration.hasMoreElements();
     }
 
-    /**
-     * Returns the next object from the enumeration.
-     *
-     * @return the next object from the enumeration
-     * @throws NullPointerException if the enumeration is null
-     */
     @Override
     public E next() {
         last = enumeration.nextElement();
         return last;
     }
 
-    /**
-     * Removes the last retrieved element if a collection is attached.
-     * <p>
-     * Functions if an associated <code>Collection</code> is known.
-     * If so, the first occurrence of the last returned object from this
-     * iterator will be removed from the collection.
-     *
-     * @throws IllegalStateException         <code>next()</code> not called.
-     * @throws UnsupportedOperationException if no associated collection
-     */
     @Override
     public void remove() {
         if (collection != null) {
@@ -129,20 +105,10 @@ public class EnumerationIterator<E> implements Iterator<E> {
         }
     }
 
-    /**
-     * Returns the underlying enumeration.
-     *
-     * @return the underlying enumeration
-     */
     public Enumeration<? extends E> getEnumeration() {
         return enumeration;
     }
 
-    /**
-     * Sets the underlying enumeration.
-     *
-     * @param enumeration the new underlying enumeration
-     */
     public void setEnumeration(final Enumeration<? extends E> enumeration) {
         this.enumeration = enumeration;
     }

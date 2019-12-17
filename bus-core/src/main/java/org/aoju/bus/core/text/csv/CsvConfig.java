@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.text.csv;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 

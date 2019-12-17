@@ -23,6 +23,10 @@
  */
 package org.aoju.bus.core.utils;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+
 /**
  * @author Kimi Liu
  * @version 5.3.2
@@ -347,6 +351,22 @@ public class ByteUtils {
             intToBytesLE(values[i], ret, 4 * i);
         }
         return ret;
+    }
+
+    public static byte[] getBytes(char[] chars) {
+        Charset cs = Charset.forName(org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        CharBuffer cb = CharBuffer.allocate(chars.length);
+        cb.put(chars);
+        cb.flip();
+        ByteBuffer bb = cs.encode(cb);
+        return bb.array();
+    }
+
+    public static byte[] charToByte(char c) {
+        byte[] b = new byte[2];
+        b[0] = (byte) ((c & 0xFF00) >> 8);
+        b[1] = (byte) (c & 0xFF);
+        return b;
     }
 
 }

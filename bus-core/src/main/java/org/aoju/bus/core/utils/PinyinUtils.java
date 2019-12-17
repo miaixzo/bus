@@ -23,14 +23,13 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -397,7 +396,8 @@ public class PinyinUtils {
         Properties p = new Properties();
         try {
             String path = "/" + Normal.META_DATA_INF + "/template/" + type + ".dict";
-            Reader reader = PropertiesUtils.getReader(path);
+            InputStream is = PinyinUtils.class.getResourceAsStream(path);
+            Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(reader);
             String line;
             while ((line = br.readLine()) != null) {

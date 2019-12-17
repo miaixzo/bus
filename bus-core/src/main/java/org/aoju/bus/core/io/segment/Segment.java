@@ -41,44 +41,44 @@ package org.aoju.bus.core.io.segment;
 public final class Segment {
 
     /**
-     * The size of all segments in bytes.
+     * 所有段的大小(以字节为单位)
      */
     public static final int SIZE = 8192;
 
     /**
-     * Segments will be shared when doing so avoids {@code arraycopy()} of this many bytes.
+     * 这样做避免了这么多字节的{@code arraycopy()}时，将被共享
      */
     public static final int SHARE_MINIMUM = 1024;
 
     public final byte[] data;
 
     /**
-     * The next byte of application data byte to read in this segment.
+     * 此段中要读取的应用程序数据字节的下一个字节.
      */
     public int pos;
 
     /**
-     * The first byte of available data ready to be written to.
+     * 准备写入的可用数据的第一个字节.
      */
     public int limit;
 
     /**
-     * True if other segments or byte strings use the same byte array.
+     * 如果其他段或字节字符串使用相同的字节数组，则为真.
      */
     public boolean shared;
 
     /**
-     * True if this segment owns the byte array and can append to it, extending {@code limit}.
+     * 如果这个段拥有字节数组并可以向其追加，则为True，扩展{@code limit}.
      */
     public boolean owner;
 
     /**
-     * Next segment in a linked or circularly-linked list.
+     * 链表或循环链表中的下一段.
      */
     public Segment next;
 
     /**
-     * Previous segment in a circularly-linked list.
+     * 循环链表中的前一段.
      */
     public Segment prev;
 
@@ -126,11 +126,6 @@ public final class Segment {
         if (byteCount <= 0 || byteCount > limit - pos) throw new IllegalArgumentException();
         Segment prefix;
 
-        // We have two competing performance goals:
-        //  - Avoid copying data. We accomplish this by sharing segments.
-        //  - Avoid short shared segments. These are bad for performance because they are readonly and
-        //    may lead to long chains of short segments.
-        // To balance these goals we only share segments when the copy will be large.
         if (byteCount >= SHARE_MINIMUM) {
             prefix = sharedCopy();
         } else {
@@ -145,11 +140,17 @@ public final class Segment {
     }
 
     public final void compact() {
-        if (prev == this) throw new IllegalStateException();
-        if (!prev.owner) return; // Cannot compact: prev isn't writable.
+        if (prev == this) {
+            throw new IllegalStateException();
+        }
+        if (!prev.owner) {
+            return;
+        }
         int byteCount = limit - pos;
         int availableByteCount = SIZE - prev.limit + (prev.shared ? 0 : prev.pos);
-        if (byteCount > availableByteCount) return; // Cannot compact: not enough writable space.
+        if (byteCount > availableByteCount) {
+            return;
+        }
         writeTo(prev, byteCount);
         pop();
         LifeCycle.recycle(this);
@@ -158,7 +159,6 @@ public final class Segment {
     public final void writeTo(Segment sink, int byteCount) {
         if (!sink.owner) throw new IllegalArgumentException();
         if (sink.limit + byteCount > SIZE) {
-            // We can't fit byteCount bytes at the sink's current position. Shift sink first.
             if (sink.shared) throw new IllegalArgumentException();
             if (sink.limit + byteCount - sink.pos > SIZE) throw new IllegalArgumentException();
             System.arraycopy(sink.data, sink.pos, sink.data, 0, sink.limit - sink.pos);

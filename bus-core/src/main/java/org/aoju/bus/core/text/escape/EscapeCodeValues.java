@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.text.escape;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.translate.AggregateTranslator;
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 import org.aoju.bus.core.text.translate.LookupTranslator;

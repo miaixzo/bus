@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.text.csv;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
@@ -68,7 +68,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param file File CSV文件
      */
     public CsvWriter(File file) {
-        this(file, org.aoju.bus.core.consts.Charset.UTF_8);
+        this(file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

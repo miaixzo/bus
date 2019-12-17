@@ -24,7 +24,7 @@
 package org.aoju.bus.starter.sensitive;
 
 import org.aoju.bus.base.spring.BaseAdvice;
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;

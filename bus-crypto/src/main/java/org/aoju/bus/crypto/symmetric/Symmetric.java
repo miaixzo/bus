@@ -267,7 +267,7 @@ public class Symmetric {
      * @return 加密后的bytes
      */
     public byte[] encrypt(String data) {
-        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.consts.Charset.UTF_8));
+        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.lang.Charset.UTF_8));
     }
 
     /**
@@ -367,7 +367,7 @@ public class Symmetric {
      * @return 解密后的String
      */
     public String decryptStr(byte[] bytes) {
-        return decryptStr(bytes, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptStr(bytes, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -398,7 +398,7 @@ public class Symmetric {
      * @return 解密后的String
      */
     public String decryptStr(String data) {
-        return decryptStr(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -429,7 +429,7 @@ public class Symmetric {
      * @return 解密后的String
      */
     public String decryptStr(InputStream data) {
-        return decryptStr(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

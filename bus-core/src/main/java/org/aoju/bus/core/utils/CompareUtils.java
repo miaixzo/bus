@@ -1,8 +1,8 @@
 package org.aoju.bus.core.utils;
 
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 /**
  * 各种比较器实现和封装

@@ -29,8 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation to exclude a field from being used by
- * the {@link ReflectionToStringBuilder}.
+ * 使用这个注释来排除字段被{@link ReflectionToStringBuilder}使用.
  *
  * @author Kimi Liu
  * @version 5.3.2

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.validate.annotation;
 
-import org.aoju.bus.core.consts.Fields;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.strategy.DateStrategy;
 

@@ -101,7 +101,6 @@ public final class HashSink extends ForwardSink {
     public void write(Buffer source, long byteCount) throws IOException {
         IoUtils.checkOffsetAndCount(source.size, 0, byteCount);
 
-        // Hash byteCount bytes from the prefix of source.
         long hashedCount = 0;
         for (Segment s = source.head; hashedCount < byteCount; s = s.next) {
             int toHash = (int) Math.min(byteCount - hashedCount, s.limit - s.pos);
@@ -113,7 +112,6 @@ public final class HashSink extends ForwardSink {
             hashedCount += toHash;
         }
 
-        // Write those bytes to the sink.
         super.write(source, byteCount);
     }
 

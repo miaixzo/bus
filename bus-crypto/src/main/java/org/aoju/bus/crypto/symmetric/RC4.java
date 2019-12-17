@@ -87,7 +87,7 @@ public class RC4 {
      * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
     public byte[] encrypt(String message) throws InstrumentException {
-        return encrypt(message, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encrypt(message, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -152,7 +152,7 @@ public class RC4 {
      * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
     public String decrypt(byte[] message) throws InstrumentException {
-        return decrypt(message, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decrypt(message, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

@@ -66,7 +66,6 @@ public final class InflaterSource implements Source {
         while (true) {
             boolean sourceExhausted = refill();
 
-            // Decompress the inflater's compressed data into the sink.
             try {
                 Segment tail = sink.writableSegment(1);
                 int toRead = (int) Math.min(byteCount, Segment.SIZE - tail.limit);
@@ -79,7 +78,6 @@ public final class InflaterSource implements Source {
                 if (inflater.finished() || inflater.needsDictionary()) {
                     releaseInflatedBytes();
                     if (tail.pos == tail.limit) {
-                        // We allocated a tail segment, but didn't end up needing it. Recycle!
                         sink.head = tail.pop();
                         LifeCycle.recycle(tail);
                     }
@@ -96,12 +94,12 @@ public final class InflaterSource implements Source {
         if (!inflater.needsInput()) return false;
 
         releaseInflatedBytes();
-        if (inflater.getRemaining() != 0) throw new IllegalStateException("?"); // TODO: possible?
+        if (inflater.getRemaining() != 0) throw new IllegalStateException("?");
 
-        // If there are compressed bytes in the source, assign them to the inflater.
-        if (source.exhausted()) return true;
+        if (source.exhausted()) {
+            return true;
+        }
 
-        // Assign buffer bytes to the inflater.
         Segment head = source.buffer().head;
         bufferBytesHeldByInflater = head.limit - head.pos;
         inflater.setInput(head.data, head.pos, bufferBytesHeldByInflater);

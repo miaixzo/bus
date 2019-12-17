@@ -40,7 +40,7 @@ public final class Credentials {
     }
 
     public static String basic(String username, String password) {
-        return basic(username, password, org.aoju.bus.core.consts.Charset.ISO_8859_1);
+        return basic(username, password, org.aoju.bus.core.lang.Charset.ISO_8859_1);
     }
 
     public static String basic(String username, String password, Charset charset) {

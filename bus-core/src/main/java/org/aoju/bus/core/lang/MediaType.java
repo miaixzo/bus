@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.consts;
+package org.aoju.bus.core.lang;
 
 import lombok.Data;
 import org.aoju.bus.core.utils.MapUtils;
@@ -338,7 +338,7 @@ public class MediaType {
         this.mediaType = mediaType == null ? APPLICATION_FORM_URLENCODED : mediaType;
         this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
-        this.charset = charset == null ? org.aoju.bus.core.consts.Charset.DEFAULT_UTF_8 : charset;
+        this.charset = charset == null ? org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8 : charset;
         if (MapUtils.isNotEmpty(params)) {
             params = new TreeMap(new Comparator<String>() {
                 public int compare(String o1, String o2) {

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.tracer.transport;
 
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.logger.Logger;
 
 import java.io.UnsupportedEncodingException;

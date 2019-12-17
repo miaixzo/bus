@@ -64,10 +64,6 @@ public class CacheInfoContainer {
         return CachePair.of(cacheHolder, cacheMethod);
     }
 
-    /****
-     * cache key doGetMethodInfo
-     ****/
-
     private static CacheHolder getAnnoHolder(Method method) {
 
         CacheHolder.Builder builder = CacheHolder.Builder.newBuilder(method);
@@ -132,10 +128,6 @@ public class CacheInfoContainer {
                 .setPrefix(invalid.prefix())
                 .setExpire(CacheExpire.NO);
     }
-
-    /***
-     * cache method doGetMethodInfo
-     ***/
 
     private static CacheMethod getMethodHolder(Method method, CacheHolder cacheHolder) {
         boolean isCollectionReturn = Collection.class.isAssignableFrom(method.getReturnType());

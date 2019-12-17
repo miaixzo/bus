@@ -58,8 +58,6 @@ final class PeekSource implements Source {
     public long read(Buffer sink, long byteCount) throws IOException {
         if (closed) throw new IllegalStateException("closed");
 
-        // Source becomes invalid if there is an expected Segment and it and the expected position
-        // do not match the current head and head position of the upstream buffer
         if (expectedSegment != null
                 && (expectedSegment != buffer.head || expectedPos != buffer.head.pos)) {
             throw new IllegalStateException("Peek source is invalid because upstream source was used");
@@ -67,9 +65,6 @@ final class PeekSource implements Source {
 
         upstream.request(pos + byteCount);
         if (expectedSegment == null && buffer.head != null) {
-            // Only once the buffer actually holds data should an expected Segment and position be
-            // recorded. This allows reads from the peek source to repeatedly return -1 and for data to be
-            // added later. Unit tests depend on this behavior.
             expectedSegment = buffer.head;
             expectedPos = buffer.head.pos;
         }
@@ -88,7 +83,7 @@ final class PeekSource implements Source {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         closed = true;
     }
 

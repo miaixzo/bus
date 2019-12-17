@@ -23,9 +23,6 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.FileType;
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.BOMInputStream;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileCopier;
@@ -33,6 +30,9 @@ import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
 import org.aoju.bus.core.io.file.LineSeparator;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
@@ -1926,7 +1926,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static BufferedReader getUtf8Reader(Path path) throws InstrumentException {
-        return getReader(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return getReader(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -1937,7 +1937,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static BufferedReader getUtf8Reader(File file) throws InstrumentException {
-        return getReader(file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return getReader(file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -1948,7 +1948,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static BufferedReader getUtf8Reader(String path) throws InstrumentException {
-        return getReader(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return getReader(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2044,7 +2044,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static String readUtf8String(File file) throws InstrumentException {
-        return readString(file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readString(file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2055,7 +2055,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static String readUtf8String(String path) throws InstrumentException {
-        return readString(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readString(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2141,7 +2141,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static <T extends Collection<String>> T readUtf8Lines(String path, T collection) throws InstrumentException {
-        return readLines(path, org.aoju.bus.core.consts.Charset.UTF_8, collection);
+        return readLines(path, org.aoju.bus.core.lang.Charset.UTF_8, collection);
     }
 
     /**
@@ -2183,7 +2183,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static <T extends Collection<String>> T readUtf8Lines(File file, T collection) throws InstrumentException {
-        return readLines(file, org.aoju.bus.core.consts.Charset.UTF_8, collection);
+        return readLines(file, org.aoju.bus.core.lang.Charset.UTF_8, collection);
     }
 
     /**
@@ -2224,7 +2224,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static <T extends Collection<String>> T readUtf8Lines(URL url, T collection) throws InstrumentException {
-        return readLines(url, org.aoju.bus.core.consts.Charset.UTF_8, collection);
+        return readLines(url, org.aoju.bus.core.lang.Charset.UTF_8, collection);
     }
 
     /**
@@ -2272,7 +2272,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static List<String> readUtf8Lines(URL url) throws InstrumentException {
-        return readLines(url, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readLines(url, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2308,7 +2308,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static List<String> readUtf8Lines(String path) throws InstrumentException {
-        return readLines(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readLines(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2345,7 +2345,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static List<String> readUtf8Lines(File file) throws InstrumentException {
-        return readLines(file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readLines(file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2380,7 +2380,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static void readUtf8Lines(File file, LineHandler lineHandler) throws InstrumentException {
-        readLines(file, org.aoju.bus.core.consts.Charset.UTF_8, lineHandler);
+        readLines(file, org.aoju.bus.core.lang.Charset.UTF_8, lineHandler);
     }
 
     /**
@@ -2407,7 +2407,7 @@ public class FileUtils {
         String line = null;
         try {
             while ((line = file.readLine()) != null) {
-                lineHandler.handle(CharsetUtils.convert(line, org.aoju.bus.core.consts.Charset.ISO_8859_1, charset));
+                lineHandler.handle(CharsetUtils.convert(line, org.aoju.bus.core.lang.Charset.ISO_8859_1, charset));
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -2443,7 +2443,7 @@ public class FileUtils {
             throw new InstrumentException(e);
         }
         if (null != line) {
-            return CharsetUtils.convert(line, org.aoju.bus.core.consts.Charset.ISO_8859_1, charset);
+            return CharsetUtils.convert(line, org.aoju.bus.core.lang.Charset.ISO_8859_1, charset);
         }
 
         return null;
@@ -2460,7 +2460,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static <T> T loadUtf8(String path, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
-        return load(path, org.aoju.bus.core.consts.Charset.UTF_8, readerHandler);
+        return load(path, org.aoju.bus.core.lang.Charset.UTF_8, readerHandler);
     }
 
     /**
@@ -2504,7 +2504,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static <T> T loadUtf8(File file, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
-        return load(file, org.aoju.bus.core.consts.Charset.UTF_8, readerHandler);
+        return load(file, org.aoju.bus.core.lang.Charset.UTF_8, readerHandler);
     }
 
     /**
@@ -2663,7 +2663,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static File writeUtf8String(String content, String path) throws InstrumentException {
-        return writeString(content, path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return writeString(content, path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2675,7 +2675,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static File writeUtf8String(String content, File file) throws InstrumentException {
-        return writeString(content, file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return writeString(content, file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2740,7 +2740,7 @@ public class FileUtils {
      * @since 3.1.9
      */
     public static File appendUtf8String(String content, String path) throws InstrumentException {
-        return appendString(content, path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return appendString(content, path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2779,7 +2779,7 @@ public class FileUtils {
      * @since 3.1.9
      */
     public static File appendUtf8String(String content, File file) throws InstrumentException {
-        return appendString(content, file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return appendString(content, file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2819,7 +2819,7 @@ public class FileUtils {
      * @since 5.3.2
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
-        return writeLines(list, path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return writeLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2833,7 +2833,7 @@ public class FileUtils {
      * @since 5.3.2
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
-        return writeLines(list, file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return writeLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2903,7 +2903,7 @@ public class FileUtils {
      * @since 3.1.9
      */
     public static <T> File appendUtf8Lines(Collection<T> list, File file) throws InstrumentException {
-        return appendLines(list, file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return appendLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2917,7 +2917,7 @@ public class FileUtils {
      * @since 3.1.9
      */
     public static <T> File appendUtf8Lines(Collection<T> list, String path) throws InstrumentException {
-        return appendLines(list, path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return appendLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -3049,7 +3049,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static File writeUtf8Map(Map<?, ?> map, File file, String kvSeparator, boolean isAppend) throws InstrumentException {
-        return FileWriter.create(file, org.aoju.bus.core.consts.Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
+        return FileWriter.create(file, org.aoju.bus.core.lang.Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
     }
 
     /**

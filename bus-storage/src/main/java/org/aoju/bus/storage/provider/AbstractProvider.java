@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.storage.provider;
 
-import org.aoju.bus.core.consts.Httpd;
+import org.aoju.bus.core.lang.Httpd;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.Provider;

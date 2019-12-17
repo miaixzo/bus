@@ -30,7 +30,9 @@ import java.util.List;
 
 /**
  * 数学相关方法工具类
- * 此工具类与{@link NumberUtils}属于一类工具,NumberUtil偏向于简单数学计算的封装,MathUtil偏向复杂数学计算
+ * 此工具类与{@link NumberUtils}属于一类工具,
+ * NumberUtils偏向于简单数学计算的封装,
+ * MathUtils偏向复杂数学计算
  *
  * @author Kimi Liu
  * @version 5.3.2

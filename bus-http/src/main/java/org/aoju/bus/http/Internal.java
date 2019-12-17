@@ -390,23 +390,23 @@ public abstract class Internal {
     public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {
         if (source.rangeEquals(0, UTF_8_BOM)) {
             source.skip(UTF_8_BOM.size());
-            return org.aoju.bus.core.consts.Charset.UTF_8;
+            return org.aoju.bus.core.lang.Charset.UTF_8;
         }
         if (source.rangeEquals(0, UTF_16_BE_BOM)) {
             source.skip(UTF_16_BE_BOM.size());
-            return org.aoju.bus.core.consts.Charset.UTF_16_BE;
+            return org.aoju.bus.core.lang.Charset.UTF_16_BE;
         }
         if (source.rangeEquals(0, UTF_16_LE_BOM)) {
             source.skip(UTF_16_LE_BOM.size());
-            return org.aoju.bus.core.consts.Charset.UTF_16_LE;
+            return org.aoju.bus.core.lang.Charset.UTF_16_LE;
         }
         if (source.rangeEquals(0, UTF_32_BE_BOM)) {
             source.skip(UTF_32_BE_BOM.size());
-            return org.aoju.bus.core.consts.Charset.UTF_32_BE;
+            return org.aoju.bus.core.lang.Charset.UTF_32_BE;
         }
         if (source.rangeEquals(0, UTF_32_LE_BOM)) {
             source.skip(UTF_32_LE_BOM.size());
-            return org.aoju.bus.core.consts.Charset.UTF_32_LE;
+            return org.aoju.bus.core.lang.Charset.UTF_32_LE;
         }
         return charset;
     }

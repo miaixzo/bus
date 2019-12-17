@@ -24,7 +24,7 @@
 package org.aoju.bus.oauth.magic;
 
 import lombok.*;
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * 授权成功后的用户信息,根据授权平台的不同,获取的数据完整性也不同

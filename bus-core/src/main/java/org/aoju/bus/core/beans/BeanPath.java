@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.beans;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.*;
 
 import java.util.*;

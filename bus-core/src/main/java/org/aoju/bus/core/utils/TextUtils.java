@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 import java.util.Arrays;

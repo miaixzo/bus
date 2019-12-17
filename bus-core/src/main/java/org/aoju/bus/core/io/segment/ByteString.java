@@ -24,6 +24,7 @@
 package org.aoju.bus.core.io.segment;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;
 
 import javax.crypto.Mac;
@@ -49,15 +50,12 @@ import static org.aoju.bus.core.utils.IoUtils.arrayRangeEquals;
 public class ByteString implements Serializable, Comparable<ByteString> {
 
     public static final ByteString EMPTY = ByteString.of();
-    static final char[] HEX_DIGITS =
-            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-    private static final long serialVersionUID = 1L;
     final byte[] data;
-    public transient int hashCode; // Lazily computed; 0 if unknown.
-    transient String utf8; // Lazily computed.
+    public transient int hashCode;
+    transient String utf8;
 
     public ByteString(byte[] data) {
-        this.data = data; // Trusted internal constructor doesn't clone data.
+        this.data = data;
     }
 
     public static ByteString of(byte... data) {
@@ -84,7 +82,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
 
     public static ByteString encodeUtf8(String s) {
         if (s == null) throw new IllegalArgumentException("s == null");
-        ByteString byteString = new ByteString(s.getBytes(org.aoju.bus.core.consts.Charset.UTF_8));
+        ByteString byteString = new ByteString(s.getBytes(org.aoju.bus.core.lang.Charset.UTF_8));
         byteString.utf8 = s;
         return byteString;
     }
@@ -151,7 +149,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public String utf8() {
         String result = utf8;
         // We don't care if we double-allocate in racy code.
-        return result != null ? result : (utf8 = new String(data, org.aoju.bus.core.consts.Charset.UTF_8));
+        return result != null ? result : (utf8 = new String(data, org.aoju.bus.core.lang.Charset.UTF_8));
     }
 
     public String string(Charset charset) {
@@ -219,8 +217,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         char[] result = new char[data.length * 2];
         int c = 0;
         for (byte b : data) {
-            result[c++] = HEX_DIGITS[(b >> 4) & 0xf];
-            result[c++] = HEX_DIGITS[b & 0xf];
+            result[c++] = Normal.DIGITS_LOWER[(b >> 4) & 0xf];
+            result[c++] = Normal.DIGITS_LOWER[b & 0xf];
         }
         return new String(result);
     }

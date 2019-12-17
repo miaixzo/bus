@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.core.image;
 
-import org.aoju.bus.core.consts.FileType;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 

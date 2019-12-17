@@ -1,6 +1,6 @@
 package org.aoju.bus.core.compare;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.io.Serializable;

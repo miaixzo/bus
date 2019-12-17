@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Fields;
-import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.date.DateTime;
+import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.awt.*;
@@ -326,7 +326,7 @@ public class RandomUtils {
      * @return 随机字符串
      */
     public static String randomString(int length) {
-        return randomString(Normal.LETTER_NUMBER, length);
+        return randomString(Normal.LOWER_NUMBER, length);
     }
 
     /**
@@ -336,7 +336,7 @@ public class RandomUtils {
      * @return 随机字符串
      */
     public static String randomStringUpper(int length) {
-        return randomString(Normal.LETTER_NUMBER, length).toUpperCase();
+        return randomString(Normal.LOWER_NUMBER, length).toUpperCase();
     }
 
     /**
@@ -387,7 +387,7 @@ public class RandomUtils {
      * @since 3.1.9
      */
     public static char randomChar() {
-        return randomChar(Normal.LETTER_NUMBER);
+        return randomChar(Normal.LOWER_NUMBER);
     }
 
     /**

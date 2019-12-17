@@ -32,10 +32,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 /**
- * /**
  * 用于构建 {@link java.lang.Comparable#compareTo(Object)} 方法的辅助工具
- *
- * <p>
  * 在Bean对象中,所有相关字段都参与比对,继承的字段不参与 使用方法如下：
  *
  * <pre>
@@ -102,145 +99,63 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * @param left  第一个对象
      * @param right 第二个对象
-     * @return a negative integer, zero, or a positive integer as <code>left</code>
-     * is less than, equal to, or greater than <code>right</code>
-     * @throws NullPointerException if either (but not both) parameters are
-     *                              <code>null</code>
-     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
-     *                              with <code>left</code>
+     * @return 当left小于、等于或大于right时，为负整数、零或正整数
      */
     public static int reflectionCompare(final Object left, final Object right) {
         return reflectionCompare(left, right, false, null);
     }
 
     /**
-     * <p>Compares two <code>Object</code>s via reflection.</p>
+     * 通过反射比较两个对象
      *
-     * <p>Fields can be private, thus <code>AccessibleObject.setAccessible</code>
-     * is used to bypass normal access control checks. This will fail under a
-     * security manager unless the appropriate permissions are set.</p>
-     *
-     * <ul>
-     * <li>Static fields will not be compared</li>
-     * <li>If <code>compareTransients</code> is <code>true</code>,
-     * compares transient members.  Otherwise ignores them, as they
-     * are likely derived fields.</li>
-     * <li>Superclass fields will be compared</li>
-     * </ul>
-     *
-     * <p>If both <code>left</code> and <code>right</code> are <code>null</code>,
-     * they are considered equal.</p>
-     *
-     * @param left              left-hand object
-     * @param right             right-hand object
-     * @param compareTransients whether to compare transient fields
-     * @return a negative integer, zero, or a positive integer as <code>left</code>
-     * is less than, equal to, or greater than <code>right</code>
-     * @throws NullPointerException if either <code>left</code> or <code>right</code>
-     *                              (but not both) is <code>null</code>
-     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
-     *                              with <code>left</code>
+     * @param left              左边的对象
+     * @param right             右边的对象
+     * @param compareTransients 是否比较属性
+     * @return 当left小于、等于或大于right时，为负整数、零或正整数
      */
-    public static int reflectionCompare(final Object left, final Object right, final boolean compareTransients) {
+    public static int reflectionCompare(final Object left,
+                                        final Object right,
+                                        final boolean compareTransients) {
         return reflectionCompare(left, right, compareTransients, null);
     }
 
     /**
-     * <p>Compares two <code>Object</code>s via reflection.</p>
+     * 通过反射比较两个对象
      *
-     * <p>Fields can be private, thus <code>AccessibleObject.setAccessible</code>
-     * is used to bypass normal access control checks. This will fail under a
-     * security manager unless the appropriate permissions are set.</p>
-     *
-     * <ul>
-     * <li>Static fields will not be compared</li>
-     * <li>If <code>compareTransients</code> is <code>true</code>,
-     * compares transient members.  Otherwise ignores them, as they
-     * are likely derived fields.</li>
-     * <li>Superclass fields will be compared</li>
-     * </ul>
-     *
-     * <p>If both <code>left</code> and <code>right</code> are <code>null</code>,
-     * they are considered equal.</p>
-     *
-     * @param left          left-hand object
-     * @param right         right-hand object
-     * @param excludeFields Collection of String fields to exclude
-     * @return a negative integer, zero, or a positive integer as <code>left</code>
-     * is less than, equal to, or greater than <code>right</code>
-     * @throws NullPointerException if either <code>left</code> or <code>right</code>
-     *                              (but not both) is <code>null</code>
-     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
-     *                              with <code>left</code>
-     * @since 2.2.0
+     * @param left          左边的对象
+     * @param right         右边的对象
+     * @param excludeFields 要排除的字符串字段的集合
+     * @return 当left小于、等于或大于right时，为负整数、零或正整数
      */
-    public static int reflectionCompare(final Object left, final Object right, final Collection<String> excludeFields) {
+    public static int reflectionCompare(final Object left,
+                                        final Object right,
+                                        final Collection<String> excludeFields) {
         return reflectionCompare(left, right, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
     }
 
     /**
-     * <p>Compares two <code>Object</code>s via reflection.</p>
+     * 通过反射比较两个对象
      *
-     * <p>Fields can be private, thus <code>AccessibleObject.setAccessible</code>
-     * is used to bypass normal access control checks. This will fail under a
-     * security manager unless the appropriate permissions are set.</p>
-     *
-     * <ul>
-     * <li>Static fields will not be compared</li>
-     * <li>If <code>compareTransients</code> is <code>true</code>,
-     * compares transient members.  Otherwise ignores them, as they
-     * are likely derived fields.</li>
-     * <li>Superclass fields will be compared</li>
-     * </ul>
-     *
-     * <p>If both <code>left</code> and <code>right</code> are <code>null</code>,
-     * they are considered equal.</p>
-     *
-     * @param left          left-hand object
-     * @param right         right-hand object
-     * @param excludeFields array of fields to exclude
-     * @return a negative integer, zero, or a positive integer as <code>left</code>
-     * is less than, equal to, or greater than <code>right</code>
-     * @throws NullPointerException if either <code>left</code> or <code>right</code>
-     *                              (but not both) is <code>null</code>
-     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
-     *                              with <code>left</code>
-     * @since 2.2.0
+     * @param left          左边的对象
+     * @param right         右边的对象
+     * @param excludeFields 要排除的字符串字段
+     * @return 当left小于、等于或大于right时，为负整数、零或正整数
      */
-    public static int reflectionCompare(final Object left, final Object right, final String... excludeFields) {
+    public static int reflectionCompare(final Object left,
+                                        final Object right,
+                                        final String... excludeFields) {
         return reflectionCompare(left, right, false, null, excludeFields);
     }
 
     /**
-     * <p>Compares two <code>Object</code>s via reflection.</p>
+     * 通过反射比较两个对象
      *
-     * <p>Fields can be private, thus <code>AccessibleObject.setAccessible</code>
-     * is used to bypass normal access control checks. This will fail under a
-     * security manager unless the appropriate permissions are set.</p>
-     *
-     * <ul>
-     * <li>Static fields will not be compared</li>
-     * <li>If the <code>compareTransients</code> is <code>true</code>,
-     * compares transient members.  Otherwise ignores them, as they
-     * are likely derived fields.</li>
-     * <li>Compares superclass fields up to and including <code>reflectUpToClass</code>.
-     * If <code>reflectUpToClass</code> is <code>null</code>, compares all superclass fields.</li>
-     * </ul>
-     *
-     * <p>If both <code>left</code> and <code>right</code> are <code>null</code>,
-     * they are considered equal.</p>
-     *
-     * @param left              left-hand object
-     * @param right             right-hand object
-     * @param compareTransients whether to compare transient fields
-     * @param reflectUpToClass  last superclass for which fields are compared
-     * @param excludeFields     fields to exclude
-     * @return a negative integer, zero, or a positive integer as <code>left</code>
-     * is less than, equal to, or greater than <code>right</code>
-     * @throws NullPointerException if either <code>left</code> or <code>right</code>
-     *                              (but not both) is <code>null</code>
-     * @throws ClassCastException   if <code>right</code> is not assignment-compatible
-     *                              with <code>left</code>
+     * @param left              左边的对象
+     * @param right             右边的对象
+     * @param compareTransients 是否比较属性
+     * @param reflectUpToClass  比较字段的最后一个超类
+     * @param excludeFields     要排除的字符串字段
+     * @return 当left小于、等于或大于right时，为负整数、零或正整数
      */
     public static int reflectionCompare(
             final Object left,
@@ -871,7 +786,7 @@ public class CompareToBuilder implements Builder<Integer> {
      *
      * @param left  数组
      * @param right 数组
-     * @return this - object
+     * @return 比较器
      */
     public CompareToBuilder append(final boolean[] left, final boolean[] right) {
         if (comparison != 0) {

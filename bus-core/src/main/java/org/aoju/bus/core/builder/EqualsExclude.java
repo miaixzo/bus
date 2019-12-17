@@ -29,9 +29,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation to exclude a field from being used by
- * the various <code>reflectionEquals</code> methods defined on
- * {@link EqualsBuilder}.
+ * 使用这个注释来排除字段被定义在{@link EqualsBuilder}
+ * 上的各种reflectionEquals方法使用.
  *
  * @author Kimi Liu
  * @version 5.3.2

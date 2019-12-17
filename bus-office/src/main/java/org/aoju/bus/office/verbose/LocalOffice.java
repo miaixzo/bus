@@ -20,14 +20,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.office.verbose;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.magic.UnoUrl;
 import org.aoju.bus.office.metric.*;
 import org.aoju.bus.office.process.AbstractProcessManager;
