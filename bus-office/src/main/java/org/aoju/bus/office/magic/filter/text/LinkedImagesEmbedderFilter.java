@@ -42,7 +42,7 @@ import org.aoju.bus.office.magic.Props;
 import org.aoju.bus.office.magic.Write;
 import org.aoju.bus.office.magic.filter.Filter;
 import org.aoju.bus.office.magic.filter.FilterChain;
-import org.aoju.bus.office.verbose.LocalContext;
+import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 
 /**
  * 此筛选器用于将图形插入到文档中.
@@ -114,7 +114,7 @@ public class LinkedImagesEmbedderFilter implements Filter {
             throws Exception {
 
         if (Write.isText(document)) {
-            convertLinkedImagesToEmbedded(((LocalContext) context).getComponentContext(), document);
+            convertLinkedImagesToEmbedded(((LocalOfficeContextAware) context).getComponentContext(), document);
         }
         chain.doFilter(context, document);
     }

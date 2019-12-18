@@ -23,8 +23,10 @@
  */
 package org.aoju.bus.office.magic.family;
 
-import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.utils.JsonUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.io.IOException;
@@ -46,20 +48,20 @@ public class JsonFormatRegistry extends SimpleFormatRegistry {
     }
 
     /**
-     * 从给定源创建JsonDocumentFormatRegistry.
+     * 从给定源创建 {@link JsonFormatRegistry}
      *
-     * @param source 包含DocumentFormat集合的字符串(JSON格式).
-     * @return 创建的JsonDocumentFormatRegistry.
+     * @param source 包含 {@link DocumentFormat} 集合的字符串(JSON格式).
+     * @return 创建的 {@link JsonFormatRegistry}
      */
     public static JsonFormatRegistry create(final String source) {
         return create(source, null);
     }
 
     /**
-     * 从给定的InputStream创建JsonDocumentFormatRegistry.
+     * 从给定的InputStream创建 {@link JsonFormatRegistry}
      *
-     * @param source 包含DocumentFormat集合的InputStream (JSON格式).
-     * @return 创建的JsonDocumentFormatRegistry.
+     * @param source 包含 {@link DocumentFormat} 集合的InputStream (JSON格式).
+     * @return 创建的 {@link JsonFormatRegistry}
      * @throws IOException 如果发生I/O错误.
      */
     public static JsonFormatRegistry create(final InputStream source) throws IOException {
@@ -67,26 +69,26 @@ public class JsonFormatRegistry extends SimpleFormatRegistry {
     }
 
     /**
-     * 从给定的InputStream创建JsonDocumentFormatRegistry.
+     * 从给定的InputStream创建 {@link JsonFormatRegistry}
      *
-     * @param source           包含DocumentFormat集合的InputStream (JSON格式).
+     * @param source           包含 {@link DocumentFormat} 集合的InputStream (JSON格式).
      * @param customProperties 加载或存储文档时应用的自定义属性.
-     * @return 创建的JsonDocumentFormatRegistry.
+     * @return 创建的 {@link JsonFormatRegistry}
      * @throws IOException 如果发生I/O错误.
      */
     public static JsonFormatRegistry create(
             final InputStream source,
             final Map<String, FormatProperties> customProperties)
             throws IOException {
-        return create(IoUtils.toString(source, "UTF-8"), customProperties);
+        return create(IoUtils.toString(source, Charset.DEFAULT_UTF_8), customProperties);
     }
 
     /**
-     * 从给定源创建JsonDocumentFormatRegistry.
+     * 从给定源创建 {@link JsonFormatRegistry}
      *
-     * @param source           包含DocumentFormat集合的InputStream (JSON格式).
+     * @param source           包含 {@link DocumentFormat} 集合的InputStream (JSON格式).
      * @param customProperties 加载或存储文档时应用的自定义属性.
-     * @return 创建的JsonDocumentFormatRegistry.
+     * @return 创建的 {@link JsonFormatRegistry}
      */
     public static JsonFormatRegistry create(
             final String source,
@@ -96,23 +98,32 @@ public class JsonFormatRegistry extends SimpleFormatRegistry {
         return registry;
     }
 
-    protected void readJsonArray(final String source, final Map<String, FormatProperties> customProperties) {
-        final List<DocumentFormat> list = JSONObject.parseArray(source, DocumentFormat.class);
-        list.stream().map(fmt -> {
-            if (ObjectUtils.isEmpty(customProperties) || !customProperties.containsKey(fmt.getExtension())) {
-                return DocumentFormat.unmodifiableCopy(fmt);
-            }
-            final FormatProperties props = customProperties.get(fmt.getExtension());
-            final DocumentFormat.Builder builder = DocumentFormat.builder().from(fmt).unmodifiable(true);
+    /**
+     * 读取相关配置信息.
+     *
+     * @param source           包含 {@link DocumentFormat} 集合的InputStream (JSON格式).
+     * @param customProperties 加载或存储文档时应用的自定义属性.
+     */
+    protected void readJsonArray(final String source,
+                                 final Map<String, FormatProperties> customProperties) {
+        final List<DocumentFormat> list = JsonUtils.toList(source, DocumentFormat.class);
+        if (CollUtils.isNotEmpty(list)) {
+            list.stream().map(fmt -> {
+                if (ObjectUtils.isEmpty(customProperties) || !customProperties.containsKey(fmt.getExtension())) {
+                    return DocumentFormat.unmodifiableCopy(fmt);
+                }
+                final FormatProperties props = customProperties.get(fmt.getExtension());
+                final DocumentFormat.Builder builder = DocumentFormat.builder().from(fmt).unmodifiable(true);
 
-            props.getLoad().forEach(builder::loadProperty);
-            props.getStore().forEach((family, storeProps) -> {
-                storeProps.forEach((name, value) -> {
-                    builder.storeProperty(family, name, value);
+                props.getLoad().forEach(builder::loadProperty);
+                props.getStore().forEach((family, storeProps) -> {
+                    storeProps.forEach((name, value) -> {
+                        builder.storeProperty(family, name, value);
+                    });
                 });
-            });
-            return builder.build();
-        }).forEach(this::addFormat);
+                return builder.build();
+            }).forEach(this::addFormat);
+        }
     }
 
 }

@@ -148,7 +148,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
                 || Httpd.PUT.equals(method)) {
             if (response instanceof CacheResponseWrapper) {
                 CacheResponseWrapper cacheResponseWrapper = ((CacheResponseWrapper) response);
-                Logger.info("<== {}", new String(cacheResponseWrapper.getBody()));
+                Logger.info("<== {}", new String(cacheResponseWrapper.getBody()).length());
             }
         }
     }

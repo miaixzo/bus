@@ -6,24 +6,21 @@ import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Provider;
+import org.aoju.bus.office.bridge.LocalOfficePoolManager;
+import org.aoju.bus.office.bridge.OnlineOfficePoolManager;
 import org.aoju.bus.office.magic.family.FormatRegistry;
-import org.aoju.bus.office.magic.family.JsonFormatRegistry;
 import org.aoju.bus.office.magic.family.RegistryInstanceHolder;
 import org.aoju.bus.office.metric.OfficeManager;
 import org.aoju.bus.office.process.ProcessManager;
-import org.aoju.bus.office.provider.LocalProvider;
-import org.aoju.bus.office.provider.OnlineProvider;
-import org.aoju.bus.office.verbose.LocalOffice;
-import org.aoju.bus.office.verbose.OnlineOffice;
+import org.aoju.bus.office.provider.LocalOfficeProvider;
+import org.aoju.bus.office.provider.OnlineOfficeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ResourceLoader;
 
-import java.io.InputStream;
 import java.util.stream.Stream;
 
 /**
@@ -33,7 +30,7 @@ import java.util.stream.Stream;
  * @version 3.6.6
  * @since JDK 1.8+
  */
-@ConditionalOnClass({LocalProvider.class, OnlineProvider.class})
+@ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
 @EnableConfigurationProperties(PreviewProperties.class)
 public class PreviewConfiguration {
 
@@ -43,8 +40,7 @@ public class PreviewConfiguration {
     @Bean(name = "localOfficeManager", initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean(name = "localOfficeManager")
     public OfficeManager localOfficeManager(final ProcessManager processManager) {
-        final LocalOffice.Builder builder = LocalOffice.builder();
-
+        final LocalOfficePoolManager.Builder builder = LocalOfficePoolManager.builder();
         if (!StringUtils.isBlank(properties.getPortNumbers())) {
             builder.portNumbers(
                     ArrayUtils.toPrimitive(
@@ -74,7 +70,7 @@ public class PreviewConfiguration {
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean(name = "onlineOfficeManager")
     public OfficeManager onlineOfficeManager() {
-        final OnlineOffice.Builder builder = OnlineOffice.builder();
+        final OnlineOfficePoolManager.Builder builder = OnlineOfficePoolManager.builder();
         builder.urlConnection(properties.getUrl());
         builder.poolSize(properties.getPoolSize());
         builder.workingDir(properties.getWorkingDir());
@@ -85,11 +81,11 @@ public class PreviewConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "localDocumentConverter")
-    @ConditionalOnBean(name = {"localOfficeManager", "documentFormatRegistry"})
+    @ConditionalOnBean(name = {"localOfficeManager", "formatRegistry"})
     public Provider localDocumentConverter(
             final OfficeManager localOfficeManager,
             final FormatRegistry formatRegistry) {
-        return LocalProvider.builder()
+        return LocalOfficeProvider.builder()
                 .officeManager(localOfficeManager)
                 .formatRegistry(formatRegistry)
                 .build();
@@ -99,7 +95,7 @@ public class PreviewConfiguration {
     @ConditionalOnMissingBean(name = "onlineDocumentConverter")
     @ConditionalOnBean(name = "onlineOfficeManager")
     public Provider onlineDocumentConverter(final OfficeManager onlineOfficeManager) {
-        return OnlineProvider.make(onlineOfficeManager);
+        return OnlineOfficeProvider.make(onlineOfficeManager);
     }
 
     @Bean
@@ -110,22 +106,8 @@ public class PreviewConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "documentFormatRegistry")
-    public FormatRegistry documentFormatRegistry(final ResourceLoader resourceLoader)
-            throws Exception {
-        FormatRegistry registry;
-        if (StringUtils.isBlank(properties.getDocumentFormatRegistry())) {
-            try (InputStream in =
-                         resourceLoader.getResource("classpath:document-formats.json").getInputStream()) {
-                registry = JsonFormatRegistry.create(in, properties.getFormatOptions());
-            }
-        } else {
-            try (InputStream in =
-                         resourceLoader.getResource(properties.getDocumentFormatRegistry()).getInputStream()) {
-                registry = JsonFormatRegistry.create(in, properties.getFormatOptions());
-            }
-        }
-        RegistryInstanceHolder.setInstance(registry);
-        return registry;
+    public FormatRegistry documentFormatRegistry() {
+        return RegistryInstanceHolder.getInstance();
     }
 
 }

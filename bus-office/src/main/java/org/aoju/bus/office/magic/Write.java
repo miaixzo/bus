@@ -25,6 +25,7 @@ package org.aoju.bus.office.magic;
 
 import com.sun.star.lang.XComponent;
 import com.sun.star.text.XTextDocument;
+import org.aoju.bus.office.Builder;
 
 /**
  * 实用程序函数，使office文本文档(Writer)更容易使用.
@@ -42,7 +43,7 @@ public final class Write {
      * @return 如果文档是文本文档，则为{@code true}，否则为{@code false}.
      */
     public static boolean isText(final XComponent document) {
-        return Info.isDocumentType(document, Lo.WRITER_SERVICE);
+        return Info.isDocumentType(document, Builder.WRITER_SERVICE);
     }
 
     /**

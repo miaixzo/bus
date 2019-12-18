@@ -41,14 +41,6 @@ import java.util.Optional;
  */
 public final class Lo {
 
-    public static final String UNKNOWN_SERVICE = "com.sun.frame.XModel";
-    public static final String WRITER_SERVICE = "com.sun.star.text.GenericTextDocument";
-    public static final String BASE_SERVICE = "com.sun.star.sdb.OfficeDatabaseDocument";
-    public static final String CALC_SERVICE = "com.sun.star.sheet.SpreadsheetDocument";
-    public static final String DRAW_SERVICE = "com.sun.star.drawing.DrawingDocument";
-    public static final String IMPRESS_SERVICE = "com.sun.star.presentation.PresentationDocument";
-    public static final String MATH_SERVICE = "com.sun.star.formula.FormulaProperties";
-
     /**
      * 为给定的Java类(必须表示一个UNO接口类型)查询给定的UNO对象.
      *

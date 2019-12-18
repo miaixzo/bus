@@ -23,63 +23,119 @@
  */
 package org.aoju.bus.starter;
 
-import org.aoju.bus.Version;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.starter.banner.BusBanner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.config.ConfigFileApplicationListener;
+import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertiesPropertySource;
+import org.springframework.core.env.*;
+import org.springframework.util.ClassUtils;
 
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.StreamSupport;
 
 /**
- * 用于配置一些特殊的关键属性,比如bus-boot.version等,
- * 将作为一个名为PropertiesPropertySource的属性源添加
+ * 启动监听器，初始化相关配置
  *
  * @author Kimi Liu
  * @version 5.3.2
  * @since JDK 1.8+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class GenieBuilder implements EnvironmentPostProcessor {
+public class GenieBuilder implements
+        ApplicationListener<ApplicationEnvironmentPreparedEvent>,
+        Ordered {
+
+    private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(
+            BusXBuilder.BUS_HIGH_PRIORITY_CONFIG,
+            new HashMap<>());
 
     @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment,
-                                       SpringApplication application) {
-        /**
-         * 环境信息
-         */
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(
-                BootConsts.BUS_BOOT_PROPERTIES, getProperties());
-        environment.getPropertySources().addLast(propertySource);
-        /**
-         * 必要参数
-         */
-        environment.setRequiredProperties(BootConsts.BUS_NAME);
-        /**
-         * 监听器
-         */
-        application.addListeners(new BusListener());
-        /**
-         * Banner
-         */
+    public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
+        ConfigurableEnvironment environment = event.getEnvironment();
+        SpringApplication application = event.getSpringApplication();
+
+        StandardEnvironment bootstrapEnvironment = new StandardEnvironment();
+        StreamSupport.stream(environment.getPropertySources().spliterator(), false)
+                .filter(source -> !(source instanceof PropertySource.StubPropertySource))
+                .forEach(source -> bootstrapEnvironment.getPropertySources().addLast(source));
+
+        List<Class> sources = new ArrayList<>();
+        for (Object s : application.getAllSources()) {
+            if (s instanceof Class) {
+                sources.add((Class) s);
+            } else if (s instanceof String) {
+                sources.add(ClassUtils.resolveClassName((String) s, null));
+            }
+        }
+
+        SpringApplication bootstrapApplication = new SpringApplicationBuilder()
+                .profiles(environment.getActiveProfiles())
+                .environment(bootstrapEnvironment).sources(sources.toArray(new Class[]{}))
+                .registerShutdownHook(false).logStartupInfo(false).web(WebApplicationType.NONE)
+                .listeners().initializers().build(event.getArgs());
+
+        ApplicationEnvironmentPreparedEvent bootstrapEvent = new ApplicationEnvironmentPreparedEvent(
+                bootstrapApplication, event.getArgs(), bootstrapEnvironment);
+
+        application.getListeners().stream()
+                .filter(listener -> listener instanceof ConfigFileApplicationListener)
+                .forEach(listener -> ((ConfigFileApplicationListener) listener)
+                        .onApplicationEvent(bootstrapEvent));
+
         application.setBanner(new BusBanner());
+
+        assemblyLogSetting(bootstrapEnvironment);
+        assemblyRequireProperties(bootstrapEnvironment);
+        assemblyEnvironmentMark(environment);
+    }
+
+    @Override
+    public int getOrder() {
+        return HIGHEST_PRECEDENCE;
+    }
+
+    public static boolean filterAllLogConfig(String key) {
+        return key.startsWith("logging.level.") || key.startsWith("logging.path.")
+                || key.startsWith("logging.config.") || key.equals("logging.path")
+                || key.equals("loggingRoot") || key.equals("file.encoding");
     }
 
     /**
-     * 获取版本信息
-     *
-     * @return properties
+     * 配置日志设置
      */
-    protected Properties getProperties() {
-        Properties properties = new Properties();
-        String version = Version.get() == null ? "" : Version.get();
-        properties.setProperty(BootConsts.BUS_BOOT_VERSION, version);
-        properties.setProperty(BootConsts.BUS_BOOT_FORMATTED_VERSION,
-                version.isEmpty() ? "" : String.format(" (v%s)", version));
-        return properties;
+    private void assemblyLogSetting(ConfigurableEnvironment environment) {
+        StreamSupport.stream(environment.getPropertySources().spliterator(), false)
+                .filter(propertySource -> propertySource instanceof EnumerablePropertySource)
+                .map(propertySource -> Arrays
+                        .asList(((EnumerablePropertySource) propertySource).getPropertyNames()))
+                .flatMap(Collection::stream).filter(GenieBuilder::filterAllLogConfig)
+                .forEach((key) -> HIGH_PRIORITY_CONFIG.getSource().put(key, environment.getProperty(key)));
+    }
+
+    /**
+     * 配置所需属性
+     *
+     * @param environment 环境信息
+     */
+    private void assemblyRequireProperties(ConfigurableEnvironment environment) {
+        if (StringUtils.hasText(environment.getProperty(BusXBuilder.BUS_NAME))) {
+            HIGH_PRIORITY_CONFIG.getSource().put(BusXBuilder.BUS_NAME,
+                    environment.getProperty(BusXBuilder.BUS_NAME));
+        }
+    }
+
+    /**
+     * 标记为引导环境
+     *
+     * @param environment 环境信息
+     */
+    private void assemblyEnvironmentMark(ConfigurableEnvironment environment) {
+        environment.getPropertySources().addFirst(
+                new MapPropertySource(BusXBuilder.BUS_BOOTSTRAP, new HashMap<>()));
     }
 
 }

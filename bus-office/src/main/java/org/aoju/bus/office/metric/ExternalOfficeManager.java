@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.office.Protocol;
 import org.aoju.bus.office.builtin.MadeInOffice;
 import org.aoju.bus.office.magic.UnoUrl;
-import org.aoju.bus.office.verbose.LocalConnect;
+import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
 
 import java.io.File;
 
@@ -43,7 +43,7 @@ import java.io.File;
  */
 public final class ExternalOfficeManager extends AbstractOfficeManager {
 
-    private final LocalConnect localConnect;
+    private final LocalOfficeBridgeFactory localOffice;
 
     /**
      * 使用指定的参数构造类的新实例.
@@ -52,10 +52,10 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
      * @param config 管理器配置.
      */
     private ExternalOfficeManager(
-            final UnoUrl unoUrl, final ExternalOfficeConfig config) {
+            final UnoUrl unoUrl, final ExternalOfficeBuilder config) {
         super(config);
 
-        localConnect = new LocalConnect(unoUrl);
+        localOffice = new LocalOfficeBridgeFactory(unoUrl);
     }
 
     /**
@@ -90,8 +90,8 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
     private void connect() throws InstrumentException {
 
         try {
-            final ExternalOfficeConfig mconfig = (ExternalOfficeConfig) config;
-            new ConnectRetryable(localConnect)
+            final ExternalOfficeBuilder mconfig = (ExternalOfficeBuilder) config;
+            new ConnectRetryable(localOffice)
                     .execute(mconfig.getRetryInterval(), mconfig.getConnectTimeout());
 
         } catch (Exception ex) {
@@ -101,23 +101,23 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
 
     @Override
     public void execute(final MadeInOffice task) throws InstrumentException {
-        synchronized (localConnect) {
+        synchronized (localOffice) {
             if (!isRunning()) {
                 connect();
             }
-            task.execute(localConnect);
+            task.execute(localOffice);
         }
     }
 
     @Override
     public boolean isRunning() {
-        return localConnect.isConnected();
+        return localOffice.isConnected();
     }
 
     @Override
     public void start() throws InstrumentException {
-        if (((ExternalOfficeConfig) config).isConnectOnStart()) {
-            synchronized (localConnect) {
+        if (((ExternalOfficeBuilder) config).isConnectOnStart()) {
+            synchronized (localOffice) {
                 connect();
 
                 makeTempDir();
@@ -127,10 +127,10 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
 
     @Override
     public void stop() {
-        synchronized (localConnect) {
+        synchronized (localOffice) {
             if (isRunning()) {
                 try {
-                    localConnect.disconnect();
+                    localOffice.disconnect();
                 } finally {
                     deleteTempDir();
                 }
@@ -172,7 +172,7 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
                             connectionProtocol == Protocol.SOCKET
                                     ? new UnoUrl(portNumber)
                                     : pipeName != null ? new UnoUrl(pipeName) : new UnoUrl(org.aoju.bus.office.Builder.DEFAULT_PORT_NUMBER),
-                            new ExternalOfficeConfig(
+                            new ExternalOfficeBuilder(
                                     workingDir, connectOnStart, connectTimeout, retryInterval));
             if (install) {
                 InstalledOfficeHolder.setInstance(manager);

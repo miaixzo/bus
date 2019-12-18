@@ -33,7 +33,6 @@ import org.aoju.bus.health.Platform;
 import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.UnoUrl;
 import org.aoju.bus.office.magic.family.FamilyType;
-import org.aoju.bus.office.metric.OfficeManager;
 import org.aoju.bus.office.process.*;
 
 import java.io.File;
@@ -48,6 +47,17 @@ import java.util.stream.Stream;
  * @since JDK 1.8+
  */
 public final class Builder {
+
+    public static final String UNKNOWN_SERVICE = "com.sun.frame.XModel";
+    public static final String WRITER_SERVICE = "com.sun.star.text.GenericTextDocument";
+    public static final String BASE_SERVICE = "com.sun.star.sdb.OfficeDatabaseDocument";
+    public static final String CALC_SERVICE = "com.sun.star.sheet.SpreadsheetDocument";
+    public static final String DRAW_SERVICE = "com.sun.star.drawing.DrawingDocument";
+    public static final String IMPRESS_SERVICE = "com.sun.star.presentation.PresentationDocument";
+    public static final String MATH_SERVICE = "com.sun.star.formula.FormulaProperties";
+    public static final String NODE_PRODUCT = "/org.openoffice.Setup/Product";
+    public static final String NODE_L10N = "/org.openoffice.Setup/L10N";
+    public static final String[] NODE_PATHS = {NODE_PRODUCT, NODE_L10N};
 
     /**
      * 连接到office的默认端口号.
@@ -134,6 +144,59 @@ public final class Builder {
      */
     private static final String EXECUTABLE_WINDOWS = "program/soffice.exe";
 
+    private static final File INSTANCE;
+
+    static {
+        if (StringUtils.isNotBlank(System.getProperty("office.home"))) {
+            INSTANCE = new File(System.getProperty("office.home"));
+        } else if (Platform.isWindows()) {
+            final String programFiles64 = System.getenv("ProgramFiles");
+            final String programFiles32 = System.getenv("ProgramFiles(x86)");
+            INSTANCE = findOfficeHome(
+                    EXECUTABLE_WINDOWS,
+                    programFiles64 + File.separator + "LibreOffice",
+                    programFiles64 + File.separator + "LibreOffice 5",
+                    programFiles32 + File.separator + "LibreOffice 5",
+                    programFiles32 + File.separator + "OpenOffice 4",
+                    programFiles64 + File.separator + "LibreOffice 4",
+                    programFiles32 + File.separator + "LibreOffice 4",
+                    programFiles64 + File.separator + "LibreOffice 3",
+                    programFiles32 + File.separator + "LibreOffice 3",
+                    programFiles32 + File.separator + "OpenOffice.org 3");
+
+        } else if (Platform.isMac()) {
+            File homeDir = findOfficeHome(
+                    EXECUTABLE_MAC_41,
+                    "/Applications/LibreOffice.app/Contents",
+                    "/Applications/OpenOffice.app/Contents",
+                    "/Applications/OpenOffice.org.app/Contents");
+            if (homeDir == null) {
+                homeDir = findOfficeHome(
+                        EXECUTABLE_MAC,
+                        "/Applications/LibreOffice.app/Contents",
+                        "/Applications/OpenOffice.app/Contents",
+                        "/Applications/OpenOffice.org.app/Contents");
+            }
+            INSTANCE = homeDir;
+        } else {
+            INSTANCE = findOfficeHome(
+                    EXECUTABLE_DEFAULT,
+                    "/usr/lib64/libreoffice",
+                    "/usr/lib/libreoffice",
+                    "/usr/local/lib64/libreoffice",
+                    "/usr/local/lib/libreoffice",
+                    "/opt/libreoffice",
+                    "/usr/lib64/openoffice",
+                    "/usr/lib64/openoffice.org3",
+                    "/usr/lib64/openoffice.org",
+                    "/usr/lib/openoffice",
+                    "/usr/lib/openoffice.org3",
+                    "/usr/lib/openoffice.org",
+                    "/opt/openoffice4",
+                    "/opt/openoffice.org3");
+        }
+    }
+
     /**
      * 找到最好的进程管理器，它将用于检索进程PID并通过PID杀死进程.
      *
@@ -185,7 +248,7 @@ public final class Builder {
      * @return {@code File}实例，它是第一次检测到的office安装所在的目录.
      */
     public static File getDefaultOfficeHome() {
-        return DefaultOfficeHomeHolder.INSTANCE;
+        return INSTANCE;
     }
 
     /**
@@ -248,40 +311,6 @@ public final class Builder {
     }
 
     /**
-     * 无条件地停止OfficeManager.
-     * 等同于{@link OfficeManager#stop()}，但任何例外都将被忽略
-     * 这通常在finally块中使用.
-     *
-     * <p>Example code:
-     *
-     * <pre>
-     * OfficeManager manager = null;
-     * try {
-     *     manager = LocalOfficeManager().make();
-     *     manager.start();
-     *
-     *     // process manager
-     *
-     * } catch (Exception e) {
-     *     // error handling
-     * } finally {
-     *     OfficeUtils.stopQuietly(manager);
-     * }
-     * </pre>
-     *
-     * @param manager 管理者停止，可能是空或已经停止.
-     */
-    public static void stopQuietly(final OfficeManager manager) {
-        try {
-            if (manager != null) {
-                manager.stop();
-            }
-        } catch (final InstrumentException ex) {
-            // ignore
-        }
-    }
-
-    /**
      * 将常规java映射转换为{@code PropertyValue}数组，可用作带有UNO接口类型的参数.
      *
      * @param properties 要转换的map.
@@ -295,7 +324,7 @@ public final class Builder {
                 final Map<String, Object> subProperties = (Map<String, Object>) value;
                 value = toUnoProperties(subProperties);
             }
-            propertyValues.add(property((String) entry.getKey(), value));
+            propertyValues.add(property(entry.getKey(), value));
         }
         return propertyValues.toArray(new PropertyValue[0]);
     }
@@ -366,74 +395,13 @@ public final class Builder {
         }
     }
 
-    private static class DefaultOfficeHomeHolder {
-
-        static final File INSTANCE;
-
-        static {
-            if (StringUtils.isNotBlank(System.getProperty("office.home"))) {
-                INSTANCE = new File(System.getProperty("office.home"));
-            } else if (Platform.isWindows()) {
-                final String programFiles64 = System.getenv("ProgramFiles");
-                final String programFiles32 = System.getenv("ProgramFiles(x86)");
-
-                INSTANCE = findOfficeHome(
-                        EXECUTABLE_WINDOWS,
-                        programFiles64 + File.separator + "LibreOffice",
-                        programFiles64 + File.separator + "LibreOffice 5",
-                        programFiles32 + File.separator + "LibreOffice 5",
-                        programFiles32 + File.separator + "OpenOffice 4",
-                        programFiles64 + File.separator + "LibreOffice 4",
-                        programFiles32 + File.separator + "LibreOffice 4",
-                        programFiles64 + File.separator + "LibreOffice 3",
-                        programFiles32 + File.separator + "LibreOffice 3",
-                        programFiles32 + File.separator + "OpenOffice.org 3");
-
-            } else if (Platform.isMac()) {
-                File homeDir =
-                        findOfficeHome(
-                                EXECUTABLE_MAC_41,
-                                "/Applications/LibreOffice.app/Contents",
-                                "/Applications/OpenOffice.app/Contents",
-                                "/Applications/OpenOffice.org.app/Contents");
-                if (homeDir == null) {
-                    homeDir =
-                            findOfficeHome(
-                                    EXECUTABLE_MAC,
-                                    "/Applications/LibreOffice.app/Contents",
-                                    "/Applications/OpenOffice.app/Contents",
-                                    "/Applications/OpenOffice.org.app/Contents");
-                }
-                INSTANCE = homeDir;
-            } else {
-                // UNIX Linux or other *nix variants
-                INSTANCE =
-                        findOfficeHome(
-                                EXECUTABLE_DEFAULT,
-                                "/usr/lib64/libreoffice",
-                                "/usr/lib/libreoffice",
-                                "/usr/local/lib64/libreoffice",
-                                "/usr/local/lib/libreoffice",
-                                "/opt/libreoffice",
-                                "/usr/lib64/openoffice",
-                                "/usr/lib64/openoffice.org3",
-                                "/usr/lib64/openoffice.org",
-                                "/usr/lib/openoffice",
-                                "/usr/lib/openoffice.org3",
-                                "/usr/lib/openoffice.org",
-                                "/opt/openoffice4",
-                                "/opt/openoffice.org3");
-            }
-        }
-
-        private static File findOfficeHome(final String executablePath, final String... homePaths) {
-
-            return Stream.of(homePaths)
-                    .map(File::new)
-                    .filter(homeDir -> new File(homeDir, executablePath).isFile())
-                    .findFirst()
-                    .orElse(null);
-        }
+    private static File findOfficeHome(final String executablePath, final String... homePaths) {
+        return Stream.of(homePaths)
+                .map(File::new)
+                .filter(homeDir -> new File(homeDir, executablePath).isFile())
+                .findFirst()
+                .orElse(null);
     }
+
 
 }

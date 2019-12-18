@@ -42,7 +42,7 @@ import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.Props;
 import org.aoju.bus.office.magic.Write;
 import org.aoju.bus.office.magic.filter.FilterChain;
-import org.aoju.bus.office.verbose.LocalContext;
+import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -175,7 +175,7 @@ public class GraphicInserterFilter extends AbstractTextContentInserterFilter {
 
         // 此筛选器只能用于文本文档
         if (Write.isText(document)) {
-            insertGraphic(((LocalContext) context).getComponentContext(), document);
+            insertGraphic(((LocalOfficeContextAware) context).getComponentContext(), document);
         }
 
         // 调用链中的下一个过滤器

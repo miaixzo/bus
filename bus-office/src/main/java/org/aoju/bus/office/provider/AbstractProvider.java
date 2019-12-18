@@ -26,7 +26,7 @@ package org.aoju.bus.office.provider;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Provider;
-import org.aoju.bus.office.builtin.AbstractSpecs;
+import org.aoju.bus.office.builtin.AbstractNorm;
 import org.aoju.bus.office.builtin.OptionalSource;
 import org.aoju.bus.office.magic.family.DefaultFormatRegistry;
 import org.aoju.bus.office.magic.family.DocumentFormat;
@@ -61,7 +61,6 @@ public abstract class AbstractProvider implements Provider {
                 throw new IllegalStateException("An office manager is required in order to build a converter.");
             }
         }
-
         this.officeManager = manager;
         this.formatRegistry = formatRegistry == null ? DefaultFormatRegistry.getInstance() : formatRegistry;
     }
@@ -74,7 +73,6 @@ public abstract class AbstractProvider implements Provider {
         if (format != null) {
             specs.setDocumentFormat(format);
         }
-
         return convert(specs);
     }
 
@@ -84,13 +82,14 @@ public abstract class AbstractProvider implements Provider {
     }
 
     @Override
-    public OptionalSource convert(
-            final InputStream source, final boolean closeStream) {
+    public OptionalSource convert(final InputStream source,
+                                  final boolean closeStream) {
 
         if (officeManager instanceof TemporaryFileMaker) {
-            return convert(
-                    new SourceFromInputStreamProvider(
-                            source, (TemporaryFileMaker) officeManager, closeStream));
+            return convert(new SourceFromInputStreamProvider(
+                    source,
+                    (TemporaryFileMaker) officeManager,
+                    closeStream));
         }
         throw new IllegalStateException("An office manager must implements the " +
                 "TemporaryFileMaker interface in order to be able to convert InputStream");
@@ -102,7 +101,7 @@ public abstract class AbstractProvider implements Provider {
      * @param source 转换输入作为文档规范.
      * @return 当前转换规范.
      */
-    protected abstract AbstractSpecs convert(AbstractSourceProvider source);
+    protected abstract AbstractNorm convert(AbstractSourceProvider source);
 
     @Override
     public FormatRegistry getFormatRegistry() {

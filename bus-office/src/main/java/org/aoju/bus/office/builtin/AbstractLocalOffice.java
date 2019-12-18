@@ -30,11 +30,12 @@ import com.sun.star.task.ErrorCodeIOException;
 import com.sun.star.util.CloseVetoException;
 import com.sun.star.util.XCloseable;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.office.Builder;
+import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 import org.aoju.bus.office.magic.Lo;
-import org.aoju.bus.office.provider.LocalProvider;
+import org.aoju.bus.office.provider.LocalOfficeProvider;
 import org.aoju.bus.office.provider.SourceDocumentProvider;
-import org.aoju.bus.office.verbose.LocalContext;
 
 import java.io.File;
 import java.util.HashMap;
@@ -72,13 +73,11 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
     public AbstractLocalOffice(
             final SourceDocumentProvider source, final Map<String, Object> loadProperties) {
         super(source);
-
         this.loadProperties = loadProperties;
     }
 
     protected static void appendProperties(
             final Map<String, Object> properties, final Map<String, Object> toAddProperties) {
-
         Optional.ofNullable(toAddProperties).ifPresent(properties::putAll);
     }
 
@@ -88,13 +87,10 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
      * @return the map
      */
     protected Map<String, Object> getLoadProperties() {
-
         final Map<String, Object> loadProps =
-                new HashMap<>(
-                        Optional.ofNullable(loadProperties).orElse(LocalProvider.DEFAULT_LOAD_PROPERTIES));
+                new HashMap<>(Optional.ofNullable(loadProperties).orElse(LocalOfficeProvider.DEFAULT_LOAD_PROPERTIES));
         Optional.ofNullable(source.getFormat())
                 .ifPresent(fmt -> appendProperties(loadProps, fmt.getLoadProperties()));
-
         return loadProps;
     }
 
@@ -105,18 +101,14 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
      * @param sourceFile 源文件
      * @return 文档信息
      */
-    protected XComponent loadDocument(final LocalContext context, final File sourceFile)
+    protected XComponent loadDocument(final LocalOfficeContextAware context, final File sourceFile)
             throws InstrumentException {
-
         try {
-            final XComponent document =
-                    context
-                            .getComponentLoader()
-                            .loadComponentFromURL(
-                                    Builder.toUrl(sourceFile), "_blank", 0, Builder.toUnoProperties(getLoadProperties()));
-
+            final XComponent document = context.getComponentLoader()
+                    .loadComponentFromURL(
+                            Builder.toUrl(sourceFile), "_blank", 0,
+                            Builder.toUnoProperties(getLoadProperties()));
             return document;
-
         } catch (ErrorCodeIOException exception) {
             throw new InstrumentException(
                     ERROR_MESSAGE_LOAD + sourceFile.getName() + "; errorCode: " + exception.ErrCode,
@@ -135,7 +127,7 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
         if (document != null) {
             // 关闭转换后的文档。使用XCloseable。如果支持该接口，则关闭，否则使用XComponent.dispose
             final XCloseable closeable = Lo.qi(XCloseable.class, document);
-            if (closeable == null) {
+            if (ObjectUtils.isEmpty(closeable)) {
                 // 如果此模型不支持close，请尝试处理它.
                 Lo.qi(XComponent.class, document).dispose();
             } else {

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.office.verbose.LocalConnect;
+import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
 
 import java.util.EventObject;
 
@@ -41,7 +41,7 @@ public class OfficeConnectEvent extends EventObject {
      *
      * @param source 事件最初发生时所在的连接.
      */
-    public OfficeConnectEvent(final LocalConnect source) {
+    public OfficeConnectEvent(final LocalOfficeBridgeFactory source) {
         super(source);
     }
 

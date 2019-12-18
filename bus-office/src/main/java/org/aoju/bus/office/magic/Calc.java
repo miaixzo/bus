@@ -25,6 +25,7 @@ package org.aoju.bus.office.magic;
 
 import com.sun.star.lang.XComponent;
 import com.sun.star.sheet.XSpreadsheetDocument;
+import org.aoju.bus.office.Builder;
 
 /**
  * 使Office Calc文档(电子表格)更容易使用的实用函数集合.
@@ -42,7 +43,7 @@ public final class Calc {
      * @return 如果文档是电子表格文档，则为{@code true}，否则为{@code false}.
      */
     public static boolean isCalc(final XComponent document) {
-        return Info.isDocumentType(document, Lo.CALC_SERVICE);
+        return Info.isDocumentType(document, Builder.CALC_SERVICE);
     }
 
     /**

@@ -51,10 +51,10 @@ import java.util.List;
 public class OfficeProcess {
 
     private final UnoUrl unoUrl;
-    private final OfficeProcessConfig config;
+    private final OfficeProcessBuilder config;
     private final File instanceProfileDir;
     private Expense process;
-    private OfficeDescriptor descriptor;
+    private OfficeOption descriptor;
     private long pid = Builder.PID_UNKNOWN;
 
     /**
@@ -63,7 +63,7 @@ public class OfficeProcess {
      * @param unoUrl 为其创建流程的URL.
      */
     public OfficeProcess(final UnoUrl unoUrl) {
-        this(unoUrl, new OfficeProcessConfig());
+        this(unoUrl, new OfficeProcessBuilder());
     }
 
     /**
@@ -72,7 +72,7 @@ public class OfficeProcess {
      * @param unoUrl 为其创建流程的URL.
      * @param config 流程配置.
      */
-    public OfficeProcess(final UnoUrl unoUrl, final OfficeProcessConfig config) {
+    public OfficeProcess(final UnoUrl unoUrl, final OfficeProcessBuilder config) {
 
         this.unoUrl = unoUrl;
         this.config = config;
@@ -345,7 +345,7 @@ public class OfficeProcess {
 
         final String execPath = executable.getAbsolutePath();
 
-        descriptor = OfficeDescriptor.fromExecutablePath(execPath);
+        descriptor = OfficeOption.fromExecutablePath(execPath);
 
         if (Platform.isWindows()) {
             return;
@@ -372,7 +372,7 @@ public class OfficeProcess {
             handler.start();
             process.waitFor();
             handler.stop();
-            descriptor = OfficeDescriptor.fromHelpOutput(handler.getOutputPumper().getLines());
+            descriptor = OfficeOption.fromHelpOutput(handler.getOutputPumper().getLines());
         } catch (IOException | InterruptedException ioEx) {
             Logger.warn("An I/O error prevents us to determine office version", ioEx);
         }

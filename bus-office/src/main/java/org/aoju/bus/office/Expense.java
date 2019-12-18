@@ -48,16 +48,12 @@ public class Expense {
      */
     public Expense(final Process process) {
         super();
-
         Objects.requireNonNull(process, "process must not be null");
-
         this.process = process;
-
-        streamHandler =
-                new PumpStreamHandler(
-                        new StreamPumper(process.getInputStream(), (line) -> Logger.info(line)),
-                        new StreamPumper(process.getErrorStream(), (line) -> Logger.error(line)));
-        streamHandler.start();
+        this.streamHandler = new PumpStreamHandler(
+                new StreamPumper(process.getInputStream(), (line) -> Logger.info(line)),
+                new StreamPumper(process.getErrorStream(), (line) -> Logger.error(line)));
+        this.streamHandler.start();
     }
 
     /**
@@ -66,7 +62,7 @@ public class Expense {
      * @return 当前这个进程.
      */
     public Process getProcess() {
-        return process;
+        return this.process;
     }
 
     /**
@@ -76,8 +72,8 @@ public class Expense {
      */
     public Integer getExitCode() {
         try {
-            final int exitValue = process.exitValue();
-            streamHandler.stop();
+            final int exitValue = this.process.exitValue();
+            this.streamHandler.stop();
             return exitValue;
 
         } catch (IllegalThreadStateException ex) {

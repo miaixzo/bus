@@ -3366,4 +3366,62 @@ public class FileUtils {
         return URLConnection.getFileNameMap().getContentTypeFor(filePath);
     }
 
+    /**
+     * 从完整的文件名中获取基名减去完整路径和扩展名.
+     * <p>
+     * 此方法将处理Unix或Windows格式的文件.
+     * 最后一个正斜杠或反斜杠后面，最后一个点之前的文本.
+     * <pre>
+     * a/b/c.txt --&gt; c
+     * a.txt     --&gt; a
+     * a/b/c     --&gt; c
+     * a/b/c/    --&gt; ""
+     * </pre>
+     * <p>
+     *
+     * @param filename 要查询的文件名null返回null
+     * @return 没有路径的文件名，如果不存在空字符串，则为空字符串
+     */
+    public static String getBaseName(final String filename) {
+        return removeExtension(getName(filename));
+    }
+
+    /**
+     * 从文件名中删除扩展名.
+     *
+     * <p>
+     * 此方法返回文件名最后一个点之前的文本部分,点之后必须没有目录分隔符.
+     * </p>
+     *
+     * <pre>
+     * foo.txt    --&gt; foo
+     * a\b\c.jpg  --&gt; a\b\c
+     * a\b\c      --&gt; a\b\c
+     * a.b\c      --&gt; a.b\c
+     * </pre>
+     *
+     * @param filename 要查询的文件名null返回null
+     * @return 文件名减去扩展名
+     */
+    public static String removeExtension(final String filename) {
+        if (filename == null) {
+            return null;
+        }
+
+        final int len = filename.length();
+        for (int i = 0; i < len; i++) {
+            if (filename.charAt(i) == 0) {
+                throw new IllegalArgumentException("Null byte present in file/path name. There are no " +
+                        "known legitimate use cases for such data, but several injection attacks may use it");
+            }
+        }
+
+        final int index = indexOfExtension(filename);
+        if (index == -1) {
+            return filename;
+        } else {
+            return filename.substring(0, index);
+        }
+    }
+
 }

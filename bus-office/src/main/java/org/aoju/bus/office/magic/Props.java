@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import java.util.Optional;
 
 /**
- * 一组实用程序函数，使office属性更易于使用.
+ * 实用程序函数，使office属性更易于使用.
  *
  * @author Kimi Liu
  * @version 3.6.6

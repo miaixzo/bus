@@ -52,7 +52,6 @@ import java.util.List;
  * @version 5.3.2
  * @since JDK 1.8+
  */
-@Component
 @EnableConfigurationProperties(value = {SwaggerProperties.class})
 public class SwaggerConfiguration implements WebMvcConfigurer {
 

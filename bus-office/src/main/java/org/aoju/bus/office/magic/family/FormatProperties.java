@@ -41,7 +41,7 @@ public class FormatProperties {
     private final Map<String, Object> load = new HashMap<>();
 
     /**
-     * 为每个受支持的家庭存储(保存)文档时应用的属性.
+     * 为每个受支持的格式存储(保存)文档时应用的属性.
      */
     private final Map<FamilyType, Map<String, Object>> store = new HashMap<>();
 

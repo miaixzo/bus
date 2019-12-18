@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class AbstractOfficeManager implements OfficeManager, TemporaryFileMaker {
 
-    protected final OfficeManagerConfig config;
+    protected final OfficeManagerBuilder config;
     private final AtomicLong tempFileCounter;
     private File tempDir;
 
@@ -50,7 +50,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
      *
      * @param config 配置信息
      */
-    protected AbstractOfficeManager(final OfficeManagerConfig config) {
+    protected AbstractOfficeManager(final OfficeManagerBuilder config) {
         super();
         this.config = config;
         tempFileCounter = new AtomicLong(0);

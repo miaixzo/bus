@@ -33,23 +33,47 @@ package org.aoju.bus.office.magic.family;
 public enum FamilyType {
 
     /**
-     * 文本文档 (odt, doc, docx, rtf, etc.)
+     * 文本文档
+     * {"odt", "doc", "docx", "rtf"}
      */
     TEXT,
 
     /**
-     * 电子表格文件 (ods, xls, xlsx, csv, etc.)
+     * 电子表格文件
+     * {"ods", "xls", "xlsx", "csv"}
      */
     SPREADSHEET,
 
     /**
-     * 电子表格文件 (odp, ppt, pptx, etc.)
+     * 电子表格文件
+     * {"odp", "ppt", "pptx"}
      */
     PRESENTATION,
 
     /**
-     * 图像文件 (odg, png, svg, etc.)
+     * 图像文件
+     * {"odg", "png", "svg","jpg", "jpeg", "gif", "bmp", "ico", "raw"}
      */
-    DRAWING
+    DRAWING,
+
+    /**
+     * 压缩文件
+     * {"rar", "zip", "jar", "7-zip", "tar", "gzip", "7z"}
+     */
+    ARCHIVE,
+
+    /**
+     * 媒体文件
+     * {"mp3", "mp4", "wav", "flv"}
+     */
+    MEDIA,
+
+    /**
+     * 媒体文件
+     * {"txt", "html", "htm", "asp", "jsp", "xml", "json", "c",
+     * "cpp","json", "md", "gitignore", "java", "py", "prg",
+     * "cmd","sql", "sh", "bat", "m", "bas", "properties"}
+     */
+    SIMTEXT
 
 }

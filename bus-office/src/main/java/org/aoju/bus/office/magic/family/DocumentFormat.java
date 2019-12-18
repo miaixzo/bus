@@ -74,26 +74,23 @@ public class DocumentFormat {
         this.extensions = new ArrayList<>(extensions);
         this.mediaType = mediaType;
         this.inputFamily = inputFamily;
-        this.loadProperties =
-                Optional.ofNullable(loadProperties)
-                        .map(HashMap<String, Object>::new)
-                        .map(mapCopy -> unmodifiable ? Collections.unmodifiableMap(mapCopy) : mapCopy)
-                        .orElse(null);
-        this.storeProperties =
-                Optional.ofNullable(storeProperties)
-                        .map(map -> {
-                            final EnumMap<FamilyType, Map<String, Object>> familyMap =
-                                    new EnumMap<>(FamilyType.class);
-                            map.forEach((family, propMap) -> familyMap.put(
-                                    family,
-                                    unmodifiable
-                                            ? Collections.unmodifiableMap(new HashMap<>(propMap))
-                                            : new HashMap<>(propMap)));
-                            return familyMap;
-                        })
-                        // Make the map read only if required.
-                        .map(mapCopy -> unmodifiable ? Collections.unmodifiableMap(mapCopy) : mapCopy)
-                        .orElse(null);
+        this.loadProperties = Optional.ofNullable(loadProperties)
+                .map(HashMap<String, Object>::new)
+                .map(mapCopy -> unmodifiable ? Collections.unmodifiableMap(mapCopy) : mapCopy)
+                .orElse(null);
+        this.storeProperties = Optional.ofNullable(storeProperties)
+                .map(map -> {
+                    final EnumMap<FamilyType, Map<String, Object>> familyMap =
+                            new EnumMap<>(FamilyType.class);
+                    map.forEach((family, propMap) -> familyMap.put(
+                            family,
+                            unmodifiable
+                                    ? Collections.unmodifiableMap(new HashMap<>(propMap))
+                                    : new HashMap<>(propMap)));
+                    return familyMap;
+                })
+                .map(mapCopy -> unmodifiable ? Collections.unmodifiableMap(mapCopy) : mapCopy)
+                .orElse(null);
     }
 
     /**
@@ -112,7 +109,6 @@ public class DocumentFormat {
      * @return {@link DocumentFormat}，与默认的文档格式不同，它是可修改的.
      */
     public static DocumentFormat copy(final DocumentFormat sourceFormat) {
-
         return new Builder().from(sourceFormat).unmodifiable(false).build();
     }
 

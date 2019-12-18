@@ -291,18 +291,21 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Fetches the ProcessorID from dmidecode (if possible with root permissions),
-     * the cpuid command (if installed) or by encoding the stepping, model, family,
-     * and feature flags.
+     * 从dmidecode(如果可能的话，使用根权限)、cpuid命令
+     * (如果安装了)或者通过编码步骤、模型、类型和特性标志来获取ProcessorID
      *
-     * @param vendor
-     * @param stepping
-     * @param model
-     * @param family
-     * @param flags
+     * @param vendor   提供者
+     * @param stepping 采取行动
+     * @param model    模型
+     * @param family   类型
+     * @param flags    标记
      * @return The Processor ID string
      */
-    private String getProcessorID(String vendor, String stepping, String model, String family, String[] flags) {
+    private String getProcessorID(String vendor,
+                                  String stepping,
+                                  String model,
+                                  String family,
+                                  String[] flags) {
         boolean procInfo = false;
         String marker = "Processor Information";
         for (String checkLine : Command.runNative("dmidecode -t 4")) {

@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.thread.NamedThreadFactory;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.magic.UnoUrl;
-import org.aoju.bus.office.verbose.LocalConnect;
+import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
 
 import java.util.concurrent.*;
 
@@ -42,9 +42,9 @@ import java.util.concurrent.*;
 public class OfficeProcessManager {
 
     private final OfficeProcess process;
-    private final LocalConnect localConnect;
+    private final LocalOfficeBridgeFactory localOffice;
     private final ExecutorService executor;
-    private final OfficeProcessManagerConfig config;
+    private final OfficeProcessManagerBuilder config;
 
     /**
      * 创建具有指定配置的新管理器.
@@ -52,10 +52,10 @@ public class OfficeProcessManager {
      * @param unoUrl 为其创建管理器的URL.
      * @param config 管理器的配置.
      */
-    public OfficeProcessManager(final UnoUrl unoUrl, final OfficeProcessManagerConfig config) {
+    public OfficeProcessManager(final UnoUrl unoUrl, final OfficeProcessManagerBuilder config) {
         this.config = config;
         process = new OfficeProcess(unoUrl, config);
-        localConnect = new LocalConnect(unoUrl);
+        localOffice = new LocalOfficeBridgeFactory(unoUrl);
         executor = Executors.newSingleThreadExecutor(new NamedThreadFactory("OfficeProcessThread"));
     }
 
@@ -96,7 +96,7 @@ public class OfficeProcessManager {
         process.start(restart);
 
         try {
-            new ConnectRetryable(process, localConnect)
+            new ConnectRetryable(process, localOffice)
                     .execute(config.getProcessRetryInterval(), config.getProcessTimeout());
 
         } catch (Exception ex) {
@@ -115,7 +115,7 @@ public class OfficeProcessManager {
      */
     private void doStopProcess(final boolean deleteInstanceProfileDir) throws InstrumentException {
         try {
-            final boolean terminated = localConnect.getDesktop().terminate();
+            final boolean terminated = localOffice.getDesktop().terminate();
             // 再一次:尝试终止
             Logger.debug(
                     "The Office Process {}",
@@ -156,8 +156,8 @@ public class OfficeProcessManager {
      *
      * @return 这个管理器的{@link LocalConnect}.
      */
-    LocalConnect getLocalConnect() {
-        return localConnect;
+    LocalOfficeBridgeFactory getLocalOffice() {
+        return localOffice;
     }
 
     /**

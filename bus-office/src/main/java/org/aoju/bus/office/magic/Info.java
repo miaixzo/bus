@@ -32,6 +32,7 @@ import com.sun.star.uno.XComponentContext;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.office.Builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,11 +48,6 @@ import java.util.stream.Collectors;
  * @since JDK 1.8+
  */
 public final class Info {
-
-    private static final String NODE_PRODUCT = "/org.openoffice.Setup/Product";
-    private static final String NODE_L10N = "/org.openoffice.Setup/L10N";
-
-    private static final String[] NODE_PATHS = {NODE_PRODUCT, NODE_L10N};
 
     /**
      * 获取指定上下文是否用于OpenOffice安装.
@@ -163,7 +159,7 @@ public final class Info {
      * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
      */
     public static Optional<String> getConfig(final XComponentContext context, final String propName) {
-        for (String nodePath : NODE_PATHS) {
+        for (String nodePath : Builder.NODE_PATHS) {
             final Optional<Object> info = getConfig(context, nodePath, propName);
             if (info.isPresent()) {
                 return info.map(String.class::cast);

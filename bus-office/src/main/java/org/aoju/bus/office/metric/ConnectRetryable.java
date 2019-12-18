@@ -26,7 +26,7 @@ package org.aoju.bus.office.metric;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.office.verbose.LocalConnect;
+import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
 
 /**
  * 执行到office进程的连接.
@@ -38,34 +38,34 @@ import org.aoju.bus.office.verbose.LocalConnect;
 public class ConnectRetryable extends AbstractRetryable {
 
     private final OfficeProcess process;
-    private final LocalConnect localConnect;
+    private final LocalOfficeBridgeFactory localOffice;
 
     /**
      * 为指定的连接创建类的新实例.
      *
-     * @param localConnect 要连接的office.
+     * @param localOffice 要连接的office.
      */
-    public ConnectRetryable(final LocalConnect localConnect) {
-        this(null, localConnect);
+    public ConnectRetryable(final LocalOfficeBridgeFactory localOffice) {
+        this(null, localOffice);
     }
 
     /**
      * 为指定的进程和连接创建类的新实例.
      *
-     * @param process      要检索其退出码的office进程.
-     * @param localConnect 要连接的office.
+     * @param process     要检索其退出码的office进程.
+     * @param localOffice 要连接的office.
      */
-    public ConnectRetryable(final OfficeProcess process, final LocalConnect localConnect) {
+    public ConnectRetryable(final OfficeProcess process, final LocalOfficeBridgeFactory localOffice) {
         super();
 
         this.process = process;
-        this.localConnect = localConnect;
+        this.localOffice = localOffice;
     }
 
     @Override
     protected void attempt() throws InstrumentException {
         try {
-            localConnect.connect();
+            localOffice.connect();
         } catch (InstrumentException connectionEx) {
             if (ObjectUtils.isEmpty(process)) {
                 throw new InstrumentException(connectionEx);
