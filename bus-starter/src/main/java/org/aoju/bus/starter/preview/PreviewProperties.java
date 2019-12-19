@@ -13,7 +13,7 @@ import java.util.Map;
  * 文档预览配置类
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 @Data

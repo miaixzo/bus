@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 内置的各api需要的url, 用枚举类分平台类型管理
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public enum Registry implements Complex {
@@ -178,7 +178,7 @@ public enum Registry implements Complex {
         }
     },
     /**
-     * 腾讯云开发者平台（coding升级后就变成腾讯云开发者平台了）
+     * 腾讯云开发者平台
      */
     TENCENT_CLOUD {
         @Override
@@ -478,7 +478,6 @@ public enum Registry implements Complex {
             return "https://api.teambition.com/users/me";
         }
     },
-
     /**
      * 人人网
      */
@@ -503,7 +502,6 @@ public enum Registry implements Complex {
             return "https://api.renren.com/v2/user/get";
         }
     },
-
     /**
      * Pinterest
      */
@@ -523,7 +521,6 @@ public enum Registry implements Complex {
             return "https://api.pinterest.com/v1/me";
         }
     },
-
     /**
      * Stack Overflow
      */
@@ -543,11 +540,8 @@ public enum Registry implements Complex {
             return "https://api.stackexchange.com/2.2/me";
         }
     },
-
     /**
      * 华为
-     *
-     * @since 2.0.0
      */
     HUAWEI {
         @Override
@@ -570,11 +564,8 @@ public enum Registry implements Complex {
             return "https://oauth-login.cloud.huawei.com/oauth2/v2/token";
         }
     },
-
     /**
      * 企业微信
-     *
-     * @since 2.0.0
      */
     WECHAT_EE {
         @Override
@@ -592,11 +583,8 @@ public enum Registry implements Complex {
             return "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo";
         }
     },
-
     /**
      * 酷家乐
-     *
-     * @since 2.0.1
      */
     KUJIALE {
         @Override
@@ -619,11 +607,8 @@ public enum Registry implements Complex {
             return "https://oauth.kujiale.com/oauth2/auth/token/refresh";
         }
     },
-
     /**
      * Gitlab
-     *
-     * @since 2.0.1
      */
     GITLAB {
         @Override
@@ -641,11 +626,8 @@ public enum Registry implements Complex {
             return "https://gitlab.com/api/v4/user";
         }
     },
-
     /**
      * 美团
-     *
-     * @since 2.0.2
      */
     MEITUAN {
         @Override
@@ -668,13 +650,8 @@ public enum Registry implements Complex {
             return "https://openapi.waimai.meituan.com/oauth/refresh_token";
         }
     },
-
     /**
      * 饿了么
-     * <p>
-     * 注：集成的是正式环境,非沙箱环境
-     *
-     * @since 2.0.2
      */
     ELEME {
         @Override
@@ -695,6 +672,25 @@ public enum Registry implements Complex {
         @Override
         public String refresh() {
             return "https://open-api.shop.ele.me/token";
+        }
+    },
+    /**
+     * Twitter
+     */
+    TWITTER {
+        @Override
+        public String authorize() {
+            return "https://api.twitter.com/oauth/authenticate";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://api.twitter.com/oauth/access_token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://api.twitter.com/1.1/users/show.json";
         }
     }
 

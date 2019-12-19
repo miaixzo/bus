@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v5.3.3-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v5.3.5-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -48,36 +48,36 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测等，快速实现业务需求的全栈式技术解决方案。
 
 ## 组件信息
-| 模块信息 | 描述信息 |
-| ------ | ------- |
-|bus-all|为微服务提供统一的pom管理，以及通用组件| 
-|bus-base|基础功能及base相关功能,实体类(Entity),服务(Service),接口(Controller)|
-|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
-|bus-core|核心功能及工具类,包括常量、线程、类加载器、字符集编码、反射、集合、日期、等各种常用工具|
-|bus-cron|定时器及定时任务等功能|
-|bus-crypto|加密解密，支持支持AES/DES/REA/MD5等常用加密算法|
-|bus-extra|扩展功能及文件操作|
-|bus-forest|jar加解密,杜绝源码泄漏或被反编译|
-|bus-health|应用服务器健康信息|
-|bus-http|HTTP功能封装|
-|bus-limiter|请求限流|
-|bus-logger|日志信息及功能，动态检测日志实现的方式，使日志使用个更加便利灵活简单|
-|bus-mapper|数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生|
-|bus-oauth|第三方登录,已集成十多家第三方平台（国内外常用的基本都已包含）|
-|bus-pager|数据分页,mybatis|
-|bus-office|office等相关转换及处理,POI封装实现，使Java操作Excel等文件变得更加简单|
-|bus-proxy|公共代理，使动态代理变得简单|
-|bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小|
-|bus-setting|设置工具类， 用于支持设置/配置|
-|bus-shade|Entity,Service,Mapper等相关代码生成工具|
-|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
-|bus-spring|spring相关配置|
-|bus-starter|SpringBoot starter，启动及相关配置文件信息|
-|bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
-|bus-swagger|API调用及测试|
-|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|
-|bus-validate|参数校验，会默认拦截所有的标记有`@Valid`的方法或类|
-
+| 完成 |模块 | 描述信息 |
+|------| ------ | ------- |
+|[ √ ]|bus-all|为微服务提供统一的pom管理，以及通用组件| 
+|[ √ ]|bus-base|基础功能及base相关功能,实体类(Entity),服务(Service),接口(Controller)|
+|[ × ]|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
+|[ √ ]|bus-core|核心功能及工具类,包括常量、线程、类加载器、字符集编码、反射、集合、日期等常用工具|
+|[ √ ]|bus-cron|定时器及定时任务等功能|
+|[ √ ]|bus-crypto|加密解密，支持支持AES/DES/REA/MD5等常用加密算法|
+|[ √ ]|bus-extra|扩展功能及文件操作|
+|[ √ ]|bus-forest|jar加解密,杜绝源码泄漏或被反编译|
+|[ √ ]|bus-health|应用服务器健康信息|
+|[ √ ]|bus-http|HTTP功能封装|
+|[ × ]|bus-limiter|请求限流|
+|[ √ ]|bus-logger|日志信息及功能，动态检测日志实现的方式，使日志使用个更加便利灵活简单|
+|[ √ ]|bus-mapper|数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生|
+|[ √ ]|bus-oauth|第三方登录,已集成十多家第三方平台（国内外常用的基本都已包含）|
+|[ √ ]|bus-pager|数据分页,mybatis|
+|[ √ ]|bus-office|office等相关转换及处理,POI封装实现，使Java操作Excel等文件变得更加简单|
+|[ √ ]|bus-proxy|公共代理，使动态代理变得简单|
+|[ √ ]|bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小|
+|[ √ ]|bus-setting|设置工具类， 用于支持设置/配置|
+|[ √ ]|bus-shade|Entity,Service,Mapper等相关代码生成工具|
+|[ √ ]|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
+|[ √ ]|bus-spring|spring相关配置|
+|[ √ ]|bus-starter|SpringBoot starter，启动及相关配置文件信息|
+|[ √ ]|bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
+|[ √ ]|bus-swagger|API调用及测试|
+|[ × ]|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|
+|[ √ ]|bus-validate|参数校验，会默认拦截所有的标记有`@Valid`的方法或类|
+ 
 
 ## 功能概述
 
@@ -95,13 +95,13 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.3.3</version>
+    <version>5.3.5</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:5.3.3'
+implementation 'org.aoju:bus-all:5.3.5'
 ```
 
 ### Other

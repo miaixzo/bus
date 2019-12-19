@@ -38,7 +38,7 @@ import static org.aoju.bus.health.common.linux.ProcUtils.CPUINFO;
  * Baseboard data obtained by sysfs
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 final class LinuxBaseboard extends AbstractBaseboard {

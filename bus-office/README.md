@@ -10,10 +10,6 @@
 1. 最最重要MIT协议开源，代码pull下来想干嘛就干嘛
 
 ### 快速开始
-> 项目使用技术
-- spring boot
-- freemarker
-- redisson 
 > 依赖外部环境
 - OpenOffice或者LibreOffice
 > 下载地址如下:

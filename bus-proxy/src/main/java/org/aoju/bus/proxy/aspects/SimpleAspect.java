@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * 可以继承此类实现自己需要的方法即可
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class SimpleAspect implements Aspect, Serializable {

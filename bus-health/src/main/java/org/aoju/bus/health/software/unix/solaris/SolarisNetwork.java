@@ -32,7 +32,7 @@ import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
 
 /**
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK1.8+
  */
 public class SolarisNetwork extends AbstractNetwork {

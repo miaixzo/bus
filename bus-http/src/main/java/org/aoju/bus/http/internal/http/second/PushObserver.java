@@ -48,7 +48,7 @@ import java.util.List;
  * future frames won't arrive on the stream ID.
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public interface PushObserver {

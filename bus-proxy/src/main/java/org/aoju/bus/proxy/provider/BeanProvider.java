@@ -30,7 +30,7 @@ import org.aoju.bus.proxy.Provider;
  * Bean 模型
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class BeanProvider implements Provider {

@@ -41,7 +41,7 @@ import java.util.Set;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class ReflectUtils {
@@ -511,7 +511,7 @@ public class ReflectUtils {
         if (null == obj || StringUtils.isBlank(fieldName)) {
             return null;
         }
-        return getFieldValue(obj, getField(obj.getClass(), fieldName));
+        return getFieldValue(obj, getField(obj instanceof Class ? (Class<?>) obj : obj.getClass(), fieldName));
     }
 
     /**
@@ -523,17 +523,39 @@ public class ReflectUtils {
      * @throws InstrumentException 包装IllegalAccessException异常
      */
     public static Object getFieldValue(Object obj, Field field) throws InstrumentException {
-        if (null == obj || null == field) {
+        if (null == field) {
             return null;
         }
+        if (obj instanceof Class) {
+            obj = null;
+        }
+
         field.setAccessible(true);
-        Object result = null;
         try {
-            result = field.get(obj);
+            return field.get(obj);
         } catch (IllegalAccessException e) {
             throw new InstrumentException("IllegalAccess for " + obj.getClass() + "." + field.getName());
         }
-        return result;
+    }
+
+    /**
+     * 获取所有字段的值
+     *
+     * @param obj bean对象，如果是static字段，此处为类class
+     * @return 字段值数组
+     */
+    public static Object[] getFieldsValue(Object obj) {
+        if (null != obj) {
+            final Field[] fields = getFields(obj instanceof Class ? (Class<?>) obj : obj.getClass());
+            if (null != fields) {
+                final Object[] values = new Object[fields.length];
+                for (int i = 0; i < fields.length; i++) {
+                    values[i] = getFieldValue(obj, fields[i]);
+                }
+                return values;
+            }
+        }
+        return null;
     }
 
     /**
@@ -594,7 +616,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.3.3
+     * @since 5.3.5
      */
     public static Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>... paramTypes) throws SecurityException {
         return getMethod(clazz, true, methodName, paramTypes);
@@ -622,7 +644,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.3.3
+     * @since 5.3.5
      */
     public static Method getMethod(Class<?> clazz, boolean ignoreCase, String methodName, Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringUtils.isBlank(methodName)) {

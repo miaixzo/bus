@@ -28,7 +28,7 @@ package org.aoju.bus.core.builder;
  * 这对于消除偶尔出现的重复的identityHashCodes是必要的.
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 final class HashKey {

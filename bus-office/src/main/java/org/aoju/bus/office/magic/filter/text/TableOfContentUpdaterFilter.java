@@ -39,7 +39,7 @@ import org.aoju.bus.office.magic.filter.FilterChain;
  * 此筛选器更新文档中的所有索引.
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class TableOfContentUpdaterFilter implements Filter {
