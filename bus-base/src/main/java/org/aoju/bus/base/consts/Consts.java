@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.base.consts;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * <p>
@@ -31,7 +31,7 @@ import org.aoju.bus.core.consts.Normal;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Consts extends Normal {

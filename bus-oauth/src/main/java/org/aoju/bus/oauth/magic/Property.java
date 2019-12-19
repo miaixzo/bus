@@ -24,13 +24,13 @@
 package org.aoju.bus.oauth.magic;
 
 import lombok.*;
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * 授权成功后的用户信息,根据授权平台的不同,获取的数据完整性也不同
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @Getter

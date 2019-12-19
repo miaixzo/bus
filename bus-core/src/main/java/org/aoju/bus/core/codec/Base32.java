@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
  * see http://blog.csdn.net/earbao/article/details/44453937
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class Base32 {
@@ -103,7 +103,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String encode(String source) {
-        return encode(source, org.aoju.bus.core.consts.Charset.UTF_8);
+        return encode(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -185,7 +185,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String decodeStr(String source) {
-        return decodeStr(source, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decodeStr(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

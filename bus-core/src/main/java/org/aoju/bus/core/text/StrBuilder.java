@@ -25,7 +25,7 @@ package org.aoju.bus.core.text;
 
 
 import org.aoju.bus.core.builder.Builder;
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.ArrayUtils;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ import java.util.Objects;
  * 提供比StringBuffer更灵活和更强大的API.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class StrBuilder implements CharSequence, Appendable, Serializable, Builder<String> {

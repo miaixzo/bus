@@ -24,7 +24,7 @@
 package org.aoju.bus.crypto.digest;
 
 
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 
 import java.security.SecureRandom;
 
@@ -34,7 +34,7 @@ import java.security.SecureRandom;
  * 它的口令必须是8至56个字符,并将在内部被转化为448位的密钥
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class BCrypt {

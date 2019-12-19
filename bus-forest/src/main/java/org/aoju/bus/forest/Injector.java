@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.forest;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.resource.Resource;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.loader.Loaders;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
@@ -39,7 +39,7 @@ import java.util.Set;
  * 框架注入器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Injector {

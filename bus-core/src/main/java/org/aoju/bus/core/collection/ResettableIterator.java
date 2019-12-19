@@ -30,14 +30,13 @@ import java.util.Iterator;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface ResettableIterator<E> extends Iterator<E> {
 
     /**
-     * Resets the iterator back to the position at which the iterator
-     * was created.
+     * 将迭代器重置为创建迭代器的位置.
      */
     void reset();
 

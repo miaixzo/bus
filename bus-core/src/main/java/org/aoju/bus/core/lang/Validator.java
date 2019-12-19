@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.consts.RegEx;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
@@ -35,7 +34,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Validator {

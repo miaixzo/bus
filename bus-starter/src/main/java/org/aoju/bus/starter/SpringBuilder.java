@@ -8,8 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ import java.util.TimeZone;
  * 设置相关系统参数信息.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @Component

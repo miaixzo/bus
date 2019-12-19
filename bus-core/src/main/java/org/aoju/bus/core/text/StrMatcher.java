@@ -24,7 +24,7 @@
 package org.aoju.bus.core.text;
 
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import java.util.Arrays;
  * 如果这些还不够,您可以子类化并实现自己的匹配器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public abstract class StrMatcher {

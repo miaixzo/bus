@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.thread.ExecutorBuilder;
 import org.aoju.bus.core.thread.ThreadBuilder;
@@ -70,7 +70,7 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Scheduler {

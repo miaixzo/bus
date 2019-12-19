@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron;
 
-import org.aoju.bus.core.consts.Fields;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.utils.ThreadUtils;
 
 /**
@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.ThreadUtils;
  * 计时器线程每隔一分钟检查一次任务列表,一旦匹配到执行对应的Task
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class CronTimer extends Thread {

@@ -25,10 +25,10 @@ package org.aoju.bus.setting;
 
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.OptNullString;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -39,7 +39,7 @@ import java.lang.reflect.Type;
  * Setting抽象类
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public abstract class AbsSetting extends OptNullString<String>

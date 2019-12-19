@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentMap;
  * 定位: 将@Cached、@Invalid、@CachedGet、(@CachedPut未来)以及将@CacheKey整体融合到一起
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class CacheInfoContainer {
@@ -63,10 +63,6 @@ public class CacheInfoContainer {
 
         return CachePair.of(cacheHolder, cacheMethod);
     }
-
-    /****
-     * cache key doGetMethodInfo
-     ****/
 
     private static CacheHolder getAnnoHolder(Method method) {
 
@@ -132,10 +128,6 @@ public class CacheInfoContainer {
                 .setPrefix(invalid.prefix())
                 .setExpire(CacheExpire.NO);
     }
-
-    /***
-     * cache method doGetMethodInfo
-     ***/
 
     private static CacheMethod getMethodHolder(Method method, CacheHolder cacheHolder) {
         boolean isCollectionReturn = Collection.class.isAssignableFrom(method.getReturnType());

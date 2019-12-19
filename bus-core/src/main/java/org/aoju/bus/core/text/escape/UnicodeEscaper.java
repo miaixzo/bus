@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.text.escape;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.text.translate.CodePointTranslator;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.io.Writer;
  * Translates codepoints to their Unicode escaped value.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class UnicodeEscaper extends CodePointTranslator {
@@ -134,10 +134,10 @@ public class UnicodeEscaper extends CodePointTranslator {
             out.write(toUtf16Escape(codepoint));
         } else {
             out.write("\\u");
-            out.write(Normal.HEX_DIGITS[(codepoint >> 12) & 15]);
-            out.write(Normal.HEX_DIGITS[(codepoint >> 8) & 15]);
-            out.write(Normal.HEX_DIGITS[(codepoint >> 4) & 15]);
-            out.write(Normal.HEX_DIGITS[(codepoint) & 15]);
+            out.write(Normal.DIGITS_UPPER[(codepoint >> 12) & 15]);
+            out.write(Normal.DIGITS_UPPER[(codepoint >> 8) & 15]);
+            out.write(Normal.DIGITS_UPPER[(codepoint >> 4) & 15]);
+            out.write(Normal.DIGITS_UPPER[(codepoint) & 15]);
         }
         return true;
     }

@@ -24,7 +24,7 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -37,7 +37,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Gitee登录
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class GiteeProvider extends DefaultProvider {

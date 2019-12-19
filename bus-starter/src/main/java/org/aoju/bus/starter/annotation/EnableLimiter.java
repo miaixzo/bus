@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.starter.annotation;
 
-import org.aoju.bus.starter.limiter.LimiterConfigurationSelector;
+import org.aoju.bus.starter.limiter.LimiterConfiguration;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
@@ -34,13 +34,13 @@ import java.lang.annotation.*;
  * 限流降级
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(LimiterConfigurationSelector.class)
+@Import(LimiterConfiguration.class)
 public @interface EnableLimiter {
 
     boolean proxyTargetClass() default false;

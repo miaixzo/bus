@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.starter.i18n;
 
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -37,7 +37,7 @@ import javax.validation.Validator;
  * 国际化配置
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {I18nProperties.class})

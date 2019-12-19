@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -44,7 +44,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class DateTime extends Date {
@@ -498,7 +498,7 @@ public class DateTime extends Date {
      * 考虑到很多框架（例如Hibernate）的兼容性,提供此方法返回JDK原生的Date对象
      *
      * @return {@link Date}
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public Date toJdkDate() {
         return new Date(this.getTime());

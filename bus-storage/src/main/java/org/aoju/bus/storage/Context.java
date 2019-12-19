@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @Data
@@ -53,11 +53,11 @@ public class Context {
     protected String endpoint;
     /**
      * 访问key
-     **/
+     */
     protected String accessKey;
     /**
      * 访问秘钥
-     **/
+     */
     protected String secretKey;
     /**
      * 存储区域

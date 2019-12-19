@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.validate.annotation;
 
-import org.aoju.bus.core.consts.Fields;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.strategy.DateStrategy;
 
@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 判断是否为日期
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @Documented

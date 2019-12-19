@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.digest;
 
-import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.Builder;
 
 import java.io.File;
@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
  * MD5算法
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class MD5 extends Digester {

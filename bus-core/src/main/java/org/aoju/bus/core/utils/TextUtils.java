@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import java.util.Arrays;
  * 可复用的字符串生成器,非线程安全
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class TextUtils implements CharSequence, Appendable, Serializable {

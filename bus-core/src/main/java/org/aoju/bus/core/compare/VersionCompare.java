@@ -1,6 +1,6 @@
 package org.aoju.bus.core.compare;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.util.List;
  * 支持如：1.3.20.8,6.82.20160101,8.5a/8.5c等版本形式
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class VersionCompare implements Comparator<String>, Serializable {

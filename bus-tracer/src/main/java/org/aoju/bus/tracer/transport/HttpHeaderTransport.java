@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.tracer.transport;
 
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.logger.Logger;
 
 import java.io.UnsupportedEncodingException;
@@ -33,7 +33,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class HttpHeaderTransport {

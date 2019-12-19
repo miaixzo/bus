@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.codec;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import java.util.Map;
  * 莫尔斯电码的编码和解码
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Morse {

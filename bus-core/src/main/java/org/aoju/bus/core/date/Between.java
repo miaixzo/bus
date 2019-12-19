@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.consts.Fields;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.utils.DateUtils;
 
 import java.util.Calendar;
@@ -33,7 +33,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Between {

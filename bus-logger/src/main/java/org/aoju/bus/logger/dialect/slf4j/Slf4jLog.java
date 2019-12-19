@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.logger.dialect.slf4j;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.AbstractAware;
 import org.aoju.bus.logger.level.Level;
@@ -36,7 +36,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * 无缝支持 LogBack
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Slf4jLog extends AbstractAware {

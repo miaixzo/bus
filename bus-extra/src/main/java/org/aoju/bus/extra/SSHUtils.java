@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class SSHUtils {
@@ -366,7 +366,7 @@ public class SSHUtils {
      */
     public static String exec(Session session, String cmd, Charset charset, OutputStream errStream) {
         if (null == charset) {
-            charset = org.aoju.bus.core.consts.Charset.UTF_8;
+            charset = org.aoju.bus.core.lang.Charset.UTF_8;
         }
         ChannelExec channel = (ChannelExec) openChannel(session, ChannelType.EXEC);
         channel.setCommand(StringUtils.bytes(cmd, charset));
@@ -376,7 +376,7 @@ public class SSHUtils {
         try {
             channel.start();
             in = channel.getInputStream();
-            return IoUtils.read(in, org.aoju.bus.core.consts.Charset.UTF_8);
+            return IoUtils.read(in, org.aoju.bus.core.lang.Charset.UTF_8);
         } catch (IOException e) {
             throw new InstrumentException(e);
         } catch (JSchException e) {

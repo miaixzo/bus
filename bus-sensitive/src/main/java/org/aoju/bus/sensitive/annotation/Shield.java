@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.sensitive.annotation;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Condition;
 import org.aoju.bus.sensitive.provider.ConditionProvider;
@@ -43,7 +43,7 @@ import java.lang.annotation.*;
  * 在 Strategy 注解中,可以指定策略 默认是全部,如果指定,则只针对其中的某个策略生效
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @Documented

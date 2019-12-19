@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.core.convert.impl;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.convert.ConverterRegistry;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.IterUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -40,7 +40,7 @@ import java.util.List;
  * 数组转换器,包括原始类型数组
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ArrayConverter extends AbstractConverter<Object> {

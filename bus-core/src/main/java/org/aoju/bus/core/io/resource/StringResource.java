@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  * 字符串资源,字符串做为资源
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class StringResource implements Resource {
@@ -62,7 +62,7 @@ public class StringResource implements Resource {
      * @param name 资源名称
      */
     public StringResource(String data, String name) {
-        this(data, name, org.aoju.bus.core.consts.Charset.UTF_8);
+        this(data, name, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

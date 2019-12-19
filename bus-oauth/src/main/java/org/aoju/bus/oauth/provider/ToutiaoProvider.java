@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -40,7 +40,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ToutiaoProvider extends DefaultProvider {

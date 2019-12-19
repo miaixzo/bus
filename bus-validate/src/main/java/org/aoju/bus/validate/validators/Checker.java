@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.exception.NoSuchException;
 import org.aoju.bus.core.lang.exception.ValidateException;
 import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.FieldUtils;
+import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.validate.*;
@@ -43,7 +43,7 @@ import java.util.List;
  * 校验检查器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Checker {
@@ -82,9 +82,9 @@ public class Checker {
         try {
             Object object = validated.getObject();
             if (ObjectUtils.isNotEmpty(object)) {
-                Field[] fields = FieldUtils.getAllFields(object.getClass());
+                Field[] fields = ClassUtils.getAllFields(object.getClass());
                 for (Field field : fields) {
-                    Object value = FieldUtils.readField(field, object, true);
+                    Object value = ClassUtils.readField(field, object, true);
                     Annotation[] annotations = field.getDeclaredAnnotations();
 
                     String[] xFields = validated.getContext().getField();

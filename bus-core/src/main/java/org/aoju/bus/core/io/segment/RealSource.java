@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class RealSource implements BufferSource {
@@ -451,7 +451,6 @@ public final class RealSource implements BufferSource {
             long lastBufferSize = buffer.size;
             if (source.read(buffer, Segment.SIZE) == -1) return -1L;
 
-            // Keep searching, picking up from where we left off.
             fromIndex = Math.max(fromIndex, lastBufferSize);
         }
     }

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.forest;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.algorithm.SecureRandom;
 import org.aoju.bus.forest.algorithm.SymmetricSecureKey;
@@ -46,7 +46,7 @@ import java.util.jar.Attributes;
  * Jar 工具类,包含I/O,密钥,过滤器的工具方法
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public abstract class Builder {

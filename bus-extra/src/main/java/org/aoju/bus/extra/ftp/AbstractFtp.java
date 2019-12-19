@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.extra.ftp;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -37,12 +37,12 @@ import java.util.List;
  * 抽象FTP类,用于定义通用的FTP方法
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public abstract class AbstractFtp implements Closeable {
 
-    public static final Charset DEFAULT_CHARSET = org.aoju.bus.core.consts.Charset.UTF_8;
+    public static final Charset DEFAULT_CHARSET = org.aoju.bus.core.lang.Charset.UTF_8;
 
     protected String host;
     protected int port;

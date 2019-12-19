@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.text.csv;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 
@@ -31,7 +31,7 @@ import java.io.Serializable;
  * CSV写出配置项
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class CsvWriteConfig extends CsvConfig implements Serializable {

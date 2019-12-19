@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
  * 将浮点数类型的number转换成英语的表达方式
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class NumberWord {

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.io.watchers;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
@@ -45,7 +45,7 @@ import java.util.Map;
  * 递归监听目录时,并不会监听新创建的目录
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class WatchMonitor extends Thread implements Closeable {

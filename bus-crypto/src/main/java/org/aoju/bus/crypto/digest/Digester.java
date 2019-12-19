@@ -40,7 +40,7 @@ import java.security.Provider;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Digester {
@@ -182,7 +182,7 @@ public class Digester {
      * @return 摘要
      */
     public byte[] digest(String data) {
-        return digest(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return digest(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -214,7 +214,7 @@ public class Digester {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return digestHex(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

@@ -23,9 +23,6 @@
  */
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.consts.FileType;
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
@@ -44,7 +41,7 @@ import java.util.jar.JarFile;
  * 类扫描器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Scaner {
@@ -103,7 +100,7 @@ public class Scaner {
      * @param classFilter 过滤器,无需传入null
      */
     public Scaner(String packageName, Filter<Class<?>> classFilter) {
-        this(packageName, classFilter, org.aoju.bus.core.consts.Charset.UTF_8);
+        this(packageName, classFilter, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

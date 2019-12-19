@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
@@ -54,7 +54,7 @@ import java.util.zip.GZIPOutputStream;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class StringUtils extends TextUtils {
@@ -980,7 +980,7 @@ public class StringUtils extends TextUtils {
      * @param str2       要比较的字符串2
      * @param ignoreCase 是否忽略大小写
      * @return 如果两个字符串相同, 或者都是null, 则返回true
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static boolean equals(CharSequence str1, CharSequence str2, boolean ignoreCase) {
         if (null == str1) {
@@ -1350,7 +1350,7 @@ public class StringUtils extends TextUtils {
      * @param separator   分隔符字符
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<String> splitTrim(String str, char separator, boolean ignoreEmpty) {
         return split(str, separator, 0, true, ignoreEmpty);
@@ -1363,7 +1363,7 @@ public class StringUtils extends TextUtils {
      * @param separator   分隔符字符串
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<String> splitTrim(String str, String separator, boolean ignoreEmpty) {
         return split(str, separator, true, ignoreEmpty);
@@ -1390,7 +1390,7 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<String> splitTrim(String str, String separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty);
@@ -1405,7 +1405,7 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<String> splitIgnoreCase(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, true);
@@ -1420,7 +1420,7 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<String> splitIgnoreCase(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, true);
@@ -1434,7 +1434,7 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<String> splitTrimIgnoreCase(String str, String separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty, true);
@@ -1767,7 +1767,7 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
         if (isEmpty(str)) {
@@ -1804,7 +1804,7 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
         if (isEmpty(str)) {
@@ -1965,26 +1965,6 @@ public class StringUtils extends TextUtils {
         return startWith(str, prefix, true);
     }
 
-    public static String capitalize(String str) {
-        int strLen;
-        if (str != null && (strLen = str.length()) != 0) {
-            char firstChar = str.charAt(0);
-            return Character.isTitleCase(firstChar) ? str : (new StringBuilder(strLen)).append(Character.toTitleCase(firstChar)).append(str.substring(1)).toString();
-        } else {
-            return str;
-        }
-    }
-
-    public static String uncapitalize(String str) {
-        int strLen;
-        if (str != null && (strLen = str.length()) != 0) {
-            char firstChar = str.charAt(0);
-            return Character.isLowerCase(firstChar) ? str : (new StringBuilder(strLen)).append(Character.toLowerCase(firstChar)).append(str.substring(1)).toString();
-        } else {
-            return str;
-        }
-    }
-
     /**
      * 指定范围内查找指定字符
      *
@@ -2057,7 +2037,7 @@ public class StringUtils extends TextUtils {
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
         return indexOfIgnoreCase(str, searchStr, 0);
@@ -2084,7 +2064,7 @@ public class StringUtils extends TextUtils {
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置
      * @return 位置
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
         return indexOf(str, searchStr, fromIndex, true);
@@ -2098,7 +2078,7 @@ public class StringUtils extends TextUtils {
      * @param fromIndex  起始位置
      * @param ignoreCase 是否忽略大小写
      * @return 位置
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
         if (str == null || searchStr == null) {
@@ -2135,7 +2115,7 @@ public class StringUtils extends TextUtils {
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
         return lastIndexOfIgnoreCase(str, searchStr, str.length());
@@ -2148,7 +2128,7 @@ public class StringUtils extends TextUtils {
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置,从后往前计数
      * @return 位置
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
         return lastIndexOf(str, searchStr, fromIndex, true);
@@ -2162,7 +2142,7 @@ public class StringUtils extends TextUtils {
      * @param fromIndex  起始位置,从后往前计数
      * @param ignoreCase 是否忽略大小写
      * @return 位置
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static int lastIndexOf(final CharSequence str, final CharSequence searchStr, int fromIndex, boolean ignoreCase) {
         if (str == null || searchStr == null) {
@@ -2244,7 +2224,7 @@ public class StringUtils extends TextUtils {
      * @param length     截取长度
      * @param ignoreCase 是否忽略大小写
      * @return 子串是否相同
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static boolean isSubEquals(CharSequence str1, int start1, CharSequence str2, int start2, int length, boolean ignoreCase) {
         if (null == str1 || null == str2) {
@@ -3486,7 +3466,7 @@ public class StringUtils extends TextUtils {
      * @param endExclude   结束位置（不包含）
      * @param replacedChar 被替换的字符
      * @return 替换后的字符串
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static String replace(CharSequence str, int startInclude, int endExclude, char replacedChar) {
         if (isEmpty(str)) {
@@ -3535,7 +3515,7 @@ public class StringUtils extends TextUtils {
      * @param chars       需要替换的字符列表,用一个字符串表示这个字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static String replaceChars(CharSequence str, String chars, CharSequence replacedStr) {
         if (isEmpty(str) || isEmpty(chars)) {
@@ -3551,7 +3531,7 @@ public class StringUtils extends TextUtils {
      * @param chars       需要替换的字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static String replaceChars(CharSequence str, char[] chars, CharSequence replacedStr) {
         if (isEmpty(str) || ArrayUtils.isEmpty(chars)) {
@@ -3923,7 +3903,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static boolean containsAny(CharSequence str, CharSequence... testStrs) {
         return null != getContainsStr(str, testStrs);
@@ -3997,7 +3977,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static String getContainsStr(CharSequence str, CharSequence... testStrs) {
         if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {
@@ -4033,7 +4013,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static boolean containsAnyIgnoreCase(CharSequence str, CharSequence... testStrs) {
         return null != getContainsStrIgnoreCase(str, testStrs);
@@ -4046,7 +4026,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static String getContainsStrIgnoreCase(CharSequence str, CharSequence... testStrs) {
         if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {
@@ -5325,6 +5305,372 @@ public class StringUtils extends TextUtils {
             }
         }
         return paramBuilder.toString();
+    }
+
+    /**
+     * 根据{@link String#toUpperCase()}将字符串转换为大写.
+     *
+     * <pre>
+     * StringUtils.upperCase(null)  = null
+     * StringUtils.upperCase("")    = ""
+     * StringUtils.upperCase("aBc") = "ABC"
+     * </pre>
+     *
+     * @param str 以大写字母表示的字符串可以为空
+     * @return 大写字符串{@code null}如果输入为空字符串
+     */
+    public static String upperCase(final String str) {
+        if (str == null) {
+            return null;
+        }
+        return str.toUpperCase();
+    }
+
+    /**
+     * 根据{@link String#toUpperCase()}将字符串转换为大写
+     *
+     * <pre>
+     * StringUtils.upperCase(null, Locale.ENGLISH)  = null
+     * StringUtils.upperCase("", Locale.ENGLISH)    = ""
+     * StringUtils.upperCase("aBc", Locale.ENGLISH) = "ABC"
+     * </pre>
+     *
+     * @param str    以大写字母表示的字符串可以为空
+     * @param locale 定义案例转换规则的区域设置不能为空
+     * @return 大写字符串{@code null}如果输入为空字符串
+     */
+    public static String upperCase(final String str, final Locale locale) {
+        if (str == null) {
+            return null;
+        }
+        return str.toUpperCase(locale);
+    }
+
+    /**
+     * 根据{@link String#toLowerCase()}将字符串转换为小写
+     *
+     * <pre>
+     * StringUtils.lowerCase(null)  = null
+     * StringUtils.lowerCase("")    = ""
+     * StringUtils.lowerCase("aBc") = "abc"
+     * </pre>
+     *
+     * @param str 小写字符串可以为空
+     * @return 小写字符串{@code null}如果输入为空字符串
+     */
+    public static String lowerCase(final String str) {
+        if (str == null) {
+            return null;
+        }
+        return str.toLowerCase();
+    }
+
+    /**
+     * 根据{@link String#toLowerCase()}将字符串转换为小写
+     *
+     * <pre>
+     * StringUtils.lowerCase(null, Locale.ENGLISH)  = null
+     * StringUtils.lowerCase("", Locale.ENGLISH)    = ""
+     * StringUtils.lowerCase("aBc", Locale.ENGLISH) = "abc"
+     * </pre>
+     *
+     * @param str    小写字符串可以为空
+     * @param locale t定义案例转换规则的区域设置不能为空
+     * @return 小写字符串{@code null}如果输入为空字符串
+     */
+    public static String lowerCase(final String str, final Locale locale) {
+        if (str == null) {
+            return null;
+        }
+        return str.toLowerCase(locale);
+    }
+
+    /**
+     * 按{@link Character#toTitleCase(int)}
+     * 将第一个字符更改为标题大小写.其他字符没有改变
+     *
+     * <pre>
+     * StringUtils.capitalize(null)  = null
+     * StringUtils.capitalize("")    = ""
+     * StringUtils.capitalize("cat") = "Cat"
+     * StringUtils.capitalize("cAt") = "CAt"
+     * StringUtils.capitalize("'cat'") = "'cat'"
+     * </pre>
+     *
+     * @param str 要大写的字符串可以为空
+     * @return 大写字符串，{@code null}如果输入为空字符串
+     */
+    public static String capitalize(final String str) {
+        int strLen;
+        if (str == null || (strLen = str.length()) == 0) {
+            return str;
+        }
+
+        final int firstCodepoint = str.codePointAt(0);
+        final int newCodePoint = Character.toTitleCase(firstCodepoint);
+        if (firstCodepoint == newCodePoint) {
+            return str;
+        }
+
+        final int newCodePoints[] = new int[strLen];
+        int outOffset = 0;
+        newCodePoints[outOffset++] = newCodePoint;
+        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
+            final int codepoint = str.codePointAt(inOffset);
+            newCodePoints[outOffset++] = codepoint;
+            inOffset += Character.charCount(codepoint);
+        }
+        return new String(newCodePoints, 0, outOffset);
+    }
+
+    /**
+     * 取消字符串的大小写，将第一个字符改为小写。其他字符没有改变
+     *
+     * <pre>
+     * StringUtils.uncapitalize(null)  = null
+     * StringUtils.uncapitalize("")    = ""
+     * StringUtils.uncapitalize("cat") = "cat"
+     * StringUtils.uncapitalize("Cat") = "cat"
+     * StringUtils.uncapitalize("CAT") = "cAT"
+     * </pre>
+     *
+     * @param str 要取消大写的字符串可以为空
+     * @return 未大写的字符串，{@code null}如果输入为空字符串
+     */
+    public static String uncapitalize(final String str) {
+        int strLen;
+        if (str == null || (strLen = str.length()) == 0) {
+            return str;
+        }
+
+        final int firstCodepoint = str.codePointAt(0);
+        final int newCodePoint = Character.toLowerCase(firstCodepoint);
+        if (firstCodepoint == newCodePoint) {
+            return str;
+        }
+
+        final int newCodePoints[] = new int[strLen];
+        int outOffset = 0;
+        newCodePoints[outOffset++] = newCodePoint;
+        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
+            final int codepoint = str.codePointAt(inOffset);
+            newCodePoints[outOffset++] = codepoint;
+            inOffset += Character.charCount(codepoint);
+        }
+        return new String(newCodePoints, 0, outOffset);
+    }
+
+    /**
+     * 检查CharSequence是否以提供的大小写敏感的后缀结尾.
+     *
+     * <pre>
+     * StringUtils.endsWithAny(null, null)      = false
+     * StringUtils.endsWithAny(null, new String[] {"abc"})  = false
+     * StringUtils.endsWithAny("abcxyz", null)     = false
+     * StringUtils.endsWithAny("abcxyz", new String[] {""}) = true
+     * StringUtils.endsWithAny("abcxyz", new String[] {"xyz"}) = true
+     * StringUtils.endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * StringUtils.endsWithAny("abcXYZ", "def", "XYZ") = true
+     * StringUtils.endsWithAny("abcXYZ", "def", "xyz") = false
+     * </pre>
+     *
+     * @param sequence      要检查的CharSequence可能为空
+     * @param searchStrings 要查找的区分大小写的字符序列可以是空的，也可以包含{@code null}
+     * @return {如果输入{@code sequence}是{@code null}， 并且没有提供{@code searchstring}，
+     * 或者输入{@code sequence}以提供的区分大小写的{@code searchstring}结尾.
+     */
+    public static boolean endsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
+        if (isEmpty(sequence) || ArrayUtils.isEmpty(searchStrings)) {
+            return false;
+        }
+        for (final CharSequence searchString : searchStrings) {
+            if (endWith(sequence, searchString)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 如果字符串还没有以后缀结尾，则将后缀追加到字符串的末尾.
+     *
+     * @param str        字符串.
+     * @param suffix     附加到字符串末尾的后缀.
+     * @param ignoreCase 指示比较是否应忽略大小写.
+     * @param suffixes   有效终止符的附加后缀(可选).
+     * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
+     */
+    private static String appendIfMissing(final String str, final CharSequence suffix, final boolean ignoreCase, final CharSequence... suffixes) {
+        if (str == null || isEmpty(suffix) || endWith(str, suffix, ignoreCase)) {
+            return str;
+        }
+        if (suffixes != null && suffixes.length > 0) {
+            for (final CharSequence s : suffixes) {
+                if (endWith(str, s, ignoreCase)) {
+                    return str;
+                }
+            }
+        }
+        return str + suffix.toString();
+    }
+
+    /**
+     * 如果字符串还没有以任何后缀结尾，则将后缀追加到字符串的末尾.
+     *
+     * <pre>
+     * StringUtils.appendIfMissing(null, null) = null
+     * StringUtils.appendIfMissing("abc", null) = "abc"
+     * StringUtils.appendIfMissing("", "xyz") = "xyz"
+     * StringUtils.appendIfMissing("abc", "xyz") = "abcxyz"
+     * StringUtils.appendIfMissing("abcxyz", "xyz") = "abcxyz"
+     * StringUtils.appendIfMissing("abcXYZ", "xyz") = "abcXYZxyz"
+     * </pre>
+     * <p>With additional suffixes,</p>
+     * <pre>
+     * StringUtils.appendIfMissing(null, null, null) = null
+     * StringUtils.appendIfMissing("abc", null, null) = "abc"
+     * StringUtils.appendIfMissing("", "xyz", null) = "xyz"
+     * StringUtils.appendIfMissing("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
+     * StringUtils.appendIfMissing("abc", "xyz", "") = "abc"
+     * StringUtils.appendIfMissing("abc", "xyz", "mno") = "abcxyz"
+     * StringUtils.appendIfMissing("abcxyz", "xyz", "mno") = "abcxyz"
+     * StringUtils.appendIfMissing("abcmno", "xyz", "mno") = "abcmno"
+     * StringUtils.appendIfMissing("abcXYZ", "xyz", "mno") = "abcXYZxyz"
+     * StringUtils.appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
+     * </pre>
+     *
+     * @param str      字符串.
+     * @param suffix   附加到字符串末尾的后缀.
+     * @param suffixes 有效终止符的附加后缀(可选).
+     * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
+     */
+    public static String appendIfMissing(final String str, final CharSequence suffix, final CharSequence... suffixes) {
+        return appendIfMissing(str, suffix, false, suffixes);
+    }
+
+    /**
+     * 如果字符串还没有结束，则使用任何后缀将后缀追加到字符串的末尾，不区分大小写.
+     *
+     * <pre>
+     * StringUtils.appendIfMissingIgnoreCase(null, null) = null
+     * StringUtils.appendIfMissingIgnoreCase("abc", null) = "abc"
+     * StringUtils.appendIfMissingIgnoreCase("", "xyz") = "xyz"
+     * StringUtils.appendIfMissingIgnoreCase("abc", "xyz") = "abcxyz"
+     * StringUtils.appendIfMissingIgnoreCase("abcxyz", "xyz") = "abcxyz"
+     * StringUtils.appendIfMissingIgnoreCase("abcXYZ", "xyz") = "abcXYZ"
+     * </pre>
+     * <p>With additional suffixes,</p>
+     * <pre>
+     * StringUtils.appendIfMissingIgnoreCase(null, null, null) = null
+     * StringUtils.appendIfMissingIgnoreCase("abc", null, null) = "abc"
+     * StringUtils.appendIfMissingIgnoreCase("", "xyz", null) = "xyz"
+     * StringUtils.appendIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "abcxyz"
+     * StringUtils.appendIfMissingIgnoreCase("abc", "xyz", "") = "abc"
+     * StringUtils.appendIfMissingIgnoreCase("abc", "xyz", "mno") = "axyz"
+     * StringUtils.appendIfMissingIgnoreCase("abcxyz", "xyz", "mno") = "abcxyz"
+     * StringUtils.appendIfMissingIgnoreCase("abcmno", "xyz", "mno") = "abcmno"
+     * StringUtils.appendIfMissingIgnoreCase("abcXYZ", "xyz", "mno") = "abcXYZ"
+     * StringUtils.appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
+     * </pre>
+     *
+     * @param str      字符串.
+     * @param suffix   附加到字符串末尾的后缀.
+     * @param suffixes 有效终止符的附加后缀(可选).
+     * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
+     */
+    public static String appendIfMissingIgnoreCase(final String str, final CharSequence suffix, final CharSequence... suffixes) {
+        return appendIfMissing(str, suffix, true, suffixes);
+    }
+
+    /**
+     * 如果字符串还没有以任何前缀开始，则将前缀添加到字符串的开头.
+     *
+     * @param str        字符串.
+     * @param prefix     在字符串开始前的前缀.
+     * @param ignoreCase 指示比较是否应忽略大小写.
+     * @param prefixes   有效的附加前缀(可选).
+     * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
+     */
+    private static String prependIfMissing(final String str, final CharSequence prefix, final boolean ignoreCase, final CharSequence... prefixes) {
+        if (str == null || isEmpty(prefix) || startWith(str, prefix, ignoreCase)) {
+            return str;
+        }
+        if (prefixes != null && prefixes.length > 0) {
+            for (final CharSequence p : prefixes) {
+                if (startWith(str, p, ignoreCase)) {
+                    return str;
+                }
+            }
+        }
+        return prefix.toString() + str;
+    }
+
+    /**
+     * 如果字符串还没有以任何前缀开始，则将前缀添加到字符串的开头.
+     *
+     * <pre>
+     * StringUtils.prependIfMissing(null, null) = null
+     * StringUtils.prependIfMissing("abc", null) = "abc"
+     * StringUtils.prependIfMissing("", "xyz") = "xyz"
+     * StringUtils.prependIfMissing("abc", "xyz") = "xyzabc"
+     * StringUtils.prependIfMissing("xyzabc", "xyz") = "xyzabc"
+     * StringUtils.prependIfMissing("XYZabc", "xyz") = "xyzXYZabc"
+     * </pre>
+     * <p>With additional prefixes,</p>
+     * <pre>
+     * StringUtils.prependIfMissing(null, null, null) = null
+     * StringUtils.prependIfMissing("abc", null, null) = "abc"
+     * StringUtils.prependIfMissing("", "xyz", null) = "xyz"
+     * StringUtils.prependIfMissing("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
+     * StringUtils.prependIfMissing("abc", "xyz", "") = "abc"
+     * StringUtils.prependIfMissing("abc", "xyz", "mno") = "xyzabc"
+     * StringUtils.prependIfMissing("xyzabc", "xyz", "mno") = "xyzabc"
+     * StringUtils.prependIfMissing("mnoabc", "xyz", "mno") = "mnoabc"
+     * StringUtils.prependIfMissing("XYZabc", "xyz", "mno") = "xyzXYZabc"
+     * StringUtils.prependIfMissing("MNOabc", "xyz", "mno") = "xyzMNOabc"
+     * </pre>
+     *
+     * @param str      T字符串.
+     * @param prefix   在字符串开始前的前缀.
+     * @param prefixes 有效的附加前缀(可选).
+     * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
+     */
+    public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence... prefixes) {
+        return prependIfMissing(str, prefix, false, prefixes);
+    }
+
+    /**
+     * 如果字符串尚未开始，则将前缀添加到字符串的开头，不区分大小写，并使用任何前缀.
+     *
+     * <pre>
+     * StringUtils.prependIfMissingIgnoreCase(null, null) = null
+     * StringUtils.prependIfMissingIgnoreCase("abc", null) = "abc"
+     * StringUtils.prependIfMissingIgnoreCase("", "xyz") = "xyz"
+     * StringUtils.prependIfMissingIgnoreCase("abc", "xyz") = "xyzabc"
+     * StringUtils.prependIfMissingIgnoreCase("xyzabc", "xyz") = "xyzabc"
+     * StringUtils.prependIfMissingIgnoreCase("XYZabc", "xyz") = "XYZabc"
+     * </pre>
+     * <p>With additional prefixes,</p>
+     * <pre>
+     * StringUtils.prependIfMissingIgnoreCase(null, null, null) = null
+     * StringUtils.prependIfMissingIgnoreCase("abc", null, null) = "abc"
+     * StringUtils.prependIfMissingIgnoreCase("", "xyz", null) = "xyz"
+     * StringUtils.prependIfMissingIgnoreCase("abc", "xyz", new CharSequence[]{null}) = "xyzabc"
+     * StringUtils.prependIfMissingIgnoreCase("abc", "xyz", "") = "abc"
+     * StringUtils.prependIfMissingIgnoreCase("abc", "xyz", "mno") = "xyzabc"
+     * StringUtils.prependIfMissingIgnoreCase("xyzabc", "xyz", "mno") = "xyzabc"
+     * StringUtils.prependIfMissingIgnoreCase("mnoabc", "xyz", "mno") = "mnoabc"
+     * StringUtils.prependIfMissingIgnoreCase("XYZabc", "xyz", "mno") = "XYZabc"
+     * StringUtils.prependIfMissingIgnoreCase("MNOabc", "xyz", "mno") = "MNOabc"
+     * </pre>
+     *
+     * @param str      T字符串.
+     * @param prefix   在字符串开始前的前缀.
+     * @param prefixes 有效的附加前缀(可选).
+     * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
+     */
+    public static String prependIfMissingIgnoreCase(final String str, final CharSequence prefix, final CharSequence... prefixes) {
+        return prependIfMissing(str, prefix, true, prefixes);
     }
 
 }

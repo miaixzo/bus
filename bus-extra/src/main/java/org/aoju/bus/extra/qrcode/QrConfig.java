@@ -37,7 +37,7 @@ import java.util.HashMap;
  * 二维码设置
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class QrConfig {
@@ -72,7 +72,7 @@ public class QrConfig {
     /**
      * 编码
      */
-    public Charset charset = org.aoju.bus.core.consts.Charset.UTF_8;
+    public Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
     /**
      * 二维码中的Logo
      */

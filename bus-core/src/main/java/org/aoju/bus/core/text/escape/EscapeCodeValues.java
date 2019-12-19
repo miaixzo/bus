@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.text.escape;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.translate.AggregateTranslator;
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 import org.aoju.bus.core.text.translate.LookupTranslator;
@@ -41,7 +41,7 @@ import java.util.Map;
  * ESCAPE信息
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class EscapeCodeValues {

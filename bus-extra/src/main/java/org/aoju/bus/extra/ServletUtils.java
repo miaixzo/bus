@@ -25,9 +25,9 @@ package org.aoju.bus.extra;
 
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
-import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.consts.Httpd;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Httpd;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
@@ -44,7 +44,7 @@ import java.util.*;
  * Servlet相关工具类封装
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ServletUtils {

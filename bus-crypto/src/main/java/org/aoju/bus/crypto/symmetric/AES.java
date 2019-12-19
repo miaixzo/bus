@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.symmetric;
 
-import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
@@ -49,7 +49,7 @@ import javax.crypto.spec.IvParameterSpec;
  * <p>
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class AES extends Symmetric {

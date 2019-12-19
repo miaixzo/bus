@@ -46,7 +46,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 在对称加密算法中,使用的密钥只有一个,发收信双方都使用这个密钥对数据进行加密和解密,这就要求解密方事先必须知道加密密钥
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Symmetric {
@@ -267,7 +267,7 @@ public class Symmetric {
      * @return 加密后的bytes
      */
     public byte[] encrypt(String data) {
-        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.consts.Charset.UTF_8));
+        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.lang.Charset.UTF_8));
     }
 
     /**
@@ -367,7 +367,7 @@ public class Symmetric {
      * @return 解密后的String
      */
     public String decryptStr(byte[] bytes) {
-        return decryptStr(bytes, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptStr(bytes, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -398,7 +398,7 @@ public class Symmetric {
      * @return 解密后的String
      */
     public String decryptStr(String data) {
-        return decryptStr(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -429,7 +429,7 @@ public class Symmetric {
      * @return 解密后的String
      */
     public String decryptStr(InputStream data) {
-        return decryptStr(data, org.aoju.bus.core.consts.Charset.UTF_8);
+        return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

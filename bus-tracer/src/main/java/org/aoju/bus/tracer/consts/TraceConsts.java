@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.tracer.consts;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 
 import javax.xml.namespace.QName;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class TraceConsts {
@@ -42,7 +42,7 @@ public final class TraceConsts {
 
     public static final String SESSION_ID_KEY = "TPIC.sessionId";
     public static final String INVOCATION_ID_KEY = "TPIC.invocationId";
-    public static final char[] ALPHANUMERICS = Normal.LETTER_UPPER_NO.toCharArray();
+    public static final char[] ALPHANUMERICS = Normal.UPPER_LOWER_NUMBER.toCharArray();
 
     public static final String DEFAULT = "default";
     public static final String HIDE_INBOUND = "HideInbound";

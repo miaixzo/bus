@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
  * Murmur3 32bit、64bit、128bit 哈希算法实现
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Murmur implements Serializable {
@@ -35,7 +35,7 @@ public class Murmur implements Serializable {
     private static final int N2 = 0x38495ab5;
 
     private static final int DEFAULT_SEED = 0;
-    private static final Charset DEFAULT_CHARSET = org.aoju.bus.core.consts.Charset.UTF_8;
+    private static final Charset DEFAULT_CHARSET = org.aoju.bus.core.lang.Charset.UTF_8;
 
     /**
      * Murmur3 32-bit Hash值计算

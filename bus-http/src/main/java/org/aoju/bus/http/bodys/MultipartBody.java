@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.bodys;
 
-import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.header.Headers;
 
@@ -39,7 +39,7 @@ import java.util.UUID;
  * An <a href="http://www.ietf.org/rfc/rfc2387.txt">RFC 2387</a>-compliant request body.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class MultipartBody extends RequestBody {

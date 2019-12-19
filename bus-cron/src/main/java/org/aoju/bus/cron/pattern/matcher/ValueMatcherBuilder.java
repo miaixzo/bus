@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cron.pattern.matcher;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.NumberUtils;
@@ -39,7 +39,7 @@ import java.util.List;
  * {@link ValueMatcher} 构建器,用于构建表达式中每一项的匹配器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ValueMatcherBuilder {

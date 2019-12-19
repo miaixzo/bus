@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.consts.Fields;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.utils.DateUtils;
 
 /**
@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.DateUtils;
  * 计算某个过程花费的时间,精确到毫秒
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class TimeInterval {

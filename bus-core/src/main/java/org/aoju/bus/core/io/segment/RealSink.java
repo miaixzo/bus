@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class RealSink implements BufferSink {
@@ -279,11 +279,11 @@ public final class RealSink implements BufferSink {
     }
 
     @Override
-    public void close() throws IOException {
-        if (closed) return;
+    public void close() {
+        if (closed) {
+            return;
+        }
 
-        // Emit buffered data to the underlying sink. If this fails, we still need
-        // to close the sink; otherwise we risk leaking resources.
         Throwable thrown = null;
         try {
             if (buffer.size > 0) {
@@ -312,4 +312,5 @@ public final class RealSink implements BufferSink {
     public String toString() {
         return "buffer(" + sink + ")";
     }
+
 }

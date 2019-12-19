@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.logger.dialect.commons;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.AbstractAware;
 import org.aoju.bus.logger.level.Level;
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * Apache Commons Logging
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ApacheCommonsLog extends AbstractAware {

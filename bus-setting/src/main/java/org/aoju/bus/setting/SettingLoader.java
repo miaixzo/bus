@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.setting;
 
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.resource.UriResource;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
@@ -46,7 +46,7 @@ import java.util.Set;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class SettingLoader {
@@ -83,7 +83,7 @@ public class SettingLoader {
      * @param groupedMap GroupedMap
      */
     public SettingLoader(GroupedMap groupedMap) {
-        this(groupedMap, org.aoju.bus.core.consts.Charset.UTF_8, false);
+        this(groupedMap, org.aoju.bus.core.lang.Charset.UTF_8, false);
     }
 
     /**

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto;
 
-import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.crypto.provider.*;
@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 1. 注解和实现之间映射
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class Registry {

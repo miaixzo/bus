@@ -24,7 +24,7 @@
 package org.aoju.bus.starter.banner;
 
 import org.aoju.bus.Version;
-import org.aoju.bus.starter.BootConsts;
+import org.aoju.bus.starter.BusXBuilder;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.ansi.AnsiColor;
@@ -37,7 +37,7 @@ import java.io.PrintStream;
  * 旗标生成器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class BusBanner implements Banner {
@@ -46,14 +46,14 @@ public class BusBanner implements Banner {
 
     @Override
     public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
-        for (Object line : BootConsts.BUS_BANNER) {
+        for (Object line : BusXBuilder.BUS_BANNER) {
             printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_YELLOW, line));
         }
 
         printStream.println();
         printStream.println(AnsiOutput.toString(
                 AnsiColor.BRIGHT_MAGENTA, SPRING_BOOT + String.format(" (v%s)", SpringBootVersion.getVersion()),
-                AnsiColor.BRIGHT_MAGENTA, "      " + BootConsts.BUS_BOOT + String.format(" (v%s)", Version.get())));
+                AnsiColor.BRIGHT_MAGENTA, "      " + BusXBuilder.BUS_BOOT + String.format(" (v%s)", Version.get())));
         printStream.println();
     }
 

@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
  * Factory for HTTP authorization credentials.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class Credentials {
@@ -40,7 +40,7 @@ public final class Credentials {
     }
 
     public static String basic(String username, String password) {
-        return basic(username, password, org.aoju.bus.core.consts.Charset.ISO_8859_1);
+        return basic(username, password, org.aoju.bus.core.lang.Charset.ISO_8859_1);
     }
 
     public static String basic(String username, String password, Charset charset) {

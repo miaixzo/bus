@@ -44,7 +44,7 @@ import java.util.concurrent.TimeoutException;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class WmiQueryHandler {
@@ -174,14 +174,10 @@ public class WmiQueryHandler {
      */
     public boolean initCOM() {
         boolean comInit = false;
-        // Step 1: --------------------------------------------------
-        // Initialize COM. ------------------------------------------
         comInit = initCOM(getComThreading());
         if (!comInit) {
             comInit = initCOM(switchComThreading());
         }
-        // Step 2: --------------------------------------------------
-        // Set general COM security levels --------------------------
         if (comInit && !isSecurityInitialized()) {
             WinNT.HRESULT hres = Ole32.INSTANCE.CoInitializeSecurity(null, -1, null, null,
                     Ole32.RPC_C_AUTHN_LEVEL_DEFAULT, Ole32.RPC_C_IMP_LEVEL_IMPERSONATE, null, Ole32.EOAC_NONE, null);

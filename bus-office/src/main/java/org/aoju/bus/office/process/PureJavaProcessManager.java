@@ -23,21 +23,38 @@
  */
 package org.aoju.bus.office.process;
 
-import org.aoju.bus.office.support.ProcessQuery;
+import org.aoju.bus.office.Builder;
 
 /**
+ * PureJava 系统流程管理器实现类.
+ *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class PureJavaProcessManager implements ProcessManager {
 
-    public long findPid(ProcessQuery query) {
-        return PID_UNKNOWN;
+    /**
+     * 获取{@code PureJavaProcessManager}的默认实例.
+     *
+     * @return 默认的{@code PureJavaProcessManager}实例.
+     */
+    public static PureJavaProcessManager getDefault() {
+        return DefaultHolder.INSTANCE;
     }
 
-    public void kill(Process process, long pid) {
+    @Override
+    public long find(final ProcessQuery query) {
+        return Builder.PID_UNKNOWN;
+    }
+
+    @Override
+    public void kill(final Process process, final long pid) {
         process.destroy();
+    }
+
+    private static class DefaultHolder {
+        static final PureJavaProcessManager INSTANCE = new PureJavaProcessManager();
     }
 
 }

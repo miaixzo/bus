@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class IterUtils {
@@ -563,11 +563,6 @@ public class IterUtils {
 
         private final Enumeration<E> e;
 
-        /**
-         * 构造
-         *
-         * @param enumeration {@link Enumeration}对象
-         */
         public EnumerationIter(Enumeration<E> enumeration) {
             this.e = enumeration;
         }
@@ -593,4 +588,5 @@ public class IterUtils {
         }
 
     }
+
 }

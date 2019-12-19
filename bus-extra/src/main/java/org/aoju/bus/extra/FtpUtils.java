@@ -47,7 +47,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class FtpUtils extends AbstractFtp {
@@ -88,7 +88,7 @@ public class FtpUtils extends AbstractFtp {
      * @param password 密码
      */
     public FtpUtils(String host, int port, String user, String password) {
-        this(host, port, user, password, org.aoju.bus.core.consts.Charset.UTF_8);
+        this(host, port, user, password, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

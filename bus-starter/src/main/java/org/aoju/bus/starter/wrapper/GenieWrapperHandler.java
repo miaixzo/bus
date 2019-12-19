@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.starter.wrapper;
 
-import org.aoju.bus.core.consts.Httpd;
 import org.aoju.bus.core.lang.Ansi;
+import org.aoju.bus.core.lang.Httpd;
 import org.aoju.bus.health.Systemd;
 import org.aoju.bus.logger.Logger;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @Component
@@ -148,7 +148,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
                 || Httpd.PUT.equals(method)) {
             if (response instanceof CacheResponseWrapper) {
                 CacheResponseWrapper cacheResponseWrapper = ((CacheResponseWrapper) response);
-                Logger.info("<== {}", new String(cacheResponseWrapper.getBody()));
+                Logger.info("<== {}", new String(cacheResponseWrapper.getBody()).length());
             }
         }
     }

@@ -23,9 +23,6 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.FileType;
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.BOMInputStream;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileCopier;
@@ -33,6 +30,9 @@ import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
 import org.aoju.bus.core.io.file.LineSeparator;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
@@ -55,7 +55,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class FileUtils {
@@ -192,7 +192,7 @@ public class FileUtils {
      * @param path       当前遍历文件或目录的路径
      * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<File> loopFiles(String path, FileFilter fileFilter) {
         return loopFiles(file(path), fileFilter);
@@ -235,7 +235,7 @@ public class FileUtils {
      *
      * @param path 当前遍历文件或目录的路径
      * @return 文件列表
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static List<File> loopFiles(String path) {
         return loopFiles(file(path));
@@ -750,8 +750,8 @@ public class FileUtils {
      * @return 成功与否
      * @throws InstrumentException 异常
      */
-    public static boolean del(String fullFileOrDirPath) throws InstrumentException {
-        return del(file(fullFileOrDirPath));
+    public static boolean delete(String fullFileOrDirPath) throws InstrumentException {
+        return delete(file(fullFileOrDirPath));
     }
 
     /**
@@ -763,7 +763,7 @@ public class FileUtils {
      * @return 成功与否
      * @throws InstrumentException 异常
      */
-    public static boolean del(File file) throws InstrumentException {
+    public static boolean delete(File file) throws InstrumentException {
         if (file == null || false == file.exists()) {
             return false;
         }
@@ -809,7 +809,7 @@ public class FileUtils {
 
         final File[] files = directory.listFiles();
         for (File childFile : files) {
-            boolean isOk = del(childFile);
+            boolean isOk = delete(childFile);
             if (isOk == false) {
                 // 删除一个出错则本次删除任务失败
                 return false;
@@ -929,7 +929,6 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static File copyFile(File src, File dest, StandardCopyOption... options) throws InstrumentException {
-        // check
         Assert.notNull(src, "Source File is null !");
         if (false == src.exists()) {
             throw new InstrumentException("File not exist: " + src);
@@ -1034,6 +1033,25 @@ public class FileUtils {
      */
     public static File copyFilesFromDir(File src, File dest, boolean isOverride) throws InstrumentException {
         return FileCopier.create(src, dest).setCopyContentIfDir(true).setOnlyCopyFile(true).setOverride(isOverride).copy();
+    }
+
+    /**
+     * Copy bytes from a <code>File</code> to an <code>OutputStream</code>.
+     * <p>
+     * This method buffers the input internally, so there is no need to use a <code>BufferedInputStream</code>.
+     * </p>
+     *
+     * @param input  the <code>File</code> to read from
+     * @param output the <code>OutputStream</code> to write to
+     * @return the number of bytes copied
+     * @throws NullPointerException if the input or output is null
+     * @throws IOException          if an I/O error occurs
+     * @since 2.1
+     */
+    public static long copyFile(final File input, final OutputStream output) throws IOException {
+        try (FileInputStream fis = new FileInputStream(input)) {
+            return IoUtils.copy(fis, output);
+        }
     }
 
     /**
@@ -1908,7 +1926,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static BufferedReader getUtf8Reader(Path path) throws InstrumentException {
-        return getReader(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return getReader(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -1919,7 +1937,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static BufferedReader getUtf8Reader(File file) throws InstrumentException {
-        return getReader(file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return getReader(file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -1930,7 +1948,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static BufferedReader getUtf8Reader(String path) throws InstrumentException {
-        return getReader(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return getReader(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2012,7 +2030,7 @@ public class FileUtils {
      * @param filePath 文件路径
      * @return 字节码
      * @throws InstrumentException 异常
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static byte[] readBytes(String filePath) throws InstrumentException {
         return readBytes(file(filePath));
@@ -2026,7 +2044,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static String readUtf8String(File file) throws InstrumentException {
-        return readString(file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readString(file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2037,7 +2055,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static String readUtf8String(String path) throws InstrumentException {
-        return readString(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readString(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2123,7 +2141,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static <T extends Collection<String>> T readUtf8Lines(String path, T collection) throws InstrumentException {
-        return readLines(path, org.aoju.bus.core.consts.Charset.UTF_8, collection);
+        return readLines(path, org.aoju.bus.core.lang.Charset.UTF_8, collection);
     }
 
     /**
@@ -2165,7 +2183,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static <T extends Collection<String>> T readUtf8Lines(File file, T collection) throws InstrumentException {
-        return readLines(file, org.aoju.bus.core.consts.Charset.UTF_8, collection);
+        return readLines(file, org.aoju.bus.core.lang.Charset.UTF_8, collection);
     }
 
     /**
@@ -2206,7 +2224,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static <T extends Collection<String>> T readUtf8Lines(URL url, T collection) throws InstrumentException {
-        return readLines(url, org.aoju.bus.core.consts.Charset.UTF_8, collection);
+        return readLines(url, org.aoju.bus.core.lang.Charset.UTF_8, collection);
     }
 
     /**
@@ -2254,7 +2272,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static List<String> readUtf8Lines(URL url) throws InstrumentException {
-        return readLines(url, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readLines(url, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2290,7 +2308,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static List<String> readUtf8Lines(String path) throws InstrumentException {
-        return readLines(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readLines(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2327,7 +2345,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static List<String> readUtf8Lines(File file) throws InstrumentException {
-        return readLines(file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return readLines(file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2362,7 +2380,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static void readUtf8Lines(File file, LineHandler lineHandler) throws InstrumentException {
-        readLines(file, org.aoju.bus.core.consts.Charset.UTF_8, lineHandler);
+        readLines(file, org.aoju.bus.core.lang.Charset.UTF_8, lineHandler);
     }
 
     /**
@@ -2389,7 +2407,7 @@ public class FileUtils {
         String line = null;
         try {
             while ((line = file.readLine()) != null) {
-                lineHandler.handle(CharsetUtils.convert(line, org.aoju.bus.core.consts.Charset.ISO_8859_1, charset));
+                lineHandler.handle(CharsetUtils.convert(line, org.aoju.bus.core.lang.Charset.ISO_8859_1, charset));
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -2425,7 +2443,7 @@ public class FileUtils {
             throw new InstrumentException(e);
         }
         if (null != line) {
-            return CharsetUtils.convert(line, org.aoju.bus.core.consts.Charset.ISO_8859_1, charset);
+            return CharsetUtils.convert(line, org.aoju.bus.core.lang.Charset.ISO_8859_1, charset);
         }
 
         return null;
@@ -2442,7 +2460,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static <T> T loadUtf8(String path, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
-        return load(path, org.aoju.bus.core.consts.Charset.UTF_8, readerHandler);
+        return load(path, org.aoju.bus.core.lang.Charset.UTF_8, readerHandler);
     }
 
     /**
@@ -2486,7 +2504,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static <T> T loadUtf8(File file, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
-        return load(file, org.aoju.bus.core.consts.Charset.UTF_8, readerHandler);
+        return load(file, org.aoju.bus.core.lang.Charset.UTF_8, readerHandler);
     }
 
     /**
@@ -2645,7 +2663,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static File writeUtf8String(String content, String path) throws InstrumentException {
-        return writeString(content, path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return writeString(content, path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2657,7 +2675,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static File writeUtf8String(String content, File file) throws InstrumentException {
-        return writeString(content, file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return writeString(content, file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2722,7 +2740,7 @@ public class FileUtils {
      * @since 3.1.9
      */
     public static File appendUtf8String(String content, String path) throws InstrumentException {
-        return appendString(content, path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return appendString(content, path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2761,7 +2779,7 @@ public class FileUtils {
      * @since 3.1.9
      */
     public static File appendUtf8String(String content, File file) throws InstrumentException {
-        return appendString(content, file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return appendString(content, file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2798,10 +2816,10 @@ public class FileUtils {
      * @param path 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
-        return writeLines(list, path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return writeLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2812,10 +2830,10 @@ public class FileUtils {
      * @param file 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
-        return writeLines(list, file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return writeLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2885,7 +2903,7 @@ public class FileUtils {
      * @since 3.1.9
      */
     public static <T> File appendUtf8Lines(Collection<T> list, File file) throws InstrumentException {
-        return appendLines(list, file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return appendLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -2899,7 +2917,7 @@ public class FileUtils {
      * @since 3.1.9
      */
     public static <T> File appendUtf8Lines(Collection<T> list, String path) throws InstrumentException {
-        return appendLines(list, path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return appendLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -3031,7 +3049,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static File writeUtf8Map(Map<?, ?> map, File file, String kvSeparator, boolean isAppend) throws InstrumentException {
-        return FileWriter.create(file, org.aoju.bus.core.consts.Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
+        return FileWriter.create(file, org.aoju.bus.core.lang.Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
     }
 
     /**
@@ -3346,6 +3364,64 @@ public class FileUtils {
      */
     public static String getMimeType(String filePath) {
         return URLConnection.getFileNameMap().getContentTypeFor(filePath);
+    }
+
+    /**
+     * 从完整的文件名中获取基名减去完整路径和扩展名.
+     * <p>
+     * 此方法将处理Unix或Windows格式的文件.
+     * 最后一个正斜杠或反斜杠后面，最后一个点之前的文本.
+     * <pre>
+     * a/b/c.txt --&gt; c
+     * a.txt     --&gt; a
+     * a/b/c     --&gt; c
+     * a/b/c/    --&gt; ""
+     * </pre>
+     * <p>
+     *
+     * @param filename 要查询的文件名null返回null
+     * @return 没有路径的文件名，如果不存在空字符串，则为空字符串
+     */
+    public static String getBaseName(final String filename) {
+        return removeExtension(getName(filename));
+    }
+
+    /**
+     * 从文件名中删除扩展名.
+     *
+     * <p>
+     * 此方法返回文件名最后一个点之前的文本部分,点之后必须没有目录分隔符.
+     * </p>
+     *
+     * <pre>
+     * foo.txt    --&gt; foo
+     * a\b\c.jpg  --&gt; a\b\c
+     * a\b\c      --&gt; a\b\c
+     * a.b\c      --&gt; a.b\c
+     * </pre>
+     *
+     * @param filename 要查询的文件名null返回null
+     * @return 文件名减去扩展名
+     */
+    public static String removeExtension(final String filename) {
+        if (filename == null) {
+            return null;
+        }
+
+        final int len = filename.length();
+        for (int i = 0; i < len; i++) {
+            if (filename.charAt(i) == 0) {
+                throw new IllegalArgumentException("Null byte present in file/path name. There are no " +
+                        "known legitimate use cases for such data, but several injection attacks may use it");
+            }
+        }
+
+        final int index = indexOfExtension(filename);
+        if (index == -1) {
+            return filename;
+        } else {
+            return filename.substring(0, index);
+        }
     }
 
 }

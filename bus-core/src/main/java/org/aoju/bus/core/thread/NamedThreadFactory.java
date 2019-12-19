@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class NamedThreadFactory implements ThreadFactory {
@@ -64,6 +64,10 @@ public class NamedThreadFactory implements ThreadFactory {
      * 无法捕获的异常统一处理
      */
     private final UncaughtExceptionHandler handler;
+
+    public NamedThreadFactory(String prefix) {
+        this(prefix, true);
+    }
 
     /**
      * 构造

@@ -25,8 +25,8 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.HttpClient;
 import org.aoju.bus.oauth.Builder;
@@ -47,7 +47,7 @@ import java.util.Map;
  * 注：集成的是正式环境,非沙箱环境
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ElemeProvider extends DefaultProvider {

@@ -26,7 +26,7 @@ package org.aoju.bus.starter.sensitive;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.base.spring.BaseAdvice;
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -56,7 +56,7 @@ import java.util.Map;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ResponseBodyAdvice extends BaseAdvice

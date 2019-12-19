@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.Builder;
 
@@ -48,7 +48,7 @@ import java.security.spec.RSAPublicKeySpec;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class RSA extends Asymmetric {

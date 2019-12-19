@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.http.internal.http;
 
-import org.aoju.bus.core.consts.MediaType;
 import org.aoju.bus.core.io.segment.BufferSource;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.http.bodys.ResponseBody;
 
 /**
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class RealResponseBody extends ResponseBody {

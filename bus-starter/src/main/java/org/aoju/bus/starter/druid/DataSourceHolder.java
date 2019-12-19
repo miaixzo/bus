@@ -13,15 +13,13 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.Map;
 
 /**
  * 数据源信息
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class DataSourceHolder {
@@ -68,20 +66,6 @@ public class DataSourceHolder {
      */
     public boolean addDataSource(Map<String, String> map) {
         try {
-            Connection connection = null;
-            try {
-                Class.forName(map.get(DruidDataSourceFactory.PROP_DRIVERCLASSNAME));
-                connection = DriverManager.getConnection(
-                        map.get(DruidDataSourceFactory.PROP_URL),
-                        map.get(DruidDataSourceFactory.PROP_USERNAME),
-                        map.get(DruidDataSourceFactory.PROP_PASSWORD));
-                System.out.println(connection.isClosed());
-            } catch (Exception e) {
-                return false;
-            } finally {
-                if (connection != null && !connection.isClosed())
-                    connection.close();
-            }
             String key = map.get("key");
             if (StringUtils.isBlank(key)) return false;
             if (DynamicDataSource.getInstance().containsKey(key)) {

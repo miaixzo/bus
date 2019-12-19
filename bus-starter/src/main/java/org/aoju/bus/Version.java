@@ -23,7 +23,7 @@
  */
 package org.aoju.bus;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.CompareUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -32,7 +32,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Version {
@@ -60,7 +60,7 @@ public class Version {
      */
 
     public static String get() {
-        return "5.3.1.RELEASE";
+        return "5.3.3.RELEASE";
     }
 
     /**

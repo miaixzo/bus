@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.health.software;
 
-import org.aoju.bus.core.consts.System;
+import org.aoju.bus.core.lang.System;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.health.Systemd;
 
@@ -31,7 +31,7 @@ import org.aoju.bus.health.Systemd;
  * 代表当前运行的JRE的信息
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class JavaRuntime {

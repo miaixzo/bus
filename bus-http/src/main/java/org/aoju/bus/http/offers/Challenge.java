@@ -35,7 +35,7 @@ import static java.util.Locale.US;
  * An RFC 7235 challenge.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class Challenge {
@@ -89,7 +89,7 @@ public final class Challenge {
             } catch (Exception ignore) {
             }
         }
-        return org.aoju.bus.core.consts.Charset.ISO_8859_1;
+        return org.aoju.bus.core.lang.Charset.ISO_8859_1;
     }
 
     @Override

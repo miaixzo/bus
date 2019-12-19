@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.aoju.bus.core.consts.Httpd;
+import org.aoju.bus.core.lang.Httpd;
 import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -51,7 +51,7 @@ import java.io.IOException;
  * Xss/重复读取等配置
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties({WrapperProperties.class})

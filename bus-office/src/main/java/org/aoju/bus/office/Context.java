@@ -24,12 +24,12 @@
 package org.aoju.bus.office;
 
 /**
+ * 所有office上下文接口的基本接口.
+ *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface Context {
-
-    Object getService(String serviceName);
 
 }

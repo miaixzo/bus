@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.core.date.format;
 
-import org.aoju.bus.core.consts.Fields;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
  * 时长格式化器
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class BetweenFormat {

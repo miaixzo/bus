@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Fields;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.Validator;
 
 import java.util.Date;
@@ -37,7 +37,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class CitizenIdUtils {
@@ -535,7 +535,7 @@ public class CitizenIdUtils {
      * @param endExclude   结束位置（不包含）
      * @return 隐藏后的身份证号码
      * @see StringUtils#hide(CharSequence, int, int)
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static String hide(String idCard, int startInclude, int endExclude) {
         return StringUtils.hide(idCard, startInclude, endExclude);

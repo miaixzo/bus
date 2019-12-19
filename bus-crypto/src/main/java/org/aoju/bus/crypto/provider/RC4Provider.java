@@ -46,7 +46,7 @@
  */
 package org.aoju.bus.crypto.provider;
 
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Provider;
@@ -60,7 +60,7 @@ import org.aoju.bus.crypto.symmetric.RC4;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class RC4Provider implements Provider {

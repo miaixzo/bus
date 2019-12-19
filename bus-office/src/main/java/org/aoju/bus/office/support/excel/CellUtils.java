@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.aoju.bus.office.support.excel.cell.FormulaCellValue;
@@ -45,7 +45,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class CellUtils {

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.digest;
 
-import org.aoju.bus.core.consts.Charset;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.HexUtils;
@@ -47,7 +47,7 @@ import java.io.InputStream;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class HMac {

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
 
@@ -32,7 +32,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 直接返回 null
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class PasswordStrategy extends AbstractProvider {

@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Fields;
 import org.aoju.bus.core.date.Between;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.date.TimeInterval;
@@ -31,6 +30,7 @@ import org.aoju.bus.core.date.format.BetweenFormat;
 import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Validator;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class DateUtils extends Fields {

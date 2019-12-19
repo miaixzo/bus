@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.consts.Charset;
-import org.aoju.bus.core.consts.Httpd;
-import org.aoju.bus.core.consts.MediaType;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Httpd;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.MapUtils;
@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * Http 辅助类
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class HttpClient extends Client {

@@ -1,8 +1,8 @@
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.File;
@@ -22,7 +22,7 @@ import java.util.Map;
  * 用于执行系统命令的工具
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class RuntimeUtils {

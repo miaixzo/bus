@@ -23,28 +23,35 @@
  */
 package org.aoju.bus.office.process;
 
-import org.aoju.bus.office.support.ProcessQuery;
-
 import java.io.IOException;
 
 /**
+ * 提供管理正在运行的流程所需的服务.
+ *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface ProcessManager {
 
-    long PID_NOT_FOUND = -2;
-    long PID_UNKNOWN = -1;
-
-    void kill(Process process, long pid) throws IOException;
+    /**
+     * 查找具有指定命令行的运行进程的PID.
+     *
+     * @param query 用于查找带有要pid的进程的查询.
+     * @return 如果没有找到，则使用pid;
+     * 如果没有找到，则使用{@link org.aoju.bus.office.Builder#PID_NOT_FOUND};
+     * 如果没有找到，则使用{@link org.aoju.bus.office.Builder#PID_UNKNOWN}
+     * @throws IOException 如果IO错误发生.
+     */
+    long find(ProcessQuery query) throws IOException;
 
     /**
-     * @param query the object
-     * @return the pid if found, {@link #PID_NOT_FOUND} if not,
-     * or {@link #PID_UNKNOWN} if this implementation is unable to find out
-     * @throws IOException exception
+     * 终止指定的进程
+     *
+     * @param process 进程信息.
+     * @param pid     进程对应pid.
+     * @throws IOException 如果IO错误发生.
      */
-    long findPid(ProcessQuery query) throws IOException;
+    void kill(Process process, long pid) throws IOException;
 
 }

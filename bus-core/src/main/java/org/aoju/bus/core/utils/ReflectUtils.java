@@ -24,11 +24,10 @@
 package org.aoju.bus.core.utils;
 
 
-import org.aoju.bus.core.consts.Normal;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.SimpleCache;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.*;
@@ -42,10 +41,20 @@ import java.util.Set;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ReflectUtils {
+
+    /**
+     * set方法前缀
+     */
+    public static final String SETTER_PREFIX = "set";
+
+    /**
+     * get方法前缀
+     */
+    public static final String GETTER_PREFIX = "get";
 
     private static final String CGLIB_CLASS_SEPARATOR = Symbol.DOLLAR + Symbol.DOLLAR;
 
@@ -73,7 +82,7 @@ public class ReflectUtils {
     public static Object invokeGetter(Object obj, String name) {
         Object object = obj;
         for (String method : StringUtils.split(name, ".")) {
-            String getterMethodName = Normal.GETTER_PREFIX + StringUtils.capitalize(method);
+            String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
         }
         return object;
@@ -92,10 +101,10 @@ public class ReflectUtils {
         String[] names = StringUtils.split(name, ".");
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
-                String getterMethodName = Normal.GETTER_PREFIX + StringUtils.capitalize(names[i]);
+                String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(names[i]);
                 object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
             } else {
-                String setterMethodName = Normal.SETTER_PREFIX + StringUtils.capitalize(names[i]);
+                String setterMethodName = SETTER_PREFIX + StringUtils.capitalize(names[i]);
                 invokeMethodByName(object, setterMethodName, new Object[]{value});
             }
         }
@@ -585,7 +594,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>... paramTypes) throws SecurityException {
         return getMethod(clazz, true, methodName, paramTypes);
@@ -613,7 +622,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.3.1
+     * @since 5.3.3
      */
     public static Method getMethod(Class<?> clazz, boolean ignoreCase, String methodName, Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringUtils.isBlank(methodName)) {
@@ -929,7 +938,7 @@ public class ReflectUtils {
      * @return 返回结果
      */
     public static String getGetMethodName(String fieldName) {
-        return Normal.GETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return GETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
     /**
@@ -939,7 +948,7 @@ public class ReflectUtils {
      * @return 返回结果
      */
     public static String getSetMethodName(String fieldName) {
-        return Normal.SETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return SETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
 

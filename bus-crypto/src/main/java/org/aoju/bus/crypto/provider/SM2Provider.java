@@ -46,7 +46,7 @@
  */
 package org.aoju.bus.crypto.provider;
 
-import org.aoju.bus.core.consts.Symbol;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
@@ -58,7 +58,7 @@ import org.aoju.bus.crypto.asymmetric.SM2;
  * RSA 加密解密算法
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class SM2Provider implements Provider {

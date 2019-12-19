@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * 生成姓名
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public abstract class NameUtils {
@@ -6944,4 +6944,5 @@ public abstract class NameUtils {
         cnNameList.add("碧莹");
         cnNameList.add("思山");
     }
+
 }

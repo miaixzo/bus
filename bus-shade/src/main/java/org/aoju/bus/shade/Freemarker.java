@@ -25,7 +25,7 @@ package org.aoju.bus.shade;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import org.aoju.bus.core.consts.Normal;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.shade.entity.TableEntity;
 
 import java.io.File;
@@ -36,7 +36,7 @@ import java.io.IOException;
  * 创建文件
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class Freemarker {

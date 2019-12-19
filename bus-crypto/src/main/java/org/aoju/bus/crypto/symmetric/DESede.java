@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.crypto.symmetric;
 
-import org.aoju.bus.core.consts.Algorithm;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Mode;
@@ -39,7 +39,7 @@ import javax.crypto.spec.IvParameterSpec;
  * Java中默认实现为：DESede/ECB/PKCS5Padding
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class DESede extends Symmetric {

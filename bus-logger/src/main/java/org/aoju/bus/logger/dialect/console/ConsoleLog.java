@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.logger.dialect.console;
 
-import org.aoju.bus.core.consts.Normal;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.lang.Dict;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.AbstractAware;
@@ -36,7 +36,7 @@ import org.aoju.bus.logger.level.Level;
  * 利用System.out.println()打印日志
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ConsoleLog extends AbstractAware {

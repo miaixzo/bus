@@ -41,7 +41,7 @@ import java.util.Objects;
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class CsvReader {
@@ -117,7 +117,7 @@ public final class CsvReader {
      * @throws InstrumentException IO异常
      */
     public CsvData read(File file) throws InstrumentException {
-        return read(file, org.aoju.bus.core.consts.Charset.UTF_8);
+        return read(file, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -140,7 +140,7 @@ public final class CsvReader {
      * @throws InstrumentException IO异常
      */
     public CsvData read(Path path) throws InstrumentException {
-        return read(path, org.aoju.bus.core.consts.Charset.UTF_8);
+        return read(path, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

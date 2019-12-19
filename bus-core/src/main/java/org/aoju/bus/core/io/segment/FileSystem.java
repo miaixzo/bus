@@ -36,7 +36,7 @@ import java.io.IOException;
  * 例如加密)
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface FileSystem {
@@ -52,7 +52,6 @@ public interface FileSystem {
             try {
                 return IoUtils.sink(file);
             } catch (FileNotFoundException e) {
-                // Maybe the parent directory doesn't exist? Try creating it first.
                 file.getParentFile().mkdirs();
                 return IoUtils.sink(file);
             }
@@ -63,7 +62,6 @@ public interface FileSystem {
             try {
                 return IoUtils.appendingSink(file);
             } catch (FileNotFoundException e) {
-                // Maybe the parent directory doesn't exist? Try creating it first.
                 file.getParentFile().mkdirs();
                 return IoUtils.appendingSink(file);
             }
@@ -71,7 +69,6 @@ public interface FileSystem {
 
         @Override
         public void delete(File file) throws IOException {
-            // If delete() fails, make sure it's because the file didn't exist!
             if (!file.delete() && file.exists()) {
                 throw new IOException("failed to delete " + file);
             }

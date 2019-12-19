@@ -30,8 +30,8 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
-import org.aoju.bus.core.consts.Symbol;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
@@ -49,7 +49,7 @@ import java.nio.file.Path;
  * 存储服务-七牛
  *
  * @author Kimi Liu
- * @version 5.3.1
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class QiniuYunOssProvider extends AbstractProvider {
