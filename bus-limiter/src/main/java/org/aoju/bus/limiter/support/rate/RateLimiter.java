@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public abstract class RateLimiter implements Limiter<org.aoju.bus.limiter.annotation.RateLimiter> {

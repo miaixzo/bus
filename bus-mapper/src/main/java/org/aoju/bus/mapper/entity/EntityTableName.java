@@ -27,7 +27,7 @@ package org.aoju.bus.mapper.entity;
  * 实现动态表名时,实体类需要实现该接口
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface EntityTableName {

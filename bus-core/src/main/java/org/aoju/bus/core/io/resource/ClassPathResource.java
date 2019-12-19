@@ -34,7 +34,7 @@ import org.aoju.bus.core.utils.*;
  * 传入的path所指向的资源必须存在,否则报错
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class ClassPathResource extends UriResource {

@@ -31,7 +31,7 @@ import org.aoju.bus.office.Context;
  * FilterChain的默认实现.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class DefaultFilter extends AbstractFilter {

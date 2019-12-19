@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {
@@ -66,7 +66,7 @@ public abstract class AbstractProvider implements Provider {
     private Properties sqls;
 
     protected AbstractProvider(Map<String, Object> context) {
-        InputStream resource = this.getClass().getClassLoader().getResourceAsStream("config/bus-cache.yaml");
+        InputStream resource = this.getClass().getClassLoader().getResourceAsStream("META-INF/caches/bus-cache.yaml");
         this.sqls = new Yaml().loadAs(resource, Properties.class);
 
         this.jdbcOperations = jdbcOperationsSupplier(context).get();

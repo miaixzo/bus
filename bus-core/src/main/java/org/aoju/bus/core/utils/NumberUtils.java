@@ -53,7 +53,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class NumberUtils {
@@ -1398,7 +1398,7 @@ public class NumberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 5.3.2
+     * @since 5.3.3
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1655,7 +1655,7 @@ public class NumberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 5.3.2
+     * @since 5.3.3
      */
     public static BigInteger newBigInteger(String str) {
         if (null == str) {

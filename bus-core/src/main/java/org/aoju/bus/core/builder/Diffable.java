@@ -39,7 +39,7 @@ package org.aoju.bus.core.builder;
  *
  * @param <T> 这个对象可能被区分的对象类型
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface Diffable<T> {

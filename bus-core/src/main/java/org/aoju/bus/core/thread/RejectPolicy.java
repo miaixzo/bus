@@ -35,7 +35,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 此枚举为JDK预定义的几种策略枚举表示
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public enum RejectPolicy {

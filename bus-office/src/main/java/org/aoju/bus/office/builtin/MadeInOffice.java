@@ -31,7 +31,7 @@ import org.aoju.bus.office.metric.OfficeManager;
  * 表示由{@link OfficeManager}执行的任务.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface MadeInOffice {

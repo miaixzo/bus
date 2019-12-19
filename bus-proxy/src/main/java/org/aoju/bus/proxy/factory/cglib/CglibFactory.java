@@ -37,7 +37,7 @@ import java.lang.reflect.Modifier;
 
 /**
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class CglibFactory extends AbstractFactory {

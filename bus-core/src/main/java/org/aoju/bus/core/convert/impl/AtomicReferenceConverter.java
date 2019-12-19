@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * {@link AtomicReference}转换器
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class AtomicReferenceConverter extends AbstractConverter<AtomicReference> {

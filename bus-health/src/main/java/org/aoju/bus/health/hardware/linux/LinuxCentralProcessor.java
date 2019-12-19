@@ -39,7 +39,7 @@ import static org.aoju.bus.health.common.linux.ProcUtils.STAT;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class LinuxCentralProcessor extends AbstractCentralProcessor {

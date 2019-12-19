@@ -17,3 +17,5 @@
 > 依赖外部环境
 - OpenOffice或者LibreOffice
 > 下载地址如下:
+地址：https://pan.baidu.com/s/1ZSGCIVXTweK8tbOPudkaQQ
+提取码： vn5v

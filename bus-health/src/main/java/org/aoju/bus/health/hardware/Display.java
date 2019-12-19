@@ -28,7 +28,7 @@ package org.aoju.bus.health.hardware;
  * identified by the EDID standard.
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface Display {

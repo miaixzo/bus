@@ -47,7 +47,7 @@ import java.util.Optional;
  * 表示本地转换任务的默认行为.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class LocalMadeInOffice extends AbstractLocalOffice {

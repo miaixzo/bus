@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 提供静态方法获取配置文件
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class SettingUtils {

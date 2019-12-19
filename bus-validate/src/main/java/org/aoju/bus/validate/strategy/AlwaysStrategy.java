@@ -30,7 +30,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * 这个校验器的结果永远为true
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class AlwaysStrategy implements Matcher {

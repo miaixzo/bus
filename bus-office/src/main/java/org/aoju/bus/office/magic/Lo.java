@@ -36,7 +36,7 @@ import java.util.Optional;
  * 实用程序函数，使Office更易于使用.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public final class Lo {

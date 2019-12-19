@@ -42,7 +42,7 @@ import static org.aoju.bus.office.Builder.toUrl;
  * 此筛选器用于在转换的文档末尾插入文档.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class DocumentInserterFilter implements Filter {

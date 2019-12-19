@@ -30,7 +30,7 @@ import java.io.OutputStream;
  * 具有指定转换源的转换作业.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface JobWithSource {

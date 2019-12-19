@@ -42,7 +42,7 @@ import java.io.InputStream;
  * 所有文档转换器实现的基类.
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {

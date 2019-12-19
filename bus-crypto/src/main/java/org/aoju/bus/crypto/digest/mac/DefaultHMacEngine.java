@@ -38,7 +38,7 @@ import java.io.InputStream;
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
- * @version 5.3.2
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public class DefaultHMacEngine implements MacEngine {

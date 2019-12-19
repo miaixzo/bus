@@ -27,7 +27,7 @@ package org.aoju.bus.office.metric;
  * 这个类提供了{@link AbstractOfficePoolManager}的配置
  *
  * @author Kimi Liu
- * @version 3.6.6
+ * @version 5.3.3
  * @since JDK 1.8+
  */
 public interface OfficeManagerPoolBuilder extends OfficeManagerBuilder {
