@@ -37,7 +37,7 @@ import java.util.*;
  * 注意：部分拼音并不准确,例如：怡
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class PinyinUtils {

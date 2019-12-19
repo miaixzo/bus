@@ -29,7 +29,7 @@ import org.aoju.bus.health.hardware.AbstractFirmware;
  * abstract a firmware
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 final class SolarisFirmware extends AbstractFirmware {

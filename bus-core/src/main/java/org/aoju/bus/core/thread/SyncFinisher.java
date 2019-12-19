@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
  * 不能保证同时开始
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class SyncFinisher {

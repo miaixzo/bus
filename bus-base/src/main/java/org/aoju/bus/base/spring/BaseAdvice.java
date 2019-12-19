@@ -44,7 +44,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 @ControllerAdvice
@@ -148,7 +148,6 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public Object httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100507);
     }
 
@@ -161,7 +160,6 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
-        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100508);
     }
 
@@ -175,7 +173,6 @@ public class BaseAdvice extends Controller {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public Object noHandlerFoundException(NoHandlerFoundException e) {
-        Logger.error(RuntimeUtils.getStackTrace(e));
         return write(ErrorCode.EM_100509);
     }
 

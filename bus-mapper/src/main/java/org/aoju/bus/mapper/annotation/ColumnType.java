@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * 针对列的复杂属性配置
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 @Target({ElementType.FIELD})

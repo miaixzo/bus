@@ -27,6 +27,7 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.starter.banner.BusBanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.ansi.AnsiOutput;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
@@ -42,7 +43,7 @@ import java.util.stream.StreamSupport;
  * 启动监听器，初始化相关配置
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class GenieBuilder implements
@@ -88,9 +89,12 @@ public class GenieBuilder implements
 
         application.setBanner(new BusBanner());
 
-        assemblyLogSetting(bootstrapEnvironment);
-        assemblyRequireProperties(bootstrapEnvironment);
-        assemblyEnvironmentMark(environment);
+        setLogging(bootstrapEnvironment);
+        setRequireProperties(bootstrapEnvironment);
+        setEnvironment(environment);
+
+        AnsiOutput.setEnabled(AnsiOutput.Enabled.DETECT);
+        AnsiOutput.setConsoleAvailable(true);
     }
 
     @Override
@@ -107,7 +111,7 @@ public class GenieBuilder implements
     /**
      * 配置日志设置
      */
-    private void assemblyLogSetting(ConfigurableEnvironment environment) {
+    private void setLogging(ConfigurableEnvironment environment) {
         StreamSupport.stream(environment.getPropertySources().spliterator(), false)
                 .filter(propertySource -> propertySource instanceof EnumerablePropertySource)
                 .map(propertySource -> Arrays
@@ -121,7 +125,7 @@ public class GenieBuilder implements
      *
      * @param environment 环境信息
      */
-    private void assemblyRequireProperties(ConfigurableEnvironment environment) {
+    private void setRequireProperties(ConfigurableEnvironment environment) {
         if (StringUtils.hasText(environment.getProperty(BusXBuilder.BUS_NAME))) {
             HIGH_PRIORITY_CONFIG.getSource().put(BusXBuilder.BUS_NAME,
                     environment.getProperty(BusXBuilder.BUS_NAME));
@@ -133,7 +137,7 @@ public class GenieBuilder implements
      *
      * @param environment 环境信息
      */
-    private void assemblyEnvironmentMark(ConfigurableEnvironment environment) {
+    private void setEnvironment(ConfigurableEnvironment environment) {
         environment.getPropertySources().addFirst(
                 new MapPropertySource(BusXBuilder.BUS_BOOTSTRAP, new HashMap<>()));
     }

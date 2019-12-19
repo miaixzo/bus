@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * Baseboard data obtained from WMI
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 final class WindowsBaseboard extends AbstractBaseboard {

@@ -56,7 +56,7 @@ import java.util.List;
  * {@link DiffResult#toString(ToStringStyle)}覆盖此样式选择。.
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @see Diffable
  * @see Diff
  * @see DiffResult

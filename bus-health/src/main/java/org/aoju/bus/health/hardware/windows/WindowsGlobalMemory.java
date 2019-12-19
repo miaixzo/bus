@@ -43,7 +43,7 @@ import java.util.function.Supplier;
  * Memory obtained by Performance Info.
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class WindowsGlobalMemory extends AbstractGlobalMemory {

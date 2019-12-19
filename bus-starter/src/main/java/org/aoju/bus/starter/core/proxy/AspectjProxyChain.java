@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
  * AOP切面实现类
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.3.5
  * @since JDK 1.8+
  */
 public class AspectjProxyChain implements ProxyChain {
