@@ -29,7 +29,7 @@ import org.aoju.bus.validate.Context;
  * 校验器接口
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 @FunctionalInterface

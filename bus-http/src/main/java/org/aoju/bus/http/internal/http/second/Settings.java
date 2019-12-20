@@ -30,7 +30,7 @@ import java.util.Arrays;
  * Settings are {@link Http2Connection connection} scoped.
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public final class Settings {

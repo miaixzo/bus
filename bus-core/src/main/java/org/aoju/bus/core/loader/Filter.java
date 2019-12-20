@@ -29,7 +29,7 @@ import java.net.URL;
  * 资源过滤器
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public interface Filter {

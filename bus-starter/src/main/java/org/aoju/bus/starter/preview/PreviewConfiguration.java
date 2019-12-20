@@ -1,3 +1,26 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2017 aoju.org All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.aoju.bus.starter.preview;
 
 import org.aoju.bus.core.lang.Symbol;
@@ -5,19 +28,14 @@ import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.office.Builder;
-import org.aoju.bus.office.Provider;
 import org.aoju.bus.office.bridge.LocalOfficePoolManager;
 import org.aoju.bus.office.bridge.OnlineOfficePoolManager;
-import org.aoju.bus.office.magic.family.FormatRegistry;
 import org.aoju.bus.office.magic.family.RegistryInstanceHolder;
 import org.aoju.bus.office.metric.OfficeManager;
-import org.aoju.bus.office.process.ProcessManager;
 import org.aoju.bus.office.provider.LocalOfficeProvider;
 import org.aoju.bus.office.provider.OnlineOfficeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -27,7 +45,7 @@ import java.util.stream.Stream;
  * 文档在线预览配置
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 @ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
@@ -37,9 +55,19 @@ public class PreviewConfiguration {
     @Autowired
     PreviewProperties properties;
 
-    @Bean(name = "localOfficeManager", initMethod = "start", destroyMethod = "stop")
-    @ConditionalOnMissingBean(name = "localOfficeManager")
-    public OfficeManager localOfficeManager(final ProcessManager processManager) {
+    @Bean
+    public PreviewProviderService previewProviderFactory(final OfficeManager localOfficeManager,
+                                                         final OfficeManager onlineOfficeManager) {
+        return new PreviewProviderService(
+                LocalOfficeProvider.builder()
+                .officeManager(localOfficeManager)
+                .formatRegistry(RegistryInstanceHolder.getInstance())
+                .build(),
+                OnlineOfficeProvider.make(onlineOfficeManager));
+    }
+
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public OfficeManager localOfficeManager() {
         final LocalOfficePoolManager.Builder builder = LocalOfficePoolManager.builder();
         if (!StringUtils.isBlank(properties.getPortNumbers())) {
             builder.portNumbers(
@@ -62,13 +90,12 @@ public class PreviewConfiguration {
         if (StringUtils.isNotEmpty(processManagerClass)) {
             builder.processManager(processManagerClass);
         } else {
-            builder.processManager(processManager);
+            builder.processManager(Builder.findBestProcessManager());
         }
         return builder.build();
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @ConditionalOnMissingBean(name = "onlineOfficeManager")
     public OfficeManager onlineOfficeManager() {
         final OnlineOfficePoolManager.Builder builder = OnlineOfficePoolManager.builder();
         builder.urlConnection(properties.getUrl());
@@ -77,37 +104,6 @@ public class PreviewConfiguration {
         builder.taskExecutionTimeout(properties.getTaskExecutionTimeout());
         builder.taskQueueTimeout(properties.getTaskQueueTimeout());
         return builder.build();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(name = "localDocumentConverter")
-    @ConditionalOnBean(name = {"localOfficeManager", "formatRegistry"})
-    public Provider localDocumentConverter(
-            final OfficeManager localOfficeManager,
-            final FormatRegistry formatRegistry) {
-        return LocalOfficeProvider.builder()
-                .officeManager(localOfficeManager)
-                .formatRegistry(formatRegistry)
-                .build();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(name = "onlineDocumentConverter")
-    @ConditionalOnBean(name = "onlineOfficeManager")
-    public Provider onlineDocumentConverter(final OfficeManager onlineOfficeManager) {
-        return OnlineOfficeProvider.make(onlineOfficeManager);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(name = "processManager")
-    public ProcessManager processManager() {
-        return Builder.findBestProcessManager();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(name = "documentFormatRegistry")
-    public FormatRegistry documentFormatRegistry() {
-        return RegistryInstanceHolder.getInstance();
     }
 
 }

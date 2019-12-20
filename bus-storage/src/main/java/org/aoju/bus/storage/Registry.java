@@ -27,7 +27,7 @@ package org.aoju.bus.storage;
  * 平台类型
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public enum Registry {
@@ -68,5 +68,5 @@ public enum Registry {
     /**
      * 本地 file
      */
-    LOCAL,
+    LOCAL
 }

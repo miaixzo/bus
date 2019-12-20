@@ -40,7 +40,7 @@ import java.util.Map;
  * Redis 单机缓存支持
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class RedisCache implements Cache {

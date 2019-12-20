@@ -44,7 +44,7 @@ import java.util.*;
  * Servlet相关工具类封装
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class ServletUtils {

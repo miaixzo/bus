@@ -36,7 +36,7 @@ import java.util.Set;
  * 多数据源支持
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {

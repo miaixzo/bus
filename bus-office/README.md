@@ -13,5 +13,65 @@
 > 依赖外部环境
 - OpenOffice或者LibreOffice
 > 下载地址如下:
-地址：https://pan.baidu.com/s/1ZSGCIVXTweK8tbOPudkaQQ
-提取码： vn5v
+地址①：https://mirror-hk.koddos.net/tdf/libreoffice/stable/
+地址②：https://pan.baidu.com/s/1ZSGCIVXTweK8tbOPudkaQQ  提取码：vn5v
+
+> 结合bus-starter项目配套使用 
+```
+@EnableStorage
+```
+
+> 具体使用如下：
+```
+    @Autowired
+    PreviewProviderService previewProviderService;
+
+    @ApiOperation(value = "将传入的文档转换为指定的格式", notes = "文档转换")
+    @PostMapping("/index")
+    public Object convertToUsingParam(
+            @ApiParam(value = "The input document to convert.", required = true)
+            @RequestParam("data") final MultipartFile inputFile,
+            @ApiParam(value = "The document format to convert the input document to.", required = true)
+            @RequestParam(name = "format") final String type,
+            @ApiParam(value = "The options to apply to the type.")
+            @RequestParam(required = false) final Map<String, String> parameters) {
+        Logger.debug("convertUsingRequestParam > Converting file to {}", type);
+        if (inputFile.isEmpty()) {
+            return write(ErrorCode.EM_100506);
+        }
+
+        if (StringUtils.isBlank(convertToFormat)) {
+            return write(ErrorCode.EM_100506);
+        }
+
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            final DocumentFormat targetFormat = DefaultFormatRegistry.getFormatByExtension(type);
+
+            final Map<String, Object> loadProperties = new HashMap<>(LocalOfficeProvider.DEFAULT_LOAD_PROPERTIES);
+            final Map<String, Object> storeProperties = new HashMap<>();
+            decodeParameters(parameters, loadProperties, storeProperties);
+
+            Provider provider = previewProviderService.get(Registry.LOCAL);
+            provider.convert(inputStream)
+                    .as(DefaultFormatRegistry.getFormatByExtension(FileUtils.getExtension(filename)))
+                    .to(outputStream)
+                    .as(targetFormat)
+                    .execute();
+
+            final HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(targetFormat.getMediaType()));
+            headers.add(
+                    "Content-Disposition",
+                    "attachment; filename="
+                            + ObjectID.id()
+                            + "."
+                            + targetFormat.getExtension());
+
+            return ResponseEntity.ok().headers(headers).body(out.toByteArray());
+        } catch (InstrumentException | IOException ex) {
+            return write(ErrorCode.EM_100506);
+        }
+    }
+
+```

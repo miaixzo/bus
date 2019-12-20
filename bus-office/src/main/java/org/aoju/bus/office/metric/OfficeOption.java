@@ -31,7 +31,7 @@ import java.util.List;
  * 包含有关正在使用的office的基本信息.
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public final class OfficeOption {

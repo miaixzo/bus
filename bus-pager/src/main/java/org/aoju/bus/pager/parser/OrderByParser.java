@@ -34,7 +34,7 @@ import java.util.List;
  * 处理 Order by
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class OrderByParser {

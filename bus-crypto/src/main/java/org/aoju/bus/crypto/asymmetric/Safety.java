@@ -37,7 +37,7 @@ import java.security.PublicKey;
 
 /**
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public abstract class Safety<T extends Safety<T>> extends Keys<T> {
