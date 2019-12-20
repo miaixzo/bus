@@ -29,7 +29,7 @@ import java.io.File;
  * 当转换过程不再需要目标文件时，提供应用行为的接口.
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public interface TargetDocumentProvider extends DocumentProvider {

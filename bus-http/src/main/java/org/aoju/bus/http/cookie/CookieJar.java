@@ -42,7 +42,7 @@ import java.util.List;
  * policies for updating and expiring cookies.
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public interface CookieJar {

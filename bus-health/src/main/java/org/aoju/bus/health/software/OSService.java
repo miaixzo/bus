@@ -32,7 +32,7 @@ package org.aoju.bus.health.software;
  * meaning of services is platform-dependent.
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class OSService {

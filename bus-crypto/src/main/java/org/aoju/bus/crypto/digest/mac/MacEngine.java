@@ -29,7 +29,7 @@ import java.io.InputStream;
  * MAC（Message Authentication Code）算法引擎
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public interface MacEngine {

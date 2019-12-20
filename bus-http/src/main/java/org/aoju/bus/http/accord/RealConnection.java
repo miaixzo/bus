@@ -62,7 +62,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {

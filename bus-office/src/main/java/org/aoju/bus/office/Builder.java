@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  * 为office提供辅助功能.
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -58,6 +58,9 @@ public final class Builder {
     public static final String NODE_PRODUCT = "/org.openoffice.Setup/Product";
     public static final String NODE_L10N = "/org.openoffice.Setup/L10N";
     public static final String[] NODE_PATHS = {NODE_PRODUCT, NODE_L10N};
+
+    public static final String SUCCESS = "0";
+    public static final String FAILURE = "-1";
 
     /**
      * 连接到office的默认端口号.

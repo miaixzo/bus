@@ -23,9 +23,8 @@
 
 > 具体使用如下：
 ```
-    @Qualifier("localOfficeManager")
     @Autowired
-    OfficeManager officeManager;
+    PreviewProviderService previewProviderService;
 
     @ApiOperation(value = "将传入的文档转换为指定的格式", notes = "文档转换")
     @PostMapping("/index")
@@ -33,10 +32,10 @@
             @ApiParam(value = "The input document to convert.", required = true)
             @RequestParam("data") final MultipartFile inputFile,
             @ApiParam(value = "The document format to convert the input document to.", required = true)
-            @RequestParam(name = "format") final String convertToFormat,
-            @ApiParam(value = "The custom options to apply to the conversion.")
+            @RequestParam(name = "format") final String type,
+            @ApiParam(value = "The options to apply to the type.")
             @RequestParam(required = false) final Map<String, String> parameters) {
-        Logger.debug("convertUsingRequestParam > Converting file to {}", convertToFormat);
+        Logger.debug("convertUsingRequestParam > Converting file to {}", type);
         if (inputFile.isEmpty()) {
             return write(ErrorCode.EM_100506);
         }
@@ -47,21 +46,16 @@
 
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            final DocumentFormat targetFormat = DefaultFormatRegistry.getFormatByExtension(convertToFormat);
+            final DocumentFormat targetFormat = DefaultFormatRegistry.getFormatByExtension(type);
 
             final Map<String, Object> loadProperties = new HashMap<>(LocalOfficeProvider.DEFAULT_LOAD_PROPERTIES);
             final Map<String, Object> storeProperties = new HashMap<>();
             decodeParameters(parameters, loadProperties, storeProperties);
 
-            final Provider provider = LocalOfficeProvider.builder()
-                    .officeManager(officeManager)
-                    .loadProperties(loadProperties)
-                    .storeProperties(storeProperties)
-                    .build();
-
-            provider.convert(inputFile.getInputStream())
-                    .as(DefaultFormatRegistry.getFormatByExtension(FileUtils.getExtension(inputFile.getOriginalFilename())))
-                    .to(out)
+            Provider provider = previewProviderService.get(Registry.LOCAL);
+            provider.convert(inputStream)
+                    .as(DefaultFormatRegistry.getFormatByExtension(FileUtils.getExtension(filename)))
+                    .to(outputStream)
                     .as(targetFormat)
                     .execute();
 

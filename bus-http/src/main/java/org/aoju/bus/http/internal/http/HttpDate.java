@@ -35,7 +35,7 @@ import java.util.Locale;
  * Best-effort parser for HTTP dates.
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public final class HttpDate {

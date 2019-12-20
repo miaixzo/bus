@@ -38,7 +38,7 @@ import java.util.*;
  * sql解析类,提供更智能的count查询sql
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class CountSqlParser {

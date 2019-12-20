@@ -43,7 +43,7 @@ import java.util.stream.StreamSupport;
  * 启动监听器，初始化相关配置
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class GenieBuilder implements

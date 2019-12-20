@@ -32,7 +32,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * NOT NUll 校验
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class NotNullStrategy implements Matcher<Object, NotNull> {

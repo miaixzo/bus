@@ -15,7 +15,7 @@ import java.net.URI;
  * 截屏,显示器相关
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class DesktopUtils {

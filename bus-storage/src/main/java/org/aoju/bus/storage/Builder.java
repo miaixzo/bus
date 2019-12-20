@@ -27,7 +27,7 @@ package org.aoju.bus.storage;
  * 框架内预定义的存储信息
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class Builder {

@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  * 通过日志打印方法的执行时间的切面
  *
  * @author Kimi Liu
- * @version 5.3.5
+ * @version 5.3.6
  * @since JDK 1.8+
  */
 public class TimeIntervalAspect extends SimpleAspect {
