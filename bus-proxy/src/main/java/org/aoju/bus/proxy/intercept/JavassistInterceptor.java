@@ -3,7 +3,7 @@ package org.aoju.bus.proxy.intercept;
 
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
-import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.aspects.Aspectj;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
@@ -22,17 +22,17 @@ public class JavassistInterceptor implements InvocationHandler, Serializable {
     private static final long serialVersionUID = 1L;
 
     private Object target;
-    private Aspect aspect;
+    private Aspectj aspectj;
 
     /**
      * 构造
      *
      * @param target 被代理对象
-     * @param aspect 切面实现
+     * @param aspectj 切面实现
      */
-    public JavassistInterceptor(Object target, Aspect aspect) {
+    public JavassistInterceptor(Object target, Aspectj aspectj) {
         this.target = target;
-        this.aspect = aspect;
+        this.aspectj = aspectj;
     }
 
     public Object getTarget() {
@@ -42,25 +42,25 @@ public class JavassistInterceptor implements InvocationHandler, Serializable {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final Object target = this.target;
-        final Aspect aspect = this.aspect;
+        final Aspectj aspectj = this.aspectj;
         Object result = null;
 
         // 开始前回调
-        if (aspect.before(target, method, args)) {
+        if (aspectj.before(target, method, args)) {
             ReflectUtils.setAccessible(method);
 
             try {
                 result = method.invoke(ClassUtils.isStatic(method) ? null : target, args);
             } catch (InvocationTargetException e) {
                 // 异常回调（只捕获业务代码导致的异常,而非反射导致的异常）
-                if (aspect.afterException(target, method, args, e.getTargetException())) {
+                if (aspectj.afterException(target, method, args, e.getTargetException())) {
                     throw e;
                 }
             }
         }
 
         // 结束执行回调
-        if (aspect.after(target, method, args, result)) {
+        if (aspectj.after(target, method, args, result)) {
             return result;
         }
         return null;

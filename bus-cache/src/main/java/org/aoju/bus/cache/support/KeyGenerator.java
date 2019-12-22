@@ -24,7 +24,7 @@
 package org.aoju.bus.cache.support;
 
 import org.aoju.bus.cache.annotation.CacheKey;
-import org.aoju.bus.cache.entity.CacheHolder;
+import org.aoju.bus.cache.magic.AnnoHolder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,32 +36,32 @@ import java.util.stream.Collectors;
  */
 public class KeyGenerator {
 
-    public static String generateSingleKey(CacheHolder cacheHolder, Object[] argValues) {
-        String[] argNames = ArgNameGenerator.getArgNames(cacheHolder.getMethod());
-        Map<Integer, CacheKey> cacheKeyMap = cacheHolder.getCacheKeyMap();
-        String prefix = cacheHolder.getPrefix();
+    public static String generateSingleKey(AnnoHolder annoHolder, Object[] argValues) {
+        String[] argNames = ArgNameGenerator.getArgNames(annoHolder.getMethod());
+        Map<Integer, CacheKey> cacheKeyMap = annoHolder.getCacheKeyMap();
+        String prefix = annoHolder.getPrefix();
 
         return doGenerateKey(cacheKeyMap, prefix, argNames, argValues);
     }
 
     //array[]: {multiEntry2Key, key2MultiEntry}
-    public static Map[] generateMultiKey(CacheHolder cacheHolder, Object[] argValues) {
+    public static Map[] generateMultiKey(AnnoHolder annoHolder, Object[] argValues) {
         /*由于要将Collection内的元素作为Map的Key, 因此就要求元素必须实现的hashcode & equals方法*/
         Map<Object, String> multiEntry2Key = new LinkedHashMap<>();
         Map<String, Object> key2MultiEntry = new LinkedHashMap<>();
 
         // 准备要拼装key所需的原材料
         // 标记为multi的参数
-        Collection multiArgEntries = getMultiArgEntries(argValues[cacheHolder.getMultiIndex()]);
+        Collection multiArgEntries = getMultiArgEntries(argValues[annoHolder.getMultiIndex()]);
         // 参数索引 -> CacheKey
-        Map<Integer, CacheKey> argIndex2CacheKey = cacheHolder.getCacheKeyMap();
+        Map<Integer, CacheKey> argIndex2CacheKey = annoHolder.getCacheKeyMap();
         // 全局prefix
-        String prefix = cacheHolder.getPrefix();
+        String prefix = annoHolder.getPrefix();
 
         // 开始拼装
 
         // 根据方法获取原始的参数名
-        String[] argNames = ArgNameGenerator.getArgNames(cacheHolder.getMethod());
+        String[] argNames = ArgNameGenerator.getArgNames(annoHolder.getMethod());
         // 给参数名添加一个`#i`遍历指令
         String[] appendArgNames = (String[]) appendArray(argNames, "i");
 

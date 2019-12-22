@@ -37,6 +37,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
+ * 这个类实际上是所有基于Javassist方法调用的超类
+ * 动态创建子类来处理特定的接口方法(它们是硬连接的)
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+

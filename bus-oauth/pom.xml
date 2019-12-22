@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <alipay-sdk-version>3.7.4.ALL</alipay-sdk-version>
+        <alipay.sdk.version>3.7.4.ALL</alipay.sdk.version>
     </properties>
 
     <dependencies>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-            <version>${alipay-sdk-version}</version>
+            <version>${alipay.sdk.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

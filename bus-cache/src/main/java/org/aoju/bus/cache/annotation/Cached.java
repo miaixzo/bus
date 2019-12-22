@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.cache.annotation;
 
-import org.aoju.bus.cache.entity.CacheExpire;
+import org.aoju.bus.cache.magic.CacheExpire;
 
 import java.lang.annotation.*;
 

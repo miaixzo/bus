@@ -97,7 +97,7 @@ public class HuaweiObsProvider extends AbstractProvider {
             extended.put("tag", item.getMetadata().getEtag());
             extended.put("storageClass", item.getMetadata().getObjectStorageClass());
             extended.put("lastModified", item.getMetadata().getLastModified());
-            storageItem.setExtended(extended);
+            storageItem.setExtend(extended);
             return storageItem;
         }).collect(Collectors.toList()));
     }

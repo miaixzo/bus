@@ -79,8 +79,13 @@ public class Attachs {
     public String owner;
 
     /**
+     * 文件hash值
+     */
+    private String hash;
+
+    /**
      * 文件扩展字段
      */
-    public Map<String, Object> extended;
+    public Map<String, Object> extend;
 
 }

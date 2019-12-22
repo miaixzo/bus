@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.proxy.Factory;
-import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.aspects.Aspectj;
 import org.aoju.bus.proxy.factory.cglib.CglibFactory;
 import org.aoju.bus.proxy.factory.javassist.JavassistFactory;
 
@@ -40,6 +40,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * 超类为{@link Factory}，它支持子类化而不仅仅是实现接口
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
@@ -118,7 +120,7 @@ public abstract class AbstractFactory extends Factory {
      * @param aspectClass 切面对象类
      * @return 代理对象
      */
-    public static <T> T createProxy(T target, Class<? extends Aspect> aspectClass) {
+    public static <T> T createProxy(T target, Class<? extends Aspectj> aspectClass) {
         return createProxy(target, ReflectUtils.newInstance(aspectClass));
     }
 
@@ -127,11 +129,11 @@ public abstract class AbstractFactory extends Factory {
      *
      * @param <T>    切面对象类型
      * @param target 被代理对象
-     * @param aspect 切面实现
+     * @param aspectj 切面实现
      * @return 代理对象
      */
-    public static <T> T createProxy(T target, Aspect aspect) {
-        return create().proxy(target, aspect);
+    public static <T> T createProxy(T target, Aspectj aspectj) {
+        return create().proxy(target, aspectj);
     }
 
     /**
@@ -156,18 +158,18 @@ public abstract class AbstractFactory extends Factory {
      * @param aspectClass 切面对象类
      * @return 代理对象
      */
-    public static <T> T proxy(T target, Class<? extends Aspect> aspectClass) {
+    public static <T> T proxy(T target, Class<? extends Aspectj> aspectClass) {
         return createProxy(target, aspectClass);
     }
 
     /**
-     * 创建动态代理对象<br>
-     * 动态代理对象的创建原理是：<br>
-     * 假设创建的代理对象名为 $Proxy0<br>
-     * 1、根据传入的interfaces动态生成一个类,实现interfaces中的接口<br>
-     * 2、通过传入的classloder将刚生成的类加载到jvm中 即将$Proxy0类load<br>
-     * 3、调用$Proxy0的$Proxy0(InvocationHandler)构造函数 创建$Proxy0的对象,并且用interfaces参数遍历其所有接口的方法,这些实现方法的实现本质上是通过反射调用被代理对象的方法<br>
-     * 4、将$Proxy0的实例返回给客户端  <br>
+     * 创建动态代理对象
+     * 动态代理对象的创建原理是：
+     * 假设创建的代理对象名为 $Proxy0
+     * 1、根据传入的interfaces动态生成一个类,实现interfaces中的接口
+     * 2、通过传入的classloder将刚生成的类加载到jvm中 即将$Proxy0类load
+     * 3、调用$Proxy0的$Proxy0(InvocationHandler)构造函数 创建$Proxy0的对象,并且用interfaces参数遍历其所有接口的方法,这些实现方法的实现本质上是通过反射调用被代理对象的方法
+     * 4、将$Proxy0的实例返回给客户端
      * 5、当调用代理类的相应方法时,相当于调用 {@link InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])} 方法
      *
      * @param <T>               被代理对象类型
@@ -206,10 +208,10 @@ public abstract class AbstractFactory extends Factory {
      *
      * @param <T>    代理对象类型
      * @param target 被代理对象
-     * @param aspect 切面实现
+     * @param aspectj 切面实现
      * @return 代理对象
      */
-    public abstract <T> T proxy(T target, Aspect aspect);
+    public abstract <T> T proxy(T target, Aspectj aspectj);
 
 }
 

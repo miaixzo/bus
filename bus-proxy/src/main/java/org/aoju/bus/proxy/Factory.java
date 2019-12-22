@@ -23,12 +23,18 @@
  */
 package org.aoju.bus.proxy;
 
+import org.aoju.bus.proxy.factory.cglib.CglibFactory;
+import org.aoju.bus.proxy.factory.javassist.JavassistFactory;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
+ * 这个类使用Java反射。对于更有效的代理， 请尝试使用其中之一
+ * {@link  CglibFactory}或 {@link  JavassistFactory}代替
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
@@ -138,6 +144,7 @@ public class Factory {
                 throw e.getTargetException();
             }
         }
+
     }
 
     private static class InvokerInvocationHandler implements InvocationHandler {

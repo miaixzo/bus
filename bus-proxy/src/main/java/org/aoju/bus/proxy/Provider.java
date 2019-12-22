@@ -24,12 +24,19 @@
 package org.aoju.bus.proxy;
 
 /**
+ * 为委托代理提供对象
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
 public interface Provider {
 
+    /**
+     * 返回对象，如果在构造/查找对象时出现任何问题，实现类应该抛出异常
+     *
+     * @return 调用方法的对象
+     */
     Object getObject();
 
 }

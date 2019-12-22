@@ -38,7 +38,7 @@ public interface Cache {
      * @param key   缓存KEY
      * @param value 缓存内容
      */
-    void set(String key, String value);
+    void set(String key, Object value);
 
     /**
      * 设置缓存,指定过期时间
@@ -47,7 +47,7 @@ public interface Cache {
      * @param value   缓存内容
      * @param timeout 指定缓存过期时间（毫秒）
      */
-    void set(String key, String value, long timeout);
+    void set(String key, Object value, long timeout);
 
     /**
      * 获取缓存
@@ -55,7 +55,7 @@ public interface Cache {
      * @param key 缓存KEY
      * @return 缓存内容
      */
-    String get(String key);
+    Object get(String key);
 
     /**
      * 是否存在key,如果对应key的value值已过期,也返回false

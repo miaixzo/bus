@@ -23,9 +23,8 @@
  */
 package org.aoju.bus.cache;
 
-import org.aoju.bus.cache.entity.CacheKeys;
-import org.aoju.bus.cache.entity.CachePair;
-import org.aoju.bus.cache.support.cache.Cache;
+import org.aoju.bus.cache.magic.CacheKeys;
+import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.annotation.Inject;
 import org.aoju.bus.core.annotation.Singleton;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -44,14 +43,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Manage {
 
     // defaultCache和cachePool直接使用Pair实现, 减小new Object的损耗
-    private CachePair<String, Cache> defaultCache;
+    private CachePair<String, CacheX> defaultCache;
 
-    private Map<String, CachePair<String, Cache>> cachePool = new ConcurrentHashMap<>();
+    private Map<String, CachePair<String, CacheX>> cachePool = new ConcurrentHashMap<>();
 
     @Inject
-    public void setCachePool(Map<String, Cache> caches) {
+    public void setCachePool(Map<String, CacheX> caches) {
         // default cache impl
-        Map.Entry<String, Cache> entry = caches.entrySet().iterator().next();
+        Map.Entry<String, CacheX> entry = caches.entrySet().iterator().next();
         this.defaultCache = CachePair.of(entry.getKey(), entry.getValue());
 
         caches.forEach((name, cache) -> this.cachePool.put(name, CachePair.of(name, cache)));
@@ -59,7 +58,7 @@ public class Manage {
 
     public Object readSingle(String cache, String key) {
         try {
-            CachePair<String, Cache> cacheImpl = getCacheImpl(cache);
+            CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 
             long start = System.currentTimeMillis();
             Object result = cacheImpl.getRight().read(key);
@@ -77,7 +76,7 @@ public class Manage {
     public void writeSingle(String cache, String key, Object value, int expire) {
         if (value != null) {
             try {
-                CachePair<String, Cache> cacheImpl = getCacheImpl(cache);
+                CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 
                 long start = System.currentTimeMillis();
                 cacheImpl.getRight().write(key, value, expire);
@@ -97,7 +96,7 @@ public class Manage {
             cacheKeys = new CacheKeys();
         } else {
             try {
-                CachePair<String, Cache> cacheImpl = getCacheImpl(cache);
+                CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 
                 long start = System.currentTimeMillis();
                 Map<String, Object> cacheMap = cacheImpl.getRight().read(keys);
@@ -130,7 +129,7 @@ public class Manage {
 
     public void writeBatch(String cache, Map<String, Object> keyValueMap, int expire) {
         try {
-            CachePair<String, Cache> cacheImpl = getCacheImpl(cache);
+            CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 
             long start = System.currentTimeMillis();
             cacheImpl.getRight().write(keyValueMap, expire);
@@ -146,7 +145,7 @@ public class Manage {
     public void remove(String cache, String... keys) {
         if (keys != null && keys.length != 0) {
             try {
-                CachePair<String, Cache> cacheImpl = getCacheImpl(cache);
+                CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 
                 long start = System.currentTimeMillis();
                 cacheImpl.getRight().remove(keys);
@@ -160,7 +159,7 @@ public class Manage {
         }
     }
 
-    private CachePair<String, Cache> getCacheImpl(String cacheName) {
+    private CachePair<String, CacheX> getCacheImpl(String cacheName) {
         if (StringUtils.isEmpty(cacheName)) {
             return defaultCache;
         } else {

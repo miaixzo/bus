@@ -25,7 +25,6 @@ package org.aoju.bus.extra.ssh;
 
 import com.jcraft.jsch.Session;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.extra.SSHUtils;
 
 import java.util.Collection;
 import java.util.Iterator;

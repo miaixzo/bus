@@ -24,13 +24,13 @@
 package org.aoju.bus.proxy.provider;
 
 /**
- * 空模型提
+ * 总是返回null
  *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public class NullProvider extends ConstantProvider {
+public class NullProvider extends AlwaysProvider {
 
     public NullProvider() {
         super(null);

@@ -25,7 +25,7 @@ package org.aoju.bus.starter.mapper;
 
 
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ public class MapperConfiguration implements EnvironmentAware {
 
     @Override
     public void setEnvironment(Environment environment) {
-        this.basePackage = StringUtils.replaceBlank(environment.getProperty(Extend.MYBATIS + ".basePackage"));
+        this.basePackage = StringUtils.replaceBlank(environment.getProperty(BusXExtend.MYBATIS + ".basePackage"));
     }
 
     @Bean

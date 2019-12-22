@@ -39,8 +39,7 @@ import java.util.Properties;
  */
 public class MailAccount implements Serializable {
 
-    public static final String MAIL_SETTING_PATH = "config/mail.setting";
-    public static final String MAIL_SETTING_PATH2 = "config/mailAccount.setting";
+    public static final String MAIL_SETTING_PATH = "mail.setting";
     private static final long serialVersionUID = -6937313421815719204L;
     private static final String MAIL_PROTOCOL = "mail.transport.protocol";
     private static final String SMTP_HOST = "mail.smtp.host";

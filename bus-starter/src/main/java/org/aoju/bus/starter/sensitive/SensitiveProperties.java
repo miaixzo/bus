@@ -24,7 +24,7 @@
 package org.aoju.bus.starter.sensitive;
 
 import lombok.Data;
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.starter.BusXExtend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -37,7 +37,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @Data
 @EnableConfigurationProperties(value = {SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class})
-@ConfigurationProperties(prefix = Extend.SENSITIVE)
+@ConfigurationProperties(prefix = BusXExtend.SENSITIVE)
 public class SensitiveProperties {
 
     @Autowired
@@ -48,14 +48,14 @@ public class SensitiveProperties {
     private boolean debug;
 
     @Data
-    @ConfigurationProperties(prefix = Extend.SENSITIVE + ".encrypt")
+    @ConfigurationProperties(prefix = BusXExtend.SENSITIVE + ".encrypt")
     public class Encrypt {
         private String key;
         private String type;
     }
 
     @Data
-    @ConfigurationProperties(prefix = Extend.SENSITIVE + ".decrypt")
+    @ConfigurationProperties(prefix = BusXExtend.SENSITIVE + ".decrypt")
     public class Decrypt {
         private String key;
         private String type;

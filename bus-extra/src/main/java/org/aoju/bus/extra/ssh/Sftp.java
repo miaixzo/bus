@@ -32,7 +32,6 @@ import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.extra.SSHUtils;
 import org.aoju.bus.extra.ftp.AbstractFtp;
 
 import java.io.File;

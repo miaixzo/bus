@@ -29,6 +29,9 @@ import org.aoju.bus.proxy.Provider;
 import java.lang.reflect.Method;
 
 /**
+ * 支持的调用程序，这意味着它在从目标提供程序返回的对象上找到匹配的方法并调用它。
+ * 该类有助于将现有类调整为它没有实现的接口
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+

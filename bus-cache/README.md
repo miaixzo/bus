@@ -75,7 +75,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
     </constructor-arg>
 </bean>
 
-org.aoju.bus.cache.support.cache.Cache实现 -->
+org.aoju.bus.cache.shooting.cache.Cache实现 -->
 <bean id="guava" class="GuavaCache">
     <constructor-arg name="expire" value="600000"/>
     <constructor-arg name="size" value="100000"/>

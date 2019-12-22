@@ -32,6 +32,9 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 
 /**
+ * 一个适配器类，使AOP联盟的{@link MethodInterceptor}
+ * 接口适应于Proxy的{@link Interceptor}接口
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+

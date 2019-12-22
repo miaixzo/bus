@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.starter.validate;
 
-import org.aoju.bus.starter.core.proxy.AspectjProxyChain;
+import org.aoju.bus.proxy.invoker.InvocationInvoker;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -73,7 +73,7 @@ public class AspectjValidateProxy {
      */
     @Around("match()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        return new AutoValidateAdvice().access(new AspectjProxyChain(point));
+        return new AutoValidateAdvice().access(new InvocationInvoker(point));
     }
 
 }

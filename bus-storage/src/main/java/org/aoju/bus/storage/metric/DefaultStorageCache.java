@@ -50,7 +50,7 @@ public enum DefaultStorageCache implements StorageCache {
      * @param value 缓存内容
      */
     @Override
-    public void cache(String key, String value) {
+    public void cache(String key, Object value) {
         oauthCache.set(key, value);
     }
 
@@ -62,7 +62,7 @@ public enum DefaultStorageCache implements StorageCache {
      * @param timeout 指定缓存过期时间（毫秒）
      */
     @Override
-    public void cache(String key, String value, long timeout) {
+    public void cache(String key, Object value, long timeout) {
         oauthCache.set(key, value, timeout);
     }
 
@@ -73,7 +73,7 @@ public enum DefaultStorageCache implements StorageCache {
      * @return 缓存内容
      */
     @Override
-    public String get(String key) {
+    public Object get(String key) {
         return oauthCache.get(key);
     }
 

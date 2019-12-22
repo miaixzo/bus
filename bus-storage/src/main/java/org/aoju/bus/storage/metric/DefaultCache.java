@@ -79,7 +79,7 @@ public class DefaultCache implements Cache {
      * @param value 缓存内容
      */
     @Override
-    public void set(String key, String value) {
+    public void set(String key, Object value) {
         set(key, value, timeout);
     }
 
@@ -91,7 +91,7 @@ public class DefaultCache implements Cache {
      * @param timeout 指定缓存过期时间（毫秒）
      */
     @Override
-    public void set(String key, String value, long timeout) {
+    public void set(String key, Object value, long timeout) {
         writeLock.lock();
         try {
             stateCache.put(key, new CacheState(value, timeout));
@@ -107,14 +107,14 @@ public class DefaultCache implements Cache {
      * @return 缓存内容
      */
     @Override
-    public String get(String key) {
+    public Object get(String key) {
         readLock.lock();
         try {
             CacheState cacheState = stateCache.get(key);
             if (null == cacheState || cacheState.isExpired()) {
                 return null;
             }
-            return cacheState.getState();
+            return cacheState.getValue();
         } finally {
             readLock.unlock();
         }
@@ -195,11 +195,11 @@ public class DefaultCache implements Cache {
     @Getter
     @Setter
     private class CacheState implements Serializable {
-        private String state;
+        private Object value;
         private long expire;
 
-        CacheState(String state, long expire) {
-            this.state = state;
+        CacheState(Object value, long expire) {
+            this.value = value;
             // 实际过期时间等于当前时间加上有效期
             this.expire = System.currentTimeMillis() + expire;
         }

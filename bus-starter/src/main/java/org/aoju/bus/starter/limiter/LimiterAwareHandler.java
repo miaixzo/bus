@@ -63,10 +63,10 @@ public class LimiterAwareHandler extends AbstractLimiterAware implements Resourc
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public BeanFactoryLimitedResourceSourceAdvisor limiterAdvisor() {
+    public BeanFactoryLimitedResourceSourceAdvisor limiterAdvisor(LimitedResourceSource limitedResourceSource, LimiterInterceptor limiterInterceptor) {
         BeanFactoryLimitedResourceSourceAdvisor advisor =
-                new BeanFactoryLimitedResourceSourceAdvisor(limitedResourceSource());
-        advisor.setAdvice(limiterInterceptor());
+                new BeanFactoryLimitedResourceSourceAdvisor(limitedResourceSource);
+        advisor.setAdvice(limiterInterceptor);
         if (this.enableLimiter != null) {
             advisor.setOrder(this.enableLimiter.<Integer>getNumber("order"));
         }
@@ -99,9 +99,9 @@ public class LimiterAwareHandler extends AbstractLimiterAware implements Resourc
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public LimiterInterceptor limiterInterceptor() {
+    public LimiterInterceptor limiterInterceptor(LimitedResourceSource limitedResourceSource) {
         LimiterInterceptor interceptor = new LimiterInterceptor();
-        interceptor.setLimitedResourceSource(limitedResourceSource());
+        interceptor.setLimitedResourceSource(limitedResourceSource);
         return interceptor;
     }
 

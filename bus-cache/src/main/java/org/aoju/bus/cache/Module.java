@@ -29,10 +29,9 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.MapBinder;
 import com.google.inject.name.Names;
-import org.aoju.bus.cache.reader.AbstractReader;
-import org.aoju.bus.cache.reader.MultiCacheReader;
-import org.aoju.bus.cache.reader.SingleCacheReader;
-import org.aoju.bus.cache.support.cache.Cache;
+import org.aoju.bus.cache.magic.AbstractReader;
+import org.aoju.bus.cache.magic.MultiCacheReader;
+import org.aoju.bus.cache.magic.SingleCacheReader;
 import org.aoju.bus.core.utils.CollUtils;
 
 import java.util.Optional;
@@ -73,12 +72,12 @@ public class Module extends AbstractModule {
         bind(Context.class).toInstance(config);
 
         // bind caches
-        MapBinder<String, Cache> mapBinder = MapBinder.newMapBinder(binder(), String.class, Cache.class);
+        MapBinder<String, CacheX> mapBinder = MapBinder.newMapBinder(binder(), String.class, CacheX.class);
         config.getCaches().forEach((name, cache) -> mapBinder.addBinding(name).toInstance(cache));
 
         // bind baseProvider
-        Optional.ofNullable(config.getProvider())
-                .ifPresent(mxBean -> bind(Provider.class).toInstance(mxBean));
+        Optional.ofNullable(config.getShooting())
+                .ifPresent(mxBean -> bind(Shooting.class).toInstance(mxBean));
 
         bind(AbstractReader.class).annotatedWith(Names.named("singleCacheReader")).to(SingleCacheReader.class);
         bind(AbstractReader.class).annotatedWith(Names.named("multiCacheReader")).to(MultiCacheReader.class);

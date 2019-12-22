@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
-import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.aspects.Aspectj;
 import org.aoju.bus.proxy.factory.AbstractFactory;
 import org.aoju.bus.proxy.factory.AbstractProxyClass;
 import org.aoju.bus.proxy.factory.ProxyClassCache;
@@ -40,6 +40,8 @@ import org.aoju.bus.proxy.intercept.JavassistInterceptor;
 import java.lang.reflect.Method;
 
 /**
+ * Javassist 3.0或更高版本
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
@@ -54,10 +56,10 @@ public class JavassistFactory extends AbstractFactory {
             new InvokerProxyClassGenerator());
 
     @Override
-    public <T> T proxy(T target, Aspect aspect) {
+    public <T> T proxy(T target, Aspectj aspectj) {
         return (T) newProxyInstance(
                 target.getClass().getClassLoader(),
-                new JavassistInterceptor(target, aspect),
+                new JavassistInterceptor(target, aspectj),
                 target.getClass().getInterfaces());
     }
 

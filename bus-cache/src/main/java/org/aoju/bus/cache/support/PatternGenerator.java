@@ -24,7 +24,7 @@
 package org.aoju.bus.cache.support;
 
 import org.aoju.bus.cache.annotation.CacheKey;
-import org.aoju.bus.cache.entity.CacheHolder;
+import org.aoju.bus.cache.magic.AnnoHolder;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -40,13 +40,13 @@ public class PatternGenerator {
 
     private static final ConcurrentMap<Method, String> patterns = new ConcurrentHashMap<>();
 
-    public static String generatePattern(CacheHolder cacheHolder) {
-        return patterns.computeIfAbsent(cacheHolder.getMethod(), (method) -> doPatternCombiner(cacheHolder));
+    public static String generatePattern(AnnoHolder annoHolder) {
+        return patterns.computeIfAbsent(annoHolder.getMethod(), (method) -> doPatternCombiner(annoHolder));
     }
 
-    private static String doPatternCombiner(CacheHolder cacheHolder) {
-        StringBuilder sb = new StringBuilder(cacheHolder.getPrefix());
-        Collection<CacheKey> cacheKeys = cacheHolder.getCacheKeyMap().values();
+    private static String doPatternCombiner(AnnoHolder annoHolder) {
+        StringBuilder sb = new StringBuilder(annoHolder.getPrefix());
+        Collection<CacheKey> cacheKeys = annoHolder.getCacheKeyMap().values();
         for (CacheKey cacheKey : cacheKeys) {
             sb.append(cacheKey.value());
         }

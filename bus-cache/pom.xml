@@ -23,7 +23,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <aspectj.version>1.9.4</aspectj.version>
         <guice.version>4.2.0</guice.version>
         <jedis.version>2.9.0</jedis.version>
         <memcached.version>2.0.0</memcached.version>
@@ -40,11 +39,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-proxy</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

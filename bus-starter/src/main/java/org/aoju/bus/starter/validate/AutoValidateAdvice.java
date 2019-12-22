@@ -25,7 +25,7 @@ package org.aoju.bus.starter.validate;
 
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.starter.core.proxy.AspectjProxyChain;
+import org.aoju.bus.proxy.invoker.ProxyChain;
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.Context;
 
@@ -48,16 +48,16 @@ public class AutoValidateAdvice {
      * @return 返回执行结果
      * @throws Throwable 异常
      */
-    public Object access(AspectjProxyChain proxyChain) throws Throwable {
-        Object[] agruements = proxyChain.getArgs();
+    public Object access(ProxyChain proxyChain) throws Throwable {
+        Object[] agruements = proxyChain.getArguments();
         Method method = proxyChain.getMethod();
         if (method.getDeclaringClass().isInterface()) {
             try {
-                method = proxyChain.getTarget().getClass().getDeclaredMethod(method.getName(),
+                method = proxyChain.getProxy().getClass().getDeclaredMethod(method.getName(),
                         method.getParameterTypes());
             } catch (NoSuchMethodException e) {
                 Logger.info("无法在实现类中找到指定的方法,所以无法实现校验器验证,method：" + method.getName());
-                return proxyChain.doProxyChain(agruements);
+                return proxyChain.proceed(agruements);
             }
         }
         Annotation[][] annotations = method.getParameterAnnotations();
@@ -65,7 +65,7 @@ public class AutoValidateAdvice {
         for (int i = 0; i < agruements.length; i++) {
             Builder.on(agruements[i], annotations[i], Context.newInstance(), StringUtils.toString(names[i]));
         }
-        return proxyChain.doProxyChain(agruements);
+        return proxyChain.proceed(agruements);
     }
 
 }

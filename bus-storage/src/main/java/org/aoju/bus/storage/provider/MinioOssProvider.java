@@ -135,11 +135,11 @@ public class MinioOssProvider extends AbstractProvider {
                             Item item = itemResult.get();
                             storageItem.setName(item.objectName());
                             storageItem.setSize(StringUtils.toString(item.objectSize()));
-                            Map<String, Object> extended = Maps.newHashMap();
-                            extended.put("tag", item.etag());
-                            extended.put("storageClass", item.storageClass());
-                            extended.put("lastModified", item.lastModified());
-                            storageItem.setExtended(extended);
+                            Map<String, Object> extend = Maps.newHashMap();
+                            extend.put("tag", item.etag());
+                            extend.put("storageClass", item.storageClass());
+                            extend.put("lastModified", item.lastModified());
+                            storageItem.setExtend(extend);
                             return storageItem;
                         } catch (InvalidBucketNameException |
                                 NoSuchAlgorithmException |

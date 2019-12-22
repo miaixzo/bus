@@ -29,6 +29,9 @@ import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invocation;
 
 /**
+ * 记录每个方法调用的拦截器。
+ * 注意:这个类的实现是从HiveMind的日志拦截器中借来的
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+

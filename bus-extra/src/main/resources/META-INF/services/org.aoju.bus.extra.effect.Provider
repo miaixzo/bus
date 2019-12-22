@@ -1,0 +1,6 @@
+org.aoju.bus.extra.effect.Bzip2Provider
+org.aoju.bus.extra.effect.DeflaterProvider
+org.aoju.bus.extra.effect.GzipProvider
+org.aoju.bus.extra.effect.Lz4Provider
+org.aoju.bus.extra.effect.LzoProvider
+org.aoju.bus.extra.effect.SnappyProvider

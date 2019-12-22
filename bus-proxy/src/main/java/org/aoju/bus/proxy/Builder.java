@@ -24,7 +24,7 @@
 package org.aoju.bus.proxy;
 
 import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.aspects.Aspectj;
 import org.aoju.bus.proxy.factory.AbstractFactory;
 import org.aoju.bus.proxy.invoker.NullInvoker;
 
@@ -107,7 +107,7 @@ public class Builder {
      * @param aspectClass 切面对象类
      * @return 代理对象
      */
-    public static <T> T proxy(T target, Class<? extends Aspect> aspectClass) {
+    public static <T> T proxy(T target, Class<? extends Aspectj> aspectClass) {
         return AbstractFactory.createProxy(target, aspectClass);
     }
 
@@ -116,11 +116,11 @@ public class Builder {
      *
      * @param <T>    被代理对象类型
      * @param target 被代理对象
-     * @param aspect 切面对象
+     * @param aspectj 切面对象
      * @return 代理对象
      */
-    public static <T> T proxy(T target, Aspect aspect) {
-        return AbstractFactory.createProxy(target, aspect);
+    public static <T> T proxy(T target, Aspectj aspectj) {
+        return AbstractFactory.createProxy(target, aspectj);
     }
 
     /**
