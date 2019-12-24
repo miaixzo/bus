@@ -44,7 +44,7 @@ import java.util.*;
  */
 public class NetUtils {
 
-    public final static String LOCAL_IP = "127.0.0.1";
+    public static final String LOCAL_IP = "127.0.0.1";
 
     /**
      * 默认最小端口,1024

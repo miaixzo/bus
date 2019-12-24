@@ -101,7 +101,7 @@ public class FileType {
     /**
      * 图片
      */
-    public final static Map<String, String> PICS = new HashMap<String, String>() {
+    public static final Map<String, String> PICS = new HashMap<String, String>() {
         {
             put(".jpe", "image/jpeg");
             put(".jpeg", "image/jpeg");
@@ -145,7 +145,7 @@ public class FileType {
     /**
      * 文档
      */
-    public final static Map<String, String> DOCS = new HashMap<String, String>() {
+    public static final Map<String, String> DOCS = new HashMap<String, String>() {
         {
             // txt
             put(".txt", "text/plain");
@@ -372,7 +372,7 @@ public class FileType {
     /**
      * 压缩文档
      */
-    public final static Map<String, String> ZIPDOCS = new HashMap<String, String>() {
+    public static final Map<String, String> ZIPDOCS = new HashMap<String, String>() {
         {
             put(".7z", "application/x-7z-compressed");
             put(".z", "application/x-compress");
@@ -388,7 +388,7 @@ public class FileType {
     /**
      * 视频
      */
-    public final static Map<String, String> VIDEOS = new HashMap<String, String>() {
+    public static final Map<String, String> VIDEOS = new HashMap<String, String>() {
         {
             put(".flv", "video/x-flv");
             put(".3gp", "video/3gpp");
@@ -439,7 +439,7 @@ public class FileType {
     /**
      * 音频
      */
-    public final static Map<String, String> AUDIOS = new HashMap<String, String>() {
+    public static final Map<String, String> AUDIOS = new HashMap<String, String>() {
         {
             put(".mp3", "audio/mpeg");
             put(".wma", "audio/x-ms-wma");
@@ -483,7 +483,7 @@ public class FileType {
     /**
      * 其他
      */
-    public final static Map<String, String> OTHER = new HashMap<String, String>() {
+    public static final Map<String, String> OTHER = new HashMap<String, String>() {
         {
             // xml类型文件
             put(".asa", "application/xml");
@@ -731,7 +731,7 @@ public class FileType {
     /**
      * 文件信息头
      */
-    public final static Map<String, String> IHDR = new HashMap<String, String>() {
+    public static final Map<String, String> IHDR = new HashMap<String, String>() {
         {
             // JPEG (jpg)
             put("ffd8ffe", "jpg");

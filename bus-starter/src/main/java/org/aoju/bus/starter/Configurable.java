@@ -34,8 +34,6 @@ import org.springframework.core.env.PropertiesPropertySource;
 import java.util.Properties;
 
 /**
- *
- *
  * 用于配置一些特殊的关键属性,比如bus-boot.version等,
  * 将作为一个名为PropertiesPropertySource的属性源添加
  *

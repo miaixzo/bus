@@ -24,12 +24,8 @@
 package org.aoju.bus.core.annotation;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 注解命名
@@ -39,7 +35,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @since JDK 1.8+
  */
 @Binding
-@Retention(RUNTIME)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 public @interface Named {
 

@@ -44,7 +44,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     /**
      * 所有数据源的key集合
      */
-    private final static Set<Object> keySet = new LinkedHashSet<>();
+    private static final Set<Object> keySet = new LinkedHashSet<>();
     /**
      * 单例句柄
      */

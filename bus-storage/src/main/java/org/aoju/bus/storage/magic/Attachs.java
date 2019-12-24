@@ -77,15 +77,13 @@ public class Attachs {
      * 文件所有者
      */
     public String owner;
-
-    /**
-     * 文件hash值
-     */
-    private String hash;
-
     /**
      * 文件扩展字段
      */
     public Map<String, Object> extend;
+    /**
+     * 文件hash值
+     */
+    private String hash;
 
 }

@@ -32,10 +32,10 @@ import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Context;
+import org.aoju.bus.office.bridge.OnlineOfficeContextAware;
 import org.aoju.bus.office.metric.RequestBuilder;
 import org.aoju.bus.office.provider.SourceDocumentProvider;
 import org.aoju.bus.office.provider.TargetDocumentProvider;
-import org.aoju.bus.office.bridge.OnlineOfficeContextAware;
 
 import java.io.File;
 import java.util.Map;

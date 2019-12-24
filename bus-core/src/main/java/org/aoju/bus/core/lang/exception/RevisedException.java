@@ -24,34 +24,34 @@
 package org.aoju.bus.core.lang.exception;
 
 /**
- * 自定义异常: 认证失败异常
+ * 自定义异常: 无法找到方法
  *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public class AuthorizationException extends UnauthorizedException {
+public class RevisedException extends RelevantException {
 
-    public AuthorizationException() {
+    public RevisedException() {
     }
 
-    public AuthorizationException(String message) {
+    public RevisedException(String message) {
         super(message);
     }
 
-    public AuthorizationException(String format, Object... args) {
+    public RevisedException(String format, Object... args) {
         super(format, args);
     }
 
-    public AuthorizationException(String message, Throwable cause) {
+    public RevisedException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public AuthorizationException(Throwable cause) {
+    public RevisedException(Throwable cause) {
         super(cause);
     }
 
-    public AuthorizationException(String errcode, String errmsg) {
+    public RevisedException(String errcode, String errmsg) {
         super(errcode, errmsg);
     }
 

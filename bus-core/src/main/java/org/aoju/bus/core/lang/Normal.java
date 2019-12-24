@@ -83,7 +83,7 @@ public class Normal {
     /**
      * 将数字表示为字符串的所有字符
      */
-    public final static char[] DIGITS_ALL = {
+    public static final char[] DIGITS_ALL = {
             '0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b',
             'c', 'd', 'e', 'f', 'g', 'h',

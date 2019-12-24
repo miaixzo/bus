@@ -39,11 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Registry {
 
     /**
-     * 服务提供者列表
-     */
-    private static Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
-
-    /**
      * 本地转换
      */
     public static final String LOCAL = "LOCAL";
@@ -51,7 +46,10 @@ public class Registry {
      * 在线转换
      */
     public static final String ONLINE = "ONLINE";
-
+    /**
+     * 服务提供者列表
+     */
+    private static Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
     /**
      * 校验实例信息
      */

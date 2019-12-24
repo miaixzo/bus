@@ -32,9 +32,6 @@ import org.aoju.bus.health.software.linux.LinuxOS;
 
 import java.util.*;
 
-import static org.aoju.bus.health.common.linux.ProcUtils.CPUINFO;
-import static org.aoju.bus.health.common.linux.ProcUtils.STAT;
-
 /**
  * A CPU as defined in Linux /proc.
  *
@@ -58,7 +55,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
 
         StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
         String[] flags = new String[0];
-        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + CPUINFO);
+        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
             if (splitLine.length < 2) {
@@ -120,7 +117,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
     @Override
     protected LogicalProcessor[] initProcessorCounts() {
         Map<Integer, Integer> numaNodeMap = mapNumaNodes();
-        List<String> procCpu = Builder.readFile(ProcUtils.getProcPath() + CPUINFO);
+        List<String> procCpu = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.CPUINFO);
         List<LogicalProcessor> logProcs = new ArrayList<>();
         int currentProcessor = 0;
         int currentCore = 0;
@@ -204,7 +201,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
         // If unsuccessful, try from /proc/cpuinfo
         Arrays.fill(freqs, -1);
-        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + CPUINFO);
+        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.CPUINFO);
         int proc = 0;
         for (String s : cpuInfo) {
             if (s.toLowerCase().contains("cpu mhz")) {
@@ -259,7 +256,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
         // cpu 3357 0 4313 1362393 ...
         // per-processor subsequent lines for cpu0, cpu1, etc.
         int cpu = 0;
-        List<String> procStat = Builder.readFile(ProcUtils.getProcPath() + STAT);
+        List<String> procStat = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("cpu") && !stat.startsWith("cpu ")) {
                 // Split the line. Note the first (0) element is "cpu" so
@@ -370,7 +367,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryContextSwitches() {
-        List<String> procStat = Builder.readFile(ProcUtils.getProcPath() + STAT);
+        List<String> procStat = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("ctxt ")) {
                 String[] ctxtArr = Builder.whitespaces.split(stat);
@@ -384,7 +381,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryInterrupts() {
-        List<String> procStat = Builder.readFile(ProcUtils.getProcPath() + STAT);
+        List<String> procStat = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("intr ")) {
                 String[] intrArr = Builder.whitespaces.split(stat);
@@ -395,4 +392,5 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
         return -1;
     }
+
 }

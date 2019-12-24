@@ -23,11 +23,10 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.health.Memoizer;
+
 import java.util.Arrays;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoizer.defaultExpiration;
-import static org.aoju.bus.health.Memoizer.memoize;
 
 /**
  * Sensor info.
@@ -38,11 +37,11 @@ import static org.aoju.bus.health.Memoizer.memoize;
  */
 public abstract class AbstractSensors implements Sensors {
 
-    private final Supplier<Double> cpuTemperature = memoize(this::queryCpuTemperature, defaultExpiration());
+    private final Supplier<Double> cpuTemperature = Memoizer.memoize(this::queryCpuTemperature, Memoizer.defaultExpiration());
 
-    private final Supplier<int[]> fanSpeeds = memoize(this::queryFanSpeeds, defaultExpiration());
+    private final Supplier<int[]> fanSpeeds = Memoizer.memoize(this::queryFanSpeeds, Memoizer.defaultExpiration());
 
-    private final Supplier<Double> cpuVoltage = memoize(this::queryCpuVoltage, defaultExpiration());
+    private final Supplier<Double> cpuVoltage = Memoizer.memoize(this::queryCpuVoltage, Memoizer.defaultExpiration());
 
     @Override
     public double getCpuTemperature() {
@@ -73,4 +72,5 @@ public abstract class AbstractSensors implements Sensors {
         sb.append("CPU Voltage=").append(getCpuVoltage());
         return sb.toString();
     }
+
 }

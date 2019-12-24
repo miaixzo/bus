@@ -240,7 +240,6 @@ public abstract class NotificationService {
     }
 
     @JsonIgnore
-    @SuppressWarnings("unchecked")
     protected <T> T getProperty(String prop, T defaultValue) {
 
         Object value = (properties != null ? properties.get(prop) : null);

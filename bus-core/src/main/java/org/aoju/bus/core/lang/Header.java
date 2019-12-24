@@ -61,6 +61,10 @@ public class Header {
      */
     public static final String ALLOW = "Allow";
     /**
+     * The header Expires
+     */
+    public static final String EXPIRES = "Expires";
+    /**
      * The header Cache-Control
      */
     public static final String CACHE_CONTROL = "Cache-Control";
@@ -108,5 +112,18 @@ public class Header {
      * The header Transfer-Encoding
      */
     public static final String TRANSFER_ENCODING = "Transfer-Encoding";
+
+    public static final String HOST = "Host";
+    public static final String KEEP_ALIVE = "Keep-Alive";
+    public static final String PROXY_CONNECTION = "Proxy-Connection";
+    public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
+    public static final String PROXY_AUTHENTICATE = "Proxy-Authenticate";
+    public static final String HTTPD_PREEMPTIVE = "Httpd-Preemptive";
+    public static final String TE = "te";
+    public static final String ENCODING = "encoding";
+    public static final String UPGRADE = "upgrade";
+
+    public static final String IF_MODIFIED_SINCE = "If-Modified-Since";
+    public static final String IF_NONE_MATCH = "If-None-Match";
 
 }

@@ -25,6 +25,7 @@ package org.aoju.bus.tracer.binding.jms;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
+import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 
@@ -33,10 +34,8 @@ import javax.interceptor.InvocationContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Map;
-
-import static java.util.Collections.singletonList;
-import static org.aoju.bus.tracer.config.TraceFilterConfiguration.Channel.AsyncProcess;
 
 /**
  * @author Kimi Liu
@@ -73,18 +72,18 @@ public final class TraceMessageListener {
     }
 
     public void beforeProcessing(final Message message) throws JMSException {
-        if (backend.getConfiguration().shouldProcessContext(AsyncProcess)) {
+        if (backend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.AsyncProcess)) {
             final String encodedTraceContext = message.getStringProperty(TraceConsts.TPIC_HEADER);
             if (encodedTraceContext != null) {
-                final Map<String, String> contextFromMessage = httpHeaderSerialization.parse(singletonList(encodedTraceContext));
-                backend.putAll(backend.getConfiguration().filterDeniedParams(contextFromMessage, AsyncProcess));
+                final Map<String, String> contextFromMessage = httpHeaderSerialization.parse(Collections.singletonList(encodedTraceContext));
+                backend.putAll(backend.getConfiguration().filterDeniedParams(contextFromMessage, TraceFilterConfiguration.Channel.AsyncProcess));
             }
         }
         Builder.generateInvocationIdIfNecessary(backend);
     }
 
     void cleanUp() {
-        if (backend.getConfiguration().shouldProcessContext(AsyncProcess)) {
+        if (backend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.AsyncProcess)) {
             backend.clear();
         }
     }

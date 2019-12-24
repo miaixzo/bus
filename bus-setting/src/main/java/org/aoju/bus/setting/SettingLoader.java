@@ -54,11 +54,11 @@ public class SettingLoader {
     /**
      * 注释符号（当有此符号在行首,表示此行为注释）
      */
-    private final static char COMMENT_FLAG_PRE = '#';
+    private static final char COMMENT_FLAG_PRE = '#';
     /**
      * 赋值分隔符（用于分隔键值对）
      */
-    private final static char ASSIGN_FLAG = '=';
+    private static final char ASSIGN_FLAG = '=';
     /**
      * 变量名称的正则
      */

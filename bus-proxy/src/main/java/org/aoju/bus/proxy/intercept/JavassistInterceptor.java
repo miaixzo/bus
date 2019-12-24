@@ -27,7 +27,7 @@ public class JavassistInterceptor implements InvocationHandler, Serializable {
     /**
      * 构造
      *
-     * @param target 被代理对象
+     * @param target  被代理对象
      * @param aspectj 切面实现
      */
     public JavassistInterceptor(Object target, Aspectj aspectj) {

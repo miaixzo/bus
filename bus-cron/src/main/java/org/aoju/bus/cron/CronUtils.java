@@ -50,9 +50,9 @@ public final class CronUtils {
     /**
      * Crontab配置文件
      */
-    public final static String CRONTAB_CONFIG_PATH = "config/cron.setting";
+    public static final String CRONTAB_CONFIG_PATH = "config/cron.setting";
 
-    private final static Scheduler scheduler = new Scheduler();
+    private static final Scheduler scheduler = new Scheduler();
     private static Setting crontabSetting;
 
     private CronUtils() {

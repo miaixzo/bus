@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.health.hardware;
 
-import java.util.function.Supplier;
+import org.aoju.bus.health.Memoizer;
 
-import static org.aoju.bus.health.Memoizer.memoize;
+import java.util.function.Supplier;
 
 /**
  * Common fields or methods used by platform-specific implementations of
@@ -37,13 +37,13 @@ import static org.aoju.bus.health.Memoizer.memoize;
  */
 public abstract class AbstractHardwareLayer implements HardwareLayer {
 
-    private final Supplier<ComputerSystem> computerSystem = memoize(this::createComputerSystem);
+    private final Supplier<ComputerSystem> computerSystem = Memoizer.memoize(this::createComputerSystem);
 
-    private final Supplier<CentralProcessor> processor = memoize(this::createProcessor);
+    private final Supplier<CentralProcessor> processor = Memoizer.memoize(this::createProcessor);
 
-    private final Supplier<GlobalMemory> memory = memoize(this::createMemory);
+    private final Supplier<GlobalMemory> memory = Memoizer.memoize(this::createMemory);
 
-    private final Supplier<Sensors> sensors = memoize(this::createSensors);
+    private final Supplier<Sensors> sensors = Memoizer.memoize(this::createSensors);
 
     @Override
     public ComputerSystem getComputerSystem() {
@@ -87,4 +87,5 @@ public abstract class AbstractHardwareLayer implements HardwareLayer {
      * @return platform-specific {@link Sensors} object
      */
     protected abstract Sensors createSensors();
+
 }

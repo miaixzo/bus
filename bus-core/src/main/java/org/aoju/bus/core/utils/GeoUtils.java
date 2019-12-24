@@ -124,6 +124,15 @@ public class GeoUtils {
     }
 
     /**
+     * 坐标点类型
+     *
+     * @since 2.0.6
+     */
+    public enum PointType {
+        WGS84, GCJ02, BD09
+    }
+
+    /**
      * 地理坐标点
      * <p>坐标系转换代码参考自: https://blog.csdn.net/a13570320979/article/details/51366355</p>
      */
@@ -406,15 +415,6 @@ public class GeoUtils {
         public String toString() {
             return "Point{" + "longitude=" + longitude + ", latitude=" + latitude + ", type=" + type + '}';
         }
-    }
-
-    /**
-     * 坐标点类型
-     *
-     * @since 2.0.6
-     */
-    public enum PointType {
-        WGS84, GCJ02, BD09
     }
 
     /**

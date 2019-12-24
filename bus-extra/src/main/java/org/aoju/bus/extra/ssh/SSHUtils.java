@@ -49,7 +49,7 @@ public class SSHUtils {
     /**
      * 不使用SSH的值
      */
-    public final static String SSH_NONE = "none";
+    public static final String SSH_NONE = "none";
 
     /**
      * 本地端口生成器

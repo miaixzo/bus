@@ -24,8 +24,6 @@
 package org.aoju.bus.cache.magic;
 
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.proxy.Invocation;
-import org.aoju.bus.proxy.invoker.InvocationInvoker;
 import org.aoju.bus.proxy.invoker.ProxyChain;
 
 /**

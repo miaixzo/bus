@@ -44,7 +44,7 @@ import java.io.*;
  */
 public class CacheRequestWrapper extends HttpServletRequestWrapper {
 
-    private final static byte[] DEFAULT_BYTE = new byte[0];
+    private static final byte[] DEFAULT_BYTE = new byte[0];
     private byte[] body;
     private ServletInputStreamWrapper inputStreamWrapper;
 

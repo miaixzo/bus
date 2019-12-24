@@ -28,10 +28,10 @@ import org.aoju.bus.cache.annotation.CacheKey;
 import org.aoju.bus.cache.annotation.Cached;
 import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
-import org.aoju.bus.cache.magic.CacheExpire;
 import org.aoju.bus.cache.magic.AnnoHolder;
-import org.aoju.bus.cache.magic.MethodHolder;
+import org.aoju.bus.cache.magic.CacheExpire;
 import org.aoju.bus.cache.magic.CachePair;
+import org.aoju.bus.cache.magic.MethodHolder;
 import org.aoju.bus.logger.Logger;
 
 import java.lang.annotation.Annotation;
@@ -223,6 +223,6 @@ public class CacheInfoContainer {
     private static boolean isInvalidMulti(Class<?> paramType) {
         return !Collection.class.isAssignableFrom(paramType)
                 && !paramType.isArray();
-        // 永久不能放开  && !Map.class.isAssignableFrom(paramType);
     }
+
 }

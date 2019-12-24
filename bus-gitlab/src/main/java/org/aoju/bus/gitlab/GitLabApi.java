@@ -24,7 +24,7 @@ public class GitLabApi {
      * GitLab4J default per page.  GitLab will ignore anything over 100.
      */
     public static final int DEFAULT_PER_PAGE = 96;
-    private final static Logger LOGGER = Logger.getLogger(GitLabApi.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GitLabApi.class.getName());
     // Used to keep track of GitLabApiExceptions on calls that return Optional<?>
     private static final Map<Integer, GitLabApiException> optionalExceptionMap =
             Collections.synchronizedMap(new WeakHashMap<Integer, GitLabApiException>());

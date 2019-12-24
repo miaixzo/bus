@@ -22,7 +22,7 @@ public class CglibInterceptor implements MethodInterceptor {
     /**
      * 构造
      *
-     * @param target 被代理对象
+     * @param target  被代理对象
      * @param aspectj 切面实现
      */
     public CglibInterceptor(Object target, Aspectj aspectj) {

@@ -26,8 +26,8 @@ package org.aoju.bus.starter.oauth;
 import lombok.Data;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
-import org.aoju.bus.starter.cache.CacheProperties;
 import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.starter.cache.CacheProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 

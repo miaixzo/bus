@@ -24,8 +24,8 @@
 package org.aoju.bus.starter.storage;
 
 import lombok.Data;
-import org.aoju.bus.starter.cache.CacheProperties;
 import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.starter.cache.CacheProperties;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.Registry;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -24,14 +24,12 @@
 package org.aoju.bus.health.hardware;
 
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Memoizer;
 import org.aoju.bus.logger.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoizer.defaultExpiration;
-import static org.aoju.bus.health.Memoizer.memoize;
 
 /**
  * A CPU.
@@ -42,15 +40,15 @@ import static org.aoju.bus.health.Memoizer.memoize;
  */
 public abstract class AbstractCentralProcessor implements CentralProcessor {
 
-    private final Supplier<ProcessorIdentifier> cpuid = memoize(this::queryProcessorId);
-    private final Supplier<Long> maxFreq = memoize(this::queryMaxFreq);
-    private final Supplier<long[]> currentFreq = memoize(this::queryCurrentFreq, defaultExpiration());
-    private final Supplier<Long> contextSwitches = memoize(this::queryContextSwitches, defaultExpiration());
-    private final Supplier<Long> interrupts = memoize(this::queryInterrupts, defaultExpiration());
+    private final Supplier<ProcessorIdentifier> cpuid = Memoizer.memoize(this::queryProcessorId);
+    private final Supplier<Long> maxFreq = Memoizer.memoize(this::queryMaxFreq);
+    private final Supplier<long[]> currentFreq = Memoizer.memoize(this::queryCurrentFreq, Memoizer.defaultExpiration());
+    private final Supplier<Long> contextSwitches = Memoizer.memoize(this::queryContextSwitches, Memoizer.defaultExpiration());
+    private final Supplier<Long> interrupts = Memoizer.memoize(this::queryInterrupts, Memoizer.defaultExpiration());
 
-    private final Supplier<long[]> systemCpuLoadTicks = memoize(this::querySystemCpuLoadTicks, defaultExpiration());
-    private final Supplier<long[][]> processorCpuLoadTicks = memoize(this::queryProcessorCpuLoadTicks,
-            defaultExpiration());
+    private final Supplier<long[]> systemCpuLoadTicks = Memoizer.memoize(this::querySystemCpuLoadTicks, Memoizer.defaultExpiration());
+    private final Supplier<long[][]> processorCpuLoadTicks = Memoizer.memoize(this::queryProcessorCpuLoadTicks,
+            Memoizer.defaultExpiration());
 
     // Logical and Physical Processor Counts
     private final int physicalPackageCount;

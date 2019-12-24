@@ -55,12 +55,12 @@ public class MediaType {
     /**
      * A {@code String} constant representing wildcard {@value #WILDCARD} media type .
      */
-    public final static String WILDCARD = "*/*";
+    public static final String WILDCARD = "*/*";
 
     /**
      * A {@link MediaType} constant representing wildcard {@value #WILDCARD} media type.
      */
-    public final static MediaType WILDCARD_TYPE = new MediaType();
+    public static final MediaType WILDCARD_TYPE = new MediaType();
 
     /**
      * "application/xml"
@@ -124,128 +124,128 @@ public class MediaType {
     /**
      * "application/dicom"
      */
-    public final static String APPLICATION_DICOM = "application/dicom";
-    public final static MediaType APPLICATION_DICOM_TYPE = new MediaType("application", "dicom");
+    public static final String APPLICATION_DICOM = "application/dicom";
+    public static final MediaType APPLICATION_DICOM_TYPE = new MediaType("application", "dicom");
 
     /**
      * "application/dicom+xml"
      */
-    public final static String APPLICATION_DICOM_XML = "application/dicom+xml";
-    public final static MediaType APPLICATION_DICOM_XML_TYPE = new MediaType("application", "dicom+xml");
+    public static final String APPLICATION_DICOM_XML = "application/dicom+xml";
+    public static final MediaType APPLICATION_DICOM_XML_TYPE = new MediaType("application", "dicom+xml");
 
     /**
      * "application/dicom+json"
      */
-    public final static String APPLICATION_DICOM_JSON = "application/dicom+json";
-    public final static MediaType APPLICATION_DICOM_JSON_TYPE = new MediaType("application", "dicom+json");
+    public static final String APPLICATION_DICOM_JSON = "application/dicom+json";
+    public static final MediaType APPLICATION_DICOM_JSON_TYPE = new MediaType("application", "dicom+json");
 
     /**
      * "image/*"
      */
-    public final static String IMAGE_WILDCARD = "image/*";
-    public final static MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", "*");
+    public static final String IMAGE_WILDCARD = "image/*";
+    public static final MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", "*");
 
     /**
      * "image/gif"
      */
-    public final static String IMAGE_GIF = "image/gif";
-    public final static MediaType IMAGE_GIF_TYPE = new MediaType("image", "gif");
+    public static final String IMAGE_GIF = "image/gif";
+    public static final MediaType IMAGE_GIF_TYPE = new MediaType("image", "gif");
 
     /**
      * "image/png"
      */
-    public final static String IMAGE_PNG = "image/png";
-    public final static MediaType IMAGE_PNG_TYPE = new MediaType("image", "png");
+    public static final String IMAGE_PNG = "image/png";
+    public static final MediaType IMAGE_PNG_TYPE = new MediaType("image", "png");
 
     /**
      * "image/bmp"
      */
-    public final static String IMAGE_BMP = "image/bmp";
-    public final static MediaType IMAGE_BMP_TYPE = new MediaType("image", "bmp");
+    public static final String IMAGE_BMP = "image/bmp";
+    public static final MediaType IMAGE_BMP_TYPE = new MediaType("image", "bmp");
 
     /**
      * "image/jpeg"
      */
-    public final static String IMAGE_JPEG = "image/jpeg";
-    public final static MediaType IMAGE_JPEG_TYPE = new MediaType("image", "jpeg");
+    public static final String IMAGE_JPEG = "image/jpeg";
+    public static final MediaType IMAGE_JPEG_TYPE = new MediaType("image", "jpeg");
 
     /**
      * "image/x-jls"
      */
-    public final static String IMAGE_X_JLS = "image/x-jls";
-    public final static MediaType IMAGE_X_JLS_TYPE = new MediaType("image", "x-jls");
+    public static final String IMAGE_X_JLS = "image/x-jls";
+    public static final MediaType IMAGE_X_JLS_TYPE = new MediaType("image", "x-jls");
 
     /**
      * "image/jp2"
      */
-    public final static String IMAGE_JP2 = "image/jp2";
-    public final static MediaType IMAGE_JP2_TYPE = new MediaType("image", "jp2");
+    public static final String IMAGE_JP2 = "image/jp2";
+    public static final MediaType IMAGE_JP2_TYPE = new MediaType("image", "jp2");
 
     /**
      * "image/jpx"
      */
-    public final static String IMAGE_JPX = "image/jpx";
-    public final static MediaType IMAGE_JPX_TYPE = new MediaType("image", "jpx");
+    public static final String IMAGE_JPX = "image/jpx";
+    public static final MediaType IMAGE_JPX_TYPE = new MediaType("image", "jpx");
 
     /**
      * "image/dicom+rle"
      */
-    public final static String IMAGE_X_DICOM_RLE = "image/x-dicom+rle";
-    public final static MediaType IMAGE_X_DICOM_RLE_TYPE = new MediaType("image", "x-dicom+rle");
+    public static final String IMAGE_X_DICOM_RLE = "image/x-dicom+rle";
+    public static final MediaType IMAGE_X_DICOM_RLE_TYPE = new MediaType("image", "x-dicom+rle");
 
     /**
      * "video/*"
      */
-    public final static String VIDEO_WILDCARD = "video/*";
-    public final static MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", "*");
+    public static final String VIDEO_WILDCARD = "video/*";
+    public static final MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", "*");
 
     /**
      * "video/mpeg"
      */
-    public final static String VIDEO_MPEG = "video/mpeg";
-    public final static MediaType VIDEO_MPEG_TYPE = new MediaType("video", "mpeg");
+    public static final String VIDEO_MPEG = "video/mpeg";
+    public static final MediaType VIDEO_MPEG_TYPE = new MediaType("video", "mpeg");
 
     /**
      * "video/mp4"
      */
-    public final static String VIDEO_MP4 = "video/mp4";
-    public final static MediaType VIDEO_MP4_TYPE = new MediaType("video", "mp4");
+    public static final String VIDEO_MP4 = "video/mp4";
+    public static final MediaType VIDEO_MP4_TYPE = new MediaType("video", "mp4");
 
     /**
      * "application/pdf"
      */
-    public final static String APPLICATION_PDF = "application/pdf";
-    public final static MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
+    public static final String APPLICATION_PDF = "application/pdf";
+    public static final MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
 
     /**
      * "text/rtf"
      */
-    public final static String TEXT_RTF = "text/rtf";
-    public final static MediaType TEXT_RTF_TYPE = new MediaType("text", "rtf");
+    public static final String TEXT_RTF = "text/rtf";
+    public static final MediaType TEXT_RTF_TYPE = new MediaType("text", "rtf");
 
     /**
      * "text/csv"
      */
-    public final static String TEXT_CSV = "text/csv";
-    public final static MediaType TEXT_CSV_TYPE = new MediaType("text", "csv");
+    public static final String TEXT_CSV = "text/csv";
+    public static final MediaType TEXT_CSV_TYPE = new MediaType("text", "csv");
 
     /**
      * "text/csv;charset=utf-8"
      */
-    public final static String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
-    public final static MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", "utf-8");
+    public static final String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
+    public static final MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", "utf-8");
 
     /**
      * "application/zip"
      */
-    public final static String APPLICATION_ZIP = "application/zip";
-    public final static MediaType APPLICATION_ZIP_TYPE = new MediaType("application", "zip");
+    public static final String APPLICATION_ZIP = "application/zip";
+    public static final MediaType APPLICATION_ZIP_TYPE = new MediaType("application", "zip");
 
     /**
      * "application/x-zip-compressed"
      */
-    public final static String APPLICATION_ZIP_COMPRESSED = "application/x-zip-compressed";
-    public final static MediaType APPLICATION_ZIP_COMPRESSED_TYPE = new MediaType("application", "x-zip-compressed");
+    public static final String APPLICATION_ZIP_COMPRESSED = "application/x-zip-compressed";
+    public static final MediaType APPLICATION_ZIP_COMPRESSED_TYPE = new MediaType("application", "x-zip-compressed");
 
     /**
      * "multipart/form-data"
@@ -256,42 +256,42 @@ public class MediaType {
     /**
      * "multipart/mixed"
      */
-    public final static String MULTIPART_MIXED = "multipart/mixed";
-    public final static MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed");
+    public static final String MULTIPART_MIXED = "multipart/mixed";
+    public static final MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed");
 
     /**
      * "multipart/alternative"
      */
-    public final static String MULTIPART_ALTERNATIVE = "multipart/alternative";
-    public final static MediaType MULTIPART_ALTERNATIVE_TYPE = new MediaType("multipart", "alternative");
+    public static final String MULTIPART_ALTERNATIVE = "multipart/alternative";
+    public static final MediaType MULTIPART_ALTERNATIVE_TYPE = new MediaType("multipart", "alternative");
 
     /**
      * "multipart/digest"
      */
-    public final static String MULTIPART_DIGEST = "multipart/digest";
-    public final static MediaType MULTIPART_DIGEST_TYPE = new MediaType("multipart", "digest");
+    public static final String MULTIPART_DIGEST = "multipart/digest";
+    public static final MediaType MULTIPART_DIGEST_TYPE = new MediaType("multipart", "digest");
 
     /**
      * "multipart/related"
      */
-    public final static String MULTIPART_parallel = "multipart/parallel";
-    public final static MediaType MULTIPART_PARALLEL_TYPE = new MediaType("multipart", "parallel");
+    public static final String MULTIPART_parallel = "multipart/parallel";
+    public static final MediaType MULTIPART_PARALLEL_TYPE = new MediaType("multipart", "parallel");
 
     /**
      * "multipart/related"
      */
-    public final static String MULTIPART_RELATED = "multipart/related";
-    public final static MediaType MULTIPART_RELATED_TYPE = new MediaType("multipart", "related");
+    public static final String MULTIPART_RELATED = "multipart/related";
+    public static final MediaType MULTIPART_RELATED_TYPE = new MediaType("multipart", "related");
 
     /**
      * "multipart/related;type=application/dicom"
      */
-    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
+    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
 
     /**
      * "multipart/related;type=application/dicom+xml"
      */
-    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
+    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
 
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
     public static final String QUOTED = "\"([^\"]*)\"";

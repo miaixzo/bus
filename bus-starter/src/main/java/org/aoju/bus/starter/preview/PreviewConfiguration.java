@@ -60,9 +60,9 @@ public class PreviewConfiguration {
                                                          final OfficeManager onlineOfficeManager) {
         return new PreviewProviderService(
                 LocalOfficeProvider.builder()
-                .officeManager(localOfficeManager)
-                .formatRegistry(RegistryInstanceHolder.getInstance())
-                .build(),
+                        .officeManager(localOfficeManager)
+                        .formatRegistry(RegistryInstanceHolder.getInstance())
+                        .build(),
                 OnlineOfficeProvider.make(onlineOfficeManager));
     }
 

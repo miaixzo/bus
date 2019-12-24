@@ -25,9 +25,9 @@ package org.aoju.bus.office.metric;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.office.Protocol;
+import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
 import org.aoju.bus.office.builtin.MadeInOffice;
 import org.aoju.bus.office.magic.UnoUrl;
-import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
 
 import java.io.File;
 

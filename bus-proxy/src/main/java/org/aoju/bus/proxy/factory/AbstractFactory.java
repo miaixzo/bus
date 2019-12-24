@@ -127,8 +127,8 @@ public abstract class AbstractFactory extends Factory {
     /**
      * 根据用户引入Cglib与否自动创建代理对象
      *
-     * @param <T>    切面对象类型
-     * @param target 被代理对象
+     * @param <T>     切面对象类型
+     * @param target  被代理对象
      * @param aspectj 切面实现
      * @return 代理对象
      */
@@ -206,8 +206,8 @@ public abstract class AbstractFactory extends Factory {
     /**
      * 创建代理
      *
-     * @param <T>    代理对象类型
-     * @param target 被代理对象
+     * @param <T>     代理对象类型
+     * @param target  被代理对象
      * @param aspectj 切面实现
      * @return 代理对象
      */

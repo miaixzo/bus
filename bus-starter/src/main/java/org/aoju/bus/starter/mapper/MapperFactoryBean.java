@@ -23,13 +23,12 @@
  */
 package org.aoju.bus.starter.mapper;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.session.Configuration;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.FactoryBean;
-
-import static org.aoju.bus.core.lang.Assert.notNull;
 
 /**
  * 增加mapperBuilder
@@ -56,7 +55,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport
     protected void checkDaoConfig() {
         super.checkDaoConfig();
 
-        notNull(this.mapperInterface, "Property 'mapperInterface' is required");
+        Assert.notNull(this.mapperInterface, "Property 'mapperInterface' is required");
 
         Configuration configuration = getSqlSession().getConfiguration();
         if (this.addToConfig && !configuration.hasMapper(this.mapperInterface)) {

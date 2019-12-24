@@ -114,8 +114,8 @@ public class Builder {
     /**
      * 使用切面代理对象
      *
-     * @param <T>    被代理对象类型
-     * @param target 被代理对象
+     * @param <T>     被代理对象类型
+     * @param target  被代理对象
      * @param aspectj 切面对象
      * @return 代理对象
      */

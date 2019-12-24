@@ -23,9 +23,10 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.health.Memoizer;
+
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoizer.memoize;
 
 /**
  * Computer System data.
@@ -36,9 +37,9 @@ import static org.aoju.bus.health.Memoizer.memoize;
  */
 public abstract class AbstractComputerSystem implements ComputerSystem {
 
-    private final Supplier<Firmware> firmware = memoize(this::createFirmware);
+    private final Supplier<Firmware> firmware = Memoizer.memoize(this::createFirmware);
 
-    private final Supplier<Baseboard> baseboard = memoize(this::createBaseboard);
+    private final Supplier<Baseboard> baseboard = Memoizer.memoize(this::createBaseboard);
 
     @Override
     public Firmware getFirmware() {

@@ -34,8 +34,6 @@ import org.aoju.bus.health.hardware.Firmware;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.common.linux.ProcUtils.CPUINFO;
-
 /**
  * Hardware data obtained from sysfs.
  *
@@ -111,7 +109,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String queryManufacturerFromProcCpu() {
-        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + CPUINFO);
+        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.CPUINFO);
         for (String line : cpuInfo) {
             if (line.startsWith("CPU implementer")) {
                 int part = Builder.parseLastInt(line, 0);
@@ -227,4 +225,5 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
         }
         return null;
     }
+
 }

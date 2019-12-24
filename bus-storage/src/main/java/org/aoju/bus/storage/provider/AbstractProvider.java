@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.storage.provider;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Httpd;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.storage.Context;
@@ -54,7 +55,7 @@ public abstract class AbstractProvider implements Provider {
             httpConn = (HttpURLConnection) url.openConnection();
             int responseCode = httpConn.getResponseCode();
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            if (responseCode == Http.HTTP_OK) {
                 String fileName = "";
                 String disposition = httpConn.getHeaderField("Content-Disposition");
 

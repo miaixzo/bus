@@ -32,8 +32,6 @@ import org.aoju.bus.health.hardware.AbstractBaseboard;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.common.linux.ProcUtils.CPUINFO;
-
 /**
  * Baseboard data obtained by sysfs
  *
@@ -152,7 +150,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
         String pcVersion = null;
         String pcSerialNumber = null;
 
-        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + CPUINFO);
+        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
             if (splitLine.length < 2) {
@@ -210,4 +208,5 @@ final class LinuxBaseboard extends AbstractBaseboard {
             this.serialNumber = StringUtils.isBlank(serialNumber) ? Builder.UNKNOWN : serialNumber;
         }
     }
+
 }

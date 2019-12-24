@@ -36,13 +36,13 @@ import com.sun.star.uno.Any;
 import com.sun.star.uno.AnyConverter;
 import com.sun.star.uno.XComponentContext;
 import org.aoju.bus.office.Context;
+import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 import org.aoju.bus.office.magic.Info;
 import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.Props;
 import org.aoju.bus.office.magic.Write;
 import org.aoju.bus.office.magic.filter.Filter;
 import org.aoju.bus.office.magic.filter.FilterChain;
-import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 
 /**
  * 此筛选器用于将图形插入到文档中.

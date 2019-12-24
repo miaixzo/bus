@@ -39,8 +39,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 
-import static org.aoju.bus.tracer.config.TraceFilterConfiguration.Channel.IncomingRequest;
-
 /**
  * @author Kimi Liu
  * @version 5.3.6
@@ -80,12 +78,12 @@ public final class TraceServletRequestListener implements ServletRequestListener
     private void httpRequestInitialized(final HttpServletRequest request) {
         final TraceFilterConfiguration configuration = backend.getConfiguration();
 
-        if (configuration.shouldProcessContext(IncomingRequest)) {
+        if (configuration.shouldProcessContext(TraceFilterConfiguration.Channel.IncomingRequest)) {
             final Enumeration<String> headers = request.getHeaders(HTTP_HEADER_NAME);
 
             if (headers != null && headers.hasMoreElements()) {
                 final Map<String, String> contextMap = transportSerialization.parse(Collections.list(headers));
-                backend.putAll(backend.getConfiguration().filterDeniedParams(contextMap, IncomingRequest));
+                backend.putAll(backend.getConfiguration().filterDeniedParams(contextMap, TraceFilterConfiguration.Channel.IncomingRequest));
             }
         }
 
@@ -96,4 +94,5 @@ public final class TraceServletRequestListener implements ServletRequestListener
             Builder.generateSessionIdIfNecessary(backend, session.getId());
         }
     }
+
 }

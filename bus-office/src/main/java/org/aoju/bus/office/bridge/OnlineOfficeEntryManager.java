@@ -48,8 +48,6 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import static java.lang.Math.toIntExact;
-
 /**
  * 负责执行通过不依赖于office安装的{@link OnlineOfficePoolManager}提交的任务。
  * 它将向LibreOffice在线服务器发送转换请求，并等待任务完成或达到配置的任务执行超时.
@@ -148,8 +146,8 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
             final RequestBuilder requestBuilder =
                     new RequestBuilder(
                             buildUrl(connectionUrl),
-                            toIntExact(config.getTaskExecutionTimeout()),
-                            toIntExact(config.getTaskExecutionTimeout()));
+                            Math.toIntExact(config.getTaskExecutionTimeout()),
+                            Math.toIntExact(config.getTaskExecutionTimeout()));
             task.execute(new OnlineOfficeBridgeFactory(new Httpx(), requestBuilder));
 
         } catch (IOException ex) {

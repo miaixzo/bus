@@ -24,6 +24,7 @@
 package org.aoju.bus.core.io.segment;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;
 
@@ -37,8 +38,6 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-
-import static org.aoju.bus.core.utils.IoUtils.arrayRangeEquals;
 
 /**
  * 不可变的字节序列.
@@ -162,19 +161,19 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public ByteString md5() {
-        return digest("MD5");
+        return digest(Algorithm.MD5);
     }
 
     public ByteString sha1() {
-        return digest("SHA-1");
+        return digest(Algorithm.SHA1);
     }
 
     public ByteString sha256() {
-        return digest("SHA-256");
+        return digest(Algorithm.SHA256);
     }
 
     public ByteString sha512() {
-        return digest("SHA-512");
+        return digest(Algorithm.SHA512);
     }
 
     private ByteString digest(String algorithm) {
@@ -186,15 +185,15 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public ByteString hmacSha1(ByteString key) {
-        return hmac("HmacSHA1", key);
+        return hmac(Algorithm.HmacSHA1, key);
     }
 
     public ByteString hmacSha256(ByteString key) {
-        return hmac("HmacSHA256", key);
+        return hmac(Algorithm.HmacSHA256, key);
     }
 
     public ByteString hmacSha512(ByteString key) {
-        return hmac("HmacSHA512", key);
+        return hmac(Algorithm.HmacSHA512, key);
     }
 
     private ByteString hmac(String algorithm, ByteString key) {
@@ -321,7 +320,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public boolean rangeEquals(int offset, byte[] other, int otherOffset, int byteCount) {
         return offset >= 0 && offset <= data.length - byteCount
                 && otherOffset >= 0 && otherOffset <= other.length - byteCount
-                && arrayRangeEquals(data, offset, other, otherOffset, byteCount);
+                && IoUtils.arrayRangeEquals(data, offset, other, otherOffset, byteCount);
     }
 
     public final boolean startsWith(ByteString prefix) {
@@ -355,7 +354,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public int indexOf(byte[] other, int fromIndex) {
         fromIndex = Math.max(fromIndex, 0);
         for (int i = fromIndex, limit = data.length - other.length; i <= limit; i++) {
-            if (arrayRangeEquals(data, i, other, 0, other.length)) {
+            if (IoUtils.arrayRangeEquals(data, i, other, 0, other.length)) {
                 return i;
             }
         }
@@ -377,7 +376,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public int lastIndexOf(byte[] other, int fromIndex) {
         fromIndex = Math.min(fromIndex, data.length - other.length);
         for (int i = fromIndex; i >= 0; i--) {
-            if (arrayRangeEquals(data, i, other, 0, other.length)) {
+            if (IoUtils.arrayRangeEquals(data, i, other, 0, other.length)) {
                 return i;
             }
         }

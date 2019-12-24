@@ -23,7 +23,6 @@
  */
 package org.aoju.bus;
 
-import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.CompareUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -101,12 +100,12 @@ public class Version {
     }
 
     /**
-     * 代理信息
+     * 完整版本号
      *
      * @return the agent
      */
-    public static String agent() {
-        return Http.HTTP + major() + minor() + stage();
+    public static String all() {
+        return major() + minor() + stage();
     }
 
     /**
