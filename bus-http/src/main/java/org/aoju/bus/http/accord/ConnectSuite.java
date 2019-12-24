@@ -1,26 +1,3 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2017 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.http.Internal;
@@ -35,6 +12,9 @@ import java.util.List;
  * Specifies configuration for the socket connection that HTTP traffic travels through. For {@code
  * https:} URLs, this includes the TLS version and cipher suites to use when negotiating a secure
  * connection.
+ * <p>
+ * 指定HTTP传输通过的套接字连接的配置。对于{@code https:}
+ * url，这包括在协商安全连接时要使用的TLS版本和密码套件
  *
  * <p>The TLS versions configured in a connection spec are only be used if they are also enabled in
  * the SSL socket. For example, if an SSL socket does not have TLS 1.3 enabled, it will not be used
@@ -42,17 +22,13 @@ import java.util.List;
  *
  * <p>Use {@link Builder#allEnabledTlsVersions()} and {@link Builder#allEnabledCipherSuites} to
  * defer all feature selection to the underlying SSL socket.
- *
- * @author Kimi Liu
- * @version 5.3.6
- * @since JDK 1.8+
  */
-public final class ConnectionSpec {
+public final class ConnectSuite {
 
     /**
      * Unencrypted, unauthenticated connections for {@code http:} URLs.
      */
-    public static final ConnectionSpec CLEARTEXT = new Builder(false).build();
+    public static final ConnectSuite CLEARTEXT = new Builder(false).build();
     // Most secure but generally supported list.
     private static final CipherSuite[] RESTRICTED_CIPHER_SUITES = new CipherSuite[]{
             // TLSv1.3
@@ -72,7 +48,7 @@ public final class ConnectionSpec {
     /**
      * A secure TLS connection assuming a modern client platform and server.
      */
-    public static final ConnectionSpec RESTRICTED_TLS = new Builder(true)
+    public static final ConnectSuite RESTRICTED_TLS = new Builder(true)
             .cipherSuites(RESTRICTED_CIPHER_SUITES)
             .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2)
             .supportsTlsExtensions(true)
@@ -108,7 +84,7 @@ public final class ConnectionSpec {
     /**
      * A modern TLS connection with extensions like SNI and ALPN available.
      */
-    public static final ConnectionSpec MODERN_TLS = new Builder(true)
+    public static final ConnectSuite MODERN_TLS = new Builder(true)
             .cipherSuites(APPROVED_CIPHER_SUITES)
             .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2, TlsVersion.TLS_1_1, TlsVersion.TLS_1_0)
             .supportsTlsExtensions(true)
@@ -116,19 +92,17 @@ public final class ConnectionSpec {
     /**
      * A backwards-compatible fallback connection for interop with obsolete servers.
      */
-    public static final ConnectionSpec COMPATIBLE_TLS = new Builder(true)
+    public static final ConnectSuite COMPATIBLE_TLS = new Builder(true)
             .cipherSuites(APPROVED_CIPHER_SUITES)
             .tlsVersions(TlsVersion.TLS_1_0)
             .supportsTlsExtensions(true)
             .build();
     final boolean tls;
     final boolean supportsTlsExtensions;
-    final
-    String[] cipherSuites;
-    final
-    String[] tlsVersions;
+    final String[] cipherSuites;
+    final String[] tlsVersions;
 
-    ConnectionSpec(Builder builder) {
+    ConnectSuite(Builder builder) {
         this.tls = builder.tls;
         this.cipherSuites = builder.cipherSuites;
         this.tlsVersions = builder.tlsVersions;
@@ -139,10 +113,18 @@ public final class ConnectionSpec {
         return tls;
     }
 
+    /**
+     * Returns the cipher suites to use for a connection. Returns null if all of the SSL socket's
+     * enabled cipher suites should be used.
+     */
     public List<CipherSuite> cipherSuites() {
         return cipherSuites != null ? CipherSuite.forJavaNames(cipherSuites) : null;
     }
 
+    /**
+     * Returns the TLS versions to use when negotiating a connection. Returns null if all of the SSL
+     * socket's enabled TLS versions should be used.
+     */
     public List<TlsVersion> tlsVersions() {
         return tlsVersions != null ? TlsVersion.forJavaNames(tlsVersions) : null;
     }
@@ -151,8 +133,11 @@ public final class ConnectionSpec {
         return supportsTlsExtensions;
     }
 
+    /**
+     * Applies this spec to {@code sslSocket}.
+     */
     public void apply(SSLSocket sslSocket, boolean isFallback) {
-        ConnectionSpec specToApply = supportedSpec(sslSocket, isFallback);
+        ConnectSuite specToApply = supportedSpec(sslSocket, isFallback);
 
         if (specToApply.tlsVersions != null) {
             sslSocket.setEnabledProtocols(specToApply.tlsVersions);
@@ -162,7 +147,11 @@ public final class ConnectionSpec {
         }
     }
 
-    private ConnectionSpec supportedSpec(SSLSocket sslSocket, boolean isFallback) {
+    /**
+     * Returns a copy of this that omits cipher suites and TLS versions not enabled by {@code
+     * sslSocket}.
+     */
+    private ConnectSuite supportedSpec(SSLSocket sslSocket, boolean isFallback) {
         String[] cipherSuitesIntersection = cipherSuites != null
                 ? Internal.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(), cipherSuites)
                 : sslSocket.getEnabledCipherSuites();
@@ -186,6 +175,17 @@ public final class ConnectionSpec {
                 .build();
     }
 
+    /**
+     * Returns {@code true} if the socket, as currently configured, supports this connection spec. In
+     * order for a socket to be compatible the enabled cipher suites and protocols must intersect.
+     *
+     * <p>For cipher suites, at least one of the {@link #cipherSuites() required cipher suites} must
+     * match the socket's enabled cipher suites. If there are no required cipher suites the socket
+     * must have at least one cipher suite enabled.
+     *
+     * <p>For protocols, at least one of the {@link #tlsVersions() required protocols} must match the
+     * socket's enabled protocols.
+     */
     public boolean isCompatible(SSLSocket socket) {
         if (!tls) {
             return false;
@@ -206,10 +206,10 @@ public final class ConnectionSpec {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof ConnectionSpec)) return false;
+        if (!(other instanceof ConnectSuite)) return false;
         if (other == this) return true;
 
-        ConnectionSpec that = (ConnectionSpec) other;
+        ConnectSuite that = (ConnectSuite) other;
         if (this.tls != that.tls) return false;
 
         if (tls) {
@@ -248,7 +248,6 @@ public final class ConnectionSpec {
     }
 
     public static final class Builder {
-
         boolean tls;
         String[] cipherSuites;
         String[] tlsVersions;
@@ -258,11 +257,11 @@ public final class ConnectionSpec {
             this.tls = tls;
         }
 
-        public Builder(ConnectionSpec connectionSpec) {
-            this.tls = connectionSpec.tls;
-            this.cipherSuites = connectionSpec.cipherSuites;
-            this.tlsVersions = connectionSpec.tlsVersions;
-            this.supportsTlsExtensions = connectionSpec.supportsTlsExtensions;
+        public Builder(ConnectSuite connectSuite) {
+            this.tls = connectSuite.tls;
+            this.cipherSuites = connectSuite.cipherSuites;
+            this.tlsVersions = connectSuite.tlsVersions;
+            this.supportsTlsExtensions = connectSuite.supportsTlsExtensions;
         }
 
         public Builder allEnabledCipherSuites() {
@@ -326,9 +325,8 @@ public final class ConnectionSpec {
             return this;
         }
 
-        public ConnectionSpec build() {
-            return new ConnectionSpec(this);
+        public ConnectSuite build() {
+            return new ConnectSuite(this);
         }
     }
-
 }

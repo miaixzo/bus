@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.accord.ConnectionSpec;
+import org.aoju.bus.http.accord.ConnectSuite;
 import org.aoju.bus.http.secure.Authenticator;
 import org.aoju.bus.http.secure.CertificatePinner;
 
@@ -51,7 +51,7 @@ public final class Address {
     public final SocketFactory socketFactory;
     public final Authenticator proxyAuthenticator;
     public final List<Protocol> protocols;
-    public final List<ConnectionSpec> connectionSpecs;
+    public final List<ConnectSuite> connectSuites;
     public final ProxySelector proxySelector;
     public final Proxy proxy;
     public final SSLSocketFactory sslSocketFactory;
@@ -61,7 +61,7 @@ public final class Address {
     public Address(String uriHost, int uriPort, DnsX dns, SocketFactory socketFactory,
                    SSLSocketFactory sslSocketFactory, HostnameVerifier hostnameVerifier,
                    CertificatePinner certificatePinner, Authenticator proxyAuthenticator,
-                   Proxy proxy, List<Protocol> protocols, List<ConnectionSpec> connectionSpecs,
+                   Proxy proxy, List<Protocol> protocols, List<ConnectSuite> connectSuites,
                    ProxySelector proxySelector) {
         this.url = new UnoUrl.Builder()
                 .scheme(sslSocketFactory != null ? "https" : "http")
@@ -83,8 +83,8 @@ public final class Address {
         if (protocols == null) throw new NullPointerException("protocols == null");
         this.protocols = Internal.immutableList(protocols);
 
-        if (connectionSpecs == null) throw new NullPointerException("connectionSpecs == null");
-        this.connectionSpecs = Internal.immutableList(connectionSpecs);
+        if (connectSuites == null) throw new NullPointerException("connectionSpecs == null");
+        this.connectSuites = Internal.immutableList(connectSuites);
 
         if (proxySelector == null) throw new NullPointerException("proxySelector == null");
         this.proxySelector = proxySelector;
@@ -115,8 +115,8 @@ public final class Address {
         return protocols;
     }
 
-    public List<ConnectionSpec> connectionSpecs() {
-        return connectionSpecs;
+    public List<ConnectSuite> connectionSpecs() {
+        return connectSuites;
     }
 
     public ProxySelector proxySelector() {
@@ -153,7 +153,7 @@ public final class Address {
         result = 31 * result + dns.hashCode();
         result = 31 * result + proxyAuthenticator.hashCode();
         result = 31 * result + protocols.hashCode();
-        result = 31 * result + connectionSpecs.hashCode();
+        result = 31 * result + connectSuites.hashCode();
         result = 31 * result + proxySelector.hashCode();
         result = 31 * result + (proxy != null ? proxy.hashCode() : 0);
         result = 31 * result + (sslSocketFactory != null ? sslSocketFactory.hashCode() : 0);
@@ -166,7 +166,7 @@ public final class Address {
         return this.dns.equals(that.dns)
                 && this.proxyAuthenticator.equals(that.proxyAuthenticator)
                 && this.protocols.equals(that.protocols)
-                && this.connectionSpecs.equals(that.connectionSpecs)
+                && this.connectSuites.equals(that.connectSuites)
                 && this.proxySelector.equals(that.proxySelector)
                 && Internal.equal(this.proxy, that.proxy)
                 && Internal.equal(this.sslSocketFactory, that.sslSocketFactory)

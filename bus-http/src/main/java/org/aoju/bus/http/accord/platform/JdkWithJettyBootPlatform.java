@@ -1,28 +1,21 @@
 /*
- * The MIT License
+ * Copyright (C) 2016 Square, Inc.
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.aoju.bus.http.accord.platform;
 
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.Protocol;
 
@@ -34,9 +27,7 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
- * @author Kimi Liu
- * @version 5.3.6
- * @since JDK 1.8+
+ * OpenJDK 7 or OpenJDK 8 with {@code org.mortbay.jetty.alpn/alpn-boot} 在引导类路径中.
  */
 class JdkWithJettyBootPlatform extends Platform {
 
@@ -56,6 +47,7 @@ class JdkWithJettyBootPlatform extends Platform {
     }
 
     public static Platform buildIfSupported() {
+        // 查找Jetty的OpenJDK ALPN扩展
         try {
             String negoClassName = "org.eclipse.jetty.alpn.ALPN";
             Class<?> negoClass = Class.forName(negoClassName);
@@ -83,7 +75,7 @@ class JdkWithJettyBootPlatform extends Platform {
                     new Class[]{clientProviderClass, serverProviderClass}, new JettyNegoProvider(names));
             putMethod.invoke(null, sslSocket, provider);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw Internal.assertionError("unable to set alpn", e);
+            throw new InstrumentException("unable to set alpn", e);
         }
     }
 
@@ -92,7 +84,7 @@ class JdkWithJettyBootPlatform extends Platform {
         try {
             removeMethod.invoke(null, sslSocket);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw Internal.assertionError("unable to remove alpn", e);
+            throw new InstrumentException("unable to remove alpn", e);
         }
     }
 
@@ -112,20 +104,19 @@ class JdkWithJettyBootPlatform extends Platform {
     }
 
     /**
-     * Handle the methods of ALPN's ClientProvider and ServerProvider without a compile-time
-     * dependency on those interfaces.
+     * 处理ALPN的ClientProvider和ServerProvider的方法，而不需要在编译时依赖于这些接口
      */
     private static class JettyNegoProvider implements InvocationHandler {
         /**
-         * This peer's supported protocols.
+         * 这个对等点支持的协议.
          */
         private final List<String> protocols;
         /**
-         * Set when remote peer notifies ALPN is unsupported.
+         * 当远程对等节点通知不支持ALPN时设置.
          */
         boolean unsupported;
         /**
-         * The protocol the server selected.
+         * 服务器选择的协议.
          */
         String selected;
 
@@ -141,25 +132,28 @@ class JdkWithJettyBootPlatform extends Platform {
                 args = Internal.EMPTY_STRING_ARRAY;
             }
             if (methodName.equals("supports") && boolean.class == returnType) {
-                return true; // ALPN is supported.
+                // ALPN支持
+                return true;
             } else if (methodName.equals("unsupported") && void.class == returnType) {
-                this.unsupported = true; // Peer doesn't support ALPN.
+                // 不支持ALPN
+                this.unsupported = true;
                 return null;
             } else if (methodName.equals("protocols") && args.length == 0) {
-                return protocols; // Client advertises these protocols.
+                // 客户端广播这些协议
+                return protocols;
             } else if ((methodName.equals("selectProtocol") || methodName.equals("select"))
                     && String.class == returnType && args.length == 1 && args[0] instanceof List) {
                 List<String> peerProtocols = (List) args[0];
-                // Pick the first known protocol the peer advertises.
+                // 选择同行宣传的第一个已知协议.
                 for (int i = 0, size = peerProtocols.size(); i < size; i++) {
                     if (protocols.contains(peerProtocols.get(i))) {
                         return selected = peerProtocols.get(i);
                     }
                 }
-                return selected = protocols.get(0); // On no intersection, try peer's first protocol.
+                return selected = protocols.get(0);
             } else if ((methodName.equals("protocolSelected") || methodName.equals("selected"))
                     && args.length == 1) {
-                this.selected = (String) args[0]; // Server selected this protocol.
+                this.selected = (String) args[0];
                 return null;
             } else {
                 return method.invoke(this, args);

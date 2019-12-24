@@ -604,23 +604,23 @@ public abstract class Internal {
 
     public abstract void setCache(Httpd.Builder builder, InternalCache internalCache);
 
-    public abstract RealConnection get(ConnectionPool pool, Address address,
+    public abstract RealConnection get(ConnectPool pool, Address address,
                                        StreamAllocation streamAllocation, Route route);
 
     public abstract boolean equalsNonHost(Address a, Address b);
 
     public abstract Socket deduplicate(
-            ConnectionPool pool, Address address, StreamAllocation streamAllocation);
+            ConnectPool pool, Address address, StreamAllocation streamAllocation);
 
-    public abstract void put(ConnectionPool pool, RealConnection connection);
+    public abstract void put(ConnectPool pool, RealConnection connection);
 
-    public abstract boolean connectionBecameIdle(ConnectionPool pool, RealConnection connection);
+    public abstract boolean connectionBecameIdle(ConnectPool pool, RealConnection connection);
 
-    public abstract RouteDatabase routeDatabase(ConnectionPool connectionPool);
+    public abstract RouteDatabase routeDatabase(ConnectPool connectPool);
 
     public abstract int code(Response.Builder responseBuilder);
 
-    public abstract void apply(ConnectionSpec tlsConfiguration, SSLSocket sslSocket,
+    public abstract void apply(ConnectSuite tlsConfiguration, SSLSocket sslSocket,
                                boolean isFallback);
 
     public abstract boolean isInvalidHttpUrlHost(IllegalArgumentException e);

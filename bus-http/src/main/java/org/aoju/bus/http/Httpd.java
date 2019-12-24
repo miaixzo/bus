@@ -109,7 +109,7 @@ import java.util.concurrent.TimeUnit;
  *     client.dispatcher().executorService().shutdown();
  * }</pre>
  *
- * <p>Clear the connection pool with {@link ConnectionPool#evictAll() evictAll()}. Note that the
+ * <p>Clear the connection pool with {@link ConnectPool#evictAll() evictAll()}. Note that the
  * connection pool's daemon thread may not exit immediately. <pre>   {@code
  *
  *     client.connectionPool().evictAll();
@@ -134,8 +134,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     static final List<Protocol> DEFAULT_PROTOCOLS = Internal.immutableList(
             Protocol.HTTP_2, Protocol.HTTP_1_1);
 
-    static final List<ConnectionSpec> DEFAULT_CONNECTION_SPECS = Internal.immutableList(
-            ConnectionSpec.MODERN_TLS, ConnectionSpec.CLEARTEXT);
+    static final List<ConnectSuite> DEFAULT_CONNECTION_SPECS = Internal.immutableList(
+            ConnectSuite.MODERN_TLS, ConnectSuite.CLEARTEXT);
 
     static {
         Internal.instance = new Internal() {
@@ -157,12 +157,12 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
 
             @Override
             public boolean connectionBecameIdle(
-                    ConnectionPool pool, RealConnection connection) {
+                    ConnectPool pool, RealConnection connection) {
                 return pool.connectionBecameIdle(connection);
             }
 
             @Override
-            public RealConnection get(ConnectionPool pool, Address address,
+            public RealConnection get(ConnectPool pool, Address address,
                                       StreamAllocation streamAllocation, Route route) {
                 return pool.get(address, streamAllocation, route);
             }
@@ -174,18 +174,18 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
 
             @Override
             public Socket deduplicate(
-                    ConnectionPool pool, Address address, StreamAllocation streamAllocation) {
+                    ConnectPool pool, Address address, StreamAllocation streamAllocation) {
                 return pool.deduplicate(address, streamAllocation);
             }
 
             @Override
-            public void put(ConnectionPool pool, RealConnection connection) {
+            public void put(ConnectPool pool, RealConnection connection) {
                 pool.put(connection);
             }
 
             @Override
-            public RouteDatabase routeDatabase(ConnectionPool connectionPool) {
-                return connectionPool.routeDatabase;
+            public RouteDatabase routeDatabase(ConnectPool connectPool) {
+                return connectPool.routeDatabase;
             }
 
             @Override
@@ -194,7 +194,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             }
 
             @Override
-            public void apply(ConnectionSpec tlsConfiguration, SSLSocket sslSocket, boolean isFallback) {
+            public void apply(ConnectSuite tlsConfiguration, SSLSocket sslSocket, boolean isFallback) {
                 tlsConfiguration.apply(sslSocket, isFallback);
             }
 
@@ -223,7 +223,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     final Dispatcher dispatcher;
     final Proxy proxy;
     final List<Protocol> protocols;
-    final List<ConnectionSpec> connectionSpecs;
+    final List<ConnectSuite> connectSuites;
     final List<Interceptor> interceptors;
     final List<Interceptor> networkInterceptors;
     final EventListener.Factory eventListenerFactory;
@@ -238,7 +238,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     final CertificatePinner certificatePinner;
     final Authenticator proxyAuthenticator;
     final Authenticator authenticator;
-    final ConnectionPool connectionPool;
+    final ConnectPool connectPool;
     final DnsX dns;
     final boolean followSslRedirects;
     final boolean followRedirects;
@@ -257,7 +257,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         this.dispatcher = builder.dispatcher;
         this.proxy = builder.proxy;
         this.protocols = builder.protocols;
-        this.connectionSpecs = builder.connectionSpecs;
+        this.connectSuites = builder.connectSuites;
         this.interceptors = Internal.immutableList(builder.interceptors);
         this.networkInterceptors = Internal.immutableList(builder.networkInterceptors);
         this.eventListenerFactory = builder.eventListenerFactory;
@@ -268,7 +268,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         this.socketFactory = builder.socketFactory;
 
         boolean isTLS = false;
-        for (ConnectionSpec spec : connectionSpecs) {
+        for (ConnectSuite spec : connectSuites) {
             isTLS = isTLS || spec.isTls();
         }
 
@@ -290,7 +290,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
                 certificateChainCleaner);
         this.proxyAuthenticator = builder.proxyAuthenticator;
         this.authenticator = builder.authenticator;
-        this.connectionPool = builder.connectionPool;
+        this.connectPool = builder.connectPool;
         this.dns = builder.dns;
         this.followSslRedirects = builder.followSslRedirects;
         this.followRedirects = builder.followRedirects;
@@ -387,8 +387,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         return proxyAuthenticator;
     }
 
-    public ConnectionPool connectionPool() {
-        return connectionPool;
+    public ConnectPool connectionPool() {
+        return connectPool;
     }
 
     public boolean followSslRedirects() {
@@ -411,8 +411,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         return protocols;
     }
 
-    public List<ConnectionSpec> connectionSpecs() {
-        return connectionSpecs;
+    public List<ConnectSuite> connectionSpecs() {
+        return connectSuites;
     }
 
     public List<Interceptor> interceptors() {
@@ -450,7 +450,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         Dispatcher dispatcher;
         Proxy proxy;
         List<Protocol> protocols;
-        List<ConnectionSpec> connectionSpecs;
+        List<ConnectSuite> connectSuites;
         EventListener.Factory eventListenerFactory;
         ProxySelector proxySelector;
         CookieJar cookieJar;
@@ -463,7 +463,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         CertificatePinner certificatePinner;
         Authenticator proxyAuthenticator;
         Authenticator authenticator;
-        ConnectionPool connectionPool;
+        ConnectPool connectPool;
         DnsX dns;
         boolean followSslRedirects;
         boolean followRedirects;
@@ -477,7 +477,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         public Builder() {
             dispatcher = new Dispatcher();
             protocols = DEFAULT_PROTOCOLS;
-            connectionSpecs = DEFAULT_CONNECTION_SPECS;
+            connectSuites = DEFAULT_CONNECTION_SPECS;
             eventListenerFactory = EventListener.factory(EventListener.NONE);
             proxySelector = ProxySelector.getDefault();
             if (proxySelector == null) {
@@ -489,7 +489,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             certificatePinner = CertificatePinner.DEFAULT;
             proxyAuthenticator = Authenticator.NONE;
             authenticator = Authenticator.NONE;
-            connectionPool = new ConnectionPool();
+            connectPool = new ConnectPool();
             dns = DnsX.SYSTEM;
             followSslRedirects = true;
             followRedirects = true;
@@ -505,7 +505,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             this.dispatcher = httpd.dispatcher;
             this.proxy = httpd.proxy;
             this.protocols = httpd.protocols;
-            this.connectionSpecs = httpd.connectionSpecs;
+            this.connectSuites = httpd.connectSuites;
             this.interceptors.addAll(httpd.interceptors);
             this.networkInterceptors.addAll(httpd.networkInterceptors);
             this.eventListenerFactory = httpd.eventListenerFactory;
@@ -520,7 +520,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             this.certificatePinner = httpd.certificatePinner;
             this.proxyAuthenticator = httpd.proxyAuthenticator;
             this.authenticator = httpd.authenticator;
-            this.connectionPool = httpd.connectionPool;
+            this.connectPool = httpd.connectPool;
             this.dns = httpd.dns;
             this.followSslRedirects = httpd.followSslRedirects;
             this.followRedirects = httpd.followRedirects;
@@ -662,9 +662,9 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             return this;
         }
 
-        public Builder connectionPool(ConnectionPool connectionPool) {
-            if (connectionPool == null) throw new NullPointerException("connectionPool == null");
-            this.connectionPool = connectionPool;
+        public Builder connectionPool(ConnectPool connectPool) {
+            if (connectPool == null) throw new NullPointerException("connectionPool == null");
+            this.connectPool = connectPool;
             return this;
         }
 
@@ -750,8 +750,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             return this;
         }
 
-        public Builder connectionSpecs(List<ConnectionSpec> connectionSpecs) {
-            this.connectionSpecs = Internal.immutableList(connectionSpecs);
+        public Builder connectionSpecs(List<ConnectSuite> connectSuites) {
+            this.connectSuites = Internal.immutableList(connectSuites);
             return this;
         }
 

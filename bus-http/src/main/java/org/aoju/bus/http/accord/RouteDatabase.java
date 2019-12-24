@@ -1,25 +1,17 @@
 /*
- * The MIT License
+ * Copyright (C) 2013 Square, Inc.
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.aoju.bus.http.accord;
 
@@ -29,27 +21,41 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * A blacklist of failed routes to avoid when creating a new connection to a target address. This is
- * used so that httpClient can learn from its mistakes: if there was a failure attempting to connect to
- * a specific IP address or proxy server, that failure is remembered and alternate routes are
- * preferred.
- *
- * @author Kimi Liu
- * @version 5.3.6
- * @since JDK 1.8+
+ * 创建到目标地址的新连接时要避免的失败路由的黑名单。
+ * 如果尝试连接到特定IP地址或代理服务器时出现故障，
+ * 则会记住该故障并首选备用路由
  */
 public final class RouteDatabase {
 
+    /**
+     * 路由记录
+     */
     private final Set<Route> failedRoutes = new LinkedHashSet<>();
 
-    public synchronized void failed(Route failedRoute) {
-        failedRoutes.add(failedRoute);
+    /**
+     * 记录连接到{@code route}的失败
+     *
+     * @param route 错误路由信息
+     */
+    public synchronized void failed(Route route) {
+        failedRoutes.add(route);
     }
 
+    /**
+     * 成功连接到{@code route}
+     *
+     * @param route 正确的路由
+     */
     public synchronized void connected(Route route) {
         failedRoutes.remove(route);
     }
 
+    /**
+     * 如果{@code route}最近失败，应该避免返回true
+     *
+     * @param route 路由
+     * @return the true/false
+     */
     public synchronized boolean shouldPostpone(Route route) {
         return failedRoutes.contains(route);
     }

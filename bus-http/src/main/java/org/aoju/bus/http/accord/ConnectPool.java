@@ -1,28 +1,6 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2017 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package org.aoju.bus.http.accord;
 
+import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Address;
 import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.Route;
@@ -40,13 +18,8 @@ import java.util.concurrent.TimeUnit;
  * Manages reuse of HTTP and HTTP/2 connections for reduced network latency. HTTP requests that
  * share the same {@link Address} may share a {@link Connection}. This class implements the policy
  * of which connections to keep open for future use.
- *
- * @author Kimi Liu
- * @version 5.3.6
- * @since JDK 1.8+
  */
-public final class ConnectionPool {
-
+public final class ConnectPool {
     /**
      * Background threads are used to cleanup expired connections. There will be at most a single
      * thread running per connection pool. The thread pool executor permits the pool itself to be
@@ -54,7 +27,7 @@ public final class ConnectionPool {
      */
     private static final Executor executor = new ThreadPoolExecutor(0 /* corePoolSize */,
             Integer.MAX_VALUE /* maximumPoolSize */, 60L /* keepAliveTime */, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>(), Internal.threadFactory("HttpClient ConnectionPool", true));
+            new SynchronousQueue<Runnable>(), Internal.threadFactory("Httpd ConnectionPool", true));
     public final RouteDatabase routeDatabase = new RouteDatabase();
     /**
      * The maximum number of idle connections for each address.
@@ -72,9 +45,9 @@ public final class ConnectionPool {
                 if (waitNanos > 0) {
                     long waitMillis = waitNanos / 1000000L;
                     waitNanos -= (waitMillis * 1000000L);
-                    synchronized (ConnectionPool.this) {
+                    synchronized (ConnectPool.this) {
                         try {
-                            ConnectionPool.this.wait(waitMillis, (int) waitNanos);
+                            ConnectPool.this.wait(waitMillis, (int) waitNanos);
                         } catch (InterruptedException ignored) {
                         }
                     }
@@ -85,14 +58,14 @@ public final class ConnectionPool {
 
     /**
      * Create a new connection pool with tuning parameters appropriate for a single-user application.
-     * The tuning parameters in this pool are subject to change in future HttpClient releases. Currently
+     * The tuning parameters in this pool are subject to change in future Httpd releases. Currently
      * this pool holds up to 5 idle connections which will be evicted after 5 minutes of inactivity.
      */
-    public ConnectionPool() {
+    public ConnectPool() {
         this(5, 5, TimeUnit.MINUTES);
     }
 
-    public ConnectionPool(int maxIdleConnections, long keepAliveDuration, TimeUnit timeUnit) {
+    public ConnectPool(int maxIdleConnections, long keepAliveDuration, TimeUnit timeUnit) {
         this.maxIdleConnections = maxIdleConnections;
         this.keepAliveDurationNs = timeUnit.toNanos(keepAliveDuration);
 
@@ -102,6 +75,9 @@ public final class ConnectionPool {
         }
     }
 
+    /**
+     * Returns the number of idle connections in the pool.
+     */
     public synchronized int idleConnectionCount() {
         int total = 0;
         for (RealConnection connection : connections) {
@@ -111,8 +87,8 @@ public final class ConnectionPool {
     }
 
     /**
-     * @return total number of connections in the pool. Note that prior to HttpClient 2.7 this included
-     * only idle connections and HTTP/2 connections. Since HttpClient 2.7 this includes all connections,
+     * Returns total number of connections in the pool. Note that prior to Httpd 2.7 this included
+     * only idle connections and HTTP/2 connections. Since Httpd this includes all connections,
      * both active and inactive. Use {@link #idleConnectionCount()} to count connections not currently
      * in use.
      */
@@ -120,6 +96,10 @@ public final class ConnectionPool {
         return connections.size();
     }
 
+    /**
+     * Returns a recycled connection to {@code address}, or null if no such connection exists. The
+     * route is null if the address has not yet been routed.
+     */
     public RealConnection get(Address address, StreamAllocation streamAllocation, Route route) {
         assert (Thread.holdsLock(this));
         for (RealConnection connection : connections) {
@@ -131,6 +111,10 @@ public final class ConnectionPool {
         return null;
     }
 
+    /**
+     * Replaces the connection held by {@code streamAllocation} with a shared connection if possible.
+     * This recovers when multiple multiplexed connections are created concurrently.
+     */
     public Socket deduplicate(Address address, StreamAllocation streamAllocation) {
         assert (Thread.holdsLock(this));
         for (RealConnection connection : connections) {
@@ -152,6 +136,10 @@ public final class ConnectionPool {
         connections.add(connection);
     }
 
+    /**
+     * Notify this pool that {@code connection} has become idle. Returns true if the connection has
+     * been removed from the pool and should be closed.
+     */
     public boolean connectionBecameIdle(RealConnection connection) {
         assert (Thread.holdsLock(this));
         if (connection.noNewStreams || maxIdleConnections == 0) {
@@ -163,6 +151,9 @@ public final class ConnectionPool {
         }
     }
 
+    /**
+     * Close and remove all idle connections in the pool.
+     */
     public void evictAll() {
         List<RealConnection> evictedConnections = new ArrayList<>();
         synchronized (this) {
@@ -177,7 +168,7 @@ public final class ConnectionPool {
         }
 
         for (RealConnection connection : evictedConnections) {
-            Internal.closeQuietly(connection.socket());
+            IoUtils.close(connection.socket());
         }
     }
 
@@ -185,8 +176,7 @@ public final class ConnectionPool {
      * Performs maintenance on this pool, evicting the connection that has been idle the longest if
      * either it has exceeded the keep alive limit or the idle connections limit.
      *
-     * @param now long
-     * @return the duration in nanos to sleep until the next scheduled call to this method. Returns
+     * <p>Returns the duration in nanos to sleep until the next scheduled call to this method. Returns
      * -1 if no further cleanups are required.
      */
     long cleanup(long now) {
@@ -234,12 +224,18 @@ public final class ConnectionPool {
             }
         }
 
-        Internal.closeQuietly(longestIdleConnection.socket());
+        IoUtils.close(longestIdleConnection.socket());
 
         // Cleanup again immediately.
         return 0;
     }
 
+    /**
+     * Prunes any leaked allocations and then returns the number of remaining live allocations on
+     * {@code connection}. Allocations are leaked if the connection is tracking them but the
+     * application code has abandoned them. Leak detection is imprecise and relies on garbage
+     * collection.
+     */
     private int pruneAndGetAllocationCount(RealConnection connection, long now) {
         List<Reference<StreamAllocation>> references = connection.allocations;
         for (int i = 0; i < references.size(); ) {
@@ -266,7 +262,7 @@ public final class ConnectionPool {
                 return 0;
             }
         }
+
         return references.size();
     }
-
 }

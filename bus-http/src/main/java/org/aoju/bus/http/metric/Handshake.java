@@ -24,7 +24,7 @@
 package org.aoju.bus.http.metric;
 
 import org.aoju.bus.http.Internal;
-import org.aoju.bus.http.accord.ConnectionSpec;
+import org.aoju.bus.http.accord.ConnectSuite;
 import org.aoju.bus.http.secure.CipherSuite;
 import org.aoju.bus.http.secure.TlsVersion;
 
@@ -41,7 +41,7 @@ import java.util.List;
  * A record of a TLS handshake. For HTTPS clients, the client is <i>local</i> and the remote server
  * is its <i>peer</i>.
  *
- * <p>This value object describes a completed handshake. Use {@link ConnectionSpec} to set policy
+ * <p>This value object describes a completed handshake. Use {@link ConnectSuite} to set policy
  * for new handshakes.
  *
  * @author Kimi Liu

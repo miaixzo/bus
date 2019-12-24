@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.accord.ConnectionPool;
+import org.aoju.bus.http.accord.ConnectPool;
 import org.aoju.bus.http.bodys.MultipartBody;
 import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.http.magic.HttpProxy;
@@ -185,12 +185,12 @@ public class Httpx extends Httpd {
             Dispatcher dispatcher = new Dispatcher();
             dispatcher.setMaxRequests(maxRequests);
             dispatcher.setMaxRequestsPerHost(maxRequestsPerHost);
-            ConnectionPool connectionPool = new ConnectionPool(maxIdleConnections,
+            ConnectPool connectPool = new ConnectPool(maxIdleConnections,
                     keepAliveDuration, TimeUnit.MINUTES);
             Httpd.Builder builder = new Httpd.Builder();
 
             builder.dispatcher(dispatcher);
-            builder.connectionPool(connectionPool);
+            builder.connectionPool(connectPool);
             builder.addNetworkInterceptor(chain -> {
                 Request request = chain.request();
                 return chain.proceed(request);
