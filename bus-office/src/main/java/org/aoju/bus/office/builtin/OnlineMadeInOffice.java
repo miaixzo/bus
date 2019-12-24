@@ -108,7 +108,7 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
             try {
                 MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE);
                 if (targetFile != null) {
-                    // MediaType.parse() 里面是上传的文件类型。
+                    // MediaType.valueOf() 里面是上传的文件类型。
                     RequestBody body = RequestBody.create(MediaType.valueOf("image/*"), sourceFile);
                     // 参数分别为， 请求key ，文件名称 ， RequestBody
                     requestBody.addFormDataPart("data", targetFile.getName(), body);

@@ -208,7 +208,7 @@ public class Awaits extends Timeout {
 
             @Override
             public String toString() {
-                return "AsyncTimeout.sink(" + sink + ")";
+                return "Awaits.sink(" + sink + ")";
             }
         };
     }
@@ -251,7 +251,7 @@ public class Awaits extends Timeout {
 
             @Override
             public String toString() {
-                return "AsyncTimeout.source(" + source + ")";
+                return "Awaits.source(" + source + ")";
             }
         };
     }
