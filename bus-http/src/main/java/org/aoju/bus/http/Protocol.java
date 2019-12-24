@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.offers.CipherSuite;
+import org.aoju.bus.http.secure.CipherSuite;
 
 import java.io.IOException;
 

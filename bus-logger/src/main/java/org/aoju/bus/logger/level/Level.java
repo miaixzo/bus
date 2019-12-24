@@ -60,6 +60,10 @@ public enum Level {
      */
     FATAL,
     /**
+     * 'FINE' log level.
+     */
+    FINE,
+    /**
      * 'OFF' log.
      */
     OFF

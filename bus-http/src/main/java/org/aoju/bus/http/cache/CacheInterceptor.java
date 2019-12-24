@@ -25,16 +25,12 @@ package org.aoju.bus.http.cache;
 
 import org.aoju.bus.core.io.segment.*;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.Internal;
-import org.aoju.bus.http.Protocol;
-import org.aoju.bus.http.Request;
-import org.aoju.bus.http.Response;
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.HttpCodec;
-import org.aoju.bus.http.internal.http.HttpHeaders;
-import org.aoju.bus.http.internal.http.HttpMethod;
-import org.aoju.bus.http.internal.http.RealResponseBody;
-import org.aoju.bus.http.offers.Interceptor;
+import org.aoju.bus.http.*;
+import org.aoju.bus.http.bodys.RealResponseBody;
+import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.http.HttpCodec;
+import org.aoju.bus.http.metric.http.HttpHeaders;
+import org.aoju.bus.http.metric.http.HttpMethod;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -61,8 +57,8 @@ public final class CacheInterceptor implements Interceptor {
                 : response;
     }
 
-    private static Headers combine(Headers cachedHeaders, Headers networkHeaders) {
-        Headers.Builder result = new Headers.Builder();
+    private static Header combine(Header cachedHeaders, Header networkHeaders) {
+        Header.Builder result = new Header.Builder();
 
         for (int i = 0, size = cachedHeaders.size(); i < size; i++) {
             String fieldName = cachedHeaders.name(i);

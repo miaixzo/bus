@@ -24,7 +24,7 @@
 package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.http.Client;
+import org.aoju.bus.http.Httpd;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicCertificateChainCleaner;
 import org.aoju.bus.http.secure.BasicTrustRootIndex;
@@ -87,7 +87,7 @@ public class Platform {
     public static final int INFO = 4;
     public static final int WARN = 5;
     private static final Platform PLATFORM = findPlatform();
-    private static final Logger logger = Logger.getLogger(Client.class.getName());
+    private static final Logger logger = Logger.getLogger(Httpd.class.getName());
 
     public static Platform get() {
         return PLATFORM;

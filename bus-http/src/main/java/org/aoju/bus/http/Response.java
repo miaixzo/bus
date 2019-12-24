@@ -27,11 +27,10 @@ import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.cache.CacheControl;
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.HttpHeaders;
-import org.aoju.bus.http.internal.http.StatusLine;
-import org.aoju.bus.http.offers.Challenge;
-import org.aoju.bus.http.offers.Handshake;
+import org.aoju.bus.http.metric.Handshake;
+import org.aoju.bus.http.metric.http.HttpHeaders;
+import org.aoju.bus.http.metric.http.StatusLine;
+import org.aoju.bus.http.secure.Challenge;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -58,7 +57,7 @@ public final class Response implements Closeable {
     final int code;
     final String message;
     final Handshake handshake;
-    final Headers headers;
+    final Header headers;
     final ResponseBody body;
     final Response networkResponse;
     final Response cacheResponse;
@@ -120,7 +119,7 @@ public final class Response implements Closeable {
         return result != null ? result : defaultValue;
     }
 
-    public Headers headers() {
+    public Header headers() {
         return headers;
     }
 
@@ -228,7 +227,7 @@ public final class Response implements Closeable {
         int code = -1;
         String message;
         Handshake handshake;
-        Headers.Builder headers;
+        Header.Builder headers;
         ResponseBody body;
         Response networkResponse;
         Response cacheResponse;
@@ -237,7 +236,7 @@ public final class Response implements Closeable {
         long receivedResponseAtMillis;
 
         public Builder() {
-            headers = new Headers.Builder();
+            headers = new Header.Builder();
         }
 
         Builder(Response response) {
@@ -295,7 +294,7 @@ public final class Response implements Closeable {
             return this;
         }
 
-        public Builder headers(Headers headers) {
+        public Builder headers(Header headers) {
             this.headers = headers.newBuilder();
             return this;
         }

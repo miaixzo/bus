@@ -28,7 +28,7 @@ import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Internal;
-import org.aoju.bus.http.Url;
+import org.aoju.bus.http.UnoUrl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -59,7 +59,7 @@ public final class FormBody extends RequestBody {
     }
 
     public String name(int index) {
-        return Url.percentDecode(encodedName(index), true);
+        return UnoUrl.percentDecode(encodedName(index), true);
     }
 
     public String encodedValue(int index) {
@@ -67,7 +67,7 @@ public final class FormBody extends RequestBody {
     }
 
     public String value(int index) {
-        return Url.percentDecode(encodedValue(index), true);
+        return UnoUrl.percentDecode(encodedValue(index), true);
     }
 
     @Override
@@ -128,8 +128,8 @@ public final class FormBody extends RequestBody {
             if (name == null) throw new NullPointerException("name == null");
             if (value == null) throw new NullPointerException("value == null");
 
-            names.add(Url.canonicalize(name, Symbol.FORM_ENCODE_SET, false, false, true, true, charset));
-            values.add(Url.canonicalize(value, Symbol.FORM_ENCODE_SET, false, false, true, true, charset));
+            names.add(UnoUrl.canonicalize(name, Symbol.FORM_ENCODE_SET, false, false, true, true, charset));
+            values.add(UnoUrl.canonicalize(value, Symbol.FORM_ENCODE_SET, false, false, true, true, charset));
             return this;
         }
 
@@ -137,8 +137,8 @@ public final class FormBody extends RequestBody {
             if (name == null) throw new NullPointerException("name == null");
             if (value == null) throw new NullPointerException("value == null");
 
-            names.add(Url.canonicalize(name, Symbol.FORM_ENCODE_SET, true, false, true, true, charset));
-            values.add(Url.canonicalize(value, Symbol.FORM_ENCODE_SET, true, false, true, true, charset));
+            names.add(UnoUrl.canonicalize(name, Symbol.FORM_ENCODE_SET, true, false, true, true, charset));
+            values.add(UnoUrl.canonicalize(value, Symbol.FORM_ENCODE_SET, true, false, true, true, charset));
             return this;
         }
 

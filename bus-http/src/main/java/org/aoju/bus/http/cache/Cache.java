@@ -29,12 +29,11 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.ResponseBody;
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.HttpHeaders;
-import org.aoju.bus.http.internal.http.HttpMethod;
-import org.aoju.bus.http.internal.http.StatusLine;
-import org.aoju.bus.http.offers.CipherSuite;
-import org.aoju.bus.http.offers.Handshake;
+import org.aoju.bus.http.metric.Handshake;
+import org.aoju.bus.http.metric.http.HttpHeaders;
+import org.aoju.bus.http.metric.http.HttpMethod;
+import org.aoju.bus.http.metric.http.StatusLine;
+import org.aoju.bus.http.secure.CipherSuite;
 import org.aoju.bus.http.secure.TlsVersion;
 
 import java.io.Closeable;
@@ -190,7 +189,7 @@ public final class Cache implements Closeable, Flushable {
         this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
     }
 
-    public static String key(Url url) {
+    public static String key(UnoUrl url) {
         return ByteString.encodeUtf8(url.toString()).md5().hex();
     }
 
@@ -473,12 +472,12 @@ public final class Cache implements Closeable, Flushable {
         private static final String RECEIVED_MILLIS = Platform.get().getPrefix() + "-Received-Millis";
 
         private final String url;
-        private final Headers varyHeaders;
+        private final Header varyHeaders;
         private final String requestMethod;
         private final Protocol protocol;
         private final int code;
         private final String message;
-        private final Headers responseHeaders;
+        private final Header responseHeaders;
         private final Handshake handshake;
         private final long sentRequestMillis;
         private final long receivedResponseMillis;
@@ -488,7 +487,7 @@ public final class Cache implements Closeable, Flushable {
                 BufferSource source = IoUtils.buffer(in);
                 url = source.readUtf8LineStrict();
                 requestMethod = source.readUtf8LineStrict();
-                Headers.Builder varyHeadersBuilder = new Headers.Builder();
+                Header.Builder varyHeadersBuilder = new Header.Builder();
                 int varyRequestHeaderLineCount = readInt(source);
                 for (int i = 0; i < varyRequestHeaderLineCount; i++) {
                     varyHeadersBuilder.addLenient(source.readUtf8LineStrict());
@@ -499,7 +498,7 @@ public final class Cache implements Closeable, Flushable {
                 protocol = statusLine.protocol;
                 code = statusLine.code;
                 message = statusLine.message;
-                Headers.Builder responseHeadersBuilder = new Headers.Builder();
+                Header.Builder responseHeadersBuilder = new Header.Builder();
                 int responseHeaderLineCount = readInt(source);
                 for (int i = 0; i < responseHeaderLineCount; i++) {
                     responseHeadersBuilder.addLenient(source.readUtf8LineStrict());

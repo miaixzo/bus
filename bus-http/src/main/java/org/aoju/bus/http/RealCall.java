@@ -29,13 +29,13 @@ import org.aoju.bus.http.accord.ConnectInterceptor;
 import org.aoju.bus.http.accord.StreamAllocation;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.cache.CacheInterceptor;
-import org.aoju.bus.http.internal.NamedRunnable;
-import org.aoju.bus.http.internal.http.BridgeInterceptor;
-import org.aoju.bus.http.internal.http.CallServerInterceptor;
-import org.aoju.bus.http.internal.http.RealInterceptorChain;
-import org.aoju.bus.http.internal.http.RetryAndFollowUpInterceptor;
-import org.aoju.bus.http.offers.EventListener;
-import org.aoju.bus.http.offers.Interceptor;
+import org.aoju.bus.http.metric.EventListener;
+import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.NamedRunnable;
+import org.aoju.bus.http.metric.http.BridgeInterceptor;
+import org.aoju.bus.http.metric.http.CallServerInterceptor;
+import org.aoju.bus.http.metric.http.RealInterceptorChain;
+import org.aoju.bus.http.metric.http.RetryAndFollowUpInterceptor;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -52,9 +52,9 @@ import static org.aoju.bus.http.accord.platform.Platform.INFO;
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public final class RealCall implements Call {
+public final class RealCall implements NewCall {
 
-    public final Client client;
+    public final Httpd httpd;
     public final RetryAndFollowUpInterceptor retryAndFollowUpInterceptor;
     public final Awaits timeout;
     /**
@@ -63,31 +63,31 @@ public final class RealCall implements Call {
     public final Request originalRequest;
     public final boolean forWebSocket;
     /**
-     * There is a cycle between the {@link Call} and {@link EventListener} that makes this awkward.
+     * There is a cycle between the {@link NewCall} and {@link EventListener} that makes this awkward.
      * This will be set after we create the call instance then create the event listener instance.
      */
     private EventListener eventListener;
     // Guarded by this.
     private boolean executed;
 
-    private RealCall(Client client, Request originalRequest, boolean forWebSocket) {
-        this.client = client;
+    private RealCall(Httpd httpd, Request originalRequest, boolean forWebSocket) {
+        this.httpd = httpd;
         this.originalRequest = originalRequest;
         this.forWebSocket = forWebSocket;
-        this.retryAndFollowUpInterceptor = new RetryAndFollowUpInterceptor(client, forWebSocket);
+        this.retryAndFollowUpInterceptor = new RetryAndFollowUpInterceptor(httpd, forWebSocket);
         this.timeout = new Awaits() {
             @Override
             protected void timedOut() {
                 cancel();
             }
         };
-        this.timeout.timeout(client.callTimeoutMillis(), MILLISECONDS);
+        this.timeout.timeout(httpd.callTimeoutMillis(), MILLISECONDS);
     }
 
-    static RealCall newRealCall(Client client, Request originalRequest, boolean forWebSocket) {
+    static RealCall newRealCall(Httpd httpd, Request originalRequest, boolean forWebSocket) {
         // Safely publish the Call instance to the EventListener.
-        RealCall call = new RealCall(client, originalRequest, forWebSocket);
-        call.eventListener = client.eventListenerFactory().create(call);
+        RealCall call = new RealCall(httpd, originalRequest, forWebSocket);
+        call.eventListener = httpd.eventListenerFactory().create(call);
         return call;
     }
 
@@ -106,7 +106,7 @@ public final class RealCall implements Call {
         timeout.enter();
         eventListener.callStart(this);
         try {
-            client.dispatcher().executed(this);
+            httpd.dispatcher().executed(this);
             Response result = getResponseWithInterceptorChain();
             if (result == null) throw new IOException("Canceled");
             return result;
@@ -115,7 +115,7 @@ public final class RealCall implements Call {
             eventListener.callFailed(this, e);
             throw e;
         } finally {
-            client.dispatcher().finished(this);
+            httpd.dispatcher().finished(this);
         }
     }
 
@@ -142,7 +142,7 @@ public final class RealCall implements Call {
         }
         captureCallStackTrace();
         eventListener.callStart(this);
-        client.dispatcher().enqueue(new AsyncCall(responseCallback));
+        httpd.dispatcher().enqueue(new AsyncCall(responseCallback));
     }
 
     @Override
@@ -167,7 +167,7 @@ public final class RealCall implements Call {
 
     @Override
     public RealCall clone() {
-        return RealCall.newRealCall(client, originalRequest, forWebSocket);
+        return RealCall.newRealCall(httpd, originalRequest, forWebSocket);
     }
 
     StreamAllocation streamAllocation() {
@@ -191,19 +191,19 @@ public final class RealCall implements Call {
     Response getResponseWithInterceptorChain() throws IOException {
         // Build a full stack of interceptors.
         List<Interceptor> interceptors = new ArrayList<>();
-        interceptors.addAll(client.interceptors());
+        interceptors.addAll(httpd.interceptors());
         interceptors.add(retryAndFollowUpInterceptor);
-        interceptors.add(new BridgeInterceptor(client.cookieJar()));
-        interceptors.add(new CacheInterceptor(client.internalCache()));
-        interceptors.add(new ConnectInterceptor(client));
+        interceptors.add(new BridgeInterceptor(httpd.cookieJar()));
+        interceptors.add(new CacheInterceptor(httpd.internalCache()));
+        interceptors.add(new ConnectInterceptor(httpd));
         if (!forWebSocket) {
-            interceptors.addAll(client.networkInterceptors());
+            interceptors.addAll(httpd.networkInterceptors());
         }
         interceptors.add(new CallServerInterceptor(forWebSocket));
 
         Interceptor.Chain chain = new RealInterceptorChain(interceptors, null, null, null, 0,
-                originalRequest, this, eventListener, client.connectTimeoutMillis(),
-                client.readTimeoutMillis(), client.writeTimeoutMillis());
+                originalRequest, this, eventListener, httpd.connectTimeoutMillis(),
+                httpd.readTimeoutMillis(), httpd.writeTimeoutMillis());
 
         return chain.proceed(originalRequest);
     }
@@ -236,7 +236,7 @@ public final class RealCall implements Call {
          * @param executorService the executor
          */
         public void executeOn(ExecutorService executorService) {
-            assert (!Thread.holdsLock(client.dispatcher()));
+            assert (!Thread.holdsLock(httpd.dispatcher()));
             boolean success = false;
             try {
                 executorService.execute(this);
@@ -248,7 +248,7 @@ public final class RealCall implements Call {
                 responseCallback.onFailure(RealCall.this, ioException);
             } finally {
                 if (!success) {
-                    client.dispatcher().finished(this); // This call is no longer running!
+                    httpd.dispatcher().finished(this); // This call is no longer running!
                 }
             }
         }
@@ -276,7 +276,7 @@ public final class RealCall implements Call {
                     responseCallback.onFailure(RealCall.this, e);
                 }
             } finally {
-                client.dispatcher().finished(this);
+                httpd.dispatcher().finished(this);
             }
         }
     }

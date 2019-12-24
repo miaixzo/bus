@@ -25,7 +25,7 @@ package org.aoju.bus.http.accord;
 
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.Route;
-import org.aoju.bus.http.offers.Handshake;
+import org.aoju.bus.http.metric.Handshake;
 
 import java.net.Socket;
 

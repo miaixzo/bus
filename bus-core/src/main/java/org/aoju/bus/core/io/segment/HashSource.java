@@ -39,7 +39,7 @@ import java.security.NoSuchAlgorithmException;
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public final class HashSource extends ForwardSource {
+public final class HashSource extends DelegateSource {
 
     private final MessageDigest messageDigest;
     private final Mac mac;

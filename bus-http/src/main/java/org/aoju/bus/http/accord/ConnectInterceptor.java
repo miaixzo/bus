@@ -23,12 +23,12 @@
  */
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.http.Client;
+import org.aoju.bus.http.Httpd;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
-import org.aoju.bus.http.internal.http.HttpCodec;
-import org.aoju.bus.http.internal.http.RealInterceptorChain;
-import org.aoju.bus.http.offers.Interceptor;
+import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.http.HttpCodec;
+import org.aoju.bus.http.metric.http.RealInterceptorChain;
 
 import java.io.IOException;
 
@@ -41,10 +41,10 @@ import java.io.IOException;
  */
 public final class ConnectInterceptor implements Interceptor {
 
-    public final Client client;
+    public final Httpd httpd;
 
-    public ConnectInterceptor(Client client) {
-        this.client = client;
+    public ConnectInterceptor(Httpd httpd) {
+        this.httpd = httpd;
     }
 
     @Override
@@ -54,7 +54,7 @@ public final class ConnectInterceptor implements Interceptor {
         StreamAllocation streamAllocation = realChain.streamAllocation();
 
         boolean doExtensiveHealthChecks = !request.method().equals("GET");
-        HttpCodec httpCodec = streamAllocation.newStream(client, chain, doExtensiveHealthChecks);
+        HttpCodec httpCodec = streamAllocation.newStream(httpd, chain, doExtensiveHealthChecks);
         RealConnection connection = streamAllocation.connection();
 
         return realChain.proceed(request, streamAllocation, httpCodec, connection);

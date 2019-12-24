@@ -27,7 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -62,7 +62,7 @@ public class MiProvider extends DefaultProvider {
     }
 
     private AccToken getToken(String accessTokenUrl) {
-        String response = HttpClient.get(accessTokenUrl);
+        String response = Httpx.get(accessTokenUrl);
         JSONObject object = JSONObject.parseObject(StringUtils.replace(response, "&&&START&&&", Normal.EMPTY));
 
         if (object.containsKey("error")) {
@@ -106,7 +106,7 @@ public class MiProvider extends DefaultProvider {
         String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}", "https://open.account.xiaomi.com/user/phoneAndEmail", context
                 .getClientId(), token.getAccessToken());
 
-        JSONObject userEmailPhone = JSONObject.parseObject(HttpClient.get(emailPhoneUrl));
+        JSONObject userEmailPhone = JSONObject.parseObject(Httpx.get(emailPhoneUrl));
         if (!"error".equalsIgnoreCase(userEmailPhone.getString("result"))) {
             JSONObject emailPhone = userEmailPhone.getJSONObject("data");
             property.setEmail(emailPhone.getString("email"));

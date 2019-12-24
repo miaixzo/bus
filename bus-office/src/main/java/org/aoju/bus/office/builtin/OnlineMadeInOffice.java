@@ -129,7 +129,7 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
                         Builder.STORE_PROPERTIES_PREFIX_PARAM);
 
                 Request request = new Request.Builder().url(urlBuilder.toString()).post(requestBody.build()).tag(context).build();
-                ((OnlineOfficeContextAware) context).getHttpClient().newCall(request).execute();
+                ((OnlineOfficeContextAware) context).getHttp().newCall(request).execute();
                 // onComplete on target将把临时文件复制到/ OutputStream中，如果输出是OutputStream，则删除临时文件
                 target.onComplete(targetFile);
 

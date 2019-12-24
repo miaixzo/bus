@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -73,7 +73,7 @@ public class GoogleProvider extends DefaultProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "Bearer " + token.getAccessToken());
 
-        String response = HttpClient.post(userInfoUrl(token), null, header);
+        String response = Httpx.post(userInfoUrl(token), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);

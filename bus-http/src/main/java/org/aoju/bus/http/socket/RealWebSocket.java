@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.StreamAllocation;
-import org.aoju.bus.http.offers.EventListener;
+import org.aoju.bus.http.metric.EventListener;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -89,7 +89,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
     /**
      * Non-null for client web sockets. These can be canceled.
      */
-    private Call call;
+    private NewCall call;
     /**
      * Null until this web socket is connected. Only accessed by the reader thread.
      */
@@ -201,8 +201,8 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         call.cancel();
     }
 
-    public void connect(Client client) {
-        client = client.newBuilder()
+    public void connect(Httpd httpd) {
+        httpd = httpd.newBuilder()
                 .eventListener(EventListener.NONE)
                 .protocols(ONLY_HTTP1)
                 .build();
@@ -212,11 +212,11 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 .header("Sec-WebSocket-Key", key)
                 .header("Sec-WebSocket-Version", "13")
                 .build();
-        call = Internal.instance.newWebSocketCall(client, request);
+        call = Internal.instance.newWebSocketCall(httpd, request);
         call.timeout().clearTimeout();
         call.enqueue(new Callback() {
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(NewCall call, Response response) {
                 try {
                     checkResponse(response);
                 } catch (ProtocolException e) {
@@ -243,7 +243,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
             }
 
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(NewCall call, IOException e) {
                 failWebSocket(e, null);
             }
         });

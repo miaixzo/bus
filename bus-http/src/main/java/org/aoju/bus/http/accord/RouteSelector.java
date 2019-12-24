@@ -24,10 +24,9 @@
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.offers.EventListener;
+import org.aoju.bus.http.metric.EventListener;
 
 import java.io.IOException;
-import java.net.Proxy;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +45,7 @@ public final class RouteSelector {
 
     private final Address address;
     private final RouteDatabase routeDatabase;
-    private final Call call;
+    private final NewCall call;
     private final EventListener eventListener;
     /* State for negotiating failed routes */
     private final List<Route> postponedRoutes = new ArrayList<>();
@@ -56,7 +55,7 @@ public final class RouteSelector {
     /* State for negotiating the next socket address to use. */
     private List<InetSocketAddress> inetSocketAddresses = Collections.emptyList();
 
-    public RouteSelector(Address address, RouteDatabase routeDatabase, Call call,
+    public RouteSelector(Address address, RouteDatabase routeDatabase, NewCall call,
                          EventListener eventListener) {
         this.address = address;
         this.routeDatabase = routeDatabase;
@@ -119,7 +118,7 @@ public final class RouteSelector {
         routeDatabase.failed(failedRoute);
     }
 
-    private void resetNextProxy(Url url, Proxy proxy) {
+    private void resetNextProxy(UnoUrl url, Proxy proxy) {
         if (proxy != null) {
             proxies = Collections.singletonList(proxy);
         } else {

@@ -27,7 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -63,7 +63,7 @@ public class QqProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken token) {
-        String response = HttpClient.get(refreshTokenUrl(token.getRefreshToken()));
+        String response = Httpx.get(refreshTokenUrl(token.getRefreshToken()));
         return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
@@ -100,7 +100,7 @@ public class QqProvider extends DefaultProvider {
      * @return openId
      */
     private String getOpenId(AccToken token) {
-        String response = HttpClient.get(Builder.fromBaseUrl("https://graph.qq.com/oauth2.0/me")
+        String response = Httpx.get(Builder.fromBaseUrl("https://graph.qq.com/oauth2.0/me")
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("unionid", context.isUnionId() ? 1 : 0)
                 .build());

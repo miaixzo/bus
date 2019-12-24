@@ -252,7 +252,7 @@ public final class DiskLruCache implements Closeable, Flushable {
 
     private BufferSink newJournalWriter() throws FileNotFoundException {
         Sink fileSink = fileSystem.appendingSink(journalFile);
-        Sink faultHidingSink = new FaultHidingSink(fileSink) {
+        Sink faultHidingSink = new FaultHideSink(fileSink) {
             @Override
             protected void onException(IOException e) {
                 assert (Thread.holdsLock(DiskLruCache.this));
@@ -768,7 +768,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                 } catch (FileNotFoundException e) {
                     return IoUtils.blackhole();
                 }
-                return new FaultHidingSink(sink) {
+                return new FaultHideSink(sink) {
                     @Override
                     protected void onException(IOException e) {
                         synchronized (DiskLruCache.this) {

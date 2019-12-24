@@ -24,12 +24,12 @@
 package org.aoju.bus.http.socket;
 
 import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.http.Client;
+import org.aoju.bus.http.Httpd;
 import org.aoju.bus.http.Request;
 
 /**
  * A non-blocking interface to a web socket. Use the {@linkplain WebSocket.Factory factory} to
- * create instances; usually this is {@link Client}.
+ * create instances; usually this is {@link Httpd}.
  *
  * <h3>Web Socket Lifecycle</h3>
  * <p>

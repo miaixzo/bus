@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.HttpHeaders;
+import org.aoju.bus.http.Header;
+import org.aoju.bus.http.metric.http.HttpHeaders;
 
 import java.util.concurrent.TimeUnit;
 
@@ -105,7 +105,7 @@ public final class CacheControl {
         this.immutable = builder.immutable;
     }
 
-    public static CacheControl parse(Headers headers) {
+    public static CacheControl parse(Header headers) {
         boolean noCache = false;
         boolean noStore = false;
         int maxAgeSeconds = -1;

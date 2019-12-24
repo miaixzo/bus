@@ -55,7 +55,6 @@ public class Bzip2Provider implements Provider {
         ByteArrayInputStream in = new ByteArrayInputStream(data);
 
         try {
-            @SuppressWarnings("resource")
             BZip2CompressorInputStream ungzip = new BZip2CompressorInputStream(in);
             byte[] buffer = new byte[2048];
             int n;

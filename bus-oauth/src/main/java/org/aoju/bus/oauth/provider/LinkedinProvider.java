@@ -29,7 +29,7 @@ import com.alibaba.fastjson.JSONPath;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -74,7 +74,7 @@ public class LinkedinProvider extends DefaultProvider {
         header.put("Connection", "Keep-Alive");
         header.put("Authorization", "Bearer " + accessToken);
 
-        String response = HttpClient.get(userInfoUrl(token), null, header);
+        String response = Httpx.get(userInfoUrl(token), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -154,7 +154,7 @@ public class LinkedinProvider extends DefaultProvider {
         header.put("Authorization", "Bearer " + accessToken);
 
         String url = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
-        String response = HttpClient.get(url, null, header);
+        String response = Httpx.get(url, null, header);
 
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
@@ -205,7 +205,7 @@ public class LinkedinProvider extends DefaultProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Host", "www.linkedin.com");
 
-        String response = HttpClient.get(accessTokenUrl, null, header);
+        String response = Httpx.get(accessTokenUrl, null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);

@@ -31,8 +31,6 @@ import org.aoju.bus.http.accord.*;
 import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.cache.InternalCache;
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.second.Header;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
@@ -104,7 +102,7 @@ public abstract class Internal {
     }
 
     public static void initializeInstanceForTests() {
-        new Client();
+        new Httpd();
     }
 
     public static void addSuppressedIfPossible(Throwable e, Throwable suppressed) {
@@ -246,11 +244,11 @@ public abstract class Internal {
         return false;
     }
 
-    public static String hostHeader(Url url, boolean includeDefaultPort) {
+    public static String hostHeader(UnoUrl url, boolean includeDefaultPort) {
         String host = url.host().contains(":")
                 ? "[" + url.host() + "]"
                 : url.host();
-        return includeDefaultPort || url.port() != Url.defaultPort(url.scheme())
+        return includeDefaultPort || url.port() != UnoUrl.defaultPort(url.scheme())
                 ? host + ":" + url.port()
                 : host;
     }
@@ -592,19 +590,19 @@ public abstract class Internal {
         }
     }
 
-    public static Headers toHeaders(List<Header> headerBlock) {
-        Headers.Builder builder = new Headers.Builder();
-        for (Header header : headerBlock) {
+    public static Header toHeaders(List<org.aoju.bus.http.metric.http.Header> headerBlock) {
+        Header.Builder builder = new Header.Builder();
+        for (org.aoju.bus.http.metric.http.Header header : headerBlock) {
             Internal.instance.addLenient(builder, header.name.utf8(), header.value.utf8());
         }
         return builder.build();
     }
 
-    public abstract void addLenient(Headers.Builder builder, String line);
+    public abstract void addLenient(Header.Builder builder, String line);
 
-    public abstract void addLenient(Headers.Builder builder, String name, String value);
+    public abstract void addLenient(Header.Builder builder, String name, String value);
 
-    public abstract void setCache(Client.Builder builder, InternalCache internalCache);
+    public abstract void setCache(Httpd.Builder builder, InternalCache internalCache);
 
     public abstract RealConnection get(ConnectionPool pool, Address address,
                                        StreamAllocation streamAllocation, Route route);
@@ -627,9 +625,9 @@ public abstract class Internal {
 
     public abstract boolean isInvalidHttpUrlHost(IllegalArgumentException e);
 
-    public abstract StreamAllocation streamAllocation(Call call);
+    public abstract StreamAllocation streamAllocation(NewCall call);
 
-    public abstract IOException timeoutExit(Call call, IOException e);
+    public abstract IOException timeoutExit(NewCall call, IOException e);
 
-    public abstract Call newWebSocketCall(Client client, Request request);
+    public abstract NewCall newWebSocketCall(Httpd httpd, Request request);
 }

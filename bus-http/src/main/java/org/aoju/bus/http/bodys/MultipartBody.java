@@ -27,8 +27,8 @@ import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.http.Header;
 import org.aoju.bus.http.Internal;
-import org.aoju.bus.http.header.Headers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ public final class MultipartBody extends RequestBody {
 
         for (int p = 0, partCount = parts.size(); p < partCount; p++) {
             Part part = parts.get(p);
-            Headers headers = part.headers;
+            Header headers = part.headers;
             RequestBody body = part.body;
 
             sink.write(DASHDASH);
@@ -191,10 +191,10 @@ public final class MultipartBody extends RequestBody {
     }
 
     public static final class Part {
-        final Headers headers;
+        final Header headers;
         final RequestBody body;
 
-        private Part(Headers headers, RequestBody body) {
+        private Part(Header headers, RequestBody body) {
             this.headers = headers;
             this.body = body;
         }
@@ -203,7 +203,7 @@ public final class MultipartBody extends RequestBody {
             return create(null, body);
         }
 
-        public static Part create(Headers headers, RequestBody body) {
+        public static Part create(Header headers, RequestBody body) {
             if (body == null) {
                 throw new NullPointerException("body == null");
             }
@@ -232,10 +232,10 @@ public final class MultipartBody extends RequestBody {
                 appendQuotedString(disposition, filename);
             }
 
-            return create(Headers.of("Content-Disposition", disposition.toString()), body);
+            return create(Header.of("Content-Disposition", disposition.toString()), body);
         }
 
-        public Headers headers() {
+        public Header headers() {
             return headers;
         }
 
@@ -272,7 +272,7 @@ public final class MultipartBody extends RequestBody {
             return addPart(Part.create(body));
         }
 
-        public Builder addPart(Headers headers, RequestBody body) {
+        public Builder addPart(Header headers, RequestBody body) {
             return addPart(Part.create(headers, body));
         }
 

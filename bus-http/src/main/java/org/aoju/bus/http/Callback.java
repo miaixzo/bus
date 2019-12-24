@@ -42,7 +42,7 @@ public interface Callback {
      * @param call Call
      * @param ex   IOException
      */
-    void onFailure(Call call, IOException ex);
+    void onFailure(NewCall call, IOException ex);
 
     /**
      * Called when the HTTP response was successfully returned by the remote server. The callback may
@@ -58,5 +58,5 @@ public interface Callback {
      * @param response Response
      * @throws IOException if there is an IO issue.
      */
-    void onResponse(Call call, Response response) throws IOException;
+    void onResponse(NewCall call, Response response) throws IOException;
 }

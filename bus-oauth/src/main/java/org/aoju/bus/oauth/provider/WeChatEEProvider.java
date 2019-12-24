@@ -27,7 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -186,7 +186,7 @@ public class WeChatEEProvider extends DefaultProvider {
                 .queryParam("access_token", accessToken)
                 .queryParam("userid", userId)
                 .build();
-        return HttpClient.get(userDetailUrl);
+        return Httpx.get(userDetailUrl);
     }
 
 }

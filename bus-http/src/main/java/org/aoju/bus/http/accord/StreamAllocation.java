@@ -24,11 +24,11 @@
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.internal.http.HttpCodec;
-import org.aoju.bus.http.internal.http.second.ErrorCode;
-import org.aoju.bus.http.internal.http.second.StreamResetException;
-import org.aoju.bus.http.offers.EventListener;
-import org.aoju.bus.http.offers.Interceptor;
+import org.aoju.bus.http.metric.EventListener;
+import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.http.ErrorCode;
+import org.aoju.bus.http.metric.http.HttpCodec;
+import org.aoju.bus.http.metric.http.StreamResetException;
 
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -80,7 +80,7 @@ import java.util.List;
 public final class StreamAllocation {
 
     public final Address address;
-    public final Call call;
+    public final NewCall call;
     public final EventListener eventListener;
     private final ConnectionPool connectionPool;
     private final Object callStackTrace;
@@ -94,7 +94,7 @@ public final class StreamAllocation {
     private boolean canceled;
     private HttpCodec codec;
 
-    public StreamAllocation(ConnectionPool connectionPool, Address address, Call call,
+    public StreamAllocation(ConnectionPool connectionPool, Address address, NewCall call,
                             EventListener eventListener, Object callStackTrace) {
         this.connectionPool = connectionPool;
         this.address = address;
@@ -105,17 +105,17 @@ public final class StreamAllocation {
     }
 
     public HttpCodec newStream(
-            Client client, Interceptor.Chain chain, boolean doExtensiveHealthChecks) {
+            Httpd httpd, Interceptor.Chain chain, boolean doExtensiveHealthChecks) {
         int connectTimeout = chain.connectTimeoutMillis();
         int readTimeout = chain.readTimeoutMillis();
         int writeTimeout = chain.writeTimeoutMillis();
-        int pingIntervalMillis = client.pingIntervalMillis();
-        boolean connectionRetryEnabled = client.retryOnConnectionFailure();
+        int pingIntervalMillis = httpd.pingIntervalMillis();
+        boolean connectionRetryEnabled = httpd.retryOnConnectionFailure();
 
         try {
             RealConnection resultConnection = findHealthyConnection(connectTimeout, readTimeout,
                     writeTimeout, pingIntervalMillis, connectionRetryEnabled, doExtensiveHealthChecks);
-            HttpCodec resultCodec = resultConnection.newCodec(client, chain, this);
+            HttpCodec resultCodec = resultConnection.newCodec(httpd, chain, this);
 
             synchronized (connectionPool) {
                 codec = resultCodec;

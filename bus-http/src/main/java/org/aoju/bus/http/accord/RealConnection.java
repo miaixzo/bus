@@ -29,17 +29,11 @@ import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
-import org.aoju.bus.http.internal.http.HttpCodec;
-import org.aoju.bus.http.internal.http.HttpHeaders;
-import org.aoju.bus.http.internal.http.first.Http1Codec;
-import org.aoju.bus.http.internal.http.second.ErrorCode;
-import org.aoju.bus.http.internal.http.second.Http2Codec;
-import org.aoju.bus.http.internal.http.second.Http2Connection;
-import org.aoju.bus.http.internal.http.second.Http2Stream;
-import org.aoju.bus.http.offers.CertificatePinner;
-import org.aoju.bus.http.offers.EventListener;
-import org.aoju.bus.http.offers.Handshake;
-import org.aoju.bus.http.offers.Interceptor;
+import org.aoju.bus.http.metric.EventListener;
+import org.aoju.bus.http.metric.Handshake;
+import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.http.*;
+import org.aoju.bus.http.secure.CertificatePinner;
 import org.aoju.bus.http.secure.OkHostnameVerifier;
 import org.aoju.bus.http.socket.RealWebSocket;
 
@@ -49,7 +43,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.lang.ref.Reference;
-import java.net.Proxy;
 import java.net.*;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -122,7 +115,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     }
 
     public void connect(int connectTimeout, int readTimeout, int writeTimeout,
-                        int pingIntervalMillis, boolean connectionRetryEnabled, Call call,
+                        int pingIntervalMillis, boolean connectionRetryEnabled, NewCall call,
                         EventListener eventListener) {
         if (protocol != null) throw new IllegalStateException("already connected");
 
@@ -199,10 +192,10 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
     }
 
-    private void connectTunnel(int connectTimeout, int readTimeout, int writeTimeout, Call call,
+    private void connectTunnel(int connectTimeout, int readTimeout, int writeTimeout, NewCall call,
                                EventListener eventListener) throws IOException {
         Request tunnelRequest = createTunnelRequest();
-        Url url = tunnelRequest.url();
+        UnoUrl url = tunnelRequest.url();
         for (int i = 0; i < MAX_TUNNEL_ATTEMPTS; i++) {
             connectSocket(connectTimeout, readTimeout, call, eventListener);
             tunnelRequest = createTunnel(readTimeout, writeTimeout, tunnelRequest, url);
@@ -217,7 +210,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
     }
 
-    private void connectSocket(int connectTimeout, int readTimeout, Call call,
+    private void connectSocket(int connectTimeout, int readTimeout, NewCall call,
                                EventListener eventListener) throws IOException {
         Proxy proxy = route.proxy();
         Address address = route.address();
@@ -247,7 +240,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     }
 
     private void establishProtocol(ConnectionSpecSelector connectionSpecSelector,
-                                   int pingIntervalMillis, Call call, EventListener eventListener) throws IOException {
+                                   int pingIntervalMillis, NewCall call, EventListener eventListener) throws IOException {
         if (route.address().sslSocketFactory() == null) {
             if (route.address().protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)) {
                 socket = rawSocket;
@@ -342,7 +335,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     }
 
     private Request createTunnel(int readTimeout, int writeTimeout, Request tunnelRequest,
-                                 Url url) throws IOException {
+                                 UnoUrl url) throws IOException {
         // Make an SSL Tunnel on the first message pair of each SSL + proxy connection.
         String requestLine = "CONNECT " + Internal.hostHeader(url, true) + " HTTP/1.1";
         while (true) {
@@ -447,7 +440,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         return true;
     }
 
-    public boolean supportsUrl(Url url) {
+    public boolean supportsUrl(UnoUrl url) {
         if (url.port() != route.address().url().port()) {
             return false; // Port mismatch.
         }
@@ -461,15 +454,15 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         return true; // Success. The URL is supported.
     }
 
-    public HttpCodec newCodec(Client client, Interceptor.Chain chain,
+    public HttpCodec newCodec(Httpd httpd, Interceptor.Chain chain,
                               StreamAllocation streamAllocation) throws SocketException {
         if (http2Connection != null) {
-            return new Http2Codec(client, chain, streamAllocation, http2Connection);
+            return new Http2Codec(httpd, chain, streamAllocation, http2Connection);
         } else {
             socket.setSoTimeout(chain.readTimeoutMillis());
             source.timeout().timeout(chain.readTimeoutMillis(), MILLISECONDS);
             sink.timeout().timeout(chain.writeTimeoutMillis(), MILLISECONDS);
-            return new Http1Codec(client, streamAllocation, source, sink);
+            return new Http1Codec(httpd, streamAllocation, source, sink);
         }
     }
 

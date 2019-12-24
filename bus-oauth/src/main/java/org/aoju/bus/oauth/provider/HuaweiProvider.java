@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -72,7 +72,7 @@ public class HuaweiProvider extends DefaultProvider {
         params.put("client_secret", context.getClientSecret());
         params.put("redirect_uri", context.getRedirectUri());
 
-        HttpClient.post(source.accessToken(), params);
+        Httpx.post(source.accessToken(), params);
 
         return getAuthToken(params);
     }
@@ -92,7 +92,7 @@ public class HuaweiProvider extends DefaultProvider {
         params.put("nsp_fmt", "JS");
         params.put("nsp_svc", "OpenUP.User.getInfo");
 
-        String response = HttpClient.post(source.userInfo(), params);
+        String response = Httpx.post(source.userInfo(), params);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -123,7 +123,7 @@ public class HuaweiProvider extends DefaultProvider {
         params.put("client_secret", context.getClientSecret());
         params.put("refresh_token", token.getRefreshToken());
         params.put("grant_type", "refresh_token");
-        HttpClient.post(source.accessToken(), params);
+        Httpx.post(source.accessToken(), params);
         return Message.builder()
                 .errcode(Builder.Status.SUCCESS.getCode())
                 .data(getAuthToken(params))
@@ -131,7 +131,7 @@ public class HuaweiProvider extends DefaultProvider {
     }
 
     private AccToken getAuthToken(Map<String, Object> params) {
-        String response = HttpClient.post(source.accessToken(), params);
+        String response = Httpx.post(source.accessToken(), params);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);

@@ -27,9 +27,9 @@ import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.http.Call;
 import org.aoju.bus.http.Callback;
 import org.aoju.bus.http.Internal;
+import org.aoju.bus.http.NewCall;
 import org.aoju.bus.http.Response;
 
 import java.io.*;
@@ -47,7 +47,7 @@ import java.nio.charset.Charset;
  * may ultimately cause the application to slow down or crash.
  *
  * <p>Both this class and {@link Response} implement {@link Closeable}. Closing a response simply
- * closes its response body. If you invoke {@link Call#execute()} or implement {@link
+ * closes its response body. If you invoke {@link NewCall#execute()} or implement {@link
  * Callback#onResponse} you must close this body by calling any of the following methods:
  *
  * <ul>

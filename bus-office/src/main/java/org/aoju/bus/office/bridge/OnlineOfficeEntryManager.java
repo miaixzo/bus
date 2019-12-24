@@ -27,7 +27,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.office.builtin.MadeInOffice;
 import org.aoju.bus.office.metric.AbstractOfficeEntryManager;
 import org.aoju.bus.office.metric.RequestBuilder;
@@ -150,7 +150,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
                             buildUrl(connectionUrl),
                             toIntExact(config.getTaskExecutionTimeout()),
                             toIntExact(config.getTaskExecutionTimeout()));
-            task.execute(new OnlineOfficeBridgeFactory(new HttpClient(), requestBuilder));
+            task.execute(new OnlineOfficeBridgeFactory(new Httpx(), requestBuilder));
 
         } catch (IOException ex) {
             throw new InstrumentException("Unable to create the HTTP client", ex);

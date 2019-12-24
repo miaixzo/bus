@@ -24,9 +24,8 @@
 package org.aoju.bus.http;
 
 import org.aoju.bus.http.accord.ConnectionSpec;
-import org.aoju.bus.http.offers.Authenticator;
-import org.aoju.bus.http.offers.CertificatePinner;
-import org.aoju.bus.http.offers.Dns;
+import org.aoju.bus.http.secure.Authenticator;
+import org.aoju.bus.http.secure.CertificatePinner;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
@@ -47,8 +46,8 @@ import java.util.List;
  */
 public final class Address {
 
-    public final Url url;
-    public final Dns dns;
+    public final UnoUrl url;
+    public final DnsX dns;
     public final SocketFactory socketFactory;
     public final Authenticator proxyAuthenticator;
     public final List<Protocol> protocols;
@@ -59,12 +58,12 @@ public final class Address {
     public final HostnameVerifier hostnameVerifier;
     public final CertificatePinner certificatePinner;
 
-    public Address(String uriHost, int uriPort, Dns dns, SocketFactory socketFactory,
+    public Address(String uriHost, int uriPort, DnsX dns, SocketFactory socketFactory,
                    SSLSocketFactory sslSocketFactory, HostnameVerifier hostnameVerifier,
                    CertificatePinner certificatePinner, Authenticator proxyAuthenticator,
                    Proxy proxy, List<Protocol> protocols, List<ConnectionSpec> connectionSpecs,
                    ProxySelector proxySelector) {
-        this.url = new Url.Builder()
+        this.url = new UnoUrl.Builder()
                 .scheme(sslSocketFactory != null ? "https" : "http")
                 .host(uriHost)
                 .port(uriPort)
@@ -96,11 +95,11 @@ public final class Address {
         this.certificatePinner = certificatePinner;
     }
 
-    public Url url() {
+    public UnoUrl url() {
         return url;
     }
 
-    public Dns dns() {
+    public DnsX dns() {
         return dns;
     }
 

@@ -193,11 +193,13 @@ public class Symbol {
      */
     public static final char C_BACKSLASH = '\\';
     public static final String BACKSLASH = Normal.EMPTY + C_BACKSLASH;
+
     /**
      * 符号: 回车
      */
     public static final char C_CR = '\r';
     public static final String CR = Normal.EMPTY + C_CR;
+
     /**
      * 符号: 换行
      */
@@ -209,6 +211,7 @@ public class Symbol {
      */
     public static final char C_HT = '\t';
     public static final String HT = Normal.EMPTY + C_HT;
+
 
     /**
      * 符号: 回车换行
@@ -230,7 +233,10 @@ public class Symbol {
      * 符号: [L
      */
     public static final String NON_PREFIX = "[L";
-
+    /**
+     * 符号: //
+     */
+    public static final String FORWARDSLASH = "//";
     /**
      * HTML: 空格
      */

@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.http.cache;
 
+import org.aoju.bus.http.Header;
 import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.HttpDate;
-import org.aoju.bus.http.internal.http.HttpHeaders;
-import org.aoju.bus.http.internal.http.StatusLine;
+import org.aoju.bus.http.metric.http.HttpDate;
+import org.aoju.bus.http.metric.http.HttpHeaders;
+import org.aoju.bus.http.metric.http.StatusLine;
 
 import java.net.HttpURLConnection;
 import java.util.Date;
@@ -149,7 +149,7 @@ public final class CacheStrategy {
             if (cacheResponse != null) {
                 this.sentRequestMillis = cacheResponse.sentRequestAtMillis();
                 this.receivedResponseMillis = cacheResponse.receivedResponseAtMillis();
-                Headers headers = cacheResponse.headers();
+                Header headers = cacheResponse.headers();
                 for (int i = 0, size = headers.size(); i < size; i++) {
                     String fieldName = headers.name(i);
                     String value = headers.value(i);
@@ -249,7 +249,7 @@ public final class CacheStrategy {
                 return new CacheStrategy(request, null); // No condition! Make a regular request.
             }
 
-            Headers.Builder conditionalRequestHeaders = request.headers().newBuilder();
+            Header.Builder conditionalRequestHeaders = request.headers().newBuilder();
             Internal.instance.addLenient(conditionalRequestHeaders, conditionName, conditionValue);
 
             Request conditionalRequest = request.newBuilder()

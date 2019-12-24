@@ -25,8 +25,7 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.http.cache.CacheControl;
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.HttpMethod;
+import org.aoju.bus.http.metric.http.HttpMethod;
 
 import java.net.URL;
 import java.util.Collections;
@@ -44,9 +43,9 @@ import java.util.Map;
  */
 public final class Request {
 
-    final Url url;
+    final UnoUrl url;
     final String method;
-    final Headers headers;
+    final Header headers;
     final RequestBody body;
     final Map<Class<?>, Object> tags;
 
@@ -60,7 +59,7 @@ public final class Request {
         this.tags = Internal.immutableMap(builder.tags);
     }
 
-    public Url url() {
+    public UnoUrl url() {
         return url;
     }
 
@@ -68,7 +67,7 @@ public final class Request {
         return method;
     }
 
-    public Headers headers() {
+    public Header headers() {
         return headers;
     }
 
@@ -117,16 +116,16 @@ public final class Request {
     }
 
     public static class Builder {
-        Url url;
+        UnoUrl url;
         String method;
-        Headers.Builder headers;
+        Header.Builder headers;
         RequestBody body;
 
         Map<Class<?>, Object> tags = Collections.emptyMap();
 
         public Builder() {
             this.method = "GET";
-            this.headers = new Headers.Builder();
+            this.headers = new Header.Builder();
         }
 
         Builder(Request request) {
@@ -139,7 +138,7 @@ public final class Request {
             this.headers = request.headers.newBuilder();
         }
 
-        public Builder url(Url url) {
+        public Builder url(UnoUrl url) {
             if (url == null) throw new NullPointerException("url == null");
             this.url = url;
             return this;
@@ -155,12 +154,12 @@ public final class Request {
                 url = "https:" + url.substring(4);
             }
 
-            return url(Url.get(url));
+            return url(UnoUrl.get(url));
         }
 
         public Builder url(URL url) {
             if (url == null) throw new NullPointerException("url == null");
-            return url(Url.get(url.toString()));
+            return url(UnoUrl.get(url.toString()));
         }
 
         public Builder header(String name, String value) {
@@ -178,7 +177,7 @@ public final class Request {
             return this;
         }
 
-        public Builder headers(Headers headers) {
+        public Builder headers(Header headers) {
             this.headers = headers.newBuilder();
             return this;
         }

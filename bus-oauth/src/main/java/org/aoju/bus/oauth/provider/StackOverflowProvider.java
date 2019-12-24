@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -55,7 +55,7 @@ public class StackOverflowProvider extends DefaultProvider {
     @Override
     protected AccToken getAccessToken(Callback Callback) {
         String accessTokenUrl = accessTokenUrl(Callback.getCode());
-        String response = HttpClient.post(source.accessToken(), parseQueryToMap(accessTokenUrl));
+        String response = Httpx.post(source.accessToken(), parseQueryToMap(accessTokenUrl));
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -73,7 +73,7 @@ public class StackOverflowProvider extends DefaultProvider {
                 .queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getStackOverflowKey())
                 .build();
-        JSONObject object = JSONObject.parseObject(HttpClient.get(userInfoUrl));
+        JSONObject object = JSONObject.parseObject(Httpx.get(userInfoUrl));
         this.checkResponse(object);
         JSONObject userObj = object.getJSONArray("items").getJSONObject(0);
 

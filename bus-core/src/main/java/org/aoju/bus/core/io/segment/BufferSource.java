@@ -623,7 +623,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
             throws IOException;
 
     /**
-     * a new {@code BufferedSource} that can read data from this {@code BufferedSource}
+     * a new {@code BufferSource} that can read data from this {@code BufferSource}
      * without consuming it. The returned source becomes invalid once this source is next read or
      * closed.
      * <p>
@@ -636,7 +636,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *
      *   buffer.readUtf8(3) // returns "abc", buffer contains "defghi"
      *
-     *   BufferedSource peek = buffer.peek();
+     *   BufferSource peek = buffer.peek();
      *   peek.readUtf8(3); // returns "def", buffer contains "defghi"
      *   peek.readUtf8(3); // returns "ghi", buffer contains "defghi"
      *

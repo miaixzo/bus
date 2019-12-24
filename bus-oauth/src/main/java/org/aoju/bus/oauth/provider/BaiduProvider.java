@@ -27,7 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -100,7 +100,7 @@ public class BaiduProvider extends DefaultProvider {
                 .build();
         return Message.builder()
                 .errcode(Builder.Status.SUCCESS.getCode())
-                .data(this.getAuthToken(HttpClient.get(refreshUrl)))
+                .data(this.getAuthToken(Httpx.get(refreshUrl)))
                 .build();
     }
 

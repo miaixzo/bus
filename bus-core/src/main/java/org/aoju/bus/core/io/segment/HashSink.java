@@ -41,7 +41,7 @@ import java.security.NoSuchAlgorithmException;
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public final class HashSink extends ForwardSink {
+public final class HashSink extends DelegateSink {
 
     private final MessageDigest messageDigest;
     private final Mac mac;

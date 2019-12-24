@@ -34,6 +34,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
@@ -956,9 +957,26 @@ public class IoUtils {
      * @param closeable 被关闭的对象
      */
     public static void close(Closeable closeable) {
-        if (null != closeable) {
+        if (closeable != null) {
             try {
                 closeable.close();
+            } catch (RuntimeException rethrown) {
+                throw rethrown;
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    /**
+     * 关闭
+     * 关闭失败不会抛出异常
+     *
+     * @param autoCloseable 被关闭的对象
+     */
+    public static void close(AutoCloseable autoCloseable) {
+        if (null != autoCloseable) {
+            try {
+                autoCloseable.close();
             } catch (Exception e) {
                 // 静默关闭
             }
@@ -969,30 +987,35 @@ public class IoUtils {
      * 关闭
      * 关闭失败不会抛出异常
      *
-     * @param closeable 被关闭的对象
+     * @param socket 被关闭的对象
      */
-    public static void close(AutoCloseable closeable) {
-        if (null != closeable) {
+    public static void close(Socket socket) {
+        if (socket != null) {
             try {
-                closeable.close();
-            } catch (Exception e) {
-                // 静默关闭
+                socket.close();
+            } catch (AssertionError e) {
+                if (!isAndroidGetsocknameError(e)) throw e;
+            } catch (RuntimeException rethrown) {
+                throw rethrown;
+            } catch (Exception ignored) {
             }
         }
     }
 
     /**
-     * 关闭
-     * 关闭失败不会抛出异常
-     *
-     * @param sock 被关闭的对象
+     * @param serverSocket 被关闭的对象
+     *                     关闭{@code serverSocket}，忽略任何已检查的异常。
+     *                     如果{@code serverSocket}为空，则不执行任何操作
      */
-    public static void close(Socket sock) {
-        if (sock != null)
+    public static void close(ServerSocket serverSocket) {
+        if (serverSocket != null) {
             try {
-                sock.close();
-            } catch (IOException ignore) {
+                serverSocket.close();
+            } catch (RuntimeException rethrown) {
+                throw rethrown;
+            } catch (Exception ignored) {
             }
+        }
     }
 
     /**

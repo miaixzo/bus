@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -112,7 +112,7 @@ public class KujialeProvider extends DefaultProvider {
     @Override
     public Property getUserInfo(AccToken token) {
         String openId = this.getOpenId(token);
-        String response = HttpClient.get(Builder.fromBaseUrl(source.userInfo())
+        String response = Httpx.get(Builder.fromBaseUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("open_id", openId)
                 .build());
@@ -139,7 +139,7 @@ public class KujialeProvider extends DefaultProvider {
      * @return openId
      */
     private String getOpenId(AccToken token) {
-        String response = HttpClient.get(Builder.fromBaseUrl("https://oauth.kujiale.com/oauth2/auth/user")
+        String response = Httpx.get(Builder.fromBaseUrl("https://oauth.kujiale.com/oauth2/auth/user")
                 .queryParam("access_token", token.getAccessToken())
                 .build());
         JSONObject accessTokenObject = checkResponse(response);
@@ -148,7 +148,7 @@ public class KujialeProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken token) {
-        String response = HttpClient.post(refreshTokenUrl(token.getRefreshToken()));
+        String response = Httpx.post(refreshTokenUrl(token.getRefreshToken()));
         return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.office.bridge;
 
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.metric.RequestBuilder;
 
@@ -41,7 +41,7 @@ public interface OnlineOfficeContextAware extends Context {
      *
      * @return 将发送转换请求的客户端.
      */
-    HttpClient getHttpClient();
+    Httpx getHttp();
 
     /**
      * 获取请求配置.

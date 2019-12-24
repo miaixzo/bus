@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.core.utils.UriUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.*;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
@@ -479,7 +479,7 @@ public abstract class DefaultProvider implements Provider {
      * @return HttpResponse
      */
     protected String doPostAuthorizationCode(String code) {
-        return HttpClient.post(accessTokenUrl(code));
+        return Httpx.post(accessTokenUrl(code));
     }
 
     /**
@@ -489,7 +489,7 @@ public abstract class DefaultProvider implements Provider {
      * @return HttpResponse
      */
     protected String doGetAuthorizationCode(String code) {
-        return HttpClient.get(accessTokenUrl(code));
+        return Httpx.get(accessTokenUrl(code));
     }
 
     /**
@@ -499,7 +499,7 @@ public abstract class DefaultProvider implements Provider {
      * @return HttpResponse
      */
     protected String doGetUserInfo(AccToken token) {
-        return HttpClient.get(userInfoUrl(token));
+        return Httpx.get(userInfoUrl(token));
     }
 
     /**
@@ -509,7 +509,7 @@ public abstract class DefaultProvider implements Provider {
      * @return HttpResponse
      */
     protected String doGetRevoke(AccToken token) {
-        return HttpClient.get(revokeUrl(token));
+        return Httpx.get(revokeUrl(token));
     }
 
     /**

@@ -28,7 +28,7 @@ import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -71,7 +71,7 @@ public class ElemeProvider extends DefaultProvider {
         // 设置header
         this.setHeader(header);
 
-        String response = HttpClient.post(source.accessToken(), null, header);
+        String response = Httpx.post(source.accessToken(), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -111,7 +111,7 @@ public class ElemeProvider extends DefaultProvider {
         // 设置header
         this.setHeader(header, "application/json; charset=utf-8", requestId);
 
-        String response = HttpClient.post(source.userInfo(), null, header);
+        String response = Httpx.post(source.userInfo(), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         // 校验请求
@@ -140,7 +140,7 @@ public class ElemeProvider extends DefaultProvider {
         header.put("refresh_token", oldToken.getRefreshToken());
         header.put("grant_type", "refresh_token");
         this.setHeader(header);
-        String response = HttpClient.post(source.refresh(), null, header);
+        String response = Httpx.post(source.refresh(), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
