@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.pager.proxy;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.pager.PageException;
 import org.aoju.bus.pager.dialect.AbstractHelperDialect;
 import org.aoju.bus.pager.dialect.Dialect;
@@ -119,7 +120,7 @@ public class PageAutoDialect {
 
     private String fromJdbcUrl(String jdbcUrl) {
         for (String dialect : dialectAliasMap.keySet()) {
-            if (jdbcUrl.indexOf(":" + dialect + ":") != -1) {
+            if (jdbcUrl.indexOf(Symbol.COLON + dialect + Symbol.COLON) != -1) {
                 return dialect;
             }
         }
@@ -239,9 +240,9 @@ public class PageAutoDialect {
         }
         String dialectAlias = properties.getProperty("dialectAlias");
         if (PageFromObject.isNotEmpty(dialectAlias)) {
-            String[] alias = dialectAlias.split(";");
+            String[] alias = dialectAlias.split(Symbol.SEMICOLON);
             for (int i = 0; i < alias.length; i++) {
-                String[] kv = alias[i].split("=");
+                String[] kv = alias[i].split(Symbol.EQUAL);
                 if (kv.length != 2) {
                     throw new IllegalArgumentException("dialectAlias 参数配置错误," +
                             "请按照 alias1=xx.dialectClass;alias2=dialectClass2 的形式进行配置!");

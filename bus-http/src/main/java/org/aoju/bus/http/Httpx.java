@@ -26,12 +26,13 @@ package org.aoju.bus.http;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.accord.ConnectPool;
+import org.aoju.bus.http.accord.ConnectionPool;
 import org.aoju.bus.http.bodys.MultipartBody;
 import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.http.magic.HttpProxy;
@@ -51,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * Http 辅助类
+ * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -185,14 +186,14 @@ public class Httpx extends Httpd {
             Dispatcher dispatcher = new Dispatcher();
             dispatcher.setMaxRequests(maxRequests);
             dispatcher.setMaxRequestsPerHost(maxRequestsPerHost);
-            ConnectPool connectPool = new ConnectPool(maxIdleConnections,
+            ConnectionPool connectPool = new ConnectionPool(maxIdleConnections,
                     keepAliveDuration, TimeUnit.MINUTES);
             Httpd.Builder builder = new Httpd.Builder();
 
             builder.dispatcher(dispatcher);
             builder.connectionPool(connectPool);
             builder.addNetworkInterceptor(chain -> {
-                Request request = chain.request();
+                org.aoju.bus.http.Request request = chain.request();
                 return chain.proceed(request);
             });
             if (ObjectUtils.isNotEmpty(dns)) {
@@ -303,9 +304,9 @@ public class Httpx extends Httpd {
      * @param url      URL地址 String
      * @param callback 回调信息 callback
      */
-    public static void get(String url, Callback callback) {
-        Request request = new Request.Builder().url(url).get().build();
-        NewCall call = httpd.newCall(request);
+    public static void get(String url, org.aoju.bus.http.Callback callback) {
+        org.aoju.bus.http.Request request = new org.aoju.bus.http.Request.Builder().url(url).get().build();
+        org.aoju.bus.http.NewCall call = httpd.newCall(request);
         call.enqueue(callback);
     }
 
@@ -316,17 +317,17 @@ public class Httpx extends Httpd {
      * @param queryMap 查询参数 Map
      * @param callback 回调信息 callback
      */
-    public static void post(String url, Map<String, Object> queryMap, Callback callback) {
+    public static void post(String url, Map<String, Object> queryMap, org.aoju.bus.http.Callback callback) {
         StringBuilder data = new StringBuilder();
         if (ObjectUtils.isNotEmpty(queryMap)) {
             Set<String> keys = queryMap.keySet();
             for (String key : keys) {
-                data.append(key).append("=").append(queryMap.get(key)).append("&");
+                data.append(key).append(Symbol.EQUAL).append(queryMap.get(key)).append(Symbol.AND);
             }
         }
         RequestBody requestBody = RequestBody.create(MediaType.TEXT_HTML_TYPE, data.toString());
-        Request request = new Request.Builder().url(url).post(requestBody).build();
-        NewCall call = httpd.newCall(request);
+        org.aoju.bus.http.Request request = new org.aoju.bus.http.Request.Builder().url(url).post(requestBody).build();
+        org.aoju.bus.http.NewCall call = httpd.newCall(request);
         call.enqueue(callback);
     }
 
@@ -353,7 +354,7 @@ public class Httpx extends Httpd {
         if (MapUtils.isNotEmpty(formMap)) {
             data = formMap.entrySet().stream()
                     .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-                    .collect(Collectors.joining("&"));
+                    .collect(Collectors.joining(Symbol.AND));
         }
         return post(url, data, MediaType.APPLICATION_FORM_URLENCODED);
     }
@@ -468,7 +469,7 @@ public class Httpx extends Httpd {
      */
     public static String post(final String url, final Map<String, Object> params,
                               final List<String> pathList) {
-        MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED + ";" + Charset.DEFAULT_UTF_8);
+        MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
         RequestBody bodyParams = RequestBody.create(mediaType, params.toString());
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE)
                 .addFormDataPart("params", "", bodyParams);
@@ -479,10 +480,10 @@ public class Httpx extends Httpd {
             requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.create(mediaType, new File(path)));
         }
         RequestBody requestBody = requestBodyBuilder.build();
-        Request request = new Request.Builder().url(url).post(requestBody).build();
+        org.aoju.bus.http.Request request = new org.aoju.bus.http.Request.Builder().url(url).post(requestBody).build();
         String result = "";
         try {
-            Response response = httpd.newCall(request).execute();
+            org.aoju.bus.http.Response response = httpd.newCall(request).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 byte[] bytes = response.body().bytes();
@@ -517,13 +518,13 @@ public class Httpx extends Httpd {
             Logger.info(">>>>>>>>Builder[{}]<<<<<<<<", builder.toString());
         }
         String url = builder.url;
-        Request.Builder request = new Request.Builder();
+        org.aoju.bus.http.Request.Builder request = new org.aoju.bus.http.Request.Builder();
 
         if (MapUtils.isNotEmpty(builder.queryMap)) {
             String queryParams = builder.queryMap.entrySet().stream()
                     .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-                    .collect(Collectors.joining("&"));
-            url = String.format("%s%s%s", url, url.contains("?") ? "&" : "?", queryParams);
+                    .collect(Collectors.joining(Symbol.AND));
+            url = String.format("%s%s%s", url, url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, queryParams);
         }
         request.url(url);
         if (MapUtils.isNotEmpty(builder.headerMap)) {
@@ -543,7 +544,7 @@ public class Httpx extends Httpd {
 
         String result = "";
         try {
-            Response response = httpd.newCall(request.build()).execute();
+            org.aoju.bus.http.Response response = httpd.newCall(request.build()).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 byte[] bytes = response.body().bytes();
@@ -581,13 +582,13 @@ public class Httpx extends Httpd {
             Logger.info(">>>>>>>>Builder[{}]<<<<<<<<", builder.toString());
         }
         String url = builder.url;
-        Request.Builder request = new Request.Builder();
+        org.aoju.bus.http.Request.Builder request = new Request.Builder();
 
         if (MapUtils.isNotEmpty(builder.queryMap)) {
             String queryParams = builder.queryMap.entrySet().stream()
                     .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-                    .collect(Collectors.joining("&"));
-            url = String.format("%s%s%s", url, url.contains("?") ? "&" : "?", queryParams);
+                    .collect(Collectors.joining(Symbol.AND));
+            url = String.format("%s%s%s", url, url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, queryParams);
         }
 
         request.url(url);
@@ -608,10 +609,10 @@ public class Httpx extends Httpd {
         String[] result = {""};
 
         String finalUrl = url;
-        NewCall call = httpd.newCall(request.build());
+        org.aoju.bus.http.NewCall call = httpd.newCall(request.build());
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(NewCall call, IOException e) {
+            public void onFailure(org.aoju.bus.http.NewCall call, IOException e) {
                 Logger.info(String.format(">>>>>>>>Url[%s]failure<<<<<<<<", finalUrl));
             }
 

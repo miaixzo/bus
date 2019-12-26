@@ -26,6 +26,7 @@ package org.aoju.bus.health.software.mac;
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.mac.SystemB;
@@ -99,7 +100,7 @@ public class MacNetwork extends AbstractNetwork {
             if (v6Table && line.startsWith(DEFAULT_GATEWAY)) {
                 String[] fields = Builder.whitespaces.split(line);
                 if (fields.length > 2 && fields[2].contains("G")) {
-                    return fields[1].split("%")[0];
+                    return fields[1].split(Symbol.PERCENT)[0];
                 }
             } else if (line.startsWith(IPV6_ROUTE_HEADER)) {
                 v6Table = true;

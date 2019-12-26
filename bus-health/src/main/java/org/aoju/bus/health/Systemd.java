@@ -25,6 +25,7 @@ package org.aoju.bus.health;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Singleton;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.health.hardware.HardwareLayer;
@@ -149,11 +150,11 @@ public class Systemd {
             return true;
         }
 
-        if ("true".equals(value) || "yes".equals(value) || "1".equals(value)) {
+        if ("true".equals(value) || "yes".equals(value) || Symbol.ONE.equals(value)) {
             return true;
         }
 
-        if ("false".equals(value) || "no".equals(value) || "0".equals(value)) {
+        if ("false".equals(value) || "no".equals(value) || Symbol.ZERO.equals(value)) {
             return false;
         }
 
@@ -195,7 +196,7 @@ public class Systemd {
      * @return 当前进程 ID
      */
     public static long getCurrentPID() {
-        return Long.parseLong(getRuntimeMXBean().getName().split("@")[0]);
+        return Long.parseLong(getRuntimeMXBean().getName().split(Symbol.AT)[0]);
     }
 
     /**
@@ -394,7 +395,7 @@ public class Systemd {
      * @param value   值
      */
     public static void append(StringBuilder builder, String caption, Object value) {
-        builder.append(caption).append(StringUtils.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
+        builder.append(caption).append(StringUtils.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
     }
 
     /**

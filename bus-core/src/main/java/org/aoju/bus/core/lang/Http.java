@@ -32,39 +32,115 @@ package org.aoju.bus.core.lang;
  */
 public class Http {
 
+    /**
+     * The http
+     */
     public static final String HTTP = "http";
+    /**
+     * The https
+     */
     public static final String HTTPS = "https";
-
+    /**
+     * The prefix http
+     */
     public static final String HTTP_PREFIX = HTTP + Symbol.COLON + Symbol.FORWARDSLASH;
+    /**
+     * The prefix https
+     */
     public static final String HTTPS_PREFIX = HTTPS + Symbol.COLON + Symbol.FORWARDSLASH;
-
-    public static final String ALL = "ALL";
+    /**
+     * HTTP Method GET
+     */
     public static final String GET = "GET";
+    /**
+     * HTTP Method POST
+     */
     public static final String POST = "POST";
+    /**
+     * HTTP Method PUT
+     */
     public static final String PUT = "PUT";
+    /**
+     * HTTP Method PATCH
+     */
     public static final String PATCH = "PATCH";
+    /**
+     * HTTP Method DELETE
+     */
     public static final String DELETE = "DELETE";
+    /**
+     * HTTP Method HEAD
+     */
     public static final String HEAD = "HEAD";
+    /**
+     * HTTP Method TRACE
+     */
     public static final String TRACE = "TRACE";
+    /**
+     * HTTP Method CONNECT
+     */
     public static final String CONNECT = "CONNECT";
+    /**
+     * HTTP Method OPTIONS
+     */
     public static final String OPTIONS = "OPTIONS";
+    /**
+     * HTTP Method BEFORE
+     */
     public static final String BEFORE = "BEFORE";
+    /**
+     * HTTP Method AFTER
+     */
     public static final String AFTER = "AFTER";
+    /**
+     * HTTP Method MOVE
+     */
     public static final String MOVE = "MOVE";
+    /**
+     * HTTP Method PROPPATCH
+     */
     public static final String PROPPATCH = "PROPPATCH";
+    /**
+     * HTTP Method REPORT
+     */
     public static final String REPORT = "REPORT";
+    /**
+     * HTTP Method PROPFIND
+     */
     public static final String PROPFIND = "PROPFIND";
-
+    /**
+     * HTTP Method ALL
+     */
+    public static final String ALL = "ALL";
+    /**
+     * The use status
+     */
     public static final String RESPONSE_STATUS_UTF8 = ":status";
+    /**
+     * The use method
+     */
     public static final String TARGET_METHOD_UTF8 = ":method";
+    /**
+     * The use path
+     */
     public static final String TARGET_PATH_UTF8 = ":path";
+    /**
+     * The use scheme
+     */
     public static final String TARGET_SCHEME_UTF8 = ":scheme";
+    /**
+     * The use authority
+     */
     public static final String TARGET_AUTHORITY_UTF8 = ":authority";
 
     /**
-     * HTTP Status-Code 200: Continue.
+     * HTTP Status-Code 100: Continue.
      */
     public static final int HTTP_CONTINUE = 100;
+    /**
+     * HTTP Status-Code 101: Switching Protocols.
+     */
+    public static final int HTTP_SWITCHING_PROTOCOL = 101;
     /**
      * HTTP Status-Code 200: OK.
      */
@@ -249,7 +325,6 @@ public class Http {
      * HTTP Status-Code 505: HTTP Version Not Supported.
      */
     public static final int HTTP_VERSION = 505;
-
 
     /**
      * From the HTTP/2 specs, the default initial window size for all streams is 64 KiB. (Chrome 25

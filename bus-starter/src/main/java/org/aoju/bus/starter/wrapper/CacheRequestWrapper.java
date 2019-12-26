@@ -27,6 +27,8 @@ import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.logger.Logger;
@@ -44,24 +46,24 @@ import java.io.*;
  */
 public class CacheRequestWrapper extends HttpServletRequestWrapper {
 
-    private static final byte[] DEFAULT_BYTE = new byte[0];
+    private static final byte[] DEFAULT_BYTE = Normal.EMPTY_BYTE_ARRAY;
     private byte[] body;
     private ServletInputStreamWrapper inputStreamWrapper;
 
     CacheRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         // 从ParameterMap获取参数，并保存以便多次获取
-        Logger.info("{}", JSON.toJSON(request.getParameterMap()).toString());
+        Logger.info(Symbol.DELIM, JSON.toJSON(request.getParameterMap()).toString());
      /*
        this.body = request.getParameterMap().entrySet().stream()
                 .map(entry -> {
                     String[] value = entry.getValue();
                     if (ArrayUtils.isNotEmpty(value)) {
-                        return Arrays.stream(value).map(s -> entry.getKey() + "=" + s)
-                                .collect(Collectors.joining("&"));
+                        return Arrays.stream(value).map(s -> entry.getKey() + Symbol.EQUAL + s)
+                                .collect(Collectors.joining(Symbol.AND));
                     }
-                    return entry.getKey() + "=" + value[0];
-                }).collect(Collectors.joining("&")).getBytes();
+                    return entry.getKey() + Symbol.EQUAL + value[0];
+                }).collect(Collectors.joining(Symbol.AND)).getBytes();
      */
         // 从InputStream获取参数，并保存以便多次获取
         this.body = IoUtils.readBytes(request.getInputStream());

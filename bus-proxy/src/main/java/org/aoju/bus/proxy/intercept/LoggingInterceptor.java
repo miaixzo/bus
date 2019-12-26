@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.proxy.intercept;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.proxy.Builder;
 import org.aoju.bus.proxy.Interceptor;
@@ -62,7 +63,7 @@ public class LoggingInterceptor implements Interceptor {
         StringBuffer buffer = new StringBuffer(BUFFER_SIZE);
         buffer.append("BEGIN ");
         buffer.append(methodName);
-        buffer.append("(");
+        buffer.append(Symbol.PARENTHESE_LEFT);
         int count = args.length;
         for (int i = 0; i < count; i++) {
             Object arg = args[i];
@@ -71,7 +72,7 @@ public class LoggingInterceptor implements Interceptor {
             }
             convert(buffer, arg);
         }
-        buffer.append(")");
+        buffer.append(Symbol.PARENTHESE_RIGHT);
         Logger.debug(buffer.toString());
     }
 
@@ -85,7 +86,7 @@ public class LoggingInterceptor implements Interceptor {
             buffer.append(input.toString());
             return;
         }
-        buffer.append("(");
+        buffer.append(Symbol.PARENTHESE_LEFT);
         buffer.append(Builder.getJavaClassName(input.getClass()));
         buffer.append("){");
         Object[] array = (Object[]) input;
@@ -96,7 +97,7 @@ public class LoggingInterceptor implements Interceptor {
             }
             convert(buffer, array[i]);
         }
-        buffer.append("}");
+        buffer.append(Symbol.BRACE_RIGHT);
     }
 
     private void exception(String methodName, Throwable t) {
@@ -114,7 +115,7 @@ public class LoggingInterceptor implements Interceptor {
         buffer.append(methodName);
         buffer.append("() [");
         convert(buffer, result);
-        buffer.append("]");
+        buffer.append(Symbol.BRACKET_RIGHT);
         Logger.debug(buffer.toString());
     }
 

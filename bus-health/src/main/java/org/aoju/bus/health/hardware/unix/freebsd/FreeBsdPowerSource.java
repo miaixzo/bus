@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.unix.freebsd;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.unix.freebsd.BsdSysctlUtils;
@@ -105,7 +106,7 @@ public class FreeBsdPowerSource extends AbstractPowerSource {
         List<String> acpiconf = Command.runNative("acpiconf -i 0");
         Map<String, String> psMap = new HashMap<>();
         for (String line : acpiconf) {
-            String[] split = line.split(":", 2);
+            String[] split = line.split(Symbol.COLON, 2);
             if (split.length > 1) {
                 String value = split[1].trim();
                 if (!value.isEmpty()) {
@@ -136,7 +137,7 @@ public class FreeBsdPowerSource extends AbstractPowerSource {
         double psTimeRemainingInstant = psTimeRemainingEstimated;
         String time = psMap.get("Remaining time");
         if (time != null) {
-            String[] hhmm = time.split(":");
+            String[] hhmm = time.split(Symbol.COLON);
             if (hhmm.length == 2) {
                 psTimeRemainingInstant = 3600d * Builder.parseIntOrDefault(hhmm[0], 0)
                         + 60d * Builder.parseIntOrDefault(hhmm[1], 0);

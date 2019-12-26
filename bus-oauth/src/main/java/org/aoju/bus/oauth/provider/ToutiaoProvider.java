@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -156,15 +157,15 @@ public class ToutiaoProvider extends DefaultProvider {
          * 0：正常；
          * other：调用异常,具体异常内容见{@code desc}
          */
-        EC0("0", "接口调用成功"),
-        EC1("1", "API配置错误,未传入Client Key"),
-        EC2("2", "API配置错误,Client Key错误,请检查是否和开放平台的ClientKey一致"),
-        EC3("3", "没有授权信息"),
-        EC4("4", "响应类型错误"),
-        EC5("5", "授权类型错误"),
-        EC6("6", "client_secret错误"),
-        EC7("7", "authorize_code过期"),
-        EC8("8", "指定url的scheme不是https"),
+        EC0(Symbol.ZERO, "接口调用成功"),
+        EC1(Symbol.ONE, "API配置错误,未传入Client Key"),
+        EC2(Symbol.TWO, "API配置错误,Client Key错误,请检查是否和开放平台的ClientKey一致"),
+        EC3(Symbol.THREE, "没有授权信息"),
+        EC4(Symbol.FOUR, "响应类型错误"),
+        EC5(Symbol.FIVE, "授权类型错误"),
+        EC6(Symbol.SIX, "client_secret错误"),
+        EC7(Symbol.SEVEN, "authorize_code过期"),
+        EC8(Symbol.EIGHT, "指定url的scheme不是https"),
         EC9("9", "接口内部错误,请联系头条技术"),
         EC10("10", "access_token过期"),
         EC11("11", "缺少access_token"),

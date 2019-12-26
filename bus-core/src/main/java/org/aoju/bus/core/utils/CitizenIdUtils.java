@@ -291,9 +291,9 @@ public class CitizenIdUtils {
         if (idCard.matches("^[a-zA-Z][0-9]{9}$")) { // 台湾
             info[0] = "台湾";
             String char2 = idCard.substring(1, 2);
-            if (char2.equals("1")) {
+            if (char2.equals(Symbol.ONE)) {
                 info[1] = "M";
-            } else if (char2.equals("2")) {
+            } else if (char2.equals(Symbol.TWO)) {
                 info[1] = "F";
             } else {
                 info[1] = "N";
@@ -561,27 +561,27 @@ public class CitizenIdUtils {
     private static char getCheckCode18(int iSum) {
         switch (iSum % 11) {
             case 10:
-                return '2';
+                return Symbol.C_TWO;
             case 9:
-                return '3';
+                return Symbol.C_THREE;
             case 8:
-                return '4';
+                return Symbol.C_FOUR;
             case 7:
-                return '5';
+                return Symbol.C_FIVE;
             case 6:
-                return '6';
+                return Symbol.C_SIX;
             case 5:
-                return '7';
+                return Symbol.C_SEVEN;
             case 4:
-                return '8';
+                return Symbol.C_EIGHT;
             case 3:
-                return '9';
+                return Symbol.C_NINE;
             case 2:
                 return 'x';
             case 1:
-                return '0';
+                return Symbol.C_ZERO;
             case 0:
-                return '1';
+                return Symbol.C_ONE;
             default:
                 return Symbol.C_SPACE;
         }

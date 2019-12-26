@@ -24,6 +24,7 @@
 package org.aoju.bus.base.consts;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 /**
  * <p>
@@ -40,29 +41,29 @@ public class Consts extends Normal {
      * 全局状态
      */
     public static final String STATUS_MINUS_ONE = "-1";
-    public static final String STATUS_ZERO = "0";
-    public static final String STATUS_ONE = "1";
-    public static final String STATUS_TWO = "2";
-    public static final String STATUS_THREE = "3";
-    public static final String STATUS_FOUR = "4";
-    public static final String STATUS_FIVE = "5";
-    public static final String STATUS_SIX = "6";
-    public static final String STATUS_SEVEN = "7";
-    public static final String STATUS_EIGHT = "8";
-    public static final String STATUS_NINE = "9";
+    public static final String STATUS_ZERO = Symbol.ZERO;
+    public static final String STATUS_ONE = Symbol.ONE;
+    public static final String STATUS_TWO = Symbol.TWO;
+    public static final String STATUS_THREE = Symbol.THREE;
+    public static final String STATUS_FOUR = Symbol.FOUR;
+    public static final String STATUS_FIVE = Symbol.FIVE;
+    public static final String STATUS_SIX = Symbol.SIX;
+    public static final String STATUS_SEVEN = Symbol.SEVEN;
+    public static final String STATUS_EIGHT = Symbol.EIGHT;
+    public static final String STATUS_NINE = Symbol.NINE;
 
     /**
      * 全局类型
      */
-    public static final String TYPE_ZERO = "0";
-    public static final String TYPE_ONE = "1";
-    public static final String TYPE_TWO = "2";
-    public static final String TYPE_THREE = "3";
-    public static final String TYPE_FOUR = "4";
-    public static final String TYPE_FIVE = "5";
-    public static final String TYPE_SIX = "6";
-    public static final String TYPE_SEVEN = "7";
-    public static final String TYPE_EIGHT = "8";
-    public static final String TYPE_NINE = "9";
+    public static final String TYPE_ZERO = Symbol.ZERO;
+    public static final String TYPE_ONE = Symbol.ONE;
+    public static final String TYPE_TWO = Symbol.TWO;
+    public static final String TYPE_THREE = Symbol.THREE;
+    public static final String TYPE_FOUR = Symbol.FOUR;
+    public static final String TYPE_FIVE = Symbol.FIVE;
+    public static final String TYPE_SIX = Symbol.SIX;
+    public static final String TYPE_SEVEN = Symbol.SEVEN;
+    public static final String TYPE_EIGHT = Symbol.EIGHT;
+    public static final String TYPE_NINE = Symbol.NINE;
 
 }

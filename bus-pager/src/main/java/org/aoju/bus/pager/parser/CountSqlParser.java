@@ -30,6 +30,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.pager.plugin.PageFromObject;
 
 import java.util.*;
@@ -160,7 +161,7 @@ public class CountSqlParser {
      * @return the string
      */
     public String getSmartCountSql(String sql) {
-        return getSmartCountSql(sql, "0");
+        return getSmartCountSql(sql, Symbol.ZERO);
     }
 
     /**
@@ -207,7 +208,7 @@ public class CountSqlParser {
      * @return 返回count查询sql
      */
     public String getSimpleCountSql(final String sql) {
-        return getSimpleCountSql(sql, "0");
+        return getSimpleCountSql(sql, Symbol.ZERO);
     }
 
     /**
@@ -268,7 +269,7 @@ public class CountSqlParser {
         }
         for (SelectItem item : select.getSelectItems()) {
             //select列中包含参数的时候不可以,否则会引起参数个数错误
-            if (item.toString().contains("?")) {
+            if (item.toString().contains(Symbol.QUESTION_MARK)) {
                 return false;
             }
             //如果查询列中包含函数,也不可以,函数可能会聚合列
@@ -408,7 +409,7 @@ public class CountSqlParser {
             return false;
         }
         for (OrderByElement orderByElement : orderByElements) {
-            if (orderByElement.toString().contains("?")) {
+            if (orderByElement.toString().contains(Symbol.QUESTION_MARK)) {
                 return true;
             }
         }

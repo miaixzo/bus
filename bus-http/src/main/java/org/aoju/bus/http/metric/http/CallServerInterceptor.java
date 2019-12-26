@@ -25,21 +25,24 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.ForwardSink;
+import org.aoju.bus.core.io.segment.DelegateSink;
 import org.aoju.bus.core.io.segment.Sink;
+import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
 import org.aoju.bus.http.accord.RealConnection;
 import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.metric.Interceptor;
 
 import java.io.IOException;
 import java.net.ProtocolException;
 
 /**
- * This is the last intercept in the chain. It makes a network call to the server.
+ * 这是链中的最后一个拦截器
+ * 它对服务器进行网络调用
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -69,9 +72,6 @@ public final class CallServerInterceptor implements Interceptor {
 
         Response.Builder responseBuilder = null;
         if (HttpMethod.permitsRequestBody(request.method()) && request.body() != null) {
-            // If there's a "Expect: 100-continue" header on the request, wait for a "HTTP/1.1 100
-            // Continue" response before transmitting the request body. If we don't get that, return
-            // what we did get (such as a 4xx response) without ever transmitting the request body.
             if ("100-continue".equalsIgnoreCase(request.header("Expect"))) {
                 httpCodec.flushRequest();
                 realChain.eventListener().responseHeadersStart(realChain.call());
@@ -79,7 +79,6 @@ public final class CallServerInterceptor implements Interceptor {
             }
 
             if (responseBuilder == null) {
-                // Write the request body if the "Expect: 100-continue" expectation was met.
                 realChain.eventListener().requestBodyStart(realChain.call());
                 long contentLength = request.body().contentLength();
                 CountingSink requestBodyOut =
@@ -91,9 +90,6 @@ public final class CallServerInterceptor implements Interceptor {
                 realChain.eventListener()
                         .requestBodyEnd(realChain.call(), requestBodyOut.successfulCount);
             } else if (!connection.isMultiplexed()) {
-                // If the "Expect: 100-continue" expectation wasn't met, prevent the HTTP/1 connection
-                // from being reused. Otherwise we're still obligated to transmit the request body to
-                // leave the connection in a consistent state.
                 streamAllocation.noNewStreams();
             }
         }
@@ -113,9 +109,7 @@ public final class CallServerInterceptor implements Interceptor {
                 .build();
 
         int code = response.code();
-        if (code == 100) {
-            // server sent a 100-continue even though we did not request first.
-            // try again to read the actual response
+        if (code == Http.HTTP_CONTINUE) {
             responseBuilder = httpCodec.readResponseHeaders(false);
 
             response = responseBuilder
@@ -131,10 +125,9 @@ public final class CallServerInterceptor implements Interceptor {
         realChain.eventListener()
                 .responseHeadersEnd(realChain.call(), response);
 
-        if (forWebSocket && code == 101) {
-            // Connection is upgrading, but we need to ensure interceptors see a non-null response body.
+        if (forWebSocket && code == Http.HTTP_SWITCHING_PROTOCOL) {
             response = response.newBuilder()
-                    .body(Internal.EMPTY_RESPONSE)
+                    .body(ResponseBody.create(null, Normal.EMPTY_BYTE_ARRAY))
                     .build();
         } else {
             response = response.newBuilder()
@@ -142,12 +135,12 @@ public final class CallServerInterceptor implements Interceptor {
                     .build();
         }
 
-        if ("close".equalsIgnoreCase(response.request().header("Connection"))
-                || "close".equalsIgnoreCase(response.header("Connection"))) {
+        if ("close".equalsIgnoreCase(response.request().header(org.aoju.bus.core.lang.Header.CONNECTION))
+                || "close".equalsIgnoreCase(response.header(org.aoju.bus.core.lang.Header.CONNECTION))) {
             streamAllocation.noNewStreams();
         }
 
-        if ((code == 204 || code == 205) && response.body().contentLength() > 0) {
+        if ((code == Http.HTTP_NO_CONTENT || code == Http.HTTP_RESET) && response.body().contentLength() > 0) {
             throw new ProtocolException(
                     "HTTP " + code + " had non-zero Content-Length: " + response.body().contentLength());
         }
@@ -155,7 +148,7 @@ public final class CallServerInterceptor implements Interceptor {
         return response;
     }
 
-    static final class CountingSink extends ForwardSink {
+    static final class CountingSink extends DelegateSink {
         long successfulCount;
 
         CountingSink(Sink delegate) {

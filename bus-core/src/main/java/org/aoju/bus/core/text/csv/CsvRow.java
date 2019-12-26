@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.text.csv;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.*;
 
 /**
@@ -250,12 +252,12 @@ public final class CsvRow implements List<String> {
 
         sb.append("fields=");
         if (headerMap != null) {
-            sb.append('{');
+            sb.append(Symbol.C_BRACE_LEFT);
             for (final Iterator<Map.Entry<String, String>> it = getFieldMap().entrySet().iterator(); it.hasNext(); ) {
 
                 final Map.Entry<String, String> entry = it.next();
                 sb.append(entry.getKey());
-                sb.append('=');
+                sb.append(Symbol.C_EQUAL);
                 if (entry.getValue() != null) {
                     sb.append(entry.getValue());
                 }
@@ -263,12 +265,12 @@ public final class CsvRow implements List<String> {
                     sb.append(", ");
                 }
             }
-            sb.append('}');
+            sb.append(Symbol.C_BRACE_RIGHT);
         } else {
             sb.append(fields.toString());
         }
 
-        sb.append('}');
+        sb.append(Symbol.C_BRACE_RIGHT);
         return sb.toString();
     }
 }

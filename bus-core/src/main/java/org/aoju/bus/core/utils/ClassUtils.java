@@ -397,9 +397,9 @@ public class ClassUtils {
             throw new InstrumentException("Blank classNameDotMethodName!");
         }
 
-        int splitIndex = classNameWithMethodName.lastIndexOf('#');
+        int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_SHAPE);
         if (splitIndex <= 0) {
-            splitIndex = classNameWithMethodName.lastIndexOf('.');
+            splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_DOT);
         }
         if (splitIndex <= 0) {
             throw new InstrumentException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
@@ -1156,7 +1156,7 @@ public class ClassUtils {
             final String elementClassName = name.substring(0, name.length() - Symbol.BRACKET.length());
             final Class<?> elementClass = loadClass(elementClassName, classLoader, isInitialized);
             clazz = Array.newInstance(elementClass, 0).getClass();
-        } else if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(";")) {
+        } else if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(Symbol.SEMICOLON)) {
             // "[Ljava.lang.String;" 风格
             final String elementName = name.substring(Symbol.NON_PREFIX.length(), name.length() - 1);
             final Class<?> elementClass = loadClass(elementName, classLoader, isInitialized);
@@ -1330,7 +1330,7 @@ public class ClassUtils {
             return Array.newInstance(elementClass, 0).getClass();
         }
 
-        if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(";")) {
+        if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(Symbol.SEMICOLON)) {
             String elementName = name.substring(Symbol.NON_PREFIX.length(), name.length() - 1);
             Class<?> elementClass = forName(elementName, classLoader);
             return Array.newInstance(elementClass, 0).getClass();
@@ -1431,12 +1431,12 @@ public class ClassUtils {
         final StringBuilder arrayPrefix = new StringBuilder();
 
         // 处理数组编码
-        if (className.startsWith("[")) {
-            while (className.charAt(0) == '[') {
+        if (className.startsWith(Symbol.BRACKET_LEFT)) {
+            while (className.charAt(0) == Symbol.C_BRACKET_LEFT) {
                 className = className.substring(1);
-                arrayPrefix.append("[]");
+                arrayPrefix.append(Symbol.BRACKET);
             }
-            if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == ';') {
+            if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == Symbol.C_SEMICOLON) {
                 className = className.substring(1, className.length() - 1);
             }
 
@@ -1771,7 +1771,7 @@ public class ClassUtils {
     }
 
     /**
-     * 把一个'.'的类路径转换为基于'/'的类路径
+     * 把一个'.'的类路径转换为基于/的类路径
      *
      * @param className 完整雷鸣
      * @return 对应的资源路径，指向类

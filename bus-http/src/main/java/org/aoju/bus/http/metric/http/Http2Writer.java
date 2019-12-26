@@ -25,13 +25,17 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSink;
+import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.http.Settings;
+import org.aoju.bus.logger.Logger;
+import org.aoju.bus.logger.level.Level;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 
 /**
- * Writes HTTP/2 transport frames.
+ * 编写HTTP/2传输帧.
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -43,6 +47,9 @@ final class Http2Writer implements Closeable {
     private final BufferSink sink;
     private final boolean client;
     private final Buffer hpackBuffer;
+    /**
+     * 在一次对{@link #data}的调用中可能发送的最大字节数
+     */
     private int maxFrameSize;
     private boolean closed;
 
@@ -63,6 +70,9 @@ final class Http2Writer implements Closeable {
     public synchronized void connectionPreface() throws IOException {
         if (closed) throw new IOException("closed");
         if (!client) return; // Nothing to write; servers don't send connection headers!
+        if (Logger.get().isEnabled(Level.FINE)) {
+            Logger.warn(StringUtils.format(">> CONNECTION %s", Http2.CONNECTION_PREFACE.hex()));
+        }
         sink.write(Http2.CONNECTION_PREFACE.toByteArray());
         sink.flush();
     }
@@ -81,8 +91,21 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    public synchronized void pushPromise(int streamId, int promisedStreamId,
-                                         List<Header> requestHeaders) throws IOException {
+    /**
+     * HTTP/2 only. 发送推送header
+     * 推送promise包含所有与服务器发起的请求相关的头信息，以及一个{@code promise edstreamid}，
+     * 它将传递响应帧。推送承诺帧作为响应的一部分发送到{@code streamId}。{@code promisedStreamId}的
+     * 优先级比{@code streamId}大1
+     *
+     * @param streamId         客户端发起的流ID。必须是奇数.
+     * @param promisedStreamId 服务器发起的流ID。必须是偶数.
+     * @param requestHeaders   最低限度包括 {@code :method}, {@code :scheme}, {@code :authority},
+     *                         and {@code :path}.
+     * @throws IOException 异常
+     */
+    public synchronized void pushPromise(int streamId,
+                                         int promisedStreamId,
+                                         List<HttpHeaders> requestHeaders) throws IOException {
         if (closed) throw new IOException("closed");
         hpackWriter.writeHeaders(requestHeaders);
 
@@ -103,21 +126,21 @@ final class Http2Writer implements Closeable {
     }
 
     public synchronized void synStream(boolean outFinished, int streamId,
-                                       int associatedStreamId, List<Header> headerBlock) throws IOException {
+                                       int associatedStreamId, List<HttpHeaders> headersBlock) throws IOException {
         if (closed) throw new IOException("closed");
-        headers(outFinished, streamId, headerBlock);
+        headers(outFinished, streamId, headersBlock);
     }
 
     public synchronized void synReply(boolean outFinished, int streamId,
-                                      List<Header> headerBlock) throws IOException {
+                                      List<HttpHeaders> headersBlock) throws IOException {
         if (closed) throw new IOException("closed");
-        headers(outFinished, streamId, headerBlock);
+        headers(outFinished, streamId, headersBlock);
     }
 
-    public synchronized void headers(int streamId, List<Header> headerBlock)
+    public synchronized void headers(int streamId, List<HttpHeaders> headersBlock)
             throws IOException {
         if (closed) throw new IOException("closed");
-        headers(false, streamId, headerBlock);
+        headers(false, streamId, headersBlock);
     }
 
     public synchronized void rstStream(int streamId, ErrorCode errorCode)
@@ -164,9 +187,9 @@ final class Http2Writer implements Closeable {
             if (!settings.isSet(i)) continue;
             int id = i;
             if (id == 4) {
-                id = 3; // SETTINGS_MAX_CONCURRENT_STREAMS renumbered.
+                id = 3;
             } else if (id == 7) {
-                id = 4; // SETTINGS_INITIAL_WINDOW_SIZE renumbered.
+                id = 4;
             }
             sink.writeShort(id);
             sink.writeInt(settings.get(i));
@@ -186,6 +209,13 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
+    /**
+     * 告诉对方停止创建流，我们最后处理{@code lastGoodStreamId}，如果没有处理流，则为零.
+     *
+     * @param lastGoodStreamId 处理的最后一个流ID，如果没有处理流，则为零
+     * @param errorCode        关闭连接的原因.
+     * @param debugData        只适用于HTTP/2;要发送的不透明调试数据.
+     */
     public synchronized void goAway(int lastGoodStreamId, ErrorCode errorCode, byte[] debugData)
             throws IOException {
         if (closed) throw new IOException("closed");
@@ -218,6 +248,9 @@ final class Http2Writer implements Closeable {
     }
 
     public void frameHeader(int streamId, int length, byte type, byte flags) throws IOException {
+        if (Logger.get().isEnabled(Level.FINE)) {
+            Logger.warn(Http2.frameLog(false, streamId, length, type, flags));
+        }
         if (length > maxFrameSize) {
             throw Http2.illegalArgument("FRAME_SIZE_ERROR length > %d: %d", maxFrameSize, length);
         }
@@ -243,9 +276,9 @@ final class Http2Writer implements Closeable {
         }
     }
 
-    void headers(boolean outFinished, int streamId, List<Header> headerBlock) throws IOException {
+    void headers(boolean outFinished, int streamId, List<HttpHeaders> headersBlock) throws IOException {
         if (closed) throw new IOException("closed");
-        hpackWriter.writeHeaders(headerBlock);
+        hpackWriter.writeHeaders(headersBlock);
 
         long byteCount = hpackBuffer.size();
         int length = (int) Math.min(maxFrameSize, byteCount);

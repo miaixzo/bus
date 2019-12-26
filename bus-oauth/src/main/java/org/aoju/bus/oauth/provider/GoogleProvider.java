@@ -25,6 +25,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -126,7 +127,7 @@ public class GoogleProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error") || object.containsKey("error_description")) {
-            throw new InstrumentException(object.containsKey("error") + ":" + object.getString("error_description"));
+            throw new InstrumentException(object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
         }
     }
 }

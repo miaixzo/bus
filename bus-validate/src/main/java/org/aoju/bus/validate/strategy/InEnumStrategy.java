@@ -33,7 +33,6 @@ import org.aoju.bus.validate.validators.Matcher;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
-
 /**
  * int enum 校验
  *

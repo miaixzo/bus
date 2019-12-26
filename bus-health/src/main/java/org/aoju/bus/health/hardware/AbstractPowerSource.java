@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Systemd;
 import org.aoju.bus.health.hardware.linux.LinuxPowerSource;
@@ -281,25 +282,25 @@ public abstract class AbstractPowerSource implements PowerSource {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Name: ").append(getName()).append(", ");
-        sb.append("Device Name: ").append(getDeviceName()).append(",\n ");
+        sb.append("Device Name: ").append(getDeviceName()).append(Symbol.NEWLINE);
         sb.append("RemainingCapacityPercent: ").append(getRemainingCapacityPercent() * 100).append("%, ");
         sb.append("Time Remaining: ").append(formatTimeRemaining(getTimeRemainingEstimated())).append(", ");
-        sb.append("Time Remaining Instant: ").append(formatTimeRemaining(getTimeRemainingInstant())).append(",\n ");
+        sb.append("Time Remaining Instant: ").append(formatTimeRemaining(getTimeRemainingInstant())).append(Symbol.NEWLINE);
         sb.append("Power Usage Rate: ").append(getPowerUsageRate()).append("mW, ");
         sb.append("Voltage: ").append(getVoltage()).append("V, ");
         sb.append("Amperage: ").append(getAmperage()).append("mA,\n ");
         sb.append("Power OnLine: ").append(isPowerOnLine()).append(", ");
         sb.append("Charging: ").append(isCharging()).append(", ");
-        sb.append("Discharging: ").append(isDischarging()).append(",\n ");
+        sb.append("Discharging: ").append(isDischarging()).append(Symbol.NEWLINE);
         sb.append("Capacity Units: ").append(getCapacityUnits()).append(", ");
         sb.append("Current Capacity: ").append(getCurrentCapacity()).append(", ");
         sb.append("Max Capacity: ").append(getMaxCapacity()).append(", ");
-        sb.append("Design Capacity: ").append(getDesignCapacity()).append(",\n ");
+        sb.append("Design Capacity: ").append(getDesignCapacity()).append(Symbol.NEWLINE);
         sb.append("Cycle Count: ").append(getCycleCount()).append(", ");
         sb.append("Chemistry: ").append(getChemistry()).append(", ");
         sb.append("Manufacture Date: ").append(getManufactureDate() != null ? getManufactureDate() : Builder.UNKNOWN)
                 .append(", ");
-        sb.append("Manufacturer: ").append(getManufacturer()).append(",\n ");
+        sb.append("Manufacturer: ").append(getManufacturer()).append(Symbol.NEWLINE);
         sb.append("SerialNumber: ").append(getSerialNumber()).append(", ");
         sb.append("Temperature: ");
         if (getTemperature() > 0) {

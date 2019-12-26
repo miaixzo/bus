@@ -1,6 +1,7 @@
 package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.util.Locale;
@@ -23,7 +24,7 @@ public class LocaleConverter extends AbstractConverter<Locale> {
                 return null;
             }
 
-            final String[] items = str.split("_");
+            final String[] items = str.split(Symbol.UNDERLINE);
             if (items.length == 1) {
                 return new Locale(items[0]);
             }

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.NewCall;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A concrete intercept chain that carries the entire intercept chain: all application
- * interceptors, the httpClient core, all network interceptors, and finally the network caller.
+ * 承载整个拦截器链的具体拦截器链:
+ * 所有应用程序拦截器、Httpd核心、所有网络拦截器，最后是网络调用者.
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -88,7 +88,7 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
     @Override
     public Interceptor.Chain withConnectTimeout(int timeout, TimeUnit unit) {
-        int millis = Internal.checkDuration("timeout", timeout, unit);
+        int millis = Builder.checkDuration("timeout", timeout, unit);
         return new RealInterceptorChain(interceptors, streamAllocation, httpCodec, connection, index,
                 request, call, eventListener, millis, readTimeout, writeTimeout);
     }
@@ -100,7 +100,7 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
     @Override
     public Interceptor.Chain withReadTimeout(int timeout, TimeUnit unit) {
-        int millis = Internal.checkDuration("timeout", timeout, unit);
+        int millis = Builder.checkDuration("timeout", timeout, unit);
         return new RealInterceptorChain(interceptors, streamAllocation, httpCodec, connection, index,
                 request, call, eventListener, connectTimeout, millis, writeTimeout);
     }
@@ -112,7 +112,7 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
     @Override
     public Interceptor.Chain withWriteTimeout(int timeout, TimeUnit unit) {
-        int millis = Internal.checkDuration("timeout", timeout, unit);
+        int millis = Builder.checkDuration("timeout", timeout, unit);
         return new RealInterceptorChain(interceptors, streamAllocation, httpCodec, connection, index,
                 request, call, eventListener, connectTimeout, readTimeout, millis);
     }
@@ -150,41 +150,37 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
         calls++;
 
-        // If we already have a stream, confirm that the incoming request will use it.
         if (this.httpCodec != null && !this.connection.supportsUrl(request.url())) {
-            throw new IllegalStateException("network intercept " + interceptors.get(index - 1)
+            throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
                     + " must retain the same host and port");
         }
 
-        // If we already have a stream, confirm that this is the only call to chain.proceed().
         if (this.httpCodec != null && calls > 1) {
-            throw new IllegalStateException("network intercept " + interceptors.get(index - 1)
+            throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
                     + " must call proceed() exactly once");
         }
 
-        // Call the next intercept in the chain.
         RealInterceptorChain next = new RealInterceptorChain(interceptors, streamAllocation, httpCodec,
                 connection, index + 1, request, call, eventListener, connectTimeout, readTimeout,
                 writeTimeout);
         Interceptor interceptor = interceptors.get(index);
         Response response = interceptor.intercept(next);
 
-        // Confirm that the next intercept made its required call to chain.proceed().
         if (httpCodec != null && index + 1 < interceptors.size() && next.calls != 1) {
-            throw new IllegalStateException("network intercept " + interceptor
+            throw new IllegalStateException("network interceptor " + interceptor
                     + " must call proceed() exactly once");
         }
 
-        // Confirm that the intercepted response isn't null.
         if (response == null) {
-            throw new NullPointerException("intercept " + interceptor + " returned null");
+            throw new NullPointerException("interceptor " + interceptor + " returned null");
         }
 
         if (response.body() == null) {
             throw new IllegalStateException(
-                    "intercept " + interceptor + " returned a response with no body");
+                    "interceptor " + interceptor + " returned a response with no body");
         }
 
         return response;
     }
+
 }

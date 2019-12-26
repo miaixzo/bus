@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.proxy.invoker;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
 
@@ -56,7 +57,7 @@ public class DuckInvoker implements Invoker {
                     "Target type " + targetClass.getName() + " method has incompatible return type.");
         } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException(
-                    "Target type " + targetClass.getName() + " does not have a method matching " + method + ".");
+                    "Target type " + targetClass.getName() + " does not have a method matching " + method + Symbol.DOT);
         }
     }
 

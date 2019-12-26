@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.linux.LinuxLibc;
@@ -54,7 +56,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
         boolean cpu64bit = false;
 
         StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
-        String[] flags = new String[0];
+        String[] flags = Normal.EMPTY_STRING_ARRAY;
         List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
@@ -70,7 +72,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
                     cpuName = splitLine[1];
                     break;
                 case "flags":
-                    flags = splitLine[1].toLowerCase().split(" ");
+                    flags = splitLine[1].toLowerCase().split(Symbol.SPACE);
                     for (String flag : flags) {
                         if ("lm".equals(flag)) {
                             cpu64bit = true;
@@ -156,7 +158,7 @@ public class LinuxCentralProcessor extends AbstractCentralProcessor {
         // 0,0
         // 1,0
         for (String line : lscpu) {
-            if (line.startsWith("#")) {
+            if (line.startsWith(Symbol.SHAPE)) {
                 continue;
             }
             String[] split = line.split(",");

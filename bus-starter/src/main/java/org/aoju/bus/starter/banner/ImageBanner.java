@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.starter.banner;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.color.ColorSpace;
@@ -79,23 +81,23 @@ public class ImageBanner {
         double luminance = getLuminance(color, dark);
 
         if (luminance >= 90) {
-            return ' ';
+            return Symbol.C_SPACE;
         } else if (luminance >= 80) {
-            return '.';
+            return Symbol.C_DOT;
         } else if (luminance >= 70) {
-            return '*';
+            return Symbol.C_STAR;
         } else if (luminance >= 60) {
-            return ':';
+            return Symbol.C_COLON;
         } else if (luminance >= 50) {
             return 'o';
         } else if (luminance >= 40) {
-            return '&';
+            return Symbol.C_AND;
         } else if (luminance >= 30) {
-            return '8';
+            return Symbol.C_EIGHT;
         } else if (luminance >= 20) {
-            return '#';
+            return Symbol.C_SHAPE;
         } else {
-            return '@';
+            return Symbol.C_AT;
         }
     }
 
@@ -278,7 +280,7 @@ public class ImageBanner {
             }
         }
 
-        return "${AnsiColor." + matchedColorName + "}" + getAsciiCharacter(color, dark);
+        return "${AnsiColor." + matchedColorName + Symbol.BRACE_RIGHT + getAsciiCharacter(color, dark);
     }
 
 }

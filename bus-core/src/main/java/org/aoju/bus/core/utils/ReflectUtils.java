@@ -24,10 +24,7 @@
 package org.aoju.bus.core.utils;
 
 
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.SimpleCache;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.*;
@@ -81,7 +78,7 @@ public class ReflectUtils {
      */
     public static Object invokeGetter(Object obj, String name) {
         Object object = obj;
-        for (String method : StringUtils.split(name, ".")) {
+        for (String method : StringUtils.split(name, Symbol.DOT)) {
             String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
         }
@@ -98,7 +95,7 @@ public class ReflectUtils {
      */
     public static void invokeSetter(Object obj, String name, Object value) {
         Object object = obj;
-        String[] names = StringUtils.split(name, ".");
+        String[] names = StringUtils.split(name, Symbol.DOT);
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(names[i]);
@@ -133,13 +130,13 @@ public class ReflectUtils {
             }
         }
         if (type.equals(String.class)) {
-            return obj == null ? "" : obj.toString();
+            return obj == null ? Normal.EMPTY : obj.toString();
         }
         return obj;
     }
 
     public static Object invokeMethod(Method method, Object target) {
-        return invokeMethod(method, target, new Object[0]);
+        return invokeMethod(method, target, Normal.EMPTY_OBJECT_ARRAY);
     }
 
     public static Object invokeMethod(Method method, Object target, Object... args) {
@@ -534,7 +531,7 @@ public class ReflectUtils {
         try {
             return field.get(obj);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for " + obj.getClass() + "." + field.getName());
+            throw new InstrumentException("IllegalAccess for " + obj.getClass() + Symbol.DOT + field.getName());
         }
     }
 
@@ -588,7 +585,7 @@ public class ReflectUtils {
         try {
             field.set(obj, value);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for " + obj.getClass() + "." + field.getName());
+            throw new InstrumentException("IllegalAccess for " + obj.getClass() + Symbol.DOT + field.getName());
         }
     }
 

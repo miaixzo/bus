@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.cache.support;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 
 import java.lang.reflect.Method;
@@ -72,7 +73,7 @@ public class ArgNameGenerator {
     // 为了方便用户, 我们统一生成xArgN这种方式来填充, 同时也兼容原先的这种生成方式¬
     public static String[] getXArgNames(int valueSize) {
         if (valueSize == 0) {
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         }
 
         String[] xArgs = new String[valueSize];

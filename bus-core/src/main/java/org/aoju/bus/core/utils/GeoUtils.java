@@ -411,10 +411,6 @@ public class GeoUtils {
                     .toHashCode();
         }
 
-        @Override
-        public String toString() {
-            return "Point{" + "longitude=" + longitude + ", latitude=" + latitude + ", type=" + type + '}';
-        }
     }
 
     /**
@@ -548,10 +544,6 @@ public class GeoUtils {
                     .toHashCode();
         }
 
-        @Override
-        public String toString() {
-            return "Bounds{southWest=" + southWest + ", northEast=" + northEast + '}';
-        }
     }
 
     /**
@@ -641,10 +633,6 @@ public class GeoUtils {
                     .toHashCode();
         }
 
-        @Override
-        public String toString() {
-            return "Circle{" + "center=" + center + ", r=" + r + '}';
-        }
     }
 
     /**

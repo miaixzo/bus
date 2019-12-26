@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.tracer.config;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.tracer.consts.TraceConsts;
@@ -45,7 +46,7 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
 
     static final String Trace_CONFIG_PREFIX = "Builder.";
     static final String PROFILED_PREFIX = Trace_CONFIG_PREFIX + "profile.";
-    static final String Trace_DEFAULT_PROFILE_PREFIX = Trace_CONFIG_PREFIX + TraceConsts.DEFAULT + ".";
+    static final String Trace_DEFAULT_PROFILE_PREFIX = Trace_CONFIG_PREFIX + TraceConsts.DEFAULT + Symbol.DOT;
     static final String GENERATE_INVOCATION_ID = "invocationIdLength";
     static final String GENERATE_SESSION_ID = "sessionIdLength";
 
@@ -85,7 +86,7 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
 
     private String getProfiledOrDefaultProperty(final String propertyName) {
         if (profileName != null && !TraceConsts.DEFAULT.equals(profileName)) {
-            final String profiledProperty = propertyChain.getProperty(PROFILED_PREFIX + profileName + '.' + propertyName);
+            final String profiledProperty = propertyChain.getProperty(PROFILED_PREFIX + profileName + Symbol.C_DOT + propertyName);
             if (profiledProperty != null)
                 return profiledProperty;
         }
@@ -175,7 +176,7 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
             return Collections.emptyList();
 
         final List<Pattern> trimmedPatterns = new ArrayList<>();
-        final StringTokenizer tokenizer = new StringTokenizer(propertyValue, ",");
+        final StringTokenizer tokenizer = new StringTokenizer(propertyValue, Symbol.COMMA);
         while (tokenizer.hasMoreTokens()) {
             final String trimmedString = tokenizer.nextToken().trim();
             if (!trimmedString.isEmpty()) {
@@ -183,7 +184,6 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
                     trimmedPatterns.add(Pattern.compile(trimmedString));
                 } catch (PatternSyntaxException e) {
                     Logger.error("Can not compile pattern '" + trimmedString + "'. Message: " + e.getMessage() + " -- Ignore pattern");
-                    Logger.debug("Detailed Exception cause: " + e.getMessage(), e);
                 }
             }
         }

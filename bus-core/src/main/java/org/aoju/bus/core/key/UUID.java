@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.key;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.RandomUtils;
 
 import java.security.MessageDigest;
@@ -175,7 +176,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @throws IllegalArgumentException 如果 name 与 {@link #toString} 中描述的字符串表示形式不符抛出此异常
      */
     public static UUID fromString(String name) {
-        String[] components = name.split("-");
+        String[] components = name.split(Symbol.HYPHEN);
         if (components.length != 5) {
             throw new IllegalArgumentException("Invalid UUID string: " + name);
         }
@@ -376,22 +377,22 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         // time_low
         builder.append(digits(mostSigBits >> 32, 8));
         if (false == isSimple) {
-            builder.append('-');
+            builder.append(Symbol.C_HYPHEN);
         }
         // time_mid
         builder.append(digits(mostSigBits >> 16, 4));
         if (false == isSimple) {
-            builder.append('-');
+            builder.append(Symbol.C_HYPHEN);
         }
         // time_high_and_version
         builder.append(digits(mostSigBits, 4));
         if (false == isSimple) {
-            builder.append('-');
+            builder.append(Symbol.C_HYPHEN);
         }
         // variant_and_sequence
         builder.append(digits(leastSigBits >> 48, 4));
         if (false == isSimple) {
-            builder.append('-');
+            builder.append(Symbol.C_HYPHEN);
         }
         // node
         builder.append(digits(leastSigBits, 12));

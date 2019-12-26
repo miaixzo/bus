@@ -198,20 +198,6 @@ final class ServerConfig<T> {
         return readBacklog;
     }
 
-    @Override
-    public String toString() {
-        return "IoServerConfig{" +
-                ", readBufferSize=" + readBufferSize +
-                ", host='" + host + '\'' +
-                ", monitor=" + monitor +
-                ", port=" + port +
-                ", processor=" + processor +
-                ", protocol=" + protocol +
-                ", bannerEnabled=" + bannerEnabled +
-                ", socketOptions=" + socketOptions +
-                '}';
-    }
-
     /**
      * 服务配置
      */
@@ -225,4 +211,5 @@ final class ServerConfig<T> {
         String CLIENT_PAGE_IS_DIRECT = PROJECT_NAME + ".client.page.isDirect";
         String READ_BACKLOG = PROJECT_NAME + ".read.backlog";
     }
+
 }

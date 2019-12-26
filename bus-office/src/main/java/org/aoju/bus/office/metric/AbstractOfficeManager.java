@@ -24,6 +24,7 @@
 package org.aoju.bus.office.metric;
 
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -78,7 +79,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
 
     @Override
     public File makeTemporaryFile(final String extension) {
-        return new File(tempDir, "tempfile_" + tempFileCounter.getAndIncrement() + "." + extension);
+        return new File(tempDir, "tempfile_" + tempFileCounter.getAndIncrement() + Symbol.DOT + extension);
     }
 
     /**

@@ -26,9 +26,10 @@ package org.aoju.bus.http.bodys;
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.http.Header;
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.http.Headers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +37,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * An <a href="http://www.ietf.org/rfc/rfc2387.txt">RFC 2387</a>-compliant request body.
+ * The MIME Multipart/Related Content-type
+ * 用于复合对象
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -44,9 +46,9 @@ import java.util.UUID;
  */
 public final class MultipartBody extends RequestBody {
 
-    private static final byte[] COLONSPACE = {':', ' '};
-    private static final byte[] CRLF = {'\r', '\n'};
-    private static final byte[] DASHDASH = {'-', '-'};
+    private static final byte[] COLONSPACE = {Symbol.C_COLON, Symbol.C_SPACE};
+    private static final byte[] CRLF = {Symbol.C_CR, Symbol.C_LF};
+    private static final byte[] DASHDASH = {Symbol.C_HYPHEN, Symbol.C_HYPHEN};
 
     private final ByteString boundary;
     private final MediaType originalType;
@@ -58,21 +60,21 @@ public final class MultipartBody extends RequestBody {
         this.boundary = boundary;
         this.originalType = type;
         this.contentType = MediaType.valueOf(type + "; boundary=" + boundary.utf8());
-        this.parts = Internal.immutableList(parts);
+        this.parts = org.aoju.bus.http.Builder.immutableList(parts);
     }
 
     static StringBuilder appendQuotedString(StringBuilder target, String key) {
-        target.append('"');
+        target.append(Symbol.C_DOUBLE_QUOTES);
         for (int i = 0, len = key.length(); i < len; i++) {
             char ch = key.charAt(i);
             switch (ch) {
-                case '\n':
+                case Symbol.C_LF:
                     target.append("%0A");
                     break;
-                case '\r':
+                case Symbol.C_CR:
                     target.append("%0D");
                     break;
-                case '"':
+                case Symbol.C_DOUBLE_QUOTES:
                     target.append("%22");
                     break;
                 default:
@@ -80,7 +82,7 @@ public final class MultipartBody extends RequestBody {
                     break;
             }
         }
-        target.append('"');
+        target.append(Symbol.C_DOUBLE_QUOTES);
         return target;
     }
 
@@ -121,8 +123,17 @@ public final class MultipartBody extends RequestBody {
         writeOrCountBytes(sink, false);
     }
 
-    private long writeOrCountBytes(
-            BufferSink sink, boolean countBytes) throws IOException {
+    /**
+     * 将此请求写入{@code sink}或测量其内容长度。我们有一种方法可以
+     * 同时确保计数和内容是一致的，特别是当涉及到一些棘手的操作时，
+     * 比如测量报头字符串的编码长度，或者编码整数的位数长度
+     *
+     * @param sink       缓冲区
+     * @param countBytes 统计写入大小
+     * @return 当前写入大小信息
+     * @throws IOException 异常
+     */
+    private long writeOrCountBytes(BufferSink sink, boolean countBytes) throws IOException {
         long byteCount = 0L;
 
         Buffer byteCountBuffer = null;
@@ -132,7 +143,7 @@ public final class MultipartBody extends RequestBody {
 
         for (int p = 0, partCount = parts.size(); p < partCount; p++) {
             Part part = parts.get(p);
-            Header headers = part.headers;
+            Headers headers = part.headers;
             RequestBody body = part.body;
 
             sink.write(DASHDASH);
@@ -161,7 +172,6 @@ public final class MultipartBody extends RequestBody {
                         .writeDecimalLong(contentLength)
                         .write(CRLF);
             } else if (countBytes) {
-                // We can't measure the body's size without the sizes of its components.
                 byteCountBuffer.clear();
                 return -1L;
             }
@@ -191,10 +201,11 @@ public final class MultipartBody extends RequestBody {
     }
 
     public static final class Part {
-        final Header headers;
+
+        final Headers headers;
         final RequestBody body;
 
-        private Part(Header headers, RequestBody body) {
+        private Part(Headers headers, RequestBody body) {
             this.headers = headers;
             this.body = body;
         }
@@ -203,14 +214,14 @@ public final class MultipartBody extends RequestBody {
             return create(null, body);
         }
 
-        public static Part create(Header headers, RequestBody body) {
+        public static Part create(Headers headers, RequestBody body) {
             if (body == null) {
                 throw new NullPointerException("body == null");
             }
-            if (headers != null && headers.get("Content-Type") != null) {
+            if (headers != null && headers.get(Header.CONTENT_TYPE) != null) {
                 throw new IllegalArgumentException("Unexpected header: Content-Type");
             }
-            if (headers != null && headers.get("Content-Length") != null) {
+            if (headers != null && headers.get(Header.CONTENT_LENGTH) != null) {
                 throw new IllegalArgumentException("Unexpected header: Content-Length");
             }
             return new Part(headers, body);
@@ -232,10 +243,14 @@ public final class MultipartBody extends RequestBody {
                 appendQuotedString(disposition, filename);
             }
 
-            return create(Header.of("Content-Disposition", disposition.toString()), body);
+            Headers headers = new Headers.Builder()
+                    .addUnsafeNonAscii(Header.CONTENT_DISPOSITION, disposition.toString())
+                    .build();
+
+            return create(headers, body);
         }
 
-        public Header headers() {
+        public Headers headers() {
             return headers;
         }
 
@@ -245,6 +260,7 @@ public final class MultipartBody extends RequestBody {
     }
 
     public static final class Builder {
+
         private final ByteString boundary;
         private final List<Part> parts = new ArrayList<>();
         private MediaType type = MediaType.MULTIPART_MIXED_TYPE;
@@ -261,7 +277,7 @@ public final class MultipartBody extends RequestBody {
             if (type == null) {
                 throw new NullPointerException("type == null");
             }
-            if (!type.type().equals("multipart")) {
+            if (!"multipart".equals(type.type())) {
                 throw new IllegalArgumentException("multipart != " + type);
             }
             this.type = type;
@@ -272,7 +288,7 @@ public final class MultipartBody extends RequestBody {
             return addPart(Part.create(body));
         }
 
-        public Builder addPart(Header headers, RequestBody body) {
+        public Builder addPart(Headers headers, RequestBody body) {
             return addPart(Part.create(headers, body));
         }
 
@@ -290,9 +306,12 @@ public final class MultipartBody extends RequestBody {
             return this;
         }
 
+        /**
+         * @return 将指定的部件组装到请求体中
+         */
         public MultipartBody build() {
             if (parts.isEmpty()) {
-                throw new IllegalStateException("Multipart body must have at least first part.");
+                throw new IllegalStateException("Multipart body must have at least one part.");
             }
             return new MultipartBody(boundary, type, parts);
         }

@@ -21,34 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.http.socket;
+package org.aoju.bus.http.magic;
 
-import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.http.Response;
+import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.http.NewCall;
+import org.aoju.bus.logger.Logger;
+
+import java.io.*;
 
 /**
+ * 文件-异步回调
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public abstract class SocketListener {
+public abstract class FileCallback extends AbsCallback {
 
-    public void onOpen(WebSocket webSocket, Response response) {
+    private String fileAbsolutePath;
+
+    public FileCallback() {
     }
 
-    public void onMessage(WebSocket webSocket, String text) {
+    public FileCallback(String fileAbsolutePath) {
+        this.fileAbsolutePath = fileAbsolutePath;
     }
 
-    public void onMessage(WebSocket webSocket, ByteString bytes) {
+    @Override
+    public void onResponse(NewCall newCall, HttpResponse response, int id) {
+        try {
+            if (fileAbsolutePath != null && fileAbsolutePath.length() > 0) {
+                File file = new File(fileAbsolutePath);
+                FileOutputStream fos = new FileOutputStream(file);
+                ByteArrayInputStream bis = new ByteArrayInputStream(response.body().bytes());
+                StreamUtils.copy(bis, fos);
+                onSuccess(newCall, file, id);
+            } else {
+                onSuccess(newCall, response.body().byteStream(), id);
+            }
+        } catch (IOException e) {
+            Logger.error(e.getMessage(), e);
+        }
     }
 
-    public void onClosing(WebSocket webSocket, int code, String reason) {
+    public void onSuccess(NewCall newCall, File file, int id) {
+
     }
 
-    public void onClosed(WebSocket webSocket, int code, String reason) {
-    }
+    public void onSuccess(NewCall newCall, InputStream fileStream, int id) {
 
-    public void onFailure(WebSocket webSocket, Throwable t, Response response) {
     }
 
 }

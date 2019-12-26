@@ -112,7 +112,6 @@ public class WatchMonitor extends Thread implements Closeable {
      */
     private Map<WatchKey, Path> watchKeyPathMap = new HashMap<>();
 
-
     /**
      * 构造
      *

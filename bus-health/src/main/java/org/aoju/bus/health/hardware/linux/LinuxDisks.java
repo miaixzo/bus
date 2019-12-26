@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.common.linux.ProcUtils;
 import org.aoju.bus.health.common.linux.Udev;
@@ -63,7 +64,7 @@ public class LinuxDisks implements Disks {
         String stat = Builder.getStringFromFile(ProcUtils.getProcPath() + "/diskstats");
         int statLength = 11;
         if (!stat.isEmpty()) {
-            statLength = Builder.countStringToLongArray(stat, ' ');
+            statLength = Builder.countStringToLongArray(stat, Symbol.C_SPACE);
         }
         UDEV_STAT_LENGTH = statLength;
     }
@@ -94,7 +95,7 @@ public class LinuxDisks implements Disks {
 
     private static void computeDiskStats(HWDiskStore store, Udev.UdevDevice disk) {
         String devstat = Udev.INSTANCE.udev_device_get_sysattr_value(disk, "stat");
-        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, ' ');
+        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, Symbol.C_SPACE);
         store.setTimeStamp(System.currentTimeMillis());
 
         // Reads and writes are converted in bytes

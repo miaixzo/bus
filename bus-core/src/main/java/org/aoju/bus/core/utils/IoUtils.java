@@ -559,7 +559,7 @@ public class IoUtils {
             return null;
         }
         if (length <= 0) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
 
         byte[] b = new byte[length];

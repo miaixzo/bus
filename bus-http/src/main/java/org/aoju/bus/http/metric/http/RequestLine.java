@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.UnoUrl;
 
@@ -41,7 +42,7 @@ public final class RequestLine {
     public static String get(Request request, Proxy.Type proxyType) {
         StringBuilder result = new StringBuilder();
         result.append(request.method());
-        result.append(' ');
+        result.append(Symbol.C_SPACE);
 
         if (includeAuthorityInRequestLine(request, proxyType)) {
             result.append(request.url());
@@ -60,6 +61,7 @@ public final class RequestLine {
     public static String requestPath(UnoUrl url) {
         String path = url.encodedPath();
         String query = url.encodedQuery();
-        return query != null ? (path + '?' + query) : path;
+        return query != null ? (path + Symbol.C_QUESTION_MARK + query) : path;
     }
+
 }

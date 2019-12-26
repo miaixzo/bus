@@ -30,23 +30,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Provides <strong>policy</strong> and <strong>persistence</strong> for HTTP cookies.
- *
- * <p>As policy, implementations of this interface are responsible for selecting which cookies to
- * accept and which to reject. A reasonable policy is to reject all cookies, though that may
- * interfere with session-based authentication schemes that require cookies.
- *
- * <p>As persistence, implementations of this interface must also provide storage of cookies. Simple
- * implementations may store cookies in memory; sophisticated ones may use the file system or
- * database to hold accepted cookies. The <a
- * href="https://tools.ietf.org/html/rfc6265#section-5.3">cookie storage model</a> specifies
- * policies for updating and expiring cookies.
+ * 为HTTP cookie提供策略和持久性
+ * 作为策略，此接口的实现负责选择接受和拒绝哪些cookie。一个合理的策略是拒绝所有cookie，
+ * 尽管这可能会干扰需要cookie的基于会话的身份验证方案
  *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
 public interface CookieJar {
+
     /**
      * A cookie jar that never accepts any cookies.
      */
@@ -61,7 +54,25 @@ public interface CookieJar {
         }
     };
 
+    /**
+     * 据这个jar's的策略将HTTP响应中的{@code cookies}保存到这个存储中
+     * 请注意，对于单个HTTP响应，如果响应包含一个拖车，则可以第二次调用此方法。
+     * 对于这个模糊的HTTP特性，{@code cookie}只包含预告片的cookie
+     *
+     * @param url     url信息
+     * @param cookies cookie
+     */
     void saveFromResponse(UnoUrl url, List<Cookie> cookies);
 
+    /**
+     * 将HTTP请求的cookie从jar加载到{@code url}。
+     * 此方法为网络请求返回一个可能为空的cookie列表
+     * 简单的实现将返回尚未过期的已接受的Cookie，
+     * 并返回{@linkplain Cookie#matches} {@code url}
+     *
+     * @param url url信息
+     * @return the cookies
+     */
     List<Cookie> loadForRequest(UnoUrl url);
+
 }

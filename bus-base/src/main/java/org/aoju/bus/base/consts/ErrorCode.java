@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.base.consts;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.util.Map;
@@ -40,7 +41,7 @@ public class ErrorCode {
     /**
      * 全局错误码
      */
-    public static String EM_SUCCESS = "0";
+    public static String EM_SUCCESS = Symbol.ZERO;
     public static String EM_FAILURE = "-1";
     public static String EM_LIMITER = "-2";
     public static String EM_100100 = "100100";

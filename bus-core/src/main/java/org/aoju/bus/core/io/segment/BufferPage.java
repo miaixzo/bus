@@ -191,12 +191,4 @@ public final class BufferPage {
         availableBuffers.add(cleanBuffer);
     }
 
-    @Override
-    public String toString() {
-        return "BufferPage{" +
-                "availableBuffers=" + availableBuffers +
-                ", cleanBuffers=" + cleanBuffers +
-                '}';
-    }
-
 }

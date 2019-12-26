@@ -25,6 +25,8 @@ package org.aoju.bus.crypto.digest;
 
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.security.SecureRandom;
 
@@ -115,12 +117,9 @@ public class BCrypt {
             0x2547adf0, 0xba38209c, 0xf746ce76, 0x77afa1c5, 0x20756060, 0x85cbfe4e, 0x8ae88dd8, 0x7aaaf9b0, 0x4cf9aa7e, 0x1948c25c, 0x02fb8a8c, 0x01c36ae4, 0xd6ebe1f9, 0x90d4f869, 0xa65cdea0,
             0x3f09252d, 0xc208e69f, 0xb74e6132, 0xce77e25b, 0x578fdfe3, 0x3ac372e6};
 
-    static private final int bf_crypt_ciphertext[] = {0x4f727068, 0x65616e42, 0x65686f6c, 0x64657253, 0x63727944, 0x6f756274};
+    private static final int bf_crypt_ciphertext[] = {0x4f727068, 0x65616e42, 0x65686f6c, 0x64657253, 0x63727944, 0x6f756274};
 
-    static private final char base64_code[] = {'.', '/', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b',
-            'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-
-    static private final byte index_64[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    private static final byte index_64[] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, 0, 1, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, -1, -1, -1, -1, -1, -1, -1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
             25, 26, 27, -1, -1, -1, -1, -1, -1, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, -1, -1, -1, -1, -1};
 
@@ -145,24 +144,24 @@ public class BCrypt {
 
         while (off < len) {
             c1 = d[off++] & 0xff;
-            rs.append(base64_code[(c1 >> 2) & 0x3f]);
+            rs.append(Normal.STANDARD_ENCODE_TABLE[(c1 >> 2) & 0x3f]);
             c1 = (c1 & 0x03) << 4;
             if (off >= len) {
-                rs.append(base64_code[c1 & 0x3f]);
+                rs.append(Normal.STANDARD_ENCODE_TABLE[c1 & 0x3f]);
                 break;
             }
             c2 = d[off++] & 0xff;
             c1 |= (c2 >> 4) & 0x0f;
-            rs.append(base64_code[c1 & 0x3f]);
+            rs.append(Normal.STANDARD_ENCODE_TABLE[c1 & 0x3f]);
             c1 = (c2 & 0x0f) << 2;
             if (off >= len) {
-                rs.append(base64_code[c1 & 0x3f]);
+                rs.append(Normal.STANDARD_ENCODE_TABLE[c1 & 0x3f]);
                 break;
             }
             c2 = d[off++] & 0xff;
             c1 |= (c2 >> 6) & 0x03;
-            rs.append(base64_code[c1 & 0x3f]);
-            rs.append(base64_code[c2 & 0x3f]);
+            rs.append(Normal.STANDARD_ENCODE_TABLE[c1 & 0x3f]);
+            rs.append(Normal.STANDARD_ENCODE_TABLE[c2 & 0x3f]);
         }
         return rs.toString();
     }
@@ -273,19 +272,19 @@ public class BCrypt {
         int rounds, off = 0;
         StringBuilder rs = new StringBuilder();
 
-        if (salt.charAt(0) != '$' || salt.charAt(1) != '2')
+        if (salt.charAt(0) != Symbol.C_DOLLAR || salt.charAt(1) != '2')
             throw new IllegalArgumentException("Invalid salt version");
-        if (salt.charAt(2) == '$')
+        if (salt.charAt(2) == Symbol.C_DOLLAR)
             off = 3;
         else {
             minor = salt.charAt(2);
-            if (minor != 'a' || salt.charAt(3) != '$')
+            if (minor != 'a' || salt.charAt(3) != Symbol.C_DOLLAR)
                 throw new IllegalArgumentException("Invalid salt revision");
             off = 4;
         }
 
         // Extract number of rounds
-        if (salt.charAt(off + 2) > '$')
+        if (salt.charAt(off + 2) > Symbol.C_DOLLAR)
             throw new IllegalArgumentException("Missing salt rounds");
         rounds = Integer.parseInt(salt.substring(off, off + 2));
 
@@ -299,14 +298,14 @@ public class BCrypt {
         rs.append("$2");
         if (minor >= 'a')
             rs.append(minor);
-        rs.append("$");
+        rs.append(Symbol.DOLLAR);
         if (rounds < 10)
-            rs.append("0");
+            rs.append(Symbol.ZERO);
         if (rounds > 30) {
             throw new IllegalArgumentException("rounds exceeds maximum (30)");
         }
-        rs.append(Integer.toString(rounds));
-        rs.append("$");
+        rs.append(rounds);
+        rs.append(Symbol.DOLLAR);
         rs.append(encode_base64(saltb, saltb.length));
         rs.append(encode_base64(hashed, bf_crypt_ciphertext.length * 4 - 1));
         return rs.toString();
@@ -327,12 +326,12 @@ public class BCrypt {
 
         rs.append("$2a$");
         if (log_rounds < 10)
-            rs.append("0");
+            rs.append(Symbol.ZERO);
         if (log_rounds > 30) {
             throw new IllegalArgumentException("log_rounds exceeds maximum (30)");
         }
-        rs.append(Integer.toString(log_rounds));
-        rs.append("$");
+        rs.append(log_rounds);
+        rs.append(Symbol.DOLLAR);
         rs.append(encode_base64(rnd, rnd.length));
         return rs.toString();
     }

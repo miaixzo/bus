@@ -507,8 +507,8 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
 
             for (; pos < limit; pos++, seen++) {
                 byte b = data[pos];
-                if (b >= '0' && b <= '9') {
-                    int digit = '0' - b;
+                if (b >= Symbol.C_ZERO && b <= Symbol.C_NINE) {
+                    int digit = Symbol.C_ZERO - b;
 
                     if (value < overflowZone || value == overflowZone && digit < overflowDigit) {
                         Buffer buffer = new Buffer().writeDecimalLong(value).writeByte(b);
@@ -517,7 +517,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
                     }
                     value *= 10;
                     value += digit;
-                } else if (b == '-' && seen == 0) {
+                } else if (b == Symbol.C_HYPHEN && seen == 0) {
                     negative = true;
                     overflowDigit -= 1;
                 } else {
@@ -561,8 +561,8 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
                 int digit;
 
                 byte b = data[pos];
-                if (b >= '0' && b <= '9') {
-                    digit = b - '0';
+                if (b >= Symbol.C_ZERO && b <= Symbol.C_NINE) {
+                    digit = b - Symbol.C_ZERO;
                 } else if (b >= 'a' && b <= 'f') {
                     digit = b - 'a' + 10;
                 } else if (b >= 'A' && b <= 'F') {
@@ -789,7 +789,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
 
     @Override
     public String readUtf8Line() throws EOFException {
-        long newline = indexOf((byte) '\n');
+        long newline = indexOf((byte) Symbol.C_LF);
 
         if (newline == -1) {
             return size != 0 ? readUtf8(size) : null;
@@ -807,10 +807,10 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
     public String readUtf8LineStrict(long limit) throws EOFException {
         if (limit < 0) throw new IllegalArgumentException("limit < 0: " + limit);
         long scanLength = limit == Long.MAX_VALUE ? Long.MAX_VALUE : limit + 1;
-        long newline = indexOf((byte) '\n', 0, scanLength);
+        long newline = indexOf((byte) Symbol.C_LF, 0, scanLength);
         if (newline != -1) return readUtf8Line(newline);
         if (scanLength < size()
-                && getByte(scanLength - 1) == '\r' && getByte(scanLength) == '\n') {
+                && getByte(scanLength - 1) == Symbol.C_CR && getByte(scanLength) == Symbol.C_LF) {
             return readUtf8Line(scanLength);
         }
         Buffer data = new Buffer();
@@ -820,7 +820,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
     }
 
     String readUtf8Line(long newline) throws EOFException {
-        if (newline > 0 && getByte(newline - 1) == '\r') {
+        if (newline > 0 && getByte(newline - 1) == Symbol.C_CR) {
             String result = readUtf8((newline - 1));
             skip(2);
             return result;
@@ -1070,7 +1070,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
             } else {
                 int low = i + 1 < endIndex ? string.charAt(i + 1) : 0;
                 if (c > 0xdbff || low < 0xdc00 || low > 0xdfff) {
-                    writeByte('?');
+                    writeByte(Symbol.C_QUESTION_MARK);
                     i++;
                     continue;
                 }
@@ -1098,7 +1098,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
 
         } else if (codePoint < 0x10000) {
             if (codePoint >= 0xd800 && codePoint <= 0xdfff) {
-                writeByte('?');
+                writeByte(Symbol.C_QUESTION_MARK);
             } else {
                 writeByte(codePoint >> 12 | 0xe0);
                 writeByte(codePoint >> 6 & 0x3f | 0x80);
@@ -1277,7 +1277,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
     @Override
     public Buffer writeDecimalLong(long v) {
         if (v == 0) {
-            return writeByte('0');
+            return writeByte(Symbol.C_ZERO);
         }
 
         boolean negative = false;
@@ -1316,11 +1316,11 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
         int pos = tail.limit + width;
         while (v != 0) {
             int digit = (int) (v % 10);
-            data[--pos] = ByteUtils.getBytes(Normal.DIGITS_LOWER)[digit];
+            data[--pos] = ByteUtils.getBytes(Normal.DIGITS_16_LOWER)[digit];
             v /= 10;
         }
         if (negative) {
-            data[--pos] = '-';
+            data[--pos] = Symbol.C_HYPHEN;
         }
 
         tail.limit += width;
@@ -1331,7 +1331,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
     @Override
     public Buffer writeHexadecimalUnsignedLong(long v) {
         if (v == 0) {
-            return writeByte('0');
+            return writeByte(Symbol.C_ZERO);
         }
 
         int width = Long.numberOfTrailingZeros(Long.highestOneBit(v)) / 4 + 1;
@@ -1339,7 +1339,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
         Segment tail = writableSegment(width);
         byte[] data = tail.data;
         for (int pos = tail.limit + width - 1, start = tail.limit; pos >= start; pos--) {
-            data[pos] = ByteUtils.getBytes(Normal.DIGITS_LOWER)[(int) (v & 0xF)];
+            data[pos] = ByteUtils.getBytes(Normal.DIGITS_16_LOWER)[(int) (v & 0xF)];
             v >>>= 4;
         }
         tail.limit += width;

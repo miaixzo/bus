@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.math.BigDecimal;
@@ -132,7 +133,7 @@ public class NumberUtils {
         }
 
         Number value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value.toString());
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -155,7 +156,7 @@ public class NumberUtils {
         }
 
         String value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value);
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -257,7 +258,7 @@ public class NumberUtils {
         }
 
         Number value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value.toString());
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -280,7 +281,7 @@ public class NumberUtils {
         }
 
         String value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value);
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -382,7 +383,7 @@ public class NumberUtils {
         }
 
         Number value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value.toString());
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -416,7 +417,7 @@ public class NumberUtils {
         }
 
         String value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value);
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -859,16 +860,16 @@ public class NumberUtils {
         boolean allowSigns = false;
         boolean foundDigit = false;
         // deal with any possible sign up front
-        int start = (chars[0] == '-') ? 1 : 0;
+        int start = (chars[0] == Symbol.C_HYPHEN) ? 1 : 0;
         if (sz > start + 1) {
-            if (chars[start] == '0' && chars[start + 1] == 'x') {
+            if (chars[start] == Symbol.C_ZERO && chars[start + 1] == 'x') {
                 int i = start + 2;
                 if (i == sz) {
                     return false; // str == "0x"
                 }
                 // checking hex (it can't be anything else)
                 for (; i < chars.length; i++) {
-                    if ((chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
+                    if ((chars[i] < Symbol.C_ZERO || chars[i] > Symbol.C_NINE) && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
                         return false;
                     }
                 }
@@ -881,11 +882,11 @@ public class NumberUtils {
         // loop to the next to last char or to the last char if we need another digit to
         // make a valid number (e.g. chars[0..5] = "1234E")
         while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
+            if (chars[i] >= Symbol.C_ZERO && chars[i] <= Symbol.C_NINE) {
                 foundDigit = true;
                 allowSigns = false;
 
-            } else if (chars[i] == '.') {
+            } else if (chars[i] == Symbol.C_DOT) {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -902,7 +903,7 @@ public class NumberUtils {
                 }
                 hasExp = true;
                 allowSigns = true;
-            } else if (chars[i] == '+' || chars[i] == '-') {
+            } else if (chars[i] == Symbol.C_PLUS || chars[i] == Symbol.C_HYPHEN) {
                 if (!allowSigns) {
                     return false;
                 }
@@ -914,7 +915,7 @@ public class NumberUtils {
             i++;
         }
         if (i < chars.length) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
+            if (chars[i] >= Symbol.C_ZERO && chars[i] <= Symbol.C_NINE) {
                 // no type qualifier, OK
                 return true;
             }
@@ -922,7 +923,7 @@ public class NumberUtils {
                 // can't have an E at the last byte
                 return false;
             }
-            if (chars[i] == '.') {
+            if (chars[i] == Symbol.C_DOT) {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -983,7 +984,7 @@ public class NumberUtils {
     public static boolean isDouble(String s) {
         try {
             Double.parseDouble(s);
-            return s.contains(".");
+            return s.contains(Symbol.DOT);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -1580,11 +1581,11 @@ public class NumberUtils {
 
         // 去掉小数点儿后多余的0
         String string = number.toString();
-        if (string.indexOf('.') > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
-            while (string.endsWith("0")) {
+        if (string.indexOf(Symbol.C_DOT) > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
+            while (string.endsWith(Symbol.ZERO)) {
                 string = string.substring(0, string.length() - 1);
             }
-            if (string.endsWith(".")) {
+            if (string.endsWith(Symbol.DOT)) {
                 string = string.substring(0, string.length() - 1);
             }
         }
@@ -1665,7 +1666,7 @@ public class NumberUtils {
         int pos = 0; // 数字字符串位置
         int radix = 10;
         boolean negate = false; // 负数与否
-        if (str.startsWith("-")) {
+        if (str.startsWith(Symbol.HYPHEN)) {
             negate = true;
             pos = 1;
         }
@@ -1673,11 +1674,11 @@ public class NumberUtils {
             // hex
             radix = 16;
             pos += 2;
-        } else if (str.startsWith("#", pos)) {
+        } else if (str.startsWith(Symbol.SHAPE, pos)) {
             // alternative hex (allowed by Long/Integer)
             radix = 16;
             pos++;
-        } else if (str.startsWith("0", pos) && str.length() > pos + 1) {
+        } else if (str.startsWith(Symbol.ZERO, pos) && str.length() > pos + 1) {
             // octal; so long as there are additional digits
             radix = 8;
             pos++;
@@ -1784,7 +1785,7 @@ public class NumberUtils {
         if (StringUtils.startWithIgnoreCase(number, "0x")) {
             //0x04表示16进制数
             return Integer.parseInt(number.substring(2), 16);
-        } else if (number.startsWith("0")) {
+        } else if (number.startsWith(Symbol.ZERO)) {
             //04表示8进制数
             return Integer.parseInt(number.substring(1), 8);
         }
@@ -1810,7 +1811,7 @@ public class NumberUtils {
         if (number.startsWith("0x")) {
             //0x04表示16进制数
             return Long.parseLong(number.substring(2), 16);
-        } else if (number.startsWith("0")) {
+        } else if (number.startsWith(Symbol.ZERO)) {
             //04表示8进制数
             return Long.parseLong(number.substring(1), 8);
         }

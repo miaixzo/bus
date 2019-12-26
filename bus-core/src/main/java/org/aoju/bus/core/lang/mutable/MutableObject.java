@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.lang.mutable;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.io.Serializable;
 
 /**
@@ -88,7 +90,7 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
 
     @Override
     public String toString() {
-        return value == null ? "null" : value.toString();
+        return value == null ? Normal.NULL : value.toString();
     }
 
 }

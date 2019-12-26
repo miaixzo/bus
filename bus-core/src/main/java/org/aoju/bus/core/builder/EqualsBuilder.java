@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.builder;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.ClassUtils;
@@ -366,7 +367,7 @@ public class EqualsBuilder implements Builder<Boolean> {
             for (int i = 0; i < fields.length && isEquals; i++) {
                 final Field f = fields[i];
                 if (!ArrayUtils.contains(excludeFields, f.getName())
-                        && !f.getName().contains("$")
+                        && !f.getName().contains(Symbol.DOLLAR)
                         && (testTransients || !Modifier.isTransient(f.getModifiers()))
                         && !Modifier.isStatic(f.getModifiers())
                         && !f.isAnnotationPresent(EqualsExclude.class)) {

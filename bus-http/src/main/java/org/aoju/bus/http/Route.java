@@ -27,19 +27,9 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 /**
- * The concrete route used by a connection to reach an abstract origin server. When creating a
- * connection the client has many options:
- *
- * <ul>
- * <li><strong>HTTP proxy:</strong> a proxy server may be explicitly configured for the client.
- * Otherwise the {@linkplain java.net.ProxySelector proxy selector} is used. It may return
- * multiple proxies to attempt.
- * <li><strong>IP address:</strong> whether connecting directly to an origin server or a proxy,
- * opening a socket requires an IP address. The DNS server may return multiple IP addresses
- * to attempt.
- * </ul>
- *
- * <p>Each route is a specific selection of these options.
+ * 连接用于到达抽象源服务器的具体路由。
+ * 在创建连接时，客户机有许多选项
+ * 每个路由都是这些选项的特定选择
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -51,7 +41,7 @@ public final class Route {
     final Proxy proxy;
     final InetSocketAddress inetSocketAddress;
 
-    public Route(Address address, java.net.Proxy proxy, InetSocketAddress inetSocketAddress) {
+    public Route(Address address, Proxy proxy, InetSocketAddress inetSocketAddress) {
         if (address == null) {
             throw new NullPointerException("address == null");
         }
@@ -97,11 +87,6 @@ public final class Route {
         result = 31 * result + proxy.hashCode();
         result = 31 * result + inetSocketAddress.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Route{" + inetSocketAddress + "}";
     }
 
 }

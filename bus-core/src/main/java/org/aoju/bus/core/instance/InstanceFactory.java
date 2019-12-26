@@ -169,7 +169,7 @@ public final class InstanceFactory implements Instance {
         this.notNull(clazz);
         Assert.notEmpty(group, "key");
 
-        final String fullClassName = clazz.getName() + Symbol.DASHED + group;
+        final String fullClassName = clazz.getName() + Symbol.HYPHEN + group;
         T instance = (T) instanceMap.get(fullClassName);
         if (ObjectUtils.isNull(instance)) {
             instance = this.multiple(clazz);

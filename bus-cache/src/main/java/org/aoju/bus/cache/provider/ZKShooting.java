@@ -25,6 +25,7 @@ package org.aoju.bus.cache.provider;
 
 import org.aoju.bus.cache.Shooting;
 import org.aoju.bus.cache.magic.CachePair;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -166,12 +167,12 @@ public class ZKShooting implements Shooting {
     }
 
     private String processProductName(String productName) {
-        if (!productName.startsWith("/")) {
-            productName = "/" + productName;
+        if (!productName.startsWith(Symbol.SLASH)) {
+            productName = Symbol.SLASH + productName;
         }
 
-        if (!productName.endsWith("/")) {
-            productName = productName + "/";
+        if (!productName.endsWith(Symbol.SLASH)) {
+            productName = productName + Symbol.SLASH;
         }
 
         return productName;

@@ -24,6 +24,7 @@
 package org.aoju.bus.shade.entity;
 
 import lombok.Data;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.shade.NamingRules;
 
 import java.io.Serializable;
@@ -116,7 +117,7 @@ public class TableEntity implements Serializable {
         PreparedStatement pstemt = null;
         ResultSet rs = null;
         //sql
-        String sql = "select column_name,data_type,column_comment from information_schema.columns where table_schema='" + bi.getDatabase() + "' and table_name='" + bi.getTable() + "'";
+        String sql = "select column_name,data_type,column_comment from information_schema.columns where table_schema='" + bi.getDatabase() + "' and table_name='" + bi.getTable() + Symbol.SINGLE_QUOTE;
         try {
             con = DriverManager.getConnection(bi.getDbUrl(), bi.getDbName(), bi.getDbPassword());
             pstemt = con.prepareStatement(sql);

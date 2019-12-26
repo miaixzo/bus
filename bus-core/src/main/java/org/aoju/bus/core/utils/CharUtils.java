@@ -176,7 +176,7 @@ public class CharUtils {
      * @return true表示为数字字符, 数字字符指0~9
      */
     public static boolean isNumber(char ch) {
-        return ch >= '0' && ch <= '9';
+        return ch >= Symbol.C_ZERO && ch <= Symbol.C_NINE;
     }
 
     /**

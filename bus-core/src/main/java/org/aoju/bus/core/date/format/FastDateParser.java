@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.date.format;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.DateFormatSymbols;
@@ -159,19 +161,19 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         for (int i = 0; i < value.length(); ++i) {
             final char c = value.charAt(i);
             switch (c) {
-                case '\\':
-                case '^':
-                case '$':
-                case '.':
-                case '|':
-                case '?':
-                case '*':
-                case '+':
-                case '(':
-                case ')':
-                case '[':
-                case '{':
-                    sb.append('\\');
+                case Symbol.C_BACKSLASH:
+                case Symbol.C_CARET:
+                case Symbol.C_DOLLAR:
+                case Symbol.C_DOT:
+                case Symbol.C_OR:
+                case Symbol.C_QUESTION_MARK:
+                case Symbol.C_STAR:
+                case Symbol.C_PLUS:
+                case Symbol.C_PARENTHESE_LEFT:
+                case Symbol.C_PARENTHESE_RIGHT:
+                case Symbol.C_BRACKET_LEFT:
+                case Symbol.C_BRACE_LEFT:
+                    sb.append(Symbol.C_BACKSLASH);
                 default:
                     sb.append(c);
             }
@@ -200,7 +202,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             }
         }
         for (final String symbol : sorted) {
-            simpleQuote(regex, symbol).append('|');
+            simpleQuote(regex, symbol).append(Symbol.C_OR);
         }
         return values;
     }
@@ -530,7 +532,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             regex.append("((?iu)");
             lKeyValues = appendDisplayNames(definingCalendar, locale, field, regex);
             regex.setLength(regex.length() - 1);
-            regex.append(")");
+            regex.append(Symbol.PARENTHESE_RIGHT);
             createPattern(regex);
         }
 
@@ -638,7 +640,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             this.locale = locale;
 
             final StringBuilder sb = new StringBuilder();
-            sb.append("((?iu)" + RFC_822_TIME_ZONE + "|" + GMT_OPTION);
+            sb.append("((?iu)" + RFC_822_TIME_ZONE + Symbol.OR + GMT_OPTION);
 
             final Set<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
 
@@ -677,16 +679,16 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             // order the regex alternatives with longer strings first, greedy
             // match will ensure longest string will be consumed
             for (final String zoneName : sorted) {
-                simpleQuote(sb.append('|'), zoneName);
+                simpleQuote(sb.append(Symbol.C_OR), zoneName);
             }
-            sb.append(")");
+            sb.append(Symbol.PARENTHESE_RIGHT);
             createPattern(sb);
         }
 
 
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
-            if (value.charAt(0) == '+' || value.charAt(0) == '-') {
+            if (value.charAt(0) == Symbol.C_PLUS || value.charAt(0) == Symbol.C_HYPHEN) {
                 final TimeZone tz = TimeZone.getTimeZone("GMT" + value);
                 cal.setTimeZone(tz);
             } else if (value.regionMatches(true, 0, "GMT", 0, 3)) {
@@ -799,7 +801,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
                 final char c = pattern.charAt(currentIdx);
                 if (!activeQuote && isFormatLetter(c)) {
                     break;
-                } else if (c == '\'' && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != '\'')) {
+                } else if (c == Symbol.C_SINGLE_QUOTE && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != Symbol.C_SINGLE_QUOTE)) {
                     activeQuote = !activeQuote;
                     continue;
                 }

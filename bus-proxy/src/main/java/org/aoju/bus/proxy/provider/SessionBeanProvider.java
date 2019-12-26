@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.proxy.provider;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Builder;
 import org.aoju.bus.proxy.Provider;
@@ -69,7 +70,7 @@ public class SessionBeanProvider implements Provider {
             return createMethod.invoke(homeObject, Builder.EMPTY_ARGUMENTS);
         } catch (NoSuchMethodException e) {
             throw new InstrumentException(
-                    "Unable to find no-arg create() method on home interface " + clazz.getName() + ".", e);
+                    "Unable to find no-arg create() method on home interface " + clazz.getName() + Symbol.DOT, e);
         } catch (IllegalAccessException e) {
             throw new InstrumentException(
                     "No-arg create() method on home interface " + clazz.getName() + " is not accessible.",

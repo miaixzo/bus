@@ -23,6 +23,9 @@
  */
 package org.aoju.bus.pager;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -351,15 +354,15 @@ public class Pages<T> extends PageSerializable<T> {
         sb.append(", navigateLastPage=").append(navigateLastPage);
         sb.append(", navigatepageNums=");
         if (navigatepageNums == null) {
-            sb.append("null");
+            sb.append(Normal.NULL);
         } else {
-            sb.append('[');
+            sb.append(Symbol.C_BRACKET_LEFT);
             for (int i = 0; i < navigatepageNums.length; ++i) {
                 sb.append(i == 0 ? "" : ", ").append(navigatepageNums[i]);
             }
-            sb.append(']');
+            sb.append(Symbol.C_BRACKET_RIGHT);
         }
-        sb.append('}');
+        sb.append(Symbol.C_BRACE_RIGHT);
         return sb.toString();
     }
 

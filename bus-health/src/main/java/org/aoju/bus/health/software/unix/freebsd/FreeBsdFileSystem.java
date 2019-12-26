@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.software.unix.freebsd;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.unix.freebsd.BsdSysctlUtils;
@@ -102,7 +103,7 @@ public class FreeBsdFileSystem implements FileSystem {
      */
     private boolean listElementStartsWith(List<String> aList, String charSeq) {
         for (String match : aList) {
-            if (charSeq.equals(match) || charSeq.startsWith(match + "/")) {
+            if (charSeq.equals(match) || charSeq.startsWith(match + Symbol.SLASH)) {
                 return true;
             }
         }
@@ -122,7 +123,7 @@ public class FreeBsdFileSystem implements FileSystem {
         String device = "";
         for (String line : Command.runNative("geom part list")) {
             if (line.contains("Name: ")) {
-                device = line.substring(line.lastIndexOf(' ') + 1);
+                device = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
             }
             // If we aren't working with a current partition, continue
             if (device.isEmpty()) {
@@ -130,7 +131,7 @@ public class FreeBsdFileSystem implements FileSystem {
             }
             line = line.trim();
             if (line.startsWith("rawuuid:")) {
-                uuidMap.put(device, line.substring(line.lastIndexOf(' ') + 1));
+                uuidMap.put(device, line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1));
                 device = "";
             }
         }
@@ -145,7 +146,7 @@ public class FreeBsdFileSystem implements FileSystem {
             Filesystem    1K-blocks   Used   Avail Capacity iused  ifree %iused  Mounted on
             /dev/twed0s1a   2026030 584112 1279836    31%    2751 279871    1%   /
             */
-            if (line.startsWith("/")) {
+            if (line.startsWith(Symbol.SLASH)) {
                 String[] split = Builder.whitespaces.split(line);
                 if (split.length > 7) {
                     inodeFreeMap.put(split[0], Builder.parseLongOrDefault(split[6], 0L));
@@ -172,14 +173,14 @@ public class FreeBsdFileSystem implements FileSystem {
 
             // Exclude pseudo file systems
             if (this.pseudofs.contains(type) || path.equals("/dev") || listElementStartsWith(this.tmpfsPaths, path)
-                    || volume.startsWith("rpool") && !path.equals("/")) {
+                    || volume.startsWith("rpool") && !path.equals(Symbol.SLASH)) {
                 continue;
             }
 
-            String name = path.substring(path.lastIndexOf('/') + 1);
+            String name = path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1);
             // Special case for /, pull last element of volume instead
             if (name.isEmpty()) {
-                name = volume.substring(volume.lastIndexOf('/') + 1);
+                name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
             }
             File f = new File(path);
             long totalSpace = f.getTotalSpace();
@@ -187,7 +188,7 @@ public class FreeBsdFileSystem implements FileSystem {
             long freeSpace = f.getFreeSpace();
 
             String description;
-            if (volume.startsWith("/dev") || path.equals("/")) {
+            if (volume.startsWith("/dev") || path.equals(Symbol.SLASH)) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";

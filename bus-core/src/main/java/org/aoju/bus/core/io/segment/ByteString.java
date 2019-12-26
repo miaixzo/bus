@@ -26,6 +26,7 @@ package org.aoju.bus.core.io.segment;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 
 import javax.crypto.Mac;
@@ -112,7 +113,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     private static int decodeHexDigit(char c) {
-        if (c >= '0' && c <= '9') return c - '0';
+        if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) return c - Symbol.C_ZERO;
         if (c >= 'a' && c <= 'f') return c - 'a' + 10;
         if (c >= 'A' && c <= 'F') return c - 'A' + 10;
         throw new IllegalArgumentException("Unexpected hex digit: " + c);
@@ -136,7 +137,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
                 return i;
             }
             c = s.codePointAt(i);
-            if ((Character.isISOControl(c) && c != '\n' && c != '\r')
+            if ((Character.isISOControl(c) && c != Symbol.C_LF && c != Symbol.C_CR)
                     || c == Buffer.REPLACEMENT_CHARACTER) {
                 return -1;
             }
@@ -216,8 +217,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         char[] result = new char[data.length * 2];
         int c = 0;
         for (byte b : data) {
-            result[c++] = Normal.DIGITS_LOWER[(b >> 4) & 0xf];
-            result[c++] = Normal.DIGITS_LOWER[b & 0xf];
+            result[c++] = Normal.DIGITS_16_LOWER[(b >> 4) & 0xf];
+            result[c++] = Normal.DIGITS_16_LOWER[b & 0xf];
         }
         return new String(result);
     }
@@ -409,30 +410,6 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         }
         if (sizeA == sizeB) return 0;
         return sizeA < sizeB ? -1 : 1;
-    }
-
-    @Override
-    public String toString() {
-        if (data.length == 0) {
-            return "[size=0]";
-        }
-
-        String text = utf8();
-        int i = codePointIndexToCharIndex(text, 64);
-
-        if (i == -1) {
-            return data.length <= 64
-                    ? "[hex=" + hex() + "]"
-                    : "[size=" + data.length + " hex=" + substring(0, 64).hex() + "…]";
-        }
-
-        String safeText = text.substring(0, i)
-                .replace("\\", "\\\\")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
-        return i < text.length()
-                ? "[size=" + data.length + " text=" + safeText + "…]"
-                : "[text=" + safeText + "]";
     }
 
     private void readObject(ObjectInputStream in) throws IOException {

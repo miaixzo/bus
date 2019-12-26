@@ -26,7 +26,6 @@ package org.aoju.bus.core.annotation;
 import java.io.Serializable;
 import java.lang.annotation.*;
 
-
 /**
  * 注解命名
  *

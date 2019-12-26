@@ -34,7 +34,7 @@ import java.util.TimeZone;
  */
 public abstract class AbstractDateBasic implements DateBasic, Serializable {
 
-    private static final long serialVersionUID = 6333136319870641818L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The pattern
@@ -89,11 +89,6 @@ public abstract class AbstractDateBasic implements DateBasic, Serializable {
     @Override
     public int hashCode() {
         return pattern.hashCode() + 13 * (timeZone.hashCode() + 13 * locale.hashCode());
-    }
-
-    @Override
-    public String toString() {
-        return "FastDatePrinter[" + pattern + "," + locale + "," + timeZone.getID() + "]";
     }
 
 }

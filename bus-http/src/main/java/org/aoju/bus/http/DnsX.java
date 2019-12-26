@@ -29,12 +29,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * A entity name service that resolves IP addresses for host names. Most applications will use the
- * {@linkplain #SYSTEM system DNS service}, which is the default. Some applications may provide
- * their own implementation to use a different DNS server, to prefer IPv6 addresses, to prefer IPv4
- * addresses, or to force a specific known IP address.
- *
- * <p>Implementations of this interface must be safe for concurrent use.
+ * 解析主机名的IP地址的域名服务。大多数应用程序将使用默认的
+ * {@linkplain #SYSTEM SYSTEM DNS服务}，应用程序可能提供
+ * 它们自己的实现来使用不同的DNS服务器
+ * 选择IPv6地址、选择IPv4地址或强制使用特定的已知IP地址
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -42,6 +40,10 @@ import java.util.List;
  */
 public interface DnsX {
 
+    /**
+     * 使用{@link InetAddress#getAllByName(String)}请求底层操作系统
+     * 查找IP地址的DNS。大多数自定义{@link DnsX}实现应该委托给这个实例.
+     */
     DnsX SYSTEM = new DnsX() {
         @Override
         public List<InetAddress> lookup(String hostname) throws UnknownHostException {
@@ -57,5 +59,14 @@ public interface DnsX {
         }
     };
 
+    /**
+     * 返回{@code hostname}的IP地址，按Httpd尝试的顺序排列。如果到地址的连接
+     * 失败，Httpd将重试下一个地址的连接，直到建立连接、耗尽IP地址集或超出限制.
+     *
+     * @param hostname 主机名信息
+     * @return ip地址信息
+     * @throws UnknownHostException 异常信息
+     */
     List<InetAddress> lookup(String hostname) throws UnknownHostException;
+
 }

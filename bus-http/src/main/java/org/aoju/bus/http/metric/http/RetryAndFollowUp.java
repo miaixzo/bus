@@ -23,6 +23,9 @@
  */
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.exception.RelevantException;
+import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.RouteException;
 import org.aoju.bus.http.accord.StreamAllocation;
@@ -36,38 +39,48 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSocketFactory;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.*;
+import java.net.HttpRetryException;
+import java.net.ProtocolException;
+import java.net.Proxy;
+import java.net.SocketTimeoutException;
 import java.security.cert.CertificateException;
 
-
 /**
- * This intercept recovers from failures and follows redirects as necessary. It may throw an
- * {@link IOException} if the call was canceled.
+ * 该拦截器从失败中恢复，并根据需要进行重定向
+ * 如果调用被取消，它可能会抛出{@link IOException}
  *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public final class RetryAndFollowUpInterceptor implements Interceptor {
+public final class RetryAndFollowUp implements Interceptor {
+
     /**
-     * How many redirects and auth challenges should we attempt? Chrome follows 21 redirects; Firefox,
-     * curl, and wget follow 20; Safari follows 16; and HTTP/1.0 recommends 5.
+     * 我们应该尝试多少次重定向和验证挑战?Chrome遵循21重定向;
+     * Firefox、curl和wget遵循20;Safari是16;HTTP/1.0建议5
      */
     private static final int MAX_FOLLOW_UPS = 20;
 
-    private final Httpd httpd;
+    private final Httpd client;
     private final boolean forWebSocket;
     private volatile StreamAllocation streamAllocation;
     private Object callStackTrace;
     private volatile boolean canceled;
 
-    public RetryAndFollowUpInterceptor(Httpd httpd, boolean forWebSocket) {
-        this.httpd = httpd;
+    public RetryAndFollowUp(Httpd client, boolean forWebSocket) {
+        this.client = client;
         this.forWebSocket = forWebSocket;
     }
 
+    /**
+     * 如果当前持有套接字连接，则立即关闭它。使用它来中断来自任何线程的正在运行的请求
+     * 关闭请求体和响应体流是调用方的职责;否则，资源可能会泄露
+     * 此方法可以安全地并发调用，但提供了有限的保证。如果已建立传输层连接(如HTTP/2流)，
+     * 则终止该连接。否则，如果正在建立套接字连接，则终止该连接.
+     */
     public void cancel() {
         canceled = true;
         StreamAllocation streamAllocation = this.streamAllocation;
@@ -93,7 +106,7 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
         NewCall call = realChain.call();
         EventListener eventListener = realChain.eventListener();
 
-        StreamAllocation streamAllocation = new StreamAllocation(httpd.connectionPool(),
+        StreamAllocation streamAllocation = new StreamAllocation(client.connectionPool(),
                 createAddress(request.url()), call, eventListener, callStackTrace);
         this.streamAllocation = streamAllocation;
 
@@ -111,27 +124,27 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
                 response = realChain.proceed(request, streamAllocation, null, null);
                 releaseConnection = false;
             } catch (RouteException e) {
-                // The attempt to connect via a route failed. The request will not have been sent.
+                // 图通过路由连接失败。请求将不会被发送.
                 if (!recover(e.getLastConnectException(), streamAllocation, false, request)) {
                     throw e.getFirstConnectException();
                 }
                 releaseConnection = false;
                 continue;
             } catch (IOException e) {
-                // An attempt to communicate with a server failed. The request may have been sent.
-                boolean requestSendStarted = !(e instanceof IOException);
+                // 试图与服务器通信失败。请求可能已经发送.
+                boolean requestSendStarted = !(e instanceof RelevantException);
                 if (!recover(e, streamAllocation, requestSendStarted, request)) throw e;
                 releaseConnection = false;
                 continue;
             } finally {
-                // We're throwing an unchecked exception. Release any resources.
+                // 我们抛出了一个未检查的异常。释放任何资源.
                 if (releaseConnection) {
                     streamAllocation.streamFailed(null);
                     streamAllocation.release();
                 }
             }
 
-            // Attach the prior response if it exists. Such responses never have a body.
+            // 如果先前的响应存在，则附加它。这样的反应永远不会有body.
             if (priorResponse != null) {
                 response = response.newBuilder()
                         .priorResponse(priorResponse.newBuilder()
@@ -153,7 +166,7 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
                 return response;
             }
 
-            Internal.closeQuietly(response.body());
+            IoUtils.close(response.body());
 
             if (++followUpCount > MAX_FOLLOW_UPS) {
                 streamAllocation.release();
@@ -167,12 +180,12 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
 
             if (!sameConnection(response, followUp.url())) {
                 streamAllocation.release();
-                streamAllocation = new StreamAllocation(httpd.connectionPool(),
+                streamAllocation = new StreamAllocation(client.connectionPool(),
                         createAddress(followUp.url()), call, eventListener, callStackTrace);
                 this.streamAllocation = streamAllocation;
             } else if (streamAllocation.codec() != null) {
                 throw new IllegalStateException("Closing the body of " + response
-                        + " didn't close its backing stream. Bad intercept?");
+                        + " didn't close its backing stream. Bad interceptor?");
             }
 
             request = followUp;
@@ -185,71 +198,64 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
         HostnameVerifier hostnameVerifier = null;
         CertificatePinner certificatePinner = null;
         if (url.isHttps()) {
-            sslSocketFactory = httpd.sslSocketFactory();
-            hostnameVerifier = httpd.hostnameVerifier();
-            certificatePinner = httpd.certificatePinner();
+            sslSocketFactory = client.sslSocketFactory();
+            hostnameVerifier = client.hostnameVerifier();
+            certificatePinner = client.certificatePinner();
         }
 
-        return new Address(url.host(), url.port(), httpd.dns(), httpd.socketFactory(),
-                sslSocketFactory, hostnameVerifier, certificatePinner, httpd.proxyAuthenticator(),
-                httpd.proxy(), httpd.protocols(), httpd.connectionSpecs(), httpd.proxySelector());
+        return new Address(url.host(), url.port(), client.dns(), client.socketFactory(),
+                sslSocketFactory, hostnameVerifier, certificatePinner, client.proxyAuthenticator(),
+                client.proxy(), client.protocols(), client.connectionSpecs(), client.proxySelector());
     }
 
-    /**
-     * Report and attempt to recover from a failure to communicate with a server. Returns true if
-     * {@code e} is recoverable, or false if the failure is permanent. Requests with a body can only
-     * be recovered if the body is buffered or if the failure occurred before the request has been
-     * sent.
-     */
     private boolean recover(IOException e, StreamAllocation streamAllocation,
                             boolean requestSendStarted, Request userRequest) {
         streamAllocation.streamFailed(e);
 
-        // The application layer has forbidden retries.
-        if (!httpd.retryOnConnectionFailure()) return false;
+        // 应用层禁止重试.
+        if (!client.retryOnConnectionFailure()) return false;
 
-        // We can't send the request body again.
-        if (requestSendStarted && userRequest.body() instanceof UnrepeatableBody) return false;
+        // 我们不能再发送请求体了
+        if (requestSendStarted && requestIsUnrepeatable(e, userRequest)) return false;
 
-        // This exception is fatal.
+        // 这个异常是致命的
         if (!isRecoverable(e, requestSendStarted)) return false;
 
-        // No more routes to attempt.
+        // 没有更多的路线可以尝试
         if (!streamAllocation.hasMoreRoutes()) return false;
 
-        // For failure recovery, use the same route selector with a new connection.
+        // 对于故障恢复，使用与新连接相同的路由选择器
         return true;
     }
 
+    private boolean requestIsUnrepeatable(IOException e, Request userRequest) {
+        return userRequest.body() instanceof UnrepeatableBody
+                || e instanceof FileNotFoundException;
+    }
+
     private boolean isRecoverable(IOException e, boolean requestSendStarted) {
-        // If there was a protocol problem, don't recover.
+        // 如果有协议问题，不要恢复
         if (e instanceof ProtocolException) {
             return false;
         }
 
-        // If there was an interruption don't recover, but if there was a timeout connecting to a route
-        // we should try the next route (if there is first).
+        // 如果有一个中断不恢复，但如果有一个超时连接到一个路由，我们应该尝试下一个路由(如果有一个).
         if (e instanceof InterruptedIOException) {
             return e instanceof SocketTimeoutException && !requestSendStarted;
         }
 
-        // Look for known client-side or negotiation errors that are unlikely to be fixed by trying
-        // again with a different route.
+        // 查找已知的客户端或协商错误，这些错误不太可能通过再次尝试使用不同的路由来修复.
         if (e instanceof SSLHandshakeException) {
-            // If the problem was a CertificateException from the X509TrustManager,
-            // do not retry.
+            // 如果问题是来自X509TrustManager的一个证书异常，那么不要重试.
             if (e.getCause() instanceof CertificateException) {
                 return false;
             }
         }
         if (e instanceof SSLPeerUnverifiedException) {
-            // e.g. a certificate pinning error.
+            // 例如，证书固定错误.
             return false;
         }
 
-        // An example of first we might want to retry with a different route is a problem connecting to a
-        // proxy and would manifest as a standard IOException. Unless it is first we know we should not
-        // retry, we return true and try a new route.
         return true;
     }
 
@@ -259,45 +265,36 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
 
         final String method = userResponse.request().method();
         switch (responseCode) {
-            case HttpURLConnection.HTTP_PROXY_AUTH:
-                Proxy selectedProxy = route != null
-                        ? route.proxy()
-                        : httpd.proxy();
+            case Http.HTTP_PROXY_AUTH:
+                Proxy selectedProxy = route.proxy();
                 if (selectedProxy.type() != Proxy.Type.HTTP) {
                     throw new ProtocolException("Received HTTP_PROXY_AUTH (407) code while not using proxy");
                 }
-                return httpd.proxyAuthenticator().authenticate(route, userResponse);
+                return client.proxyAuthenticator().authenticate(route, userResponse);
 
-            case HttpURLConnection.HTTP_UNAUTHORIZED:
-                return httpd.authenticator().authenticate(route, userResponse);
+            case Http.HTTP_UNAUTHORIZED:
+                return client.authenticator().authenticate(route, userResponse);
 
-            case StatusLine.HTTP_PERM_REDIRECT:
-            case StatusLine.HTTP_TEMP_REDIRECT:
-                // "If the 307 or 308 status code is received in response to a request other than GET
-                // or HEAD, the user agent MUST NOT automatically redirect the request"
+            case Http.HTTP_PERM_REDIRECT:
+            case Http.HTTP_TEMP_REDIRECT:
                 if (!method.equals("GET") && !method.equals("HEAD")) {
                     return null;
                 }
-                // fall-through
-            case HttpURLConnection.HTTP_MULT_CHOICE:
-            case HttpURLConnection.HTTP_MOVED_PERM:
-            case HttpURLConnection.HTTP_MOVED_TEMP:
-            case HttpURLConnection.HTTP_SEE_OTHER:
-                // Does the client allow redirects?
-                if (!httpd.followRedirects()) return null;
+            case Http.HTTP_MULT_CHOICE:
+            case Http.HTTP_MOVED_PERM:
+            case Http.HTTP_MOVED_TEMP:
+            case Http.HTTP_SEE_OTHER:
+                if (!client.followRedirects()) return null;
 
                 String location = userResponse.header("Location");
                 if (location == null) return null;
                 UnoUrl url = userResponse.request().url().resolve(location);
 
-                // Don't follow redirects to unsupported protocols.
                 if (url == null) return null;
 
-                // If configured, don't follow redirects between SSL and non-SSL.
                 boolean sameScheme = url.scheme().equals(userResponse.request().url().scheme());
-                if (!sameScheme && !httpd.followSslRedirects()) return null;
+                if (!sameScheme && !client.followSslRedirects()) return null;
 
-                // Most redirects don't include a request body.
                 Request.Builder requestBuilder = userResponse.request().newBuilder();
                 if (HttpMethod.permitsRequestBody(method)) {
                     final boolean maintainBody = HttpMethod.redirectsWithBody(method);
@@ -314,21 +311,14 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
                     }
                 }
 
-                // When redirecting across hosts, drop all authentication headers. This
-                // is potentially annoying to the application layer since they have no
-                // way to retain them.
                 if (!sameConnection(userResponse, url)) {
                     requestBuilder.removeHeader("Authorization");
                 }
 
                 return requestBuilder.url(url).build();
 
-            case HttpURLConnection.HTTP_CLIENT_TIMEOUT:
-                // 408's are rare in practice, but some servers like HAProxy use this response code. The
-                // spec says that we may repeat the request without modifications. Modern browsers also
-                // repeat the request (even non-idempotent ones.)
-                if (!httpd.retryOnConnectionFailure()) {
-                    // The application layer has directed us not to retry the request.
+            case Http.HTTP_CLIENT_TIMEOUT:
+                if (!client.retryOnConnectionFailure()) {
                     return null;
                 }
 
@@ -337,8 +327,7 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
                 }
 
                 if (userResponse.priorResponse() != null
-                        && userResponse.priorResponse().code() == HttpURLConnection.HTTP_CLIENT_TIMEOUT) {
-                    // We attempted to retry and got another timeout. Give up.
+                        && userResponse.priorResponse().code() == Http.HTTP_CLIENT_TIMEOUT) {
                     return null;
                 }
 
@@ -348,15 +337,13 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
 
                 return userResponse.request();
 
-            case HttpURLConnection.HTTP_UNAVAILABLE:
+            case Http.HTTP_UNAVAILABLE:
                 if (userResponse.priorResponse() != null
-                        && userResponse.priorResponse().code() == HttpURLConnection.HTTP_UNAVAILABLE) {
-                    // We attempted to retry and got another timeout. Give up.
+                        && userResponse.priorResponse().code() == Http.HTTP_UNAVAILABLE) {
                     return null;
                 }
 
                 if (retryAfter(userResponse, Integer.MAX_VALUE) == 0) {
-                    // specifically received an instruction to retry without delay
                     return userResponse.request();
                 }
 
@@ -374,8 +361,6 @@ public final class RetryAndFollowUpInterceptor implements Interceptor {
             return defaultDelay;
         }
 
-        // https://tools.ietf.org/html/rfc7231#section-7.1.3
-        // currently ignores a HTTP-date, and assumes any non int 0 is a delay
         if (header.matches("\\d+")) {
             return Integer.valueOf(header);
         }

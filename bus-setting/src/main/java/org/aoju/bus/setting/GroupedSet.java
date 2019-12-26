@@ -62,11 +62,11 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     /**
      * 注释符号（当有此符号在行首,表示此行为注释）
      */
-    private static final String COMMENT_FLAG_PRE = "#";
+    private static final String COMMENT_FLAG_PRE = Symbol.SHAPE;
     /**
      * 分组行识别的环绕标记
      */
-    private static final char[] GROUP_SURROUND = {'[', ']'};
+    private static final char[] GROUP_SURROUND = {Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT};
 
     /**
      * 本设置对象的字符集

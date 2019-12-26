@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
@@ -677,7 +678,7 @@ public class StreamUtils {
                 throw new FileNotFoundException(name);
             return url.openStream();
         }
-        if (name.indexOf(':') < 2)
+        if (name.indexOf(Symbol.C_COLON) < 2)
             return new FileInputStream(name);
         return new URL(name).openStream();
     }

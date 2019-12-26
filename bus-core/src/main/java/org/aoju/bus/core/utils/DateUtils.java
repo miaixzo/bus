@@ -31,6 +31,7 @@ import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
 import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.Validator;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -41,7 +42,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 /**
  * 时间工具类
@@ -1454,17 +1454,17 @@ public class DateUtils extends Fields {
         int second = other % 60;
         final StringBuilder sb = new StringBuilder();
         if (hour < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(hour);
-        sb.append(":");
+        sb.append(Symbol.COLON);
         if (minute < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(minute);
-        sb.append(":");
+        sb.append(Symbol.COLON);
         if (second < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(second);
         return sb.toString();
@@ -1691,12 +1691,12 @@ public class DateUtils extends Fields {
             }
             map.put(beginkey,
                     calBegin.get((Calendar.YEAR))
-                            + "-"
+                            + Symbol.HYPHEN
                             + setMonthByQuarterToString(0,
                             Integer.parseInt(map.get(beginWkey))));
             map.put(endkey,
                     calEnd.get((Calendar.YEAR))
-                            + "-"
+                            + Symbol.HYPHEN
                             + setMonthByQuarterToString(1,
                             Integer.parseInt(map.get(endWkey))));
         } catch (ParseException e) {

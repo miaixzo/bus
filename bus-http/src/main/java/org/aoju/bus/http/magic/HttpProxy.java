@@ -32,6 +32,8 @@ import org.aoju.bus.http.secure.Credentials;
 import java.net.InetSocketAddress;
 
 /**
+ * HTTP代理配置
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+

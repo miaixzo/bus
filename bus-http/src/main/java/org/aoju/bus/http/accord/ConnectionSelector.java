@@ -1,6 +1,29 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2017 aoju.org All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.http.Builder;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -14,33 +37,37 @@ import java.util.List;
 /**
  * 处理连接规范回退策略:当安全套接字连接由于握手/协议问题而失败时，
  * 可能会使用不同的协议重试连接。实例是有状态的，应该创建并用于单个连接尝试
+ *
+ * @author Kimi Liu
+ * @version 5.3.6
+ * @since JDK 1.8+
  */
-public final class ConnectSelector {
+public final class ConnectionSelector {
 
-    private final List<ConnectSuite> connectSuites;
+    private final List<ConnectionSuite> connectionSuites;
     private int nextModeIndex;
     private boolean isFallbackPossible;
     private boolean isFallback;
 
-    public ConnectSelector(List<ConnectSuite> connectSuites) {
+    public ConnectionSelector(List<ConnectionSuite> connectionSuites) {
         this.nextModeIndex = 0;
-        this.connectSuites = connectSuites;
+        this.connectionSuites = connectionSuites;
     }
 
     /**
-     * 根据{@link SSLSocket} 配置连接到指定的主机的信息{@link ConnectSuite}
-     * 返回{@link ConnectSuite}，不会返回{@code null}
+     * 根据{@link SSLSocket} 配置连接到指定的主机的信息{@link ConnectionSuite}
+     * 返回{@link ConnectionSuite}，不会返回{@code null}
      *
      * @param sslSocket ssl套接字
      * @return 套接字连接的配置
      * @throws IOException 如果套接字不支持任何可用的TLS模式
      */
-    public ConnectSuite configureSecureSocket(SSLSocket sslSocket) throws IOException {
-        ConnectSuite tlsConfiguration = null;
-        for (int i = nextModeIndex, size = connectSuites.size(); i < size; i++) {
-            ConnectSuite connectSuite = this.connectSuites.get(i);
-            if (connectSuite.isCompatible(sslSocket)) {
-                tlsConfiguration = connectSuite;
+    public ConnectionSuite configureSecureSocket(SSLSocket sslSocket) throws IOException {
+        ConnectionSuite tlsConfiguration = null;
+        for (int i = nextModeIndex, size = connectionSuites.size(); i < size; i++) {
+            ConnectionSuite connectionSuite = connectionSuites.get(i);
+            if (connectionSuite.isCompatible(sslSocket)) {
+                tlsConfiguration = connectionSuite;
                 nextModeIndex = i + 1;
                 break;
             }
@@ -51,19 +78,19 @@ public final class ConnectSelector {
             // 或者可能是重试(但此套接字支持的协议比先前的套接字所建议的少)
             throw new UnknownServiceException(
                     "Unable to find acceptable protocols. isFallback=" + isFallback
-                            + ", modes=" + connectSuites
+                            + ", modes=" + connectionSuites
                             + ", supported protocols=" + Arrays.toString(sslSocket.getEnabledProtocols()));
         }
 
         isFallbackPossible = isFallbackPossible(sslSocket);
 
-        Internal.instance.apply(tlsConfiguration, sslSocket, isFallback);
+        Builder.instance.apply(tlsConfiguration, sslSocket, isFallback);
 
         return tlsConfiguration;
     }
 
     /**
-     * 报告连接失败。确定下一个要尝试的{@link ConnectSuite}(如果有的话)
+     * 报告连接失败。确定下一个要尝试的{@link ConnectionSuite}(如果有的话)
      *
      * @param ex 异常信息
      * @return 如果需要使用 {@link #configureSecureSocket(SSLSocket)} 或{@code false}重试连接，
@@ -108,12 +135,12 @@ public final class ConnectSelector {
     }
 
     /**
-     * 如果根据提供的{@link SSLSocket}，回退策略中的任何后面的{@link ConnectSuite}
+     * 如果根据提供的{@link SSLSocket}，回退策略中的任何后面的{@link ConnectionSuite}
      * 看起来都是可能的，则返回{@code true}。假设具有与提供的套接字相同的功能
      */
     private boolean isFallbackPossible(SSLSocket socket) {
-        for (int i = nextModeIndex; i < connectSuites.size(); i++) {
-            if (connectSuites.get(i).isCompatible(socket)) {
+        for (int i = nextModeIndex; i < connectionSuites.size(); i++) {
+            if (connectionSuites.get(i).isCompatible(socket)) {
                 return true;
             }
         }

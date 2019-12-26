@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab.hooks;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.models.User;
 import org.aoju.bus.gitlab.utils.JacksonJson;
 
@@ -19,7 +20,7 @@ public class WikiPageEvent extends AbstractEvent {
 
     public void setObjectKind(String objectKind) {
         if (!OBJECT_KIND.equals(objectKind))
-            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + "'");
+            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + Symbol.SINGLE_QUOTE);
     }
 
     public User getUser() {

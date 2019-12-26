@@ -2,6 +2,7 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.utils.JacksonJson;
 import org.aoju.bus.gitlab.utils.JacksonJsonEnumHelper;
 
@@ -73,7 +74,7 @@ public class Project {
      * @return a fully qualified project path based on the provided namespace and project path
      */
     public static final String getPathWithNammespace(String namespace, String path) {
-        return (namespace.trim() + "/" + path.trim());
+        return (namespace.trim() + Symbol.SLASH + path.trim());
     }
 
     public Integer getApprovalsBeforeMerge() {

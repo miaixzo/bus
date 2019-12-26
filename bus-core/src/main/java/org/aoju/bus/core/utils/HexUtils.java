@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.awt.*;
 import java.nio.charset.Charset;
@@ -49,8 +50,8 @@ public class HexUtils {
      * @return 是否为16进制
      */
     public static boolean isHexNumber(String value) {
-        int index = (value.startsWith("-") ? 1 : 0);
-        return (value.startsWith("0x", index) || value.startsWith("0X", index) || value.startsWith("#", index));
+        int index = (value.startsWith(Symbol.HYPHEN) ? 1 : 0);
+        return (value.startsWith("0x", index) || value.startsWith("0X", index) || value.startsWith(Symbol.SHAPE, index));
     }
 
     /**
@@ -82,7 +83,7 @@ public class HexUtils {
      * @return 十六进制char[]
      */
     public static char[] encodeHex(byte[] data, boolean toLowerCase) {
-        return encodeHex(data, toLowerCase ? Normal.DIGITS_LOWER : Normal.DIGITS_UPPER);
+        return encodeHex(data, toLowerCase ? Normal.DIGITS_16_LOWER : Normal.DIGITS_16_UPPER);
     }
 
     /**
@@ -124,7 +125,7 @@ public class HexUtils {
      * @return 十六进制String
      */
     public static String encodeHexStr(byte[] data, boolean toLowerCase) {
-        return encodeHexStr(data, toLowerCase ? Normal.DIGITS_LOWER : Normal.DIGITS_UPPER);
+        return encodeHexStr(data, toLowerCase ? Normal.DIGITS_16_LOWER : Normal.DIGITS_16_UPPER);
     }
 
     /**
@@ -212,7 +213,7 @@ public class HexUtils {
      * @since 3.1.9
      */
     public static String encodeColor(Color color) {
-        return encodeColor(color, "#");
+        return encodeColor(color, Symbol.SHAPE);
     }
 
     /**
@@ -228,17 +229,17 @@ public class HexUtils {
         String colorHex;
         colorHex = Integer.toHexString(color.getRed());
         if (1 == colorHex.length()) {
-            builder.append('0');
+            builder.append(Symbol.C_ZERO);
         }
         builder.append(colorHex);
         colorHex = Integer.toHexString(color.getGreen());
         if (1 == colorHex.length()) {
-            builder.append('0');
+            builder.append(Symbol.C_ZERO);
         }
         builder.append(colorHex);
         colorHex = Integer.toHexString(color.getBlue());
         if (1 == colorHex.length()) {
-            builder.append('0');
+            builder.append(Symbol.C_ZERO);
         }
         builder.append(colorHex);
         return builder.toString();
@@ -294,10 +295,10 @@ public class HexUtils {
     public static String toUnicodeHex(char ch) {
         StringBuilder sb = new StringBuilder(6);
         sb.append("\\u");
-        sb.append(Normal.DIGITS_LOWER[(ch >> 12) & 15]);
-        sb.append(Normal.DIGITS_LOWER[(ch >> 8) & 15]);
-        sb.append(Normal.DIGITS_LOWER[(ch >> 4) & 15]);
-        sb.append(Normal.DIGITS_LOWER[(ch) & 15]);
+        sb.append(Normal.DIGITS_16_LOWER[(ch >> 12) & 15]);
+        sb.append(Normal.DIGITS_16_LOWER[(ch >> 8) & 15]);
+        sb.append(Normal.DIGITS_16_LOWER[(ch >> 4) & 15]);
+        sb.append(Normal.DIGITS_16_LOWER[(ch) & 15]);
         return sb.toString();
     }
 

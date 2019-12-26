@@ -29,6 +29,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.MapUtils;
@@ -99,13 +101,13 @@ public class Builder {
         List<String> paramList = new ArrayList<>();
         params.forEach((k, v) -> {
             if (ObjectUtils.isNull(v)) {
-                paramList.add(k + "=");
+                paramList.add(k + Symbol.EQUAL);
             } else {
                 String valueString = v.toString();
-                paramList.add(k + "=" + (encode ? encode(valueString) : valueString));
+                paramList.add(k + Symbol.EQUAL + (encode ? encode(valueString) : valueString));
             }
         });
-        return CollUtils.join(paramList, "&");
+        return CollUtils.join(paramList, Symbol.AND);
     }
 
     /**
@@ -116,11 +118,11 @@ public class Builder {
      */
     public static String encode(String value) {
         if (value == null) {
-            return "";
+            return Normal.EMPTY;
         }
         try {
             String encoded = URLEncoder.encode(value, Charset.UTF_8.displayName());
-            return encoded.replace("+", "%20").replace("*", "%2A").replace("~", "%7E").replace("/", "%2F");
+            return encoded.replace("+", "%20").replace(Symbol.STAR, "%2A").replace(Symbol.TILDE, "%7E").replace(Symbol.SLASH, "%2F");
         } catch (UnsupportedEncodingException e) {
             throw new InstrumentException("Failed To Encode Uri", e);
         }
@@ -159,7 +161,7 @@ public class Builder {
         if (MapUtils.isEmpty(this.params)) {
             return this.baseUrl;
         }
-        String baseUrl = appendIfNotContain(this.baseUrl, "?", "&");
+        String baseUrl = appendIfNotContain(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);
         String paramString = parseMapToString(this.params, encode);
         return baseUrl + paramString;
     }

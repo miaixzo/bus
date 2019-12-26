@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.shade;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.shade.entity.PropertyInfo;
 import org.aoju.bus.shade.entity.TableEntity;
 
@@ -108,7 +109,7 @@ public class ShadeFile {
     }
 
     public static String pageToUrl(String url) {
-        return url.replace(".", "/") + "/";
+        return url.replace(Symbol.DOT, Symbol.SLASH) + Symbol.SLASH;
     }
 
 }

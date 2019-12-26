@@ -29,6 +29,7 @@ import org.aoju.bus.core.image.Image;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import javax.imageio.*;
@@ -1647,12 +1648,12 @@ public class ImageUtils {
      */
     public static String toHex(Color color) {
         String R = Integer.toHexString(color.getRed());
-        R = R.length() < 2 ? ('0' + R) : R;
+        R = R.length() < 2 ? (Symbol.C_ZERO + R) : R;
         String G = Integer.toHexString(color.getGreen());
-        G = G.length() < 2 ? ('0' + G) : G;
+        G = G.length() < 2 ? (Symbol.C_ZERO + G) : G;
         String B = Integer.toHexString(color.getBlue());
-        B = B.length() < 2 ? ('0' + B) : B;
-        return '#' + R + G + B;
+        B = B.length() < 2 ? (Symbol.C_ZERO + B) : B;
+        return Symbol.C_SHAPE + R + G + B;
     }
 
     /**
@@ -1662,7 +1663,7 @@ public class ImageUtils {
      * @return {@link Color}
      */
     public static Color hexToColor(String hex) {
-        return getColor(Integer.parseInt(StringUtils.removePrefix("#", hex), 16));
+        return getColor(Integer.parseInt(StringUtils.removePrefix(Symbol.SHAPE, hex), 16));
     }
 
     /**
@@ -1727,14 +1728,14 @@ public class ImageUtils {
         } else if ("LIGHTGOLD".equals(colorName)) {
             // 亮金色
             return hexToColor("#ac9c85");
-        } else if (StringUtils.startWith(colorName, '#')) {
+        } else if (StringUtils.startWith(colorName, Symbol.C_SHAPE)) {
             return hexToColor(colorName);
-        } else if (StringUtils.startWith(colorName, '$')) {
+        } else if (StringUtils.startWith(colorName, Symbol.C_DOLLAR)) {
             // 由于#在URL传输中无法传输,因此用$代替#
-            return hexToColor("#" + colorName.substring(1));
+            return hexToColor(Symbol.SHAPE + colorName.substring(1));
         } else {
             // rgb值
-            final List<String> rgb = StringUtils.split(colorName, ',');
+            final List<String> rgb = StringUtils.split(colorName, Symbol.C_COMMA);
             if (3 == rgb.size()) {
                 final Integer r = Convert.toInt(rgb.get(0));
                 final Integer g = Convert.toInt(rgb.get(1));

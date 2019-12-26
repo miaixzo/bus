@@ -134,10 +134,10 @@ public class UnicodeEscaper extends CodePointTranslator {
             out.write(toUtf16Escape(codepoint));
         } else {
             out.write("\\u");
-            out.write(Normal.DIGITS_UPPER[(codepoint >> 12) & 15]);
-            out.write(Normal.DIGITS_UPPER[(codepoint >> 8) & 15]);
-            out.write(Normal.DIGITS_UPPER[(codepoint >> 4) & 15]);
-            out.write(Normal.DIGITS_UPPER[(codepoint) & 15]);
+            out.write(Normal.DIGITS_16_UPPER[(codepoint >> 12) & 15]);
+            out.write(Normal.DIGITS_16_UPPER[(codepoint >> 8) & 15]);
+            out.write(Normal.DIGITS_16_UPPER[(codepoint >> 4) & 15]);
+            out.write(Normal.DIGITS_16_UPPER[(codepoint) & 15]);
         }
         return true;
     }

@@ -24,6 +24,7 @@
 package org.aoju.bus.proxy.factory.javassist;
 
 import javassist.*;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Builder;
 
@@ -81,7 +82,7 @@ class JavassistUtils {
     }
 
     public synchronized static CtClass createClass(String baseName, Class superclass) {
-        return classPool.makeClass(baseName + "_" + classNumber++, resolve(superclass));
+        return classPool.makeClass(baseName + Symbol.UNDERLINE + classNumber++, resolve(superclass));
     }
 
     public static CtClass[] resolve(Class[] classes) {

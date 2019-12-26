@@ -1,22 +1,31 @@
 /*
- * Copyright (C) 2016 Square, Inc.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2017 aoju.org All rights reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicTrustRootIndex;
 import org.aoju.bus.http.secure.CertificateChainCleaner;
@@ -38,16 +47,21 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 /**
- * 安卓2.3或更好.
+ * 安卓2.3或更高.
+ *
+ * @author Kimi Liu
+ * @version 5.3.6
+ * @since JDK 1.8+
  */
-class AndroidPlatform extends Platform {
+public class AndroidPlatform extends Platform {
+
     private static final int MAX_LOG_LENGTH = 4000;
 
     private final Class<?> sslParametersClass;
     private final OptionalMethod<Socket> setUseSessionTickets;
     private final OptionalMethod<Socket> setHostname;
 
-    // 非空在Android 5.0+.
+    // 非空在Android 5.0+
     private final OptionalMethod<Socket> getAlpnSelectedProtocol;
     private final OptionalMethod<Socket> setAlpnProtocols;
 
@@ -83,12 +97,13 @@ class AndroidPlatform extends Platform {
     }
 
     public static Platform buildIfSupported() {
-        // 尝试找到Android 2.3+ api.
+        // 尝试找到Android 2.3+ api
         try {
             Class<?> sslParametersClass;
             try {
                 sslParametersClass = Class.forName("com.android.org.conscrypt.SSLParametersImpl");
             } catch (ClassNotFoundException e) {
+                // Older platform before being unbundled.
                 sslParametersClass = Class.forName(
                         "org.apache.harmony.xnet.provider.jsse.SSLParametersImpl");
             }
@@ -122,7 +137,7 @@ class AndroidPlatform extends Platform {
         try {
             socket.connect(address, connectTimeout);
         } catch (AssertionError e) {
-            if (Internal.isAndroidGetsocknameError(e)) throw new IOException(e);
+            if (Builder.isAndroidGetsocknameError(e)) throw new IOException(e);
             throw e;
         } catch (SecurityException e) {
             // 在android 4.3之前，是socket,如果打开套接字导致EACCES错误，
@@ -139,7 +154,8 @@ class AndroidPlatform extends Platform {
     protected X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
         Object context = readFieldOrNull(sslSocketFactory, sslParametersClass, "sslParameters");
         if (context == null) {
-            // 如果这不起作用，请在放弃之前尝试谷歌Play Services SSL提供者。这必须由SSLSocketFactory的类装入器装入.
+            // 如果这不起作用，请在放弃之前尝试谷歌Play Services SSL提供者。
+            // 这必须由SSLSocketFactory的类装入器装入.
             try {
                 Class<?> gmsSslParametersClass = Class.forName(
                         "com.google.android.gms.org.conscrypt.SSLParametersImpl", false,
@@ -184,12 +200,13 @@ class AndroidPlatform extends Platform {
 
     @Override
     public void log(int level, String message, Throwable t) {
-        // 按行分割，然后确保每一行都能适合日志的最大长度.
+        // 按行分割，然后确保每一行都能适合日志的最大长度
         for (int i = 0, length = message.length(); i < length; i++) {
-            int newline = message.indexOf('\n', i);
+            int newline = message.indexOf(Symbol.C_LF, i);
             newline = newline != -1 ? newline : length;
             do {
                 int end = Math.min(newline, i + MAX_LOG_LENGTH);
+                Logger.warn("Httpd", message.substring(i, end));
                 i = end;
             } while (i < newline);
         }
@@ -219,7 +236,7 @@ class AndroidPlatform extends Platform {
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             return super.isCleartextTrafficPermitted(hostname);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw Internal.assertionError("unable to determine cleartext support", e);
+            throw Builder.assertionError("unable to determine cleartext support", e);
         }
     }
 
@@ -275,11 +292,13 @@ class AndroidPlatform extends Platform {
         try {
             return SSLContext.getInstance("TLSv1.2");
         } catch (NoSuchAlgorithmException e) {
-            try {
-                return SSLContext.getInstance("TLS");
-            } catch (NoSuchAlgorithmException ex) {
-                throw new IllegalStateException("No TLS provider", ex);
-            }
+            // fallback to TLS
+        }
+
+        try {
+            return SSLContext.getInstance("TLS");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("No TLS provider", e);
         }
     }
 
@@ -314,7 +333,7 @@ class AndroidPlatform extends Platform {
 
         @Override
         public boolean equals(Object other) {
-            return other instanceof AndroidCertificateChainCleaner;
+            return other instanceof AndroidCertificateChainCleaner; // All instances are equivalent.
         }
 
         @Override
@@ -388,7 +407,7 @@ class AndroidPlatform extends Platform {
      * 因为它不需要加载和索引受信任的CA证书
      * 这个类使用API 14中添加到Android的API (Android 4.0, 2011年10月发布)。
      * 这个类不应该在Android API 17或更好的版本中使用，因为这些版本由
-     * {@link AndroidCertificateChainCleaner}提供更好的服务。
+     * {@link AndroidPlatform.AndroidCertificateChainCleaner}提供更好的服务。
      */
     static final class AndroidTrustRootIndex implements TrustRootIndex {
         private final X509TrustManager trustManager;
@@ -408,7 +427,7 @@ class AndroidPlatform extends Platform {
                         ? trustAnchor.getTrustedCert()
                         : null;
             } catch (IllegalAccessException e) {
-                throw Internal.assertionError("unable to get issues and signature", e);
+                throw Builder.assertionError("unable to get issues and signature", e);
             } catch (InvocationTargetException e) {
                 return null;
             }

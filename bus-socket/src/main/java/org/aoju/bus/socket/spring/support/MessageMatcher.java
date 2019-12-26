@@ -2,6 +2,7 @@ package org.aoju.bus.socket.spring.support;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.SocketException;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -60,7 +61,7 @@ public class MessageMatcher {
         }
         ConcurrentWebSocketSessionDecorator decorator = new ConcurrentWebSocketSessionDecorator(session, -1, -1);
         try {
-            decorator.sendMessage(new TextMessage(" " + content));
+            decorator.sendMessage(new TextMessage(Symbol.SPACE + content));
         } catch (IOException e) {
             throw new SocketException("发送消息出错", e);
         }

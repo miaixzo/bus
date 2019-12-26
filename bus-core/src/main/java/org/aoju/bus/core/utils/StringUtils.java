@@ -274,14 +274,14 @@ public class StringUtils extends TextUtils {
      */
     public static String byteArrayToHex(byte[] byteArray) {
         // 首先初始化一个字符数组,用来存放每个16进制字符
-        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
         // new一个字符数组,这个就是用来组成结果字符串的（解释一下：一个byte是八位二进制,也就是2位十六进制字符（2的8次方等于16的2次方））
         char[] resultCharArray = new char[byteArray.length * 2];
         // 遍历字节数组,通过位运算（位运算效率高）,转换成字符放到字符数组中去
         int index = 0;
         for (byte b : byteArray) {
-            resultCharArray[index++] = hexDigits[b >>> 4 & 0xf];
-            resultCharArray[index++] = hexDigits[b & 0xf];
+            resultCharArray[index++] = Normal.DIGITS_16_LOWER[b >>> 4 & 0xf];
+            resultCharArray[index++] = Normal.DIGITS_16_LOWER[b & 0xf];
         }
         // 字符数组组合成字符串返回
         return new String(resultCharArray);
@@ -296,7 +296,7 @@ public class StringUtils extends TextUtils {
      */
     public static byte[] hexStringToByte(String hex) {
         if (isEmpty(hex)) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
 
         byte[] bytes = new byte[hex.length() / 2];
@@ -366,7 +366,7 @@ public class StringUtils extends TextUtils {
         char[] c = input.toCharArray();
         for (int i = 0; i < c.length; i++) {
             // 空格单独处理, 其余的偏移量为65248
-            if (c[i] == ' ') {
+            if (c[i] == Symbol.C_SPACE) {
                 c[i] = '\u3000'; // 中文空格
             } else if (c[i] < 128) {
                 c[i] = (char) (c[i] + 65248);
@@ -386,7 +386,7 @@ public class StringUtils extends TextUtils {
         for (int i = 0; i < c.length; i++) {
             // 是否是中文空格, 单独处理
             if (c[i] == '\u3000') {
-                c[i] = ' ';
+                c[i] = Symbol.C_SPACE;
             }
             // 校验是否字符值是否在此数值之间
             else if (c[i] > 65248 && c[i] < (128 + 65248)) {
@@ -409,7 +409,7 @@ public class StringUtils extends TextUtils {
             char c = input.charAt(i);
             String hexStr = Integer.toHexString(c);
             while (hexStr.length() < 4) {
-                hexStr = "0" + hexStr;
+                hexStr = Symbol.ZERO + hexStr;
             }
             // 转换为unicode
             unicode.append("\\u" + hexStr);
@@ -1043,7 +1043,7 @@ public class StringUtils extends TextUtils {
                         //占位符被转义
                         argIndex--;
                         sbuf.append(val, handledPosition, delimIndex - 1);
-                        sbuf.append(Symbol.C_DELIM_LEFT);
+                        sbuf.append(Symbol.C_BRACE_LEFT);
                         handledPosition = delimIndex + 1;
                     }
                 } else {//正常占位符
@@ -1571,9 +1571,9 @@ public class StringUtils extends TextUtils {
             String[] arr = split(str, separator);
             for (int i = 0; i < arr.length; i++) {
                 if (i == 0) {
-                    sb.append("'").append(arr[i]).append("'");
+                    sb.append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
                 } else {
-                    sb.append(reserve).append("'").append(arr[i]).append("'");
+                    sb.append(reserve).append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
                 }
             }
         }
@@ -3504,7 +3504,7 @@ public class StringUtils extends TextUtils {
      * @return 替换后的字符串
      */
     public static String hide(CharSequence str, int startInclude, int endExclude) {
-        return replace(str, startInclude, endExclude, '*');
+        return replace(str, startInclude, endExclude, Symbol.C_STAR);
     }
 
     /**
@@ -4472,7 +4472,7 @@ public class StringUtils extends TextUtils {
      * @return the {@code String} array
      */
     public static String[] toStringArray(Collection<String> collection) {
-        return collection.toArray(new String[0]);
+        return collection.toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -4714,7 +4714,7 @@ public class StringUtils extends TextUtils {
      * {@code null} if null String input
      */
     public static String leftPad(final String str, final int size) {
-        return leftPad(str, size, ' ');
+        return leftPad(str, size, Symbol.C_SPACE);
     }
 
     /**

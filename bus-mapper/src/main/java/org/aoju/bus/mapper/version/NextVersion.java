@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.mapper.version;
 
-
 /**
  * @author Kimi Liu
  * @version 5.3.6

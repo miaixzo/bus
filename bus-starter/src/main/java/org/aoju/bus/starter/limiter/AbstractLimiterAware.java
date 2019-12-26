@@ -28,7 +28,6 @@ import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 
-
 /**
  * @author Kimi Liu
  * @version 5.3.6

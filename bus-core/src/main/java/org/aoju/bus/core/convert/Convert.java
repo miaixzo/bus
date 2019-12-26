@@ -26,6 +26,7 @@ package org.aoju.bus.core.convert;
 import org.aoju.bus.core.convert.impl.CollectionConverter;
 import org.aoju.bus.core.convert.impl.GenericEnumConverter;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CharsetUtils;
 import org.aoju.bus.core.utils.ClassUtils;
@@ -631,7 +632,7 @@ public class Convert {
                 continue;
             }
 
-            if (c[i] == ' ') {
+            if (c[i] == Symbol.C_SPACE) {
                 c[i] = '\u3000';
             } else if (c[i] < '\177') {
                 c[i] = (char) (c[i] + 65248);
@@ -668,7 +669,7 @@ public class Convert {
 
             if (c[i] == '\u3000' || c[i] == '\u00a0' || c[i] == '\u2007' || c[i] == '\u202F') {
                 // \u3000是中文全角空格,\u00a0、\u2007、\u202F是不间断空格
-                c[i] = ' ';
+                c[i] = Symbol.C_SPACE;
             } else if (c[i] > '\uFF00' && c[i] < '\uFF5F') {
                 c[i] = (char) (c[i] - 65248);
             }

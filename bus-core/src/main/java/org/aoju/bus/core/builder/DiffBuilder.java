@@ -24,6 +24,7 @@
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 
 import java.util.ArrayList;
@@ -791,7 +792,7 @@ public class DiffBuilder implements Builder<DiffResult> {
         }
 
         for (final Diff<?> diff : diffResult.getDiffs()) {
-            append(fieldName + "." + diff.getFieldName(),
+            append(fieldName + Symbol.DOT + diff.getFieldName(),
                     diff.getLeft(), diff.getRight());
         }
 

@@ -31,6 +31,7 @@ import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
@@ -166,7 +167,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
     public Readers remove(String fileKey) {
         try {
             if (fileKey.contains(Symbol.SLASH)) {
-                fileKey = fileKey.replace(this.context.getPrefix(), "");
+                fileKey = fileKey.replace(this.context.getPrefix(), Normal.EMPTY);
             }
             bucketManager.delete(this.context.getBucket(), fileKey);
             return new Readers(Builder.SUCCESS);

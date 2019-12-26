@@ -49,7 +49,6 @@ public class Message {
      */
     public String errmsg;
 
-
     /**
      * 请求返回数据 JSON
      */

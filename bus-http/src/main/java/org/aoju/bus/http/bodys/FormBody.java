@@ -27,7 +27,6 @@ import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSink;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.UnoUrl;
 
 import java.io.IOException;
@@ -36,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Form请求体内容
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
@@ -46,8 +47,8 @@ public final class FormBody extends RequestBody {
     private final List<String> encodedValues;
 
     FormBody(List<String> encodedNames, List<String> encodedValues) {
-        this.encodedNames = Internal.immutableList(encodedNames);
-        this.encodedValues = Internal.immutableList(encodedValues);
+        this.encodedNames = org.aoju.bus.http.Builder.immutableList(encodedNames);
+        this.encodedValues = org.aoju.bus.http.Builder.immutableList(encodedValues);
     }
 
     public int size() {
@@ -85,6 +86,15 @@ public final class FormBody extends RequestBody {
         writeOrCountBytes(sink, false);
     }
 
+    /**
+     * 将此请求写入{@code sink}或测量其内容长度。我们有一种方法可以
+     * 同时确保计数和内容是一致的，特别是当涉及到一些棘手的操作时，
+     * 比如测量报头字符串的编码长度，或者编码整数的位数长度
+     *
+     * @param sink       保存缓冲区
+     * @param countBytes 是否统计数量
+     * @return 当前缓冲区总大小
+     */
     private long writeOrCountBytes(BufferSink sink, boolean countBytes) {
         long byteCount = 0L;
 
@@ -96,9 +106,9 @@ public final class FormBody extends RequestBody {
         }
 
         for (int i = 0, size = encodedNames.size(); i < size; i++) {
-            if (i > 0) buffer.writeByte('&');
+            if (i > 0) buffer.writeByte(Symbol.C_AND);
             buffer.writeUtf8(encodedNames.get(i));
-            buffer.writeByte('=');
+            buffer.writeByte(Symbol.C_EQUAL);
             buffer.writeUtf8(encodedValues.get(i));
         }
 
@@ -111,7 +121,6 @@ public final class FormBody extends RequestBody {
     }
 
     public static final class Builder {
-
         private final List<String> names = new ArrayList<>();
         private final List<String> values = new ArrayList<>();
         private final Charset charset;
@@ -128,8 +137,8 @@ public final class FormBody extends RequestBody {
             if (name == null) throw new NullPointerException("name == null");
             if (value == null) throw new NullPointerException("value == null");
 
-            names.add(UnoUrl.canonicalize(name, Symbol.FORM_ENCODE_SET, false, false, true, true, charset));
-            values.add(UnoUrl.canonicalize(value, Symbol.FORM_ENCODE_SET, false, false, true, true, charset));
+            names.add(UnoUrl.canonicalize(name, UnoUrl.FORM_ENCODE_SET, false, false, true, true, charset));
+            values.add(UnoUrl.canonicalize(value, UnoUrl.FORM_ENCODE_SET, false, false, true, true, charset));
             return this;
         }
 
@@ -137,15 +146,14 @@ public final class FormBody extends RequestBody {
             if (name == null) throw new NullPointerException("name == null");
             if (value == null) throw new NullPointerException("value == null");
 
-            names.add(UnoUrl.canonicalize(name, Symbol.FORM_ENCODE_SET, true, false, true, true, charset));
-            values.add(UnoUrl.canonicalize(value, Symbol.FORM_ENCODE_SET, true, false, true, true, charset));
+            names.add(UnoUrl.canonicalize(name, UnoUrl.FORM_ENCODE_SET, true, false, true, true, charset));
+            values.add(UnoUrl.canonicalize(value, UnoUrl.FORM_ENCODE_SET, true, false, true, true, charset));
             return this;
         }
 
         public FormBody build() {
             return new FormBody(names, values);
         }
-
     }
 
 }

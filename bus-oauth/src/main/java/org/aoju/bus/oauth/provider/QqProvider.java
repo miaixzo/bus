@@ -25,6 +25,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
@@ -110,7 +111,7 @@ public class QqProvider extends DefaultProvider {
         String openId = StringUtils.trim(removeSuffix);
         JSONObject object = JSONObject.parseObject(openId);
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.get("error") + ":" + object.get("error_description"));
+            throw new InstrumentException(object.get("error") + Symbol.COLON + object.get("error_description"));
         }
         token.setOpenId(object.getString("openid"));
         if (object.containsKey("unionid")) {

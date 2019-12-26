@@ -23,18 +23,13 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.secure.CipherSuite;
-
 import java.io.IOException;
 
 /**
- * Protocols that HttpClient implements for <a
- * href="http://tools.ietf.org/html/draft-ietf-tls-applayerprotoneg">ALPN</a> selection.
- *
- * <h3>Protocol vs Scheme</h3> Despite its name, {@link java.net.URL#getProtocol()} returns the
- * {@linkplain java.net.URI#getScheme() scheme} (http, https, etc.) of the URL, not the protocol
- * (http/1.1, spdy/3.1, etc.). HttpClient uses the word <i>protocol</i> to identify how HTTP messages
- * are framed.
+ * 协议vs计划 它的名字是:{@link java.net.URL#getProtocol()}
+ * 返回{@linkplain java.net.URI#getScheme() scheme} (http, https, etc.)，
+ * 而不是协议(http/1.1, spdy/3.1，等等) 请使用这个协议来识别它是如何被分割的
+ * Httpd使用协议这个词来标识HTTP消息是如何构造的
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -43,53 +38,36 @@ import java.io.IOException;
 public enum Protocol {
 
     /**
-     * An obsolete plaintext framing that does not use persistent sockets by default.
+     * 一种过时的plaintext，默认情况下不使用持久套接字
      */
     HTTP_1_0("http/1.0"),
 
     /**
-     * A plaintext framing that includes persistent connections.
-     *
-     * <p>This version of HttpClient implements <a href="https://tools.ietf.org/html/rfc7230">RFC
-     * 7230</a>, and tracks revisions to that spec.
+     * 包含持久连接的plaintext
+     * 此版本的Httpd实现了RFC 7230，并跟踪对该规范的修订
      */
     HTTP_1_1("http/1.1"),
 
     /**
-     * Chromium's binary-framed protocol that includes header compression, multiplexing multiple
-     * requests on the same socket, and server-push. HTTP/1.1 semantics are layered on SPDY/3.
-     *
-     * <p>Current versions of HttpClient do not support this protocol.
+     * Chromium的二进制框架协议，包括标头压缩、在同一个套接字上多路复用多个请求和服务器推送。
+     * HTTP/1.1语义在SPDY/3上分层.
      */
     SPDY_3("spdy/3.1"),
 
     /**
-     * The IETF's binary-framed protocol that includes header compression, multiplexing multiple
-     * requests on the same socket, and server-push. HTTP/1.1 semantics are layered on HTTP/2.
-     *
-     * <p>HTTP/2 requires deployments of HTTP/2 that use TLS 1.2 support {@linkplain
-     * CipherSuite#TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256} , present in Java 8+ and Android 5+. Servers
-     * that enforce this may send an exception message including the string {@code
-     * INADEQUATE_SECURITY}.
+     * IETF的二进制框架协议，包括头压缩、在同一个套接字上多路复用多个请求和服务器推送。
+     * HTTP/1.1语义是在HTTP/2上分层的.
      */
-    HTTP_2("h2"),
+    HTTP_2("http/2.0"),
 
     /**
-     * Cleartext HTTP/2 with no "upgrade" round trip. This option requires the client to have prior
-     * knowledge that the server supports cleartext HTTP/2.
-     *
-     * @see <a href="https://tools.ietf.org/html/rfc7540#section-3.4">Starting HTTP/2 with Prior
-     * Knowledge</a>
+     * 明文HTTP/2，没有"upgrade"往返。此选项要求客户端事先知道服务器支持明文HTTP/2
      */
     H2_PRIOR_KNOWLEDGE("h2_prior_knowledge"),
 
     /**
-     * QUIC (Quick UDP Internet Connection) is a new multiplexed and secure transport atop UDP,
-     * designed from the ground up and optimized for HTTP/2 semantics.
-     * HTTP/1.1 semantics are layered on HTTP/2.
-     *
-     * <p>QUIC is not natively supported by HttpClient, but provided to allow a theoretical
-     * intercept that provides support.
+     * QUIC(快速UDP互联网连接)是一个新的多路复用和UDP之上的安全传输，
+     * 从底层设计和优化的HTTP/2语义。HTTP/1.1语义是在HTTP/2上分层的
      */
     QUIC("quic");
 
@@ -99,8 +77,12 @@ public enum Protocol {
         this.protocol = protocol;
     }
 
+    /**
+     * @param protocol 协议标示
+     * @return 返回由{@code protocol}标识的协议
+     * @throws IOException if {@code protocol} is unknown.
+     */
     public static Protocol get(String protocol) throws IOException {
-        // Unroll the loop over values() to save an allocation.
         if (protocol.equals(HTTP_1_0.protocol)) return HTTP_1_0;
         if (protocol.equals(HTTP_1_1.protocol)) return HTTP_1_1;
         if (protocol.equals(H2_PRIOR_KNOWLEDGE.protocol)) return H2_PRIOR_KNOWLEDGE;
@@ -110,8 +92,12 @@ public enum Protocol {
         throw new IOException("Unexpected protocol: " + protocol);
     }
 
+    /**
+     * 返回用于识别ALPN协议的字符串，如“http/1.1”、“spdy/3.1”或“http/2.0”.
+     */
     @Override
     public String toString() {
         return protocol;
     }
+
 }

@@ -30,6 +30,7 @@ import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
 
@@ -59,7 +60,7 @@ public class ArrayUtils {
      * @return 数组字符串, 与集合转字符串格式相同
      */
     public static String toString(final Object array) {
-        return toString(array, "{}");
+        return toString(array, Symbol.DELIM);
     }
 
     /**
@@ -7435,7 +7436,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new int[0];
+            return Normal.EMPTY_INT_ARRAY;
         }
 
         int[] array = new int[length];
@@ -7457,7 +7458,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new Long[0];
+            return Normal.EMPTY_LONG_OBJECT_ARRAY;
         }
 
         Long[] array = new Long[length];
@@ -7479,7 +7480,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new long[0];
+            return Normal.EMPTY_LONG_ARRAY;
         }
 
         long[] array = new long[length];
@@ -7501,7 +7502,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new Character[0];
+            return Normal.EMPTY_CHARACTER_OBJECT_ARRAY;
         }
 
         Character[] array = new Character[length];
@@ -7523,7 +7524,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new char[0];
+            return Normal.EMPTY_CHAR_ARRAY;
         }
 
         char[] array = new char[length];
@@ -7545,7 +7546,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new Byte[0];
+            return Normal.EMPTY_BYTE_OBJECT_ARRAY;
         }
 
         Byte[] array = new Byte[length];
@@ -7567,7 +7568,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
 
         byte[] array = new byte[length];
@@ -7589,7 +7590,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new Short[0];
+            return Normal.EMPTY_SHORT_OBJECT_ARRAY;
         }
 
         Short[] array = new Short[length];
@@ -7611,7 +7612,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new short[0];
+            return Normal.EMPTY_SHORT_ARRAY;
         }
 
         short[] array = new short[length];
@@ -7633,7 +7634,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new Float[0];
+            return Normal.EMPTY_FLOAT_OBJECT_ARRAY;
         }
 
         Float[] array = new Float[length];
@@ -7655,7 +7656,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new float[0];
+            return Normal.EMPTY_FLOAT_ARRAY;
         }
 
         float[] array = new float[length];
@@ -7677,7 +7678,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new Double[0];
+            return Normal.EMPTY_DOUBLE_OBJECT_ARRAY;
         }
 
         Double[] array = new Double[length];
@@ -7699,7 +7700,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new double[0];
+            return Normal.EMPTY_DOUBLE_ARRAY;
         }
 
         double[] array = new double[length];
@@ -7721,7 +7722,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new Boolean[0];
+            return Normal.EMPTY_BOOLEAN_OBJECT_ARRAY;
         }
 
         Boolean[] array = new Boolean[length];
@@ -7743,7 +7744,7 @@ public class ArrayUtils {
         }
         int length = values.length;
         if (0 == length) {
-            return new boolean[0];
+            return Normal.EMPTY_BOOLEAN_ARRAY;
         }
 
         boolean[] array = new boolean[length];
@@ -7868,7 +7869,7 @@ public class ArrayUtils {
             end += length;
         }
         if (start == length) {
-            return new Object[0];
+            return Normal.EMPTY_OBJECT_ARRAY;
         }
         if (start > end) {
             int tmp = start;
@@ -7877,7 +7878,7 @@ public class ArrayUtils {
         }
         if (end > length) {
             if (start >= length) {
-                return new Object[0];
+                return Normal.EMPTY_OBJECT_ARRAY;
             }
             end = length;
         }

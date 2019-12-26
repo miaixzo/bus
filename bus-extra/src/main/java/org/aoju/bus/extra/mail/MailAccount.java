@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.extra.mail;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.setting.Setting;
 
@@ -499,11 +500,11 @@ public class MailAccount implements Serializable {
 
         if (StringUtils.isBlank(this.host)) {
             // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
-            this.host = StringUtils.format("smtp.{}", StringUtils.subSuf(fromAddress, fromAddress.indexOf('@') + 1));
+            this.host = StringUtils.format("smtp.{}", StringUtils.subSuf(fromAddress, fromAddress.indexOf(Symbol.C_AT) + 1));
         }
         if (StringUtils.isBlank(user)) {
             // 如果用户名为空,默认为发件人邮箱前缀
-            this.user = StringUtils.subPre(fromAddress, fromAddress.indexOf('@'));
+            this.user = StringUtils.subPre(fromAddress, fromAddress.indexOf(Symbol.C_AT));
         }
         if (null == this.auth) {
             // 如果密码非空白,则使用认证模式
@@ -518,12 +519,6 @@ public class MailAccount implements Serializable {
             this.charset = org.aoju.bus.core.lang.Charset.UTF_8;
         }
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return "MailAccount [host=" + host + ", port=" + port + ", auth=" + auth + ", user=" + user + ", pass=" + (StringUtils.isEmpty(this.pass) ? "" : "******") + ", from=" + from + ", startttlsEnable="
-                + startttlsEnable + ", socketFactoryClass=" + socketFactoryClass + ", socketFactoryFallback=" + socketFactoryFallback + ", socketFactoryPort=" + socketFactoryPort + "]";
     }
 
 }

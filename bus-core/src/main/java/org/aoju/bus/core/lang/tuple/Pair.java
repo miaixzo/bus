@@ -24,6 +24,7 @@
 package org.aoju.bus.core.lang.tuple;
 
 import org.aoju.bus.core.builder.CompareToBuilder;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -134,7 +135,7 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
 
     @Override
     public String toString() {
-        return "(" + getLeft() + ',' + getRight() + ')';
+        return Symbol.PARENTHESE_LEFT + getLeft() + Symbol.C_COMMA + getRight() + Symbol.C_PARENTHESE_RIGHT;
     }
 
     public String toString(final String format) {

@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.text.escape;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.translate.CodePointTranslator;
 
 import java.io.IOException;
@@ -120,7 +121,7 @@ public class NumericEscaper extends CodePointTranslator {
         }
         out.write("&#");
         out.write(Integer.toString(codepoint, 10));
-        out.write(';');
+        out.write(Symbol.C_SEMICOLON);
         return true;
     }
 
@@ -297,7 +298,7 @@ public class NumericEscaper extends CodePointTranslator {
 
         public String toString() {
             if (this.toString == null) {
-                this.toString = ("[" + this.minimum + ".." + this.maximum + "]");
+                this.toString = (Symbol.BRACKET_LEFT + this.minimum + ".." + this.maximum + Symbol.BRACKET_RIGHT);
             }
             return this.toString;
         }

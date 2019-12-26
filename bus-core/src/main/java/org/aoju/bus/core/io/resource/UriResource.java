@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.io.resource;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
@@ -139,7 +140,7 @@ public class UriResource implements Resource {
      */
     @Override
     public String toString() {
-        return (null == this.url) ? "null" : this.url.toString();
+        return (null == this.url) ? Normal.NULL : this.url.toString();
     }
 
 }

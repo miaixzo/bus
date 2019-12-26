@@ -50,7 +50,7 @@ public class MediaType {
     /**
      * The value of a type or subtype wildcard {@value #MEDIA_TYPE_WILDCARD}.
      */
-    public static final String MEDIA_TYPE_WILDCARD = "*";
+    public static final String MEDIA_TYPE_WILDCARD = Symbol.STAR;
 
     /**
      * A {@code String} constant representing wildcard {@value #WILDCARD} media type .
@@ -143,7 +143,7 @@ public class MediaType {
      * "image/*"
      */
     public static final String IMAGE_WILDCARD = "image/*";
-    public static final MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", "*");
+    public static final MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", Symbol.STAR);
 
     /**
      * "image/gif"
@@ -197,7 +197,7 @@ public class MediaType {
      * "video/*"
      */
     public static final String VIDEO_WILDCARD = "video/*";
-    public static final MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", "*");
+    public static final MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", Symbol.STAR);
 
     /**
      * "video/mpeg"
@@ -295,8 +295,8 @@ public class MediaType {
 
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
     public static final String QUOTED = "\"([^\"]*)\"";
-    public static final Pattern TYPE_SUBTYPE = Pattern.compile(TOKEN + "/" + TOKEN);
-    public static final Pattern PARAMETER = Pattern.compile(";\\s*(?:" + TOKEN + "=(?:" + TOKEN + "|" + QUOTED + "))?");
+    public static final Pattern TYPE_SUBTYPE = Pattern.compile(TOKEN + Symbol.SLASH + TOKEN);
+    public static final Pattern PARAMETER = Pattern.compile(";\\s*(?:" + TOKEN + "=(?:" + TOKEN + Symbol.OR + QUOTED + "))?");
 
     public final String type;
     public final String subtype;
@@ -362,7 +362,7 @@ public class MediaType {
     public static MediaType valueOf(String text) {
         Matcher typeSubtype = TYPE_SUBTYPE.matcher(text);
         if (!typeSubtype.lookingAt()) {
-            throw new IllegalArgumentException("No subtype found for: \"" + text + '"');
+            throw new IllegalArgumentException("No subtype found for: \"" + text + Symbol.C_DOUBLE_QUOTES);
         }
         String type = typeSubtype.group(1).toLowerCase(Locale.US);
         String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
@@ -380,7 +380,7 @@ public class MediaType {
             String charsetParameter;
             String token = parameter.group(2);
             if (token != null) {
-                charsetParameter = (token.startsWith("'") && token.endsWith("'") && token.length() > 2)
+                charsetParameter = (token.startsWith(Symbol.SINGLE_QUOTE) && token.endsWith(Symbol.SINGLE_QUOTE) && token.length() > 2)
                         ? token.substring(1, token.length() - 1)
                         : token;
             } else {

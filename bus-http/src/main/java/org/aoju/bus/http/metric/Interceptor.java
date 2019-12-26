@@ -32,9 +32,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Observes, modifies, and potentially short-circuits requests going out and the corresponding
- * responses coming back in. Typically interceptors add, remove, or transform headers on the request
- * or response.
+ * 观察、修改和潜在的短路请求，并返回相应的响应。
+ * 通常，拦截器在请求或响应上添加、删除或转换标头
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -45,10 +44,20 @@ public interface Interceptor {
     Response intercept(Chain chain) throws IOException;
 
     interface Chain {
+
+        /**
+         * @return 网络请求
+         */
         Request request();
 
         Response proceed(Request request) throws IOException;
 
+        /**
+         * 返回将执行请求的连接。这只在网络拦截器链中可用;
+         * 对于应用程序拦截器，这总是null
+         *
+         * @return 连接信息
+         */
         Connection connection();
 
         NewCall call();

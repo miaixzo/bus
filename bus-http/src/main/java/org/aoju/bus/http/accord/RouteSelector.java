@@ -1,20 +1,29 @@
 /*
- * Copyright (C) 2012 Square, Inc.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2017 aoju.org All rights reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package org.aoju.bus.http.accord;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.metric.EventListener;
 
@@ -28,12 +37,16 @@ import java.util.NoSuchElementException;
 /**
  * 选择连接到源服务器的路由。每个连接都需要选择代理
  * 服务器、IP地址和TLS模式。连接也可以循环使用
+ *
+ * @author Kimi Liu
+ * @version 5.3.6
+ * @since JDK 1.8+
  */
 public final class RouteSelector {
 
     private final Address address;
     private final RouteDatabase routeDatabase;
-    private final NewCall newCall;
+    private final NewCall call;
     private final EventListener eventListener;
     /**
      * 失败路线的状态
@@ -49,11 +62,11 @@ public final class RouteSelector {
      */
     private List<InetSocketAddress> inetSocketAddresses = Collections.emptyList();
 
-    public RouteSelector(Address address, RouteDatabase routeDatabase, NewCall newCall,
+    public RouteSelector(Address address, RouteDatabase routeDatabase, NewCall call,
                          EventListener eventListener) {
         this.address = address;
         this.routeDatabase = routeDatabase;
-        this.newCall = newCall;
+        this.call = call;
         this.eventListener = eventListener;
 
         resetNextProxy(address.url(), address.proxy());
@@ -74,7 +87,6 @@ public final class RouteSelector {
             // 如果它是一个IP地址，那么应该只尝试该IP地址
             return socketAddress.getHostName();
         }
-
         // InetSocketAddress有一个特定的地址:我们应该只尝试该地址。
         // 因此，我们返回地址并忽略任何可用的主机名
         return address.getHostAddress();
@@ -153,8 +165,8 @@ public final class RouteSelector {
             // 尝试每一个ProxySelector选项，直到一个连接成功
             List<Proxy> proxiesOrNull = address.proxySelector().select(url.uri());
             proxies = proxiesOrNull != null && !proxiesOrNull.isEmpty()
-                    ? Internal.immutableList(proxiesOrNull)
-                    : Internal.immutableList(Proxy.NO_PROXY);
+                    ? Builder.immutableList(proxiesOrNull)
+                    : Builder.immutableList(Proxy.NO_PROXY);
         }
         nextProxyIndex = 0;
     }
@@ -210,21 +222,22 @@ public final class RouteSelector {
         }
 
         if (socketPort < 1 || socketPort > 65535) {
-            throw new SocketException("No route to " + socketHost + ":" + socketPort
+            throw new SocketException("No route to " + socketHost + Symbol.COLON + socketPort
                     + "; port is out of range");
         }
 
         if (proxy.type() == Proxy.Type.SOCKS) {
             inetSocketAddresses.add(InetSocketAddress.createUnresolved(socketHost, socketPort));
         } else {
-            eventListener.dnsStart(newCall, socketHost);
+            eventListener.dnsStart(call, socketHost);
+
             // 在IPv4/IPv6混合环境中尝试每个地址以获得最佳性能
             List<InetAddress> addresses = address.dns().lookup(socketHost);
             if (addresses.isEmpty()) {
                 throw new UnknownHostException(address.dns() + " returned no addresses for " + socketHost);
             }
 
-            eventListener.dnsEnd(newCall, socketHost, addresses);
+            eventListener.dnsEnd(call, socketHost, addresses);
 
             for (int i = 0, size = addresses.size(); i < size; i++) {
                 InetAddress inetAddress = addresses.get(i);
@@ -237,7 +250,6 @@ public final class RouteSelector {
      * 选定的路由
      */
     public static final class Selection {
-
         private final List<Route> routes;
         private int nextRouteIndex = 0;
 
@@ -259,7 +271,6 @@ public final class RouteSelector {
         public List<Route> getAll() {
             return new ArrayList<>(routes);
         }
-
     }
 
 }

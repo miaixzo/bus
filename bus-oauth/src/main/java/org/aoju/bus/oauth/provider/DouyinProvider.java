@@ -36,7 +36,6 @@ import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.StateCache;
 
-
 /**
  * 抖音登录
  *

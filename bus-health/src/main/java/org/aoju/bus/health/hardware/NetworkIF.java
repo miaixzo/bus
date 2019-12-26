@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Systemd;
 import org.aoju.bus.health.hardware.linux.LinuxNetworks;
@@ -92,7 +94,7 @@ public class NetworkIF {
                 for (byte b : hwmac) {
                     octets.add(String.format("%02x", b));
                 }
-                this.mac = String.join(":", octets);
+                this.mac = String.join(Symbol.COLON, octets);
             } else {
                 this.mac = "Unknown";
             }
@@ -101,15 +103,15 @@ public class NetworkIF {
             ArrayList<String> ipv6list = new ArrayList<>();
             for (InetAddress address : Collections.list(networkInterface.getInetAddresses())) {
                 if (address.getHostAddress().length() > 0) {
-                    if (address.getHostAddress().contains(":")) {
-                        ipv6list.add(address.getHostAddress().split("%")[0]);
+                    if (address.getHostAddress().contains(Symbol.COLON)) {
+                        ipv6list.add(address.getHostAddress().split(Symbol.PERCENT)[0]);
                     } else {
                         ipv4list.add(address.getHostAddress());
                     }
                 }
             }
-            this.ipv4 = ipv4list.toArray(new String[0]);
-            this.ipv6 = ipv6list.toArray(new String[0]);
+            this.ipv4 = ipv4list.toArray(Normal.EMPTY_STRING_ARRAY);
+            this.ipv6 = ipv6list.toArray(Normal.EMPTY_STRING_ARRAY);
         } catch (SocketException e) {
             Logger.error("Socket exception: {}", e);
         }
@@ -421,11 +423,11 @@ public class NetworkIF {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: ").append(getName()).append(" ").append("(").append(getDisplayName()).append(")").append("\n");
-        sb.append("  MAC Address: ").append(getMacaddr()).append("\n");
-        sb.append("  MTU: ").append(getMTU()).append(", ").append("Speed: ").append(getSpeed()).append("\n");
-        sb.append("  IPv4: ").append(Arrays.toString(getIPv4addr())).append("\n");
-        sb.append("  IPv6: ").append(Arrays.toString(getIPv6addr())).append("\n");
+        sb.append("Name: ").append(getName()).append(Symbol.SPACE).append(Symbol.PARENTHESE_LEFT).append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
+        sb.append("  MAC Address: ").append(getMacaddr()).append(Symbol.LF);
+        sb.append("  MTU: ").append(getMTU()).append(", ").append("Speed: ").append(getSpeed()).append(Symbol.LF);
+        sb.append("  IPv4: ").append(Arrays.toString(getIPv4addr())).append(Symbol.LF);
+        sb.append("  IPv6: ").append(Arrays.toString(getIPv6addr())).append(Symbol.LF);
         sb.append("  Traffic: received ").append(getPacketsRecv()).append(" packets/")
                 .append(Builder.formatBytes(getBytesRecv())).append(" (" + getInErrors() + " err);");
         sb.append(" transmitted ").append(getPacketsSent()).append(" packets/")

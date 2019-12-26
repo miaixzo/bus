@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.starter.druid;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -49,7 +50,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * 单例句柄
      */
     private static DynamicDataSource instance;
-    private static byte[] lock = new byte[0];
+    private static byte[] lock = Normal.EMPTY_BYTE_ARRAY;
 
     /**
      * 单例方法

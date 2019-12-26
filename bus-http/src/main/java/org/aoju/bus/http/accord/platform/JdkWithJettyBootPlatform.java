@@ -1,22 +1,30 @@
 /*
- * Copyright (C) 2016 Square, Inc.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2017 aoju.org All rights reserved.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package org.aoju.bus.http.accord.platform;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
 
 import javax.net.ssl.SSLSocket;
@@ -28,8 +36,12 @@ import java.util.List;
 
 /**
  * OpenJDK 7 or OpenJDK 8 with {@code org.mortbay.jetty.alpn/alpn-boot} 在引导类路径中.
+ *
+ * @author Kimi Liu
+ * @version 5.3.6
+ * @since JDK 1.8+
  */
-class JdkWithJettyBootPlatform extends Platform {
+public class JdkWithJettyBootPlatform extends Platform {
 
     private final Method putMethod;
     private final Method getMethod;
@@ -69,13 +81,12 @@ class JdkWithJettyBootPlatform extends Platform {
     public void configureTlsExtensions(
             SSLSocket sslSocket, String hostname, List<Protocol> protocols) {
         List<String> names = alpnProtocolNames(protocols);
-
         try {
             Object provider = Proxy.newProxyInstance(Platform.class.getClassLoader(),
                     new Class[]{clientProviderClass, serverProviderClass}, new JettyNegoProvider(names));
             putMethod.invoke(null, sslSocket, provider);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new InstrumentException("unable to set alpn", e);
+            throw Builder.assertionError("unable to set alpn", e);
         }
     }
 
@@ -84,7 +95,7 @@ class JdkWithJettyBootPlatform extends Platform {
         try {
             removeMethod.invoke(null, sslSocket);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new InstrumentException("unable to remove alpn", e);
+            throw Builder.assertionError("unable to remove alpn", e);
         }
     }
 
@@ -94,12 +105,13 @@ class JdkWithJettyBootPlatform extends Platform {
             JettyNegoProvider provider =
                     (JettyNegoProvider) Proxy.getInvocationHandler(getMethod.invoke(null, socket));
             if (!provider.unsupported && provider.selected == null) {
-                get().log(INFO, "ALPN callback dropped: HTTP/2 is disabled. class path?", null);
+                get().log(INFO, "ALPN callback dropped: HTTP/2 is disabled. "
+                        + "Is alpn-boot on the boot class path?", null);
                 return null;
             }
             return provider.unsupported ? null : provider.selected;
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw Internal.assertionError("unable to get selected protocol", e);
+            throw Builder.assertionError("unable to get selected protocol", e);
         }
     }
 
@@ -107,6 +119,7 @@ class JdkWithJettyBootPlatform extends Platform {
      * 处理ALPN的ClientProvider和ServerProvider的方法，而不需要在编译时依赖于这些接口
      */
     private static class JettyNegoProvider implements InvocationHandler {
+
         /**
          * 这个对等点支持的协议.
          */
@@ -129,7 +142,7 @@ class JdkWithJettyBootPlatform extends Platform {
             String methodName = method.getName();
             Class<?> returnType = method.getReturnType();
             if (args == null) {
-                args = Internal.EMPTY_STRING_ARRAY;
+                args = Normal.EMPTY_STRING_ARRAY;
             }
             if (methodName.equals("supports") && boolean.class == returnType) {
                 // ALPN支持
@@ -159,7 +172,5 @@ class JdkWithJettyBootPlatform extends Platform {
                 return method.invoke(this, args);
             }
         }
-
     }
-
 }

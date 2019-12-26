@@ -24,6 +24,7 @@
 package org.aoju.bus.socket.origin;
 
 import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -209,7 +210,7 @@ public class UdpBootstrap<Request> implements Runnable {
                             }
                         }
                     }
-                }, "UDP-Worker-" + uid + "-" + i).start();
+                }, "UDP-Worker-" + uid + Symbol.HYPHEN + i).start();
             }
         }
     }

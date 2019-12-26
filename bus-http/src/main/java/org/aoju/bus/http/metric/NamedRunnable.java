@@ -26,7 +26,7 @@ package org.aoju.bus.http.metric;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
- * Runnable implementation which always sets its thread name.
+ * 可运行的实现，它总是设置它的线程名.
  *
  * @author Kimi Liu
  * @version 5.3.6

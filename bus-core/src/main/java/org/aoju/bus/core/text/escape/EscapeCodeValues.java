@@ -229,15 +229,15 @@ public class EscapeCodeValues {
         ISO8859_1_ESCAPE_MAP.put("\u00FF", "&yuml;"); // ÿ - lowercase y, umlaut
 
         JAVA_ESCAPE.put("\b", "\\b");
-        JAVA_ESCAPE.put("\n", "\\n");
-        JAVA_ESCAPE.put("\t", "\\t");
+        JAVA_ESCAPE.put(Symbol.LF, "\\n");
+        JAVA_ESCAPE.put(Symbol.HT, "\\t");
         JAVA_ESCAPE.put("\f", "\\f");
-        JAVA_ESCAPE.put("\r", "\\r");
+        JAVA_ESCAPE.put(Symbol.CR, "\\r");
 
-        UNESCAPE_JAVA_MAP.put("\\\\", "\\");
-        UNESCAPE_JAVA_MAP.put("\\\"", "\"");
-        UNESCAPE_JAVA_MAP.put("\\'", "'");
-        UNESCAPE_JAVA_MAP.put("\\", "");
+        UNESCAPE_JAVA_MAP.put("\\\\", Symbol.BACKSLASH);
+        UNESCAPE_JAVA_MAP.put("\\\"", Symbol.DOUBLE_QUOTES);
+        UNESCAPE_JAVA_MAP.put("\\'", Symbol.SINGLE_QUOTE);
+        UNESCAPE_JAVA_MAP.put(Symbol.BACKSLASH, "");
 
         HTML40_ESCAPE_MAP.put("\u0192", "&fnof;"); // latin small f with hook = function= florin, U+0192 ISOtech
         HTML40_ESCAPE_MAP.put("\u0391", "&Alpha;"); // greek capital letter alpha, U+0391
@@ -391,20 +391,20 @@ public class EscapeCodeValues {
         HTML40_ESCAPE_MAP.put("\u2039", "&lsaquo;"); // single left-pointing angle quotation mark,U+2039 ISO proposed
         HTML40_ESCAPE_MAP.put("\u203A", "&rsaquo;"); // single right-pointing angle quotation mark,U+203A ISO proposed
         HTML40_ESCAPE_MAP.put("\u20AC", "&euro;"); // euro sign, U+20AC NEW
-        BASIC_ESCAPE_MAP.put("\"", "&quot;"); // " - double-quote
-        BASIC_ESCAPE_MAP.put("&", "&amp;");   // & - ampersand
-        BASIC_ESCAPE_MAP.put("<", "&lt;");    // < - less-than
-        BASIC_ESCAPE_MAP.put(">", "&gt;");    // > - greater-than
-        APOS_ESCAPE_MAP.put("'", "&apos;"); // XML apostrophe
-        ESCAPE_JAVA_MAP.put("\"", "\\\"");
-        ESCAPE_JAVA_MAP.put("\\", "\\\\");
-        ESCAPE_ECMASCRIPT_MAP.put("'", "\\'");
-        ESCAPE_ECMASCRIPT_MAP.put("\"", "\\\"");
-        ESCAPE_ECMASCRIPT_MAP.put("\\", "\\\\");
-        ESCAPE_ECMASCRIPT_MAP.put("/", "\\/");
-        escapeJsonMap.put("\"", "\\\"");
-        escapeJsonMap.put("\\", "\\\\");
-        escapeJsonMap.put("/", "\\/");
+        BASIC_ESCAPE_MAP.put(Symbol.DOUBLE_QUOTES, "&quot;"); // " - double-quote
+        BASIC_ESCAPE_MAP.put(Symbol.AND, "&amp;");   // & - ampersand
+        BASIC_ESCAPE_MAP.put(Symbol.LT, "&lt;");    // < - less-than
+        BASIC_ESCAPE_MAP.put(Symbol.GT, "&gt;");    // > - greater-than
+        APOS_ESCAPE_MAP.put(Symbol.SINGLE_QUOTE, "&apos;"); // XML apostrophe
+        ESCAPE_JAVA_MAP.put(Symbol.DOUBLE_QUOTES, "\\\"");
+        ESCAPE_JAVA_MAP.put(Symbol.BACKSLASH, "\\\\");
+        ESCAPE_ECMASCRIPT_MAP.put(Symbol.SINGLE_QUOTE, "\\'");
+        ESCAPE_ECMASCRIPT_MAP.put(Symbol.DOUBLE_QUOTES, "\\\"");
+        ESCAPE_ECMASCRIPT_MAP.put(Symbol.BACKSLASH, "\\\\");
+        ESCAPE_ECMASCRIPT_MAP.put(Symbol.SLASH, "\\/");
+        escapeJsonMap.put(Symbol.DOUBLE_QUOTES, "\\\"");
+        escapeJsonMap.put(Symbol.BACKSLASH, "\\\\");
+        escapeJsonMap.put(Symbol.SLASH, "\\/");
         ESCAPE_XML10_MAP.put("\u0000", Normal.EMPTY);
         ESCAPE_XML10_MAP.put("\u0001", Normal.EMPTY);
         ESCAPE_XML10_MAP.put("\u0002", Normal.EMPTY);
@@ -441,29 +441,29 @@ public class EscapeCodeValues {
         ESCAPE_XML11_MAP.put("\u000c", "&#12;");
         ESCAPE_XML11_MAP.put("\ufffe", Normal.EMPTY);
         ESCAPE_XML11_MAP.put("\uffff", Normal.EMPTY);
-        ESCAPE_XSI_MAP.put("|", "\\|");
-        ESCAPE_XSI_MAP.put("&", "\\&");
-        ESCAPE_XSI_MAP.put(";", "\\;");
-        ESCAPE_XSI_MAP.put("<", "\\<");
-        ESCAPE_XSI_MAP.put(">", "\\>");
-        ESCAPE_XSI_MAP.put("(", "\\(");
-        ESCAPE_XSI_MAP.put(")", "\\)");
-        ESCAPE_XSI_MAP.put("$", "\\$");
+        ESCAPE_XSI_MAP.put(Symbol.OR, "\\|");
+        ESCAPE_XSI_MAP.put(Symbol.AND, "\\&");
+        ESCAPE_XSI_MAP.put(Symbol.SEMICOLON, "\\;");
+        ESCAPE_XSI_MAP.put(Symbol.LT, "\\<");
+        ESCAPE_XSI_MAP.put(Symbol.GT, "\\>");
+        ESCAPE_XSI_MAP.put(Symbol.PARENTHESE_LEFT, "\\(");
+        ESCAPE_XSI_MAP.put(Symbol.PARENTHESE_RIGHT, "\\)");
+        ESCAPE_XSI_MAP.put(Symbol.DOLLAR, "\\$");
         ESCAPE_XSI_MAP.put("`", "\\`");
-        ESCAPE_XSI_MAP.put("\\", "\\\\");
-        ESCAPE_XSI_MAP.put("\"", "\\\"");
-        ESCAPE_XSI_MAP.put("'", "\\'");
-        ESCAPE_XSI_MAP.put(" ", "\\ ");
-        ESCAPE_XSI_MAP.put("\t", "\\\t");
-        ESCAPE_XSI_MAP.put("\r\n", "");
-        ESCAPE_XSI_MAP.put("\n", "");
-        ESCAPE_XSI_MAP.put("*", "\\*");
-        ESCAPE_XSI_MAP.put("?", "\\?");
-        ESCAPE_XSI_MAP.put("[", "\\[");
-        ESCAPE_XSI_MAP.put("#", "\\#");
-        ESCAPE_XSI_MAP.put("~", "\\~");
-        ESCAPE_XSI_MAP.put("=", "\\=");
-        ESCAPE_XSI_MAP.put("%", "\\%");
+        ESCAPE_XSI_MAP.put(Symbol.BACKSLASH, "\\\\");
+        ESCAPE_XSI_MAP.put(Symbol.DOUBLE_QUOTES, "\\\"");
+        ESCAPE_XSI_MAP.put(Symbol.SINGLE_QUOTE, "\\'");
+        ESCAPE_XSI_MAP.put(Symbol.SPACE, "\\ ");
+        ESCAPE_XSI_MAP.put(Symbol.HT, "\\\t");
+        ESCAPE_XSI_MAP.put(Symbol.CRLF, "");
+        ESCAPE_XSI_MAP.put(Symbol.LF, "");
+        ESCAPE_XSI_MAP.put(Symbol.STAR, "\\*");
+        ESCAPE_XSI_MAP.put(Symbol.QUESTION_MARK, "\\?");
+        ESCAPE_XSI_MAP.put(Symbol.BRACKET_LEFT, "\\[");
+        ESCAPE_XSI_MAP.put(Symbol.SHAPE, "\\#");
+        ESCAPE_XSI_MAP.put(Symbol.TILDE, "\\~");
+        ESCAPE_XSI_MAP.put(Symbol.EQUAL, "\\=");
+        ESCAPE_XSI_MAP.put(Symbol.PERCENT, "\\%");
 
         ISO8859_1_ESCAPE = Collections.unmodifiableMap(ISO8859_1_ESCAPE_MAP);
         ISO8859_1_UNESCAPE = Collections.unmodifiableMap(invert(ISO8859_1_ESCAPE));

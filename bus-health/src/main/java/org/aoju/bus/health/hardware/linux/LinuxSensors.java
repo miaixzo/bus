@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.hardware.AbstractSensors;
@@ -224,7 +225,7 @@ public class LinuxSensors extends AbstractSensors {
                 return fanSpeeds;
             }
         }
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     @Override

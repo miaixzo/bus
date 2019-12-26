@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -200,7 +201,7 @@ public class PatternUtils {
         if (matcher.find()) {
             for (String var : varNums) {
                 int group = Integer.parseInt(var);
-                template = template.replace("$" + var, matcher.group(group));
+                template = template.replace(Symbol.DOLLAR + var, matcher.group(group));
             }
             return template;
         }
@@ -527,7 +528,7 @@ public class PatternUtils {
                 String replacement = replacementTemplate;
                 for (String var : varNums) {
                     int group = Integer.parseInt(var);
-                    replacement = replacement.replace("$" + var, matcher.group(group));
+                    replacement = replacement.replace(Symbol.DOLLAR + var, matcher.group(group));
                 }
                 matcher.appendReplacement(sb, escape(replacement));
                 result = matcher.find();
@@ -547,7 +548,7 @@ public class PatternUtils {
     public static String escape(char c) {
         final StringBuilder builder = new StringBuilder();
         if (RegEx.RE_KEYS.contains(c)) {
-            builder.append('\\');
+            builder.append(Symbol.C_BACKSLASH);
         }
         builder.append(c);
         return builder.toString();
@@ -570,7 +571,7 @@ public class PatternUtils {
         for (int i = 0; i < len; i++) {
             current = content.charAt(i);
             if (RegEx.RE_KEYS.contains(current)) {
-                builder.append('\\');
+                builder.append(Symbol.C_BACKSLASH);
             }
             builder.append(current);
         }

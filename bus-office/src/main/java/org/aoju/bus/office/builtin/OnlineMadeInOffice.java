@@ -24,6 +24,7 @@
 package org.aoju.bus.office.builtin;
 
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Request;
@@ -78,15 +79,15 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
                     // 添加所有FilterData属性
                     for (final Map.Entry<String, Object> fdentry : ((Map<String, Object>) value).entrySet()) {
                         urlBuilder.append(parameterPrefix + Builder.FILTER_DATA_PREFIX_PARAM + fdentry.getKey())
-                                .append("=")
+                                .append(Symbol.EQUAL)
                                 .append(fdentry.getValue().toString())
-                                .append("&");
+                                .append(Symbol.AND);
                     }
                 } else if (value instanceof String || value.getClass().isPrimitive()) {
                     urlBuilder.append(parameterPrefix + key)
-                            .append("=")
+                            .append(Symbol.EQUAL)
                             .append(value.toString())
-                            .append("&");
+                            .append(Symbol.AND);
                 }
             }
         }
@@ -116,7 +117,7 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
 
                 // 将响应保存到目标文件中.
                 final RequestBuilder requestBuilder = onlineOfficeContextAware.getRequestBuilder();
-                StringBuilder urlBuilder = new StringBuilder(buildUrl(requestBuilder.getUrl())).append("?");
+                StringBuilder urlBuilder = new StringBuilder(buildUrl(requestBuilder.getUrl())).append(Symbol.QUESTION_MARK);
 
                 // 我们假设服务器支持自定义加载属性，但是LibreOffice不支持自定义加载属性，只有示例web服务支持.
                 addPropertiesToBuilder(
@@ -146,7 +147,7 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
     }
 
     private String buildUrl(final String connectionUrl) {
-        return StringUtils.appendIfMissing(connectionUrl, "/") + target.getFormat().getExtension();
+        return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH) + target.getFormat().getExtension();
     }
 
 }

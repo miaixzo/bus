@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
 /**
@@ -39,7 +40,7 @@ public abstract class AbstractVirtualMemory implements VirtualMemory {
         StringBuilder sb = new StringBuilder();
         sb.append("Used: ");
         sb.append(Builder.formatBytes(getSwapUsed()));
-        sb.append("/");
+        sb.append(Symbol.SLASH);
         sb.append(Builder.formatBytes(getSwapTotal()));
         return sb.toString();
     }

@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
 /**
@@ -340,9 +341,9 @@ public class HWPartition implements Comparable<HWPartition> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getIdentification()).append(": ");
-        sb.append(getName()).append(" ");
-        sb.append("(").append(getType()).append(") ");
-        sb.append("Maj:Min=").append(getMajor()).append(":").append(getMinor()).append(", ");
+        sb.append(getName()).append(Symbol.SPACE);
+        sb.append(Symbol.PARENTHESE_LEFT).append(getType()).append(") ");
+        sb.append("Maj:Min=").append(getMajor()).append(Symbol.COLON).append(getMinor()).append(", ");
         sb.append("size: ").append(Builder.formatBytesDecimal(getSize()));
         sb.append(getMountPoint().isEmpty() ? "" : " @ " + getMountPoint());
         return sb.toString();

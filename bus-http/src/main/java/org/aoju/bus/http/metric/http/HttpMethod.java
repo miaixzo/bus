@@ -23,7 +23,11 @@
  */
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.lang.Http;
+
 /**
+ * Http请求方法
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
@@ -34,19 +38,20 @@ public final class HttpMethod {
     }
 
     public static boolean invalidatesCache(String method) {
-        return method.equals("POST")
-                || method.equals("PATCH")
-                || method.equals("PUT")
-                || method.equals("DELETE")
-                || method.equals("MOVE");     // WebDAV
+        return Http.POST.equals(method)
+                || Http.PUT.equals(method)
+                || Http.PATCH.equals(method)
+                || Http.DELETE.equals(method)
+                || Http.MOVE.equals(method);
     }
 
     public static boolean requiresRequestBody(String method) {
-        return method.equals("POST")
-                || method.equals("PUT")
-                || method.equals("PATCH")
-                || method.equals("PROPPATCH") // WebDAV
-                || method.equals("REPORT");   // CalDAV/CardDAV (defined in WebDAV Versioning)
+        return Http.POST.equals(method)
+                || Http.PUT.equals(method)
+                || Http.PATCH.equals(method)
+                || Http.PROPPATCH.equals(method)
+                || Http.REPORT.equals(method);
+
     }
 
     public static boolean permitsRequestBody(String method) {
@@ -54,11 +59,13 @@ public final class HttpMethod {
     }
 
     public static boolean redirectsWithBody(String method) {
-        return method.equals("PROPFIND"); // (WebDAV) redirects should also maintain the request body
+        // (WebDAV)重定向还应该维护请求体
+        return Http.PROPFIND.equals(method);
     }
 
     public static boolean redirectsToGet(String method) {
-        // All requests but PROPFIND should redirect to a GET request.
-        return !method.equals("PROPFIND");
+        // 除了PROPFIND之外的所有请求都应该重定向到GET请求.
+        return !Http.PROPFIND.equals(method);
     }
+
 }

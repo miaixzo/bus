@@ -24,11 +24,12 @@
 package org.aoju.bus.http.secure;
 
 import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.nio.charset.Charset;
 
 /**
- * Factory for HTTP authorization credentials.
+ * HTTP授权工厂
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -39,12 +40,19 @@ public final class Credentials {
     private Credentials() {
     }
 
+    /**
+     * 返回基本方案的验证凭据
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return 验证凭据
+     */
     public static String basic(String username, String password) {
         return basic(username, password, org.aoju.bus.core.lang.Charset.ISO_8859_1);
     }
 
     public static String basic(String username, String password, Charset charset) {
-        String usernameAndPassword = username + ":" + password;
+        String usernameAndPassword = username + Symbol.COLON + password;
         String encoded = ByteString.encodeString(usernameAndPassword, charset).base64();
         return "Basic " + encoded;
     }

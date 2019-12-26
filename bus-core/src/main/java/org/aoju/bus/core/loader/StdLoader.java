@@ -62,8 +62,8 @@ public class StdLoader extends ResourceLoader implements Loader {
     }
 
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) throws IOException {
-        while (path.startsWith("/")) path = path.substring(1);
-        while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
+        while (path.startsWith(Symbol.SLASH)) path = path.substring(1);
+        while (path.endsWith(Symbol.SLASH)) path = path.substring(0, path.length() - 1);
         return new Enumerator(classLoader, path, recursively, filter != null ? filter : Filters.ALWAYS);
     }
 

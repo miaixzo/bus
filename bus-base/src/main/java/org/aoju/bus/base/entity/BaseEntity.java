@@ -27,6 +27,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -118,7 +119,7 @@ public class BaseEntity extends Tracer {
             return false;
         }
         Object value = ReflectUtils.getFieldValue(entity, field);
-        return value != null && !"".equals(value);
+        return value != null && !Normal.EMPTY.equals(value);
     }
 
     /**

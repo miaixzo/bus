@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.io.segment;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.EOFException;
@@ -94,7 +95,7 @@ public final class InflaterSource implements Source {
         if (!inflater.needsInput()) return false;
 
         releaseInflatedBytes();
-        if (inflater.getRemaining() != 0) throw new IllegalStateException("?");
+        if (inflater.getRemaining() != 0) throw new IllegalStateException(Symbol.QUESTION_MARK);
 
         if (source.exhausted()) {
             return true;

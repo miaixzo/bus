@@ -27,69 +27,93 @@ import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.ByteString;
 import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.accord.*;
-import org.aoju.bus.http.bodys.RequestBody;
-import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.cache.InternalCache;
+import org.aoju.bus.http.metric.http.HttpHeaders;
 
 import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.*;
+import java.net.IDN;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
- * utility methods.
+ * 实用方法工具
  *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public abstract class Internal {
+public abstract class Builder {
 
-    public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-    public static final String[] EMPTY_STRING_ARRAY = new String[0];
-
-    public static final ResponseBody EMPTY_RESPONSE = ResponseBody.create(null, EMPTY_BYTE_ARRAY);
-    public static final RequestBody EMPTY_REQUEST = RequestBody.create(null, EMPTY_BYTE_ARRAY);
-    public static final TimeZone UTC = TimeZone.getTimeZone("GMT");
-    public static final Comparator<String> NATURAL_ORDER = new Comparator<String>() {
-        @Override
-        public int compare(String a, String b) {
-            return a.compareTo(b);
-        }
-    };
-    private static final ByteString UTF_8_BOM = ByteString.decodeHex("efbbbf");
-    private static final ByteString UTF_16_BE_BOM = ByteString.decodeHex("feff");
-    private static final ByteString UTF_16_LE_BOM = ByteString.decodeHex("fffe");
-    private static final ByteString UTF_32_BE_BOM = ByteString.decodeHex("0000ffff");
-    private static final ByteString UTF_32_LE_BOM = ByteString.decodeHex("ffff0000");
-    private static final Method addSuppressedExceptionMethod;
     /**
-     * Quick and dirty pattern to differentiate IP addresses from hostnames. This is an approximation
-     * of Android's private InetAddress#isNumeric API.
-     *
-     * <p>This matches IPv6 addresses as a hex string containing at least first colon, and possibly
-     * including dots after the first colon. It matches IPv4 addresses as strings containing only
-     * decimal digits and dots. This pattern matches strings like "a:.23" and "54" that are neither IP
-     * addresses nor hostnames; they will be verified as IP addresses (which is a more strict
-     * verification).
+     * 最后一个四位数的年份:"Fri, 31 Dec 9999 23:59:59 GMT".
      */
-    private static final Pattern VERIFY_AS_IP_ADDRESS = Pattern.compile(
-            "([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)");
-    public static Internal instance;
+    public static final long MAX_DATE = 253402300799999L;
+    public static final String X_509 = "X.509";
+    public static final TimeZone UTC = TimeZone.getTimeZone("GMT");
+    public static final ByteString UTF_8_BOM = ByteString.decodeHex("efbbbf");
+    public static final ByteString UTF_16_BE_BOM = ByteString.decodeHex("feff");
+    public static final ByteString UTF_16_LE_BOM = ByteString.decodeHex("fffe");
+    public static final ByteString UTF_32_BE_BOM = ByteString.decodeHex("0000ffff");
+    public static final ByteString UTF_32_LE_BOM = ByteString.decodeHex("ffff0000");
+    public static final Method addSuppressedExceptionMethod;
+    /**
+     * 大多数网站都提供祝福格式的cookies。创建解析器，以确保此类cookie处于快速路径上
+     */
+    public static final ThreadLocal<DateFormat> STANDARD_DATE_FORMAT =
+            new ThreadLocal<DateFormat>() {
+                @Override
+                protected DateFormat initialValue() {
+                    DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+                    rfc1123.setLenient(false);
+                    rfc1123.setTimeZone(Builder.UTC);
+                    return rfc1123;
+                }
+            };
+
+    /**
+     * 如果我们未能以非标准格式解析日期，请依次尝试这些格式.
+     */
+    public static final String[] BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS = new String[]{
+            "EEE, dd MMM yyyy HH:mm:ss zzz",
+            "EEEE, dd-MMM-yy HH:mm:ss zzz",
+            "EEE MMM d HH:mm:ss yyyy",
+            "EEE, dd-MMM-yyyy HH:mm:ss z",
+            "EEE, dd-MMM-yyyy HH-mm-ss z",
+            "EEE, dd MMM yy HH:mm:ss z",
+            "EEE dd-MMM-yyyy HH:mm:ss z",
+            "EEE dd MMM yyyy HH:mm:ss z",
+            "EEE dd-MMM-yyyy HH-mm-ss z",
+            "EEE dd-MMM-yy HH:mm:ss z",
+            "EEE dd MMM yy HH:mm:ss z",
+            "EEE,dd-MMM-yy HH:mm:ss z",
+            "EEE,dd-MMM-yyyy HH:mm:ss z",
+            "EEE, dd-MM-yyyy HH:mm:ss z",
+            "EEE MMM d yyyy HH:mm:ss z",
+    };
+
+    public static final DateFormat[] BROWSER_COMPATIBLE_DATE_FORMATS =
+            new DateFormat[BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length];
+
+    /**
+     * 快速和正则模式区分IP地址从主机名，这是Android私有的InetAddress#isNumeric API的近似值
+     */
+    public static final Pattern VERIFY_AS_IP_ADDRESS = Pattern.compile("([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)");
+    public static Builder instance;
 
     static {
         Method m;
@@ -99,6 +123,42 @@ public abstract class Internal {
             m = null;
         }
         addSuppressedExceptionMethod = m;
+    }
+
+    public Builder() {
+
+    }
+
+    public static Date parse(String value) {
+        if (value.length() == 0) {
+            return null;
+        }
+
+        ParsePosition position = new ParsePosition(0);
+        Date result = STANDARD_DATE_FORMAT.get().parse(value, position);
+        if (position.getIndex() == value.length()) {
+            return result;
+        }
+        synchronized (BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS) {
+            for (int i = 0, count = BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length; i < count; i++) {
+                DateFormat format = BROWSER_COMPATIBLE_DATE_FORMATS[i];
+                if (format == null) {
+                    format = new SimpleDateFormat(BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS[i], Locale.US);
+                    format.setTimeZone(Builder.UTC);
+                    BROWSER_COMPATIBLE_DATE_FORMATS[i] = format;
+                }
+                position.setIndex(0);
+                result = format.parse(value, position);
+                if (position.getIndex() != 0) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String format(Date value) {
+        return STANDARD_DATE_FORMAT.get().format(value);
     }
 
     public static void initializeInstanceForTests() {
@@ -117,45 +177,6 @@ public abstract class Internal {
     public static void checkOffsetAndCount(long arrayLength, long offset, long count) {
         if ((offset | count) < 0 || offset > arrayLength || arrayLength - offset < count) {
             throw new ArrayIndexOutOfBoundsException();
-        }
-    }
-
-    public static boolean equal(Object a, Object b) {
-        return a == b || (a != null && a.equals(b));
-    }
-
-    public static void closeQuietly(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (RuntimeException rethrown) {
-                throw rethrown;
-            } catch (Exception ignored) {
-            }
-        }
-    }
-
-    public static void closeQuietly(Socket socket) {
-        if (socket != null) {
-            try {
-                socket.close();
-            } catch (AssertionError e) {
-                if (!isAndroidGetsocknameError(e)) throw e;
-            } catch (RuntimeException rethrown) {
-                throw rethrown;
-            } catch (Exception ignored) {
-            }
-        }
-    }
-
-    public static void closeQuietly(ServerSocket serverSocket) {
-        if (serverSocket != null) {
-            try {
-                serverSocket.close();
-            } catch (RuntimeException rethrown) {
-                throw rethrown;
-            } catch (Exception ignored) {
-            }
         }
     }
 
@@ -178,9 +199,9 @@ public abstract class Internal {
             while (source.read(skipBuffer, 8192) != -1) {
                 skipBuffer.clear();
             }
-            return true; // Success! The source has been exhausted.
+            return true;
         } catch (InterruptedIOException e) {
-            return false; // We ran out of time before exhausting the source.
+            return false;
         } finally {
             if (originalDuration == Long.MAX_VALUE) {
                 source.timeout().clearDeadline();
@@ -245,11 +266,11 @@ public abstract class Internal {
     }
 
     public static String hostHeader(UnoUrl url, boolean includeDefaultPort) {
-        String host = url.host().contains(":")
-                ? "[" + url.host() + "]"
+        String host = url.host().contains(Symbol.COLON)
+                ? Symbol.BRACKET_LEFT + url.host() + Symbol.BRACKET_RIGHT
                 : url.host();
         return includeDefaultPort || url.port() != UnoUrl.defaultPort(url.scheme())
-                ? host + ":" + url.port()
+                ? host + Symbol.COLON + url.port()
                 : host;
     }
 
@@ -275,11 +296,11 @@ public abstract class Internal {
     public static int skipLeadingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = pos; i < limit; i++) {
             switch (input.charAt(i)) {
-                case '\t':
-                case '\n':
+                case Symbol.C_HT:
+                case Symbol.C_LF:
                 case '\f':
-                case '\r':
-                case ' ':
+                case Symbol.C_CR:
+                case Symbol.C_SPACE:
                     continue;
                 default:
                     return i;
@@ -291,11 +312,11 @@ public abstract class Internal {
     public static int skipTrailingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = limit - 1; i >= pos; i--) {
             switch (input.charAt(i)) {
-                case '\t':
-                case '\n':
+                case Symbol.C_HT:
+                case Symbol.C_LF:
                 case '\f':
-                case '\r':
-                case ' ':
+                case Symbol.C_CR:
+                case Symbol.C_SPACE:
                     continue;
                 default:
                     return i + 1;
@@ -325,27 +346,23 @@ public abstract class Internal {
     }
 
     public static String canonicalizeHost(String host) {
-        // If the input contains a :, it’s an IPv6 address.
-        if (host.contains(":")) {
-            // If the input is encased in square braces "[...]", drop 'em.
-            InetAddress inetAddress = host.startsWith("[") && host.endsWith("]")
+        if (host.contains(Symbol.COLON)) {
+            InetAddress inetAddress = host.startsWith(Symbol.BRACKET_LEFT) && host.endsWith(Symbol.BRACKET_RIGHT)
                     ? decodeIpv6(host, 1, host.length() - 1)
                     : decodeIpv6(host, 0, host.length());
             if (inetAddress == null) return null;
             byte[] address = inetAddress.getAddress();
             if (address.length == 16) return inet6AddressToAscii(address);
-            throw new AssertionError("Invalid IPv6 address: '" + host + "'");
+            throw new AssertionError("Invalid IPv6 address: '" + host + Symbol.SINGLE_QUOTE);
         }
 
         try {
             String result = IDN.toASCII(host).toLowerCase(Locale.US);
             if (result.isEmpty()) return null;
 
-            // Confirm that the IDN ToASCII result doesn't contain any illegal characters.
             if (containsInvalidHostnameAsciiCodes(result)) {
                 return null;
             }
-            // TODO: implement all label limits.
             return result;
         } catch (IllegalArgumentException e) {
             return null;
@@ -355,15 +372,10 @@ public abstract class Internal {
     private static boolean containsInvalidHostnameAsciiCodes(String hostnameAscii) {
         for (int i = 0; i < hostnameAscii.length(); i++) {
             char c = hostnameAscii.charAt(i);
-            // The WHATWG Host parsing rules accepts some character codes which are invalid by
-            // definition for HttpClient's host header checks (and the WHATWG Host syntax definition). Here
-            // we rule out characters that would cause problems in host headers.
             if (c <= '\u001f' || c >= '\u007f') {
                 return true;
             }
-            // Check for the characters mentioned in the WHATWG Host parsing spec:
-            // U+0000, U+0009, U+000A, U+000D, U+0020, "#", "%", "/", ":", "?", "@", "[", "\", and "]"
-            // (excluding the characters covered above).
+
             if (" #%/:?@[\\]".indexOf(c) != -1) {
                 return true;
             }
@@ -423,13 +435,12 @@ public abstract class Internal {
         try {
             assertionError.initCause(e);
         } catch (IllegalStateException ise) {
-            // ignored, shouldn't happen
         }
         return assertionError;
     }
 
     public static int decodeHexDigit(char c) {
-        if (c >= '0' && c <= '9') return c - '0';
+        if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) return c - Symbol.C_ZERO;
         if (c >= 'a' && c <= 'f') return c - 'a' + 10;
         if (c >= 'A' && c <= 'F') return c - 'A' + 10;
         return -1;
@@ -442,31 +453,27 @@ public abstract class Internal {
         int groupOffset = -1;
 
         for (int i = pos; i < limit; ) {
-            if (b == address.length) return null; // Too many groups.
+            if (b == address.length) return null;
 
-            // Read a delimiter.
             if (i + 2 <= limit && input.regionMatches(i, "::", 0, 2)) {
-                // Compression "::" delimiter, which is anywhere in the input, including its prefix.
-                if (compress != -1) return null; // Multiple "::" delimiters.
+                if (compress != -1) return null;
                 i += 2;
                 b += 2;
                 compress = b;
                 if (i == limit) break;
             } else if (b != 0) {
-                // Group separator ":" delimiter.
-                if (input.regionMatches(i, ":", 0, 1)) {
+                if (input.regionMatches(i, Symbol.COLON, 0, 1)) {
                     i++;
-                } else if (input.regionMatches(i, ".", 0, 1)) {
+                } else if (input.regionMatches(i, Symbol.DOT, 0, 1)) {
                     // If we see a '.', rewind to the beginning of the previous group and parse as IPv4.
                     if (!decodeIpv4Suffix(input, groupOffset, limit, address, b - 2)) return null;
-                    b += 2; // We rewound two bytes and then added four.
+                    b += 2;
                     break;
                 } else {
-                    return null; // Wrong delimiter.
+                    return null;
                 }
             }
 
-            // Read a group, first to four hex digits.
             int value = 0;
             groupOffset = i;
             for (; i < limit; i++) {
@@ -476,24 +483,14 @@ public abstract class Internal {
                 value = (value << 4) + hexDigit;
             }
             int groupLength = i - groupOffset;
-            if (groupLength == 0 || groupLength > 4) return null; // Group is the wrong size.
+            if (groupLength == 0 || groupLength > 4) return null;
 
-            // We've successfully read a group. Assign its value to our byte array.
             address[b++] = (byte) ((value >>> 8) & 0xff);
             address[b++] = (byte) (value & 0xff);
         }
 
-        // All done. If compression happened, we need to move bytes to the right place in the
-        // address. Here's a sample:
-        //
-        //      input: "1111:2222:3333::7777:8888"
-        //     before: { 11, 11, 22, 22, 33, 33, 00, 00, 77, 77, 88, 88, 00, 00, 00, 00  }
-        //   compress: 6
-        //          b: 10
-        //      after: { 11, 11, 22, 22, 33, 33, 00, 00, 00, 00, 00, 00, 77, 77, 88, 88 }
-        //
         if (b != address.length) {
-            if (compress == -1) return null; // Address didn't have compression or enough groups.
+            if (compress == -1) return null;
             System.arraycopy(address, compress, address, address.length - (b - compress), b - compress);
             Arrays.fill(address, compress, compress + (address.length - b), (byte) 0);
         }
@@ -510,39 +507,38 @@ public abstract class Internal {
         int b = addressOffset;
 
         for (int i = pos; i < limit; ) {
-            if (b == address.length) return false; // Too many groups.
+            if (b == address.length) return false;
 
             // Read a delimiter.
             if (b != addressOffset) {
-                if (input.charAt(i) != '.') return false; // Wrong delimiter.
+                if (input.charAt(i) != Symbol.C_DOT) return false;
                 i++;
             }
 
-            // Read 1 or more decimal digits for a value in 0..255.
             int value = 0;
             int groupOffset = i;
             for (; i < limit; i++) {
                 char c = input.charAt(i);
-                if (c < '0' || c > '9') break;
-                if (value == 0 && groupOffset != i) return false; // Reject unnecessary leading '0's.
-                value = (value * 10) + c - '0';
-                if (value > 255) return false; // Value out of range.
+                if (c < Symbol.C_ZERO || c > Symbol.C_NINE) break;
+                if (value == 0 && groupOffset != i) return false;
+                value = (value * 10) + c - Symbol.C_ZERO;
+                if (value > 255) return false;
             }
             int groupLength = i - groupOffset;
-            if (groupLength == 0) return false; // No digits.
+            if (groupLength == 0) return false;
 
-            // We've successfully read a byte.
             address[b++] = (byte) value;
         }
 
-        if (b != addressOffset + 4) return false; // Too few groups. We wanted exactly four.
-        return true; // Success.
+        if (b != addressOffset + 4) return false;
+
+        return true;
     }
 
+    /**
+     * Encodes an IPv6 address in canonical form according to RFC 5952.
+     */
     private static String inet6AddressToAscii(byte[] address) {
-        // Go through the address looking for the longest run of 0s. Each group is 2-bytes.
-        // A run must be longer than first group (section 4.2.2).
-        // If there are multiple equal runs, the first first must be used (section 4.2.3).
         int longestRunOffset = -1;
         int longestRunLength = 0;
         for (int i = 0; i < address.length; i += 2) {
@@ -557,15 +553,14 @@ public abstract class Internal {
             }
         }
 
-        // Emit each 2-byte group in hex, separated by ':'. The longest run of zeroes is "::".
         Buffer result = new Buffer();
         for (int i = 0; i < address.length; ) {
             if (i == longestRunOffset) {
-                result.writeByte(':');
+                result.writeByte(Symbol.C_COLON);
                 i += longestRunLength;
-                if (i == 16) result.writeByte(':');
+                if (i == 16) result.writeByte(Symbol.C_COLON);
             } else {
-                if (i > 0) result.writeByte(':');
+                if (i > 0) result.writeByte(Symbol.C_COLON);
                 int group = (address[i] & 0xff) << 8 | address[i + 1] & 0xff;
                 result.writeHexadecimalUnsignedLong(group);
                 i += 2;
@@ -574,60 +569,59 @@ public abstract class Internal {
         return result.readUtf8();
     }
 
-    public static X509TrustManager platformTrustManager() {
-        try {
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
-                    TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init((KeyStore) null);
-            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-                throw new IllegalStateException("Unexpected default trust managers:"
-                        + Arrays.toString(trustManagers));
-            }
-            return (X509TrustManager) trustManagers[0];
-        } catch (GeneralSecurityException e) {
-            throw assertionError("No System TLS", e); // The system has no TLS. Just give up.
-        }
-    }
-
-    public static Header toHeaders(List<org.aoju.bus.http.metric.http.Header> headerBlock) {
-        Header.Builder builder = new Header.Builder();
-        for (org.aoju.bus.http.metric.http.Header header : headerBlock) {
-            Internal.instance.addLenient(builder, header.name.utf8(), header.value.utf8());
+    public static Headers toHeaders(List<HttpHeaders> headersBlock) {
+        Headers.Builder builder = new Headers.Builder();
+        for (HttpHeaders headers : headersBlock) {
+            Builder.instance.addLenient(builder, headers.name.utf8(), headers.value.utf8());
         }
         return builder.build();
     }
 
-    public abstract void addLenient(Header.Builder builder, String line);
+    public abstract void addLenient(Headers.Builder builder,
+                                    String line);
 
-    public abstract void addLenient(Header.Builder builder, String name, String value);
+    public abstract void addLenient(Headers.Builder builder,
+                                    String name,
+                                    String value);
 
-    public abstract void setCache(Httpd.Builder builder, InternalCache internalCache);
+    public abstract void setCache(Httpd.Builder builder,
+                                  InternalCache internalCache);
 
-    public abstract RealConnection get(ConnectPool pool, Address address,
-                                       StreamAllocation streamAllocation, Route route);
+    public abstract RealConnection get(ConnectionPool pool,
+                                       Address address,
+                                       StreamAllocation streamAllocation,
+                                       Route route);
 
-    public abstract boolean equalsNonHost(Address a, Address b);
+    public abstract boolean equalsNonHost(Address a,
+                                          Address b);
 
     public abstract Socket deduplicate(
-            ConnectPool pool, Address address, StreamAllocation streamAllocation);
+            ConnectionPool pool,
+            Address address,
+            StreamAllocation streamAllocation);
 
-    public abstract void put(ConnectPool pool, RealConnection connection);
+    public abstract void put(ConnectionPool pool,
+                             RealConnection connection);
 
-    public abstract boolean connectionBecameIdle(ConnectPool pool, RealConnection connection);
+    public abstract boolean connectionBecameIdle(ConnectionPool pool,
+                                                 RealConnection connection);
 
-    public abstract RouteDatabase routeDatabase(ConnectPool connectPool);
+    public abstract RouteDatabase routeDatabase(ConnectionPool connectionPool);
 
     public abstract int code(Response.Builder responseBuilder);
 
-    public abstract void apply(ConnectSuite tlsConfiguration, SSLSocket sslSocket,
+    public abstract void apply(ConnectionSuite tlsConfiguration,
+                               SSLSocket sslSocket,
                                boolean isFallback);
 
     public abstract boolean isInvalidHttpUrlHost(IllegalArgumentException e);
 
     public abstract StreamAllocation streamAllocation(NewCall call);
 
-    public abstract IOException timeoutExit(NewCall call, IOException e);
+    public abstract IOException timeoutExit(NewCall call,
+                                            IOException e);
 
-    public abstract NewCall newWebSocketCall(Httpd httpd, Request request);
+    public abstract NewCall newWebSocketCall(Httpd client,
+                                             Request request);
+
 }

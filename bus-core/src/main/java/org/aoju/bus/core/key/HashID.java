@@ -23,6 +23,9 @@
  */
 package org.aoju.bus.core.key;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -90,7 +93,7 @@ public class HashID {
                     "alphabet must contain at least " + MIN_ALPHABET_LENGTH + " unique characters");
         }
 
-        if (alphabet.contains(" ")) {
+        if (alphabet.contains(Symbol.SPACE)) {
             throw new IllegalArgumentException("alphabet cannot contains spaces");
         }
 
@@ -100,9 +103,9 @@ public class HashID {
         for (int i = 0; i < seps.length(); i++) {
             final int j = alphabet.indexOf(seps.charAt(i));
             if (j == -1) {
-                seps = seps.substring(0, i) + " " + seps.substring(i + 1);
+                seps = seps.substring(0, i) + Symbol.SPACE + seps.substring(i + 1);
             } else {
-                alphabet = alphabet.substring(0, j) + " " + alphabet.substring(j + 1);
+                alphabet = alphabet.substring(0, j) + Symbol.SPACE + alphabet.substring(j + 1);
             }
         }
 
@@ -235,13 +238,13 @@ public class HashID {
      */
     public long[] decode(String hash) {
         if (hash.isEmpty()) {
-            return new long[0];
+            return Normal.EMPTY_LONG_ARRAY;
         }
 
         String validChars = this.alphabet + this.guards + this.seps;
         for (int i = 0; i < hash.length(); i++) {
             if (validChars.indexOf(hash.charAt(i)) == -1) {
-                return new long[0];
+                return Normal.EMPTY_LONG_ARRAY;
             }
         }
 
@@ -263,7 +266,7 @@ public class HashID {
         final Matcher matcher = PATTERN.matcher(hexa);
 
         while (matcher.find()) {
-            matched.add(Long.parseLong("1" + matcher.group(), 16));
+            matched.add(Long.parseLong(Symbol.ONE + matcher.group(), 16));
         }
 
         // conversion
@@ -360,9 +363,9 @@ public class HashID {
         final ArrayList<Long> ret = new ArrayList<>();
         String shuffle = alphabet;
         int i = 0;
-        final String regexp = "[" + this.guards + "]";
-        String hashBreakdown = hash.replaceAll(regexp, " ");
-        String[] hashArray = hashBreakdown.split(" ");
+        final String regexp = Symbol.BRACKET_LEFT + this.guards + Symbol.BRACKET_RIGHT;
+        String hashBreakdown = hash.replaceAll(regexp, Symbol.SPACE);
+        String[] hashArray = hashBreakdown.split(Symbol.SPACE);
 
         if (hashArray.length == 3 || hashArray.length == 2) {
             i = 1;
@@ -374,8 +377,8 @@ public class HashID {
                 final char lottery = hashBreakdown.charAt(0);
 
                 hashBreakdown = hashBreakdown.substring(1);
-                hashBreakdown = hashBreakdown.replaceAll("[" + this.seps + "]", " ");
-                hashArray = hashBreakdown.split(" ");
+                hashBreakdown = hashBreakdown.replaceAll(Symbol.BRACKET_LEFT + this.seps + Symbol.BRACKET_RIGHT, Symbol.SPACE);
+                hashArray = hashBreakdown.split(Symbol.SPACE);
 
                 String subHash, buffer;
                 for (final String aHashArray : hashArray) {
@@ -394,7 +397,7 @@ public class HashID {
         }
 
         if (!this.encode(arr).equals(hash)) {
-            arr = new long[0];
+            arr = Normal.EMPTY_LONG_ARRAY;
         }
 
         return arr;

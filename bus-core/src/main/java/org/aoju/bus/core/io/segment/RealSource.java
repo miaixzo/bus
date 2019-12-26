@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.io.segment;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.EOFException;
@@ -247,7 +248,7 @@ public final class RealSource implements BufferSource {
 
     @Override
     public String readUtf8Line() throws IOException {
-        long newline = indexOf((byte) '\n');
+        long newline = indexOf((byte) Symbol.C_LF);
 
         if (newline == -1) {
             return buffer.size != 0 ? readUtf8(buffer.size) : null;
@@ -265,11 +266,11 @@ public final class RealSource implements BufferSource {
     public String readUtf8LineStrict(long limit) throws IOException {
         if (limit < 0) throw new IllegalArgumentException("limit < 0: " + limit);
         long scanLength = limit == Long.MAX_VALUE ? Long.MAX_VALUE : limit + 1;
-        long newline = indexOf((byte) '\n', 0, scanLength);
+        long newline = indexOf((byte) Symbol.C_LF, 0, scanLength);
         if (newline != -1) return buffer.readUtf8Line(newline);
         if (scanLength < Long.MAX_VALUE
-                && request(scanLength) && buffer.getByte(scanLength - 1) == '\r'
-                && request(scanLength + 1) && buffer.getByte(scanLength) == '\n') {
+                && request(scanLength) && buffer.getByte(scanLength - 1) == Symbol.C_CR
+                && request(scanLength + 1) && buffer.getByte(scanLength) == Symbol.C_LF) {
             return buffer.readUtf8Line(scanLength); // The line was 'limit' UTF-8 bytes followed by \r\n.
         }
         Buffer data = new Buffer();
@@ -336,7 +337,7 @@ public final class RealSource implements BufferSource {
 
         for (int pos = 0; request(pos + 1); pos++) {
             byte b = buffer.getByte(pos);
-            if ((b < '0' || b > '9') && (pos != 0 || b != '-')) {
+            if ((b < Symbol.C_ZERO || b > Symbol.C_NINE) && (pos != 0 || b != Symbol.C_HYPHEN)) {
                 // Non-digit, or non-leading negative sign.
                 if (pos == 0) {
                     throw new NumberFormatException(String.format(
@@ -355,7 +356,7 @@ public final class RealSource implements BufferSource {
 
         for (int pos = 0; request(pos + 1); pos++) {
             byte b = buffer.getByte(pos);
-            if ((b < '0' || b > '9') && (b < 'a' || b > 'f') && (b < 'A' || b > 'F')) {
+            if ((b < Symbol.C_ZERO || b > Symbol.C_NINE) && (b < 'a' || b > 'f') && (b < 'A' || b > 'F')) {
                 // Non-digit, or non-leading negative sign.
                 if (pos == 0) {
                     throw new NumberFormatException(String.format(

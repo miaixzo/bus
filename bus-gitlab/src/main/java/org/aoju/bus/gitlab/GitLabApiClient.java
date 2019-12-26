@@ -1,5 +1,7 @@
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.TokenType;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.utils.JacksonJson;
@@ -29,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
@@ -192,9 +193,7 @@ public class GitLabApiClient {
      * @param clientConfigProperties the properties given to Jersey's clientconfig
      */
     public GitLabApiClient(ApiVersion apiVersion, String hostUrl, TokenType tokenType, String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
-
-        // Remove the trailing "/" from the hostUrl if present
-        this.hostUrl = (hostUrl.endsWith("/") ? hostUrl.replaceAll("/$", "") : hostUrl);
+        this.hostUrl = (hostUrl.endsWith(Symbol.SLASH) ? hostUrl.replaceAll("/$", Normal.EMPTY) : hostUrl);
         this.baseUrl = this.hostUrl;
         this.hostUrl += apiVersion.getApiNamespace();
 
@@ -322,7 +321,7 @@ public class GitLabApiClient {
         StringBuilder urlBuilder = new StringBuilder(url);
         for (Object pathArg : pathArgs) {
             if (pathArg != null) {
-                urlBuilder.append("/");
+                urlBuilder.append(Symbol.SLASH);
                 urlBuilder.append(pathArg.toString());
             }
         }

@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * An abstract Sound Card
  *
@@ -114,7 +116,7 @@ public abstract class AbstractSoundCard implements SoundCard {
         builder.append(this.name);
         builder.append(", codec=");
         builder.append(this.codec);
-        builder.append(']');
+        builder.append(Symbol.C_BRACKET_RIGHT);
         return builder.toString();
     }
 

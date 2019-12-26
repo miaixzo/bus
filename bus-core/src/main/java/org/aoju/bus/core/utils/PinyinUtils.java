@@ -65,7 +65,7 @@ public class PinyinUtils {
      */
     public static String[] convert(char c, String format) {
         String pinyin = DICT_PINYIN.getProperty(String.valueOf(c));
-        if ((pinyin != null) && (!pinyin.equals("null"))) {
+        if ((pinyin != null) && (!pinyin.equals(Normal.NULL))) {
             return format(pinyin, format);
         }
         return null;
@@ -156,7 +156,7 @@ public class PinyinUtils {
      * @return 对应拼音的首字母
      */
     public static String convert(String str) {
-        String separator = "#";
+        String separator = Symbol.SHAPE;
         StringBuilder sb = new StringBuilder();
 
         char[] charArray = new char[str.length()];
@@ -275,7 +275,7 @@ public class PinyinUtils {
                 }
             }
             if (!hasMarkedChar) {
-                pinyinArray[i] = originalPinyin + "5";
+                pinyinArray[i] = originalPinyin + Symbol.FIVE;
             }
         }
 
@@ -395,13 +395,13 @@ public class PinyinUtils {
     private static Properties getDict(String type) {
         Properties p = new Properties();
         try {
-            String path = "/" + Normal.META_DATA_INF + "/template/" + type + ".dict";
+            String path = Symbol.SLASH + Normal.META_DATA_INF + "/template/" + type + ".dict";
             InputStream is = PinyinUtils.class.getResourceAsStream(path);
             Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(reader);
             String line;
             while ((line = br.readLine()) != null) {
-                String[] tokens = line.trim().split("=");
+                String[] tokens = line.trim().split(Symbol.EQUAL);
                 p.setProperty(tokens[0], tokens[1]);
             }
             br.close();

@@ -100,9 +100,9 @@ public abstract class Builder {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         while (b != -1) {
             switch (b) {
-                case '\r':
+                case Symbol.C_CR:
                     break;
-                case '\n':
+                case Symbol.C_LF:
                     return bos.toByteArray();
                 default:
                     bos.write(b);
@@ -125,8 +125,8 @@ public abstract class Builder {
             return;
         }
         out.write(line);
-        out.write('\r');
-        out.write('\n');
+        out.write(Symbol.C_CR);
+        out.write(Symbol.C_LF);
     }
 
     /**
@@ -440,7 +440,7 @@ public abstract class Builder {
     }
 
     public static boolean isAbsolute(String path) {
-        if (path.startsWith("/")) {
+        if (path.startsWith(Symbol.SLASH)) {
             return true;
         }
         Set<File> roots = new HashSet<>();
@@ -457,7 +457,7 @@ public abstract class Builder {
     }
 
     public static String normalize(String path) {
-        return path.replaceAll("[/\\\\]+", "/");
+        return path.replaceAll("[/\\\\]+", Symbol.SLASH);
     }
 
 }

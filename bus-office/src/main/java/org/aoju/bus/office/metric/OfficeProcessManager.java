@@ -24,6 +24,7 @@
 package org.aoju.bus.office.metric;
 
 import com.sun.star.lang.DisposedException;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.thread.NamedThreadFactory;
 import org.aoju.bus.logger.Logger;
@@ -280,7 +281,7 @@ public class OfficeProcessManager {
                 throw (InstrumentException) executionEx.getCause();
             }
             throw new InstrumentException(
-                    "Failed to execute task '" + taskName + "'", executionEx.getCause());
+                    "Failed to execute task '" + taskName + Symbol.SINGLE_QUOTE, executionEx.getCause());
 
         } catch (InterruptedException interruptedEx) {
             Thread.currentThread().interrupt();

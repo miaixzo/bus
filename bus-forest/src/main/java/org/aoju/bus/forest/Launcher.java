@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.forest;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.provider.DecryptorProvider;
 import org.aoju.bus.forest.provider.EncryptorProvider;
@@ -154,7 +155,7 @@ public class Launcher {
             }
         }
 
-        if (hold == null || !Arrays.asList("true", "1", "yes", "y").contains(hold.trim().toLowerCase())) {
+        if (hold == null || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
             if (keyfile != null && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
                 throw new IOException("could not delete key file: " + keyfile.getCanonicalPath());
             }

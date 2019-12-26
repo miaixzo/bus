@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.health.software;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.logger.Logger;
 
@@ -58,7 +60,7 @@ public abstract class AbstractNetwork implements NetworkParams {
                 if (split.length < 2) {
                     return "";
                 }
-                return split[1].split("%")[0];
+                return split[1].split(Symbol.PERCENT)[0];
             }
         }
         return "";
@@ -78,7 +80,7 @@ public abstract class AbstractNetwork implements NetworkParams {
     public String getHostName() {
         try {
             String hn = InetAddress.getLocalHost().getHostName();
-            int dot = hn.indexOf('.');
+            int dot = hn.indexOf(Symbol.C_DOT);
             if (dot == -1) {
                 return hn;
             } else {
@@ -100,13 +102,13 @@ public abstract class AbstractNetwork implements NetworkParams {
             String line = resolv.get(i);
             if (line.startsWith(key)) {
                 String value = line.substring(key.length()).replaceFirst("^[ \t]+", "");
-                if (value.length() != 0 && value.charAt(0) != '#' && value.charAt(0) != ';') {
+                if (value.length() != 0 && value.charAt(0) != Symbol.C_SHAPE && value.charAt(0) != Symbol.C_SEMICOLON) {
                     String val = value.split("[ \t#;]", 2)[0];
                     servers.add(val);
                 }
             }
         }
-        return servers.toArray(new String[0]);
+        return servers.toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     @Override

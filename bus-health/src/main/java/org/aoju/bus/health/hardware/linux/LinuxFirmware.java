@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
@@ -201,7 +202,7 @@ final class LinuxFirmware extends AbstractFirmware {
             if (checkLine.contains(biosMarker)) {
                 String[] biosArr = Builder.whitespaces.split(checkLine);
                 if (biosArr.length >= 2) {
-                    biosName = biosArr[0] + " " + biosArr[1];
+                    biosName = biosArr[0] + Symbol.SPACE + biosArr[1];
                 }
             }
             if (checkLine.contains(revMarker)) {

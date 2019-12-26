@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.nio.charset.Charset;
@@ -253,7 +255,7 @@ public class Base64Encoder {
 
         int len = arr.length;
         if (len == 0) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
 
         int evenlen = (len / 3) * 3;
@@ -261,7 +263,7 @@ public class Base64Encoder {
         int destlen = cnt + (isMultiLine ? (cnt - 1) / 76 << 1 : 0);
         byte[] dest = new byte[destlen];
 
-        byte[] encodeTable = isUrlSafe ? Base64.URL_SAFE_ENCODE_TABLE : Base64.STANDARD_ENCODE_TABLE;
+        byte[] encodeTable = isUrlSafe ? Normal.URL_SAFE_ENCODE_TABLE : Normal.STANDARD_ENCODE_TABLE;
 
         for (int s = 0, d = 0, cc = 0; s < evenlen; ) {
             int i = (arr[s++] & 0xff) << 16 | (arr[s++] & 0xff) << 8 | (arr[s++] & 0xff);
@@ -272,8 +274,8 @@ public class Base64Encoder {
             dest[d++] = encodeTable[i & 0x3f];
 
             if (isMultiLine && ++cc == 19 && d < destlen - 2) {
-                dest[d++] = '\r';
-                dest[d++] = '\n';
+                dest[d++] = Symbol.C_CR;
+                dest[d++] = Symbol.C_LF;
                 cc = 0;
             }
         }
@@ -296,8 +298,8 @@ public class Base64Encoder {
                 System.arraycopy(dest, 0, urlSafeDest, 0, urlSafeLen);
                 return urlSafeDest;
             } else {
-                dest[destlen - 2] = (left == 2) ? encodeTable[i & 0x3f] : (byte) '=';
-                dest[destlen - 1] = '=';
+                dest[destlen - 2] = (left == 2) ? encodeTable[i & 0x3f] : (byte) Symbol.C_EQUAL;
+                dest[destlen - 1] = Symbol.C_EQUAL;
             }
         }
         return dest;

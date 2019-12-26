@@ -33,65 +33,120 @@ package org.aoju.bus.core.lang;
 public class Symbol {
 
     /**
-     * 字符:小数点
+     * 符号: 0
      */
-    public static final char C_DOT = '.';
-    public static final String DOT = Normal.EMPTY + C_DOT;
-    public static final String DOUBLE_DOT = Normal.EMPTY + C_DOT + C_DOT;
+    public static final char C_ZERO = '0';
+    public static final String ZERO = Normal.EMPTY + C_ZERO;
+
     /**
-     * 逗号字符
+     * 符号: 1
+     */
+    public static final char C_ONE = '1';
+    public static final String ONE = Normal.EMPTY + C_ONE;
+
+    /**
+     * 符号: 2
+     */
+    public static final char C_TWO = '2';
+    public static final String TWO = Normal.EMPTY + C_TWO;
+
+    /**
+     * 符号: 3
+     */
+    public static final char C_THREE = '3';
+    public static final String THREE = Normal.EMPTY + C_THREE;
+
+    /**
+     * 符号: 4
+     */
+    public static final char C_FOUR = '4';
+    public static final String FOUR = Normal.EMPTY + C_FOUR;
+
+    /**
+     * 符号: 5
+     */
+    public static final char C_FIVE = '5';
+    public static final String FIVE = Normal.EMPTY + C_FIVE;
+
+    /**
+     * 符号: 6
+     */
+    public static final char C_SIX = '6';
+    public static final String SIX = Normal.EMPTY + C_SIX;
+
+    /**
+     * 符号: 7
+     */
+    public static final char C_SEVEN = '7';
+    public static final String SEVEN = Normal.EMPTY + C_SEVEN;
+
+    /**
+     * 符号: 8
+     */
+    public static final char C_EIGHT = '8';
+    public static final String EIGHT = Normal.EMPTY + C_EIGHT;
+
+    /**
+     * 符号: 9
+     */
+    public static final char C_NINE = '9';
+    public static final String NINE = Normal.EMPTY + C_NINE;
+
+    /**
+     * 符号: 逗号
      */
     public static final char C_COMMA = ',';
     public static final String COMMA = Normal.EMPTY + C_COMMA;
 
     /**
-     * 冒号
+     * 符号: 冒号
      */
     public static final char C_COLON = ':';
     public static final String COLON = Normal.EMPTY + C_COLON;
 
     /**
-     * 空格
+     * 符号: 波浪符
+     */
+    public static final char C_TILDE = '~';
+    public static final String TILDE = Normal.EMPTY + C_TILDE;
+
+    /**
+     * 符号: 空格
      */
     public static final char C_SPACE = ' ';
     public static final String SPACE = Normal.EMPTY + C_SPACE;
 
     /**
-     * TAB
+     * 符号: TAB
      */
     public static final char C_TAB = '	';
     public static final String TAB = Normal.EMPTY + C_TAB;
 
+    /**
+     * 符号: 小数点
+     */
+    public static final char C_DOT = '.';
+    public static final String DOT = Normal.EMPTY + C_DOT;
+    public static final String DOUBLE_DOT = Normal.EMPTY + C_DOT + C_DOT;
 
     /**
-     * 下划线
+     * 符号: 分号
+     */
+    public static final char C_SEMICOLON = ';';
+    public static final String SEMICOLON = Normal.EMPTY + C_SEMICOLON;
+
+    /**
+     * 符号: 下划线
      */
     public static final char C_UNDERLINE = '_';
     public static final String UNDERLINE = Normal.EMPTY + C_UNDERLINE;
-
-    /**
-     * 符号: @
-     */
-    public static final char C_AT = '@';
-    public static final String AT = Normal.EMPTY + C_AT;
-
-    /**
-     * 斜杠
-     */
-    public static final char C_SLASH = '/';
-    public static final String SLASH = Normal.EMPTY + C_SLASH;
-
-    /**
-     * 符号: *
-     */
-    public static final char C_STAR = '*';
-    public static final String STAR = Normal.EMPTY + C_STAR;
 
     /**
      * 符号: 单引号
      */
     public static final char C_SINGLE_QUOTE = '\'';
     public static final String SINGLE_QUOTE = Normal.EMPTY + C_SINGLE_QUOTE;
+
     /**
      * 符号: 双引号
      */
@@ -117,16 +172,27 @@ public class Symbol {
     public static final String OR = Normal.EMPTY + C_OR;
 
     /**
-     * 符号: #
+     * 符号: @
      */
-    public static final char C_SHAPE = '#';
-    public static final String SHAPE = Normal.EMPTY + C_SHAPE;
+    public static final char C_AT = '@';
+    public static final String AT = Normal.EMPTY + C_AT;
+
+    /**
+     * 符号: 星号
+     */
+    public static final char C_STAR = '*';
+    public static final String STAR = Normal.EMPTY + C_STAR;
 
     /**
      * 符号: 美元
      */
     public static final char C_DOLLAR = '$';
     public static final String DOLLAR = Normal.EMPTY + C_DOLLAR;
+    /**
+     * 符号: #
+     */
+    public static final char C_SHAPE = '#';
+    public static final String SHAPE = Normal.EMPTY + C_SHAPE;
 
     /**
      * 符号: 百分比
@@ -141,28 +207,67 @@ public class Symbol {
     public static final String CARET = Normal.EMPTY + C_CARET;
 
     /**
-     * 符号: -
+     * 符号: 减号
      */
-    public static final char C_DASHED = '-';
-    public static final String DASHED = Normal.EMPTY + C_DASHED;
+    public static final char C_HYPHEN = '-';
+    public static final String HYPHEN = Normal.EMPTY + C_HYPHEN;
 
     /**
-     * 符号: +
+     * 符号: 加号
      */
     public static final char C_PLUS = '+';
     public static final String PLUS = Normal.EMPTY + C_PLUS;
 
     /**
-     * 符号: 大括号-左
+     * 符号: 等于号
      */
-    public static final char C_DELIM_LEFT = '{';
-    public static final String DELIM_LEFT = Normal.EMPTY + C_DELIM_LEFT;
+    public static final char C_EQUAL = '=';
+    public static final String EQUAL = Normal.EMPTY + C_EQUAL;
 
     /**
-     * 大括号-右
+     * 符号: 大于号
      */
-    public static final char C_DELIM_RIGHT = '}';
-    public static final String DELIM_RIGHT = Normal.EMPTY + C_DELIM_RIGHT;
+    public static final char C_GT = '>';
+    public static final String GT = Normal.EMPTY + C_GT;
+
+    /**
+     * 符号: 小于号
+     */
+    public static final char C_LT = '<';
+    public static final String LT = Normal.EMPTY + C_LT;
+
+    /**
+     * 符号: 大于等于
+     */
+    public static final String GE = ">=";
+    /**
+     * 符号: 小于等于
+     */
+    public static final String LE = "<=";
+
+    /**
+     * 符号: 圆括号-左
+     */
+    public static final char C_PARENTHESE_LEFT = '(';
+    public static final String PARENTHESE_LEFT = Normal.EMPTY + C_PARENTHESE_LEFT;
+
+    /**
+     * 符号: 圆括号-右
+     */
+    public static final char C_PARENTHESE_RIGHT = ')';
+    public static final String PARENTHESE_RIGHT = Normal.EMPTY + C_PARENTHESE_RIGHT;
+
+    /**
+     * 符号: 大括号-左
+     */
+    public static final char C_BRACE_LEFT = '{';
+    public static final String BRACE_LEFT = Normal.EMPTY + C_BRACE_LEFT;
+
+    /**
+     * 符号: 大括号-右
+     */
+    public static final char C_BRACE_RIGHT = '}';
+    public static final String BRACE_RIGHT = Normal.EMPTY + C_BRACE_RIGHT;
 
     /**
      * 符号: 方括号-左
@@ -177,16 +282,17 @@ public class Symbol {
     public static final String BRACKET_RIGHT = Normal.EMPTY + C_BRACKET_RIGHT;
 
     /**
-     * 符号: 等于号
-     */
-    public static final char C_EQUAL = '=';
-    public static final String EQUAL = Normal.EMPTY + C_EQUAL;
-
-    /**
      * 符号: 问号
      */
     public static final char C_QUESTION_MARK = '?';
     public static final String QUESTION_MARK = Normal.EMPTY + C_QUESTION_MARK;
+
+    /**
+     * 符号: /和//
+     */
+    public static final char C_SLASH = '/';
+    public static final String SLASH = Normal.EMPTY + C_SLASH;
+    public static final String FORWARDSLASH = SLASH + SLASH;
 
     /**
      * 符号: 反斜杠
@@ -212,7 +318,6 @@ public class Symbol {
     public static final char C_HT = '\t';
     public static final String HT = Normal.EMPTY + C_HT;
 
-
     /**
      * 符号: 回车换行
      */
@@ -233,10 +338,6 @@ public class Symbol {
      * 符号: [L
      */
     public static final String NON_PREFIX = "[L";
-    /**
-     * 符号: //
-     */
-    public static final String FORWARDSLASH = "//";
     /**
      * HTML: 空格
      */
@@ -261,17 +362,5 @@ public class Symbol {
      * HTML: 大于号
      */
     public static final String HTML_GT = "&gt;";
-
-    public static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
-    public static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
-    public static final String PATH_SEGMENT_ENCODE_SET = " \"<>^`{}|/\\?#";
-    public static final String PATH_SEGMENT_ENCODE_SET_URI = "[]";
-    public static final String QUERY_ENCODE_SET = " \"'<>#";
-    public static final String QUERY_COMPONENT_REENCODE_SET = " \"'<>#&=";
-    public static final String QUERY_COMPONENT_ENCODE_SET = " !\"#$&'(),/:;<=>?@[]\\^`{|}~";
-    public static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
-    public static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
-    public static final String FRAGMENT_ENCODE_SET = "";
-    public static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
 
 }

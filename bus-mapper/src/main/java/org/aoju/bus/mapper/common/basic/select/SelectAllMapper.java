@@ -28,7 +28,6 @@ import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 
-
 /**
  * 通用Mapper接口,查询全部
  *

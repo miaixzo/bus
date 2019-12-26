@@ -25,6 +25,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -203,7 +204,7 @@ public class HuaweiProvider extends DefaultProvider {
      */
     private Normal.Gender getRealGender(JSONObject object) {
         int genderCodeInt = object.getIntValue("gender");
-        String genderCode = genderCodeInt == 1 ? "0" : (genderCodeInt == 0) ? "1" : genderCodeInt + "";
+        String genderCode = genderCodeInt == 1 ? Symbol.ZERO : (genderCodeInt == 0) ? Symbol.ONE : genderCodeInt + "";
         return Normal.Gender.getGender(genderCode);
     }
 
@@ -217,7 +218,7 @@ public class HuaweiProvider extends DefaultProvider {
             throw new InstrumentException(object.getString("error"));
         }
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("sub_error") + ":" + object.getString("error_description"));
+            throw new InstrumentException(object.getString("sub_error") + Symbol.COLON + object.getString("error_description"));
         }
     }
 }

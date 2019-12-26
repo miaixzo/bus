@@ -50,7 +50,6 @@ import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-
 /**
  * 文件工具类
  *
@@ -1118,7 +1117,7 @@ public class FileUtils {
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
-            newName = newName.concat(".").concat(FileUtils.extName(file));
+            newName = newName.concat(Symbol.DOT).concat(FileUtils.extName(file));
         }
         final Path path = file.toPath();
         final CopyOption[] options = isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{};
@@ -1499,7 +1498,6 @@ public class FileUtils {
      * "/foo/../bar" =》 "/bar"
      * "/foo/../bar/" =》 "/bar/"
      * "/foo/../bar/../baz" =》 "/baz"
-     * "/../" =》 "/"
      * "foo/bar/.." =》 "foo"
      * "foo/../bar" =》 "bar"
      * "foo/../../bar" =》 "bar"
@@ -1524,7 +1522,7 @@ public class FileUtils {
         // 去除file:前缀
         pathToUse = StringUtils.removePrefixIgnoreCase(pathToUse, "file:");
         // 统一使用斜杠
-        pathToUse = pathToUse.replaceAll("[/\\\\]{1,}", "/").trim();
+        pathToUse = pathToUse.replaceAll("[/\\\\]{1,}", Symbol.SLASH).trim();
 
         int prefixIndex = pathToUse.indexOf(Symbol.COLON);
         String prefix = "";
@@ -1535,7 +1533,7 @@ public class FileUtils {
                 // 去除类似于/C:这类路径开头的斜杠
                 prefix = prefix.substring(1);
             }
-            if (false == prefix.contains("/")) {
+            if (false == prefix.contains(Symbol.SLASH)) {
                 pathToUse = pathToUse.substring(prefixIndex + 1);
             } else {
                 // 如果前缀中包含/,说明非Windows风格path
@@ -1612,11 +1610,11 @@ public class FileUtils {
     public static String subPath(String dirPath, String filePath) {
         if (StringUtils.isNotEmpty(dirPath) && StringUtils.isNotEmpty(filePath)) {
 
-            dirPath = StringUtils.removeSuffix(normalize(dirPath), "/");
+            dirPath = StringUtils.removeSuffix(normalize(dirPath), Symbol.SLASH);
             filePath = normalize(filePath);
 
             final String result = StringUtils.removePrefixIgnoreCase(filePath, dirPath);
-            return StringUtils.removePrefix(result, "/");
+            return StringUtils.removePrefix(result, Symbol.SLASH);
         }
         return filePath;
     }
@@ -3172,11 +3170,11 @@ public class FileUtils {
      */
     public static String readableFileSize(long size) {
         if (size <= 0) {
-            return "0";
+            return Symbol.ZERO;
         }
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB", "EB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE + units[digitGroups];
     }
 
     /**

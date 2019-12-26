@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.storage;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * 框架内预定义的存储信息
  *
@@ -32,7 +34,7 @@ package org.aoju.bus.storage;
  */
 public class Builder {
 
-    public static final String SUCCESS = "0";
+    public static final String SUCCESS = Symbol.ZERO;
     public static final String FAILURE = "-1";
 
 }

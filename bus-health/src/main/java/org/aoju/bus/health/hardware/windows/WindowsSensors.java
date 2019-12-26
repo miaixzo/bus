@@ -25,6 +25,7 @@ package org.aoju.bus.health.hardware.windows;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.common.windows.PerfWildcardQuery;
 import org.aoju.bus.health.common.windows.PerfWildcardQuery.PdhCounterWildcardProperty;
 import org.aoju.bus.health.common.windows.WmiQueryHandler;
@@ -137,8 +138,7 @@ public class WindowsSensors extends AbstractSensors {
             return fanSpeeds;
         }
 
-        // Default
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     private int[] getFansFromOHM() {
@@ -162,7 +162,7 @@ public class WindowsSensors extends AbstractSensors {
                 }
             }
         }
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     private int[] getFansFromWMI() {
@@ -175,7 +175,7 @@ public class WindowsSensors extends AbstractSensors {
             }
             return fanSpeeds;
         }
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     @Override

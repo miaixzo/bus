@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.software.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.software.OSUser;
 
@@ -87,7 +88,7 @@ public class LinuxUserGroupInfo {
         List<String> passwd = Command.runNative("getent passwd");
         // see man 5 passwd for the fields
         for (String entry : passwd) {
-            String[] split = entry.split(":");
+            String[] split = entry.split(Symbol.COLON);
             if (split.length < 3) {
                 continue;
             }
@@ -108,7 +109,7 @@ public class LinuxUserGroupInfo {
         List<String> group = Command.runNative("getent group");
         // see man 5 group for the fields
         for (String entry : group) {
-            String[] split = entry.split(":");
+            String[] split = entry.split(Symbol.COLON);
             if (split.length < 3) {
                 continue;
             }

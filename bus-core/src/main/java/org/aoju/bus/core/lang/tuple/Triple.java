@@ -24,6 +24,7 @@
 package org.aoju.bus.core.lang.tuple;
 
 import org.aoju.bus.core.builder.CompareToBuilder;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -96,7 +97,7 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Se
 
     @Override
     public String toString() {
-        return "(" + getLeft() + "," + getMiddle() + "," + getRight() + ")";
+        return Symbol.PARENTHESE_LEFT + getLeft() + Symbol.COMMA + getMiddle() + Symbol.COMMA + getRight() + Symbol.PARENTHESE_RIGHT;
     }
 
     public String toString(final String format) {

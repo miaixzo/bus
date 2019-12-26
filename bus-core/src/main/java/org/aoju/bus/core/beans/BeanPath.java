@@ -100,9 +100,9 @@ public class BeanPath {
             return null;
         }
 
-        if (StringUtils.contains(expression, ':')) {
+        if (StringUtils.contains(expression, Symbol.C_COLON)) {
             // [start:end:step] 模式
-            final List<String> parts = StringUtils.splitTrim(expression, ':');
+            final List<String> parts = StringUtils.splitTrim(expression, Symbol.C_COLON);
             int start = Integer.parseInt(parts.get(0));
             int end = Integer.parseInt(parts.get(1));
             int step = 1;
@@ -114,9 +114,8 @@ public class BeanPath {
             } else if (ArrayUtils.isArray(bean)) {
                 return ArrayUtils.sub(bean, start, end, step);
             }
-        } else if (StringUtils.contains(expression, ',')) {
-            // [num0,num1,num2...]模式或者['key0','key1']模式
-            final List<String> keys = StringUtils.splitTrim(expression, ',');
+        } else if (StringUtils.contains(expression, Symbol.C_COMMA)) {
+            final List<String> keys = StringUtils.splitTrim(expression, Symbol.C_COMMA);
             if (bean instanceof Collection) {
                 return CollUtils.getAny((Collection<?>) bean, Convert.convert(int[].class, keys));
             } else if (ArrayUtils.isArray(bean)) {
@@ -124,7 +123,7 @@ public class BeanPath {
             } else {
                 final String[] unwrapedKeys = new String[keys.size()];
                 for (int i = 0; i < unwrapedKeys.length; i++) {
-                    unwrapedKeys[i] = StringUtils.unWrap(keys.get(i), '\'');
+                    unwrapedKeys[i] = StringUtils.unWrap(keys.get(i), Symbol.C_SINGLE_QUOTE);
                 }
                 if (bean instanceof Map) {
                     // 只支持String为key的Map
@@ -152,7 +151,7 @@ public class BeanPath {
         if (StringUtils.containsAny(expression, " = ", " > ", " < ", " like ", ",")) {
             return expression.toString();
         }
-        return StringUtils.unWrap(expression, '\'');
+        return StringUtils.unWrap(expression, Symbol.C_SINGLE_QUOTE);
     }
 
     /**
@@ -252,7 +251,7 @@ public class BeanPath {
         boolean isNumStart = false;// 下标标识符开始
         for (int i = 0; i < length; i++) {
             c = expression.charAt(i);
-            if (0 == i && '$' == c) {
+            if (0 == i && Symbol.C_DOLLAR == c) {
                 // 忽略开头的$符,表示当前对象
                 isStartWith$ = true;
                 continue;

@@ -2,6 +2,7 @@ package org.aoju.bus.gitlab.hooks;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.HookManager;
 import org.aoju.bus.gitlab.utils.HttpRequestUtils;
@@ -148,7 +149,7 @@ public class SystemHookManager implements HookManager {
 
             event = jacksonJson.unmarshal(SystemHookEvent.class, tree);
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(event.getEventName() + "\n" + jacksonJson.marshal(event) + "\n");
+                LOGGER.fine(event.getEventName() + Symbol.LF + jacksonJson.marshal(event) + Symbol.LF);
             }
 
             StringBuffer requestUrl = request.getRequestURL();

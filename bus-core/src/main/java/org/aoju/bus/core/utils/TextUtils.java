@@ -184,7 +184,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
         return (charValue >= 0x4E00 && charValue <= 0XFFF) || //
                 (charValue >= 'a' && charValue <= 'z') || //
                 (charValue >= 'A' && charValue <= 'Z') || //
-                (charValue >= '0' && charValue <= '9');
+                (charValue >= Symbol.C_ZERO && charValue <= Symbol.C_NINE);
     }
 
     /**
@@ -373,7 +373,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      */
     public TextUtils insert(int index, CharSequence csq) {
         if (null == csq) {
-            csq = "null";
+            csq = Normal.NULL;
         }
         int len = csq.length();
         moveDataAfterIndex(index, csq.length());

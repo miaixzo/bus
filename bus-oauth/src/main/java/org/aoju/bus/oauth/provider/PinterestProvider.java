@@ -25,6 +25,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -76,7 +77,7 @@ public class PinterestProvider extends DefaultProvider {
                 .uuid(userObj.getString("id"))
                 .avatar(getAvatarUrl(userObj))
                 .username(userObj.getString("username"))
-                .nickname(userObj.getString("first_name") + " " + userObj.getString("last_name"))
+                .nickname(userObj.getString("first_name") + Symbol.SPACE + userObj.getString("last_name"))
                 .gender(Normal.Gender.UNKNOWN)
                 .remark(userObj.getString("bio"))
                 .token(token)

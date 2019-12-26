@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.validate.validators;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.exception.NoSuchException;
 import org.aoju.bus.core.lang.exception.ValidateException;
@@ -137,7 +138,7 @@ public class Checker {
         if (ObjectUtils.isEmpty(matcher)) {
             throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s",
                     property.getName(),
-                    property.getClazz() == null ? "null" : property.getClazz().getName()));
+                    property.getClazz() == null ? Normal.NULL : property.getClazz().getName()));
         }
         Object validatedTarget = validated.getObject();
         if (ObjectUtils.isNotEmpty(validatedTarget) && property.isArray() && Provider.isArray(validatedTarget)) {

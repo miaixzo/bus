@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoizer;
 import org.aoju.bus.logger.Logger;
@@ -69,7 +70,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         Set<Integer> physPkgs = new HashSet<>();
         for (LogicalProcessor logProc : this.logicalProcessors) {
             int pkg = logProc.getPhysicalPackageNumber();
-            physProcPkgs.add(logProc.getPhysicalProcessorNumber() + ":" + pkg);
+            physProcPkgs.add(logProc.getPhysicalProcessorNumber() + Symbol.COLON + pkg);
             physPkgs.add(pkg);
         }
         this.logicalProcessorCount = this.logicalProcessors.length;
@@ -403,11 +404,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getName());
-        sb.append("\n ").append(getPhysicalPackageCount()).append(" physical CPU package(s)");
-        sb.append("\n ").append(getPhysicalProcessorCount()).append(" physical CPU core(s)");
-        sb.append("\n ").append(getLogicalProcessorCount()).append(" logical CPU(s)");
-        sb.append('\n').append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
-        sb.append('\n').append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
+        sb.append(Symbol.LF + Symbol.SPACE).append(getPhysicalPackageCount()).append(" physical CPU package(s)");
+        sb.append(Symbol.LF + Symbol.SPACE).append(getPhysicalProcessorCount()).append(" physical CPU core(s)");
+        sb.append(Symbol.LF + Symbol.SPACE).append(getLogicalProcessorCount()).append(" logical CPU(s)");
+        sb.append(Symbol.C_LF).append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
+        sb.append(Symbol.C_LF).append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
         return sb.toString();
     }
 

@@ -121,13 +121,6 @@ public final class TpicMap {
             return result;
         }
 
-        @Override
-        public String toString() {
-            return "Entry{" +
-                    "key='" + key + '\'' +
-                    ", value='" + value + '\'' +
-                    '}';
-        }
     }
 
 }

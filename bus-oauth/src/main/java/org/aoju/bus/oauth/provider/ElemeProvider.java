@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -165,8 +166,8 @@ public class ElemeProvider extends DefaultProvider {
 
     private String getBasic(String appKey, String appSecret) {
         StringBuilder sb = new StringBuilder();
-        String encodeToString = Base64.encode((appKey + ":" + appSecret).getBytes());
-        sb.append("Basic").append(" ").append(encodeToString);
+        String encodeToString = Base64.encode((appKey + Symbol.COLON + appSecret).getBytes());
+        sb.append("Basic").append(Symbol.SPACE).append(encodeToString);
         return sb.toString();
     }
 
@@ -184,7 +185,7 @@ public class ElemeProvider extends DefaultProvider {
     }
 
     private String getRequestId() {
-        return (ObjectID.id() + "|" + System.currentTimeMillis()).toUpperCase();
+        return (ObjectID.id() + Symbol.OR + System.currentTimeMillis()).toUpperCase();
     }
 
     private void checkResponse(JSONObject object) {

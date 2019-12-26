@@ -339,7 +339,7 @@ public abstract class StrMatcher {
 
         @Override
         public String toString() {
-            return super.toString() + ' ' + Arrays.toString(chars);
+            return super.toString() + Symbol.C_SPACE + Arrays.toString(chars);
         }
 
     }

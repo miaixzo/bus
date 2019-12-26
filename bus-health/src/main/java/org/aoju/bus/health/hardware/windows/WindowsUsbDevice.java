@@ -28,6 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Cfgmgr32;
 import com.sun.jna.platform.win32.Cfgmgr32Util;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoizer;
 import org.aoju.bus.health.common.windows.WmiQueryHandler;
@@ -239,7 +240,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         if (usbDeviceCache.containsKey(hubDeviceId)) {
             WindowsUsbDevice device = usbDeviceCache.get(hubDeviceId);
             if (device.name.isEmpty()) {
-                device.name = vendorId + ":" + productId;
+                device.name = vendorId + Symbol.COLON + productId;
             }
             device.vendorId = vendorId;
             device.productId = productId;

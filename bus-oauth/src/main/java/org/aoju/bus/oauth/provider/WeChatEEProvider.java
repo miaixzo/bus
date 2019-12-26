@@ -25,6 +25,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
@@ -124,9 +125,9 @@ public class WeChatEEProvider extends DefaultProvider {
     private String getRealGender(JSONObject userDetail) {
         int gender = userDetail.getIntValue("gender");
         if (Normal.Gender.MALE.getCode() == gender) {
-            return "1";
+            return Symbol.ONE;
         }
-        return 2 == gender ? "0" : null;
+        return 2 == gender ? Symbol.ZERO : null;
     }
 
     /**

@@ -45,7 +45,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 
-
 /**
  * 存储服务-腾讯云
  *
@@ -115,7 +114,6 @@ public class TencentCosProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String bucket, String fileName, InputStream content) {
-        //腾讯云必需要以"/"开头
         if (!fileName.startsWith(File.separator)) {
             fileName = File.separator + fileName;
         }
@@ -139,7 +137,6 @@ public class TencentCosProvider extends AbstractProvider {
 
     @Override
     public Readers upload(String bucket, String fileName, byte[] content) {
-        //腾讯云必需要以"/"开头
         if (!fileName.startsWith(File.separator)) {
             fileName = File.separator + fileName;
         }

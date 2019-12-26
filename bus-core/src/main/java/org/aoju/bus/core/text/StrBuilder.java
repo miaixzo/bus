@@ -26,6 +26,7 @@ package org.aoju.bus.core.text;
 
 import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 
 import java.io.IOException;
@@ -34,7 +35,6 @@ import java.io.Serializable;
 import java.nio.CharBuffer;
 import java.util.Iterator;
 import java.util.Objects;
-
 
 /**
  * 提供比StringBuffer更灵活和更强大的API.
@@ -1190,7 +1190,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      */
     public StrBuilder appendWithSeparators(final Object[] array, final String separator) {
         if (array != null && array.length > 0) {
-            final String sep = Objects.toString(separator, "");
+            final String sep = Objects.toString(separator, Normal.EMPTY);
             append(array[0]);
             for (int i = 1; i < array.length; i++) {
                 append(sep);
@@ -1212,7 +1212,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      */
     public StrBuilder appendWithSeparators(final Iterable<?> iterable, final String separator) {
         if (iterable != null) {
-            final String sep = Objects.toString(separator, "");
+            final String sep = Objects.toString(separator, Normal.EMPTY);
             final Iterator<?> it = iterable.iterator();
             while (it.hasNext()) {
                 append(it.next());
@@ -1236,7 +1236,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      */
     public StrBuilder appendWithSeparators(final Iterator<?> it, final String separator) {
         if (it != null) {
-            final String sep = Objects.toString(separator, "");
+            final String sep = Objects.toString(separator, Normal.EMPTY);
             while (it.hasNext()) {
                 append(it.next());
                 if (it.hasNext()) {
@@ -1909,10 +1909,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         int len = size;
         final char[] buf = buffer;
         int pos = 0;
-        while (pos < len && buf[pos] <= ' ') {
+        while (pos < len && buf[pos] <= Symbol.C_SPACE) {
             pos++;
         }
-        while (pos < len && buf[len - 1] <= ' ') {
+        while (pos < len && buf[len - 1] <= Symbol.C_SPACE) {
             len--;
         }
         if (len < size) {

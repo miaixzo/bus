@@ -28,37 +28,8 @@ import org.aoju.bus.http.Httpd;
 import org.aoju.bus.http.Request;
 
 /**
- * A non-blocking interface to a web socket. Use the {@linkplain WebSocket.Factory factory} to
- * create instances; usually this is {@link Httpd}.
- *
- * <h3>Web Socket Lifecycle</h3>
- * <p>
- * Upon normal operation each web socket progresses through a sequence of states:
- *
- * <ul>
- * <li><strong>Connecting:</strong> the initial state of each web socket. Messages may be enqueued
- * but they won't be transmitted until the web socket is open.
- * <li><strong>Open:</strong> the web socket has been accepted by the remote peer and is fully
- * operational. Messages in either direction are enqueued for immediate transmission.
- * <li><strong>Closing:</strong> first of the peers on the web socket has initiated a graceful
- * shutdown. The web socket will continue to transmit already-enqueued messages but will
- * refuse to enqueue new ones.
- * <li><strong>Closed:</strong> the web socket has transmitted all of its messages and has
- * received all messages from the peer.
- * </ul>
- * <p>
- * Web sockets may fail due to HTTP upgrade problems, connectivity problems, or if either peer
- * chooses to short-circuit the graceful shutdown process:
- *
- * <ul>
- * <li><strong>Canceled:</strong> the web socket connection failed. Messages that were
- * successfully enqueued by either peer may not have been transmitted to the other.
- * </ul>
- * <p>
- * Note that the state progression is independent for each peer. Arriving at a gracefully-closed
- * state indicates that a peer has sent all of its outgoing messages and received all of its
- * incoming messages. But it does not guarantee that the other peer will successfully receive all of
- * its incoming messages.
+ * 到web socket的非阻塞接口。使用{@linkplain WebSocket.Factory factory}
+ * 通常是{@link Httpd} 在正常操作时，每个web套接字将通过一系列状态进行处理
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -66,22 +37,68 @@ import org.aoju.bus.http.Request;
  */
 public interface WebSocket {
 
+    /**
+     * @return 返回初始化此web套接字的请求
+     */
     Request request();
 
+    /**
+     * @return 所有排队等待发送到服务器的消息的大小(以字节为单位)。这还不包括帧开销。
+     * 它也不包括任何由操作系统或网络中介体缓冲的字节。如果队列中没有消息等待，则此方法返回0。
+     * 如果在web套接字被取消后可能返回一个非零值;这表示未传输排队消息
+     */
     long queueSize();
 
+    /**
+     * 尝试将{@code text}编码为UTF-8并将其作为文本(类型为{@code 0x1})消息的数据发送
+     * 如果消息被加入队列，此方法将返回true。将溢出传出消息缓冲区的消息将被拒绝，
+     * 并触发此web套接字的{@linkplain #close graceful shutdown}。此方法在这种情况下返回false，
+     * 在此web套接字关闭、关闭或取消的任何其他情况下也返回false
+     *
+     * @param text 文本信息
+     * @return the true/false
+     */
     boolean send(String text);
 
+    /**
+     * 尝试将{@code bytes}作为二进制(类型为{@code 0x2})消息的数据发送
+     * 如果消息被加入队列，此方法将返回true。将溢出传出消息缓冲区(16 MiB)的消息将被拒绝，
+     * 并触发此web套接字的{@linkplain #close graceful shutdown}。此方法在这种情况下返回false，
+     * 在此web套接字关闭、关闭或取消的任何其他情况下也返回false
+     *
+     * @param bytes 缓存流
+     * @return the true/false
+     */
     boolean send(ByteString bytes);
 
+    /**
+     * 尝试启动此web套接字的正常关闭。任何已加入队列的消息将在发送关闭消息之前发送，
+     * 但是随后对{@link #send}的调用将返回false，它们的消息将不被加入队列.
+     *
+     * @param code   RFC 6455第7.4节定义的状态码
+     * @param reason 关闭或{@code null}的原因
+     * @return the true/false
+     * @throws IllegalArgumentException 如果状态码无效.
+     */
     boolean close(int code, String reason);
 
+    /**
+     * 立即并强烈地释放这个web套接字持有的资源，丢弃任何排队的消息。
+     * 如果web套接字已经关闭或取消，则此操作不执行任何操作.
+     */
     void cancel();
 
     interface Factory {
 
-        WebSocket newWebSocket(Request request, SocketListener listener);
-
+        /**
+         * 创建一个新的web套接字并立即返回它。创建web套接字将启动一个异步进程来连接套接字。
+         * 成功或失败，{@code listener}将被通知。当返回的web套接字不再使用时，调用者必须关闭或取消它
+         *
+         * @param request  当前网络请求
+         * @param listener 监听器
+         * @return the web socket
+         */
+        WebSocket newWebSocket(Request request, WebSocketListener listener);
     }
 
 }

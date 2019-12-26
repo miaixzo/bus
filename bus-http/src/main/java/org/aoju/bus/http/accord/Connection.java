@@ -1,3 +1,26 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2017 aoju.org All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.http.Protocol;
@@ -12,7 +35,7 @@ import java.net.Socket;
  *
  * <p>
  * 通常，此类的实例由HTTP客户机自动创建、连接和执行。  应用程序可以使用这个类
- * 作为{@linkplain ConnectPool connection pool}的成员来监视HTTP连接.
+ * 作为{@linkplain ConnectionPool connection pool}的成员来监视HTTP连接.
  * 不要将这个类与错误命名的{@code HttpURLConnection}混淆，后者与其说是一个连接，
  * 不如说是一个请求/响应交换
  * 在协商到远程主机的安全连接时，在选择包括哪些选项时需要进行权衡。更新的TLS选项非常有用
@@ -28,6 +51,10 @@ import java.net.Socket;
  * 注意，一个分配可能在它的流完成之前被释放。这是为了使调用者更容易地进行簿记:
  * 一旦找到终端流，就释放分配。但仅在其数据流耗尽后才完成流
  * </p>
+ *
+ * @author Kimi Liu
+ * @version 5.3.6
+ * @since JDK 1.8+
  */
 public interface Connection {
 

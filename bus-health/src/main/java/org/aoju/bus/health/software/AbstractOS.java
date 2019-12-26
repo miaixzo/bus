@@ -24,6 +24,7 @@
 package org.aoju.bus.health.software;
 
 import com.sun.jna.Platform;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Memoizer;
 
 import java.util.ArrayList;
@@ -201,7 +202,7 @@ public abstract class AbstractOS implements OperatingSystem {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getManufacturer()).append(' ').append(getFamily()).append(' ');
+        sb.append(getManufacturer()).append(Symbol.C_SPACE).append(getFamily()).append(Symbol.C_SPACE);
         return sb.toString();
     }
 

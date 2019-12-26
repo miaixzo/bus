@@ -1,35 +1,62 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2017 aoju.org All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.secure.CipherSuite;
 import org.aoju.bus.http.secure.TlsVersion;
 
 import javax.net.ssl.SSLSocket;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
- * Specifies configuration for the socket connection that HTTP traffic travels through. For {@code
- * https:} URLs, this includes the TLS version and cipher suites to use when negotiating a secure
- * connection.
- * <p>
- * 指定HTTP传输通过的套接字连接的配置。对于{@code https:}
- * url，这包括在协商安全连接时要使用的TLS版本和密码套件
+ * 指定HTTP传输通过的套接字连接的配置。对于{@code https:} url，这包括在协商安全连接时要使用
+ * 的TLS版本和密码套件,只有在SSL套接字中也启用了连接规范中配置的TLS版本时，才会使用它们。例如，
+ * 如果SSL套接字没有启用TLS 1.3，即使它在连接规范中出现，也不会被使用。同样的策略也适用于密码套件
+ * 使用{@link Builder#allEnabledTlsVersions()}和{@link Builder#allEnabledCipherSuites}
+ * 将所有特性选择延迟到底层SSL套接字
  *
- * <p>The TLS versions configured in a connection spec are only be used if they are also enabled in
- * the SSL socket. For example, if an SSL socket does not have TLS 1.3 enabled, it will not be used
- * even if it is present on the connection spec. The same policy also applies to cipher suites.
- *
- * <p>Use {@link Builder#allEnabledTlsVersions()} and {@link Builder#allEnabledCipherSuites} to
- * defer all feature selection to the underlying SSL socket.
+ * @author Kimi Liu
+ * @version 5.3.6
+ * @since JDK 1.8+
  */
-public final class ConnectSuite {
+public final class ConnectionSuite {
 
+    public static final Comparator<String> NATURAL_ORDER = new Comparator<String>() {
+        @Override
+        public int compare(String a, String b) {
+            return a.compareTo(b);
+        }
+    };
     /**
-     * Unencrypted, unauthenticated connections for {@code http:} URLs.
+     * 用于{@code http:} url的未加密、未经身份验证的连接
      */
-    public static final ConnectSuite CLEARTEXT = new Builder(false).build();
-    // Most secure but generally supported list.
+    public static final ConnectionSuite CLEARTEXT = new Builder(false).build();
+    /**
+     * 最安全但通常受支持的列表
+     */
     private static final CipherSuite[] RESTRICTED_CIPHER_SUITES = new CipherSuite[]{
             // TLSv1.3
             CipherSuite.TLS_AES_128_GCM_SHA256,
@@ -45,16 +72,19 @@ public final class ConnectSuite {
             CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
             CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
     };
+
     /**
-     * A secure TLS connection assuming a modern client platform and server.
+     * 一个安全的TLS连接，假设有一个现代的客户端平台和服务器
      */
-    public static final ConnectSuite RESTRICTED_TLS = new Builder(true)
+    public static final ConnectionSuite RESTRICTED_TLS = new Builder(true)
             .cipherSuites(RESTRICTED_CIPHER_SUITES)
             .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2)
             .supportsTlsExtensions(true)
             .build();
-    // This is nearly equal to the cipher suites supported in Chrome 51, current as of 2016-05-25.
-    // All of these suites are available on Android 7.0; earlier releases support a subset of these
+    /**
+     * 等于Chrome 51支持的密码套件
+     * 所有这些套件都可以在Android 7.0上使用
+     */
     private static final CipherSuite[] APPROVED_CIPHER_SUITES = new CipherSuite[]{
             // TLSv1.3
             CipherSuite.TLS_AES_128_GCM_SHA256,
@@ -70,9 +100,8 @@ public final class ConnectSuite {
             CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
             CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
 
-            // Note that the following cipher suites are all on HTTP/2's bad cipher suites list. We'll
-            // continue to include them until better suites are commonly available. For example, none
-            // of the better cipher suites listed above shipped with Android 4.4 or Java 7.
+            // 请注意，以下密码套件都在HTTP/2的“坏密码套件”列表中。我们将继续包括他们，
+            // 直到更好的套房是普遍可用的。例如，上面列出的更好的密码套件都没有随Android 4.4或Java 7一起发布
             CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
             CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
             CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
@@ -82,17 +111,17 @@ public final class ConnectSuite {
             CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
     };
     /**
-     * A modern TLS connection with extensions like SNI and ALPN available.
+     * 一个TLS连接与扩展，如SNI和ALPN可用
      */
-    public static final ConnectSuite MODERN_TLS = new Builder(true)
+    public static final ConnectionSuite MODERN_TLS = new Builder(true)
             .cipherSuites(APPROVED_CIPHER_SUITES)
             .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2, TlsVersion.TLS_1_1, TlsVersion.TLS_1_0)
             .supportsTlsExtensions(true)
             .build();
     /**
-     * A backwards-compatible fallback connection for interop with obsolete servers.
+     * 向后兼容的回退连接，用于与过时的服务器进行互操作.
      */
-    public static final ConnectSuite COMPATIBLE_TLS = new Builder(true)
+    public static final ConnectionSuite COMPATIBLE_TLS = new Builder(true)
             .cipherSuites(APPROVED_CIPHER_SUITES)
             .tlsVersions(TlsVersion.TLS_1_0)
             .supportsTlsExtensions(true)
@@ -102,7 +131,7 @@ public final class ConnectSuite {
     final String[] cipherSuites;
     final String[] tlsVersions;
 
-    ConnectSuite(Builder builder) {
+    ConnectionSuite(Builder builder) {
         this.tls = builder.tls;
         this.cipherSuites = builder.cipherSuites;
         this.tlsVersions = builder.tlsVersions;
@@ -114,16 +143,14 @@ public final class ConnectSuite {
     }
 
     /**
-     * Returns the cipher suites to use for a connection. Returns null if all of the SSL socket's
-     * enabled cipher suites should be used.
+     * @return 用于连接的密码套件。如果应该使用SSL套接字的所有启用密码套件，则返回null
      */
     public List<CipherSuite> cipherSuites() {
         return cipherSuites != null ? CipherSuite.forJavaNames(cipherSuites) : null;
     }
 
     /**
-     * Returns the TLS versions to use when negotiating a connection. Returns null if all of the SSL
-     * socket's enabled TLS versions should be used.
+     * @return 在协商连接时使用的TLS版本。如果应该使用SSL套接字的所有启用的TLS版本，则返回null
      */
     public List<TlsVersion> tlsVersions() {
         return tlsVersions != null ? TlsVersion.forJavaNames(tlsVersions) : null;
@@ -134,10 +161,13 @@ public final class ConnectSuite {
     }
 
     /**
-     * Applies this spec to {@code sslSocket}.
+     * 将此规范应用于{@code sslSocket}
+     *
+     * @param sslSocket  安全套接字
+     * @param isFallback 是否失败回调
      */
     public void apply(SSLSocket sslSocket, boolean isFallback) {
-        ConnectSuite specToApply = supportedSpec(sslSocket, isFallback);
+        ConnectionSuite specToApply = supportedSuite(sslSocket, isFallback);
 
         if (specToApply.tlsVersions != null) {
             sslSocket.setEnabledProtocols(specToApply.tlsVersions);
@@ -148,24 +178,25 @@ public final class ConnectSuite {
     }
 
     /**
-     * Returns a copy of this that omits cipher suites and TLS versions not enabled by {@code
-     * sslSocket}.
+     * {@code sslSocket}未启用的密码套件和TLS版本
+     *
+     * @param sslSocket  安全套接字
+     * @param isFallback 是否失败回调
+     * @return 返回一个副本
      */
-    private ConnectSuite supportedSpec(SSLSocket sslSocket, boolean isFallback) {
+    private ConnectionSuite supportedSuite(SSLSocket sslSocket, boolean isFallback) {
         String[] cipherSuitesIntersection = cipherSuites != null
-                ? Internal.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(), cipherSuites)
+                ? org.aoju.bus.http.Builder.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(), cipherSuites)
                 : sslSocket.getEnabledCipherSuites();
         String[] tlsVersionsIntersection = tlsVersions != null
-                ? Internal.intersect(Internal.NATURAL_ORDER, sslSocket.getEnabledProtocols(), tlsVersions)
+                ? org.aoju.bus.http.Builder.intersect(NATURAL_ORDER, sslSocket.getEnabledProtocols(), tlsVersions)
                 : sslSocket.getEnabledProtocols();
 
-        // In accordance with https://tools.ietf.org/html/draft-ietf-tls-downgrade-scsv-00
-        // the SCSV cipher is added to signal that a protocol fallback has taken place.
         String[] supportedCipherSuites = sslSocket.getSupportedCipherSuites();
-        int indexOfFallbackScsv = Internal.indexOf(
+        int indexOfFallbackScsv = org.aoju.bus.http.Builder.indexOf(
                 CipherSuite.ORDER_BY_NAME, supportedCipherSuites, "TLS_FALLBACK_SCSV");
         if (isFallback && indexOfFallbackScsv != -1) {
-            cipherSuitesIntersection = Internal.concat(
+            cipherSuitesIntersection = org.aoju.bus.http.Builder.concat(
                     cipherSuitesIntersection, supportedCipherSuites[indexOfFallbackScsv]);
         }
 
@@ -176,27 +207,25 @@ public final class ConnectSuite {
     }
 
     /**
-     * Returns {@code true} if the socket, as currently configured, supports this connection spec. In
-     * order for a socket to be compatible the enabled cipher suites and protocols must intersect.
+     * 如果当前配置的套接字支持此连接规范，则返回{@code true} 为了使套接字兼容，启用的密码套件和协议必须相交
+     * 对于密码套件，{@link #cipherSuites() required cipher suites}中至少有一个必须与套接字启用的密码
+     * 套件匹配。如果不需要密码套件，则套接字必须至少启用一个密码套件
+     * 对于协议，{@link #tlsVersions() required protocols}中至少有一个必须与套接字启用的协议匹配
      *
-     * <p>For cipher suites, at least one of the {@link #cipherSuites() required cipher suites} must
-     * match the socket's enabled cipher suites. If there are no required cipher suites the socket
-     * must have at least one cipher suite enabled.
-     *
-     * <p>For protocols, at least one of the {@link #tlsVersions() required protocols} must match the
-     * socket's enabled protocols.
+     * @param socket 安全套接字
+     * @return the true/false
      */
     public boolean isCompatible(SSLSocket socket) {
         if (!tls) {
             return false;
         }
 
-        if (tlsVersions != null && !Internal.nonEmptyIntersection(
-                Internal.NATURAL_ORDER, tlsVersions, socket.getEnabledProtocols())) {
+        if (tlsVersions != null && !org.aoju.bus.http.Builder.nonEmptyIntersection(
+                NATURAL_ORDER, tlsVersions, socket.getEnabledProtocols())) {
             return false;
         }
 
-        if (cipherSuites != null && !Internal.nonEmptyIntersection(
+        if (cipherSuites != null && !org.aoju.bus.http.Builder.nonEmptyIntersection(
                 CipherSuite.ORDER_BY_NAME, cipherSuites, socket.getEnabledCipherSuites())) {
             return false;
         }
@@ -206,10 +235,10 @@ public final class ConnectSuite {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof ConnectSuite)) return false;
+        if (!(other instanceof ConnectionSuite)) return false;
         if (other == this) return true;
 
-        ConnectSuite that = (ConnectSuite) other;
+        ConnectionSuite that = (ConnectionSuite) other;
         if (this.tls != that.tls) return false;
 
         if (tls) {
@@ -248,6 +277,7 @@ public final class ConnectSuite {
     }
 
     public static final class Builder {
+
         boolean tls;
         String[] cipherSuites;
         String[] tlsVersions;
@@ -257,11 +287,11 @@ public final class ConnectSuite {
             this.tls = tls;
         }
 
-        public Builder(ConnectSuite connectSuite) {
-            this.tls = connectSuite.tls;
-            this.cipherSuites = connectSuite.cipherSuites;
-            this.tlsVersions = connectSuite.tlsVersions;
-            this.supportsTlsExtensions = connectSuite.supportsTlsExtensions;
+        public Builder(ConnectionSuite connectionSuite) {
+            this.tls = connectionSuite.tls;
+            this.cipherSuites = connectionSuite.cipherSuites;
+            this.tlsVersions = connectionSuite.tlsVersions;
+            this.supportsTlsExtensions = connectionSuite.supportsTlsExtensions;
         }
 
         public Builder allEnabledCipherSuites() {
@@ -287,7 +317,7 @@ public final class ConnectSuite {
                 throw new IllegalArgumentException("At least one cipher suite is required");
             }
 
-            this.cipherSuites = cipherSuites.clone(); // Defensive copy.
+            this.cipherSuites = cipherSuites.clone();
             return this;
         }
 
@@ -315,7 +345,7 @@ public final class ConnectSuite {
                 throw new IllegalArgumentException("At least one TLS version is required");
             }
 
-            this.tlsVersions = tlsVersions.clone(); // Defensive copy.
+            this.tlsVersions = tlsVersions.clone();
             return this;
         }
 
@@ -325,8 +355,9 @@ public final class ConnectSuite {
             return this;
         }
 
-        public ConnectSuite build() {
-            return new ConnectSuite(this);
+        public ConnectionSuite build() {
+            return new ConnectionSuite(this);
         }
     }
+
 }

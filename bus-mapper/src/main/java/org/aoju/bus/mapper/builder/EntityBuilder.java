@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.MapperException;
 import org.aoju.bus.mapper.annotation.ColumnType;
 import org.aoju.bus.mapper.annotation.NameStyle;
@@ -88,7 +89,7 @@ public class EntityBuilder {
                 if (orderBy.length() != 0) {
                     orderBy.append(",");
                 }
-                orderBy.append(column.getColumn()).append(" ").append(column.getOrderBy());
+                orderBy.append(column.getColumn()).append(Symbol.SPACE).append(column.getOrderBy());
             }
         }
         table.setOrderByClause(orderBy.toString());
@@ -354,12 +355,12 @@ public class EntityBuilder {
         for (int i = 0; i < size; i++) {
             c = chars[i];
             if (isUppercaseAlpha(c)) {
-                sb.append('_').append(toLowerAscii(c));
+                sb.append(Symbol.C_UNDERLINE).append(toLowerAscii(c));
             } else {
                 sb.append(c);
             }
         }
-        return sb.charAt(0) == '_' ? sb.substring(1) : sb.toString();
+        return sb.charAt(0) == Symbol.C_UNDERLINE ? sb.substring(1) : sb.toString();
     }
 
     public static boolean isUppercaseAlpha(char c) {

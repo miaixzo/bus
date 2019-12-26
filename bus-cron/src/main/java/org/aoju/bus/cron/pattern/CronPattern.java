@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.cron.pattern;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -244,7 +245,7 @@ public class CronPattern {
      * @param groupPattern 复合表达式
      */
     private void parseGroupPattern(String groupPattern) {
-        List<String> patternList = StringUtils.split(groupPattern, '|');
+        List<String> patternList = StringUtils.split(groupPattern, Symbol.C_OR);
         for (String pattern : patternList) {
             parseSinglePattern(pattern);
         }

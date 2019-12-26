@@ -45,7 +45,6 @@ public interface Plugin<T> extends NetMonitor<T> {
      */
     boolean preProcess(AioSession<T> session, T t);
 
-
     /**
      * @param stateMachine 状态
      * @param session      会话

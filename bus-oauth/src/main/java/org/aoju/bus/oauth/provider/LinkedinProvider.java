@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
@@ -41,7 +42,6 @@ import org.aoju.bus.oauth.metric.StateCache;
 
 import java.util.HashMap;
 import java.util.Map;
-
 
 /**
  * 领英登录
@@ -118,7 +118,7 @@ public class LinkedinProvider extends DefaultProvider {
         } else {
             lastName = getUserName(userInfoObject, "lastName");
         }
-        return firstName + " " + lastName;
+        return firstName + Symbol.SPACE + lastName;
     }
 
     /**
@@ -167,7 +167,7 @@ public class LinkedinProvider extends DefaultProvider {
         JSONObject firstNameObj = userInfoObject.getJSONObject(nameKey);
         JSONObject localizedObj = firstNameObj.getJSONObject("localized");
         JSONObject preferredLocaleObj = firstNameObj.getJSONObject("preferredLocale");
-        firstName = localizedObj.getString(preferredLocaleObj.getString("language") + "_" + preferredLocaleObj.getString("country"));
+        firstName = localizedObj.getString(preferredLocaleObj.getString("language") + Symbol.UNDERLINE + preferredLocaleObj.getString("country"));
         return firstName;
     }
 

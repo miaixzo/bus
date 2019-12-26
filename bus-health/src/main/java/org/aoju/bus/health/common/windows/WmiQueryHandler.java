@@ -30,6 +30,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil;
 import com.sun.jna.platform.win32.Ole32;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinNT;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.logger.Logger;
 
@@ -50,7 +51,7 @@ import java.util.concurrent.TimeoutException;
 public class WmiQueryHandler {
 
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
-    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    private static final Object[] EMPTY_OBJECT_ARRAY = Normal.EMPTY_OBJECT_ARRAY;
     private static int globalTimeout = Config.get("oshi.util.wmi.timeout", -1);
     // Factory to create this or a subclass
     private static Class<? extends WmiQueryHandler> customClass = null;

@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.software;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 /**
@@ -661,7 +662,7 @@ public class OSProcess {
         StringBuilder builder = new StringBuilder("OSProcess@");
         builder.append(Integer.toHexString(hashCode()));
         builder.append("[processID=").append(this.processID);
-        builder.append(", name=").append(this.name).append(']');
+        builder.append(", name=").append(this.name).append(Symbol.C_BRACKET_RIGHT);
         return builder.toString();
     }
 

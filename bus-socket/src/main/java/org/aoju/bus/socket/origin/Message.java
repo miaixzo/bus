@@ -58,7 +58,6 @@ public interface Message<T> {
      */
     void join(String group, AioSession<T> session);
 
-
     /**
      * 将AioSession从群众group中移除
      *

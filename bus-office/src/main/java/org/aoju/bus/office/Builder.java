@@ -26,6 +26,7 @@ package org.aoju.bus.office;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XServiceInfo;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -59,7 +60,7 @@ public final class Builder {
     public static final String NODE_L10N = "/org.openoffice.Setup/L10N";
     public static final String[] NODE_PATHS = {NODE_PRODUCT, NODE_L10N};
 
-    public static final String SUCCESS = "0";
+    public static final String SUCCESS = Symbol.ZERO;
     public static final String FAILURE = "-1";
 
     /**
@@ -340,8 +341,8 @@ public final class Builder {
      */
     public static String toUrl(final File file) {
         final String path = file.toURI().getRawPath();
-        final String url = path.startsWith("//") ? "file:" + path : "file://" + path;
-        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+        final String url = path.startsWith(Symbol.FORWARDSLASH) ? "file:" + path : "file://" + path;
+        return url.endsWith(Symbol.SLASH) ? url.substring(0, url.length() - 1) : url;
     }
 
     /**

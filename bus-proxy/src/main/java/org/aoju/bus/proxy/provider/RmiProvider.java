@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.proxy.provider;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Provider;
 
@@ -77,11 +78,11 @@ public class RmiProvider implements Provider {
             Registry reg = getRegistry();
             return reg.lookup(name);
         } catch (NotBoundException e) {
-            throw new InstrumentException("Name " + name + " not found in registry at " + host + ":" + port + ".",
+            throw new InstrumentException("Name " + name + " not found in registry at " + host + Symbol.COLON + port + Symbol.DOT,
                     e);
         } catch (RemoteException e) {
             throw new InstrumentException(
-                    "Unable to lookup service named " + name + " in registry at " + host + ":" + port + ".", e);
+                    "Unable to lookup service named " + name + " in registry at " + host + Symbol.COLON + port + Symbol.DOT, e);
         }
     }
 
@@ -109,7 +110,7 @@ public class RmiProvider implements Provider {
                 return LocateRegistry.getRegistry(host, port);
             }
         } catch (RemoteException e) {
-            throw new InstrumentException("Unable to locate registry at " + host + ":" + port + ".", e);
+            throw new InstrumentException("Unable to locate registry at " + host + Symbol.COLON + port + Symbol.DOT, e);
         }
     }
 

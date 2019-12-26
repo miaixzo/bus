@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.cron.factory;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
@@ -51,9 +52,9 @@ public class InvokeTask implements Task {
      * @param classNameWithMethodName 类名与方法名的字符串表示,方法名和类名使用#隔开或者.隔开
      */
     public InvokeTask(String classNameWithMethodName) {
-        int splitIndex = classNameWithMethodName.lastIndexOf('#');
+        int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_SHAPE);
         if (splitIndex <= 0) {
-            splitIndex = classNameWithMethodName.lastIndexOf('.');
+            splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_DOT);
         }
         if (splitIndex <= 0) {
             throw new InstrumentException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);

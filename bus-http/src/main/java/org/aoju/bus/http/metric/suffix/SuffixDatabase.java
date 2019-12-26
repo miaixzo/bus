@@ -26,8 +26,9 @@ package org.aoju.bus.http.metric.suffix;
 import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.io.segment.GzipSource;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.Internal;
 import org.aoju.bus.http.accord.platform.Platform;
 
 import java.io.IOException;
@@ -38,8 +39,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * A database of public suffixes provided by
- * <a href="https://publicsuffix.org/">suffix.org</a>.
+ * 提供的公共后缀数据库
+ * <a href="https://publicsuffix.org/">publicsuffix.org</a>.
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -49,28 +50,14 @@ public final class SuffixDatabase {
 
     public static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
 
-    private static final byte[] WILDCARD_LABEL = new byte[]{'*'};
-    private static final String[] EMPTY_RULE = new String[0];
-    private static final String[] PREVAILING_RULE = new String[]{"*"};
-
-    private static final byte EXCEPTION_MARKER = '!';
-
+    private static final byte[] WILDCARD_LABEL = new byte[]{Symbol.C_STAR};
+    private static final String[] EMPTY_RULE = Normal.EMPTY_STRING_ARRAY;
+    private static final String[] PREVAILING_RULE = new String[]{Symbol.STAR};
+    private static final byte EXCEPTION_MARKER = Symbol.C_NOT;
     private static final SuffixDatabase instance = new SuffixDatabase();
-
-    /**
-     * True after we've attempted to read the list for the first time.
-     */
     private final AtomicBoolean listRead = new AtomicBoolean(false);
-
-    /**
-     * Used for concurrent threads reading the list for the first time.
-     */
     private final CountDownLatch readCompleteLatch = new CountDownLatch(1);
 
-    // The lists are held as a large array of UTF-8 bytes. This is to avoid allocating lots of strings
-    // that will likely never be used. Each rule is separated by '\n'. Please see the
-    // PublicSuffixListGenerator class for how these lists are generated.
-    // Guarded by this.
     private byte[] publicSuffixListBytes;
     private byte[] publicSuffixExceptionListBytes;
 
@@ -86,14 +73,13 @@ public final class SuffixDatabase {
             int mid = (low + high) / 2;
             // Search for a '\n' that marks the start of a value. Don't go back past the start of the
             // array.
-            while (mid > -1 && bytesToSearch[mid] != '\n') {
+            while (mid > -1 && bytesToSearch[mid] != Symbol.C_LF) {
                 mid--;
             }
             mid++;
 
-            // Now look for the ending '\n'.
             int end = 1;
-            while (bytesToSearch[mid + end] != '\n') {
+            while (bytesToSearch[mid + end] != Symbol.C_LF) {
                 end++;
             }
             int publicSuffixLength = (mid + end) - mid;
@@ -109,7 +95,7 @@ public final class SuffixDatabase {
             while (true) {
                 int byte0;
                 if (expectDot) {
-                    byte0 = '.';
+                    byte0 = Symbol.C_DOT;
                     expectDot = false;
                 } else {
                     byte0 = labels[currentLabelIndex][currentLabelByteIndex] & 0xff;
@@ -164,30 +150,26 @@ public final class SuffixDatabase {
     }
 
     public String getEffectiveTldPlusOne(String domain) {
-        if (domain == null) throw new NullPointerException("entity == null");
+        if (domain == null) throw new NullPointerException("domain == null");
 
-        // We use UTF-8 in the list so we need to convert to Unicode.
         String unicodeDomain = IDN.toUnicode(domain);
         String[] domainLabels = unicodeDomain.split("\\.");
         String[] rule = findMatchingRule(domainLabels);
         if (domainLabels.length == rule.length && rule[0].charAt(0) != EXCEPTION_MARKER) {
-            // The entity is a public suffix.
             return null;
         }
 
         int firstLabelOffset;
         if (rule[0].charAt(0) == EXCEPTION_MARKER) {
-            // Exception rules hold the effective TLD plus first.
             firstLabelOffset = domainLabels.length - rule.length;
         } else {
-            // Otherwise the rule is for a public suffix, so we must take first more label.
             firstLabelOffset = domainLabels.length - (rule.length + 1);
         }
 
         StringBuilder effectiveTldPlusOne = new StringBuilder();
         String[] punycodeLabels = domain.split("\\.");
         for (int i = firstLabelOffset; i < punycodeLabels.length; i++) {
-            effectiveTldPlusOne.append(punycodeLabels[i]).append('.');
+            effectiveTldPlusOne.append(punycodeLabels[i]).append(Symbol.C_DOT);
         }
         effectiveTldPlusOne.deleteCharAt(effectiveTldPlusOne.length() - 1);
 
@@ -201,7 +183,7 @@ public final class SuffixDatabase {
             try {
                 readCompleteLatch.await();
             } catch (InterruptedException ignored) {
-                Thread.currentThread().interrupt(); // Retain interrupted status.
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -212,14 +194,11 @@ public final class SuffixDatabase {
             }
         }
 
-        // Break apart the entity into UTF-8 labels, i.e. foo.bar.com turns into [foo, bar, com].
         byte[][] domainLabelsUtf8Bytes = new byte[domainLabels.length][];
         for (int i = 0; i < domainLabels.length; i++) {
             domainLabelsUtf8Bytes[i] = domainLabels[i].getBytes(Charset.UTF_8);
         }
 
-        // Start by looking for exact matches. We start at the leftmost label. For example, foo.bar.com
-        // will look like: [foo, bar, com], [bar, com], [com]. The longest matching rule wins.
         String exactMatch = null;
         for (int i = 0; i < domainLabelsUtf8Bytes.length; i++) {
             String rule = binarySearchBytes(publicSuffixListBytes, domainLabelsUtf8Bytes, i);
@@ -229,11 +208,6 @@ public final class SuffixDatabase {
             }
         }
 
-        // In theory, wildcard rules are not restricted to having the wildcard in the leftmost position.
-        // In practice, wildcards are always in the leftmost position. For now, this implementation
-        // cheats and does not attempt every possible permutation. Instead, it only considers wildcards
-        // in the leftmost position. We assert this fact when we generate the public suffix file. If
-        // this assertion ever fails we'll need to refactor this implementation.
         String wildcardMatch = null;
         if (domainLabelsUtf8Bytes.length > 1) {
             byte[][] labelsWithWildcard = domainLabelsUtf8Bytes.clone();
@@ -247,7 +221,6 @@ public final class SuffixDatabase {
             }
         }
 
-        // Exception rules only apply to wildcard rules, so only try it if we matched a wildcard.
         String exception = null;
         if (wildcardMatch != null) {
             for (int labelIndex = 0; labelIndex < domainLabelsUtf8Bytes.length - 1; labelIndex++) {
@@ -261,8 +234,7 @@ public final class SuffixDatabase {
         }
 
         if (exception != null) {
-            // Signal we've identified an exception rule.
-            exception = "!" + exception;
+            exception = Symbol.NOT + exception;
             return exception.split("\\.");
         } else if (exactMatch == null && wildcardMatch == null) {
             return PREVAILING_RULE;
@@ -289,7 +261,7 @@ public final class SuffixDatabase {
                     readTheList();
                     return;
                 } catch (InterruptedIOException e) {
-                    Thread.interrupted(); // Temporarily clear the interrupted state.
+                    Thread.interrupted();
                     interrupted = true;
                 } catch (IOException e) {
                     Platform.get().log(Platform.WARN, "Failed to read public suffix list", e);
@@ -298,7 +270,7 @@ public final class SuffixDatabase {
             }
         } finally {
             if (interrupted) {
-                Thread.currentThread().interrupt(); // Retain interrupted status.
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -320,7 +292,7 @@ public final class SuffixDatabase {
             publicSuffixExceptionListBytes = new byte[totalExceptionBytes];
             bufferedSource.readFully(publicSuffixExceptionListBytes);
         } finally {
-            Internal.closeQuietly(bufferedSource);
+            IoUtils.close(bufferedSource);
         }
 
         synchronized (this) {

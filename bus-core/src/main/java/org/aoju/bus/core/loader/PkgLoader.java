@@ -24,6 +24,7 @@
 package org.aoju.bus.core.loader;
 
 import org.aoju.bus.core.io.resource.Resource;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -50,7 +51,7 @@ public class PkgLoader extends DelegateLoader implements Loader {
     }
 
     public Enumeration<Resource> load(String pkg, boolean recursively, Filter filter) throws IOException {
-        String path = pkg.replace('.', '/');
+        String path = pkg.replace(Symbol.C_DOT, Symbol.C_SLASH);
         return delegate.load(path, recursively, filter);
     }
 

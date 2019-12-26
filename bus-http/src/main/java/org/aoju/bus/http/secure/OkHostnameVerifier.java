@@ -23,7 +23,8 @@
  */
 package org.aoju.bus.http.secure;
 
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.http.Builder;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLException;
@@ -34,7 +35,7 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 
 /**
- * A HostnameVerifier consistent with <a href="http://www.ietf.org/rfc/rfc2818.txt">RFC 2818</a>.
+ * 一个与RFC 2818一致的HostnameVerifier
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -99,7 +100,7 @@ public final class OkHostnameVerifier implements HostnameVerifier {
     }
 
     public boolean verify(String host, X509Certificate certificate) {
-        return Internal.verifyAsIpAddress(host)
+        return Builder.verifyAsIpAddress(host)
                 ? verifyIpAddress(host, certificate)
                 : verifyHostname(host, certificate);
     }
@@ -125,91 +126,62 @@ public final class OkHostnameVerifier implements HostnameVerifier {
         return false;
     }
 
+    /**
+     * 返回{@code true} iff {@code hostname}匹配域名{@code pattern}.
+     *
+     * @param hostname 小写字母的主机名.
+     * @param pattern  从证书的域名模式。可能是一个通配符模式，如{@code *.android.com}
+     * @return the true/false
+     */
     public boolean verifyHostname(String hostname, String pattern) {
-        // Basic sanity checks
-        // Check length == 0 instead of .isEmpty() to support Java 5.
-        if ((hostname == null) || (hostname.length() == 0) || (hostname.startsWith("."))
-                || (hostname.endsWith(".."))) {
-            // Invalid entity name
+        // 基本健康检查
+        if ((hostname == null) || (hostname.length() == 0) || (hostname.startsWith(Symbol.DOT))
+                || (hostname.endsWith(Symbol.DOUBLE_DOT))) {
             return false;
         }
-        if ((pattern == null) || (pattern.length() == 0) || (pattern.startsWith("."))
-                || (pattern.endsWith(".."))) {
-            // Invalid pattern/entity name
+        if ((pattern == null) || (pattern.length() == 0) || (pattern.startsWith(Symbol.DOT))
+                || (pattern.endsWith(Symbol.DOUBLE_DOT))) {
             return false;
         }
 
-        // Normalize hostname and pattern by turning them into absolute entity names if they are not
-        // yet absolute. This is needed because server certificates do not normally contain absolute
-        // names or patterns, but they should be treated as absolute. At the same time, any hostname
-        // presented to this method should also be treated as absolute for the purposes of matching
-        // to the server certificate.
-        //   www.android.com  matches www.android.com
-        //   www.android.com  matches www.android.com.
-        //   www.android.com. matches www.android.com.
-        //   www.android.com. matches www.android.com
-        if (!hostname.endsWith(".")) {
-            hostname += '.';
+        if (!hostname.endsWith(Symbol.DOT)) {
+            hostname += Symbol.C_DOT;
         }
-        if (!pattern.endsWith(".")) {
-            pattern += '.';
+        if (!pattern.endsWith(Symbol.DOT)) {
+            pattern += Symbol.C_DOT;
         }
-        // hostname and pattern are now absolute entity names.
 
         pattern = pattern.toLowerCase(Locale.US);
-        // hostname and pattern are now in lower case entity names are case-insensitive.
+        // 主机名和模式现在是小写的——域名不区分大小写.
 
-        if (!pattern.contains("*")) {
-            // Not a wildcard pattern hostname and pattern must match exactly.
+        if (!pattern.contains(Symbol.STAR)) {
+            // 不是通配符模式——主机名和模式必须完全匹配.
             return hostname.equals(pattern);
         }
-        // Wildcard pattern
 
-        // WILDCARD PATTERN RULES:
-        // 1. Asterisk (*) is only permitted in the left-most entity name label and must be the
-        //    only character in that label (i.e., must match the whole left-most label).
-        //    For example, *.example.com is permitted, while *a.example.com, a*.example.com,
-        //    a*b.example.com, a.*.example.com are not permitted.
-        // 2. Asterisk (*) cannot match across entity name labels.
-        //    For example, *.example.com matches test.example.com but does not match
-        //    sub.test.example.com.
-        // 3. Wildcard patterns for single-label entity names are not permitted.
-
-        if ((!pattern.startsWith("*.")) || (pattern.indexOf('*', 1) != -1)) {
-            // Asterisk (*) is only permitted in the left-most entity name label and must be the only
-            // character in that label
+        if ((!pattern.startsWith("*.")) || (pattern.indexOf(Symbol.C_STAR, 1) != -1)) {
             return false;
         }
 
-        // Optimization: check whether hostname is too short to match the pattern. hostName must be at
-        // least as long as the pattern because asterisk must match the whole left-most label and
-        // hostname starts with a non-empty label. Thus, asterisk has to match first or more characters.
         if (hostname.length() < pattern.length()) {
-            // hostname too short to match the pattern.
             return false;
         }
 
         if ("*.".equals(pattern)) {
-            // Wildcard pattern for single-label entity name not permitted.
             return false;
         }
 
-        // hostname must end with the region of pattern following the asterisk.
         String suffix = pattern.substring(1);
         if (!hostname.endsWith(suffix)) {
-            // hostname does not end with the suffix
             return false;
         }
 
-        // Check that asterisk did not match across entity name labels.
         int suffixStartIndexInHostname = hostname.length() - suffix.length();
         if ((suffixStartIndexInHostname > 0)
-                && (hostname.lastIndexOf('.', suffixStartIndexInHostname - 1) != -1)) {
-            // Asterisk is matching across entity name labels not permitted.
+                && (hostname.lastIndexOf(Symbol.C_DOT, suffixStartIndexInHostname - 1) != -1)) {
             return false;
         }
 
-        // hostname matches pattern
         return true;
     }
 

@@ -206,7 +206,6 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
 
             // 获取当前列坐标
             String tempCurCoordinate = attributes.getValue(R_ATTR);
-            // 前一列为null,则将其设置为"@",A为第一列,ascii码为65,前一列即为@,ascii码64
             if (preCoordinate == null) {
                 preCoordinate = String.valueOf(ExcelSaxUtils.CELL_FILL_CHAR);
             } else {

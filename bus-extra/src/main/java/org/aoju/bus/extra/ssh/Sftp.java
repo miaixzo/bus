@@ -29,6 +29,7 @@ import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -160,7 +161,7 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public Sftp reconnectIfTimeout() {
-        if (false == this.cd("/") && StringUtils.isNotBlank(this.host)) {
+        if (false == this.cd(Symbol.SLASH) && StringUtils.isNotBlank(this.host)) {
             init(this.host, this.port, this.user, this.password, this.charset);
         }
         return this;
@@ -257,7 +258,7 @@ public class Sftp extends AbstractFtp {
                 @Override
                 public int select(LsEntry entry) {
                     String fileName = entry.getFilename();
-                    if (false == StringUtils.equals(".", fileName) && false == StringUtils.equals("..", fileName)) {
+                    if (false == StringUtils.equals(Symbol.DOT, fileName) && false == StringUtils.equals(Symbol.DOUBLE_DOT, fileName)) {
                         if (null == filter || filter.accept(entry)) {
                             fileNames.add(entry.getFilename());
                         }
@@ -294,7 +295,7 @@ public class Sftp extends AbstractFtp {
             return true;
         }
         try {
-            channel.cd(directory.replaceAll("\\\\", "/"));
+            channel.cd(directory.replaceAll("\\\\", Symbol.SLASH));
             return true;
         } catch (SftpException e) {
             return false;
@@ -338,7 +339,7 @@ public class Sftp extends AbstractFtp {
         String fileName;
         for (LsEntry entry : list) {
             fileName = entry.getFilename();
-            if (false == fileName.equals(".") && false == fileName.equals("..")) {
+            if (false == fileName.equals(Symbol.DOT) && false == fileName.equals(Symbol.DOUBLE_DOT)) {
                 if (entry.getAttrs().isDir()) {
                     delDir(fileName);
                 } else {

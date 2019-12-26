@@ -27,6 +27,8 @@ import org.aoju.bus.core.io.segment.BufferPage;
 import org.aoju.bus.core.io.segment.EventFactory;
 import org.aoju.bus.core.io.segment.RingBuffer;
 import org.aoju.bus.core.io.segment.VirtualBuffer;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -59,7 +61,6 @@ public final class UdpChannel<Request> {
      * 与当前UDP通道对接的会话
      */
     private ConcurrentHashMap<String, UdpAioSession<Request>> udpAioSessionConcurrentHashMap = new ConcurrentHashMap<>();
-
 
     /**
      * 待输出消息
@@ -178,7 +179,7 @@ public final class UdpChannel<Request> {
 
         }
         InetSocketAddress address = (InetSocketAddress) remote;
-        String key = address.getHostName() + ":" + address.getPort();
+        String key = address.getHostName() + Symbol.COLON + address.getPort();
         UdpAioSession<Request> session = udpAioSessionConcurrentHashMap.get(key);
         if (session != null) {
             return session;
@@ -230,7 +231,7 @@ public final class UdpChannel<Request> {
                 channel = null;
             }
         } catch (IOException e) {
-            Logger.error("", e);
+            Logger.error(Normal.EMPTY, e);
         }
     }
 

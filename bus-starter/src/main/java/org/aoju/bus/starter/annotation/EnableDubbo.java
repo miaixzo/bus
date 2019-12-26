@@ -66,7 +66,6 @@ public @interface EnableDubbo {
     @AliasFor(annotation = DubboComponentScan.class, attribute = "basePackageClasses")
     Class<?>[] basePackageClass() default {};
 
-
     /**
      * binding to multiple Spring Beans.
      *

@@ -27,7 +27,6 @@ import org.aoju.bus.health.Memoizer;
 
 import java.util.function.Supplier;
 
-
 /**
  * Computer System data.
  *

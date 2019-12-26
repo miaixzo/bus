@@ -21,6 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/*
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.segment.BufferSink;
@@ -30,20 +45,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * This class was originally composed from the following classes in <a
- * href="https://github.com/twitter/hpack">Twitter Hpack</a>.
+ * 这个类最初是由以下类组成的<a href="https://github.com/twitter/hpack">Twitter Hpack</a>.
  *
  * <ul>
- * <li>{@code com.twitter.hpack.HuffmanEncoder}</li>
- * <li>{@code com.twitter.hpack.HuffmanDecoder}</li>
- * <li>{@code com.twitter.hpack.HpackUtil}</li>
+ *     <li>{@code com.twitter.hpack.HuffmanEncoder}</li>
+ *     <li>{@code com.twitter.hpack.HuffmanDecoder}</li>
+ *     <li>{@code com.twitter.hpack.HpackUtil}</li>
  * </ul>
  *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
-class Huffman {
+public class Huffman {
 
     private static final int[] CODES = {
             0x1ff8, 0x7fffd8, 0xfffffe2, 0xfffffe3, 0xfffffe4, 0xfffffe5, 0xfffffe6, 0xfffffe7, 0xfffffe8,
@@ -148,12 +162,12 @@ class Huffman {
                 int c = (current >>> (nbits - 8)) & 0xFF;
                 node = node.children[c];
                 if (node.children == null) {
-                    // terminal node
+                    // 终端节点
                     baos.write(node.symbol);
                     nbits -= node.terminalBits;
                     node = root;
                 } else {
-                    // non-terminal node
+                    // 非终结符节点
                     nbits -= 8;
                 }
             }
@@ -205,29 +219,32 @@ class Huffman {
 
     private static final class Node {
 
-        // Null if terminal.
+        /**
+         * 终端节点
+         */
         final Node[] children;
 
-        // Terminal nodes have a symbol.
+        /**
+         * 终端节点符号
+         */
         final int symbol;
 
-        // Number of bits represented in the terminal node.
+        /**
+         * 终端节点中表示的位数
+         */
         final int terminalBits;
 
-        /**
-         * Construct an internal node.
-         */
         Node() {
             this.children = new Node[256];
-            this.symbol = 0; // Not read.
-            this.terminalBits = 0; // Not read.
+            this.symbol = 0;
+            this.terminalBits = 0;
         }
 
         /**
-         * Construct a terminal node.
+         * 构造一个终端节点
          *
-         * @param symbol symbol the node represents
-         * @param bits   length of Huffman code in bits
+         * @param symbol 节点表示
+         * @param bits   bits类型的Huffman长度
          */
         Node(int symbol, int bits) {
             this.children = null;

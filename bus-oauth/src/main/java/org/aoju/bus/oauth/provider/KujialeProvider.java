@@ -24,6 +24,7 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
@@ -103,7 +104,7 @@ public class KujialeProvider extends DefaultProvider {
 
     private JSONObject checkResponse(String response) {
         JSONObject object = JSONObject.parseObject(response);
-        if (!"0".equals(object.getString("c"))) {
+        if (!Symbol.ZERO.equals(object.getString("c"))) {
             throw new InstrumentException(object.getString("m"));
         }
         return object;
@@ -117,7 +118,7 @@ public class KujialeProvider extends DefaultProvider {
                 .queryParam("open_id", openId)
                 .build());
         JSONObject object = JSONObject.parseObject(response);
-        if (!"0".equals(object.getString("c"))) {
+        if (!Symbol.ZERO.equals(object.getString("c"))) {
             throw new InstrumentException(object.getString("m"));
         }
         JSONObject resultObject = object.getJSONObject("d");

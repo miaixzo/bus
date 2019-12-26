@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.mapper.criteria;
 
-
 /**
  * 主键处理
  *

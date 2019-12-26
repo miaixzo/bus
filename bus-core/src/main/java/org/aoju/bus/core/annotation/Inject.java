@@ -25,7 +25,6 @@ package org.aoju.bus.core.annotation;
 
 import java.lang.annotation.*;
 
-
 /**
  * 注释实现类的成员(构造函数、方法和字段)
  *

@@ -56,7 +56,7 @@ public class Console {
             Throwable e = (Throwable) obj;
             log(e, e.getMessage());
         } else {
-            log("{}", obj);
+            log(Symbol.DELIM, obj);
         }
     }
 
@@ -67,7 +67,7 @@ public class Console {
      * @since 3.3.1
      */
     public static void print(Object obj) {
-        print("{}", obj);
+        print(Symbol.DELIM, obj);
     }
 
     /**
@@ -122,7 +122,7 @@ public class Console {
             Throwable e = (Throwable) obj;
             error(e, e.getMessage());
         } else {
-            error("{}", obj);
+            error(Symbol.DELIM, obj);
         }
     }
 

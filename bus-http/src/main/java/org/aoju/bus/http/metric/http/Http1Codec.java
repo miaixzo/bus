@@ -24,8 +24,10 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.Header;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.RealConnection;
 import org.aoju.bus.http.accord.StreamAllocation;
@@ -38,24 +40,10 @@ import java.net.ProtocolException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A socket connection that can be used to send HTTP/1.1 messages. This class strictly enforces the
- * following lifecycle:
- *
- * <ol>
- * <li>{@linkplain #writeRequest Send request headers}.
- * <li>Open a sink to write the request body. Either {@linkplain #newFixedLengthSink
- * fixed-length} or {@link #newChunkedSink chunked}.
- * <li>Write to and then close that sink.
- * <li>{@linkplain #readResponseHeaders Read response headers}.
- * <li>Open a source to read the response body. Either {@linkplain #newFixedLengthSource
- * fixed-length}, {@linkplain #newChunkedSource chunked} or {@linkplain
- * #newUnknownLengthSource unknown length}.
- * <li>Read from and close that source.
- * </ol>
- *
- * <p>Exchanges that do not have a request body may skip creating and closing the request body.
- * Exchanges that do not have a response body can call {@link #newFixedLengthSource(long)
- * newFixedLengthSource(0)} and may skip reading and closing that source.
+ * 可以用来发送HTTP/1.1消息的套接字连接。这个类严格执行以下生命周期:
+ * 没有请求主体的交换器可以跳过创建和关闭请求主体。没有响应体的交换器可以
+ * 调用{@link #newFixedLengthSource(long) newFixedLengthSource(0)}
+ * 并可以跳过读取和关闭该源
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -63,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class Http1Codec implements HttpCodec {
 
-    private static final int STATE_IDLE = 0; // Idle connections are ready to write request headers.
+    private static final int STATE_IDLE = 0;
     private static final int STATE_OPEN_REQUEST_BODY = 1;
     private static final int STATE_WRITING_REQUEST_BODY = 2;
     private static final int STATE_READ_RESPONSE_HEADERS = 3;
@@ -73,11 +61,11 @@ public final class Http1Codec implements HttpCodec {
     private static final int HEADER_LIMIT = 256 * 1024;
 
     /**
-     * The client that configures this stream. May be null for HTTPS proxy tunnels.
+     * 配置此流的客户端。可能是空的HTTPS代理隧道.
      */
-    final Httpd httpd;
+    final Httpd client;
     /**
-     * The stream allocation that owns this stream. May be null for HTTPS proxy tunnels.
+     * 拥有该流的分配。对于HTTPS代理隧道可能为空
      */
     final StreamAllocation streamAllocation;
 
@@ -86,9 +74,9 @@ public final class Http1Codec implements HttpCodec {
     int state = STATE_IDLE;
     private long headerLimit = HEADER_LIMIT;
 
-    public Http1Codec(Httpd httpd, StreamAllocation streamAllocation, BufferSource source,
+    public Http1Codec(Httpd client, StreamAllocation streamAllocation, BufferSource source,
                       BufferSink sink) {
-        this.httpd = httpd;
+        this.client = client;
         this.streamAllocation = streamAllocation;
         this.source = source;
         this.sink = sink;
@@ -96,13 +84,11 @@ public final class Http1Codec implements HttpCodec {
 
     @Override
     public Sink createRequestBody(Request request, long contentLength) {
-        if ("chunked".equalsIgnoreCase(request.header("Transfer-Encoding"))) {
-            // Stream a request body of unknown length.
+        if ("chunked".equalsIgnoreCase(request.header(Header.TRANSFER_ENCODING))) {
             return newChunkedSink();
         }
 
         if (contentLength != -1) {
-            // Stream a request body of a known length.
             return newFixedLengthSink(contentLength);
         }
 
@@ -161,16 +147,16 @@ public final class Http1Codec implements HttpCodec {
         sink.flush();
     }
 
-    public void writeRequest(Header headers, String requestLine) throws IOException {
+    public void writeRequest(Headers headers, String requestLine) throws IOException {
         if (state != STATE_IDLE) throw new IllegalStateException("state: " + state);
-        sink.writeUtf8(requestLine).writeUtf8("\r\n");
+        sink.writeUtf8(requestLine).writeUtf8(Symbol.CRLF);
         for (int i = 0, size = headers.size(); i < size; i++) {
             sink.writeUtf8(headers.name(i))
                     .writeUtf8(": ")
                     .writeUtf8(headers.value(i))
-                    .writeUtf8("\r\n");
+                    .writeUtf8(Symbol.CRLF);
         }
-        sink.writeUtf8("\r\n");
+        sink.writeUtf8(Symbol.CRLF);
         state = STATE_OPEN_REQUEST_BODY;
     }
 
@@ -189,9 +175,9 @@ public final class Http1Codec implements HttpCodec {
                     .message(statusLine.message)
                     .headers(readHeaders());
 
-            if (expectContinue && statusLine.code == StatusLine.HTTP_CONTINUE) {
+            if (expectContinue && statusLine.code == Http.HTTP_CONTINUE) {
                 return null;
-            } else if (statusLine.code == StatusLine.HTTP_CONTINUE) {
+            } else if (statusLine.code == Http.HTTP_CONTINUE) {
                 state = STATE_READ_RESPONSE_HEADERS;
                 return responseBuilder;
             }
@@ -199,7 +185,6 @@ public final class Http1Codec implements HttpCodec {
             state = STATE_OPEN_RESPONSE_BODY;
             return responseBuilder;
         } catch (EOFException e) {
-            // Provide more context if the server ends the stream before sending a response.
             IOException exception = new IOException("unexpected end of stream on " + streamAllocation);
             exception.initCause(e);
             throw exception;
@@ -212,10 +197,10 @@ public final class Http1Codec implements HttpCodec {
         return line;
     }
 
-    public Header readHeaders() throws IOException {
-        Header.Builder headers = new Header.Builder();
+    public Headers readHeaders() throws IOException {
+        Headers.Builder headers = new Headers.Builder();
         for (String line; (line = readHeaderLine()).length() != 0; ) {
-            Internal.instance.addLenient(headers, line);
+            Builder.instance.addLenient(headers, line);
         }
         return headers.build();
     }
@@ -252,15 +237,18 @@ public final class Http1Codec implements HttpCodec {
         return new UnknownLengthSource();
     }
 
-    void detachTimeout(Forward timeout) {
+    void detachTimeout(Delegate timeout) {
         Timeout oldDelegate = timeout.delegate();
         timeout.setDelegate(Timeout.NONE);
         oldDelegate.clearDeadline();
         oldDelegate.clearTimeout();
     }
 
+    /**
+     * 预先知道长度固定的HTTP正文.
+     */
     private final class FixedLengthSink implements Sink {
-        private final Forward timeout = new Forward(sink.timeout());
+        private final Delegate timeout = new Delegate(sink.timeout());
         private boolean closed;
         private long bytesRemaining;
 
@@ -276,7 +264,7 @@ public final class Http1Codec implements HttpCodec {
         @Override
         public void write(Buffer source, long byteCount) throws IOException {
             if (closed) throw new IllegalStateException("closed");
-            Internal.checkOffsetAndCount(source.size(), 0, byteCount);
+            Builder.checkOffsetAndCount(source.size(), 0, byteCount);
             if (byteCount > bytesRemaining) {
                 throw new ProtocolException("expected " + bytesRemaining
                         + " bytes but received " + byteCount);
@@ -302,8 +290,7 @@ public final class Http1Codec implements HttpCodec {
     }
 
     private final class ChunkedSink implements Sink {
-
-        private final Forward timeout = new Forward(sink.timeout());
+        private final Delegate timeout = new Delegate(sink.timeout());
         private boolean closed;
 
         ChunkedSink() {
@@ -320,9 +307,9 @@ public final class Http1Codec implements HttpCodec {
             if (byteCount == 0) return;
 
             sink.writeHexadecimalUnsignedLong(byteCount);
-            sink.writeUtf8("\r\n");
+            sink.writeUtf8(Symbol.CRLF);
             sink.write(source, byteCount);
-            sink.writeUtf8("\r\n");
+            sink.writeUtf8(Symbol.CRLF);
         }
 
         @Override
@@ -342,8 +329,7 @@ public final class Http1Codec implements HttpCodec {
     }
 
     private abstract class AbstractSource implements Source {
-
-        protected final Forward timeout = new Forward(source.timeout());
+        protected final Delegate timeout = new Delegate(source.timeout());
         protected boolean closed;
         protected long bytesRead = 0;
 
@@ -366,7 +352,7 @@ public final class Http1Codec implements HttpCodec {
             }
         }
 
-        protected final void endOfInput(boolean reuseConnection, IOException e) throws IOException {
+        protected final void endOfInput(boolean reuseConnection, IOException e) {
             if (state == STATE_CLOSED) return;
             if (state != STATE_READING_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
 
@@ -379,8 +365,10 @@ public final class Http1Codec implements HttpCodec {
         }
     }
 
+    /**
+     * 预先指定了固定长度的HTTP主体.
+     */
     private class FixedLengthSource extends AbstractSource {
-
         private long bytesRemaining;
 
         FixedLengthSource(long length) throws IOException {
@@ -399,7 +387,7 @@ public final class Http1Codec implements HttpCodec {
             long read = super.read(sink, Math.min(bytesRemaining, byteCount));
             if (read == -1) {
                 ProtocolException e = new ProtocolException("unexpected end of stream");
-                endOfInput(false, e); // The server didn't supply the promised content length.
+                endOfInput(false, e);
                 throw e;
             }
 
@@ -414,7 +402,7 @@ public final class Http1Codec implements HttpCodec {
         public void close() throws IOException {
             if (closed) return;
 
-            if (bytesRemaining != 0 && !Internal.discard(this, DISCARD_STREAM_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
+            if (bytesRemaining != 0 && !Builder.discard(this, DISCARD_STREAM_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                 endOfInput(false, null);
             }
 
@@ -422,8 +410,10 @@ public final class Http1Codec implements HttpCodec {
         }
     }
 
+    /**
+     * 具有交替块大小和块体的HTTP主体.
+     */
     private class ChunkedSource extends AbstractSource {
-
         private static final long NO_CHUNK_YET = -1L;
         private final UnoUrl url;
         private long bytesRemainingInChunk = NO_CHUNK_YET;
@@ -447,7 +437,7 @@ public final class Http1Codec implements HttpCodec {
             long read = super.read(sink, Math.min(byteCount, bytesRemainingInChunk));
             if (read == -1) {
                 ProtocolException e = new ProtocolException("unexpected end of stream");
-                endOfInput(false, e); // The server didn't supply the promised chunk length.
+                endOfInput(false, e);
                 throw e;
             }
             bytesRemainingInChunk -= read;
@@ -455,23 +445,22 @@ public final class Http1Codec implements HttpCodec {
         }
 
         private void readChunkSize() throws IOException {
-            // Read the suffix of the previous chunk.
             if (bytesRemainingInChunk != NO_CHUNK_YET) {
                 source.readUtf8LineStrict();
             }
             try {
                 bytesRemainingInChunk = source.readHexadecimalUnsignedLong();
                 String extensions = source.readUtf8LineStrict().trim();
-                if (bytesRemainingInChunk < 0 || (!extensions.isEmpty() && !extensions.startsWith(";"))) {
+                if (bytesRemainingInChunk < 0 || (!extensions.isEmpty() && !extensions.startsWith(Symbol.SEMICOLON))) {
                     throw new ProtocolException("expected chunk size and optional extensions but was \""
-                            + bytesRemainingInChunk + extensions + "\"");
+                            + bytesRemainingInChunk + extensions + Symbol.DOUBLE_QUOTES);
                 }
             } catch (NumberFormatException e) {
                 throw new ProtocolException(e.getMessage());
             }
             if (bytesRemainingInChunk == 0L) {
                 hasMoreChunks = false;
-                HttpHeaders.receiveHeaders(httpd.cookieJar(), url, readHeaders());
+                HttpHeaders.receiveHeaders(client.cookieJar(), url, readHeaders());
                 endOfInput(true, null);
             }
         }
@@ -479,15 +468,17 @@ public final class Http1Codec implements HttpCodec {
         @Override
         public void close() throws IOException {
             if (closed) return;
-            if (hasMoreChunks && !Internal.discard(this, DISCARD_STREAM_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
+            if (hasMoreChunks && !Builder.discard(this, DISCARD_STREAM_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                 endOfInput(false, null);
             }
             closed = true;
         }
     }
 
+    /**
+     * HTTP消息体在底层流结束时终止
+     */
     private class UnknownLengthSource extends AbstractSource {
-
         private boolean inputExhausted;
 
         UnknownLengthSource() {

@@ -25,6 +25,7 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.map.TableMap;
 
 import java.lang.reflect.*;
@@ -1749,7 +1750,7 @@ public class TypeUtils {
                     buf.insert(0, c.getName());
                     break;
                 }
-                buf.insert(0, c.getSimpleName()).insert(0, '.');
+                buf.insert(0, c.getSimpleName()).insert(0, Symbol.C_DOT);
                 c = c.getEnclosingClass();
             }
         } else if (d instanceof Type) {
@@ -1757,7 +1758,7 @@ public class TypeUtils {
         } else {
             buf.append(d);
         }
-        return buf.append(':').append(typeVariableToString(var)).toString();
+        return buf.append(Symbol.C_COLON).append(typeVariableToString(var)).toString();
     }
 
     /**
@@ -1769,20 +1770,20 @@ public class TypeUtils {
      */
     private static String classToString(final Class<?> c) {
         if (c.isArray()) {
-            return toString(c.getComponentType()) + "[]";
+            return toString(c.getComponentType()) + Symbol.BRACKET;
         }
 
         final StringBuilder buf = new StringBuilder();
 
         if (c.getEnclosingClass() != null) {
-            buf.append(classToString(c.getEnclosingClass())).append('.').append(c.getSimpleName());
+            buf.append(classToString(c.getEnclosingClass())).append(Symbol.C_DOT).append(c.getSimpleName());
         } else {
             buf.append(c.getName());
         }
         if (c.getTypeParameters().length > 0) {
-            buf.append('<');
+            buf.append(Symbol.C_LT);
             appendAllTo(buf, ", ", c.getTypeParameters());
-            buf.append('>');
+            buf.append(Symbol.C_GT);
         }
         return buf.toString();
     }
@@ -1825,7 +1826,7 @@ public class TypeUtils {
             } else {
                 buf.append(useOwner.toString());
             }
-            buf.append('.').append(raw.getSimpleName());
+            buf.append(Symbol.C_DOT).append(raw.getSimpleName());
         }
 
         final int[] recursiveTypeIndexes = findRecursiveTypes(p);
@@ -1833,7 +1834,7 @@ public class TypeUtils {
         if (recursiveTypeIndexes.length > 0) {
             appendRecursiveTypes(buf, recursiveTypeIndexes, p.getActualTypeArguments());
         } else {
-            appendAllTo(buf.append('<'), ", ", p.getActualTypeArguments()).append('>');
+            appendAllTo(buf.append(Symbol.C_LT), ", ", p.getActualTypeArguments()).append(Symbol.C_GT);
         }
 
         return buf.toString();
@@ -1841,13 +1842,13 @@ public class TypeUtils {
 
     private static void appendRecursiveTypes(final StringBuilder buf, final int[] recursiveTypeIndexes, final Type[] argumentTypes) {
         for (int i = 0; i < recursiveTypeIndexes.length; i++) {
-            appendAllTo(buf.append('<'), ", ", argumentTypes[i].toString()).append('>');
+            appendAllTo(buf.append(Symbol.C_LT), ", ", argumentTypes[i].toString()).append(Symbol.C_GT);
         }
 
         final Type[] argumentsFiltered = ArrayUtils.removeAll(argumentTypes, recursiveTypeIndexes);
 
         if (argumentsFiltered.length > 0) {
-            appendAllTo(buf.append('<'), ", ", argumentsFiltered).append('>');
+            appendAllTo(buf.append(Symbol.C_LT), ", ", argumentsFiltered).append(Symbol.C_GT);
         }
     }
 
@@ -1869,7 +1870,7 @@ public class TypeUtils {
     }
 
     private static String wildcardTypeToString(final WildcardType w) {
-        final StringBuilder buf = new StringBuilder().append('?');
+        final StringBuilder buf = new StringBuilder().append(Symbol.C_QUESTION_MARK);
         final Type[] lowerBounds = w.getLowerBounds();
         final Type[] upperBounds = w.getUpperBounds();
         if (lowerBounds.length > 1 || lowerBounds.length == 1 && lowerBounds[0] != null) {

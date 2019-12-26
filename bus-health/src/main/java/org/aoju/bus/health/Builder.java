@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.health;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -509,7 +511,7 @@ public class Builder {
         // Check if string is valid hex
         if (!VALID_HEX.matcher(digits).matches() || (len & 0x1) != 0) {
             Logger.warn("Invalid hexadecimal string: {}", digits);
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
@@ -782,7 +784,7 @@ public class Builder {
      * @return the value contained between single tick marks
      */
     public static String getSingleQuoteStringValue(String line) {
-        return getStringBetween(line, '\'');
+        return getStringBetween(line, Symbol.C_SINGLE_QUOTE);
     }
 
     /**
@@ -792,7 +794,7 @@ public class Builder {
      * @return the value contained between double tick marks
      */
     public static String getDoubleQuoteStringValue(String line) {
-        return getStringBetween(line, '"');
+        return getStringBetween(line, Symbol.C_DOUBLE_QUOTES);
     }
 
     /**
@@ -917,17 +919,17 @@ public class Builder {
                     }
                     delimCurrent = true;
                 }
-            } else if (indices[parsedIndex] != stringIndex || c == '+') {
+            } else if (indices[parsedIndex] != stringIndex || c == Symbol.C_PLUS) {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
-            } else if (c >= '0' && c <= '9') {
+            } else if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
                 if (power > 18) {
                     Logger.error("Number is too big for a long parsing string '{}' to long array", s);
                     return new long[indices.length];
                 }
-                parsed[parsedIndex] += (c - '0') * POWERS_OF_TEN[power++];
+                parsed[parsedIndex] += (c - Symbol.C_ZERO) * POWERS_OF_TEN[power++];
                 delimCurrent = false;
-            } else if (c == '-') {
+            } else if (c == Symbol.C_HYPHEN) {
                 parsed[parsedIndex] *= -1L;
                 delimCurrent = false;
             } else {
@@ -968,7 +970,7 @@ public class Builder {
                     numbers++;
                     delimCurrent = true;
                 }
-            } else if (c >= '0' && c <= '9' || c == '-' || c == '+') {
+            } else if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE || c == Symbol.C_HYPHEN || c == Symbol.C_PLUS) {
                 delimCurrent = false;
             } else {
                 // we found non-digit or delimiter, exit
@@ -1086,10 +1088,10 @@ public class Builder {
      * remainder of the String does not match.
      */
     public static boolean wildcardMatch(String text, String pattern) {
-        if (pattern.length() > 0 && pattern.charAt(0) == '^') {
+        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
             return !wildcardMatch(text, pattern.substring(1));
         }
-        return text.matches(pattern.replace("?", ".?").replace("*", ".*?"));
+        return text.matches(pattern.replace(Symbol.QUESTION_MARK, ".?").replace(Symbol.STAR, ".*?"));
     }
 
     /**
@@ -1102,11 +1104,11 @@ public class Builder {
         // Bytes 8-9 are manufacturer ID in 3 5-bit characters.
         String temp = String
                 .format("%8s%8s", Integer.toBinaryString(edid[8] & 0xFF), Integer.toBinaryString(edid[9] & 0xFF))
-                .replace(' ', '0');
+                .replace(Symbol.C_SPACE, Symbol.C_ZERO);
         Logger.debug("Manufacurer ID: {}", temp);
         return String.format("%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace("@", "");
+                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace(Symbol.AT, "");
     }
 
     /**
@@ -1173,7 +1175,7 @@ public class Builder {
      */
     public static String getVersion(byte[] edid) {
         // Bytes 18-19 are EDID version
-        return edid[18] + "." + edid[19];
+        return edid[18] + Symbol.DOT + edid[19];
     }
 
     /**
@@ -1279,7 +1281,7 @@ public class Builder {
         sb.append(", Product ID=").append(Builder.getProductID(edid));
         sb.append(", ").append(Builder.isDigital(edid) ? "Digital" : "Analog");
         sb.append(", Serial=").append(Builder.getSerialNo(edid));
-        sb.append(", ManufDate=").append(Builder.getWeek(edid) * 12 / 52 + 1).append('/')
+        sb.append(", ManufDate=").append(Builder.getWeek(edid) * 12 / 52 + 1).append(Symbol.C_SLASH)
                 .append(Builder.getYear(edid));
         sb.append(", EDID v").append(Builder.getVersion(edid));
         int hSize = Builder.getHcm(edid);

@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.hardware.AbstractHardwareLayer;
 import org.aoju.bus.health.hardware.AbstractSoundCard;
@@ -112,7 +113,7 @@ public class LinuxSoundCard extends AbstractSoundCard {
             for (File file : cardFiles) {
                 if (file.getName().startsWith("codec")) {
                     if (!file.isDirectory()) {
-                        cardCodec = Builder.getKeyValueMapFromFile(file.getPath(), ":").get("Codec");
+                        cardCodec = Builder.getKeyValueMapFromFile(file.getPath(), Symbol.COLON).get("Codec");
                     } else {
                         // on various centos environments, this is a subdirectory
                         // each file is usually named something like
@@ -121,8 +122,8 @@ public class LinuxSoundCard extends AbstractSoundCard {
                         File[] codecs = file.listFiles();
                         if (codecs != null) {
                             for (File codec : codecs) {
-                                if (!codec.isDirectory() && codec.getName().contains("#")) {
-                                    cardCodec = codec.getName().substring(0, codec.getName().indexOf("#"));
+                                if (!codec.isDirectory() && codec.getName().contains(Symbol.SHAPE)) {
+                                    cardCodec = codec.getName().substring(0, codec.getName().indexOf(Symbol.SHAPE));
                                     break;
                                 }
                             }
@@ -148,8 +149,8 @@ public class LinuxSoundCard extends AbstractSoundCard {
      */
     private static String getCardName(File file) {
         String cardName = "Not Found..";
-        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(SC_PATH + "/" + CARDS_FILE, ":");
-        String cardId = Builder.getStringFromFile(file.getPath() + "/" + ID_FILE);
+        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(SC_PATH + Symbol.SLASH + CARDS_FILE, Symbol.COLON);
+        String cardId = Builder.getStringFromFile(file.getPath() + Symbol.SLASH + ID_FILE);
         for (Map.Entry<String, String> entry : cardNamePairs.entrySet()) {
             if (entry.getKey().contains(cardId)) {
                 cardName = entry.getValue();

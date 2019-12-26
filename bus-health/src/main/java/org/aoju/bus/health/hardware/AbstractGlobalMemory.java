@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 
@@ -62,14 +63,14 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                     speed = 0L;
                 }
             } else if (bank > 0) {
-                String[] split = line.trim().split(":");
+                String[] split = line.trim().split(Symbol.COLON);
                 if (split.length == 2) {
                     switch (split[0]) {
                         case "Bank Locator":
                             bankLabel = split[1].trim();
                             break;
                         case "Locator":
-                            locator = "/" + split[1].trim();
+                            locator = Symbol.SLASH + split[1].trim();
                             break;
                         case "Size":
                             capacity = parsePhysicalMemorySize(split[1].trim());
@@ -133,7 +134,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
         StringBuilder sb = new StringBuilder();
         sb.append("Available: ");
         sb.append(Builder.formatBytes(getAvailable()));
-        sb.append("/");
+        sb.append(Symbol.SLASH);
         sb.append(Builder.formatBytes(getTotal()));
         return sb.toString();
     }

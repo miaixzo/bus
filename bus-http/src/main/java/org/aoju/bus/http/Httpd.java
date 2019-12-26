@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.io.segment.Sink;
+import org.aoju.bus.core.io.segment.Source;
 import org.aoju.bus.http.accord.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.cache.Cache;
@@ -37,8 +39,8 @@ import org.aoju.bus.http.secure.CertificateChainCleaner;
 import org.aoju.bus.http.secure.CertificatePinner;
 import org.aoju.bus.http.secure.OkHostnameVerifier;
 import org.aoju.bus.http.socket.RealWebSocket;
-import org.aoju.bus.http.socket.SocketListener;
 import org.aoju.bus.http.socket.WebSocket;
+import org.aoju.bus.http.socket.WebSocketListener;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
@@ -52,78 +54,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Factory for {@linkplain NewCall calls}, which can be used to send HTTP requests and read their
- * responses.
- *
- * <h3>Okclients should be shared</h3>
- *
- * <p>OkHttp performs best when you create a single {@code client} instance and reuse it for
- * all of your HTTP calls. This is because each client holds its own connection pool and thread
- * pools. Reusing connections and threads reduces latency and saves memory. Conversely, creating a
- * client for each request wastes resources on idle pools.
- *
- * <p>Use {@code new client()} to create a shared instance with the default settings:
- * <pre>   {@code
- *
- *   // The singleton HTTP client.
- *   public final client client = new client();
- * }</pre>
- *
- * <p>Or use {@code new client.Builder()} to create a shared instance with custom settings:
- * <pre>   {@code
- *
- *   // The singleton HTTP client.
- *   public final client client = new client.Builder()
- *       .addInterceptor(new HttpLoggingInterceptor())
- *       .cache(new Cache(cacheDir, cacheSize))
- *       .build();
- * }</pre>
- *
- * <h3>Customize your client with newBuilder()</h3>
- *
- * <p>You can customize a shared client instance with {@link #newBuilder()}. This builds a
- * client that shares the same connection pool, thread pools, and configuration. Use the builder
- * methods to configure the derived client for a specific purpose.
- *
- * <p>This example shows a call with a short 500 millisecond timeout: <pre>   {@code
- *
- *   client eagerClient = client.newBuilder()
- *       .readTimeout(500, TimeUnit.MILLISECONDS)
- *       .build();
- *   Response response = eagerClient.newCall(request).execute();
- * }</pre>
- *
- * <h3>Shutdown isn't necessary</h3>
- *
- * <p>The threads and connections that are held will be released automatically if they remain idle.
- * But if you are writing a application that needs to aggressively release unused resources you may
- * do so.
- *
- * <p>Shutdown the dispatcher's executor service with {@link ExecutorService#shutdown shutdown()}.
- * This will also cause future calls to the client to be rejected. <pre>   {@code
- *
- *     client.dispatcher().executorService().shutdown();
- * }</pre>
- *
- * <p>Clear the connection pool with {@link ConnectPool#evictAll() evictAll()}. Note that the
- * connection pool's daemon thread may not exit immediately. <pre>   {@code
- *
- *     client.connectionPool().evictAll();
- * }</pre>
- *
- * <p>If your client has a cache, call {@link Cache#close close()}. Note that it is an error to
- * create calls against a cache that is closed, and doing so will cause the call to crash.
- * <pre>   {@code
- *
- *     client.cache().close();
- * }</pre>
- *
- * <p>OkHttp also uses daemon threads for HTTP/2 connections. These will exit automatically if they
- * remain idle.
+ * 发送HTTP请求辅助类
+ * 工厂的{@linkplain NewCall calls}，可以用来发送HTTP请求并读取它们的响应
+ * 当您创建一个{@code Httpd}实例并将其用于所有HTTP调用时，体现Httpd的性能最佳。
+ * 这是因为每个客户机都拥有自己的连接池和线程池。重用连接和线程可以减少延迟并节省内存。
+ * 相反，为每个请求创建一个客户机会浪费空闲池上的资源
+ * Httpd还为HTTP/2连接使用守护进程线程。如果它们保持空闲，就会自动退出
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -131,38 +70,37 @@ import java.util.concurrent.TimeUnit;
  */
 public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
 
-    static final List<Protocol> DEFAULT_PROTOCOLS = Internal.immutableList(
+    static final List<Protocol> DEFAULT_PROTOCOLS = org.aoju.bus.http.Builder.immutableList(
             Protocol.HTTP_2, Protocol.HTTP_1_1);
 
-    static final List<ConnectSuite> DEFAULT_CONNECTION_SPECS = Internal.immutableList(
-            ConnectSuite.MODERN_TLS, ConnectSuite.CLEARTEXT);
+    static final List<ConnectionSuite> DEFAULT_CONNECTION_SPECS = org.aoju.bus.http.Builder.immutableList(
+            ConnectionSuite.MODERN_TLS, ConnectionSuite.CLEARTEXT);
 
     static {
-        Internal.instance = new Internal() {
-
+        org.aoju.bus.http.Builder.instance = new org.aoju.bus.http.Builder() {
             @Override
-            public void addLenient(Header.Builder builder, String line) {
+            public void addLenient(Headers.Builder builder, String line) {
                 builder.addLenient(line);
             }
 
             @Override
-            public void addLenient(Header.Builder builder, String name, String value) {
+            public void addLenient(Headers.Builder builder, String name, String value) {
                 builder.addLenient(name, value);
             }
 
             @Override
-            public void setCache(Httpd.Builder builder, InternalCache internalCache) {
+            public void setCache(Builder builder, InternalCache internalCache) {
                 builder.setInternalCache(internalCache);
             }
 
             @Override
             public boolean connectionBecameIdle(
-                    ConnectPool pool, RealConnection connection) {
+                    ConnectionPool pool, RealConnection connection) {
                 return pool.connectionBecameIdle(connection);
             }
 
             @Override
-            public RealConnection get(ConnectPool pool, Address address,
+            public RealConnection get(ConnectionPool pool, Address address,
                                       StreamAllocation streamAllocation, Route route) {
                 return pool.get(address, streamAllocation, route);
             }
@@ -174,18 +112,18 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
 
             @Override
             public Socket deduplicate(
-                    ConnectPool pool, Address address, StreamAllocation streamAllocation) {
+                    ConnectionPool pool, Address address, StreamAllocation streamAllocation) {
                 return pool.deduplicate(address, streamAllocation);
             }
 
             @Override
-            public void put(ConnectPool pool, RealConnection connection) {
+            public void put(ConnectionPool pool, RealConnection connection) {
                 pool.put(connection);
             }
 
             @Override
-            public RouteDatabase routeDatabase(ConnectPool connectPool) {
-                return connectPool.routeDatabase;
+            public RouteDatabase routeDatabase(ConnectionPool connectionPool) {
+                return connectionPool.routeDatabase;
             }
 
             @Override
@@ -194,7 +132,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             }
 
             @Override
-            public void apply(ConnectSuite tlsConfiguration, SSLSocket sslSocket, boolean isFallback) {
+            public void apply(ConnectionSuite tlsConfiguration, SSLSocket sslSocket, boolean isFallback) {
                 tlsConfiguration.apply(sslSocket, isFallback);
             }
 
@@ -214,8 +152,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             }
 
             @Override
-            public NewCall newWebSocketCall(Httpd httpd, Request originalRequest) {
-                return RealCall.newRealCall(httpd, originalRequest, true);
+            public NewCall newWebSocketCall(Httpd client, Request originalRequest) {
+                return RealCall.newRealCall(client, originalRequest, true);
             }
         };
     }
@@ -223,8 +161,16 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     final Dispatcher dispatcher;
     final Proxy proxy;
     final List<Protocol> protocols;
-    final List<ConnectSuite> connectSuites;
+    final List<ConnectionSuite> connectionSuites;
+    /**
+     * 返回一个不可变的拦截器列表，该列表观察每个调用的完整跨度:
+     * 从建立连接之前(如果有的话)到选择响应源之后(源服务器、缓存或两者都有)
+     */
     final List<Interceptor> interceptors;
+    /**
+     * 返回观察单个网络请求和响应的不可变拦截器列表。这些拦截器必须
+     * 调用{@link Interceptor.Chain#proceed} 只执行一次:网络拦截器短路或重复网络请求是错误的
+     */
     final List<Interceptor> networkInterceptors;
     final EventListener.Factory eventListenerFactory;
     final ProxySelector proxySelector;
@@ -238,15 +184,30 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     final CertificatePinner certificatePinner;
     final Authenticator proxyAuthenticator;
     final Authenticator authenticator;
-    final ConnectPool connectPool;
+    final ConnectionPool connectionPool;
     final DnsX dns;
     final boolean followSslRedirects;
     final boolean followRedirects;
     final boolean retryOnConnectionFailure;
+    /**
+     * 默认调用超时(毫秒).
+     */
     final int callTimeout;
+    /**
+     * 默认连接超时(毫秒).
+     */
     final int connectTimeout;
+    /**
+     * 默认读超时(毫秒).
+     */
     final int readTimeout;
+    /**
+     * 默认写超时(毫秒).
+     */
     final int writeTimeout;
+    /**
+     * Web socket ping间隔(毫秒)
+     */
     final int pingInterval;
 
     public Httpd() {
@@ -257,9 +218,9 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         this.dispatcher = builder.dispatcher;
         this.proxy = builder.proxy;
         this.protocols = builder.protocols;
-        this.connectSuites = builder.connectSuites;
-        this.interceptors = Internal.immutableList(builder.interceptors);
-        this.networkInterceptors = Internal.immutableList(builder.networkInterceptors);
+        this.connectionSuites = builder.connectionSuites;
+        this.interceptors = org.aoju.bus.http.Builder.immutableList(builder.interceptors);
+        this.networkInterceptors = org.aoju.bus.http.Builder.immutableList(builder.networkInterceptors);
         this.eventListenerFactory = builder.eventListenerFactory;
         this.proxySelector = builder.proxySelector;
         this.cookieJar = builder.cookieJar;
@@ -268,7 +229,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         this.socketFactory = builder.socketFactory;
 
         boolean isTLS = false;
-        for (ConnectSuite spec : connectSuites) {
+        for (ConnectionSuite spec : connectionSuites) {
             isTLS = isTLS || spec.isTls();
         }
 
@@ -276,7 +237,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             this.sslSocketFactory = builder.sslSocketFactory;
             this.certificateChainCleaner = builder.certificateChainCleaner;
         } else {
-            X509TrustManager trustManager = Internal.platformTrustManager();
+            X509TrustManager trustManager = org.aoju.bus.http.secure.X509TrustManager.platformTrustManager();
             this.sslSocketFactory = newSslSocketFactory(trustManager);
             this.certificateChainCleaner = CertificateChainCleaner.get(trustManager);
         }
@@ -290,7 +251,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
                 certificateChainCleaner);
         this.proxyAuthenticator = builder.proxyAuthenticator;
         this.authenticator = builder.authenticator;
-        this.connectPool = builder.connectPool;
+        this.connectionPool = builder.connectionPool;
         this.dns = builder.dns;
         this.followSslRedirects = builder.followSslRedirects;
         this.followRedirects = builder.followRedirects;
@@ -302,10 +263,10 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         this.pingInterval = builder.pingInterval;
 
         if (interceptors.contains(null)) {
-            throw new IllegalStateException("Null intercept: " + interceptors);
+            throw new IllegalStateException("Null interceptor: " + interceptors);
         }
         if (networkInterceptors.contains(null)) {
-            throw new IllegalStateException("Null network intercept: " + networkInterceptors);
+            throw new IllegalStateException("Null network interceptor: " + networkInterceptors);
         }
     }
 
@@ -315,9 +276,22 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             sslContext.init(null, new TrustManager[]{trustManager}, null);
             return sslContext.getSocketFactory();
         } catch (GeneralSecurityException e) {
-            throw Internal.assertionError("No System TLS", e); // The system has no TLS. Just give up.
+            throw org.aoju.bus.http.Builder.assertionError("No System TLS", e); // The system has no TLS. Just give up.
         }
     }
+
+    @Override
+    public NewCall newCall(Request request) {
+        return RealCall.newRealCall(this, request, false /* for web socket */);
+    }
+
+    @Override
+    public WebSocket newWebSocket(Request request, WebSocketListener listener) {
+        RealWebSocket webSocket = new RealWebSocket(request, listener, new Random(), pingInterval);
+        webSocket.connect(this);
+        return webSocket;
+    }
+
 
     public int callTimeoutMillis() {
         return callTimeout;
@@ -387,8 +361,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         return proxyAuthenticator;
     }
 
-    public ConnectPool connectionPool() {
-        return connectPool;
+    public ConnectionPool connectionPool() {
+        return connectionPool;
     }
 
     public boolean followSslRedirects() {
@@ -411,8 +385,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         return protocols;
     }
 
-    public List<ConnectSuite> connectionSpecs() {
-        return connectSuites;
+    public List<ConnectionSuite> connectionSpecs() {
+        return connectionSuites;
     }
 
     public List<Interceptor> interceptors() {
@@ -427,30 +401,19 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         return eventListenerFactory;
     }
 
-    @Override
-    public NewCall newCall(Request request) {
-        return RealCall.newRealCall(this, request, false /* for web socket */);
-    }
-
-    @Override
-    public WebSocket newWebSocket(Request request, SocketListener listener) {
-        RealWebSocket webSocket = new RealWebSocket(request, listener, new Random(), pingInterval);
-        webSocket.connect(this);
-        return webSocket;
-    }
 
     public Builder newBuilder() {
         return new Builder(this);
     }
 
-    public static class Builder {
-
+    public static final class Builder {
         final List<Interceptor> interceptors = new ArrayList<>();
         final List<Interceptor> networkInterceptors = new ArrayList<>();
         Dispatcher dispatcher;
         Proxy proxy;
         List<Protocol> protocols;
-        List<ConnectSuite> connectSuites;
+        List<ConnectionSuite> connectionSuites;
+
         EventListener.Factory eventListenerFactory;
         ProxySelector proxySelector;
         CookieJar cookieJar;
@@ -463,7 +426,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         CertificatePinner certificatePinner;
         Authenticator proxyAuthenticator;
         Authenticator authenticator;
-        ConnectPool connectPool;
+        ConnectionPool connectionPool;
         DnsX dns;
         boolean followSslRedirects;
         boolean followRedirects;
@@ -477,7 +440,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         public Builder() {
             dispatcher = new Dispatcher();
             protocols = DEFAULT_PROTOCOLS;
-            connectSuites = DEFAULT_CONNECTION_SPECS;
+            connectionSuites = DEFAULT_CONNECTION_SPECS;
             eventListenerFactory = EventListener.factory(EventListener.NONE);
             proxySelector = ProxySelector.getDefault();
             if (proxySelector == null) {
@@ -489,15 +452,15 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             certificatePinner = CertificatePinner.DEFAULT;
             proxyAuthenticator = Authenticator.NONE;
             authenticator = Authenticator.NONE;
-            connectPool = new ConnectPool();
+            connectionPool = new ConnectionPool();
             dns = DnsX.SYSTEM;
             followSslRedirects = true;
             followRedirects = true;
             retryOnConnectionFailure = true;
             callTimeout = 0;
-            connectTimeout = 30_000;
-            readTimeout = 30_000;
-            writeTimeout = 30_000;
+            connectTimeout = 10_000;
+            readTimeout = 10_000;
+            writeTimeout = 10_000;
             pingInterval = 0;
         }
 
@@ -505,7 +468,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             this.dispatcher = httpd.dispatcher;
             this.proxy = httpd.proxy;
             this.protocols = httpd.protocols;
-            this.connectSuites = httpd.connectSuites;
+            this.connectionSuites = httpd.connectionSuites;
             this.interceptors.addAll(httpd.interceptors);
             this.networkInterceptors.addAll(httpd.networkInterceptors);
             this.eventListenerFactory = httpd.eventListenerFactory;
@@ -520,7 +483,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             this.certificatePinner = httpd.certificatePinner;
             this.proxyAuthenticator = httpd.proxyAuthenticator;
             this.authenticator = httpd.authenticator;
-            this.connectPool = httpd.connectPool;
+            this.connectionPool = httpd.connectionPool;
             this.dns = httpd.dns;
             this.followSslRedirects = httpd.followSslRedirects;
             this.followRedirects = httpd.followRedirects;
@@ -532,96 +495,222 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             this.pingInterval = httpd.pingInterval;
         }
 
+        /**
+         * 设置完成调用的默认超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         *
+         * @param timeout 超时时间
+         * @param unit    计算单位
+         * @return 构造器
+         */
         public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Internal.checkDuration("timeout", timeout, unit);
+            callTimeout = org.aoju.bus.http.Builder.checkDuration("timeout", timeout, unit);
             return this;
         }
 
+        /**
+         * 设置完成调用的默认超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         *
+         * @param duration 持续时间
+         * @return 构造器
+         */
         public Builder callTimeout(Duration duration) {
-            this.callTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
+            callTimeout = org.aoju.bus.http.Builder.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
+        /**
+         * 设置新连接的默认连接超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         *
+         * @param timeout 超时时间
+         * @param unit    计算单位
+         * @return 构造器
+         */
         public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Internal.checkDuration("timeout", timeout, unit);
+            connectTimeout = org.aoju.bus.http.Builder.checkDuration("timeout", timeout, unit);
             return this;
         }
 
+        /**
+         * 设置新连接的默认连接超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         *
+         * @param duration 持续时间
+         * @return 构造器
+         */
         public Builder connectTimeout(Duration duration) {
-            this.connectTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
+            connectTimeout = org.aoju.bus.http.Builder.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
+        /**
+         * 设置新连接的默认读取超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         *
+         * @param timeout 超时时间
+         * @param unit    计算单位
+         * @return 构造器
+         * @see Socket#setSoTimeout(int)
+         * @see Source#timeout()
+         */
         public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Internal.checkDuration("timeout", timeout, unit);
+            readTimeout = org.aoju.bus.http.Builder.checkDuration("timeout", timeout, unit);
             return this;
         }
 
+        /**
+         * 设置新连接的默认读取超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
+         *
+         * @param duration 持续时间
+         * @return 构造器
+         * @see Socket#setSoTimeout(int)
+         * @see Source#timeout()
+         */
         public Builder readTimeout(Duration duration) {
-            readTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
+            readTimeout = org.aoju.bus.http.Builder.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
+        /**
+         * 设置新连接的默认写超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         *
+         * @param timeout 超时时间
+         * @param unit    计算单位
+         * @return 构造器
+         * @see Sink#timeout()
+         */
         public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Internal.checkDuration("timeout", timeout, unit);
+            writeTimeout = org.aoju.bus.http.Builder.checkDuration("timeout", timeout, unit);
             return this;
         }
 
+        /**
+         * 设置新连接的默认写超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         *
+         * @param duration 持续时间
+         * @return 构造器
+         * @see Sink#timeout()
+         */
         public Builder writeTimeout(Duration duration) {
-            this.writeTimeout = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
+            writeTimeout = org.aoju.bus.http.Builder.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
+        /**
+         * 设置此客户端发起的HTTP/2和web套接字ping之间的间隔。使用此命令可自动发送ping帧，直到连接失败或关闭。
+         * 这将保持连接处于活动状态，并可能检测到连接失败.
+         *
+         * @param interval 间隔时间
+         * @param unit     计算单位
+         * @return 构造器
+         */
         public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Internal.checkDuration("interval", interval, unit);
+            pingInterval = org.aoju.bus.http.Builder.checkDuration("interval", interval, unit);
             return this;
         }
 
+        /**
+         * 设置此客户端发起的HTTP/2和web套接字ping之间的间隔。使用此命令可自动发送ping帧，
+         * 直到连接失败或关闭。这将保持连接处于活动状态，并可能检测到连接失败.
+         *
+         * @param duration 持续时间
+         * @return 构造器
+         */
         public Builder pingInterval(Duration duration) {
-            this.pingInterval = Internal.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
+            pingInterval = org.aoju.bus.http.Builder.checkDuration("timeout", duration.toMillis(), TimeUnit.MILLISECONDS);
             return this;
         }
 
+        /**
+         * 设置此客户端创建的连接将使用的HTTP代理。它优先于{@link #proxySelector}，
+         * 后者仅在此代理为空(默认为空)时才被启用。要完全禁用代理使用，请调用{@code proxy(proxy . no_proxy)}
+         *
+         * @param proxy 代理
+         * @return 构造器
+         */
         public Builder proxy(Proxy proxy) {
             this.proxy = proxy;
             return this;
         }
 
+        /**
+         * 如果没有显式指定{@link #proxy proxy}，则设置要使用的代理选择策略。代理选择器可以返回多个代理;在这种情况下，
+         * 将依次对它们进行测试，直到建立成功的连接.
+         *
+         * @param proxySelector 代理选择器
+         * @return 构造器
+         */
         public Builder proxySelector(ProxySelector proxySelector) {
             if (proxySelector == null) throw new NullPointerException("proxySelector == null");
             this.proxySelector = proxySelector;
             return this;
         }
 
+        /**
+         * 设置可以接受来自传入HTTP响应的cookie并向传出HTTP请求提供cookie的处理程序.
+         *
+         * @param cookieJar cookie策略
+         * @return 构造器
+         */
         public Builder cookieJar(CookieJar cookieJar) {
             if (cookieJar == null) throw new NullPointerException("cookieJar == null");
             this.cookieJar = cookieJar;
             return this;
         }
 
+        /**
+         * 设置用于读写缓存的响应的响应缓存.
+         *
+         * @param internalCache 响应缓存
+         * @return 构造器
+         */
         void setInternalCache(InternalCache internalCache) {
             this.internalCache = internalCache;
             this.cache = null;
         }
 
+        /**
+         * 设置用于读写缓存的响应的响应缓存.
+         *
+         * @param cache 缓存支持
+         * @return 构造器
+         */
         public Builder cache(Cache cache) {
             this.cache = cache;
             this.internalCache = null;
             return this;
         }
 
+        /**
+         * 设置用于查找主机名的IP地址的DNS服务.
+         * 如果未设置，将使用{@link DnsX#SYSTEM system-wide default}DNS
+         *
+         * @param dns DNS服务
+         * @return 构造器
+         */
         public Builder dns(DnsX dns) {
             if (dns == null) throw new NullPointerException("dns == null");
             this.dns = dns;
             return this;
         }
 
+        /**
+         * 设置用于创建连接的套接字工厂。Httpd只使用无参数的{@link SocketFactory#createSocket()}
+         * 方法来创建未连接的套接字。重写这个方法，例如。，允许将套接字绑定到特定的本地地址
+         * 如果未设置，将使用{@link SocketFactory#getDefault() system-wide default}socket工厂
+         *
+         * @param socketFactory socket工厂
+         * @return 构造器
+         */
         public Builder socketFactory(SocketFactory socketFactory) {
             if (socketFactory == null) throw new NullPointerException("socketFactory == null");
             this.socketFactory = socketFactory;
             return this;
         }
 
+        /**
+         * 设置用于保护HTTPS连接的套接字工厂。如果未设置，则使用系统默认值.
+         *
+         * @param sslSocketFactory socket工厂
+         * @return 构造器
+         */
         public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory) {
             if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
             this.sslSocketFactory = sslSocketFactory;
@@ -629,8 +718,37 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             return this;
         }
 
-        public Builder sslSocketFactory(
-                SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
+        /**
+         * 设置用于保护HTTPS连接的套接字工厂和信任管理器。如果未设置，则使用系统默认值
+         * 大多数应用程序不应该调用这个方法，而应该使用系统默认值。这些类包含特殊的优化，如果实现被修饰，这些优化可能会丢失
+         * <pre>
+         * {@code
+         *
+         *   TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+         *       TrustManagerFactory.getDefaultAlgorithm());
+         *   trustManagerFactory.init((KeyStore) null);
+         *   TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+         *   if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+         *     throw new IllegalStateException("Unexpected default trust managers:"
+         *         + Arrays.toString(trustManagers));
+         *   }
+         *   X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
+         *
+         *   SSLContext sslContext = SSLContext.getInstance("TLS");
+         *   sslContext.init(null, new TrustManager[] { trustManager }, null);
+         *   SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+         *
+         *   Httpd client = new Httpd.Builder()
+         *       .sslSocketFactory(sslSocketFactory, trustManager)
+         *       .build();
+         * }
+         * </pre>
+         *
+         * @param sslSocketFactory ssl socket工厂
+         * @param trustManager     X509证书身份验证
+         * @return 构造器
+         */
+        public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
             if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
             if (trustManager == null) throw new NullPointerException("trustManager == null");
             this.sslSocketFactory = sslSocketFactory;
@@ -638,51 +756,113 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             return this;
         }
 
+        /**
+         * 设置用于确认响应证书适用于HTTPS连接请求的主机名的验证程序.
+         * 如果未设置，将使用默认的主机名验证器
+         *
+         * @param hostnameVerifier 验证主机名接口
+         * @return 构造器
+         */
         public Builder hostnameVerifier(HostnameVerifier hostnameVerifier) {
             if (hostnameVerifier == null) throw new NullPointerException("hostnameVerifier == null");
             this.hostnameVerifier = hostnameVerifier;
             return this;
         }
 
+        /**
+         * 设置限制哪些证书受信任的证书pinner。默认情况下，HTTPS连接仅
+         * 依赖于{@link #sslSocketFactory SSL套接字工厂}来建立信任。
+         * 固定证书避免了信任证书颁发机构的需要。
+         *
+         * @param certificatePinner 证书
+         * @return 构造器
+         */
         public Builder certificatePinner(CertificatePinner certificatePinner) {
             if (certificatePinner == null) throw new NullPointerException("certificatePinner == null");
             this.certificatePinner = certificatePinner;
             return this;
         }
 
+        /**
+         * 设置用于响应来自源服务器的挑战的验证器。使用{@link #proxyAuthenticator}设置代理服务器的身份验证器.
+         *
+         * @param authenticator 验证器
+         * @return 构造器
+         */
         public Builder authenticator(Authenticator authenticator) {
             if (authenticator == null) throw new NullPointerException("authenticator == null");
             this.authenticator = authenticator;
             return this;
         }
 
+        /**
+         * 设置用于响应来自代理服务器的挑战的验证器。使用{@link #authenticator}设置源服务器的身份验证器
+         * 果未设置，将尝试{@linkplain Authenticator#NONE no authentication will be attempted}
+         *
+         * @param proxyAuthenticator 代理验证器
+         * @return 构造器
+         */
         public Builder proxyAuthenticator(Authenticator proxyAuthenticator) {
             if (proxyAuthenticator == null) throw new NullPointerException("proxyAuthenticator == null");
             this.proxyAuthenticator = proxyAuthenticator;
             return this;
         }
 
-        public Builder connectionPool(ConnectPool connectPool) {
-            if (connectPool == null) throw new NullPointerException("connectionPool == null");
-            this.connectPool = connectPool;
+        /**
+         * 设置用于回收HTTP和HTTPS连接的连接池.
+         * 如果未设置，将使用新的连接池
+         *
+         * @param connectionPool 连接池信息
+         * @return 构造器
+         */
+        public Builder connectionPool(ConnectionPool connectionPool) {
+            if (connectionPool == null) throw new NullPointerException("connectionPool == null");
+            this.connectionPool = connectionPool;
             return this;
         }
 
+        /**
+         * 让这个客户从HTTPS到HTTPS跟踪和从HTTPS到HTTPS.
+         * 如果未设置，将遵循协议重定向。这与内置的{@code HttpURLConnection}的默认设置不同
+         *
+         * @param followProtocolRedirects 重定向
+         * @return 构造器
+         */
         public Builder followSslRedirects(boolean followProtocolRedirects) {
             this.followSslRedirects = followProtocolRedirects;
             return this;
         }
 
+        /**
+         * 此客户端配置为遵循重定向。如果未设置，将遵循重定向.
+         *
+         * @param followRedirects 重定向
+         * @return 构造器
+         */
         public Builder followRedirects(boolean followRedirects) {
             this.followRedirects = followRedirects;
             return this;
         }
 
+        /**
+         * 在遇到连接问题时，将此客户端配置为重试或不重试
+         * 将此设置为false，以避免在这样做会造成破坏时重试请求
+         * 在这种情况下，调用应用程序应该自己恢复连接故障.
+         *
+         * @param retryOnConnectionFailure 失败重试
+         * @return 构造器
+         */
         public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
             return this;
         }
 
+        /**
+         * 设置用于设置策略和执行异步请求的调度程序。不能为空.
+         *
+         * @param dispatcher 调度程序分配器
+         * @return 构造器
+         */
         public Builder dispatcher(Dispatcher dispatcher) {
             if (dispatcher == null) throw new IllegalArgumentException("dispatcher == null");
             this.dispatcher = dispatcher;
@@ -690,42 +870,19 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * Configure the protocols used by this client to communicate with remote servers. By default
-         * this client will prefer the most efficient transport available, falling back to more
-         * ubiquitous protocols. Applications should only call this method to avoid specific
-         * compatibility problems, such as web servers that behave incorrectly when HTTP/2 is enabled.
+         * 配置此客户端使用的协议以与远程服务器通信。默认情况下，该客户机将选择最有效的传输方式
+         * 退回到更普遍的协议。应用程序应该只调用这个方法来避免特定的兼容性问题，比如在启用HTTP/2时web服务器的行为不正确.
          *
-         * <p>The following protocols are currently supported:
-         *
-         * <ul>
-         * <li><a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">http/1.1</a>
-         * <li><a href="https://tools.ietf.org/html/rfc7540">h2</a>
-         * <li><a href="https://tools.ietf.org/html/rfc7540#section-3.4">h2 with prior knowledge
-         * (cleartext only)</a>
-         * </ul>
-         *
-         * <p><strong>This is an evolving set.</strong> Future releases include support for transitional
-         * protocols. The http/1.1 transport will never be dropped.
-         *
-         * <p>If multiple protocols are specified, <a
-         * href="http://tools.ietf.org/html/draft-ietf-tls-applayerprotoneg">ALPN</a> will be used to
-         * negotiate a transport. Protocol negotiation is only attempted for HTTPS URLs.
-         *
-         * <p>{@link Protocol#HTTP_1_0} is not supported in this set. Requests are initiated with {@code
-         * HTTP/1.1}. If the server responds with {@code HTTP/1.0}, that will be exposed by {@link
-         * Response#protocol()}.
-         *
-         * @param protocols the protocols to use, in order of preference. If the list contains {@link
-         *                  Protocol#H2_PRIOR_KNOWLEDGE} then that must be the only protocol and HTTPS URLs will not
-         *                  be supported. Otherwise the list must contain {@link Protocol#HTTP_1_1}. The list must
-         *                  not contain null or {@link Protocol#HTTP_1_0}.
-         * @return Builder
+         * @param protocols 使用的协议，按优先顺序排列。如果列表包含{@link Protocol#H2_PRIOR_KNOWLEDGE}，
+         *                  那么它必须是唯一的协议，并且不支持HTTPS url。否则列表必须包含{@link Protocol#HTTP_1_1}。
+         *                  该列表不能包含null或{@link Protocol#HTTP_1_0}.
+         * @return 构造器
          */
         public Builder protocols(List<Protocol> protocols) {
-            // Create a private copy of the list.
+            // 创建列表的私有副本
             protocols = new ArrayList<>(protocols);
 
-            // Validate that the list has everything we require and nothing we forbid.
+            // 验证该列表包含我们需要的所有内容，没有我们禁止的内容.
             if (!protocols.contains(Protocol.H2_PRIOR_KNOWLEDGE)
                     && !protocols.contains(Protocol.HTTP_1_1)) {
                 throw new IllegalArgumentException(
@@ -742,45 +899,70 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
                 throw new IllegalArgumentException("protocols must not contain null");
             }
 
-            // Remove protocols that we no longer support.
+            // 删除不再支持的协议
             protocols.remove(Protocol.SPDY_3);
 
-            // Assign as an unmodifiable list. This is effectively immutable.
+            // 指定为不可修改的列表。这是有效不可变的.
             this.protocols = Collections.unmodifiableList(protocols);
             return this;
         }
 
-        public Builder connectionSpecs(List<ConnectSuite> connectSuites) {
-            this.connectSuites = Internal.immutableList(connectSuites);
+        public Builder connectionSpecs(List<ConnectionSuite> connectionSuites) {
+            this.connectionSuites = org.aoju.bus.http.Builder.immutableList(connectionSuites);
             return this;
         }
 
+        /**
+         * 返回一个可修改的拦截器列表，该列表观察每个调用的完整跨度:
+         * 从建立连接之前(如果有的话)到选择响应源之后(源服务器、缓存或两者都有).
+         *
+         * @return 构造器
+         */
         public List<Interceptor> interceptors() {
             return interceptors;
         }
 
         public Builder addInterceptor(Interceptor interceptor) {
-            if (interceptor == null) throw new IllegalArgumentException("intercept == null");
+            if (interceptor == null) throw new IllegalArgumentException("interceptor == null");
             interceptors.add(interceptor);
             return this;
         }
 
+        /**
+         * 返回观察单个网络请求和响应的可修改的拦截器列表。
+         * 这些拦截器必须调用{@link Interceptor.Chain#proceed}
+         * 只执行一次:网络拦截器短路或重复网络请求是错误的
+         *
+         * @return 构造器
+         */
         public List<Interceptor> networkInterceptors() {
             return networkInterceptors;
         }
 
         public Builder addNetworkInterceptor(Interceptor interceptor) {
-            if (interceptor == null) throw new IllegalArgumentException("intercept == null");
+            if (interceptor == null) throw new IllegalArgumentException("interceptor == null");
             networkInterceptors.add(interceptor);
             return this;
         }
 
+        /**
+         * 配置单个客户机作用域侦听器，该侦听器将接收此客户机的所有分析事件.
+         *
+         * @param eventListener 监听器
+         * @return 构造器
+         */
         public Builder eventListener(EventListener eventListener) {
             if (eventListener == null) throw new NullPointerException("eventListener == null");
             this.eventListenerFactory = EventListener.factory(eventListener);
             return this;
         }
 
+        /**
+         * 配置工厂以提供每个调用范围的侦听器，这些侦听器将接收此客户机的分析事件
+         *
+         * @param eventListenerFactory 监听工厂信息
+         * @return 构造器
+         */
         public Builder eventListenerFactory(EventListener.Factory eventListenerFactory) {
             if (eventListenerFactory == null) {
                 throw new NullPointerException("eventListenerFactory == null");

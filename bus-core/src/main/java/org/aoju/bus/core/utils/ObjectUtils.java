@@ -25,6 +25,7 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.io.FastByteArray;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
@@ -1244,14 +1245,14 @@ public class ObjectUtils {
             return (Object[]) source;
         }
         if (source == null) {
-            return new Object[0];
+            return Normal.EMPTY_OBJECT_ARRAY;
         }
         if (!source.getClass().isArray()) {
             throw new IllegalArgumentException("Source is not an array: " + source);
         }
         int length = Array.getLength(source);
         if (length == 0) {
-            return new Object[0];
+            return Normal.EMPTY_OBJECT_ARRAY;
         }
         Class<?> wrapperType = Array.get(source, 0).getClass();
         Object[] newArray = (Object[]) Array.newInstance(wrapperType, length);

@@ -1,5 +1,7 @@
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * BCD码（Binary-Coded Decimal‎）亦称二进码十进数或二-十进制代码
  * BCD码这种编码形式利用了四个位元来储存一个十进制的数码,
@@ -21,7 +23,7 @@ public class BCD {
         int len = asc.length();
         int mod = len % 2;
         if (mod != 0) {
-            asc = "0" + asc;
+            asc = Symbol.ZERO + asc;
             len = asc.length();
         }
         byte abt[] = new byte[len];
@@ -33,15 +35,15 @@ public class BCD {
         int j;
         int k;
         for (int p = 0; p < asc.length() / 2; p++) {
-            if ((abt[2 * p] >= '0') && (abt[2 * p] <= '9')) {
-                j = abt[2 * p] - '0';
+            if ((abt[2 * p] >= Symbol.C_ZERO) && (abt[2 * p] <= Symbol.C_NINE)) {
+                j = abt[2 * p] - Symbol.C_ZERO;
             } else if ((abt[2 * p] >= 'a') && (abt[2 * p] <= 'z')) {
                 j = abt[2 * p] - 'a' + 0x0a;
             } else {
                 j = abt[2 * p] - 'A' + 0x0a;
             }
-            if ((abt[2 * p + 1] >= '0') && (abt[2 * p + 1] <= '9')) {
-                k = abt[2 * p + 1] - '0';
+            if ((abt[2 * p + 1] >= Symbol.C_ZERO) && (abt[2 * p + 1] <= Symbol.C_NINE)) {
+                k = abt[2 * p + 1] - Symbol.C_ZERO;
             } else if ((abt[2 * p + 1] >= 'a') && (abt[2 * p + 1] <= 'z')) {
                 k = abt[2 * p + 1] - 'a' + 0x0a;
             } else {
@@ -92,10 +94,10 @@ public class BCD {
 
         for (int i = 0; i < bytes.length; i++) {
             val = (char) (((bytes[i] & 0xf0) >> 4) & 0x0f);
-            temp[i * 2] = (char) (val > 9 ? val + 'A' - 10 : val + '0');
+            temp[i * 2] = (char) (val > 9 ? val + 'A' - 10 : val + Symbol.C_ZERO);
 
             val = (char) (bytes[i] & 0x0f);
-            temp[i * 2 + 1] = (char) (val > 9 ? val + 'A' - 10 : val + '0');
+            temp[i * 2 + 1] = (char) (val > 9 ? val + 'A' - 10 : val + Symbol.C_ZERO);
         }
         return new String(temp);
     }
@@ -109,8 +111,8 @@ public class BCD {
     private static byte ascToBcd(byte asc) {
         byte bcd;
 
-        if ((asc >= '0') && (asc <= '9')) {
-            bcd = (byte) (asc - '0');
+        if ((asc >= Symbol.C_ZERO) && (asc <= Symbol.C_NINE)) {
+            bcd = (byte) (asc - Symbol.C_ZERO);
         } else if ((asc >= 'A') && (asc <= 'F')) {
             bcd = (byte) (asc - 'A' + 10);
         } else if ((asc >= 'a') && (asc <= 'f')) {

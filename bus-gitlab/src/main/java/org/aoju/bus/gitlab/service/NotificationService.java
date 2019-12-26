@@ -1,6 +1,7 @@
 package org.aoju.bus.gitlab.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiForm;
 import org.aoju.bus.gitlab.utils.JacksonJson;
 
@@ -244,11 +245,10 @@ public abstract class NotificationService {
 
         Object value = (properties != null ? properties.get(prop) : null);
 
-        // HACK: Sometimes GitLab returns "0" or "1" for true/false
         if (value != null && Boolean.class.isInstance(defaultValue)) {
-            if ("0".equals(value)) {
+            if (Symbol.ZERO.equals(value)) {
                 return ((T) Boolean.FALSE);
-            } else if ("1".equals(value)) {
+            } else if (Symbol.ONE.equals(value)) {
                 return ((T) Boolean.TRUE);
             }
         }

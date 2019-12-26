@@ -74,7 +74,6 @@ import java.security.cert.CertificateFactory;
 import java.security.spec.*;
 import java.util.Map;
 
-
 /**
  * 安全相关工具类
  * 加密分为三种：
@@ -92,7 +91,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm 加密算法
-     * @param key       密钥, 字符串使用','分割
+     * @param key       密钥, 字符串使用,分割
      *                  格式: 私钥,公钥,类型
      * @param content   需要加密的内容
      * @return 加密结果
@@ -106,7 +105,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm 解密算法
-     * @param key       密钥, 字符串使用','分割
+     * @param key       密钥, 字符串使用,分割
      *                  格式: 私钥,公钥,类型
      * @param content   需要加密的内容
      * @param charset   字符集
@@ -120,7 +119,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm   加密算法
-     * @param key         密钥, 字符串使用','分割
+     * @param key         密钥, 字符串使用,分割
      *                    格式: 私钥,公钥,类型
      * @param inputStream 需要加密的内容
      * @return 加密结果
@@ -134,7 +133,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm 加密算法
-     * @param key       密钥, 字符串使用','分割
+     * @param key       密钥, 字符串使用,分割
      *                  格式: 私钥,公钥,类型
      * @param content   需要解密的内容
      * @return 解密结果
@@ -148,7 +147,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm 解密算法
-     * @param key       密钥, 字符串使用','分割
+     * @param key       密钥, 字符串使用,分割
      *                  格式: 私钥,公钥,类型
      * @param content   需要解密的内容
      * @param charset   字符集
@@ -162,7 +161,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm   解密算法
-     * @param key         密钥, 字符串使用','分割
+     * @param key         密钥, 字符串使用,分割
      *                    格式: 私钥,公钥,类型
      * @param inputStream 需要解密的内容
      * @return 解密结果

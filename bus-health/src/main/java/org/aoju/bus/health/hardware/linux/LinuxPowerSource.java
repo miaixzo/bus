@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.hardware.AbstractPowerSource;
 import org.aoju.bus.health.hardware.PowerSource;
@@ -90,7 +92,7 @@ public class LinuxPowerSource extends AbstractPowerSource {
         String[] psNames = f.list();
         // Empty directory will give null rather than empty array, so fix
         if (psNames == null) {
-            psNames = new String[0];
+            psNames = Normal.EMPTY_STRING_ARRAY;
         }
         List<LinuxPowerSource> psList = new ArrayList<>(psNames.length);
         // For each power source, output various info
@@ -107,7 +109,7 @@ public class LinuxPowerSource extends AbstractPowerSource {
             }
             Map<String, String> psMap = new HashMap<>();
             for (String line : psInfo) {
-                String[] split = line.split("=");
+                String[] split = line.split(Symbol.EQUAL);
                 if (split.length > 1 && !split[1].isEmpty()) {
                     psMap.put(split[0], split[1]);
                 }

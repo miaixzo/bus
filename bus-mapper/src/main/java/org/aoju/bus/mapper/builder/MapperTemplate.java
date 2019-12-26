@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.MapperException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.entity.EntityColumn;
@@ -202,7 +203,7 @@ public abstract class MapperTemplate {
             prefix = mapperBuilder.getConfig().getPrefix();
         }
         if (Assert.isNotEmpty(prefix)) {
-            return prefix + "." + entityTable.getName();
+            return prefix + Symbol.DOT + entityTable.getName();
         }
         return entityTable.getName();
     }

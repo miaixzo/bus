@@ -23,40 +23,31 @@
  */
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.metric.http.HttpDate;
 
 import java.util.*;
 
 /**
- * The header fields of a single HTTP message. Values are uninterpreted strings; use {@code Request}
- * and {@code Response} for interpreted headers. This class maintains the order of the header fields
- * within the HTTP message.
- *
- * <p>This class tracks header values line-by-line. A field with multiple comma- separated values on
- * the same line will be treated as a field with a single value by this class. It is the caller's
- * responsibility to detect and split on commas if their field permits multiple values. This
- * simplifies use of single-valued fields whose values routinely contain commas, such as cookies or
- * dates.
- *
- * <p>This class trims whitespace from values. It never returns values with leading or trailing
- * whitespace.
- *
- * <p>Instances of this class are immutable. Use {@link Builder} to create instances.
+ * 单个HTTP消息的头字段。值是未解释的字符串;
+ * 使用{@code Request}和{@code Response}解释头信息
+ * 该类维护HTTP消息中的头字段的顺序
+ * 这个类从值中删除空白。它从不返回带开头或结尾空白的值
  *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public final class Header {
+public final class Headers {
 
     private final String[] namesAndValues;
 
-    Header(Builder builder) {
+    Headers(Builder builder) {
         this.namesAndValues = builder.namesAndValues.toArray(new String[builder.namesAndValues.size()]);
     }
 
-    private Header(String[] namesAndValues) {
+    private Headers(String[] namesAndValues) {
         this.namesAndValues = namesAndValues;
     }
 
@@ -69,20 +60,18 @@ public final class Header {
         return null;
     }
 
-    public static Header of(String... namesAndValues) {
+    public static Headers of(String... namesAndValues) {
         if (namesAndValues == null) throw new NullPointerException("namesAndValues == null");
         if (namesAndValues.length % 2 != 0) {
             throw new IllegalArgumentException("Expected alternating header names and values");
         }
 
-        // Make a defensive copy and clean it up.
         namesAndValues = namesAndValues.clone();
         for (int i = 0; i < namesAndValues.length; i++) {
             if (namesAndValues[i] == null) throw new IllegalArgumentException("Headers cannot be null");
             namesAndValues[i] = namesAndValues[i].trim();
         }
 
-        // Check for malformed headers.
         for (int i = 0; i < namesAndValues.length; i += 2) {
             String name = namesAndValues[i];
             String value = namesAndValues[i + 1];
@@ -90,13 +79,12 @@ public final class Header {
             checkValue(value, name);
         }
 
-        return new Header(namesAndValues);
+        return new Headers(namesAndValues);
     }
 
-    public static Header of(Map<String, String> headers) {
+    public static Headers of(Map<String, String> headers) {
         if (headers == null) throw new NullPointerException("headers == null");
 
-        // Make a defensive copy and clean it up.
         String[] namesAndValues = new String[headers.size() * 2];
         int i = 0;
         for (Map.Entry<String, String> header : headers.entrySet()) {
@@ -112,7 +100,7 @@ public final class Header {
             i += 2;
         }
 
-        return new Header(namesAndValues);
+        return new Headers(namesAndValues);
     }
 
     static void checkName(String name) {
@@ -131,7 +119,7 @@ public final class Header {
         if (value == null) throw new NullPointerException("value for name " + name + " == null");
         for (int i = 0, length = value.length(); i < length; i++) {
             char c = value.charAt(i);
-            if ((c <= '\u001f' && c != '\t') || c >= '\u007f') {
+            if ((c <= '\u001f' && c != Symbol.C_HT) || c >= '\u007f') {
                 throw new IllegalArgumentException(StringUtils.format(
                         "Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));
             }
@@ -144,7 +132,7 @@ public final class Header {
 
     public Date getDate(String name) {
         String value = get(name);
-        return value != null ? HttpDate.parse(value) : null;
+        return value != null ? org.aoju.bus.http.Builder.parse(value) : null;
     }
 
     public int size() {
@@ -181,8 +169,6 @@ public final class Header {
     }
 
     public long byteCount() {
-        // Each header name has 2 bytes of overhead for ': ' and every header value has 2 bytes of
-        // overhead for '\r\n'.
         long result = namesAndValues.length * 2;
 
         for (int i = 0, size = namesAndValues.length; i < size; i++) {
@@ -198,38 +184,10 @@ public final class Header {
         return result;
     }
 
-    /**
-     * Returns true if {@code other} is a {@code Headers} object with the same headers, with the same
-     * casing, in the same order. Note that two headers instances may be <i>semantically</i> equal
-     * but not equal according to this method. In particular, none of the following sets of headers
-     * are equal according to this method: <pre>   {@code
-     *
-     *   1. Original
-     *   Content-Type: text/html
-     *   Content-Length: 50
-     *
-     *   2. Different order
-     *   Content-Length: 50
-     *   Content-Type: text/html
-     *
-     *   3. Different case
-     *   content-type: text/html
-     *   content-length: 50
-     *
-     *   4. Different values
-     *   Content-Type: text/html
-     *   Content-Length: 050
-     * }</pre>
-     * <p>
-     * Applications that require semantically equal headers should convert them into a canonical form
-     * before comparing them for equality.
-     *
-     * @param other Object
-     */
     @Override
     public boolean equals(Object other) {
-        return other instanceof Header
-                && Arrays.equals(((Header) other).namesAndValues, namesAndValues);
+        return other instanceof Headers
+                && Arrays.equals(((Headers) other).namesAndValues, namesAndValues);
     }
 
     @Override
@@ -241,7 +199,7 @@ public final class Header {
     public String toString() {
         StringBuilder result = new StringBuilder();
         for (int i = 0, size = size(); i < size; i++) {
-            result.append(name(i)).append(": ").append(value(i)).append("\n");
+            result.append(name(i)).append(": ").append(value(i)).append(Symbol.LF);
         }
         return result.toString();
     }
@@ -264,20 +222,18 @@ public final class Header {
         final List<String> namesAndValues = new ArrayList<>(20);
 
         public Builder addLenient(String line) {
-            int index = line.indexOf(":", 1);
+            int index = line.indexOf(Symbol.COLON, 1);
             if (index != -1) {
                 return addLenient(line.substring(0, index), line.substring(index + 1));
-            } else if (line.startsWith(":")) {
-                // Work around empty header names and header names that start with a
-                // colon (created by old broken SPDY versions of the response cache).
-                return addLenient("", line.substring(1)); // Empty header name.
+            } else if (line.startsWith(Symbol.COLON)) {
+                return addLenient(Normal.EMPTY, line.substring(1));
             } else {
-                return addLenient("", line); // No header name.
+                return addLenient(Normal.EMPTY, line);
             }
         }
 
         public Builder add(String line) {
-            int index = line.indexOf(":");
+            int index = line.indexOf(Symbol.COLON);
             if (index == -1) {
                 throw new IllegalArgumentException("Unexpected header: " + line);
             }
@@ -295,7 +251,7 @@ public final class Header {
             return addLenient(name, value);
         }
 
-        public Builder addAll(Header headers) {
+        public Builder addAll(Headers headers) {
             int size = headers.size();
             for (int i = 0; i < size; i++) {
                 addLenient(headers.name(i), headers.value(i));
@@ -306,17 +262,17 @@ public final class Header {
 
         public Builder add(String name, Date value) {
             if (value == null) throw new NullPointerException("value for name " + name + " == null");
-            add(name, HttpDate.format(value));
+            add(name, org.aoju.bus.http.Builder.format(value));
             return this;
         }
 
         public Builder set(String name, Date value) {
             if (value == null) throw new NullPointerException("value for name " + name + " == null");
-            set(name, HttpDate.format(value));
+            set(name, org.aoju.bus.http.Builder.format(value));
             return this;
         }
 
-        public Builder addLenient(String name, String value) {
+        Builder addLenient(String name, String value) {
             namesAndValues.add(name);
             namesAndValues.add(value.trim());
             return this;
@@ -350,8 +306,8 @@ public final class Header {
             return null;
         }
 
-        public Header build() {
-            return new Header(this);
+        public Headers build() {
+            return new Headers(this);
         }
     }
 

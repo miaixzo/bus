@@ -24,7 +24,8 @@
 package org.aoju.bus.storage.provider;
 
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.Httpd;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.Provider;
@@ -56,7 +57,7 @@ public abstract class AbstractProvider implements Provider {
             int responseCode = httpConn.getResponseCode();
 
             if (responseCode == Http.HTTP_OK) {
-                String fileName = "";
+                String fileName = Normal.EMPTY;
                 String disposition = httpConn.getHeaderField("Content-Disposition");
 
                 if (disposition != null) {
@@ -66,7 +67,7 @@ public abstract class AbstractProvider implements Provider {
                                 disposition.length() - 1);
                     }
                 } else {
-                    fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1);
+                    fileName = fileURL.substring(fileURL.lastIndexOf(Symbol.C_SLASH) + 1);
                 }
                 InputStream inputStream = httpConn.getInputStream();
                 String saveFilePath = saveDir + File.separator + fileName;
@@ -101,7 +102,7 @@ public abstract class AbstractProvider implements Provider {
     }
 
     protected String getFullPath(String file) {
-        if (file.startsWith(Httpd.HTTP_PREFIX) || file.startsWith(Httpd.HTTPS_PREFIX)) {
+        if (file.startsWith(Http.HTTP_PREFIX) || file.startsWith(Http.HTTPS_PREFIX)) {
             return file;
         }
         return this.context.getPrefix() + file;

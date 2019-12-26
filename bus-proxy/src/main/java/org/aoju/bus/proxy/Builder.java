@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.proxy;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.proxy.aspects.Aspectj;
 import org.aoju.bus.proxy.factory.AbstractFactory;
@@ -42,8 +44,8 @@ import java.util.Map;
  */
 public class Builder {
 
-    public static final Object[] EMPTY_ARGUMENTS = new Object[0];
-    public static final Class[] EMPTY_ARGUMENT_TYPES = new Class[0];
+    public static final Object[] EMPTY_ARGUMENTS = Normal.EMPTY_OBJECT_ARRAY;
+    public static final Class[] EMPTY_ARGUMENT_TYPES = Normal.EMPTY_CLASS_ARRAY;
     private static final Map wrapperClassMap = new HashMap();
 
     static {
@@ -89,7 +91,7 @@ public class Builder {
 
     public static String getJavaClassName(Class clazz) {
         if (clazz.isArray()) {
-            return getJavaClassName(clazz.getComponentType()) + "[]";
+            return getJavaClassName(clazz.getComponentType()) + Symbol.BRACKET;
         }
         return clazz.getName();
     }

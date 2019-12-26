@@ -73,12 +73,4 @@ public class PageSerializable<T> implements Serializable {
         this.list = list;
     }
 
-    @Override
-    public String toString() {
-        return "PageSerializable{" +
-                "total=" + total +
-                ", list=" + list +
-                '}';
-    }
-
 }

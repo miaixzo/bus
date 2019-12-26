@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.aoju.bus.core.lang.Httpd;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -118,7 +118,7 @@ public class WrapperConfiguration {
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             final String method = request.getMethod();
             // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换,提高性能
-            if (Httpd.POST.equals(method) || Httpd.PATCH.equals(method) || Httpd.PUT.equals(method)) {
+            if (Http.POST.equals(method) || Http.PATCH.equals(method) || Http.PUT.equals(method)) {
                 if (!(request instanceof CacheRequestWrapper)) {
                     request = new CacheRequestWrapper(request);
                 }

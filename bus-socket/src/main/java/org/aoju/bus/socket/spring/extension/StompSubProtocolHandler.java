@@ -1,5 +1,6 @@
 package org.aoju.bus.socket.spring.extension;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.socket.spring.intercept.FromClientExecutionChain;
 import org.aoju.bus.socket.spring.intercept.FromClientInterceptor;
@@ -69,7 +70,7 @@ public class StompSubProtocolHandler extends org.springframework.web.socket.mess
         if (webSocketMessage instanceof TextMessage) {
             MessageFrom message = new MessageFrom();
             String payload = ((TextMessage) webSocketMessage).getPayload();
-            String[] arr = payload.split("\n");
+            String[] arr = payload.split(Symbol.LF);
             Queue<String> queue = new LinkedTransferQueue<>();
             for (String str : arr) {
                 String strTrim = str.trim();
@@ -87,17 +88,17 @@ public class StompSubProtocolHandler extends org.springframework.web.socket.mess
             while (queue.size() > last) {
                 String param = queue.poll();
                 if (param.startsWith("id:")) {
-                    message.setSubId(param.split(":")[1].trim());
+                    message.setSubId(param.split(Symbol.COLON)[1].trim());
                 } else if (param.startsWith("destination:")) {
-                    message.setDestination(param.split(":")[1].trim());
+                    message.setDestination(param.split(Symbol.COLON)[1].trim());
                 } else if (param.startsWith("content-length:")) {
-                    message.setContentLength(Integer.valueOf(param.split(":")[1].trim()));
+                    message.setContentLength(Integer.valueOf(param.split(Symbol.COLON)[1].trim()));
                 }
             }
             String content = queue.poll();
             if (!StringUtils.isEmpty(content)) {
                 if (content.startsWith("destination:") && StringUtils.isEmpty(message.getDestination())) {
-                    message.setDestination(content.split(":")[1].trim());
+                    message.setDestination(content.split(Symbol.COLON)[1].trim());
                 } else {
                     message.setContent(content.trim());
                 }

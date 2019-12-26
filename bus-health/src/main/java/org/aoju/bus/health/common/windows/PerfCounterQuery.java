@@ -26,6 +26,7 @@ package org.aoju.bus.health.common.windows;
 import com.sun.jna.platform.win32.COM.Wbemcli;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.util.EnumMap;
@@ -53,11 +54,11 @@ public class PerfCounterQuery<T extends Enum<T>> {
     /**
      * Constant <code>NOT_TOTAL_INSTANCE="^ + TOTAL_INSTANCE"</code>
      */
-    public static final String NOT_TOTAL_INSTANCE = "^" + TOTAL_INSTANCE;
+    public static final String NOT_TOTAL_INSTANCE = Symbol.CARET + TOTAL_INSTANCE;
     /**
      * Constant <code>NOT_TOTAL_INSTANCES="^ + TOTAL_INSTANCES"</code>
      */
-    public static final String NOT_TOTAL_INSTANCES = "^" + TOTAL_INSTANCES;
+    public static final String NOT_TOTAL_INSTANCES = Symbol.CARET + TOTAL_INSTANCES;
     protected final Class<T> propertyEnum;
     protected final String perfObject;
     protected final String perfWmiClass;

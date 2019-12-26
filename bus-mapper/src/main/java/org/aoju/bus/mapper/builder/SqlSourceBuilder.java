@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.annotation.Version;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.entity.EntityColumn;
@@ -186,13 +187,13 @@ public class SqlSourceBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("<if test=\"");
         if (Assert.isNotEmpty(entityName)) {
-            sql.append(entityName).append(".");
+            sql.append(entityName).append(Symbol.DOT);
         }
         sql.append(column.getProperty()).append(" != null");
         if (empty && column.getJavaType().equals(String.class)) {
             sql.append(" and ");
             if (Assert.isNotEmpty(entityName)) {
-                sql.append(entityName).append(".");
+                sql.append(entityName).append(Symbol.DOT);
             }
             sql.append(column.getProperty()).append(" != '' ");
         }
@@ -215,13 +216,13 @@ public class SqlSourceBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("<if test=\"");
         if (Assert.isNotEmpty(entityName)) {
-            sql.append(entityName).append(".");
+            sql.append(entityName).append(Symbol.DOT);
         }
         sql.append(column.getProperty()).append(" == null");
         if (empty && column.getJavaType().equals(String.class)) {
             sql.append(" or ");
             if (Assert.isNotEmpty(entityName)) {
-                sql.append(entityName).append(".");
+                sql.append(entityName).append(Symbol.DOT);
             }
             sql.append(column.getProperty()).append(" == '' ");
         }
@@ -256,7 +257,7 @@ public class SqlSourceBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
         sql.append(getAllColumns(entityClass));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -306,7 +307,7 @@ public class SqlSourceBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append(" FROM ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -333,7 +334,7 @@ public class SqlSourceBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ");
         sql.append(getDynamicTableName(entityClass, defaultTableName, entityName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -348,7 +349,7 @@ public class SqlSourceBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE FROM ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 
@@ -363,7 +364,7 @@ public class SqlSourceBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ");
         sql.append(getDynamicTableName(entityClass, defaultTableName));
-        sql.append(" ");
+        sql.append(Symbol.SPACE);
         return sql.toString();
     }
 

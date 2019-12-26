@@ -24,6 +24,8 @@
 package org.aoju.bus.http.bodys;
 
 /**
+ * 不可重复的请求体
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+

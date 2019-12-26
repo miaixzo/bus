@@ -23,10 +23,12 @@
  */
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.Version;
 import org.aoju.bus.core.io.segment.GzipSource;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.Header;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.bodys.RealResponseBody;
 import org.aoju.bus.http.bodys.RequestBody;
@@ -37,9 +39,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Bridges from application code to network code. First it builds a network request from a user
- * request. Then it proceeds to call the network. Finally it builds a user response from the network
- * response.
+ * 从应用程序代码连接到网络代码。首先，它从用户请求构建网络请求。
+ * 然后它继续调用网络。最后，它从网络响应构建用户响应
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -62,40 +63,42 @@ public final class BridgeInterceptor implements Interceptor {
         if (body != null) {
             MediaType contentType = body.contentType();
             if (contentType != null) {
-                requestBuilder.header("Content-Type", contentType.toString());
+                requestBuilder.header(Header.CONTENT_TYPE, contentType.toString());
             }
 
             long contentLength = body.contentLength();
             if (contentLength != -1) {
-                requestBuilder.header("Content-Length", Long.toString(contentLength));
-                requestBuilder.removeHeader("Transfer-Encoding");
+                requestBuilder.header(Header.CONTENT_LENGTH, Long.toString(contentLength));
+                requestBuilder.removeHeader(Header.TRANSFER_ENCODING);
             } else {
-                requestBuilder.header("Transfer-Encoding", "chunked");
-                requestBuilder.removeHeader("Content-Length");
+                requestBuilder.header(Header.TRANSFER_ENCODING, "chunked");
+                requestBuilder.removeHeader(Header.CONTENT_LENGTH);
             }
         }
 
-        if (userRequest.header("Host") == null) {
-            requestBuilder.header("Host", Internal.hostHeader(userRequest.url(), false));
+        if (userRequest.header(Header.HOST) == null) {
+            requestBuilder.header(Header.HOST, Builder.hostHeader(userRequest.url(), false));
         }
 
-        if (userRequest.header("Connection") == null) {
-            requestBuilder.header("Connection", "Keep-Alive");
+        if (userRequest.header(Header.CONNECTION) == null) {
+            requestBuilder.header(Header.CONNECTION, Header.KEEP_ALIVE);
         }
 
+        // If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing
+        // the transfer stream.
         boolean transparentGzip = false;
-        if (userRequest.header("Accept-Encoding") == null && userRequest.header("Range") == null) {
+        if (userRequest.header(Header.ACCEPT_ENCODING) == null && userRequest.header("Range") == null) {
             transparentGzip = true;
-            requestBuilder.header("Accept-Encoding", "gzip");
+            requestBuilder.header(Header.ACCEPT_ENCODING, "gzip");
         }
 
         List<Cookie> cookies = cookieJar.loadForRequest(userRequest.url());
         if (!cookies.isEmpty()) {
-            requestBuilder.header("Cookie", cookieHeader(cookies));
+            requestBuilder.header(Header.COOKIE, cookieHeader(cookies));
         }
 
-        if (userRequest.header("User-Agent") == null) {
-            requestBuilder.header("User-Agent", Version.userAgent());
+        if (userRequest.header(Header.USER_AGENT) == null) {
+            requestBuilder.header(Header.USER_AGENT, "Httpd/" + Version.all());
         }
 
         Response networkResponse = chain.proceed(requestBuilder.build());
@@ -106,15 +109,15 @@ public final class BridgeInterceptor implements Interceptor {
                 .request(userRequest);
 
         if (transparentGzip
-                && "gzip".equalsIgnoreCase(networkResponse.header("Content-Encoding"))
+                && "gzip".equalsIgnoreCase(networkResponse.header(Header.CONTENT_ENCODING))
                 && HttpHeaders.hasBody(networkResponse)) {
             GzipSource responseBody = new GzipSource(networkResponse.body().source());
-            Header strippedHeaders = networkResponse.headers().newBuilder()
-                    .removeAll("Content-Encoding")
-                    .removeAll("Content-Length")
+            Headers strippedHeaders = networkResponse.headers().newBuilder()
+                    .removeAll(Header.CONTENT_ENCODING)
+                    .removeAll(Header.CONTENT_LENGTH)
                     .build();
             responseBuilder.headers(strippedHeaders);
-            String contentType = networkResponse.header("Content-Type");
+            String contentType = networkResponse.header(Header.CONTENT_TYPE);
             responseBuilder.body(new RealResponseBody(contentType, -1L, IoUtils.buffer(responseBody)));
         }
 
@@ -128,7 +131,7 @@ public final class BridgeInterceptor implements Interceptor {
                 cookieHeader.append("; ");
             }
             Cookie cookie = cookies.get(i);
-            cookieHeader.append(cookie.name()).append('=').append(cookie.value());
+            cookieHeader.append(cookie.name()).append(Symbol.C_EQUAL).append(cookie.value());
         }
         return cookieHeader.toString();
     }

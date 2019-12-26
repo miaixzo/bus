@@ -29,6 +29,7 @@ import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.lang.XServiceInfo;
 import com.sun.star.uno.Exception;
 import com.sun.star.uno.XComponentContext;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
@@ -145,9 +146,9 @@ public final class Info {
     private static String normalizeVersion(final String version, final int length) {
         final List<String> numbers = new ArrayList<>(Arrays.asList(version.split("\\.")));
         while (numbers.size() < length) {
-            numbers.add("0");
+            numbers.add(Symbol.ZERO);
         }
-        return numbers.stream().collect(Collectors.joining("."));
+        return numbers.stream().collect(Collectors.joining(Symbol.DOT));
     }
 
     /**

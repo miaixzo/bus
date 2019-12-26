@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.starter;
 
-
 /**
  * 全局常量配置
  *

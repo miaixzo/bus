@@ -26,6 +26,7 @@ package org.aoju.bus.health.hardware.unix.freebsd;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.common.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.hardware.AbstractSensors;
 
@@ -60,7 +61,7 @@ public class FreeBsdSensors extends AbstractSensors {
 
     @Override
     public int[] queryFanSpeeds() {
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
 

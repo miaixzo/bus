@@ -30,22 +30,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * {@link Protocol#HTTP_2 HTTP/2} only. Processes server-initiated HTTP requests on the client.
- * Implementations must quickly dispatch callbacks to avoid creating a bottleneck.
- *
- * <p>While {@link #onReset} may occur at any time, the following callbacks are expected in order,
- * correlated by stream ID.
- *
- * <ul>
- * <li>{@link #onRequest}</li> <li>{@link #onHeaders} (unless canceled)
- * <li>{@link #onData} (optional sequence of data frames)
- * </ul>
- *
- * <p>As a stream ID is scoped to a single HTTP/2 connection, implementations which target multiple
- * connections should expect repetition of stream IDs.
- *
- * <p>Return true to request cancellation of a pushed stream.  Note that this does not guarantee
- * future frames won't arrive on the stream ID.
+ * 仅{@link Protocol#HTTP_2 HTTP/2}
+ * 在客户端处理服务器发起的HTTP请求
+ * 返回true以请求取消已推的流。
+ * 注意，这并不保证将来的帧不会到达流ID
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -56,12 +44,12 @@ public interface PushObserver {
     PushObserver CANCEL = new PushObserver() {
 
         @Override
-        public boolean onRequest(int streamId, List<Header> requestHeaders) {
+        public boolean onRequest(int streamId, List<HttpHeaders> requestHeaders) {
             return true;
         }
 
         @Override
-        public boolean onHeaders(int streamId, List<Header> responseHeaders, boolean last) {
+        public boolean onHeaders(int streamId, List<HttpHeaders> responseHeaders, boolean last) {
             return true;
         }
 
@@ -77,12 +65,44 @@ public interface PushObserver {
         }
     };
 
-    boolean onRequest(int streamId, List<Header> requestHeaders);
+    /**
+     * 描述服务器打算为其推送响应的请求
+     *
+     * @param streamId       务器发起的流ID:偶数
+     * @param requestHeaders 最低限度包括{@code:method}、{@code:scheme}、{@code:authority}和{@code:path}
+     * @return the true/false
+     */
+    boolean onRequest(int streamId, List<HttpHeaders> requestHeaders);
 
-    boolean onHeaders(int streamId, List<Header> responseHeaders, boolean last);
+    /**
+     * 推送请求对应的响应标头。当{@code last}为真时，则没有后续的数据帧
+     *
+     * @param streamId        服务器发起的流ID:偶数.
+     * @param responseHeaders 最少包含{@code:status}
+     * @param last            如果为真，则没有响应数据
+     * @return the true/false
+     */
+    boolean onHeaders(int streamId, List<HttpHeaders> responseHeaders, boolean last);
 
+    /**
+     * 与推送请求对应的响应数据块。必须读取或跳过这些数据.
+     *
+     * @param streamId  服务器发起的流ID:偶数.
+     * @param source    与此流ID对应的数据的位置.
+     * @param byteCount 从源读取或跳过的字节数.
+     * @param last      如果为真，则不需要遵循任何数据帧.
+     * @return the true/false
+     * @throws IOException 异常
+     */
     boolean onData(int streamId, BufferSource source, int byteCount, boolean last)
             throws IOException;
 
+    /**
+     * 指示此流被取消的原因
+     *
+     * @param streamId  服务器发起的流ID:偶数.
+     * @param errorCode 错误码信息
+     */
     void onReset(int streamId, ErrorCode errorCode);
+
 }

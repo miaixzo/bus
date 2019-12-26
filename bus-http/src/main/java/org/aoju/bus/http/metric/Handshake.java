@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.metric;
 
-import org.aoju.bus.http.Internal;
-import org.aoju.bus.http.accord.ConnectSuite;
+import org.aoju.bus.http.Builder;
+import org.aoju.bus.http.accord.ConnectionSuite;
 import org.aoju.bus.http.secure.CipherSuite;
 import org.aoju.bus.http.secure.TlsVersion;
 
@@ -38,11 +38,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A record of a TLS handshake. For HTTPS clients, the client is <i>local</i> and the remote server
- * is its <i>peer</i>.
- *
- * <p>This value object describes a completed handshake. Use {@link ConnectSuite} to set policy
- * for new handshakes.
+ * TLS握手的记录。对于HTTPS客户机，客户机是local，远程服务器
+ * 此值对象描述完成的握手。使用{@link ConnectionSuite}设置新的握手策略
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -50,9 +47,22 @@ import java.util.List;
  */
 public final class Handshake {
 
+    /**
+     * 用于此连接的TLS版本。在Httpd 3.0之前没有跟踪这个值。
+     * 对于之前版本缓存的响应，它返回{@link TlsVersion#SSL_3_0}
+     */
     private final TlsVersion tlsVersion;
+    /**
+     * 用于连接的密码套件
+     */
     private final CipherSuite cipherSuite;
+    /**
+     * 标识远程对等点的证书列表，该列表可能为空
+     */
     private final List<Certificate> peerCertificates;
+    /**
+     * 标识此对等点的证书列表，该列表可能为空
+     */
     private final List<Certificate> localCertificates;
 
     private Handshake(TlsVersion tlsVersion, CipherSuite cipherSuite,
@@ -83,12 +93,12 @@ public final class Handshake {
             peerCertificates = null;
         }
         List<Certificate> peerCertificatesList = peerCertificates != null
-                ? Internal.immutableList(peerCertificates)
+                ? Builder.immutableList(peerCertificates)
                 : Collections.<Certificate>emptyList();
 
         Certificate[] localCertificates = session.getLocalCertificates();
         List<Certificate> localCertificatesList = localCertificates != null
-                ? Internal.immutableList(localCertificates)
+                ? Builder.immutableList(localCertificates)
                 : Collections.<Certificate>emptyList();
 
         return new Handshake(tlsVersion, cipherSuite, peerCertificatesList, localCertificatesList);
@@ -98,8 +108,8 @@ public final class Handshake {
                                 List<Certificate> peerCertificates, List<Certificate> localCertificates) {
         if (tlsVersion == null) throw new NullPointerException("tlsVersion == null");
         if (cipherSuite == null) throw new NullPointerException("cipherSuite == null");
-        return new Handshake(tlsVersion, cipherSuite, Internal.immutableList(peerCertificates),
-                Internal.immutableList(localCertificates));
+        return new Handshake(tlsVersion, cipherSuite, Builder.immutableList(peerCertificates),
+                Builder.immutableList(localCertificates));
     }
 
     public TlsVersion tlsVersion() {

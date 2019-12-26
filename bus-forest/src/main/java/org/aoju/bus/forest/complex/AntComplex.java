@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.forest.complex;
 
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.loader.AntFilter;
 import org.aoju.bus.forest.Complex;
 
 /**
@@ -33,8 +35,6 @@ import org.aoju.bus.forest.Complex;
  * @since JDK 1.8+
  */
 public abstract class AntComplex<E> extends RegexComplex<E> implements Complex<E> {
-
-    private static final String[] SYMBOLS = {"\\", "$", "(", ")", "+", ".", "[", "]", "^", "{", "}", "|"};
 
     protected AntComplex(String ant) {
         super(convert(ant));
@@ -48,13 +48,13 @@ public abstract class AntComplex<E> extends RegexComplex<E> implements Complex<E
      */
     private static String convert(String ant) {
         String regex = ant;
-        for (String symbol : SYMBOLS) regex = regex.replace(symbol, '\\' + symbol);
-        regex = regex.replace("?", ".{1}");
-        regex = regex.replace("**/", "(.{0,}?/){0,}?");
-        regex = regex.replace("**", ".{0,}?");
-        regex = regex.replace("*", "[^/]{0,}?");
-        while (regex.startsWith("/")) regex = regex.substring(1);
-        while (regex.endsWith("/")) regex = regex.substring(0, regex.length() - 1);
+        for (String symbol : AntFilter.SYMBOLS) regex = regex.replace(symbol, Symbol.C_BACKSLASH + symbol);
+        regex = regex.replace(Symbol.QUESTION_MARK, ".{1}");
+        regex = regex.replace(Symbol.STAR + Symbol.STAR + Symbol.SLASH, "(.{0,}?/){0,}?");
+        regex = regex.replace(Symbol.STAR + Symbol.STAR, ".{0,}?");
+        regex = regex.replace(Symbol.STAR, "[^/]{0,}?");
+        while (regex.startsWith(Symbol.SLASH)) regex = regex.substring(1);
+        while (regex.endsWith(Symbol.SLASH)) regex = regex.substring(0, regex.length() - 1);
         return regex;
     }
 

@@ -47,7 +47,6 @@ public class Sign extends Keys<Sign> {
      */
     protected Signature signature;
 
-
     /**
      * 构造,创建新的私钥公钥对
      *

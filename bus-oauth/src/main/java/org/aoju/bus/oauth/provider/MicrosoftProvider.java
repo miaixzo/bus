@@ -25,6 +25,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -100,7 +101,7 @@ public class MicrosoftProvider extends DefaultProvider {
     protected Property getUserInfo(AccToken oauthToken) {
         String token = oauthToken.getAccessToken();
         String tokenType = oauthToken.getTokenType();
-        String jwt = tokenType + " " + token;
+        String jwt = tokenType + Symbol.SPACE + token;
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", jwt);

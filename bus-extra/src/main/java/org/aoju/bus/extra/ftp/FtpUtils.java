@@ -24,6 +24,7 @@
 package org.aoju.bus.extra.ftp;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.FileUtils;
@@ -353,7 +354,7 @@ public class FtpUtils extends AbstractFtp {
             childPath = StringUtils.format("{}/{}", dirPath, name);
             if (ftpFile.isDirectory()) {
                 // 上级和本级目录除外
-                if (false == name.equals(".") && false == name.equals("..")) {
+                if (false == name.equals(Symbol.DOT) && false == name.equals(Symbol.DOUBLE_DOT)) {
                     delDir(childPath);
                 }
             } else {

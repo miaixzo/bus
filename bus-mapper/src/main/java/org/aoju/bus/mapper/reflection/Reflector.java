@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.mapper.reflection;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.MapperException;
 import org.apache.ibatis.mapping.MappedStatement;
-
 
 /**
  * 反射工具
@@ -43,10 +43,10 @@ public class Reflector {
      * @return 对象
      */
     public static Class<?> getMapperClass(String msId) {
-        if (msId.indexOf(".") == -1) {
+        if (msId.indexOf(Symbol.DOT) == -1) {
             throw new MapperException("当前MappedStatement的id=" + msId + ",不符合MappedStatement的规则!");
         }
-        String mapperClassStr = msId.substring(0, msId.lastIndexOf("."));
+        String mapperClassStr = msId.substring(0, msId.lastIndexOf(Symbol.DOT));
         ClassLoader[] classLoader = getClassLoaders();
         Class<?> mapperClass = null;
         for (ClassLoader cl : classLoader) {
@@ -88,7 +88,7 @@ public class Reflector {
      * @return the string
      */
     public static String getMethodName(String msId) {
-        return msId.substring(msId.lastIndexOf(".") + 1);
+        return msId.substring(msId.lastIndexOf(Symbol.DOT) + 1);
     }
 
 }

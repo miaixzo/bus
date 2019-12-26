@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.extra.mail;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -229,10 +230,10 @@ public class MailUtils {
             return null;
         }
         List<String> result;
-        if (StringUtils.contains(addresses, ',')) {
-            result = StringUtils.splitTrim(addresses, ',');
-        } else if (StringUtils.contains(addresses, ';')) {
-            result = StringUtils.splitTrim(addresses, ';');
+        if (StringUtils.contains(addresses, Symbol.C_COMMA)) {
+            result = StringUtils.splitTrim(addresses, Symbol.C_COMMA);
+        } else if (StringUtils.contains(addresses, Symbol.C_SEMICOLON)) {
+            result = StringUtils.splitTrim(addresses, Symbol.C_SEMICOLON);
         } else {
             result = CollUtils.newArrayList(addresses);
         }

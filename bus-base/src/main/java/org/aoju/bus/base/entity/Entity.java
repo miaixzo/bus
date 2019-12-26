@@ -29,7 +29,6 @@ import lombok.Data;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-
 /**
  * <p>
  * Entity 实体

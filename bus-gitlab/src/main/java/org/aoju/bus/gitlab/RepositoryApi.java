@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
 import org.aoju.bus.gitlab.utils.FileUtils;
@@ -199,7 +200,7 @@ public class RepositoryApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public List<TreeItem> getTree(Object projectIdOrPath) throws GitLabApiException {
-        return (getTree(projectIdOrPath, "/", "master"));
+        return (getTree(projectIdOrPath, Symbol.SLASH, "master"));
     }
 
     /**
@@ -213,7 +214,7 @@ public class RepositoryApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<TreeItem> getTree(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (getTree(projectIdOrPath, "/", "master", false, itemsPerPage));
+        return (getTree(projectIdOrPath, Symbol.SLASH, "master", false, itemsPerPage));
     }
 
     /**
@@ -226,7 +227,7 @@ public class RepositoryApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Stream<TreeItem> getTreeStream(Object projectIdOrPath) throws GitLabApiException {
-        return (getTreeStream(projectIdOrPath, "/", "master"));
+        return (getTreeStream(projectIdOrPath, Symbol.SLASH, "master"));
     }
 
     /**
@@ -433,7 +434,7 @@ public class RepositoryApi extends AbstractApi {
          */
         Form formData = new GitLabApiForm().withParam("sha", sha);
         Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + "." + format.toString());
+                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + Symbol.DOT + format.toString());
         return (response.readEntity(InputStream.class));
     }
 
@@ -518,7 +519,7 @@ public class RepositoryApi extends AbstractApi {
          */
         Form formData = new GitLabApiForm().withParam("sha", sha);
         Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + "." + format.toString());
+                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + Symbol.DOT + format.toString());
 
         try {
 

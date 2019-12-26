@@ -24,6 +24,7 @@
 package org.aoju.bus.office.bridge;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -77,7 +78,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
     private static File getFile(final URL url) {
         try {
             return new File(
-                    new URI(StringUtils.replace(url.toString(), " ", "%20")).getSchemeSpecificPart());
+                    new URI(StringUtils.replace(url.toString(), Symbol.SPACE, "%20")).getSchemeSpecificPart());
         } catch (URISyntaxException ex) {
             return new File(url.getFile());
         }
@@ -133,11 +134,11 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
         final URL url = new URL(connectionUrl);
         final String path = url.toExternalForm().toLowerCase();
         if (StringUtils.endsWithAny(path, "lool/convert-to", "lool/convert-to/")) {
-            return StringUtils.appendIfMissing(connectionUrl, "/");
+            return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH);
         } else if (StringUtils.endsWithAny(path, "lool", "lool/")) {
-            return StringUtils.appendIfMissing(connectionUrl, "/") + "convert-to/";
+            return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH) + "convert-to/";
         }
-        return StringUtils.appendIfMissing(connectionUrl, "/") + "lool/convert-to/";
+        return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH) + "lool/convert-to/";
     }
 
     @Override

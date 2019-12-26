@@ -41,6 +41,7 @@ import com.sun.jna.platform.win32.WinPerf.*;
 import com.sun.jna.platform.win32.Wtsapi32.WTS_PROCESS_INFO_EX;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoizer;
@@ -129,9 +130,9 @@ public class WindowsOS extends AbstractOS {
                 if (minor == 3) {
                     version = ntWorkstation ? "8.1" : "Server 2012 R2";
                 } else if (minor == 2) {
-                    version = ntWorkstation ? "8" : "Server 2012";
+                    version = ntWorkstation ? Symbol.EIGHT : "Server 2012";
                 } else if (minor == 1) {
-                    version = ntWorkstation ? "7" : "Server 2008 R2";
+                    version = ntWorkstation ? Symbol.SEVEN : "Server 2008 R2";
                 } else if (minor == 0) {
                     version = ntWorkstation ? "Vista" : "Server 2008";
                 }
@@ -158,7 +159,7 @@ public class WindowsOS extends AbstractOS {
 
         String sp = WmiUtils.getString(versionInfo, OSVersionProperty.CSDVersion, 0);
         if (!sp.isEmpty() && !"unknown".equals(sp)) {
-            version = version + " " + sp.replace("Service Pack ", "SP");
+            version = version + Symbol.SPACE + sp.replace("Service Pack ", "SP");
         }
 
         return version;
@@ -241,7 +242,7 @@ public class WindowsOS extends AbstractOS {
                     return event6005Time;
                 }
             } catch (Win32Exception e) {
-                Logger.warn("Can't open event log \"{}\".", eventLog);
+                Logger.warn("Can't open event log {}", eventLog);
             }
         }
         // If we get this far, event log reading has failed, either from no log or no
@@ -468,8 +469,7 @@ public class WindowsOS extends AbstractOS {
             }
             // For my own process, set CWD
             if (pid == myPid) {
-                String cwd = new File(".").getAbsolutePath();
-                // trim off trailing "."
+                String cwd = new File(Symbol.DOT).getAbsolutePath();
                 proc.setCurrentWorkingDirectory(cwd.isEmpty() ? "" : cwd.substring(0, cwd.length() - 1));
             }
 
@@ -773,11 +773,9 @@ public class WindowsOS extends AbstractOS {
         /*
          * Process counter index in integer and string form
          */
-        private int processIndex; // 6
-        private String processIndexStr; // "6"
-        /*
-         * Registry counter data byte offsets
-         */
+        private int processIndex;
+        private String processIndexStr;
+
         private int priorityBaseOffset; // 92
         private int elapsedTimeOffset; // 96
         private int idProcessOffset; // 104
@@ -803,10 +801,6 @@ public class WindowsOS extends AbstractOS {
                 // Look up list of english names and ids
                 String[] counters = Advapi32Util.registryGetStringArray(WinReg.HKEY_LOCAL_MACHINE, ENGLISH_COUNTER_KEY,
                         ENGLISH_COUNTER_VALUE);
-                // Array contains alternating index/name pairs
-                // {"1", "1847", "2", "System", "4", "Memory", ... }
-                // Get position of name in the array (odd index), return parsed value of
-                // previous even index
                 for (int i = 1; i < counters.length; i += 2) {
                     if (counters[i].equals("Process")) {
                         this.processIndex = Integer.parseInt(counters[i - 1]);

@@ -27,50 +27,53 @@ import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.ByteString;
 
 /**
+ * web socket协议信息
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
 public final class WebSocketProtocol {
+
     /**
-     * Magic value which must be appended to the key in a response header.
+     * 须附加到响应标头中的键的魔法值.
      */
     static final String ACCEPT_MAGIC = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     /**
-     * Byte 0 flag for whether this is the final fragment in a message.
+     * 标记这是否是消息中的最后一个片段.
      */
     static final int B0_FLAG_FIN = 0b10000000;
     /**
-     * Byte 0 reserved flag 1. Must be 0 unless negotiated otherwise.
+     * 保留标志1。必须是0.
      */
     static final int B0_FLAG_RSV1 = 0b01000000;
     /**
-     * Byte 0 reserved flag 2. Must be 0 unless negotiated otherwise.
+     * 保留标志2。必须是0.
      */
     static final int B0_FLAG_RSV2 = 0b00100000;
     /**
-     * Byte 0 reserved flag 3. Must be 0 unless negotiated otherwise.
+     * 保留标志3。必须是0.
      */
     static final int B0_FLAG_RSV3 = 0b00010000;
     /**
-     * Byte 0 mask for the frame opcode.
+     * 帧操作码的字节0掩码.
      */
     static final int B0_MASK_OPCODE = 0b00001111;
     /**
-     * Flag in the opcode which indicates a control frame.
+     * 在操作码中标记，指示控制帧.
      */
     static final int OPCODE_FLAG_CONTROL = 0b00001000;
 
     /**
-     * Byte 1 flag for whether the payload data is masked. <p> If this flag is set, the next four
-     * bytes represent the mask key. These bytes appear after any additional bytes specified by {@link
-     * #B1_MASK_LENGTH}.
+     * 字节1标记是否屏蔽了有效负载数据
+     * 如果设置了这个标志，接下来的四个字节表示掩码键
+     * 这些字节出现在{@link #B1_MASK_LENGTH}指定的任何附加字节之后.
      */
     static final int B1_FLAG_MASK = 0b10000000;
     /**
-     * Byte 1 mask for the payload length. <p> If this value is {@link #PAYLOAD_SHORT}, the next two
-     * bytes represent the length. If this value is {@link #PAYLOAD_LONG}, the next eight bytes
-     * represent the length.
+     * 有效负载长度的字节1掩码
+     * 如果这个值是{@link #PAYLOAD_SHORT}，接下来的两个字节表示长度
+     * 如果这个值是{@link #PAYLOAD_LONG}，接下来的8个字节表示长度.
      */
     static final int B1_MASK_LENGTH = 0b01111111;
 
@@ -83,34 +86,32 @@ public final class WebSocketProtocol {
     static final int OPCODE_CONTROL_PONG = 0xa;
 
     /**
-     * Maximum length of frame payload. Larger payloads, if supported by the frame type, can use the
-     * special values {@link #PAYLOAD_SHORT} or {@link #PAYLOAD_LONG}.
+     * 帧有效载荷的最大长度。如果框架类型支持较大的有效负载，
+     * 则可以使用特殊值{@link #PAYLOAD_SHORT}或{@link #PAYLOAD_LONG}.
      */
     static final long PAYLOAD_BYTE_MAX = 125L;
     /**
-     * Maximum length of close message in bytes.
+     * 关闭消息的最大长度(以字节为单位).
      */
     static final long CLOSE_MESSAGE_MAX = PAYLOAD_BYTE_MAX - 2;
     /**
-     * Value for {@link #B1_MASK_LENGTH} which indicates the next two bytes are the unsigned length.
+     * 表示后面两个字节是无符号长度的{@link #B1_MASK_LENGTH}的值.
      */
     static final int PAYLOAD_SHORT = 126;
     /**
-     * Maximum length of a frame payload to be denoted as {@link #PAYLOAD_SHORT}.
+     * 帧有效载荷的最大长度表示为{@link #PAYLOAD_SHORT}.
      */
     static final long PAYLOAD_SHORT_MAX = 0xffffL;
     /**
-     * Value for {@link #B1_MASK_LENGTH} which indicates the next eight bytes are the unsigned
-     * length.
+     * {@link #B1_MASK_LENGTH}的值，该值指示接下来的八个字节是无符号长度.
      */
     static final int PAYLOAD_LONG = 127;
-
     /**
-     * Used when an unchecked exception was thrown in a listener.
+     * 在侦听器中抛出未检查异常时使用.
      */
     static final int CLOSE_CLIENT_GOING_AWAY = 1001;
     /**
-     * Used when an empty close frame was received (i.e., without a status code).
+     * 当接收到一个空的关闭帧时使用,没有状态码).
      */
     static final int CLOSE_NO_STATUS_CODE = 1005;
 
@@ -124,7 +125,7 @@ public final class WebSocketProtocol {
         do {
             byte[] buffer = cursor.data;
             for (int i = cursor.start, end = cursor.end; i < end; i++, keyIndex++) {
-                keyIndex %= keyLength; // Reassign to prevent overflow breaking counter.
+                keyIndex %= keyLength;
                 buffer[i] = (byte) (buffer[i] ^ key[keyIndex]);
             }
         } while (cursor.next() != -1);

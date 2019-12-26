@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.limiter.annotation;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
@@ -38,9 +40,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface RateLimiter {
 
-    String limiter() default "";
+    String limiter() default Normal.EMPTY;
 
-    String key() default "";
+    String key() default Normal.EMPTY;
 
     String fallback() default "defaultFallbackResolver";
 

@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.entity;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
@@ -119,7 +120,7 @@ public class EntityColumn {
         StringBuffer sb = new StringBuffer("#{");
         if (Assert.isNotEmpty(entityName)) {
             sb.append(entityName);
-            sb.append(".");
+            sb.append(Symbol.DOT);
         }
         sb.append(this.property);
         if (Assert.isNotEmpty(suffix)) {
@@ -135,7 +136,7 @@ public class EntityColumn {
             sb.append(",javaType=");
             sb.append(javaType.getCanonicalName());
         }
-        sb.append("}");
+        sb.append(Symbol.BRACE_RIGHT);
         if (Assert.isNotEmpty(separator)) {
             sb.append(separator);
         }

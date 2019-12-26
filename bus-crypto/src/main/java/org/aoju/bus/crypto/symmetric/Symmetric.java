@@ -69,7 +69,6 @@ public class Symmetric {
     private boolean isZeroPadding;
     private Lock lock = new ReentrantLock();
 
-
     /**
      * 构造,使用随机密钥
      *

@@ -21,24 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.http.metric.http;
+package org.aoju.bus.http.magic;
 
-import java.io.IOException;
+import org.aoju.bus.http.Request;
+import org.aoju.bus.http.bodys.RequestBody;
+
+import java.util.Map;
 
 /**
- * Thrown when an HTTP/2 stream is canceled without damage to the socket that carries it.
+ * GET请求处理
  *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
-public final class StreamResetException extends IOException {
+public class GetRequest extends HttpRequest {
 
-    public final ErrorCode errorCode;
+    public GetRequest(String url, Object tag, Map<String, String> params,
+                      Map<String, String> headers, int id) {
+        super(url, tag, params, headers, null, null, null, id);
+    }
 
-    public StreamResetException(ErrorCode errorCode) {
-        super("stream was reset: " + errorCode);
-        this.errorCode = errorCode;
+    public GetRequest(String url, Object tag, Map<String, String> params,
+                      Map<String, String> encodedParams,
+                      Map<String, String> headers, int id) {
+        super(url, tag, params, encodedParams, headers, null, null, null, id);
+    }
+
+    @Override
+    protected RequestBody buildRequestBody() {
+        return null;
+    }
+
+    @Override
+    protected Request buildRequest(RequestBody requestBody) {
+        return builder.get().build();
     }
 
 }

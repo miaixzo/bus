@@ -24,6 +24,7 @@
 package org.aoju.bus.office.magic.filter;
 
 import com.sun.star.lang.XComponent;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.office.Context;
 
@@ -118,7 +119,7 @@ public abstract class AbstractFilter implements FilterChain {
         } catch (InstrumentException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new InstrumentException("Could not apply filter " + filter.getClass().getName() + ".", ex);
+            throw new InstrumentException("Could not apply filter " + filter.getClass().getName() + Symbol.DOT, ex);
         }
     }
 

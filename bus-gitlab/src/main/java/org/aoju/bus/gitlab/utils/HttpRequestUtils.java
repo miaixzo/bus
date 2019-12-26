@@ -1,5 +1,7 @@
 package org.aoju.bus.gitlab.utils;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -31,24 +33,24 @@ public class HttpRequestUtils {
     public static String getShortRequestDump(String fromMethod, boolean includeHeaders, HttpServletRequest request) {
 
         StringBuilder dump = new StringBuilder();
-        dump.append("Timestamp     : ").append(ISO8601.getTimestamp()).append("\n");
-        dump.append("fromMethod    : ").append(fromMethod).append("\n");
-        dump.append("Method        : ").append(request.getMethod()).append('\n');
-        dump.append("Scheme        : ").append(request.getScheme()).append('\n');
-        dump.append("URI           : ").append(request.getRequestURI()).append('\n');
-        dump.append("Query-String  : ").append(request.getQueryString()).append('\n');
-        dump.append("Auth-Type     : ").append(request.getAuthType()).append('\n');
-        dump.append("Remote-Addr   : ").append(request.getRemoteAddr()).append('\n');
-        dump.append("Scheme        : ").append(request.getScheme()).append('\n');
-        dump.append("Content-Type  : ").append(request.getContentType()).append('\n');
-        dump.append("Content-Length: ").append(request.getContentLength()).append('\n');
+        dump.append("Timestamp     : ").append(ISO8601.getTimestamp()).append(Symbol.C_LF);
+        dump.append("fromMethod    : ").append(fromMethod).append(Symbol.C_LF);
+        dump.append("Method        : ").append(request.getMethod()).append(Symbol.C_LF);
+        dump.append("Scheme        : ").append(request.getScheme()).append(Symbol.C_LF);
+        dump.append("URI           : ").append(request.getRequestURI()).append(Symbol.C_LF);
+        dump.append("Query-String  : ").append(request.getQueryString()).append(Symbol.C_LF);
+        dump.append("Auth-Type     : ").append(request.getAuthType()).append(Symbol.C_LF);
+        dump.append("Remote-Addr   : ").append(request.getRemoteAddr()).append(Symbol.C_LF);
+        dump.append("Scheme        : ").append(request.getScheme()).append(Symbol.C_LF);
+        dump.append("Content-Type  : ").append(request.getContentType()).append(Symbol.C_LF);
+        dump.append("Content-Length: ").append(request.getContentLength()).append(Symbol.C_LF);
 
         if (includeHeaders) {
             dump.append("Headers       :\n");
             Enumeration<String> headers = request.getHeaderNames();
             while (headers.hasMoreElements()) {
                 String header = headers.nextElement();
-                dump.append("\t").append(header).append(": ").append(request.getHeader(header)).append('\n');
+                dump.append(Symbol.HT).append(header).append(": ").append(request.getHeader(header)).append(Symbol.C_LF);
             }
         }
 
@@ -74,34 +76,34 @@ public class HttpRequestUtils {
             Enumeration<String> attrs = request.getAttributeNames();
             while (attrs.hasMoreElements()) {
                 String attr = attrs.nextElement();
-                buf.append("\t").append(attr).append(": ").append(request.getAttribute(attr)).append('\n');
+                buf.append(Symbol.HT).append(attr).append(": ").append(request.getAttribute(attr)).append(Symbol.C_LF);
             }
 
             buf.append("\nHeaders:\n");
             Enumeration<String> headers = request.getHeaderNames();
             while (headers.hasMoreElements()) {
                 String header = headers.nextElement();
-                buf.append("\t").append(header).append(": ").append(request.getHeader(header)).append('\n');
+                buf.append(Symbol.HT).append(header).append(": ").append(request.getHeader(header)).append(Symbol.C_LF);
             }
 
             buf.append("\nParameters:\n");
             Enumeration<String> params = request.getParameterNames();
             while (params.hasMoreElements()) {
                 String param = params.nextElement();
-                buf.append("\t").append(param).append(": ").append(request.getParameter(param)).append('\n');
+                buf.append(Symbol.HT).append(param).append(": ").append(request.getParameter(param)).append(Symbol.C_LF);
             }
 
             buf.append("\nCookies:\n");
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    String cstr = "\t" + cookie.getDomain() + "." + cookie.getPath() + "." + cookie.getName() + ": " + cookie.getValue() + "\n";
+                    String cstr = Symbol.HT + cookie.getDomain() + Symbol.DOT + cookie.getPath() + Symbol.DOT + cookie.getName() + ": " + cookie.getValue() + Symbol.LF;
                     buf.append(cstr);
                 }
             }
 
             if (includePostData) {
-                buf.append(getPostDataAsString(request)).append("\n");
+                buf.append(getPostDataAsString(request)).append(Symbol.LF);
             }
 
             return (buf.toString());

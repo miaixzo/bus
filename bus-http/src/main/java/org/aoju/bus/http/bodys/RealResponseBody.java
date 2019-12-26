@@ -27,29 +27,31 @@ import org.aoju.bus.core.io.segment.BufferSource;
 import org.aoju.bus.core.lang.MediaType;
 
 /**
+ * 响应体只能使用一次
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
 public final class RealResponseBody extends ResponseBody {
+
     /**
-     * Use a string to avoid parsing the content type until needed. This also defers problems caused
-     * by malformed content types.
+     * 使用字符串避免在需要时才解析内容类型。这也避免了由格式不正确的内容类型引起的问题.
      */
-    private final String contentType;
+    private final String contentTypeString;
     private final long contentLength;
     private final BufferSource source;
 
     public RealResponseBody(
-            String contentType, long contentLength, BufferSource source) {
-        this.contentType = contentType;
+            String contentTypeString, long contentLength, BufferSource source) {
+        this.contentTypeString = contentTypeString;
         this.contentLength = contentLength;
         this.source = source;
     }
 
     @Override
     public MediaType contentType() {
-        return contentType != null ? MediaType.valueOf(contentType) : null;
+        return contentTypeString != null ? MediaType.valueOf(contentTypeString) : null;
     }
 
     @Override

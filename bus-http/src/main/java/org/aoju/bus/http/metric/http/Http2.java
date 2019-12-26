@@ -24,6 +24,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.io.IOException;
@@ -35,11 +36,10 @@ import java.io.IOException;
  */
 public final class Http2 {
 
-    static final ByteString CONNECTION_PREFACE
-            = ByteString.encodeUtf8("PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
+    static final ByteString CONNECTION_PREFACE = ByteString.encodeUtf8("PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
 
     /**
-     * The initial max frame size, applied independently writing to, or reading from the peer.
+     * 初始最大帧大小，应用于独立写入，或从同行读取.
      */
     static final int INITIAL_MAX_FRAME_SIZE = 0x4000; // 16384
 
@@ -63,13 +63,12 @@ public final class Http2 {
     static final byte FLAG_PRIORITY = 0x20; // Used for headers.
     static final byte FLAG_COMPRESSED = 0x20; // Used for data.
     /**
-     * Lookup table for valid flags for DATA, HEADERS, CONTINUATION. Invalid combinations are
-     * represented in binary.
+     * 查找表的有效标志的数据，报头，延续。无效的组合用二进制表示.
      */
-    static final String[] FLAGS = new String[0x40]; // Highest bit flag is 0x20.
+    static final String[] FLAGS = new String[0x40];
     static final String[] BINARY = new String[256];
     /**
-     * Lookup table for valid frame types.
+     * 查找有效框架类型的表
      */
     private static final String[] FRAME_NAMES = new String[]{
             "DATA",
@@ -86,7 +85,7 @@ public final class Http2 {
 
     static {
         for (int i = 0; i < BINARY.length; i++) {
-            BINARY[i] = StringUtils.format("%8s", Integer.toBinaryString(i)).replace(' ', '0');
+            BINARY[i] = StringUtils.format("%8s", Integer.toBinaryString(i)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
         }
 
         FLAGS[FLAG_NONE] = "";
@@ -108,13 +107,13 @@ public final class Http2 {
 
         for (int frameFlag : frameFlags) {
             for (int prefixFlag : prefixFlags) {
-                FLAGS[prefixFlag | frameFlag] = FLAGS[prefixFlag] + '|' + FLAGS[frameFlag];
+                FLAGS[prefixFlag | frameFlag] = FLAGS[prefixFlag] + Symbol.C_OR + FLAGS[frameFlag];
                 FLAGS[prefixFlag | frameFlag | FLAG_PADDED]
-                        = FLAGS[prefixFlag] + '|' + FLAGS[frameFlag] + "|PADDED";
+                        = FLAGS[prefixFlag] + Symbol.C_OR + FLAGS[frameFlag] + "|PADDED";
             }
         }
 
-        for (int i = 0; i < FLAGS.length; i++) { // Fill in holes with binary representation.
+        for (int i = 0; i < FLAGS.length; i++) {
             if (FLAGS[i] == null) FLAGS[i] = BINARY[i];
         }
     }
@@ -130,24 +129,6 @@ public final class Http2 {
         throw new IOException(StringUtils.format(message, args));
     }
 
-    /**
-     * Returns human-readable representation of HTTP/2 frame headers.
-     *
-     * <p>The format is:
-     *
-     * <pre>
-     *   direction streamID length type flags
-     * </pre>
-     * <p>
-     * Where direction is {@code <<} for inbound and {@code >>} for outbound.
-     *
-     * <p>For example, the following would indicate a HEAD request sent from the client.
-     * <pre>
-     * {@code
-     *   << 0x0000000f    12 HEADERS       END_HEADERS|END_STREAM
-     * }
-     * </pre>
-     */
     static String frameLog(boolean inbound, int streamId, int length, byte type, byte flags) {
         String formattedType = type < FRAME_NAMES.length ? FRAME_NAMES[type] : StringUtils.format("0x%02x", type);
         String formattedFlags = formatFlags(type, flags);
@@ -155,14 +136,9 @@ public final class Http2 {
                 formattedType, formattedFlags);
     }
 
-    /**
-     * Looks up valid string representing flags from the table. Invalid combinations are represented
-     * in binary.
-     */
-    // Visible for testing.
     static String formatFlags(byte type, byte flags) {
         if (flags == 0) return "";
-        switch (type) { // Special case types that have 0 or 1 flag.
+        switch (type) {
             case TYPE_SETTINGS:
             case TYPE_PING:
                 return flags == FLAG_ACK ? "ACK" : BINARY[flags];
@@ -173,11 +149,10 @@ public final class Http2 {
                 return BINARY[flags];
         }
         String result = flags < FLAGS.length ? FLAGS[flags] : BINARY[flags];
-        // Special case types that have overlap flag values.
         if (type == TYPE_PUSH_PROMISE && (flags & FLAG_END_PUSH_PROMISE) != 0) {
-            return result.replace("HEADERS", "PUSH_PROMISE"); // TODO: Avoid allocation.
+            return result.replace("HEADERS", "PUSH_PROMISE");
         } else if (type == TYPE_DATA && (flags & FLAG_COMPRESSED) != 0) {
-            return result.replace("PRIORITY", "COMPRESSED"); // TODO: Avoid allocation.
+            return result.replace("PRIORITY", "COMPRESSED");
         }
         return result;
     }

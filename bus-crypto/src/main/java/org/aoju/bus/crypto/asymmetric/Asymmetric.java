@@ -66,7 +66,6 @@ public class Asymmetric extends Safety<Asymmetric> {
      */
     protected int decryptBlockSize = -1;
 
-
     /**
      * 构造,创建新的私钥公钥对
      *

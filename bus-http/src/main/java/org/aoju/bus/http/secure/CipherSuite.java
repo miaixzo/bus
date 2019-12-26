@@ -26,22 +26,10 @@ package org.aoju.bus.http.secure;
 import java.util.*;
 
 /**
- * <a href="https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml">TLS cipher
- * suites</a>.
- *
- * <p><strong>Not all cipher suites are supported on all platforms.</strong> As newer cipher suites
- * are created (for stronger privacy, better performance, etc.) they will be adopted by the platform
- * and then exposed here. Cipher suites that are not available on either Android (through API level
- * 24) or Java (through JDK 9) are omitted for brevity.
- *
- * <p>See <a href="https://developer.android.com/reference/javax/net/ssl/SSLEngine.html">Android SSLEngine</a>
- * which lists the cipher suites supported by Android.
- *
- * <p>See <a href="https://docs.oracle.com/javase/10/security/oracle-providers.htm">JDK 10 Providers</a>
- * which lists the cipher suites supported by Oracle.
- *
- * <p>See <a href="https://github.com/google/conscrypt/blob/master/common/src/main/java/org/conscrypt/NativeCrypto.java">NativeCrypto.java</a>
- * from conscrypt, which lists the cipher suites supported by Conscrypt.
+ * 并非所有平台都支持所有密码套件。由于创建了新的密码
+ * 套件(为了更强的私密性、更好的性能等)，它们将被平台采用，
+ * 然后在这里公开。为了简单起见，我们省略了Android(通过API level 24)
+ * 或Java(通过JDK 9)上不可用的密码套件
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -50,9 +38,9 @@ import java.util.*;
 public final class CipherSuite {
 
     /**
-     * Compares cipher suites names like "TLS_RSA_WITH_NULL_MD5" and "SSL_RSA_WITH_NULL_MD5", ignoring
-     * the "TLS_" or "SSL_" prefix which is not consistent across platforms. In particular some IBM
-     * JVMs use the "SSL_" prefix everywhere whereas Oracle JVMs mix "TLS_" and "SSL_".
+     * 比较“TLS_RSA_WITH_NULL_MD5”和“SSL_RSA_WITH_NULL_MD5”等密码套件名称，
+     * 忽略跨平台不一致的“TLS_”或“SSL_”前缀。特别是一些IBM jvm到处使用“SSL_”前缀，
+     * 而Oracle jvm则混合使用“TLS_”和“SSL_”
      */
     public static final Comparator<String> ORDER_BY_NAME = new Comparator<String>() {
         @Override
@@ -70,12 +58,10 @@ public final class CipherSuite {
     };
 
     /**
-     * Holds interned instances. This needs to be above the init() calls below so that it's
-     * initialized by the time those parts of {@code <clinit>()} run. Guarded by CipherSuite.class.
+     * 拥有实习实例。这需要在下面的init()调用之上，以便在运行{@code ()}
+     * 的那些部分时对其进行初始化。有CipherSuite.class
      */
     private static final Map<String, CipherSuite> INSTANCES = new LinkedHashMap<>();
-
-    // Last updated 2016-07-03 using cipher suites from Android 24 and Java 9.
 
     // public static final CipherSuite TLS_NULL_WITH_NULL_NULL = init("TLS_NULL_WITH_NULL_NULL", 0x0000);
     public static final CipherSuite TLS_RSA_WITH_NULL_MD5 = init("SSL_RSA_WITH_NULL_MD5", 0x0001);
@@ -411,6 +397,12 @@ public final class CipherSuite {
     public static final CipherSuite TLS_AES_128_CCM_SHA256 = init("TLS_AES_128_CCM_SHA256", 0x1304);
     public static final CipherSuite TLS_AES_256_CCM_8_SHA256 = init("TLS_AES_256_CCM_8_SHA256", 0x1305);
 
+    /**
+     * 返回此密码套件的Java名称。对于一些较旧的密码套件，Java名称具有前缀{@code SSL_}
+     * 这导致Java名称与总是以{@code TLS_}为前缀的实例名称不同。
+     * 例如，{@code TLS_RSA_EXPORT_WITH_RC4_40_MD5.javaName()}
+     * 是{@code "SSL_RSA_EXPORT_WITH_RC4_40_MD5"}
+     */
     public final String javaName;
 
     private CipherSuite(String javaName) {
@@ -421,9 +413,9 @@ public final class CipherSuite {
     }
 
     /**
-     * @param javaName the name used by Java APIs for this cipher suite. Different than the IANA name
-     *                 for older cipher suites because the prefix is {@code SSL_} instead of {@code TLS_}.
-     * @return CipherSuite
+     * @param javaName 此密码套件的Java api使用的名称。与旧密码套件的IANA名称不同，
+     *                 因为前缀是{@code SSL_}而不是{@code TLS_}.
+     * @return 密码套件信息
      */
     public static synchronized CipherSuite forJavaName(String javaName) {
         CipherSuite result = INSTANCES.get(javaName);
@@ -434,7 +426,6 @@ public final class CipherSuite {
                 result = new CipherSuite(javaName);
             }
 
-            // Add the new cipher suite, or a confirmed alias.
             INSTANCES.put(javaName, result);
         }
         return result;
@@ -459,9 +450,10 @@ public final class CipherSuite {
     }
 
     /**
-     * @param javaName the name used by Java APIs for this cipher suite. Different than the IANA name
-     *                 for older cipher suites because the prefix is {@code SSL_} instead of {@code TLS_}.
-     * @param value    the integer identifier for this cipher suite. (Documentation only.)
+     * @param javaName 此密码套件的Java api使用的名称。与旧密码套件的IANA名称不同，
+     *                 因为前缀是{@code SSL_}而不是{@code TLS_}.
+     * @param value    此密码套件的整数标识符(文档)
+     * @return 密码套件信息
      */
     private static CipherSuite init(String javaName, int value) {
         CipherSuite suite = new CipherSuite(javaName);

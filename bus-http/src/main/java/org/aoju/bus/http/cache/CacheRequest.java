@@ -28,14 +28,23 @@ import org.aoju.bus.core.io.segment.Sink;
 import java.io.IOException;
 
 /**
+ * 缓存请求信息
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
 public interface CacheRequest {
 
+    /**
+     * @return 字节流信息
+     * @throws IOException 异常
+     */
     Sink body() throws IOException;
 
+    /**
+     * 中止这个缓存
+     */
     void abort();
 
 }

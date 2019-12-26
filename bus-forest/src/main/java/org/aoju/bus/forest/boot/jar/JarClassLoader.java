@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.forest.boot.jar;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.forest.Builder;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.provider.DecryptorProvider;
@@ -83,7 +84,7 @@ public class JarClassLoader extends URLClassLoader {
         try {
             return super.findClass(name);
         } catch (ClassFormatError e) {
-            URL resource = findResource(name.replace('.', '/') + ".class");
+            URL resource = findResource(name.replace(Symbol.C_DOT, Symbol.C_SLASH) + ".class");
             if (resource == null) {
                 throw new ClassNotFoundException(name, e);
             }

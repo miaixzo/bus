@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.unix.solaris;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.hardware.AbstractUsbDevice;
@@ -191,7 +192,7 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorIdMap, productIdMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId), "", vendorId, productId,
+        return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId), "", vendorId, productId,
                 "", devPath, usbDevices.toArray(new UsbDevice[0]));
     }
 }

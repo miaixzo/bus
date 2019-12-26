@@ -240,7 +240,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
                         value = formatListener.formatNumberDateCell(frec);
                     }
                 } else {
-                    value = '"' + HSSFFormulaParser.toFormulaString(stubWorkbook, frec.getParsedExpression()) + '"';
+                    value = Symbol.C_DOUBLE_QUOTES + HSSFFormulaParser.toFormulaString(stubWorkbook, frec.getParsedExpression()) + Symbol.C_DOUBLE_QUOTES;
                 }
                 rowCellList.add(frec.getColumn(), value);
                 break;

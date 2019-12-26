@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.io.segment;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.IOException;
 
 /**
@@ -62,7 +64,7 @@ public abstract class DelegateSource implements Source {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + delegate.toString() + ")";
+        return getClass().getSimpleName() + Symbol.PARENTHESE_LEFT + delegate.toString() + Symbol.PARENTHESE_RIGHT;
     }
 
 }

@@ -251,7 +251,7 @@ public class Validator {
      * @return 是否为给定长度范围的英文字母 、数字和下划线
      */
     public static boolean isGeneral(String value, int min, int max) {
-        String reg = "^\\w{" + min + "," + max + "}$";
+        String reg = "^\\w{" + min + Symbol.COMMA + max + "}$";
         if (min < 0) {
             min = 0;
         }
@@ -741,7 +741,7 @@ public class Validator {
      * @return 是否为汉字
      */
     public static boolean isEnglish(String value) {
-        return isMactchRegex("^" + RegEx.WORD_PATTERN + "+$", value);
+        return isMactchRegex(Symbol.CARET + RegEx.WORD_PATTERN + "+$", value);
     }
 
     /**
@@ -751,7 +751,7 @@ public class Validator {
      * @return 是否为汉字
      */
     public static boolean isChinese(String value) {
-        return isMactchRegex("^" + RegEx.CHINESE_PATTERN + "+$", value);
+        return isMactchRegex(Symbol.CARET + RegEx.CHINESE_PATTERN + "+$", value);
     }
 
     /**

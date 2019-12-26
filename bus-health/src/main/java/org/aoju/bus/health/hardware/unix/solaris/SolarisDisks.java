@@ -25,6 +25,7 @@ package org.aoju.bus.health.hardware.unix.solaris;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.unix.solaris.KstatUtils;
@@ -125,7 +126,7 @@ public class SolarisDisks implements Disks {
         for (String line : lshal) {
             if (line.startsWith("udi ")) {
                 String udi = Builder.getSingleQuoteStringValue(line);
-                disk = udi.substring(udi.lastIndexOf('/') + 1);
+                disk = udi.substring(udi.lastIndexOf(Symbol.C_SLASH) + 1);
                 continue;
             }
             line = line.trim();
@@ -179,7 +180,7 @@ public class SolarisDisks implements Disks {
                     product = keyValue.replace("Product:", "").trim();
                 } else if (keyValue.startsWith("Size:")) {
                     // Size: 1.23GB <1227563008 bytes>
-                    String[] bytes = keyValue.split("<");
+                    String[] bytes = keyValue.split(Symbol.LT);
                     if (bytes.length > 1) {
                         bytes = Builder.whitespaces.split(bytes[1]);
                         size = Builder.parseLongOrDefault(bytes[0], 0L);
@@ -220,7 +221,7 @@ public class SolarisDisks implements Disks {
      */
     private void updateStore(HWDiskStore store, String model, String vendor, String product, String serial, long size,
                              String mount, int major) {
-        store.setModel(model.isEmpty() ? (vendor + " " + product).trim() : model);
+        store.setModel(model.isEmpty() ? (vendor + Symbol.SPACE + product).trim() : model);
         store.setSerial(serial);
         store.setSize(size);
 
@@ -239,7 +240,7 @@ public class SolarisDisks implements Disks {
             for (String line : prtvotc) {
                 // If line starts with asterisk we ignore except for the one
                 // specifying bytes per sector
-                if (line.startsWith("*")) {
+                if (line.startsWith(Symbol.STAR)) {
                     if (line.endsWith("bytes/sector")) {
                         split = Builder.whitespaces.split(line);
                         if (split.length > 0) {
@@ -254,7 +255,7 @@ public class SolarisDisks implements Disks {
                     // Partition Tag Flags Sector Count Sector Mount
                     split = Builder.whitespaces.split(line.trim());
                     // Partition 2 is always the whole disk so we ignore it
-                    if (split.length >= 6 && !"2".equals(split[0])) {
+                    if (split.length >= 6 && !Symbol.TWO.equals(split[0])) {
                         HWPartition partition = new HWPartition();
                         // First field is partition number
                         partition.setIdentification(mount + "s" + split[0]);

@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
 
@@ -676,7 +677,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String projectPath = null;
         try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
+            projectPath = URLEncoder.encode(namespace + Symbol.SLASH + project, "UTF-8");
         } catch (UnsupportedEncodingException uee) {
             throw (new GitLabApiException(uee));
         }
@@ -725,7 +726,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String projectPath = null;
         try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
+            projectPath = URLEncoder.encode(namespace + Symbol.SLASH + project, "UTF-8");
         } catch (UnsupportedEncodingException uee) {
             throw (new GitLabApiException(uee));
         }

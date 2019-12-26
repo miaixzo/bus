@@ -24,6 +24,7 @@
 package org.aoju.bus.limiter.execute;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -129,7 +130,7 @@ public class LimiterExecutionContext {
             Assert.notNull(evalKey, "key值计算为null!");
             return evalKey;
         }
-        return this.metadata.getTargetClass().getName() + "#" +
+        return this.metadata.getTargetClass().getName() + Symbol.SHAPE +
                 this.metadata.getTargetMethod().getName();
 
     }

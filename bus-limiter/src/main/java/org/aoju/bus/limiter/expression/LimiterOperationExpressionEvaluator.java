@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.limiter.expression;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.limiter.Limiter;
 import org.springframework.beans.factory.BeanFactory;
@@ -117,7 +118,7 @@ public class LimiterOperationExpressionEvaluator {
 
         @Override
         public String toString() {
-            return this.element + " with expression \"" + this.expression + "\"";
+            return this.element + " with expression \"" + this.expression + Symbol.DOUBLE_QUOTES;
         }
 
         @Override

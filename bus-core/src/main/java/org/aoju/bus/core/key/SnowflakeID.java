@@ -110,7 +110,6 @@ public class SnowflakeID {
      */
     private long lastTimestamp = -1L;
 
-
     /**
      * 构造函数
      *

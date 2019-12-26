@@ -169,15 +169,15 @@ public abstract class ToStringStyle implements Serializable {
      */
     private boolean fieldSeparatorAtEnd = false;
     /**
-     * 字段分隔符 <code>','</code>.
+     * 字段分隔符 <code>,</code>.
      */
     private String fieldSeparator = Symbol.COMMA;
     /**
-     * 数字开始 <code>'{'</code>.
+     * 数字开始 <code>{</code>.
      */
-    private String arrayStart = Symbol.DELIM_LEFT;
+    private String arrayStart = Symbol.BRACE_LEFT;
     /**
-     * 数字分隔符 <code>','</code>.
+     * 数字分隔符 <code>,</code>.
      */
     private String arraySeparator = Symbol.COMMA;
     /**
@@ -185,9 +185,9 @@ public abstract class ToStringStyle implements Serializable {
      */
     private boolean arrayContentDetail = true;
     /**
-     * 数组结束 <code>'}'</code>.
+     * 数组结束 <code>}</code>.
      */
-    private String arrayEnd = Symbol.DELIM_RIGHT;
+    private String arrayEnd = Symbol.BRACE_RIGHT;
     /**
      * 当fullDetail为null时使用的值，默认值true
      */
@@ -203,15 +203,15 @@ public abstract class ToStringStyle implements Serializable {
     /**
      * 摘要大小文本结束 <code>'&gt;'</code>.
      */
-    private String sizeEndText = ">";
+    private String sizeEndText = Symbol.GT;
     /**
      * 摘要大小文本开始 <code>'&lt;'</code>.
      */
-    private String summaryObjectStartText = "<";
+    private String summaryObjectStartText = Symbol.LT;
     /**
      * 摘要大小文本结束 <code>'&gt;'</code>.
      */
-    private String summaryObjectEndText = ">";
+    private String summaryObjectEndText = Symbol.GT;
 
     protected ToStringStyle() {
         super();
@@ -1365,7 +1365,7 @@ public abstract class ToStringStyle implements Serializable {
     protected void appendIdentityHashCode(final StringBuffer buffer, final Object object) {
         if (this.isUseIdentityHashCode() && object != null) {
             register(object);
-            buffer.append('@');
+            buffer.append(Symbol.C_AT);
             buffer.append(Integer.toHexString(System.identityHashCode(object)));
         }
     }
@@ -2032,10 +2032,10 @@ public abstract class ToStringStyle implements Serializable {
 
         MultiLineToStringStyle() {
             super();
-            this.setContentStart("[");
+            this.setContentStart(Symbol.BRACKET_LEFT);
             this.setFieldSeparator(System.lineSeparator() + "  ");
             this.setFieldSeparatorAtStart(true);
-            this.setContentEnd(System.lineSeparator() + "]");
+            this.setContentEnd(System.lineSeparator() + Symbol.BRACKET_RIGHT);
         }
 
         private Object readResolve() {
@@ -2064,7 +2064,7 @@ public abstract class ToStringStyle implements Serializable {
 
         private static final long serialVersionUID = 1L;
 
-        private static final String FIELD_NAME_QUOTE = "\"";
+        private static final String FIELD_NAME_QUOTE = Symbol.DOUBLE_QUOTES;
 
         JsonToStringStyle() {
             super();
@@ -2072,16 +2072,16 @@ public abstract class ToStringStyle implements Serializable {
             this.setUseClassName(false);
             this.setUseIdentityHashCode(false);
 
-            this.setContentStart("{");
-            this.setContentEnd("}");
+            this.setContentStart(Symbol.BRACE_LEFT);
+            this.setContentEnd(Symbol.BRACE_RIGHT);
 
-            this.setArrayStart("[");
-            this.setArrayEnd("]");
+            this.setArrayStart(Symbol.BRACKET_LEFT);
+            this.setArrayEnd(Symbol.BRACKET_RIGHT);
 
-            this.setFieldSeparator(",");
-            this.setFieldNameValueSeparator(":");
+            this.setFieldSeparator(Symbol.COMMA);
+            this.setFieldNameValueSeparator(Symbol.COLON);
 
-            this.setNullText("null");
+            this.setNullText(Normal.NULL);
 
             this.setSummaryObjectStartText("\"<");
             this.setSummaryObjectEndText(">\"");
@@ -2293,7 +2293,7 @@ public abstract class ToStringStyle implements Serializable {
         }
 
         private void appendValueAsString(final StringBuffer buffer, final String value) {
-            buffer.append('"').append(EscapeUtils.escapeJson(value)).append('"');
+            buffer.append(Symbol.C_DOUBLE_QUOTES).append(EscapeUtils.escapeJson(value)).append(Symbol.C_DOUBLE_QUOTES);
         }
 
         @Override

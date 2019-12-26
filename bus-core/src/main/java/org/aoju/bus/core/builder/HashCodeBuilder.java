@@ -25,6 +25,7 @@ package org.aoju.bus.core.builder;
 
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 
 import java.lang.reflect.AccessibleObject;
@@ -138,7 +139,7 @@ public class HashCodeBuilder implements Builder<Integer> {
             AccessibleObject.setAccessible(fields, true);
             for (final Field field : fields) {
                 if (!ArrayUtils.contains(excludeFields, field.getName())
-                        && !field.getName().contains("$")
+                        && !field.getName().contains(Symbol.DOLLAR)
                         && (useTransients || !Modifier.isTransient(field.getModifiers()))
                         && !Modifier.isStatic(field.getModifiers())
                         && !field.isAnnotationPresent(HashCodeExclude.class)) {

@@ -24,6 +24,7 @@
 package org.aoju.bus.storage.magic;
 
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
@@ -51,11 +52,11 @@ public class Readers {
     public Object data;
 
     public Readers(String data) {
-        this("0", data, null);
+        this(Symbol.ZERO, data, null);
     }
 
     public Readers(Object data) {
-        this("0", "", data);
+        this(Symbol.ZERO, "", data);
     }
 
     public Readers(String errcode, String errmsg) {

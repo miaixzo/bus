@@ -71,7 +71,7 @@ public class EmojiUtils {
     }
 
     /**
-     * 将子串中的Emoji别名（两个":"包围的格式）和其HTML表示形式替换为为Unicode Emoji符号
+     * 将子串中的Emoji别名和其HTML表示形式替换为为Unicode Emoji符号
      * <p>
      * 例如：
      *
@@ -89,12 +89,12 @@ public class EmojiUtils {
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为别名表现形式（两个":"包围的格式）
+     * 将字符串中的Unicode Emoji字符转换为别名表现形式
      * <p>
      * 例如： <code>😄</code> 转换为 <code>:smile:</code>
      *
      * <p>
-     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#PARSE},则别名后会增加"|"并追加fitzpatrick类型
+     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#PARSE},则别名后会追加fitzpatrick类型
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy|type_6:</code>
      *
@@ -116,7 +116,7 @@ public class EmojiUtils {
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为别名表现形式（两个":"包围的格式）,别名后会增加"|"并追加fitzpatrick类型
+     * 将字符串中的Unicode Emoji字符转换为别名表现形式,别名后会增加"|"并追加fitzpatrick类型
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy|type_6:</code>
      *

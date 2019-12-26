@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.pager.proxy;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.pager.IPage;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageContext;
@@ -52,7 +53,7 @@ public class PageParams {
     //是否支持接口参数来传递分页参数,默认false
     protected boolean supportMethodsArguments = false;
     //默认count(0)
-    protected String countColumn = "0";
+    protected String countColumn = Symbol.ZERO;
 
     /**
      * 获取分页参数

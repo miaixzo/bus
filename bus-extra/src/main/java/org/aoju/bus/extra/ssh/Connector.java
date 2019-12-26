@@ -159,12 +159,4 @@ public class Connector {
         this.group = group;
     }
 
-    /**
-     * toString方法仅用于测试显示
-     */
-    @Override
-    public String toString() {
-        return "Connector [host=" + host + ", port=" + port + ", user=" + user + ", password=" + password + "]";
-    }
-
 }

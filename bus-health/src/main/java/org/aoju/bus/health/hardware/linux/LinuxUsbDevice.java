@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.common.linux.Udev;
 import org.aoju.bus.health.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.hardware.UsbDevice;
@@ -193,7 +194,7 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
+        return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(devPath, ""), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
                 usbDevices.toArray(new UsbDevice[usbDevices.size()]));
     }

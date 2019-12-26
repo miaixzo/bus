@@ -27,6 +27,8 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.proxy.Builder;
 import org.aoju.bus.proxy.Invocation;
 
@@ -70,7 +72,7 @@ public abstract class JavassistInvocation implements Invocation {
             throws CannotCompileException {
         Class invocationClass;
         final CtClass ctClass = JavassistUtils.createClass(
-                getSimpleName(interfaceMethod.getDeclaringClass()) + "_" + interfaceMethod.getName() +
+                getSimpleName(interfaceMethod.getDeclaringClass()) + Symbol.UNDERLINE + interfaceMethod.getName() +
                         "_invocation",
                 JavassistInvocation.class);
         final CtConstructor constructor = new CtConstructor(
@@ -79,7 +81,7 @@ public abstract class JavassistInvocation implements Invocation {
         constructor.setBody("{\n\tsuper($$);\n}");
         ctClass.addConstructor(constructor);
         final CtMethod proceedMethod = new CtMethod(JavassistUtils.resolve(Object.class), "proceed",
-                JavassistUtils.resolve(new Class[0]), ctClass);
+                JavassistUtils.resolve(Normal.EMPTY_CLASS_ARRAY), ctClass);
         final Class[] argumentTypes = interfaceMethod.getParameterTypes();
         final StringBuffer proceedBody = new StringBuffer("{\n");
         if (!Void.TYPE.equals(interfaceMethod.getReturnType())) {
@@ -90,13 +92,13 @@ public abstract class JavassistInvocation implements Invocation {
                 proceedBody.append("( ");
             }
         } else {
-            proceedBody.append("\t");
+            proceedBody.append(Symbol.HT);
         }
         proceedBody.append("( (");
         proceedBody.append(Builder.getJavaClassName(interfaceMethod.getDeclaringClass()));
         proceedBody.append(" )target ).");
         proceedBody.append(interfaceMethod.getName());
-        proceedBody.append("(");
+        proceedBody.append(Symbol.PARENTHESE_LEFT);
         for (int i = 0; i < argumentTypes.length; ++i) {
             final Class argumentType = argumentTypes[i];
             proceedBody.append(createCastExpression(argumentType, "arguments[" + i + "]"));
@@ -112,7 +114,7 @@ public abstract class JavassistInvocation implements Invocation {
         if (Void.TYPE.equals(interfaceMethod.getReturnType())) {
             proceedBody.append("\treturn null;\n");
         }
-        proceedBody.append("}");
+        proceedBody.append(Symbol.BRACE_RIGHT);
         final String body = proceedBody.toString();
         proceedMethod.setBody(body);
         ctClass.addMethod(proceedMethod);
@@ -153,7 +155,7 @@ public abstract class JavassistInvocation implements Invocation {
 
     private static String getSimpleName(Class c) {
         final String name = c.getName();
-        final int ndx = name.lastIndexOf('.');
+        final int ndx = name.lastIndexOf(Symbol.C_DOT);
         return ndx == -1 ? name : name.substring(ndx + 1);
     }
 

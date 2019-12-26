@@ -24,6 +24,7 @@
 package org.aoju.bus.core.builder;
 
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ClassUtils;
 
 /**
@@ -77,13 +78,13 @@ public class MultilineRecursiveToStringStyle extends RecursiveToStringStyle {
      * 重置负责换行和缩进的字段。必须在更改{@link #spaces}值后调用
      */
     private void resetIndent() {
-        setArrayStart("{" + System.lineSeparator() + spacer(spaces));
+        setArrayStart(Symbol.BRACE_LEFT + System.lineSeparator() + spacer(spaces));
         setArraySeparator("," + System.lineSeparator() + spacer(spaces));
-        setArrayEnd(System.lineSeparator() + spacer(spaces - INDENT) + "}");
+        setArrayEnd(System.lineSeparator() + spacer(spaces - INDENT) + Symbol.BRACE_RIGHT);
 
-        setContentStart("[" + System.lineSeparator() + spacer(spaces));
+        setContentStart(Symbol.BRACKET_LEFT + System.lineSeparator() + spacer(spaces));
         setFieldSeparator("," + System.lineSeparator() + spacer(spaces));
-        setContentEnd(System.lineSeparator() + spacer(spaces - INDENT) + "]");
+        setContentEnd(System.lineSeparator() + spacer(spaces - INDENT) + Symbol.BRACKET_RIGHT);
     }
 
     /**
@@ -95,7 +96,7 @@ public class MultilineRecursiveToStringStyle extends RecursiveToStringStyle {
     private StringBuilder spacer(final int spaces) {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < spaces; i++) {
-            sb.append(" ");
+            sb.append(Symbol.SPACE);
         }
         return sb;
     }

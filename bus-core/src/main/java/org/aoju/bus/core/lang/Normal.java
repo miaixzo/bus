@@ -38,123 +38,6 @@ import java.util.Arrays;
 public class Normal {
 
     /**
-     * 字符串: 数字
-     */
-    public static final String NUMBER = "0123456789";
-    /**
-     * 字符串: 大字母
-     */
-    public static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    /**
-     * 字符串: 小字母
-     */
-    public static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
-    /**
-     * 字符串: 大字母数字
-     */
-    public static final String UPPER_NUMBER = UPPER + NUMBER;
-    /**
-     * 字符串: 小字母数字
-     */
-    public static final String LOWER_NUMBER = LOWER + NUMBER;
-    /**
-     * 字符串: 小字母数字
-     */
-    public static final String UPPER_LOWER = UPPER + LOWER;
-    /**
-     * 字符串: 大小字母数字
-     */
-    public static final String UPPER_LOWER_NUMBER = UPPER + LOWER + NUMBER;
-    /**
-     * 用于建立十六进制字符的输出的小写字符数组
-     */
-    public static final char[] DIGITS_LOWER = {
-            '0', '1', '2', '3', '4', '5', '6',
-            '7', '8', '9', 'a', 'b', 'c', 'd',
-            'e', 'f'
-    };
-    /**
-     * 用于建立十六进制字符的输出的大写字符数组
-     */
-    public static final char[] DIGITS_UPPER = {
-            '0', '1', '2', '3', '4', '5', '6',
-            '7', '8', '9', 'A', 'B', 'C', 'D',
-            'E', 'F'};
-    /**
-     * 将数字表示为字符串的所有字符
-     */
-    public static final char[] DIGITS_ALL = {
-            '0', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9', 'a', 'b',
-            'c', 'd', 'e', 'f', 'g', 'h',
-            'i', 'j', 'k', 'l', 'm', 'n',
-            'o', 'p', 'q', 'r', 's', 't',
-            'u', 'v', 'w', 'x', 'y', 'z',
-            'A', 'B', 'C', 'D', 'E', 'F',
-            'G', 'H', 'I', 'J', 'K', 'L',
-            'M', 'N', 'O', 'P', 'Q', 'R',
-            'S', 'T', 'U', 'V', 'W', 'X',
-            'Y', 'Z'
-    };
-    /**
-     * 简体中文形式
-     */
-    public static final String[] SIMPLE_DIGITS = {
-            "零", "一", "二", "三", "四", "五",
-            "六", "七", "八", "九"
-    };
-    /**
-     * 繁体中文形式
-     */
-    public static final String[] TRADITIONAL_DIGITS = {
-            "零", "壹", "贰", "叁", "肆", "伍",
-            "陆", "柒", "捌", "玖"
-    };
-    /**
-     * 简体中文单位
-     */
-    public static final String[] SIMPLE_UNITS = {"", "十",
-            "百", "千"};
-    /**
-     * 繁体中文单位
-     */
-    public static final String[] TRADITIONAL_UNITS = {"", "拾",
-            "佰", "仟"};
-    /**
-     * 英文数字1-9
-     */
-    public static final String[] EN_NUMBER = new String[]{
-            "", "ONE", "TWO", "THREE", "FOUR", "FIVE",
-            "SIX", "SEVEN", "EIGHT", "NINE"
-    };
-    /**
-     * 英文数字10-19
-     */
-    public static final String[] NUMBER_TEEN = new String[]{
-            "TEN", "ELEVEN", "TWELEVE", "THIRTEEN",
-            "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN",
-            "EIGHTEEN", "NINETEEN"
-    };
-    /**
-     * 英文数字10-90
-     */
-    public static final String[] NUMBER_TEN = new String[]{
-            "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY",
-            "SIXTY", "SEVENTY", "EIGHTY", "NINETY"
-    };
-    /**
-     * 英文数字千-亿
-     */
-    public static final String[] NUMBER_MORE = new String[]{
-            "", "THOUSAND", "MILLION", "BILLION"
-    };
-    /**
-     * 表示为真的字符串
-     */
-    public static final String[] TRUE_ARRAY = {"true", "t",
-            "yes", "y", "ok", "是", "对", "真", "正确"};
-
-    /**
      * 字符串:空
      */
     public static final String EMPTY = "";
@@ -162,14 +45,6 @@ public class Normal {
      * 字符串:null
      */
     public static final String NULL = "null";
-    /**
-     * 针对ClassPath路径的伪协议前缀: "classpath:"
-     */
-    public static final String CLASSPATH_URL_PREFIX = "classpath:";
-    /**
-     * 元数据: "META-INF"
-     */
-    public static final String META_DATA_INF = "META-INF";
     /**
      * URL 前缀表示文件: "file:"
      */
@@ -182,6 +57,14 @@ public class Normal {
      * URL 前缀表示war: "war:"
      */
     public static final String WAR_URL_PREFIX = "war:";
+    /**
+     * 针对ClassPath路径的伪协议前缀: "classpath:"
+     */
+    public static final String CLASSPATH = "classpath:";
+    /**
+     * 元数据: "META-INF"
+     */
+    public static final String META_DATA_INF = "META-INF";
     /**
      * URL 协议表示文件: "file"
      */
@@ -218,6 +101,183 @@ public class Normal {
      * WAR路径及内部文件路径分界符
      */
     public static final String WAR_URL_SEPARATOR = "*/";
+    /**
+     * 字符串: 数字
+     */
+    public static final String NUMBER = "0123456789";
+    /**
+     * 字符串: 大字母
+     */
+    public static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    /**
+     * 字符串: 小字母
+     */
+    public static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
+    /**
+     * 字符串: 大字母数字
+     */
+    public static final String UPPER_NUMBER = UPPER + NUMBER;
+    /**
+     * 字符串: 小字母数字
+     */
+    public static final String LOWER_NUMBER = LOWER + NUMBER;
+    /**
+     * 字符串: 小字母数字
+     */
+    public static final String UPPER_LOWER = UPPER + LOWER;
+    /**
+     * 字符串: 大小字母数字
+     */
+    public static final String UPPER_LOWER_NUMBER = UPPER + LOWER + NUMBER;
+
+    /**
+     * 简体中文形式
+     */
+    public static final String[] SIMPLE_DIGITS = {
+            "零", "一", "二", "三", "四", "五", "六", "七", "八", "九"
+    };
+    /**
+     * 繁体中文形式
+     */
+    public static final String[] TRADITIONAL_DIGITS = {
+            "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"
+    };
+    /**
+     * 简体中文单位
+     */
+    public static final String[] SIMPLE_UNITS = {"", "十", "百", "千"};
+    /**
+     * 繁体中文单位
+     */
+    public static final String[] TRADITIONAL_UNITS = {"", "拾", "佰", "仟"};
+    /**
+     * 英文数字1-9
+     */
+    public static final String[] EN_NUMBER = new String[]{
+            "", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT",
+            "NINE"
+    };
+    /**
+     * 英文数字10-19
+     */
+    public static final String[] NUMBER_TEEN = new String[]{
+            "TEN", "ELEVEN", "TWELEVE", "THIRTEEN", "FOURTEEN", "FIFTEEN",
+            "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"
+    };
+    /**
+     * 英文数字10-90
+     */
+    public static final String[] NUMBER_TEN = new String[]{
+            "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY",
+            "EIGHTY", "NINETY"
+    };
+    /**
+     * 英文数字千-亿
+     */
+    public static final String[] NUMBER_MORE = new String[]{
+            "", "THOUSAND", "MILLION", "BILLION"
+    };
+    /**
+     * 表示为真的字符串
+     */
+    public static final String[] TRUE_ARRAY = {
+            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确"
+    };
+    /**
+     * 用于建立十六进制字符的输出的小写字符数组
+     */
+    public static final char[] DIGITS_16_LOWER = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c',
+            'd', 'e', 'f'
+    };
+    /**
+     * 用于建立十六进制字符的输出的大写字符数组
+     */
+    public static final char[] DIGITS_16_UPPER = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C',
+            'D', 'E', 'F'};
+
+    /**
+     * 将数字表示为字符串的所有字符
+     */
+    public static final char[] DIGITS_32_LOWER = {
+            '0', '1', '2', '3', '4', '5', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+            'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+            'u', 'v', 'w', 'x', 'y', 'z'
+    };
+
+    /**
+     * 将数字表示为字符串的所有字符
+     */
+    public static final char[] DIGITS_32_UPPER = {
+            '0', '1', '2', '3', '4', '5', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+            'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+            'U', 'V', 'W', 'X', 'Y', 'Z'
+    };
+
+    /**
+     * 将数字表示为字符串的所有字符
+     */
+    public static final char[] DIGITS_36_LOWER = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c',
+            'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+            'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+    };
+
+    /**
+     * 将数字表示为字符串的所有字符
+     */
+    public static final char[] DIGITS_36_UPPER = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C',
+            'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+            'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    };
+
+    /**
+     * 将数字表示为字符串的所有字符
+     */
+    public static final char[] DIGITS_ALL = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c',
+            'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+            'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C',
+            'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+            'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    };
+
+    /**
+     * 标准编码表
+     */
+    public static final byte[] STANDARD_ENCODE_TABLE = {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '/'};
+    /**
+     * URL安全的编码表,将 . 和 / 替换为 - 和 _
+     */
+    public static final byte[] URL_SAFE_ENCODE_TABLE = {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
+
+    /**
+     * Base64解码表,共128位,-1表示非base64字符,-2表示padding
+     */
+    public static final byte[] DECODE_TABLE = {
+            // 0 1 2 3 4 5 6 7 8 9 A B C D E F
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 00-0f
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 10-1f
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, 62, -1, 63, // 20-2f + - /
+            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -2, -1, -1, // 30-3f 0-9
+            -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,           // 40-4f A-O
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, 63, // 50-5f P-Z _
+            -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, // 60-6f a-o
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51                      // 70-7a p-z
+    };
+
     /**
      * Reusable Long constant for zero.
      */
@@ -389,11 +449,11 @@ public class Normal {
             if (code == null) {
                 return UNKNOWN;
             }
-            String[] males = {"M", "男", "1", "MALE"};
+            String[] males = {"M", "男", Symbol.ONE, "MALE"};
             if (Arrays.asList(males).contains(code.toUpperCase())) {
                 return MALE;
             }
-            String[] females = {"F", "女", "0", "FEMALE"};
+            String[] females = {"F", "女", Symbol.ZERO, "FEMALE"};
             if (Arrays.asList(females).contains(code.toUpperCase())) {
                 return FEMALE;
             }

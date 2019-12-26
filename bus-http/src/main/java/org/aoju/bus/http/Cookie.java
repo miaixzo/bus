@@ -23,7 +23,8 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.metric.http.HttpDate;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.metric.suffix.SuffixDatabase;
 
 import java.util.*;
@@ -31,11 +32,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * An <a href="http://tools.ietf.org/html/rfc6265">RFC 6265</a> Cookie.
- *
- * <p>This class doesn't support additional attributes on cookies, like <a
- * href="https://code.google.com/p/chromium/issues/detail?id=232693">Chromium's Priority=HIGH
- * extension</a>.
+ * Cookie's相关工具支持
+ * 这个类不支持cookies上的附加属性，比如Chromium的Priority=HIGH extension
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -52,16 +50,45 @@ public final class Cookie {
     private static final Pattern TIME_PATTERN
             = Pattern.compile("(\\d{1,2}):(\\d{1,2}):(\\d{1,2})[^\\d]*");
 
+    /**
+     * 带有此cookie名称的非空字符串
+     */
     private final String name;
+    /**
+     * 使用此cookie的值返回一个可能为空的字符串
+     */
     private final String value;
+    /**
+     * 以与{@link System#currentTimeMillis()}相同的格式返回此cookie过期的时间。
+     * 这是9999年12月31日，如果cookie是{@linkplain #persistent() not persistent}，那么它将在当前会话结束时终止
+     */
     private final long expiresAt;
+    /**
+     * 返回cookie的域。如果{@link #hostOnly()}返回true，这是唯一匹配此cookie的域;否则它将匹配此域和所有子域
+     */
     private final String domain;
+    /**
+     * 返回此cookie的路径。此cookie匹配前缀为与此路径段匹配的路径段的url。例如，如果这个路径是{@code /foo}，
+     * 那么这个cookie将匹配对{@code /foo}和{@code /foo/bar}的请求，而不是{@code /}或{@code /football}的请求。
+     */
     private final String path;
+    /**
+     * 如果此cookie仅限于HTTPS请求，则返回true
+     */
     private final boolean secure;
+    /**
+     * 如果此cookie仅限于HTTP api，则返回true。在web浏览器中，这会阻止脚本访问cookie
+     */
     private final boolean httpOnly;
-
-    private final boolean persistent; // True if 'expires' or 'max-age' is present.
-    private final boolean hostOnly; // True unless 'entity' is present.
+    /**
+     * 如果此cookie在当前会话结束时未过期，则返回true
+     */
+    private final boolean persistent;
+    /**
+     * 如果此cookie的域应解释为单个主机名，则返回true;如果应解释为模式，则返回false。
+     * 如果它的{@code Set-Cookie}头包含{@code domain}属性，则此标志为false
+     */
+    private final boolean hostOnly;
 
     private Cookie(String name, String value, long expiresAt, String domain, String path,
                    boolean secure, boolean httpOnly, boolean hostOnly, boolean persistent) {
@@ -79,7 +106,7 @@ public final class Cookie {
     Cookie(Builder builder) {
         if (builder.name == null) throw new NullPointerException("builder.name == null");
         if (builder.value == null) throw new NullPointerException("builder.value == null");
-        if (builder.domain == null) throw new NullPointerException("builder.entity == null");
+        if (builder.domain == null) throw new NullPointerException("builder.domain == null");
 
         this.name = builder.name;
         this.value = builder.value;
@@ -94,13 +121,13 @@ public final class Cookie {
 
     private static boolean domainMatch(String urlHost, String domain) {
         if (urlHost.equals(domain)) {
-            return true; // As in 'example.com' matching 'example.com'.
+            return true;
         }
 
         if (urlHost.endsWith(domain)
-                && urlHost.charAt(urlHost.length() - domain.length() - 1) == '.'
-                && !Internal.verifyAsIpAddress(urlHost)) {
-            return true; // As in 'example.com' matching 'www.example.com'.
+                && urlHost.charAt(urlHost.length() - domain.length() - 1) == Symbol.C_DOT
+                && !org.aoju.bus.http.Builder.verifyAsIpAddress(urlHost)) {
+            return true;
         }
 
         return false;
@@ -110,12 +137,12 @@ public final class Cookie {
         String urlPath = url.encodedPath();
 
         if (urlPath.equals(path)) {
-            return true; // As in '/foo' matching '/foo'.
+            return true;
         }
 
         if (urlPath.startsWith(path)) {
-            if (path.endsWith("/")) return true; // As in '/' matching '/foo'.
-            if (urlPath.charAt(path.length()) == '/') return true; // As in '/foo' matching '/foo/bar'.
+            if (path.endsWith(Symbol.SLASH)) return true;
+            if (urlPath.charAt(path.length()) == Symbol.C_SLASH) return true;
         }
 
         return false;
@@ -128,18 +155,18 @@ public final class Cookie {
     static Cookie parse(long currentTimeMillis, UnoUrl url, String setCookie) {
         int pos = 0;
         int limit = setCookie.length();
-        int cookiePairEnd = Internal.delimiterOffset(setCookie, pos, limit, ';');
+        int cookiePairEnd = org.aoju.bus.http.Builder.delimiterOffset(setCookie, pos, limit, Symbol.C_SEMICOLON);
 
-        int pairEqualsSign = Internal.delimiterOffset(setCookie, pos, cookiePairEnd, '=');
+        int pairEqualsSign = org.aoju.bus.http.Builder.delimiterOffset(setCookie, pos, cookiePairEnd, Symbol.C_EQUAL);
         if (pairEqualsSign == cookiePairEnd) return null;
 
-        String cookieName = Internal.trimSubstring(setCookie, pos, pairEqualsSign);
-        if (cookieName.isEmpty() || Internal.indexOfControlOrNonAscii(cookieName) != -1) return null;
+        String cookieName = org.aoju.bus.http.Builder.trimSubstring(setCookie, pos, pairEqualsSign);
+        if (cookieName.isEmpty() || org.aoju.bus.http.Builder.indexOfControlOrNonAscii(cookieName) != -1) return null;
 
-        String cookieValue = Internal.trimSubstring(setCookie, pairEqualsSign + 1, cookiePairEnd);
-        if (Internal.indexOfControlOrNonAscii(cookieValue) != -1) return null;
+        String cookieValue = org.aoju.bus.http.Builder.trimSubstring(setCookie, pairEqualsSign + 1, cookiePairEnd);
+        if (org.aoju.bus.http.Builder.indexOfControlOrNonAscii(cookieValue) != -1) return null;
 
-        long expiresAt = HttpDate.MAX_DATE;
+        long expiresAt = org.aoju.bus.http.Builder.MAX_DATE;
         long deltaSeconds = -1L;
         String domain = null;
         String path = null;
@@ -150,34 +177,34 @@ public final class Cookie {
 
         pos = cookiePairEnd + 1;
         while (pos < limit) {
-            int attributePairEnd = Internal.delimiterOffset(setCookie, pos, limit, ';');
+            int attributePairEnd = org.aoju.bus.http.Builder.delimiterOffset(setCookie, pos, limit, Symbol.C_SEMICOLON);
 
-            int attributeEqualsSign = Internal.delimiterOffset(setCookie, pos, attributePairEnd, '=');
-            String attributeName = Internal.trimSubstring(setCookie, pos, attributeEqualsSign);
+            int attributeEqualsSign = org.aoju.bus.http.Builder.delimiterOffset(setCookie, pos, attributePairEnd, Symbol.C_EQUAL);
+            String attributeName = org.aoju.bus.http.Builder.trimSubstring(setCookie, pos, attributeEqualsSign);
             String attributeValue = attributeEqualsSign < attributePairEnd
-                    ? Internal.trimSubstring(setCookie, attributeEqualsSign + 1, attributePairEnd)
-                    : "";
+                    ? org.aoju.bus.http.Builder.trimSubstring(setCookie, attributeEqualsSign + 1, attributePairEnd)
+                    : Normal.EMPTY;
 
             if (attributeName.equalsIgnoreCase("expires")) {
                 try {
                     expiresAt = parseExpires(attributeValue, 0, attributeValue.length());
                     persistent = true;
                 } catch (IllegalArgumentException e) {
-                    // Ignore this attribute, it isn't recognizable as a date.
+                    // 忽略此属性，它无法识别为日期
                 }
             } else if (attributeName.equalsIgnoreCase("max-age")) {
                 try {
                     deltaSeconds = parseMaxAge(attributeValue);
                     persistent = true;
                 } catch (NumberFormatException e) {
-                    // Ignore this attribute, it isn't recognizable as a max age.
+                    // 忽略此属性，它无法识别为最大值.
                 }
-            } else if (attributeName.equalsIgnoreCase("entity")) {
+            } else if (attributeName.equalsIgnoreCase("domain")) {
                 try {
                     domain = parseDomain(attributeValue);
                     hostOnly = false;
                 } catch (IllegalArgumentException e) {
-                    // Ignore this attribute, it isn't recognizable as a entity.
+                    // 忽略此属性，它无法识别为域名.
                 }
             } else if (attributeName.equalsIgnoreCase("path")) {
                 path = attributeValue;
@@ -190,8 +217,7 @@ public final class Cookie {
             pos = attributePairEnd + 1;
         }
 
-        // If 'Max-Age' is present, it takes precedence over 'Expires', regardless of the order the two
-        // attributes are declared in the cookie string.
+        // 如果“Max-Age”出现，它将优先于“Expires”，而不管这两个属性在cookie字符串中声明的顺序如何.
         if (deltaSeconds == Long.MIN_VALUE) {
             expiresAt = Long.MIN_VALUE;
         } else if (deltaSeconds != -1L) {
@@ -199,31 +225,29 @@ public final class Cookie {
                     ? deltaSeconds * 1000
                     : Long.MAX_VALUE;
             expiresAt = currentTimeMillis + deltaMilliseconds;
-            if (expiresAt < currentTimeMillis || expiresAt > HttpDate.MAX_DATE) {
-                expiresAt = HttpDate.MAX_DATE; // Handle overflow & limit the date range.
+            if (expiresAt < currentTimeMillis || expiresAt > org.aoju.bus.http.Builder.MAX_DATE) {
+                expiresAt = org.aoju.bus.http.Builder.MAX_DATE;
             }
         }
 
-        // If the entity is present, it must entity match. Otherwise we have a host-only cookie.
+        // 如果存在域，则必须匹配域。否则我们只有一个主机cookie.
         String urlHost = url.host();
         if (domain == null) {
             domain = urlHost;
         } else if (!domainMatch(urlHost, domain)) {
-            return null; // No entity match? This is either incompetence or malice!
+            return null;
         }
 
-        // If the entity is a suffix of the url host, it must not be a public suffix.
+        // 如果域名是url主机的后缀，则它不能是公共后缀
         if (urlHost.length() != domain.length()
                 && SuffixDatabase.get().getEffectiveTldPlusOne(domain) == null) {
             return null;
         }
 
-        // If the path is absent or didn't start with '/', use the default path. It's a string like
-        // '/foo/bar' for a URL like 'http://example.com/foo/bar/baz'. It always starts with '/'.
-        if (path == null || !path.startsWith("/")) {
+        if (path == null || !path.startsWith(Symbol.SLASH)) {
             String encodedPath = url.encodedPath();
-            int lastSlash = encodedPath.lastIndexOf('/');
-            path = lastSlash != 0 ? encodedPath.substring(0, lastSlash) : "/";
+            int lastSlash = encodedPath.lastIndexOf(Symbol.C_SLASH);
+            path = lastSlash != 0 ? encodedPath.substring(0, lastSlash) : Symbol.SLASH;
         }
 
         return new Cookie(cookieName, cookieValue, expiresAt, domain, path, secureOnly, httpOnly,
@@ -253,7 +277,7 @@ public final class Cookie {
                 dayOfMonth = Integer.parseInt(matcher.group(1));
             } else if (month == -1 && matcher.usePattern(MONTH_PATTERN).matches()) {
                 String monthString = matcher.group(1).toLowerCase(Locale.US);
-                month = MONTH_PATTERN.pattern().indexOf(monthString) / 4; // Sneaky! jan=1, dec=12.
+                month = MONTH_PATTERN.pattern().indexOf(monthString) / 4;
             } else if (year == -1 && matcher.usePattern(YEAR_PATTERN).matches()) {
                 year = Integer.parseInt(matcher.group(1));
             }
@@ -261,12 +285,11 @@ public final class Cookie {
             pos = dateCharacterOffset(s, end + 1, limit, false);
         }
 
-        // Convert two-digit years into four-digit years. 99 becomes 1999, 15 becomes 2015.
+        // 将两位数的年份转换为四位数的年份。99变成1999,15变成2015.
         if (year >= 70 && year <= 99) year += 1900;
         if (year >= 0 && year <= 69) year += 2000;
 
-        // If any partial is omitted or out of range, return -1. The date is impossible. Note that leap
-        // seconds are not supported by this syntax.
+        // 如果任何部分被省略或超出范围，则返回-1。这个日期是不可能的。注意，该语法不支持闰秒.
         if (year < 1601) throw new IllegalArgumentException();
         if (month == -1) throw new IllegalArgumentException();
         if (dayOfMonth < 1 || dayOfMonth > 31) throw new IllegalArgumentException();
@@ -274,7 +297,7 @@ public final class Cookie {
         if (minute < 0 || minute > 59) throw new IllegalArgumentException();
         if (second < 0 || second > 59) throw new IllegalArgumentException();
 
-        Calendar calendar = new GregorianCalendar(Internal.UTC);
+        Calendar calendar = new GregorianCalendar(org.aoju.bus.http.Builder.UTC);
         calendar.setLenient(false);
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month - 1);
@@ -289,11 +312,11 @@ public final class Cookie {
     private static int dateCharacterOffset(String input, int pos, int limit, boolean invert) {
         for (int i = pos; i < limit; i++) {
             int c = input.charAt(i);
-            boolean dateCharacter = (c < ' ' && c != '\t') || (c >= '\u007f')
-                    || (c >= '0' && c <= '9')
+            boolean dateCharacter = (c < Symbol.C_SPACE && c != Symbol.C_HT) || (c >= '\u007f')
+                    || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
                     || (c >= 'a' && c <= 'z')
                     || (c >= 'A' && c <= 'Z')
-                    || (c == ':');
+                    || (c == Symbol.C_COLON);
             if (dateCharacter == !invert) return i;
         }
         return limit;
@@ -304,29 +327,29 @@ public final class Cookie {
             long parsed = Long.parseLong(s);
             return parsed <= 0L ? Long.MIN_VALUE : parsed;
         } catch (NumberFormatException e) {
-            // Check if the value is an integer (positive or negative) that's too big for a long.
+            // 检查值是否是一个整数(正的或负的)
             if (s.matches("-?\\d+")) {
-                return s.startsWith("-") ? Long.MIN_VALUE : Long.MAX_VALUE;
+                return s.startsWith(Symbol.HYPHEN) ? Long.MIN_VALUE : Long.MAX_VALUE;
             }
             throw e;
         }
     }
 
     private static String parseDomain(String s) {
-        if (s.endsWith(".")) {
+        if (s.endsWith(Symbol.DOT)) {
             throw new IllegalArgumentException();
         }
-        if (s.startsWith(".")) {
+        if (s.startsWith(Symbol.DOT)) {
             s = s.substring(1);
         }
-        String canonicalDomain = Internal.canonicalizeHost(s);
+        String canonicalDomain = org.aoju.bus.http.Builder.canonicalizeHost(s);
         if (canonicalDomain == null) {
             throw new IllegalArgumentException();
         }
         return canonicalDomain;
     }
 
-    public static List<Cookie> parseAll(UnoUrl url, Header headers) {
+    public static List<Cookie> parseAll(UnoUrl url, Headers headers) {
         List<String> cookieStrings = headers.values("Set-Cookie");
         List<Cookie> cookies = null;
 
@@ -396,30 +419,24 @@ public final class Cookie {
         return toString(false);
     }
 
-    /**
-     * @param forObsoleteRfc2965 true to include a leading {@code .} on the entity pattern. This is
-     *                           necessary for {@code example.com} to match {@code www.example.com} under RFC 2965. This
-     *                           extra dot is ignored by more recent specifications.
-     * @return string
-     */
     String toString(boolean forObsoleteRfc2965) {
         StringBuilder result = new StringBuilder();
         result.append(name);
-        result.append('=');
+        result.append(Symbol.C_EQUAL);
         result.append(value);
 
         if (persistent) {
             if (expiresAt == Long.MIN_VALUE) {
                 result.append("; max-age=0");
             } else {
-                result.append("; expires=").append(HttpDate.format(new Date(expiresAt)));
+                result.append("; expires=").append(org.aoju.bus.http.Builder.format(new Date(expiresAt)));
             }
         }
 
         if (!hostOnly) {
-            result.append("; entity=");
+            result.append("; domain=");
             if (forObsoleteRfc2965) {
-                result.append(".");
+                result.append(Symbol.DOT);
             }
             result.append(domain);
         }
@@ -468,18 +485,19 @@ public final class Cookie {
     }
 
     /**
-     * Builds a cookie. The {@linkplain #name() name}, {@linkplain #value() value}, and {@linkplain
-     * #domain() entity} values must all be set before calling {@link #build}.
+     * 构建一个饼干。在调用{@link #build}之前，必须设置
+     * {@linkplain #name() name}、{@linkplain #value() value}
+     * 和{@linkplain #domain() domain}.
      */
     public static final class Builder {
-
         String name;
-
         String value;
-        long expiresAt = HttpDate.MAX_DATE;
-
+        long expiresAt = org.aoju.bus.http.Builder.MAX_DATE;
+        /**
+         * 设置此cookie的域模式。cookie将匹配{@code域}及其所有子域
+         */
         String domain;
-        String path = "/";
+        String path = Symbol.SLASH;
         boolean secure;
         boolean httpOnly;
         boolean persistent;
@@ -501,7 +519,7 @@ public final class Cookie {
 
         public Builder expiresAt(long expiresAt) {
             if (expiresAt <= 0) expiresAt = Long.MIN_VALUE;
-            if (expiresAt > HttpDate.MAX_DATE) expiresAt = HttpDate.MAX_DATE;
+            if (expiresAt > org.aoju.bus.http.Builder.MAX_DATE) expiresAt = org.aoju.bus.http.Builder.MAX_DATE;
             this.expiresAt = expiresAt;
             this.persistent = true;
             return this;
@@ -516,10 +534,10 @@ public final class Cookie {
         }
 
         private Builder domain(String domain, boolean hostOnly) {
-            if (domain == null) throw new NullPointerException("entity == null");
-            String canonicalDomain = Internal.canonicalizeHost(domain);
+            if (domain == null) throw new NullPointerException("domain == null");
+            String canonicalDomain = org.aoju.bus.http.Builder.canonicalizeHost(domain);
             if (canonicalDomain == null) {
-                throw new IllegalArgumentException("unexpected entity: " + domain);
+                throw new IllegalArgumentException("unexpected domain: " + domain);
             }
             this.domain = canonicalDomain;
             this.hostOnly = hostOnly;
@@ -527,7 +545,7 @@ public final class Cookie {
         }
 
         public Builder path(String path) {
-            if (!path.startsWith("/")) throw new IllegalArgumentException("path must start with '/'");
+            if (!path.startsWith(Symbol.SLASH)) throw new IllegalArgumentException("path must start with /");
             this.path = path;
             return this;
         }

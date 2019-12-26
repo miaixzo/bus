@@ -26,6 +26,7 @@ package org.aoju.bus.health.hardware.windows;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.common.windows.PerfCounterQuery;
 import org.aoju.bus.health.common.windows.PerfWildcardQuery;
@@ -239,7 +240,7 @@ public class WindowsDisks implements Disks {
             mAnt = DEVICE_ID.matcher(WmiUtils.getRefString(diskPartitionMap, DriveToPartitionProperty.ANTECEDENT, i));
             mDep = DEVICE_ID.matcher(WmiUtils.getRefString(diskPartitionMap, DriveToPartitionProperty.DEPENDENT, i));
             if (mAnt.matches() && mDep.matches()) {
-                maps.partitionToLogicalDriveMap.put(mAnt.group(1), mDep.group(1) + "\\");
+                maps.partitionToLogicalDriveMap.put(mAnt.group(1), mDep.group(1) + Symbol.BACKSLASH);
             }
         }
 

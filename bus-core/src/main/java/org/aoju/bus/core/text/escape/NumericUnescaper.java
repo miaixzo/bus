@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.text.escape;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 
 import java.io.IOException;
@@ -86,7 +87,7 @@ public class NumericUnescaper extends CharSequenceTranslator {
     public int translate(final CharSequence input, final int index, final Writer out) throws IOException {
         final int seqEnd = input.length();
         // Uses -2 to ensure there is something after the &#
-        if (input.charAt(index) == '&' && index < seqEnd - 2 && input.charAt(index + 1) == '#') {
+        if (input.charAt(index) == Symbol.C_AND && index < seqEnd - 2 && input.charAt(index + 1) == Symbol.C_SHAPE) {
             int start = index + 2;
             boolean isHex = false;
 
@@ -103,13 +104,13 @@ public class NumericUnescaper extends CharSequenceTranslator {
 
             int end = start;
             // Note that this supports character codes without a ; on the end
-            while (end < seqEnd && (input.charAt(end) >= '0' && input.charAt(end) <= '9'
+            while (end < seqEnd && (input.charAt(end) >= Symbol.C_ZERO && input.charAt(end) <= Symbol.C_NINE
                     || input.charAt(end) >= 'a' && input.charAt(end) <= 'f'
                     || input.charAt(end) >= 'A' && input.charAt(end) <= 'F')) {
                 end++;
             }
 
-            final boolean semiNext = end != seqEnd && input.charAt(end) == ';';
+            final boolean semiNext = end != seqEnd && input.charAt(end) == Symbol.C_SEMICOLON;
 
             if (!semiNext) {
                 if (isSet(OPTION.semiColonRequired)) {

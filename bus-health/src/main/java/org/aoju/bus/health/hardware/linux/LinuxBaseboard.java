@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoizer;
@@ -178,17 +179,17 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String queryBoardManufacturer(char digit) {
         switch (digit) {
-            case '0':
+            case Symbol.C_ZERO:
                 return "Sony UK";
-            case '1':
+            case Symbol.C_ONE:
                 return "Egoman";
-            case '2':
+            case Symbol.C_TWO:
                 return "Embest";
-            case '3':
+            case Symbol.C_THREE:
                 return "Sony Japan";
-            case '4':
+            case Symbol.C_FOUR:
                 return "Embest";
-            case '5':
+            case Symbol.C_FIVE:
                 return "Stadium";
             default:
                 return Builder.UNKNOWN;

@@ -23,12 +23,10 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.core.io.segment.Sink;
-import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.Header;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.StreamAllocation;
 import org.aoju.bus.http.bodys.RealResponseBody;
@@ -43,7 +41,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Encode requests and responses using HTTP/2 frames.
+ * 使用HTTP/2帧对请求和响应进行编码.
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -51,85 +49,76 @@ import java.util.concurrent.TimeUnit;
  */
 public final class Http2Codec implements HttpCodec {
 
-    private static final String CONNECTION = "connection";
-    private static final String HOST = "host";
-    private static final String KEEP_ALIVE = "keep-alive";
-    private static final String PROXY_CONNECTION = "proxy-connection";
-    private static final String TRANSFER_ENCODING = "transfer-encoding";
-    private static final String TE = "te";
-    private static final String ENCODING = "encoding";
-    private static final String UPGRADE = "upgrade";
-
-    private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Internal.immutableList(
-            CONNECTION,
-            HOST,
-            KEEP_ALIVE,
-            PROXY_CONNECTION,
-            TE,
-            TRANSFER_ENCODING,
-            ENCODING,
-            UPGRADE,
-            org.aoju.bus.http.metric.http.Header.TARGET_METHOD_UTF8,
-            org.aoju.bus.http.metric.http.Header.TARGET_PATH_UTF8,
-            org.aoju.bus.http.metric.http.Header.TARGET_SCHEME_UTF8,
-            org.aoju.bus.http.metric.http.Header.TARGET_AUTHORITY_UTF8);
-    private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Internal.immutableList(
-            CONNECTION,
-            HOST,
-            KEEP_ALIVE,
-            PROXY_CONNECTION,
-            TE,
-            TRANSFER_ENCODING,
-            ENCODING,
-            UPGRADE);
+    private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(
+            Header.CONNECTION,
+            Header.HOST,
+            Header.KEEP_ALIVE,
+            Header.PROXY_CONNECTION,
+            Header.TE,
+            Header.TRANSFER_ENCODING,
+            Header.ENCODING,
+            Header.UPGRADE,
+            Http.TARGET_METHOD_UTF8,
+            Http.TARGET_PATH_UTF8,
+            Http.TARGET_SCHEME_UTF8,
+            Http.TARGET_AUTHORITY_UTF8);
+    private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(
+            Header.CONNECTION,
+            Header.HOST,
+            Header.KEEP_ALIVE,
+            Header.PROXY_CONNECTION,
+            Header.TE,
+            Header.TRANSFER_ENCODING,
+            Header.ENCODING,
+            Header.UPGRADE);
     final StreamAllocation streamAllocation;
     private final Interceptor.Chain chain;
     private final Http2Connection connection;
     private final Protocol protocol;
     private Http2Stream stream;
 
-    public Http2Codec(Httpd httpd, Interceptor.Chain chain, StreamAllocation streamAllocation,
+    public Http2Codec(Httpd client, Interceptor.Chain chain, StreamAllocation streamAllocation,
                       Http2Connection connection) {
         this.chain = chain;
         this.streamAllocation = streamAllocation;
         this.connection = connection;
-        this.protocol = httpd.protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)
+        this.protocol = client.protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)
                 ? Protocol.H2_PRIOR_KNOWLEDGE
                 : Protocol.HTTP_2;
     }
 
-    public static List<org.aoju.bus.http.metric.http.Header> http2HeadersList(Request request) {
-        Header headers = request.headers();
-        List<org.aoju.bus.http.metric.http.Header> result = new ArrayList<>(headers.size() + 4);
-        result.add(new org.aoju.bus.http.metric.http.Header(org.aoju.bus.http.metric.http.Header.TARGET_METHOD, request.method()));
-        result.add(new org.aoju.bus.http.metric.http.Header(org.aoju.bus.http.metric.http.Header.TARGET_PATH, RequestLine.requestPath(request.url())));
+    public static List<HttpHeaders> http2HeadersList(Request request) {
+        Headers headers = request.headers();
+        List<HttpHeaders> result = new ArrayList<>(headers.size() + 4);
+        result.add(new HttpHeaders(HttpHeaders.TARGET_METHOD, request.method()));
+        result.add(new HttpHeaders(HttpHeaders.TARGET_PATH, RequestLine.requestPath(request.url())));
         String host = request.header("Host");
         if (host != null) {
-            result.add(new org.aoju.bus.http.metric.http.Header(org.aoju.bus.http.metric.http.Header.TARGET_AUTHORITY, host)); // Optional.
+            result.add(new HttpHeaders(HttpHeaders.TARGET_AUTHORITY, host));
         }
-        result.add(new org.aoju.bus.http.metric.http.Header(org.aoju.bus.http.metric.http.Header.TARGET_SCHEME, request.url().scheme()));
+        result.add(new HttpHeaders(HttpHeaders.TARGET_SCHEME, request.url().scheme()));
 
         for (int i = 0, size = headers.size(); i < size; i++) {
-            // header names must be lowercase.
+            // 标题名称必须小写
             ByteString name = ByteString.encodeUtf8(headers.name(i).toLowerCase(Locale.US));
             if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name.utf8())) {
-                result.add(new org.aoju.bus.http.metric.http.Header(name, headers.value(i)));
+                result.add(new HttpHeaders(name, headers.value(i)));
             }
         }
         return result;
     }
 
-    public static Response.Builder readHttp2HeadersList(Header headerBlock,
+    public static Response.Builder readHttp2HeadersList(Headers headerBlock,
                                                         Protocol protocol) throws IOException {
         StatusLine statusLine = null;
-        Header.Builder headersBuilder = new Header.Builder();
+        Headers.Builder headersBuilder = new Headers.Builder();
         for (int i = 0, size = headerBlock.size(); i < size; i++) {
             String name = headerBlock.name(i);
             String value = headerBlock.value(i);
-            if (name.equals(org.aoju.bus.http.metric.http.Header.RESPONSE_STATUS_UTF8)) {
+            if (name.equals(Http.RESPONSE_STATUS_UTF8)) {
                 statusLine = StatusLine.parse("HTTP/1.1 " + value);
             } else if (!HTTP_2_SKIPPED_RESPONSE_HEADERS.contains(name)) {
-                Internal.instance.addLenient(headersBuilder, name, value);
+                Builder.instance.addLenient(headersBuilder, name, value);
             }
         }
         if (statusLine == null) throw new ProtocolException("Expected ':status' header not present");
@@ -151,7 +140,7 @@ public final class Http2Codec implements HttpCodec {
         if (stream != null) return;
 
         boolean hasRequestBody = request.body() != null;
-        List<org.aoju.bus.http.metric.http.Header> requestHeaders = http2HeadersList(request);
+        List<HttpHeaders> requestHeaders = http2HeadersList(request);
         stream = connection.newStream(requestHeaders, hasRequestBody);
         stream.readTimeout().timeout(chain.readTimeoutMillis(), TimeUnit.MILLISECONDS);
         stream.writeTimeout().timeout(chain.writeTimeoutMillis(), TimeUnit.MILLISECONDS);
@@ -169,18 +158,18 @@ public final class Http2Codec implements HttpCodec {
 
     @Override
     public Response.Builder readResponseHeaders(boolean expectContinue) throws IOException {
-        Header headers = stream.takeHeaders();
+        Headers headers = stream.takeHeaders();
         Response.Builder responseBuilder = readHttp2HeadersList(headers, protocol);
-        if (expectContinue && Internal.instance.code(responseBuilder) == StatusLine.HTTP_CONTINUE) {
+        if (expectContinue && Builder.instance.code(responseBuilder) == Http.HTTP_CONTINUE) {
             return null;
         }
         return responseBuilder;
     }
 
     @Override
-    public ResponseBody openResponseBody(Response response) throws IOException {
+    public ResponseBody openResponseBody(Response response) {
         streamAllocation.eventListener.responseBodyStart(streamAllocation.call);
-        String contentType = response.header("Content-Type");
+        String contentType = response.header(Header.CONTENT_TYPE);
         long contentLength = HttpHeaders.contentLength(response);
         Source source = new StreamFinishingSource(stream.getSource());
         return new RealResponseBody(contentType, contentLength, IoUtils.buffer(source));
@@ -191,7 +180,7 @@ public final class Http2Codec implements HttpCodec {
         if (stream != null) stream.closeLater(ErrorCode.CANCEL);
     }
 
-    class StreamFinishingSource extends ForwardSource {
+    class StreamFinishingSource extends DelegateSource {
         boolean completed = false;
         long bytesRead = 0;
 

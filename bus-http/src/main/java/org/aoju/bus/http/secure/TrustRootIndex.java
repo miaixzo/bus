@@ -26,11 +26,20 @@ package org.aoju.bus.http.secure;
 import java.security.cert.X509Certificate;
 
 /**
+ * 签名证书索引
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
 public interface TrustRootIndex {
 
+    /**
+     * 返回签名为{@code cert}的受信任CA证书
+     *
+     * @param cert 证书信息
+     * @return 签名证书
+     */
     X509Certificate findByIssuerAndSignature(X509Certificate cert);
+
 }

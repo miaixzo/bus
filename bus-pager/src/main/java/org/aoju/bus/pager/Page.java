@@ -371,21 +371,6 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     @Override
-    public String toString() {
-        return "Page{" +
-                "count=" + count +
-                ", pageNo=" + pageNo +
-                ", pageSize=" + pageSize +
-                ", startRow=" + startRow +
-                ", endRow=" + endRow +
-                ", total=" + total +
-                ", pages=" + pages +
-                ", reasonable=" + reasonable +
-                ", pageSizeZero=" + pageSizeZero +
-                '}' + super.toString();
-    }
-
-    @Override
     public void close() {
         PageContext.clearPage();
     }

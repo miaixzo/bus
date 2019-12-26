@@ -24,14 +24,14 @@
 package org.aoju.bus.http.metric.http;
 
 /**
+ * 错误码信息
+ *
  * @author Kimi Liu
  * @version 5.3.6
  * @since JDK 1.8+
  */
 public enum ErrorCode {
-    /**
-     * Not an error!
-     */
+
     NO_ERROR(0),
 
     PROTOCOL_ERROR(1),

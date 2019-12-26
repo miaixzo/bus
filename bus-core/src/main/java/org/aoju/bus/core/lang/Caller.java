@@ -198,7 +198,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new InstrumentException("[" + className + "] not found!");
+                throw new InstrumentException(Symbol.BRACKET_LEFT + className + "] not found!");
             }
         }
 
@@ -208,7 +208,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new InstrumentException("[" + className + "] not found!");
+                throw new InstrumentException(Symbol.BRACKET_LEFT + className + "] not found!");
             }
         }
 
@@ -218,7 +218,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new InstrumentException("[" + className + "] not found!");
+                throw new InstrumentException(Symbol.BRACKET_LEFT + className + "] not found!");
             }
         }
 

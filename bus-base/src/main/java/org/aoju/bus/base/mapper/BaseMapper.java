@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.base.mapper;
 
-
 /**
  * <p>
  * CoreMapper 接口.

@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.cache;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.Map;
 
 /**
@@ -62,7 +64,7 @@ public interface Shooting {
 
         public static ShootingDO newInstance(long hit, long required) {
             double rate = (required == 0 ? 0.0 : hit * 100.0 / required);
-            String rateStr = String.format("%.1f%s", rate, "%");
+            String rateStr = String.format("%.1f%s", rate, Symbol.PERCENT);
 
             return new ShootingDO(hit, required, rateStr);
         }

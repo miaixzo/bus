@@ -25,17 +25,19 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.http.Header;
+import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.metric.CookieJar;
 import org.aoju.bus.http.secure.Challenge;
 
 import java.io.EOFException;
-import java.net.HttpURLConnection;
 import java.util.*;
 
 /**
- * Headers and utilities for internal use by httpClient.
+ * Header实用工具
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -43,17 +45,46 @@ import java.util.*;
  */
 public final class HttpHeaders {
 
+    public static final ByteString PSEUDO_PREFIX = ByteString.encodeUtf8(Symbol.COLON);
+    public static final ByteString RESPONSE_STATUS = ByteString.encodeUtf8(Http.RESPONSE_STATUS_UTF8);
+    public static final ByteString TARGET_METHOD = ByteString.encodeUtf8(Http.TARGET_METHOD_UTF8);
+    public static final ByteString TARGET_PATH = ByteString.encodeUtf8(Http.TARGET_PATH_UTF8);
+    public static final ByteString TARGET_SCHEME = ByteString.encodeUtf8(Http.TARGET_SCHEME_UTF8);
+    public static final ByteString TARGET_AUTHORITY = ByteString.encodeUtf8(Http.TARGET_AUTHORITY_UTF8);
     private static final ByteString QUOTED_STRING_DELIMITERS = ByteString.encodeUtf8("\"\\");
     private static final ByteString TOKEN_DELIMITERS = ByteString.encodeUtf8("\t ,=");
+    /**
+     * 不区分大小写的ASCII编码中的名称
+     */
+    public ByteString name;
+    /**
+     * TF-8编码中的值.
+     */
+    public ByteString value;
+    public int hpackSize;
 
     private HttpHeaders() {
+    }
+
+    public HttpHeaders(String name, String value) {
+        this(ByteString.encodeUtf8(name), ByteString.encodeUtf8(value));
+    }
+
+    public HttpHeaders(ByteString name, String value) {
+        this(name, ByteString.encodeUtf8(value));
+    }
+
+    public HttpHeaders(ByteString name, ByteString value) {
+        this.name = name;
+        this.value = value;
+        this.hpackSize = 32 + name.size() + value.size();
     }
 
     public static long contentLength(Response response) {
         return contentLength(response.headers());
     }
 
-    public static long contentLength(Header headers) {
+    public static long contentLength(Headers headers) {
         return stringToLong(headers.get("Content-Length"));
     }
 
@@ -67,9 +98,9 @@ public final class HttpHeaders {
     }
 
     public static boolean varyMatches(
-            Response cachedResponse, Header cachedRequest, Request newRequest) {
+            Response cachedResponse, Headers cachedRequest, Request newRequest) {
         for (String field : varyFields(cachedResponse)) {
-            if (!Internal.equal(cachedRequest.values(field), newRequest.headers(field))) return false;
+            if (!ObjectUtils.equal(cachedRequest.values(field), newRequest.headers(field))) return false;
         }
         return true;
     }
@@ -78,15 +109,15 @@ public final class HttpHeaders {
         return hasVaryAll(response.headers());
     }
 
-    public static boolean hasVaryAll(Header responseHeaders) {
-        return varyFields(responseHeaders).contains("*");
+    public static boolean hasVaryAll(Headers responseHeaders) {
+        return varyFields(responseHeaders).contains(Symbol.STAR);
     }
 
     private static Set<String> varyFields(Response response) {
         return varyFields(response.headers());
     }
 
-    public static Set<String> varyFields(Header responseHeaders) {
+    public static Set<String> varyFields(Headers responseHeaders) {
         Set<String> result = Collections.emptySet();
         for (int i = 0, size = responseHeaders.size(); i < size; i++) {
             if (!"Vary".equalsIgnoreCase(responseHeaders.name(i))) continue;
@@ -102,17 +133,17 @@ public final class HttpHeaders {
         return result;
     }
 
-    public static Header varyHeaders(Response response) {
-        Header requestHeaders = response.networkResponse().request().headers();
-        Header responseHeaders = response.headers();
+    public static Headers varyHeaders(Response response) {
+        Headers requestHeaders = response.networkResponse().request().headers();
+        Headers responseHeaders = response.headers();
         return varyHeaders(requestHeaders, responseHeaders);
     }
 
-    public static Header varyHeaders(Header requestHeaders, Header responseHeaders) {
+    public static Headers varyHeaders(Headers requestHeaders, Headers responseHeaders) {
         Set<String> varyFields = varyFields(responseHeaders);
-        if (varyFields.isEmpty()) return new Header.Builder().build();
+        if (varyFields.isEmpty()) return new Headers.Builder().build();
 
-        Header.Builder result = new Header.Builder();
+        Headers.Builder result = new Headers.Builder();
         for (int i = 0, size = requestHeaders.size(); i < size; i++) {
             String fieldName = requestHeaders.name(i);
             if (varyFields.contains(fieldName)) {
@@ -122,7 +153,7 @@ public final class HttpHeaders {
         return result.build();
     }
 
-    public static List<Challenge> parseChallenges(Header responseHeaders, String headerName) {
+    public static List<Challenge> parseChallenges(Headers responseHeaders, String headerName) {
         List<Challenge> result = new ArrayList<>();
         for (int h = 0; h < responseHeaders.size(); h++) {
             if (headerName.equalsIgnoreCase(responseHeaders.name(h))) {
@@ -137,7 +168,6 @@ public final class HttpHeaders {
         String peek = null;
 
         while (true) {
-            // Read a scheme name for this challenge if we don't have first already.
             if (peek == null) {
                 skipWhitespaceAndCommas(header);
                 peek = readToken(header);
@@ -146,47 +176,44 @@ public final class HttpHeaders {
 
             String schemeName = peek;
 
-            // Read a token68, a sequence of parameters, or nothing.
             boolean commaPrefixed = skipWhitespaceAndCommas(header);
             peek = readToken(header);
             if (peek == null) {
-                if (!header.exhausted()) return; // Expected a token; got something else.
+                if (!header.exhausted()) return;
                 result.add(new Challenge(schemeName, Collections.<String, String>emptyMap()));
                 return;
             }
 
-            int eqCount = skipAll(header, (byte) '=');
+            int eqCount = skipAll(header, (byte) Symbol.C_EQUAL);
             boolean commaSuffixed = skipWhitespaceAndCommas(header);
 
-            // It's a token68 because there isn't a value after it.
             if (!commaPrefixed && (commaSuffixed || header.exhausted())) {
                 result.add(new Challenge(schemeName, Collections.singletonMap(
-                        (String) null, peek + repeat('=', eqCount))));
+                        (String) null, peek + repeat(Symbol.C_EQUAL, eqCount))));
                 peek = null;
                 continue;
             }
 
-            // It's a series of parameter names and values.
             Map<String, String> parameters = new LinkedHashMap<>();
-            eqCount += skipAll(header, (byte) '=');
+            eqCount += skipAll(header, (byte) Symbol.C_EQUAL);
             while (true) {
                 if (peek == null) {
                     peek = readToken(header);
-                    if (skipWhitespaceAndCommas(header)) break; // We peeked a scheme name followed by ','.
-                    eqCount = skipAll(header, (byte) '=');
+                    if (skipWhitespaceAndCommas(header)) break;
+                    eqCount = skipAll(header, (byte) Symbol.C_EQUAL);
                 }
-                if (eqCount == 0) break; // We peeked a scheme name.
-                if (eqCount > 1) return; // Unexpected '=' characters.
-                if (skipWhitespaceAndCommas(header)) return; // Unexpected ','.
+                if (eqCount == 0) break;
+                if (eqCount > 1) return;
+                if (skipWhitespaceAndCommas(header)) return;
 
-                String parameterValue = !header.exhausted() && header.getByte(0) == '"'
+                String parameterValue = !header.exhausted() && header.getByte(0) == Symbol.C_DOUBLE_QUOTES
                         ? readQuotedString(header)
                         : readToken(header);
-                if (parameterValue == null) return; // Expected a value.
+                if (parameterValue == null) return;
                 String replaced = parameters.put(peek, parameterValue);
                 peek = null;
-                if (replaced != null) return; // Unexpected duplicate parameter.
-                if (!skipWhitespaceAndCommas(header) && !header.exhausted()) return; // Expected ',' or EOF.
+                if (replaced != null) return;
+                if (!skipWhitespaceAndCommas(header) && !header.exhausted()) return;
             }
             result.add(new Challenge(schemeName, parameters));
         }
@@ -196,11 +223,11 @@ public final class HttpHeaders {
         boolean commaFound = false;
         while (!buffer.exhausted()) {
             byte b = buffer.getByte(0);
-            if (b == ',') {
-                buffer.readByte(); // Consume ','.
+            if (b == Symbol.C_COMMA) {
+                buffer.readByte();
                 commaFound = true;
-            } else if (b == ' ' || b == '\t') {
-                buffer.readByte(); // Consume space or tab.
+            } else if (b == Symbol.C_SPACE || b == Symbol.C_HT) {
+                buffer.readByte();
             } else {
                 break;
             }
@@ -222,18 +249,18 @@ public final class HttpHeaders {
         Buffer result = new Buffer();
         while (true) {
             long i = buffer.indexOfElement(QUOTED_STRING_DELIMITERS);
-            if (i == -1L) return null; // Unterminated quoted string.
+            if (i == -1L) return null;
 
-            if (buffer.getByte(i) == '"') {
+            if (buffer.getByte(i) == Symbol.C_DOUBLE_QUOTES) {
                 result.write(buffer, i);
-                buffer.readByte(); // Consume '"'.
+                buffer.readByte();
                 return result.readUtf8();
             }
 
-            if (buffer.size() == i + 1L) return null; // Dangling escape.
+            if (buffer.size() == i + 1L) return null;
             result.write(buffer, i);
-            buffer.readByte(); // Consume '\'.
-            result.write(buffer, 1L); // The escaped character.
+            buffer.readByte();
+            result.write(buffer, 1L);
         }
     }
 
@@ -256,7 +283,7 @@ public final class HttpHeaders {
         return new String(array);
     }
 
-    public static void receiveHeaders(CookieJar cookieJar, UnoUrl url, Header headers) {
+    public static void receiveHeaders(CookieJar cookieJar, UnoUrl url, Headers headers) {
         if (cookieJar == CookieJar.NO_COOKIES) return;
 
         List<Cookie> cookies = Cookie.parseAll(url, headers);
@@ -266,20 +293,17 @@ public final class HttpHeaders {
     }
 
     public static boolean hasBody(Response response) {
-        // HEAD requests never yield a body regardless of the response headers.
         if (response.request().method().equals("HEAD")) {
             return false;
         }
 
         int responseCode = response.code();
-        if ((responseCode < StatusLine.HTTP_CONTINUE || responseCode >= 200)
-                && responseCode != HttpURLConnection.HTTP_NO_CONTENT
-                && responseCode != HttpURLConnection.HTTP_NOT_MODIFIED) {
+        if ((responseCode < Http.HTTP_CONTINUE || responseCode >= Http.HTTP_OK)
+                && responseCode != Http.HTTP_NO_CONTENT
+                && responseCode != Http.HTTP_NOT_MODIFIED) {
             return true;
         }
 
-        // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
-        // response is malformed. For best compatibility, we honor the headers.
         if (contentLength(response) != -1
                 || "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
             return true;
@@ -300,7 +324,7 @@ public final class HttpHeaders {
     public static int skipWhitespace(String input, int pos) {
         for (; pos < input.length(); pos++) {
             char c = input.charAt(pos);
-            if (c != ' ' && c != '\t') {
+            if (c != Symbol.C_SPACE && c != Symbol.C_HT) {
                 break;
             }
         }
@@ -320,6 +344,33 @@ public final class HttpHeaders {
         } catch (NumberFormatException e) {
             return defaultValue;
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof HttpHeaders) {
+            HttpHeaders that = (HttpHeaders) other;
+            return this.name.equals(that.name)
+                    && this.value.equals(that.value);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + value.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return StringUtils.format("%s: %s", name.utf8(), value.utf8());
+    }
+
+    interface Listener {
+        void onHeaders(Headers headers);
     }
 
 }

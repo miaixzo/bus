@@ -39,7 +39,6 @@ import org.aoju.bus.oauth.metric.StateCache;
 
 import java.util.Objects;
 
-
 /**
  * 人人登录
  *

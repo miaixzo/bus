@@ -30,7 +30,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * 文件追加器
  * 持有一个文件,在内存中积累一定量的数据后统一追加到文件

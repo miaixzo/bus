@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.office.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public final class OfficeOption {
         }
 
         if (productLine != null) {
-            final String[] parts = productLine.split(" ");
+            final String[] parts = productLine.split(Symbol.SPACE);
             if (parts.length > 0) {
                 desc.product = parts[0];
             }

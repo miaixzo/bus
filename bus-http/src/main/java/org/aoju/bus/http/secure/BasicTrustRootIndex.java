@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A simple index that of trusted root certificates that have been loaded into memory.
+ * 一个简单的索引，包含已加载到内存中的受信任根证书
  *
  * @author Kimi Liu
  * @version 5.3.6

@@ -29,9 +29,8 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * An <a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a>-compatible WebSocket frame writer.
- *
- * <p>This class is not thread safe.
+ * RFC 6455兼容的WebSocket帧写入器.
+ * 这个类不是线程安全的
  *
  * @author Kimi Liu
  * @version 5.3.6
@@ -43,9 +42,7 @@ final class WebSocketWriter {
     final Random random;
 
     final BufferSink sink;
-    /**
-     * The {@link Buffer} of {@link #sink}. Write to this and then flush/emit {@link #sink}.
-     */
+
     final Buffer sinkBuffer;
     final Buffer buffer = new Buffer();
     final FrameSink frameSink = new FrameSink();
@@ -62,7 +59,6 @@ final class WebSocketWriter {
         this.sinkBuffer = sink.buffer();
         this.random = random;
 
-        // Masks are only a concern for client writers.
         maskKey = isClient ? new byte[4] : null;
         maskCursor = isClient ? new Buffer.UnsafeCursor() : null;
     }
@@ -75,6 +71,13 @@ final class WebSocketWriter {
         writeControlFrame(WebSocketProtocol.OPCODE_CONTROL_PONG, payload);
     }
 
+    /**
+     * 发送带有可选代码和原因的关闭帧.
+     *
+     * @param code   RFC 6455或{@code 0}第7.4节定义的状态码。
+     * @param reason 关闭或{@code null}的原因.
+     * @throws IOException 异常
+     */
     void writeClose(int code, ByteString reason) throws IOException {
         ByteString payload = ByteString.EMPTY;
         if (code != 0 || reason != null) {
@@ -139,7 +142,6 @@ final class WebSocketWriter {
         }
         activeWriter = true;
 
-        // Reset FrameSink state for a new writer.
         frameSink.formatOpcode = formatOpcode;
         frameSink.contentLength = contentLength;
         frameSink.isFirstFrame = true;
@@ -207,14 +209,13 @@ final class WebSocketWriter {
 
             buffer.write(source, byteCount);
 
-            // Determine if this is a buffered write which we can defer until close() flushes.
             boolean deferWrite = isFirstFrame
                     && contentLength != -1
-                    && buffer.size() > contentLength - 8192 /* segment size */;
+                    && buffer.size() > contentLength - 8192;
 
             long emitCount = buffer.completeSegmentByteCount();
             if (emitCount > 0 && !deferWrite) {
-                writeMessageFrame(formatOpcode, emitCount, isFirstFrame, false /* final */);
+                writeMessageFrame(formatOpcode, emitCount, isFirstFrame, false);
                 isFirstFrame = false;
             }
         }
@@ -223,7 +224,7 @@ final class WebSocketWriter {
         public void flush() throws IOException {
             if (closed) throw new IOException("closed");
 
-            writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, false /* final */);
+            writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, false);
             isFirstFrame = false;
         }
 
@@ -236,7 +237,7 @@ final class WebSocketWriter {
         public void close() throws IOException {
             if (closed) throw new IOException("closed");
 
-            writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, true /* final */);
+            writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, true);
             closed = true;
             activeWriter = false;
         }

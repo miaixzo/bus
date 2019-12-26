@@ -42,12 +42,10 @@ public class Message {
      */
     String errcode;
 
-
     /**
      * 请求返回消息
      */
     String errmsg;
-
 
     /**
      * 请求返回数据 JSON

@@ -50,7 +50,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * 请求响应处理类
  * 对加了@Encrypt的方法的数据进行加密操作

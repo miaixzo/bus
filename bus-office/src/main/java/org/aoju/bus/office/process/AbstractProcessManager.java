@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.office.process;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
@@ -53,7 +54,7 @@ public abstract class AbstractProcessManager implements ProcessManager {
     private String buildOutput(final List<String> lines) {
         Objects.requireNonNull(lines, "lines must not be null");
 
-        return lines.stream().filter(StringUtils::isNotBlank).collect(Collectors.joining("\n"));
+        return lines.stream().filter(StringUtils::isNotBlank).collect(Collectors.joining(Symbol.LF));
     }
 
     /**

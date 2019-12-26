@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.date.format;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
@@ -72,8 +73,8 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
      * @param value  the value to append digits from.
      */
     private static void appendDigits(final Appendable buffer, final int value) throws IOException {
-        buffer.append((char) (value / 10 + '0'));
-        buffer.append((char) (value % 10 + '0'));
+        buffer.append((char) (value / 10 + Symbol.C_ZERO));
+        buffer.append((char) (value % 10 + Symbol.C_ZERO));
     }
 
     /**
@@ -100,29 +101,29 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             }
             // left zero pad
             for (int i = minFieldWidth - nDigits; i > 0; --i) {
-                buffer.append('0');
+                buffer.append(Symbol.C_ZERO);
             }
 
             switch (nDigits) {
                 case 4:
-                    buffer.append((char) (value / 1000 + '0'));
+                    buffer.append((char) (value / 1000 + Symbol.C_ZERO));
                     value %= 1000;
                 case 3:
                     if (value >= 100) {
-                        buffer.append((char) (value / 100 + '0'));
+                        buffer.append((char) (value / 100 + Symbol.C_ZERO));
                         value %= 100;
                     } else {
-                        buffer.append('0');
+                        buffer.append(Symbol.C_ZERO);
                     }
                 case 2:
                     if (value >= 10) {
-                        buffer.append((char) (value / 10 + '0'));
+                        buffer.append((char) (value / 10 + Symbol.C_ZERO));
                         value %= 10;
                     } else {
-                        buffer.append('0');
+                        buffer.append(Symbol.C_ZERO);
                     }
                 case 1:
-                    buffer.append((char) (value + '0'));
+                    buffer.append((char) (value + Symbol.C_ZERO));
             }
         } else {
             // more memory allocation path works for any digits
@@ -131,13 +132,13 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             final char[] work = new char[MAX_DIGITS];
             int digit = 0;
             while (value != 0) {
-                work[digit++] = (char) (value % 10 + '0');
+                work[digit++] = (char) (value % 10 + Symbol.C_ZERO);
                 value = value / 10;
             }
 
             // pad with zeros
             while (digit < minFieldWidth) {
-                buffer.append('0');
+                buffer.append(Symbol.C_ZERO);
                 --minFieldWidth;
             }
 
@@ -313,7 +314,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                         rule = TimeZoneNumberRule.INSTANCE_COLON;
                     }
                     break;
-                case '\'': // literal text
+                case Symbol.C_SINGLE_QUOTE: // literal text
                     final String sub = token.substring(1);
                     if (sub.length() == 1) {
                         rule = new CharacterLiteral(sub.charAt(0));
@@ -363,15 +364,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             }
         } else {
             // This will identify token as text.
-            buf.append('\'');
+            buf.append(Symbol.C_SINGLE_QUOTE);
 
             boolean inLiteral = false;
 
             for (; i < length; i++) {
                 c = pattern.charAt(i);
 
-                if (c == '\'') {
-                    if (i + 1 < length && pattern.charAt(i + 1) == '\'') {
+                if (c == Symbol.C_SINGLE_QUOTE) {
+                    if (i + 1 < length && pattern.charAt(i + 1) == Symbol.C_SINGLE_QUOTE) {
                         // '' is treated as escaped '
                         i++;
                         buf.append(c);
@@ -695,7 +696,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 10) {
-                buffer.append((char) (value + '0'));
+                buffer.append((char) (value + Symbol.C_ZERO));
             } else if (value < 100) {
                 appendDigits(buffer, value);
             } else {
@@ -735,7 +736,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
             if (value < 10) {
-                buffer.append((char) (value + '0'));
+                buffer.append((char) (value + Symbol.C_ZERO));
             } else {
                 appendDigits(buffer, value);
             }
@@ -1110,17 +1111,17 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             int offset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
 
             if (offset < 0) {
-                buffer.append('-');
+                buffer.append(Symbol.C_HYPHEN);
                 offset = -offset;
             } else {
-                buffer.append('+');
+                buffer.append(Symbol.C_PLUS);
             }
 
             final int hours = offset / (60 * 60 * 1000);
             appendDigits(buffer, hours);
 
             if (mColon) {
-                buffer.append(':');
+                buffer.append(Symbol.C_COLON);
             }
 
             final int minutes = offset / (60 * 1000) - 60 * hours;
@@ -1187,10 +1188,10 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             }
 
             if (offset < 0) {
-                buffer.append('-');
+                buffer.append(Symbol.C_HYPHEN);
                 offset = -offset;
             } else {
-                buffer.append('+');
+                buffer.append(Symbol.C_PLUS);
             }
 
             final int hours = offset / (60 * 60 * 1000);
@@ -1201,7 +1202,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             }
 
             if (length == 6) {
-                buffer.append(':');
+                buffer.append(Symbol.C_COLON);
             }
 
             final int minutes = offset / (60 * 1000) - 60 * hours;
