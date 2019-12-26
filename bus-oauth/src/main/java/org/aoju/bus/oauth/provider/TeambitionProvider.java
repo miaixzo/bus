@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -43,7 +43,7 @@ import java.util.Map;
  * Teambition授权登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class TeambitionProvider extends DefaultProvider {
@@ -68,7 +68,7 @@ public class TeambitionProvider extends DefaultProvider {
         params.put("code", Callback.getCode());
         params.put("grant_type", "code");
 
-        String response = HttpClient.post(source.accessToken(), params);
+        String response = Httpx.post(source.accessToken(), params);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -84,7 +84,7 @@ public class TeambitionProvider extends DefaultProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "OAuth2 " + token.getAccessToken());
 
-        String response = HttpClient.post(source.userInfo(), null, header);
+        String response = Httpx.post(source.userInfo(), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -111,7 +111,7 @@ public class TeambitionProvider extends DefaultProvider {
         params.put("_userId", oldToken.getUid());
         params.put("refresh_token", oldToken.getRefreshToken());
 
-        String response = HttpClient.post(source.refresh(), params);
+        String response = Httpx.post(source.refresh(), params);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);

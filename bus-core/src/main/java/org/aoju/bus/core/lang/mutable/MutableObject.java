@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.lang.mutable;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.io.Serializable;
 
 /**
@@ -30,7 +32,7 @@ import java.io.Serializable;
  *
  * @param <T> 可变的类型
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MutableObject<T> implements Mutable<T>, Serializable {
@@ -88,7 +90,7 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
 
     @Override
     public String toString() {
-        return value == null ? "null" : value.toString();
+        return value == null ? Normal.NULL : value.toString();
     }
 
 }

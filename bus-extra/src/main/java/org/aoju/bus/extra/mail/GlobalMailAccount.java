@@ -26,10 +26,11 @@ package org.aoju.bus.extra.mail;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
- * 全局邮件帐户,依赖于邮件配置文件{@link MailAccount#MAIL_SETTING_PATH}或{@link MailAccount#MAIL_SETTING_PATH2}
+ * 全局邮件帐户,依赖于邮件配置文件
+ * {@link MailAccount#MAIL_SETTING_PATH}}
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public enum GlobalMailAccount {
@@ -64,7 +65,7 @@ public enum GlobalMailAccount {
         try {
             mailAccount = new MailAccount(MailAccount.MAIL_SETTING_PATH);
         } catch (InstrumentException e) {
-            mailAccount = new MailAccount(MailAccount.MAIL_SETTING_PATH2);
+            throw new InstrumentException("Please check the email account config [mail.setting]");
         }
         return mailAccount;
     }

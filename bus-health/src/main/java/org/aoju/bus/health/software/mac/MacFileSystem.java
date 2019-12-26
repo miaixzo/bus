@@ -36,6 +36,7 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.common.mac.SysctlUtils;
 import org.aoju.bus.health.software.FileSystem;
@@ -55,7 +56,7 @@ import java.util.regex.Pattern;
  * in the /Volumes directory.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MacFileSystem implements FileSystem {
@@ -137,7 +138,7 @@ public class MacFileSystem implements FileSystem {
                     if (LOCAL_DISK.matcher(volume).matches()) {
                         description = "Local Disk";
                     }
-                    if (volume.startsWith("localhost:") || volume.startsWith("//")) {
+                    if (volume.startsWith("localhost:") || volume.startsWith(Symbol.FORWARDSLASH)) {
                         description = "Network Drive";
                     }
                     // Set type and path

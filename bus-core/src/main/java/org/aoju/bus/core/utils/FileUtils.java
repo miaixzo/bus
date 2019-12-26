@@ -50,12 +50,11 @@ import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-
 /**
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FileUtils {
@@ -192,7 +191,7 @@ public class FileUtils {
      * @param path       当前遍历文件或目录的路径
      * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<File> loopFiles(String path, FileFilter fileFilter) {
         return loopFiles(file(path), fileFilter);
@@ -235,7 +234,7 @@ public class FileUtils {
      *
      * @param path 当前遍历文件或目录的路径
      * @return 文件列表
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<File> loopFiles(String path) {
         return loopFiles(file(path));
@@ -1118,7 +1117,7 @@ public class FileUtils {
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
-            newName = newName.concat(".").concat(FileUtils.extName(file));
+            newName = newName.concat(Symbol.DOT).concat(FileUtils.extName(file));
         }
         final Path path = file.toPath();
         final CopyOption[] options = isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{};
@@ -1499,7 +1498,6 @@ public class FileUtils {
      * "/foo/../bar" =》 "/bar"
      * "/foo/../bar/" =》 "/bar/"
      * "/foo/../bar/../baz" =》 "/baz"
-     * "/../" =》 "/"
      * "foo/bar/.." =》 "foo"
      * "foo/../bar" =》 "bar"
      * "foo/../../bar" =》 "bar"
@@ -1524,7 +1522,7 @@ public class FileUtils {
         // 去除file:前缀
         pathToUse = StringUtils.removePrefixIgnoreCase(pathToUse, "file:");
         // 统一使用斜杠
-        pathToUse = pathToUse.replaceAll("[/\\\\]{1,}", "/").trim();
+        pathToUse = pathToUse.replaceAll("[/\\\\]{1,}", Symbol.SLASH).trim();
 
         int prefixIndex = pathToUse.indexOf(Symbol.COLON);
         String prefix = "";
@@ -1535,7 +1533,7 @@ public class FileUtils {
                 // 去除类似于/C:这类路径开头的斜杠
                 prefix = prefix.substring(1);
             }
-            if (false == prefix.contains("/")) {
+            if (false == prefix.contains(Symbol.SLASH)) {
                 pathToUse = pathToUse.substring(prefixIndex + 1);
             } else {
                 // 如果前缀中包含/,说明非Windows风格path
@@ -1548,7 +1546,7 @@ public class FileUtils {
         }
 
         List<String> pathList = StringUtils.split(pathToUse, Symbol.C_SLASH);
-        List<String> pathElements = new LinkedList<String>();
+        List<String> pathElements = new LinkedList<>();
         int tops = 0;
 
         String element;
@@ -1612,11 +1610,11 @@ public class FileUtils {
     public static String subPath(String dirPath, String filePath) {
         if (StringUtils.isNotEmpty(dirPath) && StringUtils.isNotEmpty(filePath)) {
 
-            dirPath = StringUtils.removeSuffix(normalize(dirPath), "/");
+            dirPath = StringUtils.removeSuffix(normalize(dirPath), Symbol.SLASH);
             filePath = normalize(filePath);
 
             final String result = StringUtils.removePrefixIgnoreCase(filePath, dirPath);
-            return StringUtils.removePrefix(result, "/");
+            return StringUtils.removePrefix(result, Symbol.SLASH);
         }
         return filePath;
     }
@@ -2030,7 +2028,7 @@ public class FileUtils {
      * @param filePath 文件路径
      * @return 字节码
      * @throws InstrumentException 异常
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static byte[] readBytes(String filePath) throws InstrumentException {
         return readBytes(file(filePath));
@@ -2284,7 +2282,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static List<String> readLines(URL url, String charset) throws InstrumentException {
-        return readLines(url, charset, new ArrayList<String>());
+        return readLines(url, charset, new ArrayList<>());
     }
 
     /**
@@ -2296,7 +2294,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static List<String> readLines(URL url, Charset charset) throws InstrumentException {
-        return readLines(url, charset, new ArrayList<String>());
+        return readLines(url, charset, new ArrayList<>());
     }
 
     /**
@@ -2320,7 +2318,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static List<String> readLines(String path, String charset) throws InstrumentException {
-        return readLines(path, charset, new ArrayList<String>());
+        return readLines(path, charset, new ArrayList<>());
     }
 
     /**
@@ -2333,7 +2331,7 @@ public class FileUtils {
      * @since 3.1.1
      */
     public static List<String> readLines(String path, Charset charset) throws InstrumentException {
-        return readLines(path, charset, new ArrayList<String>());
+        return readLines(path, charset, new ArrayList<>());
     }
 
     /**
@@ -2357,7 +2355,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static List<String> readLines(File file, String charset) throws InstrumentException {
-        return readLines(file, charset, new ArrayList<String>());
+        return readLines(file, charset, new ArrayList<>());
     }
 
     /**
@@ -2369,7 +2367,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static List<String> readLines(File file, Charset charset) throws InstrumentException {
-        return readLines(file, charset, new ArrayList<String>());
+        return readLines(file, charset, new ArrayList<>());
     }
 
     /**
@@ -2816,7 +2814,7 @@ public class FileUtils {
      * @param path 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
         return writeLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2830,7 +2828,7 @@ public class FileUtils {
      * @param file 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
         return writeLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -3172,11 +3170,11 @@ public class FileUtils {
      */
     public static String readableFileSize(long size) {
         if (size <= 0) {
-            return "0";
+            return Symbol.ZERO;
         }
         final String[] units = new String[]{"B", "kB", "MB", "GB", "TB", "EB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE + units[digitGroups];
     }
 
     /**

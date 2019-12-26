@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.common.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoizer;
@@ -38,7 +39,7 @@ import java.util.regex.Pattern;
  * Provides access to some /proc filesystem info on Linux
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ProcUtils {
@@ -77,7 +78,7 @@ public class ProcUtils {
     private static String queryProcConfig() {
         String procPath = Config.get("oshi.util.proc.path", "/proc");
         // Ensure prefix begins with path separator, but doesn't end with one
-        procPath = '/' + procPath.replaceAll("/$|^/", "");
+        procPath = Symbol.C_SLASH + procPath.replaceAll("/$|^/", "");
         if (!new File(procPath).exists()) {
             throw new Config.PropertyException("oshi.util.proc.path", "The path does not exist");
         }
@@ -91,7 +92,7 @@ public class ProcUtils {
      */
     public static double getSystemUptimeSeconds() {
         String uptime = Builder.getStringFromFile(getProcPath() + "/uptime");
-        int spaceIndex = uptime.indexOf(' ');
+        int spaceIndex = uptime.indexOf(Symbol.C_SPACE);
         try {
             if (spaceIndex < 0) {
                 // No space, error

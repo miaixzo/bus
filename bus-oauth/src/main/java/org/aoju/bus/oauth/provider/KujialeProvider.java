@@ -24,9 +24,10 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -40,7 +41,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 酷家乐授权登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class KujialeProvider extends DefaultProvider {
@@ -103,7 +104,7 @@ public class KujialeProvider extends DefaultProvider {
 
     private JSONObject checkResponse(String response) {
         JSONObject object = JSONObject.parseObject(response);
-        if (!"0".equals(object.getString("c"))) {
+        if (!Symbol.ZERO.equals(object.getString("c"))) {
             throw new InstrumentException(object.getString("m"));
         }
         return object;
@@ -112,12 +113,12 @@ public class KujialeProvider extends DefaultProvider {
     @Override
     public Property getUserInfo(AccToken token) {
         String openId = this.getOpenId(token);
-        String response = HttpClient.get(Builder.fromBaseUrl(source.userInfo())
+        String response = Httpx.get(Builder.fromBaseUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("open_id", openId)
                 .build());
         JSONObject object = JSONObject.parseObject(response);
-        if (!"0".equals(object.getString("c"))) {
+        if (!Symbol.ZERO.equals(object.getString("c"))) {
             throw new InstrumentException(object.getString("m"));
         }
         JSONObject resultObject = object.getJSONObject("d");
@@ -139,7 +140,7 @@ public class KujialeProvider extends DefaultProvider {
      * @return openId
      */
     private String getOpenId(AccToken token) {
-        String response = HttpClient.get(Builder.fromBaseUrl("https://oauth.kujiale.com/oauth2/auth/user")
+        String response = Httpx.get(Builder.fromBaseUrl("https://oauth.kujiale.com/oauth2/auth/user")
                 .queryParam("access_token", token.getAccessToken())
                 .build());
         JSONObject accessTokenObject = checkResponse(response);
@@ -148,7 +149,7 @@ public class KujialeProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken token) {
-        String response = HttpClient.post(refreshTokenUrl(token.getRefreshToken()));
+        String response = Httpx.post(refreshTokenUrl(token.getRefreshToken()));
         return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 

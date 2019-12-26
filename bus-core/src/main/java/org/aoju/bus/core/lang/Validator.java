@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Validator {
@@ -251,7 +251,7 @@ public class Validator {
      * @return 是否为给定长度范围的英文字母 、数字和下划线
      */
     public static boolean isGeneral(String value, int min, int max) {
-        String reg = "^\\w{" + min + "," + max + "}$";
+        String reg = "^\\w{" + min + Symbol.COMMA + max + "}$";
         if (min < 0) {
             min = 0;
         }
@@ -741,7 +741,7 @@ public class Validator {
      * @return 是否为汉字
      */
     public static boolean isEnglish(String value) {
-        return isMactchRegex("^" + RegEx.WORD_PATTERN + "+$", value);
+        return isMactchRegex(Symbol.CARET + RegEx.WORD_PATTERN + "+$", value);
     }
 
     /**
@@ -751,7 +751,7 @@ public class Validator {
      * @return 是否为汉字
      */
     public static boolean isChinese(String value) {
-        return isMactchRegex("^" + RegEx.CHINESE_PATTERN + "+$", value);
+        return isMactchRegex(Symbol.CARET + RegEx.CHINESE_PATTERN + "+$", value);
     }
 
     /**
@@ -815,13 +815,6 @@ public class Validator {
         }
     }
 
-    /**
-     * 验证是否为UUID
-     * 包括带横线标准格式和不带横线的简单模式
-     *
-     * @param value 值
-     * @return 是否为UUID
-     */
     /**
      * 检查给定的数字是否在指定范围内
      *

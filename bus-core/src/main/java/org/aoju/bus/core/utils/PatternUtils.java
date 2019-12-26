@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PatternUtils {
@@ -200,7 +201,7 @@ public class PatternUtils {
         if (matcher.find()) {
             for (String var : varNums) {
                 int group = Integer.parseInt(var);
-                template = template.replace("$" + var, matcher.group(group));
+                template = template.replace(Symbol.DOLLAR + var, matcher.group(group));
             }
             return template;
         }
@@ -521,13 +522,13 @@ public class PatternUtils {
         final Matcher matcher = pattern.matcher(content);
         boolean result = matcher.find();
         if (result) {
-            final Set<String> varNums = findAll(RegEx.GROUP_VAR, replacementTemplate, 1, new HashSet<String>());
+            final Set<String> varNums = findAll(RegEx.GROUP_VAR, replacementTemplate, 1, new HashSet<>());
             final StringBuffer sb = new StringBuffer();
             do {
                 String replacement = replacementTemplate;
                 for (String var : varNums) {
                     int group = Integer.parseInt(var);
-                    replacement = replacement.replace("$" + var, matcher.group(group));
+                    replacement = replacement.replace(Symbol.DOLLAR + var, matcher.group(group));
                 }
                 matcher.appendReplacement(sb, escape(replacement));
                 result = matcher.find();
@@ -547,7 +548,7 @@ public class PatternUtils {
     public static String escape(char c) {
         final StringBuilder builder = new StringBuilder();
         if (RegEx.RE_KEYS.contains(c)) {
-            builder.append('\\');
+            builder.append(Symbol.C_BACKSLASH);
         }
         builder.append(c);
         return builder.toString();
@@ -570,7 +571,7 @@ public class PatternUtils {
         for (int i = 0; i < len; i++) {
             current = content.charAt(i);
             if (RegEx.RE_KEYS.contains(current)) {
-                builder.append('\\');
+                builder.append(Symbol.C_BACKSLASH);
             }
             builder.append(current);
         }

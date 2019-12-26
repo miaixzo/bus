@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.BufferedReader;
@@ -38,7 +39,7 @@ import java.util.List;
  * execution.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Command {
@@ -59,7 +60,7 @@ public class Command {
      * string if the command failed
      */
     public static List<String> runNative(String cmdToRun) {
-        String[] cmd = cmdToRun.split(" ");
+        String[] cmd = cmdToRun.split(Symbol.SPACE);
         return runNative(cmd);
     }
 
@@ -76,7 +77,7 @@ public class Command {
      * string if the command failed
      */
     public static List<String> runNative(String[] cmdToRunWithArgs) {
-        Process p = null;
+        Process p;
         try {
             p = Runtime.getRuntime().exec(cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {

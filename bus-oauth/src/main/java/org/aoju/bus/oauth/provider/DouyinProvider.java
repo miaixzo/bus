@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -36,12 +36,11 @@ import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.StateCache;
 
-
 /**
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class DouyinProvider extends DefaultProvider {
@@ -104,7 +103,7 @@ public class DouyinProvider extends DefaultProvider {
      * @return token对象
      */
     private AccToken getToken(String accessTokenUrl) {
-        JSONObject object = JSONObject.parseObject(HttpClient.post(accessTokenUrl));
+        JSONObject object = JSONObject.parseObject(Httpx.post(accessTokenUrl));
         this.checkResponse(object);
         return AccToken.builder()
                 .accessToken(object.getString("access_token"))

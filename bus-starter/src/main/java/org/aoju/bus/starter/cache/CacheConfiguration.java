@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.starter.cache;
 
-import org.aoju.bus.cache.Aspectj;
 import org.aoju.bus.cache.Context;
 import org.aoju.bus.cache.provider.*;
 import org.aoju.bus.core.utils.BeanUtils;
@@ -37,7 +36,7 @@ import org.springframework.context.annotation.Bean;
  * 缓存配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {CacheProperties.class})
@@ -47,36 +46,36 @@ public class CacheConfiguration {
     CacheProperties properties;
 
     @Bean
-    public Aspectj cacheConfigurer() {
+    public AspectjCacheProxy cacheConfigurer() {
         String type = StringUtils.toString(this.properties.getType());
         try {
             if (!StringUtils.isEmpty(type)) {
                 Object provider = ClassUtils.loadClass(type);
                 Context config = Context.newConfig(this.properties.getMap());
-                if (provider instanceof H2Provider) {
-                    config.setProvider(new H2Provider(
+                if (provider instanceof H2Shooting) {
+                    config.setShooting(new H2Shooting(
                             this.properties.getProvider().getUrl(),
                             this.properties.getProvider().getUsername(),
                             this.properties.getProvider().getPassword()
                     ));
-                } else if (provider instanceof MySQLProvider) {
-                    config.setProvider(new MySQLProvider(
+                } else if (provider instanceof MySQLShooting) {
+                    config.setShooting(new MySQLShooting(
                             BeanUtils.beanToMap(this.properties)
                     ));
-                } else if (provider instanceof SqliteProvider) {
-                    config.setProvider(new SqliteProvider(
+                } else if (provider instanceof SqliteShooting) {
+                    config.setShooting(new SqliteShooting(
                             this.properties.getProvider().getUrl(),
                             this.properties.getProvider().getUsername(),
                             this.properties.getProvider().getPassword()
                     ));
-                } else if (provider instanceof ZKProvider) {
-                    config.setProvider(new ZKProvider(
+                } else if (provider instanceof ZKShooting) {
+                    config.setShooting(new ZKShooting(
                             this.properties.getProvider().getUrl()
                     ));
-                } else if (provider instanceof MemoryProvider) {
-                    config.setProvider(new MemoryProvider());
+                } else if (provider instanceof MemoryShooting) {
+                    config.setShooting(new MemoryShooting());
                 }
-                return new Aspectj(config);
+                return new AspectjCacheProxy(config);
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("can not resolve class with type: " + type);

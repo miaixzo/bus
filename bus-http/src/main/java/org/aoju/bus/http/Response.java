@@ -25,30 +25,26 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.segment.Buffer;
 import org.aoju.bus.core.io.segment.BufferSource;
+import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.cache.CacheControl;
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.HttpHeaders;
-import org.aoju.bus.http.internal.http.StatusLine;
-import org.aoju.bus.http.offers.Challenge;
-import org.aoju.bus.http.offers.Handshake;
+import org.aoju.bus.http.metric.Handshake;
+import org.aoju.bus.http.metric.http.HttpHeaders;
+import org.aoju.bus.http.secure.Challenge;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static java.net.HttpURLConnection.*;
-
 /**
- * An HTTP response. Instances of this class are not immutable: the response body is a first-shot
- * value that may be consumed only once and then closed. All other properties are immutable.
- *
- * <p>This class implements {@link Closeable}. Closing it simply closes its response body. See
- * {@link ResponseBody} for an explanation and examples.
+ * HTTP响应。该类的实例不是不可变的:
+ * 响应体是一次性的值，可能只使用一次，然后关闭。所有其他属性都是不可变的.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Response implements Closeable {
@@ -66,7 +62,7 @@ public final class Response implements Closeable {
     final long sentRequestAtMillis;
     final long receivedResponseAtMillis;
 
-    private volatile CacheControl cacheControl; // Lazily initialized.
+    private volatile CacheControl cacheControl;
 
     Response(Builder builder) {
         this.request = builder.request;
@@ -129,7 +125,6 @@ public final class Response implements Closeable {
         source.request(byteCount);
         Buffer copy = source.buffer().clone();
 
-        // There may be more than byteCount bytes in source.buffer(). If there is, return a prefix.
         Buffer result;
         if (copy.size() > byteCount) {
             result = new Buffer();
@@ -150,14 +145,19 @@ public final class Response implements Closeable {
         return new Builder(this);
     }
 
+    /**
+     * 如果此响应重定向到另一个资源，则返回true
+     *
+     * @return the true/false
+     */
     public boolean isRedirect() {
         switch (code) {
-            case StatusLine.HTTP_PERM_REDIRECT:
-            case StatusLine.HTTP_TEMP_REDIRECT:
-            case HTTP_MULT_CHOICE:
-            case HTTP_MOVED_PERM:
-            case HTTP_MOVED_TEMP:
-            case HTTP_SEE_OTHER:
+            case Http.HTTP_PERM_REDIRECT:
+            case Http.HTTP_TEMP_REDIRECT:
+            case Http.HTTP_MULT_CHOICE:
+            case Http.HTTP_MOVED_PERM:
+            case Http.HTTP_MOVED_TEMP:
+            case Http.HTTP_SEE_OTHER:
                 return true;
             default:
                 return false;
@@ -178,10 +178,10 @@ public final class Response implements Closeable {
 
     public List<Challenge> challenges() {
         String responseField;
-        if (code == HTTP_UNAUTHORIZED) {
-            responseField = "WWW-Authenticate";
-        } else if (code == HTTP_PROXY_AUTH) {
-            responseField = "Proxy-Authenticate";
+        if (code == Http.HTTP_UNAUTHORIZED) {
+            responseField = Header.WWW_AUTHENTICATE;
+        } else if (code == Http.HTTP_PROXY_AUTH) {
+            responseField = Header.PROXY_AUTHENTICATE;
         } else {
             return Collections.emptyList();
         }
@@ -219,7 +219,7 @@ public final class Response implements Closeable {
                 + message
                 + ", url="
                 + request.url()
-                + '}';
+                + Symbol.C_BRACE_RIGHT;
     }
 
     public static class Builder {

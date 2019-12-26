@@ -132,8 +132,8 @@ extend:
 Context context = new Context();
 context.setAccessKey(xxx);
 context.setSecretKey(xxx);
-StorageProvider provider = new AliyunossProvider(context);
-provider.upload("test", null, new File("/Users/leaves/logo.gif"));
+StorageProvider shooting = new AliyunossProvider(context);
+shooting.upload("test", null, new File("/Users/leaves/logo.gif"));
 ```
 ##### 用法②
 
@@ -141,5 +141,5 @@ provider.upload("test", null, new File("/Users/leaves/logo.gif"));
 @Autowired
 StorageProviderService service;
 service.get(Registry.ALIYUN);
-provider.upload("test", null, new File("/Users/leaves/logo.gif"));
+shooting.upload("test", null, new File("/Users/leaves/logo.gif"));
 ```

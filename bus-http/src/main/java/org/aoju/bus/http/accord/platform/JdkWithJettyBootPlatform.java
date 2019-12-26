@@ -23,7 +23,8 @@
  */
 package org.aoju.bus.http.accord.platform;
 
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
 
 import javax.net.ssl.SSLSocket;
@@ -34,11 +35,13 @@ import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
+ * OpenJDK 7 or OpenJDK 8 with {@code org.mortbay.jetty.alpn/alpn-boot} 在引导类路径中.
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
-class JdkWithJettyBootPlatform extends Platform {
+public class JdkWithJettyBootPlatform extends Platform {
 
     private final Method putMethod;
     private final Method getMethod;
@@ -56,6 +59,7 @@ class JdkWithJettyBootPlatform extends Platform {
     }
 
     public static Platform buildIfSupported() {
+        // 查找Jetty的OpenJDK ALPN扩展
         try {
             String negoClassName = "org.eclipse.jetty.alpn.ALPN";
             Class<?> negoClass = Class.forName(negoClassName);
@@ -77,13 +81,12 @@ class JdkWithJettyBootPlatform extends Platform {
     public void configureTlsExtensions(
             SSLSocket sslSocket, String hostname, List<Protocol> protocols) {
         List<String> names = alpnProtocolNames(protocols);
-
         try {
             Object provider = Proxy.newProxyInstance(Platform.class.getClassLoader(),
                     new Class[]{clientProviderClass, serverProviderClass}, new JettyNegoProvider(names));
             putMethod.invoke(null, sslSocket, provider);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw Internal.assertionError("unable to set alpn", e);
+            throw Builder.assertionError("unable to set alpn", e);
         }
     }
 
@@ -92,7 +95,7 @@ class JdkWithJettyBootPlatform extends Platform {
         try {
             removeMethod.invoke(null, sslSocket);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw Internal.assertionError("unable to remove alpn", e);
+            throw Builder.assertionError("unable to remove alpn", e);
         }
     }
 
@@ -102,30 +105,31 @@ class JdkWithJettyBootPlatform extends Platform {
             JettyNegoProvider provider =
                     (JettyNegoProvider) Proxy.getInvocationHandler(getMethod.invoke(null, socket));
             if (!provider.unsupported && provider.selected == null) {
-                get().log(INFO, "ALPN callback dropped: HTTP/2 is disabled. class path?", null);
+                get().log(INFO, "ALPN callback dropped: HTTP/2 is disabled. "
+                        + "Is alpn-boot on the boot class path?", null);
                 return null;
             }
             return provider.unsupported ? null : provider.selected;
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw Internal.assertionError("unable to get selected protocol", e);
+            throw Builder.assertionError("unable to get selected protocol", e);
         }
     }
 
     /**
-     * Handle the methods of ALPN's ClientProvider and ServerProvider without a compile-time
-     * dependency on those interfaces.
+     * 处理ALPN的ClientProvider和ServerProvider的方法，而不需要在编译时依赖于这些接口
      */
     private static class JettyNegoProvider implements InvocationHandler {
+
         /**
-         * This peer's supported protocols.
+         * 这个对等点支持的协议.
          */
         private final List<String> protocols;
         /**
-         * Set when remote peer notifies ALPN is unsupported.
+         * 当远程对等节点通知不支持ALPN时设置.
          */
         boolean unsupported;
         /**
-         * The protocol the server selected.
+         * 服务器选择的协议.
          */
         String selected;
 
@@ -138,34 +142,35 @@ class JdkWithJettyBootPlatform extends Platform {
             String methodName = method.getName();
             Class<?> returnType = method.getReturnType();
             if (args == null) {
-                args = Internal.EMPTY_STRING_ARRAY;
+                args = Normal.EMPTY_STRING_ARRAY;
             }
             if (methodName.equals("supports") && boolean.class == returnType) {
-                return true; // ALPN is supported.
+                // ALPN支持
+                return true;
             } else if (methodName.equals("unsupported") && void.class == returnType) {
-                this.unsupported = true; // Peer doesn't support ALPN.
+                // 不支持ALPN
+                this.unsupported = true;
                 return null;
             } else if (methodName.equals("protocols") && args.length == 0) {
-                return protocols; // Client advertises these protocols.
+                // 客户端广播这些协议
+                return protocols;
             } else if ((methodName.equals("selectProtocol") || methodName.equals("select"))
                     && String.class == returnType && args.length == 1 && args[0] instanceof List) {
                 List<String> peerProtocols = (List) args[0];
-                // Pick the first known protocol the peer advertises.
+                // 选择同行宣传的第一个已知协议.
                 for (int i = 0, size = peerProtocols.size(); i < size; i++) {
                     if (protocols.contains(peerProtocols.get(i))) {
                         return selected = peerProtocols.get(i);
                     }
                 }
-                return selected = protocols.get(0); // On no intersection, try peer's first protocol.
+                return selected = protocols.get(0);
             } else if ((methodName.equals("protocolSelected") || methodName.equals("selected"))
                     && args.length == 1) {
-                this.selected = (String) args[0]; // Server selected this protocol.
+                this.selected = (String) args[0];
                 return null;
             } else {
                 return method.invoke(this, args);
             }
         }
-
     }
-
 }

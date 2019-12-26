@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.pager.proxy;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.pager.PageException;
 import org.aoju.bus.pager.dialect.AbstractHelperDialect;
 import org.aoju.bus.pager.dialect.Dialect;
@@ -43,12 +44,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * 基础方言信息
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PageAutoDialect {
 
-    private static Map<String, Class<? extends Dialect>> dialectAliasMap = new HashMap<String, Class<? extends Dialect>>();
+    private static Map<String, Class<? extends Dialect>> dialectAliasMap = new HashMap<>();
 
     static {
         //注册别名
@@ -84,10 +85,10 @@ public class PageAutoDialect {
     //属性配置
     private Properties properties;
     //缓存
-    private Map<String, AbstractHelperDialect> urlDialectMap = new ConcurrentHashMap<String, AbstractHelperDialect>();
+    private Map<String, AbstractHelperDialect> urlDialectMap = new ConcurrentHashMap<>();
     private ReentrantLock lock = new ReentrantLock();
     private AbstractHelperDialect delegate;
-    private ThreadLocal<AbstractHelperDialect> dialectThreadLocal = new ThreadLocal<AbstractHelperDialect>();
+    private ThreadLocal<AbstractHelperDialect> dialectThreadLocal = new ThreadLocal<>();
 
     public static void registerDialectAlias(String alias, Class<? extends Dialect> dialectClass) {
         dialectAliasMap.put(alias, dialectClass);
@@ -119,7 +120,7 @@ public class PageAutoDialect {
 
     private String fromJdbcUrl(String jdbcUrl) {
         for (String dialect : dialectAliasMap.keySet()) {
-            if (jdbcUrl.indexOf(":" + dialect + ":") != -1) {
+            if (jdbcUrl.indexOf(Symbol.COLON + dialect + Symbol.COLON) != -1) {
                 return dialect;
             }
         }
@@ -129,9 +130,9 @@ public class PageAutoDialect {
     /**
      * 反射类
      *
-     * @param className
-     * @return
-     * @throws Exception
+     * @param className 类名称
+     * @return 实体类
+     * @throws Exception 异常
      */
     private Class resloveDialectClass(String className) throws Exception {
         if (dialectAliasMap.containsKey(className.toLowerCase())) {
@@ -144,8 +145,8 @@ public class PageAutoDialect {
     /**
      * 初始化 general
      *
-     * @param dialectClass
-     * @param properties
+     * @param dialectClass 方言
+     * @param properties   属性
      */
     private AbstractHelperDialect initDialect(String dialectClass, Properties properties) {
         AbstractHelperDialect dialect;
@@ -169,8 +170,8 @@ public class PageAutoDialect {
     /**
      * 获取url
      *
-     * @param dataSource
-     * @return
+     * @param dataSource 数据源
+     * @return url
      */
     private String getUrl(DataSource dataSource) {
         Connection conn = null;
@@ -195,8 +196,8 @@ public class PageAutoDialect {
     /**
      * 根据 jdbcUrl 获取数据库方言
      *
-     * @param ms
-     * @return
+     * @param ms the MappedStatement
+     * @return dialect
      */
     private AbstractHelperDialect getDialect(MappedStatement ms) {
         //改为对dataSource做缓存
@@ -239,9 +240,9 @@ public class PageAutoDialect {
         }
         String dialectAlias = properties.getProperty("dialectAlias");
         if (PageFromObject.isNotEmpty(dialectAlias)) {
-            String[] alias = dialectAlias.split(";");
+            String[] alias = dialectAlias.split(Symbol.SEMICOLON);
             for (int i = 0; i < alias.length; i++) {
-                String[] kv = alias[i].split("=");
+                String[] kv = alias[i].split(Symbol.EQUAL);
                 if (kv.length != 2) {
                     throw new IllegalArgumentException("dialectAlias 参数配置错误," +
                             "请按照 alias1=xx.dialectClass;alias2=dialectClass2 的形式进行配置!");

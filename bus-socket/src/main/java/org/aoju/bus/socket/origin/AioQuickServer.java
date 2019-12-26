@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * AIO服务端
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class AioQuickServer<T> {
@@ -102,12 +102,7 @@ public class AioQuickServer<T> {
      * @throws IOException 异常
      */
     public void start() throws IOException {
-        start0(new Function<AsynchronousSocketChannel, TcpAioSession<T>>() {
-            @Override
-            public TcpAioSession<T> apply(AsynchronousSocketChannel channel) {
-                return new TcpAioSession<T>(channel, config, aioReadCompletionHandler, aioWriteCompletionHandler, bufferPool.allocateBufferPage());
-            }
-        });
+        start0(channel -> new TcpAioSession<>(channel, config, aioReadCompletionHandler, aioWriteCompletionHandler, bufferPool.allocateBufferPage()));
     }
 
     /**
@@ -125,7 +120,7 @@ public class AioQuickServer<T> {
         try {
 
             ThreadLocal<CompletionHandler> recursionThreadLocal = new ThreadLocal<>();
-            RingBuffer<TcpReadEvent> buffer = new RingBuffer<TcpReadEvent>(config.getReadBacklog(), new EventFactory<TcpReadEvent>() {
+            RingBuffer<TcpReadEvent> buffer = new RingBuffer<>(config.getReadBacklog(), new EventFactory<TcpReadEvent>() {
                 @Override
                 public TcpReadEvent newInstance() {
                     return new TcpReadEvent();

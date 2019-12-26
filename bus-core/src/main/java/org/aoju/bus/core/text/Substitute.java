@@ -33,7 +33,7 @@ import java.util.*;
  * 按值替换字符串中的变量.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Substitute {
@@ -41,15 +41,15 @@ public class Substitute {
     /**
      * 默认变量前缀.
      */
-    public static final StrMatcher DEFAULT_PREFIX = StrMatcher.stringMatcher(Symbol.DOLLAR + Symbol.DELIM_LEFT);
+    public static final StrMatcher DEFAULT_PREFIX = StrMatcher.stringMatcher(Symbol.DOLLAR + Symbol.BRACE_LEFT);
     /**
      * 默认变量后缀.
      */
-    public static final StrMatcher DEFAULT_SUFFIX = StrMatcher.stringMatcher(Symbol.DELIM_RIGHT);
+    public static final StrMatcher DEFAULT_SUFFIX = StrMatcher.stringMatcher(Symbol.BRACE_RIGHT);
     /**
      * 默认值分隔符.
      */
-    public static final StrMatcher DEFAULT_VALUE_DELIMITER = StrMatcher.stringMatcher(Symbol.COLON + Symbol.DASHED);
+    public static final StrMatcher DEFAULT_VALUE_DELIMITER = StrMatcher.stringMatcher(Symbol.COLON + Symbol.HYPHEN);
 
     /**
      * 存储转义字符.
@@ -255,7 +255,7 @@ public class Substitute {
         if (value == null) {
             return source.toString();
         }
-        final Map<String, String> valueMap = new HashMap<String, String>();
+        final Map<String, String> valueMap = new HashMap<>();
         final Enumeration<?> propNames = value.propertyNames();
         while (propNames.hasMoreElements()) {
             final String propName = (String) propNames.nextElement();

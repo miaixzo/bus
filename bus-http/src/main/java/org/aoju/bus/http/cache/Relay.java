@@ -23,94 +23,69 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.core.io.segment.Source;
-import org.aoju.bus.core.io.segment.Timeout;
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-
 /**
- * Replicates a single upstream source into multiple downstream sources. Each downstream source
- * returns the same bytes as the upstream source. Downstream sources may read data either as it
- * is returned by upstream, or after the upstream source has been exhausted.
- *
- * <p>As bytes are returned from upstream they are written to a local file. Downstream sources read
- * from this file as necessary.
- *
- * <p>This class also keeps a small buffer of bytes recently read from upstream. This is intended to
- * save a small amount of file I/O and data copying.
+ * 将一个上游源复制到多个下游源。每个下游源返回与上游源相同的字节。
+ * 下游源可以在上游返回数据时读取数据，也可以在上游源耗尽数据后读取数据
+ * 当字节从上游返回时，它们被写入本地文件。必要时从该文件读取的下游源
+ * 这个类保留一个最近从上游读取的字节的小缓冲区。减少文件I/O和数据复制
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class Relay {
 
-    static final ByteString PREFIX_CLEAN = ByteString.encodeUtf8("HttpClient cache v1\n");
-    static final ByteString PREFIX_DIRTY = ByteString.encodeUtf8("HttpClient DIRTY :(\n");
+    static final ByteString PREFIX_CLEAN = ByteString.encodeUtf8("Httpd cache v1\n");
+    static final ByteString PREFIX_DIRTY = ByteString.encodeUtf8("Httpd DIRTY :(\n");
     private static final int SOURCE_UPSTREAM = 1;
     private static final int SOURCE_FILE = 2;
     private static final long FILE_HEADER_SIZE = 32L;
     /**
-     * A buffer for {@code upstreamReader} to use when pulling bytes from upstream. Only the {@code
-     * upstreamReader} thread may access this buffer.
+     * {@code upstreamReader}从upstream提取字节时使用的缓冲区。
+     * 只有{@code upstreamReader}线程可以访问这个缓冲区
      */
     final Buffer upstreamBuffer = new Buffer();
     /**
-     * The most recently read bytes from {@link #upstream}. This is a suffix of {@link #file}. Guarded
-     * by this.
+     * 最近从{@link #upstream}读取的字节数。这是{@link #file}的后缀
      */
     final Buffer buffer = new Buffer();
     /**
-     * The maximum size of {@code buffer}.
+     * {@code buffer}的最大大小
      */
     final long bufferMaxSize;
     /**
-     * User-supplied additional data persisted with the source data.
+     * 用户提供的附加数据与源数据保持一致
      */
     private final ByteString metadata;
     /**
-     * Read/write persistence of the upstream source and its metadata. Its layout is as follows:
-     *
-     * <ul>
-     * <li>16 bytes: either {@code HttpClient cache v1\n} if the persisted file is complete. This is
-     * another sequence of bytes if the file is incomplete and should not be used.
-     * <li>8 bytes: <i>n</i>: upstream data size
-     * <li>8 bytes: <i>m</i>: metadata size
-     * <li><i>n</i> bytes: upstream data
-     * <li><i>m</i> bytes: metadata
-     * </ul>
-     *
-     * <p>This is closed and assigned to null when the last source is closed and no further sources
-     * are permitted.
+     * 读取/写入上游源及其元数据的持久性.
      */
     RandomAccessFile file;
     /**
-     * The thread that currently has access to upstream. Possibly null. Guarded by this.
+     * 当前可以访问上游的线程。可能是零
      */
     Thread upstreamReader;
     /**
-     * Null once the file has a complete copy of the upstream bytes. Only the {@code upstreamReader}
-     * thread may access this source.
+     * 文件具有upstream字节的完整副本，则为Null。只有{@code upstreamReader}线程可以访问这个源代码
      */
     Source upstream;
     /**
-     * The number of bytes consumed from {@link #upstream}. Guarded by this.
+     * 从{@link #upstream}消耗的字节数
      */
     long upstreamPos;
     /**
-     * True if there are no further bytes to read from {@code upstream}. Guarded by this.
+     * 如果没有从{@code upstream}读取的字节，则为True
      */
     boolean complete;
     /**
-     * Reference count of the number of active sources reading this stream. When decremented to 0
-     * resources are released and all following calls to {@link #newSource} return null. Guarded by
-     * this.
+     * 读取此流的活动源的数目的引用计数。当递减到0时，资源被释放，所有对{@link #newSource}的调用都返回null
      */
     int sourceCount;
 
@@ -124,18 +99,34 @@ final class Relay {
         this.bufferMaxSize = bufferMaxSize;
     }
 
+    /**
+     * 创建一个从{@code upstream}读取实时流的新中继，使用{@code file}与其他源共享该数据
+     *
+     * @param file          文件信息
+     * @param upstream      缓存流
+     * @param metadata      元数据
+     * @param bufferMaxSize 最大值
+     * @return the relay
+     * @throws IOException 异常
+     */
     public static Relay edit(
             File file, Source upstream, ByteString metadata, long bufferMaxSize) throws IOException {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
         Relay result = new Relay(randomAccessFile, upstream, 0L, metadata, bufferMaxSize);
 
-        // Write a dirty header. That way if we crash we won't attempt to recover this.
         randomAccessFile.setLength(0L);
         result.writeHeader(PREFIX_DIRTY, -1L, -1L);
 
         return result;
     }
 
+    /**
+     * 创建一个从{@code file}读取记录流的中继
+     *
+     * @param file 文件信息
+     * @return the relay
+     * @throws IOException 异常
+     */
     public static Relay read(File file) throws IOException {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
         FileOperator fileOperator = new FileOperator(randomAccessFile.getChannel());
@@ -178,20 +169,18 @@ final class Relay {
     }
 
     void commit(long upstreamSize) throws IOException {
-        // Write metadata to the end of the file.
+        // 将元数据写入文件末尾
         writeMetadata(upstreamSize);
         file.getChannel().force(false);
 
-        // Once everything else is in place we can swap the dirty header for a clean first.
         writeHeader(PREFIX_CLEAN, upstreamSize, metadata.size());
         file.getChannel().force(false);
 
-        // This file is complete.
         synchronized (Relay.this) {
             complete = true;
         }
 
-        Internal.closeQuietly(upstream);
+        IoUtils.close(upstream);
         upstream = null;
     }
 
@@ -203,6 +192,12 @@ final class Relay {
         return metadata;
     }
 
+    /**
+     * 返回与上游相同的字节的新源。如果此继电器已关闭，且没有其他可能的源，则返回null。
+     * 在这种情况下，调用者应该在使用{@link #read}构建新中继后重试
+     *
+     * @return 缓冲字节流
+     */
     public Source newSource() {
         synchronized (Relay.this) {
             if (file == null) return null;
@@ -216,12 +211,12 @@ final class Relay {
         private final Timeout timeout = new Timeout();
 
         /**
-         * The operator to read and write the shared file. Null if this source is closed.
+         * 读取和写入共享文件的操作符。如果此源已关闭，则为null
          */
         private FileOperator fileOperator = new FileOperator(file.getChannel());
 
         /**
-         * The next byte to read. This is always less than or equal to {@code upstreamPos}.
+         * 下一个要读的字节。它总是小于或等于{@code upstreamPos}
          */
         private long sourcePos;
 
@@ -234,18 +229,14 @@ final class Relay {
 
             selectSource:
             synchronized (Relay.this) {
-                // We need new data from upstream.
                 while (sourcePos == (upstreamPos = Relay.this.upstreamPos)) {
-                    // No more data upstream. We're done.
                     if (complete) return -1L;
 
-                    // Another thread is already reading. Wait for that.
+                    // 另一个线程已经读取，等待
                     if (upstreamReader != null) {
                         timeout.waitUntilNotified(Relay.this);
                         continue;
                     }
-
-                    // We will do the read.
                     upstreamReader = Thread.currentThread();
                     source = SOURCE_UPSTREAM;
                     break selectSource;
@@ -253,20 +244,19 @@ final class Relay {
 
                 long bufferPos = upstreamPos - buffer.size();
 
-                // Bytes of the read precede the buffer. Read from the file.
+                // 读的字节在缓冲区之前。从文件中读取
                 if (sourcePos < bufferPos) {
                     source = SOURCE_FILE;
                     break selectSource;
                 }
 
-                // The buffer has the data we need. Read from there and return immediately.
+                // 缓冲区有需要的数据。从那里读取并立即返回
                 long bytesToRead = Math.min(byteCount, upstreamPos - sourcePos);
                 buffer.copyTo(sink, sourcePos - bufferPos, bytesToRead);
                 sourcePos += bytesToRead;
                 return bytesToRead;
             }
 
-            // Read from the file.
             if (source == SOURCE_FILE) {
                 long bytesToRead = Math.min(byteCount, upstreamPos - sourcePos);
                 fileOperator.read(FILE_HEADER_SIZE + sourcePos, sink, bytesToRead);
@@ -274,34 +264,32 @@ final class Relay {
                 return bytesToRead;
             }
 
-            // Read from upstream. This always reads a full buffer: that might be more than what the
-            // current call to Source.read() has requested.
+            // 从upstream读取。这总是读取一个完整的缓冲区:这可能比当前调用Source.read()所请求的要多
             try {
                 long upstreamBytesRead = upstream.read(upstreamBuffer, bufferMaxSize);
 
-                // If we've exhausted upstream, we're done.
                 if (upstreamBytesRead == -1L) {
                     commit(upstreamPos);
                     return -1L;
                 }
 
-                // Update this source and prepare this call's result.
+                // 更新此源并准备此调用的结果
                 long bytesRead = Math.min(upstreamBytesRead, byteCount);
                 upstreamBuffer.copyTo(sink, 0, bytesRead);
                 sourcePos += bytesRead;
 
-                // Append the upstream bytes to the file.
+                // 将upstream字节追加到文件中。
                 fileOperator.write(
                         FILE_HEADER_SIZE + upstreamPos, upstreamBuffer.clone(), upstreamBytesRead);
 
                 synchronized (Relay.this) {
-                    // Append new upstream bytes into the buffer. Trim it to its max size.
+                    // 向缓冲区追加新的upstream
                     buffer.write(upstreamBuffer, upstreamBytesRead);
                     if (buffer.size() > bufferMaxSize) {
                         buffer.skip(buffer.size() - bufferMaxSize);
                     }
 
-                    // Now that the file and buffer have bytes, adjust upstreamPos.
+                    // 既然文件和缓冲区都有，就调整upstreamPos
                     Relay.this.upstreamPos += upstreamBytesRead;
                 }
 
@@ -321,7 +309,7 @@ final class Relay {
 
         @Override
         public void close() throws IOException {
-            if (fileOperator == null) return; // Already closed.
+            if (fileOperator == null) return;
             fileOperator = null;
 
             RandomAccessFile fileToClose = null;
@@ -334,7 +322,7 @@ final class Relay {
             }
 
             if (fileToClose != null) {
-                Internal.closeQuietly(fileToClose);
+                IoUtils.close(fileToClose);
             }
         }
     }

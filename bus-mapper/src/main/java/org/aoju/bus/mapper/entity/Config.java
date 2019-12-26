@@ -37,14 +37,14 @@ import java.util.Properties;
  * 通用Mapper属性配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Config {
 
     public static final String PREFIX = "mapper";
 
-    private List<Class> mappers = new ArrayList<Class>();
+    private List<Class> mappers = new ArrayList<>();
     private String UUID;
     private String identity;
     private String seqFormat;

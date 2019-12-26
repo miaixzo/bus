@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.text.escape;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ import java.io.Writer;
  * 1 to 377. This is because parsing Java is the main use case.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class OctalUnescaper extends CharSequenceTranslator {
@@ -46,7 +47,7 @@ public class OctalUnescaper extends CharSequenceTranslator {
     public int translate(final CharSequence input, final int index, final Writer out) throws IOException {
         final int remaining = input.length() - index - 1; // how many characters left, ignoring the first \
         final StringBuilder builder = new StringBuilder();
-        if (input.charAt(index) == '\\' && remaining > 0 && isOctalDigit(input.charAt(index + 1))) {
+        if (input.charAt(index) == Symbol.C_BACKSLASH && remaining > 0 && isOctalDigit(input.charAt(index + 1))) {
             final int next = index + 1;
             final int next2 = index + 2;
             final int next3 = index + 3;
@@ -74,7 +75,7 @@ public class OctalUnescaper extends CharSequenceTranslator {
      * @return true if the given char is the character representation of one of the digits from 0 to 7
      */
     private boolean isOctalDigit(final char ch) {
-        return ch >= '0' && ch <= '7';
+        return ch >= Symbol.C_ZERO && ch <= Symbol.C_SEVEN;
     }
 
     /**
@@ -84,6 +85,6 @@ public class OctalUnescaper extends CharSequenceTranslator {
      * @return true if the given char is the character representation of one of the digits from 0 to 3
      */
     private boolean isZeroToThree(final char ch) {
-        return ch >= '0' && ch <= '3';
+        return ch >= Symbol.C_ZERO && ch <= Symbol.C_THREE;
     }
 }

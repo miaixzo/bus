@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.io.file;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * 换行符枚举
  * 换行符包括：
@@ -33,7 +35,7 @@ package org.aoju.bus.core.io.file;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS
@@ -44,15 +46,15 @@ public enum LineSeparator {
     /**
      * Mac系统换行符："\r"
      */
-    MAC("\r"),
+    MAC(Symbol.CR),
     /**
      * Linux系统换行符："\n"
      */
-    LINUX("\n"),
+    LINUX(Symbol.LF),
     /**
      * Windows系统换行符："\r\n"
      */
-    WINDOWS("\r\n");
+    WINDOWS(Symbol.CRLF);
 
     private String value;
 

@@ -36,7 +36,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
@@ -61,7 +61,7 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
      *                     the PDH query, otherwise the PDH counter will only include
      *                     instances which are wildcard matches with the given instance,
      *                     replacing '?' with a single character, '*' with any number of
-     *                     characters, and reversing the test if the first character is '^'.
+     *                     characters, and reversing the test if the first character is ^.
      *                     If the counter source is WMI, the instance filtering has no
      *                     effect, and it is the responsibility of the user to add filtering
      *                     to the perfWmiClass string using a WHERE clause.
@@ -88,7 +88,7 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
      *                     the PDH query, otherwise the PDH counter will only include
      *                     instances which are wildcard matches with the given instance,
      *                     replacing '?' with a single character, '*' with any number of
-     *                     characters, and reversing the test if the first character is '^'.
+     *                     characters, and reversing the test if the first character is ^.
      *                     If the counter source is WMI, the instance filtering has no
      *                     effect, and it is the responsibility of the user to add filtering
      *                     to the perfWmiClass string using a WHERE clause.

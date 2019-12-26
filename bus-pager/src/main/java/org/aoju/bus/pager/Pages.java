@@ -23,6 +23,9 @@
  */
 package org.aoju.bus.pager;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -31,7 +34,7 @@ import java.util.List;
  * 新增分页的多项属性
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Pages<T> extends PageSerializable<T> {
@@ -132,11 +135,11 @@ public class Pages<T> extends PageSerializable<T> {
     }
 
     public static <T> Pages<T> of(List<T> list) {
-        return new Pages<T>(list);
+        return new Pages<>(list);
     }
 
     public static <T> Pages<T> of(List<T> list, int navigatePages) {
-        return new Pages<T>(list, navigatePages);
+        return new Pages<>(list, navigatePages);
     }
 
     /**
@@ -351,15 +354,15 @@ public class Pages<T> extends PageSerializable<T> {
         sb.append(", navigateLastPage=").append(navigateLastPage);
         sb.append(", navigatepageNums=");
         if (navigatepageNums == null) {
-            sb.append("null");
+            sb.append(Normal.NULL);
         } else {
-            sb.append('[');
+            sb.append(Symbol.C_BRACKET_LEFT);
             for (int i = 0; i < navigatepageNums.length; ++i) {
                 sb.append(i == 0 ? "" : ", ").append(navigatepageNums[i]);
             }
-            sb.append(']');
+            sb.append(Symbol.C_BRACKET_RIGHT);
         }
-        sb.append('}');
+        sb.append(Symbol.C_BRACE_RIGHT);
         return sb.toString();
     }
 

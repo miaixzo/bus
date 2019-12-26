@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.executor;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.entity.EntityColumn;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.ExecutorException;
@@ -41,12 +42,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * 主键处理
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SelectKey implements KeyGenerator {
@@ -212,7 +212,7 @@ public class SelectKey implements KeyGenerator {
             }
             metaParam.setValue(property, value);
         } else {
-            throw new ExecutorException("No setter found for the keyProperty '" + property + "' in " + metaParam.getOriginalObject().getClass().getName() + ".");
+            throw new ExecutorException("No setter found for the keyProperty '" + property + "' in " + metaParam.getOriginalObject().getClass().getName() + Symbol.DOT);
         }
     }
 

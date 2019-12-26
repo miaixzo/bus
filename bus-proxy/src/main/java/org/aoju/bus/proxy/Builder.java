@@ -23,8 +23,10 @@
  */
 package org.aoju.bus.proxy;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.aspects.Aspectj;
 import org.aoju.bus.proxy.factory.AbstractFactory;
 import org.aoju.bus.proxy.invoker.NullInvoker;
 
@@ -37,13 +39,13 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Builder {
 
-    public static final Object[] EMPTY_ARGUMENTS = new Object[0];
-    public static final Class[] EMPTY_ARGUMENT_TYPES = new Class[0];
+    public static final Object[] EMPTY_ARGUMENTS = Normal.EMPTY_OBJECT_ARRAY;
+    public static final Class[] EMPTY_ARGUMENT_TYPES = Normal.EMPTY_CLASS_ARRAY;
     private static final Map wrapperClassMap = new HashMap();
 
     static {
@@ -89,7 +91,7 @@ public class Builder {
 
     public static String getJavaClassName(Class clazz) {
         if (clazz.isArray()) {
-            return getJavaClassName(clazz.getComponentType()) + "[]";
+            return getJavaClassName(clazz.getComponentType()) + Symbol.BRACKET;
         }
         return clazz.getName();
     }
@@ -107,20 +109,20 @@ public class Builder {
      * @param aspectClass 切面对象类
      * @return 代理对象
      */
-    public static <T> T proxy(T target, Class<? extends Aspect> aspectClass) {
+    public static <T> T proxy(T target, Class<? extends Aspectj> aspectClass) {
         return AbstractFactory.createProxy(target, aspectClass);
     }
 
     /**
      * 使用切面代理对象
      *
-     * @param <T>    被代理对象类型
-     * @param target 被代理对象
-     * @param aspect 切面对象
+     * @param <T>     被代理对象类型
+     * @param target  被代理对象
+     * @param aspectj 切面对象
      * @return 代理对象
      */
-    public static <T> T proxy(T target, Aspect aspect) {
-        return AbstractFactory.createProxy(target, aspect);
+    public static <T> T proxy(T target, Aspectj aspectj) {
+        return AbstractFactory.createProxy(target, aspectj);
     }
 
     /**

@@ -25,6 +25,7 @@ package org.aoju.bus.tracer.binding.jms;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
+import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 
@@ -34,11 +35,9 @@ import javax.jms.Message;
 import javax.jms.MessageProducer;
 import java.util.Map;
 
-import static org.aoju.bus.tracer.config.TraceFilterConfiguration.Channel.AsyncDispatch;
-
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class TraceMessageProducer implements MessageProducer {
@@ -61,8 +60,8 @@ public class TraceMessageProducer implements MessageProducer {
 
     protected void writeTraceContextToMessage(Message message) throws JMSException {
 
-        if (!backend.isEmpty() && backend.getConfiguration().shouldProcessContext(AsyncDispatch)) {
-            final Map<String, String> filteredContext = backend.getConfiguration().filterDeniedParams(backend.copyToMap(), AsyncDispatch);
+        if (!backend.isEmpty() && backend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.AsyncDispatch)) {
+            final Map<String, String> filteredContext = backend.getConfiguration().filterDeniedParams(backend.copyToMap(), TraceFilterConfiguration.Channel.AsyncDispatch);
             final String contextAsString = httpHeaderSerialization.render(filteredContext);
 
             message.setStringProperty(TraceConsts.TPIC_HEADER, contextAsString);

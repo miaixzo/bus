@@ -23,11 +23,13 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * An abstract Sound Card
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractSoundCard implements SoundCard {
@@ -114,7 +116,7 @@ public abstract class AbstractSoundCard implements SoundCard {
         builder.append(this.name);
         builder.append(", codec=");
         builder.append(this.codec);
-        builder.append(']');
+        builder.append(Symbol.C_BRACKET_RIGHT);
         return builder.toString();
     }
 

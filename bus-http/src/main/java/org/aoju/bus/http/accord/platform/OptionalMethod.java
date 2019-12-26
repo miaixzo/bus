@@ -28,30 +28,36 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 /**
- * Duck-typing for methods: Represents a method that may or may not be present on an object.
+ * 方法的Duck-typing:表示对象上可能存在也可能不存在的方法
  *
- * @param <T> the type of the object the method might be on, typically an interface or base class
+ * @param <T> 方法所在的对象类型，通常是接口或基类
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
-class OptionalMethod<T> {
+public class OptionalMethod<T> {
 
     /**
-     * The return type of the method. null means "don't care".
+     * 方法的返回类型
      */
     private final Class<?> returnType;
 
+    /**
+     * 方法的名称
+     */
     private final String methodName;
 
+    /**
+     * 方法参数类型
+     */
     private final Class[] methodParams;
 
     /**
-     * Creates an optional method.
+     * 创建一个可选的方法.
      *
-     * @param returnType   the return type to required, null if it does not matter
-     * @param methodName   the name of the method
-     * @param methodParams the method parameter types
+     * @param returnType   返回类型为required，如果不重要，则为null
+     * @param methodName   方法的名称
+     * @param methodParams 方法参数类型
      */
     OptionalMethod(Class<?> returnType, String methodName, Class... methodParams) {
         this.returnType = returnType;
@@ -72,10 +78,25 @@ class OptionalMethod<T> {
         return method;
     }
 
+    /**
+     * 如果方法存在于提供的{@code target}上，则返回true
+     *
+     * @param target 对象
+     * @return the true/false
+     */
     public boolean isSupported(T target) {
         return getMethod(target.getClass()) != null;
     }
 
+    /**
+     * 使用{@code args}调用{@code target}上的方法。如果该方法不存在或不是公共的，
+     * 则返回{@code null}。参见{@link #invokeOptionalWithoutCheckedException}
+     *
+     * @param target 对象
+     * @param args   参数信息
+     * @return the object
+     * @throws InvocationTargetException 如果调用引发异常
+     */
     public Object invokeOptional(T target, Object... args) throws InvocationTargetException {
         Method m = getMethod(target.getClass());
         if (m == null) {
@@ -88,6 +109,15 @@ class OptionalMethod<T> {
         }
     }
 
+    /**
+     * 调用{@code target}上的方法。如果该方法不存在或不是公共的，
+     * 则返回{@code null}。方法抛出的任何RuntimeException都会被抛出，
+     * 已检查的异常被包装在{@link AssertionError}中
+     *
+     * @param target 对象
+     * @param args   参数信息
+     * @return the object
+     */
     public Object invokeOptionalWithoutCheckedException(T target, Object... args) {
         try {
             return invokeOptional(target, args);
@@ -102,6 +132,15 @@ class OptionalMethod<T> {
         }
     }
 
+    /**
+     * 使用{@code args}调用{@code target}上的方法。如果不支持该方法，则引发错误。
+     * 参见{@link #invokeWithoutCheckedException(Object, Object...)}
+     *
+     * @param target 对象
+     * @param args   参数信息
+     * @return the object
+     * @throws InvocationTargetException 如果调用引发异常
+     */
     public Object invoke(T target, Object... args) throws InvocationTargetException {
         Method m = getMethod(target.getClass());
         if (m == null) {
@@ -117,6 +156,14 @@ class OptionalMethod<T> {
         }
     }
 
+    /**
+     * 调用{@code target}上的方法。如果不支持该方法，则引发错误。
+     * 方法抛出的任何RuntimeException都会被抛出，已检查的异常被包装在{@link AssertionError}中
+     *
+     * @param target 对象
+     * @param args   参数信息
+     * @return the object
+     */
     public Object invokeWithoutCheckedException(T target, Object... args) {
         try {
             return invoke(target, args);
@@ -131,6 +178,14 @@ class OptionalMethod<T> {
         }
     }
 
+    /**
+     * 为该方法执行查找。没有缓存。为了返回一个方法，
+     * 方法名和参数必须与创建{@link OptionalMethod}时指定的参数匹配。
+     * 如果指定了返回类型(即非null)，那么它也必须是兼容的。该方法也必须是公共的
+     *
+     * @param clazz class
+     * @return the method
+     */
     private Method getMethod(Class<?> clazz) {
         Method method = null;
         if (methodName != null) {
@@ -139,6 +194,7 @@ class OptionalMethod<T> {
                     && returnType != null
                     && !returnType.isAssignableFrom(method.getReturnType())) {
 
+                // 如果返回类型是非空的，那么它必须是兼容的.
                 method = null;
             }
         }

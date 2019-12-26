@@ -40,7 +40,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class RandomUtils {
@@ -286,7 +286,7 @@ public class RandomUtils {
      * @return 随机元素
      */
     public static <T> List<T> randomEles(List<T> list, int count) {
-        final List<T> result = new ArrayList<T>(count);
+        final List<T> result = new ArrayList<>(count);
         int limit = list.size();
         while (result.size() < count) {
             result.add(randomEle(list, limit));
@@ -310,7 +310,7 @@ public class RandomUtils {
             throw new IllegalArgumentException("Count is larger than collection distinct size !");
         }
 
-        final HashSet<T> result = new HashSet<T>(count);
+        final HashSet<T> result = new HashSet<>(count);
         int limit = collection.size();
         while (result.size() < count) {
             result.add(randomEle(source, limit));

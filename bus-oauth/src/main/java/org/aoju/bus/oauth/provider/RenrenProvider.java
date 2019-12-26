@@ -27,7 +27,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -39,12 +39,11 @@ import org.aoju.bus.oauth.metric.StateCache;
 
 import java.util.Objects;
 
-
 /**
  * 人人登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class RenrenProvider extends DefaultProvider {
@@ -86,7 +85,7 @@ public class RenrenProvider extends DefaultProvider {
     }
 
     private AccToken getToken(String url) {
-        JSONObject object = JSONObject.parseObject(HttpClient.post(url));
+        JSONObject object = JSONObject.parseObject(Httpx.post(url));
         if (object.containsKey("error")) {
             throw new InstrumentException("Failed to get token from Renren: " + object);
         }

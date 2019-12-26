@@ -1,5 +1,7 @@
 package org.aoju.bus.gitlab.utils;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,7 +109,7 @@ public class DurationUtils {
             }
 
         } else {
-            buf.append(' ').append(seconds).append('s');
+            buf.append(Symbol.C_SPACE).append(seconds).append('s');
         }
 
         return (buf.toString());

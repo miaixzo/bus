@@ -28,6 +28,7 @@ import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.VMStatistics;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.Memoizer;
@@ -45,7 +46,7 @@ import java.util.function.Supplier;
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MacGlobalMemory extends AbstractGlobalMemory {
@@ -92,12 +93,12 @@ public class MacGlobalMemory extends AbstractGlobalMemory {
                     pmList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType));
                 }
                 bankLabel = line.trim();
-                int colon = bankLabel.lastIndexOf(':');
+                int colon = bankLabel.lastIndexOf(Symbol.C_COLON);
                 if (colon > 0) {
                     bankLabel = bankLabel.substring(0, colon - 1);
                 }
             } else if (bank > 0) {
-                String[] split = line.trim().split(":");
+                String[] split = line.trim().split(Symbol.COLON);
                 if (split.length == 2) {
                     switch (split[0]) {
                         case "Size":

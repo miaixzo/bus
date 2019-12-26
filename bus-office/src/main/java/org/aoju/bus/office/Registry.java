@@ -33,15 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * 支持类型
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Registry {
-
-    /**
-     * 服务提供者列表
-     */
-    private static Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 本地转换
@@ -51,7 +46,10 @@ public class Registry {
      * 在线转换
      */
     public static final String ONLINE = "ONLINE";
-
+    /**
+     * 服务提供者列表
+     */
+    private static Map<Object, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
     /**
      * 校验实例信息
      */

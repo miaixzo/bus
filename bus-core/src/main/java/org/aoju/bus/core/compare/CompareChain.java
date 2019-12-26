@@ -11,7 +11,7 @@ import java.util.*;
  * 此类copy from Apache-commons-collections
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, Comparator<E>, Serializable {
@@ -35,7 +35,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
      * 构造空的比较器链,必须至少有一个比较器,否则会在compare时抛出{@link UnsupportedOperationException}
      */
     public CompareChain() {
-        this(new ArrayList<Comparator<E>>(), new BitSet());
+        this(new ArrayList<>(), new BitSet());
     }
 
     /**
@@ -54,7 +54,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
      * @param reverse    是否反序,true表示反序,false正序
      */
     public CompareChain(final Comparator<E> comparator, final boolean reverse) {
-        chain = new ArrayList<Comparator<E>>(1);
+        chain = new ArrayList<>(1);
         chain.add(comparator);
         orderingBits = new BitSet(1);
         if (reverse == true) {

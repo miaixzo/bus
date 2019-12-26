@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.software;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.System;
 import org.aoju.bus.health.Systemd;
 
@@ -30,7 +31,7 @@ import org.aoju.bus.health.Systemd;
  * 代表Java Implementation的信息
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class JavaInfo {
@@ -135,7 +136,7 @@ public class JavaInfo {
         if (JAVA_VERSION.length() >= 5) {
             str = str + JAVA_VERSION.substring(4, 5);
         } else {
-            str = str + "0";
+            str = str + Symbol.ZERO;
         }
 
         return Integer.parseInt(str);

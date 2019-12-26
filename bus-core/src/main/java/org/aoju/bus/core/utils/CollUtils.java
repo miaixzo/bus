@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CollUtils {
@@ -1052,7 +1052,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, new Editor<T>() {
@@ -1083,7 +1083,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -1100,7 +1100,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, new Filter<T>() {
@@ -1137,14 +1137,11 @@ public class CollUtils {
      * @since 3.1.9
      */
     public static List<Object> getFieldValues(Iterable<?> collection, final String fieldName) {
-        return extract(collection, new Editor<Object>() {
-            @Override
-            public Object edit(Object bean) {
-                if (bean instanceof Map) {
-                    return ((Map<?, ?>) bean).get(fieldName);
-                } else {
-                    return ReflectUtils.getFieldValue(bean, fieldName);
-                }
+        return extract(collection, bean -> {
+            if (bean instanceof Map) {
+                return ((Map<?, ?>) bean).get(fieldName);
+            } else {
+                return ReflectUtils.getFieldValue(bean, fieldName);
             }
         });
     }
@@ -1433,11 +1430,11 @@ public class CollUtils {
             return null;
         }
 
-        final List<K> keyList = new ArrayList<K>(keys);
-        final List<V> valueList = new ArrayList<V>(values);
+        final List<K> keyList = new ArrayList<>(keys);
+        final List<V> valueList = new ArrayList<>(values);
 
         final int size = Math.min(keys.size(), values.size());
-        final Map<K, V> map = new HashMap<K, V>((int) (size / 0.75));
+        final Map<K, V> map = new HashMap<>((int) (size / 0.75));
         for (int i = 0; i < size; i++) {
             map.put(keyList.get(i), valueList.get(i));
         }
@@ -1494,7 +1491,7 @@ public class CollUtils {
      * @return treeSet
      */
     public static <T> TreeSet<T> toTreeSet(Collection<T> collection, Comparator<T> comparator) {
-        final TreeSet<T> treeSet = new TreeSet<T>(comparator);
+        final TreeSet<T> treeSet = new TreeSet<>(comparator);
         for (T t : collection) {
             treeSet.add(t);
         }
@@ -1511,7 +1508,7 @@ public class CollUtils {
      * @return {@link Enumeration}
      */
     public static <E> Enumeration<E> asEnumeration(Iterator<E> iter) {
-        return new IteratorEnumeration<E>(iter);
+        return new IteratorEnumeration<>(iter);
     }
 
     /**
@@ -2038,7 +2035,7 @@ public class CollUtils {
      * @since 3.1.9
      */
     public static <K, V> TreeMap<K, V> sort(Map<K, V> map, Comparator<? super K> comparator) {
-        final TreeMap<K, V> result = new TreeMap<K, V>(comparator);
+        final TreeMap<K, V> result = new TreeMap<>(comparator);
         result.putAll(map);
         return result;
     }
@@ -2111,22 +2108,19 @@ public class CollUtils {
      * @param asc  true升序,false降序
      */
     public static <E> void sort(List<E> list, final boolean asc, final String... name) {
-        Collections.sort(list, new Comparator<E>() {
-
-            public int compare(E a, E b) {
-                int ret = 0;
-                try {
-                    for (int i = 0; i < name.length; i++) {
-                        ret = sort(name[i], asc, a, b);
-                        if (0 != ret) {
-                            break;
-                        }
+        Collections.sort(list, (a, b) -> {
+            int ret = 0;
+            try {
+                for (int i = 0; i < name.length; i++) {
+                    ret = sort(name[i], asc, a, b);
+                    if (0 != ret) {
+                        break;
                     }
-                } catch (Exception e) {
-                    throw new InstrumentException(e);
                 }
-                return ret;
+            } catch (Exception e) {
+                throw new InstrumentException(e);
             }
+            return ret;
         });
     }
 
@@ -2221,12 +2215,7 @@ public class CollUtils {
         }
         if (null == hash) {
             // 默认hash算法,按照元素的hashCode分组
-            hash = new Hash<T>() {
-                @Override
-                public int hash(T t) {
-                    return null == t ? 0 : t.hashCode();
-                }
-            };
+            hash = t -> null == t ? 0 : t.hashCode();
         }
 
         int index;
@@ -2258,26 +2247,21 @@ public class CollUtils {
      * @return 互换后的Map
      */
     public static <T> Map<T, T> reverse(Map<T, T> map) {
-        return filter(map, new Editor<Map.Entry<T, T>>() {
+        return filter(map, (Editor<Entry<T, T>>) t -> new Entry<T, T>() {
+
             @Override
-            public Entry<T, T> edit(final Entry<T, T> t) {
-                return new Entry<T, T>() {
+            public T getKey() {
+                return t.getValue();
+            }
 
-                    @Override
-                    public T getKey() {
-                        return t.getValue();
-                    }
+            @Override
+            public T getValue() {
+                return t.getKey();
+            }
 
-                    @Override
-                    public T getValue() {
-                        return t.getKey();
-                    }
-
-                    @Override
-                    public T setValue(T value) {
-                        throw new UnsupportedOperationException("Unsupported setValue method !");
-                    }
-                };
+            @Override
+            public T setValue(T value) {
+                throw new UnsupportedOperationException("Unsupported setValue method !");
             }
         });
     }
@@ -2313,8 +2297,8 @@ public class CollUtils {
      * @param asc  true升序,false降序
      * @param a    对象
      * @param b    对象
-     * @return
-     * @throws Exception
+     * @return the object
+     * @throws Exception 异常
      */
     private static <E> int sort(final String name, final boolean asc, E a, E b) throws Exception {
 
@@ -2575,7 +2559,7 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public interface Hash<T> {
         /**

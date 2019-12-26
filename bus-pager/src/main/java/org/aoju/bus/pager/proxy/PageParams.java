@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.pager.proxy;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.pager.IPage;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageContext;
@@ -36,7 +37,7 @@ import java.util.Properties;
  * Page 参数信息
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PageParams {
@@ -52,7 +53,7 @@ public class PageParams {
     //是否支持接口参数来传递分页参数,默认false
     protected boolean supportMethodsArguments = false;
     //默认count(0)
-    protected String countColumn = "0";
+    protected String countColumn = Symbol.ZERO;
 
     /**
      * 获取分页参数

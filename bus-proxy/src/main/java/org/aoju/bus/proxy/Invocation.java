@@ -26,18 +26,41 @@ package org.aoju.bus.proxy;
 import java.lang.reflect.Method;
 
 /**
+ * 调用者方法
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface Invocation {
 
-    Method getMethod();
-
-    Object[] getArguments();
-
+    /**
+     * 获取目标实例
+     *
+     * @return 目标实例
+     */
     Object getProxy();
 
+    /**
+     * 获取方法
+     *
+     * @return Method
+     */
+    Method getMethod();
+
+    /**
+     * 获取参数值
+     *
+     * @return 参数
+     */
+    Object[] getArguments();
+
+    /**
+     * 执行方法
+     *
+     * @return 执行结果
+     * @throws Throwable Throwable
+     */
     Object proceed() throws Throwable;
 
 }

@@ -35,7 +35,7 @@ import java.util.Set;
  * 参考 org.apache.ibatis.type.SimpleTypeRegistry
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SimpleType {
@@ -53,7 +53,7 @@ public class SimpleType {
             "java.time.YearMonth"
     };
 
-    private static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<Class<?>>();
+    private static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>();
 
     /**
      * 特别注意：由于基本类型有默认值,因此在实体类中不建议使用基本类型作为数据库字段类型

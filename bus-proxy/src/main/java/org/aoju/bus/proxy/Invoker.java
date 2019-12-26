@@ -26,12 +26,23 @@ package org.aoju.bus.proxy;
 import java.lang.reflect.Method;
 
 /**
+ * 调用程序负责处理方法调用
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface Invoker {
 
+    /**
+     * 调用方法。如果在尝试调用方法时出现问题，实现应该抛出异常.
+     *
+     * @param proxy     代理对象
+     * @param method    被调用的方法
+     * @param arguments 参数
+     * @return 返回值
+     * @throws Throwable 抛出异常
+     */
     Object invoke(Object proxy, Method method, Object[] arguments) throws Throwable;
 
 }

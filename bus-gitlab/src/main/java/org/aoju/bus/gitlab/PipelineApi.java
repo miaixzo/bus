@@ -273,9 +273,8 @@ public class PipelineApi extends AbstractApi implements Constants {
         // The create pipeline REST API expects the variable data in an unusual format, this
         // class is used to create the JSON for the POST data.
         class CreatePipelineForm {
-            @SuppressWarnings("unused")
+
             public String ref;
-            @SuppressWarnings("unused")
             public List<Variable> variables;
 
             CreatePipelineForm(String ref, List<Variable> variables) {

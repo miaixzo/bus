@@ -46,7 +46,7 @@ import java.util.List;
  * Excel2003格式的事件-用户模型方式读取器,统一将此归类为Sax读取
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> implements HSSFListener {
@@ -240,7 +240,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
                         value = formatListener.formatNumberDateCell(frec);
                     }
                 } else {
-                    value = '"' + HSSFFormulaParser.toFormulaString(stubWorkbook, frec.getParsedExpression()) + '"';
+                    value = Symbol.C_DOUBLE_QUOTES + HSSFFormulaParser.toFormulaString(stubWorkbook, frec.getParsedExpression()) + Symbol.C_DOUBLE_QUOTES;
                 }
                 rowCellList.add(frec.getColumn(), value);
                 break;

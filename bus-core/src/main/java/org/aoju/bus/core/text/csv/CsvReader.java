@@ -41,7 +41,7 @@ import java.util.Objects;
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class CsvReader {
@@ -65,18 +65,18 @@ public final class CsvReader {
     }
 
     /**
-     * 设置字段分隔符,默认逗号','
+     * 设置字段分隔符,默认逗号
      *
-     * @param fieldSeparator 字段分隔符,默认逗号','
+     * @param fieldSeparator 字段分隔符,默认逗号
      */
     public void setFieldSeparator(char fieldSeparator) {
         this.config.setFieldSeparator(fieldSeparator);
     }
 
     /**
-     * 设置 文本分隔符,文本包装符,默认双引号'"'
+     * 设置 文本分隔符,文本包装符,默认双引号
      *
-     * @param textDelimiter 文本分隔符,文本包装符,默认双引号'"'
+     * @param textDelimiter 文本分隔符,文本包装符,默认双引号
      */
     public void setTextDelimiter(char textDelimiter) {
         this.config.setTextDelimiter(textDelimiter);

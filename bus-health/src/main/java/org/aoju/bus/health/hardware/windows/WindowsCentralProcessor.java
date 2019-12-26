@@ -30,6 +30,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import com.sun.jna.platform.win32.WinNT.*;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.common.windows.PerfCounterQuery;
 import org.aoju.bus.health.common.windows.PerfCounterQuery.PdhCounterProperty;
@@ -47,7 +48,7 @@ import java.util.*;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WindowsCentralProcessor extends AbstractCentralProcessor {
@@ -152,7 +153,7 @@ public class WindowsCentralProcessor extends AbstractCentralProcessor {
             processorID = WmiUtils.getString(processorId, ProcessorProperty.PROCESSORID, 0);
         } else {
             processorID = createProcessorID(cpuStepping, cpuModel, cpuFamily,
-                    cpu64bit ? new String[]{"ia64"} : new String[0]);
+                    cpu64bit ? new String[]{"ia64"} : Normal.EMPTY_STRING_ARRAY);
         }
 
         return new ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
@@ -470,7 +471,7 @@ public class WindowsCentralProcessor extends AbstractCentralProcessor {
     }
 
     enum ProcessorProperty {
-        PROCESSORID;
+        PROCESSORID
     }
 
     /*

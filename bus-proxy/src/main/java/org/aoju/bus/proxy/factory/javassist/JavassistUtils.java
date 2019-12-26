@@ -24,6 +24,7 @@
 package org.aoju.bus.proxy.factory.javassist;
 
 import javassist.*;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Builder;
 
@@ -31,8 +32,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 处理Javassist的实用方法
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 class JavassistUtils {
@@ -79,7 +82,7 @@ class JavassistUtils {
     }
 
     public synchronized static CtClass createClass(String baseName, Class superclass) {
-        return classPool.makeClass(baseName + "_" + classNumber++, resolve(superclass));
+        return classPool.makeClass(baseName + Symbol.UNDERLINE + classNumber++, resolve(superclass));
     }
 
     public static CtClass[] resolve(Class[] classes) {

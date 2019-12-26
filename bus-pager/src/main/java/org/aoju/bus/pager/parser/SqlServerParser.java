@@ -50,7 +50,7 @@ import java.util.*;
  * 该类设计为一个独立的工具类,依赖jsqlparser,可以独立使用
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SqlServerParser {
@@ -141,7 +141,7 @@ public class SqlServerParser {
         //获取查询列
         List<SelectItem> selectItems = getSelectItems((PlainSelect) selectBody);
         //对一层的SQL增加ROW_NUMBER()
-        List<SelectItem> autoItems = new ArrayList<SelectItem>();
+        List<SelectItem> autoItems = new ArrayList<>();
         SelectItem orderByColumn = addRowNumber((PlainSelect) selectBody, autoItems);
         //加入自动生成列
         ((PlainSelect) selectBody).addSelectItems(autoItems.toArray(new SelectItem[autoItems.size()]));
@@ -167,7 +167,7 @@ public class SqlServerParser {
         top.setExpression(new LongValue(Long.MAX_VALUE));
         newSelectBody.setTop(top);
         //设置order by
-        List<OrderByElement> orderByElements = new ArrayList<OrderByElement>();
+        List<OrderByElement> orderByElements = new ArrayList<>();
         OrderByElement orderByElement = new OrderByElement();
         orderByElement.setExpression(PAGE_ROW_NUMBER_COLUMN);
         orderByElements.add(orderByElement);
@@ -230,7 +230,7 @@ public class SqlServerParser {
      */
     protected List<SelectItem> getSelectItems(PlainSelect plainSelect) {
         //设置selectItems
-        List<SelectItem> selectItems = new ArrayList<SelectItem>();
+        List<SelectItem> selectItems = new ArrayList<>();
         for (SelectItem selectItem : plainSelect.getSelectItems()) {
             //别名需要特殊处理
             if (selectItem instanceof SelectExpressionItem) {
@@ -242,7 +242,7 @@ public class SqlServerParser {
                     selectItems.add(expressionItem);
                 } else if (selectExpressionItem.getExpression() instanceof Column) {
                     Column column = (Column) selectExpressionItem.getExpression();
-                    SelectExpressionItem item = null;
+                    SelectExpressionItem item;
                     if (column.getTable() != null) {
                         Column newColumn = new Column(column.getColumnName());
                         item = new SelectExpressionItem(newColumn);
@@ -434,13 +434,13 @@ public class SqlServerParser {
         OrderByElement orderByElement;
 
         // 非 `*` 且 非 `t.*` 查询列集合
-        Map<String, SelectExpressionItem> selectMap = new HashMap<String, SelectExpressionItem>();
+        Map<String, SelectExpressionItem> selectMap = new HashMap<>();
         // 别名集合
-        Set<String> aliases = new HashSet<String>();
+        Set<String> aliases = new HashSet<>();
         // 是否包含 `*` 查询列
         boolean allColumns = false;
         // `t.*` 查询列的表名集合
-        Set<String> allColumnsTables = new HashSet<String>();
+        Set<String> allColumnsTables = new HashSet<>();
 
         for (SelectItem item : plainSelect.getSelectItems()) {
             if (item instanceof SelectExpressionItem) {

@@ -23,14 +23,18 @@
  */
 package org.aoju.bus.proxy.invoker;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
 
 import java.lang.reflect.Method;
 
 /**
+ * 支持的调用程序，这意味着它在从目标提供程序返回的对象上找到匹配的方法并调用它。
+ * 该类有助于将现有类调整为它没有实现的接口
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class DuckInvoker implements Invoker {
@@ -53,7 +57,7 @@ public class DuckInvoker implements Invoker {
                     "Target type " + targetClass.getName() + " method has incompatible return type.");
         } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException(
-                    "Target type " + targetClass.getName() + " does not have a method matching " + method + ".");
+                    "Target type " + targetClass.getName() + " does not have a method matching " + method + Symbol.DOT);
         }
     }
 

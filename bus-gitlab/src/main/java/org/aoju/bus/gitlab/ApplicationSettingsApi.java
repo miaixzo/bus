@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.aoju.bus.gitlab.models.ApplicationSettings;
 import org.aoju.bus.gitlab.models.Setting;
 import org.aoju.bus.gitlab.utils.ISO8601;
+import org.aoju.bus.logger.Logger;
 
 import javax.ws.rs.core.Response;
 import java.text.ParseException;
@@ -63,7 +64,7 @@ public class ApplicationSettingsApi extends AbstractApi {
                     if (setting != null) {
                         appSettings.addSetting(setting, root.path(fieldName));
                     } else {
-                        GitLabApi.getLogger().warning(String.format("Unknown setting: %s, type: %s",
+                        Logger.warn(String.format("Unknown setting: %s, type: %s",
                                 fieldName, root.path(fieldName).getClass().getSimpleName()));
                         appSettings.addSetting(fieldName, root.path(fieldName));
                     }

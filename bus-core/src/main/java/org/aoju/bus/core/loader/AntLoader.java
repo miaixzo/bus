@@ -24,6 +24,7 @@
 package org.aoju.bus.core.loader;
 
 import org.aoju.bus.core.io.resource.Resource;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -32,7 +33,7 @@ import java.util.Enumeration;
  * ANT风格路径资源加载器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class AntLoader extends PatternLoader implements Loader {
@@ -51,7 +52,7 @@ public class AntLoader extends PatternLoader implements Loader {
 
     @Override
     public Enumeration<Resource> load(String pattern, boolean recursively, Filter filter) throws IOException {
-        if (Math.max(pattern.indexOf('*'), pattern.indexOf('?')) < 0) {
+        if (Math.max(pattern.indexOf(Symbol.C_STAR), pattern.indexOf(Symbol.C_QUESTION_MARK)) < 0) {
             return delegate.load(pattern, recursively, filter);
         } else {
             return super.load(pattern, recursively, filter);
@@ -60,9 +61,10 @@ public class AntLoader extends PatternLoader implements Loader {
 
     protected String path(String ant) {
         int index = Integer.MAX_VALUE - 1;
-        if (ant.contains("*") && ant.indexOf('*') < index) index = ant.indexOf('*');
-        if (ant.contains("?") && ant.indexOf('?') < index) index = ant.indexOf('?');
-        return ant.substring(0, ant.lastIndexOf('/', index) + 1);
+        if (ant.contains(Symbol.STAR) && ant.indexOf(Symbol.C_STAR) < index) index = ant.indexOf(Symbol.C_STAR);
+        if (ant.contains(Symbol.QUESTION_MARK) && ant.indexOf(Symbol.C_QUESTION_MARK) < index)
+            index = ant.indexOf(Symbol.C_QUESTION_MARK);
+        return ant.substring(0, ant.lastIndexOf(Symbol.C_SLASH, index) + 1);
     }
 
     protected boolean recursively(String ant) {

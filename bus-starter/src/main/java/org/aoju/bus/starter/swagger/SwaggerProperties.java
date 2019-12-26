@@ -24,18 +24,18 @@
 package org.aoju.bus.starter.swagger;
 
 import lombok.Data;
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * swagger配置项
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
-@ConfigurationProperties(prefix = Extend.SWAGGER)
+@ConfigurationProperties(prefix = BusXExtend.SWAGGER)
 public class SwaggerProperties {
 
     private String basePackage;

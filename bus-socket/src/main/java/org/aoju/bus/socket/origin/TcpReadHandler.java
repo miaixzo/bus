@@ -24,6 +24,7 @@
 package org.aoju.bus.socket.origin;
 
 import org.aoju.bus.core.io.segment.RingBuffer;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 
 import java.nio.channels.CompletionHandler;
@@ -33,7 +34,7 @@ import java.util.concurrent.Semaphore;
  * 读写事件回调处理类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 class TcpReadHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
@@ -56,20 +57,17 @@ class TcpReadHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> 
         this.semaphore = semaphore;
         this.recursionThreadLocal = recursionThreadLocal;
         this.ringBuffer = ringBuffer;
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        int consumerIndex = ringBuffer.nextReadIndex();
-                        TcpReadEvent readEvent = ringBuffer.get(consumerIndex);
-                        TcpAioSession aioSession = readEvent.getSession();
-                        int size = readEvent.getReadSize();
-                        ringBuffer.publishReadIndex(consumerIndex);
-                        completed0(size, aioSession);
-                    } catch (InterruptedException e) {
-                        Logger.error("", e);
-                    }
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
+                    int consumerIndex = ringBuffer.nextReadIndex();
+                    TcpReadEvent readEvent = ringBuffer.get(consumerIndex);
+                    TcpAioSession aioSession = readEvent.getSession();
+                    int size = readEvent.getReadSize();
+                    ringBuffer.publishReadIndex(consumerIndex);
+                    completed0(size, aioSession);
+                } catch (InterruptedException e) {
+                    Logger.error(Normal.EMPTY, e);
                 }
             }
         }, "bus-socket:DaemonThread");

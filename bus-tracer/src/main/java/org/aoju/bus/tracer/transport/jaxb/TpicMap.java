@@ -30,7 +30,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @XmlRootElement(name = TraceConsts.TPIC_HEADER)
@@ -121,13 +121,6 @@ public final class TpicMap {
             return result;
         }
 
-        @Override
-        public String toString() {
-            return "Entry{" +
-                    "key='" + key + '\'' +
-                    ", value='" + value + '\'' +
-                    '}';
-        }
     }
 
 }

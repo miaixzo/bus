@@ -29,14 +29,13 @@ import lombok.Data;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-
 /**
  * <p>
  * Entity 实体
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data

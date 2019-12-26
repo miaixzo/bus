@@ -23,13 +23,15 @@
  */
 package org.aoju.bus.limiter.annotation;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
  * 锁
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
@@ -37,9 +39,9 @@ import java.lang.annotation.*;
 @Repeatable(Locks.class)
 public @interface Lock {
 
-    String limiter() default "";
+    String limiter() default Normal.EMPTY;
 
-    String key() default "";
+    String key() default Normal.EMPTY;
 
     String fallback() default "defaultFallbackResolver";
 

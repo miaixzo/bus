@@ -43,7 +43,7 @@ import java.util.jar.JarFile;
  * 标准的资源加载器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class StdLoader extends ResourceLoader implements Loader {
@@ -62,8 +62,8 @@ public class StdLoader extends ResourceLoader implements Loader {
     }
 
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) throws IOException {
-        while (path.startsWith("/")) path = path.substring(1);
-        while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
+        while (path.startsWith(Symbol.SLASH)) path = path.substring(1);
+        while (path.endsWith(Symbol.SLASH)) path = path.substring(0, path.length() - 1);
         return new Enumerator(classLoader, path, recursively, filter != null ? filter : Filters.ALWAYS);
     }
 
@@ -80,7 +80,7 @@ public class StdLoader extends ResourceLoader implements Loader {
             this.recursively = recursively;
             this.filter = filter;
             this.urls = load(classLoader, path);
-            this.resources = Collections.enumeration(Collections.<Resource>emptySet());
+            this.resources = Collections.enumeration(Collections.emptySet());
         }
 
         private Enumeration<URL> load(ClassLoader classLoader, String path) throws IOException {

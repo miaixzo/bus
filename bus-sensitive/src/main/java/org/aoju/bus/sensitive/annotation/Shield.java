@@ -32,7 +32,6 @@ import org.aoju.bus.sensitive.strategy.DafaultStrategy;
 
 import java.lang.annotation.*;
 
-
 /**
  * 标注在字段上,用以说明字段上那些类型需要脱敏
  * 脱敏后,插件在写请求后对数据脱敏后存在数据库,对读请求不拦截
@@ -43,7 +42,7 @@ import java.lang.annotation.*;
  * 在 Strategy 注解中,可以指定策略 默认是全部,如果指定,则只针对其中的某个策略生效
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Documented

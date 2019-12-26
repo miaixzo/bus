@@ -24,6 +24,7 @@
 package org.aoju.bus.limiter.execute;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -43,7 +44,7 @@ import java.util.Map;
  * limiter 上下文信息
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LimiterExecutionContext {
@@ -129,7 +130,7 @@ public class LimiterExecutionContext {
             Assert.notNull(evalKey, "key值计算为null!");
             return evalKey;
         }
-        return this.metadata.getTargetClass().getName() + "#" +
+        return this.metadata.getTargetClass().getName() + Symbol.SHAPE +
                 this.metadata.getTargetMethod().getName();
 
     }

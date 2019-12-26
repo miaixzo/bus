@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.limiter.resource;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.CollUtils;
@@ -44,7 +45,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LimitedResourceScanner implements LimitedResourceSource {
@@ -69,7 +70,7 @@ public class LimitedResourceScanner implements LimitedResourceSource {
     public void scanLimitedResource() {
         try {
             String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-                    ClassUtils.convertClassNameToResourcePath(basePackage) + '/' + this.resourcePattern;
+                    ClassUtils.convertClassNameToResourcePath(basePackage) + Symbol.C_SLASH + this.resourcePattern;
             Resource[] resources = this.resourcePatternResolver.getResources(packageSearchPath);
             for (Resource resource : resources) {
                 if (resource.isReadable()) {
@@ -88,13 +89,13 @@ public class LimitedResourceScanner implements LimitedResourceSource {
                             if (attributes != null) {
                                 LimitedResource limitedResource = parser.parseLimiterAnnotation(attributes);
                                 if (limitedResource != null) {
-                                    String key = metadata.getDeclaringClassName() + "#" +
-                                            metadata.getMethodName() + "@"
+                                    String key = metadata.getDeclaringClassName() + Symbol.SHAPE +
+                                            metadata.getMethodName() + Symbol.AT
                                             + parser.getSupportAnnotation().getSimpleName();
                                     limitedResourceMap.put(key, limitedResource);
                                     // add to registry
                                     String classMethod = metadata.getDeclaringClassName()
-                                            + "#" + metadata.getMethodName();
+                                            + Symbol.SHAPE + metadata.getMethodName();
                                     if (!limitedResourceRegistry.containsKey(classMethod)) {
                                         List<LimitedResource> tempList = new ArrayList<>();
                                         tempList.add(limitedResource);
@@ -116,7 +117,7 @@ public class LimitedResourceScanner implements LimitedResourceSource {
 
     @Override
     public Collection<LimitedResource> getLimitedResource(Class<?> targetClass, Method method) {
-        String key = targetClass.getName() + "#" + method.getName();
+        String key = targetClass.getName() + Symbol.SHAPE + method.getName();
         return limitedResourceRegistry.get(key);
     }
 

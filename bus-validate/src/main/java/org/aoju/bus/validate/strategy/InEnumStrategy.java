@@ -33,12 +33,11 @@ import org.aoju.bus.validate.validators.Matcher;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
-
 /**
  * int enum 校验
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class InEnumStrategy implements Matcher<Object, InEnum> {

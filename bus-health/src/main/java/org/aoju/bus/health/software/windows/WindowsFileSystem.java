@@ -28,6 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.common.windows.PerfCounterQuery;
 import org.aoju.bus.health.common.windows.PerfWildcardQuery;
@@ -49,7 +50,7 @@ import java.util.Map;
  * represented by a drive letter, e.g., "A:\" and "C:\"
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WindowsFileSystem implements FileSystem {
@@ -245,7 +246,7 @@ public class WindowsFileSystem implements FileSystem {
 
         String wmiClassName = this.logicalDiskQuery.getWmiClassName();
         if (nameToMatch != null) {
-            this.logicalDiskQuery.setWmiClassName(wmiClassName + " WHERE Name=\"" + nameToMatch + "\"");
+            this.logicalDiskQuery.setWmiClassName(wmiClassName + " WHERE Name=\"" + nameToMatch + Symbol.DOUBLE_QUOTES);
         }
         WmiResult<LogicalDiskProperty> drives = wmiQueryHandler.queryWMI(this.logicalDiskQuery);
         if (nameToMatch != null) {
@@ -261,7 +262,7 @@ public class WindowsFileSystem implements FileSystem {
             String volume;
             if (type != 4) {
                 char[] chrVolume = new char[BUFSIZE];
-                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + "\\", chrVolume, BUFSIZE);
+                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + Symbol.BACKSLASH, chrVolume, BUFSIZE);
                 volume = new String(chrVolume).trim();
             } else {
                 volume = WmiUtils.getString(drives, LogicalDiskProperty.PROVIDERNAME, i);
@@ -274,7 +275,7 @@ public class WindowsFileSystem implements FileSystem {
             OSFileStore osStore = new OSFileStore();
             osStore.setName(String.format("%s (%s)", description, name));
             osStore.setVolume(volume);
-            osStore.setMount(name + "\\");
+            osStore.setMount(name + Symbol.BACKSLASH);
             osStore.setDescription(getDriveType(name));
             osStore.setType(WmiUtils.getString(drives, LogicalDiskProperty.FILESYSTEM, i));
             osStore.setUUID("");
@@ -330,7 +331,7 @@ public class WindowsFileSystem implements FileSystem {
 
 
     enum LogicalDiskProperty {
-        DESCRIPTION, DRIVETYPE, FILESYSTEM, FREESPACE, NAME, PROVIDERNAME, SIZE;
+        DESCRIPTION, DRIVETYPE, FILESYSTEM, FREESPACE, NAME, PROVIDERNAME, SIZE
     }
 
     /*

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.office.bridge;
 
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.metric.RequestBuilder;
 
@@ -31,7 +31,7 @@ import org.aoju.bus.office.metric.RequestBuilder;
  * 表示用于在线转换的office环境.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface OnlineOfficeContextAware extends Context {
@@ -41,7 +41,7 @@ public interface OnlineOfficeContextAware extends Context {
      *
      * @return 将发送转换请求的客户端.
      */
-    HttpClient getHttpClient();
+    Httpx getHttp();
 
     /**
      * 获取请求配置.

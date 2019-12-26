@@ -30,21 +30,18 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 
 /**
- * A certificate chain cleaner that uses a set of trusted root certificates to build the trusted
- * chain. This class duplicates the clean chain building performed during the TLS handshake. We
- * prefer other mechanisms where they exist, such as with
- * {@code org.aoju.bus.http.internal.platform.AndroidPlatform.AndroidCertificateChainCleaner}.
- *
- * <p>This class includes code from <a href="https://conscrypt.org/">Conscrypt's</a> {@code
- * TrustManagerImpl} and {@code TrustedCertificateIndex}.
+ * 使用一组可信根证书来构建可信链的证书链清理器。
+ * 这个类复制了在TLS握手期间执行的clean chain构建。我们更喜欢它们
+ * 存在的其他机制，比如{@code AndroidCertificateChainCleaner}
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class BasicCertificateChainCleaner extends CertificateChainCleaner {
+
     /**
-     * The maximum number of signers in a chain. We use 9 for consistency with OpenSSL.
+     * 链中最大的签名者数。我们使用9表示与OpenSSL的一致性.
      */
     private static final int MAX_SIGNERS = 9;
 
@@ -66,23 +63,22 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
         for (int c = 0; c < MAX_SIGNERS; c++) {
             X509Certificate toVerify = (X509Certificate) result.get(result.size() - 1);
 
-            // If this cert has been signed by a trusted cert, use that. Add the trusted certificate to
-            // the end of the chain unless it's already present. (That would happen if the first
-            // certificate in the chain is itself a self-signed and trusted CA certificate.)
+            // 如果此证书已由可信证书签署，请使用该证书。将受信任证书添加到链的末尾，除非它已经存在
+            // (如果链中的第一个证书本身是自签名和受信任的CA证书，则会发生这种情况)
             X509Certificate trustedCert = trustRootIndex.findByIssuerAndSignature(toVerify);
             if (trustedCert != null) {
                 if (result.size() > 1 || !toVerify.equals(trustedCert)) {
                     result.add(trustedCert);
                 }
                 if (verifySignature(trustedCert, trustedCert)) {
-                    return result; // The self-signed cert is a root CA. We're done.
+                    // 自签名证书是根CA
+                    return result;
                 }
                 foundTrustedCertificate = true;
                 continue;
             }
 
-            // Search for the certificate in the chain that signed this certificate. This is typically
-            // the next element in the chain, but it could be any element.
+            // 在签署此证书的链中搜索证书。这通常是链中的下一个元素,但它可以是任何元素.
             for (Iterator<Certificate> i = queue.iterator(); i.hasNext(); ) {
                 X509Certificate signingCert = (X509Certificate) i.next();
                 if (verifySignature(toVerify, signingCert)) {
@@ -92,12 +88,12 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
                 }
             }
 
-            // We've reached the end of the chain. If any cert in the chain is trusted, we're done.
+            // 我们已经到了链条的末端。如果链中的任何证书是可信的,我们就完成了.
             if (foundTrustedCertificate) {
                 return result;
             }
 
-            // The last link isn't trusted. Fail.
+            // 最后一个链接不可信,失败
             throw new SSLPeerUnverifiedException(
                     "Failed to find a trusted cert that signed " + toVerify);
         }

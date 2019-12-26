@@ -23,34 +23,33 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Memoizer;
 import org.aoju.bus.logger.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoizer.defaultExpiration;
-import static org.aoju.bus.health.Memoizer.memoize;
-
 /**
  * A CPU.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractCentralProcessor implements CentralProcessor {
 
-    private final Supplier<ProcessorIdentifier> cpuid = memoize(this::queryProcessorId);
-    private final Supplier<Long> maxFreq = memoize(this::queryMaxFreq);
-    private final Supplier<long[]> currentFreq = memoize(this::queryCurrentFreq, defaultExpiration());
-    private final Supplier<Long> contextSwitches = memoize(this::queryContextSwitches, defaultExpiration());
-    private final Supplier<Long> interrupts = memoize(this::queryInterrupts, defaultExpiration());
+    private final Supplier<ProcessorIdentifier> cpuid = Memoizer.memoize(this::queryProcessorId);
+    private final Supplier<Long> maxFreq = Memoizer.memoize(this::queryMaxFreq);
+    private final Supplier<long[]> currentFreq = Memoizer.memoize(this::queryCurrentFreq, Memoizer.defaultExpiration());
+    private final Supplier<Long> contextSwitches = Memoizer.memoize(this::queryContextSwitches, Memoizer.defaultExpiration());
+    private final Supplier<Long> interrupts = Memoizer.memoize(this::queryInterrupts, Memoizer.defaultExpiration());
 
-    private final Supplier<long[]> systemCpuLoadTicks = memoize(this::querySystemCpuLoadTicks, defaultExpiration());
-    private final Supplier<long[][]> processorCpuLoadTicks = memoize(this::queryProcessorCpuLoadTicks,
-            defaultExpiration());
+    private final Supplier<long[]> systemCpuLoadTicks = Memoizer.memoize(this::querySystemCpuLoadTicks, Memoizer.defaultExpiration());
+    private final Supplier<long[][]> processorCpuLoadTicks = Memoizer.memoize(this::queryProcessorCpuLoadTicks,
+            Memoizer.defaultExpiration());
 
     // Logical and Physical Processor Counts
     private final int physicalPackageCount;
@@ -71,7 +70,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         Set<Integer> physPkgs = new HashSet<>();
         for (LogicalProcessor logProc : this.logicalProcessors) {
             int pkg = logProc.getPhysicalPackageNumber();
-            physProcPkgs.add(logProc.getPhysicalProcessorNumber() + ":" + pkg);
+            physProcPkgs.add(logProc.getPhysicalProcessorNumber() + Symbol.COLON + pkg);
             physPkgs.add(pkg);
         }
         this.logicalProcessorCount = this.logicalProcessors.length;
@@ -405,11 +404,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getName());
-        sb.append("\n ").append(getPhysicalPackageCount()).append(" physical CPU package(s)");
-        sb.append("\n ").append(getPhysicalProcessorCount()).append(" physical CPU core(s)");
-        sb.append("\n ").append(getLogicalProcessorCount()).append(" logical CPU(s)");
-        sb.append('\n').append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
-        sb.append('\n').append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
+        sb.append(Symbol.LF + Symbol.SPACE).append(getPhysicalPackageCount()).append(" physical CPU package(s)");
+        sb.append(Symbol.LF + Symbol.SPACE).append(getPhysicalProcessorCount()).append(" physical CPU core(s)");
+        sb.append(Symbol.LF + Symbol.SPACE).append(getLogicalProcessorCount()).append(" logical CPU(s)");
+        sb.append(Symbol.C_LF).append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
+        sb.append(Symbol.C_LF).append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
         return sb.toString();
     }
 

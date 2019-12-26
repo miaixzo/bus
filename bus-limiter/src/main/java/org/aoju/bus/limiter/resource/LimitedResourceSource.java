@@ -30,7 +30,7 @@ import java.util.Collection;
  * 获取限流规则
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface LimitedResourceSource {
@@ -41,4 +41,5 @@ public interface LimitedResourceSource {
      * @return the object
      */
     Collection<LimitedResource> getLimitedResource(Class<?> targetClass, Method method);
+
 }

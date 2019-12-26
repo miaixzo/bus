@@ -26,6 +26,7 @@ package org.aoju.bus.storage.provider;
 import com.UpYun;
 import com.upyun.UpException;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
@@ -44,7 +45,7 @@ import java.util.stream.Collectors;
  * 存储服务-又拍云
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class UpaiYunOssProvider extends AbstractProvider {
@@ -133,7 +134,7 @@ public class UpaiYunOssProvider extends AbstractProvider {
     @Override
     public Readers remove(String fileName) {
         try {
-            client.deleteFile("/" + fileName);
+            client.deleteFile(Symbol.C_SLASH + fileName);
             return new Readers(Builder.SUCCESS);
         } catch (IOException | UpException e) {
             Logger.error("file remove failed", e.getMessage());

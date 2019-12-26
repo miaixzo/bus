@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.io.resource;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
@@ -39,7 +40,7 @@ import java.nio.charset.Charset;
  * URL资源访问类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class UriResource implements Resource {
@@ -139,7 +140,7 @@ public class UriResource implements Resource {
      */
     @Override
     public String toString() {
-        return (null == this.url) ? "null" : this.url.toString();
+        return (null == this.url) ? Normal.NULL : this.url.toString();
     }
 
 }

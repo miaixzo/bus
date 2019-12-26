@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Normal;
  * Boolean类型相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class BooleanUtils {
@@ -182,7 +182,7 @@ public class BooleanUtils {
      * @return long值
      */
     public static long toLong(boolean value) {
-        return (long) toInt(value);
+        return toInt(value);
     }
 
     /**
@@ -242,7 +242,7 @@ public class BooleanUtils {
      * @return double值
      */
     public static double toDouble(boolean value) {
-        return (double) toInt(value);
+        return toInt(value);
     }
 
     /**

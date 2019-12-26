@@ -24,10 +24,7 @@
 package org.aoju.bus.core.utils;
 
 
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.SimpleCache;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.*;
@@ -41,7 +38,7 @@ import java.util.Set;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ReflectUtils {
@@ -81,7 +78,7 @@ public class ReflectUtils {
      */
     public static Object invokeGetter(Object obj, String name) {
         Object object = obj;
-        for (String method : StringUtils.split(name, ".")) {
+        for (String method : StringUtils.split(name, Symbol.DOT)) {
             String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
         }
@@ -98,7 +95,7 @@ public class ReflectUtils {
      */
     public static void invokeSetter(Object obj, String name, Object value) {
         Object object = obj;
-        String[] names = StringUtils.split(name, ".");
+        String[] names = StringUtils.split(name, Symbol.DOT);
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(names[i]);
@@ -133,13 +130,13 @@ public class ReflectUtils {
             }
         }
         if (type.equals(String.class)) {
-            return obj == null ? "" : obj.toString();
+            return obj == null ? Normal.EMPTY : obj.toString();
         }
         return obj;
     }
 
     public static Object invokeMethod(Method method, Object target) {
-        return invokeMethod(method, target, new Object[0]);
+        return invokeMethod(method, target, Normal.EMPTY_OBJECT_ARRAY);
     }
 
     public static Object invokeMethod(Method method, Object target, Object... args) {
@@ -534,7 +531,7 @@ public class ReflectUtils {
         try {
             return field.get(obj);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for " + obj.getClass() + "." + field.getName());
+            throw new InstrumentException("IllegalAccess for " + obj.getClass() + Symbol.DOT + field.getName());
         }
     }
 
@@ -588,7 +585,7 @@ public class ReflectUtils {
         try {
             field.set(obj, value);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for " + obj.getClass() + "." + field.getName());
+            throw new InstrumentException("IllegalAccess for " + obj.getClass() + Symbol.DOT + field.getName());
         }
     }
 
@@ -616,7 +613,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>... paramTypes) throws SecurityException {
         return getMethod(clazz, true, methodName, paramTypes);
@@ -644,7 +641,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static Method getMethod(Class<?> clazz, boolean ignoreCase, String methodName, Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringUtils.isBlank(methodName)) {
@@ -673,7 +670,7 @@ public class ReflectUtils {
      * @throws SecurityException 安全异常
      */
     public static Set<String> getMethodNames(Class<?> clazz) throws SecurityException {
-        final HashSet<String> methodSet = new HashSet<String>();
+        final HashSet<String> methodSet = new HashSet<>();
         final Method[] methods = getMethods(clazz);
         for (Method method : methods) {
             methodSet.add(method.getName());

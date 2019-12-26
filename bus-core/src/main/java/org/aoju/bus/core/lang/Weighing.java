@@ -45,7 +45,7 @@ import java.util.TreeMap;
  *
  * @param <T> 权重随机获取的对象类型
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Weighing<T> implements Serializable {
@@ -119,7 +119,7 @@ public class Weighing<T> implements Serializable {
      * @return this
      */
     public Weighing<T> add(T obj, double weight) {
-        return add(new WeightObj<T>(obj, weight));
+        return add(new WeightObj<>(obj, weight));
     }
 
     /**

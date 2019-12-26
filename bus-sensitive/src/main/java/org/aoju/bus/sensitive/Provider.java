@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.ContextValueFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 import org.aoju.bus.sensitive.annotation.Condition;
@@ -45,7 +46,7 @@ import java.util.*;
  *
  * @param <T> 参数类型
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Provider<T> {
@@ -80,7 +81,7 @@ public class Provider<T> {
      * @return 是否已经脱敏了
      */
     public static boolean alreadyBeSentisived(Object object) {
-        return object == null || object.toString().indexOf("*") > 0;
+        return object == null || object.toString().indexOf(Symbol.STAR) > 0;
     }
 
     /**

@@ -23,17 +23,19 @@
  */
 package org.aoju.bus.http.secure;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import javax.security.auth.x500.X500Principal;
 
 /**
- * A distinguished name (DN) parser. This parser only supports extracting a string value from a DN.
- * It doesn't support values in the hex-string style.
+ * 专有名称(DN)解析器。该解析器只支持从DN中提取字符串值。
+ * 它不支持十六进制字符串样式的值.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
-final class DistinguishedNameParser {
+public final class DistinguishedNameParser {
 
     private final String dn;
     private final int length;
@@ -42,70 +44,54 @@ final class DistinguishedNameParser {
     private int end;
 
     /**
-     * Temporary variable to store positions of the currently parsed item.
+     * 临时变量，用于存储当前已解析项的位置
      */
     private int cur;
 
     /**
-     * Distinguished name characters.
+     * 专有名称的字符
      */
     private char[] chars;
 
     DistinguishedNameParser(X500Principal principal) {
-        // RFC2253 is used to ensure we get attributes in the reverse
-        // order of the underlying ASN.1 encoding, so that the most
-        // significant values of repeated attributes occur first.
         this.dn = principal.getName(X500Principal.RFC2253);
         this.length = this.dn.length();
     }
 
-    // gets next attribute type: (ALPHA 1*keychar) / oid
     private String nextAT() {
-        // skip preceding space chars, they can present after
-        // comma or semicolon (compatibility with RFC 1779)
-        for (; pos < length && chars[pos] == ' '; pos++) {
+        for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
         }
         if (pos == length) {
-            return null; // reached the end of DN
+            return null;
         }
 
-        // mark the beginning of attribute type
         beg = pos;
 
-        // attribute type chars
         pos++;
-        for (; pos < length && chars[pos] != '=' && chars[pos] != ' '; pos++) {
-            // we don't follow exact BNF syntax here:
-            // accept any char except space and '='
+        for (; pos < length && chars[pos] != Symbol.C_EQUAL && chars[pos] != Symbol.C_SPACE; pos++) {
         }
         if (pos >= length) {
             throw new IllegalStateException("Unexpected end of DN: " + dn);
         }
 
-        // mark the end of attribute type
         end = pos;
 
-        // skip trailing space chars between attribute type and '='
-        // (compatibility with RFC 1779)
-        if (chars[pos] == ' ') {
-            for (; pos < length && chars[pos] != '=' && chars[pos] == ' '; pos++) {
+        if (chars[pos] == Symbol.C_SPACE) {
+            for (; pos < length && chars[pos] != Symbol.C_EQUAL && chars[pos] == Symbol.C_SPACE; pos++) {
             }
 
-            if (chars[pos] != '=' || pos == length) {
+            if (chars[pos] != Symbol.C_EQUAL || pos == length) {
                 throw new IllegalStateException("Unexpected end of DN: " + dn);
             }
         }
 
-        pos++; //skip '=' char
+        pos++;
 
-        // skip space chars between '=' and attribute value
-        // (compatibility with RFC 1779)
-        for (; pos < length && chars[pos] == ' '; pos++) {
+        for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
+
         }
 
-        // in case of oid attribute type skip its prefix: "oid." or "OID."
-        // (compatibility with RFC 1779)
-        if ((end - beg > 4) && (chars[beg + 3] == '.')
+        if ((end - beg > 4) && (chars[beg + 3] == Symbol.C_DOT)
                 && (chars[beg] == 'O' || chars[beg] == 'o')
                 && (chars[beg + 1] == 'I' || chars[beg + 1] == 'i')
                 && (chars[beg + 2] == 'D' || chars[beg + 2] == 'd')) {
@@ -115,7 +101,6 @@ final class DistinguishedNameParser {
         return new String(chars, beg, end - beg);
     }
 
-    // gets quoted attribute value: QUOTATION *( quotechar / pair ) QUOTATION
     private String quotedAV() {
         pos++;
         beg = pos;
@@ -126,70 +111,56 @@ final class DistinguishedNameParser {
                 throw new IllegalStateException("Unexpected end of DN: " + dn);
             }
 
-            if (chars[pos] == '"') {
-                // enclosing quotation was found
+            if (chars[pos] == Symbol.C_DOUBLE_QUOTES) {
                 pos++;
                 break;
-            } else if (chars[pos] == '\\') {
+            } else if (chars[pos] == Symbol.C_BACKSLASH) {
                 chars[end] = getEscaped();
             } else {
-                // shift char: required for string with escaped chars
                 chars[end] = chars[pos];
             }
             pos++;
             end++;
         }
 
-        // skip trailing space chars before comma or semicolon.
-        // (compatibility with RFC 1779)
-        for (; pos < length && chars[pos] == ' '; pos++) {
+        for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
         }
 
         return new String(chars, beg, end - beg);
     }
 
-    // gets hex string attribute value: "#" hexstring
     private String hexAV() {
         if (pos + 4 >= length) {
-            // encoded byte array  must be not less then 4 c
             throw new IllegalStateException("Unexpected end of DN: " + dn);
         }
 
-        beg = pos; // store '#' position
+        beg = pos;
         pos++;
         while (true) {
-
-            // check for end of attribute value
-            // looks for space and component separators
-            if (pos == length || chars[pos] == '+' || chars[pos] == ','
-                    || chars[pos] == ';') {
+            if (pos == length || chars[pos] == Symbol.C_PLUS || chars[pos] == Symbol.C_COMMA
+                    || chars[pos] == Symbol.C_SEMICOLON) {
                 end = pos;
                 break;
             }
 
-            if (chars[pos] == ' ') {
+            if (chars[pos] == Symbol.C_SPACE) {
                 end = pos;
                 pos++;
-                // skip trailing space chars before comma or semicolon.
-                // (compatibility with RFC 1779)
-                for (; pos < length && chars[pos] == ' '; pos++) {
+                for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
                 }
                 break;
             } else if (chars[pos] >= 'A' && chars[pos] <= 'F') {
-                chars[pos] += 32; //to low case
+                chars[pos] += 32;
             }
 
             pos++;
         }
 
-        // verify length of hex string
-        // encoded byte array  must be not less then 4 and must be even number
-        int hexLen = end - beg; // skip first '#' char
+        int hexLen = end - beg;
         if (hexLen < 5 || (hexLen & 1) == 0) {
             throw new IllegalStateException("Unexpected end of DN: " + dn);
         }
 
-        // get byte encoding from string representation
         byte[] encoded = new byte[hexLen / 2];
         for (int i = 0, p = beg + 1; i < encoded.length; p += 2, i++) {
             encoded[i] = (byte) getByte(p);
@@ -198,41 +169,34 @@ final class DistinguishedNameParser {
         return new String(chars, beg, hexLen);
     }
 
-    // gets string attribute value: *( stringchar / pair )
     private String escapedAV() {
         beg = pos;
         end = pos;
         while (true) {
             if (pos >= length) {
-                // the end of DN has been found
                 return new String(chars, beg, end - beg);
             }
 
             switch (chars[pos]) {
-                case '+':
-                case ',':
-                case ';':
-                    // separator char has been found
+                case Symbol.C_PLUS:
+                case Symbol.C_COMMA:
+                case Symbol.C_SEMICOLON:
                     return new String(chars, beg, end - beg);
-                case '\\':
-                    // escaped char
+                case Symbol.C_BACKSLASH:
                     chars[end++] = getEscaped();
                     pos++;
                     break;
-                case ' ':
-                    // need to figure out whether space defines
-                    // the end of attribute value or not
+                case Symbol.C_SPACE:
                     cur = end;
 
                     pos++;
-                    chars[end++] = ' ';
+                    chars[end++] = Symbol.C_SPACE;
 
-                    for (; pos < length && chars[pos] == ' '; pos++) {
-                        chars[end++] = ' ';
+                    for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
+                        chars[end++] = Symbol.C_SPACE;
                     }
-                    if (pos == length || chars[pos] == ',' || chars[pos] == '+'
-                            || chars[pos] == ';') {
-                        // separator char or the end of DN has been found
+                    if (pos == length || chars[pos] == Symbol.C_COMMA || chars[pos] == Symbol.C_PLUS
+                            || chars[pos] == Symbol.C_SEMICOLON) {
                         return new String(chars, beg, cur - beg);
                     }
                     break;
@@ -243,7 +207,6 @@ final class DistinguishedNameParser {
         }
     }
 
-    // returns escaped char
     private char getEscaped() {
         pos++;
         if (pos == length) {
@@ -251,46 +214,41 @@ final class DistinguishedNameParser {
         }
 
         switch (chars[pos]) {
-            case '"':
-            case '\\':
-            case ',':
-            case '=':
-            case '+':
-            case '<':
-            case '>':
-            case '#':
-            case ';':
-            case ' ':
-            case '*':
-            case '%':
-            case '_':
-                //FIXME: escaping is allowed only for leading or trailing space char
+            case Symbol.C_DOUBLE_QUOTES:
+            case Symbol.C_BACKSLASH:
+            case Symbol.C_COMMA:
+            case Symbol.C_EQUAL:
+            case Symbol.C_PLUS:
+            case Symbol.C_LT:
+            case Symbol.C_GT:
+            case Symbol.C_SHAPE:
+            case Symbol.C_SEMICOLON:
+            case Symbol.C_SPACE:
+            case Symbol.C_STAR:
+            case Symbol.C_PERCENT:
+            case Symbol.C_UNDERLINE:
                 return chars[pos];
             default:
-                // RFC doesn't explicitly say that escaped hex pair is
-                // interpreted as UTF-8 char. It only contains an example of such DN.
                 return getUTF8();
         }
     }
 
-    // decodes UTF-8 char
-    // see http://www.unicode.org for UTF-8 bit distribution table
     private char getUTF8() {
         int res = getByte(pos);
         pos++; //FIXME tmp
 
-        if (res < 128) { // first byte: 0-7F
+        if (res < 128) {
             return (char) res;
         } else if (res >= 192 && res <= 247) {
 
             int count;
-            if (res <= 223) { // two bytes: C0-DF
+            if (res <= 223) {
                 count = 1;
                 res = res & 0x1F;
-            } else if (res <= 239) { // three bytes: E0-EF
+            } else if (res <= 239) {
                 count = 2;
                 res = res & 0x0F;
-            } else { // four bytes: F0-F7
+            } else {
                 count = 3;
                 res = res & 0x07;
             }
@@ -298,31 +256,25 @@ final class DistinguishedNameParser {
             int b;
             for (int i = 0; i < count; i++) {
                 pos++;
-                if (pos == length || chars[pos] != '\\') {
-                    return 0x3F; //FIXME failed to decode UTF-8 char - return '?'
+                if (pos == length || chars[pos] != Symbol.C_BACKSLASH) {
+                    return 0x3F;
                 }
                 pos++;
 
                 b = getByte(pos);
                 pos++; //FIXME tmp
                 if ((b & 0xC0) != 0x80) {
-                    return 0x3F; //FIXME failed to decode UTF-8 char - return '?'
+                    return 0x3F;
                 }
 
                 res = (res << 6) + (b & 0x3F);
             }
             return (char) res;
         } else {
-            return 0x3F; //FIXME failed to decode UTF-8 char - return '?'
+            return 0x3F;
         }
     }
 
-    // Returns byte representation of a char pair
-    // The char pair is composed of DN char in
-    // specified 'position' and the next char
-    // According to BNF syntax:
-    // hexchar    = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-    //                    / "a" / "b" / "c" / "d" / "e" / "f"
     private int getByte(int position) {
         if (position + 1 >= length) {
             throw new IllegalStateException("Malformed DN: " + dn);
@@ -331,8 +283,8 @@ final class DistinguishedNameParser {
         int b1, b2;
 
         b1 = chars[position];
-        if (b1 >= '0' && b1 <= '9') {
-            b1 = b1 - '0';
+        if (b1 >= Symbol.C_ZERO && b1 <= Symbol.C_NINE) {
+            b1 = b1 - Symbol.C_ZERO;
         } else if (b1 >= 'a' && b1 <= 'f') {
             b1 = b1 - 87; // 87 = 'a' - 10
         } else if (b1 >= 'A' && b1 <= 'F') {
@@ -342,8 +294,8 @@ final class DistinguishedNameParser {
         }
 
         b2 = chars[position + 1];
-        if (b2 >= '0' && b2 <= '9') {
-            b2 = b2 - '0';
+        if (b2 >= Symbol.C_ZERO && b2 <= Symbol.C_NINE) {
+            b2 = b2 - Symbol.C_ZERO;
         } else if (b2 >= 'a' && b2 <= 'f') {
             b2 = b2 - 87; // 87 = 'a' - 10
         } else if (b2 >= 'A' && b2 <= 'F') {
@@ -356,7 +308,6 @@ final class DistinguishedNameParser {
     }
 
     public String findMostSpecific(String attributeType) {
-        // Initialize internal state.
         pos = 0;
         beg = 0;
         end = 0;
@@ -375,24 +326,20 @@ final class DistinguishedNameParser {
             }
 
             switch (chars[pos]) {
-                case '"':
+                case Symbol.C_DOUBLE_QUOTES:
                     attValue = quotedAV();
                     break;
-                case '#':
+                case Symbol.C_SHAPE:
                     attValue = hexAV();
                     break;
-                case '+':
-                case ',':
-                case ';': // compatibility with RFC 1779: semicolon can separate RDNs
-                    //empty attribute value
+                case Symbol.C_PLUS:
+                case Symbol.C_COMMA:
+                case Symbol.C_SEMICOLON:
                     break;
                 default:
                     attValue = escapedAV();
             }
 
-            // Values are ordered from most specific to least specific
-            // due to the RFC2253 formatting. So take the first match
-            // we see.
             if (attributeType.equalsIgnoreCase(attType)) {
                 return attValue;
             }
@@ -401,8 +348,8 @@ final class DistinguishedNameParser {
                 return null;
             }
 
-            if (chars[pos] == ',' || chars[pos] == ';') {
-            } else if (chars[pos] != '+') {
+            if (chars[pos] == Symbol.C_COMMA || chars[pos] == Symbol.C_SEMICOLON) {
+            } else if (chars[pos] != Symbol.C_PLUS) {
                 throw new IllegalStateException("Malformed DN: " + dn);
             }
 

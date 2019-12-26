@@ -28,7 +28,7 @@ import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invocation;
 import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
-import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.aspects.Aspectj;
 import org.aoju.bus.proxy.factory.AbstractFactory;
 import org.aoju.bus.proxy.intercept.CglibInterceptor;
 
@@ -37,7 +37,7 @@ import java.lang.reflect.Modifier;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CglibFactory extends AbstractFactory {
@@ -45,10 +45,10 @@ public class CglibFactory extends AbstractFactory {
     private static CallbackFilter callbackFilter = new PublicCallbackFilter();
 
     @Override
-    public <T> T proxy(T target, Aspect aspect) {
+    public <T> T proxy(T target, Aspectj aspectj) {
         final Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(target.getClass());
-        enhancer.setCallback(new CglibInterceptor(target, aspect));
+        enhancer.setCallback(new CglibInterceptor(target, aspectj));
         return (T) enhancer.create();
     }
 

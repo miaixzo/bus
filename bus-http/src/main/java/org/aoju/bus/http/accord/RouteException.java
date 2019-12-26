@@ -23,19 +23,20 @@
  */
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.core.lang.exception.HttpUncheckException;
+import org.aoju.bus.http.Builder;
 
 import java.io.IOException;
 
 /**
- * An exception thrown to indicate a problem connecting via a single Route. Multiple attempts may
- * have been made with alternative protocols, none of which were successful.
+ * 抛出异常，以指示通过单一路由连接的问题。
+ * 可能已经用替代协议进行了多次尝试，但没有一次成功
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
-public final class RouteException extends RuntimeException {
+public final class RouteException extends HttpUncheckException {
 
     private IOException firstException;
     private IOException lastException;
@@ -55,7 +56,7 @@ public final class RouteException extends RuntimeException {
     }
 
     public void addConnectException(IOException e) {
-        Internal.addSuppressedIfPossible(firstException, e);
+        Builder.addSuppressedIfPossible(firstException, e);
         lastException = e;
     }
 

@@ -28,6 +28,8 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.linux.LibC.Sysinfo;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.linux.LinuxLibc;
@@ -48,7 +50,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LinuxOS extends AbstractOS {
@@ -93,9 +95,9 @@ public class LinuxOS extends AbstractOS {
 
     static {
         String stat = Builder.getStringFromFile(ProcUtils.getProcPath() + "/self/stat");
-        if (!stat.isEmpty() && stat.contains(")")) {
+        if (!stat.isEmpty() && stat.contains(Symbol.PARENTHESE_RIGHT)) {
             // add 3 to account for pid, process name in prarenthesis, and state
-            PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, ' ') + 3;
+            PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, Symbol.C_SPACE) + 3;
         } else {
             // Default assuming recent kernel
             PROC_PID_STAT_LENGTH = 52;
@@ -139,7 +141,7 @@ public class LinuxOS extends AbstractOS {
 
     private static int getParentPidFromProcFile(int pid) {
         String stat = Builder.getStringFromFile(String.format("/proc/%d/stat", pid));
-        long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, PROC_PID_STAT_LENGTH, ' ');
+        long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
         return (int) statArray[ProcPidStat.PPID.ordinal()];
     }
 
@@ -180,7 +182,7 @@ public class LinuxOS extends AbstractOS {
     private static String filenameToFamily(String name) {
         switch (name.toLowerCase()) {
             // Handle known special cases
-            case "":
+            case Normal.EMPTY:
                 return "Solaris";
             case "blackcat":
                 return "Black Cat";
@@ -304,14 +306,14 @@ public class LinuxOS extends AbstractOS {
     }
 
     private OSProcess getProcess(int pid, LinuxUserGroupInfo userGroupInfo, boolean slowFields) {
-        String path = "";
+        String path = Normal.EMPTY;
         Pointer buf = new Memory(1024);
         int size = LinuxLibc.INSTANCE.readlink(String.format("/proc/%d/exe", pid), buf, 1023);
         if (size > 0) {
             String tmp = buf.getString(0);
             path = tmp.substring(0, tmp.length() < size ? tmp.length() : size);
         }
-        Map<String, String> io = Builder.getKeyValueMapFromFile(String.format("/proc/%d/io", pid), ":");
+        Map<String, String> io = Builder.getKeyValueMapFromFile(String.format("/proc/%d/io", pid), Symbol.COLON);
         // See man proc for how to parse /proc/[pid]/stat
         long now = System.currentTimeMillis();
         String stat = Builder.getStringFromFile(String.format("/proc/%d/stat", pid));
@@ -321,7 +323,7 @@ public class LinuxOS extends AbstractOS {
         }
         // We can get name and status more easily from /proc/pid/status which we
         // call later, so just get the numeric bits here
-        long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, PROC_PID_STAT_LENGTH, ' ');
+        long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
         // Fetch cached process if it exists
         OSProcess proc = new OSProcess(this);
         proc.setProcessID(pid);
@@ -343,8 +345,8 @@ public class LinuxOS extends AbstractOS {
         proc.setUserTime(statArray[ProcPidStat.USER_TIME.ordinal()] * 1000L / USER_HZ);
         proc.setUpTime(now - proc.getStartTime());
         // See man proc for how to parse /proc/[pid]/io
-        proc.setBytesRead(Builder.parseLongOrDefault(io.getOrDefault("read_bytes", ""), 0L));
-        proc.setBytesWritten(Builder.parseLongOrDefault(io.getOrDefault("write_bytes", ""), 0L));
+        proc.setBytesRead(Builder.parseLongOrDefault(io.getOrDefault("read_bytes", Normal.EMPTY), 0L));
+        proc.setBytesWritten(Builder.parseLongOrDefault(io.getOrDefault("write_bytes", Normal.EMPTY), 0L));
 
         // gets the open files count
         if (slowFields) {
@@ -365,8 +367,8 @@ public class LinuxOS extends AbstractOS {
             }
         }
 
-        Map<String, String> status = Builder.getKeyValueMapFromFile(String.format("/proc/%d/status", pid), ":");
-        proc.setName(status.getOrDefault("Name", ""));
+        Map<String, String> status = Builder.getKeyValueMapFromFile(String.format("/proc/%d/status", pid), Symbol.COLON);
+        proc.setName(status.getOrDefault("Name", Normal.EMPTY));
         proc.setPath(path);
         switch (status.getOrDefault("State", "U").charAt(0)) {
             case 'R':
@@ -388,8 +390,8 @@ public class LinuxOS extends AbstractOS {
                 proc.setState(OSProcess.State.OTHER);
                 break;
         }
-        proc.setUserID(Builder.whitespaces.split(status.getOrDefault("Uid", ""))[0]);
-        proc.setGroupID(Builder.whitespaces.split(status.getOrDefault("Gid", ""))[0]);
+        proc.setUserID(Builder.whitespaces.split(status.getOrDefault("Uid", Normal.EMPTY))[0]);
+        proc.setGroupID(Builder.whitespaces.split(status.getOrDefault("Gid", Normal.EMPTY))[0]);
         OSUser user = userGroupInfo.getUser(proc.getUserID());
         if (user != null) {
             proc.setUser(user.getUserName());
@@ -542,8 +544,8 @@ public class LinuxOS extends AbstractOS {
         }
         // If we've gotten this far with no match, use the distrib-release
         // filename (defaults will eventually give "Unknown")
-        return filenameToFamily(etcDistribRelease.replace("/etc/", "").replace("release", "").replace("version", "")
-                .replace("-", "").replace("_", ""));
+        return filenameToFamily(etcDistribRelease.replace("/etc/", Normal.EMPTY).replace("release", "").replace("version", Normal.EMPTY)
+                .replace(Symbol.HYPHEN, Normal.EMPTY).replace(Symbol.UNDERLINE, Normal.EMPTY));
     }
 
     /**
@@ -559,10 +561,7 @@ public class LinuxOS extends AbstractOS {
             for (String line : osRelease) {
                 if (line.startsWith("VERSION=")) {
                     Logger.debug("os-release: {}", line);
-                    // remove beginning and ending '"' characters, etc from
-                    // VERSION="14.04.4 LTS, Trusty Tahr" (Ubuntu style)
-                    // or VERSION="17 (Beefy Miracle)" (os-release doc style)
-                    line = line.replace("VERSION=", "").replaceAll("^\"|\"$", "").trim();
+                    line = line.replace("VERSION=", Normal.EMPTY).replaceAll("^\"|\"$", "").trim();
                     String[] split = line.split("[()]");
                     if (split.length <= 1) {
                         // If no parentheses, check for Ubuntu's comma format
@@ -576,14 +575,10 @@ public class LinuxOS extends AbstractOS {
                     }
                 } else if (line.startsWith("NAME=") && family == null) {
                     Logger.debug("os-release: {}", line);
-                    // remove beginning and ending '"' characters, etc from
-                    // NAME="Ubuntu"
-                    family = line.replace("NAME=", "").replaceAll("^\"|\"$", "").trim();
+                    family = line.replace("NAME=", Normal.EMPTY).replaceAll("^\"|\"$", "").trim();
                 } else if (line.startsWith("VERSION_ID=") && this.versionId == null) {
                     Logger.debug("os-release: {}", line);
-                    // remove beginning and ending '"' characters, etc from
-                    // VERSION_ID="14.04"
-                    this.versionId = line.replace("VERSION_ID=", "").replaceAll("^\"|\"$", "").trim();
+                    this.versionId = line.replace("VERSION_ID=", Normal.EMPTY).replaceAll("^\"|\"$", "").trim();
                 }
             }
         }
@@ -604,19 +599,19 @@ public class LinuxOS extends AbstractOS {
         for (String line : Command.runNative("lsb_release -a")) {
             if (line.startsWith("Description:")) {
                 Logger.debug("lsb_release -a: {}", line);
-                line = line.replace("Description:", "").trim();
+                line = line.replace("Description:", Normal.EMPTY).trim();
                 if (line.contains(" release ")) {
                     family = parseRelease(line, " release ");
                 }
             } else if (line.startsWith("Distributor ID:") && family == null) {
                 Logger.debug("lsb_release -a: {}", line);
-                family = line.replace("Distributor ID:", "").trim();
+                family = line.replace("Distributor ID:", Normal.EMPTY).trim();
             } else if (line.startsWith("Release:") && this.versionId == null) {
                 Logger.debug("lsb_release -a: {}", line);
-                this.versionId = line.replace("Release:", "").trim();
+                this.versionId = line.replace("Release:", Normal.EMPTY).trim();
             } else if (line.startsWith("Codename:") && this.codeName == null) {
                 Logger.debug("lsb_release -a: {}", line);
-                this.codeName = line.replace("Codename:", "").trim();
+                this.codeName = line.replace("Codename:", Normal.EMPTY).trim();
             }
         }
         return family;
@@ -636,7 +631,7 @@ public class LinuxOS extends AbstractOS {
             for (String line : osRelease) {
                 if (line.startsWith("DISTRIB_DESCRIPTION=")) {
                     Logger.debug("lsb-release: {}", line);
-                    line = line.replace("DISTRIB_DESCRIPTION=", "").replaceAll("^\"|\"$", "").trim();
+                    line = line.replace("DISTRIB_DESCRIPTION=", Normal.EMPTY).replaceAll("^\"|\"$", "").trim();
                     if (line.contains(" release ")) {
                         family = parseRelease(line, " release ");
                     }
@@ -719,7 +714,7 @@ public class LinuxOS extends AbstractOS {
             for (File f : dir.listFiles((f, name) -> name.toLowerCase().endsWith(".conf"))) {
                 // remove .conf extension
                 String name = f.getName().substring(0, f.getName().length() - 5);
-                int index = name.lastIndexOf('.');
+                int index = name.lastIndexOf(Symbol.C_DOT);
                 String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
                 if (!running.contains(name) && !running.contains(shortName)) {
                     OSService s = new OSService(name, 0, OSService.State.STOPPED);

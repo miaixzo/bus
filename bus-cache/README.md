@@ -57,7 +57,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
 <dependency>
     <groupId>org.aoju.bus</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>5.3.6</version>
+    <version>5.3.8</version>
 </dependency>
 ```
 - XML注册
@@ -75,7 +75,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
     </constructor-arg>
 </bean>
 
-org.aoju.bus.cache.support.cache.Cache实现 -->
+org.aoju.bus.cache.shooting.cache.Cache实现 -->
 <bean id="guava" class="GuavaCache">
     <constructor-arg name="expire" value="600000"/>
     <constructor-arg name="size" value="100000"/>

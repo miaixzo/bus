@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * 存储服务-京东云
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class JdYunOssProvider extends AbstractProvider {
@@ -115,11 +115,11 @@ public class JdYunOssProvider extends AbstractProvider {
             storageItem.setName(item.getKey());
             storageItem.setOwner(item.getOwner().getDisplayName());
             storageItem.setSize(StringUtils.toString(item.getSize()));
-            Map<String, Object> extended = Maps.newHashMap();
-            extended.put("tag", item.getETag());
-            extended.put("storageClass", item.getStorageClass());
-            extended.put("lastModified", item.getLastModified());
-            storageItem.setExtended(extended);
+            Map<String, Object> extend = Maps.newHashMap();
+            extend.put("tag", item.getETag());
+            extend.put("storageClass", item.getStorageClass());
+            extend.put("lastModified", item.getLastModified());
+            storageItem.setExtend(extend);
             return storageItem;
         }).collect(Collectors.toList()));
     }

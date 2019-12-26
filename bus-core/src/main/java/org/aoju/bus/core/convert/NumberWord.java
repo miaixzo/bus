@@ -24,13 +24,14 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
  * 将浮点数类型的number转换成英语的表达方式
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class NumberWord {
@@ -56,8 +57,8 @@ public class NumberWord {
      * @return 英文表达式
      */
     private static String format(String x) {
-        int z = x.indexOf("."); // 取小数点位置
-        String lstr = "", rstr = "";
+        int z = x.indexOf(Symbol.DOT); // 取小数点位置
+        String lstr, rstr = Normal.EMPTY;
         if (z > -1) { // 看是否有小数,如果有,则分别取左边和右边
             lstr = x.substring(0, z);
             rstr = x.substring(z + 1);
@@ -71,10 +72,10 @@ public class NumberWord {
 
         switch (lstrrev.length() % 3) {
             case 1:
-                lstrrev += "00";
+                lstrrev += Symbol.ZERO + Symbol.ZERO;
                 break;
             case 2:
-                lstrrev += "0";
+                lstrrev += Symbol.ZERO;
                 break;
         }
         String lm = ""; // 用来存放转换後的整数部分
@@ -83,7 +84,7 @@ public class NumberWord {
             if (!a[i].equals("000")) { // 用来避免这种情况：1000000 = first million
                 // thousand only
                 if (i != 0) {
-                    lm = transThree(a[i]) + " " + parseMore(String.valueOf(i)) + " " + lm; // 加:
+                    lm = transThree(a[i]) + Symbol.SPACE + parseMore(String.valueOf(i)) + Symbol.SPACE + lm; // 加:
                     // thousand、million、billion
                 } else {
                     lm = transThree(a[i]); // 防止i=0时, 在多加两个空格.
@@ -95,10 +96,10 @@ public class NumberWord {
 
         String xs = ""; // 用来存放转换後小数部分
         if (z > -1) {
-            xs = "AND CENTS " + transTwo(rstr) + " "; // 小数部分存在时转换小数
+            xs = "AND CENTS " + transTwo(rstr) + Symbol.SPACE; // 小数部分存在时转换小数
         }
 
-        return lm.trim() + " " + xs + "ONLY";
+        return lm.trim() + Symbol.SPACE + xs + "ONLY";
     }
 
     private static String parseFirst(String s) {
@@ -124,17 +125,17 @@ public class NumberWord {
         if (s.length() > 2) {
             s = s.substring(0, 2);
         } else if (s.length() < 2) {
-            s = "0" + s;
+            s = Symbol.ZERO + s;
         }
 
-        if (s.startsWith("0")) {// 07 - seven 是否小於10
+        if (s.startsWith(Symbol.ZERO)) {// 07 - seven 是否小於10
             value = parseFirst(s);
-        } else if (s.startsWith("1")) {// 17 seventeen 是否在10和20之间
+        } else if (s.startsWith(Symbol.ONE)) {// 17 seventeen 是否在10和20之间
             value = parseTeen(s);
-        } else if (s.endsWith("0")) {// 是否在10与100之间的能被10整除的数
+        } else if (s.endsWith(Symbol.ZERO)) {// 是否在10与100之间的能被10整除的数
             value = parseTen(s);
         } else {
-            value = parseTen(s) + " " + parseFirst(s);
+            value = parseTen(s) + Symbol.SPACE + parseFirst(s);
         }
         return value;
     }
@@ -142,8 +143,8 @@ public class NumberWord {
     // 制作叁位的数
     // s.length = 3
     private static String transThree(String s) {
-        String value = "";
-        if (s.startsWith("0")) {// 是否小於100
+        String value;
+        if (s.startsWith(Symbol.ZERO)) {// 是否小於100
             value = transTwo(s.substring(1));
         } else if (s.substring(1).equals("00")) {// 是否被100整除
             value = parseFirst(s.substring(0, 1)) + " HUNDRED";

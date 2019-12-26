@@ -3,6 +3,7 @@ package org.aoju.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.aoju.bus.gitlab.GitLabApi;
+import org.aoju.bus.logger.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public enum AccessLevel {
             return (level);
         }
 
-        GitLabApi.getLogger().warning(String.format("[%d] is not a valid GitLab access level.", value));
+        Logger.warn(String.format("[%d] is not a valid GitLab access level.", value));
         return (value == null ? null : INVALID);
     }
 

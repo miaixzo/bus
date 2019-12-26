@@ -2,7 +2,7 @@ package org.aoju.bus.proxy.intercept;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import org.aoju.bus.proxy.aspects.Aspect;
+import org.aoju.bus.proxy.aspects.Aspectj;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,23 +11,23 @@ import java.lang.reflect.Method;
  * Cglib实现的动态代理切面
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CglibInterceptor implements MethodInterceptor {
 
     private Object target;
-    private Aspect aspect;
+    private Aspectj aspectj;
 
     /**
      * 构造
      *
-     * @param target 被代理对象
-     * @param aspect 切面实现
+     * @param target  被代理对象
+     * @param aspectj 切面实现
      */
-    public CglibInterceptor(Object target, Aspect aspect) {
+    public CglibInterceptor(Object target, Aspectj aspectj) {
         this.target = target;
-        this.aspect = aspect;
+        this.aspectj = aspectj;
     }
 
     public Object getTarget() {
@@ -39,19 +39,19 @@ public class CglibInterceptor implements MethodInterceptor {
         Object result = null;
 
         // 开始前回调
-        if (aspect.before(target, method, args)) {
+        if (aspectj.before(target, method, args)) {
             try {
                 result = proxy.invokeSuper(obj, args);
             } catch (InvocationTargetException e) {
                 // 异常回调（只捕获业务代码导致的异常,而非反射导致的异常）
-                if (aspect.afterException(target, method, args, e.getTargetException())) {
+                if (aspectj.afterException(target, method, args, e.getTargetException())) {
                     throw e;
                 }
             }
         }
 
         // 结束执行回调
-        if (aspect.after(target, method, args, result)) {
+        if (aspectj.after(target, method, args, result)) {
             return result;
         }
         return null;

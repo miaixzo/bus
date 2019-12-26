@@ -54,7 +54,7 @@ import java.util.zip.GZIPOutputStream;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class StringUtils extends TextUtils {
@@ -274,14 +274,14 @@ public class StringUtils extends TextUtils {
      */
     public static String byteArrayToHex(byte[] byteArray) {
         // 首先初始化一个字符数组,用来存放每个16进制字符
-        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
         // new一个字符数组,这个就是用来组成结果字符串的（解释一下：一个byte是八位二进制,也就是2位十六进制字符（2的8次方等于16的2次方））
         char[] resultCharArray = new char[byteArray.length * 2];
         // 遍历字节数组,通过位运算（位运算效率高）,转换成字符放到字符数组中去
         int index = 0;
         for (byte b : byteArray) {
-            resultCharArray[index++] = hexDigits[b >>> 4 & 0xf];
-            resultCharArray[index++] = hexDigits[b & 0xf];
+            resultCharArray[index++] = Normal.DIGITS_16_LOWER[b >>> 4 & 0xf];
+            resultCharArray[index++] = Normal.DIGITS_16_LOWER[b & 0xf];
         }
         // 字符数组组合成字符串返回
         return new String(resultCharArray);
@@ -296,7 +296,7 @@ public class StringUtils extends TextUtils {
      */
     public static byte[] hexStringToByte(String hex) {
         if (isEmpty(hex)) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
 
         byte[] bytes = new byte[hex.length() / 2];
@@ -366,7 +366,7 @@ public class StringUtils extends TextUtils {
         char[] c = input.toCharArray();
         for (int i = 0; i < c.length; i++) {
             // 空格单独处理, 其余的偏移量为65248
-            if (c[i] == ' ') {
+            if (c[i] == Symbol.C_SPACE) {
                 c[i] = '\u3000'; // 中文空格
             } else if (c[i] < 128) {
                 c[i] = (char) (c[i] + 65248);
@@ -386,7 +386,7 @@ public class StringUtils extends TextUtils {
         for (int i = 0; i < c.length; i++) {
             // 是否是中文空格, 单独处理
             if (c[i] == '\u3000') {
-                c[i] = ' ';
+                c[i] = Symbol.C_SPACE;
             }
             // 校验是否字符值是否在此数值之间
             else if (c[i] > 65248 && c[i] < (128 + 65248)) {
@@ -409,7 +409,7 @@ public class StringUtils extends TextUtils {
             char c = input.charAt(i);
             String hexStr = Integer.toHexString(c);
             while (hexStr.length() < 4) {
-                hexStr = "0" + hexStr;
+                hexStr = Symbol.ZERO + hexStr;
             }
             // 转换为unicode
             unicode.append("\\u" + hexStr);
@@ -980,7 +980,7 @@ public class StringUtils extends TextUtils {
      * @param str2       要比较的字符串2
      * @param ignoreCase 是否忽略大小写
      * @return 如果两个字符串相同, 或者都是null, 则返回true
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static boolean equals(CharSequence str1, CharSequence str2, boolean ignoreCase) {
         if (null == str1) {
@@ -1043,7 +1043,7 @@ public class StringUtils extends TextUtils {
                         //占位符被转义
                         argIndex--;
                         sbuf.append(val, handledPosition, delimIndex - 1);
-                        sbuf.append(Symbol.C_DELIM_LEFT);
+                        sbuf.append(Symbol.C_BRACE_LEFT);
                         handledPosition = delimIndex + 1;
                     }
                 } else {//正常占位符
@@ -1350,7 +1350,7 @@ public class StringUtils extends TextUtils {
      * @param separator   分隔符字符
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<String> splitTrim(String str, char separator, boolean ignoreEmpty) {
         return split(str, separator, 0, true, ignoreEmpty);
@@ -1363,7 +1363,7 @@ public class StringUtils extends TextUtils {
      * @param separator   分隔符字符串
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<String> splitTrim(String str, String separator, boolean ignoreEmpty) {
         return split(str, separator, true, ignoreEmpty);
@@ -1390,7 +1390,7 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<String> splitTrim(String str, String separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty);
@@ -1405,7 +1405,7 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<String> splitIgnoreCase(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, true);
@@ -1420,7 +1420,7 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<String> splitIgnoreCase(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, true);
@@ -1434,7 +1434,7 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<String> splitTrimIgnoreCase(String str, String separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty, true);
@@ -1571,9 +1571,9 @@ public class StringUtils extends TextUtils {
             String[] arr = split(str, separator);
             for (int i = 0; i < arr.length; i++) {
                 if (i == 0) {
-                    sb.append("'").append(arr[i]).append("'");
+                    sb.append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
                 } else {
-                    sb.append(reserve).append("'").append(arr[i]).append("'");
+                    sb.append(reserve).append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
                 }
             }
         }
@@ -1630,10 +1630,10 @@ public class StringUtils extends TextUtils {
      */
     public static List<String> split(String str, int limit) {
         if (isEmpty(str)) {
-            return new ArrayList<String>(0);
+            return new ArrayList<>(0);
         }
         if (limit == 1) {
-            return addToList(new ArrayList<String>(1), str, true, true);
+            return addToList(new ArrayList<>(1), str, true, true);
         }
 
         final ArrayList<String> list = new ArrayList<>();
@@ -1767,14 +1767,14 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
         if (isEmpty(str)) {
-            return new ArrayList<String>(0);
+            return new ArrayList<>(0);
         }
         if (limit == 1) {
-            return addToList(new ArrayList<String>(1), str, isTrim, ignoreEmpty);
+            return addToList(new ArrayList<>(1), str, isTrim, ignoreEmpty);
         }
 
         final ArrayList<String> list = new ArrayList<>(limit > 0 ? limit : 16);
@@ -1804,14 +1804,14 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
         if (isEmpty(str)) {
-            return new ArrayList<String>(0);
+            return new ArrayList<>(0);
         }
         if (limit == 1) {
-            return addToList(new ArrayList<String>(1), str, isTrim, ignoreEmpty);
+            return addToList(new ArrayList<>(1), str, isTrim, ignoreEmpty);
         }
 
         if (isEmpty(separator)) {//分隔符为空时按照空白符切分
@@ -2037,7 +2037,7 @@ public class StringUtils extends TextUtils {
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
         return indexOfIgnoreCase(str, searchStr, 0);
@@ -2064,7 +2064,7 @@ public class StringUtils extends TextUtils {
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置
      * @return 位置
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
         return indexOf(str, searchStr, fromIndex, true);
@@ -2078,7 +2078,7 @@ public class StringUtils extends TextUtils {
      * @param fromIndex  起始位置
      * @param ignoreCase 是否忽略大小写
      * @return 位置
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
         if (str == null || searchStr == null) {
@@ -2115,7 +2115,7 @@ public class StringUtils extends TextUtils {
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
         return lastIndexOfIgnoreCase(str, searchStr, str.length());
@@ -2128,7 +2128,7 @@ public class StringUtils extends TextUtils {
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置,从后往前计数
      * @return 位置
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
         return lastIndexOf(str, searchStr, fromIndex, true);
@@ -2142,7 +2142,7 @@ public class StringUtils extends TextUtils {
      * @param fromIndex  起始位置,从后往前计数
      * @param ignoreCase 是否忽略大小写
      * @return 位置
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static int lastIndexOf(final CharSequence str, final CharSequence searchStr, int fromIndex, boolean ignoreCase) {
         if (str == null || searchStr == null) {
@@ -2224,7 +2224,7 @@ public class StringUtils extends TextUtils {
      * @param length     截取长度
      * @param ignoreCase 是否忽略大小写
      * @return 子串是否相同
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static boolean isSubEquals(CharSequence str1, int start1, CharSequence str2, int start2, int length, boolean ignoreCase) {
         if (null == str1 || null == str2) {
@@ -3466,7 +3466,7 @@ public class StringUtils extends TextUtils {
      * @param endExclude   结束位置（不包含）
      * @param replacedChar 被替换的字符
      * @return 替换后的字符串
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String replace(CharSequence str, int startInclude, int endExclude, char replacedChar) {
         if (isEmpty(str)) {
@@ -3504,7 +3504,7 @@ public class StringUtils extends TextUtils {
      * @return 替换后的字符串
      */
     public static String hide(CharSequence str, int startInclude, int endExclude) {
-        return replace(str, startInclude, endExclude, '*');
+        return replace(str, startInclude, endExclude, Symbol.C_STAR);
     }
 
     /**
@@ -3515,7 +3515,7 @@ public class StringUtils extends TextUtils {
      * @param chars       需要替换的字符列表,用一个字符串表示这个字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String replaceChars(CharSequence str, String chars, CharSequence replacedStr) {
         if (isEmpty(str) || isEmpty(chars)) {
@@ -3531,7 +3531,7 @@ public class StringUtils extends TextUtils {
      * @param chars       需要替换的字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String replaceChars(CharSequence str, char[] chars, CharSequence replacedStr) {
         if (isEmpty(str) || ArrayUtils.isEmpty(chars)) {
@@ -3903,7 +3903,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static boolean containsAny(CharSequence str, CharSequence... testStrs) {
         return null != getContainsStr(str, testStrs);
@@ -3977,7 +3977,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String getContainsStr(CharSequence str, CharSequence... testStrs) {
         if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {
@@ -4013,7 +4013,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static boolean containsAnyIgnoreCase(CharSequence str, CharSequence... testStrs) {
         return null != getContainsStrIgnoreCase(str, testStrs);
@@ -4026,7 +4026,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String getContainsStrIgnoreCase(CharSequence str, CharSequence... testStrs) {
         if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {
@@ -4472,7 +4472,7 @@ public class StringUtils extends TextUtils {
      * @return the {@code String} array
      */
     public static String[] toStringArray(Collection<String> collection) {
-        return collection.toArray(new String[0]);
+        return collection.toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -4714,7 +4714,7 @@ public class StringUtils extends TextUtils {
      * {@code null} if null String input
      */
     public static String leftPad(final String str, final int size) {
-        return leftPad(str, size, ' ');
+        return leftPad(str, size, Symbol.C_SPACE);
     }
 
     /**

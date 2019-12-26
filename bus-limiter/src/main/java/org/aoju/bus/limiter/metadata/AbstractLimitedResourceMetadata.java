@@ -40,7 +40,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource> implements LimitedResourceMetadata<T>, Observer {
@@ -81,16 +81,13 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
         try {
             final Method fallbackMethod = this.targetClass.getDeclaredMethod(limitedResource.getFallback(), this.targetMethod.getParameterTypes());
             fallbackMethod.setAccessible(true);
-            this.limitedFallbackResolver = new Resolver() {
-                @Override
-                public Object resolve(Method method, Class clazz, Object[] args, LimitedResource limitedResource, Object target) {
-                    try {
-                        return fallbackMethod.invoke(target, args);
-                    } catch (IllegalAccessException e) {
-                        return null;
-                    } catch (InvocationTargetException e) {
-                        return null;
-                    }
+            this.limitedFallbackResolver = (method, clazz, args, limitedResource1, target) -> {
+                try {
+                    return fallbackMethod.invoke(target, args);
+                } catch (IllegalAccessException e) {
+                    return null;
+                } catch (InvocationTargetException e) {
+                    return null;
                 }
             };
         } catch (NoSuchMethodException e) {

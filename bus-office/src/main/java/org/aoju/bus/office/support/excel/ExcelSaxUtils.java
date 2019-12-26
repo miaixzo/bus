@@ -36,13 +36,13 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ExcelSaxUtils {
 
     // 填充字符串
-    public static final char CELL_FILL_CHAR = '@';
+    public static final char CELL_FILL_CHAR = Symbol.C_AT;
     // 列的最大位数
     public static final int MAX_CELL_BIT = 3;
 
@@ -67,7 +67,7 @@ public class ExcelSaxUtils {
         Object result;
         switch (cellDataType) {
             case BOOL:
-                result = (value.charAt(0) != '0');
+                result = (value.charAt(0) != Symbol.C_ZERO);
                 break;
             case ERROR:
                 result = StringUtils.format("\\\"ERROR: {} ", value);
@@ -132,8 +132,8 @@ public class ExcelSaxUtils {
     public static int countNullCell(String preRef, String ref) {
         // excel2007最大行数是1048576,最大列数是16384,最后一列列名是XFD
         // 数字代表列,去掉列信息
-        String preXfd = StringUtils.nullToDefault(preRef, "@").replaceAll("\\d+", "");
-        String xfd = StringUtils.nullToDefault(ref, "@").replaceAll("\\d+", "");
+        String preXfd = StringUtils.nullToDefault(preRef, Symbol.AT).replaceAll("\\d+", "");
+        String xfd = StringUtils.nullToDefault(ref, Symbol.AT).replaceAll("\\d+", "");
 
         // A表示65,@表示64,如果A算作1,那@代表0
         // 填充最大位数3

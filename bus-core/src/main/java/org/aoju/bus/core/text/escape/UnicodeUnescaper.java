@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.text.escape;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 
 import java.io.IOException;
@@ -34,21 +35,21 @@ import java.io.Writer;
  * without the +.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class UnicodeUnescaper extends CharSequenceTranslator {
 
     @Override
     public int translate(final CharSequence input, final int index, final Writer out) throws IOException {
-        if (input.charAt(index) == '\\' && index + 1 < input.length() && input.charAt(index + 1) == 'u') {
+        if (input.charAt(index) == Symbol.C_BACKSLASH && index + 1 < input.length() && input.charAt(index + 1) == 'u') {
             // consume optional additional 'u' chars
             int i = 2;
             while (index + i < input.length() && input.charAt(index + i) == 'u') {
                 i++;
             }
 
-            if (index + i < input.length() && input.charAt(index + i) == '+') {
+            if (index + i < input.length() && input.charAt(index + i) == Symbol.C_PLUS) {
                 i++;
             }
 

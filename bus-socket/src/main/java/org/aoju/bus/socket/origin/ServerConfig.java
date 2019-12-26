@@ -27,13 +27,11 @@ import java.net.SocketOption;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.aoju.bus.socket.origin.ServerConfig.Property.READ_BACKLOG;
-
 /**
  * Quickly服务端/客户端配置信息 T:解码后生成的对象类型
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class ServerConfig<T> {
@@ -87,7 +85,7 @@ final class ServerConfig<T> {
     private int threadNum = 1;
 
 
-    private int readBacklog = getIntProperty(READ_BACKLOG, 4096);
+    private int readBacklog = getIntProperty(ServerConfig.Property.READ_BACKLOG, 4096);
 
     static int getIntProperty(String property, int defaultVal) {
         String valString = System.getProperty(property);
@@ -200,20 +198,6 @@ final class ServerConfig<T> {
         return readBacklog;
     }
 
-    @Override
-    public String toString() {
-        return "IoServerConfig{" +
-                ", readBufferSize=" + readBufferSize +
-                ", host='" + host + '\'' +
-                ", monitor=" + monitor +
-                ", port=" + port +
-                ", processor=" + processor +
-                ", protocol=" + protocol +
-                ", bannerEnabled=" + bannerEnabled +
-                ", socketOptions=" + socketOptions +
-                '}';
-    }
-
     /**
      * 服务配置
      */
@@ -227,4 +211,5 @@ final class ServerConfig<T> {
         String CLIENT_PAGE_IS_DIRECT = PROJECT_NAME + ".client.page.isDirect";
         String READ_BACKLOG = PROJECT_NAME + ".read.backlog";
     }
+
 }

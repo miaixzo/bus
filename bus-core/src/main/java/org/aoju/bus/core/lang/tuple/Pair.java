@@ -24,6 +24,7 @@
 package org.aoju.bus.core.lang.tuple;
 
 import org.aoju.bus.core.builder.CompareToBuilder;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -42,7 +43,7 @@ import java.util.Objects;
  * @param <L> the left element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, R>>, Serializable {
@@ -134,7 +135,7 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
 
     @Override
     public String toString() {
-        return "(" + getLeft() + ',' + getRight() + ')';
+        return Symbol.PARENTHESE_LEFT + getLeft() + Symbol.C_COMMA + getRight() + Symbol.C_PARENTHESE_RIGHT;
     }
 
     public String toString(final String format) {

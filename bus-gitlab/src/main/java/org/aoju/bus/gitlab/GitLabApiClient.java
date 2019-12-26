@@ -1,5 +1,7 @@
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.TokenType;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.utils.JacksonJson;
@@ -27,9 +29,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 /**
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
@@ -192,9 +191,7 @@ public class GitLabApiClient {
      * @param clientConfigProperties the properties given to Jersey's clientconfig
      */
     public GitLabApiClient(ApiVersion apiVersion, String hostUrl, TokenType tokenType, String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
-
-        // Remove the trailing "/" from the hostUrl if present
-        this.hostUrl = (hostUrl.endsWith("/") ? hostUrl.replaceAll("/$", "") : hostUrl);
+        this.hostUrl = (hostUrl.endsWith(Symbol.SLASH) ? hostUrl.replaceAll("/$", Normal.EMPTY) : hostUrl);
         this.baseUrl = this.hostUrl;
         this.hostUrl += apiVersion.getApiNamespace();
 
@@ -232,16 +229,14 @@ public class GitLabApiClient {
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API.
      *
-     * @param logger            the Logger instance to log to
-     * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
-     * @param maxEntitySize     maximum number of entity bytes to be logged.  When logging if the maxEntitySize
+     * @param maxEntityLength   maximum number of entity bytes to be logged.  When logging if the maxEntitySize
      *                          is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
      *                          the end of the log entry. If maxEntitySize is <= 0, entity logging will be disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
-    void enableRequestResponseLogging(Logger logger, Level level, int maxEntityLength, List<String> maskedHeaderNames) {
+    void enableRequestResponseLogging(int maxEntityLength, List<String> maskedHeaderNames) {
 
-        MaskingLoggingFilter loggingFilter = new MaskingLoggingFilter(logger, level, maxEntityLength, maskedHeaderNames);
+        MaskingLoggingFilter loggingFilter = new MaskingLoggingFilter(maxEntityLength, maskedHeaderNames);
         clientConfig.register(loggingFilter);
 
         // Recreate the Client instance if already created.
@@ -322,7 +317,7 @@ public class GitLabApiClient {
         StringBuilder urlBuilder = new StringBuilder(url);
         for (Object pathArg : pathArgs) {
             if (pathArg != null) {
-                urlBuilder.append("/");
+                urlBuilder.append(Symbol.SLASH);
                 urlBuilder.append(pathArg.toString());
             }
         }

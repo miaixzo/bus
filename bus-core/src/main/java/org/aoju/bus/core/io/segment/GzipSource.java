@@ -34,7 +34,7 @@ import java.util.zip.Inflater;
  * 解压读取数据
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class GzipSource implements Source {
@@ -48,28 +48,15 @@ public final class GzipSource implements Source {
     private static final byte SECTION_BODY = 1;
     private static final byte SECTION_TRAILER = 2;
     private static final byte SECTION_DONE = 3;
-    /**
-     * Our source should yield a GZIP header (which we consume directly), followed
-     * by deflated bytes (which we consume via an InflaterSource), followed by a
-     * GZIP trailer (which we also consume directly).
-     */
+
     private final BufferSource source;
-    /**
-     * The inflater used to decompress the deflated body.
-     */
+
     private final Inflater inflater;
-    /**
-     * The inflater source takes care of moving data between compressed source and
-     * decompressed sink buffers.
-     */
+
     private final InflaterSource inflaterSource;
-    /**
-     * Checksum used to check both the GZIP header and decompressed body.
-     */
+
     private final CRC32 crc = new CRC32();
-    /**
-     * The current section. Always progresses forward.
-     */
+
     private int section = SECTION_HEADER;
 
     public GzipSource(Source source) {

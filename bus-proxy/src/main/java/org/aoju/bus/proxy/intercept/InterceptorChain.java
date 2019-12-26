@@ -29,8 +29,11 @@ import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Provider;
 
 /**
+ * 一个InterceptorChain帮助创建通过一系列
+ * {@link Interceptor interceptors}的代理
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class InterceptorChain {
@@ -51,21 +54,52 @@ public class InterceptorChain {
         return currentTarget;
     }
 
-    public Provider createProxyProvider(Factory factory, Object terminus) {
-        return createProxyProvider(factory, terminus, null);
+    /**
+     * 创建一个{@link  Provider}，它将返回一个代理，
+     * 该代理通过这个拦截器链发送方法调用， 并最终到达提供的terminus对象。
+     * 代理将支持由terminus对象实现的所有接口。 线程上下文类装入器将用于生成代理类
+     *
+     * @param factory 用于创建代理的{@link Factory}
+     * @param object  代理对象
+     * @return 它将返回一个{@link Provider}代理，该代理通过这个拦截器链发送方法调用，
+     * 并最终到达提供的object对象
+     */
+    public Provider createProxyProvider(Factory factory, Object object) {
+        return createProxyProvider(factory, object, null);
     }
 
-    public Provider createProxyProvider(Factory factory, Object terminus, Class[] proxyClasses) {
-        return createProxyProvider(factory, Thread.currentThread().getContextClassLoader(), terminus,
+    /**
+     * 创建一个{@link Provider}，它将返回一个代理，该代理通过这个拦截器链发送方法调用，
+     * 并最终到达提供的terminus对象。代理将只支持指定的接口/类。线程上下文类装入器将用于生成代理类.
+     *
+     * @param factory      用于创建代理的{@link Factory}
+     * @param object       代理对象
+     * @param proxyClasses 支持的接口
+     * @return 它将返回一个{@link Provider}代理，该代理通过这个拦截器链发送方法调用，
+     * 并最终到达提供的object对象
+     */
+    public Provider createProxyProvider(Factory factory, Object object, Class[] proxyClasses) {
+        return createProxyProvider(factory, Thread.currentThread().getContextClassLoader(), object,
                 proxyClasses);
     }
 
-    public Provider createProxyProvider(Factory factory, ClassLoader classLoader, Object terminus,
+    /**
+     * 创建一个{@link Provider}，它将返回一个代理，该代理通过这个拦截器链发送方法调用，
+     * 并最终到达提供的terminus对象。代理将只支持指定的接口/类。指定的类装入器将用于生成代理类.
+     *
+     * @param factory      用于创建代理的{@link Factory}
+     * @param classLoader  用于生成代理类的类加载器
+     * @param object       代理对象
+     * @param proxyClasses 支持的接口
+     * @return 它将返回一个{@link Provider}代理，该代理通过这个拦截器链发送方法调用，
+     * 并最终到达提供的object对象
+     */
+    public Provider createProxyProvider(Factory factory, ClassLoader classLoader, Object object,
                                         Class[] proxyClasses) {
         if (proxyClasses == null || proxyClasses.length == 0) {
-            proxyClasses = Builder.getAllInterfaces(terminus.getClass());
+            proxyClasses = Builder.getAllInterfaces(object.getClass());
         }
-        return new ProxyProvider(factory, classLoader, terminus, proxyClasses);
+        return new ProxyProvider(factory, classLoader, object, proxyClasses);
     }
 
     private class ProxyProvider implements Provider {

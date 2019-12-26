@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.annotation;
 
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,7 +32,7 @@ import java.lang.annotation.Target;
  * 注释用于绑定的注释
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Target(ElementType.ANNOTATION_TYPE)

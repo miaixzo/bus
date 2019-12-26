@@ -29,10 +29,9 @@ import org.aopalliance.intercept.MethodInvocation;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LimiterInterceptor extends LimiterAspectSupport implements MethodInterceptor, Serializable {

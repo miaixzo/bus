@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.models.AccessLevel;
 import org.aoju.bus.gitlab.models.Variable;
 import org.aoju.bus.gitlab.utils.ISO8601;
@@ -129,7 +130,7 @@ public class GitLabApiForm extends Form {
 
         for (T value : values) {
             if (value != null) {
-                this.param(name + "[]", value.toString());
+                this.param(name + Symbol.BRACKET, value.toString());
             }
         }
 

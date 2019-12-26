@@ -25,8 +25,9 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -42,7 +43,7 @@ import java.util.Map;
  * Google登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class GoogleProvider extends DefaultProvider {
@@ -73,7 +74,7 @@ public class GoogleProvider extends DefaultProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "Bearer " + token.getAccessToken());
 
-        String response = HttpClient.post(userInfoUrl(token), null, header);
+        String response = Httpx.post(userInfoUrl(token), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -126,7 +127,7 @@ public class GoogleProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error") || object.containsKey("error_description")) {
-            throw new InstrumentException(object.containsKey("error") + ":" + object.getString("error_description"));
+            throw new InstrumentException(object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
         }
     }
 }

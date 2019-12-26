@@ -2,6 +2,7 @@ package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.utils.JacksonJson;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -78,7 +79,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
 
         // Set the page param to 1
         pageParam = new ArrayList<>();
-        pageParam.add("1");
+        pageParam.add(Symbol.ONE);
         queryParams.put(PAGE_PARAM, pageParam);
         Response response = api.get(Response.Status.OK, queryParams, pathArgs);
 

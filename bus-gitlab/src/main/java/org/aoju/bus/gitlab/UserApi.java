@@ -3,6 +3,7 @@ package org.aoju.bus.gitlab;
 import org.aoju.bus.gitlab.models.*;
 import org.aoju.bus.gitlab.models.ImpersonationToken.Scope;
 import org.aoju.bus.gitlab.utils.EmailChecker;
+import org.aoju.bus.logger.Logger;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -57,7 +58,7 @@ public class UserApi extends AbstractApi {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            GitLabApi.getLogger().warning("Fetching all users from " + url +
+            Logger.warn("Fetching all users from " + url +
                     " may take many minutes to complete, use Pager<User> getUsers(int) instead.");
         }
 

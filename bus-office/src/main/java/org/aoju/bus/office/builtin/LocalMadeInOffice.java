@@ -31,12 +31,12 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Context;
+import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.filter.FilterChain;
 import org.aoju.bus.office.magic.filter.RefreshFilter;
 import org.aoju.bus.office.provider.SourceDocumentProvider;
 import org.aoju.bus.office.provider.TargetDocumentProvider;
-import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 
 import java.io.File;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ import java.util.Optional;
  * 表示本地转换任务的默认行为.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LocalMadeInOffice extends AbstractLocalOffice {

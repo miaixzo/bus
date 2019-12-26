@@ -1,7 +1,9 @@
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
+import org.aoju.bus.logger.Logger;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -81,7 +83,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            GitLabApi.getLogger().warning("Fetching all projects from " + url +
+            Logger.warn("Fetching all projects from " + url +
                     " may take many hours to complete, use Pager<Project> getProjects(int) instead.");
         }
 
@@ -676,7 +678,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String projectPath = null;
         try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
+            projectPath = URLEncoder.encode(namespace + Symbol.SLASH + project, "UTF-8");
         } catch (UnsupportedEncodingException uee) {
             throw (new GitLabApiException(uee));
         }
@@ -725,7 +727,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String projectPath = null;
         try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
+            projectPath = URLEncoder.encode(namespace + Symbol.SLASH + project, "UTF-8");
         } catch (UnsupportedEncodingException uee) {
             throw (new GitLabApiException(uee));
         }

@@ -34,13 +34,11 @@ import org.aoju.bus.health.hardware.Firmware;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.common.linux.ProcUtils.CPUINFO;
-
 /**
  * Hardware data obtained from sysfs.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class LinuxComputerSystem extends AbstractComputerSystem {
@@ -77,7 +75,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String queryManufacturer() {
-        String result = null;
+        String result;
         if ((result = queryManufacturerFromSysfs()) == null && (result = queryManufacturerFromProcCpu()) == null) {
             return Builder.UNKNOWN;
         }
@@ -85,7 +83,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String queryModel() {
-        String result = null;
+        String result;
         if ((result = queryModelFromSysfs()) == null && (result = queryModelFromDeviceTree()) == null
                 && (result = queryModelFromLshw()) == null) {
             return Builder.UNKNOWN;
@@ -94,7 +92,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String querySerialNumber() {
-        String result = null;
+        String result;
         if ((result = querySerialFromSysfs()) == null && (result = querySerialFromDmiDecode()) == null
                 && (result = querySerialFromLshal()) == null && (result = querySerialFromLshw()) == null) {
             return Builder.UNKNOWN;
@@ -111,7 +109,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String queryManufacturerFromProcCpu() {
-        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + CPUINFO);
+        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.CPUINFO);
         for (String line : cpuInfo) {
             if (line.startsWith("CPU implementer")) {
                 int part = Builder.parseLastInt(line, 0);
@@ -227,4 +225,5 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
         }
         return null;
     }
+
 }

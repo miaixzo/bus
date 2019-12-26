@@ -27,10 +27,12 @@ import com.alibaba.fastjson.JSON;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.core.utils.UriUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.*;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
@@ -57,7 +59,7 @@ import java.util.TreeMap;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class DefaultProvider implements Provider {
@@ -121,11 +123,11 @@ public abstract class DefaultProvider implements Provider {
      */
     public static String urlEncode(String value) {
         if (value == null) {
-            return "";
+            return Normal.EMPTY;
         }
         try {
             String encoded = URLEncoder.encode(value, Charset.UTF_8.displayName());
-            return encoded.replace("+", "%20").replace("*", "%2A").replace("~", "%7E").replace("/", "%2F");
+            return encoded.replace(Symbol.PLUS, "%20").replace(Symbol.STAR, "%2A").replace(Symbol.TILDE, "%7E").replace(Symbol.SLASH, "%2F");
         } catch (UnsupportedEncodingException e) {
             throw new InstrumentException("Failed To Encode Uri", e);
         }
@@ -139,7 +141,7 @@ public abstract class DefaultProvider implements Provider {
      */
     public static String urlDecode(String value) {
         if (value == null) {
-            return "";
+            return Normal.EMPTY;
         }
         try {
             return URLDecoder.decode(value, Charset.UTF_8.displayName());
@@ -156,11 +158,11 @@ public abstract class DefaultProvider implements Provider {
      */
     public static Map<String, String> parseStringToMap(String accessTokenStr) {
         Map<String, String> res = new HashMap<>();
-        if (accessTokenStr.contains("&")) {
-            String[] fields = accessTokenStr.split("&");
+        if (accessTokenStr.contains(Symbol.AND)) {
+            String[] fields = accessTokenStr.split(Symbol.AND);
             for (String field : fields) {
-                if (field.contains("=")) {
-                    String[] keyValue = field.split("=");
+                if (field.contains(Symbol.EQUAL)) {
+                    String[] keyValue = field.split(Symbol.EQUAL);
                     res.put(urlDecode(keyValue[0]), keyValue.length == 2 ? urlDecode(keyValue[1]) : null);
                 }
             }
@@ -238,7 +240,7 @@ public abstract class DefaultProvider implements Provider {
         sorted.put("timestamp", timestamp);
         StringBuffer string = new StringBuffer();
         for (Map.Entry<String, Object> entry : sorted.entrySet()) {
-            string.append(entry.getKey()).append("=").append(JSON.toJSONString(entry.getValue()));
+            string.append(entry.getKey()).append(Symbol.EQUAL).append(JSON.toJSONString(entry.getValue()));
         }
         String splice = String.format("%s%s%s%s", action, token, string, secret);
         String calculatedSignature = md5(splice);
@@ -267,7 +269,7 @@ public abstract class DefaultProvider implements Provider {
         } catch (Exception ignored) {
         }
 
-        return null == buffer ? "" : buffer.toString();
+        return null == buffer ? Normal.EMPTY : buffer.toString();
     }
 
     /**
@@ -381,7 +383,7 @@ public abstract class DefaultProvider implements Provider {
      * @return AuthResponse
      */
     private Message responseError(Exception e) {
-        String errorCode = "" + Builder.Status.FAILURE.getCode();
+        String errorCode = Normal.EMPTY + Builder.Status.FAILURE.getCode();
         if (e instanceof InstrumentException) {
             errorCode = ((InstrumentException) e).getErrcode();
         }
@@ -479,7 +481,7 @@ public abstract class DefaultProvider implements Provider {
      * @return HttpResponse
      */
     protected String doPostAuthorizationCode(String code) {
-        return HttpClient.post(accessTokenUrl(code));
+        return Httpx.post(accessTokenUrl(code));
     }
 
     /**
@@ -489,7 +491,7 @@ public abstract class DefaultProvider implements Provider {
      * @return HttpResponse
      */
     protected String doGetAuthorizationCode(String code) {
-        return HttpClient.get(accessTokenUrl(code));
+        return Httpx.get(accessTokenUrl(code));
     }
 
     /**
@@ -499,7 +501,7 @@ public abstract class DefaultProvider implements Provider {
      * @return HttpResponse
      */
     protected String doGetUserInfo(AccToken token) {
-        return HttpClient.get(userInfoUrl(token));
+        return Httpx.get(userInfoUrl(token));
     }
 
     /**
@@ -509,7 +511,7 @@ public abstract class DefaultProvider implements Provider {
      * @return HttpResponse
      */
     protected String doGetRevoke(AccToken token) {
-        return HttpClient.get(revokeUrl(token));
+        return Httpx.get(revokeUrl(token));
     }
 
     /**
@@ -519,7 +521,7 @@ public abstract class DefaultProvider implements Provider {
      */
     protected void checkState(String state) {
         if (StringUtils.isEmpty(state) || !stateCache.containsKey(state)) {
-            throw new InstrumentException("" + Builder.Status.ILLEGAL_REQUEST);
+            throw new InstrumentException(Normal.EMPTY + Builder.Status.ILLEGAL_REQUEST);
         }
     }
 

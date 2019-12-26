@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.3.6</version>
+    <version>5.3.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -26,7 +26,6 @@
         <!--bus-base-->
         <swagger.version>2.9.2</swagger.version>
         <!--bus-cache-->
-        <aspectj.version>1.9.4</aspectj.version>
         <guice.version>4.2.0</guice.version>
         <jedis.version>2.9.0</jedis.version>
         <memcached.version>2.0.0</memcached.version>
@@ -34,7 +33,8 @@
         <curator.version>4.2.0</curator.version>
         <guava.version>28.0-jre</guava.version>
         <yaml.version>1.23</yaml.version>
-        <hession.version>4.0.38</hession.version>
+        <druid.version>1.1.20</druid.version>
+        <mysql.version>8.0.18</mysql.version>
         <!--bus-core-->
         <lombok.version>1.18.10</lombok.version>
         <fastjson.version>1.2.62</fastjson.version>
@@ -45,10 +45,15 @@
         <jsch.version>0.1.54</jsch.version>
         <zxing.version>3.3.3</zxing.version>
         <net.version>3.6</net.version>
-        <emoji-java.version>4.0.0</emoji-java.version>
-        <servlet.version>4.0.1</servlet.version>
+        <emoji.java.version>4.0.0</emoji.java.version>
+        <aliyun.sdk.core.version>4.2.0</aliyun.sdk.core.version>
+        <aliyun.sdk.sms.version>2.1.0</aliyun.sdk.sms.version>
+        <aliyun.sdk.dm.version>3.3.1</aliyun.sdk.dm.version>
+        <compress.vetsion>1.19</compress.vetsion>
+        <lzo.version>1.0.6</lzo.version>
+        <lz4.version>1.3.0</lz4.version>
+        <snappy.version>1.1.7.3</snappy.version>
         <!--bus-forest-->
-        <compress.version>1.19</compress.version>
         <loader.version>2.0.1.RELEASE</loader.version>
         <!--bus-health-->
         <jna.version>5.5.0</jna.version>
@@ -59,15 +64,15 @@
         <logback.version>1.2.3</logback.version>
         <log4j.version>1.2.17</log4j.version>
         <log4j2.version>2.11.2</log4j2.version>
-        <commons-logging.version>1.2</commons-logging.version>
+        <commons.logging.version>1.2</commons.logging.version>
         <tinylog.version>1.3.5</tinylog.version>
-        <jboss-logging.version>3.4.1.Final</jboss-logging.version>
+        <jboss.logging.version>3.4.1.Final</jboss.logging.version>
         <!--bus-mapper-->
         <mybatis.version>3.5.3</mybatis.version>
-        <mybatis-spring.version>2.0.3</mybatis-spring.version>
+        <mybatis.spring.version>2.0.3</mybatis.spring.version>
         <persistence.version>2.2</persistence.version>
         <!--bus-oauth-->
-        <alipay-sdk-version>3.7.4.ALL</alipay-sdk-version>
+        <alipay.sdk.version>3.7.4.ALL</alipay.sdk.version>
         <!--bus-pager-->
         <jsqlparser.version>2.0</jsqlparser.version>
         <!--bus-office-->
@@ -75,15 +80,15 @@
         <xerces.version>2.12.0</xerces.version>
         <office.version>4.1.2</office.version>
         <!--bus-proxy-->
-        <javassist.version>3.21.0-GA</javassist.version>
+        <javassist.version>3.26.0-GA</javassist.version>
+        <hession.version>4.0.38</hession.version>
         <cglib.version>3.3.0</cglib.version>
+        <aspectj.version>1.9.5</aspectj.version>
         <!--bus-shade-->
         <freemarker.version>2.3.28</freemarker.version>
         <!--bus-socket-->
         <netty.version>4.1.42.Final</netty.version>
         <!--bus-spring-->
-        <mysql.version>8.0.18</mysql.version>
-        <druid.version>1.1.20</druid.version>
         <dubbo.version>2.7.3</dubbo.version>
         <!--bus-storage-->
         <aliyun.oss.version>3.4.2</aliyun.oss.version>
@@ -91,7 +96,7 @@
         <huawei.oss.version>3.0.2</huawei.oss.version>
         <jd.oss.version>1.11.136</jd.oss.version>
         <minio.oss.version>3.0.12</minio.oss.version>
-        <qiniu.oss.version>[7.2.0, 7.2.99]</qiniu.oss.version>
+        <qiniu.oss.version>7.2.28</qiniu.oss.version>
         <tencent.oss.version>5.5.9</tencent.oss.version>
         <upyun.oss.version>4.0.1</upyun.oss.version>
         <!--bus-tracer-->
@@ -179,11 +184,6 @@
         </dependency>
         <!--bus-cache-->
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
@@ -210,13 +210,12 @@
             <artifactId>jedis</artifactId>
             <version>${jedis.version}</version>
             <optional>true</optional>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.xmemcached</groupId>
             <artifactId>xmemcached</artifactId>
             <version>${memcached.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -228,7 +227,7 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
             <version>${curator.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
@@ -248,19 +247,31 @@
             <groupId>com.caucho</groupId>
             <artifactId>hessian</artifactId>
             <version>${hession.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>${ehcache.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+            <optional>true</optional>
         </dependency>
         <!--bus-core-->
         <dependency>
@@ -280,12 +291,6 @@
             <version>${bouncycastle.version}</version>
         </dependency>
         <!--bus-extra-->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
@@ -313,15 +318,52 @@
         <dependency>
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
-            <version>${emoji-java.version}</version>
+            <version>${emoji.java.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!--bus-forest-->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>${aliyun.sdk.core.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+            <version>${aliyun.sdk.sms.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-dm</artifactId>
+            <version>${aliyun.sdk.dm.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>${compress.version}</version>
+            <version>${compress.vetsion}</version>
+            <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.anarres.lzo</groupId>
+            <artifactId>lzo-core</artifactId>
+            <version>${lzo.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.jpountz.lz4</groupId>
+            <artifactId>lz4</artifactId>
+            <version>${lz4.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+            <version>${snappy.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--bus-forest-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-loader</artifactId>
@@ -404,7 +446,7 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>${commons-logging.version}</version>
+            <version>${commons.logging.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -416,7 +458,7 @@
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
-            <version>${jboss-logging.version}</version>
+            <version>${jboss.logging.version}</version>
             <scope>provided</scope>
         </dependency>
         <!--bus-mapper-->
@@ -428,7 +470,7 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
-            <version>${mybatis-spring.version}</version>
+            <version>${mybatis.spring.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -439,14 +481,8 @@
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-            <version>${alipay-sdk-version}</version>
+            <version>${alipay.sdk.version}</version>
             <optional>true</optional>
-        </dependency>
-        <!--bus-pager-->
-        <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>${jsqlparser.version}</version>
         </dependency>
         <!--bus-office-->
         <dependency>
@@ -493,16 +529,27 @@
         </dependency>
         <!--bus-proxy-->
         <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>${javassist.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>${cglib.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <!--bus-pager-->
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>${jsqlparser.version}</version>
         </dependency>
         <!--bus-shade-->
         <dependency>
@@ -519,18 +566,6 @@
             <scope>provided</scope>
         </dependency>
         <!--bus-spring-->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${druid.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
@@ -665,11 +700,6 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>${quartz.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

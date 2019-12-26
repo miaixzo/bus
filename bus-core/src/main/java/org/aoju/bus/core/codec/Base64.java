@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 
@@ -39,44 +41,10 @@ import java.nio.charset.StandardCharsets;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Base64 {
-
-    /**
-     * 标准编码表
-     */
-    public static final byte[] STANDARD_ENCODE_TABLE = {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
-    /**
-     * URL安全的编码表,将 + 和 / 替换为 - 和 _
-     */
-    public static final byte[] URL_SAFE_ENCODE_TABLE = {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
-
-    /**
-     * Base64解码表,共128位,-1表示非base64字符,-2表示padding
-     */
-    public static final byte[] DECODE_TABLE = {
-            // 0 1 2 3 4 5 6 7 8 9 A B C D E F
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 00-0f
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, // 10-1f
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, 62, -1, 63, // 20-2f + - /
-            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -2, -1, -1, // 30-3f 0-9
-            -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, // 40-4f A-O
-            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, 63, // 50-5f P-Z _
-            -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, // 60-6f a-o
-            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 // 70-7a p-z
-    };
 
     /**
      * Base64解码表,共128位,-1表示非base64字符,-2表示padding
@@ -98,14 +66,14 @@ public class Base64 {
             case 1:
                 out[index++] = map[(in[end] & 0xff) >> 2];
                 out[index++] = map[(in[end] & 0x03) << 4];
-                out[index++] = '=';
-                out[index++] = '=';
+                out[index++] = Symbol.C_EQUAL;
+                out[index++] = Symbol.C_EQUAL;
                 break;
             case 2:
                 out[index++] = map[(in[end] & 0xff) >> 2];
                 out[index++] = map[((in[end] & 0x03) << 4) | ((in[end + 1] & 0xff) >> 4)];
                 out[index++] = map[((in[end + 1] & 0x0f) << 2)];
-                out[index++] = '=';
+                out[index++] = Symbol.C_EQUAL;
                 break;
         }
         return new String(out, StandardCharsets.US_ASCII);
@@ -123,25 +91,25 @@ public class Base64 {
         int n = srcLen / 3;
         int r = srcLen - 3 * n;
         while (n-- > 0) {
-            dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-            dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)
+            dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+            dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)
                     | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
-            dest[destPos++] = STANDARD_ENCODE_TABLE[((b2 & 0x0F) << 2)
+            dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b2 & 0x0F) << 2)
                     | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
-            dest[destPos++] = STANDARD_ENCODE_TABLE[b3 & 0x3F];
+            dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[b3 & 0x3F];
         }
         if (r > 0)
             if (r == 1) {
-                dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 = src[srcPos]) >>> 2) & 0x3F];
-                dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)];
-                dest[destPos++] = '=';
-                dest[destPos++] = '=';
+                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 = src[srcPos]) >>> 2) & 0x3F];
+                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)];
+                dest[destPos++] = Symbol.C_EQUAL;
+                dest[destPos++] = Symbol.C_EQUAL;
             } else {
-                dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-                dest[destPos++] = STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)
+                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)
                         | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
-                dest[destPos++] = STANDARD_ENCODE_TABLE[(b2 & 0x0F) << 2];
-                dest[destPos++] = '=';
+                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[(b2 & 0x0F) << 2];
+                dest[destPos++] = Symbol.C_EQUAL;
             }
     }
 
@@ -149,15 +117,15 @@ public class Base64 {
             throws IOException {
         byte b2, b3;
         while ((len -= 2) >= 0) {
-            out.write((byte) ((DECODE_TABLE[ch[off++]] << 2)
-                    | ((b2 = DECODE_TABLE[ch[off++]]) >>> 4)));
-            if ((len-- == 0) || ch[off] == '=')
+            out.write((byte) ((Normal.DECODE_TABLE[ch[off++]] << 2)
+                    | ((b2 = Normal.DECODE_TABLE[ch[off++]]) >>> 4)));
+            if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                 break;
             out.write((byte) ((b2 << 4)
-                    | ((b3 = DECODE_TABLE[ch[off++]]) >>> 2)));
-            if ((len-- == 0) || ch[off] == '=')
+                    | ((b3 = Normal.DECODE_TABLE[ch[off++]]) >>> 2)));
+            if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                 break;
-            out.write((byte) ((b3 << 6) | DECODE_TABLE[ch[off++]]));
+            out.write((byte) ((b3 << 6) | Normal.DECODE_TABLE[ch[off++]]));
         }
     }
 

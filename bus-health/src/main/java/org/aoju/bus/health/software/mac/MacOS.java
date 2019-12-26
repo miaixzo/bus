@@ -29,6 +29,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.*;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.mac.SysctlUtils;
@@ -45,7 +46,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MacOS extends AbstractOS {
@@ -207,7 +208,7 @@ public class MacOS extends AbstractOS {
         if (0 < SystemB.INSTANCE.proc_pidpath(pid, buf, SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
             path = buf.getString(0).trim();
             // Overwrite name with last part of path
-            String[] pathSplit = path.split("/");
+            String[] pathSplit = path.split(Symbol.SLASH);
             if (pathSplit.length > 0) {
                 name = pathSplit[pathSplit.length - 1];
             }
@@ -455,7 +456,7 @@ public class MacOS extends AbstractOS {
         for (File f : files) {
             // remove .plist extension
             String name = f.getName().substring(0, f.getName().length() - 6);
-            int index = name.lastIndexOf('.');
+            int index = name.lastIndexOf(Symbol.C_DOT);
             String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
             if (!running.contains(name) && !running.contains(shortName)) {
                 OSService s = new OSService(name, 0, OSService.State.STOPPED);

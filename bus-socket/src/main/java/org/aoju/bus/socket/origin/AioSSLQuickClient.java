@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutionException;
  * AIO实现的客户端服务
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class AioSSLQuickClient<T> extends AioQuickClient<T> {
@@ -63,7 +63,7 @@ public final class AioSSLQuickClient<T> extends AioQuickClient<T> {
         AsynchronousSocketChannel socketChannel = AsynchronousSocketChannel.open(asynchronousChannelGroup);
         socketChannel.connect(new InetSocketAddress(config.getHost(), config.getPort())).get();
         //连接成功则构造AIOSession对象
-        session = new SSLAioSession<T>(socketChannel, config, new TcpReadHandler<T>(), new TcpWriteHandler<T>(), sslService, bufferPool.allocateBufferPage());
+        session = new SSLAioSession<>(socketChannel, config, new TcpReadHandler<>(), new TcpWriteHandler<>(), sslService, bufferPool.allocateBufferPage());
         session.initSession();
         return session;
     }

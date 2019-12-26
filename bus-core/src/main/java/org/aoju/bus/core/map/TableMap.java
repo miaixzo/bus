@@ -6,14 +6,13 @@ import org.aoju.bus.core.utils.CollUtils;
 import java.io.Serializable;
 import java.util.*;
 
-
 /**
  * 无重复键的Map
  *
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class TableMap<K, V> implements Map<K, V>, Serializable {
@@ -117,7 +116,7 @@ public class TableMap<K, V> implements Map<K, V>, Serializable {
     public Set<Map.Entry<K, V>> entrySet() {
         HashSet<Map.Entry<K, V>> hashSet = new HashSet<>();
         for (int i = 0; i < size(); i++) {
-            hashSet.add(new Entry<K, V>(keys.get(i), values.get(i)));
+            hashSet.add(new Entry<>(keys.get(i), values.get(i)));
         }
         return hashSet;
     }

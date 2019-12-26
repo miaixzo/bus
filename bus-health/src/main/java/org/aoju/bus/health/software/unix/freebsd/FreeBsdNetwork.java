@@ -24,6 +24,7 @@
 package org.aoju.bus.health.software.unix.freebsd;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.unix.CLibrary;
@@ -31,15 +32,13 @@ import org.aoju.bus.health.common.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.software.AbstractNetwork;
 import org.aoju.bus.logger.Logger;
 
-import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
-
 /**
  * <p>
  * FreeBsdNetworkParams class.
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FreeBsdNetwork extends AbstractNetwork {
@@ -66,7 +65,7 @@ public class FreeBsdNetwork extends AbstractNetwork {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != LIBC.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }

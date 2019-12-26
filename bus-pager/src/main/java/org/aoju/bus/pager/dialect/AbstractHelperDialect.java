@@ -41,7 +41,7 @@ import java.util.*;
  * 针对 PageContext 的实现
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractHelperDialect extends AbstractDialect {
@@ -101,15 +101,15 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
         if (page.isOrderByOnly()) {
             return parameterObject;
         }
-        Map<String, Object> paramMap = null;
+        Map<String, Object> paramMap;
         if (parameterObject == null) {
-            paramMap = new HashMap<String, Object>();
+            paramMap = new HashMap<>();
         } else if (parameterObject instanceof Map) {
             //解决不可变Map的情况
-            paramMap = new HashMap<String, Object>();
+            paramMap = new HashMap<>();
             paramMap.putAll((Map) parameterObject);
         } else {
-            paramMap = new HashMap<String, Object>();
+            paramMap = new HashMap<>();
             //动态sql时的判断条件不会出现在ParameterMapping中,但是必须有,所以这里需要收集所有的getter属性
             //TypeHandlerRegistry可以直接处理的会作为一个直接使用的对象进行处理
             boolean hasTypeHandler = ms.getConfiguration().getTypeHandlerRegistry().hasTypeHandler(parameterObject.getClass());
@@ -215,7 +215,7 @@ public abstract class AbstractHelperDialect extends AbstractDialect {
 
     protected void handleParameter(BoundSql boundSql, MappedStatement ms) {
         if (boundSql.getParameterMappings() != null) {
-            List<ParameterMapping> newParameterMappings = new ArrayList<ParameterMapping>(boundSql.getParameterMappings());
+            List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, Integer.class).build());
             newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, Integer.class).build());
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);

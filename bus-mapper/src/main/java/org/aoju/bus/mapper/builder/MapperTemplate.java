@@ -23,10 +23,12 @@
  */
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.MapperException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.entity.EntityColumn;
 import org.aoju.bus.mapper.entity.EntityTable;
+import org.aoju.bus.mapper.reflection.Reflector;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.SqlSource;
@@ -47,21 +49,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.aoju.bus.mapper.reflection.Reflector.getMapperClass;
-import static org.aoju.bus.mapper.reflection.Reflector.getMethodName;
-
 /**
  * 通用Mapper模板类,扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class MapperTemplate {
 
     private static final XMLLanguageDriver languageDriver = new XMLLanguageDriver();
-    protected Map<String, Method> methodMap = new ConcurrentHashMap<String, Method>();
-    protected Map<String, Class<?>> entityClassMap = new ConcurrentHashMap<String, Class<?>>();
+    protected Map<String, Method> methodMap = new ConcurrentHashMap<>();
+    protected Map<String, Class<?>> entityClassMap = new ConcurrentHashMap<>();
     protected Class<?> mapperClass;
     protected MapperBuilder mapperBuilder;
 
@@ -107,9 +106,9 @@ public abstract class MapperTemplate {
      * @return the boolean
      */
     public boolean supportMethod(String msId) {
-        Class<?> mapperClass = getMapperClass(msId);
+        Class<?> mapperClass = Reflector.getMapperClass(msId);
         if (mapperClass != null && this.mapperClass.isAssignableFrom(mapperClass)) {
-            String methodName = getMethodName(msId);
+            String methodName = Reflector.getMethodName(msId);
             return methodMap.get(methodName) != null;
         }
         return false;
@@ -162,7 +161,7 @@ public abstract class MapperTemplate {
         if (entityClassMap.containsKey(msId)) {
             return entityClassMap.get(msId);
         } else {
-            Class<?> mapperClass = getMapperClass(msId);
+            Class<?> mapperClass = Reflector.getMapperClass(msId);
             Type[] types = mapperClass.getGenericInterfaces();
             for (Type type : types) {
                 if (type instanceof ParameterizedType) {
@@ -204,7 +203,7 @@ public abstract class MapperTemplate {
             prefix = mapperBuilder.getConfig().getPrefix();
         }
         if (Assert.isNotEmpty(prefix)) {
-            return prefix + "." + entityTable.getName();
+            return prefix + Symbol.DOT + entityTable.getName();
         }
         return entityTable.getName();
     }
@@ -235,10 +234,10 @@ public abstract class MapperTemplate {
      * @param ms MappedStatement
      */
     public void setSqlSource(MappedStatement ms) {
-        if (this.mapperClass == getMapperClass(ms.getId())) {
+        if (this.mapperClass == Reflector.getMapperClass(ms.getId())) {
             throw new MapperException("请不要配置或扫描通用Mapper接口类：" + this.mapperClass);
         }
-        Method method = methodMap.get(getMethodName(ms));
+        Method method = methodMap.get(Reflector.getMethodName(ms));
         try {
             //第一种,直接操作ms,不需要返回值
             if (method.getReturnType() == Void.TYPE) {

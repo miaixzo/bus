@@ -36,7 +36,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class RedisRatelimiterObject extends RedissonObject {
@@ -87,7 +87,7 @@ public class RedisRatelimiterObject extends RedissonObject {
                         "    return newPermit-acq\n" +
                         "end\n" +
                         "return -1 ",
-                Arrays.<Object>asList(getName()),
+                Arrays.asList(getName()),
                 permits, rate, capacity, hash);
     }
 

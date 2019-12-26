@@ -24,6 +24,7 @@
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ import java.util.List;
  * {@link DiffResult#toString(ToStringStyle)}覆盖此样式选择。.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @see Diffable
  * @see Diff
  * @see DiffResult
@@ -791,7 +792,7 @@ public class DiffBuilder implements Builder<DiffResult> {
         }
 
         for (final Diff<?> diff : diffResult.getDiffs()) {
-            append(fieldName + "." + diff.getFieldName(),
+            append(fieldName + Symbol.DOT + diff.getFieldName(),
                     diff.getLeft(), diff.getRight());
         }
 

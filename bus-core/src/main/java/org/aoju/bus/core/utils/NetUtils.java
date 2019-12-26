@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.Validator;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -39,12 +40,12 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class NetUtils {
 
-    public final static String LOCAL_IP = "127.0.0.1";
+    public static final String LOCAL_IP = "127.0.0.1";
 
     /**
      * 默认最小端口,1024
@@ -65,12 +66,12 @@ public class NetUtils {
         final StringBuilder sb = new StringBuilder();
         // 直接右移24位
         sb.append((longIP >>> 24));
-        sb.append(".");
+        sb.append(Symbol.DOT);
         // 将高8位置0,然后右移16位
         sb.append(((longIP & 0x00FFFFFF) >>> 16));
-        sb.append(".");
+        sb.append(Symbol.DOT);
         sb.append(((longIP & 0x0000FFFF) >>> 8));
-        sb.append(".");
+        sb.append(Symbol.DOT);
         sb.append((longIP & 0x000000FF));
         return sb.toString();
     }
@@ -85,9 +86,9 @@ public class NetUtils {
         if (Validator.isIpv4(strIP)) {
             long[] ip = new long[4];
             // 先找到IP地址字符串中.的位置
-            int position1 = strIP.indexOf(".");
-            int position2 = strIP.indexOf(".", position1 + 1);
-            int position3 = strIP.indexOf(".", position2 + 1);
+            int position1 = strIP.indexOf(Symbol.DOT);
+            int position2 = strIP.indexOf(Symbol.DOT, position1 + 1);
+            int position3 = strIP.indexOf(Symbol.DOT, position2 + 1);
             // 将每个.之间的字符串转换成整型
             ip[0] = Long.parseLong(strIP.substring(0, position1));
             ip[1] = Long.parseLong(strIP.substring(position1 + 1, position2));
@@ -242,7 +243,7 @@ public class NetUtils {
      * @return 隐藏部分后的IP
      */
     public static String hideIpPart(String ip) {
-        return new StringBuffer(ip.length()).append(ip, 0, ip.lastIndexOf(".") + 1).append("*").toString();
+        return new StringBuffer(ip.length()).append(ip, 0, ip.lastIndexOf(Symbol.DOT) + 1).append(Symbol.STAR).toString();
     }
 
     /**
@@ -271,7 +272,7 @@ public class NetUtils {
 
         String destHost = null;
         int port = 0;
-        int index = host.indexOf(":");
+        int index = host.indexOf(Symbol.COLON);
         if (index != -1) {
             // host:port形式
             destHost = host.substring(0, index);
@@ -312,7 +313,7 @@ public class NetUtils {
             return null;
         }
 
-        return CollUtils.addAll(new ArrayList<NetworkInterface>(), networkInterfaces);
+        return CollUtils.addAll(new ArrayList<>(), networkInterfaces);
     }
 
     /**
@@ -322,13 +323,7 @@ public class NetUtils {
      * @return IP地址列表 {@link LinkedHashSet}
      */
     public static LinkedHashSet<String> localIpv4s() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(new Filter<InetAddress>() {
-
-            @Override
-            public boolean accept(InetAddress t) {
-                return t instanceof Inet4Address;
-            }
-        });
+        final LinkedHashSet<InetAddress> localAddressList = localAddressList(t -> t instanceof Inet4Address);
 
         return toIpList(localAddressList);
     }
@@ -340,13 +335,7 @@ public class NetUtils {
      * @return IP地址列表 {@link LinkedHashSet}
      */
     public static LinkedHashSet<String> localIpv6s() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(new Filter<InetAddress>() {
-
-            @Override
-            public boolean accept(InetAddress t) {
-                return t instanceof Inet6Address;
-            }
-        });
+        final LinkedHashSet<InetAddress> localAddressList = localAddressList(t -> t instanceof Inet6Address);
 
         return toIpList(localAddressList);
     }
@@ -443,21 +432,17 @@ public class NetUtils {
      * @since 3.0.1
      */
     public static InetAddress getLocalhost() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(new Filter<InetAddress>() {
-            @Override
-            public boolean accept(InetAddress address) {
-                // 非loopback地址,指127.*.*.*的地址
-                return false == address.isLoopbackAddress()
-                        // 非地区本地地址,指10.0.0.0 ~ 10.255.255.255、172.16.0.0 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
-                        && false == address.isSiteLocalAddress()
-                        // 需为IPV4地址
-                        && address instanceof Inet4Address;
-            }
+        final LinkedHashSet<InetAddress> localAddressList = localAddressList(address -> {
+            // 非loopback地址,指127.*.*.*的地址
+            return false == address.isLoopbackAddress()
+                    // 非地区本地地址,指10.0.0.0 ~ 10.255.255.255、172.16.0.0 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
+                    && false == address.isSiteLocalAddress()
+                    // 需为IPV4地址
+                    && address instanceof Inet4Address;
         });
 
         if (CollUtils.isNotEmpty(localAddressList)) {
-            InetAddress address = CollUtils.get(localAddressList, 0);
-            return address;
+            return CollUtils.get(localAddressList, 0);
         }
 
         try {
@@ -485,7 +470,7 @@ public class NetUtils {
      * @return MAC地址, 用-分隔
      */
     public static String getMacAddress(InetAddress inetAddress) {
-        return getMacAddress(inetAddress, "-");
+        return getMacAddress(inetAddress, Symbol.HYPHEN);
     }
 
     /**
@@ -587,7 +572,7 @@ public class NetUtils {
      * @return 是否在范围内
      */
     public static boolean isInRange(String ip, String cidr) {
-        String[] ips = StringUtils.splitToArray(ip, '.');
+        String[] ips = StringUtils.splitToArray(ip, Symbol.C_DOT);
         int ipAddr = (Integer.parseInt(ips[0]) << 24) | (Integer.parseInt(ips[1]) << 16) | (Integer.parseInt(ips[2]) << 8) | Integer.parseInt(ips[3]);
         int type = Integer.parseInt(cidr.replaceAll(".*/", ""));
         int mask = 0xFFFFFFFF << (32 - type);
@@ -615,8 +600,8 @@ public class NetUtils {
      */
     public static String getMultistageReverseProxyIp(String ip) {
         // 多级反向代理检测
-        if (ip != null && ip.indexOf(",") > 0) {
-            final String[] ips = ip.trim().split(",");
+        if (ip != null && ip.indexOf(Symbol.COMMA) > 0) {
+            final String[] ips = ip.trim().split(Symbol.COMMA);
             for (String subIp : ips) {
                 if (false == isUnknow(subIp)) {
                     ip = subIp;

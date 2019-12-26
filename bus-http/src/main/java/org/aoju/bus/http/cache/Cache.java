@@ -24,18 +24,21 @@
 package org.aoju.bus.http.cache;
 
 import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.ResponseBody;
-import org.aoju.bus.http.header.Headers;
-import org.aoju.bus.http.internal.http.HttpHeaders;
-import org.aoju.bus.http.internal.http.HttpMethod;
-import org.aoju.bus.http.internal.http.StatusLine;
-import org.aoju.bus.http.offers.CipherSuite;
-import org.aoju.bus.http.offers.Handshake;
+import org.aoju.bus.http.metric.Handshake;
+import org.aoju.bus.http.metric.http.HttpHeaders;
+import org.aoju.bus.http.metric.http.HttpMethod;
+import org.aoju.bus.http.metric.http.StatusLine;
+import org.aoju.bus.http.secure.CipherSuite;
 import org.aoju.bus.http.secure.TlsVersion;
+import org.aoju.bus.logger.Logger;
 
 import java.io.Closeable;
 import java.io.File;
@@ -48,92 +51,10 @@ import java.security.cert.CertificateFactory;
 import java.util.*;
 
 /**
- * Caches HTTP and HTTPS responses to the filesystem so they may be reused, saving time and
- * bandwidth.
- *
- * <h3>Cache Optimization</h3>
- *
- * <p>To measure cache effectiveness, this class tracks three statistics:
- * <ul>
- * <li><strong>{@linkplain #requestCount() Request Count:}</strong> the number of HTTP
- * requests issued since this cache was created.
- * <li><strong>{@linkplain #networkCount() Network Count:}</strong> the number of those
- * requests that required network use.
- * <li><strong>{@linkplain #hitCount() Hit Count:}</strong> the number of those requests
- * whose responses were served by the cache.
- * </ul>
- * <p>
- * Sometimes a request will result in a conditional cache hit. If the cache contains a stale copy of
- * the response, the client will issue a conditional {@code GET}. The server will then send either
- * the updated response if it has changed, or a short 'not modified' response if the client's copy
- * is still valid. Such responses increment both the network count and hit count.
- *
- * <p>The best way to improve the cache hit rate is by configuring the web server to return
- * cacheable responses. Although this client honors all <a
- * href="http://tools.ietf.org/html/rfc7234">HTTP/1.1 (RFC 7234)</a> cache headers, it doesn't cache
- * partial responses.
- *
- * <h3>Force a Network Response</h3>
- *
- * <p>In some situations, such as after a user clicks a 'refresh' button, it may be necessary to
- * skip the cache, and fetch data directly from the server. To force a full refresh, add the {@code
- * no-cache} directive: <pre>   {@code
- *
- *   Request request = new Request.Builder()
- *       .cacheControl(new CacheControl.Builder().noCache().build())
- *       .url("http://publicobject.com/helloworld.txt")
- *       .build();
- * }</pre>
- * <p>
- * If it is only necessary to force a cached response to be validated by the server, use the more
- * efficient {@code max-age=0} directive instead: <pre>   {@code
- *
- *   Request request = new Request.Builder()
- *       .cacheControl(new CacheControl.Builder()
- *           .maxAge(0, TimeUnit.SECONDS)
- *           .build())
- *       .url("http://publicobject.com/helloworld.txt")
- *       .build();
- * }</pre>
- *
- * <h3>Force a Cache Response</h3>
- *
- * <p>Sometimes you'll want to show resources if they are available immediately, but not otherwise.
- * This can be used so your application can show <i>something</i> while waiting for the latest data
- * to be downloaded. To restrict a request to locally-cached resources, add the {@code
- * only-if-cached} directive: <pre>   {@code
- *
- *     Request request = new Request.Builder()
- *         .cacheControl(new CacheControl.Builder()
- *             .onlyIfCached()
- *             .build())
- *         .url("http://publicobject.com/helloworld.txt")
- *         .build();
- *     Response forceCacheResponse = client.newCall(request).execute();
- *     if (forceCacheResponse.code() != 504) {
- *       // The resource was cached! Show it.
- *     } else {
- *       // The resource was not cached.
- *     }
- * }</pre>
- * This technique works even better in situations where a stale response is better than no response.
- * To permit stale cached responses, use the {@code max-stale} directive with the maximum staleness
- * in seconds: <pre>   {@code
- *
- *   Request request = new Request.Builder()
- *       .cacheControl(new CacheControl.Builder()
- *           .maxStale(365, TimeUnit.DAYS)
- *           .build())
- *       .url("http://publicobject.com/helloworld.txt")
- *       .build();
- * }</pre>
- *
- * <p>The {@link CacheControl} class can configure request caching directives and parse response
- * caching directives. It even offers convenient constants {@link CacheControl#FORCE_NETWORK} and
- * {@link CacheControl#FORCE_CACHE} that address the use cases above.
+ * 缓存HTTP和HTTPS对文件系统的响应，以便可以重用它们，从而节省时间和带宽.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Cache implements Closeable, Flushable {
@@ -143,21 +64,19 @@ public final class Cache implements Closeable, Flushable {
     private static final int ENTRY_BODY = 1;
     private static final int ENTRY_COUNT = 2;
     final DiskLruCache cache;
-    /* read and write statistics, all guarded by 'this' */
     int writeSuccessCount;
     int writeAbortCount;
     private int networkCount;
     private int hitCount;
     private int requestCount;
     public final InternalCache internalCache = new InternalCache() {
-
         @Override
-        public Response get(Request request) throws IOException {
+        public Response get(Request request) {
             return Cache.this.get(request);
         }
 
         @Override
-        public CacheRequest put(Response response) throws IOException {
+        public CacheRequest put(Response response) {
             return Cache.this.put(response);
         }
 
@@ -182,6 +101,12 @@ public final class Cache implements Closeable, Flushable {
         }
     };
 
+    /**
+     * 在{@code directory}中创建最多{@code maxSize}字节的缓存
+     *
+     * @param directory 目录
+     * @param maxSize   缓存的最大大小(以字节为单位)
+     */
     public Cache(File directory, long maxSize) {
         this(directory, maxSize, FileSystem.SYSTEM);
     }
@@ -190,7 +115,7 @@ public final class Cache implements Closeable, Flushable {
         this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
     }
 
-    public static String key(Url url) {
+    public static String key(UnoUrl url) {
         return ByteString.encodeUtf8(url.toString()).md5().hex();
     }
 
@@ -199,7 +124,7 @@ public final class Cache implements Closeable, Flushable {
             long result = source.readDecimalLong();
             String line = source.readUtf8LineStrict();
             if (result < 0 || result > Integer.MAX_VALUE || !line.isEmpty()) {
-                throw new IOException("expected an int but was \"" + result + line + "\"");
+                throw new IOException("expected an int but was \"" + result + line + Symbol.DOUBLE_QUOTES);
             }
             return (int) result;
         } catch (NumberFormatException e) {
@@ -217,21 +142,21 @@ public final class Cache implements Closeable, Flushable {
                 return null;
             }
         } catch (IOException e) {
-            // Give up because the cache cannot be read.
+            // 放弃，因为缓存无法读取
             return null;
         }
 
         try {
             entry = new Entry(snapshot.getSource(ENTRY_METADATA));
         } catch (IOException e) {
-            Internal.closeQuietly(snapshot);
+            IoUtils.close(snapshot);
             return null;
         }
 
         Response response = entry.response(snapshot);
 
         if (!entry.matches(request, response)) {
-            Internal.closeQuietly(response.body());
+            IoUtils.close(response.body());
             return null;
         }
 
@@ -245,14 +170,13 @@ public final class Cache implements Closeable, Flushable {
             try {
                 remove(response.request());
             } catch (IOException ignored) {
-                // The cache cannot be written.
+                // 无法写入缓存
+                Logger.error(ignored);
             }
             return null;
         }
-        if (!requestMethod.equals("GET")) {
-            // Don't cache non-GET responses. We're technically allowed to cache
-            // HEAD requests and some POST requests, but the complexity of doing
-            // so is high and the benefit is low.
+        if (!Http.GET.equals(requestMethod)) {
+            // 不要缓存非get响应。从技术上讲，我们可以缓存HEAD请求和POST请求，但是这样做的复杂性很高，好处很少
             return null;
         }
 
@@ -284,7 +208,8 @@ public final class Cache implements Closeable, Flushable {
         DiskLruCache.Snapshot snapshot = ((CacheResponseBody) cached.body()).snapshot;
         DiskLruCache.Editor editor = null;
         try {
-            editor = snapshot.edit(); // Returns null if snapshot is not current.
+            // 如果快照不是当前的，则返回null
+            editor = snapshot.edit();
             if (editor != null) {
                 entry.writeTo(editor);
                 editor.commit();
@@ -295,7 +220,7 @@ public final class Cache implements Closeable, Flushable {
     }
 
     private void abortQuietly(DiskLruCache.Editor editor) {
-        // Give up because the cache cannot be written.
+        // 放弃，因为缓存无法写入
         try {
             if (editor != null) {
                 editor.abort();
@@ -305,53 +230,40 @@ public final class Cache implements Closeable, Flushable {
     }
 
     /**
-     * Initialize the cache. This will include reading the journal files from the storage and building
-     * up the necessary in-memory cache information.
+     * 始化缓存。这将包括从存储器中读取日志文件并构建必要的内存缓存信息
+     * 注意，如果应用程序选择不调用此方法来初始化缓存。默认情况下，将在第一次使用缓存时执行延迟初始化
      *
-     * <p>The initialization time may vary depending on the journal file size and the current actual
-     * cache size. The application needs to be aware of calling this function during the
-     * initialization phase and preferably in a background worker thread.
-     *
-     * <p>Note that if the application chooses to not call this method to initialize the cache. By
-     * default, the HttpClient will perform lazy initialization upon the first usage of the cache.
-     *
-     * @throws IOException if an I/O error occurs
+     * @throws IOException 初始化异常
      */
     public void initialize() throws IOException {
         cache.initialize();
     }
 
     /**
-     * Closes the cache and deletes all of its stored values. This will delete all files in the cache
-     * directory including files that weren't created by the cache.
+     * 关闭缓存并删除其所有存储值。这将删除缓存目录中的所有文件，包括没有由缓存创建的文件
      *
-     * @throws IOException if an I/O error occurs
+     * @throws IOException 删除异常
      */
     public void delete() throws IOException {
         cache.delete();
     }
 
     /**
-     * Deletes all values stored in the cache. In-flight writes to the cache will complete normally,
-     * but the corresponding responses will not be stored.
+     * 删除缓存中存储的所有值。缓存中的写操作将正常完成，但不会存储相应的响应
      *
-     * @throws IOException if an I/O error occurs
+     * @throws IOException 清除异常
      */
     public void evictAll() throws IOException {
         cache.evictAll();
     }
 
+
     /**
-     * Returns an iterator over the URLs in this cache. This iterator doesn't throw {@code
-     * ConcurrentModificationException}, but if new responses are added while iterating, their URLs
-     * will not be returned. If existing responses are evicted during iteration, they will be absent
-     * (unless they were already returned).
+     * 在此缓存中的url上返回一个迭代器,该迭代器支持{@linkplain Iterator#remove}。
+     * 从迭代器中删除URL将从缓存中删除相应的响应。使用此来清除选定的响应
      *
-     * <p>The iterator supports {@linkplain Iterator#remove}. Removing a URL from the iterator evicts
-     * the corresponding response from the cache. Use this to evict selected responses.
-     *
-     * @return iterator
-     * @throws IOException if an I/O error occurs
+     * @return 迭代器
+     * @throws IOException 异常
      */
     public Iterator<String> urls() throws IOException {
         return new Iterator<String>() {
@@ -364,7 +276,8 @@ public final class Cache implements Closeable, Flushable {
             public boolean hasNext() {
                 if (nextUrl != null) return true;
 
-                canRemove = false; // Prevent delegate.remove() on the wrong item!
+                canRemove = false;
+                // 删除()在错误的内容
                 while (delegate.hasNext()) {
                     DiskLruCache.Snapshot snapshot = delegate.next();
                     try {
@@ -372,8 +285,7 @@ public final class Cache implements Closeable, Flushable {
                         nextUrl = metadata.readUtf8LineStrict();
                         return true;
                     } catch (IOException ignored) {
-                        // We couldn't read the metadata for this snapshot; possibly because the host filesystem
-                        // has disappeared! Skip it.
+                        // 无法读取此快照的元数据;可能是因为主机文件系统已经消失了!跳过它
                     } finally {
                         snapshot.close();
                     }
@@ -437,10 +349,10 @@ public final class Cache implements Closeable, Flushable {
         requestCount++;
 
         if (cacheStrategy.networkRequest != null) {
-            // If this is a conditional request, we'll increment hitCount if/when it hits.
+            // 如果这是一个条件请求，我们将增加hitCount如果/当它命中。
             networkCount++;
         } else if (cacheStrategy.cacheResponse != null) {
-            // This response uses the cache and not the network. That's a cache hit.
+            // 此响应使用缓存而不是网络。这就是缓存命中
             hitCount++;
         }
     }
@@ -463,12 +375,12 @@ public final class Cache implements Closeable, Flushable {
 
     private static final class Entry {
         /**
-         * Synthetic response header: the local time when the request was sent.
+         * 合成响应标头:请求发送时的本地时间
          */
         private static final String SENT_MILLIS = Platform.get().getPrefix() + "-Sent-Millis";
 
         /**
-         * Synthetic response header: the local time when the response was received.
+         * 合成响应标头:接收到响应的本地时间
          */
         private static final String RECEIVED_MILLIS = Platform.get().getPrefix() + "-Received-Millis";
 
@@ -483,6 +395,45 @@ public final class Cache implements Closeable, Flushable {
         private final long sentRequestMillis;
         private final long receivedResponseMillis;
 
+        /**
+         * 从输入流中读取项。一个典型的案例:
+         * <pre>{@code
+         *   http://google.com/foo
+         *   GET
+         *   2
+         *   Accept-Language: fr-CA
+         *   Accept-Charset: UTF-8
+         *   HTTP/1.1 200 OK
+         *   3
+         *   Content-Type: image/png
+         *   Content-Length: 100
+         *   Cache-Control: max-age=600
+         * }</pre>
+         *
+         * <p>HTTPS文件是这样的:
+         * <pre>{@code
+         *   https://google.com/foo
+         *   GET
+         *   2
+         *   Accept-Language: fr-CA
+         *   Accept-Charset: UTF-8
+         *   HTTP/1.1 200 OK
+         *   3
+         *   Content-Type: image/png
+         *   Content-Length: 100
+         *   Cache-Control: max-age=600
+         *
+         *   AES_256_WITH_MD5
+         *   2
+         *   base64-encoded peerCertificate[0]
+         *   base64-encoded peerCertificate[1]
+         *   -1
+         *   TLSv1.2
+         * }</pre>
+         *
+         * @param in 输入流
+         * @throws IOException 异常
+         */
         Entry(Source in) throws IOException {
             try {
                 BufferSource source = IoUtils.buffer(in);
@@ -554,58 +505,58 @@ public final class Cache implements Closeable, Flushable {
             BufferSink sink = IoUtils.buffer(editor.newSink(ENTRY_METADATA));
 
             sink.writeUtf8(url)
-                    .writeByte('\n');
+                    .writeByte(Symbol.C_LF);
             sink.writeUtf8(requestMethod)
-                    .writeByte('\n');
+                    .writeByte(Symbol.C_LF);
             sink.writeDecimalLong(varyHeaders.size())
-                    .writeByte('\n');
+                    .writeByte(Symbol.C_LF);
             for (int i = 0, size = varyHeaders.size(); i < size; i++) {
                 sink.writeUtf8(varyHeaders.name(i))
                         .writeUtf8(": ")
                         .writeUtf8(varyHeaders.value(i))
-                        .writeByte('\n');
+                        .writeByte(Symbol.C_LF);
             }
 
             sink.writeUtf8(new StatusLine(protocol, code, message).toString())
-                    .writeByte('\n');
+                    .writeByte(Symbol.C_LF);
             sink.writeDecimalLong(responseHeaders.size() + 2)
-                    .writeByte('\n');
+                    .writeByte(Symbol.C_LF);
             for (int i = 0, size = responseHeaders.size(); i < size; i++) {
                 sink.writeUtf8(responseHeaders.name(i))
                         .writeUtf8(": ")
                         .writeUtf8(responseHeaders.value(i))
-                        .writeByte('\n');
+                        .writeByte(Symbol.C_LF);
             }
             sink.writeUtf8(SENT_MILLIS)
                     .writeUtf8(": ")
                     .writeDecimalLong(sentRequestMillis)
-                    .writeByte('\n');
+                    .writeByte(Symbol.C_LF);
             sink.writeUtf8(RECEIVED_MILLIS)
                     .writeUtf8(": ")
                     .writeDecimalLong(receivedResponseMillis)
-                    .writeByte('\n');
+                    .writeByte(Symbol.C_LF);
 
             if (isHttps()) {
-                sink.writeByte('\n');
+                sink.writeByte(Symbol.C_LF);
                 sink.writeUtf8(handshake.cipherSuite().javaName())
-                        .writeByte('\n');
+                        .writeByte(Symbol.C_LF);
                 writeCertList(sink, handshake.peerCertificates());
                 writeCertList(sink, handshake.localCertificates());
-                sink.writeUtf8(handshake.tlsVersion().javaName()).writeByte('\n');
+                sink.writeUtf8(handshake.tlsVersion().javaName()).writeByte(Symbol.C_LF);
             }
             sink.close();
         }
 
         private boolean isHttps() {
-            return url.startsWith("https://");
+            return url.startsWith(Http.HTTPS_PREFIX);
         }
 
         private List<Certificate> readCertificateList(BufferSource source) throws IOException {
             int length = readInt(source);
-            if (length == -1) return Collections.emptyList(); // HttpClient v1.2 used -1 to indicate null.
+            if (length == -1) return Collections.emptyList();
 
             try {
-                CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+                CertificateFactory certificateFactory = CertificateFactory.getInstance(Builder.X_509);
                 List<Certificate> result = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
                     String line = source.readUtf8LineStrict();
@@ -623,12 +574,12 @@ public final class Cache implements Closeable, Flushable {
                 throws IOException {
             try {
                 sink.writeDecimalLong(certificates.size())
-                        .writeByte('\n');
+                        .writeByte(Symbol.C_LF);
                 for (int i = 0, size = certificates.size(); i < size; i++) {
                     byte[] bytes = certificates.get(i).getEncoded();
                     String line = ByteString.of(bytes).base64();
                     sink.writeUtf8(line)
-                            .writeByte('\n');
+                            .writeByte(Symbol.C_LF);
                 }
             } catch (CertificateEncodingException e) {
                 throw new IOException(e.getMessage());
@@ -642,8 +593,8 @@ public final class Cache implements Closeable, Flushable {
         }
 
         public Response response(DiskLruCache.Snapshot snapshot) {
-            String contentType = responseHeaders.get("Content-Type");
-            String contentLength = responseHeaders.get("Content-Length");
+            String contentType = responseHeaders.get(Header.CONTENT_TYPE);
+            String contentLength = responseHeaders.get(Header.CONTENT_LENGTH);
             Request cacheRequest = new Request.Builder()
                     .url(url)
                     .method(requestMethod, null)
@@ -676,7 +627,7 @@ public final class Cache implements Closeable, Flushable {
             this.contentLength = contentLength;
 
             Source source = snapshot.getSource(ENTRY_BODY);
-            bodySource = IoUtils.buffer(new ForwardSource(source) {
+            bodySource = IoUtils.buffer(new DelegateSource(source) {
                 @Override
                 public void close() throws IOException {
                     snapshot.close();
@@ -714,7 +665,7 @@ public final class Cache implements Closeable, Flushable {
         CacheRequestImpl(final DiskLruCache.Editor editor) {
             this.editor = editor;
             this.cacheOut = editor.newSink(ENTRY_BODY);
-            this.body = new ForwardSink(cacheOut) {
+            this.body = new DelegateSink(cacheOut) {
                 @Override
                 public void close() throws IOException {
                     synchronized (Cache.this) {
@@ -739,7 +690,7 @@ public final class Cache implements Closeable, Flushable {
                 done = true;
                 writeAbortCount++;
             }
-            Internal.closeQuietly(cacheOut);
+            IoUtils.close(cacheOut);
             try {
                 editor.abort();
             } catch (IOException ignored) {

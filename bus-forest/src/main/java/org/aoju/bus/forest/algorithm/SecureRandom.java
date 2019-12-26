@@ -30,7 +30,7 @@ import java.io.IOException;
  * 安全随机数
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SecureRandom extends java.security.SecureRandom {
@@ -115,7 +115,7 @@ public class SecureRandom extends java.security.SecureRandom {
         val |= (long) nextValue() << 24;
         val |= (long) nextValue() << 16;
         val |= (long) nextValue() << 8;
-        val |= (long) nextValue();
+        val |= nextValue();
 
         return val;
     }

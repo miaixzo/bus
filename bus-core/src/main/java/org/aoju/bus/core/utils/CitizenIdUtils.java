@@ -37,7 +37,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CitizenIdUtils {
@@ -57,15 +57,15 @@ public class CitizenIdUtils {
     /**
      * 省市代码表
      */
-    private static Map<String, String> cityCodes = new HashMap<String, String>();
+    private static Map<String, String> cityCodes = new HashMap<>();
     /**
      * 台湾身份首字母对应数字
      */
-    private static Map<String, Integer> twFirstCode = new HashMap<String, Integer>();
+    private static Map<String, Integer> twFirstCode = new HashMap<>();
     /**
      * 香港身份首字母对应数字
      */
-    private static Map<String, Integer> hkFirstCode = new HashMap<String, Integer>();
+    private static Map<String, Integer> hkFirstCode = new HashMap<>();
 
     static {
         cityCodes.put("11", "北京");
@@ -291,9 +291,9 @@ public class CitizenIdUtils {
         if (idCard.matches("^[a-zA-Z][0-9]{9}$")) { // 台湾
             info[0] = "台湾";
             String char2 = idCard.substring(1, 2);
-            if (char2.equals("1")) {
+            if (char2.equals(Symbol.ONE)) {
                 info[1] = "M";
-            } else if (char2.equals("2")) {
+            } else if (char2.equals(Symbol.TWO)) {
                 info[1] = "F";
             } else {
                 info[1] = "N";
@@ -535,7 +535,7 @@ public class CitizenIdUtils {
      * @param endExclude   结束位置（不包含）
      * @return 隐藏后的身份证号码
      * @see StringUtils#hide(CharSequence, int, int)
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String hide(String idCard, int startInclude, int endExclude) {
         return StringUtils.hide(idCard, startInclude, endExclude);
@@ -555,33 +555,33 @@ public class CitizenIdUtils {
     /**
      * 将power和值与11取模获得余数进行校验码判断
      *
-     * @param iSum
+     * @param iSum the iSum
      * @return 校验位
      */
     private static char getCheckCode18(int iSum) {
         switch (iSum % 11) {
             case 10:
-                return '2';
+                return Symbol.C_TWO;
             case 9:
-                return '3';
+                return Symbol.C_THREE;
             case 8:
-                return '4';
+                return Symbol.C_FOUR;
             case 7:
-                return '5';
+                return Symbol.C_FIVE;
             case 6:
-                return '6';
+                return Symbol.C_SIX;
             case 5:
-                return '7';
+                return Symbol.C_SEVEN;
             case 4:
-                return '8';
+                return Symbol.C_EIGHT;
             case 3:
-                return '9';
+                return Symbol.C_NINE;
             case 2:
                 return 'x';
             case 1:
-                return '0';
+                return Symbol.C_ZERO;
             case 0:
-                return '1';
+                return Symbol.C_ONE;
             default:
                 return Symbol.C_SPACE;
         }
@@ -590,7 +590,7 @@ public class CitizenIdUtils {
     /**
      * 将身份证的每位和对应位的加权因子相乘之后,再得到和值
      *
-     * @param iArr
+     * @param iArr the arr
      * @return 身份证编码
      */
     private static int getPowerSum(char[] iArr) {

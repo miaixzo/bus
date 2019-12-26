@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CharUtils {
@@ -176,7 +176,7 @@ public class CharUtils {
      * @return true表示为数字字符, 数字字符指0~9
      */
     public static boolean isNumber(char ch) {
-        return ch >= '0' && ch <= '9';
+        return ch >= Symbol.C_ZERO && ch <= Symbol.C_NINE;
     }
 
     /**
@@ -277,12 +277,12 @@ public class CharUtils {
      * @return 是否为emoji
      */
     public static boolean isEmoji(char c) {
-        return false == ((c == 0x0) || //
-                (c == 0x9) || //
-                (c == 0xA) || //
-                (c == 0xD) || //
-                ((c >= 0x20) && (c <= 0xD7FF)) || //
-                ((c >= 0xE000) && (c <= 0xFFFD)) || //
+        return false == ((c == 0x0) ||
+                (c == 0x9) ||
+                (c == 0xA) ||
+                (c == 0xD) ||
+                ((c >= 0x20) && (c <= 0xD7FF)) ||
+                ((c >= 0xE000) && (c <= 0xFFFD)) ||
                 ((c >= 0x10000) && (c <= 0x10FFFF)));
     }
 

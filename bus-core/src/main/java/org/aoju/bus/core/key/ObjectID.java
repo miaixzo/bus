@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.key;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.net.NetworkInterface;
@@ -37,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 由12个字节组成,分割如下:
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ObjectID implements Comparable<ObjectID>, Serializable {
@@ -210,7 +212,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
 
         for (int i = 0; i < len; i++) {
             char c = text.charAt(i);
-            if (c >= '0' && c <= '9')
+            if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
                 continue;
             if (c >= 'a' && c <= 'f')
                 continue;
@@ -321,7 +323,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
             int x = b[i] & 0xFF;
             String s = Integer.toHexString(x);
             if (s.length() == 1)
-                buf.append("0");
+                buf.append(Symbol.ZERO);
             buf.append(s);
         }
 

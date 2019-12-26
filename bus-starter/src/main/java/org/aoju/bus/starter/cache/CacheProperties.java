@@ -24,8 +24,8 @@
 package org.aoju.bus.starter.cache;
 
 import lombok.Data;
-import org.aoju.bus.cache.support.cache.Cache;
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.cache.CacheX;
+import org.aoju.bus.starter.BusXExtend;
 import org.aoju.bus.starter.druid.DruidProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -35,11 +35,11 @@ import java.util.Map;
  * 缓存相关配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
-@ConfigurationProperties(prefix = Extend.CACHE)
+@ConfigurationProperties(prefix = BusXExtend.CACHE)
 public class CacheProperties {
 
     /**
@@ -49,7 +49,7 @@ public class CacheProperties {
     /**
      * 缓存配置
      */
-    private Map<String, Cache> map;
+    private Map<String, CacheX> map;
     /**
      * 缓存前缀,目前只对redis缓存生效,默认 OAUTH::STATE::
      */

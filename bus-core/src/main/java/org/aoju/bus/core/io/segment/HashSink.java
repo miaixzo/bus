@@ -38,10 +38,10 @@ import java.security.NoSuchAlgorithmException;
  * {@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
-public final class HashSink extends ForwardSink {
+public final class HashSink extends DelegateSink {
 
     private final MessageDigest messageDigest;
     private final Mac mac;

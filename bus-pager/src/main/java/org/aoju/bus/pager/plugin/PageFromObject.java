@@ -36,7 +36,7 @@ import java.util.Map;
  * 分页参数对象工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class PageFromObject {
@@ -44,7 +44,7 @@ public abstract class PageFromObject {
     protected static Boolean hasRequest;
     protected static Class<?> requestClass;
     protected static Method getParameterMap;
-    protected static Map<String, String> PARAMS = new HashMap<String, String>(6, 1);
+    protected static Map<String, String> PARAMS = new HashMap<>(6, 1);
 
     static {
         try {

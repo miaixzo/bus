@@ -26,12 +26,7 @@ package org.aoju.bus.cache;
 import org.aoju.bus.cache.annotation.Cached;
 import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
-import org.aoju.bus.cache.entity.CacheExpire;
-import org.aoju.bus.cache.entity.CacheHolder;
-import org.aoju.bus.cache.entity.CacheMethod;
-import org.aoju.bus.cache.entity.CachePair;
-import org.aoju.bus.cache.proxy.ProxyChain;
-import org.aoju.bus.cache.reader.AbstractReader;
+import org.aoju.bus.cache.magic.*;
 import org.aoju.bus.cache.support.ArgNameGenerator;
 import org.aoju.bus.cache.support.CacheInfoContainer;
 import org.aoju.bus.cache.support.KeyGenerator;
@@ -40,6 +35,7 @@ import org.aoju.bus.core.annotation.Inject;
 import org.aoju.bus.core.annotation.Named;
 import org.aoju.bus.core.annotation.Singleton;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.proxy.invoker.ProxyChain;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -47,7 +43,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Singleton
@@ -101,23 +97,21 @@ public class Complex {
 
     public Object read(CachedGet cachedGet, Method method, ProxyChain baseInvoker) throws Throwable {
         Object result;
-        if (isSwitchOn(config, cachedGet, method, baseInvoker.getArgs())) {
+        if (isSwitchOn(config, cachedGet, method, baseInvoker.getArguments())) {
             result = doReadWrite(method, baseInvoker, false);
         } else {
             result = baseInvoker.proceed();
         }
-
         return result;
     }
 
     public Object readWrite(Cached cached, Method method, ProxyChain baseInvoker) throws Throwable {
         Object result;
-        if (isSwitchOn(config, cached, method, baseInvoker.getArgs())) {
+        if (isSwitchOn(config, cached, method, baseInvoker.getArguments())) {
             result = doReadWrite(method, baseInvoker, true);
         } else {
             result = baseInvoker.proceed();
         }
-
         return result;
     }
 
@@ -126,15 +120,15 @@ public class Complex {
 
             long start = System.currentTimeMillis();
 
-            CacheHolder cacheHolder = CacheInfoContainer.getCacheInfo(method).getLeft();
-            if (cacheHolder.isMulti()) {
-                Map[] pair = KeyGenerator.generateMultiKey(cacheHolder, args);
+            AnnoHolder annoHolder = CacheInfoContainer.getCacheInfo(method).getLeft();
+            if (annoHolder.isMulti()) {
+                Map[] pair = KeyGenerator.generateMultiKey(annoHolder, args);
                 Set<String> keys = ((Map<String, Object>) pair[1]).keySet();
                 cacheManager.remove(invalid.value(), keys.toArray(new String[keys.size()]));
 
                 Logger.info("multi cache clear, keys: {}", keys);
             } else {
-                String key = KeyGenerator.generateSingleKey(cacheHolder, args);
+                String key = KeyGenerator.generateSingleKey(annoHolder, args);
                 cacheManager.remove(invalid.value(), key);
 
                 Logger.info("single cache clear, key: {}", key);
@@ -147,15 +141,15 @@ public class Complex {
     private Object doReadWrite(Method method, ProxyChain baseInvoker, boolean needWrite) throws Throwable {
         long start = System.currentTimeMillis();
 
-        CachePair<CacheHolder, CacheMethod> pair = CacheInfoContainer.getCacheInfo(method);
-        CacheHolder cacheHolder = pair.getLeft();
-        CacheMethod cacheMethod = pair.getRight();
+        CachePair<AnnoHolder, MethodHolder> pair = CacheInfoContainer.getCacheInfo(method);
+        AnnoHolder annoHolder = pair.getLeft();
+        MethodHolder methodHolder = pair.getRight();
 
         Object result;
-        if (cacheHolder.isMulti()) {
-            result = multiCacheReader.read(cacheHolder, cacheMethod, baseInvoker, needWrite);
+        if (annoHolder.isMulti()) {
+            result = multiCacheReader.read(annoHolder, methodHolder, baseInvoker, needWrite);
         } else {
-            result = singleCacheReader.read(cacheHolder, cacheMethod, baseInvoker, needWrite);
+            result = singleCacheReader.read(annoHolder, methodHolder, baseInvoker, needWrite);
         }
 
         Logger.debug("cache read total cost [{}] ms", (System.currentTimeMillis() - start));

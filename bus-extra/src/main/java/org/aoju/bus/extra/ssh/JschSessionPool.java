@@ -25,7 +25,6 @@ package org.aoju.bus.extra.ssh;
 
 import com.jcraft.jsch.Session;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.extra.SSHUtils;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -37,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Jsch会话池
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public enum JschSessionPool {
@@ -51,7 +50,7 @@ public enum JschSessionPool {
     /**
      * SSH会话池,key：host,value：Session对象
      */
-    private Map<String, Session> sessionPool = new ConcurrentHashMap<String, Session>();
+    private Map<String, Session> sessionPool = new ConcurrentHashMap<>();
 
     /**
      * 获取Session,不存在返回null

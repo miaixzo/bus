@@ -24,7 +24,6 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.annotation.Element;
-import org.aoju.bus.core.lang.Filter;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AccessibleObject;
@@ -38,7 +37,7 @@ import java.util.Map;
  * 快速获取注解对象、注解值等工具封装
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class AnnoUtils {
@@ -129,17 +128,14 @@ public class AnnoUtils {
             return null;
         }
 
-        final Method[] methods = ReflectUtils.getMethods(annotationType, new Filter<Method>() {
-            @Override
-            public boolean accept(Method t) {
-                if (ArrayUtils.isEmpty(t.getParameterTypes())) {
-                    final String name = t.getName();
-                    return (false == "hashCode".equals(name)) //
-                            && (false == "toString".equals(name)) //
-                            && (false == "annotationType".equals(name));
-                }
-                return false;
+        final Method[] methods = ReflectUtils.getMethods(annotationType, t -> {
+            if (ArrayUtils.isEmpty(t.getParameterTypes())) {
+                final String name = t.getName();
+                return (false == "hashCode".equals(name))
+                        && (false == "toString".equals(name))
+                        && (false == "annotationType".equals(name));
             }
+            return false;
         });
 
         final HashMap<String, Object> result = new HashMap<>(methods.length, 1);

@@ -24,6 +24,8 @@
 package org.aoju.bus.health.software;
 
 import com.sun.jna.Platform;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.health.Memoizer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,11 +33,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoizer.memoize;
-
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractOS implements OperatingSystem {
@@ -51,11 +51,11 @@ public abstract class AbstractOS implements OperatingSystem {
             .comparingInt(OSProcess::getParentProcessID);
     private static final Comparator<OSProcess> NAME_ASC_SORT = Comparator.comparing(OSProcess::getName,
             String.CASE_INSENSITIVE_ORDER);
-    private final Supplier<String> manufacturer = memoize(this::queryManufacturer);
-    private final Supplier<FamilyVersionInfo> familyVersionInfo = memoize(this::queryFamilyVersionInfo);
-    private final Supplier<Integer> bitness = memoize(this::queryPlatformBitness);
+    private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+    private final Supplier<FamilyVersionInfo> familyVersionInfo = Memoizer.memoize(this::queryFamilyVersionInfo);
+    private final Supplier<Integer> bitness = Memoizer.memoize(this::queryPlatformBitness);
     // Test if sudo or admin privileges: 1 = unknown, 0 = no, 1 = yes
-    private final Supplier<Boolean> elevated = memoize(this::queryElevated);
+    private final Supplier<Boolean> elevated = Memoizer.memoize(this::queryElevated);
 
     @Override
     public String getManufacturer() {
@@ -202,7 +202,7 @@ public abstract class AbstractOS implements OperatingSystem {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getManufacturer()).append(' ').append(getFamily()).append(' ');
+        sb.append(getManufacturer()).append(Symbol.C_SPACE).append(getFamily()).append(Symbol.C_SPACE);
         return sb.toString();
     }
 

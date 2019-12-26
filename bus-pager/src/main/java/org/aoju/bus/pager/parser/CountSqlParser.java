@@ -30,6 +30,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.pager.plugin.PageFromObject;
 
 import java.util.*;
@@ -38,7 +39,7 @@ import java.util.*;
  * sql解析类,提供更智能的count查询sql
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CountSqlParser {
@@ -48,7 +49,7 @@ public class CountSqlParser {
     /**
      * 聚合函数,以下列函数开头的都认为是聚合函数
      */
-    private static final Set<String> AGGREGATE_FUNCTIONS = new HashSet<String>(Arrays.asList(
+    private static final Set<String> AGGREGATE_FUNCTIONS = new HashSet<>(Arrays.asList(
             ("APPROX_COUNT_DISTINCT," +
                     "ARRAY_AGG," +
                     "AVG," +
@@ -135,9 +136,9 @@ public class CountSqlParser {
     }
 
     //<editor-fold desc="聚合函数">
-    private final Set<String> skipFunctions = Collections.synchronizedSet(new HashSet<String>());
+    private final Set<String> skipFunctions = Collections.synchronizedSet(new HashSet<>());
     //</editor-fold>
-    private final Set<String> falseFunctions = Collections.synchronizedSet(new HashSet<String>());
+    private final Set<String> falseFunctions = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * 添加到聚合函数,可以是逗号隔开的多个函数前缀
@@ -160,7 +161,7 @@ public class CountSqlParser {
      * @return the string
      */
     public String getSmartCountSql(String sql) {
-        return getSmartCountSql(sql, "0");
+        return getSmartCountSql(sql, Symbol.ZERO);
     }
 
     /**
@@ -207,7 +208,7 @@ public class CountSqlParser {
      * @return 返回count查询sql
      */
     public String getSimpleCountSql(final String sql) {
-        return getSimpleCountSql(sql, "0");
+        return getSimpleCountSql(sql, Symbol.ZERO);
     }
 
     /**
@@ -236,7 +237,7 @@ public class CountSqlParser {
     public void sqlToCount(Select select, String name) {
         SelectBody selectBody = select.getSelectBody();
         // 是否能简化count查询
-        List<SelectItem> COUNT_ITEM = new ArrayList<SelectItem>();
+        List<SelectItem> COUNT_ITEM = new ArrayList<>();
         COUNT_ITEM.add(new SelectExpressionItem(new Column("count(" + name + ")")));
         if (selectBody instanceof PlainSelect && isSimpleCount((PlainSelect) selectBody)) {
             ((PlainSelect) selectBody).setSelectItems(COUNT_ITEM);
@@ -268,7 +269,7 @@ public class CountSqlParser {
         }
         for (SelectItem item : select.getSelectItems()) {
             //select列中包含参数的时候不可以,否则会引起参数个数错误
-            if (item.toString().contains("?")) {
+            if (item.toString().contains(Symbol.QUESTION_MARK)) {
                 return false;
             }
             //如果查询列中包含函数,也不可以,函数可能会聚合列
@@ -408,7 +409,7 @@ public class CountSqlParser {
             return false;
         }
         for (OrderByElement orderByElement : orderByElements) {
-            if (orderByElement.toString().contains("?")) {
+            if (orderByElement.toString().contains(Symbol.QUESTION_MARK)) {
                 return true;
             }
         }

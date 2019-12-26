@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.starter.druid;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -36,7 +37,7 @@ import java.util.Set;
  * 多数据源支持
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
@@ -44,12 +45,12 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     /**
      * 所有数据源的key集合
      */
-    private final static Set<Object> keySet = new LinkedHashSet<>();
+    private static final Set<Object> keySet = new LinkedHashSet<>();
     /**
      * 单例句柄
      */
     private static DynamicDataSource instance;
-    private static byte[] lock = new byte[0];
+    private static byte[] lock = Normal.EMPTY_BYTE_ARRAY;
 
     /**
      * 单例方法

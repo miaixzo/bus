@@ -23,22 +23,20 @@
  */
 package org.aoju.bus.cache;
 
-import org.aoju.bus.cache.support.cache.Cache;
-
 import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Context {
 
     // cache接口实现
-    private Map<String, Cache> caches;
+    private Map<String, CacheX> caches;
 
     // 缓存分组命中率统计
-    private Provider provider;
+    private Shooting shooting;
 
     // 是否开启Cache(全局开关)
     private Switch cache;
@@ -46,12 +44,12 @@ public class Context {
     // 是否开启缓存防击穿
     private Switch prevent;
 
-    public static Context newConfig(Map<String, Cache> caches) {
+    public static Context newConfig(Map<String, CacheX> caches) {
         Context config = new Context();
         config.caches = caches;
         config.cache = Switch.ON;
         config.prevent = Switch.OFF;
-        config.provider = null;
+        config.shooting = null;
         return config;
     }
 
@@ -59,20 +57,20 @@ public class Context {
         return prevent != null && prevent == Switch.ON;
     }
 
-    public Map<String, Cache> getCaches() {
+    public Map<String, CacheX> getCaches() {
         return caches;
     }
 
-    public void setCaches(Map<String, Cache> caches) {
+    public void setCaches(Map<String, CacheX> caches) {
         this.caches = caches;
     }
 
-    public Provider getProvider() {
-        return provider;
+    public Shooting getShooting() {
+        return shooting;
     }
 
-    public void setProvider(Provider provider) {
-        this.provider = provider;
+    public void setShooting(Shooting shooting) {
+        this.shooting = shooting;
     }
 
     public Switch getCache() {

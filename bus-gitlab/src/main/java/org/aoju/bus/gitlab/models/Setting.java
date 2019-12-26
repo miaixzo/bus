@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.utils.JacksonJsonEnumHelper;
 
-
 /**
  * This enum provides constants and value validation for the available GitLab application settings.
  * See <a href="https://docs.gitlab.com/ce/api/settings.html#list-of-settings-that-can-be-accessed-via-api-calls">

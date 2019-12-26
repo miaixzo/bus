@@ -26,8 +26,10 @@ package org.aoju.bus.proxy.intercept;
 import java.lang.reflect.Method;
 
 /**
+ * 一个MethodFilter决定一个方法是否被接受
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface MethodFilter {

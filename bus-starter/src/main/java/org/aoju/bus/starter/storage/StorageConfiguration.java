@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.starter.storage;
 
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.starter.BusXExtend;
 import org.aoju.bus.storage.metric.DefaultStorageCache;
 import org.aoju.bus.storage.metric.StorageCache;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Bean;
  * 授权配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {StorageProperties.class})
@@ -48,7 +48,7 @@ public class StorageConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(StorageCache.class)
-    @ConditionalOnProperty(name = Extend.STORAGE + ".cache.type", havingValue = "default", matchIfMissing = true)
+    @ConditionalOnProperty(name = BusXExtend.STORAGE + ".cache.type", havingValue = "default", matchIfMissing = true)
     public StorageCache storageCache() {
         return DefaultStorageCache.INSTANCE;
     }

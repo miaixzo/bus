@@ -27,7 +27,7 @@ package org.aoju.bus.storage.metric;
  * State缓存接口,方便用户扩展
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface StorageCache {
@@ -38,7 +38,7 @@ public interface StorageCache {
      * @param key   缓存key
      * @param value 缓存内容
      */
-    void cache(String key, String value);
+    void cache(String key, Object value);
 
     /**
      * 存入缓存
@@ -47,7 +47,7 @@ public interface StorageCache {
      * @param value   缓存内容
      * @param timeout 指定缓存过期时间（毫秒）
      */
-    void cache(String key, String value, long timeout);
+    void cache(String key, Object value, long timeout);
 
     /**
      * 获取缓存内容
@@ -55,7 +55,7 @@ public interface StorageCache {
      * @param key 缓存key
      * @return 缓存内容
      */
-    String get(String key);
+    Object get(String key);
 
     /**
      * 是否存在key,如果对应key的value值已过期,也返回false

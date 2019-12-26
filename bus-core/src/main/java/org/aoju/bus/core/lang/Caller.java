@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 调用者 可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Caller {
@@ -198,7 +198,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new InstrumentException("[" + className + "] not found!");
+                throw new InstrumentException(Symbol.BRACKET_LEFT + className + "] not found!");
             }
         }
 
@@ -208,7 +208,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new InstrumentException("[" + className + "] not found!");
+                throw new InstrumentException(Symbol.BRACKET_LEFT + className + "] not found!");
             }
         }
 
@@ -218,7 +218,7 @@ public class Caller {
             try {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new InstrumentException("[" + className + "] not found!");
+                throw new InstrumentException(Symbol.BRACKET_LEFT + className + "] not found!");
             }
         }
 

@@ -26,10 +26,13 @@ package org.aoju.bus.proxy.provider;
 import org.aoju.bus.proxy.Provider;
 
 /**
- * 装饰者模型
+ * 返回内部{@link  Provider 提供程序}的结果
+ * 子类可以覆盖{@link #getObject()}方法，
+ * 并以某种方式装饰从内部提供程序返回的内容
+ * 例如,通过{@link SingletonProvider 高速缓存它}
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class DecoratorProvider implements Provider {

@@ -30,6 +30,7 @@ import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinDef.DWORDByReference;
 import com.sun.jna.platform.win32.WinDef.LONGLONGByReference;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.logger.Logger;
 
@@ -38,7 +39,7 @@ import org.aoju.bus.logger.Logger;
  * allow applications to easily add, query, and remove counters.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class PerfDataUtils {
@@ -201,11 +202,11 @@ public final class PerfDataUtils {
          */
         public String getCounterPath() {
             StringBuilder sb = new StringBuilder();
-            sb.append('\\').append(object);
+            sb.append(Symbol.C_BACKSLASH).append(object);
             if (instance != null) {
-                sb.append('(').append(instance).append(')');
+                sb.append(Symbol.C_PARENTHESE_LEFT).append(instance).append(Symbol.C_PARENTHESE_RIGHT);
             }
-            sb.append('\\').append(counter);
+            sb.append(Symbol.C_BACKSLASH).append(counter);
             return sb.toString();
         }
     }

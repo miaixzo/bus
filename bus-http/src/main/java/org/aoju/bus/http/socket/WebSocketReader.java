@@ -32,12 +32,11 @@ import java.net.ProtocolException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An compatible WebSocket frame reader.
- * <p>
- * This class is not thread safe.
+ * 兼容的WebSocket框架阅读器.
+ * 这个类不是线程安全的
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class WebSocketReader {
@@ -50,7 +49,6 @@ final class WebSocketReader {
     private final byte[] maskKey;
     private final Buffer.UnsafeCursor maskCursor;
     boolean closed;
-    // Stateful data about the current frame.
     int opcode;
     long frameLength;
     boolean isFinalFrame;
@@ -63,7 +61,6 @@ final class WebSocketReader {
         this.source = source;
         this.frameCallback = frameCallback;
 
-        // Masks are only a concern for server writers.
         maskKey = isClient ? null : new byte[4];
         maskCursor = isClient ? null : new Buffer.UnsafeCursor();
     }
@@ -80,7 +77,6 @@ final class WebSocketReader {
     private void readHeader() throws IOException {
         if (closed) throw new IOException("closed");
 
-        // Disable the timeout to read the first byte of a new frame.
         int b0;
         long timeoutBefore = source.timeout().timeoutNanos();
         source.timeout().clearTimeout();
@@ -94,7 +90,6 @@ final class WebSocketReader {
         isFinalFrame = (b0 & WebSocketProtocol.B0_FLAG_FIN) != 0;
         isControlFrame = (b0 & WebSocketProtocol.OPCODE_FLAG_CONTROL) != 0;
 
-        // Control frames must be final frames (cannot contain continuations).
         if (isControlFrame && !isFinalFrame) {
             throw new ProtocolException("Control frames must be final.");
         }
@@ -103,7 +98,6 @@ final class WebSocketReader {
         boolean reservedFlag2 = (b0 & WebSocketProtocol.B0_FLAG_RSV2) != 0;
         boolean reservedFlag3 = (b0 & WebSocketProtocol.B0_FLAG_RSV3) != 0;
         if (reservedFlag1 || reservedFlag2 || reservedFlag3) {
-            // Reserved flags are for extensions which we currently do not support.
             throw new ProtocolException("Reserved flags are unsupported.");
         }
 
@@ -111,16 +105,14 @@ final class WebSocketReader {
 
         boolean isMasked = (b1 & WebSocketProtocol.B1_FLAG_MASK) != 0;
         if (isMasked == isClient) {
-            // Masked payloads must be read on the server. Unmasked payloads must be read on the client.
             throw new ProtocolException(isClient
                     ? "Server-sent frames must not be masked."
                     : "Client-sent frames must be masked.");
         }
 
-        // Get frame length, optionally reading from follow-up bytes if indicated by special values.
         frameLength = b1 & WebSocketProtocol.B1_MASK_LENGTH;
         if (frameLength == WebSocketProtocol.PAYLOAD_SHORT) {
-            frameLength = source.readShort() & 0xffffL; // Value is unsigned.
+            frameLength = source.readShort() & 0xffffL;
         } else if (frameLength == WebSocketProtocol.PAYLOAD_LONG) {
             frameLength = source.readLong();
             if (frameLength < 0) {
@@ -134,7 +126,6 @@ final class WebSocketReader {
         }
 
         if (isMasked) {
-            // Read the masking key as bytes so that they can be used directly for unmasking.
             source.readFully(maskKey);
         }
     }
@@ -193,9 +184,6 @@ final class WebSocketReader {
         }
     }
 
-    /**
-     * Read headers and process any control frames until we reach a non-control frame.
-     */
     private void readUntilNonControlFrame() throws IOException {
         while (!closed) {
             readHeader();
@@ -221,7 +209,7 @@ final class WebSocketReader {
                 }
             }
 
-            if (isFinalFrame) break; // We are exhausted and have no continuations.
+            if (isFinalFrame) break;
 
             readUntilNonControlFrame();
             if (opcode != WebSocketProtocol.OPCODE_CONTINUATION) {

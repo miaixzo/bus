@@ -33,7 +33,7 @@ import java.util.Scanner;
  * 此类主要针对{@link java.lang.System#out} 和 {@link java.lang.System#err} 做封装
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Console {
@@ -56,7 +56,7 @@ public class Console {
             Throwable e = (Throwable) obj;
             log(e, e.getMessage());
         } else {
-            log("{}", obj);
+            log(Symbol.DELIM, obj);
         }
     }
 
@@ -67,7 +67,7 @@ public class Console {
      * @since 3.3.1
      */
     public static void print(Object obj) {
-        print("{}", obj);
+        print(Symbol.DELIM, obj);
     }
 
     /**
@@ -122,7 +122,7 @@ public class Console {
             Throwable e = (Throwable) obj;
             error(e, e.getMessage());
         } else {
-            error("{}", obj);
+            error(Symbol.DELIM, obj);
         }
     }
 

@@ -25,8 +25,9 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -41,7 +42,7 @@ import java.util.Objects;
  * Pinterest登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PinterestProvider extends DefaultProvider {
@@ -69,14 +70,14 @@ public class PinterestProvider extends DefaultProvider {
     @Override
     protected Property getUserInfo(AccToken token) {
         String userinfoUrl = userInfoUrl(token);
-        JSONObject object = JSONObject.parseObject(HttpClient.get(userinfoUrl));
+        JSONObject object = JSONObject.parseObject(Httpx.get(userinfoUrl));
         this.checkResponse(object);
         JSONObject userObj = object.getJSONObject("data");
         return Property.builder()
                 .uuid(userObj.getString("id"))
                 .avatar(getAvatarUrl(userObj))
                 .username(userObj.getString("username"))
-                .nickname(userObj.getString("first_name") + " " + userObj.getString("last_name"))
+                .nickname(userObj.getString("first_name") + Symbol.SPACE + userObj.getString("last_name"))
                 .gender(Normal.Gender.UNKNOWN)
                 .remark(userObj.getString("bio"))
                 .token(token)

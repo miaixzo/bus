@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 存储服务-华为云
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class HuaweiObsProvider extends AbstractProvider {
@@ -97,7 +97,7 @@ public class HuaweiObsProvider extends AbstractProvider {
             extended.put("tag", item.getMetadata().getEtag());
             extended.put("storageClass", item.getMetadata().getObjectStorageClass());
             extended.put("lastModified", item.getMetadata().getLastModified());
-            storageItem.setExtended(extended);
+            storageItem.setExtend(extended);
             return storageItem;
         }).collect(Collectors.toList()));
     }

@@ -23,12 +23,14 @@
  */
 package org.aoju.bus.http.accord;
 
+import org.aoju.bus.core.lang.exception.RevisedException;
+import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.internal.http.HttpCodec;
-import org.aoju.bus.http.internal.http.second.ErrorCode;
-import org.aoju.bus.http.internal.http.second.StreamResetException;
-import org.aoju.bus.http.offers.EventListener;
-import org.aoju.bus.http.offers.Interceptor;
+import org.aoju.bus.http.metric.EventListener;
+import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.http.ErrorCode;
+import org.aoju.bus.http.metric.http.HttpCodec;
+import org.aoju.bus.http.metric.http.StreamException;
 
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -37,50 +39,19 @@ import java.net.Socket;
 import java.util.List;
 
 /**
- * This class coordinates the relationship between three entities:
- *
- * <ul>
- * <li><strong>Connections:</strong> physical socket connections to remote servers. These are
- * potentially slow to establish so it is necessary to be able to cancel a connection
- * currently being connected.
- * <li><strong>Streams:</strong> logical HTTP request/response pairs that are layered on
- * connections. Each connection has its own allocation limit, which defines how many
- * concurrent streams that connection can carry. HTTP/1.x connections can carry 1 stream
- * at a time, HTTP/2 typically carry multiple.
- * <li><strong>Calls:</strong> a logical sequence of streams, typically an initial request and
- * its follow up requests. We prefer to keep all streams of a single call on the same
- * connection for better behavior and locality.
- * </ul>
- *
- * <p>Instances of this class act on behalf of the call, using first or more streams over first or more
- * connections. This class has APIs to release each of the above resources:
- *
- * <ul>
- * <li>{@link #noNewStreams()} prevents the connection from being used for new streams in the
- * future. Use this after a {@code Connection: close} header, or when the connection may be
- * inconsistent.
- * <li>{@link #streamFinished streamFinished()} releases the active stream from this allocation.
- * Note that only first stream may be active at a given time, so it is necessary to call
- * {@link #streamFinished streamFinished()} before creating a subsequent stream with {@link
- * #newStream newStream()}.
- * <li>{@link #release()} removes the call's hold on the connection. Note that this won't
- * immediately free the connection if there is a stream still lingering. That happens when a
- * call is complete but its response body has yet to be fully consumed.
- * </ul>
- *
- * <p>This class supports {@linkplain #cancel asynchronous canceling}. This is intended to have the
- * smallest blast radius possible. If an HTTP/2 stream is active, canceling will cancel that stream
- * but not the other streams sharing its connection. But if the TLS handshake is still in progress
- * then canceling may break the entire connection.
+ * 该类协调三个实体之间的关系
+ * 这个类支持{@linkplain #cancel asynchronous canceling}。这是为了使爆炸半径尽可能小。
+ * 如果HTTP/2流处于活动状态，取消将取消该流，但不会取消共享其连接的其他流。但是如果TLS握手
+ * 仍然在进行中，那么取消可能会中断整个连接
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class StreamAllocation {
 
     public final Address address;
-    public final Call call;
+    public final NewCall call;
     public final EventListener eventListener;
     private final ConnectionPool connectionPool;
     private final Object callStackTrace;
@@ -94,7 +65,7 @@ public final class StreamAllocation {
     private boolean canceled;
     private HttpCodec codec;
 
-    public StreamAllocation(ConnectionPool connectionPool, Address address, Call call,
+    public StreamAllocation(ConnectionPool connectionPool, Address address, NewCall call,
                             EventListener eventListener, Object callStackTrace) {
         this.connectionPool = connectionPool;
         this.address = address;
@@ -105,7 +76,7 @@ public final class StreamAllocation {
     }
 
     public HttpCodec newStream(
-            Client client, Interceptor.Chain chain, boolean doExtensiveHealthChecks) {
+            Httpd client, Interceptor.Chain chain, boolean doExtensiveHealthChecks) {
         int connectTimeout = chain.connectTimeoutMillis();
         int readTimeout = chain.readTimeoutMillis();
         int writeTimeout = chain.writeTimeoutMillis();
@@ -126,6 +97,18 @@ public final class StreamAllocation {
         }
     }
 
+    /**
+     * 找到一个连接，如果它是健康的，则返回它。如果不健康，则重复此过程，直到找到一个健康的连接
+     *
+     * @param connectTimeout          连接超时时间
+     * @param readTimeout             读取超时时间
+     * @param writeTimeout            写入超时时间
+     * @param pingIntervalMillis      ping间隔时间
+     * @param connectionRetryEnabled  是否重试
+     * @param doExtensiveHealthChecks 是否健康检查
+     * @return 连接信息
+     * @throws IOException 异常
+     */
     private RealConnection findHealthyConnection(int connectTimeout, int readTimeout,
                                                  int writeTimeout, int pingIntervalMillis, boolean connectionRetryEnabled,
                                                  boolean doExtensiveHealthChecks) throws IOException {
@@ -133,15 +116,14 @@ public final class StreamAllocation {
             RealConnection candidate = findConnection(connectTimeout, readTimeout, writeTimeout,
                     pingIntervalMillis, connectionRetryEnabled);
 
-            // If this is a brand new connection, we can skip the extensive health checks.
+            // 如果这是一个全新的连接，可以跳过大量的健康检查
             synchronized (connectionPool) {
                 if (candidate.successCount == 0) {
                     return candidate;
                 }
             }
 
-            // Do a (potentially slow) check to confirm that the pooled connection is still good. If it
-            // isn't, take it out of the pool and start again.
+            // 执行(可能很慢的)检查以确认池连接仍然良好。如果不是，把它从池中取出，重新开始
             if (!candidate.isHealthy(doExtensiveHealthChecks)) {
                 noNewStreams();
                 continue;
@@ -151,6 +133,17 @@ public final class StreamAllocation {
         }
     }
 
+    /**
+     * 返回主持新流的连接。如果现有连接存在，则优先选择连接池，最后构建新连接
+     *
+     * @param connectTimeout         连接超时时间
+     * @param readTimeout            读取超时时间
+     * @param writeTimeout           写入超时时间
+     * @param pingIntervalMillis     ping间隔时间
+     * @param connectionRetryEnabled 是否重试
+     * @return 连接信息
+     * @throws IOException 异常
+     */
     private RealConnection findConnection(int connectTimeout, int readTimeout, int writeTimeout,
                                           int pingIntervalMillis, boolean connectionRetryEnabled) throws IOException {
         boolean foundPooledConnection = false;
@@ -163,23 +156,22 @@ public final class StreamAllocation {
             if (codec != null) throw new IllegalStateException("codec != null");
             if (canceled) throw new IOException("Canceled");
 
-            // Attempt to use an already-allocated connection. We need to be careful here because our
-            // already-allocated connection may have been restricted from creating new streams.
+            // 尝试使用已分配的连接。在这里需要小心，因为已经分配的连接可能已经被限制不能创建新的流
             releasedConnection = this.connection;
             toClose = releaseIfNoNewStreams();
             if (this.connection != null) {
-                // We had an already-allocated connection and it's good.
+                // 有一个已经分配的连接
                 result = this.connection;
                 releasedConnection = null;
             }
             if (!reportedAcquired) {
-                // If the connection was never reported acquired, don't report it as released!
+                // 如果从未报告获得连接，不要将其报告为已发布!
                 releasedConnection = null;
             }
 
             if (result == null) {
-                // Attempt to get a connection from the pool.
-                Internal.instance.get(connectionPool, address, this, null);
+                // 尝试从池中获取连接
+                Builder.instance.get(connectionPool, address, this, null);
                 if (connection != null) {
                     foundPooledConnection = true;
                     result = connection;
@@ -188,7 +180,7 @@ public final class StreamAllocation {
                 }
             }
         }
-        Internal.closeQuietly(toClose);
+        IoUtils.close(toClose);
 
         if (releasedConnection != null) {
             eventListener.connectionReleased(call, releasedConnection);
@@ -197,11 +189,11 @@ public final class StreamAllocation {
             eventListener.connectionAcquired(call, result);
         }
         if (result != null) {
-            // If we found an already-allocated or pooled connection, we're done.
+            route = connection.route();
             return result;
         }
 
-        // If we need a route selection, make first. This is a blocking operation.
+        // 如果我们需要选择路线，就选一条。这是一个阻塞操作
         boolean newRouteSelection = false;
         if (selectedRoute == null && (routeSelection == null || !routeSelection.hasNext())) {
             newRouteSelection = true;
@@ -212,12 +204,11 @@ public final class StreamAllocation {
             if (canceled) throw new IOException("Canceled");
 
             if (newRouteSelection) {
-                // Now that we have a set of IP addresses, make another attempt at getting a connection from
-                // the pool. This could match due to connection coalescing.
+                // 现在有了一组IP地址，再尝试从池中获取一个连接。这可能由于连接合并而匹配
                 List<Route> routes = routeSelection.getAll();
                 for (int i = 0, size = routes.size(); i < size; i++) {
                     Route route = routes.get(i);
-                    Internal.instance.get(connectionPool, address, this, route);
+                    Builder.instance.get(connectionPool, address, this, route);
                     if (connection != null) {
                         foundPooledConnection = true;
                         result = connection;
@@ -232,8 +223,7 @@ public final class StreamAllocation {
                     selectedRoute = routeSelection.next();
                 }
 
-                // Create a connection and assign it to this allocation immediately. This makes it possible
-                // for an asynchronous cancel() to interrupt the handshake we're about to do.
+                // 创建一个连接并立即将其分配给这个分配。这使得异步cancel()可以中断我们将要进行的握手
                 route = selectedRoute;
                 refusedStreamCount = 0;
                 result = new RealConnection(connectionPool, selectedRoute);
@@ -241,13 +231,13 @@ public final class StreamAllocation {
             }
         }
 
-        // If we found a pooled connection on the 2nd time around, we're done.
+        // 如果在第二次找到池连接，就完成了。
         if (foundPooledConnection) {
             eventListener.connectionAcquired(call, result);
             return result;
         }
 
-        // Do TCP + TLS handshakes. This is a blocking operation.
+        // TCP + TLS握手，这是一个阻塞操作
         result.connect(connectTimeout, readTimeout, writeTimeout, pingIntervalMillis,
                 connectionRetryEnabled, call, eventListener);
         routeDatabase().connected(result.route());
@@ -256,27 +246,26 @@ public final class StreamAllocation {
         synchronized (connectionPool) {
             reportedAcquired = true;
 
-            // Pool the connection.
-            Internal.instance.put(connectionPool, result);
+            // 连接池信息
+            Builder.instance.put(connectionPool, result);
 
-            // If another multiplexed connection to the same address was created concurrently, then
-            // release this connection and acquire that first.
+            // 如果并发地创建了到同一地址的另一个多路复用连接，则释放该连接并获取该连接
             if (result.isMultiplexed()) {
-                socket = Internal.instance.deduplicate(connectionPool, address, this);
+                socket = Builder.instance.deduplicate(connectionPool, address, this);
                 result = connection;
             }
         }
-        Internal.closeQuietly(socket);
+        IoUtils.close(socket);
 
         eventListener.connectionAcquired(call, result);
         return result;
     }
 
     /**
-     * Releases the currently held connection and returns a socket to close if the held connection
-     * restricts new streams from being created. With HTTP/2 multiple requests share the same
-     * connection so it's possible that our connection is restricted from creating new streams during
-     * a follow-up request.
+     * 释放当前持有的连接并返回一个套接字来关闭，如果持有的连接*限制新流的创建
+     * 对于HTTP/2，多个请求共享同一个连接，因此在后续请求期间，我们的连接可能被限制创建新流
+     *
+     * @return 套接字关闭选项
      */
     private Socket releaseIfNoNewStreams() {
         assert (Thread.holdsLock(connectionPool));
@@ -305,16 +294,16 @@ public final class StreamAllocation {
             if (connection != null) releasedConnection = null;
             callEnd = this.released;
         }
-        Internal.closeQuietly(socket);
+        IoUtils.close(socket);
         if (releasedConnection != null) {
             eventListener.connectionReleased(call, releasedConnection);
         }
 
         if (e != null) {
-            e = Internal.instance.timeoutExit(call, e);
+            e = Builder.instance.timeoutExit(call, e);
             eventListener.callFailed(call, e);
         } else if (callEnd) {
-            Internal.instance.timeoutExit(call, null);
+            Builder.instance.timeoutExit(call, null);
             eventListener.callEnd(call);
         }
     }
@@ -326,7 +315,7 @@ public final class StreamAllocation {
     }
 
     private RouteDatabase routeDatabase() {
-        return Internal.instance.routeDatabase(connectionPool);
+        return Builder.instance.routeDatabase(connectionPool);
     }
 
     public Route route() {
@@ -345,14 +334,17 @@ public final class StreamAllocation {
             socket = deallocate(false, true, false);
             if (connection != null) releasedConnection = null;
         }
-        Internal.closeQuietly(socket);
+        IoUtils.close(socket);
         if (releasedConnection != null) {
-            Internal.instance.timeoutExit(call, null);
+            Builder.instance.timeoutExit(call, null);
             eventListener.connectionReleased(call, releasedConnection);
             eventListener.callEnd(call);
         }
     }
 
+    /**
+     * 禁止在承载此分配的连接上创建新流
+     */
     public void noNewStreams() {
         Socket socket;
         Connection releasedConnection;
@@ -361,12 +353,21 @@ public final class StreamAllocation {
             socket = deallocate(true, false, false);
             if (connection != null) releasedConnection = null;
         }
-        Internal.closeQuietly(socket);
+        IoUtils.close(socket);
         if (releasedConnection != null) {
             eventListener.connectionReleased(call, releasedConnection);
         }
     }
 
+    /**
+     * 释放由这个分配所持有的资源。如果分配了足够的资源，连接将被分离或关闭。调用方必须在连接池上同步
+     * 返回一个关闭选项，调用者应该在同步块完成时将其传递给{@link IoUtils#close}。(在连接池上同步时，我们不执行I/O。)
+     *
+     * @param noNewStreams   是否新的流
+     * @param released       是否最终
+     * @param streamFinished 是否已经结束
+     * @return 套接字关闭选项
+     */
     private Socket deallocate(boolean noNewStreams, boolean released, boolean streamFinished) {
         assert (Thread.holdsLock(connectionPool));
 
@@ -385,7 +386,7 @@ public final class StreamAllocation {
                 release(connection);
                 if (connection.allocations.isEmpty()) {
                     connection.idleAtNanos = System.nanoTime();
-                    if (Internal.instance.connectionBecameIdle(connectionPool, connection)) {
+                    if (Builder.instance.connectionBecameIdle(connectionPool, connection)) {
                         socket = connection.socket();
                     }
                 }
@@ -416,25 +417,25 @@ public final class StreamAllocation {
         boolean noNewStreams = false;
 
         synchronized (connectionPool) {
-            if (e instanceof StreamResetException) {
-                ErrorCode errorCode = ((StreamResetException) e).errorCode;
+            if (e instanceof StreamException) {
+                ErrorCode errorCode = ((StreamException) e).errorCode;
                 if (errorCode == ErrorCode.REFUSED_STREAM) {
-                    // Retry REFUSED_STREAM errors once on the same connection.
+                    // 在同一个连接上重试一次REFUSED_STREAM错误。
                     refusedStreamCount++;
                     if (refusedStreamCount > 1) {
                         noNewStreams = true;
                         route = null;
                     }
                 } else if (errorCode != ErrorCode.CANCEL) {
-                    // Keep the connection for CANCEL errors. Everything else wants a fresh connection.
+                    // 为取消错误保留连接。其他的一切都需要一个新的连接
                     noNewStreams = true;
                     route = null;
                 }
             } else if (connection != null
-                    && (!connection.isMultiplexed() || e instanceof IOException)) {
+                    && (!connection.isMultiplexed() || e instanceof RevisedException)) {
                 noNewStreams = true;
 
-                // If this route hasn't completed a call, avoid it for new connections.
+                // 如果这条路线还没有完成一个电话，避免它为新的连接
                 if (connection.successCount == 0) {
                     if (route != null && e != null) {
                         routeSelector.connectFailed(route, e);
@@ -447,21 +448,35 @@ public final class StreamAllocation {
             if (connection != null || !reportedAcquired) releasedConnection = null;
         }
 
-        Internal.closeQuietly(socket);
+        IoUtils.close(socket);
         if (releasedConnection != null) {
             eventListener.connectionReleased(call, releasedConnection);
         }
     }
 
+    /**
+     * 使用这个分配来保存{@code connection}。每个对它的调用必须与
+     * 对同一连接上的{@link #release}的调用配对
+     *
+     * @param connection       连接信息
+     * @param reportedAcquired 是否已经取得报告
+     */
     public void acquire(RealConnection connection, boolean reportedAcquired) {
         assert (Thread.holdsLock(connectionPool));
-        if (this.connection != null) throw new IllegalStateException();
+        if (this.connection != null) {
+            throw new IllegalStateException();
+        }
 
         this.connection = connection;
         this.reportedAcquired = reportedAcquired;
         connection.allocations.add(new StreamAllocationReference(this, callStackTrace));
     }
 
+    /**
+     * 从连接的分配列表中删除此分配
+     *
+     * @param connection 连接信息
+     */
     private void release(RealConnection connection) {
         for (int i = 0, size = connection.allocations.size(); i < size; i++) {
             Reference<StreamAllocation> reference = connection.allocations.get(i);
@@ -473,15 +488,24 @@ public final class StreamAllocation {
         throw new IllegalStateException();
     }
 
+    /**
+     * 释放该连接持有的连接，并获取{@code newConnection}。只有在持有的
+     * 连接是新连接，但是被{@code newConnection}复制时，调用它才是安全
+     * 的。通常在并发连接到HTTP/2 webserver时发生这种情况
+     * 返回一个关闭选项，调用者应该在同步块完成*时将其传递给{@link IoUtils#close(Socket)}
+     *
+     * @param newConnection 新连接信息
+     * @return 套接字关闭选项
+     */
     public Socket releaseAndAcquire(RealConnection newConnection) {
         assert (Thread.holdsLock(connectionPool));
         if (codec != null || connection.allocations.size() != 1) throw new IllegalStateException();
 
-        // Release the old connection.
+        // 释放旧连接
         Reference<StreamAllocation> onlyAllocation = connection.allocations.get(0);
         Socket socket = deallocate(true, false, false);
 
-        // Acquire the new connection.
+        // 获得新的连接
         this.connection = newConnection;
         newConnection.allocations.add(onlyAllocation);
 
@@ -501,7 +525,9 @@ public final class StreamAllocation {
     }
 
     public static final class StreamAllocationReference extends WeakReference<StreamAllocation> {
-
+        /**
+         * 在调用执行或进入队列时捕获堆栈跟踪。这有助于确定连接泄漏的来源
+         */
         public final Object callStackTrace;
 
         StreamAllocationReference(StreamAllocation referent, Object callStackTrace) {

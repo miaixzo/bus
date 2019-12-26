@@ -36,6 +36,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XEventListener;
 import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.uno.XComponentContext;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.logger.Logger;
@@ -53,7 +54,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 负责使用给定的UnoUrl管理到office进程的连接.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEventListener {
@@ -127,7 +128,7 @@ public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEvent
 
                 if (ObjectUtils.isEmpty(bridgeInstance)) {
                     throw new InstrumentException(
-                            "Server didn't provide an instance for '" + rootOid + "'", connectPart);
+                            "Server didn't provide an instance for '" + rootOid + Symbol.SINGLE_QUOTE, connectPart);
                 }
 
                 // 查询其主工厂接口的初始对象.

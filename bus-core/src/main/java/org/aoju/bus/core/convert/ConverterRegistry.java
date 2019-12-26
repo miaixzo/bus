@@ -57,7 +57,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ConverterRegistry {
@@ -197,7 +197,7 @@ public class ConverterRegistry {
 
         // 尝试转Bean
         if (BeanUtils.isBean(rowType)) {
-            return new BeanConverter<T>(rowType).convert(value, defaultValue);
+            return new BeanConverter<>(rowType).convert(value, defaultValue);
         }
 
         // 无法转换

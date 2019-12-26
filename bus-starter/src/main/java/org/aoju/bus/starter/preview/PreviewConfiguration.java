@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * 文档在线预览配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
@@ -60,9 +60,9 @@ public class PreviewConfiguration {
                                                          final OfficeManager onlineOfficeManager) {
         return new PreviewProviderService(
                 LocalOfficeProvider.builder()
-                .officeManager(localOfficeManager)
-                .formatRegistry(RegistryInstanceHolder.getInstance())
-                .build(),
+                        .officeManager(localOfficeManager)
+                        .formatRegistry(RegistryInstanceHolder.getInstance())
+                        .build(),
                 OnlineOfficeProvider.make(onlineOfficeManager));
     }
 

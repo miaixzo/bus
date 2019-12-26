@@ -23,8 +23,9 @@
  */
 package org.aoju.bus.starter.sensitive;
 
-import org.aoju.bus.base.spring.BaseAdvice;
+import org.aoju.bus.base.advice.BaseAdvice;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -47,7 +48,7 @@ import java.lang.reflect.Type;
  * 对加了@P的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class RequestBodyAdvice extends BaseAdvice
@@ -172,11 +173,11 @@ public class RequestBodyAdvice extends BaseAdvice
             String content = IoUtils.toString(inputMessage.getBody(), charset);
 
             String decryptBody;
-            if (content.startsWith("{")) {
+            if (content.startsWith(Symbol.BRACE_LEFT)) {
                 decryptBody = content;
             } else {
                 StringBuilder json = new StringBuilder();
-                content = content.replaceAll(" ", "+");
+                content = content.replaceAll(Symbol.SPACE, Symbol.PLUS);
 
                 if (!StringUtils.isEmpty(content)) {
                     Logger.debug("Request data decryption enabled ...");

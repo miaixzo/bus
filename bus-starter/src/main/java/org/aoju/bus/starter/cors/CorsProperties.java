@@ -24,18 +24,19 @@
 package org.aoju.bus.starter.cors;
 
 import lombok.Data;
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Core 跨域相关配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
-@ConfigurationProperties(Extend.CORS)
+@ConfigurationProperties(BusXExtend.CORS)
 public class CorsProperties {
 
     /**
@@ -45,12 +46,12 @@ public class CorsProperties {
     /**
      * 允许的域名
      */
-    private String[] allowedOrigins = new String[]{"*"};
+    private String[] allowedOrigins = new String[]{Symbol.STAR};
 
     /**
      * 允许的请求头
      */
-    private String[] allowedHeaders = new String[]{"*"};
+    private String[] allowedHeaders = new String[]{Symbol.STAR};
     /**
      * 允许的方法
      */

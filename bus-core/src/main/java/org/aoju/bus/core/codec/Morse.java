@@ -35,7 +35,7 @@ import java.util.Map;
  * 莫尔斯电码的编码和解码
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Morse {
@@ -74,46 +74,46 @@ public class Morse {
         registerMorse('Y', "1011");
         registerMorse('Z', "1100");
         // Numbers
-        registerMorse('0', "11111");
-        registerMorse('1', "01111");
-        registerMorse('2', "00111");
-        registerMorse('3', "00011");
-        registerMorse('4', "00001");
-        registerMorse('5', "00000");
-        registerMorse('6', "10000");
-        registerMorse('7', "11000");
-        registerMorse('8', "11100");
-        registerMorse('9', "11110");
+        registerMorse(Symbol.C_ZERO, "11111");
+        registerMorse(Symbol.C_ONE, "01111");
+        registerMorse(Symbol.C_TWO, "00111");
+        registerMorse(Symbol.C_THREE, "00011");
+        registerMorse(Symbol.C_FOUR, "00001");
+        registerMorse(Symbol.C_FIVE, "00000");
+        registerMorse(Symbol.C_SIX, "10000");
+        registerMorse(Symbol.C_SEVEN, "11000");
+        registerMorse(Symbol.C_EIGHT, "11100");
+        registerMorse(Symbol.C_NINE, "11110");
         // Punctuation
-        registerMorse('.', "010101");
-        registerMorse(',', "110011");
-        registerMorse('?', "001100");
-        registerMorse('\'', "011110");
-        registerMorse('!', "101011");
-        registerMorse('/', "10010");
-        registerMorse('(', "10110");
-        registerMorse(')', "101101");
-        registerMorse('&', "01000");
-        registerMorse(':', "111000");
-        registerMorse(';', "101010");
-        registerMorse('=', "10001");
-        registerMorse('+', "01010");
-        registerMorse('-', "100001");
-        registerMorse('_', "001101");
-        registerMorse('"', "010010");
-        registerMorse('$', "0001001");
-        registerMorse('@', "011010");
+        registerMorse(Symbol.C_DOT, "010101");
+        registerMorse(Symbol.C_COMMA, "110011");
+        registerMorse(Symbol.C_QUESTION_MARK, "001100");
+        registerMorse(Symbol.C_SINGLE_QUOTE, "011110");
+        registerMorse(Symbol.C_NOT, "101011");
+        registerMorse(Symbol.C_SLASH, "10010");
+        registerMorse(Symbol.C_PARENTHESE_LEFT, "10110");
+        registerMorse(Symbol.C_PARENTHESE_RIGHT, "101101");
+        registerMorse(Symbol.C_AND, "01000");
+        registerMorse(Symbol.C_COLON, "111000");
+        registerMorse(Symbol.C_SEMICOLON, "101010");
+        registerMorse(Symbol.C_EQUAL, "10001");
+        registerMorse(Symbol.C_PLUS, "01010");
+        registerMorse(Symbol.C_HYPHEN, "100001");
+        registerMorse(Symbol.C_UNDERLINE, "001101");
+        registerMorse(Symbol.C_DOUBLE_QUOTES, "010010");
+        registerMorse(Symbol.C_DOLLAR, "0001001");
+        registerMorse(Symbol.C_AT, "011010");
     }
 
-    private final char dit; // short mark or dot
-    private final char dah; // longer mark or dash
+    private final char dit;
+    private final char dah;
     private final char split;
 
     /**
      * 构造
      */
     public Morse() {
-        this(Symbol.C_DOT, Symbol.C_DASHED, Symbol.C_SLASH);
+        this(Symbol.C_DOT, Symbol.C_HYPHEN, Symbol.C_SLASH);
     }
 
     /**
@@ -158,7 +158,7 @@ public class Morse {
             if (word == null) {
                 word = Integer.toBinaryString(codePoint);
             }
-            morseBuilder.append(word.replace('0', dit).replace('1', dah)).append(split);
+            morseBuilder.append(word.replace(Symbol.C_ZERO, dit).replace(Symbol.C_ONE, dah)).append(split);
         }
         return morseBuilder.toString();
     }
@@ -185,7 +185,7 @@ public class Morse {
             if (StringUtils.isEmpty(word)) {
                 continue;
             }
-            word = word.replace(dit, '0').replace(dah, '1');
+            word = word.replace(dit, Symbol.C_ZERO).replace(dah, Symbol.C_ONE);
             codePoint = dictionaries.get(word);
             if (codePoint == null) {
                 codePoint = Integer.valueOf(word, 2);

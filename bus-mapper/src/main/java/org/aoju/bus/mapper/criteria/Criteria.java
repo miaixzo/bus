@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.mapper.criteria;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.MapperException;
 import org.aoju.bus.mapper.entity.EntityColumn;
 import org.apache.ibatis.reflection.MetaObject;
@@ -34,7 +36,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Criteria {
@@ -49,7 +51,7 @@ public class Criteria {
     //属性和列对应
     protected Map<String, EntityColumn> propertyMap;
     //模糊查询标识符
-    protected String likePlaceholder = "%";
+    protected String likePlaceholder = Symbol.PERCENT;
 
     public Criteria(Map<String, EntityColumn> propertyMap, boolean exists, boolean notNull) {
         this.exists = exists;
@@ -82,7 +84,7 @@ public class Criteria {
         if (condition == null) {
             throw new MapperException("Value for condition cannot be null");
         }
-        if (condition.startsWith("null")) {
+        if (condition.startsWith(Normal.NULL)) {
             return;
         }
         criteria.add(new Criterion(condition));
@@ -120,7 +122,7 @@ public class Criteria {
         if (condition == null) {
             throw new MapperException("Value for condition cannot be null");
         }
-        if (condition.startsWith("null")) {
+        if (condition.startsWith(Normal.NULL)) {
             return;
         }
         criteria.add(new Criterion(condition, true));

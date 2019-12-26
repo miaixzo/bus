@@ -24,6 +24,7 @@
 package org.aoju.bus.health.hardware.unix.solaris;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.unix.solaris.KstatUtils;
@@ -37,7 +38,7 @@ import java.util.*;
  * A CPU
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SolarisCentralProcessor extends AbstractCentralProcessor {
@@ -108,10 +109,10 @@ public class SolarisCentralProcessor extends AbstractCentralProcessor {
             if (line.startsWith("lgroup")) {
                 lgroup = Builder.getFirstIntValue(line);
             } else if (line.contains("CPUs:")) {
-                String[] cpuList = Builder.whitespaces.split(line.split(":")[1]);
+                String[] cpuList = Builder.whitespaces.split(line.split(Symbol.COLON)[1]);
                 for (String cpu : cpuList) {
                     // Will either be individual CPU or hyphen-delimited range
-                    if (cpu.contains("-")) {
+                    if (cpu.contains(Symbol.HYPHEN)) {
                         int first = Builder.getFirstIntValue(cpu);
                         int last = Builder.getNthIntValue(line, 2);
                         for (int i = first; i <= last; i++) {
@@ -164,7 +165,7 @@ public class SolarisCentralProcessor extends AbstractCentralProcessor {
                 if (kc.read(ksp)) {
                     String suppFreq = KstatUtils.dataLookupString(ksp, "supported_frequencies_Hz");
                     if (!suppFreq.isEmpty()) {
-                        for (String s : suppFreq.split(":")) {
+                        for (String s : suppFreq.split(Symbol.COLON)) {
                             long freq = Builder.parseLongOrDefault(s, -1L);
                             if (max < freq) {
                                 max = freq;
@@ -213,15 +214,6 @@ public class SolarisCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
-    /**
-     * Fetches the ProcessorID by encoding the stepping, model, family, and feature
-     * flags.
-     *
-     * @param stepping
-     * @param model
-     * @param family
-     * @return The Processor ID string
-     */
     private String getProcessorID(String stepping, String model, String family) {
         List<String> isainfo = Command.runNative("isainfo -v");
         StringBuilder flags = new StringBuilder();
@@ -229,7 +221,7 @@ public class SolarisCentralProcessor extends AbstractCentralProcessor {
             if (line.startsWith("32-bit")) {
                 break;
             } else if (!line.startsWith("64-bit")) {
-                flags.append(' ').append(line.trim());
+                flags.append(Symbol.C_SPACE).append(line.trim());
             }
         }
         return createProcessorID(stepping, model, family, Builder.whitespaces.split(flags.toString().toLowerCase()));

@@ -24,15 +24,14 @@
 package org.aoju.bus.health.software.unix.solaris;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.unix.solaris.SolarisLibc;
 import org.aoju.bus.health.software.AbstractNetwork;
 
-import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
-
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK1.8+
  */
 public class SolarisNetwork extends AbstractNetwork {
@@ -41,7 +40,7 @@ public class SolarisNetwork extends AbstractNetwork {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != LIBC.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }
@@ -57,4 +56,5 @@ public class SolarisNetwork extends AbstractNetwork {
     public String getIpv6DefaultGateway() {
         return searchGateway(Command.runNative("route get -inet6 default"));
     }
+
 }

@@ -23,22 +23,22 @@
  */
 package org.aoju.bus.health.hardware;
 
-import java.util.function.Supplier;
+import org.aoju.bus.health.Memoizer;
 
-import static org.aoju.bus.health.Memoizer.memoize;
+import java.util.function.Supplier;
 
 /**
  * Computer System data.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractComputerSystem implements ComputerSystem {
 
-    private final Supplier<Firmware> firmware = memoize(this::createFirmware);
+    private final Supplier<Firmware> firmware = Memoizer.memoize(this::createFirmware);
 
-    private final Supplier<Baseboard> baseboard = memoize(this::createBaseboard);
+    private final Supplier<Baseboard> baseboard = Memoizer.memoize(this::createBaseboard);
 
     @Override
     public Firmware getFirmware() {

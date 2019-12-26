@@ -24,6 +24,7 @@
 package org.aoju.bus.tracer.transport;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.UnsupportedEncodingException;
@@ -33,7 +34,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class HttpHeaderTransport {
@@ -43,7 +44,7 @@ public class HttpHeaderTransport {
         final Map<String, String> context = new HashMap<>();
         while (pairTokenizer.hasMoreTokens()) {
             final String pairStr = pairTokenizer.nextToken();
-            final String[] keyValuePair = pairStr.split("=");
+            final String[] keyValuePair = pairStr.split(Symbol.EQUAL);
             if (keyValuePair.length != 2) {
                 continue;
             }
@@ -75,9 +76,9 @@ public class HttpHeaderTransport {
             try {
                 final String key = URLEncoder.encode(entry.getKey().trim(), Charset.DEFAULT_UTF_8);
                 final String value = URLEncoder.encode(entry.getValue().trim(), Charset.DEFAULT_UTF_8);
-                sb.append(key).append('=').append(value);
+                sb.append(key).append(Symbol.C_EQUAL).append(value);
                 if (iterator.hasNext()) {
-                    sb.append(',');
+                    sb.append(Symbol.C_COMMA);
                 }
             } catch (UnsupportedEncodingException e) {
                 Logger.error("Charset not found", e);

@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.aoju.bus.core.lang.Httpd;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -51,7 +51,7 @@ import java.io.IOException;
  * Xss/重复读取等配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties({WrapperProperties.class})
@@ -118,7 +118,7 @@ public class WrapperConfiguration {
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             final String method = request.getMethod();
             // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换,提高性能
-            if (Httpd.POST.equals(method) || Httpd.PATCH.equals(method) || Httpd.PUT.equals(method)) {
+            if (Http.POST.equals(method) || Http.PATCH.equals(method) || Http.PUT.equals(method)) {
                 if (!(request instanceof CacheRequestWrapper)) {
                     request = new CacheRequestWrapper(request);
                 }

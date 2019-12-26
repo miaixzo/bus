@@ -24,16 +24,16 @@
 package org.aoju.bus.starter.socket;
 
 import lombok.Data;
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
-@ConfigurationProperties(prefix = Extend.WEBSOCKET)
+@ConfigurationProperties(prefix = BusXExtend.WEBSOCKET)
 public class SocketProperties {
 
     private int port = 80;

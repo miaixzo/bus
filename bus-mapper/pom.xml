@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-mapper</artifactId>
-    <version>5.3.6</version>
+    <version>5.3.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -18,11 +18,16 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <mybatis.version>3.5.3</mybatis.version>
-        <mybatis-spring.version>2.0.3</mybatis-spring.version>
+        <mybatis.spring.version>2.0.3</mybatis.spring.version>
         <persistence.version>2.2</persistence.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-logger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -31,7 +36,7 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
-            <version>${mybatis-spring.version}</version>
+            <version>${mybatis.spring.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>

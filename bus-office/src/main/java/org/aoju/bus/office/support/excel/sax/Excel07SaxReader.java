@@ -48,7 +48,7 @@ import java.util.List;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> implements ContentHandler {
@@ -206,7 +206,6 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
 
             // 获取当前列坐标
             String tempCurCoordinate = attributes.getValue(R_ATTR);
-            // 前一列为null,则将其设置为"@",A为第一列,ascii码为65,前一列即为@,ascii码64
             if (preCoordinate == null) {
                 preCoordinate = String.valueOf(ExcelSaxUtils.CELL_FILL_CHAR);
             } else {
@@ -225,7 +224,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     /**
      * 设置单元格的类型
      *
-     * @param attribute
+     * @param attribute 属性
      */
     private void setCellType(Attributes attribute) {
         // 重置numFmtIndex,numFmtString的值
@@ -255,7 +254,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      * 标签结束的回调处理方法
      */
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
+    public void endElement(String uri, String localName, String qName) {
         final String contentStr = StringUtils.trim(lastContent);
 
         if (T_ELEMENT.equals(qName)) {
@@ -298,7 +297,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      * s标签结束的回调处理方法
      */
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    public void characters(char[] ch, int start, int length) {
         // 得到单元格内容的值
         lastContent = lastContent.concat(new String(ch, start, length));
     }
@@ -312,37 +311,37 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      * ?xml标签的回调处理方法
      */
     @Override
-    public void startDocument() throws SAXException {
+    public void startDocument() {
         // pass
     }
 
     @Override
-    public void endDocument() throws SAXException {
+    public void endDocument() {
         // pass
     }
 
     @Override
-    public void startPrefixMapping(String prefix, String uri) throws SAXException {
+    public void startPrefixMapping(String prefix, String uri) {
         // pass
     }
 
     @Override
-    public void endPrefixMapping(String prefix) throws SAXException {
+    public void endPrefixMapping(String prefix) {
         // pass
     }
 
     @Override
-    public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+    public void ignorableWhitespace(char[] ch, int start, int length) {
         // pass
     }
 
     @Override
-    public void processingInstruction(String target, String data) throws SAXException {
+    public void processingInstruction(String target, String data) {
         // pass
     }
 
     @Override
-    public void skippedEntity(String name) throws SAXException {
+    public void skippedEntity(String name) {
 
     }
 
@@ -383,7 +382,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      * @throws SAXException SAX异常
      */
     private XMLReader fetchSheetReader() throws SAXException {
-        XMLReader xmlReader = null;
+        XMLReader xmlReader;
         try {
             xmlReader = XMLReaderFactory.createXMLReader(CLASS_SAXPARSER);
         } catch (SAXException e) {

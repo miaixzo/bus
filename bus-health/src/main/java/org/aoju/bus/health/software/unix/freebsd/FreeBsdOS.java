@@ -26,6 +26,7 @@ package org.aoju.bus.health.software.unix.freebsd;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.unix.CLibrary;
@@ -43,7 +44,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FreeBsdOS extends AbstractOS {
@@ -84,7 +85,7 @@ public class FreeBsdOS extends AbstractOS {
 
         String version = BsdSysctlUtils.sysctl("kern.osrelease", "");
         String versionInfo = BsdSysctlUtils.sysctl("kern.version", "");
-        String buildNumber = versionInfo.split(":")[0].replace(family, "").replace(version, "").trim();
+        String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, "").replace(version, "").trim();
 
         return new FamilyVersionInfo(family, new OSVersionInfo(version, null, buildNumber));
     }
@@ -198,7 +199,7 @@ public class FreeBsdOS extends AbstractOS {
             fproc.setKernelTime(Builder.parseDHMSOrDefault(split[12], 0L));
             fproc.setUserTime(Builder.parseDHMSOrDefault(split[13], 0L) - fproc.getKernelTime());
             fproc.setPath(split[14]);
-            fproc.setName(fproc.getPath().substring(fproc.getPath().lastIndexOf('/') + 1));
+            fproc.setName(fproc.getPath().substring(fproc.getPath().lastIndexOf(Symbol.C_SLASH) + 1));
             fproc.setCommandLine(split[15]);
             fproc.setCurrentWorkingDirectory(cwdMap.getOrDefault(fproc.getProcessID(), ""));
 
@@ -239,7 +240,7 @@ public class FreeBsdOS extends AbstractOS {
         // Sample output:
         // pid 8 mask: 0, 1
         // cpuset: getaffinity: No such process
-        String[] split = cpuset.split(":");
+        String[] split = cpuset.split(Symbol.COLON);
         if (split.length > 1) {
             String[] bits = split[1].split(",");
             for (String bit : bits) {

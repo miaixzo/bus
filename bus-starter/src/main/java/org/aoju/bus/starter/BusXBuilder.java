@@ -23,12 +23,11 @@
  */
 package org.aoju.bus.starter;
 
-
 /**
  * 全局常量配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 
@@ -77,5 +76,6 @@ public class BusXBuilder {
     public static final String BUS_HIGH_PRIORITY_CONFIG = "BusHighPriorityConfig";
 
     public static final String BUS_BOOTSTRAP = "BusBootstrap";
+
 
 }

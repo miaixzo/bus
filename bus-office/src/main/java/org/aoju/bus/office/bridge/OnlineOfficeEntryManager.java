@@ -24,10 +24,11 @@
 package org.aoju.bus.office.bridge;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.office.builtin.MadeInOffice;
 import org.aoju.bus.office.metric.AbstractOfficeEntryManager;
 import org.aoju.bus.office.metric.RequestBuilder;
@@ -48,14 +49,12 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import static java.lang.Math.toIntExact;
-
 /**
  * 负责执行通过不依赖于office安装的{@link OnlineOfficePoolManager}提交的任务。
  * 它将向LibreOffice在线服务器发送转换请求，并等待任务完成或达到配置的任务执行超时.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
@@ -79,7 +78,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
     private static File getFile(final URL url) {
         try {
             return new File(
-                    new URI(StringUtils.replace(url.toString(), " ", "%20")).getSchemeSpecificPart());
+                    new URI(StringUtils.replace(url.toString(), Symbol.SPACE, "%20")).getSchemeSpecificPart());
         } catch (URISyntaxException ex) {
             return new File(url.getFile());
         }
@@ -125,7 +124,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
     /**
      * 获取 HostnameVerifier
      *
-     * @return
+     * @return the object
      */
     private static HostnameVerifier createTrustAllHostnameVerifier() {
         return (hostname, session) -> true;
@@ -135,11 +134,11 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
         final URL url = new URL(connectionUrl);
         final String path = url.toExternalForm().toLowerCase();
         if (StringUtils.endsWithAny(path, "lool/convert-to", "lool/convert-to/")) {
-            return StringUtils.appendIfMissing(connectionUrl, "/");
+            return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH);
         } else if (StringUtils.endsWithAny(path, "lool", "lool/")) {
-            return StringUtils.appendIfMissing(connectionUrl, "/") + "convert-to/";
+            return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH) + "convert-to/";
         }
-        return StringUtils.appendIfMissing(connectionUrl, "/") + "lool/convert-to/";
+        return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH) + "lool/convert-to/";
     }
 
     @Override
@@ -148,9 +147,9 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
             final RequestBuilder requestBuilder =
                     new RequestBuilder(
                             buildUrl(connectionUrl),
-                            toIntExact(config.getTaskExecutionTimeout()),
-                            toIntExact(config.getTaskExecutionTimeout()));
-            task.execute(new OnlineOfficeBridgeFactory(new HttpClient(), requestBuilder));
+                            Math.toIntExact(config.getTaskExecutionTimeout()),
+                            Math.toIntExact(config.getTaskExecutionTimeout()));
+            task.execute(new OnlineOfficeBridgeFactory(new Httpx(), requestBuilder));
 
         } catch (IOException ex) {
             throw new InstrumentException("Unable to create the HTTP client", ex);

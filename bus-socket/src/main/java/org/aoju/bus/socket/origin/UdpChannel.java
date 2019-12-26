@@ -27,6 +27,8 @@ import org.aoju.bus.core.io.segment.BufferPage;
 import org.aoju.bus.core.io.segment.EventFactory;
 import org.aoju.bus.core.io.segment.RingBuffer;
 import org.aoju.bus.core.io.segment.VirtualBuffer;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -41,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class UdpChannel<Request> {
@@ -59,7 +61,6 @@ public final class UdpChannel<Request> {
      * 与当前UDP通道对接的会话
      */
     private ConcurrentHashMap<String, UdpAioSession<Request>> udpAioSessionConcurrentHashMap = new ConcurrentHashMap<>();
-
 
     /**
      * 待输出消息
@@ -94,12 +95,6 @@ public final class UdpChannel<Request> {
         this.bufferPage = bufferPage;
     }
 
-    /**
-     * @param virtualBuffer
-     * @param remote
-     * @throws IOException
-     * @throws InterruptedException
-     */
     private void write(VirtualBuffer virtualBuffer, SocketAddress remote) throws IOException, InterruptedException {
         int index = writeRingBuffer == null ? -1 : writeRingBuffer.tryNextWriteIndex();
         //缓存区已满,同步输出确保线程不发送死锁
@@ -178,7 +173,7 @@ public final class UdpChannel<Request> {
 
         }
         InetSocketAddress address = (InetSocketAddress) remote;
-        String key = address.getHostName() + ":" + address.getPort();
+        String key = address.getHostName() + Symbol.COLON + address.getPort();
         UdpAioSession<Request> session = udpAioSessionConcurrentHashMap.get(key);
         if (session != null) {
             return session;
@@ -187,22 +182,19 @@ public final class UdpChannel<Request> {
             if (session != null) {
                 return session;
             }
-            Function<WriteBuffer, Void> function = new Function<WriteBuffer, Void>() {
-                @Override
-                public Void apply(WriteBuffer writeBuffer) {
-                    VirtualBuffer virtualBuffer = writeBuffer.poll();
-                    if (virtualBuffer == null) {
-                        return null;
-                    }
-                    try {
-                        write(virtualBuffer, remote);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            Function<WriteBuffer, Void> function = writeBuffer -> {
+                VirtualBuffer virtualBuffer = writeBuffer.poll();
+                if (virtualBuffer == null) {
                     return null;
                 }
+                try {
+                    write(virtualBuffer, remote);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
             };
             WriteBuffer writeBuffer = new WriteBuffer(bufferPage, function, writeQueueCapacity);
             session = new UdpAioSession<>(this, remote, writeBuffer);
@@ -230,7 +222,7 @@ public final class UdpChannel<Request> {
                 channel = null;
             }
         } catch (IOException e) {
-            Logger.error("", e);
+            Logger.error(Normal.EMPTY, e);
         }
     }
 

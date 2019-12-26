@@ -24,7 +24,9 @@
 package org.aoju.bus.core.io.segment;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 
 import javax.crypto.Mac;
@@ -38,13 +40,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import static org.aoju.bus.core.utils.IoUtils.arrayRangeEquals;
-
 /**
  * 不可变的字节序列.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ByteString implements Serializable, Comparable<ByteString> {
@@ -113,7 +113,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     private static int decodeHexDigit(char c) {
-        if (c >= '0' && c <= '9') return c - '0';
+        if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) return c - Symbol.C_ZERO;
         if (c >= 'a' && c <= 'f') return c - 'a' + 10;
         if (c >= 'A' && c <= 'F') return c - 'A' + 10;
         throw new IllegalArgumentException("Unexpected hex digit: " + c);
@@ -137,7 +137,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
                 return i;
             }
             c = s.codePointAt(i);
-            if ((Character.isISOControl(c) && c != '\n' && c != '\r')
+            if ((Character.isISOControl(c) && c != Symbol.C_LF && c != Symbol.C_CR)
                     || c == Buffer.REPLACEMENT_CHARACTER) {
                 return -1;
             }
@@ -162,19 +162,19 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public ByteString md5() {
-        return digest("MD5");
+        return digest(Algorithm.MD5);
     }
 
     public ByteString sha1() {
-        return digest("SHA-1");
+        return digest(Algorithm.SHA1);
     }
 
     public ByteString sha256() {
-        return digest("SHA-256");
+        return digest(Algorithm.SHA256);
     }
 
     public ByteString sha512() {
-        return digest("SHA-512");
+        return digest(Algorithm.SHA512);
     }
 
     private ByteString digest(String algorithm) {
@@ -186,15 +186,15 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public ByteString hmacSha1(ByteString key) {
-        return hmac("HmacSHA1", key);
+        return hmac(Algorithm.HmacSHA1, key);
     }
 
     public ByteString hmacSha256(ByteString key) {
-        return hmac("HmacSHA256", key);
+        return hmac(Algorithm.HmacSHA256, key);
     }
 
     public ByteString hmacSha512(ByteString key) {
-        return hmac("HmacSHA512", key);
+        return hmac(Algorithm.HmacSHA512, key);
     }
 
     private ByteString hmac(String algorithm, ByteString key) {
@@ -217,8 +217,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         char[] result = new char[data.length * 2];
         int c = 0;
         for (byte b : data) {
-            result[c++] = Normal.DIGITS_LOWER[(b >> 4) & 0xf];
-            result[c++] = Normal.DIGITS_LOWER[b & 0xf];
+            result[c++] = Normal.DIGITS_16_LOWER[(b >> 4) & 0xf];
+            result[c++] = Normal.DIGITS_16_LOWER[b & 0xf];
         }
         return new String(result);
     }
@@ -321,7 +321,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public boolean rangeEquals(int offset, byte[] other, int otherOffset, int byteCount) {
         return offset >= 0 && offset <= data.length - byteCount
                 && otherOffset >= 0 && otherOffset <= other.length - byteCount
-                && arrayRangeEquals(data, offset, other, otherOffset, byteCount);
+                && IoUtils.arrayRangeEquals(data, offset, other, otherOffset, byteCount);
     }
 
     public final boolean startsWith(ByteString prefix) {
@@ -355,7 +355,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public int indexOf(byte[] other, int fromIndex) {
         fromIndex = Math.max(fromIndex, 0);
         for (int i = fromIndex, limit = data.length - other.length; i <= limit; i++) {
-            if (arrayRangeEquals(data, i, other, 0, other.length)) {
+            if (IoUtils.arrayRangeEquals(data, i, other, 0, other.length)) {
                 return i;
             }
         }
@@ -377,7 +377,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public int lastIndexOf(byte[] other, int fromIndex) {
         fromIndex = Math.min(fromIndex, data.length - other.length);
         for (int i = fromIndex; i >= 0; i--) {
-            if (arrayRangeEquals(data, i, other, 0, other.length)) {
+            if (IoUtils.arrayRangeEquals(data, i, other, 0, other.length)) {
                 return i;
             }
         }
@@ -410,30 +410,6 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         }
         if (sizeA == sizeB) return 0;
         return sizeA < sizeB ? -1 : 1;
-    }
-
-    @Override
-    public String toString() {
-        if (data.length == 0) {
-            return "[size=0]";
-        }
-
-        String text = utf8();
-        int i = codePointIndexToCharIndex(text, 64);
-
-        if (i == -1) {
-            return data.length <= 64
-                    ? "[hex=" + hex() + "]"
-                    : "[size=" + data.length + " hex=" + substring(0, 64).hex() + "…]";
-        }
-
-        String safeText = text.substring(0, i)
-                .replace("\\", "\\\\")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
-        return i < text.length()
-                ? "[size=" + data.length + " text=" + safeText + "…]"
-                : "[text=" + safeText + "]";
     }
 
     private void readObject(ObjectInputStream in) throws IOException {

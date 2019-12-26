@@ -27,9 +27,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -42,12 +43,11 @@ import org.aoju.bus.oauth.metric.StateCache;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * 领英登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LinkedinProvider extends DefaultProvider {
@@ -74,7 +74,7 @@ public class LinkedinProvider extends DefaultProvider {
         header.put("Connection", "Keep-Alive");
         header.put("Authorization", "Bearer " + accessToken);
 
-        String response = HttpClient.get(userInfoUrl(token), null, header);
+        String response = Httpx.get(userInfoUrl(token), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -118,7 +118,7 @@ public class LinkedinProvider extends DefaultProvider {
         } else {
             lastName = getUserName(userInfoObject, "lastName");
         }
-        return firstName + " " + lastName;
+        return firstName + Symbol.SPACE + lastName;
     }
 
     /**
@@ -154,7 +154,7 @@ public class LinkedinProvider extends DefaultProvider {
         header.put("Authorization", "Bearer " + accessToken);
 
         String url = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
-        String response = HttpClient.get(url, null, header);
+        String response = Httpx.get(url, null, header);
 
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
@@ -167,7 +167,7 @@ public class LinkedinProvider extends DefaultProvider {
         JSONObject firstNameObj = userInfoObject.getJSONObject(nameKey);
         JSONObject localizedObj = firstNameObj.getJSONObject("localized");
         JSONObject preferredLocaleObj = firstNameObj.getJSONObject("preferredLocale");
-        firstName = localizedObj.getString(preferredLocaleObj.getString("language") + "_" + preferredLocaleObj.getString("country"));
+        firstName = localizedObj.getString(preferredLocaleObj.getString("language") + Symbol.UNDERLINE + preferredLocaleObj.getString("country"));
         return firstName;
     }
 
@@ -205,7 +205,7 @@ public class LinkedinProvider extends DefaultProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Host", "www.linkedin.com");
 
-        String response = HttpClient.get(accessTokenUrl, null, header);
+        String response = Httpx.get(accessTokenUrl, null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);

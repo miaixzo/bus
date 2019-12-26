@@ -29,10 +29,10 @@ import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.extra.SSHUtils;
 import org.aoju.bus.extra.ftp.AbstractFtp;
 
 import java.io.File;
@@ -53,7 +53,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Sftp extends AbstractFtp {
@@ -161,7 +161,7 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public Sftp reconnectIfTimeout() {
-        if (false == this.cd("/") && StringUtils.isNotBlank(this.host)) {
+        if (false == this.cd(Symbol.SLASH) && StringUtils.isNotBlank(this.host)) {
             init(this.host, this.port, this.user, this.password, this.charset);
         }
         return this;
@@ -221,12 +221,7 @@ public class Sftp extends AbstractFtp {
      * @return 目录名列表
      */
     public List<String> lsDirs(String path) {
-        return ls(path, new Filter<LsEntry>() {
-            @Override
-            public boolean accept(LsEntry t) {
-                return t.getAttrs().isDir();
-            }
-        });
+        return ls(path, t -> t.getAttrs().isDir());
     }
 
     /**
@@ -236,12 +231,7 @@ public class Sftp extends AbstractFtp {
      * @return 文件名列表
      */
     public List<String> lsFiles(String path) {
-        return ls(path, new Filter<LsEntry>() {
-            @Override
-            public boolean accept(LsEntry t) {
-                return false == t.getAttrs().isDir();
-            }
-        });
+        return ls(path, t -> false == t.getAttrs().isDir());
     }
 
     /**
@@ -254,17 +244,14 @@ public class Sftp extends AbstractFtp {
     public List<String> ls(String path, final Filter<LsEntry> filter) {
         final List<String> fileNames = new ArrayList<>();
         try {
-            channel.ls(path, new LsEntrySelector() {
-                @Override
-                public int select(LsEntry entry) {
-                    String fileName = entry.getFilename();
-                    if (false == StringUtils.equals(".", fileName) && false == StringUtils.equals("..", fileName)) {
-                        if (null == filter || filter.accept(entry)) {
-                            fileNames.add(entry.getFilename());
-                        }
+            channel.ls(path, entry -> {
+                String fileName = entry.getFilename();
+                if (false == StringUtils.equals(Symbol.DOT, fileName) && false == StringUtils.equals(Symbol.DOUBLE_DOT, fileName)) {
+                    if (null == filter || filter.accept(entry)) {
+                        fileNames.add(entry.getFilename());
                     }
-                    return CONTINUE;
                 }
+                return LsEntrySelector.CONTINUE;
             });
         } catch (SftpException e) {
             throw new InstrumentException(e);
@@ -295,7 +282,7 @@ public class Sftp extends AbstractFtp {
             return true;
         }
         try {
-            channel.cd(directory.replaceAll("\\\\", "/"));
+            channel.cd(directory.replaceAll("\\\\", Symbol.SLASH));
             return true;
         } catch (SftpException e) {
             return false;
@@ -329,7 +316,7 @@ public class Sftp extends AbstractFtp {
             return false;
         }
 
-        Vector<LsEntry> list = null;
+        Vector<LsEntry> list;
         try {
             list = channel.ls(channel.pwd());
         } catch (SftpException e) {
@@ -339,7 +326,7 @@ public class Sftp extends AbstractFtp {
         String fileName;
         for (LsEntry entry : list) {
             fileName = entry.getFilename();
-            if (false == fileName.equals(".") && false == fileName.equals("..")) {
+            if (false == fileName.equals(Symbol.DOT) && false == fileName.equals(Symbol.DOUBLE_DOT)) {
                 if (entry.getAttrs().isDir()) {
                     delDir(fileName);
                 } else {
@@ -417,7 +404,7 @@ public class Sftp extends AbstractFtp {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         SSHUtils.close(this.channel);
         SSHUtils.close(this.session);
     }
@@ -437,7 +424,7 @@ public class Sftp extends AbstractFtp {
         /**
          * 追加模式,如果目标文件已存在,传输的文件将在目标文件后追加
          */
-        APPEND;
+        APPEND
     }
 
 }

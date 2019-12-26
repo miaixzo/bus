@@ -42,7 +42,7 @@ import java.util.List;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class CronUtils {
@@ -50,9 +50,9 @@ public final class CronUtils {
     /**
      * Crontab配置文件
      */
-    public final static String CRONTAB_CONFIG_PATH = "config/cron.setting";
+    public static final String CRONTAB_CONFIG_PATH = "config/cron.setting";
 
-    private final static Scheduler scheduler = new Scheduler();
+    private static final Scheduler scheduler = new Scheduler();
     private static Setting crontabSetting;
 
     private CronUtils() {

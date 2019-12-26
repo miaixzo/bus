@@ -32,17 +32,14 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 /**
- * Computes the effective certificate chain from the raw array returned by Java's built in TLS APIs.
- * Cleaning a chain returns a list of certificates where the first element is {@code chain[0]}, each
- * certificate is signed by the certificate that follows, and the last certificate is a trusted CA
- * certificate.
- *
- * <p>Use of the chain cleaner is necessary to omit unexpected certificates that aren't relevant to
- * the TLS handshake and to extract the trusted CA certificate for the benefit of certificate
- * pinning.
+ * 从Java在TLS api中构建的原始数组中计算有效的证书链。
+ * 清理链返回一个证书列表，  其中第一个元素是{@code chain[0]}，
+ * 每个证书由后面的证书签名，最后一个证书是受信任的CA证书.
+ * 使用链清理器可以省略与TLS握手无关的意外证书，
+ * 并提取受信任的CA证书，以便进行证书固定
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class CertificateChainCleaner {

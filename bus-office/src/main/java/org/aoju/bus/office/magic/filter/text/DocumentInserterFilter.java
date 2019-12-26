@@ -28,6 +28,7 @@ import com.sun.star.document.XDocumentInsertable;
 import com.sun.star.lang.XComponent;
 import com.sun.star.text.XTextCursor;
 import com.sun.star.text.XTextDocument;
+import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.Write;
@@ -36,13 +37,11 @@ import org.aoju.bus.office.magic.filter.FilterChain;
 
 import java.io.File;
 
-import static org.aoju.bus.office.Builder.toUrl;
-
 /**
  * 此筛选器用于在转换的文档末尾插入文档.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class DocumentInserterFilter implements Filter {
@@ -84,7 +83,7 @@ public class DocumentInserterFilter implements Filter {
 
         // 在当前文档的末尾插入要合并的文档.
         final XDocumentInsertable insertable = Lo.qi(XDocumentInsertable.class, textCursor);
-        insertable.insertDocumentFromURL(toUrl(documentToInsert), new PropertyValue[0]);
+        insertable.insertDocumentFromURL(Builder.toUrl(documentToInsert), new PropertyValue[0]);
     }
 
 }

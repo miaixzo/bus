@@ -2,17 +2,18 @@ package org.aoju.bus.gitlab.hooks;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.HookManager;
 import org.aoju.bus.gitlab.utils.HttpRequestUtils;
 import org.aoju.bus.gitlab.utils.JacksonJson;
+import org.aoju.bus.logger.Logger;
+import org.aoju.bus.logger.level.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class provides a handler for processing GitLab System Hook callouts.
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 public class SystemHookManager implements HookManager {
 
     public static final String SYSTEM_HOOK_EVENT = "System Hook";
-    private final static Logger LOGGER = Logger.getLogger(SystemHookManager.class.getName());
+    ;
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for System Hook events.
@@ -87,20 +88,20 @@ public class SystemHookManager implements HookManager {
         String eventName = request.getHeader("X-Gitlab-Event");
         if (eventName == null || eventName.trim().isEmpty()) {
             String message = "X-Gitlab-Event header is missing!";
-            LOGGER.warning(message);
+            Logger.warn(message);
             return (null);
         }
 
         if (!isValidSecretToken(request)) {
             String message = "X-Gitlab-Token mismatch!";
-            LOGGER.warning(message);
+            Logger.warn(message);
             throw new GitLabApiException(message);
         }
 
-        LOGGER.info("handleEvent: X-Gitlab-Event=" + eventName);
+        Logger.info("handleEvent: X-Gitlab-Event=" + eventName);
         if (!SYSTEM_HOOK_EVENT.equals(eventName)) {
             String message = "Unsupported X-Gitlab-Event, event Name=" + eventName;
-            LOGGER.warning(message);
+            Logger.warn(message);
             throw new GitLabApiException(message);
         }
 
@@ -109,10 +110,10 @@ public class SystemHookManager implements HookManager {
         JsonNode tree;
         try {
 
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(HttpRequestUtils.getShortRequestDump("System Hook", true, request));
+            if (Logger.get().isEnabled(Level.ALL)) {
+                Logger.debug(HttpRequestUtils.getShortRequestDump("System Hook", true, request));
                 String postData = HttpRequestUtils.getPostDataAsString(request);
-                LOGGER.fine("Raw POST data:\n" + postData);
+                Logger.debug("Raw POST data:\n" + postData);
                 tree = jacksonJson.readTree(postData);
             } else {
                 InputStreamReader reader = new InputStreamReader(request.getInputStream());
@@ -120,7 +121,7 @@ public class SystemHookManager implements HookManager {
             }
 
         } catch (Exception e) {
-            LOGGER.warning("Error reading JSON data, exception=" +
+            Logger.warn("Error reading JSON data, exception=" +
                     e.getClass().getSimpleName() + ", error=" + e.getMessage());
             throw new GitLabApiException(e);
         }
@@ -137,7 +138,7 @@ public class SystemHookManager implements HookManager {
                 node.put("event_name", MergeRequestSystemHookEvent.MERGE_REQUEST_EVENT);
             } else {
                 String message = "Unsupported object_kind for system hook event, object_kind=" + objectKind;
-                LOGGER.warning(message);
+                Logger.warn(message);
                 throw new GitLabApiException(message);
             }
         }
@@ -147,8 +148,8 @@ public class SystemHookManager implements HookManager {
         try {
 
             event = jacksonJson.unmarshal(SystemHookEvent.class, tree);
-            if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(event.getEventName() + "\n" + jacksonJson.marshal(event) + "\n");
+            if (Logger.get().isEnabled(Level.ALL)) {
+                Logger.debug(event.getEventName() + Symbol.LF + jacksonJson.marshal(event) + Symbol.LF);
             }
 
             StringBuffer requestUrl = request.getRequestURL();
@@ -159,7 +160,7 @@ public class SystemHookManager implements HookManager {
             event.setRequestSecretToken(secretToken);
 
         } catch (Exception e) {
-            LOGGER.warning(String.format("Error processing JSON data, exception=%s, error=%s",
+            Logger.warn(String.format("Error processing JSON data, exception=%s, error=%s",
                     e.getClass().getSimpleName(), e.getMessage()));
             throw new GitLabApiException(e);
         }
@@ -170,7 +171,7 @@ public class SystemHookManager implements HookManager {
             return (event);
 
         } catch (Exception e) {
-            LOGGER.warning(String.format("Error processing event, exception=%s, error=%s",
+            Logger.warn(String.format("Error processing event, exception=%s, error=%s",
                     e.getClass().getSimpleName(), e.getMessage()));
             throw new GitLabApiException(e);
         }
@@ -184,10 +185,10 @@ public class SystemHookManager implements HookManager {
      */
     public void handleEvent(SystemHookEvent event) throws GitLabApiException {
         if (event != null) {
-            LOGGER.info("handleEvent:" + event.getClass().getSimpleName() + ", eventName=" + event.getEventName());
+            Logger.info("handleEvent:" + event.getClass().getSimpleName() + ", eventName=" + event.getEventName());
             fireEvent(event);
         } else {
-            LOGGER.warning("handleEvent: provided event cannot be null!");
+            Logger.warn("handleEvent: provided event cannot be null!");
         }
     }
 
@@ -242,7 +243,7 @@ public class SystemHookManager implements HookManager {
             fireMergeRequestEvent((MergeRequestSystemHookEvent) event);
         } else {
             String message = "Unsupported event, event_named=" + event.getEventName();
-            LOGGER.warning(message);
+            Logger.warn(message);
             throw new GitLabApiException(message);
         }
     }

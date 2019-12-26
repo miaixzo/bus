@@ -29,7 +29,7 @@ import org.aoju.bus.socket.origin.StateMachine;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface Plugin<T> extends NetMonitor<T> {
@@ -44,7 +44,6 @@ public interface Plugin<T> extends NetMonitor<T> {
      * @return true/false
      */
     boolean preProcess(AioSession<T> session, T t);
-
 
     /**
      * @param stateMachine 状态

@@ -64,6 +64,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.*;
@@ -72,8 +73,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.spec.*;
 import java.util.Map;
-import java.lang.System;
-
 
 /**
  * 安全相关工具类
@@ -83,7 +82,7 @@ import java.lang.System;
  * 3、摘要加密（digest）,例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Builder {
@@ -92,7 +91,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm 加密算法
-     * @param key       密钥, 字符串使用','分割
+     * @param key       密钥, 字符串使用,分割
      *                  格式: 私钥,公钥,类型
      * @param content   需要加密的内容
      * @return 加密结果
@@ -106,7 +105,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm 解密算法
-     * @param key       密钥, 字符串使用','分割
+     * @param key       密钥, 字符串使用,分割
      *                  格式: 私钥,公钥,类型
      * @param content   需要加密的内容
      * @param charset   字符集
@@ -120,7 +119,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm   加密算法
-     * @param key         密钥, 字符串使用','分割
+     * @param key         密钥, 字符串使用,分割
      *                    格式: 私钥,公钥,类型
      * @param inputStream 需要加密的内容
      * @return 加密结果
@@ -134,7 +133,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm 加密算法
-     * @param key       密钥, 字符串使用','分割
+     * @param key       密钥, 字符串使用,分割
      *                  格式: 私钥,公钥,类型
      * @param content   需要解密的内容
      * @return 解密结果
@@ -148,7 +147,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm 解密算法
-     * @param key       密钥, 字符串使用','分割
+     * @param key       密钥, 字符串使用,分割
      *                  格式: 私钥,公钥,类型
      * @param content   需要解密的内容
      * @param charset   字符集
@@ -162,7 +161,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm   解密算法
-     * @param key         密钥, 字符串使用','分割
+     * @param key         密钥, 字符串使用,分割
      *                    格式: 私钥,公钥,类型
      * @param inputStream 需要解密的内容
      * @return 解密结果

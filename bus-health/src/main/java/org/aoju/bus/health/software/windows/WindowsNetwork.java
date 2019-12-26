@@ -31,6 +31,7 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Kernel32Util;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.software.AbstractNetwork;
@@ -46,7 +47,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WindowsNetwork extends AbstractNetwork {
@@ -70,14 +71,14 @@ public class WindowsNetwork extends AbstractNetwork {
         int ret = IPHlpAPI.INSTANCE.GetNetworkParams(null, bufferSize);
         if (ret != WinError.ERROR_BUFFER_OVERFLOW) {
             Logger.error("Failed to get network parameters buffer size. Error code: {}", ret);
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         }
 
         Memory buffer = new Memory(bufferSize.getValue());
         ret = IPHlpAPI.INSTANCE.GetNetworkParams(buffer, bufferSize);
         if (ret != 0) {
             Logger.error("Failed to get network parameters. Error code: {}", ret);
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         }
         FIXED_INFO fixedInfo = new FIXED_INFO(buffer);
 
@@ -94,7 +95,7 @@ public class WindowsNetwork extends AbstractNetwork {
             list.add(addr);
             dns = dns.Next;
         }
-        return list.toArray(new String[0]);
+        return list.toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     @Override

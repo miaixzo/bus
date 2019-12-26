@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.base.consts;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.util.Map;
@@ -32,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 系统响应码
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ErrorCode {
@@ -40,7 +41,7 @@ public class ErrorCode {
     /**
      * 全局错误码
      */
-    public static String EM_SUCCESS = "0";
+    public static String EM_SUCCESS = Symbol.ZERO;
     public static String EM_FAILURE = "-1";
     public static String EM_LIMITER = "-2";
     public static String EM_100100 = "100100";

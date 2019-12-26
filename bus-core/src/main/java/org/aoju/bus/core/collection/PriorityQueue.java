@@ -9,7 +9,7 @@ import java.util.*;
  * 按照给定的排序规则淘汰末尾元素
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
@@ -31,21 +31,16 @@ public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
      * @param comparator 比较器
      */
     public PriorityQueue(int capacity, final Comparator<? super E> comparator) {
-        super(capacity, new Comparator<E>() {
-
-            @Override
-            public int compare(E o1, E o2) {
-                int cResult;
-                if (comparator != null) {
-                    cResult = comparator.compare(o1, o2);
-                } else {
-                    Comparable<E> o1c = (Comparable<E>) o1;
-                    cResult = o1c.compareTo(o2);
-                }
-
-                return -cResult;
+        super(capacity, (o1, o2) -> {
+            int cResult;
+            if (comparator != null) {
+                cResult = comparator.compare(o1, o2);
+            } else {
+                Comparable<E> o1c = (Comparable<E>) o1;
+                cResult = o1c.compareTo(o2);
             }
 
+            return -cResult;
         });
         this.capacity = capacity;
         this.comparator = comparator;
@@ -85,7 +80,7 @@ public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
      * @return 返回排序后的列表
      */
     public ArrayList<E> toList() {
-        final ArrayList<E> list = new ArrayList<E>(this);
+        final ArrayList<E> list = new ArrayList<>(this);
         Collections.sort(list, comparator);
         return list;
     }

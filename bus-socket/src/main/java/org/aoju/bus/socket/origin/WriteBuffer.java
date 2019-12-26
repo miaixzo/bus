@@ -36,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 包装当前会话分配到的虚拟Buffer,提供流式操作方式
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WriteBuffer extends OutputStream {
@@ -95,10 +95,9 @@ public class WriteBuffer extends OutputStream {
      * 而使用该接口时容易传入非byte范围内的数据,接口定义与实际使用出现歧义的可能性较大,故建议废弃该方法,选用{@link WriteBuffer#writeByte(byte)}
      *
      * @param b byte
-     * @throws IOException 如果发生 I/O 错误
      */
     @Override
-    public void write(int b) throws IOException {
+    public void write(int b) {
         writeByte((byte) b);
     }
 

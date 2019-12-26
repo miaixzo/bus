@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
  * Murmur3 32bit、64bit、128bit 哈希算法实现
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Murmur implements Serializable {
@@ -290,7 +290,7 @@ public class Murmur implements Serializable {
             case 10:
                 k2 ^= (long) (data[tailStart + 9] & 0xff) << 8;
             case 9:
-                k2 ^= (long) (data[tailStart + 8] & 0xff);
+                k2 ^= data[tailStart + 8] & 0xff;
                 k2 *= C2;
                 k2 = Long.rotateLeft(k2, R3);
                 k2 *= C1;

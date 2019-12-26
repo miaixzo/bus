@@ -32,7 +32,7 @@ import java.util.Map;
  * 查找字符串值的字符串键.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class StrLookup<V> {
@@ -67,7 +67,7 @@ public abstract class StrLookup<V> {
      * @return 使用映射的查找, 而不是null
      */
     public static <V> StrLookup<V> mapLookup(final Map<String, V> map) {
-        return new MapStrLookup<V>(map);
+        return new MapStrLookup<>(map);
     }
 
     /**

@@ -30,7 +30,7 @@ import java.time.LocalDate;
  * of charge/discharge
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface PowerSource {
@@ -271,7 +271,7 @@ public interface PowerSource {
          * capacity still represents state of charge and the ratio of max/design
          * capacity still represents state of health.
          */
-        RELATIVE;
+        RELATIVE
     }
 
 }

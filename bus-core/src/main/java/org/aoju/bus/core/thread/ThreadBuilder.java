@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * ThreadFactory创建器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ThreadBuilder implements Builder<ThreadFactory> {
@@ -85,24 +85,21 @@ public class ThreadBuilder implements Builder<ThreadFactory> {
         final Integer priority = builder.priority;
         final UncaughtExceptionHandler handler = builder.uncaughtExceptionHandler;
         final AtomicLong count = (null == namePrefix) ? null : new AtomicLong();
-        return new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                final Thread thread = backingThreadFactory.newThread(r);
-                if (null != namePrefix) {
-                    thread.setName(namePrefix + count.getAndIncrement());
-                }
-                if (null != daemon) {
-                    thread.setDaemon(daemon);
-                }
-                if (null != priority) {
-                    thread.setPriority(priority);
-                }
-                if (null != handler) {
-                    thread.setUncaughtExceptionHandler(handler);
-                }
-                return thread;
+        return r -> {
+            final Thread thread = backingThreadFactory.newThread(r);
+            if (null != namePrefix) {
+                thread.setName(namePrefix + count.getAndIncrement());
             }
+            if (null != daemon) {
+                thread.setDaemon(daemon);
+            }
+            if (null != priority) {
+                thread.setPriority(priority);
+            }
+            if (null != handler) {
+                thread.setUncaughtExceptionHandler(handler);
+            }
+            return thread;
         };
     }
 

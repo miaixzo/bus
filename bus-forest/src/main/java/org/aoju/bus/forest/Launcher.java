@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.forest;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.provider.DecryptorProvider;
 import org.aoju.bus.forest.provider.EncryptorProvider;
@@ -45,7 +46,7 @@ import java.util.jar.Manifest;
  * Spring-Boot 启动器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Launcher {
@@ -154,7 +155,7 @@ public class Launcher {
             }
         }
 
-        if (hold == null || !Arrays.asList("true", "1", "yes", "y").contains(hold.trim().toLowerCase())) {
+        if (hold == null || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
             if (keyfile != null && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
                 throw new IOException("could not delete key file: " + keyfile.getCanonicalPath());
             }

@@ -1,5 +1,7 @@
 package org.aoju.bus.gitlab.utils;
 
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.logger.Logger;
 import org.glassfish.jersey.message.MessageUtils;
 
 import javax.annotation.Priority;
@@ -18,9 +20,6 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 /**
  * This class logs request and response info masking HTTP header values that are known to
@@ -63,59 +62,46 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      */
     protected static final String LOGGING_ID_PROPERTY = MaskingLoggingFilter.class.getName() + ".id";
 
-    protected final Logger logger;
-    protected final Level level;
     protected final int maxEntitySize;
     protected final AtomicLong _id = new AtomicLong(0);
     protected Set<String> maskedHeaderNames = new HashSet<String>();
 
     /**
      * Creates a masking logging filter for the specified logger with entity logging disabled.
-     *
-     * @param logger the logger to log messages to
-     * @param level  level at which the messages will be logged
      */
-    public MaskingLoggingFilter(final Logger logger, final Level level) {
-        this(logger, level, 0, null);
+    public MaskingLoggingFilter() {
+        this(0, null);
     }
 
     /**
      * Creates a masking logging filter for the specified logger.
      *
-     * @param logger        the logger to log messages to
-     * @param level         level at which the messages will be logged
      * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
      *                      is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
      *                      the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
      */
-    public MaskingLoggingFilter(final Logger logger, final Level level, final int maxEntitySize) {
-        this(logger, level, maxEntitySize, null);
+    public MaskingLoggingFilter(final int maxEntitySize) {
+        this(maxEntitySize, null);
     }
 
     /**
      * Creates a masking logging filter for the specified logger with entity logging disabled.
      *
-     * @param logger            the logger to log messages to
-     * @param level             level at which the messages will be logged
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
-    public MaskingLoggingFilter(final Logger logger, final Level level, final List<String> maskedHeaderNames) {
-        this(logger, level, 0, maskedHeaderNames);
+    public MaskingLoggingFilter(final List<String> maskedHeaderNames) {
+        this(0, maskedHeaderNames);
     }
 
     /**
      * Creates a masking logging filter for the specified logger.
      *
-     * @param logger            the logger to log messages to
-     * @param level             level at which the messages will be logged
      * @param maxEntitySize     maximum number of entity bytes to be logged.  When logging if the maxEntitySize
      *                          is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
      *                          the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
-    public MaskingLoggingFilter(final Logger logger, final Level level, final int maxEntitySize, final List<String> maskedHeaderNames) {
-        this.logger = logger;
-        this.level = level;
+    public MaskingLoggingFilter(final int maxEntitySize, final List<String> maskedHeaderNames) {
         this.maxEntitySize = maxEntitySize;
 
         if (maskedHeaderNames != null) {
@@ -153,13 +139,11 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     }
 
     protected void log(final StringBuilder sb) {
-        if (logger != null) {
-            logger.log(level, sb.toString());
-        }
+        Logger.info(sb.toString());
     }
 
     protected StringBuilder appendId(final StringBuilder sb, final long id) {
-        sb.append(Long.toString(id)).append(' ');
+        sb.append(id).append(Symbol.C_SPACE);
         return (sb);
     }
 
@@ -167,18 +151,18 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         appendId(sb, id).append(SECTION_PREFIX)
                 .append(note)
                 .append(" on thread ").append(Thread.currentThread().getName())
-                .append('\n');
-        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(' ')
-                .append(uri.toASCIIString()).append('\n');
+                .append(Symbol.C_LF);
+        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(Symbol.C_SPACE)
+                .append(uri.toASCIIString()).append(Symbol.C_LF);
     }
 
     protected void printResponseLine(final StringBuilder sb, final String note, final long id, final int status) {
         appendId(sb, id).append(SECTION_PREFIX)
                 .append(note)
-                .append(" on thread ").append(Thread.currentThread().getName()).append('\n');
+                .append(" on thread ").append(Thread.currentThread().getName()).append(Symbol.C_LF);
         appendId(sb, id).append(RESPONSE_PREFIX)
-                .append(Integer.toString(status))
-                .append('\n');
+                .append(status)
+                .append(Symbol.C_LF);
     }
 
     protected Set<Entry<String, List<String>>> getSortedHeaders(final Set<Entry<String, List<String>>> headers) {
@@ -210,7 +194,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
             if (values.size() == 1) {
                 String value = (isMaskedHeader ? "********" : values.get(0).toString());
-                appendId(sb, id).append(prefix).append(header).append(": ").append(value).append('\n');
+                appendId(sb, id).append(prefix).append(header).append(": ").append(value).append(Symbol.C_LF);
             } else {
 
                 final StringBuilder headerBuf = new StringBuilder();
@@ -222,7 +206,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
                     headerBuf.append(isMaskedHeader ? "********" : value.toString());
                 }
 
-                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf.toString()).append('\n');
+                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf.toString()).append(Symbol.C_LF);
             }
         });
     }
@@ -234,7 +218,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             sb.append("...more...");
         }
 
-        sb.append('\n');
+        sb.append(Symbol.C_LF);
     }
 
     private InputStream logResponseEntity(final StringBuilder sb, InputStream stream, final Charset charset) throws IOException {
@@ -256,11 +240,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     }
 
     @Override
-    public void filter(ClientRequestContext requestContext) throws IOException {
-
-        if (!logger.isLoggable(level)) {
-            return;
-        }
+    public void filter(ClientRequestContext requestContext) {
 
         final long id = _id.incrementAndGet();
         requestContext.setProperty(LOGGING_ID_PROPERTY, id);
@@ -280,10 +260,6 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
     @Override
     public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
-
-        if (!logger.isLoggable(level)) {
-            return;
-        }
 
         final Object requestId = requestContext.getProperty(LOGGING_ID_PROPERTY);
         final long id = requestId != null ? (Long) requestId : _id.incrementAndGet();

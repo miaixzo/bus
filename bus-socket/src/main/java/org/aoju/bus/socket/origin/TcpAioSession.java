@@ -60,7 +60,7 @@ import java.util.concurrent.TimeUnit;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 class TcpAioSession<T> extends AioSession<T> {
@@ -96,13 +96,6 @@ class TcpAioSession<T> extends AioSession<T> {
     private InputStream inputStream;
     private WriteBuffer byteBuf;
 
-    /**
-     * @param channel
-     * @param config
-     * @param readCompletionHandler
-     * @param writeCompletionHandler
-     * @param bufferPage             是否服务端Session
-     */
     TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig<T> config, TcpReadHandler<T> readCompletionHandler, TcpWriteHandler<T> writeCompletionHandler, BufferPage bufferPage) {
         this.channel = channel;
         this.readCompletionHandler = readCompletionHandler;
@@ -110,20 +103,17 @@ class TcpAioSession<T> extends AioSession<T> {
         this.ioServerConfig = config;
 
         this.readBuffer = bufferPage.allocate(config.getReadBufferSize());
-        byteBuf = new WriteBuffer(bufferPage, new Function<WriteBuffer, Void>() {
-            @Override
-            public Void apply(WriteBuffer var) {
-                if (!semaphore.tryAcquire()) {
-                    return null;
-                }
-                TcpAioSession.this.writeBuffer = var.poll();
-                if (writeBuffer == null) {
-                    semaphore.release();
-                } else {
-                    continueWrite(writeBuffer);
-                }
+        byteBuf = new WriteBuffer(bufferPage, var -> {
+            if (!semaphore.tryAcquire()) {
                 return null;
             }
+            TcpAioSession.this.writeBuffer = var.poll();
+            if (writeBuffer == null) {
+                semaphore.release();
+            } else {
+                continueWrite(writeBuffer);
+            }
+            return null;
         }, ioServerConfig.getWriteQueueCapacity());
         //触发状态机
         config.getProcessor().stateEvent(this, StateMachine.NEW_SESSION, null);

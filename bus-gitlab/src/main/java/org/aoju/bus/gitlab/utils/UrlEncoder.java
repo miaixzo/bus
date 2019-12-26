@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab.utils;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
 
 import java.net.URLEncoder;
@@ -19,10 +20,10 @@ public class UrlEncoder {
             String encoded = URLEncoder.encode(s, "UTF-8");
             // Since the encode method encodes plus signs as %2B,
             // we can simply replace the encoded spaces with the correct encoding here 
-            encoded = encoded.replace("+", "%20");
-            encoded = encoded.replace(".", "%2E");
-            encoded = encoded.replace("-", "%2D");
-            encoded = encoded.replace("_", "%5F");
+            encoded = encoded.replace(Symbol.PLUS, "%20");
+            encoded = encoded.replace(Symbol.DOT, "%2E");
+            encoded = encoded.replace(Symbol.HYPHEN, "%2D");
+            encoded = encoded.replace(Symbol.UNDERLINE, "%5F");
             return (encoded);
         } catch (Exception e) {
             throw new GitLabApiException(e);

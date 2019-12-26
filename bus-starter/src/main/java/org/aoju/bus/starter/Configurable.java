@@ -34,13 +34,11 @@ import org.springframework.core.env.PropertiesPropertySource;
 import java.util.Properties;
 
 /**
- *
- *
  * 用于配置一些特殊的关键属性,比如bus-boot.version等,
  * 将作为一个名为PropertiesPropertySource的属性源添加
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 100)

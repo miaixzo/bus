@@ -25,6 +25,7 @@ package org.aoju.bus.health.software.linux;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.software.FileSystem;
 import org.aoju.bus.health.software.OSFileStore;
@@ -44,7 +45,7 @@ import java.util.*;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LinuxFileSystem implements FileSystem {
@@ -118,7 +119,7 @@ public class LinuxFileSystem implements FileSystem {
      */
     private boolean listElementStartsWith(List<String> aList, String charSeq) {
         for (String match : aList) {
-            if (charSeq.equals(match) || charSeq.startsWith(match + "/")) {
+            if (charSeq.equals(match) || charSeq.startsWith(match + Symbol.SLASH)) {
                 return true;
             }
         }
@@ -158,7 +159,7 @@ public class LinuxFileSystem implements FileSystem {
         // Parse /proc/self/mounts to get fs types
         List<String> mounts = Builder.readFile("/proc/self/mounts");
         for (String mount : mounts) {
-            String[] split = mount.split(" ");
+            String[] split = mount.split(Symbol.SPACE);
             // As reported in fstab(5) manpage, struct is:
             // 1st field is volume name
             // 2nd field is path with spaces escaped as \040
@@ -171,7 +172,7 @@ public class LinuxFileSystem implements FileSystem {
             }
 
             // Exclude pseudo file systems
-            String path = split[1].replaceAll("\\\\040", " ");
+            String path = split[1].replaceAll("\\\\040", Symbol.SPACE);
             String type = split[2];
             if (this.pseudofs.contains(type) // exclude non-fs types
                     || path.equals("/dev") // exclude plain dev directory
@@ -181,9 +182,9 @@ public class LinuxFileSystem implements FileSystem {
                 continue;
             }
 
-            String name = split[0].replaceAll("\\\\040", " ");
-            if (path.equals("/")) {
-                name = "/";
+            String name = split[0].replaceAll("\\\\040", Symbol.SPACE);
+            if (path.equals(Symbol.SLASH)) {
+                name = Symbol.SLASH;
             }
 
             // If only updating for one name, skip others
@@ -191,7 +192,7 @@ public class LinuxFileSystem implements FileSystem {
                 continue;
             }
 
-            String volume = split[0].replaceAll("\\\\040", " ");
+            String volume = split[0].replaceAll("\\\\040", Symbol.SPACE);
             String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], "") : "";
 
             String description;

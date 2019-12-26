@@ -5,7 +5,7 @@ import java.net.URL;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class HtmlC {
@@ -38,11 +38,9 @@ public class HtmlC {
         // Set an observer...
         // The Notify() will be called when a matching charset is found.
 
-        det.init(new Observer() {
-            public void notify(String charset) {
-                HtmlC.found = true;
-                System.out.println("CHARSET = " + charset);
-            }
+        det.init(charset -> {
+            HtmlC.found = true;
+            System.out.println("CHARSET = " + charset);
         });
 
         URL url = new URL(argv[0]);

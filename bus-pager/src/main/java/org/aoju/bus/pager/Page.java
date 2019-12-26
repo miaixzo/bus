@@ -31,7 +31,7 @@ import java.util.List;
  * Mybatis - 分页对象
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Page<E> extends ArrayList<E> implements Closeable {
@@ -331,12 +331,12 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Pages<E> toPageInfo() {
-        Pages<E> pages = new Pages<E>(this);
+        Pages<E> pages = new Pages<>(this);
         return pages;
     }
 
     public PageSerializable<E> toPageSerializable() {
-        PageSerializable<E> serializable = new PageSerializable<E>(this);
+        PageSerializable<E> serializable = new PageSerializable<>(this);
         return serializable;
     }
 
@@ -368,21 +368,6 @@ public class Page<E> extends ArrayList<E> implements Closeable {
 
     public void setCountColumn(String countColumn) {
         this.countColumn = countColumn;
-    }
-
-    @Override
-    public String toString() {
-        return "Page{" +
-                "count=" + count +
-                ", pageNo=" + pageNo +
-                ", pageSize=" + pageSize +
-                ", startRow=" + startRow +
-                ", endRow=" + endRow +
-                ", total=" + total +
-                ", pages=" + pages +
-                ", reasonable=" + reasonable +
-                ", pageSizeZero=" + pageSizeZero +
-                '}' + super.toString();
     }
 
     @Override

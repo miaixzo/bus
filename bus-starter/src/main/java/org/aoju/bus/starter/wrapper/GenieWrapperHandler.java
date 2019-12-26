@@ -24,7 +24,7 @@
 package org.aoju.bus.starter.wrapper;
 
 import org.aoju.bus.core.lang.Ansi;
-import org.aoju.bus.core.lang.Httpd;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.health.Systemd;
 import org.aoju.bus.logger.Logger;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Component
@@ -56,28 +56,28 @@ public class GenieWrapperHandler implements HandlerInterceptor {
      */
     private static void isHandle(String method, String url) {
         switch (method) {
-            case Httpd.ALL:
+            case Http.ALL:
                 method = Ansi.BgBlack.and(Ansi.White).format(" %s ", method);
                 break;
-            case Httpd.GET:
+            case Http.GET:
                 method = Ansi.BgGreen.and(Ansi.Black).format(" %s ", method);
                 break;
-            case Httpd.POST:
+            case Http.POST:
                 method = Ansi.BgBlue.and(Ansi.Black).format(" %s ", method);
                 break;
-            case Httpd.DELETE:
+            case Http.DELETE:
                 method = Ansi.BgRed.and(Ansi.Black).format(" %s ", method);
                 break;
-            case Httpd.PUT:
+            case Http.PUT:
                 method = Ansi.BgYellow.and(Ansi.Black).format(" %s ", method);
                 break;
-            case Httpd.OPTIONS:
+            case Http.OPTIONS:
                 method = Ansi.BgCyan.and(Ansi.Black).format(" %s ", method);
                 break;
-            case Httpd.BEFORE:
+            case Http.BEFORE:
                 method = Ansi.BgMagenta.and(Ansi.Black).format(" %s ", method);
                 break;
-            case Httpd.AFTER:
+            case Http.AFTER:
                 method = Ansi.BgWhite.and(Ansi.Black).format(" %s ", method);
                 break;
         }
@@ -98,10 +98,10 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String method = request.getMethod().toUpperCase();
         isHandle(method, request.getRequestURL().toString());
-        if (Httpd.GET.equals(method)
-                || Httpd.POST.equals(method)
-                || Httpd.PATCH.equals(method)
-                || Httpd.PUT.equals(method)) {
+        if (Http.GET.equals(method)
+                || Http.POST.equals(method)
+                || Http.PATCH.equals(method)
+                || Http.PUT.equals(method)) {
             if (request instanceof CacheRequestWrapper) {
                 CacheRequestWrapper cacheRequestWrapper = ((CacheRequestWrapper) request);
                 Logger.info("==> {}", new String(cacheRequestWrapper.getBody()));
@@ -143,9 +143,9 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
         final String method = request.getMethod();
-        if (Httpd.POST.equals(method)
-                || Httpd.PATCH.equals(method)
-                || Httpd.PUT.equals(method)) {
+        if (Http.POST.equals(method)
+                || Http.PATCH.equals(method)
+                || Http.PUT.equals(method)) {
             if (response instanceof CacheResponseWrapper) {
                 CacheResponseWrapper cacheResponseWrapper = ((CacheResponseWrapper) response);
                 Logger.info("<== {}", new String(cacheResponseWrapper.getBody()).length());

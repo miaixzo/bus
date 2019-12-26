@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.software;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.health.Builder;
 
@@ -35,7 +36,7 @@ import java.util.List;
  * controls the computer.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface OperatingSystem {
@@ -291,7 +292,7 @@ public interface OperatingSystem {
 
             StringBuilder sb = new StringBuilder(getVersion() != null ? getVersion() : Builder.UNKNOWN);
             if (!StringUtils.isBlank(getCodeName())) {
-                sb.append(" (").append(getCodeName()).append(')');
+                sb.append(" (").append(getCodeName()).append(Symbol.C_PARENTHESE_RIGHT);
             }
             if (!StringUtils.isBlank(getBuildNumber())) {
                 sb.append(" build ").append(getBuildNumber());

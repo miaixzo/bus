@@ -23,11 +23,11 @@
  */
 package org.aoju.bus.http.accord;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.offers.EventListener;
+import org.aoju.bus.http.metric.EventListener;
 
 import java.io.IOException;
-import java.net.Proxy;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,28 +35,34 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * Selects routes to connect to an origin server. Each connection requires a choice of proxy server,
- * IP address, and TLS mode. Connections may also be recycled.
+ * 选择连接到源服务器的路由。每个连接都需要选择代理
+ * 服务器、IP地址和TLS模式。连接也可以循环使用
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class RouteSelector {
 
     private final Address address;
     private final RouteDatabase routeDatabase;
-    private final Call call;
+    private final NewCall call;
     private final EventListener eventListener;
-    /* State for negotiating failed routes */
+    /**
+     * 失败路线的状态
+     */
     private final List<Route> postponedRoutes = new ArrayList<>();
-    /* State for negotiating the next proxy to use. */
+    /**
+     * 用于协商下一个要使用的代理的状态
+     */
     private List<Proxy> proxies = Collections.emptyList();
     private int nextProxyIndex;
-    /* State for negotiating the next socket address to use. */
+    /**
+     * 状态，用于协商下一个要使用的套接字地址
+     */
     private List<InetSocketAddress> inetSocketAddresses = Collections.emptyList();
 
-    public RouteSelector(Address address, RouteDatabase routeDatabase, Call call,
+    public RouteSelector(Address address, RouteDatabase routeDatabase, NewCall call,
                          EventListener eventListener) {
         this.address = address;
         this.routeDatabase = routeDatabase;
@@ -66,16 +72,31 @@ public final class RouteSelector {
         resetNextProxy(address.url(), address.proxy());
     }
 
+    /**
+     * 从{@link InetSocketAddress}获取“主机”
+     * 这将返回一个包含实际主机名或数字IP地址的字符串。
+     *
+     * @param socketAddress 套接字通信地址
+     * @return 主机名或者host
+     */
     static String getHostString(InetSocketAddress socketAddress) {
         InetAddress address = socketAddress.getAddress();
         if (address == null) {
-
+            // InetSocketAddress是用字符串(数字IP或主机名)指定的。
+            // 如果它是一个名称，那么应该尝试该名称的所有ip。
+            // 如果它是一个IP地址，那么应该只尝试该IP地址
             return socketAddress.getHostName();
         }
-
+        // InetSocketAddress有一个特定的地址:我们应该只尝试该地址。
+        // 因此，我们返回地址并忽略任何可用的主机名
         return address.getHostAddress();
     }
 
+    /**
+     * 如果要尝试另一组路由，则返回true。每个地址至少有一条路由
+     *
+     * @return the true/false
+     */
     public boolean hasNext() {
         return hasNextProxy() || !postponedRoutes.isEmpty();
     }
@@ -85,8 +106,12 @@ public final class RouteSelector {
             throw new NoSuchElementException();
         }
 
+        // 计算要尝试的下一组路由
         List<Route> routes = new ArrayList<>();
         while (hasNextProxy()) {
+            // 推迟的路线总是最后尝试。例如，如果我们有两个代理，
+            // 并且proxy1的所有路由都应该延迟，那么我们将转移到proxy2
+            // 只有在我们用尽了所有的好路线后，我们才会尝试推迟的路线
             Proxy proxy = nextProxy();
             for (int i = 0, size = inetSocketAddresses.size(); i < size; i++) {
                 Route route = new Route(address, proxy, inetSocketAddresses.get(i));
@@ -110,8 +135,15 @@ public final class RouteSelector {
         return new Selection(routes);
     }
 
+    /**
+     * 当客户端在此路由选择器返回的连接上遇到连接失败时，应调用此方法
+     *
+     * @param failedRoute 路由信息
+     * @param failure     异常
+     */
     public void connectFailed(Route failedRoute, IOException failure) {
         if (failedRoute.proxy().type() != Proxy.Type.DIRECT && address.proxySelector() != null) {
+            // 当我们无法连接到新的连接时，告诉代理选择器
             address.proxySelector().connectFailed(
                     address.url().uri(), failedRoute.proxy().address(), failure);
         }
@@ -119,22 +151,41 @@ public final class RouteSelector {
         routeDatabase.failed(failedRoute);
     }
 
-    private void resetNextProxy(Url url, Proxy proxy) {
+    /**
+     * 准备代理服务器进行尝试
+     *
+     * @param url   连接地址
+     * @param proxy 代理信息
+     */
+    private void resetNextProxy(UnoUrl url, Proxy proxy) {
         if (proxy != null) {
+            // 如果用户指定了代理，那么只能尝试该操作
             proxies = Collections.singletonList(proxy);
         } else {
+            // 尝试每一个ProxySelector选项，直到一个连接成功
             List<Proxy> proxiesOrNull = address.proxySelector().select(url.uri());
             proxies = proxiesOrNull != null && !proxiesOrNull.isEmpty()
-                    ? Internal.immutableList(proxiesOrNull)
-                    : Internal.immutableList(Proxy.NO_PROXY);
+                    ? Builder.immutableList(proxiesOrNull)
+                    : Builder.immutableList(Proxy.NO_PROXY);
         }
         nextProxyIndex = 0;
     }
 
+    /**
+     * 如果要尝试另一个代理，则返回true
+     *
+     * @return the true/false
+     */
     private boolean hasNextProxy() {
         return nextProxyIndex < proxies.size();
     }
 
+    /**
+     * 返回要尝试的下一个代理。可能是代理NO_PROXY，但不能为null
+     *
+     * @return 代理信息
+     * @throws IOException 异常
+     */
     private Proxy nextProxy() throws IOException {
         if (!hasNextProxy()) {
             throw new SocketException("No route to " + address.url().host()
@@ -145,6 +196,12 @@ public final class RouteSelector {
         return result;
     }
 
+    /**
+     * 为当前代理或主机准备套接字地址
+     *
+     * @return 代理信息
+     * @throws IOException 异常
+     */
     private void resetNextInetSocketAddress(Proxy proxy) throws IOException {
         inetSocketAddresses = new ArrayList<>();
 
@@ -165,7 +222,7 @@ public final class RouteSelector {
         }
 
         if (socketPort < 1 || socketPort > 65535) {
-            throw new SocketException("No route to " + socketHost + ":" + socketPort
+            throw new SocketException("No route to " + socketHost + Symbol.COLON + socketPort
                     + "; port is out of range");
         }
 
@@ -174,6 +231,7 @@ public final class RouteSelector {
         } else {
             eventListener.dnsStart(call, socketHost);
 
+            // 在IPv4/IPv6混合环境中尝试每个地址以获得最佳性能
             List<InetAddress> addresses = address.dns().lookup(socketHost);
             if (addresses.isEmpty()) {
                 throw new UnknownHostException(address.dns() + " returned no addresses for " + socketHost);
@@ -188,8 +246,10 @@ public final class RouteSelector {
         }
     }
 
+    /**
+     * 选定的路由
+     */
     public static final class Selection {
-
         private final List<Route> routes;
         private int nextRouteIndex = 0;
 
@@ -211,7 +271,6 @@ public final class RouteSelector {
         public List<Route> getAll() {
             return new ArrayList<>(routes);
         }
-
     }
 
 }

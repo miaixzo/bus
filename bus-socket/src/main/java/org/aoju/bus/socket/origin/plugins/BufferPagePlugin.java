@@ -25,6 +25,8 @@ package org.aoju.bus.socket.origin.plugins;
 
 import org.aoju.bus.core.io.segment.BufferPage;
 import org.aoju.bus.core.io.segment.BufferPool;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.origin.AioQuickServer;
 import org.aoju.bus.socket.origin.QuickTimer;
@@ -37,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * 内存页监测插件
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class BufferPagePlugin<T> extends AbstractPlugin {
@@ -76,13 +78,13 @@ public class BufferPagePlugin<T> extends AbstractPlugin {
                         Field field = BufferPool.class.getDeclaredField("bufferPageList");
                         field.setAccessible(true);
                         BufferPage[] pages = (BufferPage[]) field.get(pagePool);
-                        String logger = "";
+                        String logger = Normal.EMPTY;
                         for (BufferPage page : pages) {
-                            logger += "\r\n" + page.toString();
+                            logger += Symbol.CRLF + page.toString();
                         }
                         Logger.info(logger);
                     } catch (Exception e) {
-                        Logger.error("", e);
+                        Logger.error(Normal.EMPTY, e);
                     }
                 }
             }

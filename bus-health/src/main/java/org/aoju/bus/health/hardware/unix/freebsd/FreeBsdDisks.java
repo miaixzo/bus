@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.unix.freebsd;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.unix.freebsd.BsdSysctlUtils;
@@ -38,7 +39,7 @@ import java.util.regex.Pattern;
  * FreeBSD hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FreeBsdDisks implements Disks {
@@ -133,7 +134,7 @@ public class FreeBsdDisks implements Disks {
                 if (store != null) {
                     setPartitions(store, partList);
                 }
-                String device = line.substring(line.lastIndexOf(' ') + 1);
+                String device = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
                 // Get the device.
                 if (devices.contains(device)) {
                     store = diskMap.get(device);
@@ -172,7 +173,7 @@ public class FreeBsdDisks implements Disks {
         for (String line : geom) {
             line = line.trim();
             if (line.startsWith("Geom name:")) {
-                String device = line.substring(line.lastIndexOf(' ') + 1);
+                String device = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
                 // Get the device.
                 if (devices.contains(device)) {
                     store = diskMap.get(device);
@@ -197,7 +198,7 @@ public class FreeBsdDisks implements Disks {
                 }
                 // Verify new entry is a partition
                 // (will happen in 'providers' section)
-                String part = line.substring(line.lastIndexOf(' ') + 1);
+                String part = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
                 if (part.startsWith(store.getName())) {
                     // Create a new partition.
                     partition = new HWPartition();

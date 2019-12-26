@@ -53,7 +53,7 @@ import java.util.stream.StreamSupport;
  * 存储服务-MinIO
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MinioOssProvider extends AbstractProvider {
@@ -135,11 +135,11 @@ public class MinioOssProvider extends AbstractProvider {
                             Item item = itemResult.get();
                             storageItem.setName(item.objectName());
                             storageItem.setSize(StringUtils.toString(item.objectSize()));
-                            Map<String, Object> extended = Maps.newHashMap();
-                            extended.put("tag", item.etag());
-                            extended.put("storageClass", item.storageClass());
-                            extended.put("lastModified", item.lastModified());
-                            storageItem.setExtended(extended);
+                            Map<String, Object> extend = Maps.newHashMap();
+                            extend.put("tag", item.etag());
+                            extend.put("storageClass", item.storageClass());
+                            extend.put("lastModified", item.lastModified());
+                            storageItem.setExtend(extend);
                             return storageItem;
                         } catch (InvalidBucketNameException |
                                 NoSuchAlgorithmException |

@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.models.ArtifactsFile;
 import org.aoju.bus.gitlab.models.Job;
 
@@ -373,7 +374,7 @@ public class JobApi extends AbstractApi implements Constants {
      */
     public File downloadSingleArtifactsFile(Object projectIdOrPath, Integer jobId, Path artifactPath, File directory) throws GitLabApiException {
 
-        String path = artifactPath.toString().replace("\\", "/");
+        String path = artifactPath.toString().replace(Symbol.BACKSLASH, Symbol.SLASH);
         Response response = get(Status.OK, getDefaultPerPageParam(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", path);
         try {
@@ -407,7 +408,7 @@ public class JobApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public InputStream downloadSingleArtifactsFile(Object projectIdOrPath, Integer jobId, Path artifactPath) throws GitLabApiException {
-        String path = artifactPath.toString().replace("\\", "/");
+        String path = artifactPath.toString().replace(Symbol.BACKSLASH, Symbol.SLASH);
         Response response = get(Status.OK, getDefaultPerPageParam(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", path);
         return (response.readEntity(InputStream.class));

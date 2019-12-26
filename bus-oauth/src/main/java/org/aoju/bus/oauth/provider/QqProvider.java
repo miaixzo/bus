@@ -25,9 +25,10 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -43,7 +44,7 @@ import java.util.Map;
  * qq登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class QqProvider extends DefaultProvider {
@@ -63,7 +64,7 @@ public class QqProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken token) {
-        String response = HttpClient.get(refreshTokenUrl(token.getRefreshToken()));
+        String response = Httpx.get(refreshTokenUrl(token.getRefreshToken()));
         return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
@@ -100,7 +101,7 @@ public class QqProvider extends DefaultProvider {
      * @return openId
      */
     private String getOpenId(AccToken token) {
-        String response = HttpClient.get(Builder.fromBaseUrl("https://graph.qq.com/oauth2.0/me")
+        String response = Httpx.get(Builder.fromBaseUrl("https://graph.qq.com/oauth2.0/me")
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("unionid", context.isUnionId() ? 1 : 0)
                 .build());
@@ -110,7 +111,7 @@ public class QqProvider extends DefaultProvider {
         String openId = StringUtils.trim(removeSuffix);
         JSONObject object = JSONObject.parseObject(openId);
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.get("error") + ":" + object.get("error_description"));
+            throw new InstrumentException(object.get("error") + Symbol.COLON + object.get("error_description"));
         }
         token.setOpenId(object.getString("openid"));
         if (object.containsKey("unionid")) {

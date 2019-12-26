@@ -32,7 +32,7 @@ import lombok.Data;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
@@ -48,7 +48,6 @@ public class Message {
      * 请求返回消息
      */
     public String errmsg;
-
 
     /**
      * 请求返回数据 JSON

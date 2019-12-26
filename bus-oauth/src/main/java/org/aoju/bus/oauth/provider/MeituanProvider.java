@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -43,7 +43,7 @@ import java.util.Map;
  * 美团登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MeituanProvider extends DefaultProvider {
@@ -64,7 +64,7 @@ public class MeituanProvider extends DefaultProvider {
         params.put("code", Callback.getCode());
         params.put("grant_type", "authorization_code");
 
-        String response = HttpClient.post(source.accessToken(), params);
+        String response = Httpx.post(source.accessToken(), params);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -83,7 +83,7 @@ public class MeituanProvider extends DefaultProvider {
         params.put("secret", context.getClientSecret());
         params.put("access_token", token.getAccessToken());
 
-        String response = HttpClient.post(source.refresh(), params);
+        String response = Httpx.post(source.refresh(), params);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -107,7 +107,7 @@ public class MeituanProvider extends DefaultProvider {
         params.put("refresh_token", oldToken.getRefreshToken());
         params.put("grant_type", "refresh_token");
 
-        String response = HttpClient.post(source.refresh(), params);
+        String response = Httpx.post(source.refresh(), params);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);

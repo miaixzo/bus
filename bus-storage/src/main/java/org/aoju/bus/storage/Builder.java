@@ -23,16 +23,18 @@
  */
 package org.aoju.bus.storage;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * 框架内预定义的存储信息
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Builder {
 
-    public static final String SUCCESS = "0";
+    public static final String SUCCESS = Symbol.ZERO;
     public static final String FAILURE = "-1";
 
 }

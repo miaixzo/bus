@@ -29,8 +29,11 @@ import org.aoju.bus.proxy.Invocation;
 import java.io.*;
 
 /**
+ * 拦截器，它对所有参数和返回值进行序列化复制。
+ * 这在测试远程服务以确保所有参数/返回类型实际上都是可序列化/反序列化的时候非常有用
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SerializingInterceptor implements Interceptor {

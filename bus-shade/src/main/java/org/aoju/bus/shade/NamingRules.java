@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.shade;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.shade.convert.DateType;
 import org.aoju.bus.shade.convert.MySQLTypeConvert;
 
@@ -30,7 +31,7 @@ import org.aoju.bus.shade.convert.MySQLTypeConvert;
  * 获奖java中需要的驼峰命名
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class NamingRules {
@@ -61,7 +62,7 @@ public class NamingRules {
         if (!named) {
             return field;
         }
-        String[] fields = field.split("_");
+        String[] fields = field.split(Symbol.UNDERLINE);
         StringBuilder sbuilder = new StringBuilder(fields[0]);
         for (int i = 1; i < fields.length; i++) {
             char[] cs = fields[i].toCharArray();

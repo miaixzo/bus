@@ -27,8 +27,11 @@ import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invocation;
 
 /**
+ * 修饰另一个MethodInterceptor，
+ * 只在方法被提供的MethodFilter接受的情况下调用它
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FilteredInterceptor implements Interceptor {

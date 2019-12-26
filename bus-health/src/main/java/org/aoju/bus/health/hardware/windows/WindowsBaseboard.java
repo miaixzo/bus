@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * Baseboard data obtained from WMI
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class WindowsBaseboard extends AbstractBaseboard {
@@ -78,7 +78,7 @@ final class WindowsBaseboard extends AbstractBaseboard {
     }
 
     enum BaseboardProperty {
-        MANUFACTURER, MODEL, VERSION, SERIALNUMBER;
+        MANUFACTURER, MODEL, VERSION, SERIALNUMBER
     }
 
     private static final class WmiStrings {

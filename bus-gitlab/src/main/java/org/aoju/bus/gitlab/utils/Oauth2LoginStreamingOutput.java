@@ -1,5 +1,7 @@
 package org.aoju.bus.gitlab.utils;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
@@ -35,18 +37,18 @@ public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseabl
         writer.write("\"password\": ");
 
         // Output the quoted password
-        writer.write('"');
+        writer.write(Symbol.C_DOUBLE_QUOTES);
         for (int i = 0, length = password.length(); i < length; i++) {
 
             char c = password.charAt(i);
-            if (c == '"' || c == '\\') {
-                writer.write('\\');
+            if (c == Symbol.C_DOUBLE_QUOTES || c == Symbol.C_BACKSLASH) {
+                writer.write(Symbol.C_BACKSLASH);
             }
 
             writer.write(c);
         }
 
-        writer.write('"');
+        writer.write(Symbol.C_DOUBLE_QUOTES);
 
         writer.write(" }");
         writer.flush();

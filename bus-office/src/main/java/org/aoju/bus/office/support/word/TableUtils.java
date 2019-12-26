@@ -41,7 +41,7 @@ import java.util.Map;
  * Word中表格相关工具
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class TableUtils {
@@ -97,7 +97,7 @@ public class TableUtils {
         if (rowBean instanceof Map) {
             rowMap = (Map) rowBean;
         } else if (BeanUtils.isBean(rowBean.getClass())) {
-            rowMap = BeanUtils.beanToMap(rowBean, new LinkedHashMap<String, Object>(), false, false);
+            rowMap = BeanUtils.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
         } else {
             // 其它转为字符串默认输出
             writeRow(row, CollUtils.newArrayList(rowBean), isWriteKeyAsHead);

@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang;
  * Header 常量
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Header {
@@ -60,6 +60,14 @@ public class Header {
      * The header Allow
      */
     public static final String ALLOW = "Allow";
+    /**
+     * The header Expires
+     */
+    public static final String EXPIRES = "Expires";
+    /**
+     * The header Cookie
+     */
+    public static final String COOKIE = "Cookie";
     /**
      * The header Cache-Control
      */
@@ -108,5 +116,57 @@ public class Header {
      * The header Transfer-Encoding
      */
     public static final String TRANSFER_ENCODING = "Transfer-Encoding";
+    /**
+     * The header Host
+     */
+    public static final String HOST = "Host";
+    /**
+     * The header Keep-Alive
+     */
+    public static final String KEEP_ALIVE = "Keep-Alive";
+    /**
+     * The header Proxy-Connection
+     */
+    public static final String PROXY_CONNECTION = "Proxy-Connection";
+    /**
+     * The header WWW-Authenticate
+     */
+    public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
+    /**
+     * The header Proxy-Authenticate
+     */
+    public static final String PROXY_AUTHENTICATE = "Proxy-Authenticate";
+    /**
+     * The header Httpd-Preemptive
+     */
+    public static final String HTTPD_PREEMPTIVE = "Httpd-Preemptive";
+    /**
+     * The header te
+     */
+    public static final String TE = "te";
+    /**
+     * The header Encoding
+     */
+    public static final String ENCODING = "Encoding";
+    /**
+     * The header Upgrade
+     */
+    public static final String UPGRADE = "Upgrade";
+    /**
+     * The header If-Modified-Since
+     */
+    public static final String IF_MODIFIED_SINCE = "If-Modified-Since";
+    /**
+     * The header If-None-Match
+     */
+    public static final String IF_NONE_MATCH = "If-None-Match";
+    /**
+     * The header Sec-WebSocket-Key
+     */
+    public static final String SEC_WEBSOCKET_KEY = "Sec-WebSocket-Key";
+    /**
+     * The header Sec-WebSocket-Version
+     */
+    public static final String SEC_WEBSOCKET_VERSION = "Sec-WebSocket-Version";
 
 }

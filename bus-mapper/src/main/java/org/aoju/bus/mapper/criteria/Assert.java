@@ -23,15 +23,16 @@
  */
 package org.aoju.bus.mapper.criteria;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * 规则处理
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Assert {
@@ -69,7 +70,7 @@ public class Assert {
     }
 
     public Assert andEqualTo(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, "=", "and"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.EQUAL, "and"));
         return this;
     }
 
@@ -79,22 +80,22 @@ public class Assert {
     }
 
     public Assert andGreaterThan(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, ">", "and"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.GT, "and"));
         return this;
     }
 
     public Assert andGreaterThanOrEqualTo(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, ">=", "and"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.GE, "and"));
         return this;
     }
 
     public Assert andLessThan(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, "<", "and"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.LT, "and"));
         return this;
     }
 
     public Assert andLessThanOrEqualTo(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, "<=", "and"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.LE, "and"));
         return this;
     }
 
@@ -139,7 +140,7 @@ public class Assert {
     }
 
     public Assert orEqualTo(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, "=", "or"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.EQUAL, "or"));
         return this;
     }
 
@@ -149,22 +150,22 @@ public class Assert {
     }
 
     public Assert orGreaterThan(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, ">", "or"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.GT, "or"));
         return this;
     }
 
     public Assert orGreaterThanOrEqualTo(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, ">=", "or"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.GE, "or"));
         return this;
     }
 
     public Assert orLessThan(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, "<", "or"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.LT, "or"));
         return this;
     }
 
     public Assert orLessThanOrEqualTo(String property, Object value) {
-        this.criteria.criterions.add(new Criterion(property, value, "<=", "or"));
+        this.criteria.criterions.add(new Criterion(property, value, Symbol.LE, "or"));
         return this;
     }
 

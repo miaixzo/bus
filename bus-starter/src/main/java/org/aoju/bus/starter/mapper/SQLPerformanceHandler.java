@@ -24,6 +24,7 @@
 package org.aoju.bus.starter.mapper;
 
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.logger.Logger;
@@ -50,7 +51,7 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Intercepts(value = {
@@ -69,10 +70,10 @@ public class SQLPerformanceHandler implements Interceptor {
     private static String getParameterValue(Object obj) {
         String value;
         if (obj instanceof String) {
-            value = "'" + obj.toString() + "'";
+            value = Symbol.SINGLE_QUOTE + obj.toString() + Symbol.SINGLE_QUOTE;
         } else if (obj instanceof Date) {
             DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
-            value = "'" + formatter.format(new Date()) + "'";
+            value = Symbol.SINGLE_QUOTE + formatter.format(new Date()) + Symbol.SINGLE_QUOTE;
         } else {
             if (obj != null) {
                 value = obj.toString();
@@ -91,7 +92,7 @@ public class SQLPerformanceHandler implements Interceptor {
         // 1.SQL语句多个空格全部使用一个空格代替
         // 2.防止参数值中有问号问题,全部动态替换
         String sql = boundSql.getSql()
-                .replaceAll("[\\s]+", " ")
+                .replaceAll("[\\s]+", Symbol.SPACE)
                 .replaceAll("\\?", id);
         if (!CollUtils.isEmpty(parameterMappings) && parameterObject != null) {
             // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换

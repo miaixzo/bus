@@ -24,18 +24,18 @@
 package org.aoju.bus.starter.mapper;
 
 import lombok.Data;
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * mybatis配置项
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
-@ConfigurationProperties(prefix = Extend.MYBATIS)
+@ConfigurationProperties(prefix = BusXExtend.MYBATIS)
 public class MybatisProperties {
 
     private String basePackage;

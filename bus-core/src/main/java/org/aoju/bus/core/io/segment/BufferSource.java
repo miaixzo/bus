@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
  * 它还允许客户端提前读取,在消费之前进行必要的缓冲输入
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface BufferSource extends Source, ReadableByteChannel {
@@ -623,7 +623,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
             throws IOException;
 
     /**
-     * a new {@code BufferedSource} that can read data from this {@code BufferedSource}
+     * a new {@code BufferSource} that can read data from this {@code BufferSource}
      * without consuming it. The returned source becomes invalid once this source is next read or
      * closed.
      * <p>
@@ -636,7 +636,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      *
      *   buffer.readUtf8(3) // returns "abc", buffer contains "defghi"
      *
-     *   BufferedSource peek = buffer.peek();
+     *   BufferSource peek = buffer.peek();
      *   peek.readUtf8(3); // returns "def", buffer contains "defghi"
      *   peek.readUtf8(3); // returns "ghi", buffer contains "defghi"
      *

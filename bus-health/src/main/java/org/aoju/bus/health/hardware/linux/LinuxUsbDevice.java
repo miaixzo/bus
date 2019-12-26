@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.common.linux.Udev;
 import org.aoju.bus.health.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.hardware.UsbDevice;
@@ -36,7 +37,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LinuxUsbDevice extends AbstractUsbDevice {
@@ -173,12 +174,11 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
      * @param devPath      The device node path.
      * @param vid          The default (parent) vendor ID
      * @param pid          The default (parent) product ID
-     * @param nameMap
-     * @param vendorMap
-     * @param vendorIdMap
-     * @param productIdMap
-     * @param serialMap
-     * @param hubMap
+     * @param nameMap      The nameMap
+     * @param vendorMap    The vendorMap
+     * @param vendorIdMap  The vendorIdMap
+     * @param productIdMap The productIdMap
+     * @param hubMap       The hubMap
      * @return A LinuxUsbDevice corresponding to this device
      */
     private static LinuxUsbDevice getDeviceAndChildren(String devPath, String vid, String pid,
@@ -186,14 +186,14 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
                                                        Map<String, String> productIdMap, Map<String, String> serialMap, Map<String, List<String>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);
-        List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<String>());
+        List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
         List<LinuxUsbDevice> usbDevices = new ArrayList<>();
         for (String path : childPaths) {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorMap, vendorIdMap,
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
+        return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(devPath, ""), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
                 usbDevices.toArray(new UsbDevice[usbDevices.size()]));
     }

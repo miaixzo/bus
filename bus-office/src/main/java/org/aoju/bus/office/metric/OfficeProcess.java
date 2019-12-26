@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.office.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -45,7 +46,7 @@ import java.util.List;
  * 表示正在执行的office程序的实例.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class OfficeProcess {
@@ -208,7 +209,7 @@ public class OfficeProcess {
         return new File(
                 config.getWorkingDir(),
                 ".converter_"
-                        + unoUrl.getConnectionAndParametersAsString().replace(',', '_').replace('=', '-'));
+                        + unoUrl.getConnectionAndParametersAsString().replace(Symbol.C_COMMA, Symbol.C_UNDERLINE).replace(Symbol.C_EQUAL, '-'));
     }
 
     /**
@@ -253,7 +254,7 @@ public class OfficeProcess {
         }
 
         final String execPath = executable.getAbsolutePath();
-        final String prefix = descriptor.useLongOptionNameGnuStyle() ? "--" : "-";
+        final String prefix = descriptor.useLongOptionNameGnuStyle() ? Symbol.HYPHEN + Symbol.HYPHEN : Symbol.HYPHEN;
         command.add(execPath);
         command.add(prefix + "accept=" + acceptString);
         command.add(prefix + "headless");
@@ -287,9 +288,9 @@ public class OfficeProcess {
     public void start(final boolean restart) throws InstrumentException {
         final String acceptString =
                 unoUrl.getConnectionAndParametersAsString()
-                        + ";"
+                        + Symbol.SEMICOLON
                         + unoUrl.getProtocolAndParametersAsString()
-                        + ";"
+                        + Symbol.SEMICOLON
                         + unoUrl.getRootOid();
 
         // 搜索现有进程.
@@ -351,7 +352,7 @@ public class OfficeProcess {
             return;
         }
 
-        final String prefix = descriptor.useLongOptionNameGnuStyle() ? "--" : "-";
+        final String prefix = descriptor.useLongOptionNameGnuStyle() ? Symbol.HYPHEN + Symbol.HYPHEN : Symbol.HYPHEN;
 
         command.add(execPath);
         command.add(prefix + "invisible");

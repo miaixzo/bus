@@ -33,10 +33,9 @@ import org.aoju.bus.tracer.consts.TraceConsts;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractBackend implements Backend {

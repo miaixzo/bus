@@ -28,21 +28,35 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Versions of TLS that can be offered when negotiating a secure socket. See {@link
- * javax.net.ssl.SSLSocket#setEnabledProtocols}.
+ * 在协商安全插槽时可以提供的TLS版本。
+ * 查看{@link javax.net.ssl.SSLSocket # setEnabledProtocols}
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public enum TlsVersion {
 
-    TLS_1_3("TLSv1.3"), // 2016.
-    TLS_1_2("TLSv1.2"), // 2008.
-    TLS_1_1("TLSv1.1"), // 2006.
-    TLS_1_0("TLSv1"),   // 1999.
-    SSL_3_0("SSLv3"),   // 1996.
-    ;
+    /**
+     * 2016年版本
+     */
+    TLS_1_3("TLSv1.3"),
+    /**
+     * 2008年版本
+     */
+    TLS_1_2("TLSv1.2"),
+    /**
+     * 2006年版本
+     */
+    TLS_1_1("TLSv1.1"),
+    /**
+     * 1999年版本
+     */
+    TLS_1_0("TLSv1"),
+    /**
+     * 1996年版本
+     */
+    SSL_3_0("SSLv3");
 
     public final String javaName;
 
@@ -77,4 +91,5 @@ public enum TlsVersion {
     public String javaName() {
         return javaName;
     }
+
 }

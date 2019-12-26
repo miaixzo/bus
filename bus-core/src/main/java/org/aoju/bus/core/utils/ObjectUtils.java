@@ -25,6 +25,7 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.io.FastByteArray;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
@@ -40,7 +41,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ObjectUtils {
@@ -384,7 +385,7 @@ public class ObjectUtils {
      * @return the field
      */
     public static Field[] getAllFields(Object object) {
-        List<Field> fieldList = new ArrayList<Field>();
+        List<Field> fieldList = new ArrayList<>();
         Class tempClass = object.getClass();
         while (tempClass != null && !tempClass.getName().toLowerCase().equals("java.lang.object")) {
             // 当父类为null的时候说明到达了最上层的父类(Object类).
@@ -623,7 +624,7 @@ public class ObjectUtils {
      */
     public static Map<String, Object> getFields(Object bean) {
         try {
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<>();
             for (Class clazz = bean.getClass(); !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {
@@ -652,7 +653,7 @@ public class ObjectUtils {
      */
     public static Map<String, Class> getFieldNames(Class clazz) {
         try {
-            Map<String, Class> attrMap = new HashMap<String, Class>();
+            Map<String, Class> attrMap = new HashMap<>();
             for (; !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {
@@ -678,7 +679,7 @@ public class ObjectUtils {
             if (hasInitValue) {
                 cleanInitValue(bean);
             }
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new HashMap<>();
             for (Class clazz = bean.getClass(); !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {
@@ -1244,14 +1245,14 @@ public class ObjectUtils {
             return (Object[]) source;
         }
         if (source == null) {
-            return new Object[0];
+            return Normal.EMPTY_OBJECT_ARRAY;
         }
         if (!source.getClass().isArray()) {
             throw new IllegalArgumentException("Source is not an array: " + source);
         }
         int length = Array.getLength(source);
         if (length == 0) {
-            return new Object[0];
+            return Normal.EMPTY_OBJECT_ARRAY;
         }
         Class<?> wrapperType = Array.get(source, 0).getClass();
         Object[] newArray = (Object[]) Array.newInstance(wrapperType, length);

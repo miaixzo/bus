@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -32,7 +33,7 @@ import java.nio.charset.Charset;
  * Base64解码实现
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Base64Decoder {
@@ -175,7 +176,7 @@ public class Base64Decoder {
         while (pos.value <= maxPos) {
             base64Byte = in[pos.value++];
             if (base64Byte > -1) {
-                decodeByte = Base64.DECODE_TABLE[base64Byte];
+                decodeByte = Normal.DECODE_TABLE[base64Byte];
                 if (decodeByte > -1) {
                     return decodeByte;
                 }

@@ -29,15 +29,13 @@ import java.io.IOException;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 
-import static java.util.zip.Deflater.DEFAULT_COMPRESSION;
-
 /**
  * 这相当于使用{@link Deflater}同步刷新选项
  * 该类不提供任何部分刷新机制 为获得最佳性能,
  * 只在应用程序行为需要时调用{@link #flush}
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class GzipSink implements Sink {
@@ -53,7 +51,7 @@ public final class GzipSink implements Sink {
 
     public GzipSink(Sink sink) {
         if (sink == null) throw new IllegalArgumentException("sink == null");
-        this.deflater = new Deflater(DEFAULT_COMPRESSION, true /* No wrap */);
+        this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
         this.sink = IoUtils.buffer(sink);
         this.deflaterSink = new DeflaterSink(this.sink, deflater);
 

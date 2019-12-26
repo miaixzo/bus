@@ -43,16 +43,22 @@ import java.util.stream.StreamSupport;
  * 启动监听器，初始化相关配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class GenieBuilder implements
         ApplicationListener<ApplicationEnvironmentPreparedEvent>,
         Ordered {
 
-    private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(
+    private static final MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(
             BusXBuilder.BUS_HIGH_PRIORITY_CONFIG,
             new HashMap<>());
+
+    public static boolean filterAllLogConfig(String key) {
+        return key.startsWith("logging.level.") || key.startsWith("logging.path.")
+                || key.startsWith("logging.config.") || key.equals("logging.path")
+                || key.equals("loggingRoot") || key.equals("file.encoding");
+    }
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
@@ -100,12 +106,6 @@ public class GenieBuilder implements
     @Override
     public int getOrder() {
         return HIGHEST_PRECEDENCE;
-    }
-
-    public static boolean filterAllLogConfig(String key) {
-        return key.startsWith("logging.level.") || key.startsWith("logging.path.")
-                || key.startsWith("logging.config.") || key.equals("logging.path")
-                || key.equals("loggingRoot") || key.equals("file.encoding");
     }
 
     /**

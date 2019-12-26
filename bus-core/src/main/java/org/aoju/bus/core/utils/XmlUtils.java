@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -54,7 +55,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class XmlUtils {
@@ -107,7 +108,7 @@ public class XmlUtils {
      * @param <T>    对象类型
      * @param source {@link InputSource}
      * @return 对象
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static <T> T readObjectFromXml(InputSource source) {
         Object result = null;
@@ -273,7 +274,7 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -321,7 +322,7 @@ public class XmlUtils {
      * @param source     资源,可以是Docunent、Node节点等
      * @param returnType 返回类型,{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();
@@ -354,19 +355,19 @@ public class XmlUtils {
         for (int i = 0, length = string.length(); i < length; i++) {
             char c = string.charAt(i);
             switch (c) {
-                case '&':
+                case Symbol.C_AND:
                     sb.append("&amp;");
                     break;
-                case '<':
+                case Symbol.C_LT:
                     sb.append("&lt;");
                     break;
-                case '>':
+                case Symbol.C_GT:
                     sb.append("&gt;");
                     break;
-                case '"':
+                case Symbol.C_DOUBLE_QUOTES:
                     sb.append("&quot;");
                     break;
-                case '\'':
+                case Symbol.C_SINGLE_QUOTE:
                     sb.append("&apos;");
                     break;
                 default:
@@ -581,11 +582,11 @@ public class XmlUtils {
             JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
             Unmarshaller um = jaxbContext.createUnmarshaller();
             if (xml != null && xml.contains(rel)) {
-                String start_tag = "<" + rel + ">";
+                String start_tag = Symbol.LT + rel + Symbol.GT;
                 if (isSelect) {
-                    start_tag = "<" + rel + " action=\"select\">";
+                    start_tag = Symbol.LT + rel + " action=\"select\"" + Symbol.GT;
                 }
-                String end_tag = "</" + rel + ">";
+                String end_tag = Symbol.LT + Symbol.C_SLASH + rel + Symbol.GT;
                 String[] entrys = xml.split(end_tag);
                 for (String val : entrys) {
                     if (null != val && val.contains(start_tag)) {
@@ -665,7 +666,7 @@ public class XmlUtils {
      * @return 字符串
      */
     public static String replaceEscapeCharacter(String xml) {
-        return xml.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&quot;", "\"");
+        return xml.replaceAll("&lt;", Symbol.LT).replaceAll("&gt;", Symbol.GT).replaceAll("&quot;", Symbol.DOUBLE_QUOTES);
     }
 
     /**
@@ -679,9 +680,9 @@ public class XmlUtils {
         Set<String> set = map.keySet();
         for (Iterator<String> it = set.iterator(); it.hasNext(); ) {
             String key = it.next();
-            Object value = null != map.get(key) ? map.get(key) : " ";
+            Object value = null != map.get(key) ? map.get(key) : Symbol.SPACE;
             if (!"sign".equals(key)) {
-                sb.append("<" + key + ">" + value + "</" + key + ">");
+                sb.append(Symbol.LT + key + Symbol.GT + value + Symbol.LT + Symbol.C_SLASH + key + Symbol.LT);
             }
         }
         return sb.toString();
@@ -702,7 +703,7 @@ public class XmlUtils {
             JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
             Unmarshaller um = jaxbContext.createUnmarshaller();
             if (xml != null && xml.contains(rel)) {
-                String start_tag = "<" + rel + ">";
+                String start_tag = Symbol.LT + rel + Symbol.GT;
                 String end_tag = "</" + rel + ">";
                 String[] entrys = xml.split(end_tag);
                 for (String val : entrys) {
@@ -758,7 +759,7 @@ public class XmlUtils {
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         marshaller.marshal(esbEntry, byteArrayOutputStream);
         String xmlContent = new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
-        return xmlContent.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"");
+        return xmlContent.replace("&lt;", Symbol.LT).replace("&gt;", Symbol.GT).replace("&quot;", Symbol.DOUBLE_QUOTES);
     }
 
     public String getfield(String str, String field) {
@@ -767,7 +768,7 @@ public class XmlUtils {
         String[] entrys = s2.split("</entry>");
         for (String s : entrys) {
             if (s.contains(field)) {
-                return s.substring(s.indexOf(">") + 1);
+                return s.substring(s.indexOf(Symbol.GT) + 1);
             }
         }
         return "";

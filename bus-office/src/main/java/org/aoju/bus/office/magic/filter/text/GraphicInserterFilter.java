@@ -37,12 +37,12 @@ import com.sun.star.uno.XComponentContext;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Context;
+import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 import org.aoju.bus.office.magic.Info;
 import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.Props;
 import org.aoju.bus.office.magic.Write;
 import org.aoju.bus.office.magic.filter.FilterChain;
-import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -58,7 +58,7 @@ import java.util.UUID;
  * 此筛选器用于将图形插入到文档中.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class GraphicInserterFilter extends AbstractTextContentInserterFilter {

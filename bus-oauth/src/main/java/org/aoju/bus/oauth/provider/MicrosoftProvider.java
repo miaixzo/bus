@@ -25,8 +25,9 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -43,7 +44,7 @@ import java.util.Map;
  * 微软登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MicrosoftProvider extends DefaultProvider {
@@ -71,7 +72,7 @@ public class MicrosoftProvider extends DefaultProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Host", "https://login.microsoftonline.com");
 
-        String response = HttpClient.post(accessTokenUrl, parseQueryToMap(accessTokenUrl), header);
+        String response = Httpx.post(accessTokenUrl, parseQueryToMap(accessTokenUrl), header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -100,12 +101,12 @@ public class MicrosoftProvider extends DefaultProvider {
     protected Property getUserInfo(AccToken oauthToken) {
         String token = oauthToken.getAccessToken();
         String tokenType = oauthToken.getTokenType();
-        String jwt = tokenType + " " + token;
+        String jwt = tokenType + Symbol.SPACE + token;
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", jwt);
 
-        String response = HttpClient.get(userInfoUrl(oauthToken), null, header);
+        String response = Httpx.get(userInfoUrl(oauthToken), null, header);
 
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);

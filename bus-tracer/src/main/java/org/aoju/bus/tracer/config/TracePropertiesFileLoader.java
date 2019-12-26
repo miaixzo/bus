@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.tracer.config;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -31,13 +33,13 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class TracePropertiesFileLoader {
 
-    public static final String Trace_PROPERTIES_FILE = "META-INF/tracer.properties";
-    public static final String Trace_DEFAULT_PROPERTIES_FILE = "META-INF/tracer.default.properties";
+    public static final String Trace_PROPERTIES_FILE = Normal.META_DATA_INF + "/tracer/tracer.properties";
+    public static final String Trace_DEFAULT_PROPERTIES_FILE = Normal.META_DATA_INF + "/tracer/tracer.default.properties";
 
     public Properties loadTraceProperties(String TracePropertiesFile) throws IOException {
         final Properties propertiesFromFile = new Properties();

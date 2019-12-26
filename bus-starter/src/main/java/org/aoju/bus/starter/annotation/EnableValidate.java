@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 启用数据校验
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Target({ElementType.TYPE})

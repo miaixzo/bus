@@ -27,7 +27,7 @@ package org.aoju.bus.extra.ssh;
  * 连接者对象,提供一些连接的基本信息
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Connector {
@@ -157,14 +157,6 @@ public class Connector {
      */
     public void setGroup(String group) {
         this.group = group;
-    }
-
-    /**
-     * toString方法仅用于测试显示
-     */
-    @Override
-    public String toString() {
-        return "Connector [host=" + host + ", port=" + port + ", user=" + user + ", password=" + password + "]";
     }
 
 }

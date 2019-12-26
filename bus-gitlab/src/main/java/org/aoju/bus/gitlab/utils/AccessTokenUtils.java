@@ -2,6 +2,7 @@ package org.aoju.bus.gitlab.utils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
 
 import java.io.BufferedReader;
@@ -552,7 +553,7 @@ public final class AccessTokenUtils {
             }
 
             // Get the session cookie from the headers
-            String[] cookieParts = connection.getHeaderField(COOKIES_HEADER).split(";");
+            String[] cookieParts = connection.getHeaderField(COOKIES_HEADER).split(Symbol.SEMICOLON);
             String cookies = cookieParts[0];
 
             // Extract the authenticity token from the content, need this to submit the
@@ -598,7 +599,7 @@ public final class AccessTokenUtils {
                 throw new GitLabApiException("Login failure, aborting!", 401);
             }
 
-            cookieParts = connection.getHeaderField(COOKIES_HEADER).split(";");
+            cookieParts = connection.getHeaderField(COOKIES_HEADER).split(Symbol.SEMICOLON);
             cookies = cookieParts[0];
 
             // Follow the redirect with the provided session cookie
@@ -685,11 +686,11 @@ public final class AccessTokenUtils {
         if (formData == null) {
             formData = new StringBuilder();
         } else if (formData.length() > 0) {
-            formData.append("&");
+            formData.append(Symbol.AND);
         }
 
         formData.append(name);
-        formData.append("=");
+        formData.append(Symbol.EQUAL);
         try {
             formData.append(URLEncoder.encode(value, "UTF-8"));
             return (formData);

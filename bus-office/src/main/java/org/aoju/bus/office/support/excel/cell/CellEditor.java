@@ -29,10 +29,11 @@ import org.apache.poi.ss.usermodel.Cell;
  * 单元格编辑器接口
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface CellEditor {
+
     /**
      * 编辑
      *
@@ -40,5 +41,6 @@ public interface CellEditor {
      * @param value 单元格值
      * @return 编辑后的对象
      */
-    public Object edit(Cell cell, Object value);
+    Object edit(Cell cell, Object value);
+
 }

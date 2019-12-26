@@ -32,7 +32,7 @@ import java.util.Set;
  * 复合过滤器,实际上内部维护一个过滤器的{@link LinkedHashSet}集合,提供添加/删除以及链式拼接的方法来混合多个子过滤器,该过滤器的具体逻辑由子类拓展
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class MixFilter implements Filter {
@@ -44,7 +44,7 @@ public abstract class MixFilter implements Filter {
     }
 
     protected MixFilter(Collection<? extends Filter> filters) {
-        this.filters = filters != null ? new LinkedHashSet<Filter>(filters) : new LinkedHashSet<Filter>();
+        this.filters = filters != null ? new LinkedHashSet<>(filters) : new LinkedHashSet<>();
     }
 
     /**

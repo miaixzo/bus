@@ -24,6 +24,7 @@
 package org.aoju.bus.core.lang.tuple;
 
 import org.aoju.bus.core.builder.CompareToBuilder;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -40,7 +41,7 @@ import java.util.Objects;
  * @param <M> the middle element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Serializable {
@@ -96,7 +97,7 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Se
 
     @Override
     public String toString() {
-        return "(" + getLeft() + "," + getMiddle() + "," + getRight() + ")";
+        return Symbol.PARENTHESE_LEFT + getLeft() + Symbol.COMMA + getMiddle() + Symbol.COMMA + getRight() + Symbol.PARENTHESE_RIGHT;
     }
 
     public String toString(final String format) {

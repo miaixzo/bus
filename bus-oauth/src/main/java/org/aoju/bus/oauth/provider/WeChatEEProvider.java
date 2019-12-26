@@ -25,9 +25,10 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -40,7 +41,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WeChatEEProvider extends DefaultProvider {
@@ -124,9 +125,9 @@ public class WeChatEEProvider extends DefaultProvider {
     private String getRealGender(JSONObject userDetail) {
         int gender = userDetail.getIntValue("gender");
         if (Normal.Gender.MALE.getCode() == gender) {
-            return "1";
+            return Symbol.ONE;
         }
-        return 2 == gender ? "0" : null;
+        return 2 == gender ? Symbol.ZERO : null;
     }
 
     /**
@@ -186,7 +187,7 @@ public class WeChatEEProvider extends DefaultProvider {
                 .queryParam("access_token", accessToken)
                 .queryParam("userid", userId)
                 .build();
-        return HttpClient.get(userDetailUrl);
+        return Httpx.get(userDetailUrl);
     }
 
 }

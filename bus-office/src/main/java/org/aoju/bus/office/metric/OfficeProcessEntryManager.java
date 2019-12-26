@@ -32,10 +32,10 @@ import com.sun.star.uno.XComponentContext;
 import com.sun.star.util.XChangesBatch;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.office.bridge.LocalOfficePoolManager;
 import org.aoju.bus.office.builtin.MadeInOffice;
 import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.UnoUrl;
-import org.aoju.bus.office.bridge.LocalOfficePoolManager;
 
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * OfficeProcessManagerPoolEntry还负责在达到每个进程的最大任务数时重新启动office进程.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {

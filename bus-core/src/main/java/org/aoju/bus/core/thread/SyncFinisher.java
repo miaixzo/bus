@@ -36,13 +36,13 @@ import java.util.concurrent.CountDownLatch;
  * 不能保证同时开始
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SyncFinisher {
 
     private CountDownLatch countDownLatch;
-    private Set<Worker> workers = new LinkedHashSet<Worker>();
+    private Set<Worker> workers = new LinkedHashSet<>();
 
     /**
      * 增加工作线程

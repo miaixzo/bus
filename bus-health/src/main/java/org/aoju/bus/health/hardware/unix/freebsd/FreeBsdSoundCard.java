@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.unix.freebsd;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.hardware.AbstractSoundCard;
@@ -37,7 +38,7 @@ import java.util.Map;
  * FreeBSD soundcard.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FreeBsdSoundCard extends AbstractSoundCard {
@@ -80,15 +81,15 @@ public class FreeBsdSoundCard extends AbstractSoundCard {
                 if (line.contains("freebsd.driver =") && "pcm".equals(Builder.getSingleQuoteStringValue(line))) {
                     sounds.add(key);
                 } else if (line.contains("info.product")) {
-                    productMap.put(key, Builder.getStringBetween(line, '\''));
+                    productMap.put(key, Builder.getStringBetween(line, Symbol.C_SINGLE_QUOTE));
                 } else if (line.contains("info.vendor")) {
-                    vendorMap.put(key, Builder.getStringBetween(line, '\''));
+                    vendorMap.put(key, Builder.getStringBetween(line, Symbol.C_SINGLE_QUOTE));
                 }
             }
         }
         List<SoundCard> soundCards = new ArrayList<>();
         for (String _key : sounds) {
-            soundCards.add(new FreeBsdSoundCard(productMap.get(_key), vendorMap.get(_key) + " " + productMap.get(_key),
+            soundCards.add(new FreeBsdSoundCard(productMap.get(_key), vendorMap.get(_key) + Symbol.SPACE + productMap.get(_key),
                     productMap.get(_key)));
         }
         return soundCards;

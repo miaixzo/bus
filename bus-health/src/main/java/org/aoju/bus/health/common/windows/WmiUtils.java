@@ -27,6 +27,7 @@ import com.sun.jna.platform.win32.COM.Wbemcli;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Variant;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
 import java.time.OffsetDateTime;
@@ -35,7 +36,7 @@ import java.time.OffsetDateTime;
  * Helper class for WMI
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WmiUtils {
@@ -69,7 +70,7 @@ public class WmiUtils {
         StringBuilder sb = new StringBuilder("SELECT ");
         sb.append(props[0].name());
         for (int i = 1; i < props.length; i++) {
-            sb.append(',').append(props[i].name());
+            sb.append(Symbol.C_COMMA).append(props[i].name());
         }
         sb.append(" FROM ").append(query.getWmiClassName());
         return sb.toString();

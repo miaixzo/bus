@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实例化工厂类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class InstanceFactory implements Instance {
@@ -169,7 +169,7 @@ public final class InstanceFactory implements Instance {
         this.notNull(clazz);
         Assert.notEmpty(group, "key");
 
-        final String fullClassName = clazz.getName() + Symbol.DASHED + group;
+        final String fullClassName = clazz.getName() + Symbol.HYPHEN + group;
         T instance = (T) instanceMap.get(fullClassName);
         if (ObjectUtils.isNull(instance)) {
             instance = this.multiple(clazz);

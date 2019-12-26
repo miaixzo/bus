@@ -23,28 +23,29 @@
  */
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.http.Client;
+import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.http.Httpd;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
-import org.aoju.bus.http.internal.http.HttpCodec;
-import org.aoju.bus.http.internal.http.RealInterceptorChain;
-import org.aoju.bus.http.offers.Interceptor;
+import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.http.HttpCodec;
+import org.aoju.bus.http.metric.http.RealInterceptorChain;
 
 import java.io.IOException;
 
 /**
- * Opens a connection to the target server and proceeds to the next intercept.
+ * 打开到目标服务器的连接并继续到下一个拦截器.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class ConnectInterceptor implements Interceptor {
 
-    public final Client client;
+    public final Httpd httpd;
 
-    public ConnectInterceptor(Client client) {
-        this.client = client;
+    public ConnectInterceptor(Httpd httpd) {
+        this.httpd = httpd;
     }
 
     @Override
@@ -53,8 +54,9 @@ public final class ConnectInterceptor implements Interceptor {
         Request request = realChain.request();
         StreamAllocation streamAllocation = realChain.streamAllocation();
 
-        boolean doExtensiveHealthChecks = !request.method().equals("GET");
-        HttpCodec httpCodec = streamAllocation.newStream(client, chain, doExtensiveHealthChecks);
+        // 我们需要网络来满足这个要求。可能用于验证条件GET
+        boolean doExtensiveHealthChecks = !Http.GET.equals(request.method());
+        HttpCodec httpCodec = streamAllocation.newStream(httpd, chain, doExtensiveHealthChecks);
         RealConnection connection = streamAllocation.connection();
 
         return realChain.proceed(request, streamAllocation, httpCodec, connection);

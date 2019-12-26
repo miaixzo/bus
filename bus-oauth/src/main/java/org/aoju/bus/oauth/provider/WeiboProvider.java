@@ -27,7 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -41,12 +41,11 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * 微博登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WeiboProvider extends DefaultProvider {
@@ -89,7 +88,7 @@ public class WeiboProvider extends DefaultProvider {
                 token.getUid(), token.getAccessToken()));
         header.put("API-RemoteIP", getLocalIp());
 
-        String response = HttpClient.get(userInfoUrl(token), null, header);
+        String response = Httpx.get(userInfoUrl(token), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         if (object.containsKey("error")) {

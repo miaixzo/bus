@@ -24,6 +24,8 @@
 package org.aoju.bus.health.software.unix.solaris;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.linux.ProcUtils;
@@ -42,7 +44,7 @@ import java.util.Map;
  * computers.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SolarisOS extends AbstractOS {
@@ -141,7 +143,7 @@ public class SolarisOS extends AbstractOS {
     private List<OSProcess> getProcessListFromPS(String psCommand, int pid, boolean slowFields) {
         Map<Integer, String> cwdMap = Builder.getCwdMap(pid);
         List<OSProcess> procs = new ArrayList<>();
-        List<String> procList = Command.runNative(psCommand + (pid < 0 ? "" : pid));
+        List<String> procList = Command.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
         if (procList.isEmpty() || procList.size() < 2) {
             return procs;
         }
@@ -194,9 +196,9 @@ public class SolarisOS extends AbstractOS {
             sproc.setStartTime(now - sproc.getUpTime());
             sproc.setUserTime(Builder.parseDHMSOrDefault(split[12], 0L));
             sproc.setPath(split[13]);
-            sproc.setName(sproc.getPath().substring(sproc.getPath().lastIndexOf('/') + 1));
+            sproc.setName(sproc.getPath().substring(sproc.getPath().lastIndexOf(Symbol.C_SLASH) + 1));
             sproc.setCommandLine(split[14]);
-            sproc.setCurrentWorkingDirectory(cwdMap.getOrDefault(sproc.getProcessID(), ""));
+            sproc.setCurrentWorkingDirectory(cwdMap.getOrDefault(sproc.getProcessID(), Normal.EMPTY));
             // bytes read/written not easily available
 
             if (slowFields) {
@@ -237,7 +239,7 @@ public class SolarisOS extends AbstractOS {
                 }
             }
             return bitMask;
-        } else if (cpuset.endsWith(".") && cpuset.contains("strongly bound to processor(s)")) {
+        } else if (cpuset.endsWith(Symbol.DOT) && cpuset.contains("strongly bound to processor(s)")) {
             String parse = cpuset.substring(0, cpuset.length() - 1);
             String[] split = Builder.whitespaces.split(parse);
             for (int i = split.length - 1; i >= 0; i--) {
@@ -323,7 +325,7 @@ public class SolarisOS extends AbstractOS {
                     }
                     services.add(new OSService(name, 0, OSService.State.STOPPED));
                 }
-            } else if (line.startsWith(" ")) {
+            } else if (line.startsWith(Symbol.SPACE)) {
                 String[] split = Builder.whitespaces.split(line.trim());
                 if (split.length == 3) {
                     services.add(new OSService(split[2], Builder.parseIntOrDefault(split[1], 0), OSService.State.RUNNING));

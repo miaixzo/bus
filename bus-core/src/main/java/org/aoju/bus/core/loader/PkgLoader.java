@@ -24,6 +24,7 @@
 package org.aoju.bus.core.loader;
 
 import org.aoju.bus.core.io.resource.Resource;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -32,7 +33,7 @@ import java.util.Enumeration;
  * 包名表达式资源加载器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PkgLoader extends DelegateLoader implements Loader {
@@ -50,7 +51,7 @@ public class PkgLoader extends DelegateLoader implements Loader {
     }
 
     public Enumeration<Resource> load(String pkg, boolean recursively, Filter filter) throws IOException {
-        String path = pkg.replace('.', '/');
+        String path = pkg.replace(Symbol.C_DOT, Symbol.C_SLASH);
         return delegate.load(path, recursively, filter);
     }
 

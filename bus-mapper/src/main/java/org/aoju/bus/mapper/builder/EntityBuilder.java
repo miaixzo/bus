@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.MapperException;
 import org.aoju.bus.mapper.annotation.ColumnType;
 import org.aoju.bus.mapper.annotation.NameStyle;
@@ -47,7 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实体类工具类 - 处理实体和数据库表以及字段
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class EntityBuilder {
@@ -55,7 +56,7 @@ public class EntityBuilder {
     /**
      * 实体类 => 表对象
      */
-    private static final Map<Class<?>, EntityTable> entityTableMap = new ConcurrentHashMap<Class<?>, EntityTable>();
+    private static final Map<Class<?>, EntityTable> entityTableMap = new ConcurrentHashMap<>();
 
     /**
      * 获取表对象
@@ -88,7 +89,7 @@ public class EntityBuilder {
                 if (orderBy.length() != 0) {
                     orderBy.append(",");
                 }
-                orderBy.append(column.getColumn()).append(" ").append(column.getOrderBy());
+                orderBy.append(column.getColumn()).append(Symbol.SPACE).append(column.getOrderBy());
             }
         }
         table.setOrderByClause(orderBy.toString());
@@ -177,10 +178,10 @@ public class EntityBuilder {
             //可以通过stye控制
             entityTable.setName(convertByStyle(entityClass.getSimpleName(), style));
         }
-        entityTable.setEntityClassColumns(new LinkedHashSet<EntityColumn>());
-        entityTable.setEntityClassPKColumns(new LinkedHashSet<EntityColumn>());
+        entityTable.setEntityClassColumns(new LinkedHashSet<>());
+        entityTable.setEntityClassPKColumns(new LinkedHashSet<>());
         //处理所有列
-        List<EntityField> fields = null;
+        List<EntityField> fields;
         if (config.isEnableMethodAnnotation()) {
             fields = FieldSourceBuilder.getAll(entityClass);
         } else {
@@ -188,7 +189,7 @@ public class EntityBuilder {
         }
         for (EntityField field : fields) {
             //如果启用了简单类型,就做简单类型校验,如果不是简单类型,直接跳过
-            //5.3.6 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
+            //5.3.8 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
             if (config.isUseSimpleType() &&
                     !(SimpleType.isSimpleType(field.getJavaType())
                             ||
@@ -354,12 +355,12 @@ public class EntityBuilder {
         for (int i = 0; i < size; i++) {
             c = chars[i];
             if (isUppercaseAlpha(c)) {
-                sb.append('_').append(toLowerAscii(c));
+                sb.append(Symbol.C_UNDERLINE).append(toLowerAscii(c));
             } else {
                 sb.append(c);
             }
         }
-        return sb.charAt(0) == '_' ? sb.substring(1) : sb.toString();
+        return sb.charAt(0) == Symbol.C_UNDERLINE ? sb.substring(1) : sb.toString();
     }
 
     public static boolean isUppercaseAlpha(char c) {

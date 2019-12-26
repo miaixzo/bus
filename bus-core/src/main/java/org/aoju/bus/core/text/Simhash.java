@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Simhash {
@@ -55,7 +55,7 @@ public class Simhash {
         this.hammingThresh = hammingThresh;
         this.storage = new ArrayList<>(fracCount);
         for (int i = 0; i < fracCount; i++) {
-            storage.add(new HashMap<String, List<Long>>());
+            storage.add(new HashMap<>());
         }
     }
 
@@ -144,7 +144,7 @@ public class Simhash {
                 if (fracMap.containsKey(frac)) {
                     fracMap.get(frac).add(simhash);
                 } else {
-                    final List<Long> ls = new ArrayList<Long>();
+                    final List<Long> ls = new ArrayList<>();
                     ls.add(simhash);
                     fracMap.put(frac, ls);
                 }

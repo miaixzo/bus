@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoizer;
@@ -32,13 +33,11 @@ import org.aoju.bus.health.hardware.AbstractBaseboard;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.common.linux.ProcUtils.CPUINFO;
-
 /**
  * Baseboard data obtained by sysfs
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class LinuxBaseboard extends AbstractBaseboard {
@@ -72,7 +71,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String queryManufacturer() {
-        String result = null;
+        String result;
         if ((result = queryManufacturerFromSysfs()) == null && (result = queryProcCpu().manufacturer) == null) {
             return Builder.UNKNOWN;
         }
@@ -80,7 +79,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String queryModel() {
-        String result = null;
+        String result;
         if ((result = queryModelFromSysfs()) == null && (result = queryProcCpu().model) == null) {
             return Builder.UNKNOWN;
         }
@@ -88,7 +87,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String queryVersion() {
-        String result = null;
+        String result;
         if ((result = queryVersionFromSysfs()) == null && (result = queryProcCpu().version) == null) {
             return Builder.UNKNOWN;
         }
@@ -96,7 +95,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String querySerialNumber() {
-        String result = null;
+        String result;
         if ((result = querySerialFromSysfs()) == null && (result = queryProcCpu().serialNumber) == null) {
             return Builder.UNKNOWN;
         }
@@ -152,7 +151,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
         String pcVersion = null;
         String pcSerialNumber = null;
 
-        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + CPUINFO);
+        List<String> cpuInfo = Builder.readFile(ProcUtils.getProcPath() + ProcUtils.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
             if (splitLine.length < 2) {
@@ -180,17 +179,17 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String queryBoardManufacturer(char digit) {
         switch (digit) {
-            case '0':
+            case Symbol.C_ZERO:
                 return "Sony UK";
-            case '1':
+            case Symbol.C_ONE:
                 return "Egoman";
-            case '2':
+            case Symbol.C_TWO:
                 return "Embest";
-            case '3':
+            case Symbol.C_THREE:
                 return "Sony Japan";
-            case '4':
+            case Symbol.C_FOUR:
                 return "Embest";
-            case '5':
+            case Symbol.C_FIVE:
                 return "Stadium";
             default:
                 return Builder.UNKNOWN;
@@ -210,4 +209,5 @@ final class LinuxBaseboard extends AbstractBaseboard {
             this.serialNumber = StringUtils.isBlank(serialNumber) ? Builder.UNKNOWN : serialNumber;
         }
     }
+
 }

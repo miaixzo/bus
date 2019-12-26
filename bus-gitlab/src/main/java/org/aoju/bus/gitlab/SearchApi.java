@@ -96,7 +96,7 @@ public class SearchApi extends AbstractApi {
                 return (new Pager<User>(this, User.class, itemsPerPage, formData.asMap(), "search"));
 
             case WIKI_BLOBS:
-                return (new Pager<SearchBlob>(this, SearchBlob.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<>(this, SearchBlob.class, itemsPerPage, formData.asMap(), "search"));
 
             default:
                 throw new GitLabApiException("Invalid SearchScope [" + scope + "]");

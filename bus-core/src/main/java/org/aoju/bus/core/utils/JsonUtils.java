@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.JSONLibDataFormatSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.UnsupportedEncodingException;
@@ -40,7 +41,7 @@ import java.util.Map;
  * fastjson工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class JsonUtils {
@@ -157,7 +158,7 @@ public class JsonUtils {
         List<T> list = new ArrayList<>();
         if (!text.equals("")) {
 
-            if (text.contains("{") || text.contains("[")) {
+            if (text.contains(Symbol.BRACE_LEFT) || text.contains(Symbol.BRACKET_LEFT)) {
                 text = text;
             } else {
                 // 转码
@@ -182,7 +183,7 @@ public class JsonUtils {
     }
 
     /**
-     * object为可以转换为JSON对象的入参,例如:{'':''}字符串,以及其他普通对象,包含基本类型和封装类型,
+     * object为可以转换为JSON对象的入参,以及其他普通对象,包含基本类型和封装类型,
      *
      * @param object 对象
      * @return json字符
@@ -196,8 +197,8 @@ public class JsonUtils {
     }
 
     /**
-     * object为可以转换为JSON对象的入参,例如:{
-     * '':''}字符串,以及其他普通对象,不包含基本类型和封装类型[String除外但要符合JSON规则] 例如
+     * object为可以转换为JSON对象的入参,以及其他普通对象,
+     * 不包含基本类型和封装类型[String除外但要符合JSON规则]
      *
      * @param object 对象
      * @return json字符

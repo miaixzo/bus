@@ -28,8 +28,10 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
+ * 用于{@link ProxyClass}实现
+ *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractProxyClass implements ProxyClass {

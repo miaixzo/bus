@@ -24,7 +24,9 @@
 package org.aoju.bus.health.software.mac;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.common.mac.SystemB;
@@ -36,15 +38,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
-
 /**
  * <p>
  * MacNetworkParams class.
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MacNetwork extends AbstractNetwork {
@@ -59,7 +59,7 @@ public class MacNetwork extends AbstractNetwork {
     public String getDomainName() {
         CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
         hint.ai_flags = CLibrary.AI_CANONNAME;
-        String hostname = "";
+        String hostname;
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
@@ -80,7 +80,7 @@ public class MacNetwork extends AbstractNetwork {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != SYS.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }
@@ -100,7 +100,7 @@ public class MacNetwork extends AbstractNetwork {
             if (v6Table && line.startsWith(DEFAULT_GATEWAY)) {
                 String[] fields = Builder.whitespaces.split(line);
                 if (fields.length > 2 && fields[2].contains("G")) {
-                    return fields[1].split("%")[0];
+                    return fields[1].split(Symbol.PERCENT)[0];
                 }
             } else if (line.startsWith(IPV6_ROUTE_HEADER)) {
                 v6Table = true;

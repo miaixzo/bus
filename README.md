@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v5.3.6-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v5.3.8-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -70,11 +70,10 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ √ ]|bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小|
 |[ √ ]|bus-setting|设置工具类， 用于支持设置/配置|
 |[ √ ]|bus-shade|Entity,Service,Mapper等相关代码生成工具|
-|[ √ ]|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
+|[ × ]|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
 |[ √ ]|bus-spring|spring相关配置|
 |[ √ ]|bus-starter|SpringBoot starter，启动及相关配置文件信息|
 |[ √ ]|bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
-|[ √ ]|bus-swagger|API调用及测试|
 |[ × ]|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|
 |[ √ ]|bus-validate|参数校验，会默认拦截所有的标记有`@Valid`的方法或类|
  
@@ -95,13 +94,13 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.3.6</version>
+    <version>5.3.8</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:5.3.6'
+implementation 'org.aoju:bus-all:5.3.8'
 ```
 
 ### Other

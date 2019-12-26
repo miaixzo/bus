@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
  * 虚拟ByteBuffer缓冲区
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class VirtualBuffer {
@@ -96,14 +96,6 @@ public final class VirtualBuffer {
         if (bufferPage != null) {
             bufferPage.clean(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "VirtualBuffer{" +
-                "parentPosition=" + parentPosition +
-                ", parentLimit=" + parentLimit +
-                '}';
     }
 
 }

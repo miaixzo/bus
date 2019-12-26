@@ -28,6 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Cfgmgr32;
 import com.sun.jna.platform.win32.Cfgmgr32Util;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoizer;
 import org.aoju.bus.health.common.windows.WmiQueryHandler;
@@ -47,7 +48,7 @@ import java.util.regex.Pattern;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WindowsUsbDevice extends AbstractUsbDevice {
@@ -212,8 +213,8 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
      * @param hubDeviceId    The PNPdeviceID of this device.
      * @param vid            The default (parent) vendor ID
      * @param pid            The default (parent) product ID
-     * @param deviceTreeMap
-     * @param usbDeviceCache
+     * @param deviceTreeMap  The  deviceTreeMap
+     * @param usbDeviceCache The usbDeviceCache
      * @return A WindowsUsbDevice corresponding to this deviceID, or null if unable
      * to find
      */
@@ -226,7 +227,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
             vendorId = m.group(1).toLowerCase();
             productId = m.group(2).toLowerCase();
         }
-        List<String> pnpDeviceIds = deviceTreeMap.getOrDefault(hubDeviceId, new ArrayList<String>());
+        List<String> pnpDeviceIds = deviceTreeMap.getOrDefault(hubDeviceId, new ArrayList<>());
         List<WindowsUsbDevice> usbDevices = new ArrayList<>();
         for (String pnpDeviceId : pnpDeviceIds) {
             WindowsUsbDevice deviceAndChildren = getDeviceAndChildren(pnpDeviceId, vendorId, productId, deviceTreeMap,
@@ -239,7 +240,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         if (usbDeviceCache.containsKey(hubDeviceId)) {
             WindowsUsbDevice device = usbDeviceCache.get(hubDeviceId);
             if (device.name.isEmpty()) {
-                device.name = vendorId + ":" + productId;
+                device.name = vendorId + Symbol.COLON + productId;
             }
             device.vendorId = vendorId;
             device.productId = productId;
@@ -271,15 +272,15 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
     }
 
     enum USBControllerProperty {
-        PNPDEVICEID;
+        PNPDEVICEID
     }
 
     enum PnPEntityProperty {
-        NAME, MANUFACTURER, PNPDEVICEID;
+        NAME, MANUFACTURER, PNPDEVICEID
     }
 
     enum DiskDriveProperty {
-        PNPDEVICEID, SERIALNUMBER;
+        PNPDEVICEID, SERIALNUMBER
     }
 
 }

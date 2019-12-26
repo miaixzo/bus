@@ -27,10 +27,10 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Provider;
 
 /**
- * Bean 模型
+ * 使用Class.newInstance()来实例化一个对象
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class BeanProvider implements Provider {

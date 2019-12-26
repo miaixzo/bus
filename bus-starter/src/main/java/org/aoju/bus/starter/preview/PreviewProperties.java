@@ -27,7 +27,7 @@ import lombok.Data;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.magic.family.FormatProperties;
-import org.aoju.bus.starter.core.Extend;
+import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -36,11 +36,11 @@ import java.util.Map;
  * 文档预览配置类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
-@ConfigurationProperties(prefix = Extend.PREVIEW)
+@ConfigurationProperties(prefix = BusXExtend.PREVIEW)
 public class PreviewProperties {
 
     /**

@@ -2,6 +2,7 @@ package org.aoju.bus.core.date;
 
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -33,7 +34,7 @@ import java.util.List;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class StopWatch {
@@ -336,7 +337,7 @@ public class StopWatch {
             for (TaskInfo task : getTaskInfo()) {
                 sb.append("; [").append(task.getTaskName()).append("] took ").append(task.getTimeNanos()).append(" ns");
                 long percent = Math.round(100.0 * task.getTimeNanos() / getTotalTimeNanos());
-                sb.append(" = ").append(percent).append("%");
+                sb.append(" = ").append(percent).append(Symbol.PERCENT);
             }
         } else {
             sb.append("; no task info kept");

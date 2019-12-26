@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.linux;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.common.linux.ProcUtils;
 import org.aoju.bus.health.common.linux.Udev;
@@ -40,7 +41,7 @@ import java.util.Map;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LinuxDisks implements Disks {
@@ -63,7 +64,7 @@ public class LinuxDisks implements Disks {
         String stat = Builder.getStringFromFile(ProcUtils.getProcPath() + "/diskstats");
         int statLength = 11;
         if (!stat.isEmpty()) {
-            statLength = Builder.countStringToLongArray(stat, ' ');
+            statLength = Builder.countStringToLongArray(stat, Symbol.C_SPACE);
         }
         UDEV_STAT_LENGTH = statLength;
     }
@@ -94,7 +95,7 @@ public class LinuxDisks implements Disks {
 
     private static void computeDiskStats(HWDiskStore store, Udev.UdevDevice disk) {
         String devstat = Udev.INSTANCE.udev_device_get_sysattr_value(disk, "stat");
-        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, ' ');
+        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, Symbol.C_SPACE);
         store.setTimeStamp(System.currentTimeMillis());
 
         // Reads and writes are converted in bytes
@@ -109,25 +110,21 @@ public class LinuxDisks implements Disks {
     @Override
     public HWDiskStore[] getDisks() {
         HWDiskStore store = null;
-        List<HWDiskStore> result;
 
         updateMountsMap();
         hashCodeToPathMap.clear();
 
-        Udev.UdevHandle handle = null;
-        Udev.UdevDevice device = null;
-        Udev.UdevEnumerate enumerate = null;
-        Udev.UdevListEntry entry;
+        Udev.UdevDevice device;
         Udev.UdevListEntry oldEntry;
 
-        result = new ArrayList<>();
+        List<HWDiskStore> result = new ArrayList<>();
 
-        handle = Udev.INSTANCE.udev_new();
-        enumerate = Udev.INSTANCE.udev_enumerate_new(handle);
+        Udev.UdevHandle handle = Udev.INSTANCE.udev_new();
+        Udev.UdevEnumerate enumerate = Udev.INSTANCE.udev_enumerate_new(handle);
         Udev.INSTANCE.udev_enumerate_add_match_subsystem(enumerate, "block");
         Udev.INSTANCE.udev_enumerate_scan_devices(enumerate);
 
-        entry = Udev.INSTANCE.udev_enumerate_get_list_entry(enumerate);
+        Udev.UdevListEntry entry = Udev.INSTANCE.udev_enumerate_get_list_entry(enumerate);
         while (true) {
             oldEntry = entry;
             device = Udev.INSTANCE.udev_device_new_from_syspath(handle, Udev.INSTANCE.udev_list_entry_get_name(entry));

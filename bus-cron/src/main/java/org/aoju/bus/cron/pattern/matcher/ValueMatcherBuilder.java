@@ -39,7 +39,7 @@ import java.util.List;
  * {@link ValueMatcher} 构建器,用于构建表达式中每一项的匹配器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ValueMatcherBuilder {
@@ -179,7 +179,7 @@ public class ValueMatcherBuilder {
         }
 
         //Range模式
-        List<String> parts = StringUtils.split(value, '-');
+        List<String> parts = StringUtils.split(value, Symbol.C_HYPHEN);
         int size = parts.size();
         if (size == 1) {// 普通值
             final int v1 = parser.parse(value);
@@ -221,6 +221,6 @@ public class ValueMatcherBuilder {
      * @return 是否为全匹配符
      */
     private static boolean isMatchAllStr(String value) {
-        return (1 == value.length()) && ("*".equals(value) || "?".equals(value));
+        return (1 == value.length()) && (Symbol.STAR.equals(value) || Symbol.QUESTION_MARK.equals(value));
     }
 }

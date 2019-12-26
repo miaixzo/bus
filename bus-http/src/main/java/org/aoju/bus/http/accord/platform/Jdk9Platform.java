@@ -23,7 +23,8 @@
  */
 package org.aoju.bus.http.accord.platform;
 
-import org.aoju.bus.http.Internal;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
 
 import javax.net.ssl.SSLParameters;
@@ -38,10 +39,10 @@ import java.util.List;
  * OpenJDK 9+.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
-final class Jdk9Platform extends Platform {
+public final class Jdk9Platform extends Platform {
 
     final Method setProtocolMethod;
     final Method getProtocolMethod;
@@ -52,6 +53,7 @@ final class Jdk9Platform extends Platform {
     }
 
     public static Jdk9Platform buildIfSupported() {
+        // Find JDK 9 new methods
         try {
             Method setProtocolMethod =
                     SSLParameters.class.getMethod("setApplicationProtocols", String[].class);
@@ -78,7 +80,7 @@ final class Jdk9Platform extends Platform {
 
             sslSocket.setSSLParameters(sslParameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw Internal.assertionError("unable to set ssl parameters", e);
+            throw Builder.assertionError("unable to set ssl parameters", e);
         }
     }
 
@@ -87,13 +89,15 @@ final class Jdk9Platform extends Platform {
         try {
             String protocol = (String) getProtocolMethod.invoke(socket);
 
-            if (protocol == null || protocol.equals("")) {
+            // SSLSocket.getApplicationProtocol 返回 "" 如果应用程序协议值不被使用
+            // 没有指定SSLParameters.setApplicationProtocols时观察到的
+            if (protocol == null || Normal.EMPTY.equals(protocol)) {
                 return null;
             }
 
             return protocol;
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw Internal.assertionError("unable to get selected protocols", e);
+            throw Builder.assertionError("unable to get selected protocols", e);
         }
     }
 

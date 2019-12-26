@@ -28,10 +28,10 @@ import org.aoju.bus.cache.annotation.CacheKey;
 import org.aoju.bus.cache.annotation.Cached;
 import org.aoju.bus.cache.annotation.CachedGet;
 import org.aoju.bus.cache.annotation.Invalid;
-import org.aoju.bus.cache.entity.CacheExpire;
-import org.aoju.bus.cache.entity.CacheHolder;
-import org.aoju.bus.cache.entity.CacheMethod;
-import org.aoju.bus.cache.entity.CachePair;
+import org.aoju.bus.cache.magic.AnnoHolder;
+import org.aoju.bus.cache.magic.CacheExpire;
+import org.aoju.bus.cache.magic.CachePair;
+import org.aoju.bus.cache.magic.MethodHolder;
 import org.aoju.bus.logger.Logger;
 
 import java.lang.annotation.Annotation;
@@ -46,27 +46,27 @@ import java.util.concurrent.ConcurrentMap;
  * 定位: 将@Cached、@Invalid、@CachedGet、(@CachedPut未来)以及将@CacheKey整体融合到一起
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CacheInfoContainer {
 
-    private static final ConcurrentMap<Method, CachePair<CacheHolder, CacheMethod>> cacheMap = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Method, CachePair<AnnoHolder, MethodHolder>> cacheMap = new ConcurrentHashMap<>();
 
-    public static CachePair<CacheHolder, CacheMethod> getCacheInfo(Method method) {
+    public static CachePair<AnnoHolder, MethodHolder> getCacheInfo(Method method) {
         return cacheMap.computeIfAbsent(method, CacheInfoContainer::doGetMethodInfo);
     }
 
-    private static CachePair<CacheHolder, CacheMethod> doGetMethodInfo(Method method) {
-        CacheHolder cacheHolder = getAnnoHolder(method);
-        CacheMethod cacheMethod = getMethodHolder(method, cacheHolder);
+    private static CachePair<AnnoHolder, MethodHolder> doGetMethodInfo(Method method) {
+        AnnoHolder annoHolder = getAnnoHolder(method);
+        MethodHolder methodHolder = getMethodHolder(method, annoHolder);
 
-        return CachePair.of(cacheHolder, cacheMethod);
+        return CachePair.of(annoHolder, methodHolder);
     }
 
-    private static CacheHolder getAnnoHolder(Method method) {
+    private static AnnoHolder getAnnoHolder(Method method) {
 
-        CacheHolder.Builder builder = CacheHolder.Builder.newBuilder(method);
+        AnnoHolder.Builder builder = AnnoHolder.Builder.newBuilder(method);
 
         Annotation[][] pAnnotations = method.getParameterAnnotations();
         scanKeys(builder, pAnnotations);
@@ -82,7 +82,7 @@ public class CacheInfoContainer {
         return builder.build();
     }
 
-    private static CacheHolder.Builder scanKeys(CacheHolder.Builder builder, Annotation[][] pAnnotations) {
+    private static AnnoHolder.Builder scanKeys(AnnoHolder.Builder builder, Annotation[][] pAnnotations) {
         int multiIndex = -1;
         String id = "";
         Map<Integer, CacheKey> cacheKeyMap = new LinkedHashMap<>(pAnnotations.length);
@@ -108,47 +108,47 @@ public class CacheInfoContainer {
                 .setId(id);
     }
 
-    private static CacheHolder.Builder scanCached(CacheHolder.Builder builder, Cached cached) {
+    private static AnnoHolder.Builder scanCached(AnnoHolder.Builder builder, Cached cached) {
         return builder
                 .setCache(cached.value())
                 .setPrefix(cached.prefix())
                 .setExpire(cached.expire());
     }
 
-    private static CacheHolder.Builder scanCachedGet(CacheHolder.Builder builder, CachedGet cachedGet) {
+    private static AnnoHolder.Builder scanCachedGet(AnnoHolder.Builder builder, CachedGet cachedGet) {
         return builder
                 .setCache(cachedGet.value())
                 .setPrefix(cachedGet.prefix())
                 .setExpire(CacheExpire.NO);
     }
 
-    private static CacheHolder.Builder scanInvalid(CacheHolder.Builder builder, Invalid invalid) {
+    private static AnnoHolder.Builder scanInvalid(AnnoHolder.Builder builder, Invalid invalid) {
         return builder
                 .setCache(invalid.value())
                 .setPrefix(invalid.prefix())
                 .setExpire(CacheExpire.NO);
     }
 
-    private static CacheMethod getMethodHolder(Method method, CacheHolder cacheHolder) {
+    private static MethodHolder getMethodHolder(Method method, AnnoHolder annoHolder) {
         boolean isCollectionReturn = Collection.class.isAssignableFrom(method.getReturnType());
         boolean isMapReturn = Map.class.isAssignableFrom(method.getReturnType());
 
         staticAnalyze(method.getParameterTypes(),
-                cacheHolder,
+                annoHolder,
                 isCollectionReturn,
                 isMapReturn);
 
-        return new CacheMethod(isCollectionReturn);
+        return new MethodHolder(isCollectionReturn);
     }
 
-    private static void staticAnalyze(Class<?>[] pTypes, CacheHolder cacheHolder,
+    private static void staticAnalyze(Class<?>[] pTypes, AnnoHolder annoHolder,
                                       boolean isCollectionReturn, boolean isMapReturn) {
-        if (isInvalidParam(pTypes, cacheHolder)) {
+        if (isInvalidParam(pTypes, annoHolder)) {
             throw new RuntimeException("cache need at least one param key");
-        } else if (isInvalidMultiCount(cacheHolder.getCacheKeyMap())) {
+        } else if (isInvalidMultiCount(annoHolder.getCacheKeyMap())) {
             throw new RuntimeException("only one multi key");
         } else {
-            Map<Integer, CacheKey> cacheKeyMap = cacheHolder.getCacheKeyMap();
+            Map<Integer, CacheKey> cacheKeyMap = annoHolder.getCacheKeyMap();
             for (Map.Entry<Integer, CacheKey> entry : cacheKeyMap.entrySet()) {
                 Integer argIndex = entry.getKey();
                 CacheKey cacheKey = entry.getValue();
@@ -181,9 +181,9 @@ public class CacheInfoContainer {
         return value.contains("#i");
     }
 
-    private static boolean isInvalidParam(Class<?>[] pTypes, CacheHolder cacheHolder) {
-        Map<Integer, CacheKey> cacheKeyMap = cacheHolder.getCacheKeyMap();
-        String prefix = cacheHolder.getPrefix();
+    private static boolean isInvalidParam(Class<?>[] pTypes, AnnoHolder annoHolder) {
+        Map<Integer, CacheKey> cacheKeyMap = annoHolder.getCacheKeyMap();
+        String prefix = annoHolder.getPrefix();
 
         return (pTypes == null
                 || pTypes.length == 0
@@ -223,6 +223,6 @@ public class CacheInfoContainer {
     private static boolean isInvalidMulti(Class<?> paramType) {
         return !Collection.class.isAssignableFrom(paramType)
                 && !paramType.isArray();
-        // 永久不能放开  && !Map.class.isAssignableFrom(paramType);
     }
+
 }

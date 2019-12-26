@@ -43,7 +43,7 @@ import java.util.Set;
  * 数字工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 abstract class MemberUtils {
@@ -130,7 +130,7 @@ abstract class MemberUtils {
         }
 
         Number value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value.toString());
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -153,7 +153,7 @@ abstract class MemberUtils {
         }
 
         String value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value);
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -255,7 +255,7 @@ abstract class MemberUtils {
         }
 
         Number value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value.toString());
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -278,7 +278,7 @@ abstract class MemberUtils {
         }
 
         String value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value);
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -380,7 +380,7 @@ abstract class MemberUtils {
         }
 
         Number value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value.toString());
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -414,7 +414,7 @@ abstract class MemberUtils {
         }
 
         String value = values[0];
-        BigDecimal result = new BigDecimal(null == value ? "0" : value);
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -747,7 +747,7 @@ abstract class MemberUtils {
      * @param numberStr 数字值的字符串表现形式
      * @param scale     保留小数位数
      * @return 新值
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String roundStr(String numberStr, int scale) {
         return round(numberStr, scale).toString();
@@ -774,7 +774,7 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String roundStr(double v, int scale, RoundingMode roundingMode) {
         return round(v, scale, roundingMode).toString();
@@ -828,7 +828,7 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String roundStr(String numberStr, int scale, RoundingMode roundingMode) {
         return round(numberStr, scale, roundingMode).toString();
@@ -989,16 +989,16 @@ abstract class MemberUtils {
         boolean allowSigns = false;
         boolean foundDigit = false;
         // deal with any possible sign up front
-        int start = (chars[0] == '-') ? 1 : 0;
+        int start = (chars[0] == Symbol.C_HYPHEN) ? 1 : 0;
         if (sz > start + 1) {
-            if (chars[start] == '0' && chars[start + 1] == 'x') {
+            if (chars[start] == Symbol.C_ZERO && chars[start + 1] == 'x') {
                 int i = start + 2;
                 if (i == sz) {
                     return false; // str == "0x"
                 }
                 // checking hex (it can't be anything else)
                 for (; i < chars.length; i++) {
-                    if ((chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
+                    if ((chars[i] < Symbol.C_ZERO || chars[i] > Symbol.C_NINE) && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
                         return false;
                     }
                 }
@@ -1011,11 +1011,11 @@ abstract class MemberUtils {
         // loop to the next to last char or to the last char if we need another digit to
         // make a valid number (e.g. chars[0..5] = "1234E")
         while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
+            if (chars[i] >= Symbol.C_ZERO && chars[i] <= Symbol.C_NINE) {
                 foundDigit = true;
                 allowSigns = false;
 
-            } else if (chars[i] == '.') {
+            } else if (chars[i] == Symbol.C_DOT) {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -1032,7 +1032,7 @@ abstract class MemberUtils {
                 }
                 hasExp = true;
                 allowSigns = true;
-            } else if (chars[i] == '+' || chars[i] == '-') {
+            } else if (chars[i] == Symbol.C_PLUS || chars[i] == Symbol.C_HYPHEN) {
                 if (!allowSigns) {
                     return false;
                 }
@@ -1044,7 +1044,7 @@ abstract class MemberUtils {
             i++;
         }
         if (i < chars.length) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
+            if (chars[i] >= Symbol.C_ZERO && chars[i] <= Symbol.C_NINE) {
                 // no type qualifier, OK
                 return true;
             }
@@ -1052,7 +1052,7 @@ abstract class MemberUtils {
                 // can't have an E at the last byte
                 return false;
             }
-            if (chars[i] == '.') {
+            if (chars[i] == Symbol.C_DOT) {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -1116,7 +1116,7 @@ abstract class MemberUtils {
     public static boolean isDouble(String s) {
         try {
             Double.parseDouble(s);
-            return s.contains(".");
+            return s.contains(Symbol.DOT);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -1197,13 +1197,12 @@ abstract class MemberUtils {
         }
 
         Random ran = new Random();
-        Set<Integer> set = new HashSet<Integer>();
+        Set<Integer> set = new HashSet<>();
         while (set.size() < size) {
             set.add(begin + ran.nextInt(end - begin));
         }
 
-        Integer[] ranArr = set.toArray(new Integer[size]);
-        return ranArr;
+        return set.toArray(new Integer[size]);
     }
 
     /**
@@ -1603,7 +1602,7 @@ abstract class MemberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1774,11 +1773,11 @@ abstract class MemberUtils {
 
         // 去掉小数点儿后多余的0
         String string = number.toString();
-        if (string.indexOf('.') > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
-            while (string.endsWith("0")) {
+        if (string.indexOf(Symbol.C_DOT) > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
+            while (string.endsWith(Symbol.ZERO)) {
                 string = string.substring(0, string.length() - 1);
             }
-            if (string.endsWith(".")) {
+            if (string.endsWith(Symbol.DOT)) {
                 string = string.substring(0, string.length() - 1);
             }
         }
@@ -1849,7 +1848,7 @@ abstract class MemberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static BigInteger newBigInteger(String str) {
         str = StringUtils.trimToNull(str);
@@ -1860,7 +1859,7 @@ abstract class MemberUtils {
         int pos = 0; // 数字字符串位置
         int radix = 10;
         boolean negate = false; // 负数与否
-        if (str.startsWith("-")) {
+        if (str.startsWith(Symbol.HYPHEN)) {
             negate = true;
             pos = 1;
         }
@@ -1868,11 +1867,11 @@ abstract class MemberUtils {
             // hex
             radix = 16;
             pos += 2;
-        } else if (str.startsWith("#", pos)) {
+        } else if (str.startsWith(Symbol.SHAPE, pos)) {
             // alternative hex (allowed by Long/Integer)
             radix = 16;
             pos++;
-        } else if (str.startsWith("0", pos) && str.length() > pos + 1) {
+        } else if (str.startsWith(Symbol.ZERO, pos) && str.length() > pos + 1) {
             // octal; so long as there are additional digits
             radix = 8;
             pos++;
@@ -2067,7 +2066,7 @@ abstract class MemberUtils {
     /**
      * byte数组转int,使用大端字节序（高位字节在前,低位字节在后）
      *
-     * @param bytes
+     * @param bytes 字节
      * @return int
      */
     public static int toInt(byte[] bytes) {

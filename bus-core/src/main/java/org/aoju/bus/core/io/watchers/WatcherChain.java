@@ -36,7 +36,7 @@ import java.util.List;
  * 用于加入多个观察者
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {

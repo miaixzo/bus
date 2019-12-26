@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 月份值处理
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MonthValueParser extends SimpleValueParser {
@@ -57,7 +57,7 @@ public class MonthValueParser extends SimpleValueParser {
      *
      * @param value 别名值
      * @return 月份int值
-     * @throws InstrumentException
+     * @throws InstrumentException 异常
      */
     private int parseAlias(String value) throws InstrumentException {
         for (int i = 0; i < ALIASES.length; i++) {

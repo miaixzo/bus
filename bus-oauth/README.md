@@ -14,28 +14,28 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>5.3.6</version>
+    <version>5.3.8</version>
 </dependency>
 ```
 - 调用api
 ```java
 // 创建授权request
-Provider provider = new GiteeProvider(Context.builder()
+Provider shooting = new GiteeProvider(Context.builder()
         .clientId("clientId")
         .clientSecret("clientSecret")
         .redirectUri("redirectUri")
         .build());
 // 生成授权页面
-provider.authorize("state");
+shooting.authorize("state");
 // 授权登录后会返回code（auth_code（仅限支付宝））、state，1.8.0版本后，可以用Callback类作为回调接口的参数
 // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
-provider.login(callback);
+shooting.login(callback);
 ```
 
 ### 获取授权链接
 
 ```java
-String authorizeUrl = provider.authorize("state");
+String authorizeUrl = shooting.authorize("state");
 ```
 获取到`authorizeUrl`后，可以手动实现redirect到`authorizeUrl`上
 
@@ -45,7 +45,7 @@ String authorizeUrl = provider.authorize("state");
 ### 登录(获取用户信息)
 
 ```java
-provider.login(callback);
+shooting.login(callback);
 ```
 
 授权登录后会返回code（auth_code（仅限支付宝）、authorization_code（仅限华为））、state，1.8.0版本后，用`AuthCallback`类作为回调接口的入参
@@ -57,7 +57,7 @@ provider.login(callback);
 注：`refresh`功能，并不是每个平台都支持
 
 ```java
-provider.refresh(AccToken.builder().refreshToken(token).build());
+shooting.refresh(AccToken.builder().refreshToken(token).build());
 ```
 
 ### 取消授权
@@ -65,42 +65,42 @@ provider.refresh(AccToken.builder().refreshToken(token).build());
 注：`revoke`功能，并不是每个平台都支持
 
 ```java
-provider.revoke(AccToken.builder().accessToken(token).build());
+shooting.revoke(AccToken.builder().accessToken(token).build());
 ```
 
 #### API列表
 |  平台  |  API  |  SDK  |
 |:------:|:-------:|:-------:|
-|  gitee | [GiteeProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/GiteeProvider.java)  | <a href="https://gitee.com/api/v5/oauth_doc#list_1" target="_blank">参考文档</a> |
-|  github | [GithubProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/GithubProvider.java)  |  <a href="https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/" target="_blank">参考文档</a> |
-|  weibo| [WeiboProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/WeiboProvider.java)  |  <a href="https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6%E8%AF%B4%E6%98%8E" target="_blank">参考文档</a>  |
-|  dingtalk| [DingTalkProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/DingTalkProvider.java)  |  <a href="https://open-doc.dingtalk.com/microapp/serverapi2/kymkv6" target="_blank">参考文档</a>  |
-|  baidu| [BaiduProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/BaiduProvider.java)  |  <a href="http://developer.baidu.com/wiki/index.php?title=docs/oauth" target="_blank">参考文档</a>  |
-|  coding | [CodingProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/CodingProvider.java)  |  <a href="https://open.coding.net/open-api" target="_blank">参考文档</a> |
-|  tencentCloud | [TencentCloudProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/TencentCloudProvider.java)  |  <a href="https://dev.tencent.com/help/doc/faq/b4e5b7aee786/oauth" target="_blank">参考文档</a> |
-|  oschina| [OschinaProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/OschinaProvider.java)  |  <a href="https://www.oschina.net/openapi/docs/oauth2_authorize" target="_blank">参考文档</a> |
-|  alipay| [AlipayProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/AlipayProvider.java)  |  <a href="https://alipay.open.taobao.com/docs/doc.htm?spm=a219a.7629140.0.0.336d4b70GUKXOl&treeId=193&articleId=105809&docType=1" target="_blank">参考文档</a> |
-|  qq| [QqProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/QqProvider.java)  |  <a href="https://wiki.connect.qq.com/%E4%BD%BF%E7%94%A8authorization_code%E8%8E%B7%E5%8F%96access_token" target="_blank">参考文档</a>  |
-|  wechat| [WeChatProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/WeChatProvider.java)   |  <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN" target="_blank">参考文档</a>  |
-|  taobao| [TaobaoProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/TaobaoProvider.java)   |  <a href="https://open.taobao.com/doc.htm?spm=a219a.7386797.0.0.4e00669acnkQy6&source=search&docId=105590&docType=1" target="_blank">参考文档</a>  |
-|  google| [GoogleProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/GoogleProvider.java)   |  <a href="https://developers.google.com/identity/protocols/OpenIDConnect" target="_blank">参考文档</a>  |
-|  facebook| [FacebookProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/FacebookProvider.java)   |  <a href="https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow" target="_blank">参考文档</a>  |
-|  douyin| [DouyinProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/DouyinProvider.java)   |  <a href="https://www.douyin.com/platform/doc/m-2-1-1" target="_blank">参考文档</a>  |
-|  linkedin| [LinkedinProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/LinkedinProvider.java)   |  <a href="https://docs.microsoft.com/zh-cn/linkedin/shared/authentication/authorization-code-flow?context=linkedin/context" target="_blank">参考文档</a>  |
-|  microsoft| [MicrosoftProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/MicrosoftProvider.java) | <a href="https://docs.microsoft.com/zh-cn/graph/" target="_blank">参考文档</a> |
-|  mi| [MiProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/MiProvider.java) | <a href="https://dev.mi.com/console/doc/detail?pId=711" target="_blank">参考文档</a> |
-|  toutiao| [ToutiaoProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/ToutiaoProvider.java) | <a href="https://open.mp.toutiao.com/#/resource?_k=y7mfgk" target="_blank">参考文档</a> |
-|  teambition| [TeambitionProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/TeambitionProvider.java) | <a href="https://docs.teambition.com/" target="_blank">参考文档</a> |
-|  renren| [RenrenProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/RenrenProvider.java) | <a href="http://open.renren.com/wiki/OAuth2.0" target="_blank">参考文档</a> |
-|  pinterest| [PinterestProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/PinterestProvider.java) | <a href="https://developers.pinterest.com/docs/api/overview" target="_blank">参考文档</a> |
-|  stackoverflow| [StackOverflowProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/StackOverflowProvider.java) | <a href="https://api.stackexchange.com/docs/authentication" target="_blank">参考文档</a> |
-|  huawei| [HuaweiProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/HuaweiProvider.java) | <a href="https://developer.huawei.com/consumer/cn/devservice/doc/30101" target="_blank">参考文档</a> |
-|  wechat| [WeChatEEProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/WeChatEEProvider.java) | <a href="https://open.work.weixin.qq.com/api/doc#90000/90135/90664" target="_blank">参考文档</a> |
-|  kujiale| [KujialeProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/KujialeProvider.java)  |  <a href="https://open.kujiale.com/open/apps/2/docs?doc_id=95" target="_blank">参考文档</a> |
-|  gitlab| [GitlabProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/GitlabProvider.java)  |  <a href="https://docs.gitlab.com/ee/api/oauth2.html" target="_blank">参考文档</a> |
-|  meituan| [MeituanProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/MeituanProvider.java)  |  <a href="http://open.waimai.meituan.com/openapi_docs/oauth/" target="_blank">参考文档</a> |
-|  eleme| [ElemeProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/ElemeProvider.java)  |  <a href="https://open.shop.ele.me/openapi/documents/khd001" target="_blank">参考文档</a> |
-|  csdn| [CsdnProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/CsdnProvider.java)  |  无 |
+|  gitee | [GiteeProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/GiteeProvider.java)  | <a href="https://gitee.com/api/v5/oauth_doc#list_1" target="_blank">参考文档</a> |
+|  github | [GithubProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/GithubProvider.java)  |  <a href="https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/" target="_blank">参考文档</a> |
+|  weibo| [WeiboProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/WeiboProvider.java)  |  <a href="https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6%E8%AF%B4%E6%98%8E" target="_blank">参考文档</a>  |
+|  dingtalk| [DingTalkProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/DingTalkProvider.java)  |  <a href="https://open-doc.dingtalk.com/microapp/serverapi2/kymkv6" target="_blank">参考文档</a>  |
+|  baidu| [BaiduProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/BaiduProvider.java)  |  <a href="http://developer.baidu.com/wiki/index.php?title=docs/oauth" target="_blank">参考文档</a>  |
+|  coding | [CodingProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/CodingProvider.java)  |  <a href="https://open.coding.net/open-api" target="_blank">参考文档</a> |
+|  tencentCloud | [TencentCloudProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/TencentCloudProvider.java)  |  <a href="https://dev.tencent.com/help/doc/faq/b4e5b7aee786/oauth" target="_blank">参考文档</a> |
+|  oschina| [OschinaProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/OschinaProvider.java)  |  <a href="https://www.oschina.net/openapi/docs/oauth2_authorize" target="_blank">参考文档</a> |
+|  alipay| [AlipayProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/AlipayProvider.java)  |  <a href="https://alipay.open.taobao.com/docs/doc.htm?spm=a219a.7629140.0.0.336d4b70GUKXOl&treeId=193&articleId=105809&docType=1" target="_blank">参考文档</a> |
+|  qq| [QqProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/QqProvider.java)  |  <a href="https://wiki.connect.qq.com/%E4%BD%BF%E7%94%A8authorization_code%E8%8E%B7%E5%8F%96access_token" target="_blank">参考文档</a>  |
+|  wechat| [WeChatProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/WeChatProvider.java)   |  <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN" target="_blank">参考文档</a>  |
+|  taobao| [TaobaoProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/TaobaoProvider.java)   |  <a href="https://open.taobao.com/doc.htm?spm=a219a.7386797.0.0.4e00669acnkQy6&source=search&docId=105590&docType=1" target="_blank">参考文档</a>  |
+|  google| [GoogleProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/GoogleProvider.java)   |  <a href="https://developers.google.com/identity/protocols/OpenIDConnect" target="_blank">参考文档</a>  |
+|  facebook| [FacebookProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/FacebookProvider.java)   |  <a href="https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow" target="_blank">参考文档</a>  |
+|  douyin| [DouyinProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/DouyinProvider.java)   |  <a href="https://www.douyin.com/platform/doc/m-2-1-1" target="_blank">参考文档</a>  |
+|  linkedin| [LinkedinProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/LinkedinProvider.java)   |  <a href="https://docs.microsoft.com/zh-cn/linkedin/shared/authentication/authorization-code-flow?context=linkedin/context" target="_blank">参考文档</a>  |
+|  microsoft| [MicrosoftProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/MicrosoftProvider.java) | <a href="https://docs.microsoft.com/zh-cn/graph/" target="_blank">参考文档</a> |
+|  mi| [MiProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/MiProvider.java) | <a href="https://dev.mi.com/console/doc/detail?pId=711" target="_blank">参考文档</a> |
+|  toutiao| [ToutiaoProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/ToutiaoProvider.java) | <a href="https://open.mp.toutiao.com/#/resource?_k=y7mfgk" target="_blank">参考文档</a> |
+|  teambition| [TeambitionProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/TeambitionProvider.java) | <a href="https://docs.teambition.com/" target="_blank">参考文档</a> |
+|  renren| [RenrenProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/RenrenProvider.java) | <a href="http://open.renren.com/wiki/OAuth2.0" target="_blank">参考文档</a> |
+|  pinterest| [PinterestProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/PinterestProvider.java) | <a href="https://developers.pinterest.com/docs/api/overview" target="_blank">参考文档</a> |
+|  stackoverflow| [StackOverflowProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/StackOverflowProvider.java) | <a href="https://api.stackexchange.com/docs/authentication" target="_blank">参考文档</a> |
+|  huawei| [HuaweiProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/HuaweiProvider.java) | <a href="https://developer.huawei.com/consumer/cn/devservice/doc/30101" target="_blank">参考文档</a> |
+|  wechat| [WeChatEEProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/WeChatEEProvider.java) | <a href="https://open.work.weixin.qq.com/api/doc#90000/90135/90664" target="_blank">参考文档</a> |
+|  kujiale| [KujialeProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/KujialeProvider.java)  |  <a href="https://open.kujiale.com/open/apps/2/docs?doc_id=95" target="_blank">参考文档</a> |
+|  gitlab| [GitlabProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/GitlabProvider.java)  |  <a href="https://docs.gitlab.com/ee/api/oauth2.html" target="_blank">参考文档</a> |
+|  meituan| [MeituanProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/MeituanProvider.java)  |  <a href="http://open.waimai.meituan.com/openapi_docs/oauth/" target="_blank">参考文档</a> |
+|  eleme| [ElemeProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/ElemeProvider.java)  |  <a href="https://open.shop.ele.me/openapi/documents/khd001" target="_blank">参考文档</a> |
+|  csdn| [CsdnProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/shooting/CsdnProvider.java)  |  无 |
 
 _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经下线。如果以前申请过的应用，可以继续使用，但是不再支持申请新的应用, 本项目中的CSDN登录只能针对少部分用户使用了
 

@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PerfCounterHandler {
@@ -54,12 +54,7 @@ public class PerfCounterHandler {
         // Set up hook to close all queries on shutdown
         // User is expected to release all queries so this should only be a
         // backup
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                removeAllCounters();
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> removeAllCounters()));
     }
 
     /**

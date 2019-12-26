@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.software;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 /**
@@ -32,7 +33,7 @@ import org.aoju.bus.logger.Logger;
  * execution that execute instructions concurrently.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class OSProcess {
@@ -661,7 +662,7 @@ public class OSProcess {
         StringBuilder builder = new StringBuilder("OSProcess@");
         builder.append(Integer.toHexString(hashCode()));
         builder.append("[processID=").append(this.processID);
-        builder.append(", name=").append(this.name).append(']');
+        builder.append(", name=").append(this.name).append(Symbol.C_BRACKET_RIGHT);
         return builder.toString();
     }
 

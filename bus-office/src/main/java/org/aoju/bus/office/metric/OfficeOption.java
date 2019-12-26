@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.office.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.util.List;
@@ -31,7 +32,7 @@ import java.util.List;
  * 包含有关正在使用的office的基本信息.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class OfficeOption {
@@ -67,7 +68,7 @@ public final class OfficeOption {
         }
 
         if (productLine != null) {
-            final String[] parts = productLine.split(" ");
+            final String[] parts = productLine.split(Symbol.SPACE);
             if (parts.length > 0) {
                 desc.product = parts[0];
             }

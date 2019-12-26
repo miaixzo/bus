@@ -23,36 +23,36 @@
  */
 package org.aoju.bus.office.bridge;
 
-import org.aoju.bus.http.HttpClient;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.office.metric.RequestBuilder;
 
 /**
  * 保存与LibreOffice在线服务器通信的请求配置.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class OnlineOfficeBridgeFactory implements OnlineOfficeContextAware {
 
-    private final HttpClient httpClient;
+    private final Httpx httpx;
     private final RequestBuilder requestBuilder;
 
     /**
      * 使用指定的客户端和URL构造新连接.
      *
-     * @param httpClient     用于与LibreOffice在线服务器通信的HTTP客户机(已初始化).
+     * @param httpx          用于与LibreOffice在线服务器通信的HTTP客户机(已初始化).
      * @param requestBuilder 转换的请求配置.
      */
-    public OnlineOfficeBridgeFactory(final HttpClient httpClient,
+    public OnlineOfficeBridgeFactory(final Httpx httpx,
                                      final RequestBuilder requestBuilder) {
-        this.httpClient = httpClient;
+        this.httpx = httpx;
         this.requestBuilder = requestBuilder;
     }
 
     @Override
-    public HttpClient getHttpClient() {
-        return httpClient;
+    public Httpx getHttp() {
+        return httpx;
     }
 
     @Override

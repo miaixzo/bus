@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.sensitive.strategy;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -31,7 +32,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 默认脱敏处理类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class DafaultStrategy extends AbstractProvider {
@@ -44,7 +45,7 @@ public class DafaultStrategy extends AbstractProvider {
 
         final int SIZE = 6;
         final int TWO = 2;
-        final String SYMBOL = "*";
+        final String SYMBOL = Symbol.STAR;
 
         String value = object.toString();
 

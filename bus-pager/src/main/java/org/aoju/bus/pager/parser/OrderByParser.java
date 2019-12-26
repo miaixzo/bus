@@ -26,6 +26,7 @@ package org.aoju.bus.pager.parser;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.pager.PageException;
 
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.List;
  * 处理 Order by
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class OrderByParser {
@@ -54,7 +55,7 @@ public class OrderByParser {
             //处理body-去最外层order by
             List<OrderByElement> orderByElements = extraOrderBy(selectBody);
             String defaultOrderBy = PlainSelect.orderByToString(orderByElements);
-            if (defaultOrderBy.indexOf('?') != -1) {
+            if (defaultOrderBy.indexOf(Symbol.C_QUESTION_MARK) != -1) {
                 throw new PageException("原SQL[" + sql + "]中的order by包含参数,因此不能使用OrderBy插件进行修改!");
             }
             //新的sql
