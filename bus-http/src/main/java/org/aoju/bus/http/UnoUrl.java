@@ -896,8 +896,7 @@ public final class UnoUrl {
         }
 
         private static String canonicalizeHost(String input, int pos, int limit) {
-            String percentDecoded = percentDecode(input, pos, limit, false);
-            return org.aoju.bus.http.Builder.canonicalizeHost(percentDecoded);
+            return org.aoju.bus.http.Builder.canonicalizeHost(percentDecode(input, pos, limit, false));
         }
 
         private static int parsePort(String input, int pos, int limit) {
@@ -1228,10 +1227,10 @@ public final class UnoUrl {
 
             int schemeDelimiterOffset = schemeDelimiterOffset(input, pos, limit);
             if (schemeDelimiterOffset != -1) {
-                if (input.regionMatches(true, pos, Http.HTTPS, 0, 6)) {
+                if (input.regionMatches(true, pos, Http.HTTPS + Symbol.COLON, 0, 6)) {
                     this.scheme = Http.HTTPS;
-                    pos += (Http.HTTP + Symbol.COLON).length();
-                } else if (input.regionMatches(true, pos, Http.HTTP, 0, 5)) {
+                    pos += (Http.HTTPS + Symbol.COLON).length();
+                } else if (input.regionMatches(true, pos, Http.HTTP + Symbol.COLON, 0, 5)) {
                     this.scheme = Http.HTTP;
                     pos += (Http.HTTP + Symbol.COLON).length();
                 } else {

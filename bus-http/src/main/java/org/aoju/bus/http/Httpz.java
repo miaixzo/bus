@@ -41,9 +41,9 @@ import java.security.SecureRandom;
  */
 public class Httpz {
 
-    private static Httpd httpd;
+    private static Client client = new Client(getDefaultOkHttpClient());
 
-    static {
+    private static Httpd getDefaultOkHttpClient() {
         Httpd.Builder builder = new Httpd().newBuilder();
         final X509TrustManager trustManager = new org.aoju.bus.http.secure.X509TrustManager();
         SSLSocketFactory sslSocketFactory = null;
@@ -54,7 +54,7 @@ public class Httpz {
         } catch (Exception e) {
             Logger.error(e.getMessage(), e);
         }
-        httpd = builder.sslSocketFactory(sslSocketFactory, trustManager).hostnameVerifier(new HostnameVerifier() {
+        return builder.sslSocketFactory(sslSocketFactory, trustManager).hostnameVerifier(new HostnameVerifier() {
             @Override
             public boolean verify(String hostname, SSLSession session) {
                 return true;
@@ -62,28 +62,62 @@ public class Httpz {
         }).build();
     }
 
-    public Httpz(Httpd httpd) {
-        this.httpd = httpd;
-    }
-
     public static HttpBuilder newBuilder() {
-        return new HttpBuilder(httpd);
+        return new HttpBuilder(client.getHttpd());
     }
 
-    public static HttpBuilder newBuilder(Httpd httpd) {
-        return new HttpBuilder(httpd);
+    public static HttpBuilder newBuilder(Httpd client) {
+        return new HttpBuilder(client);
     }
 
-    public GetBuilder get() {
-        return new GetBuilder(httpd);
+    public static GetBuilder get() {
+        return client.get();
     }
 
-    public PostBuilder post() {
-        return new PostBuilder(httpd);
+    public static PostBuilder post() {
+        return client.post();
     }
 
-    public PutBuilder put() {
-        return new PutBuilder(httpd);
+    public static PutBuilder put() {
+        return client.put();
+    }
+
+    public static Client getClient() {
+        return client;
+    }
+
+    public static void setClient(Client httpClient) {
+        Httpz.client = httpClient;
+    }
+
+    public static class Client {
+
+        private Httpd httpd;
+
+        public Client(Httpd httpd) {
+            this.httpd = httpd;
+        }
+
+        public GetBuilder get() {
+            return new GetBuilder(httpd);
+        }
+
+        public PostBuilder post() {
+            return new PostBuilder(httpd);
+        }
+
+        public PutBuilder put() {
+            return new PutBuilder(httpd);
+        }
+
+        public Httpd getHttpd() {
+            return httpd;
+        }
+
+        public void setHttpd(Httpd httpd) {
+            this.httpd = httpd;
+        }
+
     }
 
 }

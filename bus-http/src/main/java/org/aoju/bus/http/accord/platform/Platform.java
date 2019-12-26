@@ -236,7 +236,7 @@ public class Platform {
      * @return 返回一个对象
      */
     public Object getStackTraceForCloseable(String closer) {
-        if (Logger.get().isEnabled(Level.FINE)) {
+        if (Logger.get().isEnabled(Level.DEBUG)) {
             return new Throwable(closer);
         }
         return null;
@@ -245,7 +245,7 @@ public class Platform {
     public void logCloseableLeak(String message, Object stackTrace) {
         if (stackTrace == null) {
             message += " To see where this was allocated, set the Httpd logger level to FINE: "
-                    + "Logger.getLogger(Httpd.class.getName()).setLevel(Level.FINE);";
+                    + "Logger.getLogger(Httpd.class.getName()).setLevel(Level.DEBUG);";
         }
         log(WARN, message, (Throwable) stackTrace);
     }

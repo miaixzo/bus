@@ -31,6 +31,7 @@ package org.aoju.bus.logger.level;
  * @since JDK 1.8+
  */
 public enum Level {
+
     /**
      * 'ALL' log level.
      */
@@ -59,10 +60,6 @@ public enum Level {
      * 'FATAL' log level.
      */
     FATAL,
-    /**
-     * 'FINE' log level.
-     */
-    FINE,
     /**
      * 'OFF' log.
      */

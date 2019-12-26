@@ -25,6 +25,7 @@ package org.aoju.bus.http.magic;
 
 import org.aoju.bus.http.DnsX;
 import org.aoju.bus.http.Httpd;
+import org.aoju.bus.http.Httpz;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.accord.ConnectionPool;
 import org.aoju.bus.http.accord.ConnectionSuite;
@@ -211,6 +212,10 @@ public class HttpBuilder {
                     }
                 });
         return this;
+    }
+
+    public Httpz.Client build() {
+        return new Httpz.Client(builder.build());
     }
 
 }

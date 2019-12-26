@@ -1,6 +1,7 @@
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.models.*;
+import org.aoju.bus.logger.Logger;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -40,7 +41,7 @@ public class GroupApi extends AbstractApi {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            GitLabApi.getLogger().warning("Fetching all groups from " + url +
+            Logger.warn("Fetching all groups from " + url +
                     " may take many minutes to complete, use Pager<Group> getGroups(int) instead.");
         }
 
