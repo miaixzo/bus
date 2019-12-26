@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.starter.sensitive;
 
-import org.aoju.bus.base.spring.BaseAdvice;
+import org.aoju.bus.base.advice.BaseAdvice;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
