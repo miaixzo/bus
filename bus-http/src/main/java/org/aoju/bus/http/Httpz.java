@@ -41,9 +41,9 @@ import java.security.SecureRandom;
  */
 public class Httpz {
 
-    private static Client client = new Client(getDefaultOkHttpClient());
+    private static Client client = new Client(geHtttpd());
 
-    private static Httpd getDefaultOkHttpClient() {
+    private static Httpd geHtttpd() {
         Httpd.Builder builder = new Httpd().newBuilder();
         final X509TrustManager trustManager = new org.aoju.bus.http.secure.X509TrustManager();
         SSLSocketFactory sslSocketFactory = null;
