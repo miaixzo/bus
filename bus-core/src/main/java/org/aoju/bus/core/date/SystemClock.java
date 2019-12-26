@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * 后台定时更新时钟,JVM退出时,线程自动回收
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SystemClock {
@@ -51,11 +51,6 @@ public class SystemClock {
      */
     private volatile long now;
 
-    /**
-     * 构造
-     *
-     * @param period
-     */
     private SystemClock(long period) {
         this.period = period;
         this.now = System.currentTimeMillis();
@@ -89,20 +84,12 @@ public class SystemClock {
      * 开启计时器线程
      */
     private void scheduleClockUpdating() {
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable runnable) {
-                Thread thread = new Thread(runnable, "System Clock");
-                thread.setDaemon(true);
-                return thread;
-            }
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
+            Thread thread = new Thread(runnable, "System Clock");
+            thread.setDaemon(true);
+            return thread;
         });
-        scheduler.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                now = System.currentTimeMillis();
-            }
-        }, period, period, TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(() -> now = System.currentTimeMillis(), period, period, TimeUnit.MILLISECONDS);
     }
 
     /**

@@ -8,7 +8,7 @@ import java.util.*;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ListValueMap<K, V> extends CollectionValueMap<K, V> {
@@ -56,7 +56,7 @@ public class ListValueMap<K, V> extends CollectionValueMap<K, V> {
      * @param loadFactor      加载因子
      */
     public ListValueMap(int initialCapacity, float loadFactor) {
-        super(new HashMap<K, Collection<V>>(initialCapacity, loadFactor));
+        super(new HashMap<>(initialCapacity, loadFactor));
     }
 
     @Override

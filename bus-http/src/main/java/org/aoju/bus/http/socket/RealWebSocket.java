@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
@@ -171,15 +171,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         random.nextBytes(nonce);
         this.key = ByteString.of(nonce).base64();
 
-        this.writerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (writeOneFrame()) {
-                    }
-                } catch (IOException e) {
-                    failWebSocket(e, null);
+        this.writerRunnable = () -> {
+            try {
+                while (writeOneFrame()) {
                 }
+            } catch (IOException e) {
+                failWebSocket(e, null);
             }
         };
     }
@@ -274,7 +271,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
-    public void initReaderAndWriter(String name, Streams streams) throws IOException {
+    public void initReaderAndWriter(String name, Streams streams) {
         synchronized (this) {
             this.streams = streams;
             this.writer = new WebSocketWriter(streams.client, streams.sink, random);
@@ -333,12 +330,12 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
     }
 
     @Override
-    public void onReadMessage(String text) throws IOException {
+    public void onReadMessage(String text) {
         listener.onMessage(this, text);
     }
 
     @Override
-    public void onReadMessage(ByteString bytes) throws IOException {
+    public void onReadMessage(ByteString bytes) {
         listener.onMessage(this, bytes);
     }
 

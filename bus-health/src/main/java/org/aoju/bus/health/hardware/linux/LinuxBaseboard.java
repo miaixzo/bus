@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * Baseboard data obtained by sysfs
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class LinuxBaseboard extends AbstractBaseboard {
@@ -71,7 +71,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String queryManufacturer() {
-        String result = null;
+        String result;
         if ((result = queryManufacturerFromSysfs()) == null && (result = queryProcCpu().manufacturer) == null) {
             return Builder.UNKNOWN;
         }
@@ -79,7 +79,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String queryModel() {
-        String result = null;
+        String result;
         if ((result = queryModelFromSysfs()) == null && (result = queryProcCpu().model) == null) {
             return Builder.UNKNOWN;
         }
@@ -87,7 +87,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String queryVersion() {
-        String result = null;
+        String result;
         if ((result = queryVersionFromSysfs()) == null && (result = queryProcCpu().version) == null) {
             return Builder.UNKNOWN;
         }
@@ -95,7 +95,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
     }
 
     private String querySerialNumber() {
-        String result = null;
+        String result;
         if ((result = querySerialFromSysfs()) == null && (result = queryProcCpu().serialNumber) == null) {
             return Builder.UNKNOWN;
         }

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class KeyGenerator {
@@ -110,8 +110,8 @@ public class KeyGenerator {
     /**
      * 将标记为`multi`的参数转成`Collection`实例
      *
-     * @param multiArg
-     * @return
+     * @param multiArg the object
+     * @return the collection
      */
     private static Collection getMultiArgEntries(Object multiArg) {
         if (multiArg == null) {

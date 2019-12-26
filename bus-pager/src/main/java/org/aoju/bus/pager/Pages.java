@@ -34,7 +34,7 @@ import java.util.List;
  * 新增分页的多项属性
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Pages<T> extends PageSerializable<T> {
@@ -135,11 +135,11 @@ public class Pages<T> extends PageSerializable<T> {
     }
 
     public static <T> Pages<T> of(List<T> list) {
-        return new Pages<T>(list);
+        return new Pages<>(list);
     }
 
     public static <T> Pages<T> of(List<T> list, int navigatePages) {
-        return new Pages<T>(list, navigatePages);
+        return new Pages<>(list, navigatePages);
     }
 
     /**

@@ -38,7 +38,7 @@ import java.util.*;
  * A CPU
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SolarisCentralProcessor extends AbstractCentralProcessor {
@@ -214,15 +214,6 @@ public class SolarisCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
-    /**
-     * Fetches the ProcessorID by encoding the stepping, model, family, and feature
-     * flags.
-     *
-     * @param stepping
-     * @param model
-     * @param family
-     * @return The Processor ID string
-     */
     private String getProcessorID(String stepping, String model, String family) {
         List<String> isainfo = Command.runNative("isainfo -v");
         StringBuilder flags = new StringBuilder();

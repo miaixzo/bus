@@ -52,7 +52,7 @@ import java.util.concurrent.*;
  * 到远程对等点的套接字连接。连接主机可以发送和接收数据流.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Http2Connection implements Closeable {
@@ -63,7 +63,7 @@ public final class Http2Connection implements Closeable {
      * 共享执行程序来发送传入流的通知。这个执行器需要多个线程，因为侦听器不需要立即返回.
      */
     private static final ExecutorService listenerExecutor = new ThreadPoolExecutor(0,
-            Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+            Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new SynchronousQueue<>(),
             org.aoju.bus.http.Builder.threadFactory("Httpd Http2Connection", true));
 
     /**
@@ -141,7 +141,7 @@ public final class Http2Connection implements Closeable {
         }
 
         pushExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(),
+                new LinkedBlockingQueue<>(),
                 org.aoju.bus.http.Builder.threadFactory(StringUtils.format("Httpd %s Push Observer", hostname), true));
         peerSettings.set(Http.INITIAL_WINDOW_SIZE, Http.DEFAULT_INITIAL_WINDOW_SIZE);
         peerSettings.set(Http.MAX_FRAME_SIZE, Http2.INITIAL_MAX_FRAME_SIZE);

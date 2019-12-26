@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -81,7 +81,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
      *
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public ExcelWriter() {
         this(false);
@@ -93,7 +93,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 若写出到文件,需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx 是否为xlsx格式
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public ExcelWriter(boolean isXlsx) {
         this(BookUtils.createBook(isXlsx), null);
@@ -379,7 +379,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      *
      * @param headerAlias 标题别名
      * @return this
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public ExcelWriter setHeaderAlias(Map<String, String> headerAlias) {
         this.headerAlias = headerAlias;
@@ -638,7 +638,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 map = new TreeMap<>(comparator);
                 map.putAll((Map) obj);
             } else {
-                map = BeanUtils.beanToMap(obj, new TreeMap<String, Object>(comparator), false, false);
+                map = BeanUtils.beanToMap(obj, new TreeMap<>(comparator), false, false);
             }
             writeRow(map, isFirstRow);
             if (isFirstRow) {
@@ -691,10 +691,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             }
         } else if (BeanUtils.isBean(rowBean.getClass())) {
             if (MapUtils.isEmpty(this.headerAlias)) {
-                rowMap = BeanUtils.beanToMap(rowBean, new LinkedHashMap<String, Object>(), false, false);
+                rowMap = BeanUtils.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
             } else {
                 // 别名存在情况下按照别名的添加顺序排序Bean数据
-                rowMap = BeanUtils.beanToMap(rowBean, new TreeMap<String, Object>(getInitedAliasComparator()), false, false);
+                rowMap = BeanUtils.beanToMap(rowBean, new TreeMap<>(getInitedAliasComparator()), false, false);
             }
         } else {
             // 其它转为字符串默认输出

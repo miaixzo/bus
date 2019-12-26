@@ -36,7 +36,7 @@ import java.security.SecureRandom;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Httpz {
@@ -54,12 +54,7 @@ public class Httpz {
         } catch (Exception e) {
             Logger.error(e.getMessage(), e);
         }
-        return builder.sslSocketFactory(sslSocketFactory, trustManager).hostnameVerifier(new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        }).build();
+        return builder.sslSocketFactory(sslSocketFactory, trustManager).hostnameVerifier((hostname, session) -> true).build();
     }
 
     public static HttpBuilder newBuilder() {

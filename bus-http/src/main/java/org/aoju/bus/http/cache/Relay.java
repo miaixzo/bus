@@ -37,7 +37,7 @@ import java.io.RandomAccessFile;
  * 这个类保留一个最近从上游读取的字节的小缓冲区。减少文件I/O和数据复制
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class Relay {
@@ -121,7 +121,7 @@ final class Relay {
     }
 
     /**
-     * 创建一个从{@code文件}读取记录流的中继
+     * 创建一个从{@code file}读取记录流的中继
      *
      * @param file 文件信息
      * @return the relay

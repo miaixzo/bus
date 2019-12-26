@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * 这个类不支持cookies上的附加属性，比如Chromium的Priority=HIGH extension
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Cookie {
@@ -494,7 +494,7 @@ public final class Cookie {
         String value;
         long expiresAt = org.aoju.bus.http.Builder.MAX_DATE;
         /**
-         * 设置此cookie的域模式。cookie将匹配{@code域}及其所有子域
+         * 设置此cookie的域模式。cookie将匹配{@code domain}及其所有子域
          */
         String domain;
         String path = Symbol.SLASH;

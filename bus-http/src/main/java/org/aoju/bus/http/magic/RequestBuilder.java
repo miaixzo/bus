@@ -33,7 +33,7 @@ import java.util.Map;
  * 请求参数构造器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 
@@ -76,9 +76,7 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
 
     public T addHeaders(Map<String, String> headers) {
         if (headers != null) {
-            headers.forEach((k, v) -> {
-                this.headers.put(k, v);
-            });
+            headers.forEach((k, v) -> this.headers.put(k, v));
         }
         return (T) this;
     }
@@ -102,18 +100,14 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
         if (paramMap == null) {
             return (T) this;
         }
-        paramMap.forEach((k, v) -> {
-            params.put(k, v);
-        });
+        paramMap.forEach((k, v) -> params.put(k, v));
         return (T) this;
     }
 
     public T addParams(Object obj) {
         if (obj != null) {
             Map<String, Object> map = ClassUtils.beanToMap(obj);
-            map.forEach((key, val) -> {
-                addParams(key, (String) val);
-            });
+            map.forEach((key, val) -> addParams(key, (String) val));
         }
         return (T) this;
     }

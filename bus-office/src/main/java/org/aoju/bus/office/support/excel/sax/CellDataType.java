@@ -27,7 +27,7 @@ package org.aoju.bus.office.support.excel.sax;
  * 单元格数据类型枚举
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public enum CellDataType {
@@ -74,7 +74,7 @@ public enum CellDataType {
      *
      * @param name 类型属性值
      */
-    private CellDataType(String name) {
+    CellDataType(String name) {
         this.name = name;
     }
 

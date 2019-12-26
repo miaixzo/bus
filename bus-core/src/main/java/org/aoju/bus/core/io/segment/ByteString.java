@@ -44,7 +44,7 @@ import java.util.Arrays;
  * 不可变的字节序列.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ByteString implements Serializable, Comparable<ByteString> {

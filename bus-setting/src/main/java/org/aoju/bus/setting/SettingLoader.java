@@ -46,7 +46,7 @@ import java.util.Set;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SettingLoader {
@@ -192,8 +192,6 @@ public class SettingLoader {
         try {
             writer = FileUtils.getPrintWriter(absolutePath, charset, false);
             store(writer);
-        } catch (IOException e) {
-            throw new InstrumentException("Store Setting to [{}] error!", absolutePath);
         } finally {
             IoUtils.close(writer);
         }
@@ -203,9 +201,8 @@ public class SettingLoader {
      * 存储到Writer
      *
      * @param writer Writer
-     * @throws IOException IO异常
      */
-    private void store(PrintWriter writer) throws IOException {
+    private void store(PrintWriter writer) {
         for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupedMap.entrySet()) {
             writer.println(StringUtils.format("{}{}{}", Symbol.BRACKET_LEFT, groupEntry.getKey(), Symbol.BRACKET_RIGHT));
             for (Entry<String, String> entry : groupEntry.getValue().entrySet()) {
@@ -223,7 +220,7 @@ public class SettingLoader {
      */
     private String replaceVar(String group, String value) {
         // 找到所有变量标识
-        final Set<String> vars = PatternUtils.findAll(reg_var, value, 0, new HashSet<String>());
+        final Set<String> vars = PatternUtils.findAll(reg_var, value, 0, new HashSet<>());
         String key;
         for (String var : vars) {
             key = PatternUtils.get(reg_var, var, 1);

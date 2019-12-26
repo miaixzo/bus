@@ -30,7 +30,7 @@ import java.util.Collection;
  * 过滤器工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class Filters {
@@ -38,20 +38,12 @@ public abstract class Filters {
     /**
      * 永远返回true的过滤器
      */
-    public static final Filter ALWAYS = new Filter() {
-        public boolean filtrate(String name, URL url) {
-            return true;
-        }
-    };
+    public static final Filter ALWAYS = (name, url) -> true;
 
     /**
      * 永远返回false的过滤器
      */
-    public static final Filter NEVER = new Filter() {
-        public boolean filtrate(String name, URL url) {
-            return false;
-        }
-    };
+    public static final Filter NEVER = (name, url) -> false;
 
     /**
      * 创建多个子过滤器AND连接的混合过滤器

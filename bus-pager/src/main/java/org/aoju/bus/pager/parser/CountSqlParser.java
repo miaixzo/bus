@@ -39,7 +39,7 @@ import java.util.*;
  * sql解析类,提供更智能的count查询sql
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CountSqlParser {
@@ -49,7 +49,7 @@ public class CountSqlParser {
     /**
      * 聚合函数,以下列函数开头的都认为是聚合函数
      */
-    private static final Set<String> AGGREGATE_FUNCTIONS = new HashSet<String>(Arrays.asList(
+    private static final Set<String> AGGREGATE_FUNCTIONS = new HashSet<>(Arrays.asList(
             ("APPROX_COUNT_DISTINCT," +
                     "ARRAY_AGG," +
                     "AVG," +
@@ -136,9 +136,9 @@ public class CountSqlParser {
     }
 
     //<editor-fold desc="聚合函数">
-    private final Set<String> skipFunctions = Collections.synchronizedSet(new HashSet<String>());
+    private final Set<String> skipFunctions = Collections.synchronizedSet(new HashSet<>());
     //</editor-fold>
-    private final Set<String> falseFunctions = Collections.synchronizedSet(new HashSet<String>());
+    private final Set<String> falseFunctions = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * 添加到聚合函数,可以是逗号隔开的多个函数前缀
@@ -237,7 +237,7 @@ public class CountSqlParser {
     public void sqlToCount(Select select, String name) {
         SelectBody selectBody = select.getSelectBody();
         // 是否能简化count查询
-        List<SelectItem> COUNT_ITEM = new ArrayList<SelectItem>();
+        List<SelectItem> COUNT_ITEM = new ArrayList<>();
         COUNT_ITEM.add(new SelectExpressionItem(new Column("count(" + name + ")")));
         if (selectBody instanceof PlainSelect && isSimpleCount((PlainSelect) selectBody)) {
             ((PlainSelect) selectBody).setSelectItems(COUNT_ITEM);

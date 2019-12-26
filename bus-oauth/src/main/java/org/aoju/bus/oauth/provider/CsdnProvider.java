@@ -37,7 +37,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * CSDN登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CsdnProvider extends DefaultProvider {

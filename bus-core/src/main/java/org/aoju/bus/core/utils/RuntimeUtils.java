@@ -22,7 +22,7 @@ import java.util.Map;
  * 用于执行系统命令的工具
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class RuntimeUtils {
@@ -166,7 +166,7 @@ public class RuntimeUtils {
         InputStream in = null;
         try {
             in = process.getInputStream();
-            return IoUtils.readLines(in, charset, new ArrayList<String>());
+            return IoUtils.readLines(in, charset, new ArrayList<>());
         } finally {
             IoUtils.close(in);
             destroy(process);
@@ -561,7 +561,7 @@ public class RuntimeUtils {
      * @return 异常链中所有异常集合
      */
     public static List<Throwable> getThrowableList(Throwable throwable) {
-        final List<Throwable> list = new ArrayList<Throwable>();
+        final List<Throwable> list = new ArrayList<>();
         while (throwable != null && false == list.contains(throwable)) {
             list.add(throwable);
             throwable = throwable.getCause();

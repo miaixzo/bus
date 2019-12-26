@@ -31,7 +31,7 @@ import java.util.concurrent.*;
  * {@link ThreadPoolExecutor} 建造者
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
@@ -67,7 +67,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
             workQueue = builder.workQueue;
         } else {
             //corePoolSize为0则要使用SynchronousQueue避免无限阻塞
-            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<Runnable>() : new LinkedBlockingQueue<Runnable>();
+            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>();
         }
         final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
         final RejectedExecutionHandler handler = builder.handler;
@@ -146,7 +146,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      * @return this
      */
     public ExecutorBuilder useSynchronousQueue() {
-        return setWorkQueue(new SynchronousQueue<Runnable>());
+        return setWorkQueue(new SynchronousQueue<>());
     }
 
     /**

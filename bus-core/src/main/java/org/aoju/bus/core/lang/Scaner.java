@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  * 类扫描器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Scaner {
@@ -75,7 +75,7 @@ public class Scaner {
      */
     private boolean initialize;
 
-    private Set<Class<?>> classes = new HashSet<Class<?>>();
+    private Set<Class<?>> classes = new HashSet<>();
 
     /**
      * 构造,默认UTF-8编码
@@ -128,12 +128,7 @@ public class Scaner {
      * @return 类集合
      */
     public static Set<Class<?>> scanPackageByAnnotation(String packageName, final Class<? extends Annotation> annotationClass) {
-        return scanPackage(packageName, new Filter<Class<?>>() {
-            @Override
-            public boolean accept(Class<?> clazz) {
-                return clazz.isAnnotationPresent(annotationClass);
-            }
-        });
+        return scanPackage(packageName, clazz -> clazz.isAnnotationPresent(annotationClass));
     }
 
     /**
@@ -144,12 +139,7 @@ public class Scaner {
      * @return 类集合
      */
     public static Set<Class<?>> scanPackageBySuper(String packageName, final Class<?> superClass) {
-        return scanPackage(packageName, new Filter<Class<?>>() {
-            @Override
-            public boolean accept(Class<?> clazz) {
-                return superClass.isAssignableFrom(clazz) && !superClass.equals(clazz);
-            }
-        });
+        return scanPackage(packageName, clazz -> superClass.isAssignableFrom(clazz) && !superClass.equals(clazz));
     }
 
     /**

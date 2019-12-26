@@ -34,7 +34,7 @@ import java.nio.channels.AsynchronousSocketChannel;
  * AIO服务端
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class AioSSLQuickServer<T> extends AioQuickServer<T> {
@@ -55,12 +55,7 @@ public class AioSSLQuickServer<T> extends AioQuickServer<T> {
     @Override
     public void start() throws IOException {
         sslService = new SSLService(sslConfig);
-        start0(new Function<AsynchronousSocketChannel, TcpAioSession<T>>() {
-            @Override
-            public TcpAioSession<T> apply(AsynchronousSocketChannel channel) {
-                return new SSLAioSession<T>(channel, config, aioReadCompletionHandler, aioWriteCompletionHandler, sslService, bufferPool.allocateBufferPage());
-            }
-        });
+        start0(channel -> new SSLAioSession<>(channel, config, aioReadCompletionHandler, aioWriteCompletionHandler, sslService, bufferPool.allocateBufferPage()));
     }
 
     public AioSSLQuickServer<T> setKeyStore(String keyStoreFile, String keystorePassword) {

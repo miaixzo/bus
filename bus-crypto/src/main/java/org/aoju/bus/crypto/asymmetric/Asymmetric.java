@@ -47,7 +47,7 @@ import java.security.PublicKey;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Asymmetric extends Safety<Asymmetric> {
@@ -72,7 +72,7 @@ public class Asymmetric extends Safety<Asymmetric> {
      * @param algorithm 算法
      */
     public Asymmetric(String algorithm) {
-        this(algorithm, (byte[]) null, (byte[]) null);
+        this(algorithm, (byte[]) null, null);
     }
 
     /**

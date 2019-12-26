@@ -58,7 +58,7 @@ import java.util.Map;
  * 数据源配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @ConditionalOnClass(DruidDataSource.class)
@@ -172,8 +172,8 @@ public class DruidConfiguration {
      * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的，
      * 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
      *
-     * @param result
-     * @param properties
+     * @param result     数据源
+     * @param properties 配置信息
      */
     private void bind(DataSource result, Map properties) {
         ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);

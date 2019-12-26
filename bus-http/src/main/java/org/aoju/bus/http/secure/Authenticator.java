@@ -36,7 +36,7 @@ import java.io.IOException;
  * 应用程序可以为源服务器或代理服务器配置Httpd的身份验证器，或者两者都配置.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface Authenticator {
@@ -44,14 +44,7 @@ public interface Authenticator {
     /**
      * 不知道任何凭据且不尝试进行身份验证的验证程序.
      */
-    Authenticator NONE = new Authenticator() {
-
-        @Override
-        public Request authenticate(Route route, Response response) {
-            return null;
-        }
-
-    };
+    Authenticator NONE = (route, response) -> null;
 
     /**
      * 该请求包含满足{@code response}中的身份验证挑战的凭据。如果无法满足挑战，则返回null.

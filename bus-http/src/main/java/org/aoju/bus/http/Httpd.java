@@ -65,7 +65,7 @@ import java.util.concurrent.TimeUnit;
  * Httpd还为HTTP/2连接使用守护进程线程。如果它们保持空闲，就会自动退出
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
@@ -659,7 +659,6 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * 设置用于读写缓存的响应的响应缓存.
          *
          * @param internalCache 响应缓存
-         * @return 构造器
          */
         void setInternalCache(InternalCache internalCache) {
             this.internalCache = internalCache;

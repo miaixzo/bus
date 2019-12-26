@@ -48,7 +48,7 @@ import java.util.List;
  * 限流配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -107,12 +107,9 @@ public class LimiterAwareHandler extends AbstractLimiterAware implements Resourc
 
     @Bean
     Handler defaultErrorHandler() {
-        Handler errorHandler = new Handler() {
-            @Override
-            public boolean resolve(Throwable throwable, LimiterExecutionContext executionContext) {
-                Logger.info(throwable.getMessage());
-                throw new RuntimeException(throwable.getMessage());
-            }
+        Handler errorHandler = (throwable, executionContext) -> {
+            Logger.info(throwable.getMessage());
+            throw new RuntimeException(throwable.getMessage());
         };
         return errorHandler;
     }

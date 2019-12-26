@@ -42,7 +42,7 @@ import java.util.Set;
  * UDP服务启动类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class UdpBootstrap<Request> implements Runnable {
@@ -190,24 +190,21 @@ public class UdpBootstrap<Request> implements Runnable {
             readRingBuffers = new RingBuffer[config.getThreadNum()];
             for (int i = 0; i < config.getThreadNum(); i++) {
                 final RingBuffer<UdpReadEvent<Request>> ringBuffer = readRingBuffers[i] = new RingBuffer<>(1024, factory);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        while (STATUS_RUNNING == status) {
-                            try {
-                                int index = ringBuffer.nextReadIndex();
-                                if (STATUS_RUNNING != status) {
-                                    break;
-                                }
-                                UdpReadEvent<Request> event = ringBuffer.get(index);
-                                UdpAioSession<Request> aioSession = event.getAioSession();
-                                Request message = event.getMessage();
-                                ringBuffer.publishReadIndex(index);
-                                config.getProcessor().process(aioSession, message);
-                                aioSession.writeBuffer().flush();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                new Thread(() -> {
+                    while (STATUS_RUNNING == status) {
+                        try {
+                            int index = ringBuffer.nextReadIndex();
+                            if (STATUS_RUNNING != status) {
+                                break;
                             }
+                            UdpReadEvent<Request> event = ringBuffer.get(index);
+                            UdpAioSession<Request> aioSession = event.getAioSession();
+                            Request message = event.getMessage();
+                            ringBuffer.publishReadIndex(index);
+                            config.getProcessor().process(aioSession, message);
+                            aioSession.writeBuffer().flush();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 }, "UDP-Worker-" + uid + Symbol.HYPHEN + i).start();

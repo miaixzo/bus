@@ -36,7 +36,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ExcelSaxUtils {

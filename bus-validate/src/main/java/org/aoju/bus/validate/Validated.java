@@ -47,7 +47,7 @@ import java.util.List;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
@@ -143,7 +143,7 @@ public class Validated extends Provider {
     /**
      * 根据对象注解解析校验器
      *
-     * @param annotations
+     * @param annotations 注解信息
      * @return the object
      */
     private List<Property> resolve(Annotation[] annotations) {
@@ -168,8 +168,8 @@ public class Validated extends Provider {
     /**
      * 根据对象注解配置校验上下文
      *
-     * @param context
-     * @param annotations
+     * @param context     上下文
+     * @param annotations 注解信息
      * @return the object
      */
     private Context resolve(Context context, Annotation[] annotations) {

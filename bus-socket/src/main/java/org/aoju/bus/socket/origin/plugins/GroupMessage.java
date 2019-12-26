@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 abstract class GroupMessage<T> implements Message<T> {
@@ -44,8 +44,8 @@ abstract class GroupMessage<T> implements Message<T> {
     /**
      * 将AioSession加入群组group
      *
-     * @param group
-     * @param session
+     * @param group   分组信息
+     * @param session 会话
      */
     @Override
     public final synchronized void join(String group, AioSession<T> session) {

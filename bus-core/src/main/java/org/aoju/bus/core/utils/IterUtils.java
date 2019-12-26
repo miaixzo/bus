@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class IterUtils {
@@ -356,7 +356,7 @@ public class IterUtils {
      * @return Map
      */
     public static <K, V> HashMap<K, V> toMap(Iterable<Entry<K, V>> entryIter) {
-        final HashMap<K, V> map = new HashMap<K, V>();
+        final HashMap<K, V> map = new HashMap<>();
         if (isNotEmpty(entryIter)) {
             for (Entry<K, V> entry : entryIter) {
                 map.put(entry.getKey(), entry.getValue());
@@ -471,12 +471,7 @@ public class IterUtils {
      * @return {@link Iterable}
      */
     public static <E> Iterable<E> asIterable(final Iterator<E> iter) {
-        return new Iterable<E>() {
-            @Override
-            public Iterator<E> iterator() {
-                return iter;
-            }
-        };
+        return () -> iter;
     }
 
     /**

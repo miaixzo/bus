@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * {@link java.text.SimpleDateFormat} 的线程安全版本,用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 class FastDateParser extends AbstractDateBasic implements DateParser {
@@ -50,12 +50,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     // comparator used to sort regex alternatives
     // alternatives should be ordered longer first, and shorter last. ('february' before 'feb')
     // all entries must be lowercase by locale.
-    private static final Comparator<String> LONGER_FIRST_LOWERCASE = new Comparator<String>() {
-        @Override
-        public int compare(final String left, final String right) {
-            return right.compareTo(left);
-        }
-    };
+    private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
     private static final ConcurrentMap<Locale, Strategy>[] caches = new ConcurrentMap[Calendar.FIELD_COUNT];
     private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {
 

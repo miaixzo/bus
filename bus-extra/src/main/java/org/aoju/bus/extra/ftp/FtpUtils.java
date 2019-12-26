@@ -46,7 +46,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FtpUtils extends AbstractFtp {
@@ -231,7 +231,7 @@ public class FtpUtils extends AbstractFtp {
      */
     @Override
     public boolean cd(String directory) {
-        boolean flag = true;
+        boolean flag;
         try {
             flag = client.changeWorkingDirectory(directory);
         } catch (IOException e) {
@@ -295,7 +295,7 @@ public class FtpUtils extends AbstractFtp {
 
     @Override
     public boolean mkdir(String dir) {
-        boolean flag = true;
+        boolean flag;
         try {
             flag = this.client.makeDirectory(dir);
         } catch (IOException e) {

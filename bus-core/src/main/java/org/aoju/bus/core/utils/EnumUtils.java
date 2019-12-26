@@ -33,7 +33,7 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class EnumUtils {
@@ -231,7 +231,7 @@ public class EnumUtils {
      * @since 4.0.2
      */
     public static <E extends Enum<E>> LinkedHashMap<String, E> getEnumMap(final Class<E> enumClass) {
-        final LinkedHashMap<String, E> map = new LinkedHashMap<String, E>();
+        final LinkedHashMap<String, E> map = new LinkedHashMap<>();
         for (final E e : enumClass.getEnumConstants()) {
             map.put(e.name(), e);
         }

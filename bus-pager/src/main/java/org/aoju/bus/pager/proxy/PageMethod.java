@@ -33,12 +33,12 @@ import java.util.Properties;
  * 基础分页方法
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class PageMethod {
 
-    protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<Page>();
+    protected static final ThreadLocal<Page> LOCAL_PAGE = new ThreadLocal<>();
     protected static boolean DEFAULT_COUNT = true;
 
     /**
@@ -149,7 +149,7 @@ public abstract class PageMethod {
      * @return 结果
      */
     public static <E> Page<E> startPage(int pageNum, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) {
-        Page<E> page = new Page<E>(pageNum, pageSize, count);
+        Page<E> page = new Page<>(pageNum, pageSize, count);
         page.setReasonable(reasonable);
         page.setPageSizeZero(pageSizeZero);
         //当已经执行过orderBy的时候
@@ -183,7 +183,7 @@ public abstract class PageMethod {
      * @return 结果
      */
     public static <E> Page<E> offsetPage(int offset, int limit, boolean count) {
-        Page<E> page = new Page<E>(new int[]{offset, limit}, count);
+        Page<E> page = new Page<>(new int[]{offset, limit}, count);
         //当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {

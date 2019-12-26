@@ -37,7 +37,7 @@ import java.util.List;
  * POST参数构造器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PostBuilder extends RequestBuilder<PostBuilder> {
@@ -113,8 +113,7 @@ public class PostBuilder extends RequestBuilder<PostBuilder> {
         return addFile(partName, fileName, content.getBytes(charsetName));
     }
 
-    public PostBuilder addFile(String partName, String fileName, byte[] content, String charsetName)
-            throws UnsupportedEncodingException {
+    public PostBuilder addFile(String partName, String fileName, byte[] content, String charsetName) {
         return addFile(partName, fileName, content);
     }
 

@@ -39,7 +39,7 @@ import java.util.List;
  * 也不能重入客户机。任何对文件或网络的IO写入都应该异步进行
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class EventListener {
@@ -49,11 +49,7 @@ public abstract class EventListener {
     };
 
     public static EventListener.Factory factory(final EventListener listener) {
-        return new EventListener.Factory() {
-            public EventListener create(NewCall call) {
-                return listener;
-            }
-        };
+        return call -> listener;
     }
 
     /**

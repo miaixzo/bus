@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 实用方法工具
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class Builder {
@@ -75,15 +75,12 @@ public abstract class Builder {
      * 大多数网站都提供祝福格式的cookies。创建解析器，以确保此类cookie处于快速路径上
      */
     public static final ThreadLocal<DateFormat> STANDARD_DATE_FORMAT =
-            new ThreadLocal<DateFormat>() {
-                @Override
-                protected DateFormat initialValue() {
-                    DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-                    rfc1123.setLenient(false);
-                    rfc1123.setTimeZone(Builder.UTC);
-                    return rfc1123;
-                }
-            };
+            ThreadLocal.withInitial(() -> {
+                DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+                rfc1123.setLenient(false);
+                rfc1123.setTimeZone(Builder.UTC);
+                return rfc1123;
+            });
 
     /**
      * 如果我们未能以非标准格式解析日期，请依次尝试这些格式.
@@ -217,7 +214,7 @@ public abstract class Builder {
 
     public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
         return map.isEmpty()
-                ? Collections.<K, V>emptyMap()
+                ? Collections.emptyMap()
                 : Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
@@ -226,13 +223,10 @@ public abstract class Builder {
     }
 
     public static ThreadFactory threadFactory(final String name, final boolean daemon) {
-        return new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable runnable) {
-                Thread result = new Thread(runnable, name);
-                result.setDaemon(daemon);
-                return result;
-            }
+        return runnable -> {
+            Thread result = new Thread(runnable, name);
+            result.setDaemon(daemon);
+            return result;
         };
     }
 

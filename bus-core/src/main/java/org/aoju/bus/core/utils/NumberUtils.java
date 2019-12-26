@@ -54,7 +54,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class NumberUtils {
@@ -1064,13 +1064,12 @@ public class NumberUtils {
         }
 
         Random ran = new Random();
-        Set<Integer> set = new HashSet<Integer>();
+        Set<Integer> set = new HashSet<>();
         while (set.size() < size) {
             set.add(begin + ran.nextInt(end - begin));
         }
-
-        Integer[] ranArr = set.toArray(new Integer[size]);
-        return ranArr;
+ 
+        return set.toArray(new Integer[size]);
     }
 
     /**
@@ -1399,7 +1398,7 @@ public class NumberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1656,7 +1655,7 @@ public class NumberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static BigInteger newBigInteger(String str) {
         if (null == str) {

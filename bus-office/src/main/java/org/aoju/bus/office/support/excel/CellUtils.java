@@ -45,7 +45,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CellUtils {
@@ -61,7 +61,7 @@ public class CellUtils {
         if (null == cell) {
             return null;
         }
-        return getCellValue(cell, cell.getCellTypeEnum(), isTrimCellValue);
+        return getCellValue(cell, cell.getCellType(), isTrimCellValue);
     }
 
     /**
@@ -75,7 +75,7 @@ public class CellUtils {
         if (null == cell) {
             return null;
         }
-        return getCellValue(cell, cell.getCellTypeEnum(), cellEditor);
+        return getCellValue(cell, cell.getCellType(), cellEditor);
     }
 
     /**
@@ -104,7 +104,7 @@ public class CellUtils {
             return null;
         }
         if (null == cellType) {
-            cellType = cell.getCellTypeEnum();
+            cellType = cell.getCellType();
         }
 
         Object value;
@@ -117,7 +117,7 @@ public class CellUtils {
                 break;
             case FORMULA:
                 // 遇到公式时查找公式结果类型
-                value = getCellValue(cell, cell.getCachedFormulaResultTypeEnum(), cellEditor);
+                value = getCellValue(cell, cell.getCachedFormulaResultType(), cellEditor);
                 break;
             case BLANK:
                 value = Normal.EMPTY;
@@ -278,10 +278,10 @@ public class CellUtils {
         );
 
         if (null != cellStyle) {
-            RegionUtil.setBorderTop(cellStyle.getBorderTopEnum(), cellRangeAddress, sheet);
-            RegionUtil.setBorderRight(cellStyle.getBorderRightEnum(), cellRangeAddress, sheet);
-            RegionUtil.setBorderBottom(cellStyle.getBorderBottomEnum(), cellRangeAddress, sheet);
-            RegionUtil.setBorderLeft(cellStyle.getBorderLeftEnum(), cellRangeAddress, sheet);
+            RegionUtil.setBorderTop(cellStyle.getBorderTop(), cellRangeAddress, sheet);
+            RegionUtil.setBorderRight(cellStyle.getBorderRight(), cellRangeAddress, sheet);
+            RegionUtil.setBorderBottom(cellStyle.getBorderBottom(), cellRangeAddress, sheet);
+            RegionUtil.setBorderLeft(cellStyle.getBorderLeft(), cellRangeAddress, sheet);
         }
         return sheet.addMergedRegion(cellRangeAddress);
     }

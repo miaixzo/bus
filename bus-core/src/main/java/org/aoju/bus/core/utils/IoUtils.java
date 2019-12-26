@@ -59,7 +59,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class IoUtils {
@@ -688,12 +688,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static <T extends Collection<String>> T readLines(Reader reader, final T collection) throws InstrumentException {
-        readLines(reader, new LineHandler() {
-            @Override
-            public void handle(String line) {
-                collection.add(line);
-            }
-        });
+        readLines(reader, (LineHandler) line -> collection.add(line));
         return collection;
     }
 
@@ -736,7 +731,7 @@ public class IoUtils {
 
         // 从返回的内容中读取所需内容
         final BufferedReader bReader = getReader(reader);
-        String line = null;
+        String line;
         try {
             while ((line = bReader.readLine()) != null) {
                 lineHandler.handle(line);

@@ -36,7 +36,7 @@ import java.util.*;
  * 这个类从值中删除空白。它从不返回带开头或结尾空白的值
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Headers {
@@ -165,7 +165,7 @@ public final class Headers {
         }
         return result != null
                 ? Collections.unmodifiableList(result)
-                : Collections.<String>emptyList();
+                : Collections.emptyList();
     }
 
     public long byteCount() {

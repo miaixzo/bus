@@ -41,11 +41,11 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @ControllerAdvice
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order()
 public class TraceResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     @Autowired

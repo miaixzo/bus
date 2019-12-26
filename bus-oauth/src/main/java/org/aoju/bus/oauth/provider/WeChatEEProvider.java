@@ -41,7 +41,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WeChatEEProvider extends DefaultProvider {

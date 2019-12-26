@@ -41,7 +41,7 @@ import java.util.Map;
  * 一个HTTP请求。如果该类的{@link #body}为空或自身为不可变，则该类的实例是不可变的.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Request {
@@ -143,7 +143,7 @@ public final class Request {
             this.method = request.method;
             this.body = request.body;
             this.tags = request.tags.isEmpty()
-                    ? Collections.<Class<?>, Object>emptyMap()
+                    ? Collections.emptyMap()
                     : new LinkedHashMap<>(request.tags);
             this.headers = request.headers.newBuilder();
         }

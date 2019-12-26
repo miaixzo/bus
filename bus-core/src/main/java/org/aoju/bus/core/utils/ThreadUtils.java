@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ThreadUtils {
@@ -56,7 +56,7 @@ public class ThreadUtils {
      * @return ExecutorService
      */
     public static ExecutorService newExecutor() {
-        return ExecutorBuilder.create().setWorkQueue(new SynchronousQueue<Runnable>()).build();
+        return ExecutorBuilder.create().setWorkQueue(new SynchronousQueue<>()).build();
     }
 
     /**
@@ -119,12 +119,7 @@ public class ThreadUtils {
      * @return 执行的方法体
      */
     public static Runnable excAsync(final Runnable runnable, boolean isDeamon) {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                runnable.run();
-            }
-        };
+        Thread thread = new Thread(() -> runnable.run());
         thread.setDaemon(isDeamon);
         thread.start();
 
@@ -163,7 +158,7 @@ public class ThreadUtils {
      * @return CompletionService
      */
     public static <T> CompletionService<T> newCompletionService() {
-        return new ExecutorCompletionService<T>(GlobalThread.getExecutor());
+        return new ExecutorCompletionService<>(GlobalThread.getExecutor());
     }
 
     /**
@@ -175,7 +170,7 @@ public class ThreadUtils {
      * @return CompletionService
      */
     public static <T> CompletionService<T> newCompletionService(ExecutorService executor) {
-        return new ExecutorCompletionService<T>(executor);
+        return new ExecutorCompletionService<>(executor);
     }
 
     /**

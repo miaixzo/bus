@@ -36,7 +36,7 @@ import java.util.List;
  * PUT参数构造器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PutBuilder extends RequestBuilder<PutBuilder> {
@@ -102,8 +102,7 @@ public class PutBuilder extends RequestBuilder<PutBuilder> {
         return addFile(partName, fileName, content.getBytes(charsetName));
     }
 
-    public PutBuilder addFile(String partName, String fileName, byte[] content, String charsetName)
-            throws UnsupportedEncodingException {
+    public PutBuilder addFile(String partName, String fileName, byte[] content, String charsetName) {
         return addFile(partName, fileName, content);
     }
 

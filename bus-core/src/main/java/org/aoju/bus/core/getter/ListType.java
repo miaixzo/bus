@@ -31,7 +31,7 @@ import java.util.List;
  * 列表类型的Get接口
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface ListType {

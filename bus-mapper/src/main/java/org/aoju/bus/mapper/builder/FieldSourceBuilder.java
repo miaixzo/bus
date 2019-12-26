@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * 类字段工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FieldSourceBuilder {
@@ -86,8 +86,8 @@ public class FieldSourceBuilder {
         List<EntityField> fields = fieldHelper.getFields(entityClass);
         List<EntityField> properties = fieldHelper.getProperties(entityClass);
         //拼到一起,名字相同的合并
-        List<EntityField> all = new ArrayList<EntityField>();
-        Set<EntityField> usedSet = new HashSet<EntityField>();
+        List<EntityField> all = new ArrayList<>();
+        Set<EntityField> usedSet = new HashSet<>();
         for (EntityField field : fields) {
             for (EntityField property : properties) {
                 if (!usedSet.contains(property) && field.getName().equals(property.getName())) {
@@ -159,7 +159,7 @@ public class FieldSourceBuilder {
         public List<EntityField> getFields(Class<?> entityClass) {
             List<EntityField> fields = _getFields(entityClass, null, null);
             List<EntityField> properties = getProperties(entityClass);
-            Set<EntityField> usedSet = new HashSet<EntityField>();
+            Set<EntityField> usedSet = new HashSet<>();
             for (EntityField field : fields) {
                 for (EntityField property : properties) {
                     if (!usedSet.contains(property) && field.getName().equals(property.getName())) {
@@ -182,7 +182,7 @@ public class FieldSourceBuilder {
          */
         private List<EntityField> _getFields(Class<?> entityClass, List<EntityField> fieldList, Integer level) {
             if (fieldList == null) {
-                fieldList = new ArrayList<EntityField>();
+                fieldList = new ArrayList<>();
             }
             if (level == null) {
                 level = 0;
@@ -224,8 +224,8 @@ public class FieldSourceBuilder {
          */
         @Override
         public List<EntityField> getProperties(Class<?> entityClass) {
-            List<EntityField> entityFields = new ArrayList<EntityField>();
-            BeanInfo beanInfo = null;
+            List<EntityField> entityFields = new ArrayList<>();
+            BeanInfo beanInfo;
             try {
                 beanInfo = Introspector.getBeanInfo(entityClass);
             } catch (IntrospectionException e) {
@@ -248,7 +248,7 @@ public class FieldSourceBuilder {
 
         @Override
         public List<EntityField> getFields(Class<?> entityClass) {
-            List<EntityField> fieldList = new ArrayList<EntityField>();
+            List<EntityField> fieldList = new ArrayList<>();
             _getFields(entityClass, fieldList, _getGenericTypeMap(entityClass), null);
             return fieldList;
         }
@@ -262,7 +262,7 @@ public class FieldSourceBuilder {
         @Override
         public List<EntityField> getProperties(Class<?> entityClass) {
             Map<String, Class<?>> genericMap = _getGenericTypeMap(entityClass);
-            List<EntityField> entityFields = new ArrayList<EntityField>();
+            List<EntityField> entityFields = new ArrayList<>();
             BeanInfo beanInfo;
             try {
                 beanInfo = Introspector.getBeanInfo(entityClass);
@@ -349,7 +349,7 @@ public class FieldSourceBuilder {
          * @return 结果
          */
         private Map<String, Class<?>> _getGenericTypeMap(Class<?> entityClass) {
-            Map<String, Class<?>> genericMap = new HashMap<String, Class<?>>();
+            Map<String, Class<?>> genericMap = new HashMap<>();
             if (entityClass == Object.class) {
                 return genericMap;
             }

@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * 数据库id,将它们用作忘记密码散列、邀请码、存储碎片号
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class HashID {
@@ -201,13 +201,6 @@ public class HashID {
         return number;
     }
 
-    public static void main(String[] args) {
-        HashID hashids = new HashID();
-        System.out.println(hashids.getSalt());
-    }
-
-    /* Private methods */
-
     /**
      * Encrypt numbers to string
      *
@@ -262,7 +255,7 @@ public class HashID {
             return "";
         }
 
-        final List<Long> matched = new ArrayList<Long>();
+        final List<Long> matched = new ArrayList<>();
         final Matcher matcher = PATTERN.matcher(hexa);
 
         while (matcher.find()) {

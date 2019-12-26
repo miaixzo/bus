@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PatternUtils {
@@ -522,7 +522,7 @@ public class PatternUtils {
         final Matcher matcher = pattern.matcher(content);
         boolean result = matcher.find();
         if (result) {
-            final Set<String> varNums = findAll(RegEx.GROUP_VAR, replacementTemplate, 1, new HashSet<String>());
+            final Set<String> varNums = findAll(RegEx.GROUP_VAR, replacementTemplate, 1, new HashSet<>());
             final StringBuffer sb = new StringBuffer();
             do {
                 String replacement = replacementTemplate;

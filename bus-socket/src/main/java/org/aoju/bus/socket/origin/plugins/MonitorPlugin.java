@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 服务器运行状态监控插件
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class MonitorPlugin<T> extends TimerTask implements Plugin<T> {

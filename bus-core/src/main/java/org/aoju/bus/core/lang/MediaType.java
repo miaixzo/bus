@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * HTTP 媒体类型
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @Data
@@ -340,11 +340,7 @@ public class MediaType {
         this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
         this.charset = charset == null ? org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8 : charset;
         if (MapUtils.isNotEmpty(params)) {
-            params = new TreeMap(new Comparator<String>() {
-                public int compare(String o1, String o2) {
-                    return o1.compareToIgnoreCase(o2);
-                }
-            });
+            params = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
         }
         params = params == null ? new HashMap<>() : params;
         if (charset != null && !charset.isEmpty()) {
@@ -396,11 +392,7 @@ public class MediaType {
     }
 
     private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
-        TreeMap<String, String> map = new TreeMap(new Comparator<String>() {
-            public int compare(String o1, String o2) {
-                return o1.compareToIgnoreCase(o2);
-            }
-        });
+        TreeMap<String, String> map = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
         if (initialValues != null) {
             Iterator i$ = initialValues.entrySet().iterator();
 

@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * 请求参数构造器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class HttpBuilder {
@@ -205,12 +205,7 @@ public class HttpBuilder {
             Logger.error(e.getMessage(), e);
         }
         builder.sslSocketFactory(sslSocketFactory, trustManager).
-                hostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
-                    }
-                });
+                hostnameVerifier((hostname, session) -> true);
         return this;
     }
 

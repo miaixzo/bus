@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * 每个值必须在{@code 0}和{@code Integer之间。MAX_VALUE}字节的长度
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class DiskLruCache implements Closeable, Flushable {
@@ -157,7 +157,7 @@ public final class DiskLruCache implements Closeable, Flushable {
         }
 
         Executor executor = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(), Builder.threadFactory("Httpd DiskLruCache", true));
+                new LinkedBlockingQueue<>(), Builder.threadFactory("Httpd DiskLruCache", true));
 
         return new DiskLruCache(fileSystem, directory, appVersion, valueCount, maxSize, executor);
     }

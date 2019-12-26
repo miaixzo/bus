@@ -32,7 +32,7 @@ import java.util.*;
  * 或Java(通过JDK 9)上不可用的密码套件
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class CipherSuite {
@@ -42,19 +42,16 @@ public final class CipherSuite {
      * 忽略跨平台不一致的“TLS_”或“SSL_”前缀。特别是一些IBM jvm到处使用“SSL_”前缀，
      * 而Oracle jvm则混合使用“TLS_”和“SSL_”
      */
-    public static final Comparator<String> ORDER_BY_NAME = new Comparator<String>() {
-        @Override
-        public int compare(String a, String b) {
-            for (int i = 4, limit = Math.min(a.length(), b.length()); i < limit; i++) {
-                char charA = a.charAt(i);
-                char charB = b.charAt(i);
-                if (charA != charB) return charA < charB ? -1 : 1;
-            }
-            int lengthA = a.length();
-            int lengthB = b.length();
-            if (lengthA != lengthB) return lengthA < lengthB ? -1 : 1;
-            return 0;
+    public static final Comparator<String> ORDER_BY_NAME = (a, b) -> {
+        for (int i = 4, limit = Math.min(a.length(), b.length()); i < limit; i++) {
+            char charA = a.charAt(i);
+            char charB = b.charAt(i);
+            if (charA != charB) return charA < charB ? -1 : 1;
         }
+        int lengthA = a.length();
+        int lengthB = b.length();
+        if (lengthA != lengthB) return lengthA < lengthB ? -1 : 1;
+        return 0;
     };
 
     /**

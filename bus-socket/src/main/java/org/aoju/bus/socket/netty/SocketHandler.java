@@ -30,7 +30,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 @ChannelHandler.Sharable
@@ -39,7 +39,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<TextWebSocketFram
     private RequestDecoder decoder = new RequestDecoder();
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
         String message = msg.text();
         SocketRequest request = decoder.decode(ctx, message);
         if (request != null) {
@@ -48,22 +48,22 @@ public class SocketHandler extends SimpleChannelInboundHandler<TextWebSocketFram
     }
 
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+    public void handlerAdded(ChannelHandlerContext ctx) {
         ClientService.active(ctx);
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+    public void handlerRemoved(ChannelHandlerContext ctx) {
         CommandExecutor.execute(new RemoveCommand(ctx));
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) {
         ctx.channel().close();
     }
 

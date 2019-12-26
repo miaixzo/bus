@@ -33,7 +33,7 @@ import java.util.*;
  * 按值替换字符串中的变量.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Substitute {
@@ -255,7 +255,7 @@ public class Substitute {
         if (value == null) {
             return source.toString();
         }
-        final Map<String, String> valueMap = new HashMap<String, String>();
+        final Map<String, String> valueMap = new HashMap<>();
         final Enumeration<?> propNames = value.propertyNames();
         while (propNames.hasMoreElements()) {
             final String propName = (String) propNames.nextElement();

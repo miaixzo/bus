@@ -37,7 +37,7 @@ import java.util.*;
  * 注意：部分拼音并不准确,例如：怡
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PinyinUtils {
@@ -297,7 +297,7 @@ public class PinyinUtils {
         }
         pinyinArray = array.replaceAll("ü", "v").split(Symbol.COMMA);
 
-        Set<String> pinyinSet = new LinkedHashSet<String>();
+        Set<String> pinyinSet = new LinkedHashSet<>();
         for (String pinyin : pinyinArray) {
             pinyinSet.add(pinyin);
         }

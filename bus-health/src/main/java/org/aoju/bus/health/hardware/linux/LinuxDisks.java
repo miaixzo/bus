@@ -41,7 +41,7 @@ import java.util.Map;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class LinuxDisks implements Disks {
@@ -110,25 +110,21 @@ public class LinuxDisks implements Disks {
     @Override
     public HWDiskStore[] getDisks() {
         HWDiskStore store = null;
-        List<HWDiskStore> result;
 
         updateMountsMap();
         hashCodeToPathMap.clear();
 
-        Udev.UdevHandle handle = null;
-        Udev.UdevDevice device = null;
-        Udev.UdevEnumerate enumerate = null;
-        Udev.UdevListEntry entry;
+        Udev.UdevDevice device;
         Udev.UdevListEntry oldEntry;
 
-        result = new ArrayList<>();
+        List<HWDiskStore> result = new ArrayList<>();
 
-        handle = Udev.INSTANCE.udev_new();
-        enumerate = Udev.INSTANCE.udev_enumerate_new(handle);
+        Udev.UdevHandle handle = Udev.INSTANCE.udev_new();
+        Udev.UdevEnumerate enumerate = Udev.INSTANCE.udev_enumerate_new(handle);
         Udev.INSTANCE.udev_enumerate_add_match_subsystem(enumerate, "block");
         Udev.INSTANCE.udev_enumerate_scan_devices(enumerate);
 
-        entry = Udev.INSTANCE.udev_enumerate_get_list_entry(enumerate);
+        Udev.UdevListEntry entry = Udev.INSTANCE.udev_enumerate_get_list_entry(enumerate);
         while (true) {
             oldEntry = entry;
             device = Udev.INSTANCE.udev_device_new_from_syspath(handle, Udev.INSTANCE.udev_list_entry_get_name(entry));

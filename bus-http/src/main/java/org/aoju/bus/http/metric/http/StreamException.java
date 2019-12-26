@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.RevisedException;
  * 当取消HTTP/2流而不损坏承载它的套接字时抛出
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class StreamException extends RevisedException {

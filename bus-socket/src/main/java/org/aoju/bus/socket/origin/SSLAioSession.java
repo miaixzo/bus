@@ -38,7 +38,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 class SSLAioSession<T> extends TcpAioSession<T> {
@@ -57,13 +57,6 @@ class SSLAioSession<T> extends TcpAioSession<T> {
      */
     private SSLService sslService;
 
-    /**
-     * @param channel
-     * @param config
-     * @param aioReadCompletionHandler
-     * @param aioWriteCompletionHandler
-     * @param sslService                是否服务端Session
-     */
     SSLAioSession(AsynchronousSocketChannel channel, ServerConfig<T> config, TcpReadHandler<T> aioReadCompletionHandler, TcpWriteHandler<T> aioWriteCompletionHandler, SSLService sslService, BufferPage bufferPage) {
         super(channel, config, aioReadCompletionHandler, aioWriteCompletionHandler, bufferPage);
         this.handshakeModel = sslService.createSSLEngine(channel);

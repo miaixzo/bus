@@ -33,7 +33,7 @@ import java.util.Properties;
  * CacheFactory
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class CacheFactory {
@@ -52,9 +52,9 @@ public abstract class CacheFactory {
         if (PageFromObject.isEmpty(sqlCacheClass)) {
             try {
                 Class.forName("com.google.common.cache.Cache");
-                return new GuavaCache<K, V>(properties, prefix);
+                return new GuavaCache<>(properties, prefix);
             } catch (Throwable t) {
-                return new SimpleCache<K, V>(properties, prefix);
+                return new SimpleCache<>(properties, prefix);
             }
         } else {
             try {

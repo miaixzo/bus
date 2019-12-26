@@ -42,7 +42,7 @@ import java.util.Map;
  * HTTP请求处理
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class HttpRequest {
@@ -129,9 +129,7 @@ public abstract class HttpRequest {
     }
 
     public Request createRequest(AbsCallback absCallback) {
-        RequestBody requestBody = buildRequestBody();
-        Request request = buildRequest(requestBody);
-        return request;
+        return buildRequest(buildRequestBody());
     }
 
     protected void appendHeaders() {

@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from sysfs.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class LinuxComputerSystem extends AbstractComputerSystem {
@@ -75,7 +75,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String queryManufacturer() {
-        String result = null;
+        String result;
         if ((result = queryManufacturerFromSysfs()) == null && (result = queryManufacturerFromProcCpu()) == null) {
             return Builder.UNKNOWN;
         }
@@ -83,7 +83,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String queryModel() {
-        String result = null;
+        String result;
         if ((result = queryModelFromSysfs()) == null && (result = queryModelFromDeviceTree()) == null
                 && (result = queryModelFromLshw()) == null) {
             return Builder.UNKNOWN;
@@ -92,7 +92,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String querySerialNumber() {
-        String result = null;
+        String result;
         if ((result = querySerialFromSysfs()) == null && (result = querySerialFromDmiDecode()) == null
                 && (result = querySerialFromLshal()) == null && (result = querySerialFromLshw()) == null) {
             return Builder.UNKNOWN;

@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * 该类实现了哪些连接保持开放以供将来使用的策略
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class ConnectionPool {
@@ -54,7 +54,7 @@ public final class ConnectionPool {
      */
     private static final Executor executor = new ThreadPoolExecutor(0,
             Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>(), Builder.threadFactory("Httpd ConnectionPool", true));
+            new SynchronousQueue<>(), Builder.threadFactory("Httpd ConnectionPool", true));
     public final Deque<RealConnection> connections = new ArrayDeque<>();
     public final RouteDatabase routeDatabase = new RouteDatabase();
     /**
@@ -63,20 +63,17 @@ public final class ConnectionPool {
     private final int maxIdleConnections;
     private final long keepAliveDurationNs;
     boolean cleanupRunning;
-    private final Runnable cleanupRunnable = new Runnable() {
-        @Override
-        public void run() {
-            while (true) {
-                long waitNanos = cleanup(System.nanoTime());
-                if (waitNanos == -1) return;
-                if (waitNanos > 0) {
-                    long waitMillis = waitNanos / 1000000L;
-                    waitNanos -= (waitMillis * 1000000L);
-                    synchronized (ConnectionPool.this) {
-                        try {
-                            ConnectionPool.this.wait(waitMillis, (int) waitNanos);
-                        } catch (InterruptedException ignored) {
-                        }
+    private final Runnable cleanupRunnable = () -> {
+        while (true) {
+            long waitNanos = cleanup(System.nanoTime());
+            if (waitNanos == -1) return;
+            if (waitNanos > 0) {
+                long waitMillis = waitNanos / 1000000L;
+                waitNanos -= (waitMillis * 1000000L);
+                synchronized (ConnectionPool.this) {
+                    try {
+                        ConnectionPool.this.wait(waitMillis, (int) waitNanos);
+                    } catch (InterruptedException ignored) {
                     }
                 }
             }

@@ -37,7 +37,7 @@ import java.util.concurrent.*;
  * OfficeProcessManager负责管理一个office流程以及到这个office流程的连接(桥接).
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class OfficeProcessManager {
@@ -169,16 +169,12 @@ public class OfficeProcessManager {
     public void restartAndWait() throws InstrumentException {
         submitAndWait(
                 "Restart",
-                new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
+                () -> {
+                    // 在重新启动时，不会删除实例配置文件目录，从而加快了office进程的启动。
+                    doStopProcess(false);
+                    doStartProcessAndConnect(true);
 
-                        // 在重新启动时，不会删除实例配置文件目录，从而加快了office进程的启动。
-                        doStopProcess(false);
-                        doStartProcessAndConnect(true);
-
-                        return null;
-                    }
+                    return null;
                 });
     }
 
@@ -188,17 +184,12 @@ public class OfficeProcessManager {
     public void restartDueToLostConnection() {
         Logger.info("Executing task 'Restart After Lost Connection'...");
         executor.execute(
-                new Runnable() {
-
-                    @Override
-                    public void run() {
-                        try {
-                            doEnsureProcessExited(true);
-                            doStartProcessAndConnect(false);
-
-                        } catch (InstrumentException officeEx) {
-                            Logger.error("Could not restart process after connection lost.", officeEx);
-                        }
+                () -> {
+                    try {
+                        doEnsureProcessExited(true);
+                        doStartProcessAndConnect(false);
+                    } catch (InstrumentException officeEx) {
+                        Logger.error("Could not restart process after connection lost.", officeEx);
                     }
                 });
     }
@@ -209,15 +200,11 @@ public class OfficeProcessManager {
     public void restartDueToTaskTimeout() {
         Logger.info("Executing task 'Restart After Timeout'...");
         executor.execute(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            doTerminateProcess();
-
-                        } catch (InstrumentException officeException) {
-                            Logger.error("Could not terminate process after task timeout.", officeException);
-                        }
+                () -> {
+                    try {
+                        doTerminateProcess();
+                    } catch (InstrumentException officeException) {
+                        Logger.error("Could not terminate process after task timeout.", officeException);
                     }
                 });
     }
@@ -231,12 +218,9 @@ public class OfficeProcessManager {
         // 将启动任务提交给执行程序并等待
         submitAndWait(
                 "Start",
-                new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        doStartProcessAndConnect(false);
-                        return null;
-                    }
+                () -> {
+                    doStartProcessAndConnect(false);
+                    return null;
                 });
     }
 
@@ -249,15 +233,9 @@ public class OfficeProcessManager {
         // 将停止任务提交给执行程序并等待
         submitAndWait(
                 "Stop",
-                new Callable<Void>() {
-
-                    @Override
-                    public Void call() throws Exception {
-
-                        doStopProcess(true);
-
-                        return null;
-                    }
+                () -> {
+                    doStopProcess(true);
+                    return null;
                 });
     }
 

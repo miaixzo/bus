@@ -39,17 +39,12 @@ import java.util.List;
  * 将所有特性选择延迟到底层SSL套接字
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class ConnectionSuite {
 
-    public static final Comparator<String> NATURAL_ORDER = new Comparator<String>() {
-        @Override
-        public int compare(String a, String b) {
-            return a.compareTo(b);
-        }
-    };
+    public static final Comparator<String> NATURAL_ORDER = String::compareTo;
     /**
      * 用于{@code http:} url的未加密、未经身份验证的连接
      */

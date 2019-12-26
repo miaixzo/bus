@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.forest;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.algorithm.SecureRandom;
@@ -46,16 +47,16 @@ import java.util.jar.Attributes;
  * Jar 工具类,包含I/O,密钥,过滤器的工具方法
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class Builder {
 
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
     public static final String WEB_INF_LIB = "WEB-INF/lib/";
-    public static final String META_INF_MANIFEST = "META-INF/MANIFEST.MF";
+    public static final String META_INF_MANIFEST = Normal.META_DATA_INF + "/MANIFEST.MF";
     public static final String XJAR_SRC_DIR = Builder.class.getPackage().getName().replace(Symbol.C_DOT, Symbol.C_SLASH) + Symbol.SLASH;
-    public static final String XJAR_INF_DIR = "META-INF/";
+    public static final String XJAR_INF_DIR = Normal.META_DATA_INF + "/";
     public static final String XJAR_INF_IDX = "FOREST.MF";
     public static final String XJAR_ALGORITHM = "--xjar.algorithm=";
     public static final String XJAR_KEYSIZE = "--xjar.keysize=";

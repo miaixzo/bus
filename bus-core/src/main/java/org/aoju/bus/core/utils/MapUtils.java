@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MapUtils {
@@ -81,7 +81,7 @@ public class MapUtils {
      * @return HashMap对象
      */
     public static <K, V> HashMap<K, V> newHashMap() {
-        return new HashMap<K, V>();
+        return new HashMap<>();
     }
 
     /**
@@ -96,7 +96,7 @@ public class MapUtils {
      */
     public static <K, V> HashMap<K, V> newHashMap(int size, boolean isOrder) {
         int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR);
-        return isOrder ? new LinkedHashMap<K, V>(initialCapacity) : new HashMap<K, V>(initialCapacity);
+        return isOrder ? new LinkedHashMap<>(initialCapacity) : new HashMap<>(initialCapacity);
     }
 
     /**
@@ -572,29 +572,24 @@ public class MapUtils {
      * @param <T> 键和值类型
      * @param map Map对象,键值类型必须一致
      * @return 互换后的Map
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static <T> Map<T, T> reverse(Map<T, T> map) {
-        return filter(map, new Editor<Entry<T, T>>() {
+        return filter(map, (Editor<Entry<T, T>>) t -> new Entry<T, T>() {
+
             @Override
-            public Entry<T, T> edit(final Entry<T, T> t) {
-                return new Entry<T, T>() {
+            public T getKey() {
+                return t.getValue();
+            }
 
-                    @Override
-                    public T getKey() {
-                        return t.getValue();
-                    }
+            @Override
+            public T getValue() {
+                return t.getKey();
+            }
 
-                    @Override
-                    public T getValue() {
-                        return t.getKey();
-                    }
-
-                    @Override
-                    public T setValue(T value) {
-                        throw new UnsupportedOperationException("Unsupported setValue method !");
-                    }
-                };
+            @Override
+            public T setValue(T value) {
+                throw new UnsupportedOperationException("Unsupported setValue method !");
             }
         });
     }
@@ -643,7 +638,7 @@ public class MapUtils {
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static MapProxy createProxy(Map<?, ?> map) {
         return MapProxy.create(map);
@@ -695,13 +690,7 @@ public class MapUtils {
      * @return 新Map, 只包含指定的key
      */
     public static <K, V> Map<K, V> getAny(Map<K, V> map, final K... keys) {
-        return filter(map, new Filter<Entry<K, V>>() {
-
-            @Override
-            public boolean accept(Entry<K, V> entry) {
-                return ArrayUtils.contains(keys, entry.getKey());
-            }
-        });
+        return filter(map, (Filter<Entry<K, V>>) entry -> ArrayUtils.contains(keys, entry.getKey()));
     }
 
     /**

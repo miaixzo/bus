@@ -40,7 +40,7 @@ import java.util.*;
  * Header实用工具
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class HttpHeaders {
@@ -189,7 +189,7 @@ public final class HttpHeaders {
 
             if (!commaPrefixed && (commaSuffixed || header.exhausted())) {
                 result.add(new Challenge(schemeName, Collections.singletonMap(
-                        (String) null, peek + repeat(Symbol.C_EQUAL, eqCount))));
+                        null, peek + repeat(Symbol.C_EQUAL, eqCount))));
                 peek = null;
                 continue;
             }

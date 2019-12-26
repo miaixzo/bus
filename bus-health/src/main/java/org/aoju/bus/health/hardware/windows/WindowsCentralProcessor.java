@@ -48,7 +48,7 @@ import java.util.*;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WindowsCentralProcessor extends AbstractCentralProcessor {
@@ -471,7 +471,7 @@ public class WindowsCentralProcessor extends AbstractCentralProcessor {
     }
 
     enum ProcessorProperty {
-        PROCESSORID;
+        PROCESSORID
     }
 
     /*

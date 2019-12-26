@@ -43,7 +43,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MacUsbDevice extends AbstractUsbDevice {
@@ -210,8 +210,8 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param locationId         The locationID of this controller returned from the registry
      * @param locationIDKey      A pointer to the locationID string
      * @param ioPropertyMatchKey A pointer to the IOPropertyMatch string
-     * @param productIdMap
-     * @param vendorIdMap
+     * @param productIdMap       The productIdMap
+     * @param vendorIdMap        The vendorIdMap
      */
     private static void getControllerIdByLocation(long id, CFTypeRef locationId, CFStringRef locationIDKey,
                                                   CFStringRef ioPropertyMatchKey, Map<Long, String> vendorIdMap, Map<Long, String> productIdMap) {
@@ -268,12 +268,11 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param registryEntryId The device unique registry id.
      * @param vid             The default (parent) vendor ID
      * @param pid             The default (parent) product ID
-     * @param nameMap
-     * @param vendorMap
-     * @param vendorIdMap
-     * @param productIdMap
-     * @param serialMap
-     * @param hubMap
+     * @param nameMap         The nameMap
+     * @param vendorMap       The vendorMap
+     * @param vendorIdMap     The vendorIdMap
+     * @param productIdMap    The productIdMap
+     * @param hubMap          The hubMap
      * @return A MacUsbDevice corresponding to this device
      */
     private static MacUsbDevice getDeviceAndChildren(Long registryEntryId, String vid, String pid,
@@ -281,7 +280,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
                                                      Map<Long, String> productIdMap, Map<Long, String> serialMap, Map<Long, List<Long>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(registryEntryId, vid);
         String productId = productIdMap.getOrDefault(registryEntryId, pid);
-        List<Long> childIds = hubMap.getOrDefault(registryEntryId, new ArrayList<Long>());
+        List<Long> childIds = hubMap.getOrDefault(registryEntryId, new ArrayList<>());
         List<MacUsbDevice> usbDevices = new ArrayList<>();
         for (Long id : childIds) {
             usbDevices.add(getDeviceAndChildren(id, vendorId, productId, nameMap, vendorMap, vendorIdMap, productIdMap,

@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 处理主要逻辑,最关键的一个类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MapperBuilder {
@@ -51,22 +51,22 @@ public class MapperBuilder {
     /**
      * 缓存skip结果
      */
-    private final Map<String, Boolean> msIdSkip = new ConcurrentHashMap<String, Boolean>();
+    private final Map<String, Boolean> msIdSkip = new ConcurrentHashMap<>();
 
     /**
      * 注册的接口
      */
-    private List<Class<?>> registerClass = new ArrayList<Class<?>>();
+    private List<Class<?>> registerClass = new ArrayList<>();
 
     /**
      * 注册的通用Mapper接口
      */
-    private Map<Class<?>, MapperTemplate> registerMapper = new ConcurrentHashMap<Class<?>, MapperTemplate>();
+    private Map<Class<?>, MapperTemplate> registerMapper = new ConcurrentHashMap<>();
 
     /**
      * 缓存msid和MapperTemplate
      */
-    private Map<String, MapperTemplate> msIdCache = new ConcurrentHashMap<String, MapperTemplate>();
+    private Map<String, MapperTemplate> msIdCache = new ConcurrentHashMap<>();
 
     /**
      * 通用Mapper配置
@@ -94,7 +94,7 @@ public class MapperBuilder {
         Method[] methods = mapperClass.getDeclaredMethods();
         Class<?> templateClass = null;
         Class<?> tempClass = null;
-        Set<String> methodSet = new HashSet<String>();
+        Set<String> methodSet = new HashSet<>();
         for (Method method : methods) {
             if (method.isAnnotationPresent(SelectProvider.class)) {
                 SelectProvider provider = method.getAnnotation(SelectProvider.class);
@@ -122,7 +122,7 @@ public class MapperBuilder {
         if (templateClass == null || !MapperTemplate.class.isAssignableFrom(templateClass)) {
             templateClass = EmptyProvider.class;
         }
-        MapperTemplate mapperTemplate = null;
+        MapperTemplate mapperTemplate;
         try {
             mapperTemplate = (MapperTemplate) templateClass.getConstructor(Class.class, MapperBuilder.class).newInstance(mapperClass, this);
         } catch (Exception e) {

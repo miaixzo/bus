@@ -34,7 +34,7 @@ import java.util.Collection;
  * 各种集合类转换器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CollectionConverter implements Converter<Collection<?>> {
@@ -86,7 +86,7 @@ public class CollectionConverter implements Converter<Collection<?>> {
 
     @Override
     public Collection<?> convert(Object value, Collection<?> defaultValue) throws IllegalArgumentException {
-        Collection<?> result = null;
+        Collection<?> result;
         try {
             result = convertInternal(value);
         } catch (RuntimeException e) {

@@ -44,7 +44,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class MacNetwork extends AbstractNetwork {
@@ -59,7 +59,7 @@ public class MacNetwork extends AbstractNetwork {
     public String getDomainName() {
         CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
         hint.ai_flags = CLibrary.AI_CANONNAME;
-        String hostname = "";
+        String hostname;
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {

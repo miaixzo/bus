@@ -32,7 +32,7 @@ import javax.security.auth.x500.X500Principal;
  * 它不支持十六进制字符串样式的值.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class DistinguishedNameParser {

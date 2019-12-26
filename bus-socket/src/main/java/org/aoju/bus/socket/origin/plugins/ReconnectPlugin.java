@@ -33,7 +33,7 @@ import java.nio.channels.AsynchronousChannelGroup;
  * 断链重连插件
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 class ReconnectPlugin<T> extends AbstractPlugin<T> {

@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * 并可以跳过读取和关闭该源
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Http1Codec implements HttpCodec {
@@ -223,13 +223,13 @@ public final class Http1Codec implements HttpCodec {
         return new FixedLengthSource(length);
     }
 
-    public Source newChunkedSource(UnoUrl url) throws IOException {
+    public Source newChunkedSource(UnoUrl url) {
         if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
         state = STATE_READING_RESPONSE_BODY;
         return new ChunkedSource(url);
     }
 
-    public Source newUnknownLengthSource() throws IOException {
+    public Source newUnknownLengthSource() {
         if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
         if (streamAllocation == null) throw new IllegalStateException("streamAllocation == null");
         state = STATE_READING_RESPONSE_BODY;
@@ -371,7 +371,7 @@ public final class Http1Codec implements HttpCodec {
     private class FixedLengthSource extends AbstractSource {
         private long bytesRemaining;
 
-        FixedLengthSource(long length) throws IOException {
+        FixedLengthSource(long length) {
             bytesRemaining = length;
             if (bytesRemaining == 0) {
                 endOfInput(true, null);

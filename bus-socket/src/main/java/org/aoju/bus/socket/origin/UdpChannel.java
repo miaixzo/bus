@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class UdpChannel<Request> {
@@ -95,12 +95,6 @@ public final class UdpChannel<Request> {
         this.bufferPage = bufferPage;
     }
 
-    /**
-     * @param virtualBuffer
-     * @param remote
-     * @throws IOException
-     * @throws InterruptedException
-     */
     private void write(VirtualBuffer virtualBuffer, SocketAddress remote) throws IOException, InterruptedException {
         int index = writeRingBuffer == null ? -1 : writeRingBuffer.tryNextWriteIndex();
         //缓存区已满,同步输出确保线程不发送死锁
@@ -188,22 +182,19 @@ public final class UdpChannel<Request> {
             if (session != null) {
                 return session;
             }
-            Function<WriteBuffer, Void> function = new Function<WriteBuffer, Void>() {
-                @Override
-                public Void apply(WriteBuffer writeBuffer) {
-                    VirtualBuffer virtualBuffer = writeBuffer.poll();
-                    if (virtualBuffer == null) {
-                        return null;
-                    }
-                    try {
-                        write(virtualBuffer, remote);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            Function<WriteBuffer, Void> function = writeBuffer -> {
+                VirtualBuffer virtualBuffer = writeBuffer.poll();
+                if (virtualBuffer == null) {
                     return null;
                 }
+                try {
+                    write(virtualBuffer, remote);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
             };
             WriteBuffer writeBuffer = new WriteBuffer(bufferPage, function, writeQueueCapacity);
             session = new UdpAioSession<>(this, remote, writeBuffer);

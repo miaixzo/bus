@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 如果您提供自己的执行程序，它应该能够并发地运行{@linkplain #getMaxRequests 配置的最大调用数}
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Dispatcher {
@@ -75,7 +75,7 @@ public final class Dispatcher {
     public synchronized ExecutorService executorService() {
         if (executorService == null) {
             executorService = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
-                    new SynchronousQueue<Runnable>(), Builder.threadFactory("Httpd Dispatcher", false));
+                    new SynchronousQueue<>(), Builder.threadFactory("Httpd Dispatcher", false));
         }
         return executorService;
     }

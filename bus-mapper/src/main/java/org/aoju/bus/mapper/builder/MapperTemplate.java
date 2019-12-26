@@ -53,14 +53,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通用Mapper模板类,扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class MapperTemplate {
 
     private static final XMLLanguageDriver languageDriver = new XMLLanguageDriver();
-    protected Map<String, Method> methodMap = new ConcurrentHashMap<String, Method>();
-    protected Map<String, Class<?>> entityClassMap = new ConcurrentHashMap<String, Class<?>>();
+    protected Map<String, Method> methodMap = new ConcurrentHashMap<>();
+    protected Map<String, Class<?>> entityClassMap = new ConcurrentHashMap<>();
     protected Class<?> mapperClass;
     protected MapperBuilder mapperBuilder;
 

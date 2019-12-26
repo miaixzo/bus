@@ -47,7 +47,7 @@ import java.util.Map;
  * POST请求处理
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class PostRequest extends HttpRequest {
@@ -111,8 +111,7 @@ public class PostRequest extends HttpRequest {
         } else {
             FormBody.Builder builder = new FormBody.Builder();
             addParams(builder);
-            FormBody formBody = builder.build();
-            return formBody;
+            return builder.build();
         }
     }
 
@@ -132,10 +131,8 @@ public class PostRequest extends HttpRequest {
 
     private void addParams(MultipartBody.Builder builder) {
         if (params != null && !params.isEmpty()) {
-            params.forEach((k, v) -> {
-                builder.addPart(Headers.of(Header.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
-                        RequestBody.create(null, v));
-            });
+            params.forEach((k, v) -> builder.addPart(Headers.of(Header.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
+                    RequestBody.create(null, v)));
         }
     }
 

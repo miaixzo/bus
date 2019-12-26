@@ -39,7 +39,7 @@ import java.util.List;
  * execution.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Command {
@@ -77,7 +77,7 @@ public class Command {
      * string if the command failed
      */
     public static List<String> runNative(String[] cmdToRunWithArgs) {
-        Process p = null;
+        Process p;
         try {
             p = Runtime.getRuntime().exec(cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {

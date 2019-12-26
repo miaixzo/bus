@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 可以挂起的线程池执行程序,池中只允许有一个线程
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SuspendableThread extends ThreadPoolExecutor {
@@ -44,7 +44,7 @@ public class SuspendableThread extends ThreadPoolExecutor {
     private boolean available;
 
     public SuspendableThread(final ThreadFactory threadFactory) {
-        super(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), threadFactory);
+        super(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), threadFactory);
     }
 
     @Override

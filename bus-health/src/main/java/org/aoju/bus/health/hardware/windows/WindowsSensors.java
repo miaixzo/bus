@@ -42,7 +42,7 @@ import java.util.Map;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WindowsSensors extends AbstractSensors {
@@ -252,19 +252,19 @@ public class WindowsSensors extends AbstractSensors {
     }
 
     enum OhmHardwareProperty {
-        IDENTIFIER;
+        IDENTIFIER
     }
 
     enum OhmSensorProperty {
-        VALUE;
+        VALUE
     }
 
     enum FanProperty {
-        DESIREDSPEED;
+        DESIREDSPEED
     }
 
     enum VoltProperty {
-        CURRENTVOLTAGE, VOLTAGECAPS;
+        CURRENTVOLTAGE, VOLTAGECAPS
     }
 
     /*

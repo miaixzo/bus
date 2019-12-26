@@ -43,12 +43,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <a href="https://publicsuffix.org/">publicsuffix.org</a>.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class SuffixDatabase {
 
-    public static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
+    public static final String PUBLIC_SUFFIX_RESOURCE = Normal.META_DATA_INF + "/suffixes/suffixes.gz";
 
     private static final byte[] WILDCARD_LABEL = new byte[]{Symbol.C_STAR};
     private static final String[] EMPTY_RULE = Normal.EMPTY_STRING_ARRAY;

@@ -38,7 +38,7 @@ import java.util.*;
  * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
@@ -77,7 +77,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param m Map
      */
     public Dict(Map<String, Object> m) {
-        super((null == m) ? new HashMap<String, Object>() : m);
+        super((null == m) ? new HashMap<>() : m);
     }
 
     /**

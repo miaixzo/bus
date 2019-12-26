@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * Firmware data obtained by sysfs.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 final class LinuxFirmware extends AbstractFirmware {
@@ -81,7 +81,7 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private String queryManufacturer() {
-        String result = null;
+        String result;
         if ((result = queryManufacturerFromSysfs()) == null && (result = vcGenCmd.get().manufacturer) == null) {
             return Builder.UNKNOWN;
         }
@@ -89,7 +89,7 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private String queryDescription() {
-        String result = null;
+        String result;
         if ((result = queryDescriptionFromSysfs()) == null && (result = vcGenCmd.get().description) == null) {
             return Builder.UNKNOWN;
         }
@@ -97,7 +97,7 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private String queryVersion() {
-        String result = null;
+        String result;
         if ((result = queryVersionFromSysfs()) == null && (result = vcGenCmd.get().version) == null) {
             return Builder.UNKNOWN;
         }
@@ -105,7 +105,7 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private String queryReleaseDate() {
-        String result = null;
+        String result;
         if ((result = queryReleaseDateFromSysfs()) == null && (result = vcGenCmd.get().releaseDate) == null) {
             return Builder.UNKNOWN;
         }
@@ -113,7 +113,7 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private String queryName() {
-        String result = null;
+        String result;
         if ((result = bios.get().biosName) == null && (result = vcGenCmd.get().name) == null) {
             return Builder.UNKNOWN;
         }
@@ -215,9 +215,9 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private VcGenCmdStrings queryVcGenCmd() {
-        String vcReleaseDate = null;
-        String vcManufacturer = null;
-        String vcVersion = null;
+        String vcReleaseDate;
+        String vcManufacturer;
+        String vcVersion;
 
         List<String> vcgencmd = Command.runNative("vcgencmd version");
         if (vcgencmd.size() >= 3) {

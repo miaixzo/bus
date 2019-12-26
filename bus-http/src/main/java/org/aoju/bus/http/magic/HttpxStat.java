@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * HTTP状态
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class HttpxStat {
@@ -46,7 +46,7 @@ public class HttpxStat {
     protected static AtomicInteger reqExceptionCount = new AtomicInteger(0);
     protected static Date startTime = new Date();
     protected static Date lastAccessTime;
-    protected static LinkedBlockingDeque<String> errorMsgs = new LinkedBlockingDeque<String>(MAX_ERROR_MSG_COUNT);
+    protected static LinkedBlockingDeque<String> errorMsgs = new LinkedBlockingDeque<>(MAX_ERROR_MSG_COUNT);
     private static boolean isStop = false;
 
     public static void stopStat() {
@@ -89,7 +89,6 @@ public class HttpxStat {
             if (errorMsgs.size() >= MAX_ERROR_MSG_COUNT) {
                 errorMsgs.removeFirst();
             }
-            ;
             StringBuilder errorMsg = new StringBuilder();
             errorMsg.append(DateUtils.format(new Date(), Fields.NORM_DATETIME_PATTERN))
                     .append(Symbol.HT)

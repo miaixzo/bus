@@ -46,7 +46,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class BeanUtils {
@@ -146,12 +146,9 @@ public class BeanUtils {
         } catch (IntrospectionException e) {
             throw new InstrumentException(e);
         }
-        return ArrayUtils.filter(beanInfo.getPropertyDescriptors(), new Filter<PropertyDescriptor>() {
-            @Override
-            public boolean accept(PropertyDescriptor t) {
-                // 过滤掉getClass方法
-                return false == "class".equals(t.getName());
-            }
+        return ArrayUtils.filter(beanInfo.getPropertyDescriptors(), (Filter<PropertyDescriptor>) t -> {
+            // 过滤掉getClass方法
+            return false == "class".equals(t.getName());
         });
     }
 
@@ -460,7 +457,7 @@ public class BeanUtils {
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, boolean isToUnderlineCase, boolean ignoreNullValue) {
-        return beanToMap(bean, new LinkedHashMap<String, Object>(), isToUnderlineCase, ignoreNullValue);
+        return beanToMap(bean, new LinkedHashMap<>(), isToUnderlineCase, ignoreNullValue);
     }
 
     /**
@@ -478,13 +475,7 @@ public class BeanUtils {
             return null;
         }
 
-        return beanToMap(bean, targetMap, ignoreNullValue, new Editor<String>() {
-
-            @Override
-            public String edit(String key) {
-                return isToUnderlineCase ? StringUtils.toUnderlineCase(key) : key;
-            }
-        });
+        return beanToMap(bean, targetMap, ignoreNullValue, key -> isToUnderlineCase ? StringUtils.toUnderlineCase(key) : key);
     }
 
     /**

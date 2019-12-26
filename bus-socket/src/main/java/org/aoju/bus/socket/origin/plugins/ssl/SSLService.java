@@ -39,7 +39,7 @@ import java.security.cert.X509Certificate;
  * TLS/SSL服务
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SSLService {
@@ -77,11 +77,11 @@ public class SSLService {
             } else {
                 trustManagers = new TrustManager[]{new X509TrustManager() {
                     @Override
-                    public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                    public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
                     }
 
                     @Override
-                    public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                    public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
                     }
 
                     @Override

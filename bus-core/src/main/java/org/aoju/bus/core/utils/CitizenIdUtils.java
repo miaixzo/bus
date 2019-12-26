@@ -37,7 +37,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CitizenIdUtils {
@@ -57,15 +57,15 @@ public class CitizenIdUtils {
     /**
      * 省市代码表
      */
-    private static Map<String, String> cityCodes = new HashMap<String, String>();
+    private static Map<String, String> cityCodes = new HashMap<>();
     /**
      * 台湾身份首字母对应数字
      */
-    private static Map<String, Integer> twFirstCode = new HashMap<String, Integer>();
+    private static Map<String, Integer> twFirstCode = new HashMap<>();
     /**
      * 香港身份首字母对应数字
      */
-    private static Map<String, Integer> hkFirstCode = new HashMap<String, Integer>();
+    private static Map<String, Integer> hkFirstCode = new HashMap<>();
 
     static {
         cityCodes.put("11", "北京");
@@ -535,7 +535,7 @@ public class CitizenIdUtils {
      * @param endExclude   结束位置（不包含）
      * @return 隐藏后的身份证号码
      * @see StringUtils#hide(CharSequence, int, int)
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static String hide(String idCard, int startInclude, int endExclude) {
         return StringUtils.hide(idCard, startInclude, endExclude);
@@ -555,7 +555,7 @@ public class CitizenIdUtils {
     /**
      * 将power和值与11取模获得余数进行校验码判断
      *
-     * @param iSum
+     * @param iSum the iSum
      * @return 校验位
      */
     private static char getCheckCode18(int iSum) {
@@ -590,7 +590,7 @@ public class CitizenIdUtils {
     /**
      * 将身份证的每位和对应位的加权因子相乘之后,再得到和值
      *
-     * @param iArr
+     * @param iArr the arr
      * @return 身份证编码
      */
     private static int getPowerSum(char[] iArr) {

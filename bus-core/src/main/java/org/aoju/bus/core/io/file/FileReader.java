@@ -40,7 +40,7 @@ import java.util.List;
  * 文件读取器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class FileReader extends FileWrapper {
@@ -220,7 +220,7 @@ public class FileReader extends FileWrapper {
      * @throws InstrumentException 异常
      */
     public List<String> readLines() throws InstrumentException {
-        return readLines(new ArrayList<String>());
+        return readLines(new ArrayList<>());
     }
 
     /**
@@ -233,7 +233,7 @@ public class FileReader extends FileWrapper {
      */
     public <T> T read(ReaderHandler<T> readerHandler) throws InstrumentException {
         BufferedReader reader = null;
-        T result = null;
+        T result;
         try {
             reader = FileUtils.getReader(this.file, charset);
             result = readerHandler.handle(reader);

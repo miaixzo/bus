@@ -42,7 +42,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ArrayUtils {
@@ -4487,7 +4487,7 @@ public class ArrayUtils {
      * 数组的最后一个值保留为默认值.
      *
      * @param array                 要复制的数组不能是{@code null}.
-     * @param newArrayComponentType 如果{@code数组}是{@code null}，
+     * @param newArrayComponentType 如果{@code array}是{@code null}，
      *                              则创建此类型的大小为1的数组.
      * @return 比输入大1的数组的新副本.
      */
@@ -4529,8 +4529,7 @@ public class ArrayUtils {
         } else {
             throw new IllegalArgumentException("Array and element cannot both be null");
         }
-        final T[] newArray = (T[]) add(array, index, element, clss);
-        return newArray;
+        return (T[]) add(array, index, element, clss);
     }
 
     /**
@@ -5228,8 +5227,7 @@ public class ArrayUtils {
                 toRemove.set(i);
             }
         }
-        final T[] result = (T[]) removeAll(array, toRemove);
-        return result;
+        return (T[]) removeAll(array, toRemove);
     }
 
     /**
@@ -5871,12 +5869,7 @@ public class ArrayUtils {
      * @return 数组是否已排序
      */
     public static <T extends Comparable<? super T>> boolean isSorted(final T[] array) {
-        return isSorted(array, new Comparator<T>() {
-            @Override
-            public int compare(final T o1, final T o2) {
-                return o1.compareTo(o2);
-            }
-        });
+        return isSorted(array, (o1, o2) -> o1.compareTo(o2));
     }
 
 
@@ -7046,7 +7039,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7057,7 +7050,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7069,7 +7062,7 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return newArray(componentType, 0).getClass();
@@ -8598,7 +8591,7 @@ public class ArrayUtils {
      * @return 过滤后的数组
      */
     public static <T> T[] filter(T[] array, Editor<T> editor) {
-        ArrayList<T> list = new ArrayList<T>(array.length);
+        ArrayList<T> list = new ArrayList<>(array.length);
         T modified;
         for (T t : array) {
             modified = editor.edit(t);
@@ -8617,10 +8610,10 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口,用于定义过滤规则
      * @return 过滤后的数组
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
-        ArrayList<T> list = new ArrayList<T>(array.length);
+        ArrayList<T> list = new ArrayList<>(array.length);
         boolean isAccept;
         for (T t : array) {
             isAccept = filter.accept(t);

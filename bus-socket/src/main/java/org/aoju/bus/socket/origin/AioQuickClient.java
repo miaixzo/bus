@@ -39,7 +39,7 @@ import java.util.concurrent.ThreadFactory;
  * AIO实现的客户端服务
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class AioQuickClient<T> {
@@ -112,7 +112,7 @@ public class AioQuickClient<T> {
         }
         socketChannel.connect(new InetSocketAddress(config.getHost(), config.getPort())).get();
         //连接成功则构造AIOSession对象
-        session = new TcpAioSession<T>(socketChannel, config, new TcpReadHandler<T>(), new TcpWriteHandler<T>(), bufferPool.allocateBufferPage());
+        session = new TcpAioSession<>(socketChannel, config, new TcpReadHandler<>(), new TcpWriteHandler<>(), bufferPool.allocateBufferPage());
         session.initSession();
         return session;
     }
@@ -129,12 +129,7 @@ public class AioQuickClient<T> {
      * @see AioQuickClient#start(AsynchronousChannelGroup)
      */
     public final AioSession<T> start() throws IOException, ExecutionException, InterruptedException {
-        this.asynchronousChannelGroup = AsynchronousChannelGroup.withFixedThreadPool(2, new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r);
-            }
-        });
+        this.asynchronousChannelGroup = AsynchronousChannelGroup.withFixedThreadPool(2, r -> new Thread(r));
         return start(asynchronousChannelGroup);
     }
 

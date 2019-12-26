@@ -39,7 +39,7 @@ import java.util.Map;
  * 数据库方言 hsqldb
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class HsqldbDialect extends AbstractHelperDialect {
@@ -53,7 +53,7 @@ public class HsqldbDialect extends AbstractHelperDialect {
         pageKey.update(page.getStartRow());
         //处理参数配置
         if (boundSql.getParameterMappings() != null) {
-            List<ParameterMapping> newParameterMappings = new ArrayList<ParameterMapping>(boundSql.getParameterMappings());
+            List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             if (page.getPageSize() > 0) {
                 newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, Integer.class).build());
             }

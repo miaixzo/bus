@@ -47,7 +47,7 @@ import java.util.*;
  * 类工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ClassUtils {
@@ -168,7 +168,7 @@ public class ClassUtils {
      * @return 方法名Set
      */
     public static Set<String> getPublicMethodNames(Class<?> clazz) {
-        HashSet<String> methodSet = new HashSet<String>();
+        HashSet<String> methodSet = new HashSet<>();
         Method[] methodArray = getPublicMethods(clazz);
         for (Method method : methodArray) {
             String methodName = method.getName();
@@ -223,12 +223,7 @@ public class ClassUtils {
      */
     public static List<Method> getPublicMethods(Class<?> clazz, Method... excludeMethods) {
         final HashSet<Method> excludeMethodSet = CollUtils.newHashSet(excludeMethods);
-        return getPublicMethods(clazz, new Filter<Method>() {
-            @Override
-            public boolean accept(Method method) {
-                return false == excludeMethodSet.contains(method);
-            }
-        });
+        return getPublicMethods(clazz, method -> false == excludeMethodSet.contains(method));
     }
 
     /**
@@ -240,12 +235,7 @@ public class ClassUtils {
      */
     public static List<Method> getPublicMethods(Class<?> clazz, String... excludeMethodNames) {
         final HashSet<String> excludeMethodNameSet = CollUtils.newHashSet(excludeMethodNames);
-        return getPublicMethods(clazz, new Filter<Method>() {
-            @Override
-            public boolean accept(Method method) {
-                return false == excludeMethodNameSet.contains(method.getName());
-            }
-        });
+        return getPublicMethods(clazz, method -> false == excludeMethodNameSet.contains(method.getName()));
     }
 
     /**
@@ -330,8 +320,7 @@ public class ClassUtils {
      * @return 获得Java ClassPath路径,不包括 jre
      */
     public static String[] getJavaClassPaths() {
-        String[] classPaths = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
-        return classPaths;
+        return System.getProperty("java.class.path").split(System.getProperty("path.separator"));
     }
 
     /**
@@ -749,7 +738,7 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 5.3.6
+     * @since 5.3.8
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();
@@ -916,13 +905,7 @@ public class ClassUtils {
             return null;
         }
 
-        return beanToMap(bean, targetMap, ignoreNullValue, new Editor<String>() {
-
-            @Override
-            public String edit(String key) {
-                return isToUnderlineCase ? StringUtils.toUnderlineCase(key) : key;
-            }
-        });
+        return beanToMap(bean, targetMap, ignoreNullValue, key -> isToUnderlineCase ? StringUtils.toUnderlineCase(key) : key);
     }
 
     /**
@@ -1664,82 +1647,73 @@ public class ClassUtils {
      * @return 可迭代的在给定类的类层次结构上的可迭代的
      */
     public static Iterable<Class<?>> hierarchy(final Class<?> type, final Interfaces interfacesBehavior) {
-        final Iterable<Class<?>> classes = new Iterable<Class<?>>() {
+        final Iterable<Class<?>> classes = () -> {
+            final MutableObject<Class<?>> next = new MutableObject<>(type);
+            return new Iterator<Class<?>>() {
 
-            @Override
-            public Iterator<Class<?>> iterator() {
-                final MutableObject<Class<?>> next = new MutableObject<Class<?>>(type);
-                return new Iterator<Class<?>>() {
+                @Override
+                public boolean hasNext() {
+                    return next.get() != null;
+                }
 
-                    @Override
-                    public boolean hasNext() {
-                        return next.get() != null;
-                    }
+                @Override
+                public Class<?> next() {
+                    final Class<?> result = next.get();
+                    next.set(result.getSuperclass());
+                    return result;
+                }
 
-                    @Override
-                    public Class<?> next() {
-                        final Class<?> result = next.get();
-                        next.set(result.getSuperclass());
-                        return result;
-                    }
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
 
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-
-                };
-            }
-
+            };
         };
         if (interfacesBehavior != Interfaces.INCLUDE) {
             return classes;
         }
-        return new Iterable<Class<?>>() {
+        return () -> {
+            final Set<Class<?>> seenInterfaces = new HashSet<>();
+            final Iterator<Class<?>> wrapped = classes.iterator();
 
-            @Override
-            public Iterator<Class<?>> iterator() {
-                final Set<Class<?>> seenInterfaces = new HashSet<>();
-                final Iterator<Class<?>> wrapped = classes.iterator();
+            return new Iterator<Class<?>>() {
+                Iterator<Class<?>> interfaces = Collections.emptyIterator();
 
-                return new Iterator<Class<?>>() {
-                    Iterator<Class<?>> interfaces = Collections.emptyIterator();
+                @Override
+                public boolean hasNext() {
+                    return interfaces.hasNext() || wrapped.hasNext();
+                }
 
-                    @Override
-                    public boolean hasNext() {
-                        return interfaces.hasNext() || wrapped.hasNext();
+                @Override
+                public Class<?> next() {
+                    if (interfaces.hasNext()) {
+                        final Class<?> nextInterface = interfaces.next();
+                        seenInterfaces.add(nextInterface);
+                        return nextInterface;
                     }
+                    final Class<?> nextSuperclass = wrapped.next();
+                    final Set<Class<?>> currentInterfaces = new LinkedHashSet<>();
+                    walkInterfaces(currentInterfaces, nextSuperclass);
+                    interfaces = currentInterfaces.iterator();
+                    return nextSuperclass;
+                }
 
-                    @Override
-                    public Class<?> next() {
-                        if (interfaces.hasNext()) {
-                            final Class<?> nextInterface = interfaces.next();
-                            seenInterfaces.add(nextInterface);
-                            return nextInterface;
+                private void walkInterfaces(final Set<Class<?>> addTo, final Class<?> c) {
+                    for (final Class<?> iface : c.getInterfaces()) {
+                        if (!seenInterfaces.contains(iface)) {
+                            addTo.add(iface);
                         }
-                        final Class<?> nextSuperclass = wrapped.next();
-                        final Set<Class<?>> currentInterfaces = new LinkedHashSet<>();
-                        walkInterfaces(currentInterfaces, nextSuperclass);
-                        interfaces = currentInterfaces.iterator();
-                        return nextSuperclass;
+                        walkInterfaces(addTo, iface);
                     }
+                }
 
-                    private void walkInterfaces(final Set<Class<?>> addTo, final Class<?> c) {
-                        for (final Class<?> iface : c.getInterfaces()) {
-                            if (!seenInterfaces.contains(iface)) {
-                                addTo.add(iface);
-                            }
-                            walkInterfaces(addTo, iface);
-                        }
-                    }
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
 
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-
-                };
-            }
+            };
         };
     }
 
@@ -1962,7 +1936,7 @@ public class ClassUtils {
         args = ArrayUtils.nullToEmpty(args);
 
         final String messagePrefix;
-        Method method = null;
+        Method method;
 
         if (forceAccess) {
             messagePrefix = "No such method: ";

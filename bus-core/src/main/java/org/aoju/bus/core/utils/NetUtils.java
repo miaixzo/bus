@@ -40,7 +40,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class NetUtils {
@@ -313,7 +313,7 @@ public class NetUtils {
             return null;
         }
 
-        return CollUtils.addAll(new ArrayList<NetworkInterface>(), networkInterfaces);
+        return CollUtils.addAll(new ArrayList<>(), networkInterfaces);
     }
 
     /**
@@ -323,13 +323,7 @@ public class NetUtils {
      * @return IP地址列表 {@link LinkedHashSet}
      */
     public static LinkedHashSet<String> localIpv4s() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(new Filter<InetAddress>() {
-
-            @Override
-            public boolean accept(InetAddress t) {
-                return t instanceof Inet4Address;
-            }
-        });
+        final LinkedHashSet<InetAddress> localAddressList = localAddressList(t -> t instanceof Inet4Address);
 
         return toIpList(localAddressList);
     }
@@ -341,13 +335,7 @@ public class NetUtils {
      * @return IP地址列表 {@link LinkedHashSet}
      */
     public static LinkedHashSet<String> localIpv6s() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(new Filter<InetAddress>() {
-
-            @Override
-            public boolean accept(InetAddress t) {
-                return t instanceof Inet6Address;
-            }
-        });
+        final LinkedHashSet<InetAddress> localAddressList = localAddressList(t -> t instanceof Inet6Address);
 
         return toIpList(localAddressList);
     }
@@ -444,21 +432,17 @@ public class NetUtils {
      * @since 3.0.1
      */
     public static InetAddress getLocalhost() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(new Filter<InetAddress>() {
-            @Override
-            public boolean accept(InetAddress address) {
-                // 非loopback地址,指127.*.*.*的地址
-                return false == address.isLoopbackAddress()
-                        // 非地区本地地址,指10.0.0.0 ~ 10.255.255.255、172.16.0.0 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
-                        && false == address.isSiteLocalAddress()
-                        // 需为IPV4地址
-                        && address instanceof Inet4Address;
-            }
+        final LinkedHashSet<InetAddress> localAddressList = localAddressList(address -> {
+            // 非loopback地址,指127.*.*.*的地址
+            return false == address.isLoopbackAddress()
+                    // 非地区本地地址,指10.0.0.0 ~ 10.255.255.255、172.16.0.0 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
+                    && false == address.isSiteLocalAddress()
+                    // 需为IPV4地址
+                    && address instanceof Inet4Address;
         });
 
         if (CollUtils.isNotEmpty(localAddressList)) {
-            InetAddress address = CollUtils.get(localAddressList, 0);
-            return address;
+            return CollUtils.get(localAddressList, 0);
         }
 
         try {

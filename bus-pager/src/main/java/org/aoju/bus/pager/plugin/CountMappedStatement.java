@@ -34,13 +34,13 @@ import java.util.List;
  * 创建新的MappedStatement,主要是Count返回值int
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CountMappedStatement {
 
     public static final String COUNT = "_COUNT";
-    private static final List<ResultMapping> EMPTY_RESULTMAPPING = new ArrayList<ResultMapping>(0);
+    private static final List<ResultMapping> EMPTY_RESULTMAPPING = new ArrayList<>(0);
 
     /**
      * 新建count查询的MappedStatement
@@ -66,7 +66,7 @@ public class CountMappedStatement {
         builder.timeout(ms.getTimeout());
         builder.parameterMap(ms.getParameterMap());
         //count查询返回值int
-        List<ResultMap> resultMaps = new ArrayList<ResultMap>();
+        List<ResultMap> resultMaps = new ArrayList<>();
         ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), Long.class, EMPTY_RESULTMAPPING).build();
         resultMaps.add(resultMap);
         builder.resultMaps(resultMaps);

@@ -35,7 +35,7 @@ import java.util.Map;
  * 莫尔斯电码的编码和解码
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Morse {

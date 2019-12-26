@@ -61,7 +61,7 @@ import java.util.function.Supplier;
  * computers.
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class WindowsOS extends AbstractOS {
@@ -165,12 +165,6 @@ public class WindowsOS extends AbstractOS {
         return version;
     }
 
-    /**
-     * Gets suites available on the system and return as a codename
-     *
-     * @param suiteMask
-     * @return Suites
-     */
     private static String parseCodeName(int suiteMask) {
         List<String> suites = new ArrayList<>();
         if ((suiteMask & 0x00000002) != 0) {
@@ -725,15 +719,15 @@ public class WindowsOS extends AbstractOS {
     }
 
     enum OSVersionProperty {
-        Version, ProductType, BuildNumber, CSDVersion, SuiteMask;
+        Version, ProductType, BuildNumber, CSDVersion, SuiteMask
     }
 
     enum BitnessProperty {
-        AddressWidth;
+        AddressWidth
     }
 
     enum ProcessProperty {
-        ProcessId, CommandLine;
+        ProcessId, CommandLine
     }
 
     // Properties to get from WMI if WTSEnumerateProcesses doesn't work
@@ -745,12 +739,12 @@ public class WindowsOS extends AbstractOS {
         // First element defines WMI instance name field and PDH instance filter
         Name(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
-        Priority("Priority Base"), //
-        CreationDate("Elapsed Time"), //
-        ProcessId("ID Process"), //
-        ParentProcessId("Creating Process ID"), //
-        ReadTransferCount("IO Read Bytes/sec"), //
-        WriteTransferCount("IO Write Bytes/sec"), //
+        Priority("Priority Base"),
+        CreationDate("Elapsed Time"),
+        ProcessId("ID Process"),
+        ParentProcessId("Creating Process ID"),
+        ReadTransferCount("IO Read Bytes/sec"),
+        WriteTransferCount("IO Write Bytes/sec"),
         PrivatePageCount("Working Set - Private");
 
         private final String counter;

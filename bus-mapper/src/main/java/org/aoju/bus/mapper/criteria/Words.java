@@ -30,7 +30,7 @@ import java.util.Set;
  * 关键字处理
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Words {
@@ -953,7 +953,7 @@ public class Words {
                 "ZONE" //$NON-NLS-1$
         };
 
-        RESERVED_WORDS = new HashSet<String>(words.length);
+        RESERVED_WORDS = new HashSet<>(words.length);
 
         for (String word : words) {
             RESERVED_WORDS.add(word);

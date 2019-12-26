@@ -41,7 +41,7 @@ import java.util.Map;
  * Excel图片工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class ExcelPicUtils {
@@ -101,7 +101,7 @@ public class ExcelPicUtils {
      * @return 图片映射, 键格式：行_列,值：{@link PictureData}
      */
     private static Map<String, PictureData> getPicMapXlsx(XSSFWorkbook workbook, int sheetIndex) {
-        final Map<String, PictureData> sheetIndexPicMap = new HashMap<String, PictureData>();
+        final Map<String, PictureData> sheetIndexPicMap = new HashMap<>();
         final XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
         XSSFDrawing drawing;
         for (POIXMLDocumentPart dr : sheet.getRelations()) {

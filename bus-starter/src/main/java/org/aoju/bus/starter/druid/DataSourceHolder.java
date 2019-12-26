@@ -19,17 +19,12 @@ import java.util.Map;
  * 数据源信息
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class DataSourceHolder {
 
-    private static final ThreadLocal<String> DATA_SOURCE_KEY = new ThreadLocal<String>() {
-        @Override
-        protected String initialValue() {
-            return "dataSource";
-        }
-    };
+    private static final ThreadLocal<String> DATA_SOURCE_KEY = ThreadLocal.withInitial(() -> "dataSource");
 
     /**
      * Get current DataSource

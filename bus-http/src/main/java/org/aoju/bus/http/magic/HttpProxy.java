@@ -35,7 +35,7 @@ import java.net.InetSocketAddress;
  * HTTP代理配置
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class HttpProxy {
@@ -70,14 +70,11 @@ public class HttpProxy {
     }
 
     public Authenticator authenticator() {
-        return new Authenticator() {
-            @Override
-            public Request authenticate(Route route, Response response) {
-                String credential = Credentials.basic(user, password);
-                return response.request().newBuilder().
-                        header("Proxy-Authorization", credential).
-                        header("Proxy-Connection", "Keep-Alive").build();
-            }
+        return (route, response) -> {
+            String credential = Credentials.basic(user, password);
+            return response.request().newBuilder().
+                    header("Proxy-Authorization", credential).
+                    header("Proxy-Connection", "Keep-Alive").build();
         };
     }
 

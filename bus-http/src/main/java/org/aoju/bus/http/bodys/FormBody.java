@@ -38,7 +38,7 @@ import java.util.List;
  * Form请求体内容
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class FormBody extends RequestBody {
@@ -82,7 +82,7 @@ public final class FormBody extends RequestBody {
     }
 
     @Override
-    public void writeTo(BufferSink sink) throws IOException {
+    public void writeTo(BufferSink sink) {
         writeOrCountBytes(sink, false);
     }
 

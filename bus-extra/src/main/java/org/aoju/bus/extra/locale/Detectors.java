@@ -2,7 +2,7 @@ package org.aoju.bus.extra.locale;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Detectors extends PSM implements Locales {

@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Httpx extends Httpd {
@@ -85,12 +85,7 @@ public class Httpx extends Httpd {
      * @param x509TrustManager 信任管理器
      */
     public Httpx(X509TrustManager x509TrustManager) {
-        this(null, null, 30, 30, 30, 64, 5, 5, 5, org.aoju.bus.http.secure.SSLSocketFactory.createTrustAllSSLFactory(x509TrustManager), x509TrustManager, new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        });
+        this(null, null, 30, 30, 30, 64, 5, 5, 5, org.aoju.bus.http.secure.SSLSocketFactory.createTrustAllSSLFactory(x509TrustManager), x509TrustManager, (hostname, session) -> true);
     }
 
     /**

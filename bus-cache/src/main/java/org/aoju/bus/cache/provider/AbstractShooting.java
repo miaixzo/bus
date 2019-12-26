@@ -25,6 +25,7 @@ package org.aoju.bus.cache.provider;
 
 import org.aoju.bus.cache.Shooting;
 import org.aoju.bus.cache.magic.CachePair;
+import org.aoju.bus.core.lang.Normal;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.yaml.snakeyaml.Yaml;
 
@@ -41,7 +42,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public abstract class AbstractShooting implements Shooting {
@@ -66,7 +67,7 @@ public abstract class AbstractShooting implements Shooting {
     private Properties sqls;
 
     protected AbstractShooting(Map<String, Object> context) {
-        InputStream resource = this.getClass().getClassLoader().getResourceAsStream("META-INF/caches/bus-cache.yaml");
+        InputStream resource = this.getClass().getClassLoader().getResourceAsStream(Normal.META_DATA_INF+"/caches/bus-cache.yaml");
         this.sqls = new Yaml().loadAs(resource, Properties.class);
 
         this.jdbcOperations = jdbcOperationsSupplier(context).get();

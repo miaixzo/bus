@@ -32,7 +32,7 @@ import java.lang.annotation.Annotation;
  * 当前框架内预定义的校验器名称
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Builder extends Validator {
@@ -88,7 +88,7 @@ public class Builder extends Validator {
      * @return the object
      */
     public static <T> T on(Object object) {
-        return (T) Instances.singletion(Provider.class).on(object);
+        return Instances.singletion(Provider.class).on(object);
     }
 
     /**
@@ -102,7 +102,7 @@ public class Builder extends Validator {
      * @return the object
      */
     public static <T> T on(Object object, Context context) {
-        return (T) Instances.singletion(Provider.class).on(object, context);
+        return Instances.singletion(Provider.class).on(object, context);
     }
 
     /**
@@ -117,7 +117,7 @@ public class Builder extends Validator {
      * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations) {
-        return (T) Instances.singletion(Provider.class).on(object, annotations);
+        return Instances.singletion(Provider.class).on(object, annotations);
     }
 
     /**
@@ -133,7 +133,7 @@ public class Builder extends Validator {
      * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context) {
-        return (T) Instances.singletion(Provider.class).on(object, annotations, context);
+        return Instances.singletion(Provider.class).on(object, annotations, context);
     }
 
     /**
@@ -150,7 +150,7 @@ public class Builder extends Validator {
      * @return the object
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context, String field) {
-        return (T) Instances.singletion(Provider.class).on(object, annotations, context, field);
+        return Instances.singletion(Provider.class).on(object, annotations, context, field);
     }
 
 }

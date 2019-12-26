@@ -42,7 +42,7 @@ import java.util.List;
  * 此值对象描述完成的握手。使用{@link ConnectionSuite}设置新的握手策略
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public final class Handshake {
@@ -94,12 +94,12 @@ public final class Handshake {
         }
         List<Certificate> peerCertificatesList = peerCertificates != null
                 ? Builder.immutableList(peerCertificates)
-                : Collections.<Certificate>emptyList();
+                : Collections.emptyList();
 
         Certificate[] localCertificates = session.getLocalCertificates();
         List<Certificate> localCertificatesList = localCertificates != null
                 ? Builder.immutableList(localCertificates)
-                : Collections.<Certificate>emptyList();
+                : Collections.emptyList();
 
         return new Handshake(tlsVersion, cipherSuite, peerCertificatesList, localCertificatesList);
     }

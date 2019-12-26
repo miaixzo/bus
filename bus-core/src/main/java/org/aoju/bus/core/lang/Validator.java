@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class Validator {
@@ -815,13 +815,6 @@ public class Validator {
         }
     }
 
-    /**
-     * 验证是否为UUID
-     * 包括带横线标准格式和不带横线的简单模式
-     *
-     * @param value 值
-     * @return 是否为UUID
-     */
     /**
      * 检查给定的数字是否在指定范围内
      *

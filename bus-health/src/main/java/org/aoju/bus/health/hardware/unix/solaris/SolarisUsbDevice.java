@@ -37,7 +37,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class SolarisUsbDevice extends AbstractUsbDevice {
@@ -186,7 +186,7 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
                                                          Map<String, List<String>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);
-        List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<String>());
+        List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
         List<SolarisUsbDevice> usbDevices = new ArrayList<>();
         for (String path : childPaths) {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorIdMap, productIdMap, hubMap));

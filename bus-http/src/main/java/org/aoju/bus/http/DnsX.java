@@ -35,7 +35,7 @@ import java.util.List;
  * 选择IPv6地址、选择IPv4地址或强制使用特定的已知IP地址
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public interface DnsX {
@@ -44,18 +44,15 @@ public interface DnsX {
      * 使用{@link InetAddress#getAllByName(String)}请求底层操作系统
      * 查找IP地址的DNS。大多数自定义{@link DnsX}实现应该委托给这个实例.
      */
-    DnsX SYSTEM = new DnsX() {
-        @Override
-        public List<InetAddress> lookup(String hostname) throws UnknownHostException {
-            if (hostname == null) throw new UnknownHostException("hostname == null");
-            try {
-                return Arrays.asList(InetAddress.getAllByName(hostname));
-            } catch (NullPointerException e) {
-                UnknownHostException unknownHostException =
-                        new UnknownHostException("Broken system behaviour for dns lookup of " + hostname);
-                unknownHostException.initCause(e);
-                throw unknownHostException;
-            }
+    DnsX SYSTEM = hostname -> {
+        if (hostname == null) throw new UnknownHostException("hostname == null");
+        try {
+            return Arrays.asList(InetAddress.getAllByName(hostname));
+        } catch (NullPointerException e) {
+            UnknownHostException unknownHostException =
+                    new UnknownHostException("Broken system behaviour for dns lookup of " + hostname);
+            unknownHostException.initCause(e);
+            throw unknownHostException;
         }
     };
 

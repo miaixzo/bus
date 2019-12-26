@@ -10,7 +10,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
@@ -58,7 +58,7 @@ public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {
      * @param loadFactor      加载因子
      */
     public CamelCaseLinkedMap(int initialCapacity, float loadFactor) {
-        super(new HashMap<K, V>(initialCapacity, loadFactor));
+        super(new HashMap<>(initialCapacity, loadFactor));
     }
 
 }

@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class DateUtils extends Fields {
@@ -569,9 +569,7 @@ public class DateUtils extends Fields {
      * @return String 日期字符串
      */
     public static String format(long timestamp, String format) {
-        String date = new SimpleDateFormat(format).format(new Date(
-                timestamp));
-        return date;
+        return new SimpleDateFormat(format).format(new Date( timestamp));
     }
 
     /**
@@ -1727,7 +1725,7 @@ public class DateUtils extends Fields {
             calBegin.setTime(date1);
             Calendar calEnd = Calendar.getInstance();
             calEnd.setTime(dEnd);
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             int beginY = calBegin.get(Calendar.YEAR);
             int beginYQ = Integer.parseInt(beginQ);
             int endY = calEnd.get(Calendar.YEAR);
@@ -1764,7 +1762,7 @@ public class DateUtils extends Fields {
                                               String endkey,
                                               String begin,
                                               String end) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         try {
             Date dBegin = PURE_DATETIME_FORMAT.parse(begin);
             Date dEnd = PURE_DATETIME_FORMAT.parse(end);
@@ -1812,7 +1810,7 @@ public class DateUtils extends Fields {
      * @return the list
      */
     public static List<String> getLast(String begin, String end) {
-        List<String> lDate = new ArrayList<String>();
+        List<String> lDate = new ArrayList<>();
         Date date1;
         Date dEnd;
         try {
@@ -1921,7 +1919,7 @@ public class DateUtils extends Fields {
                                               String endkey,
                                               String begin,
                                               String end) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         try {
             DateFormat sdf = new SimpleDateFormat(NORM_YEAR_PATTERN);
             Date date1 = sdf.parse(begin);
@@ -1992,7 +1990,7 @@ public class DateUtils extends Fields {
                                                 String endkey,
                                                 String begin,
                                                 String end) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         try {
             DateFormat sdf = new SimpleDateFormat(NORM_YEAR_MTOTH_PATTERN);
             Date date1 = sdf.parse(begin);
@@ -2212,7 +2210,7 @@ public class DateUtils extends Fields {
             return null;
         }
         long diff = System.currentTimeMillis() - date.getTime();
-        long r = 0;
+        long r;
         if (diff > Unit.DAY.getMillis()) {
             r = (diff / Unit.DAY.getMillis());
             return r + "天前";
@@ -2463,7 +2461,7 @@ public class DateUtils extends Fields {
         if (dptDate == null || dptDate.isEmpty())
             return false;
         String formatDate = format(dptDate, pattern, pattern);
-        if (formatDate != null && formatDate.equals(dptDate)) {
+        if (formatDate.equals(dptDate)) {
             return true;
         }
         return false;

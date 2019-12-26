@@ -49,7 +49,7 @@ import javax.crypto.spec.IvParameterSpec;
  * <p>
  *
  * @author Kimi Liu
- * @version 5.3.6
+ * @version 5.3.8
  * @since JDK 1.8+
  */
 public class AES extends Symmetric {
@@ -123,7 +123,7 @@ public class AES extends Symmetric {
      * @param iv      偏移向量,加盐
      */
     public AES(Mode mode, Padding padding, SecretKey key, byte[] iv) {
-        this(mode, padding, key, ArrayUtils.isEmpty(iv) ? ((IvParameterSpec) null) : new IvParameterSpec(iv));
+        this(mode, padding, key, ArrayUtils.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }
 
     /**
