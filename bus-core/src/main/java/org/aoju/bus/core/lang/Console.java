@@ -33,7 +33,7 @@ import java.util.Scanner;
  * 此类主要针对{@link java.lang.System#out} 和 {@link java.lang.System#err} 做封装
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class Console {

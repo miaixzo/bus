@@ -55,7 +55,7 @@ import java.util.Properties;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public final class Props extends Properties implements BasicType<String>, OptBasicType<String> {

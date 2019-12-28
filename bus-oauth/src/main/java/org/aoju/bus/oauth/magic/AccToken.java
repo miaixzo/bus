@@ -31,7 +31,7 @@ import lombok.Setter;
  * 授权所需的token
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8++
  */
 @Getter

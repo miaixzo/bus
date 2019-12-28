@@ -27,7 +27,7 @@ package org.aoju.bus.office.builtin;
  * 具有尚未应用到转换器的可选目标格式的转换作业.
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public interface OptionalTarget extends RequiredTarget, ConvertJob {

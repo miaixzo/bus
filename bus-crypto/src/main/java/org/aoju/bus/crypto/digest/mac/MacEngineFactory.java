@@ -32,7 +32,7 @@ import javax.crypto.SecretKey;
  * {@link MacEngine} 实现工厂类
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class MacEngineFactory {

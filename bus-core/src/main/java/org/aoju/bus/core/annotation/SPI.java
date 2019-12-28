@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * 实现方制定接口并完成对接口的实现
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 @Target(ElementType.TYPE)

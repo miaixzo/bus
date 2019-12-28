@@ -59,7 +59,7 @@ import java.nio.charset.Charset;
  * 或{@link #charStream()}来处理响应
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public abstract class ResponseBody implements Closeable {

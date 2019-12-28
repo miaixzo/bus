@@ -48,16 +48,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 转换器登记中心
- * <p>
- * 将各种类型Convert对象放入登记中心,通过convert方法查找目标类型对应的转换器,将被转换对象转换之
- * </p>
- * <p>
- * 在此类中,存放着默认转换器和自定义转换器,默认转换器预定义的一些转换器,自定义转换器存放用户自定的转换器
- * </p>
+ * 转换器登记中心,将各种类型Convert对象放入登记中心,通过convert方法查找
+ * 目标类型对应的转换器,将被转换对象转换之,在此类中,存放着默认转换器和自定义
+ * 转换器,默认转换器预定义的一些转换器,自定义转换器存放用户自定的转换器
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class ConverterRegistry {
@@ -270,6 +266,11 @@ public class ConverterRegistry {
             return (T) value;
         }
 
+        // 枚举转换
+        if (rowType.isEnum()) {
+            return (T) new EnumConverter(rowType).convert(value, defaultValue);
+        }
+
         // 数组转换
         if (rowType.isArray()) {
             final ArrayConverter arrayConverter = new ArrayConverter(rowType);
@@ -353,7 +354,8 @@ public class ConverterRegistry {
     }
 
     /**
-     * 类级的内部类,也就是静态的成员式内部类,该内部类的实例与外部类的实例 没有绑定关系,而且只有被调用到才会装载,从而实现了延迟加载
+     * 类级的内部类,也就是静态的成员式内部类,该内部类的实例与外部类的实例
+     * 没有绑定关系,而且只有被调用到才会装载,从而实现了延迟加载
      */
     private static class SingletonHolder {
         /**

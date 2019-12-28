@@ -42,7 +42,7 @@ import java.util.Map;
  * count 查询
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public abstract class CountExecutor {

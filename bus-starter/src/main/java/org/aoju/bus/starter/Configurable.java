@@ -38,7 +38,7 @@ import java.util.Properties;
  * 将作为一个名为PropertiesPropertySource的属性源添加
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 100)

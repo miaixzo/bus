@@ -41,7 +41,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class ObjectUtils {
@@ -55,6 +55,29 @@ public class ObjectUtils {
      */
     public static boolean equal(Object obj1, Object obj2) {
         return (obj1 == obj2) || (obj1 != null && obj1.equals(obj2));
+    }
+
+    /**
+     * 比较两个摘要是否相等
+     *
+     * @param byte1 字节比较信息1
+     * @param byte2 字节比较信息2
+     * @return 如果相等，则为true，否则为false
+     */
+    public static boolean equal(byte[] byte1, byte[] byte2) {
+        if (byte1 == byte2) return true;
+        if (byte1 == null || byte2 == null) {
+            return false;
+        }
+        if (byte1.length != byte2.length) {
+            return false;
+        }
+
+        int result = 0;
+        for (int i = 0; i < byte1.length; i++) {
+            result |= byte1[i] ^ byte2[i];
+        }
+        return result == 0;
     }
 
     /**
@@ -1260,6 +1283,51 @@ public class ObjectUtils {
             newArray[i] = Array.get(source, i);
         }
         return newArray;
+    }
+
+    /**
+     * 对象序列化
+     * 对象必须实现Serializable接口
+     *
+     * @param <T> 对象类型
+     * @param obj 要被序列化的对象
+     * @return 序列化后的字节码
+     */
+    public static <T> byte[] serialize(T obj) {
+        if (false == (obj instanceof Serializable)) {
+            return null;
+        }
+
+        FastByteArray out = new FastByteArray();
+        ObjectOutputStream os = null;
+        try {
+            os = new ObjectOutputStream(out);
+            os.writeObject(obj);
+            os.flush();
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        } finally {
+            IoUtils.close(os);
+        }
+        return out.toByteArray();
+    }
+
+    /**
+     * byte反序列化
+     * 对象必须实现Serializable接口
+     *
+     * @param <T>   对象类型
+     * @param bytes 反序列化的字节码
+     * @return 反序列化后的对象
+     */
+    public static <T> T deserialize(byte[] bytes) {
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+            ObjectInputStream out = new ObjectInputStream(in);
+            return (T) out.readObject();
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
     }
 
 }

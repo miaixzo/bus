@@ -30,7 +30,7 @@ package org.aoju.bus.extra.ftp;
  * 见：https://www.cnblogs.com/huhaoshida/p/5412615.html
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public enum FtpMode {

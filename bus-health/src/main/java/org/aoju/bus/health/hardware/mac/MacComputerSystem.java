@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 final class MacComputerSystem extends AbstractComputerSystem {

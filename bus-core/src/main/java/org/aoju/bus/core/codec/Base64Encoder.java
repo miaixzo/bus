@@ -25,6 +25,7 @@ package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.utils.ByteUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.nio.charset.Charset;
@@ -33,7 +34,7 @@ import java.nio.charset.Charset;
  * Base64编码
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class Base64Encoder {
@@ -263,7 +264,7 @@ public class Base64Encoder {
         int destlen = cnt + (isMultiLine ? (cnt - 1) / 76 << 1 : 0);
         byte[] dest = new byte[destlen];
 
-        byte[] encodeTable = isUrlSafe ? Normal.URL_SAFE_ENCODE_TABLE : Normal.STANDARD_ENCODE_TABLE;
+        byte[] encodeTable = isUrlSafe ? Normal.URL_SAFE_ENCODE_TABLE : ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE);
 
         for (int s = 0, d = 0, cc = 0; s < evenlen; ) {
             int i = (arr[s++] & 0xff) << 16 | (arr[s++] & 0xff) << 8 | (arr[s++] & 0xff);

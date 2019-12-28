@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * 在本地不支持超时的地方实现超时,例如对阻塞的套接字操作.
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class Awaits extends Timeout {

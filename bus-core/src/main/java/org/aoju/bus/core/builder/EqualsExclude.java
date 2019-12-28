@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * 上的各种reflectionEquals方法使用.
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

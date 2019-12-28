@@ -31,7 +31,7 @@ import java.io.IOException;
  * 基于snappy的数据压缩.
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class SnappyProvider implements Provider {

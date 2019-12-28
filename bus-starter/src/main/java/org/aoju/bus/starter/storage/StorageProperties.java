@@ -37,7 +37,7 @@ import java.util.Map;
  * 存储配置信息
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 @Data

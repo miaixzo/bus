@@ -29,7 +29,7 @@ import org.apache.ibatis.session.RowBounds;
  * 分页结果信息
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class PageRowBounds extends RowBounds {

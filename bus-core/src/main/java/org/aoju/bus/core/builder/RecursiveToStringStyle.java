@@ -52,7 +52,7 @@ import java.util.Collection;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class RecursiveToStringStyle extends ToStringStyle {

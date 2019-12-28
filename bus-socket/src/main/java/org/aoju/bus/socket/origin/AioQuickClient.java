@@ -39,7 +39,7 @@ import java.util.concurrent.ThreadFactory;
  * AIO实现的客户端服务
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class AioQuickClient<T> {

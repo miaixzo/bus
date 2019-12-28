@@ -30,7 +30,7 @@ import java.util.TimerTask;
  * 服务器定时任务
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public abstract class QuickTimer extends TimerTask {

@@ -31,7 +31,7 @@ import org.aoju.bus.office.builtin.MadeInOffice;
  * 并且在不再需要它时必须停止它。停止后就无法重新启动office管理器
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public interface OfficeManager {

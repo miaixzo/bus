@@ -27,7 +27,7 @@ package org.aoju.bus.storage.metric;
  * State缓存接口,方便用户扩展
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public interface StorageCache {

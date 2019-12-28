@@ -25,6 +25,7 @@ package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.utils.ByteUtils;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 
@@ -41,7 +42,7 @@ import java.nio.charset.StandardCharsets;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.3.9
  * @since JDK 1.8+
  */
 public class Base64 {
@@ -91,24 +92,24 @@ public class Base64 {
         int n = srcLen / 3;
         int r = srcLen - 3 * n;
         while (n-- > 0) {
-            dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-            dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)
+            dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+            dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[((b1 & 0x03) << 4)
                     | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
-            dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b2 & 0x0F) << 2)
+            dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[((b2 & 0x0F) << 2)
                     | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
-            dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[b3 & 0x3F];
+            dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[b3 & 0x3F];
         }
         if (r > 0)
             if (r == 1) {
-                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 = src[srcPos]) >>> 2) & 0x3F];
-                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)];
+                dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[((b1 = src[srcPos]) >>> 2) & 0x3F];
+                dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[((b1 & 0x03) << 4)];
                 dest[destPos++] = Symbol.C_EQUAL;
                 dest[destPos++] = Symbol.C_EQUAL;
             } else {
-                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[((b1 & 0x03) << 4)
+                dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+                dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[((b1 & 0x03) << 4)
                         | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
-                dest[destPos++] = Normal.STANDARD_ENCODE_TABLE[(b2 & 0x0F) << 2];
+                dest[destPos++] = ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE)[(b2 & 0x0F) << 2];
                 dest[destPos++] = Symbol.C_EQUAL;
             }
     }
@@ -117,15 +118,15 @@ public class Base64 {
             throws IOException {
         byte b2, b3;
         while ((len -= 2) >= 0) {
-            out.write((byte) ((Normal.DECODE_TABLE[ch[off++]] << 2)
-                    | ((b2 = Normal.DECODE_TABLE[ch[off++]]) >>> 4)));
+            out.write((byte) ((Normal.STANDARD_DECODE_TABLE[ch[off++]] << 2)
+                    | ((b2 = Normal.STANDARD_DECODE_TABLE[ch[off++]]) >>> 4)));
             if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                 break;
             out.write((byte) ((b2 << 4)
-                    | ((b3 = Normal.DECODE_TABLE[ch[off++]]) >>> 2)));
+                    | ((b3 = Normal.STANDARD_DECODE_TABLE[ch[off++]]) >>> 2)));
             if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                 break;
-            out.write((byte) ((b3 << 6) | Normal.DECODE_TABLE[ch[off++]]));
+            out.write((byte) ((b3 << 6) | Normal.STANDARD_DECODE_TABLE[ch[off++]]));
         }
     }
 
