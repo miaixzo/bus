@@ -36,7 +36,7 @@ import java.io.IOException;
  * @version 5.3.9
  * @since JDK 1.8+
  */
-public class Lz4Provider implements Provider {
+public class Lz4Provider implements EffectProvider {
 
     @Override
     public byte[] compress(byte[] data) throws IOException {

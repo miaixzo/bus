@@ -52,8 +52,8 @@
             final Map<String, Object> storeProperties = new HashMap<>();
             decodeParameters(parameters, loadProperties, storeProperties);
 
-            Provider provider = previewProviderService.get(Registry.LOCAL);
-            provider.convert(inputStream)
+            Provider effectProvider = previewProviderService.get(Registry.LOCAL);
+            effectProvider.convert(inputStream)
                     .as(DefaultFormatRegistry.getFormatByExtension(FileUtils.getExtension(filename)))
                     .to(outputStream)
                     .as(targetFormat)

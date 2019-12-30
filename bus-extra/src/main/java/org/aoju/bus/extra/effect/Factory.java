@@ -40,22 +40,22 @@ public enum Factory {
 
     CF;
 
-    Map<String, Provider> compressMap = new HashMap<>();
+    Map<String, EffectProvider> compressMap = new HashMap<>();
 
     Factory() {
-        ServiceLoader<Provider> compresses = ServiceLoader.load(Provider.class);
-        for (Provider provider : compresses) {
-            SPI spi = provider.getClass().getAnnotation(SPI.class);
+        ServiceLoader<EffectProvider> compresses = ServiceLoader.load(EffectProvider.class);
+        for (EffectProvider effectProvider : compresses) {
+            SPI spi = effectProvider.getClass().getAnnotation(SPI.class);
             if (spi != null) {
                 String name = spi.value();
                 if (compressMap.containsKey(name)) {
                     throw new RuntimeException("The @SPI value(" + name
-                            + ") repeat, for class(" + provider.getClass()
+                            + ") repeat, for class(" + effectProvider.getClass()
                             + ") and class(" + compressMap.get(name).getClass()
                             + ").");
                 }
 
-                compressMap.put(name, provider);
+                compressMap.put(name, effectProvider);
             }
         }
     }
@@ -66,7 +66,7 @@ public enum Factory {
      * @param name 名称
      * @return 服务提供者
      */
-    public Provider get(String name) {
+    public EffectProvider get(String name) {
         return compressMap.get(name);
     }
 

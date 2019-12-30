@@ -36,7 +36,7 @@ import java.util.zip.GZIPOutputStream;
  * @version 5.3.9
  * @since JDK 1.8+
  */
-public class GzipProvider implements Provider {
+public class GzipProvider implements EffectProvider {
 
     @Override
     public byte[] compress(byte[] data) {

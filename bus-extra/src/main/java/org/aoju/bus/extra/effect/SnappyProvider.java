@@ -34,7 +34,7 @@ import java.io.IOException;
  * @version 5.3.9
  * @since JDK 1.8+
  */
-public class SnappyProvider implements Provider {
+public class SnappyProvider implements EffectProvider {
 
     @Override
     public byte[] compress(byte[] data) throws IOException {

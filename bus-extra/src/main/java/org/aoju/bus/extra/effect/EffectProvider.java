@@ -32,7 +32,7 @@ import java.io.IOException;
  * @version 5.3.9
  * @since JDK 1.8+
  */
-public interface Provider {
+public interface EffectProvider {
 
     /**
      * 数据压缩.

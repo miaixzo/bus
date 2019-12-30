@@ -35,7 +35,7 @@ import java.util.zip.Inflater;
  * @version 5.3.9
  * @since JDK 1.8+
  */
-public class DeflaterProvider implements Provider {
+public class DeflaterProvider implements EffectProvider {
 
     @Override
     public byte[] compress(byte[] data) {

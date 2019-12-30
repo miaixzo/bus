@@ -37,7 +37,7 @@ import java.io.IOException;
  * @version 5.3.9
  * @since JDK 1.8+
  */
-public class Bzip2Provider implements Provider {
+public class Bzip2Provider implements EffectProvider {
 
     @Override
     public byte[] compress(byte[] data) throws IOException {
