@@ -1385,7 +1385,7 @@ public final class UnoUrl {
         }
 
         private boolean isDotDot(String input) {
-            return input.equals("..")
+            return input.equals(Symbol.DOUBLE_DOT)
                     || input.equalsIgnoreCase("%2e.")
                     || input.equalsIgnoreCase(".%2e")
                     || input.equalsIgnoreCase("%2e%2e");

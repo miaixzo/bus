@@ -37,7 +37,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * {@link java.text.SimpleDateFormat} 的线程安全版本,用于解析日期字符串并转换为 {@link Date} 对象
+ * {@link java.text.SimpleDateFormat} 的线程安全版本
+ * 用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
  * @version 5.3.9
@@ -45,15 +46,12 @@ import java.util.regex.Pattern;
  */
 class FastDateParser extends AbstractDateBasic implements DateParser {
 
+    private static final long serialVersionUID = -1L;
+
     static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
-    private static final long serialVersionUID = -3199383897950947498L;
-    // comparator used to sort regex alternatives
-    // alternatives should be ordered longer first, and shorter last. ('february' before 'feb')
-    // all entries must be lowercase by locale.
     private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
     private static final ConcurrentMap<Locale, Strategy>[] caches = new ConcurrentMap[Calendar.FIELD_COUNT];
     private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {
-
         @Override
         int modify(final FastDateParser parser, final int iValue) {
             return iValue < 100 ? parser.adjustYear(iValue) : iValue;
@@ -99,33 +97,28 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
      */
     private final int century;
     private final int startYear;
-    // derived fields
     private transient List<StrategyAndWidth> patterns;
 
     /**
-     * <p>
-     * Constructs a new FastDateParser.
-     * </p>
-     * <p>
-     * Use {@link FastDateFormat#getInstance(String, TimeZone, Locale)} or another variation of the factory methods of {@link FastDateFormat} to get a cached FastDateParser instance.
+     * 构造一个新的FastDateParser
+     * 使用{@link FastDateFormat#getInstance(String, TimeZone, Locale)}
+     * 或{@link FastDateFormat}工厂方法的另一种变体来获取缓存的FastDateParser实例.
      *
-     * @param pattern  non-null {@link java.text.SimpleDateFormat} compatible pattern
-     * @param timeZone non-null time zone to use
-     * @param locale   non-null locale
+     * @param pattern  非空{@link java.text.SimpleDateFormat}兼容模式
+     * @param timeZone 要使用的非空时区
+     * @param locale   显示名称的语言环境
      */
     protected FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale) {
         this(pattern, timeZone, locale, null);
     }
 
     /**
-     * <p>
-     * Constructs a new FastDateParser.
-     * </p>
+     * 构造一个新的FastDateParser
      *
-     * @param pattern      non-null {@link java.text.SimpleDateFormat} compatible pattern
-     * @param timeZone     non-null time zone to use
-     * @param locale       non-null locale
-     * @param centuryStart The start of the century for 2 digit year parsing
+     * @param pattern      非空{@link java.text.SimpleDateFormat}兼容模式
+     * @param timeZone     要使用的非空时区
+     * @param locale       显示名称的语言环境
+     * @param centuryStart 本世纪初为2位数年解析
      */
     protected FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
         super(pattern, timeZone, locale);
@@ -138,7 +131,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         } else if (locale.equals(JAPANESE_IMPERIAL)) {
             centuryStartYear = 0;
         } else {
-            // from 80 years ago to 20 years from now
+            // 从80年前到现在的20年
             definingCalendar.setTime(new Date());
             centuryStartYear = definingCalendar.get(Calendar.YEAR) - 80;
         }
@@ -177,13 +170,13 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Get the short and long values displayed for a field
+     * 获取为字段显示的短值和长值
      *
-     * @param cal    The calendar to obtain the short and long values
-     * @param locale The locale of display names
-     * @param field  The field of interest
-     * @param regex  The regular expression to build
-     * @return The map of string display names to field values
+     * @param cal    获取短值和长值的日历
+     * @param locale 显示名称的语言环境
+     * @param field  感兴趣的领域
+     * @param regex  要构建的正则表达式
+     * @return 字符串显示名称到字段值的映射
      */
     private static Map<String, Integer> appendDisplayNames(final Calendar cal, final Locale locale, final int field, final StringBuilder regex) {
         final Map<String, Integer> values = new HashMap<>();
@@ -203,10 +196,10 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Get a cache of Strategies for a particular field
+     * 获取特定领域的策略缓存
      *
-     * @param field The Calendar field
-     * @return a cache of Locale to Strategy
+     * @param field 日历字段
+     * @return 将语言环境的缓存返回到策略
      */
     private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
         synchronized (caches) {
@@ -217,10 +210,11 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         }
     }
 
+
     /**
-     * Initialize derived fields from defining fields. This is called from constructor and from readObject (de-serialization)
+     * 从定义字段初始化派生字段。 从构造函数和readObject（反序列化）中调用
      *
-     * @param definingCalendar the {@link Calendar} instance used to initialize this FastDateParser
+     * @param definingCalendar {@link Calendar}实例，用于初始化此FastDateParser
      */
     private void init(final Calendar definingCalendar) {
         patterns = new ArrayList<>();
@@ -236,11 +230,11 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Create the object after serialization. This implementation reinitializes the transient properties.
+     * 序列化后创建对象。 此实现重新初始化瞬态属性。
      *
-     * @param in ObjectInputStream from which the object is being deserialized.
-     * @throws IOException            if there is an IO issue.
-     * @throws ClassNotFoundException if a class cannot be found.
+     * @param in ObjectInputStream中的@param，将从中反序列化对象。
+     * @throws IOException            如果存在IO问题，则抛出IOException。
+     * @throws ClassNotFoundException ClassNotFoundException如果找不到一个类     
      */
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -299,7 +293,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
      * 使用当前的世纪调整两位数年份为四位数年份
      *
      * @param twoDigitYear 两位数年份
-     * @return A value between centuryStart(inclusive) to centuryStart+100(exclusive)
+     * @return CenturyStart(inclusive)到CenturyStart + 100(exclusive) 之间的值
      */
     private int adjustYear(final int twoDigitYear) {
         final int trial = century + twoDigitYear;
@@ -307,11 +301,11 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Obtain a Strategy given a field from a SimpleDateFormat pattern
+     * 从SimpleDateFormat模式获取给定字段的策略
      *
-     * @param formatField      A sub-sequence of the SimpleDateFormat pattern
-     * @param definingCalendar The calendar to obtain the short and long values
-     * @return The Strategy that will handle parsing for the field
+     * @param formatField      SimpleDateFormat模式的子序列
+     * @param definingCalendar 获取短值和长值的日历
+     * @return 负责现场解析的策略
      */
     private Strategy getStrategy(final char formatField, final int width, final Calendar definingCalendar) {
         switch (formatField) {
@@ -367,11 +361,11 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Construct a Strategy that parses a Text field
+     * 构建解析文本字段的策略
      *
-     * @param field            The Calendar field
-     * @param definingCalendar The calendar to obtain the short and long values
-     * @return a TextStrategy for the field and Locale
+     * @param field            日历字段
+     * @param definingCalendar 获取短值和长值的日历
+     * @return 字段和语言环境的TextStrategy
      */
     private Strategy getLocaleSpecificStrategy(final int field, final Calendar definingCalendar) {
         final ConcurrentMap<Locale, Strategy> cache = getCache(field);
@@ -387,7 +381,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Holds strategy and field width
+     * 持有策略和领域宽度
      */
     private static class StrategyAndWidth {
         final Strategy strategy;
@@ -412,11 +406,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
      * 单个日期字段的分析策略
      */
     private static abstract class Strategy {
-        /**
-         * Is this field a number? The default implementation returns false.
-         *
-         * @return true, if field is a number
-         */
+
         boolean isNumber() {
             return false;
         }
@@ -425,7 +415,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * A strategy to parse a single field from the parsing pattern
+     * 从解析模式解析单个字段的策略
      */
     private static abstract class PatternStrategy extends Strategy {
 
@@ -439,11 +429,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             this.pattern = Pattern.compile(regex);
         }
 
-        /**
-         * Is this field a number? The default implementation returns false.
-         *
-         * @return true, if field is a number
-         */
         @Override
         boolean isNumber() {
             return false;
@@ -465,16 +450,16 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * A strategy that copies the static or quoted field in the parsing pattern
+     * 在解析模式中复制静态或带引号字段的策略
      */
     private static class CopyQuotedStrategy extends Strategy {
 
         final private String formatField;
 
         /**
-         * Construct a Strategy that ensures the formatField has literal text
+         * 构造一个策略，以确保formatField具有文字文本
          *
-         * @param formatField The literal text to match
+         * @param formatField 要匹配的文字文本
          */
         CopyQuotedStrategy(final String formatField) {
             this.formatField = formatField;
@@ -505,7 +490,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * A strategy that handles a text field in the parsing pattern
+     * 一种处理解析模式中的文本字段的策略
      */
     private static class CaseInsensitiveTextStrategy extends PatternStrategy {
         final Locale locale;
@@ -513,11 +498,11 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         private final Map<String, Integer> lKeyValues;
 
         /**
-         * Construct a Strategy that parses a Text field
+         * 构建解析文本字段的策略
          *
-         * @param field            The Calendar field
-         * @param definingCalendar The Calendar to use
-         * @param locale           The Locale to use
+         * @param field            日历字段
+         * @param definingCalendar 要使用的日历
+         * @param locale           要使用的语言环境
          */
         CaseInsensitiveTextStrategy(final int field, final Calendar definingCalendar, final Locale locale) {
             this.field = field;
@@ -540,16 +525,12 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * A strategy that handles a number field in the parsing pattern
+     * 处理解析模式中数字字段的策略
      */
     private static class NumberStrategy extends Strategy {
+
         private final int field;
 
-        /**
-         * Construct a Strategy that parses a Number field
-         *
-         * @param field The Calendar field
-         */
         NumberStrategy(final int field) {
             this.field = field;
         }
@@ -566,7 +547,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             int last = source.length();
 
             if (maxWidth == 0) {
-                // if no maxWidth, strip leading white space
                 for (; idx < last; ++idx) {
                     final char c = source.charAt(idx);
                     if (!Character.isWhitespace(c)) {
@@ -601,11 +581,11 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         }
 
         /**
-         * Make any modifications to parsed integer
+         * 对解析的整数进行任何修改
          *
-         * @param parser The parser
-         * @param iValue The parsed integer
-         * @return The modified value
+         * @param parser 解析器
+         * @param iValue 解析的整数
+         * @return 修改后的值
          */
         int modify(final FastDateParser parser, final int iValue) {
             return iValue;
@@ -614,22 +594,20 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * A strategy that handles a timezone field in the parsing pattern
+     * 在解析模式中处理时区字段的策略
      */
     static class TimeZoneStrategy extends PatternStrategy {
         private static final String RFC_822_TIME_ZONE = "[+-]\\d{4}";
         private static final String GMT_OPTION = "GMT[+-]\\d{1,2}:\\d{2}";
-        /**
-         * Index of zone id
-         */
+
         private static final int ID = 0;
         private final Locale locale;
         private final Map<String, TzInfo> tzNames = new HashMap<>();
 
         /**
-         * Construct a Strategy that parses a TimeZone
+         * 构建一个解析时区的策略
          *
-         * @param locale The Locale
+         * @param locale 语言环境
          */
         TimeZoneStrategy(final Locale locale) {
             this.locale = locale;
@@ -647,32 +625,28 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
                     continue;
                 }
                 final TimeZone tz = TimeZone.getTimeZone(tzId);
-                // offset 1 is long standard name
-                // offset 2 is short standard name
                 final TzInfo standard = new TzInfo(tz, false);
                 TzInfo tzInfo = standard;
                 for (int i = 1; i < zoneNames.length; ++i) {
                     switch (i) {
-                        case 3: // offset 3 is long daylight savings (or summertime) name
-                            // offset 4 is the short summertime name
+                        case 3:
                             tzInfo = new TzInfo(tz, true);
                             break;
-                        case 5: // offset 5 starts additional names, probably standard time
+                        case 5:
                             tzInfo = standard;
                             break;
                     }
                     if (zoneNames[i] != null) {
                         final String key = zoneNames[i].toLowerCase(locale);
-                        // ignore the data associated with duplicates supplied in
-                        // the additional names
+                        // 忽略与提供的重复项关联的数据
+                        // 其他名称
                         if (sorted.add(key)) {
                             tzNames.put(key, tzInfo);
                         }
                     }
                 }
             }
-            // order the regex alternatives with longer strings first, greedy
-            // match will ensure longest string will be consumed
+
             for (final String zoneName : sorted) {
                 simpleQuote(sb.append(Symbol.C_OR), zoneName);
             }
@@ -708,26 +682,25 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     private static class ISO8601TimeZoneStrategy extends PatternStrategy {
-        // Z, +hh, -hh, +hhmm, -hhmm, +hh:mm or -hh:mm
 
         private static final Strategy ISO_8601_1_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}))");
         private static final Strategy ISO_8601_2_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}\\d{2}))");
         private static final Strategy ISO_8601_3_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}(?::)\\d{2}))");
 
         /**
-         * Construct a Strategy that parses a TimeZone
+         * 构建解析时区的策略
          *
-         * @param pattern The RegEx
+         * @param pattern 正则表达式
          */
         ISO8601TimeZoneStrategy(final String pattern) {
             createPattern(pattern);
         }
 
         /**
-         * Factory method for ISO8601TimeZoneStrategies.
+         * SO8601TimeZoneStrategies的工厂方法。
          *
-         * @param tokenLen a token indicating the length of the TimeZone String to be formatted.
-         * @return a ISO8601TimeZoneStrategy that can format TimeZone String of length {@code tokenLen}. If no such strategy exists, an IllegalArgumentException will be thrown.
+         * @param tokenLen 一个令牌，指示要格式化的TimeZone字符串的长度。
+         * @return 可以格式化长度为{@code tokenLen}的TimeZone字符串的ISO8601TimeZoneStrategy。 如果不存在这样的策略，则将引发IllegalArgumentException。
          */
         static Strategy getStrategy(final int tokenLen) {
             switch (tokenLen) {
@@ -754,7 +727,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Parse format into Strategies
+     * 将格式解析为策略
      */
     private class StrategyParser {
         final private Calendar definingCalendar;

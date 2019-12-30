@@ -36,7 +36,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 public class DayOfWeekValueParser extends SimpleValueParser {
 
     /**
-     * Weeks aliases.
+     * 周的别名
      */
     private static final String[] ALIASES = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
 
@@ -65,7 +65,7 @@ public class DayOfWeekValueParser extends SimpleValueParser {
      * @throws InstrumentException 异常
      */
     private int parseAlias(String value) throws InstrumentException {
-        if (value.equalsIgnoreCase("L")) {
+        if ("L".equalsIgnoreCase(value)) {
             //最后一天为星期六
             return ALIASES.length - 1;
         }
@@ -77,4 +77,5 @@ public class DayOfWeekValueParser extends SimpleValueParser {
         }
         throw new InstrumentException("Invalid month alias: {}", value);
     }
+
 }

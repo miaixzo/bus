@@ -95,7 +95,7 @@ public abstract class AbstractFtp implements Closeable {
      * @return 是否打开目录
      */
     public boolean toParent() {
-        return cd("..");
+        return cd(Symbol.DOUBLE_DOT);
     }
 
     /**

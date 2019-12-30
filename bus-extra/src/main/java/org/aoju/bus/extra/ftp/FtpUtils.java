@@ -28,6 +28,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -354,7 +355,8 @@ public class FtpUtils extends AbstractFtp {
             childPath = StringUtils.format("{}/{}", dirPath, name);
             if (ftpFile.isDirectory()) {
                 // 上级和本级目录除外
-                if (false == name.equals(Symbol.DOT) && false == name.equals(Symbol.DOUBLE_DOT)) {
+                if (false == ObjectUtils.equal(name, Symbol.DOT)
+                        && false == ObjectUtils.equal(name, Symbol.DOUBLE_DOT)) {
                     delDir(childPath);
                 }
             } else {

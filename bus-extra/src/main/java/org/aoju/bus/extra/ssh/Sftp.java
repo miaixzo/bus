@@ -36,7 +36,6 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.extra.ftp.AbstractFtp;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -246,7 +245,8 @@ public class Sftp extends AbstractFtp {
         try {
             channel.ls(path, entry -> {
                 String fileName = entry.getFilename();
-                if (false == StringUtils.equals(Symbol.DOT, fileName) && false == StringUtils.equals(Symbol.DOUBLE_DOT, fileName)) {
+                if (false == StringUtils.equals(Symbol.DOT, fileName)
+                        && false == StringUtils.equals(Symbol.DOUBLE_DOT, fileName)) {
                     if (null == filter || filter.accept(entry)) {
                         fileNames.add(entry.getFilename());
                     }
@@ -326,7 +326,8 @@ public class Sftp extends AbstractFtp {
         String fileName;
         for (LsEntry entry : list) {
             fileName = entry.getFilename();
-            if (false == fileName.equals(Symbol.DOT) && false == fileName.equals(Symbol.DOUBLE_DOT)) {
+            if (false == StringUtils.equals(fileName, Symbol.DOT)
+                    && false == StringUtils.equals(fileName, Symbol.DOUBLE_DOT)) {
                 if (entry.getAttrs().isDir()) {
                     delDir(fileName);
                 } else {
@@ -335,7 +336,7 @@ public class Sftp extends AbstractFtp {
             }
         }
 
-        if (false == cd("..")) {
+        if (false == cd(Symbol.DOUBLE_DOT)) {
             return false;
         }
 

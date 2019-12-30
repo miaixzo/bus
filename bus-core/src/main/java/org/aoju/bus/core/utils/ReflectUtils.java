@@ -756,7 +756,7 @@ public class ReflectUtils {
      * @return 是否为equals方法
      */
     public static boolean isEqualsMethod(Method method) {
-        if (method == null || false == method.getName().equals("equals")) {
+        if (method == null || false == ObjectUtils.equal(method.getName(), "equals")) {
             return false;
         }
         final Class<?>[] paramTypes = method.getParameterTypes();
@@ -770,7 +770,7 @@ public class ReflectUtils {
      * @return 是否为hashCode方法
      */
     public static boolean isHashCodeMethod(Method method) {
-        return (method != null && method.getName().equals("hashCode") && method.getParameterTypes().length == 0);
+        return (method != null && ObjectUtils.equal(method.getName(), "hashCode") && method.getParameterTypes().length == 0);
     }
 
     /**
@@ -780,7 +780,7 @@ public class ReflectUtils {
      * @return 是否为toString方法
      */
     public static boolean isToStringMethod(Method method) {
-        return (method != null && method.getName().equals("toString") && method.getParameterTypes().length == 0);
+        return (method != null && ObjectUtils.equal(method.getName(), "toString") && method.getParameterTypes().length == 0);
     }
 
 

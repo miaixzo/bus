@@ -293,7 +293,7 @@ public class CitizenIdUtils {
             String char2 = idCard.substring(1, 2);
             if (char2.equals(Symbol.ONE)) {
                 info[1] = "M";
-            } else if (char2.equals(Symbol.TWO)) {
+            } else if (ObjectUtils.equal(char2,Symbol.TWO)) {
                 info[1] = "F";
             } else {
                 info[1] = "N";

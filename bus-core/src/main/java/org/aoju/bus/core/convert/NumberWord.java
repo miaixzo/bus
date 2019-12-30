@@ -25,6 +25,7 @@ package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
@@ -81,7 +82,7 @@ public class NumberWord {
         String lm = ""; // 用来存放转换後的整数部分
         for (int i = 0; i < lstrrev.length() / 3; i++) {
             a[i] = StringUtils.reverse(lstrrev.substring(3 * i, 3 * i + 3)); // 截取第一个叁位
-            if (!a[i].equals("000")) { // 用来避免这种情况：1000000 = first million
+            if (!ObjectUtils.equal(a[i], "000")) { // 用来避免这种情况：1000000 = first million
                 // thousand only
                 if (i != 0) {
                     lm = transThree(a[i]) + Symbol.SPACE + parseMore(String.valueOf(i)) + Symbol.SPACE + lm; // 加:
@@ -120,7 +121,7 @@ public class NumberWord {
 
     // 两位
     private static String transTwo(String s) {
-        String value = "";
+        String value;
         // 判断位数
         if (s.length() > 2) {
             s = s.substring(0, 2);
@@ -146,7 +147,7 @@ public class NumberWord {
         String value;
         if (s.startsWith(Symbol.ZERO)) {// 是否小於100
             value = transTwo(s.substring(1));
-        } else if (s.substring(1).equals("00")) {// 是否被100整除
+        } else if (ObjectUtils.equal(s.substring(1), "00")) {// 是否被100整除
             value = parseFirst(s.substring(0, 1)) + " HUNDRED";
         } else {
             value = parseFirst(s.substring(0, 1)) + " HUNDRED AND " + transTwo(s.substring(1));

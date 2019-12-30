@@ -298,7 +298,7 @@ public class NumericEscaper extends CodePointTranslator {
 
         public String toString() {
             if (this.toString == null) {
-                this.toString = (Symbol.BRACKET_LEFT + this.minimum + ".." + this.maximum + Symbol.BRACKET_RIGHT);
+                this.toString = (Symbol.BRACKET_LEFT + this.minimum + Symbol.DOUBLE_DOT + this.maximum + Symbol.BRACKET_RIGHT);
             }
             return this.toString;
         }
