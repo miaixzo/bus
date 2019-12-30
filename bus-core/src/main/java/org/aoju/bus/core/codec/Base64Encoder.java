@@ -305,4 +305,5 @@ public class Base64Encoder {
         }
         return dest;
     }
+
 }
