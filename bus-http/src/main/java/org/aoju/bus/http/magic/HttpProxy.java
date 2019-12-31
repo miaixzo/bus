@@ -23,9 +23,6 @@
  */
 package org.aoju.bus.http.magic;
 
-import org.aoju.bus.http.Request;
-import org.aoju.bus.http.Response;
-import org.aoju.bus.http.Route;
 import org.aoju.bus.http.secure.Authenticator;
 import org.aoju.bus.http.secure.Credentials;
 

@@ -28,7 +28,6 @@ import org.aoju.bus.socket.origin.plugins.ssl.SSLConfig;
 import org.aoju.bus.socket.origin.plugins.ssl.SSLService;
 
 import java.io.IOException;
-import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * AIO服务端

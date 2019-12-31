@@ -569,7 +569,7 @@ public class DateUtils extends Fields {
      * @return String 日期字符串
      */
     public static String format(long timestamp, String format) {
-        return new SimpleDateFormat(format).format(new Date( timestamp));
+        return new SimpleDateFormat(format).format(new Date(timestamp));
     }
 
     /**

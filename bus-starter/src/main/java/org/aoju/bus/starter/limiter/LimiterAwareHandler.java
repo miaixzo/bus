@@ -28,7 +28,6 @@ import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.limiter.Handler;
 import org.aoju.bus.limiter.Parser;
 import org.aoju.bus.limiter.Resolver;
-import org.aoju.bus.limiter.execute.LimiterExecutionContext;
 import org.aoju.bus.limiter.intercept.BeanFactoryLimitedResourceSourceAdvisor;
 import org.aoju.bus.limiter.intercept.LimiterInterceptor;
 import org.aoju.bus.limiter.resource.DefaultLimitedResourceSource;

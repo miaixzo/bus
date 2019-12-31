@@ -29,7 +29,10 @@ import org.aoju.bus.http.magic.PostBuilder;
 import org.aoju.bus.http.magic.PutBuilder;
 import org.aoju.bus.logger.Logger;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.security.SecureRandom;
 
 /**

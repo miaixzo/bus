@@ -451,49 +451,6 @@ public class BCrypt {
     }
 
     /**
-     * 加密密文
-     *
-     * @param password   明文密码
-     * @param salt       加盐
-     * @param log_rounds hash中叠加的对数
-     * @param cdata      加密数据
-     * @return 加密后的密文
-     */
-    public byte[] crypt(byte password[], byte salt[], int log_rounds, int cdata[]) {
-        int rounds, i, j;
-        int clen = cdata.length;
-        byte ret[];
-
-        if (log_rounds < 4 || log_rounds > 30)
-            throw new IllegalArgumentException("Bad number of rounds");
-        rounds = 1 << log_rounds;
-        if (salt.length != BCRYPT_SALT_LEN)
-            throw new IllegalArgumentException("Bad salt length");
-
-        P = P_ORIG.clone();
-        S = S_ORIG.clone();
-        ekskey(salt, password);
-        for (i = 0; i != rounds; i++) {
-            key(password);
-            key(salt);
-        }
-
-        for (i = 0; i < 64; i++) {
-            for (j = 0; j < (clen >> 1); j++)
-                encipher(cdata, j << 1);
-        }
-
-        ret = new byte[clen * 4];
-        for (i = 0, j = 0; i < clen; i++) {
-            ret[j++] = (byte) ((cdata[i] >> 24) & 0xff);
-            ret[j++] = (byte) ((cdata[i] >> 16) & 0xff);
-            ret[j++] = (byte) ((cdata[i] >> 8) & 0xff);
-            ret[j++] = (byte) (cdata[i] & 0xff);
-        }
-        return ret;
-    }
-
-    /**
      * 使用bcrypt稍微修改过的base64编码方案对字节数组进行编码。
      * 注意，这与标准的MIME-base64编码不兼容
      *
@@ -596,6 +553,70 @@ public class BCrypt {
     }
 
     /**
+     * 循环提取关键材料的一个词
+     *
+     * @param data 要从中提取数据的字符串
+     * @param offp 指向数据中当前偏移量
+     * @return 正确和错误的下一个词的资料从数据作为int[2]
+     */
+    private static int streamtoword(byte data[], int offp[]) {
+        int i;
+        int word = 0;
+        int off = offp[0];
+
+        for (i = 0; i < 4; i++) {
+            word = (word << 8) | (data[off] & 0xff);
+            off = (off + 1) % data.length;
+        }
+
+        offp[0] = off;
+        return word;
+    }
+
+    /**
+     * 加密密文
+     *
+     * @param password   明文密码
+     * @param salt       加盐
+     * @param log_rounds hash中叠加的对数
+     * @param cdata      加密数据
+     * @return 加密后的密文
+     */
+    public byte[] crypt(byte password[], byte salt[], int log_rounds, int cdata[]) {
+        int rounds, i, j;
+        int clen = cdata.length;
+        byte ret[];
+
+        if (log_rounds < 4 || log_rounds > 30)
+            throw new IllegalArgumentException("Bad number of rounds");
+        rounds = 1 << log_rounds;
+        if (salt.length != BCRYPT_SALT_LEN)
+            throw new IllegalArgumentException("Bad salt length");
+
+        P = P_ORIG.clone();
+        S = S_ORIG.clone();
+        ekskey(salt, password);
+        for (i = 0; i != rounds; i++) {
+            key(password);
+            key(salt);
+        }
+
+        for (i = 0; i < 64; i++) {
+            for (j = 0; j < (clen >> 1); j++)
+                encipher(cdata, j << 1);
+        }
+
+        ret = new byte[clen * 4];
+        for (i = 0, j = 0; i < clen; i++) {
+            ret[j++] = (byte) ((cdata[i] >> 24) & 0xff);
+            ret[j++] = (byte) ((cdata[i] >> 16) & 0xff);
+            ret[j++] = (byte) ((cdata[i] >> 8) & 0xff);
+            ret[j++] = (byte) (cdata[i] & 0xff);
+        }
+        return ret;
+    }
+
+    /**
      * 输入Blowfish密码
      *
      * @param key 包含键的数组
@@ -654,7 +675,6 @@ public class BCrypt {
         }
     }
 
-
     /**
      * 将一个64位块编码为两个32位的一半
      *
@@ -680,27 +700,6 @@ public class BCrypt {
         }
         lr[off] = r ^ P[BLOWFISH_NUM_ROUNDS + 1];
         lr[off + 1] = l;
-    }
-
-    /**
-     * 循环提取关键材料的一个词
-     *
-     * @param data 要从中提取数据的字符串
-     * @param offp 指向数据中当前偏移量
-     * @return 正确和错误的下一个词的资料从数据作为int[2]
-     */
-    private static int streamtoword(byte data[], int offp[]) {
-        int i;
-        int word = 0;
-        int off = offp[0];
-
-        for (i = 0; i < 4; i++) {
-            word = (word << 8) | (data[off] & 0xff);
-            off = (off + 1) % data.length;
-        }
-
-        offp[0] = off;
-        return word;
     }
 
 }

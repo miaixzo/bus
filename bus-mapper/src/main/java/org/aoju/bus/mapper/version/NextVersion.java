@@ -31,14 +31,6 @@ package org.aoju.bus.mapper.version;
 public interface NextVersion<T> {
 
     /**
-     * 返回下一个版本
-     *
-     * @param current 对象
-     * @return 结果
-     */
-    T nextVersion(T current) throws VersionException;
-
-    /**
      * 获取下一个版本
      *
      * @param nextVersionClass 下个版本对象
@@ -54,4 +46,12 @@ public interface NextVersion<T> {
             throw new VersionException("获取下一个版本号失败!", e);
         }
     }
+
+    /**
+     * 返回下一个版本
+     *
+     * @param current 对象
+     * @return 结果
+     */
+    T nextVersion(T current) throws VersionException;
 }

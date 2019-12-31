@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.pager.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.pager.IPage;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageException;
@@ -191,7 +192,7 @@ public abstract class PageFromObject {
     }
 
     public static boolean isEmpty(Object obj) {
-        return obj == null || obj.toString().equals("");
+        return obj == null || obj.toString().equals(Normal.EMPTY);
     }
 
     public static boolean isNotEmpty(String str) {

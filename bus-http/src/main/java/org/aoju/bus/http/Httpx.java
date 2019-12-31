@@ -41,7 +41,6 @@ import org.aoju.bus.http.secure.X509TrustManager;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.File;
 import java.io.IOException;

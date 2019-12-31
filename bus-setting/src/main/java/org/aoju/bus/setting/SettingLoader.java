@@ -25,7 +25,6 @@ package org.aoju.bus.setting;
 
 import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.PatternUtils;

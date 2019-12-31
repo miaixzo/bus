@@ -41,7 +41,6 @@ import org.aoju.bus.logger.Logger;
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import java.net.Proxy;
 import java.net.ProxySelector;

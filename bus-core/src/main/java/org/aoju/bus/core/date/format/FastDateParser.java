@@ -46,9 +46,8 @@ import java.util.regex.Pattern;
  */
 class FastDateParser extends AbstractDateBasic implements DateParser {
 
-    private static final long serialVersionUID = -1L;
-
     static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
+    private static final long serialVersionUID = -1L;
     private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
     private static final ConcurrentMap<Locale, Strategy>[] caches = new ConcurrentMap[Calendar.FIELD_COUNT];
     private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {

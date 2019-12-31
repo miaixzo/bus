@@ -719,8 +719,8 @@ public class UriUtils {
         for (Map.Entry<String, ?> entry : uriVariables.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            String stringValue = (value != null ? value.toString() : "");
-            result.put(key, encode(stringValue, Charset.forName("UTF-8")));
+            String stringValue = (value != null ? value.toString() : Normal.EMPTY);
+            result.put(key, encode(stringValue, Charset.forName(org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8)));
         }
         return result;
     }
@@ -734,8 +734,8 @@ public class UriUtils {
     public static Object[] encodeUriVariables(Object... uriVariables) {
         List<String> result = new ArrayList<>();
         for (Object value : uriVariables) {
-            String stringValue = (value != null ? value.toString() : "");
-            result.add(encode(stringValue, Charset.forName("UTF-8")));
+            String stringValue = (value != null ? value.toString() : Normal.EMPTY);
+            result.add(encode(stringValue, org.aoju.bus.core.lang.Charset.UTF_8));
         }
         return result.toArray();
     }

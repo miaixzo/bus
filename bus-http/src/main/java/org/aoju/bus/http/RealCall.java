@@ -25,6 +25,7 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.segment.Awaits;
 import org.aoju.bus.core.io.segment.Timeout;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.accord.ConnectInterceptor;
 import org.aoju.bus.http.accord.StreamAllocation;
@@ -174,7 +175,7 @@ public final class RealCall implements NewCall {
     }
 
     String toLoggableString() {
-        return (isCanceled() ? "canceled " : "")
+        return (isCanceled() ? "canceled " : Normal.EMPTY)
                 + (forWebSocket ? "web socket" : "call")
                 + " to " + redactedUrl();
     }

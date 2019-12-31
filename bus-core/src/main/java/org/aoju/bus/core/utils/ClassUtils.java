@@ -1305,7 +1305,7 @@ public class ClassUtils {
     public static String getPackageName(String className) {
         Assert.notNull(className, "Class name must not be null");
         int lastDotIndex = className.lastIndexOf(Symbol.C_DOT);
-        return (lastDotIndex != -1 ? className.substring(0, lastDotIndex) : "");
+        return (lastDotIndex != -1 ? className.substring(0, lastDotIndex) : Normal.EMPTY);
     }
 
     /**

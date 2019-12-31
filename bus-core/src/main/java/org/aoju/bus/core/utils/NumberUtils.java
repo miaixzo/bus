@@ -1068,7 +1068,7 @@ public class NumberUtils {
         while (set.size() < size) {
             set.add(begin + ran.nextInt(end - begin));
         }
- 
+
         return set.toArray(new Integer[size]);
     }
 

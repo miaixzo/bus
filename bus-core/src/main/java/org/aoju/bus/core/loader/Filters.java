@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.loader;
 
-import java.net.URL;
 import java.util.Collection;
 
 /**

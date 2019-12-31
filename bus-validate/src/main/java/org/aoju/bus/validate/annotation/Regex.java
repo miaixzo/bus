@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.validate.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.strategy.RegexStrategy;
 
@@ -45,7 +46,7 @@ import java.lang.annotation.*;
 public @interface Regex {
 
     @Filler("pattern")
-    String pattern() default "";
+    String pattern() default Normal.EMPTY;
 
     /**
      * 如果长度为0,判断能否通过校验

@@ -25,7 +25,6 @@ package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.annotation.ColumnType;
 import org.aoju.bus.mapper.annotation.NameStyle;
 import org.aoju.bus.mapper.criteria.*;
