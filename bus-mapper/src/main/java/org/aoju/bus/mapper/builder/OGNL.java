@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.criteria.Criteria;
 import org.aoju.bus.mapper.criteria.Criterion;
@@ -51,7 +51,7 @@ public abstract class OGNL {
             Condition condition = (Condition) parameter;
             Class<?> entityClass = condition.getEntityClass();
             if (!entityClass.getCanonicalName().equals(entityFullName)) {
-                throw new MapperException("当前 Condition 方法对应实体为:" + entityFullName
+                throw new InstrumentException("当前 Condition 方法对应实体为:" + entityFullName
                         + ", 但是参数 Condition 中的 entityClass 为:" + entityClass.getCanonicalName());
             }
         }

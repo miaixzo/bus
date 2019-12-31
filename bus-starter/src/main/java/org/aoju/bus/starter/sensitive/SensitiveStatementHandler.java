@@ -28,6 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.mapper.handlers.AbstractSqlParserHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.NShield;
@@ -45,7 +46,6 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,34 +59,17 @@ import java.util.Properties;
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
-public class SensitiveStatementHandler implements Interceptor {
-
-    private static final String MAPPEDSTATEMENT = "delegate.mappedStatement";
-    private static final String BOUND_SQL = "delegate.boundSql";
-
-    /**
-     * 获得真正的处理对象,可能多层代理.
-     *
-     * @param <T>    泛型
-     * @param target 对象
-     * @return the object
-     */
-    private static <T> T realTarget(Object target) {
-        if (Proxy.isProxyClass(target.getClass())) {
-            MetaObject metaObject = SystemMetaObject.forObject(target);
-            return realTarget(metaObject.getValue("hi.target"));
-        }
-        return (T) target;
-    }
+public class SensitiveStatementHandler extends AbstractSqlParserHandler
+        implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler statementHandler = realTarget(invocation.getTarget());
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(MAPPEDSTATEMENT);
+        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(DELEGATE_MAPPED_STATEMENT);
         SqlCommandType commandType = mappedStatement.getSqlCommandType();
 
-        BoundSql boundSql = (BoundSql) metaObject.getValue(BOUND_SQL);
+        BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
         Object params = boundSql.getParameterObject();
         if (params instanceof Map) {
             return invocation.proceed();

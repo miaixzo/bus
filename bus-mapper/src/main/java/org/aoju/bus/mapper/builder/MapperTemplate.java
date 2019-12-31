@@ -24,7 +24,7 @@
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.entity.EntityColumn;
 import org.aoju.bus.mapper.entity.EntityTable;
@@ -176,7 +176,7 @@ public abstract class MapperTemplate {
                 }
             }
         }
-        throw new MapperException("无法获取 " + msId + " 方法的泛型信息!");
+        throw new InstrumentException("无法获取 " + msId + " 方法的泛型信息!");
     }
 
     /**
@@ -235,7 +235,7 @@ public abstract class MapperTemplate {
      */
     public void setSqlSource(MappedStatement ms) {
         if (this.mapperClass == Reflector.getMapperClass(ms.getId())) {
-            throw new MapperException("请不要配置或扫描通用Mapper接口类：" + this.mapperClass);
+            throw new InstrumentException("请不要配置或扫描通用Mapper接口类：" + this.mapperClass);
         }
         Method method = methodMap.get(Reflector.getMethodName(ms));
         try {
@@ -256,12 +256,12 @@ public abstract class MapperTemplate {
                 //替换原有的SqlSource
                 setSqlSource(ms, sqlSource);
             } else {
-                throw new MapperException("自定义Mapper方法返回类型错误,可选的返回类型为void,SqlNode,String三种!");
+                throw new InstrumentException("自定义Mapper方法返回类型错误,可选的返回类型为void,SqlNode,String三种!");
             }
         } catch (IllegalAccessException e) {
-            throw new MapperException(e);
+            throw new InstrumentException(e);
         } catch (InvocationTargetException e) {
-            throw new MapperException(e.getTargetException() != null ? e.getTargetException() : e);
+            throw new InstrumentException(e.getTargetException() != null ? e.getTargetException() : e);
         }
     }
 

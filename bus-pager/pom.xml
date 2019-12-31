@@ -18,7 +18,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <guava.version>28.0-jre</guava.version>
-        <jsqlparser.version>2.0</jsqlparser.version>
+        <jsqlparser.version>3.1</jsqlparser.version>
     </properties>
 
     <dependencies>

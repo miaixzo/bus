@@ -28,6 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.mapper.handlers.AbstractSqlParserHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
@@ -40,7 +41,6 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,24 +54,8 @@ import java.util.Properties;
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
-public class SensitiveResultSetHandler implements Interceptor {
-
-    private static final String MAPPED_STATEMENT = "mappedStatement";
-
-    /**
-     * 获得真正的处理对象,可能多层代理.
-     *
-     * @param <T>    泛型
-     * @param target 对象
-     * @return the object
-     */
-    private static <T> T realTarget(Object target) {
-        if (Proxy.isProxyClass(target.getClass())) {
-            MetaObject metaObject = SystemMetaObject.forObject(target);
-            return realTarget(metaObject.getValue("hi.target"));
-        }
-        return (T) target;
-    }
+public class SensitiveResultSetHandler extends AbstractSqlParserHandler
+        implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -85,7 +69,7 @@ public class SensitiveResultSetHandler implements Interceptor {
         if (ObjectUtils.isNotEmpty(properties) && !properties.isDebug()) {
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-            final MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(MAPPED_STATEMENT);
+            final MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("mappedStatement");
             final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null : mappedStatement.getResultMaps().get(0);
 
             Sensitive sensitive = results.get(0).getClass().getAnnotation(Sensitive.class);

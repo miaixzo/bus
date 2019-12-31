@@ -461,7 +461,7 @@ public class SqlSourceBuilder {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getCanonicalName();
                     sql.append(column.getColumn())
-                            .append(" = ${@org.aoju.bus.mapper.version.VersionUtil@nextVersion(\"")
+                            .append(" = ${@org.aoju.bus.mapper.version.NextVersion@version(\"")
                             .append(versionClass).append("\", ")
                             .append(column.getProperty()).append(")},");
                 } else if (notNull) {

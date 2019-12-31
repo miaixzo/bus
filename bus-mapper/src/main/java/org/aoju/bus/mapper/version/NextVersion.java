@@ -38,4 +38,20 @@ public interface NextVersion<T> {
      */
     T nextVersion(T current) throws VersionException;
 
+    /**
+     * 获取下一个版本
+     *
+     * @param nextVersionClass 下个版本对象
+     * @param current          内容
+     * @return 结果对象
+     * @throws VersionException 异常
+     */
+    static Object version(String nextVersionClass, Object current) throws VersionException {
+        try {
+            NextVersion nextVersion = (NextVersion) Class.forName(nextVersionClass).newInstance();
+            return nextVersion.nextVersion(current);
+        } catch (Exception e) {
+            throw new VersionException("获取下一个版本号失败!", e);
+        }
+    }
 }

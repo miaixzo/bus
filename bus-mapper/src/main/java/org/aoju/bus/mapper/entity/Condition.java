@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.entity;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.builder.Builder;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.criteria.Assert;
@@ -148,7 +148,7 @@ public class Condition implements EntityTableName {
                 if (propertyMap.containsKey(property)) {
                     this.excludeColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\',或该属性被@Transient注释！");
+                    throw new InstrumentException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\',或该属性被@Transient注释！");
                 }
             }
         }
@@ -170,7 +170,7 @@ public class Condition implements EntityTableName {
                 if (propertyMap.containsKey(property)) {
                     this.selectColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\',或该属性被@Transient注释！");
+                    throw new InstrumentException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\',或该属性被@Transient注释！");
                 }
             }
         }

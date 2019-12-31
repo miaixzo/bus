@@ -24,7 +24,8 @@
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.annotation.ColumnType;
 import org.aoju.bus.mapper.annotation.NameStyle;
 import org.aoju.bus.mapper.criteria.*;
@@ -67,7 +68,7 @@ public class EntityBuilder {
     public static EntityTable getEntityTable(Class<?> entityClass) {
         EntityTable entityTable = entityTableMap.get(entityClass);
         if (entityTable == null) {
-            throw new MapperException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
+            throw new InstrumentException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
         }
         return entityTable;
     }
@@ -271,7 +272,7 @@ public class EntityBuilder {
         if (field.isAnnotationPresent(SequenceGenerator.class)) {
             SequenceGenerator sequenceGenerator = field.getAnnotation(SequenceGenerator.class);
             if (sequenceGenerator.sequenceName().equals("")) {
-                throw new MapperException(entityTable.getEntityClass() + "字段" + field.getName() + "的注解@SequenceGenerator未指定sequenceName!");
+                throw new InstrumentException(entityTable.getEntityClass() + "字段" + field.getName() + "的注解@SequenceGenerator未指定sequenceName!");
             }
             entityColumn.setSequenceName(sequenceGenerator.sequenceName());
         } else if (field.isAnnotationPresent(GeneratedValue.class)) {
@@ -300,7 +301,7 @@ public class EntityBuilder {
                         entityColumn.setGenerator(generator);
                     }
                 } else {
-                    throw new MapperException(field.getName()
+                    throw new InstrumentException(field.getName()
                             + " - 该字段@GeneratedValue配置只允许以下几种形式:" +
                             "\n1.全部数据库通用的@GeneratedValue(generator=\"UUID\")" +
                             "\n2.useGeneratedKeys的@GeneratedValue(generator=\\\"JDBC\\\")  " +

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.entity.Config;
 import org.aoju.bus.mapper.provider.EmptyProvider;
@@ -116,7 +116,7 @@ public class MapperBuilder {
             if (templateClass == null) {
                 templateClass = tempClass;
             } else if (templateClass != tempClass) {
-                throw new MapperException("一个通用Mapper中只允许存在一个MapperTemplate子类!");
+                throw new InstrumentException("一个通用Mapper中只允许存在一个MapperTemplate子类!");
             }
         }
         if (templateClass == null || !MapperTemplate.class.isAssignableFrom(templateClass)) {
@@ -126,14 +126,14 @@ public class MapperBuilder {
         try {
             mapperTemplate = (MapperTemplate) templateClass.getConstructor(Class.class, MapperBuilder.class).newInstance(mapperClass, this);
         } catch (Exception e) {
-            throw new MapperException("实例化MapperTemplate对象失败:" + e.getMessage());
+            throw new InstrumentException("实例化MapperTemplate对象失败:" + e.getMessage());
         }
         //注册方法
         for (String methodName : methodSet) {
             try {
                 mapperTemplate.addMethodMap(methodName, templateClass.getMethod(methodName, MappedStatement.class));
             } catch (NoSuchMethodException e) {
-                throw new MapperException(templateClass.getCanonicalName() + "中缺少" + methodName + "方法!");
+                throw new InstrumentException(templateClass.getCanonicalName() + "中缺少" + methodName + "方法!");
             }
         }
         return mapperTemplate;
@@ -167,7 +167,7 @@ public class MapperBuilder {
         try {
             registerMapper(Class.forName(mapperClass));
         } catch (ClassNotFoundException e) {
-            throw new MapperException("注册通用Mapper[" + mapperClass + "]失败,找不到该通用Mapper!");
+            throw new InstrumentException("注册通用Mapper[" + mapperClass + "]失败,找不到该通用Mapper!");
         }
     }
 
@@ -308,7 +308,7 @@ public class MapperBuilder {
                 mapperTemplate.setSqlSource(ms);
             }
         } catch (Exception e) {
-            throw new MapperException(e);
+            throw new InstrumentException(e);
         }
     }
 

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.entity;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
@@ -100,7 +100,7 @@ public class EntityTable {
                 try {
                     builder.typeHandler(getInstance(entityColumn.getJavaType(), entityColumn.getTypeHandler()));
                 } catch (Exception e) {
-                    throw new MapperException(e);
+                    throw new InstrumentException(e);
                 }
             }
             List<ResultFlag> flags = new ArrayList<ResultFlag>();

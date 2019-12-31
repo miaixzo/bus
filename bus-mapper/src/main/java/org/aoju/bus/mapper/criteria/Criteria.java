@@ -25,7 +25,7 @@ package org.aoju.bus.mapper.criteria;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.entity.EntityColumn;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
@@ -64,7 +64,7 @@ public class Criteria {
         if (propertyMap.containsKey(property)) {
             return propertyMap.get(property).getColumn();
         } else if (exists) {
-            throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+            throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
         } else {
             return null;
         }
@@ -74,7 +74,7 @@ public class Criteria {
         if (propertyMap.containsKey(property)) {
             return property;
         } else if (exists) {
-            throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+            throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
         } else {
             return null;
         }
@@ -82,7 +82,7 @@ public class Criteria {
 
     public void addCriterion(String condition) {
         if (condition == null) {
-            throw new MapperException("Value for condition cannot be null");
+            throw new InstrumentException("Value for condition cannot be null");
         }
         if (condition.startsWith(Normal.NULL)) {
             return;
@@ -93,7 +93,7 @@ public class Criteria {
     public void addCriterion(String condition, Object value, String property) {
         if (value == null) {
             if (notNull) {
-                throw new MapperException("Value for " + property + " cannot be null");
+                throw new InstrumentException("Value for " + property + " cannot be null");
             } else {
                 return;
             }
@@ -107,7 +107,7 @@ public class Criteria {
     public void addCriterion(String condition, Object value1, Object value2, String property) {
         if (value1 == null || value2 == null) {
             if (notNull) {
-                throw new MapperException("Between values for " + property + " cannot be null");
+                throw new InstrumentException("Between values for " + property + " cannot be null");
             } else {
                 return;
             }
@@ -120,7 +120,7 @@ public class Criteria {
 
     public void addOrCriterion(String condition) {
         if (condition == null) {
-            throw new MapperException("Value for condition cannot be null");
+            throw new InstrumentException("Value for condition cannot be null");
         }
         if (condition.startsWith(Normal.NULL)) {
             return;
@@ -131,7 +131,7 @@ public class Criteria {
     public void addOrCriterion(String condition, Object value, String property) {
         if (value == null) {
             if (notNull) {
-                throw new MapperException("Value for " + property + " cannot be null");
+                throw new InstrumentException("Value for " + property + " cannot be null");
             } else {
                 return;
             }
@@ -145,7 +145,7 @@ public class Criteria {
     public void addOrCriterion(String condition, Object value1, Object value2, String property) {
         if (value1 == null || value2 == null) {
             if (notNull) {
-                throw new MapperException("Between values for " + property + " cannot be null");
+                throw new InstrumentException("Between values for " + property + " cannot be null");
             } else {
                 return;
             }

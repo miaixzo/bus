@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.entity;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.criteria.Identity;
 import org.aoju.bus.mapper.criteria.SimpleType;
@@ -339,7 +339,7 @@ public class Config {
             try {
                 this.style = Style.valueOf(styleStr);
             } catch (IllegalArgumentException e) {
-                throw new MapperException(styleStr + "不是合法的Style值!");
+                throw new InstrumentException(styleStr + "不是合法的Style值!");
             }
         } else {
             //默认驼峰

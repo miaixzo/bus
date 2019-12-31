@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.entity.EntityField;
 
 import javax.persistence.Entity;
@@ -229,7 +229,7 @@ public class FieldSourceBuilder {
             try {
                 beanInfo = Introspector.getBeanInfo(entityClass);
             } catch (IntrospectionException e) {
-                throw new MapperException(e);
+                throw new InstrumentException(e);
             }
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor desc : descriptors) {
@@ -267,7 +267,7 @@ public class FieldSourceBuilder {
             try {
                 beanInfo = Introspector.getBeanInfo(entityClass);
             } catch (IntrospectionException e) {
-                throw new MapperException(e);
+                throw new InstrumentException(e);
             }
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor desc : descriptors) {
@@ -313,7 +313,7 @@ public class FieldSourceBuilder {
                     EntityField entityField = new EntityField(field, null);
                     if (field.getGenericType() != null && field.getGenericType() instanceof TypeVariable) {
                         if (genericMap == null || !genericMap.containsKey(((TypeVariable) field.getGenericType()).getName())) {
-                            throw new MapperException(entityClass + "字段" + field.getName() + "的泛型类型无法获取!");
+                            throw new InstrumentException(entityClass + "字段" + field.getName() + "的泛型类型无法获取!");
                         } else {
                             entityField.setJavaType(genericMap.get(((TypeVariable) field.getGenericType()).getName()));
                         }

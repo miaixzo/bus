@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.criteria;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.entity.Condition;
 import org.aoju.bus.mapper.entity.EntityColumn;
 
@@ -48,11 +48,11 @@ public class OrderBy {
 
     private String property(String property) {
         if (Assert.isEmpty(property) || Assert.isEmpty(property.trim())) {
-            throw new MapperException("接收的property为空！");
+            throw new InstrumentException("接收的property为空！");
         }
         property = property.trim();
         if (!propertyMap.containsKey(property)) {
-            throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+            throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
         }
         return propertyMap.get(property).getColumn();
     }

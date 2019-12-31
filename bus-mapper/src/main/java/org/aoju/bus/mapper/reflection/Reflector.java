@@ -24,7 +24,7 @@
 package org.aoju.bus.mapper.reflection;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
@@ -44,7 +44,7 @@ public class Reflector {
      */
     public static Class<?> getMapperClass(String msId) {
         if (msId.indexOf(Symbol.DOT) == -1) {
-            throw new MapperException("当前MappedStatement的id=" + msId + ",不符合MappedStatement的规则!");
+            throw new InstrumentException("当前MappedStatement的id=" + msId + ",不符合MappedStatement的规则!");
         }
         String mapperClassStr = msId.substring(0, msId.lastIndexOf(Symbol.DOT));
         ClassLoader[] classLoader = getClassLoaders();
@@ -62,7 +62,7 @@ public class Reflector {
             }
         }
         if (mapperClass == null) {
-            throw new MapperException("class loaders failed to locate the class " + mapperClassStr);
+            throw new InstrumentException("class loaders failed to locate the class " + mapperClassStr);
         }
         return mapperClass;
     }

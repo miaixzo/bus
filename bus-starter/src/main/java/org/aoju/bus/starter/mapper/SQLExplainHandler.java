@@ -81,4 +81,7 @@ public class SQLExplainHandler implements Interceptor {
     public void setProperties(Properties prop) {
         this.properties = prop;
     }
+
+
+
 }

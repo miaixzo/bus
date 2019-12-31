@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.provider;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.builder.MapperTemplate;
@@ -91,7 +91,7 @@ public class BaseInsertProvider extends MapperTemplate {
                     if (null != column.getGenerator() && "JDBC".equals(column.getGenerator())) {
                         continue;
                     }
-                    throw new MapperException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
+                    throw new InstrumentException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
                 }
                 //插入selectKey
                 SelectKey.newSelectKeyMappedStatement(ms, column, entityClass, isBEFORE(), getIDENTITY(column));
@@ -182,7 +182,7 @@ public class BaseInsertProvider extends MapperTemplate {
                     if (column.getGenerator() != null && column.getGenerator().equals("JDBC")) {
                         continue;
                     }
-                    throw new MapperException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
+                    throw new InstrumentException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
                 }
                 //插入selectKey
                 SelectKey.newSelectKeyMappedStatement(ms, column, entityClass, isBEFORE(), getIDENTITY(column));
