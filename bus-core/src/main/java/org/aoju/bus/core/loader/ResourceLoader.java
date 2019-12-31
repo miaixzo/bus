@@ -33,7 +33,7 @@ import java.util.NoSuchElementException;
  * 资源加载器
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public abstract class ResourceLoader implements Loader {

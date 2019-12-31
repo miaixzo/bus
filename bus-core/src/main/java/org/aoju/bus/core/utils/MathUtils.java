@@ -35,7 +35,7 @@ import java.util.List;
  * MathUtils偏向复杂数学计算
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class MathUtils {

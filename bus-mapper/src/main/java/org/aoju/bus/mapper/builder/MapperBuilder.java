@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 处理主要逻辑,最关键的一个类
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class MapperBuilder {

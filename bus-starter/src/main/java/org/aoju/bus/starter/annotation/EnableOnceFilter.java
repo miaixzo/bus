@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 开启 Request/Response 多次读取
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -31,7 +31,7 @@ import org.springframework.core.annotation.Order;
  * 扫描包配置项及其他属性等
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 @ComponentScan("org.aoju.**")

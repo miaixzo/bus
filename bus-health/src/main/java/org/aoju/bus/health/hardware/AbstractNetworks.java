@@ -59,7 +59,7 @@ import java.util.List;
  * Network interfaces implementation.
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public abstract class AbstractNetworks implements Networks {

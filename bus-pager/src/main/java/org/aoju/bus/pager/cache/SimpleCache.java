@@ -34,7 +34,7 @@ import java.util.Properties;
  * Simple MyBatis Cache
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class SimpleCache<K, V> implements Cache<K, V> {

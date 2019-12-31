@@ -34,7 +34,7 @@ import org.aoju.bus.proxy.Invocation;
  * 注意:这个类的实现是从HiveMind的日志拦截器中借来的
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class LoggingInterceptor implements Interceptor {

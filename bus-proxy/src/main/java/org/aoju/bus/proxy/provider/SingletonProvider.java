@@ -30,7 +30,7 @@ import org.aoju.bus.proxy.Provider;
  * 在所有后续调用时返回包装提供程序返回的值
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class SingletonProvider extends DecoratorProvider {

@@ -27,7 +27,7 @@ package org.aoju.bus.office.magic.filter;
  * FilterChain的不可修改的实现.
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class UnmodifiableFilter extends AbstractFilter {

@@ -27,7 +27,7 @@ package org.aoju.bus.office.support.excel.sax;
  * 单元格数据类型枚举
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public enum CellDataType {

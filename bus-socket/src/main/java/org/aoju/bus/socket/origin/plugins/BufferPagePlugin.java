@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * 内存页监测插件
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class BufferPagePlugin<T> extends AbstractPlugin {

@@ -39,7 +39,7 @@ import java.util.List;
  * 也不能重入客户机。任何对文件或网络的IO写入都应该异步进行
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public abstract class EventListener {

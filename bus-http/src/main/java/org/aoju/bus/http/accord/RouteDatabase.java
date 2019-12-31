@@ -34,7 +34,7 @@ import java.util.Set;
  * 则会记住该故障并首选备用路由
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public final class RouteDatabase {

@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from WMI.
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 final class WindowsComputerSystem extends AbstractComputerSystem {

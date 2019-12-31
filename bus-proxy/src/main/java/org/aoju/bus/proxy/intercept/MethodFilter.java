@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
  * 一个MethodFilter决定一个方法是否被接受
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public interface MethodFilter {

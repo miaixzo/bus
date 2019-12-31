@@ -27,7 +27,7 @@ package org.aoju.bus.starter;
  * 全局常量配置
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 

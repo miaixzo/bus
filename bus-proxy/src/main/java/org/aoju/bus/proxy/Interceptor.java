@@ -27,7 +27,7 @@ package org.aoju.bus.proxy;
  * "拦截"方法调用
  *
  * @author Kimi Liu
- * @version 5.3.9
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public interface Interceptor {
