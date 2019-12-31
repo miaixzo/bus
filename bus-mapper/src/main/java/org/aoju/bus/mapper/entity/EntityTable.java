@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.entity;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * 数据库表
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class EntityTable {
@@ -100,7 +100,7 @@ public class EntityTable {
                 try {
                     builder.typeHandler(getInstance(entityColumn.getJavaType(), entityColumn.getTypeHandler()));
                 } catch (Exception e) {
-                    throw new MapperException(e);
+                    throw new InstrumentException(e);
                 }
             }
             List<ResultFlag> flags = new ArrayList<ResultFlag>();

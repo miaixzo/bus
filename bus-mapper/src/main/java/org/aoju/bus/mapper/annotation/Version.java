@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.annotation;
 
-import org.aoju.bus.mapper.version.DefaultNextVersion;
+import org.aoju.bus.mapper.version.DefaultVersion;
 import org.aoju.bus.mapper.version.NextVersion;
 
 import java.lang.annotation.ElementType;
@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * 版本信息
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 @Target({ElementType.FIELD})
@@ -47,6 +47,6 @@ public @interface Version {
      *
      * @return 版本信息
      */
-    Class<? extends NextVersion> nextVersion() default DefaultNextVersion.class;
+    Class<? extends NextVersion> nextVersion() default DefaultVersion.class;
 
 }

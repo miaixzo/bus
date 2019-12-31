@@ -28,6 +28,7 @@ import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.utils.BeanUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
 
 import java.util.Map;
@@ -42,7 +43,7 @@ import java.util.Map;
  *
  * @param <T> Bean类型
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class BeanConverter<T> extends AbstractConverter<T> {
@@ -76,6 +77,9 @@ public class BeanConverter<T> extends AbstractConverter<T> {
         if (value instanceof Map || value instanceof ValueProvider || BeanUtils.isBean(value.getClass())) {
             //限定被转换对象类型
             return BeanCopier.create(value, ReflectUtils.newInstanceIfPossible(this.beanClass), copyOptions).copy();
+        } else if (value instanceof byte[]) {
+            // 尝试反序列化
+            return ObjectUtils.deserialize((byte[]) value);
         }
         return null;
     }

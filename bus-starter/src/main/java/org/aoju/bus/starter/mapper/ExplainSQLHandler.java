@@ -41,7 +41,7 @@ import java.util.Properties;
  * 防止全表更新与删除
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 @Data
@@ -53,7 +53,7 @@ import java.util.Properties;
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class})})
-public class SQLExplainHandler implements Interceptor {
+public class ExplainSQLHandler implements Interceptor {
 
     private Properties properties;
 
@@ -81,4 +81,5 @@ public class SQLExplainHandler implements Interceptor {
     public void setProperties(Properties prop) {
         this.properties = prop;
     }
+
 }

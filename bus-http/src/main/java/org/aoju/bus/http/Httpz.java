@@ -29,14 +29,17 @@ import org.aoju.bus.http.magic.PostBuilder;
 import org.aoju.bus.http.magic.PutBuilder;
 import org.aoju.bus.logger.Logger;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.security.SecureRandom;
 
 /**
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class Httpz {

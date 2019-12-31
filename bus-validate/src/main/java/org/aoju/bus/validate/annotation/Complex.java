@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.validate.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.validate.validators.Matcher;
 
 import java.lang.annotation.*;
@@ -35,7 +36,7 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 @Documented
@@ -48,7 +49,7 @@ public @interface Complex {
      *
      * @return the string
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
      * 校验器类, 优先使用类型匹配

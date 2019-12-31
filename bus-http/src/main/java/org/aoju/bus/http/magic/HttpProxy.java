@@ -23,9 +23,6 @@
  */
 package org.aoju.bus.http.magic;
 
-import org.aoju.bus.http.Request;
-import org.aoju.bus.http.Response;
-import org.aoju.bus.http.Route;
 import org.aoju.bus.http.secure.Authenticator;
 import org.aoju.bus.http.secure.Credentials;
 
@@ -35,7 +32,7 @@ import java.net.InetSocketAddress;
  * HTTP代理配置
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class HttpProxy {

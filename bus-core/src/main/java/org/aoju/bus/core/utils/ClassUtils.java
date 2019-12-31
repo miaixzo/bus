@@ -41,13 +41,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.net.URI;
 import java.net.URL;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 
 /**
  * 类工具类
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class ClassUtils {
@@ -487,14 +488,34 @@ public class ClassUtils {
 
     /**
      * 是否为简单值类型
-     * 包括：原始类型,、String、other CharSequence, a Number, a Date, a URI, a URL, a Locale or a Class.
+     * 包括：
+     * <pre>
+     *     原始类型
+     *     String
+     *     CharSequence
+     *     Number
+     *     Date
+     *     URI
+     *     URL
+     *     Locale
+     *     Class
+     * </pre>
      *
+     * @param clazz 类
      * @param clazz 类
      * @return 是否为简单值类型
      */
     public static boolean isSimpleValueType(Class<?> clazz) {
-        return isBasicType(clazz) || clazz.isEnum() || CharSequence.class.isAssignableFrom(clazz) || Number.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz) || clazz
-                .equals(URI.class) || clazz.equals(URL.class) || clazz.equals(Locale.class) || clazz.equals(Class.class);
+        return isBasicType(clazz)
+                || clazz.isEnum()
+                || CharSequence.class.isAssignableFrom(clazz)
+                || Number.class.isAssignableFrom(clazz)
+                || Date.class.isAssignableFrom(clazz)
+                || clazz.equals(URI.class)
+                || clazz.equals(URL.class)
+                || clazz.equals(Locale.class)
+                || clazz.equals(Class.class)
+                || TemporalAccessor.class.isAssignableFrom(clazz);
     }
 
     /**
@@ -738,7 +759,7 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 5.3.8
+     * @since 5.5.0
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();
@@ -1284,7 +1305,7 @@ public class ClassUtils {
     public static String getPackageName(String className) {
         Assert.notNull(className, "Class name must not be null");
         int lastDotIndex = className.lastIndexOf(Symbol.C_DOT);
-        return (lastDotIndex != -1 ? className.substring(0, lastDotIndex) : "");
+        return (lastDotIndex != -1 ? className.substring(0, lastDotIndex) : Normal.EMPTY);
     }
 
     /**

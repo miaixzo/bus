@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.pager.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.pager.IPage;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageException;
@@ -36,7 +37,7 @@ import java.util.Map;
  * 分页参数对象工具类
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public abstract class PageFromObject {
@@ -191,7 +192,7 @@ public abstract class PageFromObject {
     }
 
     public static boolean isEmpty(Object obj) {
-        return obj == null || obj.toString().equals("");
+        return obj == null || obj.toString().equals(Normal.EMPTY);
     }
 
     public static boolean isNotEmpty(String str) {

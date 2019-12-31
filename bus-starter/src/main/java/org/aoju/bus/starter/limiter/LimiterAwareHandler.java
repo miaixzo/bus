@@ -28,7 +28,6 @@ import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.limiter.Handler;
 import org.aoju.bus.limiter.Parser;
 import org.aoju.bus.limiter.Resolver;
-import org.aoju.bus.limiter.execute.LimiterExecutionContext;
 import org.aoju.bus.limiter.intercept.BeanFactoryLimitedResourceSourceAdvisor;
 import org.aoju.bus.limiter.intercept.LimiterInterceptor;
 import org.aoju.bus.limiter.resource.DefaultLimitedResourceSource;
@@ -48,7 +47,7 @@ import java.util.List;
  * 限流配置
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)

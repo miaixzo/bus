@@ -28,13 +28,12 @@ import org.aoju.bus.socket.origin.plugins.ssl.SSLConfig;
 import org.aoju.bus.socket.origin.plugins.ssl.SSLService;
 
 import java.io.IOException;
-import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * AIO服务端
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class AioSSLQuickServer<T> extends AioQuickServer<T> {

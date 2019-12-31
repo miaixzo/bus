@@ -21,21 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.annotation;
+package org.aoju.bus.extra.effect;
 
-import java.lang.annotation.*;
+import java.io.IOException;
 
 /**
- * 公共注解
+ * 数据压缩/解压缩
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
-@Inherited
-@Documented
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ComEager {
+public interface EffectProvider {
+
+    /**
+     * 数据压缩.
+     *
+     * @param data 数据
+     * @return 压缩后数据
+     * @throws IOException 异常
+     */
+    byte[] compress(byte[] data) throws IOException;
+
+    /**
+     * 数据解压.
+     *
+     * @param data 数据
+     * @return 解压后的数据
+     * @throws IOException 异常
+     */
+    byte[] uncompress(byte[] data) throws IOException;
 
 }

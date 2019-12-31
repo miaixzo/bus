@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.validate.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.validate.Builder;
 import org.aoju.bus.validate.strategy.RegexStrategy;
 
@@ -35,7 +36,7 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 @Documented
@@ -45,7 +46,7 @@ import java.lang.annotation.*;
 public @interface Regex {
 
     @Filler("pattern")
-    String pattern() default "";
+    String pattern() default Normal.EMPTY;
 
     /**
      * 如果长度为0,判断能否通过校验

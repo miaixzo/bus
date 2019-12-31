@@ -82,7 +82,7 @@ import java.util.Map;
  * 3、摘要加密（digest）,例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class Builder {
@@ -736,7 +736,7 @@ public class Builder {
      * @param password 明文密码
      * @return 加密后的密文
      */
-    public static String bcrypt(String password) {
+    public static String hashpw(String password) {
         return BCrypt.hashpw(password);
     }
 
@@ -747,7 +747,7 @@ public class Builder {
      * @param hashed   密文
      * @return 是否匹配
      */
-    public static boolean bcryptCheck(String password, String hashed) {
+    public static boolean checkpw(String password, String hashed) {
         return BCrypt.checkpw(password, hashed);
     }
 

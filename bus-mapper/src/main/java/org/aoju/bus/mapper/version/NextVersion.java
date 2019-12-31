@@ -25,10 +25,27 @@ package org.aoju.bus.mapper.version;
 
 /**
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public interface NextVersion<T> {
+
+    /**
+     * 获取下一个版本
+     *
+     * @param nextVersionClass 下个版本对象
+     * @param current          内容
+     * @return 结果对象
+     * @throws VersionException 异常
+     */
+    static Object version(String nextVersionClass, Object current) throws VersionException {
+        try {
+            NextVersion nextVersion = (NextVersion) Class.forName(nextVersionClass).newInstance();
+            return nextVersion.nextVersion(current);
+        } catch (Exception e) {
+            throw new VersionException("获取下一个版本号失败!", e);
+        }
+    }
 
     /**
      * 返回下一个版本
@@ -37,5 +54,4 @@ public interface NextVersion<T> {
      * @return 结果
      */
     T nextVersion(T current) throws VersionException;
-
 }

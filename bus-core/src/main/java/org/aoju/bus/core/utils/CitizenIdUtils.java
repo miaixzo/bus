@@ -37,7 +37,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class CitizenIdUtils {
@@ -293,7 +293,7 @@ public class CitizenIdUtils {
             String char2 = idCard.substring(1, 2);
             if (char2.equals(Symbol.ONE)) {
                 info[1] = "M";
-            } else if (char2.equals(Symbol.TWO)) {
+            } else if (ObjectUtils.equal(char2, Symbol.TWO)) {
                 info[1] = "F";
             } else {
                 info[1] = "N";
@@ -535,7 +535,7 @@ public class CitizenIdUtils {
      * @param endExclude   结束位置（不包含）
      * @return 隐藏后的身份证号码
      * @see StringUtils#hide(CharSequence, int, int)
-     * @since 5.3.8
+     * @since 5.5.0
      */
     public static String hide(String idCard, int startInclude, int endExclude) {
         return StringUtils.hide(idCard, startInclude, endExclude);

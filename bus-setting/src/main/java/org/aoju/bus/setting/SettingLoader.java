@@ -25,7 +25,6 @@ package org.aoju.bus.setting;
 
 import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.PatternUtils;
@@ -46,7 +45,7 @@ import java.util.Set;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class SettingLoader {

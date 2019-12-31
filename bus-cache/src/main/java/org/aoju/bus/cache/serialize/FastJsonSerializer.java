@@ -24,10 +24,11 @@
 package org.aoju.bus.cache.serialize;
 
 import com.alibaba.fastjson.JSON;
+import org.aoju.bus.core.lang.Charset;
 
 /**
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class FastJsonSerializer extends AbstractSerializer {
@@ -41,12 +42,12 @@ public class FastJsonSerializer extends AbstractSerializer {
     @Override
     protected byte[] doSerialize(Object obj) throws Throwable {
         String json = JSON.toJSONString(obj);
-        return json.getBytes("UTF-8");
+        return json.getBytes(Charset.DEFAULT_UTF_8);
     }
 
     @Override
     protected Object doDeserialize(byte[] bytes) throws Throwable {
-        String json = new String(bytes, 0, bytes.length, "UTF-8");
+        String json = new String(bytes, 0, bytes.length, Charset.DEFAULT_UTF_8);
         return JSON.parseObject(json, type);
     }
 

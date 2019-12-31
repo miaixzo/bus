@@ -24,7 +24,7 @@
 package org.aoju.bus.mapper.builder;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.criteria.Criteria;
 import org.aoju.bus.mapper.criteria.SqlsCriteria;
@@ -97,7 +97,7 @@ public class Builder {
                 if (this.propertyMap.containsKey(property)) {
                     this.selectColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+                    throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
                 }
             }
         }
@@ -113,7 +113,7 @@ public class Builder {
                 if (propertyMap.containsKey(property)) {
                     this.excludeColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+                    throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
                 }
             }
         }
@@ -241,7 +241,7 @@ public class Builder {
         if (propertyMap.containsKey(property)) {
             return propertyMap.get(property).getColumn();
         } else if (exists) {
-            throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+            throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
         }
         return null;
     }
@@ -250,18 +250,18 @@ public class Builder {
         if (propertyMap.containsKey(property)) {
             return property;
         } else if (exists) {
-            throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+            throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
         }
         return null;
     }
 
     private String propertyforOderBy(String property) {
         if (Assert.isEmpty(property) || Assert.isEmpty(property.trim())) {
-            throw new MapperException("接收的property为空！");
+            throw new InstrumentException("接收的property为空！");
         }
         property = property.trim();
         if (!propertyMap.containsKey(property)) {
-            throw new MapperException("当前实体类不包含名为" + property + "的属性!");
+            throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
         }
         return propertyMap.get(property).getColumn();
     }

@@ -2,7 +2,6 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.gitlab.GitLabApi;
 import org.aoju.bus.logger.Logger;
 
 import java.util.HashMap;

@@ -40,7 +40,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class UriUtils {
@@ -358,7 +358,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 5.3.8
+     * @since 5.5.0
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
@@ -375,7 +375,7 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 5.3.8
+     * @since 5.5.0
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);
@@ -719,8 +719,8 @@ public class UriUtils {
         for (Map.Entry<String, ?> entry : uriVariables.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            String stringValue = (value != null ? value.toString() : "");
-            result.put(key, encode(stringValue, Charset.forName("UTF-8")));
+            String stringValue = (value != null ? value.toString() : Normal.EMPTY);
+            result.put(key, encode(stringValue, Charset.forName(org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8)));
         }
         return result;
     }
@@ -734,8 +734,8 @@ public class UriUtils {
     public static Object[] encodeUriVariables(Object... uriVariables) {
         List<String> result = new ArrayList<>();
         for (Object value : uriVariables) {
-            String stringValue = (value != null ? value.toString() : "");
-            result.add(encode(stringValue, Charset.forName("UTF-8")));
+            String stringValue = (value != null ? value.toString() : Normal.EMPTY);
+            result.add(encode(stringValue, org.aoju.bus.core.lang.Charset.UTF_8));
         }
         return result.toArray();
     }

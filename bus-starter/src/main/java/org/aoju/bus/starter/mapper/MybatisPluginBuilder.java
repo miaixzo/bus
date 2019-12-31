@@ -36,7 +36,7 @@ import java.util.Properties;
  * mybatis 插件启用
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class MybatisPluginBuilder {
@@ -56,8 +56,8 @@ public class MybatisPluginBuilder {
 
             plugins = new Interceptor[]{
                     interceptor,
-                    new SQLPerformanceHandler(),
-                    new SQLExplainHandler(),
+                    new NatureSQLHandler(),
+                    new ExplainSQLHandler(),
                     new SensitiveResultSetHandler(),
                     new SensitiveStatementHandler()};
         }

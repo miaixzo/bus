@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public abstract class AbstractShooting implements Shooting {
@@ -67,7 +67,7 @@ public abstract class AbstractShooting implements Shooting {
     private Properties sqls;
 
     protected AbstractShooting(Map<String, Object> context) {
-        InputStream resource = this.getClass().getClassLoader().getResourceAsStream(Normal.META_DATA_INF+"/caches/bus-cache.yaml");
+        InputStream resource = this.getClass().getClassLoader().getResourceAsStream(Normal.META_DATA_INF + "/caches/bus-cache.yaml");
         this.sqls = new Yaml().loadAs(resource, Properties.class);
 
         this.jdbcOperations = jdbcOperationsSupplier(context).get();

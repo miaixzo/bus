@@ -41,7 +41,6 @@ import org.aoju.bus.http.secure.X509TrustManager;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +54,7 @@ import java.util.stream.Collectors;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class Httpx extends Httpd {

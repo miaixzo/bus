@@ -29,7 +29,6 @@ import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.UnoUrl;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ import java.util.List;
  * Form请求体内容
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public final class FormBody extends RequestBody {

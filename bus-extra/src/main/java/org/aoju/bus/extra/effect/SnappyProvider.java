@@ -31,10 +31,10 @@ import java.io.IOException;
  * 基于snappy的数据压缩.
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
-public class SnappyProvider implements Provider {
+public class SnappyProvider implements EffectProvider {
 
     @Override
     public byte[] compress(byte[] data) throws IOException {

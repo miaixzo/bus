@@ -42,7 +42,7 @@ import java.util.*;
  * 或者{@link #parse parse()}如果输入是无效的URL，则返回null。您甚至可以明确每个组件是否已经编码
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public final class UnoUrl {
@@ -320,7 +320,7 @@ public final class UnoUrl {
             return new URI(uri);
         } catch (URISyntaxException e) {
             try {
-                String stripped = uri.replaceAll("[\\u0000-\\u001F\\u007F-\\u009F\\p{javaWhitespace}]", "");
+                String stripped = uri.replaceAll("[\\u0000-\\u001F\\u007F-\\u009F\\p{javaWhitespace}]", Normal.EMPTY);
                 return URI.create(stripped);
             } catch (Exception e1) {
                 throw new RuntimeException(e);
@@ -337,7 +337,7 @@ public final class UnoUrl {
     }
 
     public String encodedUsername() {
-        if (username.isEmpty()) return "";
+        if (username.isEmpty()) return Normal.EMPTY;
         int usernameStart = scheme.length() + 3;
         int usernameEnd = org.aoju.bus.http.Builder.delimiterOffset(url, usernameStart, url.length(), ":@");
         return url.substring(usernameStart, usernameEnd);
@@ -1385,7 +1385,7 @@ public final class UnoUrl {
         }
 
         private boolean isDotDot(String input) {
-            return input.equals("..")
+            return input.equals(Symbol.DOUBLE_DOT)
                     || input.equalsIgnoreCase("%2e.")
                     || input.equalsIgnoreCase(".%2e")
                     || input.equalsIgnoreCase("%2e%2e");

@@ -41,7 +41,6 @@ import org.aoju.bus.logger.Logger;
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -52,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  * 请求参数构造器
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class HttpBuilder {

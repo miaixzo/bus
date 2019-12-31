@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.mapper.criteria;
 
-import org.aoju.bus.mapper.MapperException;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -35,7 +35,7 @@ import java.util.Set;
  * 参考 org.apache.ibatis.type.SimpleTypeRegistry
  *
  * @author Kimi Liu
- * @version 5.3.8
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class SimpleType {
@@ -100,7 +100,7 @@ public class SimpleType {
                 try {
                     SIMPLE_TYPE_SET.add(Class.forName(c));
                 } catch (ClassNotFoundException e) {
-                    throw new MapperException("注册类型出错:" + c, e);
+                    throw new InstrumentException("注册类型出错:" + c, e);
                 }
             }
         }
