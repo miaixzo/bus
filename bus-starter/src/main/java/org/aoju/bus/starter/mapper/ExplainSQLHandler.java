@@ -53,7 +53,7 @@ import java.util.Properties;
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class})})
-public class SQLExplainHandler implements Interceptor {
+public class ExplainSQLHandler implements Interceptor {
 
     private Properties properties;
 
@@ -81,7 +81,5 @@ public class SQLExplainHandler implements Interceptor {
     public void setProperties(Properties prop) {
         this.properties = prop;
     }
-
-
 
 }

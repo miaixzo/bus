@@ -60,7 +60,7 @@ import java.util.regex.Matcher;
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class})})
-public class SQLPerformanceHandler implements Interceptor {
+public class NatureSQLHandler implements Interceptor {
 
     public static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
         Logger.debug(sqlId + " :  ==> " + time + " ms");
@@ -148,6 +148,7 @@ public class SQLPerformanceHandler implements Interceptor {
 
     @Override
     public void setProperties(Properties properties) {
+
     }
 
 }

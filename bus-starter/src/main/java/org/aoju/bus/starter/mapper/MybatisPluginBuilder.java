@@ -56,8 +56,8 @@ public class MybatisPluginBuilder {
 
             plugins = new Interceptor[]{
                     interceptor,
-                    new SQLPerformanceHandler(),
-                    new SQLExplainHandler(),
+                    new NatureSQLHandler(),
+                    new ExplainSQLHandler(),
                     new SensitiveResultSetHandler(),
                     new SensitiveStatementHandler()};
         }
