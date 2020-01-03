@@ -7945,6 +7945,18 @@ public class ArrayUtils {
      * @param <T>         被处理的集合
      * @param array       数组
      * @param conjunction 分隔符
+     * @return 连接后的字符串
+     */
+    public static <T> String join(T[] array, CharSequence conjunction) {
+        return join(array, conjunction, null, null);
+    }
+
+    /**
+     * 以 conjunction 为分隔符将数组转换为字符串
+     *
+     * @param <T>         被处理的集合
+     * @param array       数组
+     * @param conjunction 分隔符
      * @param prefix      每个元素添加的前缀,null表示不添加
      * @param suffix      每个元素添加的后缀,null表示不添加
      * @return 连接后的字符串
@@ -7954,7 +7966,7 @@ public class ArrayUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (T item : array) {
             if (isFirst) {
