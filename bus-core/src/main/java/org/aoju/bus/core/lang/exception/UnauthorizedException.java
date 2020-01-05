@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class UnauthorizedException extends UncheckedException {
 
     public UnauthorizedException() {
+        super();
     }
 
     public UnauthorizedException(String message) {

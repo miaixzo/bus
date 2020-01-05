@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class DisableException extends UncheckedException {
 
     public DisableException() {
+        super();
     }
 
     public DisableException(String message) {

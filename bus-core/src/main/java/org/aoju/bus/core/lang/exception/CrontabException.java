@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class CrontabException extends UnauthorizedException {
 
     public CrontabException() {
+        super();
     }
 
     public CrontabException(String message) {

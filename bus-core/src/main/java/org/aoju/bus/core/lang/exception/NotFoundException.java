@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class NotFoundException extends UncheckedException {
 
     public NotFoundException() {
+        super();
     }
 
     public NotFoundException(String message) {

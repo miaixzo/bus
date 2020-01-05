@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class InvalidParamsException extends UncheckedException {
 
     public InvalidParamsException() {
+        super();
     }
 
     public InvalidParamsException(String message) {

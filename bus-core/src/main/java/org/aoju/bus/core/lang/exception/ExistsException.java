@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class ExistsException extends UncheckedException {
 
     public ExistsException() {
+        super();
     }
 
     public ExistsException(String message) {

@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class NoSuchException extends UncheckedException {
 
     public NoSuchException() {
+        super();
     }
 
     public NoSuchException(String message) {

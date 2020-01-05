@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.lang.exception;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,6 +37,7 @@ import java.lang.reflect.InvocationTargetException;
  * @since JDK 1.8+
  */
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 public class UncheckedException extends RuntimeException {
 

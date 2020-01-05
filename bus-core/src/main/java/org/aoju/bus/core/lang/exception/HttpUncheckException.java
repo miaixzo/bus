@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class HttpUncheckException extends UncheckedException {
 
     public HttpUncheckException() {
+        super();
     }
 
     public HttpUncheckException(String message) {

@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class NotExistsException extends UncheckedException {
 
     public NotExistsException() {
+        super();
     }
 
     public NotExistsException(String message) {

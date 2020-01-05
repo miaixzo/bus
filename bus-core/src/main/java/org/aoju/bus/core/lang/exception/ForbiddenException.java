@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class ForbiddenException extends UncheckedException {
 
     public ForbiddenException() {
+        super();
     }
 
     public ForbiddenException(String message) {

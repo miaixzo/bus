@@ -33,6 +33,7 @@ package org.aoju.bus.core.lang.exception;
 public class RevisedException extends RelevantException {
 
     public RevisedException() {
+        super();
     }
 
     public RevisedException(String message) {
