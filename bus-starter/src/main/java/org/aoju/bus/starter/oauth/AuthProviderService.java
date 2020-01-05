@@ -76,7 +76,7 @@ public class AuthProviderService {
         } else if (Registry.QQ.equals(type)) {
             return new QqProvider(context, stateCache);
         } else if (Registry.WECHAT.equals(type)) {
-            return new WeChatProvider(context, stateCache);
+            return new WeChatOPProvider(context, stateCache);
         } else if (Registry.TAOBAO.equals(type)) {
             return new TaobaoProvider(context, stateCache);
         } else if (Registry.GOOGLE.equals(type)) {

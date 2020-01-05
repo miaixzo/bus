@@ -1,26 +1,3 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2017 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
@@ -38,38 +15,37 @@ import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.StateCache;
 
 /**
- * 微信登录
+ * 微信公众平台登录
  *
- * @author Kimi Liu
- * @version 5.5.0
- * @since JDK 1.8+
+ * @author yangkai.shen (https://xkcoding.com)
+ * @since 1.1.0
  */
-public class WeChatProvider extends DefaultProvider {
+public class WeChatMpProvider extends DefaultProvider {
 
-    public WeChatProvider(Context context) {
-        super(context, Registry.WECHAT);
+    public WeChatMpProvider(Context context) {
+        super(context, Registry.WECHAT_MP);
     }
 
-    public WeChatProvider(Context context, StateCache stateCache) {
-        super(context, Registry.WECHAT, stateCache);
+    public WeChatMpProvider(Context context, StateCache stateCache) {
+        super(context, Registry.WECHAT_MP, stateCache);
     }
 
     /**
-     * 微信的特殊性,此时返回的信息同时包含 openid 和 access_token
+     * 微信的特殊性，此时返回的信息同时包含 openid 和 access_token
      *
-     * @param Callback 回调返回的参数
+     * @param authCallback 回调返回的参数
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        return this.getToken(accessTokenUrl(Callback.getCode()));
+    protected AccToken getAccessToken(Callback authCallback) {
+        return this.getToken(accessTokenUrl(authCallback.getCode()));
     }
 
     @Override
     protected Property getUserInfo(AccToken token) {
         String openId = token.getOpenId();
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
 
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
         this.checkResponse(object);
 
         String location = String.format("%s-%s-%s", object.getString("country"), object.getString("province"), object.getString("city"));
@@ -91,10 +67,10 @@ public class WeChatProvider extends DefaultProvider {
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AccToken token) {
         return Message.builder()
                 .errcode(Builder.Status.SUCCESS.getCode())
-                .data(this.getToken(refreshTokenUrl(oldToken.getRefreshToken())))
+                .data(this.getToken(refreshTokenUrl(token.getRefreshToken())))
                 .build();
     }
 
@@ -110,7 +86,7 @@ public class WeChatProvider extends DefaultProvider {
     }
 
     /**
-     * 获取token,适用于获取access_token和刷新token
+     * 获取token，适用于获取access_token和刷新token
      *
      * @param accessTokenUrl 实际请求token的地址
      * @return token对象
@@ -125,24 +101,25 @@ public class WeChatProvider extends DefaultProvider {
                 .refreshToken(object.getString("refresh_token"))
                 .expireIn(object.getIntValue("expires_in"))
                 .openId(object.getString("openid"))
+                .scope(object.getString("scope"))
                 .build();
     }
 
     /**
-     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数,可以防止csrf
+     * @param state state 验证授权流程的参数，可以防止csrf
      * @return 返回授权地址
      * @since 1.9.3
      */
     @Override
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
-                .queryParam("response_type", "code")
                 .queryParam("appid", context.getClientId())
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", "snsapi_login")
-                .queryParam("state", getRealState(state))
+                .queryParam("response_type", "code")
+                .queryParam("scope", "snsapi_userinfo")
+                .queryParam("state", getRealState(state).concat("#wechat_redirect"))
                 .build();
     }
 
@@ -155,9 +132,9 @@ public class WeChatProvider extends DefaultProvider {
     @Override
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
-                .queryParam("code", code)
                 .queryParam("appid", context.getClientId())
                 .queryParam("secret", context.getClientSecret())
+                .queryParam("code", code)
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -165,14 +142,14 @@ public class WeChatProvider extends DefaultProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param token 用户授权后的token
+     * @param accToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    protected String userInfoUrl(AccToken accToken) {
         return Builder.fromBaseUrl(source.userInfo())
-                .queryParam("access_token", token.getAccessToken())
-                .queryParam("openid", token.getOpenId())
+                .queryParam("access_token", accToken.getAccessToken())
+                .queryParam("openid", accToken.getOpenId())
                 .queryParam("lang", "zh_CN")
                 .build();
     }
@@ -187,8 +164,8 @@ public class WeChatProvider extends DefaultProvider {
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromBaseUrl(source.refresh())
                 .queryParam("appid", context.getClientId())
-                .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
+                .queryParam("refresh_token", refreshToken)
                 .build();
     }
 

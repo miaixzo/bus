@@ -86,8 +86,6 @@ public class WeChatEEProvider extends DefaultProvider {
         String userDetailResponse = getUserDetail(token.getAccessToken(), userId);
         JSONObject userDetail = this.checkResponse(userDetailResponse);
 
-        String gender = getRealGender(userDetail);
-
         return Property.builder()
                 .username(userDetail.getString("name"))
                 .nickname(userDetail.getString("alias"))
@@ -95,7 +93,7 @@ public class WeChatEEProvider extends DefaultProvider {
                 .location(userDetail.getString("address"))
                 .email(userDetail.getString("email"))
                 .uuid(userId)
-                .gender(Normal.Gender.getGender(gender))
+                .gender(Normal.Gender.getGender(object.getString("gender")))
                 .token(token)
                 .source(source.toString())
                 .build();
@@ -114,20 +112,6 @@ public class WeChatEEProvider extends DefaultProvider {
             throw new InstrumentException(StringUtils.toString(object.getIntValue("errcode")), object.getString("errmsg"));
         }
         return object;
-    }
-
-    /**
-     * 获取用户的实际性别,0表示未定义,1表示男性,2表示女性
-     *
-     * @param userDetail 用户详情
-     * @return 用户性别
-     */
-    private String getRealGender(JSONObject userDetail) {
-        int gender = userDetail.getIntValue("gender");
-        if (Normal.Gender.MALE.getCode() == gender) {
-            return Symbol.ONE;
-        }
-        return 2 == gender ? Symbol.ZERO : null;
     }
 
     /**

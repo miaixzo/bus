@@ -259,9 +259,9 @@ public enum Registry implements Complex {
         }
     },
     /**
-     * 微信
+     * 微信开放平台
      */
-    WECHAT {
+    WECHAT_OPEN {
         @Override
         public String authorize() {
             return "https://open.weixin.qq.com/connect/qrconnect";
@@ -280,6 +280,49 @@ public enum Registry implements Complex {
         @Override
         public String refresh() {
             return "https://api.weixin.qq.com/sns/oauth2/refresh_token";
+        }
+    },
+    /**
+     * 微信公众平台
+     */
+    WECHAT_MP {
+        @Override
+        public String authorize() {
+            return "https://open.weixin.qq.com/connect/oauth2/authorize";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://api.weixin.qq.com/sns/oauth2/access_token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://api.weixin.qq.com/sns/userinfo";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://api.weixin.qq.com/sns/oauth2/refresh_token";
+        }
+    },
+    /**
+     * 企业微信
+     */
+    WECHAT_EE {
+        @Override
+        public String authorize() {
+            return "https://open.work.weixin.qq.com/wwopen/sso/qrConnect";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo";
         }
     },
     /**
@@ -562,25 +605,6 @@ public enum Registry implements Complex {
         @Override
         public String refresh() {
             return "https://oauth-login.cloud.huawei.com/oauth2/v2/token";
-        }
-    },
-    /**
-     * 企业微信
-     */
-    WECHAT_EE {
-        @Override
-        public String authorize() {
-            return "https://open.work.weixin.qq.com/wwopen/sso/qrConnect";
-        }
-
-        @Override
-        public String accessToken() {
-            return "https://qyapi.weixin.qq.com/cgi-bin/gettoken";
-        }
-
-        @Override
-        public String userInfo() {
-            return "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo";
         }
     },
     /**

@@ -33,6 +33,7 @@ import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
+import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.StateCache;
 
@@ -121,6 +122,17 @@ public class WeiboProvider extends DefaultProvider {
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("uid", token.getUid())
                 .build();
+    }
+
+    @Override
+    public Message revoke(AccToken token) {
+        JSONObject object = JSONObject.parseObject(doGetRevoke(token));
+        if (object.containsKey("error")) {
+            return Message.builder().errcode(Builder.Status.FAILURE.getCode()).errmsg(object.getString("error")).build();
+        }
+        // 返回 result = true 表示取消授权成功，否则失败
+        Builder.Status status = object.getBooleanValue("result") ? Builder.Status.SUCCESS : Builder.Status.FAILURE;
+        return Message.builder().errcode(status.getCode()).errmsg(status.getMsg()).build();
     }
 
 }
