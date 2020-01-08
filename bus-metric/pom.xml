@@ -24,22 +24,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <guava.version>28.0-jre</guava.version>
-        <commons-io.version>2.5</commons-io.version>
-        <commons-fileupload.version>1.3.3</commons-fileupload.version>
         <xstream.version>1.4.7</xstream.version>
-        <velocity.version>1.7</velocity.version>
-        <hibernate-validator.version>6.0.10.Final</hibernate-validator.version>
-        <oltu.version>1.0.2</oltu.version>
-        <jwt.version>3.9.0</jwt.version>
         <guava.version>18.0</guava.version>
-        <spring-data-redis.version>1.8.8.RELEASE</spring-data-redis.version>
         <netty.version>4.1.25.Final</netty.version>
         <jboss-marshalling-serial.version>2.0.5.Final</jboss-marshalling-serial.version>
         <itextpdf.version>5.5.12</itextpdf.version>
         <xmlworker.version>5.5.8</xmlworker.version>
         <itext-asian.version>5.2.0</itext-asian.version>
         <asm.version>7.2</asm.version>
-        <commons-codec.version>1.11</commons-codec.version>
     </properties>
 
     <dependencies>
@@ -62,12 +54,6 @@
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
             <version>${xstream.version}</version>
-        </dependency>
-
-       <dependency>
-            <groupId>org.apache.oltu.oauth2</groupId>
-            <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
-            <version>${oltu.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>

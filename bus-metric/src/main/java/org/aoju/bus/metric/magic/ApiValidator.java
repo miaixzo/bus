@@ -20,17 +20,17 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 package org.aoju.bus.metric.magic;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.metric.Context;
 import org.aoju.bus.metric.builtin.ErrorFactory;
 import org.aoju.bus.metric.builtin.Errors;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -111,7 +111,7 @@ public class ApiValidator implements Validator {
                     // 客户端传来的文件md5
                     String clientMd5 = param.getString(file.getName());
                     if (clientMd5 != null) {
-                        String fileMd5 = DigestUtils.md5Hex(file.getBytes());
+                        String fileMd5 = Builder.md5Hex(file.getBytes());
                         if (!clientMd5.equals(fileMd5)) {
                             throw Errors.ERROR_UPLOAD_FILE.getException();
                         }
