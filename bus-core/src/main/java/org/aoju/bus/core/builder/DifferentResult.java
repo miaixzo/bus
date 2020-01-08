@@ -53,11 +53,11 @@ public class DifferentResult implements Iterable<Different<?>> {
     /**
      * 创建一个{@link DifferentResult}，其中包含两个对象之间的差异
      *
-     * @param lhs   左边对象
-     * @param rhs   右边对象
+     * @param lhs        左边对象
+     * @param rhs        右边对象
      * @param differents 列表中的差异，可能是空的
-     * @param style 用于{@link #toString()}方法的样式。可能是{@code null}，
-     *              在这种情况下使用{@link ToStringStyle#DEFAULT_STYLE}
+     * @param style      用于{@link #toString()}方法的样式。可能是{@code null}，
+     *                   在这种情况下使用{@link ToStringStyle#DEFAULT_STYLE}
      */
     DifferentResult(final Object lhs, final Object rhs, final List<Different<?>> differents,
                     final ToStringStyle style) {

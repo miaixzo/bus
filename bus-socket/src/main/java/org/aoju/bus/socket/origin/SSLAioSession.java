@@ -26,7 +26,6 @@ package org.aoju.bus.socket.origin;
 import org.aoju.bus.core.io.segment.BufferPage;
 import org.aoju.bus.core.io.segment.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.socket.origin.plugins.ssl.Callback;
 import org.aoju.bus.socket.origin.plugins.ssl.Handshake;
 import org.aoju.bus.socket.origin.plugins.ssl.SSLService;
 

@@ -105,6 +105,18 @@ public class Between {
     }
 
     /**
+     * 判断目标日期是否在范围内
+     *
+     * @param begin  起始时间
+     * @param end    结束日期
+     * @param target 目标日期
+     * @return true:在范围内/false:不在范围内
+     */
+    public static boolean isBetween(Date begin, Date end, Date target) {
+        return begin.getTime() <= target.getTime() && end.getTime() >= target.getTime();
+    }
+
+    /**
      * 判断两个日期相差的时长
      * 返回 给定单位的时长差
      *
@@ -172,18 +184,6 @@ public class Between {
      */
     public boolean isBetween(Date target) {
         return this.begin.getTime() <= target.getTime() && this.end.getTime() >= target.getTime();
-    }
-
-    /**
-     * 判断目标日期是否在范围内
-     *
-     * @param begin  起始时间
-     * @param end    结束日期
-     * @param target 目标日期
-     * @return true:在范围内/false:不在范围内
-     */
-    public static boolean isBetween(Date begin, Date end, Date target) {
-        return begin.getTime() <= target.getTime() && end.getTime() >= target.getTime();
     }
 
     /**

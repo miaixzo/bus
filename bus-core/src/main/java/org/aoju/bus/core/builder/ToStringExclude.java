@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.core.builder;
 
-import org.aoju.bus.core.builder.ReflectionToStringBuilder;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

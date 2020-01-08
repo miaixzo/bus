@@ -354,7 +354,7 @@ public class ByteUtils {
     }
 
     public static byte[] getBytes(char[] chars) {
-        Charset cs =  org.aoju.bus.core.lang.Charset.UTF_8 ;
+        Charset cs = org.aoju.bus.core.lang.Charset.UTF_8;
         CharBuffer cb = CharBuffer.allocate(chars.length);
         cb.put(chars);
         cb.flip();

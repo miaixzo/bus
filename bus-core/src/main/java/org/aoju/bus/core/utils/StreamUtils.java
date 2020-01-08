@@ -133,7 +133,7 @@ public class StreamUtils {
             safeClose(reader);
         }
     }
-    
+
     public static String readText(InputStream in) throws IOException {
         return readText(in, null, -1);
     }

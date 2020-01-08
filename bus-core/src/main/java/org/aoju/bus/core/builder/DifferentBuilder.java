@@ -778,7 +778,7 @@ public class DifferentBuilder implements Builder<DifferentResult> {
      * }
      * </pre>
      *
-     * @param fieldName  字段名
+     * @param fieldName       字段名
      * @param differentResult 要附加的{@code DiffResult}
      * @return this
      * @since 3.5.0

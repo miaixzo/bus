@@ -65,7 +65,7 @@ public class OrderBy {
             return this;
         }
         if (Assert.isNotEmpty(condition.getOrderByClause())) {
-            condition.setOrderByClause(condition.getOrderByClause() + Symbol.COMMA+ column);
+            condition.setOrderByClause(condition.getOrderByClause() + Symbol.COMMA + column);
         } else {
             condition.setOrderByClause(column);
         }
