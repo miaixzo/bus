@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.provider;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.builder.MapperTemplate;
@@ -66,7 +67,7 @@ public class InsertListProvider extends MapperTemplate {
         //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (column.isInsertable()) {
-                sql.append(column.getColumnHolder("record") + ",");
+                sql.append(column.getColumnHolder("record") + Symbol.COMMA);
             }
         }
         sql.append("</trim>");
@@ -94,7 +95,7 @@ public class InsertListProvider extends MapperTemplate {
         //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (!column.isId() && column.isInsertable()) {
-                sql.append(column.getColumnHolder("record") + ",");
+                sql.append(column.getColumnHolder("record") + Symbol.COMMA);
             }
         }
         sql.append("</trim>")

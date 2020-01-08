@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -307,12 +307,7 @@ public class Validator {
      * @since 3.3.0
      */
     public static boolean isLetter(String value) {
-        return StringUtils.isAllCharMatch(value, new org.aoju.bus.core.lang.Matcher<Character>() {
-            @Override
-            public boolean match(Character t) {
-                return Character.isLetter(t);
-            }
-        });
+        return StringUtils.isAllCharMatch(value, t -> Character.isLetter(t));
     }
 
     /**
@@ -337,12 +332,7 @@ public class Validator {
      * @since 3.3.0
      */
     public static boolean isUpperCase(String value) {
-        return StringUtils.isAllCharMatch(value, new org.aoju.bus.core.lang.Matcher<Character>() {
-            @Override
-            public boolean match(Character t) {
-                return Character.isUpperCase(t);
-            }
-        });
+        return StringUtils.isAllCharMatch(value, t -> Character.isUpperCase(t));
     }
 
     /**
@@ -367,12 +357,7 @@ public class Validator {
      * @since 3.3.0
      */
     public static boolean isLowerCase(String value) {
-        return StringUtils.isAllCharMatch(value, new org.aoju.bus.core.lang.Matcher<Character>() {
-            @Override
-            public boolean match(Character t) {
-                return Character.isLowerCase(t);
-            }
-        });
+        return StringUtils.isAllCharMatch(value, t -> Character.isLowerCase(t));
     }
 
     /**

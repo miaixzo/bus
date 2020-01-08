@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -177,12 +177,12 @@ public class MailUtils {
      * @param files       附件列表
      */
     public static void send(MailAccount mailAccount, Collection<String> tos, String subject, String content, boolean isHtml, File... files) {
-        Mail.create(mailAccount)//
-                .setTos(tos.toArray(new String[tos.size()]))//
-                .setTitle(subject)//
-                .setContent(content)//
-                .setHtml(isHtml)//
-                .setFiles(files)//
+        Mail.create(mailAccount)
+                .setTos(tos.toArray(new String[tos.size()]))
+                .setTitle(subject)
+                .setContent(content)
+                .setHtml(isHtml)
+                .setFiles(files)
                 .send();
     }
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ public class Algorithm {
     public static final String TYPE_PRIVATE_KEY = "PrivateKey";
     public static final String TYPE_PUBLIC_KEY = "PublicKey";
 
-    /***************非对称算法类型*************/
+    /* 非对称算法类型 */
 
     /**
      * RSA算法
@@ -59,7 +59,7 @@ public class Algorithm {
     public static final String EC = "EC";
 
 
-    /***************对称算法类型*************/
+    /* 对称算法类型 */
 
     /**
      * 默认的AES加密方式：AES/CBC/PKCS5Padding
@@ -80,7 +80,7 @@ public class Algorithm {
     public static final String PBEWithSHA1AndDESede = "PBEWithSHA1AndDESede";
     public static final String PBEWithSHA1AndRC2_40 = "PBEWithSHA1AndRC2_40";
 
-    /***************签名算法类型*************/
+    /* 签名算法类型 */
 
     /**
      * The RSA signature algorithm

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.MapUtils;
@@ -344,7 +341,7 @@ public class Httpx extends Httpd {
      * @return String
      */
     public static String post(final String url, final Map<String, Object> formMap) {
-        String data = "";
+        String data = Normal.EMPTY;
         if (MapUtils.isNotEmpty(formMap)) {
             data = formMap.entrySet().stream()
                     .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
@@ -466,7 +463,7 @@ public class Httpx extends Httpd {
         MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
         RequestBody bodyParams = RequestBody.create(mediaType, params.toString());
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE)
-                .addFormDataPart("params", "", bodyParams);
+                .addFormDataPart("params", Normal.EMPTY, bodyParams);
 
         File file;
         for (String path : pathList) {
@@ -475,7 +472,7 @@ public class Httpx extends Httpd {
         }
         RequestBody requestBody = requestBodyBuilder.build();
         org.aoju.bus.http.Request request = new org.aoju.bus.http.Request.Builder().url(url).post(requestBody).build();
-        String result = "";
+        String result = Normal.EMPTY;
         try {
             org.aoju.bus.http.Response response = httpd.newCall(request).execute();
             if (response.isSuccessful()) {
@@ -536,7 +533,7 @@ public class Httpx extends Httpd {
             throw new InstrumentException(String.format(">>>>>>>>request method not found [%s]<<<<<<<<", method));
         }
 
-        String result = "";
+        String result = Normal.EMPTY;
         try {
             org.aoju.bus.http.Response response = httpd.newCall(request.build()).execute();
             if (response.isSuccessful()) {
@@ -600,7 +597,7 @@ public class Httpx extends Httpd {
         } else {
             throw new InstrumentException(String.format(">>>>>>>>request method not found[%s]<<<<<<<<", method));
         }
-        String[] result = {""};
+        String[] result = {Normal.EMPTY};
 
         String finalUrl = url;
         org.aoju.bus.http.NewCall call = httpd.newCall(request.build());

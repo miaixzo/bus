@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package org.aoju.bus.starter.mapper;
 
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
@@ -78,7 +79,7 @@ public class NatureSQLHandler implements Interceptor {
             if (obj != null) {
                 value = obj.toString();
             } else {
-                value = "";
+                value = Normal.EMPTY;
             }
         }
         return value;

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -115,32 +115,6 @@ public class Symmetric {
     }
 
     /**
-     * 初始化
-     *
-     * @param algorithm 算法
-     * @param key       密钥,如果为<code>null</code>自动生成一个key
-     * @return {@link Symmetric}
-     */
-    public Symmetric init(String algorithm, SecretKey key) {
-        Assert.notBlank(algorithm, "'algorithm' must be not blank !");
-        this.secretKey = key;
-
-        // 对于PBE算法使用随机数加盐
-        if (algorithm.startsWith("PBE")) {
-            this.params = new PBEParameterSpec(RandomUtils.randomBytes(8), 100);
-        }
-
-        // 检查是否为ZeroPadding,是则替换为NoPadding,并标记以便单独处理
-        if (algorithm.contains(Padding.ZeroPadding.name())) {
-            algorithm = StringUtils.replace(algorithm, Padding.ZeroPadding.name(), Padding.NoPadding.name());
-            this.isZeroPadding = true;
-        }
-
-        this.cipher = Builder.createCipher(algorithm);
-        return this;
-    }
-
-    /**
      * 设置 {@link AlgorithmParameterSpec},通常用于加盐或偏移向量
      *
      * @param params {@link AlgorithmParameterSpec}
@@ -149,6 +123,16 @@ public class Symmetric {
     public Symmetric setParams(AlgorithmParameterSpec params) {
         this.params = params;
         return this;
+    }
+
+    /**
+     * 加密,使用UTF-8编码
+     *
+     * @param data 被加密的字符串
+     * @return 加密后的bytes
+     */
+    public byte[] encrypt(String data) {
+        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.lang.Charset.UTF_8));
     }
 
     /**
@@ -176,21 +160,11 @@ public class Symmetric {
     /**
      * 加密
      *
-     * @param data 数据
-     * @return 加密后的Hex
+     * @param data 被加密的字符串
+     * @return 加密后的bytes
      */
-    public String encryptHex(byte[] data) {
-        return HexUtils.encodeHexStr(encrypt(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data 数据
-     * @return 加密后的Base64
-     */
-    public String encryptBase64(byte[] data) {
-        return Base64.encode(encrypt(data));
+    public byte[] encrypt(InputStream data) {
+        return encrypt(IoUtils.readBytes(data));
     }
 
     /**
@@ -216,6 +190,36 @@ public class Symmetric {
     }
 
     /**
+     * 加密,使用UTF-8编码
+     *
+     * @param data 被加密的字符串
+     * @return 加密后的Hex
+     */
+    public String encryptHex(String data) {
+        return HexUtils.encodeHexStr(encrypt(data));
+    }
+
+    /**
+     * 加密
+     *
+     * @param data 被加密的字符串
+     * @return 加密后的Hex
+     */
+    public String encryptHex(InputStream data) {
+        return HexUtils.encodeHexStr(encrypt(data));
+    }
+
+    /**
+     * 加密
+     *
+     * @param data 数据
+     * @return 加密后的Hex
+     */
+    public String encryptHex(byte[] data) {
+        return HexUtils.encodeHexStr(encrypt(data));
+    }
+
+    /**
      * 加密
      *
      * @param data    被加密的字符串
@@ -235,6 +239,36 @@ public class Symmetric {
      */
     public String encryptHex(String data, Charset charset) {
         return HexUtils.encodeHexStr(encrypt(data, charset));
+    }
+
+    /**
+     * 加密,使用UTF-8编码
+     *
+     * @param data 被加密的字符串
+     * @return 加密后的Base64
+     */
+    public String encryptBase64(String data) {
+        return Base64.encode(encrypt(data));
+    }
+
+    /**
+     * 加密
+     *
+     * @param data 数据
+     * @return 加密后的Base64
+     */
+    public String encryptBase64(byte[] data) {
+        return Base64.encode(encrypt(data));
+    }
+
+    /**
+     * 加密
+     *
+     * @param data 被加密的字符串
+     * @return 加密后的Base64
+     */
+    public String encryptBase64(InputStream data) {
+        return Base64.encode(encrypt(data));
     }
 
     /**
@@ -260,63 +294,23 @@ public class Symmetric {
     }
 
     /**
-     * 加密,使用UTF-8编码
+     * 解密Hex（16进制）或Base64表示的字符串
      *
-     * @param data 被加密的字符串
-     * @return 加密后的bytes
+     * @param data 被解密的String,必须为16进制字符串或Base64表示形式
+     * @return 解密后的bytes
      */
-    public byte[] encrypt(String data) {
-        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.lang.Charset.UTF_8));
+    public byte[] decrypt(String data) {
+        return decrypt(Builder.decode(data));
     }
 
     /**
-     * 加密,使用UTF-8编码
+     * 解密,不会关闭流
      *
-     * @param data 被加密的字符串
-     * @return 加密后的Hex
+     * @param data 被解密的bytes
+     * @return 解密后的bytes
      */
-    public String encryptHex(String data) {
-        return HexUtils.encodeHexStr(encrypt(data));
-    }
-
-    /**
-     * 加密,使用UTF-8编码
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的Base64
-     */
-    public String encryptBase64(String data) {
-        return Base64.encode(encrypt(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的bytes
-     */
-    public byte[] encrypt(InputStream data) {
-        return encrypt(IoUtils.readBytes(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的Hex
-     */
-    public String encryptHex(InputStream data) {
-        return HexUtils.encodeHexStr(encrypt(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的Base64
-     */
-    public String encryptBase64(InputStream data) {
-        return Base64.encode(encrypt(data));
+    public byte[] decrypt(InputStream data) {
+        return decrypt(IoUtils.readBytes(data));
     }
 
     /**
@@ -372,16 +366,6 @@ public class Symmetric {
     /**
      * 解密Hex（16进制）或Base64表示的字符串
      *
-     * @param data 被解密的String,必须为16进制字符串或Base64表示形式
-     * @return 解密后的bytes
-     */
-    public byte[] decrypt(String data) {
-        return decrypt(Builder.decode(data));
-    }
-
-    /**
-     * 解密Hex（16进制）或Base64表示的字符串
-     *
      * @param data    被解密的String
      * @param charset 解密后的charset
      * @return 解密后的String
@@ -398,16 +382,6 @@ public class Symmetric {
      */
     public String decryptStr(String data) {
         return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
-    }
-
-    /**
-     * 解密,不会关闭流
-     *
-     * @param data 被解密的bytes
-     * @return 解密后的bytes
-     */
-    public byte[] decrypt(InputStream data) {
-        return decrypt(IoUtils.readBytes(data));
     }
 
     /**
@@ -450,13 +424,35 @@ public class Symmetric {
     }
 
     /**
+     * 初始化
+     *
+     * @param algorithm 算法
+     * @param key       密钥,如果为<code>null</code>自动生成一个key
+     * @return {@link Symmetric}
+     */
+    public Symmetric init(String algorithm, SecretKey key) {
+        Assert.notBlank(algorithm, "'algorithm' must be not blank !");
+        this.secretKey = key;
+
+        // 对于PBE算法使用随机数加盐
+        if (algorithm.startsWith("PBE")) {
+            this.params = new PBEParameterSpec(RandomUtils.randomBytes(8), 100);
+        }
+
+        // 检查是否为ZeroPadding,是则替换为NoPadding,并标记以便单独处理
+        if (algorithm.contains(Padding.ZeroPadding.name())) {
+            algorithm = StringUtils.replace(algorithm, Padding.ZeroPadding.name(), Padding.NoPadding.name());
+            this.isZeroPadding = true;
+        }
+
+        this.cipher = Builder.createCipher(algorithm);
+        return this;
+    }
+
+    /**
      * 数据按照blockSize的整数倍长度填充填充0
-     *
-     * <p>
-     * 在{@link Padding#ZeroPadding} 模式下,且数据长度不是blockSize的整数倍才有效,否则返回原数据
-     *
-     * <p>
-     * 见：https://blog.csdn.net/OrangeJack/article/details/82913804
+     * 在{@link Padding#ZeroPadding} 模式下,
+     * 且数据长度不是blockSize的整数倍才有效,否则返回原数据
      *
      * @param data      数据
      * @param blockSize 块大小
@@ -477,9 +473,8 @@ public class Symmetric {
 
     /**
      * 数据按照blockSize去除填充部分,用于解密
-     *
-     * <p>
-     * 在{@link Padding#ZeroPadding} 模式下,且数据长度不是blockSize的整数倍才有效,否则返回原数据
+     * 在{@link Padding#ZeroPadding} 模式下,且数据
+     * 长度不是blockSize的整数倍才有效,否则返回原数据
      *
      * @param data      数据
      * @param blockSize 块大小

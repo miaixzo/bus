@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.common.windows.PerfCounterQuery;
@@ -278,7 +279,7 @@ public class WindowsFileSystem implements FileSystem {
             osStore.setMount(name + Symbol.BACKSLASH);
             osStore.setDescription(getDriveType(name));
             osStore.setType(WmiUtils.getString(drives, LogicalDiskProperty.FILESYSTEM, i));
-            osStore.setUUID("");
+            osStore.setUUID(Normal.EMPTY);
             osStore.setFreeSpace(free); // no separate field, assume same
             osStore.setUsableSpace(free);
             osStore.setTotalSpace(total);

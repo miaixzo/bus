@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab.utils;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.Encoding;
 
@@ -34,7 +35,7 @@ public class FileUtils {
             return (uniqueFile);
         }
 
-        String extension = "";
+        String extension = Normal.EMPTY;
         int dotIndex = filename.lastIndexOf(Symbol.C_DOT);
         if (dotIndex >= 0) {
             extension = filename.substring(dotIndex);

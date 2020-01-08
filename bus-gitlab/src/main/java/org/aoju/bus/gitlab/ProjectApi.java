@@ -905,7 +905,7 @@ public class ProjectApi extends AbstractApi implements Constants {
             formData.withParam("visibility", visibility);
 
             if (project.getTagList() != null && !project.getTagList().isEmpty()) {
-                formData.withParam("tag_list", String.join(",", project.getTagList()));
+                formData.withParam("tag_list", String.join(Symbol.COMMA, project.getTagList()));
             }
         }
 
@@ -1144,7 +1144,7 @@ public class ProjectApi extends AbstractApi implements Constants {
             formData.withParam("visibility", visibility);
 
             if (project.getTagList() != null && !project.getTagList().isEmpty()) {
-                formData.withParam("tag_list", String.join(",", project.getTagList()));
+                formData.withParam("tag_list", String.join(Symbol.COMMA, project.getTagList()));
             }
         }
 

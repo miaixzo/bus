@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -95,7 +95,7 @@ public class ElemeProvider extends DefaultProvider {
         // 公共参数
         Map<String, String> metasHashMap = new HashMap<>();
         metasHashMap.put("app_key", context.getClientId());
-        metasHashMap.put("timestamp", "" + timestamp);
+        metasHashMap.put("timestamp", Normal.EMPTY + timestamp);
         String signature = generateElemeSignature(context.getClientId(), context.getClientSecret(), timestamp, action, token.getAccessToken(), parameters);
 
         String requestId = this.getRequestId();

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -102,9 +102,7 @@ public class CollectionConverter implements Converter<Collection<?>> {
      * @return 转换后的集合对象
      */
     protected Collection<?> convertInternal(Object value) {
-        final Collection<Object> collection = CollUtils.create(TypeUtils.getClass(collectionType));
-        Type eleType = this.elementType;
-        return CollUtils.addAll(collection, value, eleType);
+        return CollUtils.addAll(CollUtils.create(TypeUtils.getClass(collectionType)), value, this.elementType);
     }
 
 }

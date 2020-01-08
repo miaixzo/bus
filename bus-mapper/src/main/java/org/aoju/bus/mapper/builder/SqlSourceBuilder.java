@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.annotation.Version;
 import org.aoju.bus.mapper.criteria.Assert;
@@ -242,7 +243,7 @@ public class SqlSourceBuilder {
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
         StringBuilder sql = new StringBuilder();
         for (EntityColumn entityColumn : columnList) {
-            sql.append(entityColumn.getColumn()).append(",");
+            sql.append(entityColumn.getColumn()).append(Symbol.COMMA);
         }
         return sql.substring(0, sql.length() - 1);
     }
@@ -391,9 +392,9 @@ public class SqlSourceBuilder {
                 continue;
             }
             if (notNull) {
-                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumn() + ",", notEmpty));
+                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumn() + Symbol.COMMA, notEmpty));
             } else {
-                sql.append(column.getColumn() + ",");
+                sql.append(column.getColumn() + Symbol.COMMA);
             }
         }
         sql.append("</trim>");
@@ -423,9 +424,9 @@ public class SqlSourceBuilder {
                 continue;
             }
             if (notNull) {
-                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumnHolder() + ",", notEmpty));
+                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumnHolder() + Symbol.COMMA, notEmpty));
             } else {
-                sql.append(column.getColumnHolder() + ",");
+                sql.append(column.getColumnHolder() + Symbol.COMMA);
             }
         }
         sql.append("</trim>");
@@ -465,9 +466,9 @@ public class SqlSourceBuilder {
                             .append(versionClass).append("\", ")
                             .append(column.getProperty()).append(")},");
                 } else if (notNull) {
-                    sql.append(SqlSourceBuilder.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + ",", notEmpty));
+                    sql.append(SqlSourceBuilder.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
                 } else {
-                    sql.append(column.getColumnEqualsHolder(entityName) + ",");
+                    sql.append(column.getColumnEqualsHolder(entityName) + Symbol.COMMA);
                 }
             }
         }
@@ -554,7 +555,7 @@ public class SqlSourceBuilder {
     public static String whereVersion(Class<?> entityClass) {
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
         boolean hasVersion = false;
-        String result = "";
+        String result = Normal.EMPTY;
         for (EntityColumn column : columnList) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (hasVersion) {

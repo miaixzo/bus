@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.lang.tuple;
 
-import org.aoju.bus.core.builder.CompareToBuilder;
+import org.aoju.bus.core.builder.CompareBuilder;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
@@ -69,7 +69,7 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Se
 
     @Override
     public int compareTo(final Triple<L, M, R> other) {
-        return new CompareToBuilder().append(getLeft(), other.getLeft())
+        return new CompareBuilder().append(getLeft(), other.getLeft())
                 .append(getMiddle(), other.getMiddle())
                 .append(getRight(), other.getRight()).toComparison();
     }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -111,7 +111,7 @@ public class XmlUtils {
      * @since 5.5.0
      */
     public static <T> T readObjectFromXml(InputSource source) {
-        Object result = null;
+        Object result;
         XMLDecoder xmldec = null;
         try {
             xmldec = new XMLDecoder(source);
@@ -140,7 +140,7 @@ public class XmlUtils {
     public static DocumentBuilder createDocumentBuilder() {
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         disableXXE(dbf);
-        DocumentBuilder builder = null;
+        DocumentBuilder builder;
         try {
             builder = dbf.newDocumentBuilder();
         } catch (Exception e) {

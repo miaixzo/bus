@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -463,10 +463,10 @@ public class CollUtils {
      */
     public static <T> HashSet<T> newHashSet(boolean isSorted, T... ts) {
         if (null == ts) {
-            return isSorted ? new LinkedHashSet<T>() : new HashSet<T>();
+            return isSorted ? new LinkedHashSet<>() : new HashSet<>();
         }
         int initialCapacity = Math.max((int) (ts.length / .75f) + 1, 16);
-        HashSet<T> set = isSorted ? new LinkedHashSet<T>(initialCapacity) : new HashSet<T>(initialCapacity);
+        HashSet<T> set = isSorted ? new LinkedHashSet<>(initialCapacity) : new HashSet<>(initialCapacity);
         for (T t : ts) {
             set.add(t);
         }
@@ -493,7 +493,7 @@ public class CollUtils {
      * @return HashSet对象
      */
     public static <T> HashSet<T> newHashSet(boolean isSorted, Collection<T> collection) {
-        return isSorted ? new LinkedHashSet<T>(collection) : new HashSet<T>(collection);
+        return isSorted ? new LinkedHashSet<>(collection) : new HashSet<>(collection);
     }
 
     /**
@@ -508,7 +508,7 @@ public class CollUtils {
         if (null == iter) {
             return newHashSet(isSorted, (T[]) null);
         }
-        final HashSet<T> set = isSorted ? new LinkedHashSet<T>() : new HashSet<T>();
+        final HashSet<T> set = isSorted ? new LinkedHashSet<>() : new HashSet<>();
         while (iter.hasNext()) {
             set.add(iter.next());
         }
@@ -527,7 +527,7 @@ public class CollUtils {
         if (null == enumration) {
             return newHashSet(isSorted, (T[]) null);
         }
-        final HashSet<T> set = isSorted ? new LinkedHashSet<T>() : new HashSet<T>();
+        final HashSet<T> set = isSorted ? new LinkedHashSet<>() : new HashSet<>();
         while (enumration.hasMoreElements()) {
             set.add(enumration.nextElement());
         }
@@ -542,7 +542,7 @@ public class CollUtils {
      * @return List对象
      */
     public static <T> List<T> list(boolean isLinked) {
-        return isLinked ? new LinkedList<T>() : new ArrayList<T>();
+        return isLinked ? new LinkedList<>() : new ArrayList<>();
     }
 
     /**
@@ -557,7 +557,7 @@ public class CollUtils {
         if (ArrayUtils.isEmpty(values)) {
             return list(isLinked);
         }
-        List<T> arrayList = isLinked ? new LinkedList<T>() : new ArrayList<T>(values.length);
+        List<T> arrayList = isLinked ? new LinkedList<>() : new ArrayList<>(values.length);
         for (T t : values) {
             arrayList.add(t);
         }
@@ -576,7 +576,7 @@ public class CollUtils {
         if (null == collection) {
             return list(isLinked);
         }
-        return isLinked ? new LinkedList<T>(collection) : new ArrayList<T>(collection);
+        return isLinked ? new LinkedList<>(collection) : new ArrayList<>(collection);
     }
 
     /**
@@ -722,7 +722,7 @@ public class CollUtils {
      * @return {@link CopyOnWriteArrayList}
      */
     public static <T> CopyOnWriteArrayList<T> newCopyOnWriteArrayList(Collection<T> collection) {
-        return (null == collection) ? (new CopyOnWriteArrayList<T>()) : (new CopyOnWriteArrayList<T>(collection));
+        return (null == collection) ? (new CopyOnWriteArrayList<>()) : (new CopyOnWriteArrayList<>(collection));
     }
 
     /**
@@ -907,7 +907,7 @@ public class CollUtils {
             return null;
         }
 
-        return sub(new ArrayList<T>(list), start, end, step);
+        return sub(new ArrayList<>(list), start, end, step);
     }
 
     /**
@@ -981,7 +981,7 @@ public class CollUtils {
      * @return 过滤后的数组
      */
     public static <T> List<T> filter(List<T> list, Editor<T> editor) {
-        final List<T> list2 = (list instanceof LinkedList) ? new LinkedList<T>() : new ArrayList<T>(list.size());
+        final List<T> list2 = (list instanceof LinkedList) ? new LinkedList<>() : new ArrayList<>(list.size());
         T modified;
         for (T t : list) {
             modified = editor.edit(t);
@@ -1037,7 +1037,7 @@ public class CollUtils {
      * @return 过滤后的数组
      */
     public static <T> List<T> filter(List<T> list, Filter<T> filter) {
-        final List<T> list2 = (list instanceof LinkedList) ? new LinkedList<T>() : new ArrayList<T>(list.size());
+        final List<T> list2 = (list instanceof LinkedList) ? new LinkedList<>() : new ArrayList<>(list.size());
         for (T t : list) {
             if (filter.accept(t)) {
                 list2.add(t);
@@ -1055,12 +1055,9 @@ public class CollUtils {
      * @since 5.5.0
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
-        return filter(collection, new Editor<T>() {
-            @Override
-            public T edit(T t) {
-                // 返回null便不加入集合
-                return t;
-            }
+        return filter(collection, (Editor<T>) t -> {
+            // 返回null便不加入集合
+            return t;
         });
     }
 
@@ -1086,12 +1083,7 @@ public class CollUtils {
      * @since 5.5.0
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
-        return filter(collection, new Filter<T>() {
-            @Override
-            public boolean accept(T t) {
-                return false == StringUtils.isEmpty(t);
-            }
-        });
+        return filter(collection, (Filter<T>) t -> false == StringUtils.isEmpty(t));
     }
 
     /**
@@ -1103,12 +1095,7 @@ public class CollUtils {
      * @since 5.5.0
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
-        return filter(collection, new Filter<T>() {
-            @Override
-            public boolean accept(T t) {
-                return false == StringUtils.isBlank(t);
-            }
-        });
+        return filter(collection, (Filter<T>) t -> false == StringUtils.isBlank(t));
     }
 
     /**
@@ -2136,21 +2123,19 @@ public class CollUtils {
         if (name.length != type.length) {
             throw new RuntimeException("属性数组元素个数和升降序数组元素个数不相等");
         }
-        Collections.sort(list, new Comparator<E>() {
-            public int compare(E a, E b) {
-                int ret = 0;
-                try {
-                    for (int i = 0; i < name.length; i++) {
-                        ret = sort(name[i], type[i], a, b);
-                        if (0 != ret) {
-                            break;
-                        }
+        Collections.sort(list, (a, b) -> {
+            int ret = 0;
+            try {
+                for (int i = 0; i < name.length; i++) {
+                    ret = sort(name[i], type[i], a, b);
+                    if (0 != ret) {
+                        break;
                     }
-                } catch (Exception e) {
-                    throw new InstrumentException(e);
                 }
-                return ret;
+            } catch (Exception e) {
+                throw new InstrumentException(e);
             }
+            return ret;
         });
     }
 

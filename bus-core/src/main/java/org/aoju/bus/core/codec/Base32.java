@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ public final class Base32 {
      * @return base32
      */
     public static String encode(final byte[] bytes) {
-        int i = 0, index = 0, digit = 0;
+        int i = 0, index = 0, digit;
         int currByte, nextByte;
         StringBuilder base32 = new StringBuilder((bytes.length + 7) * 8 / 5);
 

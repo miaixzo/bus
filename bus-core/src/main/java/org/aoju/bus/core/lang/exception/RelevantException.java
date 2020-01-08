@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -69,6 +69,10 @@ public class RelevantException extends IOException {
      */
     protected RelevantException(Throwable cause) {
         super(cause);
+    }
+
+    protected RelevantException(Exception ex) {
+        super(ex);
     }
 
     /**

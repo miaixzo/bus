@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1029,9 +1029,9 @@ public class UriUtils {
             key = item.getKey();
             value = item.getValue();
             if (value instanceof Iterable) {
-                value = CollUtils.join((Iterable<?>) value, ",");
+                value = CollUtils.join((Iterable<?>) value, Symbol.COMMA);
             } else if (value instanceof Iterator) {
-                value = CollUtils.join((Iterator<?>) value, ",");
+                value = CollUtils.join((Iterator<?>) value, Symbol.COMMA);
             }
             valueStr = Convert.toString(value);
             if (StringUtils.isNotEmpty(key)) {

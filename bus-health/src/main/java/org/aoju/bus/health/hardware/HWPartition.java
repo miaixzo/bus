@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
@@ -75,7 +76,7 @@ public class HWPartition implements Comparable<HWPartition> {
      * Creates a new HWPartition
      */
     public HWPartition() {
-        this("", "", "", "", 0L, 0, 0, "");
+        this(Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, Normal.EMPTY, 0L, 0, 0, Normal.EMPTY);
     }
 
     /**
@@ -97,7 +98,7 @@ public class HWPartition implements Comparable<HWPartition> {
      * @param identification The identification to set.
      */
     public void setIdentification(String identification) {
-        this.identification = identification == null ? "" : identification;
+        this.identification = identification == null ? Normal.EMPTY : identification;
     }
 
     /**
@@ -119,7 +120,7 @@ public class HWPartition implements Comparable<HWPartition> {
      * @param name The name to set.
      */
     public void setName(String name) {
-        this.name = name == null ? "" : name;
+        this.name = name == null ? Normal.EMPTY : name;
     }
 
     /**
@@ -141,7 +142,7 @@ public class HWPartition implements Comparable<HWPartition> {
      * @param type The type to set.
      */
     public void setType(String type) {
-        this.type = type == null ? "" : type;
+        this.type = type == null ? Normal.EMPTY : type;
     }
 
     /**
@@ -163,7 +164,7 @@ public class HWPartition implements Comparable<HWPartition> {
      * @param uuid The uuid to set.
      */
     public void setUuid(String uuid) {
-        this.uuid = uuid == null ? "" : uuid;
+        this.uuid = uuid == null ? Normal.EMPTY : uuid;
     }
 
     /**
@@ -251,7 +252,7 @@ public class HWPartition implements Comparable<HWPartition> {
      * @param mountPoint Mount point of the partition
      */
     public void setMountPoint(String mountPoint) {
-        this.mountPoint = mountPoint == null ? "" : mountPoint;
+        this.mountPoint = mountPoint == null ? Normal.EMPTY : mountPoint;
     }
 
 
@@ -345,7 +346,7 @@ public class HWPartition implements Comparable<HWPartition> {
         sb.append(Symbol.PARENTHESE_LEFT).append(getType()).append(") ");
         sb.append("Maj:Min=").append(getMajor()).append(Symbol.COLON).append(getMinor()).append(", ");
         sb.append("size: ").append(Builder.formatBytesDecimal(getSize()));
-        sb.append(getMountPoint().isEmpty() ? "" : " @ " + getMountPoint());
+        sb.append(getMountPoint().isEmpty() ? Normal.EMPTY : " @ " + getMountPoint());
         return sb.toString();
     }
 

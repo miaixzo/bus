@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -98,7 +98,7 @@ public class StringUtils extends TextUtils {
      * @return 转换后的字符串
      */
     public static String toString(Object obj) {
-        return toString(obj, "");
+        return toString(obj, Normal.EMPTY);
     }
 
     /**
@@ -122,7 +122,7 @@ public class StringUtils extends TextUtils {
      * @return true/false
      */
     public static boolean isEmpty(Object obj) {
-        return obj == null || obj.toString().equals("");
+        return obj == null || obj.toString().equals(Normal.EMPTY);
     }
 
     public static boolean isNotEmpty(String str) {
@@ -1283,7 +1283,7 @@ public class StringUtils extends TextUtils {
         }
 
         if (fromIndex == toIndex) {
-            return "";
+            return Normal.EMPTY;
         }
 
         return str.toString().substring(fromIndex, toIndex);
@@ -2262,7 +2262,7 @@ public class StringUtils extends TextUtils {
      */
     public static String repeat(char c, int count) {
         if (count <= 0) {
-            return "";
+            return Normal.EMPTY;
         }
 
         char[] result = new char[count];
@@ -2284,7 +2284,7 @@ public class StringUtils extends TextUtils {
             return null;
         }
         if (count <= 0) {
-            return "";
+            return Normal.EMPTY;
         }
         if (count == 1 || str.length() == 0) {
             return str.toString();
@@ -4300,7 +4300,7 @@ public class StringUtils extends TextUtils {
 
         StringBuilder builder = new StringBuilder();
         for (Class<?> clazz : parameterTypes) {
-            builder.append("," + clazz.getCanonicalName());
+            builder.append(Symbol.COMMA + clazz.getCanonicalName());
         }
 
         String parameter = builder.toString().trim();
@@ -4319,7 +4319,7 @@ public class StringUtils extends TextUtils {
 
         StringBuilder builder = new StringBuilder();
         for (String value : values) {
-            builder.append("," + value);
+            builder.append(Symbol.COMMA + value);
         }
 
         String parameter = builder.toString().trim();

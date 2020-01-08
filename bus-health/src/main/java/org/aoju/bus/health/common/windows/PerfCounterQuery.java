@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -256,7 +256,7 @@ public class PerfCounterQuery<T extends Enum<T>> {
         /**
          * Performance Counter data will be pulled from a WMI PerfData_RawData_* table
          */
-        WMI;
+        WMI
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -122,7 +122,7 @@ public abstract class MapperTemplate {
      */
     protected void setResultType(MappedStatement ms, Class<?> entityClass) {
         EntityTable entityTable = EntityBuilder.getEntityTable(entityClass);
-        List<ResultMap> resultMaps = new ArrayList<ResultMap>();
+        List<ResultMap> resultMaps = new ArrayList<>();
         resultMaps.add(entityTable.getResultMap(ms.getConfiguration()));
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         metaObject.setValue("resultMaps", Collections.unmodifiableList(resultMaps));

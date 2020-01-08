@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -66,7 +66,7 @@ public class FreeBsdOS extends AbstractOS {
             // Usually this works. If it doesn't, fall back to text parsing.
             // Boot time will be the first consecutive string of digits.
             return Builder.parseLongOrDefault(
-                    Command.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
+                    Command.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", ""),
                     System.currentTimeMillis() / 1000);
         }
         // tv now points to a 128-bit timeval structure for boot time.
@@ -242,7 +242,7 @@ public class FreeBsdOS extends AbstractOS {
         // cpuset: getaffinity: No such process
         String[] split = cpuset.split(Symbol.COLON);
         if (split.length > 1) {
-            String[] bits = split[1].split(",");
+            String[] bits = split[1].split(Symbol.COMMA);
             for (String bit : bits) {
                 int bitToSet = Builder.parseIntOrDefault(bit.trim(), -1);
                 if (bitToSet >= 0) {

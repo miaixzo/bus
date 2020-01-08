@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ public class AuthProviderService {
             return new AlipayProvider(context, stateCache);
         } else if (Registry.QQ.equals(type)) {
             return new QqProvider(context, stateCache);
-        } else if (Registry.WECHAT.equals(type)) {
+        } else if (Registry.WECHAT_OPEN.equals(type)) {
             return new WeChatOPProvider(context, stateCache);
         } else if (Registry.TAOBAO.equals(type)) {
             return new TaobaoProvider(context, stateCache);

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -84,7 +84,7 @@ public class FileUtils {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new java.io.FileReader(file));
-            String tempString = null;
+            String tempString;
             String all = "";
             // 一次读入一行,直到读入null为文件结束
             while ((tempString = reader.readLine()) != null) {

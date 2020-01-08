@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.unix.solaris;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.hardware.AbstractSensors;
@@ -79,7 +80,7 @@ public class SolarisSensors extends AbstractSensors {
         double voltage = 0d;
         for (String line : Command.runNative("/usr/sbin/prtpicl -v -c voltage-sensor")) {
             if (line.trim().startsWith("Voltage:")) {
-                voltage = Builder.parseDoubleOrDefault(line.replace("Voltage:", "").trim(), 0d);
+                voltage = Builder.parseDoubleOrDefault(line.replace("Voltage:", Normal.EMPTY).trim(), 0d);
                 break;
             }
         }

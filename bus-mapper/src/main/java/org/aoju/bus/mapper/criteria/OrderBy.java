@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.criteria;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.entity.Condition;
 import org.aoju.bus.mapper.entity.EntityColumn;
@@ -64,7 +65,7 @@ public class OrderBy {
             return this;
         }
         if (Assert.isNotEmpty(condition.getOrderByClause())) {
-            condition.setOrderByClause(condition.getOrderByClause() + "," + column);
+            condition.setOrderByClause(condition.getOrderByClause() + Symbol.COMMA+ column);
         } else {
             condition.setOrderByClause(column);
         }

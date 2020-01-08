@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package org.aoju.bus.starter.banner;
 
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.InputStream;
@@ -79,7 +80,7 @@ public abstract class AbstractBanner {
     // 显示成非ansi模式
     public String getPlainBanner() {
         if (banner != null) {
-            banner = banner.replaceAll("\u001b\\[[;\\d]*m", "");
+            banner = banner.replaceAll("\u001b\\[[;\\d]*m", Normal.EMPTY);
         }
 
         return banner;

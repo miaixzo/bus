@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.pager.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -58,7 +59,7 @@ public class CountMappedStatement {
         if (ms.getKeyProperties() != null && ms.getKeyProperties().length != 0) {
             StringBuilder keyProperties = new StringBuilder();
             for (String keyProperty : ms.getKeyProperties()) {
-                keyProperties.append(keyProperty).append(",");
+                keyProperties.append(keyProperty).append(Symbol.COMMA);
             }
             keyProperties.delete(keyProperties.length() - 1, keyProperties.length());
             builder.keyProperty(keyProperties.toString());

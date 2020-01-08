@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -91,7 +91,7 @@ public class Builder {
     public Builder select(String... properties) {
         if (properties != null && properties.length > 0) {
             if (this.selectColumns == null) {
-                this.selectColumns = new LinkedHashSet<String>();
+                this.selectColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
                 if (this.propertyMap.containsKey(property)) {
@@ -185,7 +185,7 @@ public class Builder {
         for (String property : properties) {
             String column;
             if ((column = propertyforOderBy(property)) != null) {
-                columns.append(",").append(column);
+                columns.append(Symbol.COMMA).append(column);
             }
         }
         columns.append(order);

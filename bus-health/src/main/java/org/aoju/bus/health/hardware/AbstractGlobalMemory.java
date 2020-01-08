@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
@@ -45,7 +46,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
         List<String> dmi = Command.runNative("dmidecode --type 17");
         int bank = 0;
         String bankLabel = Builder.UNKNOWN;
-        String locator = "";
+        String locator = Normal.EMPTY;
         long capacity = 0L;
         long speed = 0L;
         String manufacturer = Builder.UNKNOWN;
@@ -58,7 +59,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                         pmList.add(new PhysicalMemory(bankLabel + locator, capacity, speed, manufacturer, memoryType));
                     }
                     bankLabel = Builder.UNKNOWN;
-                    locator = "";
+                    locator = Normal.EMPTY;
                     capacity = 0L;
                     speed = 0L;
                 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -126,7 +126,7 @@ public final class HttpHeaders {
             if (result.isEmpty()) {
                 result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
             }
-            for (String varyField : value.split(",")) {
+            for (String varyField : value.split(Symbol.COMMA)) {
                 result.add(varyField.trim());
             }
         }
@@ -180,7 +180,7 @@ public final class HttpHeaders {
             peek = readToken(header);
             if (peek == null) {
                 if (!header.exhausted()) return;
-                result.add(new Challenge(schemeName, Collections.<String, String>emptyMap()));
+                result.add(new Challenge(schemeName, Collections.emptyMap()));
                 return;
             }
 

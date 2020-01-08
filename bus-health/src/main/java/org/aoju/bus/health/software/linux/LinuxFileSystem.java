@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package org.aoju.bus.health.software.linux;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.software.FileSystem;
@@ -193,7 +194,7 @@ public class LinuxFileSystem implements FileSystem {
             }
 
             String volume = split[0].replaceAll("\\\\040", Symbol.SPACE);
-            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], "") : "";
+            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], Normal.EMPTY) : Normal.EMPTY;
 
             String description;
             if (volume.startsWith("/dev")) {
@@ -208,7 +209,7 @@ public class LinuxFileSystem implements FileSystem {
 
             // Add in logical volume found at /dev/mapper, useful when linking
             // file system with drive.
-            String logicalVolume = "";
+            String logicalVolume = Normal.EMPTY;
             String volumeMapperDirectory = "/dev/mapper/";
             Path link = Paths.get(volume);
             if (link.toFile().exists() && Files.isSymbolicLink(link)) {

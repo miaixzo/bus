@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -128,7 +128,7 @@ public class CountSqlParser {
                     //"VARIANCE," +
                     //"VARIANCE_SAMP," +
                     //"VARP," +
-                    "XMLAGG").split(",")));
+                    "XMLAGG").split(Symbol.COMMA)));
 
     static {
         TABLE_ALIAS = new Alias("table_count");
@@ -147,7 +147,7 @@ public class CountSqlParser {
      */
     public static void addAggregateFunctions(String functions) {
         if (PageFromObject.isNotEmpty(functions)) {
-            String[] funs = functions.split(",");
+            String[] funs = functions.split(Symbol.COMMA);
             for (int i = 0; i < funs.length; i++) {
                 AGGREGATE_FUNCTIONS.add(funs[i].toUpperCase());
             }
@@ -173,7 +173,7 @@ public class CountSqlParser {
      */
     public String getSmartCountSql(String sql, String name) {
         //解析SQL
-        Statement stmt = null;
+        Statement stmt;
         //特殊sql不需要去掉order by时,使用注释前缀
         if (sql.indexOf(KEEP_ORDERBY) >= 0) {
             return getSimpleCountSql(sql, name);
@@ -197,8 +197,7 @@ public class CountSqlParser {
         processWithItemsList(select.getWithItemsList());
         //处理为count查询
         sqlToCount(select, name);
-        String result = select.toString();
-        return result;
+        return select.toString();
     }
 
     /**
@@ -279,9 +278,7 @@ public class CountSqlParser {
                     String name = ((Function) expression).getName();
                     if (name != null) {
                         String NAME = name.toUpperCase();
-                        if (skipFunctions.contains(NAME)) {
-                            //go on
-                        } else if (falseFunctions.contains(NAME)) {
+                        if (falseFunctions.contains(NAME)) {
                             return false;
                         } else {
                             for (String aggregateFunction : AGGREGATE_FUNCTIONS) {
@@ -384,8 +381,6 @@ public class CountSqlParser {
             if (subSelect.getSelectBody() != null) {
                 processSelectBody(subSelect.getSelectBody());
             }
-        } else if (fromItem instanceof ValuesList) {
-
         } else if (fromItem instanceof LateralSubSelect) {
             LateralSubSelect lateralSubSelect = (LateralSubSelect) fromItem;
             if (lateralSubSelect.getSubSelect() != null) {

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package org.aoju.bus.health.hardware.unix.solaris;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
@@ -47,11 +48,11 @@ public class SolarisCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = "";
-        String cpuName = "";
-        String cpuFamily = "";
-        String cpuModel = "";
-        String cpuStepping = "";
+        String cpuVendor = Normal.EMPTY;
+        String cpuName = Normal.EMPTY;
+        String cpuFamily = Normal.EMPTY;
+        String cpuModel = Normal.EMPTY;
+        String cpuStepping = Normal.EMPTY;
 
         // Get first result
         try (KstatChain kc = KstatUtils.openChain()) {

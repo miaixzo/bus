@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -87,8 +87,7 @@ public abstract class AbstractOS implements OperatingSystem {
         }
         // Initialize based on JVM Bitness. Individual OS implementations will test
         // if 32-bit JVM running on 64-bit OS
-        int jvmBitness = System.getProperty("os.arch").indexOf("64") != -1 ? 64 : 32;
-        return queryBitness(jvmBitness);
+        return queryBitness(System.getProperty("os.arch").indexOf("64") != -1 ? 64 : 32);
     }
 
     /**

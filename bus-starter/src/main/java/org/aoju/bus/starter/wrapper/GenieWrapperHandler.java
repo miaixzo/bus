@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package org.aoju.bus.starter.wrapper;
 
 import org.aoju.bus.core.lang.Ansi;
 import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Systemd;
 import org.aoju.bus.logger.Logger;
 import org.springframework.context.annotation.Bean;
@@ -81,7 +82,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
                 method = Ansi.BgWhite.and(Ansi.Black).format(" %s ", method);
                 break;
         }
-        Logger.info("{} {} {} {}", Ansi.isWindows ? "" : "==>", Systemd.getLocalAddress(), method, url);
+        Logger.info("{} {} {} {}", Ansi.isWindows ? Normal.EMPTY : "==>", Systemd.getLocalAddress(), method, url);
     }
 
     /**

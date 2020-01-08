@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@ import com.sun.jna.platform.win32.WinPerf.*;
 import com.sun.jna.platform.win32.Wtsapi32.WTS_PROCESS_INFO_EX;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
@@ -192,7 +193,7 @@ public class WindowsOS extends AbstractOS {
             suites.add("Compute Cluster");
         }
         // 0x8000, Home Server, is included in main version name
-        return String.join(",", suites);
+        return String.join(Symbol.COMMA, suites);
     }
 
     private static long querySystemUptime() {
@@ -464,7 +465,7 @@ public class WindowsOS extends AbstractOS {
             // For my own process, set CWD
             if (pid == myPid) {
                 String cwd = new File(Symbol.DOT).getAbsolutePath();
-                proc.setCurrentWorkingDirectory(cwd.isEmpty() ? "" : cwd.substring(0, cwd.length() - 1));
+                proc.setCurrentWorkingDirectory(cwd.isEmpty() ? Normal.EMPTY : cwd.substring(0, cwd.length() - 1));
             }
 
             if (IS_WINDOWS7_OR_GREATER) {
@@ -517,8 +518,8 @@ public class WindowsOS extends AbstractOS {
                                 groupList.add(a.name);
                                 groupIDList.add(a.sidString);
                             }
-                            proc.setGroup(String.join(",", groupList));
-                            proc.setGroupID(String.join(",", groupIDList));
+                            proc.setGroup(String.join(Symbol.COMMA, groupList));
+                            proc.setGroupID(String.join(Symbol.COMMA, groupIDList));
                         }
                     } else {
                         int error = org.aoju.bus.health.common.windows.Kernel32.INSTANCE.GetLastError();
@@ -545,7 +546,7 @@ public class WindowsOS extends AbstractOS {
             proc.setState(OSProcess.State.RUNNING);
 
             // Initialize default
-            proc.setCommandLine("");
+            proc.setCommandLine(Normal.EMPTY);
 
             processList.add(proc);
         }

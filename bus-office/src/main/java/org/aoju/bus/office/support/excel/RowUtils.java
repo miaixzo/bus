@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -70,7 +70,7 @@ public class RowUtils {
         if (length < 0) {
             return new ArrayList<>(0);
         }
-        final List<Object> cellValues = new ArrayList<>((int) length);
+        final List<Object> cellValues = new ArrayList<>(length);
         Object cellValue;
         boolean isAllNull = true;
         for (short i = 0; i < length; i++) {

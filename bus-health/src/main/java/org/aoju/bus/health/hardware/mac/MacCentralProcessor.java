@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import com.sun.jna.platform.mac.SystemB.HostCpuLoadInfo;
 import com.sun.jna.platform.mac.SystemB.VMMeter;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.common.mac.SysctlUtils;
 import org.aoju.bus.health.hardware.AbstractCentralProcessor;
@@ -47,14 +48,14 @@ public class MacCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected final ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = SysctlUtils.sysctl("machdep.cpu.vendor", "");
-        String cpuName = SysctlUtils.sysctl("machdep.cpu.brand_string", "");
+        String cpuVendor = SysctlUtils.sysctl("machdep.cpu.vendor", Normal.EMPTY);
+        String cpuName = SysctlUtils.sysctl("machdep.cpu.brand_string", Normal.EMPTY);
         int i = SysctlUtils.sysctl("machdep.cpu.stepping", -1);
-        String cpuStepping = i < 0 ? "" : Integer.toString(i);
+        String cpuStepping = i < 0 ? Normal.EMPTY : Integer.toString(i);
         i = SysctlUtils.sysctl("machdep.cpu.model", -1);
-        String cpuModel = i < 0 ? "" : Integer.toString(i);
+        String cpuModel = i < 0 ? Normal.EMPTY : Integer.toString(i);
         i = SysctlUtils.sysctl("machdep.cpu.family", -1);
-        String cpuFamily = i < 0 ? "" : Integer.toString(i);
+        String cpuFamily = i < 0 ? Normal.EMPTY : Integer.toString(i);
         long processorIdBits = 0L;
         processorIdBits |= SysctlUtils.sysctl("machdep.cpu.signature", 0);
         processorIdBits |= (SysctlUtils.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;

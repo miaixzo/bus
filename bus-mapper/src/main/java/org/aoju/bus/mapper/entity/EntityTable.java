@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.entity;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.apache.ibatis.mapping.ResultFlag;
@@ -103,7 +104,7 @@ public class EntityTable {
                     throw new InstrumentException(e);
                 }
             }
-            List<ResultFlag> flags = new ArrayList<ResultFlag>();
+            List<ResultFlag> flags = new ArrayList<>();
             if (entityColumn.isId()) {
                 flags.add(ResultFlag.ID);
             }
@@ -240,7 +241,7 @@ public class EntityTable {
         if (Assert.isNotEmpty(schema)) {
             return schema;
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     public Map<String, EntityColumn> getPropertyMap() {

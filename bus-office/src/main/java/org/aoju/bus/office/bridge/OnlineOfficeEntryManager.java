@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -107,8 +107,8 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
     /**
      * Https SSL证书
      *
-     * @param X509TrustManager
-     * @return SSLSocketFactory
+     * @param X509TrustManager 证书信息
+     * @return SSLSocketFactory 安全套接字
      */
     private static SSLSocketFactory createTrustAllSSLFactory(X509TrustManager X509TrustManager) {
         try {

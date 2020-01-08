@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -260,7 +260,7 @@ class TcpAioSession<T> extends AioSession<T> {
         readBuffer.flip();
         final Message<T> messageProcessor = ioServerConfig.getProcessor();
         while (readBuffer.hasRemaining() && status == SESSION_STATUS_ENABLED) {
-            T dataEntry = null;
+            T dataEntry;
             try {
                 dataEntry = ioServerConfig.getProtocol().decode(readBuffer, this);
             } catch (Exception e) {
@@ -416,12 +416,12 @@ class TcpAioSession<T> extends AioSession<T> {
         }
 
         @Override
-        public int available() throws IOException {
+        public int available() {
             return remainLength == 0 ? 0 : readBuffer.buffer().remaining();
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             if (TcpAioSession.this.inputStream == InnerInputStream.this) {
                 TcpAioSession.this.inputStream = null;
             }

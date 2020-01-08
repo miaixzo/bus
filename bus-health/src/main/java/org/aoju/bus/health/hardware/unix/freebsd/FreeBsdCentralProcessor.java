@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
@@ -68,11 +69,11 @@ public class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 .compile("Origin=\"([^\"]*)\".*Id=(\\S+).*Family=(\\S+).*Model=(\\S+).*Stepping=(\\S+).*");
         final Pattern featuresPattern = Pattern.compile("Features=(\\S+)<.*");
 
-        String cpuVendor = "";
-        String cpuName = BsdSysctlUtils.sysctl("hw.model", "");
-        String cpuFamily = "";
-        String cpuModel = "";
-        String cpuStepping = "";
+        String cpuVendor = Normal.EMPTY;
+        String cpuName = BsdSysctlUtils.sysctl("hw.model", Normal.EMPTY);
+        String cpuFamily = Normal.EMPTY;
+        String cpuModel = Normal.EMPTY;
+        String cpuStepping = Normal.EMPTY;
         String processorID;
         boolean cpu64bit;
 
@@ -84,7 +85,7 @@ public class FreeBsdCentralProcessor extends AbstractCentralProcessor {
             line = line.trim();
             // Prefer hw.model to this one
             if (line.startsWith("CPU:") && cpuName.isEmpty()) {
-                cpuName = line.replace("CPU:", "").trim();
+                cpuName = line.replace("CPU:", Normal.EMPTY).trim();
             } else if (line.startsWith("Origin=")) {
                 Matcher m = identifierPattern.matcher(line);
                 if (m.matches()) {
@@ -120,7 +121,7 @@ public class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     }
 
     private List<LogicalProcessor> parseTopology() {
-        String[] topology = BsdSysctlUtils.sysctl("kern.sched.topology_spec", "").split("\\n|\\r");
+        String[] topology = BsdSysctlUtils.sysctl("kern.sched.topology_spec", Normal.EMPTY).split("\\n|\\r");
         /*-
          * Sample output:
 
@@ -224,7 +225,7 @@ public class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryMaxFreq() {
         long max = -1L;
-        String freqLevels = BsdSysctlUtils.sysctl("dev.cpu.0.freq_levels", "");
+        String freqLevels = BsdSysctlUtils.sysctl("dev.cpu.0.freq_levels", Normal.EMPTY);
         // MHz/Watts pairs like: 2501/32000 2187/27125 2000/24000
         for (String s : Builder.whitespaces.split(freqLevels)) {
             long freq = Builder.parseLongOrDefault(s.split(Symbol.SLASH)[0], -1L);

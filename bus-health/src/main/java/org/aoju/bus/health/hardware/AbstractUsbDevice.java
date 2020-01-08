@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.util.Arrays;
@@ -82,7 +83,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
      */
     private static String indentUsb(UsbDevice usbDevice, int indent) {
         String indentFmt = indent > 2 ? String.format("%%%ds|-- ", indent - 4) : String.format("%%%ds", indent);
-        StringBuilder sb = new StringBuilder(String.format(indentFmt, ""));
+        StringBuilder sb = new StringBuilder(String.format(indentFmt, Normal.EMPTY));
         sb.append(usbDevice.getName());
         if (usbDevice.getVendor().length() > 0) {
             sb.append(" (").append(usbDevice.getVendor()).append(Symbol.C_PARENTHESE_RIGHT);

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.office.support.excel.sax;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -218,7 +219,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
             setCellType(attributes);
         }
 
-        lastContent = "";
+        lastContent = Normal.EMPTY;
     }
 
     /**
@@ -229,7 +230,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     private void setCellType(Attributes attribute) {
         // 重置numFmtIndex,numFmtString的值
         numFmtIndex = 0;
-        numFmtString = "";
+        numFmtString = Normal.EMPTY;
         this.cellDataType = CellDataType.of(attribute.getValue(T_ATTR_VALUE));
 
         // 获取单元格的xf索引,对应style.xml中cellXfs的子元素xf
@@ -370,7 +371,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                 len++;
             }
             while (len-- > 0) {
-                rowCellList.add(curCell++, "");
+                rowCellList.add(curCell++, Normal.EMPTY);
             }
         }
     }

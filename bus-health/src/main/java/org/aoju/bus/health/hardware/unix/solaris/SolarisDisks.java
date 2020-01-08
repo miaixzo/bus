@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -102,14 +102,14 @@ public class SolarisDisks implements Disks {
         for (int i = 0; i < disks.size() && i < mountpoints.size(); i++) {
             // Map disk
             disk = disks.get(i);
-            String[] diskSplit = disk.split(",");
+            String[] diskSplit = disk.split(Symbol.COMMA);
             if (diskSplit.length >= 5 && !"device".equals(diskSplit[0])) {
                 HWDiskStore store = new HWDiskStore();
                 store.setName(diskSplit[0]);
                 diskMap.put(diskSplit[0], store);
                 // Map mount
                 String mount = mountpoints.get(i);
-                String[] mountSplit = mount.split(",");
+                String[] mountSplit = mount.split(Symbol.COMMA);
                 if (mountSplit.length >= 5 && !"device".equals(mountSplit[4])) {
                     deviceMap.put(diskSplit[0], mountSplit[4]);
                 }
@@ -148,7 +148,7 @@ public class SolarisDisks implements Disks {
             // The -r switch enables comma delimited for easy parsing!
             // No guarantees on which line the results appear so we'll nest
             // a loop iterating on the comma splits
-            String[] split = line.split(",");
+            String[] split = line.split(Symbol.COMMA);
             for (String keyValue : split) {
                 keyValue = keyValue.trim();
                 // If entry is tne name of a disk, this is beginning of new

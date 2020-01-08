@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -116,9 +116,7 @@ public class JsonFormatRegistry extends SimpleFormatRegistry {
                 final DocumentFormat.Builder builder = DocumentFormat.builder().from(fmt).unmodifiable(true);
 
                 props.getLoad().forEach(builder::loadProperty);
-                props.getStore().forEach((family, storeProps) -> {
-                    storeProps.forEach((name, value) -> builder.storeProperty(family, name, value));
-                });
+                props.getStore().forEach((family, storeProps) -> storeProps.forEach((name, value) -> builder.storeProperty(family, name, value)));
                 return builder.build();
             }).forEach(this::addFormat);
         }
