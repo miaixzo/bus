@@ -23,12 +23,16 @@
  */
 package org.aoju.bus.core.key;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.RandomUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -61,6 +65,7 @@ import java.util.Random;
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
     private static final long serialVersionUID = 1L;
+
     /**
      * 此UUID的最高64有效位
      */
@@ -69,6 +74,25 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * 此UUID的最低64有效位
      */
     private final long leastSigBits;
+    
+    /**
+     * 支持的最小进制数
+     */
+    private static final int MIN_RADIX = 2;
+    private final static String STR_BASE = Normal.UPPER_LOWER_NUMBER;
+    private final static char[] DIGITS = STR_BASE.toCharArray();
+    /**
+     * 支持的最大进制数
+     */
+    private static final int MAX_RADIX = DIGITS.length;
+    private static final Map<Character, Integer> DIGIT_MAP = new HashMap<>();
+    private static final SecureRandom numberGenerator = RandomUtils.getSecureRandom();
+
+    static {
+        for (int i = 0; i < DIGITS.length; i++) {
+            DIGIT_MAP.put(DIGITS[i], i);
+        }
+    }
 
     /**
      * 私有构造
@@ -108,7 +132,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 随机数
      */
     public static int random(int min, int max) {
-        return Holder.numberGenerator.nextInt(max - min + 1) + min;
+        return numberGenerator.nextInt(max - min + 1) + min;
     }
 
     /**
@@ -130,13 +154,59 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
+     * 获取32位UUID
+     */
+    public static String randomUUID32() {
+        return java.util.UUID.randomUUID().toString().replace("-", "");
+    }
+
+    /**
+     * 获取19位的UUID
+     */
+    public static String randomUUID19() {
+        // 产生UUID
+        java.util.UUID uuid = java.util.UUID.randomUUID();
+        // 分区转换
+        return digits(uuid.getMostSignificantBits() >> 32, 8) +
+                digits(uuid.getMostSignificantBits() >> 16, 4) +
+                digits(uuid.getMostSignificantBits(), 4) +
+                digits(uuid.getLeastSignificantBits() >> 48, 4) +
+                digits(uuid.getLeastSignificantBits(), 12);
+    }
+
+    /**
+     * 获取15位的UUID（精度有所损失）
+     */
+    public static String randomUUID15() {
+        return UUIDMaker.generate();
+    }
+
+    /**
+     * 获取15位的Long型UUID（精度有所损失）
+     */
+    public static long randomUUID15Long() {
+        return toNumber(randomUUID15(), 10);
+    }
+
+    public static String randomUUIDBase64() {
+        java.util.UUID uuid = java.util.UUID.randomUUID();
+        byte[] byUuid = new byte[16];
+        long least = uuid.getLeastSignificantBits();
+        long most = uuid.getMostSignificantBits();
+        long2bytes(most, byUuid, 0);
+        long2bytes(least, byUuid, 8);
+
+        return Base64.getEncoder().encodeToString(byUuid);
+    }
+
+    /**
      * 获取类型 4（伪随机生成的）UUID 的静态工厂  使用加密的强伪随机数生成器生成该 UUID
      *
      * @param isSecure 是否使用{@link SecureRandom}如果是可以获得更安全的随机码,否则可以得到更好的性能
      * @return 随机生成的 {@code UUID}
      */
     public static UUID randomUUID(boolean isSecure) {
-        final Random ng = isSecure ? Holder.numberGenerator : RandomUtils.getRandom();
+        final Random ng = isSecure ? numberGenerator : RandomUtils.getRandom();
 
         byte[] randomBytes = new byte[16];
         ng.nextBytes(randomBytes);
@@ -241,7 +311,6 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 此 {@code UUID} 的版本号
      */
     public int version() {
-        // Version is bits masked by 0x000000000000F000 in MS long
         return (int) ((mostSigBits >> 12) & 0x0f);
     }
 
@@ -259,11 +328,6 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 此 {@code UUID} 相关联的变体号
      */
     public int variant() {
-        // This field is composed of a varying number of bits.
-        // 0 - - Reserved for NCS backward compatibility
-        // 1 0 - The IETF aka Leach-Salz variant (used by this class)
-        // 1 1 0 Reserved, Microsoft backward compatibility
-        // 1 1 1 Reserved for future definition.
         return (int) ((leastSigBits >>> (64 - (leastSigBits >>> 62))) & (leastSigBits >> 63));
     }
 
@@ -320,8 +384,6 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         checkTimeBase();
         return leastSigBits & 0x0000FFFFFFFFFFFFL;
     }
-
-    // Object Inherited Methods
 
     /**
      * 返回此{@code UUID} 的字符串表现形式
@@ -426,7 +488,6 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         return (mostSigBits == id.mostSigBits && leastSigBits == id.leastSigBits);
     }
 
-
     /**
      * 将此 UUID 与指定的 UUID 比较
      *
@@ -437,13 +498,11 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 在此 UUID 小于、等于或大于 val 时,分别返回 -1、0 或 1
      */
     public int compareTo(UUID val) {
-        // The ordering is intentionally set up so that the UUIDs
-        // can simply be numerically compared as two numbers
-        return (this.mostSigBits < val.mostSigBits ? -1 : //
-                (this.mostSigBits > val.mostSigBits ? 1 : //
-                        (this.leastSigBits < val.leastSigBits ? -1 : //
-                                (this.leastSigBits > val.leastSigBits ? 1 : //
-                                        0))));
+        return this.mostSigBits < val.mostSigBits ? -1 :
+                (this.mostSigBits > val.mostSigBits ? 1 :
+                        (this.leastSigBits < val.leastSigBits ? -1 :
+                                (this.leastSigBits > val.leastSigBits ? 1 : 0)
+                        ));
     }
 
     /**
@@ -455,11 +514,108 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         }
     }
 
+    private static void long2bytes(long value, byte[] bytes, int offset) {
+        for (int i = 7; i > -1; i--) {
+            bytes[offset++] = (byte) ((value >> 8 * i) & 0xFF);
+        }
+    }
+
     /**
-     * {@link SecureRandom} 的单例
+     * 将字符串转换为长整型数字
+     *
+     * @param s     数字字符串
+     * @param radix 进制数
      */
-    private static class Holder {
-        static final SecureRandom numberGenerator = RandomUtils.getSecureRandom();
+    private static long toNumber(String s, int radix) {
+        if (s == null) {
+            throw new NumberFormatException("null");
+        }
+        if (radix < MIN_RADIX) {
+            throw new NumberFormatException("radix " + radix + " less than Numbers.MIN_RADIX");
+        }
+        if (radix > MAX_RADIX) {
+            throw new NumberFormatException("radix " + radix + " greater than Numbers.MAX_RADIX");
+        }
+
+        boolean negative = false;
+        Integer digit, i = 0, len = s.length();
+        long result = 0, limit = -Long.MAX_VALUE, multmin;
+        if (len <= 0) {
+            throw forInputString(s);
+        }
+
+        char firstChar = s.charAt(0);
+        if (firstChar < '0') {
+            if (firstChar == '-') {
+                negative = true;
+                limit = Long.MIN_VALUE;
+            } else if (firstChar != '+') {
+                throw forInputString(s);
+            }
+            if (len == 1) {
+                throw forInputString(s);
+            }
+            i++;
+        }
+
+        multmin = limit / radix;
+        while (i < len) {
+            digit = DIGIT_MAP.get(s.charAt(i++));
+            if (digit == null || digit < 0 || result < multmin) {
+                throw forInputString(s);
+            }
+            result *= radix;
+            if (result < limit + digit) {
+                throw forInputString(s);
+            }
+            result -= digit;
+        }
+
+        return negative ? result : -result;
+    }
+
+    private static NumberFormatException forInputString(String s) {
+        return new NumberFormatException("For input string: " + s);
+    }
+
+    private static class UUIDMaker {
+
+        private final static String STR = Normal.LOWER_NUMBER;
+        private final static int PIX_LEN = STR.length();
+        private static volatile int pixOne = 0;
+        private static volatile int pixTwo = 0;
+        private static volatile int pixThree = 0;
+        private static volatile int pixFour = 0;
+
+        /**
+         * 生成短时间内不会重复的长度为15位的字符串，主要用于模块数据库主键生成使用。<br/>
+         * 生成策略为获取自1970年1月1日零时零分零秒至当前时间的毫秒数的16进制字符串值，该字符串值为11位<br/>
+         * 并追加四位"0-z"的自增字符串.<br/>
+         * 如果系统时间设置为大于<b>2304-6-27 7:00:26<b/>的时间，将会报错！<br/>
+         * 由于系统返回的毫秒数与操作系统关系很大，所以本方法并不准确。<br/>
+         * 本方法可以保证在系统返回的一个毫秒数内生成36的4次方个（1679616）ID不重复。<br/>
+         */
+        private synchronized static String generate() {
+            String hexString = Long.toHexString(System.currentTimeMillis());
+            pixFour++;
+            if (pixFour == PIX_LEN) {
+                pixFour = 0;
+                pixThree++;
+                if (pixThree == PIX_LEN) {
+                    pixThree = 0;
+                    pixTwo++;
+                    if (pixTwo == PIX_LEN) {
+                        pixTwo = 0;
+                        pixOne++;
+                        if (pixOne == PIX_LEN) {
+                            pixOne = 0;
+                        }
+                    }
+                }
+            }
+            return hexString + STR.charAt(pixOne) + STR.charAt(pixTwo) +
+                    STR.charAt(pixThree) + STR.charAt(pixFour);
+        }
     }
 
 }

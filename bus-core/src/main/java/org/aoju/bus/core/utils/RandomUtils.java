@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.date.DateTime;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -76,7 +77,7 @@ public class RandomUtils {
      */
     public static SecureRandom getSecureRandom() {
         try {
-            return SecureRandom.getInstance("SHA1PRNG");
+            return SecureRandom.getInstance(Algorithm.SHAPRNG);
         } catch (NoSuchAlgorithmException e) {
             throw new InstrumentException(e);
         }

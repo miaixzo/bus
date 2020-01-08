@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.netty;
 
-import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -33,7 +33,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
  * @version 5.5.1
  * @since JDK 1.8+
  */
-@ChannelHandler.Sharable
+@Sharable
 public class SocketHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
     private RequestDecoder decoder = new RequestDecoder();

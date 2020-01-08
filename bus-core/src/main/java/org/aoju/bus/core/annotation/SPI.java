@@ -23,23 +23,44 @@
  */
 package org.aoju.bus.core.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * 启用框架扩展和替换组件,服务提供发现机制,
  * 实现方制定接口并完成对接口的实现
  *
+ * <pre>
+ *   1.支持自定义实现类为单例/多例
+ *   2.支持设置默认的实现类
+ *   3.支持实现类order排序
+ *   4.支持实现类定义特征属性category，用于区分多维度的不同类别
+ *   5.支持根据category属性值来搜索实现类
+ *   6.支持自动扫描实现类
+ *   7.支持手动添加实现类
+ *   8.支持获取所有实现类
+ *   9.支持只创建所需实现类，解决JDK原生的全量方式
+ *   10.支持自定义ClassLoader来加载class
+ *
+ * </pre>
+ *
  * @author Kimi Liu
  * @version 5.5.1
  * @since JDK 1.8+
  */
+@Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SPI {
 
-    String value();
+    /**
+     * 默认实现ID
+     */
+    String value() default "";
+
+    /**
+     * 声明每次获取实现类时是否需要创建
+     * 新对象，也就是说，是否为单例对象
+     */
+    boolean single() default false;
 
 }

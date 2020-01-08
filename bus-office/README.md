@@ -18,7 +18,7 @@
 
 > 结合bus-starter项目配套使用 
 ```
-@EnableStorage
+@EnablePreview
 ```
 
 > 具体使用如下：
