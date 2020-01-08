@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,13 +34,13 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class HttpHeaderTransport {
 
     Map<String, String> parse(String serialized) {
-        final StringTokenizer pairTokenizer = new StringTokenizer(serialized.trim(), ",");
+        final StringTokenizer pairTokenizer = new StringTokenizer(serialized.trim(), Symbol.COMMA);
         final Map<String, String> context = new HashMap<>();
         while (pairTokenizer.hasMoreTokens()) {
             final String pairStr = pairTokenizer.nextToken();

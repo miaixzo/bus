@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.annotation.ColumnType;
@@ -48,7 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实体类工具类 - 处理实体和数据库表以及字段
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class EntityBuilder {
@@ -87,7 +88,7 @@ public class EntityBuilder {
         for (EntityColumn column : table.getEntityClassColumns()) {
             if (column.getOrderBy() != null) {
                 if (orderBy.length() != 0) {
-                    orderBy.append(",");
+                    orderBy.append(Symbol.COMMA);
                 }
                 orderBy.append(column.getColumn()).append(Symbol.SPACE).append(column.getOrderBy());
             }
@@ -135,12 +136,12 @@ public class EntityBuilder {
             if (!skipAlias && !entityColumn.getColumn().equalsIgnoreCase(entityColumn.getProperty())) {
                 //不等的时候分几种情况,例如`DESC`
                 if (entityColumn.getColumn().substring(1, entityColumn.getColumn().length() - 1).equalsIgnoreCase(entityColumn.getProperty())) {
-                    selectBuilder.append(",");
+                    selectBuilder.append(Symbol.COMMA);
                 } else {
-                    selectBuilder.append(" AS ").append(entityColumn.getProperty()).append(",");
+                    selectBuilder.append(" AS ").append(entityColumn.getProperty()).append(Symbol.COMMA);
                 }
             } else {
-                selectBuilder.append(",");
+                selectBuilder.append(Symbol.COMMA);
             }
         }
         entityTable.setBaseSelect(selectBuilder.substring(0, selectBuilder.length() - 1));
@@ -168,7 +169,7 @@ public class EntityBuilder {
         EntityTable entityTable = null;
         if (entityClass.isAnnotationPresent(Table.class)) {
             Table table = entityClass.getAnnotation(Table.class);
-            if (!table.name().equals("")) {
+            if (!Normal.EMPTY.equals(table.name())) {
                 entityTable = new EntityTable(entityClass);
                 entityTable.setTable(table);
             }
@@ -189,7 +190,7 @@ public class EntityBuilder {
         }
         for (EntityField field : fields) {
             //如果启用了简单类型,就做简单类型校验,如果不是简单类型,直接跳过
-            //5.5.0 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
+            //5.5.1 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
             if (config.isUseSimpleType() &&
                     !(SimpleType.isSimpleType(field.getJavaType())
                             ||
@@ -261,7 +262,7 @@ public class EntityBuilder {
         //OrderBy
         if (field.isAnnotationPresent(OrderBy.class)) {
             OrderBy orderBy = field.getAnnotation(OrderBy.class);
-            if (orderBy.value().equals("")) {
+            if (Normal.EMPTY.equals(orderBy.value())) {
                 entityColumn.setOrderBy("ASC");
             } else {
                 entityColumn.setOrderBy(orderBy.value());
@@ -270,7 +271,7 @@ public class EntityBuilder {
         //主键策略 - Oracle序列,MySql自动增长,UUID
         if (field.isAnnotationPresent(SequenceGenerator.class)) {
             SequenceGenerator sequenceGenerator = field.getAnnotation(SequenceGenerator.class);
-            if (sequenceGenerator.sequenceName().equals("")) {
+            if (Normal.EMPTY.equals(sequenceGenerator.sequenceName())) {
                 throw new InstrumentException(entityTable.getEntityClass() + "字段" + field.getName() + "的注解@SequenceGenerator未指定sequenceName!");
             }
             entityColumn.setSequenceName(sequenceGenerator.sequenceName());
@@ -289,7 +290,7 @@ public class EntityBuilder {
                 if (generatedValue.strategy() == GenerationType.IDENTITY) {
                     //mysql的自动增长
                     entityColumn.setIdentity(true);
-                    if (!generatedValue.generator().equals("")) {
+                    if (!Normal.EMPTY.equals(generatedValue.generator())) {
                         String generator = null;
                         Identity identity = Identity.getDatabaseDialect(generatedValue.generator());
                         if (identity != null) {

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.shade;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.shade.entity.PropertyInfo;
 import org.aoju.bus.shade.entity.TableEntity;
@@ -33,7 +34,7 @@ import java.util.List;
  * 获取文件路径调用创建文件
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class ShadeFile {
@@ -63,7 +64,7 @@ public class ShadeFile {
     public static Object createMapperXml(String url, TableEntity bi) {
         String fileUrl = getFileUrl(url, bi.getMapperXmlUrl(), bi.getEntityName(), MAPPER_XML);
         List<PropertyInfo> list = bi.getCis();
-        String agile = "";
+        String agile = Normal.EMPTY;
         for (PropertyInfo propertyInfo : list) {
             agile = agile + propertyInfo.getColumn() + ",\n\t\t";
         }

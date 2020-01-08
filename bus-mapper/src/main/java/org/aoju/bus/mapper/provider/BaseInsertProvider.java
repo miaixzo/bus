@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.provider;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -39,7 +40,7 @@ import java.util.Set;
  * BaseInsertProvider实现类,基础方法实现类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class BaseInsertProvider extends MapperTemplate {
@@ -111,22 +112,22 @@ public class BaseInsertProvider extends MapperTemplate {
             //优先使用传入的属性值,当原属性property!=null时,用原属性
             //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
             if (column.isIdentity()) {
-                sql.append(SqlSourceBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", ",")));
+                sql.append(SqlSourceBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", Symbol.COMMA)));
             } else {
                 //其他情况值仍然存在原property中
-                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
             //当属性为null时,如果存在主键策略,会自动获取值,如果不存在,则使用null
             //序列的情况
             if (Assert.isNotEmpty(column.getSequenceName())) {
                 sql.append(SqlSourceBuilder.getIfIsNull(column, getSeqNextVal(column) + " ,", false));
             } else if (column.isIdentity()) {
-                sql.append(SqlSourceBuilder.getIfCacheIsNull(column, column.getColumnHolder() + ","));
+                sql.append(SqlSourceBuilder.getIfCacheIsNull(column, column.getColumnHolder() + Symbol.COMMA));
             } else if (column.isUuid()) {
-                sql.append(SqlSourceBuilder.getIfIsNull(column, column.getColumnHolder(null, "_bind", ","), isNotEmpty()));
+                sql.append(SqlSourceBuilder.getIfIsNull(column, column.getColumnHolder(null, "_bind", Symbol.COMMA), isNotEmpty()));
             } else {
                 //当null的时候,如果不指定jdbcType,oracle可能会报异常,指定VARCHAR不影响其他
-                sql.append(SqlSourceBuilder.getIfIsNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+                sql.append(SqlSourceBuilder.getIfIsNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
         }
         sql.append("</trim>");

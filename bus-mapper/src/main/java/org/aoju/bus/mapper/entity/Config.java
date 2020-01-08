@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.mapper.entity;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.criteria.Identity;
@@ -37,7 +38,7 @@ import java.util.Properties;
  * 通用Mapper属性配置
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class Config {
@@ -72,7 +73,7 @@ public class Config {
     /**
      * 处理关键字,默认空,mysql可以设置为 `{0}`, sqlserver 为 [{0}],{0} 代表的列名
      */
-    private String wrapKeyword = "";
+    private String wrapKeyword = Normal.EMPTY;
 
     public String getCatalog() {
         return catalog;
@@ -126,7 +127,7 @@ public class Config {
         if (Assert.isNotEmpty(this.schema)) {
             return this.schema;
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     public String getSchema() {

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * 包含处理特定文档格式所需的信息
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class DocumentFormat {
@@ -231,7 +231,7 @@ public class DocumentFormat {
             this.extensions = new LinkedHashSet<>(sourceFormat.getExtensions());
             this.mediaType = sourceFormat.getMediaType();
             this.inputFamily = sourceFormat.getInputFamily();
-            this.loadProperties = (Map<String, Object>) Optional.ofNullable(sourceFormat.getLoadProperties())
+            this.loadProperties = Optional.ofNullable(sourceFormat.getLoadProperties())
                     .map(map -> map.entrySet()
                             .stream()
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))

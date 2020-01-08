@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.mapper.entity.Config;
@@ -43,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 处理主要逻辑,最关键的一个类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class MapperBuilder {
@@ -237,7 +239,7 @@ public class MapperBuilder {
         if (mapperInterface != null) {
             prefix = mapperInterface.getCanonicalName();
         } else {
-            prefix = "";
+            prefix = Normal.EMPTY;
         }
         for (Object object : new ArrayList<Object>(configuration.getMappedStatements())) {
             if (object instanceof MappedStatement) {
@@ -286,7 +288,7 @@ public class MapperBuilder {
             mapper = properties.getProperty("mappers");
         }
         if (Assert.isNotEmpty(mapper)) {
-            String[] mappers = mapper.split(",");
+            String[] mappers = mapper.split(Symbol.COMMA);
             for (String mapperClass : mappers) {
                 if (mapperClass.length() > 0) {
                     registerMapper(mapperClass);

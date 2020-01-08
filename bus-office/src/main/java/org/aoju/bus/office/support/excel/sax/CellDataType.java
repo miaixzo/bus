@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,11 +23,13 @@
  */
 package org.aoju.bus.office.support.excel.sax;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * 单元格数据类型枚举
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public enum CellDataType {
@@ -54,7 +56,7 @@ public enum CellDataType {
     /**
      * 数字类型
      */
-    NUMBER(""),
+    NUMBER(Normal.EMPTY),
     /**
      * 日期类型
      */
@@ -62,7 +64,7 @@ public enum CellDataType {
     /**
      * 空类型
      */
-    NULL("");
+    NULL(Normal.EMPTY);
 
     /**
      * 属性值

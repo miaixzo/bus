@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-limiter</artifactId>
-    <version>5.5.0</version>
+    <version>5.5.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -25,7 +25,6 @@
         <project.compiler.version>1.8</project.compiler.version>
         <curator.version>4.2.0</curator.version>
         <redisson.version>3.11.2</redisson.version>
-        <guava.version>28.0-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -33,11 +32,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-cache</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.redisson</groupId>

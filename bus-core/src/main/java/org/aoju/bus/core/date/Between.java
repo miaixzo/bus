@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class Between {
@@ -105,6 +105,18 @@ public class Between {
     }
 
     /**
+     * 判断目标日期是否在范围内
+     *
+     * @param begin  起始时间
+     * @param end    结束日期
+     * @param target 目标日期
+     * @return true:在范围内/false:不在范围内
+     */
+    public static boolean isBetween(Date begin, Date end, Date target) {
+        return begin.getTime() <= target.getTime() && end.getTime() >= target.getTime();
+    }
+
+    /**
      * 判断两个日期相差的时长
      * 返回 给定单位的时长差
      *
@@ -162,6 +174,16 @@ public class Between {
             }
         }
         return result;
+    }
+
+    /**
+     * 判断目标日期是否在范围内
+     *
+     * @param target 目标日期
+     * @return true:在范围内/false:不在范围内
+     */
+    public boolean isBetween(Date target) {
+        return this.begin.getTime() <= target.getTime() && this.end.getTime() >= target.getTime();
     }
 
     /**

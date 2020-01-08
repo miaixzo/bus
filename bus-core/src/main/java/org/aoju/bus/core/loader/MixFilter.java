@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import java.util.Set;
  * 复合过滤器,实际上内部维护一个过滤器的{@link LinkedHashSet}集合,提供添加/删除以及链式拼接的方法来混合多个子过滤器,该过滤器的具体逻辑由子类拓展
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public abstract class MixFilter implements Filter {

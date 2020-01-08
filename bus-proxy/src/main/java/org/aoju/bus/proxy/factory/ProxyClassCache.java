@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.proxy.factory;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +35,7 @@ import java.util.WeakHashMap;
  * 代理类缓存确保每个{@link AbstractProxyClass}/{@link ClassLoader}/代理类数组组合只有一个类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class ProxyClassCache {
@@ -80,7 +82,7 @@ public class ProxyClassCache {
             Class proxyInterface = proxyClasses[i];
             sb.append(proxyInterface.getName());
             if (i != proxyClasses.length - 1) {
-                sb.append(",");
+                sb.append(Symbol.COMMA);
             }
         }
         return sb.toString();

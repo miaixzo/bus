@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class LinuxNetwork extends AbstractNetwork {
@@ -58,7 +58,7 @@ public class LinuxNetwork extends AbstractNetwork {
     public String getDomainName() {
         CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
         hint.ai_flags = CLibrary.AI_CANONNAME;
-        String hostname = "";
+        String hostname;
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {

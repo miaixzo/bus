@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class UriUtils {
@@ -358,7 +358,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
@@ -375,7 +375,7 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);
@@ -1029,9 +1029,9 @@ public class UriUtils {
             key = item.getKey();
             value = item.getValue();
             if (value instanceof Iterable) {
-                value = CollUtils.join((Iterable<?>) value, ",");
+                value = CollUtils.join((Iterable<?>) value, Symbol.COMMA);
             } else if (value instanceof Iterator) {
-                value = CollUtils.join((Iterator<?>) value, ",");
+                value = CollUtils.join((Iterator<?>) value, Symbol.COMMA);
             }
             valueStr = Convert.toString(value);
             if (StringUtils.isNotEmpty(key)) {

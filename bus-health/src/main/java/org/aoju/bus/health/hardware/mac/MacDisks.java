@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import com.sun.jna.platform.mac.DiskArbitration.DASessionRef;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.SystemB.Statfs;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
 import org.aoju.bus.health.hardware.Disks;
@@ -45,7 +46,7 @@ import java.util.*;
  * Mac hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class MacDisks implements Disks {
@@ -79,7 +80,7 @@ public class MacDisks implements Disks {
         // Iterate all mounted file systems
         for (Statfs f : fs) {
             String mntFrom = new String(f.f_mntfromname, StandardCharsets.UTF_8).trim();
-            mountPointMap.put(mntFrom.replace("/dev/", ""), new String(f.f_mntonname, StandardCharsets.UTF_8).trim());
+            mountPointMap.put(mntFrom.replace("/dev/", Normal.EMPTY), new String(f.f_mntonname, StandardCharsets.UTF_8).trim());
         }
         return mountPointMap;
     }
@@ -212,7 +213,7 @@ public class MacDisks implements Disks {
                                 // look up the BSD Name
                                 String partBsdName = sdService.getStringProperty("BSD Name");
                                 String name = partBsdName;
-                                String type = "";
+                                String type = Normal.EMPTY;
                                 // Get the DiskArbitration dictionary for
                                 // this partition
                                 DADiskRef disk = DA.DADiskCreateFromBSDName(CF.CFAllocatorGetDefault(), session,
@@ -242,7 +243,7 @@ public class MacDisks implements Disks {
                                 if (logicalVolumeMap.containsKey(partBsdName)) {
                                     mountPoint = "Logical Volume: " + logicalVolumeMap.get(partBsdName);
                                 } else {
-                                    mountPoint = mountPointMap.getOrDefault(partBsdName, "");
+                                    mountPoint = mountPointMap.getOrDefault(partBsdName, Normal.EMPTY);
                                 }
                                 Long size = sdService.getLongProperty("Size");
                                 Integer bsdMajor = sdService.getIntegerProperty("BSD Major");
@@ -335,8 +336,8 @@ public class MacDisks implements Disks {
 
         // Now iterate the bsdNames
         for (String bsdName : bsdNames) {
-            String model = "";
-            String serial = "";
+            String model = Normal.EMPTY;
+            String serial = Normal.EMPTY;
             long size = 0L;
 
             // Get a reference to the disk - only matching /dev/disk*
@@ -392,7 +393,7 @@ public class MacDisks implements Disks {
                             serviceIterator.release();
                         }
                         if (serial == null) {
-                            serial = "";
+                            serial = Normal.EMPTY;
                         }
                     }
                 }

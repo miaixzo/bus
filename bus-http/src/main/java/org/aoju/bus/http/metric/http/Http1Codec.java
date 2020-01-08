@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * 并可以跳过读取和关闭该源
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public final class Http1Codec implements HttpCodec {
@@ -217,7 +217,7 @@ public final class Http1Codec implements HttpCodec {
         return new FixedLengthSink(contentLength);
     }
 
-    public Source newFixedLengthSource(long length) throws IOException {
+    public Source newFixedLengthSource(long length) {
         if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
         state = STATE_READING_RESPONSE_BODY;
         return new FixedLengthSource(length);

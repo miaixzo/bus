@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
  * see http://blog.csdn.net/earbao/article/details/44453937
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public final class Base32 {
@@ -64,7 +64,7 @@ public final class Base32 {
      * @return base32
      */
     public static String encode(final byte[] bytes) {
-        int i = 0, index = 0, digit = 0;
+        int i = 0, index = 0, digit;
         int currByte, nextByte;
         StringBuilder base32 = new StringBuilder((bytes.length + 7) * 8 / 5);
 

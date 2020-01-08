@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ package org.aoju.bus.core.builder;
  *
  * @param <T> 建造对象类型
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public interface Builder<T> {
@@ -39,5 +39,43 @@ public interface Builder<T> {
      * @return 被构建的对象
      */
     T build();
+
+    final class HashKey {
+
+        private final Object value;
+        private final int id;
+
+        /**
+         * 构造函数
+         *
+         * @param _value The value
+         */
+        HashKey(final Object _value) {
+            // 这是对象哈希码
+            id = System.identityHashCode(_value);
+            // 有一些情况(LANG-459)会为不同的对象返回相同的标识哈希码。
+            // 因此，还添加了值来消除这些情况的歧义
+            value = _value;
+        }
+
+
+        @Override
+        public int hashCode() {
+            return id;
+        }
+
+        @Override
+        public boolean equals(final Object other) {
+            if (!(other instanceof HashKey)) {
+                return false;
+            }
+            final HashKey hashKey = (HashKey) other;
+            if (id != hashKey.id) {
+                return false;
+            }
+            return value == hashKey.value;
+        }
+
+    }
 
 }

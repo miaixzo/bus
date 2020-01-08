@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
@@ -41,7 +40,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class WeChatEEProvider extends DefaultProvider {
@@ -86,8 +85,6 @@ public class WeChatEEProvider extends DefaultProvider {
         String userDetailResponse = getUserDetail(token.getAccessToken(), userId);
         JSONObject userDetail = this.checkResponse(userDetailResponse);
 
-        String gender = getRealGender(userDetail);
-
         return Property.builder()
                 .username(userDetail.getString("name"))
                 .nickname(userDetail.getString("alias"))
@@ -95,7 +92,7 @@ public class WeChatEEProvider extends DefaultProvider {
                 .location(userDetail.getString("address"))
                 .email(userDetail.getString("email"))
                 .uuid(userId)
-                .gender(Normal.Gender.getGender(gender))
+                .gender(Normal.Gender.getGender(object.getString("gender")))
                 .token(token)
                 .source(source.toString())
                 .build();
@@ -114,20 +111,6 @@ public class WeChatEEProvider extends DefaultProvider {
             throw new InstrumentException(StringUtils.toString(object.getIntValue("errcode")), object.getString("errmsg"));
         }
         return object;
-    }
-
-    /**
-     * 获取用户的实际性别,0表示未定义,1表示男性,2表示女性
-     *
-     * @param userDetail 用户详情
-     * @return 用户性别
-     */
-    private String getRealGender(JSONObject userDetail) {
-        int gender = userDetail.getIntValue("gender");
-        if (Normal.Gender.MALE.getCode() == gender) {
-            return Symbol.ONE;
-        }
-        return 2 == gender ? Symbol.ZERO : null;
     }
 
     /**

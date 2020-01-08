@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ import java.util.List;
  * 因为 FastJSON 本身的转换问题,如果对象中存储的是集合对象列表,会导致显示不是信息本身
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilter {
@@ -71,9 +71,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
         for (Annotation annotation : annotations) {
             Condition sensitiveCondition = annotation.annotationType().getAnnotation(Condition.class);
             if (ObjectUtils.isNotNull(sensitiveCondition)) {
-                Class<? extends ConditionProvider> customClass = sensitiveCondition.value();
-                ConditionProvider condition = ClassUtils.newInstance(customClass);
-                return condition;
+                return ClassUtils.newInstance(sensitiveCondition.value());
             }
         }
         return null;
@@ -137,7 +135,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
         }
         if (TypeUtils.isCollection(fieldTypeClass)) {
             // Collection 接口的子类
-            final Collection<Object> entryCollection = (Collection<Object>) value;
+            final Collection<?> entryCollection = (Collection<?>) value;
             if (CollUtils.isNotEmpty(entryCollection)) {
                 Object firstCollectionEntry = CollUtils.firstNotNullElem(entryCollection).get();
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class DouyinProvider extends DefaultProvider {
@@ -62,13 +62,15 @@ public class DouyinProvider extends DefaultProvider {
     protected Property getUserInfo(AccToken token) {
         JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
         this.checkResponse(object);
+        JSONObject dataObj = object.getJSONObject("data");
         return Property.builder()
-                .uuid(object.getString("union_id"))
-                .username(object.getString("nickname"))
-                .nickname(object.getString("nickname"))
-                .avatar(object.getString("avatar"))
-                .remark(object.getString("description"))
-                .gender(Normal.Gender.UNKNOWN)
+                .uuid(dataObj.getString("union_id"))
+                .username(dataObj.getString("nickname"))
+                .nickname(dataObj.getString("nickname"))
+                .avatar(dataObj.getString("avatar"))
+                .remark(dataObj.getString("description"))
+                .gender(Normal.Gender.getGender(dataObj.getString("gender")))
+                .location(String.format("%s %s %s", dataObj.getString("country"), dataObj.getString("province"), dataObj.getString("city")))
                 .token(token)
                 .source(source.toString())
                 .build();
@@ -105,12 +107,13 @@ public class DouyinProvider extends DefaultProvider {
     private AccToken getToken(String accessTokenUrl) {
         JSONObject object = JSONObject.parseObject(Httpx.post(accessTokenUrl));
         this.checkResponse(object);
+        JSONObject dataObj = object.getJSONObject("data");
         return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .openId(object.getString("open_id"))
-                .expireIn(object.getIntValue("expires_in"))
-                .refreshToken(object.getString("refresh_token"))
-                .scope(object.getString("scope"))
+                .accessToken(dataObj.getString("access_token"))
+                .openId(dataObj.getString("open_id"))
+                .expireIn(dataObj.getIntValue("expires_in"))
+                .refreshToken(dataObj.getString("refresh_token"))
+                .scope(dataObj.getString("scope"))
                 .build();
     }
 

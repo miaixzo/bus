@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class WindowsNetwork extends AbstractNetwork {
@@ -60,7 +60,7 @@ public class WindowsNetwork extends AbstractNetwork {
         IntByReference bufferSize = new IntByReference(buffer.length);
         if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
             Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return "";
+            return Normal.EMPTY;
         }
         return new String(buffer).trim();
     }
@@ -121,7 +121,7 @@ public class WindowsNetwork extends AbstractNetwork {
                 return fields[2];
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     private String parseIpv6Route() {
@@ -132,7 +132,7 @@ public class WindowsNetwork extends AbstractNetwork {
                 return fields[3];
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

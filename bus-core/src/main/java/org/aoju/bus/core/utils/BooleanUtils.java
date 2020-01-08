@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Normal;
  * Boolean类型相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class BooleanUtils {
@@ -47,6 +47,16 @@ public class BooleanUtils {
             return null;
         }
         return bool.booleanValue() ? Boolean.FALSE : Boolean.TRUE;
+    }
+
+    /**
+     * 取相反值
+     *
+     * @param bool Boolean值
+     * @return 相反的Boolean值
+     */
+    public static boolean negate(boolean bool) {
+        return !bool;
     }
 
     /**
@@ -89,16 +99,6 @@ public class BooleanUtils {
      */
     public static boolean isFalse(Boolean bool) {
         return Boolean.FALSE.equals(bool);
-    }
-
-    /**
-     * 取相反值
-     *
-     * @param bool Boolean值
-     * @return 相反的Boolean值
-     */
-    public static boolean negate(boolean bool) {
-        return !bool;
     }
 
     /**

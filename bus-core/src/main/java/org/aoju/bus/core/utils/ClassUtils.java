@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,10 +45,10 @@ import java.time.temporal.TemporalAccessor;
 import java.util.*;
 
 /**
- * 类工具类
+ * Class工具类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class ClassUtils {
@@ -759,7 +759,7 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();
@@ -3222,6 +3222,53 @@ public class ClassUtils {
         final Field field = getDeclaredField(cls, fieldName, forceAccess);
         Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
         writeField(field, target, value, false);
+    }
+
+    /**
+     * 为给定实例返回用户定义的类:通常只是给定实例的类，
+     * 但如果是cglib生成的子类，则返回原始类
+     *
+     * @param instance 要检查的实例
+     * @return 用户定义的类
+     */
+    public static Class<?> getUserClass(Object instance) {
+        return getUserClass(instance.getClass());
+    }
+
+    /**
+     * 为给定的类返回用户定义的类:通常只是给定的类，
+     * 但对于cglib生成的子类，则是原始类.
+     *
+     * @param clazz 要检查的类
+     * @return 用户定义的类
+     */
+    public static Class<?> getUserClass(Class<?> clazz) {
+        if (clazz.getName().contains(Symbol.DOLLAR + Symbol.DOLLAR)) {
+            Class<?> superclass = clazz.getSuperclass();
+            if (superclass != null && superclass != Object.class) {
+                return superclass;
+            }
+        }
+        return clazz;
+    }
+
+    /**
+     * 判断这个字段是否是数字类型或字符串类型
+     *
+     * @param type 字段类型
+     * @return true：是数字或字符串类型
+     */
+    public static boolean isNumberOrStringType(Class<?> type) {
+        if (type == String.class) {
+            return true;
+        }
+        if (type.getGenericSuperclass() == Number.class) {
+            return true;
+        }
+        if (type.isPrimitive()) {
+            return true;
+        }
+        return false;
     }
 
     public enum Interfaces {

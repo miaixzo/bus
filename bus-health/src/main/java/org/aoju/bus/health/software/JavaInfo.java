@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.aoju.bus.health.Systemd;
  * 代表Java Implementation的信息
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class JavaInfo {
@@ -105,7 +105,7 @@ public class JavaInfo {
      *
      * @return Java版本的<code>float</code>值或<code>0</code>
      */
-    private final float getJavaVersionAsFloat() {
+    private float getJavaVersionAsFloat() {
         if (JAVA_VERSION == null) {
             return 0f;
         }
@@ -124,7 +124,7 @@ public class JavaInfo {
      *
      * @return Java版本的<code>int</code>值或<code>0</code>
      */
-    private final int getJavaVersionAsInt() {
+    private int getJavaVersionAsInt() {
         if (JAVA_VERSION == null) {
             return 0;
         }
@@ -270,7 +270,7 @@ public class JavaInfo {
      * @param versionPrefix Java版本前缀
      * @return 如果版本匹配, 则返回<code>true</code>
      */
-    private final boolean getJavaVersionMatches(String versionPrefix) {
+    private boolean getJavaVersionMatches(String versionPrefix) {
         if (JAVA_VERSION == null) {
             return false;
         }

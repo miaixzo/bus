@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Systemd;
@@ -42,14 +43,14 @@ import org.aoju.bus.logger.Logger;
  * its File Stores.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class HWDiskStore implements Comparable<HWDiskStore> {
 
-    private String model = "";
-    private String name = "";
-    private String serial = "";
+    private String model = Normal.EMPTY;
+    private String name = Normal.EMPTY;
+    private String serial = Normal.EMPTY;
     private long size = 0L;
     private long reads = 0L;
     private long readBytes = 0L;
@@ -140,7 +141,7 @@ public class HWDiskStore implements Comparable<HWDiskStore> {
      * @param name the name to set
      */
     public void setName(String name) {
-        this.name = name == null ? "" : name;
+        this.name = name == null ? Normal.EMPTY : name;
     }
 
     /**
@@ -162,7 +163,7 @@ public class HWDiskStore implements Comparable<HWDiskStore> {
      * @param model the model to set
      */
     public void setModel(String model) {
-        this.model = model == null ? "" : model;
+        this.model = model == null ? Normal.EMPTY : model;
     }
 
     /**
@@ -184,7 +185,7 @@ public class HWDiskStore implements Comparable<HWDiskStore> {
      * @param serial the serial to set
      */
     public void setSerial(String serial) {
-        this.serial = serial == null ? "" : serial;
+        this.serial = serial == null ? Normal.EMPTY : serial;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.unix.freebsd;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
@@ -39,7 +40,7 @@ import java.util.regex.Pattern;
  * FreeBSD hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class FreeBsdDisks implements Disks {
@@ -96,7 +97,7 @@ public class FreeBsdDisks implements Disks {
 
         // Get list of valid disks
         diskMap.clear();
-        List<String> devices = Arrays.asList(Builder.whitespaces.split(BsdSysctlUtils.sysctl("kern.disks", "")));
+        List<String> devices = Arrays.asList(Builder.whitespaces.split(BsdSysctlUtils.sysctl("kern.disks", Normal.EMPTY)));
 
         // Temporary list to hold partitions
         List<HWPartition> partList = new ArrayList<>();
@@ -159,10 +160,10 @@ public class FreeBsdDisks implements Disks {
                 }
             }
             if (line.startsWith("descr:")) {
-                store.setModel(line.replace("descr:", "").trim());
+                store.setModel(line.replace("descr:", Normal.EMPTY).trim());
             }
             if (line.startsWith("ident:")) {
-                store.setSerial(line.replace("ident:", "").replace("(null)", "").trim());
+                store.setSerial(line.replace("ident:", Normal.EMPTY).replace("(null)", Normal.EMPTY).trim());
             }
         }
 
@@ -204,7 +205,7 @@ public class FreeBsdDisks implements Disks {
                     partition = new HWPartition();
                     partition.setIdentification(part);
                     partition.setName(part);
-                    partition.setMountPoint(mountMap.getOrDefault(part, ""));
+                    partition.setMountPoint(mountMap.getOrDefault(part, Normal.EMPTY));
                 }
             }
             // If we don't have a valid store, don't bother parsing anything

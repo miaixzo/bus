@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 支付宝登录
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class AlipayProvider extends DefaultProvider {
@@ -101,7 +101,7 @@ public class AlipayProvider extends DefaultProvider {
         }
 
         String province = response.getProvince(), city = response.getCity();
-        String location = String.format("%s %s", StringUtils.isEmpty(province) ? "" : province, StringUtils.isEmpty(city) ? "" : city);
+        String location = String.format("%s %s", StringUtils.isEmpty(province) ? Normal.EMPTY : province, StringUtils.isEmpty(city) ? Normal.EMPTY : city);
 
         return Property.builder()
                 .uuid(response.getUserId())

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class CitizenIdUtils {
@@ -535,7 +535,7 @@ public class CitizenIdUtils {
      * @param endExclude   结束位置（不包含）
      * @return 隐藏后的身份证号码
      * @see StringUtils#hide(CharSequence, int, int)
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static String hide(String idCard, int startInclude, int endExclude) {
         return StringUtils.hide(idCard, startInclude, endExclude);

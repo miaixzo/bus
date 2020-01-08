@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,10 @@ import org.aoju.bus.core.utils.RuntimeUtils;
 import org.aoju.bus.logger.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -45,7 +47,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 @ControllerAdvice
@@ -175,6 +177,20 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public Object noHandlerFoundException(NoHandlerFoundException e) {
         return write(ErrorCode.EM_100509);
+    }
+
+    /**
+     * 参数绑定异常
+     *
+     * @param e 异常信息
+     * @return 异常提示
+     */
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
+    public Object handleBodyValidException(MethodArgumentNotValidException e) {
+        Logger.error(e.getBindingResult().getFieldErrors().get(0).getDefaultMessage());
+        return write(ErrorCode.EM_100511);
     }
 
 }

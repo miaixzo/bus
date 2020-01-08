@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package org.aoju.bus.starter.swagger;
 
 import io.swagger.annotations.ApiOperation;
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Normal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -48,7 +49,7 @@ import java.util.List;
  * swagger配置
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {SwaggerProperties.class})
@@ -77,7 +78,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
         ParameterBuilder aParameterBuilder = new ParameterBuilder();
         aParameterBuilder.parameterType("header") // 参数类型支持header, cookie,
                 .name("X-Access-Token") // 参数名
-                .defaultValue("") // 默认值
+                .defaultValue(Normal.EMPTY) // 默认值
                 .description("X-Access-Token格式为:" + ObjectID.id()).modelRef(new ModelRef("string"))// 指定参数值的类型
                 .required(false).build(); // 非必需,这里是全局配置,然而在登陆的时候是不用验证的
         List<Parameter> aParameters = new ArrayList();
@@ -94,7 +95,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title(this.properties.getTitle()).termsOfServiceUrl(this.properties.getServiceUrl())
-                .description(this.properties.getDescription()).contact(new Contact(this.properties.getContact(), "", "")).version(this.properties.getVersion()).build();
+                .description(this.properties.getDescription()).contact(new Contact(this.properties.getContact(), Normal.EMPTY, Normal.EMPTY)).version(this.properties.getVersion()).build();
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.health.hardware.unix.solaris;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
@@ -37,7 +38,7 @@ import java.util.Map;
  * Solaris Sound Card.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class SolarisSoundCard extends AbstractSoundCard {
@@ -69,7 +70,7 @@ public class SolarisSoundCard extends AbstractSoundCard {
         Map<String, String> vendorMap = new HashMap<>();
         Map<String, String> productMap = new HashMap<>();
         List<String> sounds = new ArrayList<>();
-        String key = "";
+        String key = Normal.EMPTY;
         for (String line : Command.runNative(LSHAL)) {
             line = line.trim();
             if (line.startsWith("udi =")) {

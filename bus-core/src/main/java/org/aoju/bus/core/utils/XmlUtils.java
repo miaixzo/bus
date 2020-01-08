@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class XmlUtils {
@@ -108,10 +108,10 @@ public class XmlUtils {
      * @param <T>    对象类型
      * @param source {@link InputSource}
      * @return 对象
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static <T> T readObjectFromXml(InputSource source) {
-        Object result = null;
+        Object result;
         XMLDecoder xmldec = null;
         try {
             xmldec = new XMLDecoder(source);
@@ -140,7 +140,7 @@ public class XmlUtils {
     public static DocumentBuilder createDocumentBuilder() {
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         disableXXE(dbf);
-        DocumentBuilder builder = null;
+        DocumentBuilder builder;
         try {
             builder = dbf.newDocumentBuilder();
         } catch (Exception e) {
@@ -274,7 +274,7 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -322,7 +322,7 @@ public class XmlUtils {
      * @param source     资源,可以是Docunent、Node节点等
      * @param returnType 返回类型,{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();

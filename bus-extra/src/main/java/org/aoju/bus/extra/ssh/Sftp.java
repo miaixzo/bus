@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,7 +52,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class Sftp extends AbstractFtp {
@@ -413,7 +413,7 @@ public class Sftp extends AbstractFtp {
     /**
      * JSch支持的三种文件传输模式
      */
-    public static enum Mode {
+    public enum Mode {
         /**
          * 完全覆盖模式,这是JSch的默认文件传输模式,即如果目标文件已经存在,传输的文件将完全覆盖目标文件,产生新的文件
          */

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.5.0</version>
+    <version>5.5.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -87,7 +87,7 @@
         <!--bus-shade-->
         <freemarker.version>2.3.28</freemarker.version>
         <!--bus-socket-->
-        <netty.version>4.1.42.Final</netty.version>
+        <netty.version>4.1.44.Final</netty.version>
         <!--bus-spring-->
         <dubbo.version>2.7.3</dubbo.version>
         <!--bus-storage-->

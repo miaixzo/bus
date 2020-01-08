@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ import java.util.*;
  * 或者{@link #parse parse()}如果输入是无效的URL，则返回null。您甚至可以明确每个组件是否已经编码
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public final class UnoUrl {
@@ -747,8 +747,8 @@ public final class UnoUrl {
 
     public String redact() {
         return newBuilder("/...")
-                .username("")
-                .password("")
+                .username(Normal.EMPTY)
+                .password(Normal.EMPTY)
                 .build()
                 .toString();
     }

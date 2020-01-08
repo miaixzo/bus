@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.date.DateTime;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -36,7 +37,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class ExcelSaxUtils {
@@ -132,8 +133,8 @@ public class ExcelSaxUtils {
     public static int countNullCell(String preRef, String ref) {
         // excel2007最大行数是1048576,最大列数是16384,最后一列列名是XFD
         // 数字代表列,去掉列信息
-        String preXfd = StringUtils.nullToDefault(preRef, Symbol.AT).replaceAll("\\d+", "");
-        String xfd = StringUtils.nullToDefault(ref, Symbol.AT).replaceAll("\\d+", "");
+        String preXfd = StringUtils.nullToDefault(preRef, Symbol.AT).replaceAll("\\d+", Normal.EMPTY);
+        String xfd = StringUtils.nullToDefault(ref, Symbol.AT).replaceAll("\\d+", Normal.EMPTY);
 
         // A表示65,@表示64,如果A算作1,那@代表0
         // 填充最大位数3

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@ package org.aoju.bus.socket.origin;
 import org.aoju.bus.core.io.segment.BufferPage;
 import org.aoju.bus.core.io.segment.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.socket.origin.plugins.ssl.Callback;
 import org.aoju.bus.socket.origin.plugins.ssl.Handshake;
 import org.aoju.bus.socket.origin.plugins.ssl.SSLService;
 
@@ -38,7 +37,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 class SSLAioSession<T> extends TcpAioSession<T> {
@@ -80,16 +79,13 @@ class SSLAioSession<T> extends TcpAioSession<T> {
         this.netWriteBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
         this.netWriteBuffer.flip();
         this.netReadBuffer = ByteBuffer.allocate(readBuffer.buffer().capacity());
-        this.handshakeModel.setHandshakeCallback(new Callback() {
-            @Override
-            public void callback() {
-                synchronized (SSLAioSession.this) {
-                    handshakeModel = null;//释放内存
-                    SSLAioSession.this.notifyAll();
-                }
-                sslService = null;//释放内存
-                continueRead();
+        this.handshakeModel.setHandshakeCallback(() -> {
+            synchronized (SSLAioSession.this) {
+                handshakeModel = null;//释放内存
+                SSLAioSession.this.notifyAll();
             }
+            sslService = null;//释放内存
+            continueRead();
         });
         sslService.doHandshake(handshakeModel);
     }

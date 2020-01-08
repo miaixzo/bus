@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2017 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 转换器,默认转换器预定义的一些转换器,自定义转换器存放用户自定的转换器
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class ConverterRegistry {
@@ -119,7 +119,7 @@ public class ConverterRegistry {
      * @return 转换器
      */
     public <T> Converter<T> getConverter(Type type, boolean isCustomFirst) {
-        Converter<T> converter = null;
+        Converter<T> converter;
         if (isCustomFirst) {
             converter = this.getCustomConverter(type);
             if (null == converter) {

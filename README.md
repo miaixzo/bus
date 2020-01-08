@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v5.5.0-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v5.5.1-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -28,11 +28,6 @@
 	</a>
 </p>
 
-<p align="center">
-	-- QQ群①：<a href="https://shang.qq.com/wpa/qunwpa?idkey=17fadd02891457034c6536c984f0d7db29b73ea14c9b86bba39ce18ed7a90e18">839128</a> --
-	-- QQ群②：<a href="https://shang.qq.com/wpa/qunwpa?idkey=c207666cbc107d03d368bde8fc15605bb883ebc482e28d440de149e3e2217460">839120</a> --
-</p>
-
 ---
 
 ## 项目说明
@@ -56,11 +51,11 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ √ ]|bus-core|核心功能及工具类,包括常量、线程、类加载器、字符集编码、反射、集合、日期等常用工具|
 |[ √ ]|bus-cron|定时器及定时任务等功能|
 |[ √ ]|bus-crypto|加密解密，支持支持AES/DES/REA/MD5等常用加密算法|
-|[ √ ]|bus-extra|扩展功能及文件操作|
-|[ √ ]|bus-forest|jar加解密,杜绝源码泄漏或被反编译|
-|[ √ ]|bus-health|应用服务器健康信息|
-|[ √ ]|bus-http|HTTP功能封装|
-|[ × ]|bus-limiter|请求限流|
+|[ √ ]|bus-extra|扩展功能及文件操作,FTP/文件/二维码/短信相关支持|
+|[ √ ]|bus-forest|jar加解密,杜绝源码泄漏或被反编译，支持springboot项目加解密|
+|[ √ ]|bus-health|应用服务器健康信息，软件硬件信息采集等|
+|[ √ ]|bus-http|HTTP功能封装,根据业务场景可使用 Httpd/Httpx/Httpz 不同的处理方式|
+|[ × ]|bus-limiter|请求限流,根据不同业务设置不同限流策略|
 |[ √ ]|bus-logger|日志信息及功能，动态检测日志实现的方式，使日志使用个更加便利灵活简单|
 |[ √ ]|bus-mapper|数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生|
 |[ √ ]|bus-oauth|第三方登录,已集成十多家第三方平台（国内外常用的基本都已包含）|
@@ -71,8 +66,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ √ ]|bus-setting|设置工具类， 用于支持设置/配置|
 |[ √ ]|bus-shade|Entity,Service,Mapper等相关代码生成工具|
 |[ × ]|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
-|[ √ ]|bus-spring|spring相关配置|
-|[ √ ]|bus-starter|SpringBoot starter，启动及相关配置文件信息|
+|[ √ ]|bus-starter|SpringBoot starter，spring相关配置，启动及相关配置文件信息|
 |[ √ ]|bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
 |[ × ]|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|
 |[ √ ]|bus-validate|参数校验，会默认拦截所有的标记有`@Valid`的方法或类|
@@ -94,13 +88,13 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.5.0</version>
+    <version>5.5.1</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:5.5.0'
+implementation 'org.aoju:bus-all:5.5.1'
 ```
 
 ### Other
