@@ -51,7 +51,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 文档生成器
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8++
  */
 public class ApiDocBuilder {

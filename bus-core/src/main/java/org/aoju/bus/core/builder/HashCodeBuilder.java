@@ -62,7 +62,7 @@ import java.util.Set;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class HashCodeBuilder implements Builder<Integer> {

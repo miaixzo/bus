@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 对象不存在
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class NotExistsException extends UncheckedException {

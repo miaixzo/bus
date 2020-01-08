@@ -29,7 +29,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8++
  */
 public abstract class BaseValidationAnnotationBuilder<T extends Annotation> extends AbstractValidationAnnotationBuilder<T> {

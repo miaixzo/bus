@@ -32,7 +32,7 @@ import com.sun.jna.PointerType;
  * Interface for talking with Udev.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public interface Udev extends Library {

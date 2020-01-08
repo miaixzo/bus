@@ -39,7 +39,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 通过该注入该类实现发送短信
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 @AllArgsConstructor

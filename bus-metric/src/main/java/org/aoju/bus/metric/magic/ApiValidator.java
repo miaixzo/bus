@@ -49,7 +49,7 @@ import java.util.*;
  * 负责校验,校验工作都在这里
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8++
  */
 public class ApiValidator implements Validator {

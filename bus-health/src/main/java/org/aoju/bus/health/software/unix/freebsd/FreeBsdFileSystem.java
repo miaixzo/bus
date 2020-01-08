@@ -40,7 +40,7 @@ import java.util.*;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class FreeBsdFileSystem implements FileSystem {

@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类<p>
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class CollUtils {
@@ -1052,7 +1052,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, (Editor<T>) t -> {
@@ -1080,7 +1080,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, (Filter<T>) t -> false == StringUtils.isEmpty(t));
@@ -1092,7 +1092,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, (Filter<T>) t -> false == StringUtils.isBlank(t));
@@ -2544,7 +2544,7 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 5.5.0
+     * @since 5.5.1
      */
     public interface Hash<T> {
         /**

@@ -39,7 +39,7 @@ import org.aoju.bus.office.magic.filter.FilterChain;
  * 此筛选器用于替换文档中的文本.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class TextReplacerFilter implements Filter {

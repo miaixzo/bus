@@ -38,7 +38,7 @@ import java.util.concurrent.Executors;
  * 负责监控的拦截器
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8++
  */
 public class MonitorHandler extends ApiHandlerAdapter implements Visitor {

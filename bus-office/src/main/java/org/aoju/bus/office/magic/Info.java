@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 实用程序函数，使office信息更容易获取.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public final class Info {

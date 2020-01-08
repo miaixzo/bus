@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * 每个值必须在{@code 0}和{@code Integer之间。MAX_VALUE}字节的长度
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public final class DiskLruCache implements Closeable, Flushable {

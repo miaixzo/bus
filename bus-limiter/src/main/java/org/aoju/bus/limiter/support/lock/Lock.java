@@ -31,7 +31,7 @@ import java.util.Map;
  * Lock
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public abstract class Lock implements Limiter<org.aoju.bus.limiter.annotation.Lock> {

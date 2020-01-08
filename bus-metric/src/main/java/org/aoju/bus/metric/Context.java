@@ -51,7 +51,7 @@ import java.util.Locale;
  * 应用上下文,方便获取信息
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8++
  */
 public class Context {

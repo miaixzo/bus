@@ -27,7 +27,7 @@ package org.aoju.bus.metric.builtin.doc;
  * 保存文档内容
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8++
  */
 public class ApiDocHolder {

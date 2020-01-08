@@ -33,7 +33,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * 邮箱校验
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public class EmailStrategy implements Matcher<String, Email> {

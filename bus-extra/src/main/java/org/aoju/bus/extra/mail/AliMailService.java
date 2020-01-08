@@ -37,7 +37,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 阿里云邮件服务
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 @AllArgsConstructor

@@ -34,7 +34,7 @@ import java.net.ProtocolException;
  * HTTP响应“HTTP/ 1.1200 OK”这样的在线状态.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.1
  * @since JDK 1.8+
  */
 public final class StatusLine {
