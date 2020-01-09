@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.starter.annotation;
 
+import org.aoju.bus.socket.spring.extension.MessageConfiguration;
+import org.aoju.bus.socket.spring.support.MessageMatcher;
 import org.aoju.bus.starter.socket.SocketScannerRegistrar;
 import org.springframework.context.annotation.Import;
 
@@ -35,10 +37,11 @@ import java.lang.annotation.*;
  * @version 5.5.2
  * @since JDK 1.8+
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Inherited
 @Documented
-@Import({SocketScannerRegistrar.class})
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Import({SocketScannerRegistrar.class, MessageConfiguration.class, MessageMatcher.class})
 public @interface EnableSocket {
 
     String[] basePackage() default {};

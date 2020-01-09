@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.starter.socket;
 
-
 import org.aoju.bus.core.thread.ThreadBuilder;
 import org.aoju.bus.socket.netty.SocketService;
 

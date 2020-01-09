@@ -25,7 +25,7 @@ package org.aoju.bus.metric.magic;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.metric.Context;
+import org.aoju.bus.metric.ApiContext;
 import org.aoju.bus.metric.consts.MetricConsts;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +70,7 @@ public class ApiParam extends JSONObject implements Param {
     }
 
     public HttpServletRequest fatchRequest() {
-        return Context.getRequest();
+        return ApiContext.getRequest();
     }
 
     /**

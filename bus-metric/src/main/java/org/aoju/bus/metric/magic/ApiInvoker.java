@@ -28,14 +28,10 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.exception.InvalidParamsException;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.Context;
-import org.aoju.bus.metric.builtin.DefinitionHolder;
-import org.aoju.bus.metric.builtin.Errors;
-import org.aoju.bus.metric.builtin.Invoker;
-import org.aoju.bus.metric.builtin.MethodCaller;
-import org.aoju.bus.metric.builtin.doc.ApiDocHolder;
-import org.aoju.bus.metric.builtin.doc.ApiDocItem;
-import org.aoju.bus.metric.handler.ApiHandler;
+import org.aoju.bus.metric.ApiContext;
+import org.aoju.bus.metric.ApiHandler;
+import org.aoju.bus.metric.builtin.ApiDocHolder;
+import org.aoju.bus.metric.builtin.ApiDocItem;
 import org.aoju.bus.metric.register.SingleParameterContext;
 import org.aoju.bus.metric.support.ReflectUtil;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,12 +69,12 @@ public class ApiInvoker implements Invoker {
 
     @Override
     public Object invoke(HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        Context.setRequest(request);
-        Context.setResponse(response);
+        ApiContext.setRequest(request);
+        ApiContext.setResponse(response);
         try {
             // 解析参数
-            ApiParam param = Context.getConfig().getParamParser().parse(request);
-            Context.setApiParam(param);
+            ApiParam param = ApiContext.getConfig().getParamParser().parse(request);
+            ApiContext.setApiParam(param);
             return this.doInvoke(param, request, response);
         } catch (Throwable e) {
             if (e instanceof InvocationTargetException) {
@@ -96,11 +92,11 @@ public class ApiInvoker implements Invoker {
 
     @Override
     public Object invokeMock(HttpServletRequest request, HttpServletResponse response) {
-        Context.setRequest(request);
-        Context.setResponse(response);
+        ApiContext.setRequest(request);
+        ApiContext.setResponse(response);
         // 解析参数
-        ApiParam param = Context.getConfig().getParamParser().parse(request);
-        Context.setApiParam(param);
+        ApiParam param = ApiContext.getConfig().getParamParser().parse(request);
+        ApiContext.setApiParam(param);
 
         ApiDocItem apiDocItem = ApiDocHolder.getApiDocBuilder().getApiDocItem(param.fatchName(), param.fatchVersion());
         if (apiDocItem == null) {
@@ -118,10 +114,10 @@ public class ApiInvoker implements Invoker {
         if (value == null) {
             return null;
         }
-        if (Context.isEncryptMode()) {
-            value = Context.decryptAES(value);
-        } else if (Context.hasUseNewSSL(request)) {
-            value = Context.decryptAESFromBase64String(value);
+        if (ApiContext.isEncryptMode()) {
+            value = ApiContext.decryptAES(value);
+        } else if (ApiContext.hasUseNewSSL(request)) {
+            value = ApiContext.decryptAESFromBase64String(value);
         }
         return value;
     }
@@ -137,13 +133,13 @@ public class ApiInvoker implements Invoker {
      */
     protected Object doInvoke(ApiParam param, HttpServletRequest request, HttpServletResponse response) throws Throwable {
         ApiDefinition apiDefinition = this.getApiDefinition(param);
-        Context.setApiMeta(apiDefinition);
+        ApiContext.setApiMeta(apiDefinition);
         // 方法参数
         Object methodArgu = null;
         // 返回结果
         Object invokeResult = null;
 
-        Validator validator = Context.getConfig().getValidator();
+        Validator validator = ApiContext.getConfig().getValidator();
 
         param.setIgnoreSign(apiDefinition.isIgnoreSign());
         param.setIgnoreValidate(apiDefinition.isIgnoreValidate());
@@ -151,7 +147,7 @@ public class ApiInvoker implements Invoker {
         validator.validate(param);
 
         // 业务参数json格式
-        String busiJsonData = Context.getConfig().getDataDecoder().decode(param);
+        String busiJsonData = ApiContext.getConfig().getDataDecoder().decode(param);
 
         // 业务参数Class
         Class<?> arguClass = apiDefinition.getMethodArguClass();
@@ -180,7 +176,7 @@ public class ApiInvoker implements Invoker {
                 this.bindUploadFile(methodArgu);
             }
             // 拦截器
-            ApiHandler[] interceptors = Context.getConfig().getInterceptors();
+            ApiHandler[] interceptors = ApiContext.getConfig().getInterceptors();
             if (interceptors == null) {
                 interceptors = EMPTY_INTERCEPTOR_ARRAY;
             }
@@ -248,7 +244,7 @@ public class ApiInvoker implements Invoker {
             finalReturn = null;
         } else if (apiDefinition.isWrapResult()) {
             // 对返回结果包装
-            finalReturn = Context.getConfig().getResultCreator().createResult(invokeResult);
+            finalReturn = ApiContext.getConfig().getResultCreator().createResult(invokeResult);
         }
         return finalReturn;
     }
@@ -256,7 +252,7 @@ public class ApiInvoker implements Invoker {
     private void triggerAfterCompletion(ApiDefinition definition, int interceptorIndex,
                                         HttpServletRequest request, HttpServletResponse response, Object argu, Object result, Exception e) throws Exception {
         // 5、触发整个请求处理完毕回调方法afterCompletion （逆序从1.2中的预处理成功的索引处的拦截器执行）
-        ApiHandler[] interceptors = Context.getConfig().getInterceptors();
+        ApiHandler[] interceptors = ApiContext.getConfig().getInterceptors();
 
         if (interceptors != null && interceptors.length > 0) {
             for (int i = interceptorIndex; i >= 0; i--) {
@@ -290,7 +286,7 @@ public class ApiInvoker implements Invoker {
      */
     protected void bindUploadFile(Object args) {
         if (args != null) {
-            Upload upload = Context.getUploadContext();
+            Upload upload = ApiContext.getUploadContext();
             if (upload != null) {
                 List<MultipartFile> files = upload.getAllFile();
                 if (files != null && files.size() > 0) {

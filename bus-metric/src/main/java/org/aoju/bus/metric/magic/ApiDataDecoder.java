@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.metric.magic;
 
-import org.aoju.bus.metric.builtin.DataDecoder;
 import org.aoju.bus.metric.consts.MetricConsts;
 import org.springframework.util.StringUtils;
 

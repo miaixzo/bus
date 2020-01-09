@@ -65,9 +65,17 @@ public class BusXExtend {
      */
     public static final String MYBATIS = "extend.mybatis";
     /**
+     * API网关
+     */
+    public static final String METRIC = "extend.metric";
+    /**
      * 授权登陆
      */
     public static final String OAUTH = "extend.oauth";
+    /**
+     * 文件在线预览
+     */
+    public static final String PREVIEW = "extend.preview";
     /**
      * 数据脱敏
      */
@@ -88,9 +96,5 @@ public class BusXExtend {
      * XSS/重复读取失效
      */
     public static final String WRAPPER = "extend.wrapper";
-    /**
-     * 文件在线预览
-     */
-    public static final String PREVIEW = "extend.preview";
 
 }

@@ -28,7 +28,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.Context;
+import org.aoju.bus.metric.ApiContext;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -86,7 +86,7 @@ public class ApiSessionManager implements SessionManager {
     }
 
     protected ServletContext getServletContext() {
-        return Context.getServletContext();
+        return ApiContext.getServletContext();
     }
 
     protected LoadingCache<String, HttpSession> buildCache() {

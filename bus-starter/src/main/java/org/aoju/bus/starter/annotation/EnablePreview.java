@@ -35,10 +35,10 @@ import java.lang.annotation.*;
  * @version 5.5.2
  * @since JDK 1.8+
  */
+@Inherited
+@Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
 @Import({PreviewConfiguration.class})
 public @interface EnablePreview {
 

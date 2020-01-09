@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.metric.magic;
 
-import org.aoju.bus.metric.builtin.Invocation;
-
 /**
  * @author Kimi Liu
  * @version 5.5.2

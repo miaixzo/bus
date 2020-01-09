@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.metric.magic;
 
-import org.aoju.bus.metric.Context;
+import org.aoju.bus.metric.ApiContext;
 
 import java.util.*;
 
@@ -71,7 +71,7 @@ public class DefaultVerifier implements Verifier {
      * @return 返回MD5全部大写
      */
     public String encrypt(String source) {
-        Safety safety = Context.getConfig().getSafety();
+        Safety safety = ApiContext.getConfig().getSafety();
         return safety.md5(source).toUpperCase();
     }
 

@@ -24,7 +24,7 @@
 package org.aoju.bus.metric.register;
 
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.Config;
+import org.aoju.bus.metric.ApiConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 
@@ -38,11 +38,11 @@ import org.springframework.util.Assert;
 public abstract class AbstractInitializer implements Initializer, RegistCallback {
 
     @Override
-    public void onRegistFinished(Config config) {
+    public void onRegistFinished(ApiConfig config) {
     }
 
     @Override
-    public synchronized void init(ApplicationContext applicationContext, Config config) {
+    public synchronized void init(ApplicationContext applicationContext, ApiConfig config) {
         Assert.notNull(applicationContext, "applicationContext不能为null");
         Assert.notNull(config, "apiConfig不能为null");
         try {

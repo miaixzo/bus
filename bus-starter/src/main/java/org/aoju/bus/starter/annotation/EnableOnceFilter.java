@@ -35,9 +35,10 @@ import java.lang.annotation.*;
  * @version 5.5.2
  * @since JDK 1.8+
  */
+@Inherited
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
-@Documented
 @Import(WrapperConfiguration.class)
 public @interface EnableOnceFilter {
 

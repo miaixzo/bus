@@ -47,6 +47,19 @@ public class CorsConfiguration {
     @Autowired
     CorsProperties properties;
 
+    /**
+     * 跨域过滤器
+     *
+     * @return Cors过滤器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration(properties.getPath(), buildConfig());
+        return new CorsFilter(source);
+    }
+
     private org.springframework.web.cors.CorsConfiguration buildConfig() {
         org.springframework.web.cors.CorsConfiguration corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList(properties.getAllowedOrigins()));
@@ -61,19 +74,6 @@ public class CorsConfiguration {
             corsConfiguration.setExposedHeaders(Arrays.asList(properties.getExposedHeaders()));
         }
         return corsConfiguration;
-    }
-
-    /**
-     * 跨域过滤器
-     *
-     * @return Cors过滤器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration(properties.getPath(), buildConfig());
-        return new CorsFilter(source);
     }
 
 }

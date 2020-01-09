@@ -37,10 +37,10 @@ public final class Pipe {
 
     final long maxBufferSize;
     final Buffer buffer = new Buffer();
-    boolean sinkClosed;
-    boolean sourceClosed;
     private final Sink sink = new PipeSink();
     private final Source source = new PipeSource();
+    boolean sinkClosed;
+    boolean sourceClosed;
 
     public Pipe(long maxBufferSize) {
         if (maxBufferSize < 1L) {

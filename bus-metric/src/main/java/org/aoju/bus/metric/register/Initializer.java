@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.metric.register;
 
-import org.aoju.bus.metric.Config;
+import org.aoju.bus.metric.ApiConfig;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -39,6 +39,6 @@ public interface Initializer {
      * @param applicationContext spring上下文
      * @param config             配置内容
      */
-    void init(ApplicationContext applicationContext, Config config);
+    void init(ApplicationContext applicationContext, ApiConfig config);
 
 }

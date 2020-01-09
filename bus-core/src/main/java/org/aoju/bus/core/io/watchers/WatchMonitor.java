@@ -48,8 +48,6 @@ import java.nio.file.*;
  */
 public class WatchMonitor extends WatchServer {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 事件丢失
      */
@@ -75,7 +73,7 @@ public class WatchMonitor extends WatchServer {
             ENTRY_CREATE,
             ENTRY_DELETE
     };
-
+    private static final long serialVersionUID = 1L;
     /**
      * 监听路径，必须为目录
      */
@@ -93,6 +91,56 @@ public class WatchMonitor extends WatchServer {
      * 监听器
      */
     private Watcher watcher;
+
+    /**
+     * 构造
+     *
+     * @param file   文件
+     * @param events 监听的事件列表
+     */
+    public WatchMonitor(File file, WatchEvent.Kind<?>... events) {
+        this(file.toPath(), events);
+    }
+
+    /**
+     * 构造
+     *
+     * @param path   字符串路径
+     * @param events 监听的事件列表
+     */
+    public WatchMonitor(String path, WatchEvent.Kind<?>... events) {
+        this(Paths.get(path), events);
+    }
+
+    /**
+     * 构造
+     *
+     * @param path   字符串路径
+     * @param events 监听事件列表
+     */
+    public WatchMonitor(Path path, WatchEvent.Kind<?>... events) {
+        this(path, 0, events);
+    }
+
+    /**
+     * 构造
+     * 例如设置：
+     * <pre>
+     * maxDepth &lt;= 1 表示只监听当前目录
+     * maxDepth = 2 表示监听当前目录以及下层目录
+     * maxDepth = 3 表示监听当前目录以及下两层
+     * </pre>
+     *
+     * @param path     字符串路径
+     * @param maxDepth 递归目录的最大深度，当小于2时不递归下层目录
+     * @param events   监听事件列表
+     */
+    public WatchMonitor(Path path, int maxDepth, WatchEvent.Kind<?>... events) {
+        this.path = path;
+        this.maxDepth = maxDepth;
+        this.events = events;
+        this.init();
+    }
 
     /**
      * 创建并初始化监听
@@ -271,56 +319,6 @@ public class WatchMonitor extends WatchServer {
     }
 
     /**
-     * 构造
-     *
-     * @param file   文件
-     * @param events 监听的事件列表
-     */
-    public WatchMonitor(File file, WatchEvent.Kind<?>... events) {
-        this(file.toPath(), events);
-    }
-
-    /**
-     * 构造
-     *
-     * @param path   字符串路径
-     * @param events 监听的事件列表
-     */
-    public WatchMonitor(String path, WatchEvent.Kind<?>... events) {
-        this(Paths.get(path), events);
-    }
-
-    /**
-     * 构造
-     *
-     * @param path   字符串路径
-     * @param events 监听事件列表
-     */
-    public WatchMonitor(Path path, WatchEvent.Kind<?>... events) {
-        this(path, 0, events);
-    }
-
-    /**
-     * 构造
-     * 例如设置：
-     * <pre>
-     * maxDepth &lt;= 1 表示只监听当前目录
-     * maxDepth = 2 表示监听当前目录以及下层目录
-     * maxDepth = 3 表示监听当前目录以及下两层
-     * </pre>
-     *
-     * @param path     字符串路径
-     * @param maxDepth 递归目录的最大深度，当小于2时不递归下层目录
-     * @param events   监听事件列表
-     */
-    public WatchMonitor(Path path, int maxDepth, WatchEvent.Kind<?>... events) {
-        this.path = path;
-        this.maxDepth = maxDepth;
-        this.events = events;
-        this.init();
-    } 
-
-    /**
      * 初始化
      * 初始化包括：
      * <pre>
@@ -396,7 +394,7 @@ public class WatchMonitor extends WatchServer {
         }
 
         // 按照层级注册路径及其子路径
-        registerPath(); 
+        registerPath();
 
         while (false == isClosed) {
             doTakeAndWatch(watcher);

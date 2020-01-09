@@ -24,8 +24,6 @@
 package org.aoju.bus.metric.magic;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.aoju.bus.metric.builtin.ErrorMeta;
-import org.aoju.bus.metric.builtin.Errors;
 
 /**
  * 默认的结果封装类.

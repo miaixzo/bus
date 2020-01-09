@@ -37,10 +37,10 @@ import java.lang.annotation.*;
  * @version 5.5.2
  * @since JDK 1.8+
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
 @Inherited
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 @Import(value = {MybatisConfiguration.class, MapperConfiguration.class, DruidConfiguration.class})
 public @interface EnableMapper {
 

@@ -26,8 +26,7 @@ package org.aoju.bus.metric.magic;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.Context;
-import org.aoju.bus.metric.builtin.Errors;
+import org.aoju.bus.metric.ApiContext;
 import org.aoju.bus.metric.consts.MetricConsts;
 import org.aoju.bus.metric.support.RequestUtil;
 import org.springframework.http.MediaType;
@@ -70,15 +69,15 @@ public class ApiParamParser implements ParamParser {
             throw Errors.ERROR_PARAM.getException();
         }
 
-        if (Context.hasUseNewSSL(request)) {
+        if (ApiContext.hasUseNewSSL(request)) {
             requestJson = this.decryptData(requestJson);
-        } else if (Context.isEncryptMode()) {
-            String randomKey = Context.getRandomKey();
+        } else if (ApiContext.isEncryptMode()) {
+            String randomKey = ApiContext.getRandomKey();
             if (randomKey == null) {
                 Logger.error("未找到randomKey");
                 throw Errors.ERROR_SSL.getException();
             }
-            requestJson = Context.decryptAES(requestJson);
+            requestJson = ApiContext.decryptAES(requestJson);
         }
         ApiParam param = this.jsonToApiParam(requestJson);
         this.bindRestParam(param, request);
@@ -90,7 +89,7 @@ public class ApiParamParser implements ParamParser {
         String data = result.getString(REQUEST_DATA_NAME);
         try {
             // aes解密
-            data = Context.decryptAESFromBase64String(data);
+            data = ApiContext.decryptAESFromBase64String(data);
             // 重新赋值
             result.put(REQUEST_DATA_NAME, data);
         } catch (Exception e) {
@@ -154,7 +153,7 @@ public class ApiParamParser implements ParamParser {
 
             if (finalMap.size() > 0) {
                 // 保存上传文件
-                Context.setUploadContext(new ApiUpload(finalMap));
+                ApiContext.setUploadContext(new ApiUpload(finalMap));
             }
         }
 

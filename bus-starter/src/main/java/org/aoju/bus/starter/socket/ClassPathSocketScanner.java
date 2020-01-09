@@ -63,4 +63,5 @@ public class ClassPathSocketScanner extends ClassPathBeanDefinitionScanner {
     protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
         return super.isCandidateComponent(beanDefinition);
     }
+
 }

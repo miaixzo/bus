@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.metric.register;
 
-import org.aoju.bus.metric.Config;
+import org.aoju.bus.metric.ApiConfig;
 
 /**
  * @author Kimi Liu
@@ -37,6 +37,6 @@ public interface RegistCallback {
      *
      * @param config 配置
      */
-    void onRegistFinished(Config config);
+    void onRegistFinished(ApiConfig config);
 
 }

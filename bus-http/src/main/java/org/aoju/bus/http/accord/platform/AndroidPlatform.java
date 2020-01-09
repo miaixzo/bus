@@ -24,7 +24,6 @@
 package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicTrustRootIndex;

@@ -46,23 +46,22 @@ import java.util.Map;
 public class WatchServer extends Thread implements Closeable, Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 监听服务
-     */
-    private WatchService watchService;
     /**
      * 监听事件列表
      */
     protected WatchEvent.Kind<?>[] events;
     /**
-     * 监听选项，例如监听频率等
-     */
-    private WatchEvent.Modifier[] modifiers;
-    /**
      * 监听是否已经关闭
      */
     protected boolean isClosed;
+    /**
+     * 监听服务
+     */
+    private WatchService watchService;
+    /**
+     * 监听选项，例如监听频率等
+     */
+    private WatchEvent.Modifier[] modifiers;
     /**
      * WatchKey 和 Path的对应表
      */

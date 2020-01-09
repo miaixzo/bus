@@ -65,16 +65,6 @@ import java.util.Random;
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 此UUID的最高64有效位
-     */
-    private final long mostSigBits;
-    /**
-     * 此UUID的最低64有效位
-     */
-    private final long leastSigBits;
-
     /**
      * 支持的最小进制数
      */
@@ -93,6 +83,15 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
             DIGIT_MAP.put(DIGITS[i], i);
         }
     }
+
+    /**
+     * 此UUID的最高64有效位
+     */
+    private final long mostSigBits;
+    /**
+     * 此UUID的最低64有效位
+     */
+    private final long leastSigBits;
 
     /**
      * 私有构造
@@ -285,6 +284,70 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     private static String digits(long val, int digits) {
         long hi = 1L << (digits * 4);
         return Long.toHexString(hi | (val & (hi - 1))).substring(1);
+    }
+
+    private static void long2bytes(long value, byte[] bytes, int offset) {
+        for (int i = 7; i > -1; i--) {
+            bytes[offset++] = (byte) ((value >> 8 * i) & 0xFF);
+        }
+    }
+
+    /**
+     * 将字符串转换为长整型数字
+     *
+     * @param s     数字字符串
+     * @param radix 进制数
+     */
+    private static long toNumber(String s, int radix) {
+        if (s == null) {
+            throw new NumberFormatException("null");
+        }
+        if (radix < MIN_RADIX) {
+            throw new NumberFormatException("radix " + radix + " less than Numbers.MIN_RADIX");
+        }
+        if (radix > MAX_RADIX) {
+            throw new NumberFormatException("radix " + radix + " greater than Numbers.MAX_RADIX");
+        }
+
+        boolean negative = false;
+        Integer digit, i = 0, len = s.length();
+        long result = 0, limit = -Long.MAX_VALUE, multmin;
+        if (len <= 0) {
+            throw forInputString(s);
+        }
+
+        char firstChar = s.charAt(0);
+        if (firstChar < '0') {
+            if (firstChar == '-') {
+                negative = true;
+                limit = Long.MIN_VALUE;
+            } else if (firstChar != '+') {
+                throw forInputString(s);
+            }
+            if (len == 1) {
+                throw forInputString(s);
+            }
+            i++;
+        }
+
+        multmin = limit / radix;
+        while (i < len) {
+            digit = DIGIT_MAP.get(s.charAt(i++));
+            if (digit == null || digit < 0 || result < multmin) {
+                throw forInputString(s);
+            }
+            result *= radix;
+            if (result < limit + digit) {
+                throw forInputString(s);
+            }
+            result -= digit;
+        }
+
+        return negative ? result : -result;
+    }
+
+    private static NumberFormatException forInputString(String s) {
+        return new NumberFormatException("For input string: " + s);
     }
 
     /**
@@ -520,70 +583,6 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         if (version() != 1) {
             throw new UnsupportedOperationException("Not a time-based UUID");
         }
-    }
-
-    private static void long2bytes(long value, byte[] bytes, int offset) {
-        for (int i = 7; i > -1; i--) {
-            bytes[offset++] = (byte) ((value >> 8 * i) & 0xFF);
-        }
-    }
-
-    /**
-     * 将字符串转换为长整型数字
-     *
-     * @param s     数字字符串
-     * @param radix 进制数
-     */
-    private static long toNumber(String s, int radix) {
-        if (s == null) {
-            throw new NumberFormatException("null");
-        }
-        if (radix < MIN_RADIX) {
-            throw new NumberFormatException("radix " + radix + " less than Numbers.MIN_RADIX");
-        }
-        if (radix > MAX_RADIX) {
-            throw new NumberFormatException("radix " + radix + " greater than Numbers.MAX_RADIX");
-        }
-
-        boolean negative = false;
-        Integer digit, i = 0, len = s.length();
-        long result = 0, limit = -Long.MAX_VALUE, multmin;
-        if (len <= 0) {
-            throw forInputString(s);
-        }
-
-        char firstChar = s.charAt(0);
-        if (firstChar < '0') {
-            if (firstChar == '-') {
-                negative = true;
-                limit = Long.MIN_VALUE;
-            } else if (firstChar != '+') {
-                throw forInputString(s);
-            }
-            if (len == 1) {
-                throw forInputString(s);
-            }
-            i++;
-        }
-
-        multmin = limit / radix;
-        while (i < len) {
-            digit = DIGIT_MAP.get(s.charAt(i++));
-            if (digit == null || digit < 0 || result < multmin) {
-                throw forInputString(s);
-            }
-            result *= radix;
-            if (result < limit + digit) {
-                throw forInputString(s);
-            }
-            result -= digit;
-        }
-
-        return negative ? result : -result;
-    }
-
-    private static NumberFormatException forInputString(String s) {
-        return new NumberFormatException("For input string: " + s);
     }
 
     private static class UUIDMaker {

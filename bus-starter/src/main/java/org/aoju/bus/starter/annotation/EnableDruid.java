@@ -35,10 +35,10 @@ import java.lang.annotation.*;
  * @version 5.5.2
  * @since JDK 1.8+
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
 @Import(DruidConfiguration.class)
 public @interface EnableDruid {
 

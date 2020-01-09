@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.metric.magic;
 
-import org.aoju.bus.metric.builtin.MethodCaller;
-
 import java.lang.reflect.Method;
 
 /**
