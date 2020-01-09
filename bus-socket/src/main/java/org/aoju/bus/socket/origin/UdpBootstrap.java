@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 

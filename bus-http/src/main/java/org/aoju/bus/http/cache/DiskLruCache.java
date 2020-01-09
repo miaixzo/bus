@@ -23,12 +23,11 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.segment.FileSystem;
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.FileSystem;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Builder;
-import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.logger.Logger;
 
 import java.io.*;
@@ -186,7 +185,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                 initialized = true;
                 return;
             } catch (IOException journalIsCorrupt) {
-                Platform.get().log(Platform.WARN, "DiskLruCache " + directory + " is corrupt: "
+                Logger.warn("DiskLruCache " + directory + " is corrupt: "
                         + journalIsCorrupt.getMessage() + ", removing", journalIsCorrupt);
             }
 

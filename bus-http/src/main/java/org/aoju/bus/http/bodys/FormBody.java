@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.bodys;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSink;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.UnoUrl;

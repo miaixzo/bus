@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.http.Response;
 
 /**

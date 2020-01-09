@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;

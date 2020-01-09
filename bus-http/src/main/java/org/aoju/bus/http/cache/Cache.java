@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
@@ -70,6 +70,7 @@ public final class Cache implements Closeable, Flushable {
     private int hitCount;
     private int requestCount;
     public final InternalCache internalCache = new InternalCache() {
+
         @Override
         public Response get(Request request) {
             return Cache.this.get(request);

@@ -24,11 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.io.FastByteArray;
-import org.aoju.bus.core.io.LineHandler;
-import org.aoju.bus.core.io.NullOutputStream;
-import org.aoju.bus.core.io.StreamProgress;
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;

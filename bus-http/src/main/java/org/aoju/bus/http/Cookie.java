@@ -419,7 +419,7 @@ public final class Cookie {
         return toString(false);
     }
 
-    String toString(boolean forObsoleteRfc2965) {
+    public String toString(boolean forObsoleteRfc2965) {
         StringBuilder result = new StringBuilder();
         result.append(name);
         result.append(Symbol.C_EQUAL);

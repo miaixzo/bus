@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.File;

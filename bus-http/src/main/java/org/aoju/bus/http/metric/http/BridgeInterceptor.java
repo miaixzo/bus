@@ -24,7 +24,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.Version;
-import org.aoju.bus.core.io.segment.GzipSource;
+import org.aoju.bus.core.io.GzipSource;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;

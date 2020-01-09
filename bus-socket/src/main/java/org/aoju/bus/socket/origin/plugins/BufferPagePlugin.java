@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.socket.origin.plugins;
 
-import org.aoju.bus.core.io.segment.BufferPage;
-import org.aoju.bus.core.io.segment.BufferPool;
+import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.BufferPool;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;

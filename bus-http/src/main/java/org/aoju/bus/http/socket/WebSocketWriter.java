@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 
 import java.io.IOException;
 import java.util.Random;

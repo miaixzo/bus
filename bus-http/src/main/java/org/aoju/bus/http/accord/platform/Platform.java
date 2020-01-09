@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.accord.platform;
 
-import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicCertificateChainCleaner;
 import org.aoju.bus.http.secure.BasicTrustRootIndex;
@@ -220,10 +220,6 @@ public class Platform {
         socket.connect(address, connectTimeout);
     }
 
-    public void log(int level, String message, Throwable t) {
-        Logger.warn(message, t);
-    }
-
     public boolean isCleartextTrafficPermitted(String hostname) {
         return true;
     }
@@ -247,7 +243,7 @@ public class Platform {
             message += " To see where this was allocated, set the Httpd logger level to FINE: "
                     + "Logger.getLogger(Httpd.class.getName()).setLevel(Level.DEBUG);";
         }
-        log(WARN, message, (Throwable) stackTrace);
+        Logger.warn(message, stackTrace);
     }
 
     public CertificateChainCleaner buildCertificateChainCleaner(X509TrustManager trustManager) {

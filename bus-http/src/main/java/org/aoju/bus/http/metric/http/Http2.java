@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 

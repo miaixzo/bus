@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.BufferPool;
+import org.aoju.bus.core.io.BufferPool;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

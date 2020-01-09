@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.segment.Sink;
-import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.Sink;
+import org.aoju.bus.core.io.Source;
 import org.aoju.bus.http.accord.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.cache.Cache;

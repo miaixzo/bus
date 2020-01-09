@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.segment.Timeout;
+import org.aoju.bus.core.io.Timeout;
 import org.aoju.bus.http.bodys.ResponseBody;
 
 import java.io.IOException;

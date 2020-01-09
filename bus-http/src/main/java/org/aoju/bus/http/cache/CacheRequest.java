@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.segment.Sink;
+import org.aoju.bus.core.io.Sink;
 
 import java.io.IOException;
 

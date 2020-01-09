@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.RingBuffer;
+import org.aoju.bus.core.io.RingBuffer;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 

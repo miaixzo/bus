@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.magic;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.DelegateSource;
-import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.DelegateSource;
+import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Response;

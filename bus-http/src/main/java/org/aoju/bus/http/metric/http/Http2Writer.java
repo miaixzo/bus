@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSink;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;

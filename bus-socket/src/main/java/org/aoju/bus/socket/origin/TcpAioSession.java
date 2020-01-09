@@ -24,8 +24,8 @@
 package org.aoju.bus.socket.origin;
 
 
-import org.aoju.bus.core.io.segment.BufferPage;
-import org.aoju.bus.core.io.segment.VirtualBuffer;
+import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;

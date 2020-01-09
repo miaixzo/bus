@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.http.metric.suffix;
 
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.GzipSource;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.GzipSource;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.http.accord.platform.Platform;
+import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -264,7 +264,7 @@ public final class SuffixDatabase {
                     Thread.interrupted();
                     interrupted = true;
                 } catch (IOException e) {
-                    Platform.get().log(Platform.WARN, "Failed to read public suffix list", e);
+                    Logger.warn("Failed to read public suffix list", e);
                     return;
                 }
             }

@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -36,7 +36,6 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.Settings;
-import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.metric.NamedRunnable;
 import org.aoju.bus.logger.Logger;
 
@@ -750,7 +749,7 @@ public final class Http2Connection implements Closeable {
                             try {
                                 listener.onStream(newStream);
                             } catch (IOException e) {
-                                Platform.get().log(Platform.INFO, "Http2Connection.Listener failure for " + hostname, e);
+                                Logger.info("Http2Connection.Listener failure for " + hostname, e);
                                 try {
                                     newStream.close(ErrorCode.PROTOCOL_ERROR);
                                 } catch (IOException ignored) {

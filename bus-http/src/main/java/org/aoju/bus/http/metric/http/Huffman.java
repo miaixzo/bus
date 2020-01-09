@@ -38,8 +38,8 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.ByteString;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

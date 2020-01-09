@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.BufferSource;
+import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.http.Protocol;
 
 import java.io.IOException;

@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http.bodys;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Builder;

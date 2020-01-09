@@ -24,9 +24,9 @@
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.Version;
-import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;

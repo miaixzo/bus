@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.DelegateSink;
-import org.aoju.bus.core.io.segment.Sink;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.DelegateSink;
+import org.aoju.bus.core.io.Sink;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;

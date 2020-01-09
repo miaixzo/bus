@@ -26,6 +26,7 @@ package org.aoju.bus.http.accord.platform;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
+import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.SSLSocket;
 import java.lang.reflect.InvocationHandler;
@@ -105,7 +106,7 @@ public class JdkWithJettyBootPlatform extends Platform {
             JettyNegoProvider provider =
                     (JettyNegoProvider) Proxy.getInvocationHandler(getMethod.invoke(null, socket));
             if (!provider.unsupported && provider.selected == null) {
-                get().log(INFO, "ALPN callback dropped: HTTP/2 is disabled. "
+                Logger.info("ALPN callback dropped: HTTP/2 is disabled. "
                         + "Is alpn-boot on the boot class path?", null);
                 return null;
             }

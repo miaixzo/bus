@@ -54,12 +54,16 @@ public @interface SPI {
 
     /**
      * 默认实现ID
+     *
+     * @return 标识
      */
     String value() default "";
 
     /**
      * 声明每次获取实现类时是否需要创建
      * 新对象，也就是说，是否为单例对象
+     *
+     * @return 是否单例
      */
     boolean single() default false;
 

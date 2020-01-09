@@ -74,7 +74,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * 此UUID的最低64有效位
      */
     private final long leastSigBits;
-    
+
     /**
      * 支持的最小进制数
      */
@@ -155,6 +155,8 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 获取32位UUID
+     *
+     * @return 随机生成ID
      */
     public static String randomUUID32() {
         return java.util.UUID.randomUUID().toString().replace("-", "");
@@ -162,6 +164,8 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 获取19位的UUID
+     *
+     * @return 随机生成ID
      */
     public static String randomUUID19() {
         // 产生UUID
@@ -176,6 +180,8 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 获取15位的UUID（精度有所损失）
+     *
+     * @return 随机生成ID
      */
     public static String randomUUID15() {
         return UUIDMaker.generate();
@@ -183,6 +189,8 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
     /**
      * 获取15位的Long型UUID（精度有所损失）
+     *
+     * @return 随机生成ID
      */
     public static long randomUUID15Long() {
         return toNumber(randomUUID15(), 10);
