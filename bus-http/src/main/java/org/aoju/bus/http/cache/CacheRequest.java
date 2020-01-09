@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.segment.Sink;
+import org.aoju.bus.core.io.Sink;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ import java.io.IOException;
  * 缓存请求信息
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public interface CacheRequest {

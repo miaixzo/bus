@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {

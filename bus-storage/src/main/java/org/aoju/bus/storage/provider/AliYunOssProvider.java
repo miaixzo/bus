@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 存储服务-阿里云
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class AliYunOssProvider extends AbstractProvider {

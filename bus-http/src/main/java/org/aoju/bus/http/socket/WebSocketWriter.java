@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 
 import java.io.IOException;
 import java.util.Random;
@@ -33,7 +33,7 @@ import java.util.Random;
  * 这个类不是线程安全的
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 final class WebSocketWriter {

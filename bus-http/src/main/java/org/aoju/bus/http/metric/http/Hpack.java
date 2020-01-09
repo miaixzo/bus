@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -44,7 +44,7 @@ import java.util.*;
  * 动态条目被添加到数组中，从最后一个位置开始向前移动。当数组填满时，它被加倍.
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 final class Hpack {

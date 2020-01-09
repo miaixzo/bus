@@ -39,7 +39,7 @@ import java.security.SecureRandom;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class Httpz {

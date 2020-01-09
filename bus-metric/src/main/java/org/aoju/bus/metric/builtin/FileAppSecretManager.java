@@ -36,7 +36,7 @@ import java.util.Properties;
  * key为appKey，value为secret
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public class FileAppSecretManager implements AppSecretManager {

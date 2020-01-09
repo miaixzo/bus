@@ -32,7 +32,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * Boolean true 校验
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class TrueStrategy implements Matcher<Boolean, True> {

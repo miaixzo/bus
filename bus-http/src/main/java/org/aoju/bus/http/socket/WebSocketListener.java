@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.http.Response;
 
 /**
  * web socket 监听器
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public abstract class WebSocketListener {

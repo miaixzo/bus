@@ -38,8 +38,8 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.ByteString;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,7 +54,7 @@ import java.io.IOException;
  * </ul>
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class Huffman {

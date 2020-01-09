@@ -28,7 +28,7 @@ package org.aoju.bus.health.hardware;
  * physical memory (RAM) as well as any available virtual memory.
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public interface GlobalMemory {

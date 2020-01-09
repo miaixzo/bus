@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.segment.Awaits;
-import org.aoju.bus.core.io.segment.Timeout;
+import org.aoju.bus.core.io.Awaits;
+import org.aoju.bus.core.io.Timeout;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.accord.ConnectInterceptor;
@@ -38,6 +38,7 @@ import org.aoju.bus.http.metric.http.BridgeInterceptor;
 import org.aoju.bus.http.metric.http.CallServerInterceptor;
 import org.aoju.bus.http.metric.http.RealInterceptorChain;
 import org.aoju.bus.http.metric.http.RetryAndFollowUp;
+import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -51,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * 实际调用准备执行的请求
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class RealCall implements NewCall {
@@ -257,7 +258,7 @@ public final class RealCall implements NewCall {
             } catch (IOException e) {
                 e = timeoutExit(e);
                 if (signalledCallback) {
-                    Platform.get().log(Platform.INFO, "Callback failure for " + toLoggableString(), e);
+                    Logger.info("Callback failure for " + toLoggableString(), e);
                 } else {
                     eventListener.callFailed(RealCall.this, e);
                     responseCallback.onFailure(RealCall.this, e);

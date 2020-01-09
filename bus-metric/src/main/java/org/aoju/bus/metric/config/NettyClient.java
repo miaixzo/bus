@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * netty客户端
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 @Data

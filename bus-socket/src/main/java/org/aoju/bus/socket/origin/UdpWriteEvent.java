@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.VirtualBuffer;
+import org.aoju.bus.core.io.VirtualBuffer;
 
 import java.net.SocketAddress;
 
 /**
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 final class UdpWriteEvent {

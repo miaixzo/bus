@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.secure;
 
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -44,7 +44,7 @@ import java.util.*;
  * 则{@link CertificatePinner}不能用于pin自签名证书
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class CertificatePinner {

@@ -33,7 +33,7 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class EnumUtils {

@@ -23,10 +23,10 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.BufferPage;
-import org.aoju.bus.core.io.segment.EventFactory;
-import org.aoju.bus.core.io.segment.RingBuffer;
-import org.aoju.bus.core.io.segment.VirtualBuffer;
+import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.EventFactory;
+import org.aoju.bus.core.io.RingBuffer;
+import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class UdpChannel<Request> {

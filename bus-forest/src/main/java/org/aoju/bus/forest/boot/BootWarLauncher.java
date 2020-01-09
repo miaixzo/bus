@@ -32,7 +32,7 @@ import java.net.URL;
  * Spring-Boot Jar 启动器
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class BootWarLauncher extends WarLauncher {

@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.segment.Sink;
-import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.Sink;
+import org.aoju.bus.core.io.Source;
 import org.aoju.bus.http.accord.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.cache.Cache;
@@ -65,7 +65,7 @@ import java.util.concurrent.TimeUnit;
  * Httpd还为HTTP/2连接使用守护进程线程。如果它们保持空闲，就会自动退出
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
@@ -276,13 +276,13 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             sslContext.init(null, new TrustManager[]{trustManager}, null);
             return sslContext.getSocketFactory();
         } catch (GeneralSecurityException e) {
-            throw org.aoju.bus.http.Builder.assertionError("No System TLS", e); // The system has no TLS. Just give up.
+            throw org.aoju.bus.http.Builder.assertionError("No System TLS", e);
         }
     }
 
     @Override
     public NewCall newCall(Request request) {
-        return RealCall.newRealCall(this, request, false /* for web socket */);
+        return RealCall.newRealCall(this, request, false);
     }
 
     @Override

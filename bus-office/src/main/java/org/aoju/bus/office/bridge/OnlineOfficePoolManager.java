@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
  * {@link OfficeManager}池实现，不依赖于office安装来处理转换
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class OnlineOfficePoolManager extends AbstractOfficePoolManager {

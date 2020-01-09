@@ -37,7 +37,7 @@ import java.io.File;
  * 更新权限配置
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public class UpdatePermissionConfigProcessor extends AbstractNettyProcessorNoLock {

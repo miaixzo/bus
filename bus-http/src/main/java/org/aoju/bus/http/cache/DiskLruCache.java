@@ -23,12 +23,11 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.segment.FileSystem;
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.FileSystem;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Builder;
-import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.logger.Logger;
 
 import java.io.*;
@@ -46,7 +45,7 @@ import java.util.regex.Pattern;
  * 每个值必须在{@code 0}和{@code Integer之间。MAX_VALUE}字节的长度
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class DiskLruCache implements Closeable, Flushable {
@@ -186,7 +185,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                 initialized = true;
                 return;
             } catch (IOException journalIsCorrupt) {
-                Platform.get().log(Platform.WARN, "DiskLruCache " + directory + " is corrupt: "
+                Logger.warn("DiskLruCache " + directory + " is corrupt: "
                         + journalIsCorrupt.getMessage() + ", removing", journalIsCorrupt);
             }
 

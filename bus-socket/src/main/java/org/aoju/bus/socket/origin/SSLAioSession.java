@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.BufferPage;
-import org.aoju.bus.core.io.segment.VirtualBuffer;
+import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.origin.plugins.ssl.Handshake;
 import org.aoju.bus.socket.origin.plugins.ssl.SSLService;
@@ -37,7 +37,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 class SSLAioSession<T> extends TcpAioSession<T> {

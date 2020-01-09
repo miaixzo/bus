@@ -29,7 +29,7 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public class ApiServiceDocCreator extends AbstractApiDocCreator<Service, Api> {

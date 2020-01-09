@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.utils.IoUtils;
@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * 使用HTTP/2帧对请求和响应进行编码.
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class Http2Codec implements HttpCodec {

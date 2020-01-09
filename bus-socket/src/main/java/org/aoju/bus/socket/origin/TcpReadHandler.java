@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.RingBuffer;
+import org.aoju.bus.core.io.RingBuffer;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 
@@ -34,7 +34,7 @@ import java.util.concurrent.Semaphore;
  * 读写事件回调处理类
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 class TcpReadHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {

@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang;
  * 系统常量
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class System {

@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http.bodys;
 
-import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.ByteString;
-import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Builder;
@@ -38,7 +38,7 @@ import java.nio.charset.Charset;
  * 内容对象
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public abstract class RequestBody {

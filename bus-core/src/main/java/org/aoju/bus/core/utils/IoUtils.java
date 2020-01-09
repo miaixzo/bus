@@ -24,11 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.io.FastByteArray;
-import org.aoju.bus.core.io.LineHandler;
-import org.aoju.bus.core.io.NullOutputStream;
-import org.aoju.bus.core.io.StreamProgress;
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -59,7 +55,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class IoUtils {

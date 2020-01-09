@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.segment.*;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.File;
@@ -37,7 +37,7 @@ import java.io.RandomAccessFile;
  * 这个类保留一个最近从上游读取的字节的小缓冲区。减少文件I/O和数据复制
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 final class Relay {

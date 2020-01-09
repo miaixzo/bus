@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.ByteString;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * 这个类不是线程安全的
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 final class WebSocketReader {

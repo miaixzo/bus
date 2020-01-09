@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.socket.origin.plugins;
 
-import org.aoju.bus.core.io.segment.BufferPage;
-import org.aoju.bus.core.io.segment.BufferPool;
+import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.BufferPool;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * 内存页监测插件
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class BufferPagePlugin<T> extends AbstractPlugin {

@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -40,7 +40,7 @@ import java.util.*;
  * Header实用工具
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class HttpHeaders {

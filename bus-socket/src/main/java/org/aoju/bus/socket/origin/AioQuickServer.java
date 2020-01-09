@@ -23,9 +23,9 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.BufferPool;
-import org.aoju.bus.core.io.segment.EventFactory;
-import org.aoju.bus.core.io.segment.RingBuffer;
+import org.aoju.bus.core.io.BufferPool;
+import org.aoju.bus.core.io.EventFactory;
+import org.aoju.bus.core.io.RingBuffer;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * AIO服务端
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class AioQuickServer<T> {

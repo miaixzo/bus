@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * 这个类不支持cookies上的附加属性，比如Chromium的Priority=HIGH extension
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class Cookie {
@@ -419,7 +419,7 @@ public final class Cookie {
         return toString(false);
     }
 
-    String toString(boolean forObsoleteRfc2965) {
+    public String toString(boolean forObsoleteRfc2965) {
         StringBuilder result = new StringBuilder();
         result.append(name);
         result.append(Symbol.C_EQUAL);

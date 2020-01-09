@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.BufferPool;
+import org.aoju.bus.core.io.BufferPool;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -38,7 +38,7 @@ import java.util.concurrent.ExecutionException;
  * AIO实现的客户端服务
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class AioQuickClient<T> {

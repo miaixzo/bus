@@ -23,14 +23,14 @@
  */
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.ByteString;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.ByteString;
 
 /**
  * web socket协议信息
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class WebSocketProtocol {
