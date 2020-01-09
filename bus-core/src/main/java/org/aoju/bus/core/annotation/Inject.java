@@ -29,7 +29,7 @@ import java.lang.annotation.*;
  * 注释实现类的成员(构造函数、方法和字段)
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})

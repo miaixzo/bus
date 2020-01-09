@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
  * 权限验证拦截器
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public class PermissionHandler extends ApiHandlerAdapter {

@@ -36,7 +36,7 @@ import org.aoju.bus.storage.provider.*;
  * 存储服务提供
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor

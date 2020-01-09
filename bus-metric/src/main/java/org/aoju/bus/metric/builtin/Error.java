@@ -28,7 +28,7 @@ package org.aoju.bus.metric.builtin;
  *
  * @param <T> 状态码类型，一般为Integer或String
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public interface Error<T> {

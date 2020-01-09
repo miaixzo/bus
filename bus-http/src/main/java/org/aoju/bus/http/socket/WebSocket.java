@@ -32,7 +32,7 @@ import org.aoju.bus.http.Request;
  * 通常是{@link Httpd} 在正常操作时，每个web套接字将通过一系列状态进行处理
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public interface WebSocket {

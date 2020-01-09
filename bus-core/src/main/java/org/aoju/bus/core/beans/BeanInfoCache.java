@@ -33,7 +33,7 @@ import java.util.Map;
  * 缓存用于防止多次反射造成的性能问题
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public enum BeanInfoCache {

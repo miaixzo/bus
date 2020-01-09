@@ -27,7 +27,7 @@ package org.aoju.bus.metric.builtin;
  * 定义错误码的地方
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public interface Errors {

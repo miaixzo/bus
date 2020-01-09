@@ -31,7 +31,7 @@ import java.util.HashMap;
  * 发送短信时请求实体
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 @Data

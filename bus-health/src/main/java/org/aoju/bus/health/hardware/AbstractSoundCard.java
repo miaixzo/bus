@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Symbol;
  * An abstract Sound Card
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public abstract class AbstractSoundCard implements SoundCard {

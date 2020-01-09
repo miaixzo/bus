@@ -8,7 +8,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 各种比较器实现和封装
  *
  * @author Kimi Liu
- * @version 5.5.1
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class CompareUtils {
