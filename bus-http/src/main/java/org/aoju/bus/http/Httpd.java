@@ -276,13 +276,13 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             sslContext.init(null, new TrustManager[]{trustManager}, null);
             return sslContext.getSocketFactory();
         } catch (GeneralSecurityException e) {
-            throw org.aoju.bus.http.Builder.assertionError("No System TLS", e); // The system has no TLS. Just give up.
+            throw org.aoju.bus.http.Builder.assertionError("No System TLS", e);
         }
     }
 
     @Override
     public NewCall newCall(Request request) {
-        return RealCall.newRealCall(this, request, false /* for web socket */);
+        return RealCall.newRealCall(this, request, false);
     }
 
     @Override
