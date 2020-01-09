@@ -31,7 +31,6 @@ import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
@@ -589,7 +588,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 } finally {
                     socket.setSoTimeout(readTimeout);
                 }
-            } catch (InstrumentException ignored) {
+            } catch (SocketException | SocketTimeoutException ignored) {
                 // 读取超时;套接字是好的
             } catch (IOException e) {
                 // 不能读取;套接字关闭
