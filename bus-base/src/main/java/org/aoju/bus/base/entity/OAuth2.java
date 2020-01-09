@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ import javax.persistence.Transient;
 @EqualsAndHashCode(callSuper = true)
 public class OAuth2 extends Entity {
 
-    private static final long serialVersionUID = -611369123580520190L;
+    private static final long serialVersionUID = 1L;
 
     @Transient
     @ApiModelProperty("当前用户ID")

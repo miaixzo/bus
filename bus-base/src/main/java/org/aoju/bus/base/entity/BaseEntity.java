@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ import javax.persistence.Transient;
 @EqualsAndHashCode(callSuper = true)
 public class BaseEntity extends Tracer {
 
-    private static final long serialVersionUID = -601369123580520198L;
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "状态", notes = "-1删除,0无效,1正常")
     protected String status;

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ package org.aoju.bus.metric.magic;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
-import org.aoju.bus.crypto.asymmetric.KeyType;
+import org.aoju.bus.crypto.algorithm.asymmetric.KeyType;
 
 /**
  * 负责各类加解密

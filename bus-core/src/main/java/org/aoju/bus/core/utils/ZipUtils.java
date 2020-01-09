@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1023,7 +1023,9 @@ public class ZipUtils {
      * @since 5.0.5
      */
     private static File buildFile(File outFile, String fileName) {
-        if (false == FileUtils.isWindows() && StringUtils.contains(fileName, Symbol.C_SLASH)) {
+        if (false == FileUtils.isWindows()
+                // 检查文件名中是否包含"/"，不考虑以"/"结尾的情况
+                && fileName.lastIndexOf(Symbol.SLASH, fileName.length() - 2) > 0) {
             // 在Linux下多层目录创建存在问题,/会被当成文件名的一部分,此处做处理
             // 使用/拆分路径（zip中无\）,级联创建父目录
             final String[] pathParts = StringUtils.splitToArray(fileName, Symbol.C_SLASH);

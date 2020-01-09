@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -288,12 +288,13 @@ public class CitizenIdUtils {
         if (card.length() != 8 && card.length() != 9 && idCard.length() != 10) {
             return null;
         }
-        if (idCard.matches("^[a-zA-Z][0-9]{9}$")) { // 台湾
+        // 台湾
+        if (idCard.matches("^[a-zA-Z][0-9]{9}$")) {
             info[0] = "台湾";
-            String char2 = idCard.substring(1, 2);
-            if (char2.equals(Symbol.ONE)) {
+            char char2 = idCard.charAt(1);
+            if (Symbol.C_ONE == char2) {
                 info[1] = "M";
-            } else if (ObjectUtils.equal(char2, Symbol.TWO)) {
+            } else if (Symbol.C_TWO == char2) {
                 info[1] = "F";
             } else {
                 info[1] = "N";

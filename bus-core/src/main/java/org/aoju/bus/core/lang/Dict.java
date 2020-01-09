@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ import java.util.*;
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
 
-    private static final long serialVersionUID = 6135423866861206530L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 构造
@@ -384,6 +384,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param attr 字段名
      * @return 字段值
      */
+    @Override
     public Date getDate(String attr) {
         return get(attr, null);
     }

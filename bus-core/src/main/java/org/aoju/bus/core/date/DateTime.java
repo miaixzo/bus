@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ import java.util.TimeZone;
  */
 public class DateTime extends Date {
 
-    private static final long serialVersionUID = -5395712593979185936L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 是否可变对象

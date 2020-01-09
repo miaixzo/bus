@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ import java.util.Properties;
  */
 public final class Props extends Properties implements BasicType<String>, OptBasicType<String> {
 
-    private static final long serialVersionUID = 1935981579709590740L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 属性文件的URL

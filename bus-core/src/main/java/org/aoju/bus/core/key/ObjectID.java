@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ObjectID implements Comparable<ObjectID>, Serializable {
 
-    private static final long serialVersionUID = -4415279469780082174L;
+    private static final long serialVersionUID = 1L;
     private static final int _genmachine;
     private static AtomicInteger _nextInc = new AtomicInteger(
             (new Random()).nextInt());

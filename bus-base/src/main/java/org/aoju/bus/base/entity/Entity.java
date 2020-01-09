@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ import java.io.Serializable;
 @Data
 public abstract class Entity implements Serializable {
 
-    private static final long serialVersionUID = -621369123580520198L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @ApiModelProperty("主键")
