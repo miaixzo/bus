@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,9 @@
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.Version;
-import org.aoju.bus.core.io.segment.BufferSink;
-import org.aoju.bus.core.io.segment.BufferSource;
-import org.aoju.bus.core.io.segment.Source;
+import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
@@ -42,7 +42,6 @@ import org.aoju.bus.http.metric.http.*;
 import org.aoju.bus.http.secure.CertificatePinner;
 import org.aoju.bus.http.secure.OkHostnameVerifier;
 import org.aoju.bus.http.socket.RealWebSocket;
-import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
@@ -61,7 +60,7 @@ import java.util.concurrent.TimeUnit;
  * 连接提供
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {
@@ -541,7 +540,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     public RealWebSocket.Streams newWebSocketStreams(final StreamAllocation streamAllocation) {
         return new RealWebSocket.Streams(true, source, sink) {
             @Override
-            public void close() throws IOException {
+            public void close() {
                 streamAllocation.streamFinished(true, streamAllocation.codec(), -1L, null);
             }
         };
@@ -553,7 +552,6 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     }
 
     public void cancel() {
-        // Close the raw socket so we don't end up doing synchronous I/O.
         IoUtils.close(rawSocket);
     }
 
@@ -590,9 +588,8 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 } finally {
                     socket.setSoTimeout(readTimeout);
                 }
-            } catch (SocketTimeoutException ignored) {
+            } catch (SocketException | SocketTimeoutException ignored) {
                 // 读取超时;套接字是好的
-                Logger.error(ignored);
             } catch (IOException e) {
                 // 不能读取;套接字关闭
                 return false;

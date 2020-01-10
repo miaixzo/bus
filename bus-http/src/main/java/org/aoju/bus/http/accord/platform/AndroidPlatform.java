@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicTrustRootIndex;
@@ -50,7 +49,7 @@ import java.util.List;
  * 安卓2.3或更高.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class AndroidPlatform extends Platform {
@@ -198,20 +197,6 @@ public class AndroidPlatform extends Platform {
     }
 
     @Override
-    public void log(int level, String message, Throwable t) {
-        // 按行分割，然后确保每一行都能适合日志的最大长度
-        for (int i = 0, length = message.length(); i < length; i++) {
-            int newline = message.indexOf(Symbol.C_LF, i);
-            newline = newline != -1 ? newline : length;
-            do {
-                int end = Math.min(newline, i + MAX_LOG_LENGTH);
-                Logger.warn("Httpd", message.substring(i, end));
-                i = end;
-            } while (i < newline);
-        }
-    }
-
-    @Override
     public Object getStackTraceForCloseable(String closer) {
         return closeGuard.createAndOpen(closer);
     }
@@ -221,7 +206,7 @@ public class AndroidPlatform extends Platform {
         boolean reported = closeGuard.warnIfOpen(stackTrace);
         if (!reported) {
             // 无法通过近距离观察报告。作为最后的努力，把它发送到记录器.
-            log(WARN, message, null);
+            Logger.warn(message, null);
         }
     }
 

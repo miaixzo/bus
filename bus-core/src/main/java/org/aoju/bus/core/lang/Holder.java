@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.mutable.MutableObject;
  *
  * @param <T> 所持有值类型
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class Holder<T> extends MutableObject<T> {

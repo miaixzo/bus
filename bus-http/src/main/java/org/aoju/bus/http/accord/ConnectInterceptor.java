@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import java.io.IOException;
  * 打开到目标服务器的连接并继续到下一个拦截器.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class ConnectInterceptor implements Interceptor {

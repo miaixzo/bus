@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,16 +28,16 @@ import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
-import org.aoju.bus.crypto.asymmetric.RSA;
-import org.aoju.bus.crypto.asymmetric.SM2;
-import org.aoju.bus.crypto.asymmetric.Sign;
-import org.aoju.bus.crypto.digest.BCrypt;
-import org.aoju.bus.crypto.digest.Digester;
-import org.aoju.bus.crypto.digest.HMac;
-import org.aoju.bus.crypto.digest.MD5;
-import org.aoju.bus.crypto.digest.mac.BCHMacEngine;
-import org.aoju.bus.crypto.digest.mac.MacEngine;
-import org.aoju.bus.crypto.symmetric.*;
+import org.aoju.bus.crypto.algorithm.asymmetric.RSA;
+import org.aoju.bus.crypto.algorithm.asymmetric.SM2;
+import org.aoju.bus.crypto.algorithm.asymmetric.Sign;
+import org.aoju.bus.crypto.algorithm.digest.BCrypt;
+import org.aoju.bus.crypto.algorithm.digest.Digester;
+import org.aoju.bus.crypto.algorithm.digest.HMac;
+import org.aoju.bus.crypto.algorithm.digest.MD5;
+import org.aoju.bus.crypto.algorithm.digest.mac.BCHMacEngine;
+import org.aoju.bus.crypto.algorithm.digest.mac.MacEngine;
+import org.aoju.bus.crypto.algorithm.symmetric.*;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -82,7 +82,7 @@ import java.util.Map;
  * 3、摘要加密（digest）,例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class Builder {

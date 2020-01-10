@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.Version;
-import org.aoju.bus.core.io.segment.GzipSource;
+import org.aoju.bus.core.io.GzipSource;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
@@ -43,7 +43,7 @@ import java.util.List;
  * 然后它继续调用网络。最后，它从网络响应构建用户响应
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class BridgeInterceptor implements Interceptor {

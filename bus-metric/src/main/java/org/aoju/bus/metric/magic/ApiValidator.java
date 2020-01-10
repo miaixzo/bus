@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.Context;
-import org.aoju.bus.metric.builtin.ErrorFactory;
-import org.aoju.bus.metric.builtin.Errors;
+import org.aoju.bus.metric.ApiContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -49,7 +47,7 @@ import java.util.*;
  * 负责校验,校验工作都在这里
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public class ApiValidator implements Validator {
@@ -79,13 +77,13 @@ public class ApiValidator implements Validator {
 
     @Override
     public void validate(ApiParam param) {
-        if (Context.getConfig().isIgnoreValidate() || param.fatchIgnoreValidate()) {
+        if (ApiContext.getConfig().isIgnoreValidate() || param.fatchIgnoreValidate()) {
             Logger.debug("忽略所有验证(ignoreValidate=true), name:{}, version:{}", param.fatchName(), param.fatchVersion());
             return;
         }
-        Assert.notNull(Context.getConfig().getAppSecretManager(), "appSecretManager未初始化");
+        Assert.notNull(ApiContext.getConfig().getAppSecretManager(), "appSecretManager未初始化");
 
-        if (param.fatchIgnoreSign() || Context.isEncryptMode()) {
+        if (param.fatchIgnoreSign() || ApiContext.isEncryptMode()) {
             Logger.debug("忽略签名验证, name:{}, version:{}", param.fatchName(), param.fatchVersion());
         } else {
             // 需要验证签名
@@ -103,7 +101,7 @@ public class ApiValidator implements Validator {
      * @param param 参数
      */
     protected void checkUploadFile(ApiParam param) {
-        Upload upload = Context.getUploadContext();
+        Upload upload = ApiContext.getUploadContext();
         if (upload != null) {
             try {
                 List<MultipartFile> files = upload.getAllFile();
@@ -126,7 +124,7 @@ public class ApiValidator implements Validator {
     }
 
     protected void checkTimeout(ApiParam param) {
-        int timeoutSeconds = Context.getConfig().getTimeoutSeconds();
+        int timeoutSeconds = ApiContext.getConfig().getTimeoutSeconds();
         // 如果设置为0，表示不校验
         if (timeoutSeconds == 0) {
             return;
@@ -147,11 +145,11 @@ public class ApiValidator implements Validator {
     }
 
     protected void checkAppKey(ApiParam param) {
-        Assert.notNull(Context.getConfig().getAppSecretManager(), "appSecretManager未初始化");
+        Assert.notNull(ApiContext.getConfig().getAppSecretManager(), "appSecretManager未初始化");
         if (StringUtils.isEmpty(param.fatchAppKey())) {
             throw Errors.NO_APP_ID.getException(param.fatchNameVersion(), ParamNames.APP_KEY_NAME);
         }
-        boolean isTrueAppKey = Context.getConfig().getAppSecretManager().isValidAppKey(param.fatchAppKey());
+        boolean isTrueAppKey = ApiContext.getConfig().getAppSecretManager().isValidAppKey(param.fatchAppKey());
         if (!isTrueAppKey) {
             throw Errors.ERROR_APP_ID.getException(param.fatchNameVersion(), ParamNames.APP_KEY_NAME);
         }
@@ -161,9 +159,9 @@ public class ApiValidator implements Validator {
         if (StringUtils.isEmpty(param.fatchSign())) {
             throw Errors.NO_SIGN_PARAM.getException(param.fatchNameVersion(), ParamNames.SIGN_NAME);
         }
-        String secret = Context.getConfig().getAppSecretManager().getSecret(param.fatchAppKey());
+        String secret = ApiContext.getConfig().getAppSecretManager().getSecret(param.fatchAppKey());
 
-        Signer signer = Context.getConfig().getSigner();
+        Signer signer = ApiContext.getConfig().getSigner();
         boolean isRightSign = signer.isRightSign(param, secret, param.fatchSignMethod());
         // 错误的sign
         if (!isRightSign) {
@@ -254,7 +252,7 @@ public class ApiValidator implements Validator {
         if (msg.startsWith(LEFT_TOKEN) && msg.endsWith(RIGHT_TOKEN)) {
             String module = msg.substring(1, msg.length() - 1);
             Object[] params = this.buildParams(msgToken);
-            String error = ErrorFactory.getErrorMessage(module, Context.getLocal(), params);
+            String error = ErrorFactory.getErrorMessage(module, ApiContext.getLocal(), params);
             return new InstrumentException(code, error);
         } else {
             return new InstrumentException(code, errorMsg);

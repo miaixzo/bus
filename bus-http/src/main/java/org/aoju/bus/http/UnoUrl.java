@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.segment.Buffer;
+import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -42,7 +42,7 @@ import java.util.*;
  * 或者{@link #parse parse()}如果输入是无效的URL，则返回null。您甚至可以明确每个组件是否已经编码
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public final class UnoUrl {
@@ -401,7 +401,7 @@ public final class UnoUrl {
      * <ul>
      *   <li>A regular host name, like {@code android.com}.
      *   <li>An IPv4 address, like {@code 127.0.0.1}.
-     *   <li>An IPv6 address, like {@code ::1}. Note that there are no square braces.
+     *   <li>An IPv6 address, like {@code ::1}.
      *   <li>An encoded IDN, like {@code xn--n3h.net}.
      * </ul>
      *
@@ -802,7 +802,6 @@ public final class UnoUrl {
      * <tr><th>URL</th><th>{@code topPrivateDomain()}</th></tr>
      * <tr><td>{@code http://google.com}</td><td>{@code "google.com"}</td></tr>
      * <tr><td>{@code http://adwords.google.co.uk}</td><td>{@code "google.co.uk"}</td></tr>
-     * <tr><td>{@code http://square}</td><td>null</td></tr>
      * <tr><td>{@code http://co.uk}</td><td>null</td></tr>
      * <tr><td>{@code http://localhost}</td><td>null</td></tr>
      * <tr><td>{@code http://127.0.0.1}</td><td>null</td></tr>

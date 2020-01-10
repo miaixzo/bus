@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class ZipUtils {
@@ -211,7 +211,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.5.0
+     * @since 5.5.2
      */
     public static File zip(File zipFile, String path, String data, Charset charset) throws InstrumentException {
         return zip(zipFile, path, IoUtils.toStream(data, charset), charset);
@@ -241,7 +241,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.5.0
+     * @since 5.5.2
      */
     public static File zip(File zipFile, String path, InputStream in, Charset charset) throws InstrumentException {
         return zip(zipFile, new String[]{path}, new InputStream[]{in}, charset);
@@ -312,7 +312,7 @@ public class ZipUtils {
      * @param charset     编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.0
+     * @since 5.5.2
      */
     public static File unzip(String zipFilePath, Charset charset) throws InstrumentException {
         return unzip(FileUtils.file(zipFilePath), charset);
@@ -324,7 +324,7 @@ public class ZipUtils {
      * @param zipFile 压缩文件
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.0
+     * @since 5.5.2
      */
     public static File unzip(File zipFile) throws InstrumentException {
         return unzip(zipFile, DEFAULT_CHARSET);
@@ -337,7 +337,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.0
+     * @since 5.5.2
      */
     public static File unzip(File zipFile, Charset charset) throws InstrumentException {
         return unzip(zipFile, FileUtils.file(zipFile.getParentFile(), FileUtils.mainName(zipFile)), charset);
@@ -388,7 +388,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.0
+     * @since 5.5.2
      */
     public static File unzip(File zipFile, File outFile, Charset charset) throws InstrumentException {
         charset = (null == charset) ? DEFAULT_CHARSET : charset;
@@ -1023,7 +1023,9 @@ public class ZipUtils {
      * @since 5.0.5
      */
     private static File buildFile(File outFile, String fileName) {
-        if (false == FileUtils.isWindows() && StringUtils.contains(fileName, Symbol.C_SLASH)) {
+        if (false == FileUtils.isWindows()
+                // 检查文件名中是否包含"/"，不考虑以"/"结尾的情况
+                && fileName.lastIndexOf(Symbol.SLASH, fileName.length() - 2) > 0) {
             // 在Linux下多层目录创建存在问题,/会被当成文件名的一部分,此处做处理
             // 使用/拆分路径（zip中无\）,级联创建父目录
             final String[] pathParts = StringUtils.splitToArray(fileName, Symbol.C_SLASH);

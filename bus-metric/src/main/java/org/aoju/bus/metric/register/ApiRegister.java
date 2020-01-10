@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,16 +26,16 @@ package org.aoju.bus.metric.register;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.Config;
-import org.aoju.bus.metric.annotation.Api;
+import org.aoju.bus.metric.ApiConfig;
+import org.aoju.bus.metric.annotation.MappingApi;
 import org.aoju.bus.metric.annotation.Service;
-import org.aoju.bus.metric.builtin.DefinitionHolder;
-import org.aoju.bus.metric.builtin.ErrorFactory;
-import org.aoju.bus.metric.builtin.doc.ApiDocBuilder;
-import org.aoju.bus.metric.builtin.doc.ApiDocHolder;
-import org.aoju.bus.metric.builtin.doc.ApiServiceDocCreator;
-import org.aoju.bus.metric.builtin.doc.DocFileCreator;
+import org.aoju.bus.metric.builtin.ApiDocBuilder;
+import org.aoju.bus.metric.builtin.ApiDocHolder;
+import org.aoju.bus.metric.builtin.ApiServiceDocCreator;
+import org.aoju.bus.metric.builtin.DocFileCreator;
 import org.aoju.bus.metric.magic.ApiDefinition;
+import org.aoju.bus.metric.magic.DefinitionHolder;
+import org.aoju.bus.metric.magic.ErrorFactory;
 import org.aoju.bus.metric.support.ReflectUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -59,7 +59,7 @@ import java.lang.reflect.Parameter;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public class ApiRegister {
@@ -68,10 +68,10 @@ public class ApiRegister {
 
     private int apiCount;
 
-    private Config config;
+    private ApiConfig config;
     private ApplicationContext applicationContext;
 
-    public ApiRegister(Config config, ApplicationContext applicationContext) {
+    public ApiRegister(ApiConfig config, ApplicationContext applicationContext) {
         this.config = config;
         this.applicationContext = applicationContext;
     }
@@ -188,11 +188,11 @@ public class ApiRegister {
         }
     }
 
-    public Config getConfig() {
+    public ApiConfig getConfig() {
         return config;
     }
 
-    public void setConfig(Config config) {
+    public void setConfig(ApiConfig config) {
         this.config = config;
     }
 
@@ -206,7 +206,7 @@ public class ApiRegister {
     private static class ApiMethodFilter implements ReflectionUtils.MethodFilter {
         @Override
         public boolean matches(Method method) {
-            return !method.isSynthetic() && AnnotationUtils.findAnnotation(method, Api.class) != null;
+            return !method.isSynthetic() && AnnotationUtils.findAnnotation(method, MappingApi.class) != null;
         }
     }
 
@@ -223,11 +223,11 @@ public class ApiRegister {
         @Override
         public void doWith(Method method) throws IllegalArgumentException {
             ReflectionUtils.makeAccessible(method);
-            Api api = AnnotationUtils.findAnnotation(method, Api.class);
-            boolean ignoreSign = api.ignoreSign() ? true : this.serviceAnno.sign();
-            boolean ignoreValidate = api.ignoreValidate() ? true : this.serviceAnno.validate();
+            MappingApi mappingApi = AnnotationUtils.findAnnotation(method, MappingApi.class);
+            boolean ignoreSign = mappingApi.ignoreSign() ? true : this.serviceAnno.sign();
+            boolean ignoreValidate = mappingApi.ignoreValidate() ? true : this.serviceAnno.validate();
 
-            boolean isWrapResult = this.serviceAnno.wrap() ? api.wrapResult() : false;
+            boolean isWrapResult = this.serviceAnno.wrap() ? mappingApi.wrapResult() : false;
 
             ApiDefinition apiDefinition = new ApiDefinition();
             apiDefinition.setIgnoreSign(ignoreSign);
@@ -235,11 +235,11 @@ public class ApiRegister {
             apiDefinition.setWrapResult(isWrapResult);
             apiDefinition.setHandler(handler);
             apiDefinition.setMethod(method);
-            apiDefinition.setName(api.name());
-            apiDefinition.setNoReturn(api.noReturn());
-            apiDefinition.setIgnoreJWT(api.ignoreJWT());
-            apiDefinition.setIgnoreToken(api.isIgnoreToken());
-            String version = api.version();
+            apiDefinition.setName(mappingApi.name());
+            apiDefinition.setNoReturn(mappingApi.noReturn());
+            apiDefinition.setIgnoreJWT(mappingApi.ignoreJWT());
+            apiDefinition.setIgnoreToken(mappingApi.isIgnoreToken());
+            String version = mappingApi.version();
             if ("".equals(version.trim())) {
                 version = config.getVersion();
             }
@@ -258,7 +258,7 @@ public class ApiRegister {
                 }
             }
 
-            Logger.debug("注册接口name={},version={},method={} {}({})", api.name(), api.version(),
+            Logger.debug("注册接口name={},version={},method={} {}({})", mappingApi.name(), mappingApi.version(),
                     method.getReturnType().getName(), method.getName(), paramClass == null ? "" : paramClass.getName());
 
             try {

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,20 +23,13 @@
  */
 package org.aoju.bus.starter.wrapper;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -51,7 +44,7 @@ import java.io.IOException;
  * Xss/重复读取等配置
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties({WrapperProperties.class})
@@ -79,37 +72,6 @@ public class WrapperConfiguration {
             registrationBean.setServletNames(this.properties.getServletNames());
         }
         return registrationBean;
-    }
-
-    @Bean
-    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
-        ObjectMapper objectMapper = builder.createXmlMapper(false).build();
-        SimpleModule simpleModule = new SimpleModule("commonJsonSerializer");
-        simpleModule.addSerializer(new CommonJsonSerializer(this.properties));
-        objectMapper.registerModule(simpleModule);
-        return objectMapper;
-    }
-
-    static class CommonJsonSerializer extends JsonSerializer<String> {
-
-        private WrapperProperties properties;
-
-        CommonJsonSerializer(WrapperProperties properties) {
-            this.properties = properties;
-        }
-
-        @Override
-        public Class<String> handledType() {
-            return String.class;
-        }
-
-        @Override
-        public void serialize(String value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-            if (value != null && this.properties != null) {
-                value = EscapeUtils.escapeHtml4(value);
-                jsonGenerator.writeString(value);
-            }
-        }
     }
 
     private static class BodyCacheFilter extends OncePerRequestFilter {

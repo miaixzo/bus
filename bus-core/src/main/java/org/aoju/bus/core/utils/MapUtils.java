@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class MapUtils {
@@ -572,7 +572,7 @@ public class MapUtils {
      * @param <T> 键和值类型
      * @param map Map对象,键值类型必须一致
      * @return 互换后的Map
-     * @since 5.5.0
+     * @since 5.5.2
      */
     public static <T> Map<T, T> reverse(Map<T, T> map) {
         return filter(map, (Editor<Entry<T, T>>) t -> new Entry<T, T>() {
@@ -638,7 +638,7 @@ public class MapUtils {
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
-     * @since 5.5.0
+     * @since 5.5.2
      */
     public static MapProxy createProxy(Map<?, ?> map) {
         return MapProxy.create(map);

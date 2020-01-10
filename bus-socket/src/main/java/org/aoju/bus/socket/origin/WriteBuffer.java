@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.segment.BufferPage;
-import org.aoju.bus.core.io.segment.VirtualBuffer;
+import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.VirtualBuffer;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 包装当前会话分配到的虚拟Buffer,提供流式操作方式
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 public class WriteBuffer extends OutputStream {

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>5.5.0</version>
+    <version>5.5.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -52,6 +52,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-mapper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-metric</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -127,6 +132,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
         </dependency>
     </dependencies>
 

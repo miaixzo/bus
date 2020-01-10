@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.segment.Buffer;
-import org.aoju.bus.core.io.segment.BufferSink;
+import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
@@ -38,7 +38,7 @@ import java.util.List;
  * 编写HTTP/2传输帧.
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
 final class Http2Writer implements Closeable {

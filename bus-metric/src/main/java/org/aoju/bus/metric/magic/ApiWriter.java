@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,8 @@ package org.aoju.bus.metric.magic;
 
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.Config;
-import org.aoju.bus.metric.Context;
-import org.aoju.bus.metric.builtin.Errors;
+import org.aoju.bus.metric.ApiConfig;
+import org.aoju.bus.metric.ApiContext;
 import org.aoju.bus.metric.consts.MetricConsts;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +39,7 @@ import java.util.Map;
  * 负责结果输出
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8++
  */
 public class ApiWriter implements Writer {
@@ -78,10 +77,10 @@ public class ApiWriter implements Writer {
         if (result == null) {
             return;
         }
-        Config config = Context.getConfig();
-        ApiParam param = Context.getApiParam();
+        ApiConfig config = ApiContext.getConfig();
+        ApiParam param = ApiContext.getApiParam();
         String format = param == null ? MetricConsts.FORMAT_JSON : param.fatchFormat();
-        String returnText = "";
+        String returnText;
 
         // json格式输出
         if (MetricConsts.FORMAT_JSON.equalsIgnoreCase(format)) {
@@ -93,10 +92,10 @@ public class ApiWriter implements Writer {
             throw Errors.NO_FORMATTER.getException(format);
         }
 
-        boolean isEncryptMode = Context.isEncryptMode() || Context.hasUseNewSSL(request);
+        boolean isEncryptMode = ApiContext.isEncryptMode() || ApiContext.hasUseNewSSL(request);
         // 如果是加密模式,对结果加密
         if (isEncryptMode) {
-            String randomKey = Context.getRandomKey();
+            String randomKey = ApiContext.getRandomKey();
             if (randomKey != null) {
                 try {
                     String text = config.getSafety().aesEncryptToBase64String(returnText, randomKey);

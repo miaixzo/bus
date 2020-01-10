@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,13 +30,13 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>int</code> 类型
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @see Integer
  * @since JDK 1.8+
  */
 public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {
 
-    private static final long serialVersionUID = -7381592836008495052L;
+    private static final long serialVersionUID = 1L;
 
     private int value;
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,76 +35,73 @@ import java.util.Date;
  * 在不提供默认值的情况下, 如果值不存在或获取错误,返回null
  *
  * @author Kimi Liu
- * @version 5.5.0
+ * @version 5.5.2
  * @since JDK 1.8+
  */
-public abstract class OptNullObject<K> extends OptNullType<K> {
+public interface OptNullObject<K> extends OptNullType<K> {
 
     @Override
-    public abstract Object getObj(K key, Object defaultValue);
-
-    @Override
-    public String getStr(K key, String defaultValue) {
+    default String getStr(K key, String defaultValue) {
         return Convert.toString(getObj(key), defaultValue);
     }
 
     @Override
-    public Integer getInt(K key, Integer defaultValue) {
+    default Integer getInt(K key, Integer defaultValue) {
         return Convert.toInt(getObj(key), defaultValue);
     }
 
     @Override
-    public Short getShort(K key, Short defaultValue) {
+    default Short getShort(K key, Short defaultValue) {
         return Convert.toShort(getObj(key), defaultValue);
     }
 
     @Override
-    public Boolean getBool(K key, Boolean defaultValue) {
+    default Boolean getBool(K key, Boolean defaultValue) {
         return Convert.toBool(getObj(key), defaultValue);
     }
 
     @Override
-    public Long getLong(K key, Long defaultValue) {
+    default Long getLong(K key, Long defaultValue) {
         return Convert.toLong(getObj(key), defaultValue);
     }
 
     @Override
-    public Character getChar(K key, Character defaultValue) {
+    default Character getChar(K key, Character defaultValue) {
         return Convert.toChar(getObj(key), defaultValue);
     }
 
     @Override
-    public Float getFloat(K key, Float defaultValue) {
+    default Float getFloat(K key, Float defaultValue) {
         return Convert.toFloat(getObj(key), defaultValue);
     }
 
     @Override
-    public Double getDouble(K key, Double defaultValue) {
+    default Double getDouble(K key, Double defaultValue) {
         return Convert.toDouble(getObj(key), defaultValue);
     }
 
     @Override
-    public Byte getByte(K key, Byte defaultValue) {
+    default Byte getByte(K key, Byte defaultValue) {
         return Convert.toByte(getObj(key), defaultValue);
     }
 
     @Override
-    public BigDecimal getBigDecimal(K key, BigDecimal defaultValue) {
+    default BigDecimal getBigDecimal(K key, BigDecimal defaultValue) {
         return Convert.toBigDecimal(getObj(key), defaultValue);
     }
 
     @Override
-    public BigInteger getBigInteger(K key, BigInteger defaultValue) {
+    default BigInteger getBigInteger(K key, BigInteger defaultValue) {
         return Convert.toBigInteger(getObj(key), defaultValue);
     }
 
     @Override
-    public <E extends Enum<E>> E getEnum(Class<E> clazz, K key, E defaultValue) {
+    default <E extends Enum<E>> E getEnum(Class<E> clazz, K key, E defaultValue) {
         return Convert.toEnum(clazz, getObj(key), defaultValue);
     }
 
     @Override
-    public Date getDate(K key, Date defaultValue) {
+    default Date getDate(K key, Date defaultValue) {
         return Convert.toDate(getObj(key), defaultValue);
     }
 
