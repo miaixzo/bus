@@ -23,13 +23,13 @@
  */
 package org.aoju.bus.metric;
 
-import org.aoju.bus.metric.magic.ApiMeta;
+import org.aoju.bus.metric.manual.ApiMeta;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 拦截器，原理同springmvc拦截器
+ * 拦截器，原理同spring拦截器
  *
  * @author Kimi Liu
  * @version 5.5.2
@@ -40,42 +40,42 @@ public interface ApiHandler {
     /**
      * 预处理回调方法，在方法调用前执行。返回false不继续向下执行，此时可使用response返回错误信息
      *
-     * @param request    网络请求
-     * @param response   响应信息
-     * @param serviceObj service类
-     * @param args       方法参数
+     * @param request  网络请求
+     * @param response 响应信息
+     * @param service  service类
+     * @param args     方法参数
      * @return 返回false不继续向下执行，此时可使用response返回错误信息
      * @throws Exception 异常
      */
-    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object serviceObj, Object args)
+    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object service, Object args)
             throws Exception;
 
     /**
      * 接口方法执行完后调用此方法。
      *
-     * @param request    网络请求
-     * @param response   响应信息
-     * @param serviceObj service类
-     * @param args       参数
-     * @param result     方法返回结果
+     * @param request  网络请求
+     * @param response 响应信息
+     * @param service  service类
+     * @param args     参数
+     * @param result   返回结果
      * @throws Exception 异常
      */
-    void postHandle(HttpServletRequest request, HttpServletResponse response, Object serviceObj, Object args,
+    void postHandle(HttpServletRequest request, HttpServletResponse response, Object service, Object args,
                     Object result) throws Exception;
 
     /**
      * 结果包装完成后执行
      *
-     * @param request    网络请求
-     * @param response   响应信息
-     * @param serviceObj service类
-     * @param args       参数
-     * @param result     最终结果，被包装过
-     * @param e          异常
+     * @param request   网络请求
+     * @param response  响应信息
+     * @param service   service类
+     * @param args      参数
+     * @param result    最终结果，被包装过
+     * @param exception 业务异常
      * @throws Exception 异常
      */
-    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object serviceObj, Object args,
-                         Object result, Exception e) throws Exception;
+    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object service, Object args,
+                         Object result, Exception exception) throws Exception;
 
     /**
      * 匹配拦截器，返回true则执行该拦截器，否则忽略该拦截器

@@ -327,7 +327,7 @@ public class BCrypt {
      * @param password 需要加密的明文
      * @return 密文
      */
-    public static String hashpw(String password) {
+    public String hashpw(String password) {
         return hashpw(password, gensalt());
     }
 
@@ -338,7 +338,7 @@ public class BCrypt {
      * @param salt     盐,使用{@link #gensalt()} 生成
      * @return 密文
      */
-    public static String hashpw(String password, String salt) {
+    public String hashpw(String password, String salt) {
         char minor = (char) 0;
         int off;
         StringBuilder rs = new StringBuilder();
@@ -387,7 +387,7 @@ public class BCrypt {
      *
      * @return 一个编码的盐值
      */
-    public static String gensalt() {
+    public String gensalt() {
         return gensalt(GENSALT_DEFAULT_LOG2_ROUNDS);
     }
 
@@ -398,7 +398,7 @@ public class BCrypt {
      * @return 一个编码的盐值
      * @throws IllegalArgumentException 如果前缀或log_rounds无效
      */
-    public static String gensalt(int log_rounds) {
+    public String gensalt(int log_rounds) {
         return gensalt(log_rounds, new SecureRandom());
     }
 
@@ -410,7 +410,7 @@ public class BCrypt {
      * @return 一个编码的盐值
      * @throws IllegalArgumentException 如果前缀或log_rounds无效
      */
-    public static String gensalt(int log_rounds, SecureRandom random) {
+    public String gensalt(int log_rounds, SecureRandom random) {
         final StringBuilder rs = new StringBuilder();
         byte rnd[] = new byte[BCRYPT_SALT_LEN];
 
@@ -435,7 +435,7 @@ public class BCrypt {
      * @param hashed    密文
      * @return 是否匹配
      */
-    public static boolean checkpw(String plaintext, String hashed) {
+    public boolean checkpw(String plaintext, String hashed) {
         byte hashed_bytes[];
         byte try_bytes[];
         String try_pw = hashpw(plaintext, hashed);

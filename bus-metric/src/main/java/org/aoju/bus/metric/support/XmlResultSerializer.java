@@ -26,8 +26,8 @@ package org.aoju.bus.metric.support;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.naming.NoNameCoder;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import org.aoju.bus.metric.magic.ApiResult;
-import org.aoju.bus.metric.magic.ResultSerializer;
+import org.aoju.bus.metric.manual.ApiResult;
+import org.aoju.bus.metric.manual.ResultSerializer;
 
 /**
  * 序列化成xml

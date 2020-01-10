@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.metric.secure;
 
-import org.aoju.bus.metric.magic.ManagerInitializer;
+import org.aoju.bus.metric.manual.ManagerInitializer;
 
 import java.util.List;
 

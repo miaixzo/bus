@@ -24,8 +24,8 @@
 package org.aoju.bus.metric.secure;
 
 import org.aoju.bus.metric.ApiContext;
-import org.aoju.bus.metric.magic.LimitQueue;
-import org.aoju.bus.metric.magic.Pagable;
+import org.aoju.bus.metric.manual.LimitQueue;
+import org.aoju.bus.metric.manual.Pagable;
 
 import java.io.Serializable;
 import java.util.Queue;

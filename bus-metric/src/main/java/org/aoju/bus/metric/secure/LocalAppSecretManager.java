@@ -31,8 +31,8 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.metric.ApiContext;
 import org.aoju.bus.metric.consts.MetricConsts;
-import org.aoju.bus.metric.magic.ManagerInitializer;
-import org.aoju.bus.metric.magic.Secret;
+import org.aoju.bus.metric.manual.ManagerInitializer;
+import org.aoju.bus.metric.manual.Secret;
 
 import java.io.File;
 import java.util.Map;

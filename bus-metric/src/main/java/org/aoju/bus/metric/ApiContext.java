@@ -23,16 +23,14 @@
  */
 package org.aoju.bus.metric;
 
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.metric.consts.MetricConsts;
 import org.aoju.bus.metric.consts.RequestMode;
-import org.aoju.bus.metric.magic.*;
+import org.aoju.bus.metric.manual.*;
 import org.aoju.bus.metric.secure.Oauth2Manager;
 import org.aoju.bus.metric.secure.OpenUser;
 import org.aoju.bus.metric.session.SessionManager;
-import org.springframework.context.ApplicationContext;
-import org.springframework.util.StringUtils;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -57,15 +55,11 @@ public class ApiContext {
     private static final String NEW_SSL_KEY = CLASS_NAME + "new_ssl_key";
     private static final String ATTR_PARAM = CLASS_NAME + "param";
     private static final String ATTR_API_META = CLASS_NAME + "apimeta";
-    private static final String ATTR_JWT_DATA = CLASS_NAME + "jwtdata";
     private static final String ATTR_REQUEST_MODE = CLASS_NAME + "requestmode";
     private static final String ATTR_UPLOAD_CONTEXT = CLASS_NAME + "uploadcontext";
 
     private static ThreadLocal<HttpServletRequest> request = new InheritableThreadLocal<>();
     private static ThreadLocal<HttpServletResponse> response = new InheritableThreadLocal<>();
-
-    private static ApplicationContext applicationContext;
-    private static ServletContext servletContext;
 
     private static ApiConfig config = new ApiConfig();
 
@@ -295,25 +289,10 @@ public class ApiContext {
         ApiContext.config = config;
     }
 
-    /**
-     * 获取spring应用上下文
-     *
-     * @return 返回spring应用上下文
-     */
-    public static ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    public static void setApplicationContext(ApplicationContext applicationContext) {
-        ApiContext.applicationContext = applicationContext;
-        if (applicationContext instanceof ConfigurableWebApplicationContext) {
-            servletContext = ((ConfigurableWebApplicationContext) applicationContext).getServletContext();
-        }
-    }
 
     public static ServletContext getServletContext() {
-        if (servletContext != null) {
-            return servletContext;
+        if (ApiAware.getServletContext() != null) {
+            return ApiAware.getServletContext();
         } else {
             ServletContext ctx = null;
             HttpSession session = getSession();

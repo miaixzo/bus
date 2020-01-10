@@ -45,17 +45,6 @@ public class SpringAware implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     /**
-     * 检查上下文信息.
-     *
-     * @return true/false
-     */
-    private static void isApplicationContext() {
-        if (applicationContext == null) {
-            throw new IllegalStateException("请配置注解扫描,或者定义SpringContextAware");
-        }
-    }
-
-    /**
      * 取得存储在静态变量中的ApplicationContext.
      *
      * @return 上下文信息
@@ -115,12 +104,10 @@ public class SpringAware implements ApplicationContextAware {
     }
 
     /**
-     * <pre>
-     *     获取指定注解的Bean
+     * 获取指定注解的Bean
      *
-     * @param  annType 指定注解类型
+     * @param annType 指定注解类型
      * @return 结果map
-     * </pre>
      */
     public static Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annType) {
         isApplicationContext();
@@ -128,18 +115,15 @@ public class SpringAware implements ApplicationContextAware {
     }
 
     /**
-     * <pre>
-     *     获取当前profile
-     *     默认获取第一个
+     * 获取当前profile
+     * 默认获取第一个
      *
      * @return profile
-     * </pre>
      */
     public static String getActiveProfile() {
         isApplicationContext();
         return applicationContext.getEnvironment().getActiveProfiles()[0];
     }
-
 
     /**
      * 当前是否开发/测试模式
@@ -166,6 +150,17 @@ public class SpringAware implements ApplicationContextAware {
      */
     public static boolean isTestMode() {
         return "test".equalsIgnoreCase(getActiveProfile());
+    }
+
+    /**
+     * 检查上下文信息.
+     *
+     * @return true/false
+     */
+    private static void isApplicationContext() {
+        if (applicationContext == null) {
+            throw new IllegalStateException("请配置注解扫描,或者定义SpringContextAware");
+        }
     }
 
 }

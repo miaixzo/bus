@@ -737,7 +737,7 @@ public class Builder {
      * @return 加密后的密文
      */
     public static String hashpw(String password) {
-        return BCrypt.hashpw(password);
+        return new BCrypt().hashpw(password);
     }
 
     /**
@@ -748,7 +748,7 @@ public class Builder {
      * @return 是否匹配
      */
     public static boolean checkpw(String password, String hashed) {
-        return BCrypt.checkpw(password, hashed);
+        return new BCrypt().checkpw(password, hashed);
     }
 
     /**

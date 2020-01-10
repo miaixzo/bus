@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.metric.secure;
 
-import org.aoju.bus.metric.magic.ApiParam;
-import org.aoju.bus.metric.magic.ApiSearch;
+import org.aoju.bus.metric.manual.ApiParam;
+import org.aoju.bus.metric.manual.ApiSearch;
 
 import java.util.List;
 
