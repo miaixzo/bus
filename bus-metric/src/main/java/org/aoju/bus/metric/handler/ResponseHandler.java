@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.metric.handler;
 
-import org.aoju.bus.metric.magic.Result;
+import org.aoju.bus.metric.manual.Result;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

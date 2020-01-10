@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.metric.register;
 
-import org.aoju.bus.metric.builtin.annotation.ApiDocField;
+import org.aoju.bus.metric.manual.docs.annotation.ApiDocField;
 import org.hibernate.validator.constraints.*;
 
 import javax.validation.constraints.Email;

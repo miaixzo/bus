@@ -25,9 +25,9 @@ package org.aoju.bus.metric.secure;
 
 import org.aoju.bus.core.lang.exception.InvalidParamsException;
 import org.aoju.bus.metric.ApiContext;
-import org.aoju.bus.metric.magic.ApiHandlerAdapter;
-import org.aoju.bus.metric.magic.ApiParam;
-import org.aoju.bus.metric.magic.Visitor;
+import org.aoju.bus.metric.manual.ApiHandlerAdapter;
+import org.aoju.bus.metric.manual.ApiParam;
+import org.aoju.bus.metric.manual.Visitor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

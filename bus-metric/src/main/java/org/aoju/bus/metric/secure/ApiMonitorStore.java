@@ -24,9 +24,9 @@
 package org.aoju.bus.metric.secure;
 
 import org.aoju.bus.metric.consts.MetricConsts;
-import org.aoju.bus.metric.magic.ApiParam;
-import org.aoju.bus.metric.magic.ApiSearch;
-import org.aoju.bus.metric.magic.Pagable;
+import org.aoju.bus.metric.manual.ApiParam;
+import org.aoju.bus.metric.manual.ApiSearch;
+import org.aoju.bus.metric.manual.Pagable;
 import org.springframework.util.StringUtils;
 
 import java.io.PrintWriter;

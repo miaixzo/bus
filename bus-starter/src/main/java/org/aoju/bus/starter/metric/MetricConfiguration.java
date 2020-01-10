@@ -23,19 +23,18 @@
  */
 package org.aoju.bus.starter.metric;
 
+import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.metric.ApiConfig;
 import org.aoju.bus.metric.ApiHandler;
-import org.aoju.bus.metric.process.ConfigClient;
-import org.aoju.bus.metric.support.ApiController;
+import org.aoju.bus.metric.ApiRouter;
+import org.aoju.bus.metric.builtin.NettyServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -53,32 +52,20 @@ public class MetricConfiguration {
     @Autowired
     MetricProperties properties;
 
-    @Bean
-    @ConditionalOnMissingBean
-    public ApiConfig apiConfig() {
-        return new ApiConfig();
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public NettyServer initServer() {
+        return new NettyServer(NumberUtils.toInt(properties.getPort()));
     }
 
-    /**
-     * 默认入口
-     */
     @Controller
-    @RequestMapping("api")
-    public class EayopenIndexController extends ApiController {
-
-        @Autowired
-        private ApiConfig config;
+    @RequestMapping("router/rest")
+    public class RestController extends ApiRouter {
 
         @Override
         protected void initApiConfig(ApiConfig apiConfig) {
             BeanUtils.copyProperties(properties, apiConfig);
-            this.initInterceptor(properties, apiConfig);
-            this.initOpenClient(properties, apiConfig);
-        }
-
-        private void initInterceptor(MetricProperties properties, ApiConfig apiConfig) {
-            if (!CollectionUtils.isEmpty(properties.getInterceptors())) {
-                List<String> interceptors = properties.getInterceptors();
+            if (!CollUtils.isEmpty(properties.getHandlers())) {
+                List<String> interceptors = properties.getHandlers();
                 ApiHandler[] apiInterceptor = new ApiHandler[interceptors.size()];
                 for (int i = 0; i < interceptors.size(); i++) {
                     String interceptorClassName = interceptors.get(i);
@@ -91,24 +78,6 @@ public class MetricConfiguration {
                 }
                 apiConfig.setInterceptors(apiInterceptor);
             }
-        }
-
-        private void initOpenClient(MetricProperties properties, ApiConfig apiConfig) {
-            String ip = properties.getConfigServerIp();
-            String port = properties.getConfigServerPort();
-            if (StringUtils.hasText(ip) && StringUtils.hasText(port)) {
-                // appName 应用名称
-                // host    配置中心ip
-                // port    配置中心端口
-                String docUrl = properties.getDocUrl();
-                ConfigClient configClient = new ConfigClient(properties.getAppName(), ip, Integer.valueOf(port), docUrl);
-                apiConfig.setConfigClient(configClient);
-            }
-        }
-
-        @Override
-        protected ApiConfig newApiConfig() {
-            return config;
         }
 
     }

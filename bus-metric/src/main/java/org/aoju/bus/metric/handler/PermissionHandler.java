@@ -26,9 +26,9 @@ package org.aoju.bus.metric.handler;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.metric.ApiContext;
-import org.aoju.bus.metric.magic.ApiHandlerAdapter;
-import org.aoju.bus.metric.magic.ApiParam;
-import org.aoju.bus.metric.magic.Errors;
+import org.aoju.bus.metric.manual.ApiHandlerAdapter;
+import org.aoju.bus.metric.manual.ApiParam;
+import org.aoju.bus.metric.manual.Errors;
 import org.aoju.bus.metric.secure.PermissionManager;
 
 import javax.servlet.http.HttpServletRequest;

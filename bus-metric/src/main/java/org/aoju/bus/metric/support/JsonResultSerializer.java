@@ -24,7 +24,7 @@
 package org.aoju.bus.metric.support;
 
 import com.alibaba.fastjson.JSON;
-import org.aoju.bus.metric.magic.ResultSerializer;
+import org.aoju.bus.metric.manual.ResultSerializer;
 
 /**
  * 序列化json

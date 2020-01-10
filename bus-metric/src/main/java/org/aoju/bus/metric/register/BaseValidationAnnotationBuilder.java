@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.metric.register;
 
-import org.aoju.bus.metric.support.ReflectUtil;
+import org.aoju.bus.metric.ApiRegister;
 
 import java.lang.annotation.Annotation;
 
@@ -35,7 +35,7 @@ import java.lang.annotation.Annotation;
 public abstract class BaseValidationAnnotationBuilder<T extends Annotation> extends AbstractValidationAnnotationBuilder<T> {
 
     public BaseValidationAnnotationBuilder() {
-        Class<?> clazz = ReflectUtil.getSuperClassGenricType(getClass(), 0);
+        Class<?> clazz = ApiRegister.getSuperClassGenricType(getClass(), 0);
         ValidationAnnotationFactory.addBuilder(clazz, this);
     }
 
