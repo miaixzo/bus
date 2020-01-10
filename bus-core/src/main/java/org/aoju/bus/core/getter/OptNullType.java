@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,13 +33,13 @@ import java.util.Date;
  * 在不提供默认值的情况下, 如果值不存在或获取错误,返回null
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.0
  * @since JDK 1.8+
  */
-public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
+public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
 
     @Override
-    default Object getObj(K key) {
+    public Object getObj(K key) {
         return getObj(key, null);
     }
 
@@ -51,7 +51,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default String getStr(K key) {
+    public String getStr(K key) {
         return this.getStr(key, null);
     }
 
@@ -63,7 +63,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Integer getInt(K key) {
+    public Integer getInt(K key) {
         return this.getInt(key, null);
     }
 
@@ -75,7 +75,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Short getShort(K key) {
+    public Short getShort(K key) {
         return this.getShort(key, null);
     }
 
@@ -87,7 +87,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Boolean getBool(K key) {
+    public Boolean getBool(K key) {
         return this.getBool(key, null);
     }
 
@@ -99,7 +99,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Long getLong(K key) {
+    public Long getLong(K key) {
         return this.getLong(key, null);
     }
 
@@ -111,7 +111,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Character getChar(K key) {
+    public Character getChar(K key) {
         return this.getChar(key, null);
     }
 
@@ -123,7 +123,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Float getFloat(K key) {
+    public Float getFloat(K key) {
         return this.getFloat(key, null);
     }
 
@@ -135,7 +135,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Double getDouble(K key) {
+    public Double getDouble(K key) {
         return this.getDouble(key, null);
     }
 
@@ -147,7 +147,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Byte getByte(K key) {
+    public Byte getByte(K key) {
         return this.getByte(key, null);
     }
 
@@ -159,7 +159,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default BigDecimal getBigDecimal(K key) {
+    public BigDecimal getBigDecimal(K key) {
         return this.getBigDecimal(key, null);
     }
 
@@ -171,7 +171,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default BigInteger getBigInteger(K key) {
+    public BigInteger getBigInteger(K key) {
         return this.getBigInteger(key, null);
     }
 
@@ -184,7 +184,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default <E extends Enum<E>> E getEnum(Class<E> clazz, K key) {
+    public <E extends Enum<E>> E getEnum(Class<E> clazz, K key) {
         return this.getEnum(clazz, key, null);
     }
 
@@ -196,7 +196,7 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Date getDate(K key) {
+    public Date getDate(K key) {
         return this.getDate(key, null);
     }
 

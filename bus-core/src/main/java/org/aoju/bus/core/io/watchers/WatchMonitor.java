@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,18 @@ package org.aoju.bus.core.io.watchers;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.UriUtils;
+import org.aoju.bus.core.utils.*;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.*;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 路径监听器
@@ -43,10 +45,10 @@ import java.nio.file.*;
  * 递归监听目录时,并不会监听新创建的目录
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.0
  * @since JDK 1.8+
  */
-public class WatchMonitor extends WatchServer {
+public class WatchMonitor extends Thread implements Closeable {
 
     /**
      * 事件丢失
@@ -67,30 +69,48 @@ public class WatchMonitor extends WatchServer {
     /**
      * 全部事件
      */
-    public static final WatchEvent.Kind<?>[] EVENTS_ALL = {
-            OVERFLOW,
-            ENTRY_MODIFY,
-            ENTRY_CREATE,
-            ENTRY_DELETE
+    public static final WatchEvent.Kind<?>[] EVENTS_ALL = {//
+            StandardWatchEventKinds.OVERFLOW,        //事件丢失
+            StandardWatchEventKinds.ENTRY_MODIFY, //修改
+            StandardWatchEventKinds.ENTRY_CREATE,  //创建
+            StandardWatchEventKinds.ENTRY_DELETE   //删除
     };
-    private static final long serialVersionUID = 1L;
+
     /**
-     * 监听路径，必须为目录
+     * 监听路径,必须为目录
      */
     private Path path;
     /**
-     * 递归目录的最大深度，当小于1时不递归下层目录
+     * 递归目录的最大深度,当小于1时不递归下层目录
      */
     private int maxDepth;
     /**
-     * 监听的文件，对于单文件监听不为空
+     * 监听的文件,对于单文件监听不为空
      */
     private Path filePath;
 
     /**
+     * 监听服务
+     */
+    private WatchService watchService;
+    /**
      * 监听器
      */
     private Watcher watcher;
+    /**
+     * 监听事件列表
+     */
+    private WatchEvent.Kind<?>[] events;
+
+    /**
+     * 监听是否已经关闭
+     */
+    private boolean isClosed;
+
+    /**
+     * WatchKey 和 Path的对应表
+     */
+    private Map<WatchKey, Path> watchKeyPathMap = new HashMap<>();
 
     /**
      * 构造
@@ -128,11 +148,11 @@ public class WatchMonitor extends WatchServer {
      * <pre>
      * maxDepth &lt;= 1 表示只监听当前目录
      * maxDepth = 2 表示监听当前目录以及下层目录
-     * maxDepth = 3 表示监听当前目录以及下两层
+     * maxDepth = 3 表示监听当前目录以及下层
      * </pre>
      *
      * @param path     字符串路径
-     * @param maxDepth 递归目录的最大深度，当小于2时不递归下层目录
+     * @param maxDepth 递归目录的最大深度,当小于2时不递归下层目录
      * @param events   监听事件列表
      */
     public WatchMonitor(Path path, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -158,7 +178,7 @@ public class WatchMonitor extends WatchServer {
      *
      * @param url      URL
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(URL url, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -181,7 +201,7 @@ public class WatchMonitor extends WatchServer {
      *
      * @param uri      URI
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(URI uri, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -204,7 +224,7 @@ public class WatchMonitor extends WatchServer {
      *
      * @param file     文件
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(File file, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -227,7 +247,7 @@ public class WatchMonitor extends WatchServer {
      *
      * @param path     路径
      * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(String path, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -250,7 +270,7 @@ public class WatchMonitor extends WatchServer {
      *
      * @param path     路径
      * @param events   监听事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
+     * @param maxDepth 当监听目录时,监听目录的最大深度,当设置值为1（或小于1）时,表示不递归监听子目录
      * @return 监听对象
      */
     public static WatchMonitor create(Path path, int maxDepth, WatchEvent.Kind<?>... events) {
@@ -258,7 +278,7 @@ public class WatchMonitor extends WatchServer {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param uri     URI
      * @param watcher {@link Watcher}
@@ -269,7 +289,7 @@ public class WatchMonitor extends WatchServer {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param url     URL
      * @param watcher {@link Watcher}
@@ -284,7 +304,7 @@ public class WatchMonitor extends WatchServer {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param file    被监听文件
      * @param watcher {@link Watcher}
@@ -295,7 +315,7 @@ public class WatchMonitor extends WatchServer {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param path    路径
      * @param watcher {@link Watcher}
@@ -306,7 +326,7 @@ public class WatchMonitor extends WatchServer {
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * 创建并初始化监听,监听所有事件
      *
      * @param path    路径
      * @param watcher {@link Watcher}
@@ -322,21 +342,19 @@ public class WatchMonitor extends WatchServer {
      * 初始化
      * 初始化包括：
      * <pre>
-     * 1、解析传入的路径，判断其为目录还是文件
+     * 1、解析传入的路径,判断其为目录还是文件
      * 2、创建{@link WatchService} 对象
      * </pre>
      *
-     * @throws InstrumentException 监听异常，IO异常时抛出此异常
+     * @throws InstrumentException 监听异常,IO异常时抛出此异常
      */
-    @Override
     public void init() throws InstrumentException {
         //获取目录或文件路径
         if (false == Files.exists(this.path, LinkOption.NOFOLLOW_LINKS)) {
-            // 不存在的路径
             final Path lastPathEle = FileUtils.getLastPathEle(this.path);
             if (null != lastPathEle) {
                 final String lastPathEleStr = lastPathEle.toString();
-                //带有点表示有扩展名，按照未创建的文件对待。Linux下.d的为目录，排除之
+                //带有点表示有扩展名,按照未创建的文件对待 Linux下.d的为目录,排除之
                 if (StringUtils.contains(lastPathEleStr, Symbol.C_DOT) && false == StringUtils.endWithIgnoreCase(lastPathEleStr, ".d")) {
                     this.filePath = this.path;
                     this.path = this.filePath.getParent();
@@ -350,17 +368,22 @@ public class WatchMonitor extends WatchServer {
                 throw new InstrumentException(e);
             }
         } else if (Files.isRegularFile(this.path, LinkOption.NOFOLLOW_LINKS)) {
-            // 文件路径
             this.filePath = this.path;
             this.path = this.filePath.getParent();
         }
 
-        super.init();
+        //初始化监听
+        try {
+            watchService = FileSystems.getDefault().newWatchService();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+
+        isClosed = false;
     }
 
     /**
      * 设置监听
-     * 多个监听请使用{@link WatcherChain}
      *
      * @param watcher 监听
      * @return {@link WatchMonitor}
@@ -376,34 +399,57 @@ public class WatchMonitor extends WatchServer {
     }
 
     /**
-     * 开始监听事件，阻塞当前进程
+     * 开始监听事件,阻塞当前进程
      */
     public void watch() {
         watch(this.watcher);
     }
 
     /**
-     * 开始监听事件，阻塞当前进程
+     * 开始监听事件,阻塞当前进程
      *
      * @param watcher 监听
-     * @throws InstrumentException 监听异常，如果监听关闭抛出此异常
+     * @throws InstrumentException 监听异常,如果监听关闭抛出此异常
      */
     public void watch(Watcher watcher) throws InstrumentException {
         if (isClosed) {
             throw new InstrumentException("Watch Monitor is closed !");
         }
-
-        // 按照层级注册路径及其子路径
         registerPath();
 
         while (false == isClosed) {
-            doTakeAndWatch(watcher);
+            WatchKey wk;
+            try {
+                wk = watchService.take();
+            } catch (InterruptedException e) {
+                return;
+            }
+
+            final Path currentPath = watchKeyPathMap.get(wk);
+            WatchEvent.Kind<?> kind;
+            for (WatchEvent<?> event : wk.pollEvents()) {
+                kind = event.kind();
+                if (null != this.filePath && false == this.filePath.endsWith(event.context().toString())) {
+                    continue;
+                }
+
+                if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+                    watcher.onCreate(event, currentPath);
+                } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+                    watcher.onModify(event, currentPath);
+                } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
+                    watcher.onDelete(event, currentPath);
+                } else if (kind == StandardWatchEventKinds.OVERFLOW) {
+                    watcher.onOverflow(event, currentPath);
+                }
+            }
+            wk.reset();
         }
     }
 
     /**
-     * 当监听目录时，监听目录的最大深度
-     * 当设置值为1（或小于1）时，表示不递归监听子目录
+     * 当监听目录时,监听目录的最大深度
+     * 当设置值为1（或小于1）时,表示不递归监听子目录
      * 例如设置：
      * <pre>
      * maxDepth &lt;= 1 表示只监听当前目录
@@ -411,7 +457,7 @@ public class WatchMonitor extends WatchServer {
      * maxDepth = 3 表示监听当前目录以及下层
      * </pre>
      *
-     * @param maxDepth 最大深度，当设置值为1（或小于1）时，表示不递归监听子目录，监听所有子目录请传{@link Integer#MAX_VALUE}
+     * @param maxDepth 最大深度,当设置值为1（或小于1）时,表示不递归监听子目录,监听所有子目录请传{@link Integer#MAX_VALUE}
      * @return this
      */
     public WatchMonitor setMaxDepth(int maxDepth) {
@@ -420,19 +466,50 @@ public class WatchMonitor extends WatchServer {
     }
 
     /**
-     * 执行事件获取并处理
-     *
-     * @param watcher {@link Watcher}
+     * 关闭监听
      */
-    private void doTakeAndWatch(Watcher watcher) {
-        super.watch(watcher, watchEvent -> null == filePath || filePath.endsWith(watchEvent.context().toString()));
+    @Override
+    public void close() {
+        isClosed = true;
+        IoUtils.close(watchService);
     }
+
 
     /**
      * 注册监听路径
      */
     private void registerPath() {
         registerPath(this.path, (null != this.filePath) ? 0 : this.maxDepth);
+    }
+
+    /**
+     * 将指定路径加入到监听中
+     *
+     * @param path     路径
+     * @param maxDepth 递归下层目录的最大深度
+     * @return {@link WatchKey}
+     */
+    private void registerPath(Path path, int maxDepth) {
+        try {
+            final WatchKey key = path.register(watchService, ArrayUtils.isEmpty(this.events) ? EVENTS_ALL : this.events);
+            watchKeyPathMap.put(key, path);
+            if (maxDepth > 1) {
+                //遍历所有子目录并加入监听
+                Files.walkFileTree(path, EnumSet.noneOf(FileVisitOption.class), maxDepth, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        registerPath(dir, 0);//继续添加目录
+                        return super.postVisitDirectory(dir, exc);
+                    }
+                });
+            }
+        } catch (IOException e) {
+            if (e instanceof AccessDeniedException) {
+                //对于禁止访问的目录,跳过监听
+                return;
+            }
+            throw new InstrumentException(e);
+        }
     }
 
 }

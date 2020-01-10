@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
+ * Copyright (c) 2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.0
  * @since JDK 1.8+
  */
 public class CitizenIdUtils {
@@ -288,13 +288,12 @@ public class CitizenIdUtils {
         if (card.length() != 8 && card.length() != 9 && idCard.length() != 10) {
             return null;
         }
-        // 台湾
-        if (idCard.matches("^[a-zA-Z][0-9]{9}$")) {
+        if (idCard.matches("^[a-zA-Z][0-9]{9}$")) { // 台湾
             info[0] = "台湾";
-            char char2 = idCard.charAt(1);
-            if (Symbol.C_ONE == char2) {
+            String char2 = idCard.substring(1, 2);
+            if (char2.equals(Symbol.ONE)) {
                 info[1] = "M";
-            } else if (Symbol.C_TWO == char2) {
+            } else if (ObjectUtils.equal(char2, Symbol.TWO)) {
                 info[1] = "F";
             } else {
                 info[1] = "N";
@@ -536,7 +535,7 @@ public class CitizenIdUtils {
      * @param endExclude   结束位置（不包含）
      * @return 隐藏后的身份证号码
      * @see StringUtils#hide(CharSequence, int, int)
-     * @since 5.5.2
+     * @since 5.5.0
      */
     public static String hide(String idCard, int startInclude, int endExclude) {
         return StringUtils.hide(idCard, startInclude, endExclude);
