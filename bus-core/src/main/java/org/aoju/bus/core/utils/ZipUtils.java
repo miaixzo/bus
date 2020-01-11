@@ -476,7 +476,6 @@ public class ZipUtils {
             final Enumeration<ZipEntry> em = (Enumeration<ZipEntry>) zipFileObj.entries();
             while (em.hasMoreElements()) {
                 ZipEntry zipEntry = em.nextElement();
-                //FileUtils.file会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
                 File outItemFile = FileUtils.file(outFile, zipEntry.getName());
                 if (zipEntry.isDirectory()) {
                     outItemFile.mkdirs();
@@ -509,11 +508,9 @@ public class ZipUtils {
             File outItemFile;
             while (em.hasMoreElements()) {
                 zipEntry = em.nextElement();
-                // FileUtil.file会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
                 outItemFile = buildFile(outFile, zipEntry.getName());
                 if (zipEntry.isDirectory()) {
                     // 创建对应目录
-                    //noinspection ResultOfMethodCallIgnored
                     outItemFile.mkdirs();
                 } else {
                     // 写出文件
