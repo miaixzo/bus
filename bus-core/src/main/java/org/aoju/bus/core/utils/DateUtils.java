@@ -50,7 +50,69 @@ import java.util.regex.Pattern;
  * @version 5.5.2
  * @since JDK 1.8+
  */
-public class DateUtils extends Fields {
+public class DateUtils {
+
+    /**
+     * 支持的最小年份
+     */
+    public final static int MINI_YEAR = 1850;
+    /**
+     * 支持的最大年份
+     */
+    public final static int MAX_YEAR = 2150;
+
+    /**
+     * 农历年，和公历是一样的
+     */
+    private int lyear;
+    /**
+     * 农历月，范围1-12
+     */
+    private int lmonth;
+    /**
+     * 农历日期
+     */
+    private int ldate;
+    /**
+     * 是否为闰月日期
+     */
+    private boolean isLeapMonth = false;
+    /**
+     * 农历这年闰月，如果不闰月，默认为0
+     */
+    private int leapMonth = 0;
+    /**
+     * 公历日期，公历月份范围：0-11
+     */
+    private GregorianCalendar solar = new GregorianCalendar();
+
+    /**
+     * 默认构造
+     */
+    public DateUtils() {
+        lunar(solar.get(Calendar.YEAR), solar.get(Calendar.MONTH), solar.get(Calendar.DATE));
+    }
+
+    /**
+     * 通过农历年、月、日构造
+     *
+     * @param lyear       农历年
+     * @param lmonth      农历月份,范围1-12
+     * @param ldate       农历日
+     * @param isleapMonth 是否闰月
+     */
+    public DateUtils(int lyear, int lmonth, int ldate, boolean isleapMonth) {
+        lunar(lyear, lmonth, ldate, isleapMonth);
+    }
+
+    /**
+     * 通过公历构造
+     *
+     * @param calendar 　公历日期
+     */
+    public DateUtils(Calendar calendar) {
+        lunar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+    }
 
     /**
      * 转换日期
@@ -59,7 +121,7 @@ public class DateUtils extends Fields {
      * @return 日期
      */
     public static String dateCN(String date) {
-        return NORM_DATE_CN_FORMAT.format(date);
+        return Fields.NORM_DATE_CN_FORMAT.format(date);
     }
 
     /**
@@ -71,7 +133,7 @@ public class DateUtils extends Fields {
     public static String weekCN(String date) {
         try {
             Calendar cal = Calendar.getInstance();
-            Date d = PURE_DATETIME_FORMAT.parse(date);
+            Date d = Fields.PURE_DATETIME_FORMAT.parse(date);
             cal.setTime(d);
             int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
             if (w < 0) {
@@ -89,7 +151,7 @@ public class DateUtils extends Fields {
      * @return string date 当前日期
      */
     public static String date24() {
-        return NORM_DATETIME_FORMAT.format(new Date());
+        return Fields.NORM_DATETIME_FORMAT.format(new Date());
     }
 
     /**
@@ -98,7 +160,7 @@ public class DateUtils extends Fields {
      * @return string date 当前日期
      */
     public static String date12() {
-        return NORM_DATETIME_FORMAT.format(new Date());
+        return Fields.NORM_DATETIME_FORMAT.format(new Date());
     }
 
     /**
@@ -462,7 +524,7 @@ public class DateUtils extends Fields {
      */
     public static String format(Date date) {
         if (date != null) {
-            SimpleDateFormat dstSdf = new SimpleDateFormat(NORM_DATETIME_PATTERN);
+            SimpleDateFormat dstSdf = new SimpleDateFormat(Fields.NORM_DATETIME_PATTERN);
             return dstSdf.format(date);
         }
         return "";
@@ -544,7 +606,7 @@ public class DateUtils extends Fields {
      */
     public static long format(String date) {
         try {
-            return NORM_DATETIME_FORMAT.parse(date).getTime();
+            return Fields.NORM_DATETIME_FORMAT.parse(date).getTime();
         } catch (ParseException e) {
             throw new InstrumentException(e);
         }
@@ -558,7 +620,7 @@ public class DateUtils extends Fields {
      * @return String 日期字符串
      */
     public static String format(long timestamp) {
-        return NORM_DATETIME_FORMAT.format(new Date(timestamp));
+        return Fields.NORM_DATETIME_FORMAT.format(new Date(timestamp));
     }
 
     /**
@@ -879,7 +941,7 @@ public class DateUtils extends Fields {
      */
     public static Calendar beginOfWeek(Calendar calendar, boolean isMondayAsFirstDay) {
         if (isMondayAsFirstDay) {
-            calendar.setFirstDayOfWeek(Week.MONDAY.getValue());
+            calendar.setFirstDayOfWeek(Fields.Week.MONDAY.getValue());
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         } else {
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
@@ -907,7 +969,7 @@ public class DateUtils extends Fields {
      */
     public static Calendar endOfWeek(Calendar calendar, boolean isSundayAsLastDay) {
         if (isSundayAsLastDay) {
-            calendar.setFirstDayOfWeek(Week.MONDAY.getValue());
+            calendar.setFirstDayOfWeek(Fields.Week.MONDAY.getValue());
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
         } else {
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
@@ -1227,7 +1289,7 @@ public class DateUtils extends Fields {
      * @since 3.0.1
      */
     public static long betweenMs(Date beginDate, Date endDate) {
-        return new Between(beginDate, endDate).between(Unit.MS);
+        return new Between(beginDate, endDate).between(Fields.Unit.MS);
     }
 
     /**
@@ -1251,7 +1313,7 @@ public class DateUtils extends Fields {
             beginDate = beginOfDay(beginDate);
             endDate = beginOfDay(endDate);
         }
-        return between(beginDate, endDate, Unit.DAY);
+        return between(beginDate, endDate, Fields.Unit.DAY);
     }
 
     /**
@@ -1289,7 +1351,7 @@ public class DateUtils extends Fields {
      * @return XX天XX小时XX分XX秒
      */
     public static String formatBetween(Date beginDate, Date endDate, Fields.Level level) {
-        return formatBetween(between(beginDate, endDate, Unit.MS), level);
+        return formatBetween(between(beginDate, endDate, Fields.Unit.MS), level);
     }
 
     /**
@@ -1301,7 +1363,7 @@ public class DateUtils extends Fields {
      * @since 3.0.1
      */
     public static String formatBetween(Date beginDate, Date endDate) {
-        return formatBetween(between(beginDate, endDate, Unit.MS));
+        return formatBetween(between(beginDate, endDate, Fields.Unit.MS));
     }
 
     /**
@@ -1429,7 +1491,7 @@ public class DateUtils extends Fields {
      * @return 是否过期
      * @since 3.1.1
      */
-    public static boolean isExpired(Date startDate, DateField dateField, int timeLength, Date checkedDate) {
+    public static boolean isExpired(Date startDate, Fields.DateField dateField, int timeLength, Date checkedDate) {
         final Date endDate = offset(startDate, dateField, timeLength);
         return endDate.after(checkedDate);
     }
@@ -1627,7 +1689,7 @@ public class DateUtils extends Fields {
     public static List<String> getYears(String StartDate, String endDate) {
         List<String> list = new ArrayList<>();
         try {
-            DateFormat df = new SimpleDateFormat(NORM_YEAR_PATTERN);
+            DateFormat df = new SimpleDateFormat(Fields.NORM_YEAR_PATTERN);
             Date date1 = df.parse(StartDate);
             Date date2 = df.parse(endDate);
             Calendar c1 = Calendar.getInstance();
@@ -1675,7 +1737,7 @@ public class DateUtils extends Fields {
                                                   String endW) {
         Map<String, String> map = new HashMap<>();
         try {
-            DateFormat sdf = new SimpleDateFormat(NORM_YEAR_PATTERN);
+            DateFormat sdf = new SimpleDateFormat(Fields.NORM_YEAR_PATTERN);
             Date date1 = sdf.parse(begin);
             Date dEnd = sdf.parse(end);
             Calendar calBegin = Calendar.getInstance();
@@ -1735,7 +1797,7 @@ public class DateUtils extends Fields {
                                            String endDate,
                                            String endQ) {
         try {
-            DateFormat sdf = new SimpleDateFormat(NORM_YEAR_MTOTH_PATTERN);
+            DateFormat sdf = new SimpleDateFormat(Fields.NORM_YEAR_MTOTH_PATTERN);
             Date date1 = sdf.parse(StartDate);
             Date dEnd = sdf.parse(endDate);
 
@@ -1782,8 +1844,8 @@ public class DateUtils extends Fields {
                                               String end) {
         Map<String, String> map = new HashMap<>();
         try {
-            Date dBegin = PURE_DATETIME_FORMAT.parse(begin);
-            Date dEnd = PURE_DATETIME_FORMAT.parse(end);
+            Date dBegin = Fields.PURE_DATETIME_FORMAT.parse(begin);
+            Date dEnd = Fields.PURE_DATETIME_FORMAT.parse(end);
             Calendar calBegin = Calendar.getInstance();
 
             calBegin.setTime(dBegin);
@@ -1811,8 +1873,8 @@ public class DateUtils extends Fields {
                 calBegin.add(Calendar.YEAR, -1);
                 calEnd.add(Calendar.YEAR, -1);
             }
-            map.put(beginkey, PURE_DATETIME_FORMAT.format(calBegin.getTime()));
-            map.put(endkey, PURE_DATETIME_FORMAT.format(calEnd.getTime()));
+            map.put(beginkey, Fields.PURE_DATETIME_FORMAT.format(calBegin.getTime()));
+            map.put(endkey, Fields.PURE_DATETIME_FORMAT.format(calEnd.getTime()));
         } catch (ParseException e) {
             throw new InstrumentException(e);
         }
@@ -1832,17 +1894,17 @@ public class DateUtils extends Fields {
         Date date1;
         Date dEnd;
         try {
-            date1 = PURE_DATETIME_FORMAT.parse(begin);
-            dEnd = PURE_DATETIME_FORMAT.parse(end);
+            date1 = Fields.PURE_DATETIME_FORMAT.parse(begin);
+            dEnd = Fields.PURE_DATETIME_FORMAT.parse(end);
             Calendar calBegin = Calendar.getInstance();
             calBegin.setTime(date1);
             Calendar calEnd = Calendar.getInstance();
             calEnd.setTime(dEnd);
-            lDate.add(PURE_DATETIME_FORMAT.format(calBegin.getTime()));
+            lDate.add(Fields.PURE_DATETIME_FORMAT.format(calBegin.getTime()));
             while (calBegin.compareTo(calEnd) < 0) {
                 calBegin.add(Calendar.DAY_OF_MONTH, 1);
                 Date ss = calBegin.getTime();
-                String str = PURE_DATETIME_FORMAT.format(ss);
+                String str = Fields.PURE_DATETIME_FORMAT.format(ss);
                 lDate.add(str);
             }
         } catch (ParseException e) {
@@ -1872,8 +1934,8 @@ public class DateUtils extends Fields {
                                               String end, String beginW, String endW) {
         Map<String, String> map = new HashMap<>();
         try {
-            Date date1 = PURE_DATETIME_FORMAT.parse(begin);
-            Date dEnd = PURE_DATETIME_FORMAT.parse(end);
+            Date date1 = Fields.PURE_DATETIME_FORMAT.parse(begin);
+            Date dEnd = Fields.PURE_DATETIME_FORMAT.parse(end);
             Calendar calBegin = Calendar.getInstance();
 
             calBegin.setTime(date1);
@@ -1916,8 +1978,8 @@ public class DateUtils extends Fields {
                     day_of_week_end = 7;
                 calEnd.add(Calendar.DATE, -day_of_week_end + 7);
             }
-            map.put(beginkey, PURE_DATETIME_FORMAT.format(calBegin.getTime()));
-            map.put(endkey, PURE_DATETIME_FORMAT.format(calEnd.getTime()));
+            map.put(beginkey, Fields.PURE_DATETIME_FORMAT.format(calBegin.getTime()));
+            map.put(endkey, Fields.PURE_DATETIME_FORMAT.format(calEnd.getTime()));
         } catch (ParseException e) {
             throw new InstrumentException(e);
         }
@@ -1939,7 +2001,7 @@ public class DateUtils extends Fields {
                                               String end) {
         Map<String, String> map = new HashMap<>();
         try {
-            DateFormat sdf = new SimpleDateFormat(NORM_YEAR_PATTERN);
+            DateFormat sdf = new SimpleDateFormat(Fields.NORM_YEAR_PATTERN);
             Date date1 = sdf.parse(begin);
             Date dEnd = sdf.parse(end);
             Calendar calBegin = Calendar.getInstance();
@@ -1970,7 +2032,7 @@ public class DateUtils extends Fields {
     public static List<String> getMonths(String StartDate, String endDate) {
         List<String> list = new ArrayList<>();
         try {
-            DateFormat df = new SimpleDateFormat(NORM_YEAR_MTOTH_PATTERN);
+            DateFormat df = new SimpleDateFormat(Fields.NORM_YEAR_MTOTH_PATTERN);
 
             Date date1 = df.parse(StartDate);
             Date date2 = df.parse(endDate);
@@ -2010,7 +2072,7 @@ public class DateUtils extends Fields {
                                                 String end) {
         Map<String, String> map = new HashMap<>();
         try {
-            DateFormat sdf = new SimpleDateFormat(NORM_YEAR_MTOTH_PATTERN);
+            DateFormat sdf = new SimpleDateFormat(Fields.NORM_YEAR_MTOTH_PATTERN);
             Date date1 = sdf.parse(begin);
             Date dEnd = sdf.parse(end);
             Calendar calBegin = Calendar.getInstance();
@@ -2059,7 +2121,7 @@ public class DateUtils extends Fields {
                                         String endW) {
         List<String> lDate = new ArrayList<>();
         try {
-            DateFormat sdf = new SimpleDateFormat(NORM_YEAR_PATTERN);
+            DateFormat sdf = new SimpleDateFormat(Fields.NORM_YEAR_PATTERN);
             Date date1 = sdf.parse(begin);
             Date dEnd = sdf.parse(end);
             Calendar calBegin = Calendar.getInstance();
@@ -2101,7 +2163,7 @@ public class DateUtils extends Fields {
     public static int getAllWeeks(String year) {
         Calendar calendar = Calendar.getInstance();
         try {
-            calendar.setTime(PURE_DATETIME_FORMAT.parse(year + "-12-31"));
+            calendar.setTime(Fields.PURE_DATETIME_FORMAT.parse(year + "-12-31"));
         } catch (ParseException e) {
             throw new InstrumentException(e);
         }
@@ -2229,16 +2291,16 @@ public class DateUtils extends Fields {
         }
         long diff = System.currentTimeMillis() - date.getTime();
         long r;
-        if (diff > Unit.DAY.getMillis()) {
-            r = (diff / Unit.DAY.getMillis());
+        if (diff > Fields.Unit.DAY.getMillis()) {
+            r = (diff / Fields.Unit.DAY.getMillis());
             return r + "天前";
         }
-        if (diff > Unit.HOUR.getMillis()) {
-            r = (diff / Unit.HOUR.getMillis());
+        if (diff > Fields.Unit.HOUR.getMillis()) {
+            r = (diff / Fields.Unit.HOUR.getMillis());
             return r + "个小时前";
         }
-        if (diff > Unit.MINUTE.getMillis()) {
-            r = (diff / Unit.MINUTE.getMillis());
+        if (diff > Fields.Unit.MINUTE.getMillis()) {
+            r = (diff / Fields.Unit.MINUTE.getMillis());
             return r + "分钟前";
         }
         return "刚刚";
@@ -2492,7 +2554,7 @@ public class DateUtils extends Fields {
      * @return true/false
      */
     public static boolean isDate(String dptDate) {
-        return isDate(dptDate, NORM_DATE_PATTERN);
+        return isDate(dptDate, Fields.NORM_DATE_PATTERN);
     }
 
     /**
@@ -2523,7 +2585,7 @@ public class DateUtils extends Fields {
      * @return true/false
      */
     public static boolean isBefore(String go, String back) {
-        return isBefore(go, back, NORM_DATE_PATTERN);
+        return isBefore(go, back, Fields.NORM_DATE_PATTERN);
     }
 
     /**
@@ -2533,7 +2595,7 @@ public class DateUtils extends Fields {
      * @return true/false
      */
     public static boolean isDatetime(String datetime) {
-        return isDate(datetime, NORM_DATETIME_PATTERN);
+        return isDate(datetime, Fields.NORM_DATETIME_PATTERN);
     }
 
     /**
@@ -2558,7 +2620,7 @@ public class DateUtils extends Fields {
      * @return true/false
      */
     public static boolean isNotLessThanToday(String date) {
-        return isNotLessThanToday(date, NORM_DATE_PATTERN);
+        return isNotLessThanToday(date, Fields.NORM_DATE_PATTERN);
     }
 
     /**
@@ -2654,7 +2716,7 @@ public class DateUtils extends Fields {
         if (year < 1900) {
             return null;
         }
-        return Fields.CHINESE_ZODIAC[(year - 1900) % Fields.CHINESE_ZODIAC.length];
+        return Fields.CN_ANIMAIL[(year - 1900) % Fields.CN_ANIMAIL.length];
     }
 
     /**
@@ -2675,6 +2737,451 @@ public class DateUtils extends Fields {
      */
     public static double nanosToSeconds(long duration) {
         return duration / 1_000_000_000.0;
+    }
+
+    /**
+     * 计算两个农历日期之差
+     *
+     * @param lc1   　农历１
+     * @param lc2   　农历２
+     * @param field 　计算的维度，比如按月,天等
+     * @return 具体的差值
+     */
+    public static long luanrDiff(DateUtils lc1, DateUtils lc2, int field) {
+        return solarDiff(lc1.getSolar(), lc2.getSolar(), field);
+    }
+
+    /**
+     * 公历转农历
+     *
+     * @param solar 　公历日期
+     * @return 农历日期
+     */
+    public static DateUtils solar2Lunar(Calendar solar) {
+        DateUtils ret = new DateUtils();
+        ret.lunar(solar.get(Calendar.YEAR), solar.get(Calendar.MONTH), solar.get(Calendar.DATE));
+        return ret;
+    }
+
+    /**
+     * 农历转公历
+     *
+     * @param lunarYear   　农历年
+     * @param lunarMonth  　农历月，从１开始
+     * @param LunarDate   　农历日
+     * @param isLeapMonth 　是否润月
+     * @return 公历日期
+     */
+    public static Calendar lunar2Solar(int lunarYear, int lunarMonth, int LunarDate, boolean isLeapMonth) {
+        DateUtils ret = new DateUtils();
+        ret.lunar(lunarYear, lunarMonth, LunarDate, isLeapMonth);
+        return ret.getSolar();
+    }
+
+    /**
+     * 获取农历日的表示
+     *
+     * @param lunarDay 　农历日数值表示
+     * @return 农历日传统字符表示
+     */
+    public static String getDayName(int lunarDay) {
+        return Fields.CN_DAY[lunarDay - 1];
+    }
+
+    /**
+     * 获取农历月份
+     *
+     * @param lunarMonth 　农历月数值表示
+     * @return 农历月传统字符表示
+     */
+    public static String getMonthName(int lunarMonth) {
+        return Fields.CN_MONTH[lunarMonth - 1];
+    }
+
+    /**
+     * 获取农历年份
+     *
+     * @param lunarYear 　农历年数值表示
+     * @return 农历年传统字符表示
+     */
+    public static String getYearName(int lunarYear) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Fields.CN_YEAR[lunarYear / 1000 - 1]);
+        sb.append(Fields.CN_YEAR[lunarYear % 1000 / 100 - 1]);
+        sb.append(Fields.CN_YEAR[lunarYear % 100 / 10 - 1]);
+        sb.append(Fields.CN_YEAR[lunarYear % 10 - 1]);
+        return sb.toString();
+    }
+
+    /**
+     * 判断两个整数所代表公历日期的差值
+     * 一年按365天计算，一个月按30天计算
+     *
+     * @param solarCode1 　农历日期代码
+     * @param solarCode2 　农历日期代码
+     * @param field      　差值单位
+     * @return 差值
+     */
+    public static long solarDateCodesDiff(int solarCode1, int solarCode2, int field) {
+        GregorianCalendar c1 = new GregorianCalendar(solarCode1 / 10000, solarCode1 % 10000 / 100 - 1,
+                solarCode1 % 10000 % 100);
+        GregorianCalendar c2 = new GregorianCalendar(solarCode2 / 10000, solarCode2 % 10000 / 100 - 1,
+                solarCode2 % 10000 % 100);
+        return solarDiff(c1, c2, field);
+    }
+
+    /**
+     * 求两个公历日期之差，field可以为年月日，时分秒
+     * 一年按365天计算，一个月按30天计算
+     *
+     * @param solar1 　历日期
+     * @param solar2 　历日期
+     * @param field  差值单位
+     * @return 差值
+     */
+    public static long solarDiff(Calendar solar1, Calendar solar2, int field) {
+        long t1 = solar1.getTimeInMillis();
+        long t2 = solar2.getTimeInMillis();
+        switch (field) {
+            case Calendar.SECOND:
+                return (long) Math.rint(Double.valueOf(t1 - t2) / Double.valueOf(1000));
+            case Calendar.MINUTE:
+                return (long) Math.rint(Double.valueOf(t1 - t2) / Double.valueOf(60 * 1000));
+            case Calendar.HOUR:
+                return (long) Math.rint(Double.valueOf(t1 - t2) / Double.valueOf(3600 * 1000));
+            case Calendar.DATE:
+                return (long) Math.rint(Double.valueOf(t1 - t2) / Double.valueOf(24 * 3600 * 1000));
+            case Calendar.MONTH:
+                return (long) Math.rint(Double.valueOf(t1 - t2) / Double.valueOf(30 * 24 * 3600 * 1000));
+            case Calendar.YEAR:
+                return (long) Math.rint(Double.valueOf(t1 - t2) / Double.valueOf(365 * 24 * 3600 * 1000));
+            default:
+                return -1;
+        }
+    }
+
+    /**
+     * 返回传统天干地支年名称
+     *
+     * @param y 农历年
+     * @return 传统农历年份的表示
+     */
+    public static String getTraditionalYearName(int y) {
+        y = y - MINI_YEAR + 36;
+        return ("" + Fields.CN_GAN[y % 10] + Fields.CN_ZHI[y % 12] + "年");
+    }
+
+    /**
+     * 获取生肖名
+     *
+     * @param y 　农历年
+     * @return 生肖名
+     */
+    public static String getAnimalYearName(int y) {
+        return Fields.CN_ANIMAIL[(y - 4) % 12 - 1];
+    }
+
+    /**
+     * 日期增加,和<code>GregorianCalendar.add</code>类似
+     *
+     * @param field  　单位
+     * @param amount 数值
+     * @see GregorianCalendar
+     */
+    public void add(int field, int amount) {
+        this.getSolar().add(field, amount);
+        this.lunar(this.getSolar().get(Calendar.YEAR), this.getSolar().get(Calendar.MONTH),
+                this.getSolar().get(Calendar.DATE));
+    }
+
+    /**
+     * 增加公历日期
+     *
+     * @param field 　单位
+     * @param n     数值
+     * @see GregorianCalendar
+     */
+    public void solarAdd(int field, int n) {
+        getSolar().add(field, n);
+        lunar(getSolar().get(Calendar.YEAR), getSolar().get(Calendar.MONTH), getSolar().get(Calendar.DATE));
+    }
+
+    /**
+     * 返回农历日期，不包含年份
+     *
+     * @param showLeap 　是否显示闰月的闰字
+     * @return 农历日期
+     */
+    public String getLunar(boolean showLeap) {
+        if (this.lmonth < 1 || this.lmonth > 12 || this.ldate < 1
+                || this.ldate > 30) {
+            throw new InstrumentException("Wrong lunar ldate: " + lmonth + " " + ldate);
+        }
+        if (showLeap) {
+            return (this.isLeapMonth() ? "闰" : "") + getMonthName(this.lmonth) + "月"
+                    + getDayName(this.ldate);
+        } else {
+            return getMonthName(this.lmonth) + "月" + getDayName(this.ldate);
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (this.lyear < MINI_YEAR || this.lyear > MAX_YEAR || this.lmonth < 1 || this.lmonth > 12 || this.ldate < 1
+                || this.ldate > 30) {
+            return "Wrong lunar date: " + lyear + " " + lmonth + " " + ldate;
+        }
+        return getYearName(this.lyear) + "年" + (this.isLeapMonth() ? "闰" : "") + getMonthName(this.lmonth) + "月"
+                + getDayName(this.ldate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DateUtils that = (DateUtils) o;
+
+        if (lyear != that.lyear) return false;
+        if (lmonth != that.lmonth) return false;
+        if (ldate != that.ldate) return false;
+        return isLeapMonth == that.isLeapMonth;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = lyear;
+        result = 31 * result + lmonth;
+        result = 31 * result + ldate;
+        result = 31 * result + (isLeapMonth ? 1 : 0);
+        return result;
+    }
+
+    /**
+     * 返回中国农历的全名
+     *
+     * @return String
+     */
+    public String getFullLunarName() {
+        return this.toString() + Symbol.SPACE + getTraditionalYearName(this.lyear) + Symbol.SPACE + getAnimalYearName(this.lyear);
+    }
+
+    /**
+     * 一个简单的二分查找，返回查找到的元素坐标，用于查找农历二维数组信息
+     *
+     * @param array 　数组
+     * @param n     　待查询数字
+     * @return 查到的坐标
+     */
+    private static int binSearch(int[] array, int n) {
+        if (null == array || array.length == 0) {
+            return -1;
+        }
+        int min = 0, max = array.length - 1;
+        if (n <= array[min]) {
+            return min;
+        } else if (n >= array[max]) {
+            return max;
+        }
+        while (max - min > 1) {
+            int newIndex = (max + min) / 2; // 二分
+            if (array[newIndex] > n) { // 取小区间
+                max = newIndex;
+            } else if (array[newIndex] < n) {// 取大区间
+                min = newIndex;
+            } else { // 相等，直接返回下标
+                return newIndex;
+            }
+        }
+        if (array[max] == n) {
+            return max;
+        } else if (array[min] == n) {
+            return min;
+        } else {
+            return min; // 返回 较小的一个
+        }
+    }
+
+    /**
+     * 创建LunarInfo中某一年的一列公历日历编码
+     * 公历日历编码：年份+月份+天，用于查询某个公历日期在某个LunarInfo列的哪一个区间
+     *
+     * @param solarYear 年份
+     * @return 公历日历编码
+     */
+    private int[] builderSolarCodes(int solarYear) {
+        if (solarYear < MINI_YEAR && solarYear > MAX_YEAR) {
+            throw new InstrumentException("Illegal solar year: " + solarYear);
+        }
+        int lunarIndex = solarYear - MINI_YEAR;
+        int[] solarCodes = new int[Fields.CN_LUNAR[lunarIndex].length];
+        for (int i = 0; i < solarCodes.length; i++) {
+            if (0 == i) { // 第一个数表示闰月，不用更改
+                solarCodes[i] = Fields.CN_LUNAR[lunarIndex][i];
+            } else if (1 == i) {
+                if (Fields.CN_LUNAR[lunarIndex][1] > 999) {
+                    // 这年农历一月一日对应的公历实际是上一年的
+                    solarCodes[i] = (solarYear - 1) * 10000 + Fields.CN_LUNAR[lunarIndex][i];
+                } else {
+                    solarCodes[i] = solarYear * 10000 + Fields.CN_LUNAR[lunarIndex][i];
+                }
+            } else {
+                solarCodes[i] = solarYear * 10000 + Fields.CN_LUNAR[lunarIndex][i];
+            }
+        }
+        return solarCodes;
+    }
+
+    /**
+     * 通过给定的农历日期，计算公历日期
+     *
+     * @param lunarYear   　农历年
+     * @param lunarMonth  　农历月，从１开始
+     * @param lunarDate   　农历日期
+     * @param isleapMonth 　是否为闰月
+     */
+    private void lunar(final int lunarYear, final int lunarMonth, final int lunarDate, final boolean isleapMonth) {
+        if (lunarYear < MINI_YEAR && lunarYear > MAX_YEAR) {
+            throw new InstrumentException("LunarYear must in (" + MINI_YEAR + "," + MAX_YEAR + ")");
+        }
+        this.lyear = lunarYear;
+        this.lmonth = lunarMonth;
+        this.ldate = lunarDate;
+        int solarMontDate = Fields.CN_LUNAR[lunarYear - MINI_YEAR][lunarMonth];
+        leapMonth = Fields.CN_LUNAR[lunarYear - MINI_YEAR][0];
+        if (leapMonth != 0 && (lunarMonth > leapMonth || (lunarMonth == leapMonth && isleapMonth))) {
+            // 闰月，且当前农历月大于闰月月份，取下一个月的LunarInfo码
+            // 闰月，且当前农历月等于闰月月份，并且此农历月为闰月，取下一个月的LunarInfo码
+            solarMontDate = Fields.CN_LUNAR[lunarYear - MINI_YEAR][lunarMonth + 1];
+        }
+        this.getSolar().set(Calendar.YEAR, lunarYear);
+        this.getSolar().set(Calendar.MONTH, (solarMontDate / 100) - 1);
+        this.getSolar().set(Calendar.DATE, solarMontDate % 100);
+        this.add(Calendar.DATE, lunarDate - 1);
+    }
+
+    /**
+     * 通过给定公历日期，计算农历日期
+     *
+     * @param solarYear  公历年
+     * @param solarMonth 公历月，0-11
+     * @param solarDate  公历日
+     * @return void
+     */
+    private void lunar(final int solarYear, final int solarMonth, final int solarDate) {
+        if (solarYear < MINI_YEAR && solarYear > MAX_YEAR) {
+            throw new InstrumentException("Illegal solar year: " + solarYear);
+        }
+        int solarCode = solarYear * 10000 + 100 * (1 + solarMonth) + solarDate; // 公历码
+        leapMonth = Fields.CN_LUNAR[solarYear - MINI_YEAR][0];
+        int[] solarCodes = builderSolarCodes(solarYear);
+        int newMonth = binSearch(solarCodes, solarCode);
+        if (-1 == newMonth) {
+            throw new InstrumentException("No lunarInfo found by solarCode: " + solarCode);
+        }
+        int xdate = Long.valueOf(solarDateCodesDiff(solarCode, solarCodes[newMonth], Calendar.DATE)).intValue();
+        if (0 == newMonth) {// 在上一年
+            int preYear = solarYear - 1;
+            short[] preSolarCodes = Fields.CN_LUNAR[preYear - MINI_YEAR];
+            // 取上年农历12月1号公历日期码
+            int nearSolarCode = preSolarCodes[preSolarCodes.length - 1]; // 上一年12月1号
+            // 下一年公历1月表示为了13月，这里做翻译，并计算出日期码
+            nearSolarCode = (nearSolarCode / 100 == 13 ? preYear + 1 : preYear) * 10000
+                    + (nearSolarCode / 100 == 13 ? nearSolarCode - 1200 : nearSolarCode);
+            if (nearSolarCode > solarCode) {// 此公历日期在上一年农历12月1号，之前，即在上年农历11月内
+                newMonth = 11;
+                // 取农历11月的公历码
+                nearSolarCode = preYear * 10000 + preSolarCodes[preSolarCodes.length - 2];
+            } else {// 此公历日期在上一年农历12月内
+                newMonth = 12;
+            }
+            xdate = Long.valueOf(solarDateCodesDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
+            if (xdate < 0) {
+                throw new InstrumentException("Wrong solarCode: " + solarCode);
+            }
+            this.ldate = 1 + xdate;
+            this.lyear = preYear;
+            this.lmonth = newMonth;
+            this.isLeapMonth = false; // 农历12月不可能为闰月
+        } else if (solarCodes.length == newMonth + 1 && xdate >= 30) {// 在下一年(公历12月只有30天)
+            newMonth = 1; // 农历肯定是1月
+            // 取下一年的公历日期码
+            short[] nextSolarCodes = Fields.CN_LUNAR[solarYear + 1 - MINI_YEAR];
+            // 取下一年农历1月1号公历日期码
+            int nearSolarCode = solarYear * 10000 + nextSolarCodes[1]; // 下一年农历1月1号公历日期码
+            xdate = Long.valueOf(solarDateCodesDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
+            if (xdate < 0) {
+                throw new InstrumentException("Wrong solarCode: " + solarCode);
+            }
+            this.ldate = 1 + xdate;
+            this.lyear = solarYear + 1; // 农历年到了下一年
+            this.lmonth = newMonth;
+            this.isLeapMonth = false; // 农历1月不可能为闰月
+        } else {
+            if (xdate < 0) {
+                throw new InstrumentException("Wrong solarCode: " + solarCode);
+            }
+            this.ldate = 1 + xdate;
+            this.lyear = solarYear;
+            this.isLeapMonth = 0 != leapMonth && (leapMonth + 1 == newMonth);
+            if (0 != leapMonth && leapMonth < newMonth) {
+                this.lmonth = newMonth - 1;
+            } else {
+                this.lmonth = newMonth;
+            }
+        }
+        this.getSolar().set(Calendar.YEAR, solarYear);
+        this.getSolar().set(Calendar.MONTH, solarMonth);
+        this.getSolar().set(Calendar.DATE, solarDate);
+    }
+
+
+    public int getLyear() {
+        return lyear;
+    }
+
+    public void setLyear(int lyear) {
+        this.lyear = lyear;
+    }
+
+    public int getLmonth() {
+        return lmonth;
+    }
+
+    public void setLmonth(int lmonth) {
+        this.lmonth = lmonth;
+    }
+
+    public int getLdate() {
+        return ldate;
+    }
+
+    public void setLdate(int ldate) {
+        this.ldate = ldate;
+    }
+
+    public int getLeapMonth() {
+        return leapMonth;
+    }
+
+    public GregorianCalendar getSolar() {
+        return solar;
+    }
+
+    public void setSolar(GregorianCalendar solar) {
+        this.solar = solar;
+    }
+
+    public boolean isLeapMonth() {
+        return isLeapMonth;
+    }
+
+    public void setLeapMonth(int leapMonth) {
+        this.leapMonth = leapMonth;
+    }
+
+    public void setLeapMonth(boolean isLeapMonth) {
+        this.isLeapMonth = isLeapMonth;
     }
 
 }

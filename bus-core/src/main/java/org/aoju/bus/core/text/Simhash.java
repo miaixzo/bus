@@ -31,10 +31,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 局部敏感hash,用于海量文本去重
- *
- * <p>
- * 局部敏感hash定义：假定两个字符串具有一定的相似性,在hash之后,仍然能保持这种相似性,就称之为局部敏感hash
- * </p>
+ * 局部敏感hash定义：假定两个字符串具有一定的相似性,
+ * 在hash之后,仍然能保持这种相似性,就称之为局部敏感hash
  *
  * @author Kimi Liu
  * @version 5.5.2

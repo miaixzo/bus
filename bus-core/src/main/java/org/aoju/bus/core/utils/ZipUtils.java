@@ -192,6 +192,80 @@ public class ZipUtils {
     }
 
     /**
+     * 对文件或文件目录进行压缩
+     *
+     * @param out        生成的Zip到的目标流，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
+     * @param charset    编码
+     * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
+     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
+     * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
+     */
+    public static void zip(OutputStream out, Charset charset, boolean withSrcDir, FileFilter filter, File... srcFiles) {
+        zip(getZipOutputStream(out, charset), withSrcDir, filter, srcFiles);
+    }
+
+    /**
+     * 对文件或文件目录进行压缩
+     *
+     * @param zipOutputStream 生成的Zip到的目标流，不关闭此流
+     * @param withSrcDir      是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
+     * @param filter          文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
+     * @param srcFiles        要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
+     */
+    public static void zip(ZipOutputStream zipOutputStream, boolean withSrcDir, FileFilter filter, File... srcFiles) {
+        String srcRootDir;
+        try {
+            for (File srcFile : srcFiles) {
+                if (null == srcFile) {
+                    continue;
+                }
+                // 如果只是压缩一个文件，则需要截取该文件的父目录
+                srcRootDir = srcFile.getCanonicalPath();
+                if (srcFile.isFile() || withSrcDir) {
+                    // 若是文件，则将父目录完整路径都截取掉；若设置包含目录，则将上级目录全部截取掉，保留本目录名
+                    srcRootDir = srcFile.getCanonicalFile().getParentFile().getCanonicalPath();
+                }
+                // 调用递归压缩方法进行目录或文件压缩
+                zip(srcFile, srcRootDir, zipOutputStream, filter);
+                zipOutputStream.flush();
+            }
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 递归压缩文件夹
+     * srcRootDir决定了路径截取的位置
+     *
+     * @param out        压缩文件存储对象
+     * @param srcRootDir 被压缩的文件夹根目录
+     * @param file       当前递归压缩的文件或目录对象
+     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
+     */
+    private static void zip(File file, String srcRootDir, ZipOutputStream out, FileFilter filter) {
+        if (null == file || (null != filter && false == filter.accept(file))) {
+            return;
+        }
+        // 获取文件相对于压缩文件夹根目录的子路径
+        final String subPath = FileUtils.subPath(srcRootDir, file);
+        // 如果是目录，则压缩压缩目录中的文件或子目录
+        if (file.isDirectory()) {
+            final File[] files = file.listFiles();
+            if (ArrayUtils.isEmpty(files) && StringUtils.isNotEmpty(subPath)) {
+                // 加入目录，只有空目录时才加入目录，非空时会在创建文件时自动添加父级目录
+                addDir(subPath, out);
+            }
+            // 压缩目录下的子文件或目录
+            for (File childFile : files) {
+                zip(childFile, srcRootDir, out, filter);
+            }
+        } else {
+            // 如果是文件或其它符号，则直接压缩该文件
+            addFile(file, subPath, out);
+        }
+    }
+    /**
      * 对流中的数据加入到压缩文件,使用默认UTF-8编码
      *
      * @param zipFile 生成的Zip文件,包括文件名 注意：zipPath不能是srcPath路径下的子文件夹
@@ -453,7 +527,7 @@ public class ZipUtils {
     }
 
     /**
-     * 解压<br>
+     * 解压
      * ZIP条目不使用高速缓冲
      *
      * @param in      zip文件流,使用完毕自动关闭
@@ -470,7 +544,7 @@ public class ZipUtils {
     }
 
     /**
-     * 解压<br>
+     * 解压
      * ZIP条目不使用高速缓冲
      *
      * @param zipStream zip文件流,包含编码信息

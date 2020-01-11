@@ -129,7 +129,6 @@ public class Normal {
      * 字符串: 大小字母数字
      */
     public static final String UPPER_LOWER_NUMBER = UPPER + LOWER + NUMBER;
-
     /**
      * 简体中文形式
      */
