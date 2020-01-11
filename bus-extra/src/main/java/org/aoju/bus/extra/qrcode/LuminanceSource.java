@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.extra.qrcode;
 
-import com.google.zxing.LuminanceSource;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -38,7 +36,7 @@ import java.awt.image.BufferedImage;
  * @version 5.5.2
  * @since JDK 1.8+
  */
-public final class BufferedImageLuminanceSource extends LuminanceSource {
+public final class LuminanceSource extends com.google.zxing.LuminanceSource {
 
     private final BufferedImage image;
     private final int left;
@@ -49,7 +47,7 @@ public final class BufferedImageLuminanceSource extends LuminanceSource {
      *
      * @param image {@link BufferedImage}
      */
-    public BufferedImageLuminanceSource(BufferedImage image) {
+    public LuminanceSource(BufferedImage image) {
         this(image, 0, 0, image.getWidth(), image.getHeight());
     }
 
@@ -62,7 +60,7 @@ public final class BufferedImageLuminanceSource extends LuminanceSource {
      * @param width  宽度
      * @param height 高度
      */
-    public BufferedImageLuminanceSource(BufferedImage image, int left, int top, int width, int height) {
+    public LuminanceSource(BufferedImage image, int left, int top, int width, int height) {
         super(width, height);
 
         int sourceWidth = image.getWidth();
@@ -114,8 +112,8 @@ public final class BufferedImageLuminanceSource extends LuminanceSource {
     }
 
     @Override
-    public LuminanceSource crop(int left, int top, int width, int height) {
-        return new BufferedImageLuminanceSource(image, this.left + left, this.top + top, width, height);
+    public com.google.zxing.LuminanceSource crop(int left, int top, int width, int height) {
+        return new LuminanceSource(image, this.left + left, this.top + top, width, height);
     }
 
     @Override
@@ -124,7 +122,7 @@ public final class BufferedImageLuminanceSource extends LuminanceSource {
     }
 
     @Override
-    public LuminanceSource rotateCounterClockwise() {
+    public com.google.zxing.LuminanceSource rotateCounterClockwise() {
 
         int sourceWidth = image.getWidth();
         int sourceHeight = image.getHeight();
@@ -138,7 +136,7 @@ public final class BufferedImageLuminanceSource extends LuminanceSource {
         g.dispose();
 
         int width = getWidth();
-        return new BufferedImageLuminanceSource(rotatedImage, top, sourceWidth - (left + width), getHeight(), width);
+        return new LuminanceSource(rotatedImage, top, sourceWidth - (left + width), getHeight(), width);
     }
 
 }

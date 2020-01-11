@@ -1875,6 +1875,20 @@ public class StringUtils extends TextUtils {
     }
 
     /**
+     * 指定字符串是否在字符串中出现过
+     *
+     * @param str       字符串
+     * @param searchStr 被查找的字符串
+     * @return 是否包含
+     */
+    public static boolean contains(CharSequence str, CharSequence searchStr) {
+        if (null == str || null == searchStr) {
+            return false;
+        }
+        return str.toString().contains(searchStr);
+    }
+
+    /**
      * 除去字符串头尾部的空白符,如果字符串是null,依然返回null
      *
      * @param str  要处理的字符串

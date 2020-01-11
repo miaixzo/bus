@@ -29,7 +29,10 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.*;
 
 /**
@@ -801,6 +804,33 @@ public class ZipUtils {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
         inflater(in, out);
         return out.toByteArray();
+    }
+
+    /**
+     * 获取Zip文件中指定目录下的所有文件，只显示文件，不显示目录
+     *
+     * @param zipFile Zip文件
+     * @param dir     目录前缀（目录前缀不包含开头的/）
+     * @return 文件列表
+     */
+    public static List<String> listFileNames(ZipFile zipFile, String dir) {
+        if (StringUtils.isNotBlank(dir)) {
+            // 目录尾部添加"/"
+            dir = StringUtils.addSuffixIfNot(dir, Symbol.SLASH);
+        }
+
+        final List<String> fileNames = new ArrayList<>();
+        String name;
+        for (ZipEntry entry : Collections.list(zipFile.entries())) {
+            name = entry.getName();
+            if (StringUtils.isEmpty(dir) || name.startsWith(dir)) {
+                final String nameSuffix = StringUtils.removePrefix(name, dir);
+                if (StringUtils.isNotEmpty(nameSuffix) && false == StringUtils.contains(nameSuffix, Symbol.SLASH)) {
+                    fileNames.add(nameSuffix);
+                }
+            }
+        }
+        return fileNames;
     }
 
     /**

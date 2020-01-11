@@ -305,16 +305,16 @@ public class QrCodeUtils {
     public static String decode(java.awt.Image image, boolean isTryHarder, boolean isPureBarcode) {
         final MultiFormatReader formatReader = new MultiFormatReader();
 
-        final LuminanceSource source = new BufferedImageLuminanceSource(ImageUtils.toBufferedImage(image));
+        final com.google.zxing.LuminanceSource source = new LuminanceSource(ImageUtils.toBufferedImage(image));
         final Binarizer binarizer = new HybridBinarizer(source);
         final BinaryBitmap binaryBitmap = new BinaryBitmap(binarizer);
 
         final HashMap<DecodeHintType, Object> hints = new HashMap<>();
         hints.put(DecodeHintType.CHARACTER_SET, Charset.UTF_8);
         // 优化精度
-        hints.put(DecodeHintType.TRY_HARDER, Boolean.valueOf(isTryHarder));
+        hints.put(DecodeHintType.TRY_HARDER, isTryHarder);
         // 复杂模式,开启PURE_BARCODE模式
-        hints.put(DecodeHintType.PURE_BARCODE, Boolean.valueOf(isPureBarcode));
+        hints.put(DecodeHintType.PURE_BARCODE, isPureBarcode);
         Result result;
         try {
             result = formatReader.decode(binaryBitmap, hints);
@@ -339,13 +339,17 @@ public class QrCodeUtils {
      * @param backColor 背景色
      * @return BufferedImage
      */
-    public static BufferedImage toImage(BitMatrix matrix, int foreColor, int backColor) {
+    public static BufferedImage toImage(BitMatrix matrix, int foreColor, Integer backColor) {
         final int width = matrix.getWidth();
         final int height = matrix.getHeight();
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(width, height, null == backColor ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                image.setRGB(x, y, matrix.get(x, y) ? foreColor : backColor);
+                if(matrix.get(x, y)) {
+                    image.setRGB(x, y, foreColor);
+                } else if(null != backColor){
+                    image.setRGB(x, y, backColor);
+                }
             }
         }
         return image;
