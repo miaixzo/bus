@@ -36,17 +36,7 @@ import java.io.OutputStream;
  */
 public class NullOutputStream extends OutputStream {
 
-    /**
-     * 什么也不做,写出到<code>/dev/null</code>.
-     *
-     * @param b   写出的数据
-     * @param off 开始位置
-     * @param len 长度
-     */
-    @Override
-    public void write(byte[] b, int off, int len) {
-        // to /dev/null
-    }
+    private boolean closed = false;
 
     /**
      * 什么也不做,写出到 <code>/dev/null</code>.
@@ -54,8 +44,8 @@ public class NullOutputStream extends OutputStream {
      * @param b 写出的数据
      */
     @Override
-    public void write(int b) {
-        // to /dev/null
+    public void write(int b) throws IOException {
+        if (this.closed) _throwClosed();
     }
 
     /**
@@ -66,7 +56,27 @@ public class NullOutputStream extends OutputStream {
      */
     @Override
     public void write(byte[] b) throws IOException {
-        // to /dev/null
+        if (this.closed) _throwClosed();
+    }
+
+    /**
+     * 什么也不做,写出到<code>/dev/null</code>.
+     *
+     * @param b   写出的数据
+     * @param off 开始位置
+     * @param len 长度
+     */
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        if (this.closed) _throwClosed();
+    }
+
+    private void _throwClosed() throws IOException {
+        throw new IOException("This OutputStream has been closed");
+    }
+
+    public void close() {
+        this.closed = true;
     }
 
 }
