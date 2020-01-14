@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * FreeBSD hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class FreeBsdDisks implements Disks {

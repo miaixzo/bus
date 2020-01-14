@@ -30,7 +30,7 @@ import java.util.Map;
  * appkey，secret默认管理，简单放在map中，如果要放在redis中，可以参照此方式实现AppSecretManager，然后在ApiConfig中setAppSecretManager()
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8++
  */
 public class CacheAppSecretManager implements AppSecretManager {

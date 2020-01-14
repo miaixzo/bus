@@ -52,7 +52,7 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 @Intercepts(value = {

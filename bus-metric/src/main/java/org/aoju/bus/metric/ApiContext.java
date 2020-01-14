@@ -45,7 +45,7 @@ import java.util.Locale;
  * 应用上下文,方便获取信息
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8++
  */
 public class ApiContext {

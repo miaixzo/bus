@@ -30,7 +30,7 @@ import java.util.Map;
  * 签名验证实现
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8++
  */
 public class ApiSigner implements Signer {

@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
  * 文档在线预览服务提供
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 @Component

@@ -25,7 +25,7 @@ package org.aoju.bus.metric.manual.docs;
 
 /**
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8++
  */
 public interface IEnum {

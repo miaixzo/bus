@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * Memory obtained from WMI
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class WindowsVirtualMemory extends AbstractVirtualMemory {

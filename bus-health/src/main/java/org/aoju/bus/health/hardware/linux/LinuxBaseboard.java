@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * Baseboard data obtained by sysfs
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 final class LinuxBaseboard extends AbstractBaseboard {

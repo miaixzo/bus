@@ -31,7 +31,7 @@ import java.util.List;
  * 权限管理定义
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8++
  */
 public interface PermissionManager extends ManagerInitializer {

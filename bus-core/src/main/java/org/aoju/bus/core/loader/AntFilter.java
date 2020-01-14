@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Symbol;
  * ANT风格路径过滤器
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class AntFilter extends RegexFilter implements Filter {

@@ -25,7 +25,7 @@ package org.aoju.bus.mapper.version;
 
 /**
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public interface NextVersion<T> {

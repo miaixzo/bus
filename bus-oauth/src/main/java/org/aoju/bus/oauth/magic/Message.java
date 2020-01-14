@@ -30,7 +30,7 @@ import lombok.Getter;
  * JustAuth统一授权响应类
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 @Getter

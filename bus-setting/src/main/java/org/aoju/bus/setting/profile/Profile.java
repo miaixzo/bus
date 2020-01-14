@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * </ol>
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class Profile implements Serializable {

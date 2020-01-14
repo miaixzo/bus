@@ -13,7 +13,7 @@
 > 依赖外部环境
 - OpenOffice或者LibreOffice
 > 下载地址如下:
-地址①：https://mirror-hk.koddos.net/tdf/libreoffice/stable/
+地址①：http://mirrors.ustc.edu.cn/tdf/libreoffice/stable
 地址②：https://pan.baidu.com/s/1ZSGCIVXTweK8tbOPudkaQQ  提取码：vn5v
 
 ```

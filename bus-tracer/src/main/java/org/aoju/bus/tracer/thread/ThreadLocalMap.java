@@ -28,7 +28,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 class ThreadLocalMap<K, V> extends InheritableThreadLocal<Map<K, V>> {
