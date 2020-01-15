@@ -29,7 +29,7 @@ import java.io.Serializable;
  * 如果要使用oauth2功能，自己的用户类需要实现这个对象
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8++
  */
 public interface OpenUser extends Serializable {

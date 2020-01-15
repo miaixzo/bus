@@ -32,7 +32,7 @@ import java.util.*;
  * 或Java(通过JDK 9)上不可用的密码套件
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public final class CipherSuite {

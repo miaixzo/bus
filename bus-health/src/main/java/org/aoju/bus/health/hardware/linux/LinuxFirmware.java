@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * Firmware data obtained by sysfs.
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 final class LinuxFirmware extends AbstractFirmware {

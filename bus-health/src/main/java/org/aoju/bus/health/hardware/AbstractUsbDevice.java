@@ -32,7 +32,7 @@ import java.util.Arrays;
  * A USB device
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public abstract class AbstractUsbDevice implements UsbDevice {

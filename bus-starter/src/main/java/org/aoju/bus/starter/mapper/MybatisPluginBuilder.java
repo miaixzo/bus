@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.starter.mapper;
 
-
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.pager.plugin.PageInterceptor;
 import org.aoju.bus.starter.sensitive.SensitiveResultSetHandler;
@@ -36,7 +35,7 @@ import java.util.Properties;
  * mybatis 插件启用
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class MybatisPluginBuilder {

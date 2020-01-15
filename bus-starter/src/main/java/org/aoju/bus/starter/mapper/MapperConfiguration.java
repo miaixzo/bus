@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.starter.mapper;
 
-
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -35,7 +34,7 @@ import org.springframework.core.env.Environment;
  * mapper 扫描配置类
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 @AutoConfigureAfter(MybatisConfiguration.class)

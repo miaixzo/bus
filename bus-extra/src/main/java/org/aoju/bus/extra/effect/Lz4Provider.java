@@ -33,7 +33,7 @@ import java.io.IOException;
  * 基于lz4算法的数据解压缩.
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class Lz4Provider implements EffectProvider {

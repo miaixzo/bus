@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * 负责解析参数
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8++
  */
 public interface ParamParser {

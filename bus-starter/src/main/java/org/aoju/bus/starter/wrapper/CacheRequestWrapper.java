@@ -42,7 +42,7 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class CacheRequestWrapper extends HttpServletRequestWrapper {
@@ -87,6 +87,7 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         int count = values.length;
         String[] encodedValues = new String[count];
         for (int i = 0; i < count; i++) {
+            encodedValues[i] = values[i];
             if (!JsonUtils.isJson(values[i])) {
                 encodedValues[i] = EscapeUtils.escapeHtml4(values[i]);
             }
@@ -100,7 +101,7 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         if (!JsonUtils.isJson(content)) {
             content = EscapeUtils.escapeHtml4(content);
         }
-        return EscapeUtils.escapeHtml4(content);
+        return content;
     }
 
     @Override

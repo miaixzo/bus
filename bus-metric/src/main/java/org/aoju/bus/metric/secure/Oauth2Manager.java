@@ -33,7 +33,7 @@ import java.util.Map;
  * 认证服务，需要自己实现
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8++
  */
 public interface Oauth2Manager {

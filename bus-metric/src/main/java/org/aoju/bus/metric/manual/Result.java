@@ -29,7 +29,7 @@ import java.io.Serializable;
  * 返回结果，后续自定义的返回类需要实现这个接口。
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8++
  */
 public interface Result extends Serializable {

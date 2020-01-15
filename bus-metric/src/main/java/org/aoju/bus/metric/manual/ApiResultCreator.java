@@ -27,7 +27,7 @@ package org.aoju.bus.metric.manual;
  * 负责对返回结果进行封装
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8++
  */
 public class ApiResultCreator implements ResultCreator {
