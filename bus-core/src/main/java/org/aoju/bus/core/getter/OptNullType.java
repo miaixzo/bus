@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,13 +33,13 @@ import java.util.Date;
  * 在不提供默认值的情况下, 如果值不存在或获取错误,返回null
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
-public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
+public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
 
     @Override
-    public Object getObj(K key) {
+    default Object getObj(K key) {
         return getObj(key, null);
     }
 
@@ -51,7 +51,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public String getStr(K key) {
+    default String getStr(K key) {
         return this.getStr(key, null);
     }
 
@@ -63,7 +63,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Integer getInt(K key) {
+    default Integer getInt(K key) {
         return this.getInt(key, null);
     }
 
@@ -75,7 +75,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Short getShort(K key) {
+    default Short getShort(K key) {
         return this.getShort(key, null);
     }
 
@@ -87,7 +87,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Boolean getBool(K key) {
+    default Boolean getBool(K key) {
         return this.getBool(key, null);
     }
 
@@ -99,7 +99,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Long getLong(K key) {
+    default Long getLong(K key) {
         return this.getLong(key, null);
     }
 
@@ -111,7 +111,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Character getChar(K key) {
+    default Character getChar(K key) {
         return this.getChar(key, null);
     }
 
@@ -123,7 +123,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Float getFloat(K key) {
+    default Float getFloat(K key) {
         return this.getFloat(key, null);
     }
 
@@ -135,7 +135,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Double getDouble(K key) {
+    default Double getDouble(K key) {
         return this.getDouble(key, null);
     }
 
@@ -147,7 +147,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Byte getByte(K key) {
+    default Byte getByte(K key) {
         return this.getByte(key, null);
     }
 
@@ -159,7 +159,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public BigDecimal getBigDecimal(K key) {
+    default BigDecimal getBigDecimal(K key) {
         return this.getBigDecimal(key, null);
     }
 
@@ -171,7 +171,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public BigInteger getBigInteger(K key) {
+    default BigInteger getBigInteger(K key) {
         return this.getBigInteger(key, null);
     }
 
@@ -184,7 +184,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public <E extends Enum<E>> E getEnum(Class<E> clazz, K key) {
+    default <E extends Enum<E>> E getEnum(Class<E> clazz, K key) {
         return this.getEnum(clazz, key, null);
     }
 
@@ -196,7 +196,7 @@ public abstract class OptNullType<K> implements BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    public Date getDate(K key) {
+    default Date getDate(K key) {
         return this.getDate(key, null);
     }
 

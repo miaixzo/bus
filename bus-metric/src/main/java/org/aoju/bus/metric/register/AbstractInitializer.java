@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,30 +24,29 @@
 package org.aoju.bus.metric.register;
 
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.Config;
-import org.springframework.context.ApplicationContext;
+import org.aoju.bus.metric.ApiConfig;
+import org.aoju.bus.metric.ApiRegister;
 import org.springframework.util.Assert;
 
 /**
  * 负责启动时的初始化工作
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8++
  */
 public abstract class AbstractInitializer implements Initializer, RegistCallback {
 
     @Override
-    public void onRegistFinished(Config config) {
+    public void onRegistFinished(ApiConfig config) {
     }
 
     @Override
-    public synchronized void init(ApplicationContext applicationContext, Config config) {
-        Assert.notNull(applicationContext, "applicationContext不能为null");
+    public synchronized void init(ApiConfig config) {
         Assert.notNull(config, "apiConfig不能为null");
         try {
             // 注册接口
-            new ApiRegister(config, applicationContext).regist(this);
+            new ApiRegister(config).regist(this);
         } catch (Exception e) {
             Logger.error(e.getMessage(), e);
             System.exit(0);

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,13 +37,13 @@ import java.util.concurrent.ConcurrentMap;
  * {@link java.text.SimpleDateFormat} 的线程安全版本,用于将 {@link Date} 格式化输出
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
 
-    private static final long serialVersionUID = -6305750172255764887L;
-    private static final int MAX_DIGITS = 10; // log10(Integer.MAX_VALUE) ~= 9.3
+    private static final long serialVersionUID = 1L;
+    private static final int MAX_DIGITS = 10;
     private static final ConcurrentMap<TimeZoneDisplayKey, String> cTimeZoneDisplayCache = new ConcurrentHashMap<>(7);
     /**
      * 规则列表.

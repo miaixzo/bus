@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 package org.aoju.bus.core.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.JSONLibDataFormatSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
@@ -41,7 +43,7 @@ import java.util.Map;
  * fastjson工具类
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class JsonUtils {
@@ -216,6 +218,60 @@ public class JsonUtils {
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * 暴力解析
+     *
+     * @param content 字符串
+     * @return the true/false
+     */
+    public final static boolean isJson(String content) {
+        try {
+            if (StringUtils.isBlank(content)) {
+                return false;
+            }
+            JSON.parse(content);
+        } catch (JSONException ex) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * 判断字符串是否可以转化为json对象
+     *
+     * @param content 字符串
+     * @return the true/false
+     */
+    public static boolean isJsonObject(String content) {
+        try {
+            if (StringUtils.isBlank(content)) {
+                return false;
+            }
+            JSONObject.parseObject(content);
+        } catch (JSONException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 判断字符串是否可以转化为JSON数组
+     *
+     * @param content 字符串
+     * @return the true/false
+     */
+    public static boolean isJsonArray(String content) {
+        try {
+            if (StringUtils.isBlank(content)) {
+                return false;
+            }
+            JSONArray.parseArray(content);
+        } catch (JSONException e) {
+            return false;
+        }
+        return true;
     }
 
 }

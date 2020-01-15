@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,17 +30,17 @@ import java.io.IOException;
  * 通常每个线程都由自己的线程访问:生产者线程向接收器写入数据，消费者线程从源读取数据
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public final class Pipe {
 
     final long maxBufferSize;
     final Buffer buffer = new Buffer();
-    boolean sinkClosed;
-    boolean sourceClosed;
     private final Sink sink = new PipeSink();
     private final Source source = new PipeSource();
+    boolean sinkClosed;
+    boolean sourceClosed;
 
     public Pipe(long maxBufferSize) {
         if (maxBufferSize < 1L) {

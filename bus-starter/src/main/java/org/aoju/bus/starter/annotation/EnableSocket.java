@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.starter.annotation;
 
+import org.aoju.bus.socket.spring.extension.MessageConfiguration;
+import org.aoju.bus.socket.spring.support.MessageMatcher;
 import org.aoju.bus.starter.socket.SocketScannerRegistrar;
 import org.springframework.context.annotation.Import;
 
@@ -32,13 +34,14 @@ import java.lang.annotation.*;
  * 开启WebSocket
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Inherited
 @Documented
-@Import({SocketScannerRegistrar.class})
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Import({SocketScannerRegistrar.class, MessageConfiguration.class, MessageMatcher.class})
 public @interface EnableSocket {
 
     String[] basePackage() default {};

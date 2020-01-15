@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import java.util.Arrays;
  * Cors 跨域支持
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {CorsProperties.class})
@@ -46,6 +46,19 @@ public class CorsConfiguration {
 
     @Autowired
     CorsProperties properties;
+
+    /**
+     * 跨域过滤器
+     *
+     * @return Cors过滤器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration(properties.getPath(), buildConfig());
+        return new CorsFilter(source);
+    }
 
     private org.springframework.web.cors.CorsConfiguration buildConfig() {
         org.springframework.web.cors.CorsConfiguration corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
@@ -61,19 +74,6 @@ public class CorsConfiguration {
             corsConfiguration.setExposedHeaders(Arrays.asList(properties.getExposedHeaders()));
         }
         return corsConfiguration;
-    }
-
-    /**
-     * 跨域过滤器
-     *
-     * @return Cors过滤器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration(properties.getPath(), buildConfig());
-        return new CorsFilter(source);
     }
 
 }

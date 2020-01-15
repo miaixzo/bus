@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ import java.util.TimeZone;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class FastDateFormat extends Format implements DateParser, DatePrinter {
@@ -64,7 +64,7 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
      * SHORT locale dependent date or time style.
      */
     public static final int SHORT = DateFormat.SHORT;
-    private static final long serialVersionUID = 8097890768636183236L;
+    private static final long serialVersionUID = 1L;
     private static final FormatCache<FastDateFormat> cache = new FormatCache<FastDateFormat>() {
         @Override
         protected FastDateFormat createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {

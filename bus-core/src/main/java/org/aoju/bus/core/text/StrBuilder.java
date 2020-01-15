@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import java.util.Objects;
  * 提供比StringBuffer更灵活和更强大的API.
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class StrBuilder implements CharSequence, Appendable, Serializable, Builder<String> {
@@ -49,7 +49,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * 默认容量
      */
     static final int CAPACITY = 32;
-    private static final long serialVersionUID = 7628716375283629643L;
+    private static final long serialVersionUID = 1L;
     /**
      * 存放的字符数组
      */

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.EscapeUtils;
 import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.utils.JsonUtils;
 import org.aoju.bus.logger.Logger;
 
 import javax.servlet.ReadListener;
@@ -41,7 +42,7 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class CacheRequestWrapper extends HttpServletRequestWrapper {
@@ -54,17 +55,6 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         super(request);
         // 从ParameterMap获取参数，并保存以便多次获取
         Logger.info(Symbol.DELIM, JSON.toJSON(request.getParameterMap()).toString());
-     /*
-       this.body = request.getParameterMap().entrySet().stream()
-                .map(entry -> {
-                    String[] value = entry.getValue();
-                    if (ArrayUtils.isNotEmpty(value)) {
-                        return Arrays.stream(value).map(s -> entry.getKey() + Symbol.EQUAL + s)
-                                .collect(Collectors.joining(Symbol.AND));
-                    }
-                    return entry.getKey() + Symbol.EQUAL + value[0];
-                }).collect(Collectors.joining(Symbol.AND)).getBytes();
-     */
         // 从InputStream获取参数，并保存以便多次获取
         this.body = IoUtils.readBytes(request.getInputStream());
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.body != null ? this.body : DEFAULT_BYTE);
@@ -97,24 +87,34 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         int count = values.length;
         String[] encodedValues = new String[count];
         for (int i = 0; i < count; i++) {
-            encodedValues[i] = EscapeUtils.escapeHtml4(values[i]);
+            if (!JsonUtils.isJson(values[i])) {
+                encodedValues[i] = EscapeUtils.escapeHtml4(values[i]);
+            }
         }
         return encodedValues;
     }
 
     @Override
-    public String getParameter(String parameter) {
-        return EscapeUtils.escapeHtml4(super.getParameter(parameter));
+    public String getParameter(String name) {
+        String content = super.getParameter(name);
+        if (!JsonUtils.isJson(content)) {
+            content = EscapeUtils.escapeHtml4(content);
+        }
+        return EscapeUtils.escapeHtml4(content);
     }
 
     @Override
     public String getHeader(String name) {
-        return EscapeUtils.escapeHtml4(super.getHeader(name));
+        String content = super.getHeader(name);
+        if (!JsonUtils.isJson(content)) {
+            content = EscapeUtils.escapeHtml4(content);
+        }
+        return content;
     }
 
-    @EqualsAndHashCode(callSuper = true)
     @Data
     @AllArgsConstructor
+    @EqualsAndHashCode(callSuper = true)
     private static class ServletInputStreamWrapper extends ServletInputStream {
 
         private InputStream inputStream;

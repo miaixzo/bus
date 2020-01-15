@@ -13,8 +13,23 @@
 > 依赖外部环境
 - OpenOffice或者LibreOffice
 > 下载地址如下:
-地址①：https://mirror-hk.koddos.net/tdf/libreoffice/stable/
+地址①：http://mirrors.ustc.edu.cn/tdf/libreoffice/stable
 地址②：https://pan.baidu.com/s/1ZSGCIVXTweK8tbOPudkaQQ  提取码：vn5v
+
+```
+wget http://mirrors.ustc.edu.cn/tdf/libreoffice/stable/6.3.4/rpm/x86_64/LibreOffice_6.3.4_Linux_x86-64_rpm.tar.gz
+wget http://mirrors.ustc.edu.cn/tdf/libreoffice/stable/6.3.4/rpm/x86_64/LibreOffice_6.3.4_Linux_x86-64_rpm_langpack_zh-CN.tar.gz
+```
+ 解压
+```
+tar xvf LibreOffice_6.3.4_Linux_x86-64_rpm.tar.gz
+tar xvf LibreOffice_6.3.4_Linux_x86-64_rpm_langpack_zh-CN.tar.gz
+```
+ 安装
+```
+yum install LibreOffice_6.3.4.2_Linux_x86-64_rpm/RPMS/*.rpm
+yum install LibreOffice_6.3.4.2_Linux_x86-64_rpm_langpack_zh-CN/RPMS/*.rpm
+```
 
 > 结合bus-starter项目配套使用 
 ```

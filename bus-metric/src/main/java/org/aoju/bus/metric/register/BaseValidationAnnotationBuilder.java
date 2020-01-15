@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,19 +23,19 @@
  */
 package org.aoju.bus.metric.register;
 
-import org.aoju.bus.metric.support.ReflectUtil;
+import org.aoju.bus.metric.ApiRegister;
 
 import java.lang.annotation.Annotation;
 
 /**
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8++
  */
 public abstract class BaseValidationAnnotationBuilder<T extends Annotation> extends AbstractValidationAnnotationBuilder<T> {
 
     public BaseValidationAnnotationBuilder() {
-        Class<?> clazz = ReflectUtil.getSuperClassGenricType(getClass(), 0);
+        Class<?> clazz = ApiRegister.getSuperClassGenricType(getClass(), 0);
         ValidationAnnotationFactory.addBuilder(clazz, this);
     }
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import java.util.HashMap;
  * 二维码设置
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class QrConfig {
@@ -60,7 +60,7 @@ public class QrConfig {
     /**
      * 背景色
      */
-    public int backColor = WHITE;
+    public Integer backColor = WHITE;
     /**
      * 边距1~4
      */
@@ -159,13 +159,16 @@ public class QrConfig {
     }
 
     /**
-     * 设置前景色,例如：Color.BLUE.getRGB()
+     * 设置前景色，例如：Color.BLUE.getRGB()
      *
      * @param foreColor 前景色
      * @return this
+     * @since 5.1.1
      */
-    public QrConfig setForeColor(int foreColor) {
-        this.foreColor = foreColor;
+    public QrConfig setForeColor(Color foreColor) {
+        if(null != foreColor){
+            this.foreColor = foreColor.getRGB();
+        }
         return this;
     }
 
@@ -179,13 +182,18 @@ public class QrConfig {
     }
 
     /**
-     * 设置背景色,例如：Color.BLUE.getRGB()
+     * 设置背景色，例如：Color.BLUE
      *
-     * @param backColor 背景色
+     * @param backColor 背景色,null表示透明背景
      * @return this
+     * @since 5.1.1
      */
-    public QrConfig setBackColor(int backColor) {
-        this.backColor = backColor;
+    public QrConfig setBackColor(Color backColor) {
+        if(null == backColor){
+            this.backColor = null;
+        } else {
+            this.backColor = backColor.getRGB();
+        }
         return this;
     }
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ import java.util.Set;
  * 在Java和Httpd表示之间进行转换的方法
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public final class NetApiConvert {
@@ -472,6 +472,31 @@ public final class NetApiConvert {
         };
     }
 
+    private static RuntimeException throwRequestModificationException() {
+        throw new UnsupportedOperationException("ResponseCache cannot modify the request.");
+    }
+
+    private static RuntimeException throwRequestSslAccessException() {
+        throw new UnsupportedOperationException("ResponseCache cannot access SSL internals");
+    }
+
+    private static RuntimeException throwResponseBodyAccessException() {
+        throw new UnsupportedOperationException("ResponseCache cannot access the response body.");
+    }
+
+    private static <T> List<T> nullSafeImmutableList(T[] elements) {
+        return elements == null ? Collections.emptyList() : Builder.immutableList(elements);
+    }
+
+    private static long stringToLong(String s) {
+        if (s == null) return -1;
+        try {
+            return Long.parseLong(s);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
     private static final class CacheHttpURLConnection extends HttpURLConnection {
 
         private final Request request;
@@ -536,23 +561,23 @@ public final class NetApiConvert {
         }
 
         @Override
-        public void setInstanceFollowRedirects(boolean followRedirects) {
-            throw throwRequestModificationException();
-        }
-
-        @Override
         public boolean getInstanceFollowRedirects() {
             return super.getInstanceFollowRedirects();
         }
 
         @Override
-        public void setRequestMethod(String method) {
+        public void setInstanceFollowRedirects(boolean followRedirects) {
             throw throwRequestModificationException();
         }
 
         @Override
         public String getRequestMethod() {
             return request.method();
+        }
+
+        @Override
+        public void setRequestMethod(String method) {
+            throw throwRequestModificationException();
         }
 
         @Override
@@ -613,23 +638,23 @@ public final class NetApiConvert {
         }
 
         @Override
-        public void setConnectTimeout(int timeout) {
-            throw throwRequestModificationException();
-        }
-
-        @Override
         public int getConnectTimeout() {
             return 0;
         }
 
         @Override
-        public void setReadTimeout(int timeout) {
+        public void setConnectTimeout(int timeout) {
             throw throwRequestModificationException();
         }
 
         @Override
         public int getReadTimeout() {
             return 0;
+        }
+
+        @Override
+        public void setReadTimeout(int timeout) {
+            throw throwRequestModificationException();
         }
 
         @Override
@@ -658,17 +683,12 @@ public final class NetApiConvert {
         }
 
         @Override
-        public void setDoInput(boolean doInput) {
-            throw throwRequestModificationException();
-        }
-
-        @Override
         public boolean getDoInput() {
             return doInput;
         }
 
         @Override
-        public void setDoOutput(boolean doOutput) {
+        public void setDoInput(boolean doInput) {
             throw throwRequestModificationException();
         }
 
@@ -678,7 +698,7 @@ public final class NetApiConvert {
         }
 
         @Override
-        public void setAllowUserInteraction(boolean allowUserInteraction) {
+        public void setDoOutput(boolean doOutput) {
             throw throwRequestModificationException();
         }
 
@@ -688,7 +708,7 @@ public final class NetApiConvert {
         }
 
         @Override
-        public void setUseCaches(boolean useCaches) {
+        public void setAllowUserInteraction(boolean allowUserInteraction) {
             throw throwRequestModificationException();
         }
 
@@ -698,13 +718,18 @@ public final class NetApiConvert {
         }
 
         @Override
-        public void setIfModifiedSince(long ifModifiedSince) {
+        public void setUseCaches(boolean useCaches) {
             throw throwRequestModificationException();
         }
 
         @Override
         public long getIfModifiedSince() {
             return stringToLong(request.headers().get("If-Modified-Since"));
+        }
+
+        @Override
+        public void setIfModifiedSince(long ifModifiedSince) {
+            throw throwRequestModificationException();
         }
 
         @Override
@@ -732,17 +757,12 @@ public final class NetApiConvert {
         }
 
         @Override
-        public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
-            throw throwRequestModificationException();
-        }
-
-        @Override
         public HostnameVerifier getHostnameVerifier() {
             throw throwRequestSslAccessException();
         }
 
         @Override
-        public void setSSLSocketFactory(SSLSocketFactory socketFactory) {
+        public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
             throw throwRequestModificationException();
         }
 
@@ -750,30 +770,10 @@ public final class NetApiConvert {
         public SSLSocketFactory getSSLSocketFactory() {
             throw throwRequestSslAccessException();
         }
-    }
 
-    private static RuntimeException throwRequestModificationException() {
-        throw new UnsupportedOperationException("ResponseCache cannot modify the request.");
-    }
-
-    private static RuntimeException throwRequestSslAccessException() {
-        throw new UnsupportedOperationException("ResponseCache cannot access SSL internals");
-    }
-
-    private static RuntimeException throwResponseBodyAccessException() {
-        throw new UnsupportedOperationException("ResponseCache cannot access the response body.");
-    }
-
-    private static <T> List<T> nullSafeImmutableList(T[] elements) {
-        return elements == null ? Collections.emptyList() : Builder.immutableList(elements);
-    }
-
-    private static long stringToLong(String s) {
-        if (s == null) return -1;
-        try {
-            return Long.parseLong(s);
-        } catch (NumberFormatException e) {
-            return -1;
+        @Override
+        public void setSSLSocketFactory(SSLSocketFactory socketFactory) {
+            throw throwRequestModificationException();
         }
     }
 

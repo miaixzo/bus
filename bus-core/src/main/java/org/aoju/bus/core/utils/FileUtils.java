@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,6 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -54,7 +53,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class FileUtils {
@@ -191,7 +190,7 @@ public class FileUtils {
      * @param path       当前遍历文件或目录的路径
      * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
-     * @since 5.5.2
+     * @since 5.5.3
      */
     public static List<File> loopFiles(String path, FileFilter fileFilter) {
         return loopFiles(file(path), fileFilter);
@@ -234,7 +233,7 @@ public class FileUtils {
      *
      * @param path 当前遍历文件或目录的路径
      * @return 文件列表
-     * @since 5.5.2
+     * @since 5.5.3
      */
     public static List<File> loopFiles(String path) {
         return loopFiles(file(path));
@@ -260,47 +259,35 @@ public class FileUtils {
      */
     public static List<String> listFileNames(String path) throws InstrumentException {
         if (path == null) {
-            return null;
+            return new ArrayList<>(0);
         }
-        List<String> paths = new ArrayList<String>();
-
         int index = path.lastIndexOf(FileType.JAR_PATH_EXT);
-        if (index == -1) {
-            // 普通目录路径
-            File[] files = ls(path);
+        if (index < 0) {
+            // 普通目录
+            final List<String> paths = new ArrayList<>();
+            final File[] files = ls(path);
             for (File file : files) {
                 if (file.isFile()) {
                     paths.add(file.getName());
                 }
             }
-        } else {
-            // jar文件
-            path = getAbsolutePath(path);
-            if (false == StringUtils.endWith(path, Symbol.C_SLASH)) {
-                path = path + Symbol.C_SLASH;
-            }
-            // jar文件中的路径
-            index = index + FileType.JAR.length();
-            JarFile jarFile = null;
-            try {
-                jarFile = new JarFile(path.substring(0, index));
-                final String subPath = path.substring(index + 2);
-                for (JarEntry entry : Collections.list(jarFile.entries())) {
-                    final String name = entry.getName();
-                    if (name.startsWith(subPath)) {
-                        final String nameSuffix = StringUtils.removePrefix(name, subPath);
-                        if (false == StringUtils.contains(nameSuffix, Symbol.C_SLASH)) {
-                            paths.add(nameSuffix);
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                throw new InstrumentException(StringUtils.format("Can not read file path of [{}]", path), e);
-            } finally {
-                IoUtils.close(jarFile);
-            }
+            return paths;
         }
-        return paths;
+
+        // jar文件
+        path = getAbsolutePath(path);
+        // jar文件中的路径
+        index = index + FileType.JAR_PATH_EXT.length();
+        JarFile jarFile = null;
+        try {
+            jarFile = new JarFile(path.substring(0, index));
+            // 防止出现jar!/org/aoju/这类路径导致文件找不到
+            return ZipUtils.listFileNames(jarFile, StringUtils.removePrefix(path.substring(index + 1), "/"));
+        } catch (IOException e) {
+            throw new InstrumentException(StringUtils.format("Can not read file path of [{}]", path), e);
+        } finally {
+            IoUtils.close(jarFile);
+        }
     }
 
     /**
@@ -2028,7 +2015,7 @@ public class FileUtils {
      * @param filePath 文件路径
      * @return 字节码
      * @throws InstrumentException 异常
-     * @since 5.5.2
+     * @since 5.5.3
      */
     public static byte[] readBytes(String filePath) throws InstrumentException {
         return readBytes(file(filePath));
@@ -2814,7 +2801,7 @@ public class FileUtils {
      * @param path 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.5.2
+     * @since 5.5.3
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
         return writeLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2828,7 +2815,7 @@ public class FileUtils {
      * @param file 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.5.2
+     * @since 5.5.3
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
         return writeLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);

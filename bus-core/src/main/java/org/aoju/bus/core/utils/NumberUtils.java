@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2020 aoju.org All rights reserved.
+ * Copyright (c) 2015-2020 aoju.org All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.2
+ * @version 5.5.3
  * @since JDK 1.8+
  */
 public class NumberUtils {
@@ -386,9 +386,7 @@ public class NumberUtils {
         BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
         for (int i = 1; i < values.length; i++) {
             value = values[i];
-            if (null != value) {
-                result = result.multiply(new BigDecimal(value.toString()));
-            }
+            result = result.multiply(new BigDecimal(null == value ? Symbol.ZERO : value.toString()));
         }
         return result;
     }
@@ -1398,7 +1396,7 @@ public class NumberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 5.5.2
+     * @since 5.5.3
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1655,7 +1653,7 @@ public class NumberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 5.5.2
+     * @since 5.5.3
      */
     public static BigInteger newBigInteger(String str) {
         if (null == str) {
