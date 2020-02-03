@@ -808,4 +808,29 @@ public class NetUtils {
         return (userIp >= begin) && (userIp <= end);
     }
 
+    /**
+     * 检测IP地址是否能ping通
+     *
+     * @param ip IP地址
+     * @return the true/false 返回是否ping通
+     */
+    public static boolean ping(String ip) {
+        return ping(ip, 200);
+    }
+
+    /**
+     * 检测IP地址是否能ping通
+     *
+     * @param ip      IP地址
+     * @param timeout 检测超时（毫秒）
+     * @return the true/false 是否ping通
+     */
+    public static boolean ping(String ip, int timeout) {
+        try {
+            return InetAddress.getByName(ip).isReachable(timeout);
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
 }
