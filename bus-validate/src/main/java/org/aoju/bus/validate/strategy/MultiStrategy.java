@@ -36,7 +36,7 @@ import java.util.List;
  * 多规则匹配校验
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class MultiStrategy implements Matcher<Object, Multi> {

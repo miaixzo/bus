@@ -41,7 +41,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class NetUtils {
@@ -806,6 +806,31 @@ public class NetUtils {
      */
     private static boolean isInner(long userIp, long begin, long end) {
         return (userIp >= begin) && (userIp <= end);
+    }
+
+    /**
+     * 检测IP地址是否能ping通
+     *
+     * @param ip IP地址
+     * @return the true/false 返回是否ping通
+     */
+    public static boolean ping(String ip) {
+        return ping(ip, 200);
+    }
+
+    /**
+     * 检测IP地址是否能ping通
+     *
+     * @param ip      IP地址
+     * @param timeout 检测超时（毫秒）
+     * @return the true/false 是否ping通
+     */
+    public static boolean ping(String ip, int timeout) {
+        try {
+            return InetAddress.getByName(ip).isReachable(timeout);
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
 }

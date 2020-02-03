@@ -35,7 +35,7 @@ import java.io.Serializable;
  * 此对象也用于将图像文件和{@link DataFlavor#imageFlavor} 元信息对应
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class ImageSelection implements Transferable, Serializable {

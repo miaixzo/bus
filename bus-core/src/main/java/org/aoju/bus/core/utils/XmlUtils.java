@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -37,6 +39,9 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -55,10 +60,55 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class XmlUtils {
+
+    /**
+     * 读取解析XML文件
+     *
+     * @param file XML文件
+     * @return XML文档对象
+     */
+    public static Document readXML(File file) {
+        Assert.notNull(file, "Xml file is null !");
+        if (false == file.exists()) {
+            throw new InstrumentException("File [{}] not a exist!", file.getAbsolutePath());
+        }
+        if (false == file.isFile()) {
+            throw new InstrumentException("[{}] not a file!", file.getAbsolutePath());
+        }
+
+        try {
+            file = file.getCanonicalFile();
+        } catch (IOException e) {
+            // ignore
+        }
+
+        BufferedInputStream in = null;
+        try {
+            in = FileUtils.getInputStream(file);
+            return readXML(in);
+        } finally {
+            IoUtils.close(in);
+        }
+    }
+
+    /**
+     * 读取解析XML文件
+     * 如果给定内容以“&lt;”开头，表示这是一个XML内容，直接读取，否则按照路径处理
+     * 路径可以为相对路径，也可以是绝对路径，相对路径相对于ClassPath
+     *
+     * @param pathOrContent 内容或路径
+     * @return XML文档对象
+     */
+    public static Document readXML(String pathOrContent) {
+        if (StringUtils.startWith(pathOrContent, '<')) {
+            return parseXml(pathOrContent);
+        }
+        return readXML(FileUtils.file(pathOrContent));
+    }
 
     /**
      * 读取解析XML文件
@@ -66,10 +116,8 @@ public class XmlUtils {
      *
      * @param inputStream XML流
      * @return XML文档对象
-     * @throws InstrumentException IO异常或转换异常
-     * @since 3.1.9
      */
-    public static Document readXML(InputStream inputStream) throws InstrumentException {
+    public static Document readXML(InputStream inputStream) {
         return readXML(new InputSource(inputStream));
     }
 
@@ -78,10 +126,8 @@ public class XmlUtils {
      *
      * @param reader XML流
      * @return XML文档对象
-     * @throws InstrumentException IO异常或转换异常
-     * @since 3.1.9
      */
-    public static Document readXML(Reader reader) throws InstrumentException {
+    public static Document readXML(Reader reader) {
         return readXML(new InputSource(reader));
     }
 
@@ -91,7 +137,6 @@ public class XmlUtils {
      *
      * @param source {@link InputSource}
      * @return XML文档对象
-     * @since 3.1.9
      */
     public static Document readXML(InputSource source) {
         final DocumentBuilder builder = createDocumentBuilder();
@@ -106,9 +151,30 @@ public class XmlUtils {
      * 从XML中读取对象 Reads serialized object from the XML file.
      *
      * @param <T>    对象类型
+     * @param source XML文件
+     * @return 对象
+     */
+    public static <T> T readObjectFromXml(File source) {
+        return readObjectFromXml(new InputSource(FileUtils.getInputStream(source)));
+    }
+
+    /**
+     * 从XML中读取对象 Reads serialized object from the XML file.
+     *
+     * @param <T>    对象类型
+     * @param xmlStr XML内容
+     * @return 对象
+     */
+    public static <T> T readObjectFromXml(String xmlStr) {
+        return readObjectFromXml(new InputSource(StringUtils.getReader(xmlStr)));
+    }
+
+    /**
+     * 从XML中读取对象 Reads serialized object from the XML file.
+     *
+     * @param <T>    对象类型
      * @param source {@link InputSource}
      * @return 对象
-     * @since 5.5.3
      */
     public static <T> T readObjectFromXml(InputSource source) {
         Object result;
@@ -117,9 +183,237 @@ public class XmlUtils {
             xmldec = new XMLDecoder(source);
             result = xmldec.readObject();
         } finally {
-            xmldec.close();
+            IoUtils.close(xmldec);
         }
         return (T) result;
+    }
+
+    /**
+     * 将String类型的XML转换为XML文档
+     *
+     * @param xmlStr XML字符串
+     * @return XML文档
+     */
+    public static Document parseXml(String xmlStr) {
+        if (StringUtils.isBlank(xmlStr)) {
+            throw new IllegalArgumentException("XML content string is empty !");
+        }
+        xmlStr = cleanInvalid(xmlStr);
+        return readXML(new InputSource(StringUtils.getReader(xmlStr)));
+    }
+
+    /**
+     * 将XML文档转换为String
+     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     * 默认非格式化输出，若想格式化请使用{@link #format(Document)}
+     *
+     * @param doc XML文档
+     * @return XML字符串
+     */
+    public static String toStr(Document doc) {
+        return toStr(doc, false);
+    }
+
+    /**
+     * 将XML文档转换为String
+     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     *
+     * @param doc      XML文档
+     * @param isPretty 是否格式化输出
+     * @return XML字符串
+     * @since 3.0.9
+     */
+    public static String toStr(Document doc, boolean isPretty) {
+        return toStr(doc, Charset.DEFAULT_UTF_8, isPretty);
+    }
+
+    /**
+     * 将XML文档转换为String
+     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     *
+     * @param doc      XML文档
+     * @param charset  编码
+     * @param isPretty 是否格式化输出
+     * @return XML字符串
+     * @since 3.0.9
+     */
+    public static String toStr(Document doc, String charset, boolean isPretty) {
+        return toStr(doc, charset, isPretty, false);
+    }
+
+    /**
+     * 将XML文档转换为String
+     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     *
+     * @param doc                XML文档
+     * @param charset            编码
+     * @param isPretty           是否格式化输出
+     * @param omitXmlDeclaration 是否输出 xml Declaration
+     * @return XML字符串
+     * @since 5.1.2
+     */
+    public static String toStr(Document doc, String charset, boolean isPretty, boolean omitXmlDeclaration) {
+        final StringWriter writer = StringUtils.getWriter();
+        try {
+            write(doc, writer, charset, isPretty ? 2 : 0, omitXmlDeclaration);
+        } catch (Exception e) {
+            throw new InstrumentException("Trans xml document to string error!");
+        }
+        return writer.toString();
+    }
+
+    /**
+     * 格式化XML输出
+     *
+     * @param doc {@link Document} XML文档
+     * @return 格式化后的XML字符串
+     * @since 4.4.5
+     */
+    public static String format(Document doc) {
+        return toStr(doc, true);
+    }
+
+    /**
+     * 格式化XML输出
+     *
+     * @param xmlStr XML字符串
+     * @return 格式化后的XML字符串
+     * @since 4.4.5
+     */
+    public static String format(String xmlStr) {
+        return format(parseXml(xmlStr));
+    }
+
+    /**
+     * 将XML文档写入到文件
+     * 使用Document中的编码
+     *
+     * @param doc          XML文档
+     * @param absolutePath 文件绝对路径，不存在会自动创建
+     */
+    public static void toFile(Document doc, String absolutePath) {
+        toFile(doc, absolutePath, null);
+    }
+
+    /**
+     * 将XML文档写入到文件
+     *
+     * @param doc     XML文档
+     * @param path    文件路径绝对路径或相对ClassPath路径，不存在会自动创建
+     * @param charset 自定义XML文件的编码，如果为{@code null} 读取XML文档中的编码，否则默认UTF-8
+     */
+    public static void toFile(Document doc, String path, String charset) {
+        if (StringUtils.isBlank(charset)) {
+            charset = doc.getXmlEncoding();
+        }
+        if (StringUtils.isBlank(charset)) {
+            charset = Charset.DEFAULT_UTF_8;
+        }
+
+        BufferedWriter writer = null;
+        try {
+            writer = FileUtils.getWriter(path, charset, false);
+            write(doc, writer, charset, 2);
+        } finally {
+            IoUtils.close(writer);
+        }
+    }
+
+    /**
+     * 将XML文档写出
+     *
+     * @param node    {@link Node} XML文档节点或文档本身
+     * @param writer  写出的Writer，Writer决定了输出XML的编码
+     * @param charset 编码
+     * @param indent  格式化输出中缩进量，小于1表示不格式化输出
+     * @since 3.0.9
+     */
+    public static void write(Node node, Writer writer, String charset, int indent) {
+        transform(new DOMSource(node), new StreamResult(writer), charset, indent);
+    }
+
+    /**
+     * 将XML文档写出
+     *
+     * @param node               {@link Node} XML文档节点或文档本身
+     * @param writer             写出的Writer，Writer决定了输出XML的编码
+     * @param charset            编码
+     * @param indent             格式化输出中缩进量，小于1表示不格式化输出
+     * @param omitXmlDeclaration 是否输出 xml Declaration
+     * @since 5.1.2
+     */
+    public static void write(Node node, Writer writer, String charset, int indent, boolean omitXmlDeclaration) {
+        transform(new DOMSource(node), new StreamResult(writer), charset, indent, omitXmlDeclaration);
+    }
+
+    /**
+     * 将XML文档写出
+     *
+     * @param node    {@link Node} XML文档节点或文档本身
+     * @param out     写出的Writer，Writer决定了输出XML的编码
+     * @param charset 编码
+     * @param indent  格式化输出中缩进量，小于1表示不格式化输出
+     * @since 4.0.8
+     */
+    public static void write(Node node, OutputStream out, String charset, int indent) {
+        transform(new DOMSource(node), new StreamResult(out), charset, indent);
+    }
+
+    /**
+     * 将XML文档写出
+     *
+     * @param node               {@link Node} XML文档节点或文档本身
+     * @param out                写出的Writer，Writer决定了输出XML的编码
+     * @param charset            编码
+     * @param indent             格式化输出中缩进量，小于1表示不格式化输出
+     * @param omitXmlDeclaration 是否输出 xml Declaration
+     * @since 5.1.2
+     */
+    public static void write(Node node, OutputStream out, String charset, int indent, boolean omitXmlDeclaration) {
+        transform(new DOMSource(node), new StreamResult(out), charset, indent, omitXmlDeclaration);
+    }
+
+    /**
+     * 将XML文档写出<br>
+     *
+     * @param source  源
+     * @param result  目标
+     * @param charset 编码
+     * @param indent  格式化输出中缩进量，小于1表示不格式化输出
+     * @since 4.0.9
+     */
+    public static void transform(Source source, Result result, String charset, int indent) {
+        transform(source, result, charset, indent, false);
+    }
+
+    /**
+     * 将XML文档写出
+     *
+     * @param source             源
+     * @param result             目标
+     * @param charset            编码
+     * @param indent             格式化输出中缩进量，小于1表示不格式化输出
+     * @param omitXmlDeclaration 是否输出 xml Declaration
+     * @since 5.1.2
+     */
+    public static void transform(Source source, Result result, String charset, int indent, boolean omitXmlDeclaration) {
+        final TransformerFactory factory = TransformerFactory.newInstance();
+        try {
+            final Transformer xformer = factory.newTransformer();
+            if (indent > 0) {
+                xformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indent));
+            }
+            if (StringUtils.isNotBlank(charset)) {
+                xformer.setOutputProperty(OutputKeys.ENCODING, charset);
+            }
+            if (omitXmlDeclaration) {
+                xformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            }
+            xformer.transform(source, result);
+        } catch (Exception e) {
+            throw new InstrumentException("Trans xml document to string error!");
+        }
     }
 
     /**
@@ -130,6 +424,32 @@ public class XmlUtils {
      */
     public static Document createXml() {
         return createDocumentBuilder().newDocument();
+    }
+
+    /**
+     * 创建XML文档<br>
+     * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
+     *
+     * @param rootElementName 根节点名称
+     * @return XML文档
+     */
+    public static Document createXml(String rootElementName) {
+        return createXml(rootElementName, null);
+    }
+
+    /**
+     * 创建XML文档<br>
+     * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
+     *
+     * @param rootElementName 根节点名称
+     * @param namespace       命名空间，无则传null
+     * @return XML文档
+     * @since 5.0.4
+     */
+    public static Document createXml(String rootElementName, String namespace) {
+        final Document doc = createXml();
+        doc.appendChild(null == namespace ? doc.createElement(rootElementName) : doc.createElementNS(rootElementName, namespace));
+        return doc;
     }
 
     /**
@@ -150,17 +470,16 @@ public class XmlUtils {
     }
 
     /**
-     * 创建XML文档
-     * 创建的XML默认是utf8编码,修改编码的过程是在toStr和toFile方法里,既XML在转为文本的时候才定义编码
+     * 去除XML文本中的无效字符
      *
-     * @param rootElementName 根节点名称
-     * @return XML文档
+     * @param xmlContent XML文本
+     * @return 当传入为null时返回null
      */
-    public static Document createXml(String rootElementName) {
-        final Document doc = createXml();
-        doc.appendChild(doc.createElement(rootElementName));
-
-        return doc;
+    public static String cleanInvalid(String xmlContent) {
+        if (xmlContent == null) {
+            return null;
+        }
+        return xmlContent.replaceAll(RegEx.INVALID_REGEX, "");
     }
 
     /**
@@ -172,19 +491,6 @@ public class XmlUtils {
      */
     public static Element getRootElement(Document doc) {
         return (null == doc) ? null : doc.getDocumentElement();
-    }
-
-    /**
-     * 去除XML文本中的无效字符
-     *
-     * @param xmlContent XML文本
-     * @return 当传入为null时返回null
-     */
-    public static String cleanInvalid(String xmlContent) {
-        if (xmlContent == null) {
-            return null;
-        }
-        return xmlContent.replaceAll(RegEx.INVALID_REGEX, "");
     }
 
     /**
@@ -274,7 +580,7 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 5.5.3
+     * @since 5.5.5
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -304,7 +610,6 @@ public class XmlUtils {
 
     /**
      * 通过XPath方式读取XML节点等信息
-     * Xpath相关文章：https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html
      *
      * @param expression XPath表达式
      * @param source     资源,可以是Docunent、Node节点等
@@ -316,13 +621,12 @@ public class XmlUtils {
 
     /**
      * 通过XPath方式读取XML节点等信息
-     * Xpath相关文章：https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html
      *
      * @param expression XPath表达式
      * @param source     资源,可以是Docunent、Node节点等
      * @param returnType 返回类型,{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 5.5.3
+     * @since 5.5.5
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();

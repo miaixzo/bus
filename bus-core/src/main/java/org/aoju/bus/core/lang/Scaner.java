@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  * 类扫描器
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class Scaner {
@@ -234,8 +234,8 @@ public class Scaner {
             if (fileName.endsWith(FileType.CLASS)) {
                 final String className = fileName//
                         // 8为classes长度,fileName.length() - 6为".class"的长度
-                        .substring(rootDir.length(), fileName.length() - 6)//
-                        .replace(File.separatorChar, Symbol.C_DOT);//
+                        .substring(rootDir.length(), fileName.length() - 6)
+                        .replace(File.separatorChar, Symbol.C_DOT);
                 //加入满足条件的类
                 addIfAccept(className);
             } else if (fileName.endsWith(FileType.JAR)) {
@@ -246,8 +246,11 @@ public class Scaner {
                 }
             }
         } else if (file.isDirectory()) {
-            for (File subFile : file.listFiles()) {
-                scanFile(subFile, (null == rootDir) ? subPathBeforePackage(file) : rootDir);
+            final File[] files = file.listFiles();
+            if (null != files) {
+                for (File subFile : files) {
+                    scanFile(subFile, (null == rootDir) ? subPathBeforePackage(file) : rootDir);
+                }
             }
         }
     }

@@ -34,7 +34,7 @@ import java.io.IOException;
  * 只有完成之后，字节才会被复制到网络中
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public final class BufferedBody extends OutputStreamBody {

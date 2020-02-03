@@ -27,7 +27,7 @@ package org.aoju.bus.metric.manual;
  * 解码data部分参数。如果想要在执行方法前改变业务参数，使用此功能。
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8++
  */
 public interface DataDecoder {

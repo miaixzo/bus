@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public class DateUtils {
@@ -1482,26 +1482,13 @@ public class DateUtils {
     }
 
     /**
-     * 判定给定开始时间经过某段时间后是否过期
-     *
-     * @param startDate   开始时间
-     * @param dateField   时间单位
-     * @param timeLength  时长
-     * @param checkedDate 被比较的时间 如果经过时长后的时间晚于被检查的时间,就表示过期
-     * @return 是否过期
-     * @since 3.1.1
-     */
-    public static boolean isExpired(Date startDate, Fields.DateField dateField, int timeLength, Date checkedDate) {
-        final Date endDate = offset(startDate, dateField, timeLength);
-        return endDate.after(checkedDate);
-    }
-
-    /**
      * 判定在指定检查时间是否过期。
      *
      * <p>
-     * 以商品为例，startDate即生产日期，endDate即保质期的截止日期，checkDate表示在何时检查是否过期（一般为当前时间）<br>
-     * endDate和startDate的差值即为保质期（按照毫秒计），checkDate和startDate的差值即为实际经过的时长，实际时长大于保质期表示超时。
+     * 以商品为例，startDate即生产日期，endDate即保质期的截止日期，
+     * checkDate表示在何时检查是否过期（一般为当前时间）
+     * endDate和startDate的差值即为保质期（按照毫秒计）
+     * checkDate和startDate的差值即为实际经过的时长，实际时长大于保质期表示超时。
      * </p>
      *
      * @param startDate 开始时间
@@ -1511,7 +1498,7 @@ public class DateUtils {
      * @since 5.1.1
      */
     public static boolean isExpired(Date startDate, Date endDate, Date checkDate) {
-        return betweenMs(startDate, checkDate) > betweenMs(startDate, checkDate);
+        return betweenMs(startDate, checkDate) > betweenMs(startDate, endDate);
     }
 
     /**

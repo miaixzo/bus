@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.starter.banner;
 
-
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;
@@ -34,7 +33,7 @@ import java.io.InputStream;
  * 旗标生成器
  *
  * @author Kimi Liu
- * @version 5.5.3
+ * @version 5.5.5
  * @since JDK 1.8+
  */
 public abstract class AbstractBanner {
