@@ -2727,45 +2727,6 @@ public class DateUtils {
     }
 
     /**
-     * 计算两个农历日期之差
-     *
-     * @param lc1   　农历１
-     * @param lc2   　农历２
-     * @param field 　计算的维度，比如按月,天等
-     * @return 具体的差值
-     */
-    public static long luanrDiff(DateUtils lc1, DateUtils lc2, int field) {
-        return solarDiff(lc1.getSolar(), lc2.getSolar(), field);
-    }
-
-    /**
-     * 公历转农历
-     *
-     * @param solar 　公历日期
-     * @return 农历日期
-     */
-    public static DateUtils solar2Lunar(Calendar solar) {
-        DateUtils ret = new DateUtils();
-        ret.lunar(solar.get(Calendar.YEAR), solar.get(Calendar.MONTH), solar.get(Calendar.DATE));
-        return ret;
-    }
-
-    /**
-     * 农历转公历
-     *
-     * @param lunarYear   　农历年
-     * @param lunarMonth  　农历月，从１开始
-     * @param LunarDate   　农历日
-     * @param isLeapMonth 　是否润月
-     * @return 公历日期
-     */
-    public static Calendar lunar2Solar(int lunarYear, int lunarMonth, int LunarDate, boolean isLeapMonth) {
-        DateUtils ret = new DateUtils();
-        ret.lunar(lunarYear, lunarMonth, LunarDate, isLeapMonth);
-        return ret.getSolar();
-    }
-
-    /**
      * 获取农历日的表示
      *
      * @param lunarDay 　农历日数值表示
@@ -2801,6 +2762,45 @@ public class DateUtils {
     }
 
     /**
+     * 农历转公历
+     *
+     * @param lunarYear   　农历年
+     * @param lunarMonth  　农历月，从１开始
+     * @param LunarDate   　农历日
+     * @param isLeapMonth 　是否润月
+     * @return 公历日期
+     */
+    public static Calendar lunar2Solar(int lunarYear, int lunarMonth, int LunarDate, boolean isLeapMonth) {
+        DateUtils ret = new DateUtils();
+        ret.lunar(lunarYear, lunarMonth, LunarDate, isLeapMonth);
+        return ret.solar;
+    }
+
+    /**
+     * 计算两个农历日期之差
+     *
+     * @param lc1   　农历１
+     * @param lc2   　农历２
+     * @param field 　计算的维度，比如按月,天等
+     * @return 具体的差值
+     */
+    public static long luanrDiff(DateUtils lc1, DateUtils lc2, int field) {
+        return solarDiff(lc1.solar, lc2.solar, field);
+    }
+
+    /**
+     * 公历转农历
+     *
+     * @param solar 　公历日期
+     * @return 农历日期
+     */
+    public static DateUtils solar2Lunar(Calendar solar) {
+        DateUtils ret = new DateUtils();
+        ret.lunar(solar.get(Calendar.YEAR), solar.get(Calendar.MONTH), solar.get(Calendar.DATE));
+        return ret;
+    }
+
+    /**
      * 判断两个整数所代表公历日期的差值
      * 一年按365天计算，一个月按30天计算
      *
@@ -2809,7 +2809,7 @@ public class DateUtils {
      * @param field      　差值单位
      * @return 差值
      */
-    public static long solarDateCodesDiff(int solarCode1, int solarCode2, int field) {
+    public static long solarDiff(int solarCode1, int solarCode2, int field) {
         GregorianCalendar c1 = new GregorianCalendar(solarCode1 / 10000, solarCode1 % 10000 / 100 - 1,
                 solarCode1 % 10000 % 100);
         GregorianCalendar c2 = new GregorianCalendar(solarCode2 / 10000, solarCode2 % 10000 / 100 - 1,
@@ -2854,7 +2854,7 @@ public class DateUtils {
      * @return 传统农历年份的表示
      */
     public static String getTraditionalYearName(int y) {
-        y = y - MINI_YEAR + 36;
+        y = y - 1804;
         return ("" + Fields.CN_GAN[y % 10] + Fields.CN_ZHI[y % 12] + "年");
     }
 
@@ -2869,6 +2869,15 @@ public class DateUtils {
     }
 
     /**
+     * 返回中国农历的全名
+     *
+     * @return String
+     */
+    public String getFullLunarName() {
+        return this.toString() + Symbol.SPACE + getTraditionalYearName(this.lyear) + Symbol.SPACE + getAnimalYearName(this.lyear);
+    }
+
+    /**
      * 日期增加,和<code>GregorianCalendar.add</code>类似
      *
      * @param field  　单位
@@ -2876,21 +2885,9 @@ public class DateUtils {
      * @see GregorianCalendar
      */
     public void add(int field, int amount) {
-        this.getSolar().add(field, amount);
-        this.lunar(this.getSolar().get(Calendar.YEAR), this.getSolar().get(Calendar.MONTH),
-                this.getSolar().get(Calendar.DATE));
-    }
-
-    /**
-     * 增加公历日期
-     *
-     * @param field 　单位
-     * @param n     数值
-     * @see GregorianCalendar
-     */
-    public void solarAdd(int field, int n) {
-        getSolar().add(field, n);
-        lunar(getSolar().get(Calendar.YEAR), getSolar().get(Calendar.MONTH), getSolar().get(Calendar.DATE));
+        this.solar.add(field, amount);
+        this.lunar(this.solar.get(Calendar.YEAR), this.solar.get(Calendar.MONTH),
+                this.solar.get(Calendar.DATE));
     }
 
     /**
@@ -2905,52 +2902,11 @@ public class DateUtils {
             throw new InstrumentException("Wrong lunar ldate: " + lmonth + " " + ldate);
         }
         if (showLeap) {
-            return (this.isLeapMonth() ? "闰" : "") + getMonthName(this.lmonth) + "月"
+            return (this.isLeapMonth ? "闰" : "") + getMonthName(this.lmonth) + "月"
                     + getDayName(this.ldate);
         } else {
             return getMonthName(this.lmonth) + "月" + getDayName(this.ldate);
         }
-    }
-
-    @Override
-    public String toString() {
-        if (this.lyear < MINI_YEAR || this.lyear > MAX_YEAR || this.lmonth < 1 || this.lmonth > 12 || this.ldate < 1
-                || this.ldate > 30) {
-            return "Wrong lunar date: " + lyear + " " + lmonth + " " + ldate;
-        }
-        return getYearName(this.lyear) + "年" + (this.isLeapMonth() ? "闰" : "") + getMonthName(this.lmonth) + "月"
-                + getDayName(this.ldate);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DateUtils that = (DateUtils) o;
-
-        if (lyear != that.lyear) return false;
-        if (lmonth != that.lmonth) return false;
-        if (ldate != that.ldate) return false;
-        return isLeapMonth == that.isLeapMonth;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = lyear;
-        result = 31 * result + lmonth;
-        result = 31 * result + ldate;
-        result = 31 * result + (isLeapMonth ? 1 : 0);
-        return result;
-    }
-
-    /**
-     * 返回中国农历的全名
-     *
-     * @return String
-     */
-    public String getFullLunarName() {
-        return this.toString() + Symbol.SPACE + getTraditionalYearName(this.lyear) + Symbol.SPACE + getAnimalYearName(this.lyear);
     }
 
     /**
@@ -2996,7 +2952,7 @@ public class DateUtils {
      * @param solarYear 年份
      * @return 公历日历编码
      */
-    private int[] builderSolarCodes(int solarYear) {
+    private int[] builder(int solarYear) {
         if (solarYear < MINI_YEAR && solarYear > MAX_YEAR) {
             throw new InstrumentException("Illegal solar year: " + solarYear);
         }
@@ -3035,15 +2991,15 @@ public class DateUtils {
         this.lmonth = lunarMonth;
         this.ldate = lunarDate;
         int solarMontDate = Fields.CN_LUNAR[lunarYear - MINI_YEAR][lunarMonth];
-        leapMonth = Fields.CN_LUNAR[lunarYear - MINI_YEAR][0];
-        if (leapMonth != 0 && (lunarMonth > leapMonth || (lunarMonth == leapMonth && isleapMonth))) {
+        this.leapMonth = Fields.CN_LUNAR[lunarYear - MINI_YEAR][0];
+        if (this.leapMonth != 0 && (lunarMonth > this.leapMonth || (lunarMonth == this.leapMonth && isleapMonth))) {
             // 闰月，且当前农历月大于闰月月份，取下一个月的LunarInfo码
             // 闰月，且当前农历月等于闰月月份，并且此农历月为闰月，取下一个月的LunarInfo码
             solarMontDate = Fields.CN_LUNAR[lunarYear - MINI_YEAR][lunarMonth + 1];
         }
-        this.getSolar().set(Calendar.YEAR, lunarYear);
-        this.getSolar().set(Calendar.MONTH, (solarMontDate / 100) - 1);
-        this.getSolar().set(Calendar.DATE, solarMontDate % 100);
+        this.solar.set(Calendar.YEAR, lunarYear);
+        this.solar.set(Calendar.MONTH, (solarMontDate / 100) - 1);
+        this.solar.set(Calendar.DATE, solarMontDate % 100);
         this.add(Calendar.DATE, lunarDate - 1);
     }
 
@@ -3060,13 +3016,13 @@ public class DateUtils {
             throw new InstrumentException("Illegal solar year: " + solarYear);
         }
         int solarCode = solarYear * 10000 + 100 * (1 + solarMonth) + solarDate; // 公历码
-        leapMonth = Fields.CN_LUNAR[solarYear - MINI_YEAR][0];
-        int[] solarCodes = builderSolarCodes(solarYear);
+        this.leapMonth = Fields.CN_LUNAR[solarYear - MINI_YEAR][0];
+        int[] solarCodes = builder(solarYear);
         int newMonth = binSearch(solarCodes, solarCode);
         if (-1 == newMonth) {
             throw new InstrumentException("No lunarInfo found by solarCode: " + solarCode);
         }
-        int xdate = Long.valueOf(solarDateCodesDiff(solarCode, solarCodes[newMonth], Calendar.DATE)).intValue();
+        int xdate = Long.valueOf(solarDiff(solarCode, solarCodes[newMonth], Calendar.DATE)).intValue();
         if (0 == newMonth) {// 在上一年
             int preYear = solarYear - 1;
             short[] preSolarCodes = Fields.CN_LUNAR[preYear - MINI_YEAR];
@@ -3082,7 +3038,7 @@ public class DateUtils {
             } else {// 此公历日期在上一年农历12月内
                 newMonth = 12;
             }
-            xdate = Long.valueOf(solarDateCodesDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
+            xdate = Long.valueOf(solarDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
             if (xdate < 0) {
                 throw new InstrumentException("Wrong solarCode: " + solarCode);
             }
@@ -3096,7 +3052,7 @@ public class DateUtils {
             short[] nextSolarCodes = Fields.CN_LUNAR[solarYear + 1 - MINI_YEAR];
             // 取下一年农历1月1号公历日期码
             int nearSolarCode = solarYear * 10000 + nextSolarCodes[1]; // 下一年农历1月1号公历日期码
-            xdate = Long.valueOf(solarDateCodesDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
+            xdate = Long.valueOf(solarDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
             if (xdate < 0) {
                 throw new InstrumentException("Wrong solarCode: " + solarCode);
             }
@@ -3117,58 +3073,51 @@ public class DateUtils {
                 this.lmonth = newMonth;
             }
         }
-        this.getSolar().set(Calendar.YEAR, solarYear);
-        this.getSolar().set(Calendar.MONTH, solarMonth);
-        this.getSolar().set(Calendar.DATE, solarDate);
+        this.solar.set(Calendar.YEAR, solarYear);
+        this.solar.set(Calendar.MONTH, solarMonth);
+        this.solar.set(Calendar.DATE, solarDate);
     }
 
-
-    public int getLyear() {
-        return lyear;
+    @Override
+    public String toString() {
+        if (this.lyear < MINI_YEAR || this.lyear > MAX_YEAR || this.lmonth < 1 || this.lmonth > 12 || this.ldate < 1
+                || this.ldate > 30) {
+            return "Wrong lunar date: " + lyear + " " + lmonth + " " + ldate;
+        }
+        return getYearName(this.lyear) + "年" + (this.isLeapMonth ? "闰" : "") + getMonthName(this.lmonth) + "月"
+                + getDayName(this.ldate);
     }
 
-    public void setLyear(int lyear) {
-        this.lyear = lyear;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DateUtils that = (DateUtils) o;
+
+        if (lyear != that.lyear) {
+            return false;
+        }
+        if (lmonth != that.lmonth) {
+            return false;
+        }
+        if (ldate != that.ldate) {
+            return false;
+        }
+        return isLeapMonth == that.isLeapMonth;
     }
 
-    public int getLmonth() {
-        return lmonth;
-    }
-
-    public void setLmonth(int lmonth) {
-        this.lmonth = lmonth;
-    }
-
-    public int getLdate() {
-        return ldate;
-    }
-
-    public void setLdate(int ldate) {
-        this.ldate = ldate;
-    }
-
-    public int getLeapMonth() {
-        return leapMonth;
-    }
-
-    public GregorianCalendar getSolar() {
-        return solar;
-    }
-
-    public void setSolar(GregorianCalendar solar) {
-        this.solar = solar;
-    }
-
-    public boolean isLeapMonth() {
-        return isLeapMonth;
-    }
-
-    public void setLeapMonth(int leapMonth) {
-        this.leapMonth = leapMonth;
-    }
-
-    public void setLeapMonth(boolean isLeapMonth) {
-        this.isLeapMonth = isLeapMonth;
+    @Override
+    public int hashCode() {
+        int result = lyear;
+        result = 31 * result + lmonth;
+        result = 31 * result + ldate;
+        result = 31 * result + (isLeapMonth ? 1 : 0);
+        return result;
     }
 
 }
