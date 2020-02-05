@@ -106,7 +106,7 @@ implementation 'org.aoju:bus-all:5.5.5'
 - [Maven中央库②](http://repo2.maven.org/maven2/org/aoju)
 
 > 注意
-> Bus项目支持JDK8+，对Android平台部分模块没有测试，不能保证所有工具类获工具方法可用。
+> Bus项目支持JDK8+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。
 
 ## 分支说明
 
