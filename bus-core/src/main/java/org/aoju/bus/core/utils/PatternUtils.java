@@ -345,7 +345,7 @@ public class PatternUtils {
             return null;
         }
 
-        Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+        Pattern pattern = get(regex, Pattern.DOTALL);
         return findAll(pattern, content, group, collection);
     }
 
@@ -500,7 +500,7 @@ public class PatternUtils {
      * @return 处理后的文本
      */
     public static String replaceAll(String content, String regex, String replacementTemplate) {
-        final Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+        final Pattern pattern = get(regex, Pattern.DOTALL);
         return replaceAll(content, pattern, replacementTemplate);
     }
 
