@@ -269,7 +269,6 @@ public class PatternUtils {
             return content;
         }
 
-        // RegEx pattern = RegEx.compile(regex, RegEx.DOTALL);
         final Pattern pattern = get(regex, Pattern.DOTALL);
         return delAll(pattern, content);
     }
