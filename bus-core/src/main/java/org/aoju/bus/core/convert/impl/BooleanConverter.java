@@ -21,31 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.BooleanUtils;
 
 /**
- * 强转转换器
+ * 波尔转换器
  *
- * @param <T> 强制转换到的类型
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class CastConverter<T> extends AbstractConverter<T> {
-
-    private Class<T> targetType;
+public class BooleanConverter extends AbstractConverter<Boolean> {
 
     @Override
-    protected T convertInternal(Object value) {
-        // 由于在AbstractConverter中已经有类型判断并强制转换,因此当在上一步强制转换失败时直接抛出异常
-        throw new InstrumentException("Can not cast value to [{}]", this.targetType);
+    protected Boolean convertInternal(Object value) {
+        if (boolean.class == value.getClass()) {
+            return Boolean.valueOf((boolean) value);
+        }
+        String valueStr = convertToStr(value);
+        return Boolean.valueOf(BooleanUtils.toBoolean(valueStr));
     }
 
-    @Override
-    public Class<T> getTargetType() {
-        return this.targetType;
-    }
 }

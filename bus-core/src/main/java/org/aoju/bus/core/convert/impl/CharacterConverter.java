@@ -21,27 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.utils.BooleanUtils;
+import org.aoju.bus.core.utils.StringUtils;
 
 /**
- * 波尔转换器
+ * 字符转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class BooleanConverter extends AbstractConverter<Boolean> {
+public class CharacterConverter extends AbstractConverter<Character> {
 
     @Override
-    protected Boolean convertInternal(Object value) {
-        if (boolean.class == value.getClass()) {
-            return Boolean.valueOf((boolean) value);
+    protected Character convertInternal(Object value) {
+        if (char.class == value.getClass()) {
+            return Character.valueOf((char) value);
+        } else if (value instanceof Boolean) {
+            return BooleanUtils.toCharacter((Boolean) value);
+        } else if (boolean.class == value.getClass()) {
+            return BooleanUtils.toCharacter((boolean) value);
+        } else {
+            final String valueStr = convertToStr(value);
+            if (StringUtils.isNotBlank(valueStr)) {
+                return Character.valueOf(valueStr.charAt(0));
+            }
         }
-        String valueStr = convertToStr(value);
-        return Boolean.valueOf(BooleanUtils.toBoolean(valueStr));
+        return null;
     }
 
 }

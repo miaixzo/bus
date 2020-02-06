@@ -21,37 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
+import org.aoju.bus.core.utils.CharsetUtils;
+
+import java.nio.charset.Charset;
 
 /**
- * 泛型枚举转换器
+ * 编码对象转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E> {
-
-    private Class<E> enumClass;
-
-    /**
-     * 构造
-     *
-     * @param enumClass 转换成的目标Enum类
-     */
-    public GenericEnumConverter(Class<E> enumClass) {
-        this.enumClass = enumClass;
-    }
+public class CharsetConverter extends AbstractConverter<Charset> {
 
     @Override
-    protected E convertInternal(Object value) {
-        return Enum.valueOf(enumClass, convertToStr(value));
+    protected Charset convertInternal(Object value) {
+        return CharsetUtils.charset(convertToStr(value));
     }
 
-    @Override
-    public Class<E> getTargetType() {
-        return this.enumClass;
-    }
 }

@@ -21,24 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
+import org.aoju.bus.core.convert.ConverterRegistry;
+import org.aoju.bus.core.utils.TypeUtils;
 
-import java.util.Currency;
+import java.lang.reflect.Type;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 货币{@link Currency} 转换器
+ * {@link AtomicReference}转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class CurrencyConverter extends AbstractConverter<Currency> {
+public class AtomicReferenceConverter extends AbstractConverter<AtomicReference> {
 
     @Override
-    protected Currency convertInternal(Object value) {
-        return Currency.getInstance(value.toString());
+    protected AtomicReference<?> convertInternal(Object value) {
+
+        //尝试将值转换为Reference泛型的类型
+        Object targetValue = null;
+        final Type paramType = TypeUtils.getTypeArgument(AtomicReference.class);
+        if (null != paramType) {
+            targetValue = ConverterRegistry.getInstance().convert(paramType, value);
+        }
+        if (null == targetValue) {
+            targetValue = value;
+        }
+
+        return new AtomicReference<>(targetValue);
     }
 
 }

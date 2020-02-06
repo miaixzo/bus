@@ -195,15 +195,11 @@ public class PatternUtils {
             return null;
         }
 
-        HashSet<String> varNums = findAll(RegEx.GROUP_VAR, template, 1, new HashSet<>());
-
         Matcher matcher = pattern.matcher(content);
         if (matcher.find()) {
-            for (String var : varNums) {
-                int group = Integer.parseInt(var);
-                template = template.replace(Symbol.DOLLAR + var, matcher.group(group));
-            }
-            return template;
+            final StringBuffer sb = new StringBuffer();
+            matcher.appendReplacement(sb, template);
+            return sb.toString();
         }
         return null;
     }
@@ -519,23 +515,7 @@ public class PatternUtils {
         }
 
         final Matcher matcher = pattern.matcher(content);
-        boolean result = matcher.find();
-        if (result) {
-            final Set<String> varNums = findAll(RegEx.GROUP_VAR, replacementTemplate, 1, new HashSet<>());
-            final StringBuffer sb = new StringBuffer();
-            do {
-                String replacement = replacementTemplate;
-                for (String var : varNums) {
-                    int group = Integer.parseInt(var);
-                    replacement = replacement.replace(Symbol.DOLLAR + var, matcher.group(group));
-                }
-                matcher.appendReplacement(sb, escape(replacement));
-                result = matcher.find();
-            } while (result);
-            matcher.appendTail(sb);
-            return sb.toString();
-        }
-        return content;
+        return matcher.replaceAll(replacementTemplate);
     }
 
     /**

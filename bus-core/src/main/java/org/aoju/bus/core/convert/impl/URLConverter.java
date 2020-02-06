@@ -21,25 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.convert.ConverterRegistry;
-import org.aoju.bus.core.utils.ArrayUtils;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
 
 /**
- * byte 类型数组转换器
+ * URL对象转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class ByteArrayConverter extends AbstractConverter<byte[]> {
+public class URLConverter extends AbstractConverter<URL> {
 
     @Override
-    protected byte[] convertInternal(Object value) {
-        final Byte[] result = ConverterRegistry.getInstance().convert(Byte[].class, value);
-        return ArrayUtils.unWrap(result);
+    protected URL convertInternal(Object value) {
+        try {
+            if (value instanceof File) {
+                return ((File) value).toURI().toURL();
+            }
+
+            if (value instanceof URI) {
+                return ((URI) value).toURL();
+            }
+            return new URL(convertToStr(value));
+        } catch (Exception e) {
+            // Ignore Exception
+        }
+        return null;
     }
 
 }

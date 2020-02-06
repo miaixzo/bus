@@ -21,36 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.utils.BooleanUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.convert.ConverterRegistry;
+import org.aoju.bus.core.utils.ArrayUtils;
 
 /**
- * 字符转换器
+ * byte 类型数组转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class CharacterConverter extends AbstractConverter<Character> {
+public class ByteArrayConverter extends AbstractConverter<byte[]> {
 
     @Override
-    protected Character convertInternal(Object value) {
-        if (char.class == value.getClass()) {
-            return Character.valueOf((char) value);
-        } else if (value instanceof Boolean) {
-            return BooleanUtils.toCharacter((Boolean) value);
-        } else if (boolean.class == value.getClass()) {
-            return BooleanUtils.toCharacter((boolean) value);
-        } else {
-            final String valueStr = convertToStr(value);
-            if (StringUtils.isNotBlank(valueStr)) {
-                return Character.valueOf(valueStr.charAt(0));
-            }
-        }
-        return null;
+    protected byte[] convertInternal(Object value) {
+        final Byte[] result = ConverterRegistry.getInstance().convert(Byte[].class, value);
+        return ArrayUtils.unWrap(result);
     }
 
 }

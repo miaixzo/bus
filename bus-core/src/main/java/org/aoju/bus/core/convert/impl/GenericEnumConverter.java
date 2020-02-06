@@ -21,38 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.convert.ConverterRegistry;
-import org.aoju.bus.core.utils.TypeUtils;
-
-import java.lang.reflect.Type;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * {@link AtomicReference}转换器
+ * 泛型枚举转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class AtomicReferenceConverter extends AbstractConverter<AtomicReference> {
+public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E> {
 
-    @Override
-    protected AtomicReference<?> convertInternal(Object value) {
+    private Class<E> enumClass;
 
-        //尝试将值转换为Reference泛型的类型
-        Object targetValue = null;
-        final Type paramType = TypeUtils.getTypeArgument(AtomicReference.class);
-        if (null != paramType) {
-            targetValue = ConverterRegistry.getInstance().convert(paramType, value);
-        }
-        if (null == targetValue) {
-            targetValue = value;
-        }
-
-        return new AtomicReference<>(targetValue);
+    /**
+     * 构造
+     *
+     * @param enumClass 转换成的目标Enum类
+     */
+    public GenericEnumConverter(Class<E> enumClass) {
+        this.enumClass = enumClass;
     }
 
+    @Override
+    protected E convertInternal(Object value) {
+        return Enum.valueOf(enumClass, convertToStr(value));
+    }
+
+    @Override
+    public Class<E> getTargetType() {
+        return this.enumClass;
+    }
 }

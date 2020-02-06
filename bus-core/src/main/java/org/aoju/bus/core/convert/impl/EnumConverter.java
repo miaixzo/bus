@@ -21,30 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ClassUtils;
 
 /**
- * 类转换器
- * 将类名转换为类
+ * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class ClassConverter extends AbstractConverter<Class<?>> {
+public class EnumConverter extends AbstractConverter<Object> {
 
-    @Override
-    protected Class<?> convertInternal(Object value) {
-        String valueStr = convertToStr(value);
-        try {
-            return ClassUtils.getClassLoader().loadClass(valueStr);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
+    private Class enumClass;
+
+    /**
+     * 构造
+     *
+     * @param enumClass 转换成的目标Enum类
+     */
+    public EnumConverter(Class enumClass) {
+        this.enumClass = enumClass;
     }
 
+    @Override
+    protected Object convertInternal(Object value) {
+        return Enum.valueOf(enumClass, convertToStr(value));
+    }
+
+    @Override
+    public Class getTargetType() {
+        return this.enumClass;
+    }
 }

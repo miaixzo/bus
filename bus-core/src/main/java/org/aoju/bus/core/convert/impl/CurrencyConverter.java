@@ -21,32 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.utils.BooleanUtils;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Currency;
 
 /**
- * {@link AtomicBoolean}转换器
+ * 货币{@link Currency} 转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class AtomicBooleanConverter extends AbstractConverter<AtomicBoolean> {
+public class CurrencyConverter extends AbstractConverter<Currency> {
 
     @Override
-    protected AtomicBoolean convertInternal(Object value) {
-        if (boolean.class == value.getClass()) {
-            return new AtomicBoolean((boolean) value);
-        }
-        if (value instanceof Boolean) {
-            return new AtomicBoolean((Boolean) value);
-        }
-        final String valueStr = convertToStr(value);
-        return new AtomicBoolean(BooleanUtils.toBoolean(valueStr));
+    protected Currency convertInternal(Object value) {
+        return Currency.getInstance(value.toString());
     }
 
 }

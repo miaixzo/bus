@@ -21,45 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.convert.impl;
 
 import org.aoju.bus.core.convert.AbstractConverter;
+import org.aoju.bus.core.utils.BooleanUtils;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 字符串转换器
+ * {@link AtomicBoolean}转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class PathConverter extends AbstractConverter<Path> {
+public class AtomicBooleanConverter extends AbstractConverter<AtomicBoolean> {
 
     @Override
-    protected Path convertInternal(Object value) {
-        try {
-            if (value instanceof URI) {
-                return Paths.get((URI) value);
-            }
-
-            if (value instanceof URL) {
-                return Paths.get(((URL) value).toURI());
-            }
-
-            if (value instanceof File) {
-                return ((File) value).toPath();
-            }
-
-            return Paths.get(convertToStr(value));
-        } catch (Exception e) {
-            // Ignore Exception
+    protected AtomicBoolean convertInternal(Object value) {
+        if (boolean.class == value.getClass()) {
+            return new AtomicBoolean((boolean) value);
         }
-        return null;
+        if (value instanceof Boolean) {
+            return new AtomicBoolean((Boolean) value);
+        }
+        final String valueStr = convertToStr(value);
+        return new AtomicBoolean(BooleanUtils.toBoolean(valueStr));
     }
 
 }
