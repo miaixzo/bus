@@ -21,24 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert.impl;
+package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.convert.AbstractConverter;
 
-import java.util.TimeZone;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
 
 /**
- * TimeZone转换器
+ * URL对象转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class TimeZoneConverter extends AbstractConverter<TimeZone> {
+public class URLConverter extends AbstractConverter<URL> {
 
     @Override
-    protected TimeZone convertInternal(Object value) {
-        return TimeZone.getTimeZone(convertToStr(value));
+    protected URL convertInternal(Object value) {
+        try {
+            if (value instanceof File) {
+                return ((File) value).toURI().toURL();
+            }
+
+            if (value instanceof URI) {
+                return ((URI) value).toURL();
+            }
+            return new URL(convertToStr(value));
+        } catch (Exception e) {
+            // Ignore Exception
+        }
+        return null;
     }
 
 }

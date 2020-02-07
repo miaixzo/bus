@@ -21,30 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert.impl;
+package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.utils.CharsetUtils;
+
+import java.nio.charset.Charset;
 
 /**
- * 类转换器
- * 将类名转换为类
+ * 编码对象转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class ClassConverter extends AbstractConverter<Class<?>> {
+public class CharsetConverter extends AbstractConverter<Charset> {
 
     @Override
-    protected Class<?> convertInternal(Object value) {
-        String valueStr = convertToStr(value);
-        try {
-            return ClassUtils.getClassLoader().loadClass(valueStr);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
+    protected Charset convertInternal(Object value) {
+        return CharsetUtils.charset(convertToStr(value));
     }
 
 }
