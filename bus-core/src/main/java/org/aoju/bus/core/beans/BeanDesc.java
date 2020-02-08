@@ -51,6 +51,8 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 public class BeanDesc implements Serializable {
+  
+    private static final long serialVersionUID = 1L;
 
     /**
      * Bean类

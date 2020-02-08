@@ -26,6 +26,7 @@ package org.aoju.bus.core.utils;
 import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.collection.IteratorEnumeration;
+import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.convert.ConverterRegistry;
 import org.aoju.bus.core.lang.Editor;
@@ -287,6 +288,26 @@ public class CollUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 集合1中是否包含集合2中所有的元素，即集合2是否为集合1的子集
+     *
+     * @param coll1 集合1
+     * @param coll2 集合2
+     * @return 集合1中是否包含集合2中所有的元素
+     */
+    public static boolean containsAll(Collection<?> coll1, Collection<?> coll2) {
+        if (isEmpty(coll1) || isEmpty(coll2) || coll1.size() < coll2.size()) {
+            return false;
+        }
+
+        for (Object object : coll2) {
+            if (false == coll1.contains(object)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1037,6 +1058,9 @@ public class CollUtils {
      * @return 过滤后的数组
      */
     public static <T> List<T> filter(List<T> list, Filter<T> filter) {
+        if (null == list || null == filter) {
+            return list;
+        }
         final List<T> list2 = (list instanceof LinkedList) ? new LinkedList<>() : new ArrayList<>(list.size());
         for (T t : list) {
             if (filter.accept(t)) {
@@ -2028,6 +2052,30 @@ public class CollUtils {
     }
 
     /**
+     * 根据Bean的属性排序
+     *
+     * @param <T>        元素类型
+     * @param collection 集合，会被转换为List
+     * @param property   属性名
+     * @return 排序后的List
+     */
+    public static <T> List<T> sortByProperty(Collection<T> collection, String property) {
+        return sort(collection, new PropertyCompare<>(property));
+    }
+
+    /**
+     * 根据Bean的属性排序
+     *
+     * @param <T>      元素类型
+     * @param list     List
+     * @param property 属性名
+     * @return 排序后的List
+     */
+    public static <T> List<T> sortByProperty(List<T> list, String property) {
+        return sort(list, new PropertyCompare<>(property));
+    }
+
+    /**
      * 通过Entry排序,可以按照键排序,也可以按照值排序,亦或者两者综合排序
      *
      * @param <K>             键类型
@@ -2035,7 +2083,6 @@ public class CollUtils {
      * @param entryCollection Entry集合
      * @param comparator      {@link Comparator}
      * @return {@link LinkedList}
-     * @since 3.1.9
      */
     public static <K, V> LinkedHashMap<K, V> sortToMap(Collection<Entry<K, V>> entryCollection, Comparator<Entry<K, V>> comparator) {
         List<Entry<K, V>> list = new LinkedList<>(entryCollection);
@@ -2056,7 +2103,6 @@ public class CollUtils {
      * @param map        被排序的Map
      * @param comparator {@link Comparator}
      * @return {@link LinkedList}
-     * @since 3.1.9
      */
     public static <K, V> LinkedHashMap<K, V> sortByEntry(Map<K, V> map, Comparator<Entry<K, V>> comparator) {
         return sortToMap(map.entrySet(), comparator);

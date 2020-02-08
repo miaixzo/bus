@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
+import org.aoju.bus.core.lang.Filter;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -539,6 +540,58 @@ public class IterUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * 过滤集合，此方法在原集合上直接修改<br>
+     * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
+     *
+     * <pre>
+     * 过滤出需要的对象，{@link Filter#accept(Object)}方法
+     * 返回false的对象将被使用{@link Iterator#remove()}方法移除
+     * </pre>
+     *
+     * @param <T>    集合类型
+     * @param <E>    集合元素类型
+     * @param iter   集合
+     * @param filter 过滤器接口
+     * @return 编辑后的集合
+     */
+    public static <T extends Iterable<E>, E> T filter(T iter, Filter<E> filter) {
+        if (null == iter) {
+            return null;
+        }
+
+        filter(iter.iterator(), filter);
+
+        return iter;
+    }
+
+    /**
+     * 过滤集合，此方法在原集合上直接修改<br>
+     * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
+     *
+     * <pre>
+     * 过滤出需要的对象，{@link Filter#accept(Object)}方法
+     * 返回false的对象将被使用{@link Iterator#remove()}方法移除
+     * </pre>
+     *
+     * @param <E>    集合元素类型
+     * @param iter   集合
+     * @param filter 过滤器接口
+     * @return 编辑后的集合
+     */
+    public static <E> Iterator<E> filter(Iterator<E> iter, Filter<E> filter) {
+        if (null == iter || null == filter) {
+            return iter;
+        }
+
+        while (iter.hasNext()) {
+            if (false == filter.accept(iter.next())) {
+                iter.remove();
+            }
+        }
+        return iter;
     }
 
     /**

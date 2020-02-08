@@ -21,45 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.core.convert.impl;
+package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.convert.AbstractConverter;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 /**
- * 字符串转换器
+ * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class PathConverter extends AbstractConverter<Path> {
+public class EnumConverter extends AbstractConverter<Object> {
 
-    @Override
-    protected Path convertInternal(Object value) {
-        try {
-            if (value instanceof URI) {
-                return Paths.get((URI) value);
-            }
+    private Class enumClass;
 
-            if (value instanceof URL) {
-                return Paths.get(((URL) value).toURI());
-            }
-
-            if (value instanceof File) {
-                return ((File) value).toPath();
-            }
-
-            return Paths.get(convertToStr(value));
-        } catch (Exception e) {
-            // Ignore Exception
-        }
-        return null;
+    /**
+     * 构造
+     *
+     * @param enumClass 转换成的目标Enum类
+     */
+    public EnumConverter(Class enumClass) {
+        this.enumClass = enumClass;
     }
 
+    @Override
+    protected Object convertInternal(Object value) {
+        return Enum.valueOf(enumClass, convertToStr(value));
+    }
+
+    @Override
+    public Class getTargetType() {
+        return this.enumClass;
+    }
 }
