@@ -32,7 +32,7 @@ import java.nio.charset.UnsupportedCharsetException;
  * 字符集工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class CharsetUtils {
@@ -143,7 +143,7 @@ public class CharsetUtils {
      * @since 3.1.9
      */
     public static Charset systemCharset() {
-        return FileUtils.isWindows() ? org.aoju.bus.core.lang.Charset.CHARSET_GBK : defaultCharset();
+        return FileUtils.isWindows() ? org.aoju.bus.core.lang.Charset.GBK : defaultCharset();
     }
 
 }

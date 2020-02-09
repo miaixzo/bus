@@ -27,7 +27,7 @@ package org.aoju.bus.metric.manual;
  * 负责加解密
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 public interface Safety {

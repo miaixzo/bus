@@ -49,5 +49,5 @@ public class NettyServerListener implements ChannelFutureListener {
                 ? System.getProperty("term.sig", "INT") //windows下 Ctrl + C
                 : System.getProperty("term.sig", "USR2"); // Linux下（等价于kill -12 pid
     }
-    
+
 }

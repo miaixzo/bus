@@ -34,11 +34,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 默认的HMAC算法实现引擎,使用{@link Mac} 实现摘要<br>
+ * 默认的HMAC算法实现引擎,使用{@link Mac} 实现摘要
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class DefaultHMacEngine implements MacEngine {

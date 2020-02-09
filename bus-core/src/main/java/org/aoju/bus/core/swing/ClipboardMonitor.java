@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.core.swing;
 
-import org.aoju.bus.core.utils.ClipboardUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.utils.SwingUtils;
 import org.aoju.bus.core.utils.ThreadUtils;
 
 import java.awt.datatransfer.Clipboard;
@@ -38,7 +38,7 @@ import java.util.Set;
  * 剪贴板监听
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
@@ -88,7 +88,7 @@ public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
      * @param delay    响应延迟,当从第二次开始,延迟一定毫秒数等待剪贴板可以获取,当tryCount小于2时无效
      */
     ClipboardMonitor(int tryCount, long delay) {
-        this(tryCount, delay, ClipboardUtils.getClipboard());
+        this(tryCount, delay, SwingUtils.getClipboard());
     }
 
     /**

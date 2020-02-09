@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.date;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.utils.DateUtils;
 
@@ -33,7 +34,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class Between {
@@ -68,8 +69,11 @@ public class Between {
      * @since 3.1.1
      */
     public Between(Date begin, Date end, boolean isAbs) {
+        Assert.notNull(begin, "Begin date is null !");
+        Assert.notNull(end, "End date is null !");
+
         if (isAbs && begin.after(end)) {
-            // 间隔只为正数的情况下,如果开始日期晚于结束日期,置换之
+            // 间隔只为正数的情况下，如果开始日期晚于结束日期，置换之
             this.begin = end;
             this.end = begin;
         } else {
@@ -104,17 +108,6 @@ public class Between {
         return new Between(begin, end, isAbs);
     }
 
-    /**
-     * 判断目标日期是否在范围内
-     *
-     * @param begin  起始时间
-     * @param end    结束日期
-     * @param target 目标日期
-     * @return true:在范围内/false:不在范围内
-     */
-    public static boolean isBetween(Date begin, Date end, Date target) {
-        return begin.getTime() <= target.getTime() && end.getTime() >= target.getTime();
-    }
 
     /**
      * 判断两个日期相差的时长
@@ -167,6 +160,16 @@ public class Between {
 
         int result = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
         if (false == isReset) {
+            // 考虑闰年的2月情况
+            if (Calendar.FEBRUARY == beginCal.get(Calendar.MONTH) && Calendar.FEBRUARY == endCal.get(Calendar.MONTH)) {
+                if (beginCal.get(Calendar.DAY_OF_MONTH) == beginCal.getActualMaximum(Calendar.DAY_OF_MONTH)
+                        && endCal.get(Calendar.DAY_OF_MONTH) == endCal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                    // 两个日期都位于2月的最后一天，此时月数按照相等对待，此时都设置为1号
+                    beginCal.set(Calendar.DAY_OF_MONTH, 1);
+                    endCal.set(Calendar.DAY_OF_MONTH, 1);
+                }
+            }
+
             endCal.set(Calendar.YEAR, beginCal.get(Calendar.YEAR));
             long between = endCal.getTimeInMillis() - beginCal.getTimeInMillis();
             if (between < 0) {
@@ -174,16 +177,6 @@ public class Between {
             }
         }
         return result;
-    }
-
-    /**
-     * 判断目标日期是否在范围内
-     *
-     * @param target 目标日期
-     * @return true:在范围内/false:不在范围内
-     */
-    public boolean isBetween(Date target) {
-        return this.begin.getTime() <= target.getTime() && this.end.getTime() >= target.getTime();
     }
 
     /**

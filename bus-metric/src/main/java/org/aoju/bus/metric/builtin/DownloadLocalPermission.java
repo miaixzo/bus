@@ -36,7 +36,7 @@ import java.io.File;
  * 下载权限配置
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 public class DownloadLocalPermission extends AbstractClientClientProcessor {

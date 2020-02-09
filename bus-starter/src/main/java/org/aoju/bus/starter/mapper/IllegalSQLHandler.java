@@ -64,13 +64,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 由于开发人员水平参差不齐，即使订了开发规范很多人也不遵守
  * <p>SQL是影响系统性能最重要的因素，所以拦截掉垃圾SQL语句</p>
- * <br>
  * <p>拦截SQL类型的场景</p>
  * <p>1.必须使用到索引，包含left jion连接字段，符合索引最左原则</p>
  * <p>必须使用索引好处，</p>
  * <p>1.1 如果因为动态SQL，bug导致update的where条件没有带上，全表更新上万条数据</p>
  * <p>1.2 如果检查到使用了索引，SQL性能基本不会太差</p>
- * <br>
  * <p>2.SQL尽量单表执行，有查询left jion的语句，必须在注释里面允许该SQL运行，否则会被拦截</p>
  * <p>https://gaoxianglong.github.io/shark</p>
  * <p>SQL尽量单表执行的好处</p>
@@ -78,7 +76,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>2.2 扩展性极强；（可为分库分表做准备）</p>
  * <p>2.3 缓存利用率高；</p>
  * <p>2.在字段上使用函数</p>
- * <br>
  * <p>3.where条件为空</p>
  * <p>4.where条件使用了 !=</p>
  * <p>5.where条件使用了 not 关键字</p>
@@ -86,7 +83,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>7.where条件使用了 使用子查询</p>
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})

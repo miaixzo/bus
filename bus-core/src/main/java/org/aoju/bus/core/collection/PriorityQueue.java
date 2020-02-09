@@ -26,12 +26,12 @@ package org.aoju.bus.core.collection;
 import java.util.*;
 
 /**
- * 有界优先队列<br>
+ * 有界优先队列
  * 按照给定的排序规则,排序元素,当队列满时,
  * 按照给定的排序规则淘汰末尾元素
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
@@ -88,7 +88,7 @@ public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
     }
 
     /**
-     * 添加多个元素<br>
+     * 添加多个元素
      * 参数为集合的情况请使用{@link PriorityQueue#addAll}
      *
      * @param c 元素数组

@@ -51,7 +51,7 @@ import java.util.Random;
  * SM2算法只支持公钥加密,私钥解密
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class SM2 extends Safety<SM2> {
@@ -584,7 +584,7 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * SM2算法模式<br>
+     * SM2算法模式
      * 在SM2算法中,C1C2C3为旧标准模式,C1C3C2为新标准模式
      */
     public enum SM2Mode {

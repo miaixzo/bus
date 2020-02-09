@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * 工具包集合,工具类快捷方式
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class $ {
@@ -38,10 +38,10 @@ public class $ {
     /**
      * 断言,必须不能为 null
      *
-     * @param obj the object reference to check for nullity
-     * @param <T> the type of the reference
-     * @return {@code obj} if not {@code null}
-     * @throws NullPointerException if {@code obj} is {@code null}
+     * @param obj 检查无效的对象引用
+     * @param <T> 引用的类型
+     * @return {@code obj} 是否为 {@code null}
+     * @throws NullPointerException 如果 {@code obj} 为 {@code null}
      */
     public static <T> T requireNotNull(T obj) {
         return Objects.requireNonNull(obj);
@@ -50,12 +50,11 @@ public class $ {
     /**
      * 断言,必须不能为 null
      *
-     * @param obj     the object reference to check for nullity
-     * @param message detail message to be used in the event that a {@code
-     *                NullPointerException} is thrown
-     * @param <T>     the type of the reference
-     * @return {@code obj} if not {@code null}
-     * @throws NullPointerException if {@code obj} is {@code null}
+     * @param obj     检查是否为空的对象引用
+     * @param message 在抛出{@code NullPointerException}时使用的详细信息
+     * @param <T>     引用的类型
+     * @return {@code obj} 如果不为 {@code null}
+     * @throws NullPointerException 如果 {@code obj} 为 {@code null}
      */
     public static <T> T requireNotNull(T obj, String message) {
         return Objects.requireNonNull(obj, message);
@@ -64,12 +63,11 @@ public class $ {
     /**
      * 断言,必须不能为 null
      *
-     * @param obj             the object reference to check for nullity
-     * @param messageSupplier supplier of the detail message to be
-     *                        used in the event that a {@code NullPointerException} is thrown
-     * @param <T>             the type of the reference
-     * @return {@code obj} if not {@code null}
-     * @throws NullPointerException if {@code obj} is {@code null}
+     * @param obj             检查是否为空的对象引用
+     * @param messageSupplier 在抛出{@code NullPointerException}时使用的详细信息的提供者
+     * @param <T>             引用的类型
+     * @return {@code obj} 如果不为 {@code null}
+     * @throws NullPointerException 如果 {@code obj} 为 {@code null}
      */
     public static <T> T requireNotNull(T obj, Supplier<String> messageSupplier) {
         return Objects.requireNonNull(obj, messageSupplier);
@@ -97,14 +95,9 @@ public class $ {
 
     /**
      * 判断对象是否为null
-     * <p>
-     * This method exists to be used as a
-     * {@link java.util.function.Predicate}, {@code context($::isNull)}
-     * </p>
      *
-     * @param obj a reference to be checked against {@code null}
-     * @return {@code true} if the provided reference is {@code null} otherwise
-     * {@code false}
+     * @param obj 要根据{@code null}检查的引用
+     * @return 如果提供的引用是{@code null}，则为{@code true};否则为{@code false}
      * @see java.util.function.Predicate
      */
     public static boolean isNull(Object obj) {
@@ -113,14 +106,9 @@ public class $ {
 
     /**
      * 判断对象是否 not null
-     * <p>
-     * This method exists to be used as a
-     * {@link java.util.function.Predicate}, {@code context($::notNull)}
-     * </p>
      *
-     * @param obj a reference to be checked against {@code null}
-     * @return {@code true} if the provided reference is non-{@code null}
-     * otherwise {@code false}
+     * @param obj 要根据{@code null}检查的引用
+     * @return 如果提供的引用是{@code null}，则为{@code true};否则为{@code false}
      * @see java.util.function.Predicate
      */
     public static boolean isNotNull(Object obj) {
@@ -150,16 +138,15 @@ public class $ {
     /**
      * 判断是否为空字符串
      * <pre class="code">
-     * $.isBlank(null)		= true
-     * $.isBlank("")		= true
-     * $.isBlank(" ")		= true
-     * $.isBlank("12345")	= false
-     * $.isBlank(" 12345 ")	= false
+     * $.isBlank(null)		   = true
+     * $.isBlank("")		   = true
+     * $.isBlank(" ")		   = true
+     * $.isBlank("12345")	   = false
+     * $.isBlank(" 12345 ")	   = false
      * </pre>
      *
-     * @param cs the {@code CharSequence} to check (may be {@code null})
-     * @return {@code true} if the {@code CharSequence} is not {@code null},
-     * its length is greater than 0, and it does not contain whitespace only
+     * @param cs 要检查的{@code CharSequence} 可以是{@code null}
+     * @return 如果{@code CharSequence}不是{@code null}，那么它的长度大于0，并且不包含空格
      * @see Character#isWhitespace
      */
     public static boolean isBlank(final CharSequence cs) {
@@ -169,16 +156,15 @@ public class $ {
     /**
      * 判断不为空字符串
      * <pre>
-     * $.isNotBlank(null)	= false
-     * $.isNotBlank("")		= false
-     * $.isNotBlank(" ")	= false
-     * $.isNotBlank("bob")	= true
+     * $.isNotBlank(null)	   = false
+     * $.isNotBlank("")		   = false
+     * $.isNotBlank(" ")	   = false
+     * $.isNotBlank("bob")	   = true
      * $.isNotBlank("  bob  ") = true
      * </pre>
      *
-     * @param cs the CharSequence to check, may be null
-     * @return {@code true} if the CharSequence is
-     * not empty and not null and not whitespace
+     * @param cs 要检查的CharSequence可能为空
+     * @return 如果CharSequence不为空，不为空白，则为{@code true}
      * @see Character#isWhitespace
      */
     public static boolean isNotBlank(final CharSequence cs) {
@@ -188,17 +174,17 @@ public class $ {
     /**
      * 判断是否有任意一个 空字符串
      *
-     * @param css CharSequence
-     * @return boolean
+     * @param cs 要检查的CharSequence可能为空
+     * @return 如果CharSequence不为空，不为空白，则为{@code true}
      */
-    public static boolean isAnyBlank(final CharSequence... css) {
-        return StringUtils.isAnyBlank(css);
+    public static boolean isAnyBlank(final CharSequence... cs) {
+        return StringUtils.isAnyBlank(cs);
     }
 
     /**
      * 判断对象是数组
      *
-     * @param obj the object to check
+     * @param obj 要检查的对象可能为空
      * @return 是否数组
      */
     public static boolean isArray(Object obj) {
@@ -208,7 +194,7 @@ public class $ {
     /**
      * 判断空对象 object、map、list、set、字符串、数组
      *
-     * @param obj the object to check
+     * @param obj 要检查的对象可能为空
      * @return 数组是否为空
      */
     public static boolean isEmpty(Object obj) {
@@ -218,7 +204,7 @@ public class $ {
     /**
      * 对象不为空 object、map、list、set、字符串、数组
      *
-     * @param obj the object to check
+     * @param obj 要检查的对象可能为空
      * @return 是否不为空
      */
     public static boolean isNotEmpty(Object obj) {
@@ -228,7 +214,7 @@ public class $ {
     /**
      * 判断数组为空
      *
-     * @param array the array to check
+     * @param array 要检查的数组可能为空
      * @return 数组是否为空
      */
     public static boolean isEmpty(Object[] array) {
@@ -294,9 +280,9 @@ public class $ {
     /**
      * 安全的 equals
      *
-     * @param o1 first Object to compare
-     * @param o2 second Object to compare
-     * @return whether the given objects are equal
+     * @param o1 第一个比较对象
+     * @param o2 第二个比较对象
+     * @return 给定对象是否相等
      * @see Object#equals(Object)
      * @see java.util.Arrays#equals
      */
@@ -305,22 +291,22 @@ public class $ {
     }
 
     /**
-     * 对象 eq
+     * 对象 equals
      *
-     * @param o1 Object
-     * @param o2 Object
-     * @return 是否eq
+     * @param o1 第一个比较对象
+     * @param o2 第二个比较对象
+     * @return 给定对象是否相等
      */
     public static boolean equals(Object o1, Object o2) {
         return Objects.equals(o1, o2);
     }
 
     /**
-     * 比较两个对象是否不相等 <br>
+     * 比较两个对象是否不相等
      *
-     * @param o1 对象1
-     * @param o2 对象2
-     * @return 是否不eq
+     * @param o1 第一个比较对象
+     * @param o2 第二个比较对象
+     * @return 给定对象是否相等
      */
     public static boolean isNotEqual(Object o1, Object o2) {
         return !Objects.equals(o1, o2);
@@ -350,10 +336,10 @@ public class $ {
     /**
      * 判断数组中是否包含元素
      *
-     * @param array   the Array to check
-     * @param element the element to look for
-     * @param <T>     The generic tag
-     * @return {@code true} if found, {@code false} else
+     * @param array   要检查的数组
+     * @param element 要查找的元素
+     * @param <T>     引用的类型
+     * @return 如果找到 {@code true},否则{@code false}
      */
     public static <T> boolean contains(T[] array, final T element) {
         return CollUtils.contains(array, element);
@@ -362,9 +348,9 @@ public class $ {
     /**
      * 判断迭代器中是否包含元素
      *
-     * @param iterator the Iterator to check
-     * @param element  the element to look for
-     * @return {@code true} if found, {@code false} otherwise
+     * @param iterator 要检查的迭代器
+     * @param element  要查找的元素
+     * @return 如果找到 {@code true},否则{@code false}
      */
     public static boolean contains(Iterator<?> iterator, Object element) {
         return CollUtils.contains(iterator, element);
@@ -373,33 +359,33 @@ public class $ {
     /**
      * 判断枚举是否包含该元素
      *
-     * @param enumeration the Enumeration to check
-     * @param element     the element to look for
-     * @return {@code true} if found, {@code false} otherwise
+     * @param enumeration 要检查的枚举
+     * @param element     要查找的元素
+     * @return 如果找到 {@code true},否则{@code false}
      */
     public static boolean contains(Enumeration<?> enumeration, Object element) {
         return CollUtils.contains(enumeration, element);
     }
 
     /**
-     * Concatenates 2 arrays
+     * 连接两个数组
      *
-     * @param one   数组1
-     * @param other 数组2
-     * @return 新数组
+     * @param one   第一个数组
+     * @param other 第二个数组
+     * @return 连接后的新数组
      */
     public static String[] concat(String[] one, String[] other) {
         return CollUtils.concat(one, other, String.class);
     }
 
     /**
-     * Concatenates 2 arrays
+     * 连接两个数组
      *
      * @param <T>   对象
-     * @param one   数组1
-     * @param other 数组2
+     * @param one   第一个数组
+     * @param other 第二个数组
      * @param clazz 数组类
-     * @return 新数组
+     * @return 连接后的新数组
      */
     public static <T> T[] concat(T[] one, T[] other, Class<T> clazz) {
         return CollUtils.concat(one, other, clazz);

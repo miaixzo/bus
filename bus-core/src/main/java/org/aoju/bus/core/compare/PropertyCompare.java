@@ -32,12 +32,12 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * Bean属性排序器<br>
+ * Bean属性排序器
  * 支持读取Bean多层次下的属性
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class PropertyCompare<T> implements Comparator<T>, Serializable {

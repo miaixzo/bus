@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.text;
 
-
 import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -40,7 +39,7 @@ import java.util.Objects;
  * 提供比StringBuffer更灵活和更强大的API.
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class StrBuilder implements CharSequence, Appendable, Serializable, Builder<String> {
@@ -66,6 +65,43 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * null字符串
      */
     private String nullText;
+    /**
+     * 存放的字符数组
+     */
+    private char[] value;
+    /**
+     * 当前指针位置，或者叫做已经加入的字符数，此位置总在最后一个字符之后
+     */
+    private int position;
+
+    /**
+     * 创建字符串构建器
+     *
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create() {
+        return new StrBuilder();
+    }
+
+    /**
+     * 创建字符串构建器
+     *
+     * @param initialCapacity 初始容量
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create(int initialCapacity) {
+        return new StrBuilder(initialCapacity);
+    }
+
+    /**
+     * 创建字符串构建器
+     *
+     * @param strs 初始字符串
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create(CharSequence... strs) {
+        return new StrBuilder(strs);
+    }
 
     /**
      * 构造
@@ -129,41 +165,19 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return totalLength;
     }
 
-    /**
-     * Gets the text to be appended when a new line is added.
-     *
-     * @return the new line text, null means use system default
-     */
     public String getNewLineText() {
         return newLine;
     }
 
-    /**
-     * Sets the text to be appended when a new line is added.
-     *
-     * @param newLine the new line text, null means use system default
-     * @return this, to enable chaining
-     */
     public StrBuilder setNewLineText(final String newLine) {
         this.newLine = newLine;
         return this;
     }
 
-    /**
-     * Gets the text to be appended when null is added.
-     *
-     * @return the null text, null means no append
-     */
     public String getNullText() {
         return nullText;
     }
 
-    /**
-     * Sets the text to be appended when null is added.
-     *
-     * @param nullText the null text, null means no append
-     * @return this, to enable chaining
-     */
     public StrBuilder setNullText(String nullText) {
         if (nullText != null && nullText.isEmpty()) {
             nullText = null;
@@ -172,23 +186,17 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return this;
     }
 
-    /**
-     * Gets the length of the string builder.
-     *
-     * @return the length
-     */
     @Override
     public int length() {
         return size;
     }
 
     /**
-     * Updates the length of the builder by either dropping the last characters
-     * or adding filler of Unicode zero.
+     * 通过删除最后一个字符或添加Unicode 0的填充来更新生成器的长度
      *
-     * @param length the length to set to, must be zero or positive
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the length is negative
+     * @param length 要设置的长度必须为0或正
+     * @return this
+     * @throws IndexOutOfBoundsException 如果长度是负的
      */
     public StrBuilder setLength(final int length) {
         if (length < 0) {
@@ -208,20 +216,15 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return this;
     }
 
-    /**
-     * Gets the current size of the internal character array buffer.
-     *
-     * @return the capacity
-     */
     public int capacity() {
         return buffer.length;
     }
 
     /**
-     * Checks the capacity and ensures that it is at least the size specified.
+     * 检查容量并确保它至少是指定的大小
      *
-     * @param capacity the capacity to ensure
-     * @return this, to enable chaining
+     * @param capacity 确保大小
+     * @return this
      */
     public StrBuilder ensureCapacity(final int capacity) {
         if (capacity > buffer.length) {
@@ -232,11 +235,6 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return this;
     }
 
-    /**
-     * Minimizes the capacity to the actual length of the string.
-     *
-     * @return this, to enable chaining
-     */
     public StrBuilder minimizeCapacity() {
         if (buffer.length > length()) {
             final char[] old = buffer;
@@ -246,55 +244,19 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return this;
     }
 
-    /**
-     * Gets the length of the string builder.
-     * <p>
-     * This method is the same as {@link #length()} and is provided to match the
-     * API of Collections.
-     *
-     * @return the length
-     */
     public int size() {
         return size;
     }
 
-    /**
-     * Checks is the string builder is empty (convenience Collections API style method).
-     * <p>
-     * This method is the same as checking {@link #length()} and is provided to match the
-     * API of Collections.
-     *
-     * @return <code>true</code> if the size is <code>0</code>.
-     */
     public boolean isEmpty() {
         return size == 0;
     }
 
-    /**
-     * Clears the string builder (convenience Collections API style method).
-     * <p>
-     * This method does not reduce the size of the internal character buffer.
-     * To do that, call <code>clear()</code> followed by {@link #minimizeCapacity()}.
-     * <p>
-     * This method is the same as {@link #setLength(int)} called with zero
-     * and is provided to match the API of Collections.
-     *
-     * @return this, to enable chaining
-     */
     public StrBuilder clear() {
         size = 0;
         return this;
     }
 
-    /**
-     * Gets the character at the specified index.
-     *
-     * @param index the index to retrieve, must be valid
-     * @return the character at the index
-     * @throws IndexOutOfBoundsException if the index is invalid
-     * @see #setCharAt(int, char)
-     * @see #deleteCharAt(int)
-     */
     @Override
     public char charAt(final int index) {
         if (index < 0 || index >= length()) {
@@ -304,12 +266,12 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Sets the character at the specified index.
+     * 在指定的索引处设置字符
      *
-     * @param index the index to set
-     * @param ch    the new character
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要设置的索引
+     * @param ch    新字符
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      * @see #charAt(int)
      * @see #deleteCharAt(int)
      */
@@ -322,11 +284,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Deletes the character at the specified index.
+     * 删除指定索引处的字符
      *
-     * @param index the index to delete
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要删除的索引
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      * @see #charAt(int)
      * @see #setCharAt(int, char)
      */
@@ -339,10 +301,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Copies the character array into the specified array.
+     * 将字符数组复制到指定的数组中.
      *
-     * @param destination the destination array, null will cause an array to be created
-     * @return the input array, unless that was null or too small
+     * @param destination 目标数组，null将导致创建一个数组
+     * @return 输入数组，除非它是null或太小
      */
     public char[] getChars(char[] destination) {
         final int len = length();
@@ -354,14 +316,14 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Copies the character array into the specified array.
+     * 将字符数组复制到指定的数组中
      *
-     * @param startIndex       first index to copy, inclusive, must be valid
-     * @param endIndex         last index, exclusive, must be valid
-     * @param destination      the destination array, must not be null or too small
-     * @param destinationIndex the index to start copying in destination
-     * @throws NullPointerException      if the array is null
-     * @throws IndexOutOfBoundsException if any index is invalid
+     * @param startIndex       要复制的第一个索引(包括)必须有效
+     * @param endIndex         最后一个索引(exclusive)必须有效
+     * @param destination      目标数组不能为空或太小
+     * @param destinationIndex 要在目的地开始复制的索引
+     * @throws NullPointerException      如果数组为空
+     * @throws IndexOutOfBoundsException 如果任何索引无效
      */
     public void getChars(final int startIndex, final int endIndex, final char[] destination, final int destinationIndex) {
         if (startIndex < 0) {
@@ -377,12 +339,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * If possible, reads chars from the provided {@link Readable} directly into underlying
-     * character buffer without making extra copies.
+     * 如果可能，从提供的{@link Readable}直接将字符读入底层字符缓冲区，而不进行额外的复制
      *
-     * @param readable object to read from
-     * @return the number of characters read
-     * @throws IOException if an I/O error occurs
+     * @param readable 读取对象
+     * @return 读取的字符数
+     * @throws IOException 如果发生I/O错误
      * @since 3.5.0
      */
     public int readFrom(final Readable readable) throws IOException {
@@ -416,13 +377,9 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends the new line string to this string builder.
-     * <p>
-     * The new line string can be altered using {@link #setNewLineText(String)}.
-     * This might be used to force the output to always use Unix line endings
-     * even when on Windows.
+     * 将新行字符串附加到此字符串生成器
      *
-     * @return this, to enable chaining
+     * @return this
      */
     public StrBuilder appendNewLine() {
         if (newLine == null) {
@@ -433,9 +390,9 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends the text representing <code>null</code> to this string builder.
+     * 将表示null的文本附加到此字符串生成器.
      *
-     * @return this, to enable chaining
+     * @return this
      */
     public StrBuilder appendNull() {
         if (nullText == null) {
@@ -445,11 +402,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends an object to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param obj the object to append
-     * @return this, to enable chaining
+     * @param obj 要追加的对象
+     * @return this
      */
     public StrBuilder append(final Object obj) {
         if (obj == null) {
@@ -462,11 +419,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a CharSequence to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param seq the CharSequence to append
-     * @return this, to enable chaining
+     * @param seq 要附加的字符序列
+     * @return this
      * @since 3.0.0
      */
     @Override
@@ -490,13 +447,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends part of a CharSequence to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param seq        the CharSequence to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
+     * @param seq        要附加的字符序列
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      * @since 3.0.0
      */
     @Override
@@ -508,11 +465,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a string to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param str the string to append
-     * @return this, to enable chaining
+     * @param str 要追加的字符串
+     * @return this
      */
     public StrBuilder append(final String str) {
         if (str == null) {
@@ -529,13 +486,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends part of a string to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param str        the string to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
+     * @param str        要追加的字符串
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder append(final String str, final int startIndex, final int length) {
         if (str == null) {
@@ -557,11 +514,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Calls {@link String#format(String, Object...)} and appends the result.
+     * 调用 {@link String#format(String, Object...)}并附加结果
      *
-     * @param format the format string
-     * @param objs   the objects to use in the format string
-     * @return {@code this} to enable chaining
+     * @param format 格式字符串
+     * @param objs   要在格式字符串中使用的对象
+     * @return this
      * @see String#format(String, Object...)
      * @since 3.2.0
      */
@@ -570,11 +527,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends the contents of a char buffer to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将char缓冲区的内容附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param buf the char buffer to append
-     * @return this, to enable chaining
+     * @param buf 要附加的字符缓冲区
+     * @return this
      * @since 3.5.0
      */
     public StrBuilder append(final CharBuffer buf) {
@@ -594,13 +551,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends the contents of a char buffer to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将char缓冲区的内容附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param buf        the char buffer to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
+     * @param buf        要附加的字符缓冲区
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      * @since 3.5.0
      */
     public StrBuilder append(final CharBuffer buf, final int startIndex, final int length) {
@@ -626,11 +583,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a string buffer to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param str the string buffer to append
-     * @return this, to enable chaining
+     * @param str 要追加的字符串
+     * @return this
      */
     public StrBuilder append(final StringBuffer str) {
         if (str == null) {
@@ -647,13 +604,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends part of a string buffer to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param str        the string to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
+     * @param str        要追加的字符串
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder append(final StringBuffer str, final int startIndex, final int length) {
         if (str == null) {
@@ -675,11 +632,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a StringBuilder to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param str the StringBuilder to append
-     * @return this, to enable chaining
+     * @param str 要追加的字符串
+     * @return this
      * @since 3.2.0
      */
     public StrBuilder append(final StringBuilder str) {
@@ -697,13 +654,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends part of a StringBuilder to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将StringBuilder的一部分附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str        the StringBuilder to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
+     * @param str        要追加的字符串
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      * @since 3.2.0
      */
     public StrBuilder append(final StringBuilder str, final int startIndex, final int length) {
@@ -726,11 +683,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends another string builder to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将String的一部分附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str the string builder to append
-     * @return this, to enable chaining
+     * @param str 要追加的字符串
+     * @return this
      */
     public StrBuilder append(final StrBuilder str) {
         if (str == null) {
@@ -747,13 +704,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends part of a string builder to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将字符串生成器的一部分附加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param str        the string to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
+     * @param str        要追加的字符串
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder append(final StrBuilder str, final int startIndex, final int length) {
         if (str == null) {
@@ -775,11 +732,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a char array to the string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向字符串生成器追加一个char数组
+     * 附加null将调用{@link #appendNull()}.
      *
-     * @param chars the char array to append
-     * @return this, to enable chaining
+     * @param chars 要附加的字符数组
+     * @return this
      */
     public StrBuilder append(final char[] chars) {
         if (chars == null) {
@@ -796,13 +753,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a char array to the string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向字符串生成器追加一个char数组
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param chars      the char array to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
+     * @param chars      要附加的字符数组
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder append(final char[] chars, final int startIndex, final int length) {
         if (chars == null) {
@@ -824,10 +781,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a boolean value to the string builder.
+     * 将布尔值附加到字符串生成器.
      *
-     * @param value the value to append
-     * @return this, to enable chaining
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder append(final boolean value) {
         if (value) {
@@ -848,10 +805,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a char value to the string builder.
+     * 将char值附加到字符串生成器.
      *
-     * @param ch the value to append
-     * @return this, to enable chaining
+     * @param ch 要附加的值
+     * @return this
      * @since 3.0.0
      */
     @Override
@@ -863,89 +820,86 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends an int value to the string builder using <code>String.valueOf</code>.
+     * 使用<code>String.valueOf</code>向字符串生成器追加一个int值
      *
-     * @param value the value to append
-     * @return this, to enable chaining
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder append(final int value) {
         return append(String.valueOf(value));
     }
 
     /**
-     * Appends a long value to the string builder using <code>String.valueOf</code>.
+     * 使用<code>String.valueOf</code>向字符串生成器追加一个long值
      *
-     * @param value the value to append
-     * @return this, to enable chaining
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder append(final long value) {
         return append(String.valueOf(value));
     }
 
     /**
-     * Appends a float value to the string builder using <code>String.valueOf</code>.
+     * 使用<code>String.valueOf</code>向字符串生成器追加一个float值
      *
-     * @param value the value to append
-     * @return this, to enable chaining
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder append(final float value) {
         return append(String.valueOf(value));
     }
 
     /**
-     * Appends a double value to the string builder using <code>String.valueOf</code>.
+     * 使用<code>String.valueOf</code>向字符串生成器追加一个double值
      *
-     * @param value the value to append
-     * @return this, to enable chaining
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder append(final double value) {
         return append(String.valueOf(value));
     }
 
     /**
-     * Appends an object followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象后接新行追加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param obj the object to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param obj 要附加的值
+     * @return this
      */
     public StrBuilder appendln(final Object obj) {
         return append(obj).appendNewLine();
     }
 
     /**
-     * Appends a string followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象后接新行追加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str the string to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param str 要附加的值
+     * @return this
      */
     public StrBuilder appendln(final String str) {
         return append(str).appendNewLine();
     }
 
     /**
-     * Appends part of a string followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 将对象后接新行追加到此字符串生成器
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str        the string to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param str        要附加的值
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder appendln(final String str, final int startIndex, final int length) {
         return append(str, startIndex, length).appendNewLine();
     }
 
     /**
-     * Calls {@link String#format(String, Object...)} and appends the result.
+     * 调用{@link String#format(String, Object...)}并附加结果
      *
-     * @param format the format string
-     * @param objs   the objects to use in the format string
-     * @return {@code this} to enable chaining
+     * @param format 格式字符串
+     * @param objs   要在格式字符串中使用的对象
+     * @return this
      * @see String#format(String, Object...)
      * @since 3.2.0
      */
@@ -954,184 +908,169 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends a string buffer followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向此字符串生成器追加一个字符串缓冲区，后跟新行
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str the string buffer to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param str 要追加的字符串缓冲区
+     * @return this
      */
     public StrBuilder appendln(final StringBuffer str) {
         return append(str).appendNewLine();
     }
 
     /**
-     * Appends a string builder followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向此字符串生成器追加一个字符串缓冲区，后跟新行
+     * * 附加null将调用{@link #appendNull()}
      *
-     * @param str the string builder to append
-     * @return this, to enable chaining
-     * @since 3.2.0
+     * @param str t他附加字符串生成器
+     * @return this
      */
     public StrBuilder appendln(final StringBuilder str) {
         return append(str).appendNewLine();
     }
 
     /**
-     * Appends part of a string builder followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向此字符串生成器追加一个字符串缓冲区，后跟新行
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str        the string builder to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
-     * @since 3.2.0
+     * @param str        要追加的字符串缓冲区
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder appendln(final StringBuilder str, final int startIndex, final int length) {
         return append(str, startIndex, length).appendNewLine();
     }
 
     /**
-     * Appends part of a string buffer followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向此字符串生成器追加一个字符串缓冲区，后跟新行
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str        the string to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param str        要追加的字符串缓冲区
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder appendln(final StringBuffer str, final int startIndex, final int length) {
         return append(str, startIndex, length).appendNewLine();
     }
 
     /**
-     * Appends another string builder followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向此字符串生成器追加一个字符串缓冲区，后跟新行
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str the string builder to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param str 要追加的字符串缓冲区
+     * @return this
      */
     public StrBuilder appendln(final StrBuilder str) {
         return append(str).appendNewLine();
     }
 
     /**
-     * Appends part of a string builder followed by a new line to this string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向此字符串生成器追加一个字符串缓冲区，后跟新行
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param str        the string to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param str        要追加的字符串缓冲区
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder appendln(final StrBuilder str, final int startIndex, final int length) {
         return append(str, startIndex, length).appendNewLine();
     }
 
     /**
-     * Appends a char array followed by a new line to the string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向此字符串生成器追加一个字符串缓冲区，后跟新行
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param chars the char array to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param chars 要附加的字符数组
+     * @return this
      */
     public StrBuilder appendln(final char[] chars) {
         return append(chars).appendNewLine();
     }
 
     /**
-     * Appends a char array followed by a new line to the string builder.
-     * Appending null will call {@link #appendNull()}.
+     * 向字符串生成器追加一个字符数组，后跟一个新行
+     * 附加null将调用{@link #appendNull()}
      *
-     * @param chars      the char array to append
-     * @param startIndex the start index, inclusive, must be valid
-     * @param length     the length to append, must be valid
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param chars      要追加的字符串缓冲区
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param length     要追加的长度必须有效
+     * @return this
      */
     public StrBuilder appendln(final char[] chars, final int startIndex, final int length) {
         return append(chars, startIndex, length).appendNewLine();
     }
 
     /**
-     * Appends a boolean value followed by a new line to the string builder.
+     * 将布尔值后跟新行追加到字符串生成器.
      *
-     * @param value the value to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder appendln(final boolean value) {
         return append(value).appendNewLine();
     }
 
     /**
-     * Appends a char value followed by a new line to the string builder.
+     * 向字符串生成器追加一个字符值，后跟一个新行.
      *
-     * @param ch the value to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param ch 要附加的值
+     * @return this
      */
     public StrBuilder appendln(final char ch) {
         return append(ch).appendNewLine();
     }
 
     /**
-     * Appends an int value followed by a new line to the string builder using <code>String.valueOf</code>.
+     * 使用<code>String.valueOf</code>向字符串生成器追加一个int值，后面跟一个新行
      *
-     * @param value the value to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder appendln(final int value) {
         return append(value).appendNewLine();
     }
 
     /**
-     * Appends a long value followed by a new line to the string builder using <code>String.valueOf</code>.
+     * 使用<code>String.valueOf</code>向字符串生成器追加一个long值，后面跟一个新行
      *
-     * @param value the value to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder appendln(final long value) {
         return append(value).appendNewLine();
     }
 
     /**
-     * Appends a float value followed by a new line to the string builder using <code>String.valueOf</code>.
+     * 使用<code>String.valueOf</code>向字符串生成器追加一个float值，后面跟一个新行
      *
-     * @param value the value to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder appendln(final float value) {
         return append(value).appendNewLine();
     }
 
     /**
-     * Appends a double value followed by a new line to the string builder using <code>String.valueOf</code>.
+     * 使用<code>String.valueOf</code>向字符串生成器追加一个double值，后面跟一个新行
      *
-     * @param value the value to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param value 要附加的值
+     * @return this
      */
     public StrBuilder appendln(final double value) {
         return append(value).appendNewLine();
     }
 
     /**
-     * Appends each item in an array to the builder without any separators.
-     * Appending a null array will have no effect.
-     * Each object is appended using {@link #append(Object)}.
+     * 不使用任何分隔符将数组中的每个项添加到生成器
+     * 附加一个空数组将没有效果
+     * 每个对象都使用{@link #append(Object)}进行追加
      *
-     * @param <T>   the element type
-     * @param array the array to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param <T>   元素类型
+     * @param array 要追加的数组
+     * @return this
      */
     public <T> StrBuilder appendAll(final T... array) {
         if (array != null && array.length > 0) {
@@ -1143,13 +1082,12 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends each item in a iterable to the builder without any separators.
-     * Appending a null iterable will have no effect.
-     * Each object is appended using {@link #append(Object)}.
+     * 在不使用任何分隔符的情况下将迭代中的每个项附加到生成器
+     * 附加一个null iterable将没有效果
+     * 每个对象都使用{@link #append(Object)}进行追加
      *
-     * @param iterable the iterable to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param iterable 可追加的迭代
+     * @return this
      */
     public StrBuilder appendAll(final Iterable<?> iterable) {
         if (iterable != null) {
@@ -1161,13 +1099,12 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends each item in an iterator to the builder without any separators.
-     * Appending a null iterator will have no effect.
-     * Each object is appended using {@link #append(Object)}.
+     * 在不使用任何分隔符的情况下将迭代器中的每个项附加到生成器
+     * 附加一个空迭代器将没有效果
+     * 每个对象都使用{@link #append(Object)}进行追加.
      *
-     * @param it the iterator to append
-     * @return this, to enable chaining
-     * @since 2.3.0
+     * @param it 要追加的迭代器
+     * @return this
      */
     public StrBuilder appendAll(final Iterator<?> it) {
         if (it != null) {
@@ -1179,14 +1116,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends an array placing separators between each value, but
-     * not before the first or after the last.
-     * Appending a null array will have no effect.
-     * Each object is appended using {@link #append(Object)}.
+     * 在每个值之间追加放置分隔符的数组，但不在第一个值之前或最后一个值之后追加
+     * 附加一个空数组将没有效果
+     * 每个对象都使用{@link #append(Object)}进行追加
      *
-     * @param array     the array to append
-     * @param separator the separator to use, null means no separator
-     * @return this, to enable chaining
+     * @param array     要追加的数组
+     * @param separator 要使用的分隔符，null表示没有分隔符
+     * @return this
      */
     public StrBuilder appendWithSeparators(final Object[] array, final String separator) {
         if (array != null && array.length > 0) {
@@ -1201,14 +1137,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends an iterable placing separators between each value, but
-     * not before the first or after the last.
-     * Appending a null iterable will have no effect.
-     * Each object is appended using {@link #append(Object)}.
+     * 在每个值之间追加一个可迭代的放置分隔符，但不是在第一个值之前或最后一个值之后
+     * 附加一个null iterable将没有效果
+     * 每个对象都使用{@link #append(Object)}进行追加.
      *
-     * @param iterable  the iterable to append
-     * @param separator the separator to use, null means no separator
-     * @return this, to enable chaining
+     * @param iterable  可追加的迭代
+     * @param separator 要使用的分隔符，null表示没有分隔符
+     * @return this
      */
     public StrBuilder appendWithSeparators(final Iterable<?> iterable, final String separator) {
         if (iterable != null) {
@@ -1225,14 +1160,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends an iterator placing separators between each value, but
-     * not before the first or after the last.
-     * Appending a null iterator will have no effect.
-     * Each object is appended using {@link #append(Object)}.
+     * 在每个值之间添加分隔符，但不在第一个值之前或最后一个值之后添加迭代器
+     * 附加一个空迭代器将没有效果
+     * 每个对象都使用{@link #append(Object)}进行追加.
      *
-     * @param it        the iterator to append
-     * @param separator the separator to use, null means no separator
-     * @return this, to enable chaining
+     * @param it        要追加的迭代器
+     * @param separator 要使用的分隔符，null表示没有分隔符
+     * @return this
      */
     public StrBuilder appendWithSeparators(final Iterator<?> it, final String separator) {
         if (it != null) {
@@ -1248,15 +1182,15 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends an object to the builder padding on the left to a fixed width.
-     * The <code>toString</code> of the object is used.
-     * If the object is larger than the length, the left hand side is lost.
-     * If the object is null, the null text value is used.
+     * 将一个对象附加到左侧的生成器内边距上，使其具有固定的宽度。
+     * 使用对象的<code>toString</code>
+     * 如果对象的长度大于长度，则左手边就会丢失
+     * 如果对象为空，则使用空文本值
      *
-     * @param obj     the object to append, null uses null text
-     * @param width   the fixed field width, zero or negative has no effect
-     * @param padChar the pad character to use
-     * @return this, to enable chaining
+     * @param obj     要追加的对象null使用空文本
+     * @param width   固定的字段宽度，零或负没有影响
+     * @param padChar 要使用的填充字符
+     * @return this
      */
     public StrBuilder appendFixedWidthPadLeft(final Object obj, final int width, final char padChar) {
         if (width > 0) {
@@ -1281,29 +1215,29 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends an object to the builder padding on the left to a fixed width.
-     * The <code>String.valueOf</code> of the <code>int</code> value is used.
-     * If the formatted value is larger than the length, the left hand side is lost.
+     * 将一个对象附加到左侧的生成器内边距上，使其具有固定的宽度
+     * 使用<code>String.valueOf</code>字符串，使用<code>int</code>
+     * 如果格式化的值大于长度，则左侧边将丢失
      *
-     * @param value   the value to append
-     * @param width   the fixed field width, zero or negative has no effect
-     * @param padChar the pad character to use
-     * @return this, to enable chaining
+     * @param value   要附加的值
+     * @param width   固定的字段宽度，零或负没有影响
+     * @param padChar 要使用的填充字符
+     * @return this
      */
     public StrBuilder appendFixedWidthPadLeft(final int value, final int width, final char padChar) {
         return appendFixedWidthPadLeft(String.valueOf(value), width, padChar);
     }
 
     /**
-     * Appends an object to the builder padding on the right to a fixed length.
-     * The <code>toString</code> of the object is used.
-     * If the object is larger than the length, the right hand side is lost.
-     * If the object is null, null text value is used.
+     * 将对象附加到右侧的生成器内边距，使其具有固定的长度。
+     * 使用对象的<code>toString</code>
+     * 如果物体比长度大，右边的部分就会丢失
+     * 如果对象为空，则使用空文本值
      *
-     * @param obj     the object to append, null uses null text
-     * @param width   the fixed field width, zero or negative has no effect
-     * @param padChar the pad character to use
-     * @return this, to enable chaining
+     * @param obj     要追加的对象null使用空文本
+     * @param width   固定的字段宽度，零或负没有影响
+     * @param padChar 要使用的填充字符
+     * @return this
      */
     public StrBuilder appendFixedWidthPadRight(final Object obj, final int width, final char padChar) {
         if (width > 0) {
@@ -1328,27 +1262,27 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Appends an object to the builder padding on the right to a fixed length.
-     * The <code>String.valueOf</code> of the <code>int</code> value is used.
-     * If the object is larger than the length, the right hand side is lost.
+     * 将对象附加到右侧的生成器内边距，使其具有固定的长度
+     * 使用<code>String.valueOf</code>字符串，使用<code>int</code>
+     * 如果格式化的值大于长度，则右侧将丢失
      *
-     * @param value   the value to append
-     * @param width   the fixed field width, zero or negative has no effect
-     * @param padChar the pad character to use
-     * @return this, to enable chaining
+     * @param value   要附加的值
+     * @param width   固定的字段宽度，零或负没有影响
+     * @param padChar 要使用的填充字符
+     * @return this
      */
     public StrBuilder appendFixedWidthPadRight(final int value, final int width, final char padChar) {
         return appendFixedWidthPadRight(String.valueOf(value), width, padChar);
     }
 
     /**
-     * Inserts the string representation of an object into this builder.
-     * Inserting null will use the stored null text value.
+     * 将对象的字符串表示形式插入到此生成器中
+     * 插入null将使用存储的空文本值
      *
-     * @param index the index to add at, must be valid
-     * @param obj   the object to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param obj   要插入的对象
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(final int index, final Object obj) {
         if (obj == null) {
@@ -1358,13 +1292,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Inserts the string into this builder.
-     * Inserting null will use the stored null text value.
+     * 将字符串插入到此生成器中.
+     * 插入null将使用存储的空文本值.
      *
-     * @param index the index to add at, must be valid
-     * @param str   the string to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param str   要插入的字符串
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(final int index, String str) {
         validateIndex(index);
@@ -1385,13 +1319,13 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Inserts the character array into this builder.
-     * Inserting null will use the stored null text value.
+     * 将字符数组插入到此生成器中.
+     * 插入null将使用存储的空文本值.
      *
-     * @param index the index to add at, must be valid
-     * @param chars the char array to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param chars 要插入的char数组
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(final int index, final char[] chars) {
         validateIndex(index);
@@ -1409,15 +1343,15 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Inserts part of the character array into this builder.
-     * Inserting null will use the stored null text value.
+     * 将字符数组的一部分插入到此生成器中.
+     * 插入null将使用存储的空文本值.
      *
-     * @param index  the index to add at, must be valid
-     * @param chars  the char array to insert
-     * @param offset the offset into the character array to start at, must be valid
-     * @param length the length of the character array part to copy, must be positive
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if any index is invalid
+     * @param index  要添加的索引必须有效
+     * @param chars  要插入的char数组
+     * @param offset 字符数组中要开始的偏移量必须有效
+     * @param length 要复制的字符数组部分的长度必须为正
+     * @return this
+     * @throws IndexOutOfBoundsException 如果任何索引无效
      */
     public StrBuilder insert(final int index, final char[] chars, final int offset, final int length) {
         validateIndex(index);
@@ -1440,12 +1374,12 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Inserts the value into this builder.
+     * 将值插入此生成器.
      *
-     * @param index the index to add at, must be valid
-     * @param value the value to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param value 要插入的值
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(int index, final boolean value) {
         validateIndex(index);
@@ -1471,12 +1405,12 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Inserts the value into this builder.
+     * 将值插入此生成器.
      *
-     * @param index the index to add at, must be valid
-     * @param value the value to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param value 要插入的值
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(final int index, final char value) {
         validateIndex(index);
@@ -1488,60 +1422,60 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Inserts the value into this builder.
+     * 将值插入此生成器.
      *
-     * @param index the index to add at, must be valid
-     * @param value the value to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param value 要插入的值
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(final int index, final int value) {
         return insert(index, String.valueOf(value));
     }
 
     /**
-     * Inserts the value into this builder.
+     * 将值插入此生成器.
      *
-     * @param index the index to add at, must be valid
-     * @param value the value to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param value 要插入的值
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(final int index, final long value) {
         return insert(index, String.valueOf(value));
     }
 
     /**
-     * Inserts the value into this builder.
+     * 将值插入此生成器.
      *
-     * @param index the index to add at, must be valid
-     * @param value the value to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param value 要插入的值
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(final int index, final float value) {
         return insert(index, String.valueOf(value));
     }
 
     /**
-     * Inserts the value into this builder.
+     * 将值插入此生成器.
      *
-     * @param index the index to add at, must be valid
-     * @param value the value to insert
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 要添加的索引必须有效
+     * @param value 要插入的值
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder insert(final int index, final double value) {
         return insert(index, String.valueOf(value));
     }
 
     /**
-     * Internal method to delete a range without validation.
+     * 内部方法，用于在不进行验证的情况下删除范围
      *
-     * @param startIndex the start index, must be valid
-     * @param endIndex   the end index (exclusive), must be valid
-     * @param len        the length, must be valid
-     * @throws IndexOutOfBoundsException if any index is invalid
+     * @param startIndex 开始索引，必须是有效的
+     * @param endIndex   结束索引(排他)必须有效
+     * @param len        长度，必须是有效的
+     * @throws IndexOutOfBoundsException 如果任何索引无效
      */
     private void deleteImpl(final int startIndex, final int endIndex, final int len) {
         System.arraycopy(buffer, endIndex, buffer, startIndex, size - endIndex);
@@ -1549,13 +1483,12 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Deletes the characters between the two specified indices.
+     * 删除两个指定索引之间的字符
      *
-     * @param startIndex the start index, inclusive, must be valid
-     * @param endIndex   the end index, exclusive, must be valid except
-     *                   that if too large it is treated as end of string
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param endIndex   唯一的结束索引必须有效，除非太大，否则将被视为字符串的结束
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder delete(final int startIndex, int endIndex) {
         endIndex = validateRange(startIndex, endIndex);
@@ -1567,10 +1500,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Deletes the character wherever it occurs in the builder.
+     * 删除在生成器中出现的字符.
      *
-     * @param ch the character to delete
-     * @return this, to enable chaining
+     * @param ch 要删除的字符
+     * @return this
      */
     public StrBuilder deleteAll(final char ch) {
         for (int i = 0; i < size; i++) {
@@ -1590,10 +1523,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Deletes the character wherever it occurs in the builder.
+     * 删除在生成器中出现的字符
      *
-     * @param ch the character to delete
-     * @return this, to enable chaining
+     * @param ch 要删除的字符
+     * @return this
      */
     public StrBuilder deleteFirst(final char ch) {
         for (int i = 0; i < size; i++) {
@@ -1606,10 +1539,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Deletes the string wherever it occurs in the builder.
+     * 删除生成器中出现的字符串
      *
-     * @param str the string to delete, null causes no action
-     * @return this, to enable chaining
+     * @param str 若要删除的字符串为空，则不执行任何操作
+     * @return this
      */
     public StrBuilder deleteAll(final String str) {
         final int len = (str == null ? 0 : str.length());
@@ -1624,10 +1557,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Deletes the string wherever it occurs in the builder.
+     * 删除生成器中出现的字符串
      *
-     * @param str the string to delete, null causes no action
-     * @return this, to enable chaining
+     * @param str 若要删除的字符串为空，则不执行任何操作
+     * @return this
      */
     public StrBuilder deleteFirst(final String str) {
         final int len = (str == null ? 0 : str.length());
@@ -1641,42 +1574,38 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Deletes all parts of the builder that the matcher matches.
-     * <p>
-     * Matchers can be used to perform advanced deletion behaviour.
-     * For example you could write a matcher to delete all occurrences
-     * where the character 'a' is followed by a number.
+     * 删除匹配程序匹配的生成器的所有部分.
+     * 匹配器可用于执行高级删除行为。例如，
+     * 您可以编写一个匹配器来删除字符“a”后面跟一个数字的所有匹配项
      *
-     * @param matcher the matcher to use to find the deletion, null causes no action
-     * @return this, to enable chaining
+     * @param matcher 要使用的matcher来查找删除，null不导致任何操作
+     * @return this
      */
     public StrBuilder deleteAll(final StrMatcher matcher) {
         return replace(matcher, null, 0, size, -1);
     }
 
     /**
-     * Deletes the first match within the builder using the specified matcher.
+     * 使用指定的匹配器删除生成器中的第一个匹配项.
      * <p>
-     * Matchers can be used to perform advanced deletion behaviour.
-     * For example you could write a matcher to delete
-     * where the character 'a' is followed by a number.
+     * 匹配器可用于执行高级删除行为。例如，您可以编写一个匹配器来删除字符“a”后面跟着一个数字的地方.
      *
-     * @param matcher the matcher to use to find the deletion, null causes no action
-     * @return this, to enable chaining
+     * @param matcher 要使用的matcher来查找删除，null不导致任何操作
+     * @return this
      */
     public StrBuilder deleteFirst(final StrMatcher matcher) {
         return replace(matcher, null, 0, size, 1);
     }
 
     /**
-     * Internal method to delete a range without validation.
+     * 内部方法，用于在不进行验证的情况下删除范围.
      *
-     * @param startIndex the start index, must be valid
-     * @param endIndex   the end index (exclusive), must be valid
-     * @param removeLen  the length to remove (endIndex - startIndex), must be valid
-     * @param insertStr  the string to replace with, null means delete range
-     * @param insertLen  the length of the insert string, must be valid
-     * @throws IndexOutOfBoundsException if any index is invalid
+     * @param startIndex 开始索引，必须是有效的
+     * @param endIndex   结束索引(排他)必须有效
+     * @param removeLen  要删除的长度(endIndex - startIndex)必须有效
+     * @param insertStr  要替换的字符串null表示删除范围
+     * @param insertLen  插入字符串的长度必须有效
+     * @throws IndexOutOfBoundsException 如果任何索引无效
      */
     private void replaceImpl(final int startIndex, final int endIndex, final int removeLen, final String insertStr, final int insertLen) {
         final int newSize = size - removeLen + insertLen;
@@ -1691,15 +1620,14 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Replaces a portion of the string builder with another string.
-     * The length of the inserted string does not have to match the removed length.
+     * 将字符串生成器的一部分替换为另一个字符串
+     * 插入字符串的长度不必与删除的长度匹配
      *
-     * @param startIndex the start index, inclusive, must be valid
-     * @param endIndex   the end index, exclusive, must be valid except
-     *                   that if too large it is treated as end of string
-     * @param replaceStr the string to replace with, null means delete range
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param startIndex 开始索引，必须是有效的
+     * @param endIndex   唯一的结束索引必须有效，除非太大，否则将被视为字符串的结束
+     * @param replaceStr 要替换的字符串null表示删除范围
+     * @return this
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public StrBuilder replace(final int startIndex, int endIndex, final String replaceStr) {
         endIndex = validateRange(startIndex, endIndex);
@@ -1709,12 +1637,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Replaces the search character with the replace character
-     * throughout the builder.
+     * 在整个生成器中使用替换字符替换搜索字符
      *
-     * @param search  the search character
-     * @param replace the replace character
-     * @return this, to enable chaining
+     * @param search  搜索字符
+     * @param replace 替换字符
+     * @return this
      */
     public StrBuilder replaceAll(final char search, final char replace) {
         if (search != replace) {
@@ -1728,12 +1655,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Replaces the first instance of the search character with the
-     * replace character in the builder.
+     * 用生成器中的替换字符替换搜索字符的第一个实例.
      *
-     * @param search  the search character
-     * @param replace the replace character
-     * @return this, to enable chaining
+     * @param search  搜索字符
+     * @param replace 替换字符
+     * @return this
      */
     public StrBuilder replaceFirst(final char search, final char replace) {
         if (search != replace) {
@@ -1748,11 +1674,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Replaces the search string with the replace string throughout the builder.
+     * 在整个生成器中使用替换字符串替换搜索字符串
      *
-     * @param searchStr  the search string, null causes no action to occur
-     * @param replaceStr the replace string, null is equivalent to an empty string
-     * @return this, to enable chaining
+     * @param searchStr  如果搜索字符串为空，则不执行任何操作
+     * @param replaceStr 替换字符串null相当于空字符串
+     * @return this
      */
     public StrBuilder replaceAll(final String searchStr, final String replaceStr) {
         final int searchLen = (searchStr == null ? 0 : searchStr.length());
@@ -1768,11 +1694,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Replaces the first instance of the search string with the replace string.
+     * 用替换字符串替换搜索字符串的第一个实例
      *
-     * @param searchStr  the search string, null causes no action to occur
-     * @param replaceStr the replace string, null is equivalent to an empty string
-     * @return this, to enable chaining
+     * @param searchStr  如果搜索字符串为空，则不执行任何操作
+     * @param replaceStr 替换字符串null相当于空字符串
+     * @return this
      */
     public StrBuilder replaceFirst(final String searchStr, final String replaceStr) {
         final int searchLen = (searchStr == null ? 0 : searchStr.length());
@@ -1787,50 +1713,37 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Replaces all matches within the builder with the replace string.
-     * <p>
-     * Matchers can be used to perform advanced replace behaviour.
-     * For example you could write a matcher to replace all occurrences
-     * where the character 'a' is followed by a number.
+     * 用替换字符串替换生成器中的所有匹配项
      *
-     * @param matcher    the matcher to use to find the deletion, null causes no action
-     * @param replaceStr the replace string, null is equivalent to an empty string
-     * @return this, to enable chaining
+     * @param matcher    要使用的matcher来查找删除，null不导致任何操作
+     * @param replaceStr 替换字符串null相当于空字符串
+     * @return this
      */
     public StrBuilder replaceAll(final StrMatcher matcher, final String replaceStr) {
         return replace(matcher, replaceStr, 0, size, -1);
     }
 
     /**
-     * Replaces the first match within the builder with the replace string.
-     * <p>
-     * Matchers can be used to perform advanced replace behaviour.
-     * For example you could write a matcher to replace
-     * where the character 'a' is followed by a number.
+     * 用替换字符串替换生成器中的所有匹配项
      *
-     * @param matcher    the matcher to use to find the deletion, null causes no action
-     * @param replaceStr the replace string, null is equivalent to an empty string
-     * @return this, to enable chaining
+     * @param matcher    要使用的matcher来查找删除，null不导致任何操作
+     * @param replaceStr 替换字符串null相当于空字符串
+     * @return this
      */
     public StrBuilder replaceFirst(final StrMatcher matcher, final String replaceStr) {
         return replace(matcher, replaceStr, 0, size, 1);
     }
 
     /**
-     * Advanced search and replaces within the builder using a matcher.
-     * <p>
-     * Matchers can be used to perform advanced behaviour.
-     * For example you could write a matcher to delete all occurrences
-     * where the character 'a' is followed by a number.
+     * 高级搜索并在构建器中使用匹配器进行替换
      *
-     * @param matcher      the matcher to use to find the deletion, null causes no action
-     * @param replaceStr   the string to replace the match with, null is a delete
-     * @param startIndex   the start index, inclusive, must be valid
-     * @param endIndex     the end index, exclusive, must be valid except
-     *                     that if too large it is treated as end of string
-     * @param replaceCount the number of times to replace, -1 for replace all
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if start index is invalid
+     * @param matcher      要使用的matcher来查找删除，null不导致任何操作
+     * @param replaceStr   将匹配项替换为null的字符串是delete
+     * @param startIndex   起始索引(包括起始索引)必须有效
+     * @param endIndex     唯一的结束索引必须有效，除非太大，否则将被视为字符串的结束
+     * @param replaceCount 要替换的次数，-1表示替换所有
+     * @return this
+     * @throws IndexOutOfBoundsException 如果开始索引无效
      */
     public StrBuilder replace(
             final StrMatcher matcher, final String replaceStr,
@@ -1840,19 +1753,15 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Replaces within the builder using a matcher.
-     * <p>
-     * Matchers can be used to perform advanced behaviour.
-     * For example you could write a matcher to delete all occurrences
-     * where the character 'a' is followed by a number.
+     * 使用匹配器在构建器中替换
      *
-     * @param matcher      the matcher to use to find the deletion, null causes no action
-     * @param replaceStr   the string to replace the match with, null is a delete
-     * @param from         the start index, must be valid
-     * @param to           the end index (exclusive), must be valid
-     * @param replaceCount the number of times to replace, -1 for replace all
-     * @return this, to enable chaining
-     * @throws IndexOutOfBoundsException if any index is invalid
+     * @param matcher      要使用的matcher来查找删除，null不导致任何操作
+     * @param replaceStr   将匹配项替换为null的字符串是delete
+     * @param from         开始索引，必须是有效的
+     * @param to           结束索引(排他)必须有效
+     * @param replaceCount 要替换的次数，-1表示替换所有
+     * @return this
+     * @throws IndexOutOfBoundsException 如果任何索引无效
      */
     private StrBuilder replaceImpl(
             final StrMatcher matcher, final String replaceStr,
@@ -1877,9 +1786,9 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Reverses the string builder placing each character in the opposite index.
+     * 反转将每个字符放在相反索引中的字符串生成器
      *
-     * @return this, to enable chaining
+     * @return this
      */
     public StrBuilder reverse() {
         if (size == 0) {
@@ -1897,10 +1806,9 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Trims the builder by removing characters less than or equal to a space
-     * from the beginning and end.
+     * 通过从开头和结尾删除小于或等于空格的字符来修剪生成器
      *
-     * @return this, to enable chaining
+     * @return this
      */
     public StrBuilder trim() {
         if (size == 0) {
@@ -1925,12 +1833,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Checks whether this builder starts with the specified string.
-     * <p>
-     * Note that this method handles null input quietly, unlike String.
+     * 检查此生成器是否以指定的字符串开始
      *
-     * @param str the string to search for, null returns false
-     * @return true if the builder starts with the string
+     * @param str 要搜索的字符串null返回false
+     * @return 如果生成器从字符串开始，则为真
      */
     public boolean startsWith(final String str) {
         if (str == null) {
@@ -1952,12 +1858,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Checks whether this builder ends with the specified string.
-     * <p>
-     * Note that this method handles null input quietly, unlike String.
+     * 检查此生成器是否以指定的字符串结束
      *
-     * @param str the string to search for, null returns false
-     * @return true if the builder ends with the string
+     * @param str 要搜索的字符串null返回false
+     * @return 如果生成器以字符串结束，则为真
      */
     public boolean endsWith(final String str) {
         if (str == null) {
@@ -1994,28 +1898,23 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Extracts a portion of this string builder as a string.
+     * 将此字符串生成器的一部分提取为字符串
      *
-     * @param start the start index, inclusive, must be valid
-     * @return the new string
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param start 起始索引(包括起始索引)必须有效
+     * @return 新的字符串
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public String substring(final int start) {
         return substring(start, size);
     }
 
     /**
-     * Extracts a portion of this string builder as a string.
-     * <p>
-     * Note: This method treats an endIndex greater than the length of the
-     * builder as equal to the length of the builder, and continues
-     * without error, unlike StringBuffer or String.
+     * 将此字符串生成器的一部分提取为字符串
      *
-     * @param startIndex the start index, inclusive, must be valid
-     * @param endIndex   the end index, exclusive, must be valid except
-     *                   that if too large it is treated as end of string
-     * @return the new string
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param endIndex   唯一的结束索引必须有效，除非太大，否则将被视为字符串的结束
+     * @return 新的字符串
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public String substring(final int startIndex, int endIndex) {
         endIndex = validateRange(startIndex, endIndex);
@@ -2023,16 +1922,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Extracts the leftmost characters from the string builder without
-     * throwing an exception.
-     * <p>
-     * This method extracts the left <code>length</code> characters from
-     * the builder. If this many characters are not available, the whole
-     * builder is returned. Thus the returned string may be shorter than the
-     * length requested.
+     * 从字符串生成器中提取最左边的字符而不引发异常.
      *
-     * @param length the number of characters to extract, negative returns empty string
-     * @return the new string
+     * @param length 要提取的字符数，负返回空字符串
+     * @return 新的字符串
      */
     public String leftString(final int length) {
         if (length <= 0) {
@@ -2045,16 +1938,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Extracts the rightmost characters from the string builder without
-     * throwing an exception.
-     * <p>
-     * This method extracts the right <code>length</code> characters from
-     * the builder. If this many characters are not available, the whole
-     * builder is returned. Thus the returned string may be shorter than the
-     * length requested.
+     * 从字符串生成器中提取最右边的字符而不引发异常.
      *
-     * @param length the number of characters to extract, negative returns empty string
-     * @return the new string
+     * @param length 要提取的字符数，负返回空字符串
+     * @return 新的字符串
      */
     public String rightString(final int length) {
         if (length <= 0) {
@@ -2067,20 +1954,11 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Extracts some characters from the middle of the string builder without
-     * throwing an exception.
-     * <p>
-     * This method extracts <code>length</code> characters from the builder
-     * at the specified index.
-     * If the index is negative it is treated as zero.
-     * If the index is greater than the builder size, it is treated as the builder size.
-     * If the length is negative, the empty string is returned.
-     * If insufficient characters are available in the builder, as much as possible is returned.
-     * Thus the returned string may be shorter than the length requested.
+     * 从字符串生成器中间提取一些字符而不引发异常
      *
-     * @param index  the index to start at, negative means zero
-     * @param length the number of characters to extract, negative returns empty string
-     * @return the new string
+     * @param index  下标从-开始，表示0
+     * @param length 要提取的字符数，负返回空字符串
+     * @return 新的字符串
      */
     public String midString(int index, final int length) {
         if (index < 0) {
@@ -2096,10 +1974,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Checks if the string builder contains the specified char.
+     * 检查字符串生成器是否包含指定的字符
      *
-     * @param ch the character to find
-     * @return true if the builder contains the character
+     * @param ch 要找的字符
+     * @return 如果生成器包含该字符，则为真
      */
     public boolean contains(final char ch) {
         final char[] thisBuf = buffer;
@@ -2112,46 +1990,41 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Checks if the string builder contains the specified string.
+     * 检查字符串生成器是否包含指定的字符串
      *
-     * @param str the string to find
-     * @return true if the builder contains the string
+     * @param str 要找的字符
+     * @return 如果生成器包含该字符，则为真
      */
     public boolean contains(final String str) {
         return indexOf(str, 0) >= 0;
     }
 
     /**
-     * Checks if the string builder contains a string matched using the
-     * specified matcher.
-     * <p>
-     * Matchers can be used to perform advanced searching behaviour.
-     * For example you could write a matcher to search for the character
-     * 'a' followed by a number.
+     * 检查字符串生成器是否包含使用指定匹配器匹配的字符串
      *
-     * @param matcher the matcher to use, null returns -1
-     * @return true if the matcher finds a match in the builder
+     * @param matcher 要使用的匹配器，如果为null返回-1
+     * @return 如果匹配器在生成器中找到匹配项，则为真
      */
     public boolean contains(final StrMatcher matcher) {
         return indexOf(matcher, 0) >= 0;
     }
 
     /**
-     * Searches the string builder to find the first reference to the specified char.
+     * 搜索字符串生成器以查找指定char类型的第一个引用.
      *
-     * @param ch the character to find
-     * @return the first index of the character, or -1 if not found
+     * @param ch 要找的字符
+     * @return 字符的第一个索引，如果没有找到则为-1
      */
     public int indexOf(final char ch) {
         return indexOf(ch, 0);
     }
 
     /**
-     * Searches the string builder to find the first reference to the specified char.
+     * 搜索字符串生成器以查找指定char类型的第一个引用.
      *
-     * @param ch         the character to find
-     * @param startIndex the index to start at, invalid index rounded to edge
-     * @return the first index of the character, or -1 if not found
+     * @param ch         要找的字符
+     * @param startIndex 从索引开始，无效的索引四舍五入到边缘
+     * @return 字符的第一个索引，如果没有找到则为-1
      */
     public int indexOf(final char ch, int startIndex) {
         startIndex = (startIndex < 0 ? 0 : startIndex);
@@ -2168,26 +2041,21 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Searches the string builder to find the first reference to the specified string.
-     * <p>
-     * Note that a null input string will return -1, whereas the JDK throws an exception.
+     * 搜索字符串生成器以查找指定字符串的第一个引用
      *
-     * @param str the string to find, null returns -1
-     * @return the first index of the string, or -1 if not found
+     * @param str 要查找的字符串，如果为null返回-1
+     * @return 字符的第一个索引，如果没有找到则为-1
      */
     public int indexOf(final String str) {
         return indexOf(str, 0);
     }
 
     /**
-     * Searches the string builder to find the first reference to the specified
-     * string starting searching from the given index.
-     * <p>
-     * Note that a null input string will return -1, whereas the JDK throws an exception.
+     * 从给定索引开始搜索，搜索字符串生成器以查找指定字符串的第一个引用
      *
-     * @param str        the string to find, null returns -1
-     * @param startIndex the index to start at, invalid index rounded to edge
-     * @return the first index of the string, or -1 if not found
+     * @param str        要查找的字符串，如果为null返回-1
+     * @param startIndex 从索引开始，无效的索引四舍五入到边缘
+     * @return 字符的第一个索引，如果没有找到则为-1
      */
     public int indexOf(final String str, int startIndex) {
         startIndex = (startIndex < 0 ? 0 : startIndex);
@@ -2219,30 +2087,21 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Searches the string builder using the matcher to find the first match.
-     * <p>
-     * Matchers can be used to perform advanced searching behaviour.
-     * For example you could write a matcher to find the character 'a'
-     * followed by a number.
+     * 使用matcher搜索字符串生成器以查找第一个匹配项.
      *
-     * @param matcher the matcher to use, null returns -1
-     * @return the first index matched, or -1 if not found
+     * @param matcher 要使用的匹配器，null返回-1
+     * @return 第一个索引匹配，如果没有找到，则为-1
      */
     public int indexOf(final StrMatcher matcher) {
         return indexOf(matcher, 0);
     }
 
     /**
-     * Searches the string builder using the matcher to find the first
-     * match searching from the given index.
-     * <p>
-     * Matchers can be used to perform advanced searching behaviour.
-     * For example you could write a matcher to find the character 'a'
-     * followed by a number.
+     * 使用matcher搜索字符串生成器，以查找从给定索引中搜索的第一个匹配项.
      *
-     * @param matcher    the matcher to use, null returns -1
-     * @param startIndex the index to start at, invalid index rounded to edge
-     * @return the first index matched, or -1 if not found
+     * @param matcher    要使用的匹配器，null返回-1
+     * @param startIndex 从索引开始，无效的索引四舍五入到边缘
+     * @return 第一个索引匹配，如果没有找到，则为-1
      */
     public int indexOf(final StrMatcher matcher, int startIndex) {
         startIndex = (startIndex < 0 ? 0 : startIndex);
@@ -2260,21 +2119,21 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Searches the string builder to find the last reference to the specified char.
+     * 搜索字符串生成器以查找对指定字符的最后一个引用.
      *
-     * @param ch the character to find
-     * @return the last index of the character, or -1 if not found
+     * @param ch 要找的字符
+     * @return 字符的最后一个索引，如果没有找到，则为-1
      */
     public int lastIndexOf(final char ch) {
         return lastIndexOf(ch, size - 1);
     }
 
     /**
-     * Searches the string builder to find the last reference to the specified char.
+     * 搜索字符串生成器以查找对指定字符的最后一个引用.
      *
-     * @param ch         the character to find
-     * @param startIndex the index to start at, invalid index rounded to edge
-     * @return the last index of the character, or -1 if not found
+     * @param ch         要找的字符
+     * @param startIndex 从索引开始，无效的索引四舍五入到边缘
+     * @return 字符的最后一个索引，如果没有找到，则为-1
      */
     public int lastIndexOf(final char ch, int startIndex) {
         startIndex = (startIndex >= size ? size - 1 : startIndex);
@@ -2290,26 +2149,21 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Searches the string builder to find the last reference to the specified string.
-     * <p>
-     * Note that a null input string will return -1, whereas the JDK throws an exception.
+     * 搜索字符串生成器以查找对指定字符串的最后引用
      *
-     * @param str the string to find, null returns -1
-     * @return the last index of the string, or -1 if not found
+     * @param str 要查找的字符串，null返回-1
+     * @return 字符串的最后一个索引，如果没有找到，则为-1
      */
     public int lastIndexOf(final String str) {
         return lastIndexOf(str, size - 1);
     }
 
     /**
-     * Searches the string builder to find the last reference to the specified
-     * string starting searching from the given index.
-     * <p>
-     * Note that a null input string will return -1, whereas the JDK throws an exception.
+     * 从给定索引开始搜索，搜索字符串生成器以查找指定字符串的最后一个引用
      *
-     * @param str        the string to find, null returns -1
-     * @param startIndex the index to start at, invalid index rounded to edge
-     * @return the last index of the string, or -1 if not found
+     * @param str        要查找的字符串，null返回-1
+     * @param startIndex 从索引开始，无效的索引四舍五入到边缘
+     * @return 字符串的最后一个索引，如果没有找到，则为-1
      */
     public int lastIndexOf(final String str, int startIndex) {
         startIndex = (startIndex >= size ? size - 1 : startIndex);
@@ -2339,30 +2193,21 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Searches the string builder using the matcher to find the last match.
-     * <p>
-     * Matchers can be used to perform advanced searching behaviour.
-     * For example you could write a matcher to find the character 'a'
-     * followed by a number.
+     * 使用matcher搜索字符串生成器以查找最后一个匹配项
      *
-     * @param matcher the matcher to use, null returns -1
-     * @return the last index matched, or -1 if not found
+     * @param matcher 要使用的匹配器，null返回-1
+     * @return 最后一个索引匹配，如果没有找到，则为-1
      */
     public int lastIndexOf(final StrMatcher matcher) {
         return lastIndexOf(matcher, size);
     }
 
     /**
-     * Searches the string builder using the matcher to find the last
-     * match searching from the given index.
-     * <p>
-     * Matchers can be used to perform advanced searching behaviour.
-     * For example you could write a matcher to find the character 'a'
-     * followed by a number.
+     * 使用matcher搜索字符串生成器，以查找从给定索引中搜索的最后一个匹配项
      *
-     * @param matcher    the matcher to use, null returns -1
-     * @param startIndex the index to start at, invalid index rounded to edge
-     * @return the last index matched, or -1 if not found
+     * @param matcher    要使用的匹配器，null返回-1
+     * @param startIndex 从索引开始，无效的索引四舍五入到边缘
+     * @return 最后一个索引匹配，如果没有找到，则为-1
      */
     public int lastIndexOf(final StrMatcher matcher, int startIndex) {
         startIndex = (startIndex >= size ? size - 1 : startIndex);
@@ -2380,11 +2225,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Checks the contents of this builder against another to see if they
-     * contain the same character content ignoring case.
+     * 检查此生成器的内容与另一个生成器的内容是否包含相同的字符内容(忽略大小写)
      *
-     * @param other the object to check, null returns false
-     * @return true if the builders contain the same characters in the same order
+     * @param other 要检查的对象null返回false
+     * @return 如果生成器以相同的顺序包含相同的字符，则为真
      */
     public boolean equalsIgnoreCase(final StrBuilder other) {
         if (this == other) {
@@ -2406,11 +2250,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Checks the contents of this builder against another to see if they
-     * contain the same character content.
+     * 检查此生成器的内容与另一个生成器的内容是否包含相同的字符内容.
      *
-     * @param other the object to check, null returns false
-     * @return true if the builders contain the same characters in the same order
+     * @param other 要检查的对象null返回false
+     * @return 如果生成器以相同的顺序包含相同的字符，则为真
      */
     public boolean equals(final StrBuilder other) {
         if (this == other) {
@@ -2433,22 +2276,16 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Checks the contents of this builder against another to see if they
-     * contain the same character content.
+     * 检查此生成器的内容与另一个生成器的内容是否包含相同的字符内容.
      *
-     * @param obj the object to check, null returns false
-     * @return true if the builders contain the same characters in the same order
+     * @param obj 要检查的对象null返回false
+     * @return 如果生成器以相同的顺序包含相同的字符，则为真
      */
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof StrBuilder && equals((StrBuilder) obj);
     }
 
-    /**
-     * Gets a suitable hash code for this builder.
-     *
-     * @return a hash code
-     */
     @Override
     public int hashCode() {
         final char[] buf = buffer;
@@ -2459,35 +2296,24 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return hash;
     }
 
-    /**
-     * Gets a String version of the string builder, creating a new instance
-     * each time the method is called.
-     * <p>
-     * Note that unlike StringBuffer, the string version returned is
-     * independent of the string builder.
-     *
-     * @return the builder as a String
-     */
     @Override
     public String toString() {
         return new String(buffer, 0, size);
     }
 
     /**
-     * Gets a StringBuffer version of the string builder, creating a
-     * new instance each time the method is called.
+     * 获取字符串生成器的StringBuffer版本，在每次调用该方法时创建一个新实例
      *
-     * @return the builder as a StringBuffer
+     * @return 构建器一个 StringBuffer
      */
     public StringBuffer toStringBuffer() {
         return new StringBuffer(size).append(buffer, 0, size);
     }
 
     /**
-     * Gets a StringBuilder version of the string builder, creating a
-     * new instance each time the method is called.
+     * 获取字符串生成器的StringBuilder版本，在每次调用该方法时创建一个新实例
      *
-     * @return the builder as a StringBuilder
+     * @return 构建器一个 StringBuilder
      * @since 3.2.0
      */
     public StringBuilder toStringBuilder() {
@@ -2495,9 +2321,9 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Implement the {@link Builder} interface.
+     * 实现{@link Builder}接口
      *
-     * @return the builder as a String
+     * @return 构建器一个 String
      * @see #toString()
      * @since 3.2.0
      */
@@ -2507,13 +2333,12 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Validates parameters defining a range of the builder.
+     * 验证定义生成器范围的参数.
      *
-     * @param startIndex the start index, inclusive, must be valid
-     * @param endIndex   the end index, exclusive, must be valid except
-     *                   that if too large it is treated as end of string
-     * @return the new string
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param startIndex 起始索引(包括起始索引)必须有效
+     * @param endIndex   唯一的结束索引必须有效，除非太大，否则将被视为字符串的结束
+     * @return 新的字符串
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     protected int validateRange(final int startIndex, int endIndex) {
         if (startIndex < 0) {
@@ -2529,10 +2354,10 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     /**
-     * Validates parameters defining a single index in the builder.
+     * 验证在生成器中定义单个索引的参数
      *
-     * @param index the index, must be valid
-     * @throws IndexOutOfBoundsException if the index is invalid
+     * @param index 索引，必须是有效的
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     protected void validateIndex(final int index) {
         if (index < 0 || index > size) {

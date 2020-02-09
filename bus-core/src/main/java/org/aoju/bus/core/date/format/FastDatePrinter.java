@@ -37,14 +37,13 @@ import java.util.concurrent.ConcurrentMap;
  * {@link java.text.SimpleDateFormat} 的线程安全版本,用于将 {@link Date} 格式化输出
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
 
     private static final long serialVersionUID = 1L;
-    private static final int MAX_DIGITS = 10;
-    private static final ConcurrentMap<TimeZoneDisplayKey, String> cTimeZoneDisplayCache = new ConcurrentHashMap<>(7);
+
     /**
      * 规则列表.
      */
@@ -64,114 +63,6 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     protected FastDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
         super(pattern, timeZone, locale);
         init();
-    }
-
-    /**
-     * Appends two digits to the given buffer.
-     *
-     * @param buffer the buffer to append to.
-     * @param value  the value to append digits from.
-     */
-    private static void appendDigits(final Appendable buffer, final int value) throws IOException {
-        buffer.append((char) (value / 10 + Symbol.C_ZERO));
-        buffer.append((char) (value % 10 + Symbol.C_ZERO));
-    }
-
-    /**
-     * Appends all digits to the given buffer.
-     *
-     * @param buffer the buffer to append to.
-     * @param value  the value to append digits from.
-     */
-    private static void appendFullDigits(final Appendable buffer, int value, int minFieldWidth) throws IOException {
-        // specialized paths for 1 to 4 digits -> avoid the memory allocation from the temporary work array
-        // see LANG-1248
-        if (value < 10000) {
-            // less memory allocation path works for four digits or less
-
-            int nDigits = 4;
-            if (value < 1000) {
-                --nDigits;
-                if (value < 100) {
-                    --nDigits;
-                    if (value < 10) {
-                        --nDigits;
-                    }
-                }
-            }
-            // left zero pad
-            for (int i = minFieldWidth - nDigits; i > 0; --i) {
-                buffer.append(Symbol.C_ZERO);
-            }
-
-            switch (nDigits) {
-                case 4:
-                    buffer.append((char) (value / 1000 + Symbol.C_ZERO));
-                    value %= 1000;
-                case 3:
-                    if (value >= 100) {
-                        buffer.append((char) (value / 100 + Symbol.C_ZERO));
-                        value %= 100;
-                    } else {
-                        buffer.append(Symbol.C_ZERO);
-                    }
-                case 2:
-                    if (value >= 10) {
-                        buffer.append((char) (value / 10 + Symbol.C_ZERO));
-                        value %= 10;
-                    } else {
-                        buffer.append(Symbol.C_ZERO);
-                    }
-                case 1:
-                    buffer.append((char) (value + Symbol.C_ZERO));
-            }
-        } else {
-            // more memory allocation path works for any digits
-
-            // build up decimal representation in reverse
-            final char[] work = new char[MAX_DIGITS];
-            int digit = 0;
-            while (value != 0) {
-                work[digit++] = (char) (value % 10 + Symbol.C_ZERO);
-                value = value / 10;
-            }
-
-            // pad with zeros
-            while (digit < minFieldWidth) {
-                buffer.append(Symbol.C_ZERO);
-                --minFieldWidth;
-            }
-
-            // reverse
-            while (--digit >= 0) {
-                buffer.append(work[digit]);
-            }
-        }
-    }
-
-    /**
-     * <p>
-     * Gets the time zone display name, using a cache for performance.
-     * </p>
-     *
-     * @param tz       the zone to query
-     * @param daylight true if daylight savings
-     * @param style    the style to use {@code TimeZone.LONG} or {@code TimeZone.SHORT}
-     * @param locale   the locale to use
-     * @return the textual name of the time zone
-     */
-    static String getTimeZoneDisplay(final TimeZone tz, final boolean daylight, final int style, final Locale locale) {
-        final TimeZoneDisplayKey key = new TimeZoneDisplayKey(tz, daylight, style, locale);
-        String value = cTimeZoneDisplayCache.get(key);
-        if (value == null) {
-            // This is a very slow call, so cache the results.
-            value = tz.getDisplayName(daylight, style, locale);
-            final String prior = cTimeZoneDisplayCache.putIfAbsent(key, value);
-            if (prior != null) {
-                value = prior;
-            }
-        }
-        return value;
     }
 
     /**
@@ -233,7 +124,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                     if (tokenLen == 2) {
                         rule = TwoDigitYearField.INSTANCE;
                     } else {
-                        rule = selectNumberRule(Calendar.YEAR, tokenLen < 4 ? 4 : tokenLen);
+                        rule = selectNumberRule(Calendar.YEAR, Math.max(tokenLen, 4));
                     }
                     if (c == 'Y') {
                         rule = new WeekYear((NumberRule) rule);
@@ -492,7 +383,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
      *
      * @param calendar the calendar to format
      * @param buf      the buffer to format into
-     * @param <B>      the Appendable class type, usually TextUtils or StringBuffer.
+     * @param <B>      the Appendable class type, usually StringBuilder or StringBuffer.
      * @return the specified string buffer
      */
     private <B extends Appendable> B applyRules(final Calendar calendar, final B buf) {
@@ -526,6 +417,91 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         init();
+    }
+
+    /**
+     * Appends two digits to the given buffer.
+     *
+     * @param buffer the buffer to append to.
+     * @param value  the value to append digits from.
+     */
+    private static void appendDigits(final Appendable buffer, final int value) throws IOException {
+        buffer.append((char) (value / 10 + '0'));
+        buffer.append((char) (value % 10 + '0'));
+    }
+
+    private static final int MAX_DIGITS = 10; // log10(Integer.MAX_VALUE) ~= 9.3
+
+    /**
+     * Appends all digits to the given buffer.
+     *
+     * @param buffer the buffer to append to.
+     * @param value  the value to append digits from.
+     */
+    private static void appendFullDigits(final Appendable buffer, int value, int minFieldWidth) throws IOException {
+        // specialized paths for 1 to 4 digits -> avoid the memory allocation from the temporary work array
+        // see LANG-1248
+        if (value < 10000) {
+            // less memory allocation path works for four digits or less
+
+            int nDigits = 4;
+            if (value < 1000) {
+                --nDigits;
+                if (value < 100) {
+                    --nDigits;
+                    if (value < 10) {
+                        --nDigits;
+                    }
+                }
+            }
+            // left zero pad
+            for (int i = minFieldWidth - nDigits; i > 0; --i) {
+                buffer.append('0');
+            }
+
+            switch (nDigits) {
+                case 4:
+                    buffer.append((char) (value / 1000 + '0'));
+                    value %= 1000;
+                case 3:
+                    if (value >= 100) {
+                        buffer.append((char) (value / 100 + '0'));
+                        value %= 100;
+                    } else {
+                        buffer.append('0');
+                    }
+                case 2:
+                    if (value >= 10) {
+                        buffer.append((char) (value / 10 + '0'));
+                        value %= 10;
+                    } else {
+                        buffer.append('0');
+                    }
+                case 1:
+                    buffer.append((char) (value + '0'));
+            }
+        } else {
+            // more memory allocation path works for any digits
+
+            // build up decimal representation in reverse
+            final char[] work = new char[MAX_DIGITS];
+            int digit = 0;
+            while (value != 0) {
+                work[digit++] = (char) (value % 10 + '0');
+                value = value / 10;
+            }
+
+            // pad with zeros
+            while (digit < minFieldWidth) {
+                buffer.append('0');
+                --minFieldWidth;
+            }
+
+            // reverse
+            while (--digit >= 0) {
+                buffer.append(work[digit]);
+            }
+        }
     }
 
     /**
@@ -625,7 +601,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
 
     /**
      * <p>
-     * Inner class to output first of a set of values.
+     * Inner class to output one of a set of values.
      * </p>
      */
     private static class TextField implements Rule {
@@ -713,25 +689,19 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     private static class UnpaddedMonthField implements NumberRule {
         static final UnpaddedMonthField INSTANCE = new UnpaddedMonthField();
 
-        /**
-         * Constructs an instance of {@code UnpaddedMonthField}.
-         */
         UnpaddedMonthField() {
             super();
         }
-
 
         @Override
         public int estimateLength() {
             return 2;
         }
 
-
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(Calendar.MONTH) + 1);
         }
-
 
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -767,18 +737,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             mSize = size;
         }
 
-
         @Override
         public int estimateLength() {
             return mSize;
         }
 
-
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(mField));
         }
-
 
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -803,18 +770,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             mField = field;
         }
 
-
         @Override
         public int estimateLength() {
             return 2;
         }
 
-
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(mField));
         }
-
 
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -841,18 +805,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             super();
         }
 
-
         @Override
         public int estimateLength() {
             return 2;
         }
 
-
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(Calendar.YEAR) % 100);
         }
-
 
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -875,18 +836,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             super();
         }
 
-
         @Override
         public int estimateLength() {
             return 2;
         }
 
-
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(Calendar.MONTH) + 1);
         }
-
 
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -911,12 +869,10 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             mRule = rule;
         }
 
-
         @Override
         public int estimateLength() {
             return mRule.estimateLength();
         }
-
 
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -926,7 +882,6 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             }
             mRule.appendTo(buffer, value);
         }
-
 
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -951,12 +906,10 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             mRule = rule;
         }
 
-
         @Override
         public int estimateLength() {
             return mRule.estimateLength();
         }
-
 
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -966,7 +919,6 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             }
             mRule.appendTo(buffer, value);
         }
-
 
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -1031,6 +983,33 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
         }
     }
 
+    private static final ConcurrentMap<TimeZoneDisplayKey, String> cTimeZoneDisplayCache = new ConcurrentHashMap<>(7);
+
+    /**
+     * <p>
+     * Gets the time zone display name, using a cache for performance.
+     * </p>
+     *
+     * @param tz       the zone to query
+     * @param daylight true if daylight savings
+     * @param style    the style to use {@code TimeZone.LONG} or {@code TimeZone.SHORT}
+     * @param locale   the locale to use
+     * @return the textual name of the time zone
+     */
+    static String getTimeZoneDisplay(final TimeZone tz, final boolean daylight, final int style, final Locale locale) {
+        final TimeZoneDisplayKey key = new TimeZoneDisplayKey(tz, daylight, style, locale);
+        String value = cTimeZoneDisplayCache.get(key);
+        if (value == null) {
+            // This is a very slow call, so cache the results.
+            value = tz.getDisplayName(daylight, style, locale);
+            final String prior = cTimeZoneDisplayCache.putIfAbsent(key, value);
+            if (prior != null) {
+                value = prior;
+            }
+        }
+        return value;
+    }
+
     /**
      * <p>
      * Inner class to output a time zone name.
@@ -1057,15 +1036,13 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             mDaylight = getTimeZoneDisplay(timeZone, true, style, locale);
         }
 
-
         @Override
         public int estimateLength() {
             // We have no access to the Calendar object that will be passed to
-            // appendTo so basic estimate on the TimeZone passed to the
+            // appendTo so base estimate on the TimeZone passed to the
             // constructor
             return Math.max(mStandard.length(), mDaylight.length());
         }
-
 
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1098,12 +1075,10 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             mColon = colon;
         }
 
-
         @Override
         public int estimateLength() {
             return 5;
         }
-
 
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1142,16 +1117,6 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
         static final Iso8601_Rule ISO8601_HOURS_MINUTES = new Iso8601_Rule(5);
         // Sign TwoDigitHours : Minutes or Z
         static final Iso8601_Rule ISO8601_HOURS_COLON_MINUTES = new Iso8601_Rule(6);
-        final int length;
-
-        /**
-         * Constructs an instance of {@code Iso8601_Rule} with the specified properties.
-         *
-         * @param length The number of characters in output (unless Z is output)
-         */
-        Iso8601_Rule(final int length) {
-            this.length = length;
-        }
 
         /**
          * Factory method for Iso8601_Rules.
@@ -1172,12 +1137,21 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             }
         }
 
+        final int length;
+
+        /**
+         * Constructs an instance of {@code Iso8601_Rule} with the specified properties.
+         *
+         * @param length The number of characters in output (unless Z is output)
+         */
+        Iso8601_Rule(final int length) {
+            this.length = length;
+        }
 
         @Override
         public int estimateLength() {
             return length;
         }
-
 
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1238,12 +1212,10 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             mLocale = locale;
         }
 
-
         @Override
         public int hashCode() {
             return (mStyle * 31 + mLocale.hashCode()) * 31 + mTimeZone.hashCode();
         }
-
 
         @Override
         public boolean equals(final Object obj) {

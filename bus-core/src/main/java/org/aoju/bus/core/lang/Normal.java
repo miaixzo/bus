@@ -32,7 +32,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class Normal {
@@ -45,6 +45,10 @@ public class Normal {
      * 字符串:null
      */
     public static final String NULL = "null";
+    /**
+     * 字符串:undefined
+     */
+    public static final String UNDEFINED = "undefined";
     /**
      * URL 前缀表示文件: "file:"
      */
@@ -198,60 +202,48 @@ public class Normal {
      */
     public static final char[] DIGITS_16_UPPER = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-            'C', 'D', 'E', 'F'};
-
-    /**
-     * 将数字表示为字符串的所有字符
-     */
-    public static final char[] DIGITS_32_LOWER = {
-            '0', '1', '2', '3', '4', '5', 'a', 'b', 'c', 'd', 'e', 'f',
-            'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-            's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+            'C', 'D', 'E', 'F'
     };
-
     /**
-     * 将数字表示为字符串的所有字符
+     * base64编码表
      */
-    public static final char[] DIGITS_32_UPPER = {
-            '0', '1', '2', '3', '4', '5', 'A', 'B', 'C', 'D', 'E', 'F',
-            'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-            'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    public static final byte[] ENCODE_64_TABLE = {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+            'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+            'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7',
+            '8', '9', '+', '/'
     };
-
     /**
-     * 将数字表示为字符串的所有字符
+     * base64解码表
      */
-    public static final char[] DIGITS_36_LOWER = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
-            'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-            'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+    public static final byte[] DECODE_64_TABLE = {
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1,
+            62, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1,
+            -1, -2, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+            12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1,
+            -1, -1, -1, 63, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+            36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+            51
     };
-
     /**
-     * 将数字表示为字符串的所有字符
+     * URL编码表,将 . 和 / 替换为 - 和 _
      */
-    public static final char[] DIGITS_36_UPPER = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-            'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    public static final byte[] ENCODE_URL_TABLE = {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+            'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+            'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7',
+            '8', '9', '-', '_'
     };
-
     /**
-     * 将数字表示为字符串的所有字符
+     * BCrypt编码表
      */
-    public static final char[] DIGITS_ALL = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-            'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-            'y', 'z'
-    };
-
-    /**
-     * 用于Base64编码的表
-     */
-    public static final char[] STANDARD_ENCODE_TABLE = {
+    public static final char[] ENCODE_BCRYPT_TABLE = {
             '.', '/', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
             'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
             'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -259,11 +251,10 @@ public class Normal {
             'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9'
     };
-
     /**
-     * 用于Base64解码的表
+     * BCrypt解码表
      */
-    public static final byte[] STANDARD_DECODE_TABLE = {
+    public static final byte[] DECODE_BCRYPT_TABLE = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -274,19 +265,27 @@ public class Normal {
             38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52,
             53, -1, -1, -1, -1, -1
     };
-
     /**
-     * URL安全的编码表,将 . 和 / 替换为 - 和 _
+     * base32编码表
      */
-    public static final byte[] URL_SAFE_ENCODE_TABLE = {
-            '-', '_', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-            'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
-            'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-            'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9'
+    public static final char[] ENCODE_32_TABLE = {
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+            'Y', 'Z', '2', '3', '4', '5', '6', '7'
     };
-
+    /**
+     * base32解码表
+     */
+    public static final int[] DECODE_32_TABLE = {
+            0xFF, 0xFF, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0xFF, 0xFF,
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x01, 0x02,
+            0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C,
+            0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
+            0x17, 0x18, 0x19, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00,
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A,
+            0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14,
+            0x15, 0x16, 0x17, 0x18, 0x19, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+    };
     /**
      * Reusable Long constant for zero.
      */

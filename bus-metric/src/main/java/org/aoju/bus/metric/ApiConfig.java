@@ -25,9 +25,9 @@ package org.aoju.bus.metric;
 
 import lombok.Data;
 import org.aoju.bus.Version;
-import org.aoju.bus.metric.manual.docs.DocFileCreator;
-import org.aoju.bus.metric.manual.*;
 import org.aoju.bus.metric.builtin.ConfigClient;
+import org.aoju.bus.metric.manual.*;
+import org.aoju.bus.metric.manual.docs.DocFileCreator;
 import org.aoju.bus.metric.secure.*;
 import org.aoju.bus.metric.session.ApiSessionManager;
 import org.aoju.bus.metric.session.SessionManager;
@@ -42,7 +42,7 @@ import java.util.Map;
  * 配置类,所有配置相关都在这里.
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 @Data
@@ -208,7 +208,7 @@ public class ApiConfig {
 
     /**
      * 开启app对接模式，开启后不进行timeout校验
-     * 如果平台直接跟Android或IOS对接，可开启这个功能。因为手机上的时间有可能跟服务端的时间不一致（用户的手机情况不可控）。<br>
+     * 如果平台直接跟Android或IOS对接，可开启这个功能。因为手机上的时间有可能跟服务端的时间不一致(用户的手机情况不可控)
      * 失去了时间校验，一个请求有可能被反复调用，服务端需要防止重复提交，有必要的话上HTTPS。
      */
     public void openAppMode() {

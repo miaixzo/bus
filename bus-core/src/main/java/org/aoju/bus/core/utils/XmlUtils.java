@@ -23,10 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -60,7 +57,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class XmlUtils {
@@ -374,7 +371,7 @@ public class XmlUtils {
     }
 
     /**
-     * 将XML文档写出<br>
+     * 将XML文档写出
      *
      * @param source  源
      * @param result  目标
@@ -427,7 +424,7 @@ public class XmlUtils {
     }
 
     /**
-     * 创建XML文档<br>
+     * 创建XML文档
      * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
      *
      * @param rootElementName 根节点名称
@@ -438,7 +435,7 @@ public class XmlUtils {
     }
 
     /**
-     * 创建XML文档<br>
+     * 创建XML文档
      * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
      *
      * @param rootElementName 根节点名称
@@ -479,7 +476,7 @@ public class XmlUtils {
         if (xmlContent == null) {
             return null;
         }
-        return xmlContent.replaceAll(RegEx.INVALID_REGEX, "");
+        return xmlContent.replaceAll(RegEx.INVALID_REGEX, Normal.EMPTY);
     }
 
     /**
@@ -580,7 +577,7 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -626,7 +623,7 @@ public class XmlUtils {
      * @param source     资源,可以是Docunent、Node节点等
      * @param returnType 返回类型,{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();
@@ -684,11 +681,37 @@ public class XmlUtils {
     /**
      * XML格式字符串转换为Map
      *
+     * @param xmlStr XML字符串
+     * @return XML数据转换后的Map
+     */
+    public static Map<String, Object> xmlToMap(String xmlStr) {
+        return xmlToMap(xmlStr, new HashMap<>());
+    }
+
+    /**
+     * XML格式字符串转换为Map
+     *
      * @param node XML节点
      * @return XML数据转换后的Map
      */
     public static Map<String, Object> xmlToMap(Node node) {
         return xmlToMap(node, new HashMap<>());
+    }
+
+    /**
+     * XML格式字符串转换为Map
+     * 只支持第一级别的XML，不支持多级XML
+     *
+     * @param xmlStr XML字符串
+     * @param result 结果Map类型
+     * @return XML数据转换后的Map
+     */
+    public static Map<String, Object> xmlToMap(String xmlStr, Map<String, Object> result) {
+        final Document doc = parseXml(xmlStr);
+        final Element root = getRootElement(doc);
+        root.normalize();
+
+        return xmlToMap(root, result);
     }
 
     /**

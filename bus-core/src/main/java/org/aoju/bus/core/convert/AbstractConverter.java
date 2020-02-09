@@ -35,7 +35,7 @@ import java.util.Map;
  * 转换器不会抛出转换异常,转换失败时会返回{@code null}
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public abstract class AbstractConverter<T> implements Converter<T> {
@@ -71,7 +71,7 @@ public abstract class AbstractConverter<T> implements Converter<T> {
     }
 
     /**
-     * 不抛异常转换<br>
+     * 不抛异常转换
      * 当转换失败时返回默认值
      *
      * @param value        被转换的值
@@ -117,11 +117,12 @@ public abstract class AbstractConverter<T> implements Converter<T> {
         if (null == value) {
             return null;
         }
-        if (value instanceof String) {
-            return (String) value;
+        if (value instanceof CharSequence) {
+            return value.toString();
         } else if (ArrayUtils.isArray(value)) {
             return ArrayUtils.toString(value);
         } else if (CharUtils.isChar(value)) {
+            //对于ASCII字符使用缓存加速转换，减少空间创建
             return CharUtils.toString((char) value);
         }
         return value.toString();

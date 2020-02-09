@@ -45,7 +45,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class CellUtils {
@@ -178,8 +178,8 @@ public class CellUtils {
     }
 
     /**
-     * 设置单元格值<br>
-     * 根据传入的styleSet自动匹配样式<br>
+     * 设置单元格值
+     * 根据传入的styleSet自动匹配样式
      * 当为头部样式时默认赋值头部样式，但是头部中如果有数字、日期等类型，将按照数字、日期样式设置
      *
      * @param cell  单元格

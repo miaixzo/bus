@@ -39,7 +39,7 @@ import java.lang.reflect.Type;
  * Setting抽象类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public abstract class AbsSetting implements OptNullString<String>, Serializable {
@@ -256,7 +256,7 @@ public abstract class AbsSetting implements OptNullString<String>, Serializable 
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法<br>
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
      * 只支持基本类型的转换
      *
      * @param <T>   对象
@@ -279,7 +279,7 @@ public abstract class AbsSetting implements OptNullString<String>, Serializable 
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法<br>
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
      * 只支持基本类型的转换
      *
      * @param <T>  对象

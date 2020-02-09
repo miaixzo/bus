@@ -82,7 +82,7 @@ import java.util.Map;
  * 3、摘要加密（digest）,例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class Builder {
@@ -791,7 +791,7 @@ public class Builder {
      */
     public static SecretKey generateKey(String algorithm, byte[] key) {
         Assert.notBlank(algorithm, "Algorithm is blank!");
-        SecretKey secretKey = null;
+        SecretKey secretKey;
         if (algorithm.startsWith("PBE")) {
             // PBE密钥
             secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.str(key, org.aoju.bus.core.lang.Charset.UTF_8).toCharArray());
@@ -1278,7 +1278,7 @@ public class Builder {
      * @return {@link KeyStore}
      */
     public static KeyStore readKeyStore(String type, InputStream in, char[] password) {
-        KeyStore keyStore = null;
+        KeyStore keyStore;
         try {
             keyStore = KeyStore.getInstance(type);
             keyStore.load(in, password);

@@ -47,7 +47,7 @@ import java.security.PublicKey;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class Asymmetric extends Safety<Asymmetric> {
@@ -76,7 +76,7 @@ public class Asymmetric extends Safety<Asymmetric> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
@@ -88,9 +88,7 @@ public class Asymmetric extends Safety<Asymmetric> {
     }
 
     /**
-     * 构造
-     * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
@@ -105,9 +103,7 @@ public class Asymmetric extends Safety<Asymmetric> {
     }
 
     /**
-     * 构造
-     * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法

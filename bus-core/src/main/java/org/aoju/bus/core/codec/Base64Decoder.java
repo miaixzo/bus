@@ -33,10 +33,12 @@ import java.nio.charset.Charset;
  * Base64解码实现
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class Base64Decoder {
+
+    private static final byte PADDING = -2;
 
     /**
      * base64解码
@@ -44,7 +46,7 @@ public class Base64Decoder {
      * @param source 被解码的base64字符串
      * @return 被加密后的字符串
      */
-    public static String decodeStr(String source) {
+    public static String decodeStr(CharSequence source) {
         return decodeStr(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
@@ -55,19 +57,8 @@ public class Base64Decoder {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeStr(String source, String charset) {
-        return StringUtils.str(decode(source, charset), charset);
-    }
-
-    /**
-     * base64解码
-     *
-     * @param source  被解码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     */
-    public static String decodeStr(String source, Charset charset) {
-        return StringUtils.str(decode(source, charset), charset);
+    public static String decodeStr(CharSequence source, Charset charset) {
+        return StringUtils.str(decode(source), charset);
     }
 
     /**
@@ -76,30 +67,8 @@ public class Base64Decoder {
      * @param source 被解码的base64字符串
      * @return 被加密后的字符串
      */
-    public static byte[] decode(String source) {
-        return decode(source, org.aoju.bus.core.lang.Charset.UTF_8);
-    }
-
-    /**
-     * base64解码
-     *
-     * @param source  被解码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     */
-    public static byte[] decode(String source, String charset) {
-        return decode(StringUtils.bytes(source, charset));
-    }
-
-    /**
-     * base64解码
-     *
-     * @param source  被解码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     */
-    public static byte[] decode(String source, Charset charset) {
-        return decode(StringUtils.bytes(source, charset));
+    public static byte[] decode(CharSequence source) {
+        return decode(StringUtils.bytes(source, org.aoju.bus.core.lang.Charset.UTF_8));
     }
 
     /**
@@ -143,13 +112,13 @@ public class Base64Decoder {
             sestet2 = getNextValidDecodeByte(in, offset, maxPos);
             sestet3 = getNextValidDecodeByte(in, offset, maxPos);
 
-            if (Base64.PADDING != sestet1) {
+            if (PADDING != sestet1) {
                 octet[octetId++] = (byte) ((sestet0 << 2) | (sestet1 >>> 4));
             }
-            if (Base64.PADDING != sestet2) {
+            if (PADDING != sestet2) {
                 octet[octetId++] = (byte) (((sestet1 & 0xf) << 4) | (sestet2 >>> 2));
             }
-            if (Base64.PADDING != sestet3) {
+            if (PADDING != sestet3) {
                 octet[octetId++] = (byte) (((sestet2 & 3) << 6) | sestet3);
             }
         }
@@ -157,7 +126,7 @@ public class Base64Decoder {
         if (octetId == octet.length) {
             return octet;
         } else {
-            // 如果有非Base64字符混入,则实际结果比解析的要短,截取之
+            // 如果有非Base64字符混入，则实际结果比解析的要短，截取之
             return (byte[]) ArrayUtils.copy(octet, new byte[octetId], octetId);
         }
     }
@@ -166,9 +135,9 @@ public class Base64Decoder {
      * 获取下一个有效的byte字符
      *
      * @param in     输入
-     * @param pos    当前位置,调用此方法后此位置保持在有效字符的下一个位置
+     * @param pos    当前位置，调用此方法后此位置保持在有效字符的下一个位置
      * @param maxPos 最大位置
-     * @return 有效字符, 如果达到末尾返回
+     * @return 有效字符，如果达到末尾返回
      */
     private static byte getNextValidDecodeByte(byte[] in, IntWrapper pos, int maxPos) {
         byte base64Byte;
@@ -176,13 +145,13 @@ public class Base64Decoder {
         while (pos.value <= maxPos) {
             base64Byte = in[pos.value++];
             if (base64Byte > -1) {
-                decodeByte = Normal.STANDARD_DECODE_TABLE[base64Byte];
+                decodeByte = Normal.DECODE_64_TABLE[base64Byte];
                 if (decodeByte > -1) {
                     return decodeByte;
                 }
             }
         }
-        return Base64.PADDING;
+        return PADDING;
     }
 
     /**

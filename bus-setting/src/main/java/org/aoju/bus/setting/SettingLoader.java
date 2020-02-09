@@ -45,7 +45,7 @@ import java.util.Set;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class SettingLoader {

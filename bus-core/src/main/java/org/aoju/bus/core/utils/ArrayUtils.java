@@ -30,7 +30,6 @@ import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
 
@@ -42,7 +41,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class ArrayUtils {
@@ -56,11 +55,40 @@ public class ArrayUtils {
     /**
      * 数组或集合转String
      *
-     * @param array 集合或数组对象
+     * @param obj 集合或数组对象
      * @return 数组字符串, 与集合转字符串格式相同
      */
-    public static String toString(final Object array) {
-        return toString(array, Symbol.DELIM);
+    public static String toString(final Object obj) {
+        if (null == obj) {
+            return null;
+        }
+
+        if (obj instanceof long[]) {
+            return Arrays.toString((long[]) obj);
+        } else if (obj instanceof int[]) {
+            return Arrays.toString((int[]) obj);
+        } else if (obj instanceof short[]) {
+            return Arrays.toString((short[]) obj);
+        } else if (obj instanceof char[]) {
+            return Arrays.toString((char[]) obj);
+        } else if (obj instanceof byte[]) {
+            return Arrays.toString((byte[]) obj);
+        } else if (obj instanceof boolean[]) {
+            return Arrays.toString((boolean[]) obj);
+        } else if (obj instanceof float[]) {
+            return Arrays.toString((float[]) obj);
+        } else if (obj instanceof double[]) {
+            return Arrays.toString((double[]) obj);
+        } else if (ArrayUtils.isArray(obj)) {
+            // 对象数组
+            try {
+                return Arrays.deepToString((Object[]) obj);
+            } catch (Exception ignore) {
+                //ignore
+            }
+        }
+
+        return obj.toString();
     }
 
     /**
@@ -7039,7 +7067,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7050,7 +7078,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7062,10 +7090,10 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static Class<?> getArrayType(Class<?> componentType) {
-        return newArray(componentType, 0).getClass();
+        return Array.newInstance(componentType, 0).getClass();
     }
 
     /**
@@ -7231,7 +7259,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 生成一个新的重新设置大小的数组<br>
+     * 生成一个新的重新设置大小的数组
      * 调整大小后拷贝原数组到新数组下 扩大则占位前N个位置,其它位置补充0,缩小则截断
      *
      * @param bytes   原数组
@@ -8622,7 +8650,7 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口,用于定义过滤规则
      * @return 过滤后的数组
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<>(array.length);
@@ -8665,6 +8693,24 @@ public class ArrayUtils {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * 去重数组中的元素，去重后生成新的数组，原数组不变
+     * 此方法通过{@link LinkedHashSet} 去重
+     *
+     * @param <T>   数组元素类型
+     * @param array 数组
+     * @return 去重后的数组
+     */
+    public static <T> T[] distinct(T[] array) {
+        if (isEmpty(array)) {
+            return array;
+        }
+
+        final Set<T> set = new LinkedHashSet<>(array.length, 1);
+        Collections.addAll(set, array);
+        return toArray(set, (Class<T>) getComponentType(array));
     }
 
 }

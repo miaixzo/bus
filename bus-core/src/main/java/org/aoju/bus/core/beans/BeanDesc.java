@@ -47,10 +47,12 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class BeanDesc implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Bean类

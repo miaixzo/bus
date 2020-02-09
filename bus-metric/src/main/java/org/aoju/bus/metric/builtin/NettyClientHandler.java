@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 public class NettyClientHandler extends SimpleChannelInboundHandler<ChannelMessage> {

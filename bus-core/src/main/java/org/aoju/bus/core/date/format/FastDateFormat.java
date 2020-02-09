@@ -43,7 +43,7 @@ import java.util.TimeZone;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class FastDateFormat extends Format implements DateParser, DatePrinter {
@@ -64,7 +64,7 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
      * SHORT locale dependent date or time style.
      */
     public static final int SHORT = DateFormat.SHORT;
-    private static final long serialVersionUID = 1L;
+
     private static final FormatCache<FastDateFormat> cache = new FormatCache<FastDateFormat>() {
         @Override
         protected FastDateFormat createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
@@ -76,33 +76,7 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
     private final FastDateParser parser;
 
     /**
-     * 构造
-     *
-     * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
-     * @param timeZone 非空时区 {@link TimeZone}
-     * @param locale   {@link Locale} 日期地理位置
-     * @throws NullPointerException if pattern, timeZone, or locale is null.
-     */
-    protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale) {
-        this(pattern, timeZone, locale, null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param pattern      使用{@link java.text.SimpleDateFormat} 相同的日期格式
-     * @param timeZone     非空时区 {@link TimeZone}
-     * @param locale       {@link Locale} 日期地理位置
-     * @param centuryStart The start of the 100 year period to use as the "default century" for 2 digit year parsing. If centuryStart is null, defaults to now - 80 years
-     * @throws NullPointerException if pattern, timeZone, or locale is null.
-     */
-    protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
-        printer = new FastDatePrinter(pattern, timeZone, locale);
-        parser = new FastDateParser(pattern, timeZone, locale, centuryStart);
-    }
-
-    /**
-     * 获得 {@link FastDateFormat} 实例,使用默认格式和地区
+     * 获得 {@link FastDateFormat} 实例，使用默认格式和地区
      *
      * @return {@link FastDateFormat}
      */
@@ -310,6 +284,32 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
         return cache.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale);
     }
 
+    /**
+     * 构造
+     *
+     * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
+     * @param timeZone 非空时区 {@link TimeZone}
+     * @param locale   {@link Locale} 日期地理位置
+     * @throws NullPointerException if pattern, timeZone, or locale is null.
+     */
+    protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale) {
+        this(pattern, timeZone, locale, null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param pattern      使用{@link java.text.SimpleDateFormat} 相同的日期格式
+     * @param timeZone     非空时区 {@link TimeZone}
+     * @param locale       {@link Locale} 日期地理位置
+     * @param centuryStart The start of the 100 year period to use as the "default century" for 2 digit year parsing. If centuryStart is null, defaults to now - 80 years
+     * @throws NullPointerException if pattern, timeZone, or locale is null.
+     */
+    protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
+        printer = new FastDatePrinter(pattern, timeZone, locale);
+        parser = new FastDateParser(pattern, timeZone, locale, centuryStart);
+    }
+
     @Override
     public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
         return toAppendTo.append(printer.format(obj));
@@ -396,7 +396,6 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
             return false;
         }
         final FastDateFormat other = (FastDateFormat) obj;
-        // no need to check parser, as it has same invariants as printer
         return printer.equals(other.printer);
     }
 

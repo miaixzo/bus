@@ -468,24 +468,24 @@ public class BCrypt {
 
         while (off < len) {
             c1 = d[off++] & 0xff;
-            rs.append(Normal.STANDARD_ENCODE_TABLE[(c1 >> 2) & 0x3f]);
+            rs.append(Normal.ENCODE_BCRYPT_TABLE[(c1 >> 2) & 0x3f]);
             c1 = (c1 & 0x03) << 4;
             if (off >= len) {
-                rs.append(Normal.STANDARD_ENCODE_TABLE[c1 & 0x3f]);
+                rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
                 break;
             }
             c2 = d[off++] & 0xff;
             c1 |= (c2 >> 4) & 0x0f;
-            rs.append(Normal.STANDARD_ENCODE_TABLE[c1 & 0x3f]);
+            rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
             c1 = (c2 & 0x0f) << 2;
             if (off >= len) {
-                rs.append(Normal.STANDARD_ENCODE_TABLE[c1 & 0x3f]);
+                rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
                 break;
             }
             c2 = d[off++] & 0xff;
             c1 |= (c2 >> 6) & 0x03;
-            rs.append(Normal.STANDARD_ENCODE_TABLE[c1 & 0x3f]);
-            rs.append(Normal.STANDARD_ENCODE_TABLE[c2 & 0x3f]);
+            rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
+            rs.append(Normal.ENCODE_BCRYPT_TABLE[c2 & 0x3f]);
         }
         return rs.toString();
     }
@@ -498,9 +498,9 @@ public class BCrypt {
      * @return 解码后的x值
      */
     private static byte char64(char x) {
-        if ((int) x < 0 || (int) x > Normal.STANDARD_DECODE_TABLE.length)
+        if ((int) x < 0 || (int) x > Normal.DECODE_BCRYPT_TABLE.length)
             return -1;
-        return Normal.STANDARD_DECODE_TABLE[(int) x];
+        return Normal.DECODE_BCRYPT_TABLE[(int) x];
     }
 
     /**

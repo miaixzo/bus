@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class Validator {
@@ -84,7 +84,7 @@ public class Validator {
      * @return 是否为空
      */
     public static boolean isEmpty(Object value) {
-        return (null == value || (value instanceof String && StringUtils.isEmpty(value)));
+        return (null == value || (value instanceof String && StringUtils.isEmpty((String) value)));
     }
 
     /**
@@ -189,7 +189,7 @@ public class Validator {
      * @param value 值
      * @return 是否匹配正则
      */
-    public static boolean isMactchRegex(String regex, String value) {
+    public static boolean isMactchRegex(String regex, CharSequence value) {
         return PatternUtils.isMatch(regex, value);
     }
 
@@ -251,10 +251,10 @@ public class Validator {
      * @return 是否为给定长度范围的英文字母 、数字和下划线
      */
     public static boolean isGeneral(String value, int min, int max) {
-        String reg = "^\\w{" + min + Symbol.COMMA + max + "}$";
         if (min < 0) {
             min = 0;
         }
+        String reg = "^\\w{" + min + "," + max + "}$";
         if (max <= 0) {
             reg = "^\\w{" + min + ",}$";
         }
@@ -735,21 +735,24 @@ public class Validator {
      * @param value 值
      * @return 是否为汉字
      */
-    public static boolean isChinese(String value) {
+    public static boolean isChinese(CharSequence value) {
         return isMactchRegex(Symbol.CARET + RegEx.CHINESE_PATTERN + "+$", value);
     }
 
     /**
      * 验证是否为汉字
      *
+     * @param <T>      字符串类型
      * @param value    表单值
      * @param errorMsg 验证错误的信息
+     * @return 验证后的值
      * @throws InstrumentException 验证异常
      */
-    public static void validateChinese(String value, String errorMsg) throws InstrumentException {
+    public static <T extends CharSequence> T validateChinese(T value, String errorMsg) throws InstrumentException {
         if (false == isChinese(value)) {
             throw new InstrumentException(errorMsg);
         }
+        return value;
     }
 
     /**

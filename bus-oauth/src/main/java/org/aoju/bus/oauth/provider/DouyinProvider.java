@@ -40,7 +40,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class DouyinProvider extends DefaultProvider {

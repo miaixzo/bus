@@ -35,14 +35,12 @@ import java.util.Map;
  * 莫尔斯电码的编码和解码
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class Morse {
 
-    // code point -> morse
     private static final Map<Integer, String> alphabets = new HashMap<>();
-    // morse -> code point
     private static final Map<String, Integer> dictionaries = new HashMap<>();
 
     static {

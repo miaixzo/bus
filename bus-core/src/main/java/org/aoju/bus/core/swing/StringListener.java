@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.swing;
 
-import org.aoju.bus.core.utils.ClipboardUtils;
+import org.aoju.bus.core.utils.SwingUtils;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 剪贴板字符串内容监听
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public abstract class StringListener implements ClipboardListener, Serializable {
@@ -44,13 +44,13 @@ public abstract class StringListener implements ClipboardListener, Serializable 
     @Override
     public Transferable onChange(Clipboard clipboard, Transferable contents) {
         if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            return onChange(clipboard, ClipboardUtils.getStr(contents));
+            return onChange(clipboard, SwingUtils.getStr(contents));
         }
         return null;
     }
 
     /**
-     * 剪贴板变动触发的事件方法<br>
+     * 剪贴板变动触发的事件方法
      * 在此事件中对剪贴板设置值无效,如若修改,需返回修改内容
      *
      * @param clipboard 剪贴板对象

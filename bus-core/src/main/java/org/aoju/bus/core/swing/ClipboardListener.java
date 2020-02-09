@@ -27,17 +27,17 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.Transferable;
 
 /**
- * 剪贴板监听事件处理接口<br>
+ * 剪贴板监听事件处理接口
  * 用户通过实现此接口,实现监听剪贴板内容变化
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public interface ClipboardListener {
 
     /**
-     * 剪贴板变动触发的事件方法<br>
+     * 剪贴板变动触发的事件方法
      * 在此事件中对剪贴板设置值无效,如若修改,需返回修改内容
      *
      * @param clipboard 剪贴板对象

@@ -40,7 +40,7 @@ import java.util.jar.JarFile;
  * 统一资源定位符相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class UriUtils {
@@ -358,7 +358,7 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
@@ -375,7 +375,7 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);
@@ -420,7 +420,6 @@ public class UriUtils {
      * @param url      URL字符串
      * @param isEncode 是否对URL中path部分的中文和特殊字符做转义（不包括 http:, /和域名部分）
      * @return 标准化后的URL字符串
-     * @since 4.4.1
      */
     public static String normalize(String url, boolean isEncode) {
         if (StringUtils.isBlank(url)) {
@@ -437,7 +436,7 @@ public class UriUtils {
             body = url;
         }
 
-        final int paramsSepIndex = StringUtils.indexOf(body, Symbol.C_QUESTION_MARK);
+        final int paramsSepIndex = StringUtils.indexOf(body, '?');
         String params = null;
         if (paramsSepIndex > 0) {
             params = StringUtils.subSuf(body, paramsSepIndex);
@@ -617,6 +616,18 @@ public class UriUtils {
      */
     public static String encodePathSegment(String segment, Charset charset) {
         return encode(segment, charset, Type.PATH_SEGMENT);
+    }
+
+    /**
+     * 编码URL，默认使用UTF-8编码
+     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     * 此方法用于POST请求中的请求体自动编码，转义大部分特殊字符
+     *
+     * @param url URL
+     * @return 编码后的URL
+     */
+    public static String encodeQuery(String url) {
+        return encodeQuery(url, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -851,6 +862,17 @@ public class UriUtils {
     }
 
     /**
+     * 解码URL
+     * 将%开头的16进制表示的内容解码。
+     *
+     * @param url URL
+     * @return 解码后的URL
+     */
+    public static String decode(String url) {
+        return decode(url, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
      * 解码给定的URI编码组件.
      * <p>See {@link #uriDecode(String, Charset)} for the decoding rules.
      *
@@ -901,7 +923,7 @@ public class UriUtils {
     }
 
     /**
-     * 对URL参数做编码,只编码键和值<br>
+     * 对URL参数做编码,只编码键和值
      * 提供的值可以是url附带参数,但是不能只是url
      *
      * <p>注意,此方法只能标准化整个URL,并不适合于单独编码参数值</p>
@@ -995,8 +1017,8 @@ public class UriUtils {
     }
 
     /**
-     * 将Map形式的Form表单数据转换为Url参数形式<br>
-     * paramMap中如果key为空（null和""）会被忽略,如果value为null,会被做为空白符（""）<br>
+     * 将Map形式的Form表单数据转换为Url参数形式
+     * paramMap中如果key为空（null和""）会被忽略,如果value为null,会被做为空白符（""）
      * 会自动url编码键和值
      *
      * <pre>
@@ -1121,7 +1143,7 @@ public class UriUtils {
     }
 
     /**
-     * 将表单数据加到URL中（用于GET表单提交）<br>
+     * 将表单数据加到URL中（用于GET表单提交）
      * 表单的键值对会被url编码,但是url中原参数不会被编码
      *
      * @param url            URL
@@ -1189,6 +1211,24 @@ public class UriUtils {
             params.put(name, values);
         }
         values.add(value);
+    }
+
+    /**
+     * 获取URL中域名部分，只保留URL中的协议（Protocol）、Host，其它为null。
+     *
+     * @param url URL
+     * @return 域名的URI
+     */
+    public static URI getHost(URL url) {
+        if (null == url) {
+            return null;
+        }
+
+        try {
+            return new URI(url.getProtocol(), url.getHost(), null, null);
+        } catch (URISyntaxException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     /**

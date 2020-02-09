@@ -32,7 +32,7 @@ import java.util.Collection;
  * 当没有规则的时候,就是不满足
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class AnyComplex<E> extends MixComplex<E> implements Complex<E> {

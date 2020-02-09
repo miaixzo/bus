@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * 开启WebSocket
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 @Inherited

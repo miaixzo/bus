@@ -25,7 +25,7 @@ package org.aoju.bus.socket.origin;
 
 /**
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 final class TcpReadEvent {

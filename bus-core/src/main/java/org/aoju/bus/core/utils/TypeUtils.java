@@ -41,7 +41,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class TypeUtils {
@@ -224,7 +224,7 @@ public class TypeUtils {
     }
 
     /**
-     * 获取方法的第一个参数类型<br>
+     * 获取方法的第一个参数类型
      * 优先获取方法的GenericParameterTypes,如果获取不到,则获取ParameterTypes
      *
      * @param method 方法
@@ -247,7 +247,7 @@ public class TypeUtils {
     }
 
     /**
-     * 获取方法的参数类型<br>
+     * 获取方法的参数类型
      * 优先获取方法的GenericParameterTypes,如果获取不到,则获取ParameterTypes
      *
      * @param method 方法
@@ -305,8 +305,8 @@ public class TypeUtils {
 
 
     /**
-     * 将{@link Type} 转换为{@link ParameterizedType}<br>
-     * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型<br>
+     * 将{@link Type} 转换为{@link ParameterizedType}
+     * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型
      * 一般用于获取泛型参数具体的参数类型,例如：
      *
      * <pre>
@@ -329,8 +329,8 @@ public class TypeUtils {
     }
 
     /**
-     * 获取指定泛型变量对应的真实类型<br>
-     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的,因此可以通过对应关系找到泛型实现类型<br>
+     * 获取指定泛型变量对应的真实类型
+     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的,因此可以通过对应关系找到泛型实现类型
      * 使用此方法注意：
      *
      * <pre>
@@ -371,8 +371,8 @@ public class TypeUtils {
     }
 
     /**
-     * 获取指定泛型变量对应的真实类型<br>
-     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的,因此可以通过对应关系找到泛型实现类型<br>
+     * 获取指定泛型变量对应的真实类型
+     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的,因此可以通过对应关系找到泛型实现类型
      * 使用此方法注意：
      *
      * <pre>
@@ -394,7 +394,7 @@ public class TypeUtils {
     }
 
     /**
-     * 是否未知类型<br>
+     * 是否未知类型
      * type为null或者{@link TypeVariable} 都视为未知类型
      *
      * @param type Type类型

@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.FastByteArray;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
@@ -41,10 +42,132 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class ObjectUtils {
+
+    /**
+     * 检查对象是否为null
+     *
+     * @param obj 对象
+     * @return 是否为null
+     */
+    public static boolean isNull(Object obj) {
+        return null == obj || obj.equals(null);
+    }
+
+    /**
+     * 检查对象是否不为null
+     *
+     * @param obj 对象
+     * @return 是否为null
+     */
+    public static boolean isNotNull(Object obj) {
+        return null != obj && false == obj.equals(null);
+    }
+
+    /**
+     * 如果给定对象为{@code null}返回默认值
+     *
+     * @param <T>          对象类型
+     * @param object       被检查对象,可能为{@code null}
+     * @param defaultValue 被检查对象为{@code null}返回的默认值,可以为{@code null}
+     * @return 被检查对象为{ null}返回默认值,否则返回原值
+     * @since 3.0.7
+     */
+    public static <T> T defaultIfNull(final T object, final T defaultValue) {
+        return (null != object) ? object : defaultValue;
+    }
+
+    /**
+     * 判断对象为true
+     *
+     * @param object 对象
+     * @return 对象是否为true
+     */
+    public static boolean isTrue(Boolean object) {
+        return Boolean.TRUE.equals(object);
+    }
+
+    /**
+     * 判断对象为false
+     *
+     * @param object 对象
+     * @return 对象是否为false
+     */
+    public static boolean isFalse(Boolean object) {
+        return object == null || Boolean.FALSE.equals(object);
+    }
+
+    /**
+     * 确定给定的对象是一个数组:对象数组还是基元数组
+     *
+     * @param object 要检查的对象
+     * @return the true/false
+     */
+    public static boolean isArray(Object object) {
+        return (object != null && object.getClass().isArray());
+    }
+
+    /**
+     * 判断对象是否Empty(null或元素为0)
+     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
+     *
+     * @param object 待检查对象
+     * @return boolean 返回的布尔值
+     */
+    public static final boolean isEmpty(Object... object) {
+        for (Object pObj : object) {
+            if (pObj == null || "".equals(pObj)) {
+                return true;
+            }
+            if (pObj instanceof String) {
+                if (((String) pObj).trim().length() == 0) {
+                    return true;
+                }
+            } else if (pObj instanceof Collection<?>) {
+                if (((Collection<?>) pObj).size() == 0) {
+                    return true;
+                }
+            } else if (pObj instanceof Map<?, ?>) {
+                if (((Map<?, ?>) pObj).size() == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断对象是否为NotEmpty(!null或元素大于0)
+     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
+     *
+     * @param object 待检查对象
+     * @return boolean 返回的布尔值
+     */
+    public static final boolean isNotEmpty(Object... object) {
+        return !isEmpty(object);
+    }
+
+    /**
+     * 检查是否为有效的数字
+     * 检查Double和Float是否为无限大,或者Not a Number
+     * 非数字类型和Null将返回true
+     *
+     * @param obj 被检查类型
+     * @return 检查结果, 非数字类型和Null将返回true
+     */
+    public static boolean isValidIfNumber(Object obj) {
+        if (obj != null && obj instanceof Number) {
+            if (obj instanceof Double) {
+                return !((Double) obj).isInfinite() && !((Double) obj).isNaN();
+            } else if (obj instanceof Float) {
+                return !((Float) obj).isInfinite() && !((Float) obj).isNaN();
+            }
+        }
+        return true;
+    }
 
     /**
      * 比较两个对象是否相等
@@ -196,88 +319,6 @@ public class ObjectUtils {
     }
 
     /**
-     * 检查对象是否为null
-     *
-     * @param obj 对象
-     * @return 是否为null
-     */
-    public static boolean isNull(Object obj) {
-        return null == obj || obj.equals(null);
-    }
-
-    /**
-     * 检查对象是否不为null
-     *
-     * @param obj 对象
-     * @return 是否为null
-     */
-    public static boolean isNotNull(Object obj) {
-        return null != obj && false == obj.equals(null);
-    }
-
-    /**
-     * 如果给定对象为{@code null}返回默认值
-     *
-     * @param <T>          对象类型
-     * @param object       被检查对象,可能为{@code null}
-     * @param defaultValue 被检查对象为{@code null}返回的默认值,可以为{@code null}
-     * @return 被检查对象为{ null}返回默认值,否则返回原值
-     * @since 3.0.7
-     */
-    public static <T> T defaultIfNull(final T object, final T defaultValue) {
-        return (null != object) ? object : defaultValue;
-    }
-
-    /**
-     * 判断对象为true
-     *
-     * @param object 对象
-     * @return 对象是否为true
-     */
-    public static boolean isTrue(Boolean object) {
-        return Boolean.TRUE.equals(object);
-    }
-
-    /**
-     * 判断对象为false
-     *
-     * @param object 对象
-     * @return 对象是否为false
-     */
-    public static boolean isFalse(Boolean object) {
-        return object == null || Boolean.FALSE.equals(object);
-    }
-
-    /**
-     * 确定给定的对象是一个数组:对象数组还是基元数组
-     *
-     * @param object 要检查的对象
-     * @return the true/false
-     */
-    public static boolean isArray(Object object) {
-        return (object != null && object.getClass().isArray());
-    }
-
-    /**
-     * 检查是否为有效的数字
-     * 检查Double和Float是否为无限大,或者Not a Number
-     * 非数字类型和Null将返回true
-     *
-     * @param obj 被检查类型
-     * @return 检查结果, 非数字类型和Null将返回true
-     */
-    public static boolean isValidIfNumber(Object obj) {
-        if (obj != null && obj instanceof Number) {
-            if (obj instanceof Double) {
-                return !((Double) obj).isInfinite() && !((Double) obj).isNaN();
-            } else if (obj instanceof Float) {
-                return !((Float) obj).isInfinite() && !((Float) obj).isNaN();
-            }
-        }
-        return true;
-    }
-
-    /**
      * 克隆对象
      * 如果对象实现Cloneable接口,调用其clone方法
      * 如果实现Serializable接口,执行深度克隆
@@ -297,6 +338,28 @@ public class ObjectUtils {
             }
         }
         return result;
+    }
+
+    /**
+     * 将Object转为String
+     * 策略为：
+     * <pre>
+     *  1、null转为"null"
+     *  2、调用Convert.toStr(Object)转换
+     * </pre>
+     *
+     * @param obj Bean对象
+     * @return Bean所有字段转为Map后的字符串
+     */
+    public static String toString(Object obj) {
+        if (null == obj) {
+            return Normal.NULL;
+        }
+        if (obj instanceof Map) {
+            return obj.toString();
+        }
+
+        return Convert.toString(obj);
     }
 
     /**
@@ -359,46 +422,6 @@ public class ObjectUtils {
             return nullGreater ? -1 : 1;
         }
         return c1.compareTo(c2);
-    }
-
-    /**
-     * 判断对象是否Empty(null或元素为0)
-     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
-     *
-     * @param object 待检查对象
-     * @return boolean 返回的布尔值
-     */
-    public static final boolean isEmpty(Object... object) {
-        for (Object pObj : object) {
-            if (pObj == null || "".equals(pObj)) {
-                return true;
-            }
-            if (pObj instanceof String) {
-                if (((String) pObj).trim().length() == 0) {
-                    return true;
-                }
-            } else if (pObj instanceof Collection<?>) {
-                if (((Collection<?>) pObj).size() == 0) {
-                    return true;
-                }
-            } else if (pObj instanceof Map<?, ?>) {
-                if (((Map<?, ?>) pObj).size() == 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 判断对象是否为NotEmpty(!null或元素大于0)
-     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
-     *
-     * @param object 待检查对象
-     * @return boolean 返回的布尔值
-     */
-    public static final boolean isNotEmpty(Object... object) {
-        return !isEmpty(object);
     }
 
     /**

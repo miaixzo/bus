@@ -41,7 +41,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 百度账号登录
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class BaiduProvider extends DefaultProvider {

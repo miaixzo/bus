@@ -40,7 +40,7 @@ import java.util.Map;
  * 文件监听服务，此服务可以同时监听多个路径
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class WatchServer extends Thread implements Closeable, Serializable {
@@ -68,7 +68,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
     private Map<WatchKey, Path> watchKeyPathMap = new HashMap<>();
 
     /**
-     * 初始化<br>
+     * 初始化
      * 初始化包括：
      * <pre>
      * 1、解析传入的路径，判断其为目录还是文件

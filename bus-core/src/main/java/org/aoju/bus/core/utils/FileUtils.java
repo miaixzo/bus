@@ -25,10 +25,9 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.io.BOMInputStream;
 import org.aoju.bus.core.io.LineHandler;
-import org.aoju.bus.core.io.file.FileCopier;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
-import org.aoju.bus.core.io.file.LineSeparator;
+import org.aoju.bus.core.io.file.*;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.Normal;
@@ -53,7 +52,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class FileUtils {
@@ -190,7 +189,7 @@ public class FileUtils {
      * @param path       当前遍历文件或目录的路径
      * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static List<File> loopFiles(String path, FileFilter fileFilter) {
         return loopFiles(file(path), fileFilter);
@@ -230,10 +229,52 @@ public class FileUtils {
 
     /**
      * 递归遍历目录以及子目录中的所有文件
+     * 如果提供file为文件，直接返回过滤结果
+     *
+     * @param file       当前遍历文件或目录
+     * @param maxDepth   遍历最大深度，-1表示遍历到没有目录为止
+     * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
+     * @return 文件列表
+     */
+    public static List<File> loopFiles(File file, int maxDepth, final FileFilter fileFilter) {
+        final List<File> fileList = new ArrayList<>();
+        if (null == file || false == file.exists()) {
+            return fileList;
+        } else if (false == file.isDirectory()) {
+            if (null == fileFilter || fileFilter.accept(file)) {
+                fileList.add(file);
+            }
+            return fileList;
+        }
+
+        if (maxDepth < 0) {
+            maxDepth = Integer.MAX_VALUE;
+        }
+
+        try {
+            Files.walkFileTree(file.toPath(), EnumSet.noneOf(FileVisitOption.class), maxDepth, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+                    final File file = path.toFile();
+                    if (null == fileFilter || fileFilter.accept(file)) {
+                        fileList.add(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+
+        return fileList;
+    }
+
+    /**
+     * 递归遍历目录以及子目录中的所有文件
      *
      * @param path 当前遍历文件或目录的路径
      * @return 文件列表
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static List<File> loopFiles(String path) {
         return loopFiles(file(path));
@@ -729,12 +770,12 @@ public class FileUtils {
 
     /**
      * 删除文件或者文件夹
-     * 路径如果为相对路径,会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空,如果不空则递归删除子文件或文件夹
+     * 路径如果为相对路径，会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param fullFileOrDirPath 文件或者目录的路径
      * @return 成功与否
-     * @throws InstrumentException 异常
+     * @throws InstrumentException IO异常
      */
     public static boolean delete(String fullFileOrDirPath) throws InstrumentException {
         return delete(file(fullFileOrDirPath));
@@ -742,23 +783,68 @@ public class FileUtils {
 
     /**
      * 删除文件或者文件夹
-     * 注意：删除文件夹时不会判断文件夹是否为空,如果不空则递归删除子文件或文件夹
+     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
      * 某个文件删除失败会终止删除操作
      *
      * @param file 文件对象
      * @return 成功与否
-     * @throws InstrumentException 异常
+     * @throws InstrumentException IO异常
      */
     public static boolean delete(File file) throws InstrumentException {
         if (file == null || false == file.exists()) {
-            return false;
+            // 如果文件不存在或已被删除，此处返回true表示删除成功
+            return true;
         }
 
         if (file.isDirectory()) {
-            clean(file);
+            // 清空目录下所有文件和目录
+            boolean isOk = clean(file);
+            if (false == isOk) {
+                return false;
+            }
         }
+
+        // 删除文件或清空后的目录
+        return file.delete();
+    }
+
+    /**
+     * 删除文件或者文件夹
+     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
+     * 某个文件删除失败会终止删除操作
+     *
+     * @param path 文件对象
+     * @return 成功与否
+     * @throws InstrumentException IO异常
+     */
+    public static boolean delete(Path path) throws InstrumentException {
+        if (Files.notExists(path)) {
+            return true;
+        }
+
         try {
-            Files.delete(file.toPath());
+            if (Files.isDirectory(path)) {
+                Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Files.delete(file);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
+                        if (e == null) {
+                            Files.delete(dir);
+                            return FileVisitResult.CONTINUE;
+                        } else {
+                            throw e;
+                        }
+                    }
+                });
+            } else {
+                Files.delete(path);
+            }
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -1490,8 +1576,6 @@ public class FileUtils {
      * "foo/../../bar" =》 "bar"
      * "//server/foo/../bar" =》 "/server/bar"
      * "//server/../bar" =》 "/bar"
-     * "C:\\foo\\..\\bar" =》 "C:/bar"
-     * "C:\\..\\bar" =》 "C:/bar"
      * "~/foo/../bar/" =》 "~/bar/"
      * "~/../bar" =》 "bar"
      * </pre>
@@ -1563,8 +1647,8 @@ public class FileUtils {
      * 栗子：
      *
      * <pre>
-     * dirPath: d:/aaa/bbb    filePath: d:/aaa/bbb/ccc     =》    ccc
-     * dirPath: d:/Aaa/bbb    filePath: d:/aaa/bbb/ccc.txt     =》    ccc.txt
+     * dirPath: /data/aaa/bbb    filePath: /data/aaa/bbb/ccc     =》    ccc
+     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/ccc.txt     =》    ccc.txt
      * </pre>
      *
      * @param rootDir 绝对父路径
@@ -1585,9 +1669,9 @@ public class FileUtils {
      * 栗子：
      *
      * <pre>
-     * dirPath: d:/aaa/bbb    filePath: d:/aaa/bbb/ccc     =》    ccc
-     * dirPath: d:/Aaa/bbb    filePath: d:/aaa/bbb/ccc.txt     =》    ccc.txt
-     * dirPath: d:/Aaa/bbb    filePath: d:/aaa/bbb/     =》    ""
+     * dirPath: /data/aaa/bbb    filePath: /data/aaa/bbb/ccc     =》    ccc
+     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/ccc.txt     =》    ccc.txt
+     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/     =》    ""
      * </pre>
      *
      * @param dirPath  父路径
@@ -2015,7 +2099,7 @@ public class FileUtils {
      * @param filePath 文件路径
      * @return 字节码
      * @throws InstrumentException 异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static byte[] readBytes(String filePath) throws InstrumentException {
         return readBytes(file(filePath));
@@ -2801,7 +2885,7 @@ public class FileUtils {
      * @param path 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
         return writeLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2815,7 +2899,7 @@ public class FileUtils {
      * @param file 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
         return writeLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -3264,10 +3348,10 @@ public class FileUtils {
      * 获取指定层级的父路径
      *
      * <pre>
-     * getParent("d:/aaa/bbb/cc/ddd", 0) - "d:/aaa/bbb/cc/ddd"
-     * getParent("d:/aaa/bbb/cc/ddd", 2) - "d:/aaa/bbb"
-     * getParent("d:/aaa/bbb/cc/ddd", 4) - "d:/"
-     * getParent("d:/aaa/bbb/cc/ddd", 5) - null
+     * getParent("/data/aaa/bbb/cc/ddd", 0) - "/data/aaa/bbb/cc/ddd"
+     * getParent("/data/aaa/bbb/cc/ddd", 2) - "/data/aaa/bbb"
+     * getParent("/data/aaa/bbb/cc/ddd", 4) - "/data/"
+     * getParent("/data/aaa/bbb/cc/ddd", 5) - null
      * </pre>
      *
      * @param filePath 目录或文件路径
@@ -3287,10 +3371,10 @@ public class FileUtils {
      * 获取指定层级的父路径
      *
      * <pre>
-     * getParent(file("d:/aaa/bbb/cc/ddd", 0)) - "d:/aaa/bbb/cc/ddd"
-     * getParent(file("d:/aaa/bbb/cc/ddd", 2)) - "d:/aaa/bbb"
-     * getParent(file("d:/aaa/bbb/cc/ddd", 4)) - "d:/"
-     * getParent(file("d:/aaa/bbb/cc/ddd", 5)) - null
+     * getParent(file("/data/aaa/bbb/cc/ddd", 0)) - "/data/aaa/bbb/cc/ddd"
+     * getParent(file("/data/aaa/bbb/cc/ddd", 2)) - "/data/aaa/bbb"
+     * getParent(file("/data/aaa/bbb/cc/ddd", 4)) - "/data/"
+     * getParent(file("/data/aaa/bbb/cc/ddd", 5)) - null
      * </pre>
      *
      * @param file  目录或文件
@@ -3406,6 +3490,66 @@ public class FileUtils {
             return filename;
         } else {
             return filename.substring(0, index);
+        }
+    }
+
+    /**
+     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
+     * 此方法会阻塞当前线程
+     *
+     * @param file    文件
+     * @param handler 行处理器
+     */
+    public static void tail(File file, LineHandler handler) {
+        tail(file, org.aoju.bus.core.lang.Charset.UTF_8, handler);
+    }
+
+    /**
+     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
+     * 此方法会阻塞当前线程
+     *
+     * @param file    文件
+     * @param charset 编码
+     * @param handler 行处理器
+     */
+    public static void tail(File file, Charset charset, LineHandler handler) {
+        new Tailer(file, charset, handler).start();
+    }
+
+    /**
+     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
+     * 此方法会阻塞当前线程
+     *
+     * @param file    文件
+     * @param charset 编码
+     */
+    public static void tail(File file, Charset charset) {
+        tail(file, charset, new Tailer.ConsoleLineHandler());
+    }
+
+    /**
+     * 创建{@link RandomAccessFile}
+     *
+     * @param path 文件Path
+     * @param mode 模式，见{@link FileMode}
+     * @return {@link RandomAccessFile}
+     */
+    public static RandomAccessFile createRandomAccessFile(Path path, FileMode mode) {
+        return createRandomAccessFile(path.toFile(), mode);
+    }
+
+    /**
+     * 创建{@link RandomAccessFile}
+     *
+     * @param file 文件
+     * @param mode 模式，见{@link FileMode}
+     * @return {@link RandomAccessFile}
+     */
+    public static RandomAccessFile createRandomAccessFile(File file, FileMode mode) {
+        try {
+            return new RandomAccessFile(file, mode.name());
+        } catch (FileNotFoundException e) {
+            throw new InstrumentException(e);
         }
     }
 

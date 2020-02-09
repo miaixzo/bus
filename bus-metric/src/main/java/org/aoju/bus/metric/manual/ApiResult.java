@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * 默认的结果封装类.
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 @XStreamAlias("result")

@@ -24,8 +24,8 @@
 package org.aoju.bus.office.magic.family;
 
 import org.aoju.bus.core.builder.ToStringBuilder;
+import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * 包含处理特定文档格式所需的信息
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class DocumentFormat {
@@ -256,7 +256,7 @@ public class DocumentFormat {
          * @return 当前构造器实例.
          */
         public Builder extension(final String extension) {
-            if (StringUtils.isEmpty(this.extensions)) {
+            if (CollUtils.isEmpty(this.extensions)) {
                 this.extensions = new LinkedHashSet<>();
             }
             this.extensions.add(extension);

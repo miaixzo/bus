@@ -37,7 +37,7 @@ import java.util.Set;
  * 签名包装,{@link Signature} 包装类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class Sign extends Keys<Sign> {
@@ -57,7 +57,7 @@ public class Sign extends Keys<Sign> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
@@ -71,7 +71,7 @@ public class Sign extends Keys<Sign> {
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
@@ -85,7 +85,7 @@ public class Sign extends Keys<Sign> {
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
@@ -100,7 +100,7 @@ public class Sign extends Keys<Sign> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm 算法
@@ -204,7 +204,7 @@ public class Sign extends Keys<Sign> {
     }
 
     /**
-     * 设置{@link Certificate} 为PublicKey<br>
+     * 设置{@link Certificate} 为PublicKey
      * 如果Certificate是X509Certificate,我们需要检查是否有密钥扩展
      *
      * @param certificate {@link Certificate}

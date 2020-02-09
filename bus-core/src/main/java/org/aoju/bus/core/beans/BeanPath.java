@@ -27,6 +27,7 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.*;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -48,10 +49,12 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
-public class BeanPath {
+public class BeanPath implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 表达式边界符号数组

@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class CharUtils {
@@ -310,6 +310,9 @@ public class CharUtils {
      */
     public static String toString(char c) {
         String[] CACHE = new String[128];
+        for (char i = 0; i < 128; i++) {
+            CACHE[i] = String.valueOf(i);
+        }
         return c < 128 ? CACHE[c] : String.valueOf(c);
     }
 

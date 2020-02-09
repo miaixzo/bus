@@ -40,7 +40,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 /**
- * SM2加密解密引擎,来自Bouncy Castle库的SM2Engine类改造<br>
+ * SM2加密解密引擎,来自Bouncy Castle库的SM2Engine类改造
  * SM2加密后的数据格式为（两种模式）：
  *
  * <pre>
@@ -49,7 +49,7 @@ import java.util.Random;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class SM2Engine {
@@ -361,7 +361,7 @@ public class SM2Engine {
     }
 
     /**
-     * SM2算法模式<br>
+     * SM2算法模式
      * 在SM2算法中,C1C2C3为旧标准模式,C1C3C2为新标准模式
      */
     public static enum SM2Mode {

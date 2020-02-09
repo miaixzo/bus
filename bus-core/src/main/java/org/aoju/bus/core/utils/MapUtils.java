@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class MapUtils {
@@ -462,7 +462,6 @@ public class MapUtils {
      * @param keyValueSeparator kv之间的连接符
      * @param isIgnoreNull      是否忽略null的键和值
      * @return 连接后的字符串
-     * @since 3.1.1
      */
     public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, boolean isIgnoreNull) {
         final StringBuilder strBuilder = new StringBuilder();
@@ -476,6 +475,87 @@ public class MapUtils {
                 }
                 strBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
             }
+        return strBuilder.toString();
+    }
+
+    /**
+     * 将map转成字符串
+     *
+     * @param <K>               键类型
+     * @param <V>               值类型
+     * @param map               Map
+     * @param separator         entry之间的连接符
+     * @param keyValueSeparator kv之间的连接符
+     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @return 连接字符串
+     */
+    public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, String... otherParams) {
+        return join(map, separator, keyValueSeparator, false, otherParams);
+    }
+
+    /**
+     * 根据参数排序后拼接为字符串，常用于签名
+     *
+     * @param params            参数
+     * @param separator         entry之间的连接符
+     * @param keyValueSeparator kv之间的连接符
+     * @param isIgnoreNull      是否忽略null的键和值
+     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @return 签名字符串
+     */
+    public static String sortJoin(Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull,
+                                  String... otherParams) {
+        return join(sort(params), separator, keyValueSeparator, isIgnoreNull, otherParams);
+    }
+
+    /**
+     * 将map转成字符串，忽略null的键和值
+     *
+     * @param <K>               键类型
+     * @param <V>               值类型
+     * @param map               Map
+     * @param separator         entry之间的连接符
+     * @param keyValueSeparator kv之间的连接符
+     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @return 连接后的字符串
+     */
+    public static <K, V> String joinIgnoreNull(Map<K, V> map, String separator, String keyValueSeparator, String... otherParams) {
+        return join(map, separator, keyValueSeparator, true, otherParams);
+    }
+
+    /**
+     * 将map转成字符串
+     *
+     * @param <K>               键类型
+     * @param <V>               值类型
+     * @param map               Map，为空返回otherParams拼接
+     * @param separator         entry之间的连接符
+     * @param keyValueSeparator kv之间的连接符
+     * @param isIgnoreNull      是否忽略null的键和值
+     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @return 连接后的字符串，map和otherParams为空返回""
+     */
+    public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, boolean isIgnoreNull, String... otherParams) {
+        final StringBuilder strBuilder = StringUtils.builder();
+        boolean isFirst = true;
+        if (isNotEmpty(map)) {
+            for (Entry<K, V> entry : map.entrySet()) {
+                if (false == isIgnoreNull || entry.getKey() != null && entry.getValue() != null) {
+                    if (isFirst) {
+                        isFirst = false;
+                    } else {
+                        strBuilder.append(separator);
+                    }
+                    strBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
+                }
+            }
+        }
+        // 补充其它字符串到末尾，默认无分隔符
+        if (ArrayUtils.isNotEmpty(otherParams)) {
+            for (String otherParam : otherParams) {
+                strBuilder.append(otherParam);
+            }
+        }
         return strBuilder.toString();
     }
 
@@ -572,7 +652,6 @@ public class MapUtils {
      * @param <T> 键和值类型
      * @param map Map对象,键值类型必须一致
      * @return 互换后的Map
-     * @since 5.5.5
      */
     public static <T> Map<T, T> reverse(Map<T, T> map) {
         return filter(map, (Editor<Entry<T, T>>) t -> new Entry<T, T>() {
@@ -638,7 +717,7 @@ public class MapUtils {
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static MapProxy createProxy(Map<?, ?> map) {
         return MapProxy.create(map);

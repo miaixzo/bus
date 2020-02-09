@@ -24,8 +24,8 @@
 package org.aoju.bus.metric.manual.docs;
 
 import org.aoju.bus.metric.ApiRegister;
-import org.aoju.bus.metric.manual.docs.annotation.ApiDocMethod;
 import org.aoju.bus.metric.manual.Api;
+import org.aoju.bus.metric.manual.docs.annotation.ApiDocMethod;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
@@ -39,7 +39,7 @@ import java.lang.reflect.Method;
  * @param <ServiceAnnotation> 类上面的注解，如Controller,ApiService
  * @param <MethodAnnotation>  方法上面的注解，如Api,RequestMapping
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 public abstract class AbstractApiDocCreator<ServiceAnnotation extends Annotation, MethodAnnotation extends Annotation> {

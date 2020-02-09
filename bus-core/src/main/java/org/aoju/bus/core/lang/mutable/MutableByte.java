@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>byte</code> 类型
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @see Byte
  * @since JDK 1.8+
  */

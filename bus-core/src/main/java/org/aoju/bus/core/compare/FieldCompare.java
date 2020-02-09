@@ -31,12 +31,12 @@ import java.lang.reflect.Field;
 import java.util.Comparator;
 
 /**
- * Bean字段排序器<br>
+ * Bean字段排序器
  * 参阅feilong-core中的PropertyComparator
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class FieldCompare<T> implements Comparator<T>, Serializable {

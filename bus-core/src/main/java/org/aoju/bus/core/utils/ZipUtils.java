@@ -39,7 +39,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class ZipUtils {
@@ -265,6 +265,7 @@ public class ZipUtils {
             addFile(file, subPath, out);
         }
     }
+
     /**
      * 对流中的数据加入到压缩文件,使用默认UTF-8编码
      *
@@ -288,7 +289,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File zip(File zipFile, String path, String data, Charset charset) throws InstrumentException {
         return zip(zipFile, path, IoUtils.toStream(data, charset), charset);
@@ -318,7 +319,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File zip(File zipFile, String path, InputStream in, Charset charset) throws InstrumentException {
         return zip(zipFile, new String[]{path}, new InputStream[]{in}, charset);
@@ -389,7 +390,7 @@ public class ZipUtils {
      * @param charset     编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File unzip(String zipFilePath, Charset charset) throws InstrumentException {
         return unzip(FileUtils.file(zipFilePath), charset);
@@ -401,7 +402,7 @@ public class ZipUtils {
      * @param zipFile 压缩文件
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File unzip(File zipFile) throws InstrumentException {
         return unzip(zipFile, DEFAULT_CHARSET);
@@ -414,7 +415,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File unzip(File zipFile, Charset charset) throws InstrumentException {
         return unzip(zipFile, FileUtils.file(zipFile.getParentFile(), FileUtils.mainName(zipFile)), charset);
@@ -465,7 +466,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File unzip(File zipFile, File outFile, Charset charset) throws InstrumentException {
         charset = (null == charset) ? DEFAULT_CHARSET : charset;
@@ -930,7 +931,7 @@ public class ZipUtils {
     /**
      * 递归压缩文件夹
      * srcRootDir决定了路径截取的位置,例如：
-     * file的路径为d:/a/b/c/d.txt,srcRootDir为d:/a/b,则压缩后的文件与目录为结构为c/d.txt
+     * file的路径为/data/a/b/c/d.txt,srcRootDir为/data/a/b,则压缩后的文件与目录为结构为c/d.txt
      *
      * @param out        压缩文件存储对象
      * @param srcRootDir 被压缩的文件夹根目录

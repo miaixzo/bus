@@ -25,6 +25,7 @@ package org.aoju.bus.metric;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.metric.builtin.ConfigClient;
 import org.aoju.bus.metric.consts.MetricConsts;
 import org.aoju.bus.metric.consts.RequestMode;
 import org.aoju.bus.metric.handler.InvokeHandler;
@@ -32,7 +33,6 @@ import org.aoju.bus.metric.handler.ResponseHandler;
 import org.aoju.bus.metric.manual.Errors;
 import org.aoju.bus.metric.manual.Result;
 import org.aoju.bus.metric.manual.Writer;
-import org.aoju.bus.metric.builtin.ConfigClient;
 import org.aoju.bus.metric.register.AbstractInitializer;
 import org.aoju.bus.metric.secure.Oauth2Manager;
 import org.aoju.bus.metric.secure.Oauth2Service;
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 public abstract class ApiRouter extends AbstractInitializer

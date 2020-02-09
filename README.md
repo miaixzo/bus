@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v5.5.5-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v5.5.6-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -58,7 +58,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ × ]|bus-limiter|请求限流,根据不同业务设置不同限流策略|
 |[ √ ]|bus-logger|日志信息及功能，动态检测日志实现的方式，使日志使用个更加便利灵活简单|
 |[ √ ]|bus-mapper|数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生|
-|[ √ ]|bus-metric|接口开放平台，平台封装了常用的参数校验、结果返回等功能|
+|[ × ]|bus-metric|接口开放平台，平台封装了常用的参数校验、结果返回等功能|
 |[ √ ]|bus-oauth|第三方登录,已集成十多家第三方平台（国内外常用的基本都已包含）|
 |[ √ ]|bus-pager|数据分页,mybatis|
 |[ √ ]|bus-office|office等相关转换及处理,POI封装实现，使Java操作Excel等文件变得更加简单|
@@ -89,24 +89,31 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.5.5</version>
+    <version>5.5.6</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:5.5.5'
+implementation 'org.aoju:bus-all:5.5.6'
 ```
 
-### Other
+### Downlad
 
 点击以下任一链接，下载`bus-*-x.x.x.jar`即可：
 
 - [Maven中央库①](https://repo1.maven.org/maven2/org/aoju)
 - [Maven中央库②](http://repo2.maven.org/maven2/org/aoju)
 
+### 测试&使用
+
+为确保项目编译效率及相关规则，本项目所有单元测试及使用请参考`abarth`项目：
+
+- 地址: [https://github.com/aoju/abarth](https://github.com/aoju/abarth) 
+
+
 > 注意
-> Bus项目支持JDK8+，对Android平台部分模块没有测试，不能保证所有工具类获工具方法可用。
+> Bus项目支持JDK8+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。
 
 ## 分支说明
 

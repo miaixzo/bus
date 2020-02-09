@@ -27,7 +27,7 @@ package org.aoju.bus.metric.manual;
  * 对象序列化
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 public interface ResultSerializer {

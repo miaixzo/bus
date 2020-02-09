@@ -26,7 +26,7 @@ package org.aoju.bus.validate;
 import lombok.Data;
 import org.aoju.bus.core.lang.exception.ValidateException;
 import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.validate.validators.Checker;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import java.util.List;
  * 当前校验的上下文信息
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 @Data
@@ -117,7 +117,7 @@ public class Context {
      * @param groups 校验组
      */
     public void addGroups(String... groups) {
-        if (StringUtils.isEmpty(groups) || groups.length == 0) {
+        if (ObjectUtils.isEmpty(groups) || groups.length == 0) {
             return;
         }
         if (CollUtils.isEmpty(this.group)) {

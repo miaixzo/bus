@@ -36,7 +36,7 @@ import java.util.List;
  * Excel中的行{@link Row}封装工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class RowUtils {
@@ -75,7 +75,7 @@ public class RowUtils {
         boolean isAllNull = true;
         for (short i = 0; i < length; i++) {
             cellValue = CellUtils.getCellValue(row.getCell(i), cellEditor);
-            isAllNull &= StringUtils.isEmptyIfStr(cellValue);
+            isAllNull &= StringUtils.emptyIfStr(cellValue);
             cellValues.add(cellValue);
         }
 
