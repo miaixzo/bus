@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
-
 /**
  * 无泛型检查的枚举转换器
  *
@@ -54,4 +52,5 @@ public class EnumConverter extends AbstractConverter<Object> {
     public Class getTargetType() {
         return this.enumClass;
     }
+
 }

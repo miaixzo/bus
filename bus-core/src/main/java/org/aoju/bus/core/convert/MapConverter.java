@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.convert.ConverterRegistry;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -33,6 +31,7 @@ import org.aoju.bus.core.utils.TypeUtils;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 /**
  * {@link Map} 转换器
@@ -80,12 +79,22 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
 
     @Override
     protected Map<?, ?> convertInternal(Object value) {
-        Map map = null;
+        Map map;
         if (value instanceof Map) {
+            final Type[] typeArguments = TypeUtils.getTypeArguments(value.getClass());
+            if (null != typeArguments
+                    && 2 == typeArguments.length
+                    && Objects.equals(this.keyType, typeArguments[0])
+                    && Objects.equals(this.valueType, typeArguments[1])) {
+                //对于键值对类型一致的Map对象，不再做转换，直接返回原对象
+                return (Map) value;
+            }
             map = MapUtils.createMap(TypeUtils.getClass(this.mapType));
             convertMapToMap((Map) value, map);
         } else if (BeanUtils.isBean(value.getClass())) {
             map = BeanUtils.beanToMap(value);
+            // 二次转换，转换键值类型
+            map = convertInternal(map);
         } else {
             throw new UnsupportedOperationException(StringUtils.format("Unsupport toMap value type: {}", value.getClass().getName()));
         }
@@ -103,8 +112,8 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
         Object key;
         Object value;
         for (Entry<?, ?> entry : srcMap.entrySet()) {
-            key = (null == this.keyType) ? entry.getKey() : convert.convert(this.keyType, entry.getKey());
-            value = (null == this.valueType) ? entry.getValue() : convert.convert(this.keyType, entry.getValue());
+            key = TypeUtils.isUnknow(this.keyType) ? entry.getKey() : convert.convert(this.keyType, entry.getKey());
+            value = TypeUtils.isUnknow(this.valueType) ? entry.getValue() : convert.convert(this.valueType, entry.getValue());
             targetMap.put(key, value);
         }
     }

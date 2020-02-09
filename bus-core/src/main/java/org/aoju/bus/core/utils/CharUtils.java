@@ -310,6 +310,9 @@ public class CharUtils {
      */
     public static String toString(char c) {
         String[] CACHE = new String[128];
+        for (char i = 0; i < 128; i++) {
+            CACHE[i] = String.valueOf(i);
+        }
         return c < 128 ? CACHE[c] : String.valueOf(c);
     }
 

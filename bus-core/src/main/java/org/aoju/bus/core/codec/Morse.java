@@ -40,9 +40,7 @@ import java.util.Map;
  */
 public class Morse {
 
-    // code point -> morse
     private static final Map<Integer, String> alphabets = new HashMap<>();
-    // morse -> code point
     private static final Map<String, Integer> dictionaries = new HashMap<>();
 
     static {

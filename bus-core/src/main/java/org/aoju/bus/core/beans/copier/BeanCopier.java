@@ -27,11 +27,13 @@ import org.aoju.bus.core.beans.BeanDesc;
 import org.aoju.bus.core.beans.copier.provider.BeanValueProvider;
 import org.aoju.bus.core.beans.copier.provider.MapValueProvider;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Typed;
 import org.aoju.bus.core.lang.copier.Copier;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
 
-import java.lang.reflect.Method;
+import java.io.Serializable;
+import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,23 +46,36 @@ import java.util.Map;
  * @version 5.5.5
  * @since JDK 1.8+
  */
-public class BeanCopier<T> implements Copier<T> {
-
-    private Object source;
-    private T dest;
-    private CopyOptions copyOptions;
+public class BeanCopier<T> implements Copier<T>, Serializable {
 
     /**
-     * 构造
+     * 源对象
+     */
+    private final Object source;
+    /**
+     * 目标对象
+     */
+    private final T dest;
+    /**
+     * 目标的类型（用于泛型类注入）
+     */
+    private final Type destType;
+    /**
+     * 拷贝选项
+     */
+    private final CopyOptions copyOptions;
+
+    /**
+     * 创建BeanCopier
      *
-     * @param source      来源对象,可以是Bean或者Map
+     * @param <T>         目标Bean类型
+     * @param source      来源对象，可以是Bean或者Map
      * @param dest        目标Bean对象
      * @param copyOptions 拷贝属性选项
+     * @return BeanCopier
      */
-    public BeanCopier(Object source, T dest, CopyOptions copyOptions) {
-        this.source = source;
-        this.dest = dest;
-        this.copyOptions = copyOptions;
+    public static <T> BeanCopier<T> create(Object source, T dest, CopyOptions copyOptions) {
+        return create(source, dest, dest.getClass(), copyOptions);
     }
 
     /**
@@ -69,32 +84,35 @@ public class BeanCopier<T> implements Copier<T> {
      * @param <T>         目标Bean类型
      * @param source      来源对象,可以是Bean或者Map
      * @param dest        目标Bean对象
+     * @param destType    目标的泛型类型,用于标注有泛型参数的Bean对象
      * @param copyOptions 拷贝属性选项
      * @return BeanCopier
      */
-    public static <T> BeanCopier<T> create(Object source, T dest, CopyOptions copyOptions) {
-        return new BeanCopier<>(source, dest, copyOptions);
+    public static <T> BeanCopier<T> create(Object source, T dest, Type destType, CopyOptions copyOptions) {
+        return new BeanCopier<>(source, dest, destType, copyOptions);
     }
 
     /**
-     * 获取指定字段名对应的映射值
+     * 构造
      *
-     * @param mapping   反向映射Map
-     * @param fieldName 字段名
-     * @return 映射值, 无对应值返回字段名
+     * @param source      来源对象，可以是Bean或者Map
+     * @param dest        目标Bean对象
+     * @param destType    目标的泛型类型，用于标注有泛型参数的Bean对象
+     * @param copyOptions 拷贝属性选项
      */
-    private static String mappingKey(Map<String, String> mapping, String fieldName) {
-        if (MapUtils.isEmpty(mapping)) {
-            return fieldName;
-        }
-        return ObjectUtils.defaultIfNull(mapping.get(fieldName), fieldName);
+    public BeanCopier(Object source, T dest, Type destType, CopyOptions copyOptions) {
+        this.source = source;
+        this.dest = dest;
+        this.destType = destType;
+        this.copyOptions = copyOptions;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T copy() {
         if (null != this.source) {
             if (this.source instanceof ValueProvider) {
-                //目标只支持Bean
+                // 目标只支持Bean
                 valueProviderToBean((ValueProvider<String>) this.source, this.dest);
             } else if (this.source instanceof Map) {
                 if (this.dest instanceof Map) {
@@ -150,7 +168,6 @@ public class BeanCopier<T> implements Copier<T> {
      *
      * @param bean      bean对象
      * @param targetMap 目标的Map
-     * @return Map
      */
     private void beanToMap(Object bean, Map targetMap) {
         final Collection<BeanDesc.PropDesc> props = BeanUtils.getBeanDesc(bean.getClass()).getProps();
@@ -204,7 +221,7 @@ public class BeanCopier<T> implements Copier<T> {
 
         final CopyOptions copyOptions = this.copyOptions;
         Class<?> actualEditable = bean.getClass();
-        if (copyOptions.editable != null) {
+        if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
             if (false == copyOptions.editable.isInstance(bean)) {
                 throw new IllegalArgumentException(StringUtils.format("Target class [{}] not assignable to Editable class [{}]", bean.getClass().getName(), copyOptions.editable.getName()));
@@ -215,12 +232,14 @@ public class BeanCopier<T> implements Copier<T> {
         final Map<String, String> fieldReverseMapping = copyOptions.getReversedMapping();
 
         final Collection<BeanDesc.PropDesc> props = BeanUtils.getBeanDesc(actualEditable).getProps();
+        Field field;
         String fieldName;
         Object value;
         Method setterMethod;
         Class<?> propClass;
         for (BeanDesc.PropDesc prop : props) {
             // 获取值
+            field = prop.getField();
             fieldName = prop.getFieldName();
             if (CollUtils.contains(ignoreSet, fieldName)) {
                 // 目标属性值被忽略或值提供者无此key时跳过
@@ -232,38 +251,76 @@ public class BeanCopier<T> implements Copier<T> {
                 continue;
             }
             setterMethod = prop.getSetter();
-            if (null == setterMethod) {
-                // Setter方法不存在跳过
+            if (null == setterMethod && false == ModifierUtils.isPublic(field)) {
+                // Setter方法不存在或者字段为非public跳过
+                //5.1.0新增支持public字段注入支持
                 continue;
             }
-            value = valueProvider.value(providerKey, TypeUtils.getFirstParamType(setterMethod));
+
+            Type valueType = (null == setterMethod) ? TypeUtils.getType(field) : TypeUtils.getFirstParamType(setterMethod);
+            if (valueType instanceof ParameterizedType) {
+                // 参数为泛型参数类型，解析对应泛型类型为真实类型
+                ParameterizedType tmp = (ParameterizedType) valueType;
+                Type[] actualTypeArguments = tmp.getActualTypeArguments();
+                if (TypeUtils.hasTypeVeriable(actualTypeArguments)) {
+                    // 泛型对象中含有未被转换的泛型变量
+                    actualTypeArguments = TypeUtils.getActualTypes(this.destType, field.getDeclaringClass(), tmp.getActualTypeArguments());
+                    if (ArrayUtils.isNotEmpty(actualTypeArguments)) {
+                        // 替换泛型变量为实际类型
+                        valueType = new Typed(actualTypeArguments, tmp.getOwnerType(), tmp.getRawType());
+                    }
+                }
+            } else if (valueType instanceof TypeVariable) {
+                // 参数为泛型，查找其真实类型（适用于泛型方法定义于泛型父类）
+                valueType = TypeUtils.getActualType(this.destType, field.getDeclaringClass(), valueType);
+            }
+
+            value = valueProvider.value(providerKey, valueType);
             if (null == value && copyOptions.ignoreNullValue) {
-                continue;// 当允许跳过空时,跳过
+                continue;// 当允许跳过空时，跳过
             }
             if (bean.equals(value)) {
-                continue;// 值不能为bean本身,防止循环引用
+                continue;// 值不能为bean本身，防止循环引用
             }
 
             try {
-                // valueProvider在没有对值做转换且当类型不匹配的时候,执行默认转换
+                // valueProvider在没有对值做转换且当类型不匹配的时候，执行默认转换
                 propClass = prop.getFieldClass();
                 if (false == propClass.isInstance(value)) {
                     value = Convert.convert(propClass, value);
                     if (null == value && copyOptions.ignoreNullValue) {
-                        continue;// 当允许跳过空时,跳过
+                        continue;// 当允许跳过空时，跳过
                     }
                 }
 
-                // 执行set方法注入值
-                setterMethod.invoke(bean, value);
-            } catch (Exception e) {
-                if (copyOptions.ignoreError) {
-                    continue;// 忽略注入失败
+                if (null == setterMethod) {
+                    // 直接注入值
+                    ReflectUtils.setFieldValue(bean, field, value);
                 } else {
+                    // 执行set方法注入值
+                    setterMethod.invoke(bean, value);
+                }
+            } catch (Exception e) {
+                if (false == copyOptions.ignoreError) {
                     throw new InstrumentException("Inject [{}] error!", prop.getFieldName());
                 }
+                // 忽略注入失败
             }
         }
+    }
+
+    /**
+     * 获取指定字段名对应的映射值
+     *
+     * @param mapping   反向映射Map
+     * @param fieldName 字段名
+     * @return 映射值，无对应值返回字段名
+     */
+    private static String mappingKey(Map<String, String> mapping, String fieldName) {
+        if (MapUtils.isEmpty(mapping)) {
+            return fieldName;
+        }
+        return ObjectUtils.defaultIfNull(mapping.get(fieldName), fieldName);
     }
 
 }

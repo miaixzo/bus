@@ -24,6 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.date.Between;
+import org.aoju.bus.core.date.Boundary;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.date.TimeInterval;
 import org.aoju.bus.core.date.format.BetweenFormat;
@@ -31,13 +32,16 @@ import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
 import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.Validator;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -146,24 +150,6 @@ public class DateUtils {
     }
 
     /**
-     * 获取当前时间-24小时制
-     *
-     * @return string date 当前日期
-     */
-    public static String date24() {
-        return Fields.NORM_DATETIME_FORMAT.format(new Date());
-    }
-
-    /**
-     * 获取当前时间-12小时制
-     *
-     * @return string date 当前日期
-     */
-    public static String date12() {
-        return Fields.NORM_DATETIME_FORMAT.format(new Date());
-    }
-
-    /**
      * 转换为{@link DateTime}对象
      *
      * @return 当前时间
@@ -208,13 +194,28 @@ public class DateUtils {
     }
 
     /**
+     * {@link TemporalAccessor}类型时间转为{@link DateTime}
+     * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
+     *
+     * @param temporalAccessor {@link TemporalAccessor}
+     * @return 时间对象
+     */
+    public static DateTime date(TemporalAccessor temporalAccessor) {
+        return new DateTime(temporalAccessor);
+    }
+
+    /**
      * 转换为Calendar对象
      *
      * @param date 日期对象
      * @return Calendar对象
      */
     public static Calendar calendar(Date date) {
-        return calendar(date.getTime());
+        if (date instanceof DateTime) {
+            return ((DateTime) date).toCalendar();
+        } else {
+            return calendar(date.getTime());
+        }
     }
 
     /**
@@ -410,6 +411,16 @@ public class DateUtils {
     }
 
     /**
+     * 是否为上午
+     *
+     * @param calendar {@link Calendar}
+     * @return 是否为上午
+     */
+    public static boolean isAM(Calendar calendar) {
+        return Calendar.AM == calendar.get(Calendar.AM_PM);
+    }
+
+    /**
      * 是否为下午
      *
      * @param date 日期
@@ -417,6 +428,16 @@ public class DateUtils {
      */
     public static boolean isPM(Date date) {
         return DateTime.of(date).isPM();
+    }
+
+    /**
+     * 是否为下午
+     *
+     * @param calendar {@link Calendar}
+     * @return 是否为下午
+     */
+    public static boolean isPM(Calendar calendar) {
+        return Calendar.PM == calendar.get(Calendar.AM_PM);
     }
 
     /**
@@ -515,6 +536,50 @@ public class DateUtils {
         return yearAndQuarter(calendar(date));
     }
 
+    /**
+     * 获得指定日期年份和季节
+     * 格式：[20131]表示2013年第一季度
+     *
+     * @param cal 日期
+     */
+    private static String yearAndQuarter(Calendar cal) {
+        return new StringBuilder().append(cal.get(Calendar.YEAR)).append(cal.get(Calendar.MONTH) / 3 + 1).toString();
+    }
+
+    /**
+     * 获得指定日期区间内的年份和季节
+     *
+     * @param startDate 起始日期（包含）
+     * @param endDate   结束日期（包含）
+     * @return 季度列表 ，元素类似于 20132
+     */
+    public static LinkedHashSet<String> yearAndQuarter(Date startDate, Date endDate) {
+        if (startDate == null || endDate == null) {
+            return new LinkedHashSet<>(0);
+        }
+        return yearAndQuarter(startDate.getTime(), endDate.getTime());
+    }
+
+    /**
+     * 获得指定日期区间内的年份和季节
+     *
+     * @param startDate 起始日期（包含）
+     * @param endDate   结束日期（包含）
+     * @return 季度列表 ，元素类似于 20132
+     */
+    public static LinkedHashSet<String> yearAndQuarter(long startDate, long endDate) {
+        LinkedHashSet<String> quarters = new LinkedHashSet<>();
+        final Calendar cal = calendar(startDate);
+        while (startDate <= endDate) {
+            // 如果开始时间超出结束时间，让结束时间为开始时间，处理完后结束循环
+            quarters.add(yearAndQuarter(cal));
+
+            cal.add(Calendar.MONTH, 3);
+            startDate = cal.getTimeInMillis();
+        }
+
+        return quarters;
+    }
 
     /**
      * 按照给定的通配模式 YYYY-MM-DD HH:MM:SS ,将时间格式化成相应的字符串
@@ -527,7 +592,7 @@ public class DateUtils {
             SimpleDateFormat dstSdf = new SimpleDateFormat(Fields.NORM_DATETIME_PATTERN);
             return dstSdf.format(date);
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**
@@ -706,7 +771,7 @@ public class DateUtils {
     }
 
     /**
-     * 将日期字符串转换为{@link DateTime}对象,格式：
+     * 将日期字符串转换为{@link DateTime}对象，格式：
      * <ol>
      * <li>yyyy-MM-dd HH:mm:ss</li>
      * <li>yyyy/MM/dd HH:mm:ss</li>
@@ -724,19 +789,26 @@ public class DateUtils {
      * <li>yyyyMMdd</li>
      * <li>EEE, dd MMM yyyy HH:mm:ss z</li>
      * <li>EEE MMM dd HH:mm:ss zzz yyyy</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss'Z'</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ssZ</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
      * </ol>
      *
-     * @param dateStr 日期字符串
+     * @param dateCharSequence 日期字符串
      * @return 日期
      */
-    public static DateTime parse(String dateStr) {
-        if (null == dateStr) {
+    public static DateTime parse(CharSequence dateCharSequence) {
+        if (StringUtils.isBlank(dateCharSequence)) {
             return null;
         }
-        dateStr = dateStr.trim().replace("日", "");
+        String dateStr = dateCharSequence.toString();
+        // 去掉两边空格并去掉中文日期中的“日”和“秒”，以规范长度
+        dateStr = StringUtils.removeAll(dateStr.trim(), '日', '秒');
         int length = dateStr.length();
 
-        if (Validator.isNumber(dateStr)) {
+        if (NumberUtils.isNumber(dateStr)) {
+            // 纯数字形式
             if (length == Fields.PURE_DATETIME_PATTERN.length()) {
                 return parse(dateStr, Fields.PURE_DATETIME_FORMAT);
             } else if (length == Fields.PURE_DATETIME_MS_PATTERN.length()) {
@@ -746,24 +818,37 @@ public class DateUtils {
             } else if (length == Fields.PURE_TIME_PATTERN.length()) {
                 return parse(dateStr, Fields.PURE_TIME_FORMAT);
             }
+        } else if (PatternUtils.isMatch(RegEx.TIME, dateStr)) {
+            // HH:mm:ss 或者 HH:mm 时间格式匹配单独解析
+            return parseTimeToday(dateStr);
+        } else if (StringUtils.containsAnyIgnoreCase(dateStr, Fields.WTB)) {
+            // JDK的Date对象toString默认格式，类似于：
+            // Tue Jan 07 15:22:15 +0800 2020
+            // Wed Jan 08 00:00:00 CST 2020
+            // Thu Jan 09 17:51:10 GMT+08:00 2020
+            return parseCST(dateStr);
+        } else if (StringUtils.contains(dateStr, 'T')) {
+            // UTC时间
+            return parseUTC(dateStr);
         }
 
-        if (length == Fields.NORM_DATETIME_PATTERN.length() || length == Fields.NORM_DATETIME_PATTERN.length() + 1) {
-            if (dateStr.contains("T")) {
-                return parseUTC(dateStr);
-            }
+        if (length == Fields.NORM_DATETIME_PATTERN.length()) {
+            // yyyy-MM-dd HH:mm:ss
             return parseDateTime(dateStr);
         } else if (length == Fields.NORM_DATE_PATTERN.length()) {
+            // yyyy-MM-dd
             return parseDate(dateStr);
-        } else if (length == Fields.NORM_TIME_PATTERN.length() || length == Fields.NORM_TIME_PATTERN.length() + 1) {
-            return parseTimeToday(dateStr);
-        } else if (length == Fields.NORM_DATETIME_MINUTE_PATTERN.length() || length == Fields.NORM_DATETIME_MINUTE_PATTERN.length() + 1) {
-            return parse(FileUtils.normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
+        } else if (length == Fields.NORM_DATETIME_MINUTE_PATTERN.length()) {
+            // yyyy-MM-dd HH:mm
+            return parse(normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
         } else if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
-            return parse(FileUtils.normalize(dateStr), Fields.NORM_DATETIME_MS_FORMAT);
+            return parse(normalize(dateStr), Fields.NORM_DATETIME_MS_FORMAT);
         }
+
+        // 没有更多匹配的时间格式
         throw new InstrumentException("No format fit for date String [{}] !", dateStr);
     }
+
 
     /**
      * 构建DateTime对象
@@ -805,8 +890,7 @@ public class DateUtils {
      * @return 日期对象
      */
     public static DateTime parseDate(String dateString) {
-        dateString = FileUtils.normalize(dateString);
-        return parse(dateString, Fields.NORM_DATE_FORMAT);
+        return parse(normalize(dateString), Fields.NORM_DATE_FORMAT);
     }
 
     /**
@@ -816,8 +900,7 @@ public class DateUtils {
      * @return 日期对象
      */
     public static DateTime parseTime(String timeString) {
-        timeString = FileUtils.normalize(timeString);
-        return parse(timeString, Fields.NORM_TIME_FORMAT);
+        return parse(normalize(timeString), Fields.NORM_TIME_FORMAT);
     }
 
     /**
@@ -827,8 +910,7 @@ public class DateUtils {
      * @return 日期对象
      */
     public static DateTime parseDateTime(String dateString) {
-        dateString = FileUtils.normalize(dateString);
-        return parse(dateString, Fields.NORM_DATETIME_FORMAT);
+        return parse(normalize(dateString), Fields.NORM_DATETIME_FORMAT);
     }
 
     /**
@@ -839,18 +921,176 @@ public class DateUtils {
      * @since 3.1.1
      */
     public static DateTime parseTimeToday(String timeString) {
-        timeString = StringUtils.format("{} {}", now(), timeString);
-        return parse(timeString, Fields.NORM_DATETIME_FORMAT);
+        timeString = StringUtils.format("{} {}", formatDate(new DateTime()), timeString);
+        if (1 == StringUtils.count(timeString, ':')) {
+            // 时间格式为 HH:mm
+            return parse(timeString, Fields.NORM_DATETIME_MINUTE_PATTERN);
+        } else {
+            // 时间格式为 HH:mm:ss
+            return parse(timeString, Fields.NORM_DATETIME_FORMAT);
+        }
     }
 
     /**
-     * 解析UTC时间,格式为：yyyy-MM-dd'T'HH:mm:ss'Z
+     * 解析CST时间，格式：
+     * <ol>
+     * <li>EEE MMM dd HH:mm:ss z yyyy（例如：Wed Aug 01 00:00:00 CST 2020）</li>
+     * </ol>
+     *
+     * @param cstString UTC时间
+     * @return 日期对象
+     */
+    public static DateTime parseCST(CharSequence cstString) {
+        if (cstString == null) {
+            return null;
+        }
+
+        return parse((String) cstString, Fields.JDK_DATETIME_FORMAT);
+    }
+
+    /**
+     * 解析UTC时间，格式：
+     * <ol>
+     * <li>yyyy-MM-dd'T'HH:mm:ss'Z'</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ssZ</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
+     * </ol>
      *
      * @param utcString UTC时间
      * @return 日期对象
      */
     public static DateTime parseUTC(String utcString) {
-        return parse(utcString, Fields.UTC_FORMAT);
+        if (utcString == null) {
+            return null;
+        }
+        int length = utcString.length();
+        if (StringUtils.contains(utcString, 'Z')) {
+            if (length == Fields.UTC_PATTERN.length() - 4) {
+                // 格式类似：2020-01-15T05:32:30Z
+                return parse(utcString, Fields.UTC_FORMAT);
+            } else if (length == Fields.OUTPUT_MSEC_PATTERN.length() - 4) {
+                // 格式类似：2020-01-15T05:32:30.999Z
+                return parse(utcString, Fields.OUTPUT_MSEC_FORMAT);
+            }
+        } else {
+            if (length == Fields.WITH_ZONE_OFFSET_PATTERN.length() + 2 || length == Fields.WITH_ZONE_OFFSET_PATTERN.length() + 3) {
+                // 格式类似：2020-01-15T05:32:30+0800 或 2020-01-15T05:32:30+08:00
+                return parse(utcString, FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC")));
+            } else if (length == Fields.MSEC_PATTERN.length() + 2 || length == Fields.MSEC_PATTERN.length() + 3) {
+                // 格式类似：2020-01-15T05:32:30.999+0800 或 2020-01-15T05:32:30.999+08:00
+                return parse(utcString, Fields.MSEC_FORMAT);
+            }
+        }
+        // 没有更多匹配的时间格式
+        throw new InstrumentException("No format fit for date String [{}] !", utcString);
+    }
+
+    /**
+     * 修改日期为某个时间字段起始时间
+     *
+     * @param date      {@link Date}
+     * @param dateField 时间字段
+     * @return {@link DateTime}
+     */
+    public static DateTime truncate(Date date, Fields.DateField dateField) {
+        return new DateTime(truncate(calendar(date), dateField));
+    }
+
+    /**
+     * 修改日期为某个时间字段起始时间
+     *
+     * @param calendar  {@link Calendar}
+     * @param dateField 时间字段
+     * @return 原{@link Calendar}
+     */
+    public static Calendar truncate(Calendar calendar, Fields.DateField dateField) {
+        return modify(calendar, dateField.getValue(), Fields.ModifyType.TRUNCATE);
+    }
+
+
+    /**
+     * 修改日期为某个时间字段四舍五入时间
+     *
+     * @param date      {@link Date}
+     * @param dateField 时间字段
+     * @return {@link DateTime}
+     */
+    public static DateTime round(Date date, Fields.DateField dateField) {
+        return new DateTime(round(calendar(date), dateField));
+    }
+
+    /**
+     * 修改日期为某个时间字段四舍五入时间
+     *
+     * @param calendar  {@link Calendar}
+     * @param dateField 时间字段
+     * @return 原{@link Calendar}
+     */
+    public static Calendar round(Calendar calendar, Fields.DateField dateField) {
+        return modify(calendar, dateField.getValue(), Fields.ModifyType.ROUND);
+    }
+
+    /**
+     * 修改日期为某个时间字段结束时间
+     *
+     * @param date      {@link Date}
+     * @param dateField 时间字段
+     * @return {@link DateTime}
+     */
+    public static DateTime ceiling(Date date, Fields.DateField dateField) {
+        return new DateTime(ceiling(calendar(date), dateField));
+    }
+
+    /**
+     * 修改日期为某个时间字段结束时间
+     *
+     * @param calendar  {@link Calendar}
+     * @param dateField 时间字段
+     * @return 原{@link Calendar}
+     */
+    public static Calendar ceiling(Calendar calendar, Fields.DateField dateField) {
+        return modify(calendar, dateField.getValue(), Fields.ModifyType.CEILING);
+    }
+
+    /**
+     * 获取秒级别的开始时间，即忽略毫秒部分
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime beginOfSecond(Date date) {
+        return new DateTime(beginOfSecond(calendar(date)));
+    }
+
+    /**
+     * 获取秒级别的结束时间，即毫秒设置为999
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime endOfSecond(Date date) {
+        return new DateTime(endOfSecond(calendar(date)));
+    }
+
+    /**
+     * 获取秒级别的开始时间，即忽略毫秒部分
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfSecond(Calendar calendar) {
+        return truncate(calendar, Fields.DateField.SECOND);
+    }
+
+    /**
+     * 获取秒级别的结束时间，即毫秒设置为999
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfSecond(Calendar calendar) {
+        return ceiling(calendar, Fields.DateField.SECOND);
     }
 
     /**
@@ -880,11 +1120,7 @@ public class DateUtils {
      * @return {@link Calendar}
      */
     public static Calendar beginOfDay(Calendar calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar;
+        return truncate(calendar, Fields.DateField.DAY_OF_MONTH);
     }
 
     /**
@@ -894,15 +1130,11 @@ public class DateUtils {
      * @return {@link Calendar}
      */
     public static Calendar endOfDay(Calendar calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
-        return calendar;
+        return ceiling(calendar, Fields.DateField.DAY_OF_MONTH);
     }
 
     /**
-     * 获取某周的开始时间
+     * 获取某周的开始时间，周一定为一周的开始时间
      *
      * @param date 日期
      * @return {@link DateTime}
@@ -922,7 +1154,7 @@ public class DateUtils {
     }
 
     /**
-     * 获取某周的开始时间
+     * 获取给定日期当前周的开始时间，周一定为一周的开始时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -932,25 +1164,22 @@ public class DateUtils {
     }
 
     /**
-     * 获取某周的开始时间,周一定为一周的开始时间
+     * 获取给定日期当前周的开始时间
      *
      * @param calendar           日期 {@link Calendar}
      * @param isMondayAsFirstDay 是否周一做为一周的第一天（false表示周日做为第一天）
      * @return {@link Calendar}
-     * @since 3.1.9
      */
     public static Calendar beginOfWeek(Calendar calendar, boolean isMondayAsFirstDay) {
         if (isMondayAsFirstDay) {
-            calendar.setFirstDayOfWeek(Fields.Week.MONDAY.getValue());
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        } else {
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            calendar.setFirstDayOfWeek(Calendar.MONDAY);
         }
-        return beginOfDay(calendar);
+        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
+        return truncate(calendar, Fields.DateField.WEEK_OF_MONTH);
     }
 
     /**
-     * 获取某周的结束时间,周日定为一周的结束
+     * 获取某周的结束时间，周日定为一周的结束
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -965,16 +1194,13 @@ public class DateUtils {
      * @param calendar          日期 {@link Calendar}
      * @param isSundayAsLastDay 是否周日做为一周的最后一天（false表示周六做为最后一天）
      * @return {@link Calendar}
-     * @since 3.1.9
      */
     public static Calendar endOfWeek(Calendar calendar, boolean isSundayAsLastDay) {
         if (isSundayAsLastDay) {
-            calendar.setFirstDayOfWeek(Fields.Week.MONDAY.getValue());
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        } else {
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+            calendar.setFirstDayOfWeek(Calendar.MONDAY);
         }
-        return endOfDay(calendar);
+        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
+        return ceiling(calendar, Fields.DateField.WEEK_OF_MONTH);
     }
 
     /**
@@ -1004,8 +1230,7 @@ public class DateUtils {
      * @return {@link Calendar}
      */
     public static Calendar beginOfMonth(Calendar calendar) {
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        return beginOfDay(calendar);
+        return truncate(calendar, Fields.DateField.MONTH);
     }
 
     /**
@@ -1015,8 +1240,7 @@ public class DateUtils {
      * @return {@link Calendar}
      */
     public static Calendar endOfMonth(Calendar calendar) {
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        return endOfDay(calendar);
+        return ceiling(calendar, Fields.DateField.MONTH);
     }
 
     /**
@@ -1090,8 +1314,7 @@ public class DateUtils {
      * @return {@link Calendar}
      */
     public static Calendar beginOfYear(Calendar calendar) {
-        calendar.set(Calendar.MONTH, Calendar.JANUARY);
-        return beginOfMonth(calendar);
+        return truncate(calendar, Fields.DateField.YEAR);
     }
 
     /**
@@ -1101,8 +1324,7 @@ public class DateUtils {
      * @return {@link Calendar}
      */
     public static Calendar endOfYear(Calendar calendar) {
-        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-        return endOfMonth(calendar);
+        return ceiling(calendar, Fields.DateField.YEAR);
     }
 
     /**
@@ -1248,10 +1470,7 @@ public class DateUtils {
      * @return 偏移后的日期
      */
     public static DateTime offset(Date date, Fields.DateField dateField, int offset) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(dateField.getValue(), offset);
-        return new DateTime(cal.getTime());
+        return new DateTime(date).offset(dateField, offset);
     }
 
     /**
@@ -1493,58 +1712,12 @@ public class DateUtils {
      *
      * @param startDate 开始时间
      * @param endDate   被比较的时间，即有效期的截止时间。如果经过时长后的时间晚于被检查的时间，就表示过期
-     * @param checkDate 检查时间，可以是当前时间，既
+     * @param checkDate 检查时间，可以是当前时间
      * @return 是否过期
-     * @since 5.1.1
      */
     public static boolean isExpired(Date startDate, Date endDate, Date checkDate) {
         return betweenMs(startDate, checkDate) > betweenMs(startDate, endDate);
     }
-
-    /**
-     * 秒数转为时间格式(HH:mm:ss)
-     *
-     * @param seconds 需要转换的秒数
-     * @return 转换后的字符串
-     * @since 3.1.9
-     */
-    public static String secondToTime(int seconds) {
-        if (seconds < 0) {
-            throw new IllegalArgumentException("Seconds must be a positive number!");
-        }
-
-        int hour = seconds / 3600;
-        int other = seconds % 3600;
-        int minute = other / 60;
-        int second = other % 60;
-        final StringBuilder sb = new StringBuilder();
-        if (hour < 10) {
-            sb.append(Symbol.ZERO);
-        }
-        sb.append(hour);
-        sb.append(Symbol.COLON);
-        if (minute < 10) {
-            sb.append(Symbol.ZERO);
-        }
-        sb.append(minute);
-        sb.append(Symbol.COLON);
-        if (second < 10) {
-            sb.append(Symbol.ZERO);
-        }
-        sb.append(second);
-        return sb.toString();
-    }
-
-    /**
-     * 获得指定日期年份和季节
-     * 格式：[20131]表示2013年第一季度
-     *
-     * @param cal 日期
-     */
-    private static String yearAndQuarter(Calendar cal) {
-        return new StringBuilder().append(cal.get(Calendar.YEAR)).append(cal.get(Calendar.MONTH) / 3 + 1).toString();
-    }
-
 
     /**
      * 生日转为年龄,计算法定年龄
@@ -1605,23 +1778,27 @@ public class DateUtils {
         cal.setTime(dateToCompare);
 
         if (cal.before(birthDay)) {
-            throw new IllegalArgumentException("Birthday is after date {}!");
+            throw new IllegalArgumentException(StringUtils.format("Birthday is after date {}!", formatDate(dateToCompare)));
         }
 
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+        final int year = cal.get(Calendar.YEAR);
+        final int month = cal.get(Calendar.MONTH);
+        final int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+        final boolean isLastDayOfMonth = dayOfMonth == cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         cal.setTime(birthDay);
         int age = year - cal.get(Calendar.YEAR);
 
-        int monthBirth = cal.get(Calendar.MONTH);
+        final int monthBirth = cal.get(Calendar.MONTH);
         if (month == monthBirth) {
-            int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
-            if (dayOfMonth < dayOfMonthBirth) {
+            final int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
+            final boolean isLastDayOfMonthBirth = dayOfMonthBirth == cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            if ((false == isLastDayOfMonth || false == isLastDayOfMonthBirth) && dayOfMonth < dayOfMonthBirth) {
+                // 如果生日在当月，但是未达到生日当天的日期，年龄减一
                 age--;
             }
         } else if (month < monthBirth) {
+            // 如果当前月份未达到生日的月份，年龄计算减一
             age--;
         }
 
@@ -2703,7 +2880,197 @@ public class DateUtils {
         if (year < 1900) {
             return null;
         }
-        return Fields.CN_ANIMAIL[(year - 1900) % Fields.CN_ANIMAIL.length];
+        return StringUtils.toString(Fields.CN_ANIMAIL[(year - 1900) % Fields.CN_ANIMAIL.length]);
+    }
+
+    /**
+     * 获取指定日期字段的最小值，例如分钟的最小值是0
+     *
+     * @param calendar  {@link Calendar}
+     * @param dateField {@link Fields.DateField}
+     * @return 字段最小值
+     * @see Calendar#getActualMinimum(int)
+     */
+    public static int getBeginValue(Calendar calendar, int dateField) {
+        if (Calendar.DAY_OF_WEEK == dateField) {
+            return calendar.getFirstDayOfWeek();
+        }
+        return calendar.getActualMinimum(dateField);
+    }
+
+    /**
+     * 获取指定日期字段的最大值，例如分钟的最大值是59
+     *
+     * @param calendar  {@link Calendar}
+     * @param dateField {@link Fields.DateField}
+     * @return 字段最大值
+     * @see Calendar#getActualMaximum(int)
+     */
+    public static int getEndValue(Calendar calendar, int dateField) {
+        if (Calendar.DAY_OF_WEEK == dateField) {
+            return (calendar.getFirstDayOfWeek() + 6) % 7;
+        }
+        return calendar.getActualMaximum(dateField);
+    }
+
+    /**
+     * 标准化日期，默认处理以空格区分的日期时间格式，空格前为日期
+     * 将以下字符替换为"-"
+     * <pre>
+     * "."
+     * "/"
+     * "年"
+     * "月"
+     * </pre>
+     *
+     * <p>
+     * 将以下字符替换为":"
+     * <pre>
+     * "时"
+     * "分"
+     * "秒"
+     * </pre>
+     *
+     * <p>
+     * 将以下字符去除
+     * <pre>
+     * "日"
+     * </pre>
+     *
+     * <p>
+     * 当末位是":"时去除之（不存在毫秒时）
+     *
+     * @param dateStr 日期时间字符串
+     * @return 格式化后的日期字符串
+     */
+    private static String normalize(CharSequence dateStr) {
+        if (StringUtils.isBlank(dateStr)) {
+            return StringUtils.str(dateStr);
+        }
+
+        // 日期时间分开处理
+        final List<String> dateAndTime = StringUtils.splitTrim(dateStr, ' ');
+        final int size = dateAndTime.size();
+        if (size < 1 || size > 2) {
+            // 非可被标准处理的格式
+            return StringUtils.str(dateStr);
+        }
+
+        final StringBuilder builder = StringUtils.builder();
+
+        // 日期部分（"\"、"/"、"."、"年"、"月"都替换为"-"）
+        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", "-");
+        datePart = StringUtils.removeSuffix(datePart, "日");
+        builder.append(datePart);
+
+        // 时间部分
+        if (size == 2) {
+            builder.append(' ');
+            String timePart = dateAndTime.get(1).replaceAll("[时分秒]", ":");
+            timePart = StringUtils.removeSuffix(timePart, ":");
+            builder.append(timePart);
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * 修改日期
+     *
+     * @param calendar   {@link Calendar}
+     * @param dateField  日期字段，即保留到哪个日期字段
+     * @param modifyType 修改类型，包括舍去、四舍五入、进一等
+     * @return 修改后的{@link Calendar}
+     */
+    public static Calendar modify(Calendar calendar, int dateField, Fields.ModifyType modifyType) {
+        // AM_PM上下午特殊处理
+        if (Calendar.AM_PM == dateField) {
+            boolean isAM = DateUtils.isAM(calendar);
+            switch (modifyType) {
+                case TRUNCATE:
+                    calendar.set(Calendar.HOUR_OF_DAY, isAM ? 0 : 12);
+                    break;
+                case CEILING:
+                    calendar.set(Calendar.HOUR_OF_DAY, isAM ? 11 : 23);
+                    break;
+                case ROUND:
+                    int min = isAM ? 0 : 12;
+                    int max = isAM ? 11 : 23;
+                    int href = (max - min) / 2 + 1;
+                    int value = calendar.get(Calendar.HOUR_OF_DAY);
+                    calendar.set(Calendar.HOUR_OF_DAY, (value < href) ? min : max);
+                    break;
+            }
+            // 处理下一级别字段
+            return modify(calendar, dateField + 1, modifyType);
+        }
+
+        int[] ignoreFields = new int[]{
+                Calendar.HOUR_OF_DAY, // 与HOUR同名
+                Calendar.AM_PM, // 此字段单独处理，不参与计算起始和结束
+                Calendar.DAY_OF_WEEK_IN_MONTH, // 不参与计算
+                Calendar.DAY_OF_YEAR, // DAY_OF_MONTH体现
+                Calendar.WEEK_OF_MONTH, // 特殊处理
+                Calendar.WEEK_OF_YEAR // WEEK_OF_MONTH体现
+        };
+        // 循环处理各级字段，精确到毫秒字段
+        for (int i = dateField + 1; i <= Calendar.MILLISECOND; i++) {
+            if (ArrayUtils.contains(ignoreFields, i)) {
+                // 忽略无关字段（WEEK_OF_MONTH）始终不做修改
+                continue;
+            }
+
+            // 在计算本周的起始和结束日时，月相关的字段忽略。
+            if (Calendar.WEEK_OF_MONTH == dateField || Calendar.WEEK_OF_YEAR == dateField) {
+                if (Calendar.DAY_OF_MONTH == i) {
+                    continue;
+                }
+            } else {
+                // 其它情况忽略周相关字段计算
+                if (Calendar.DAY_OF_WEEK == i) {
+                    continue;
+                }
+            }
+
+            modifyField(calendar, i, modifyType);
+        }
+        return calendar;
+    }
+
+    /**
+     * 修改日期字段值
+     *
+     * @param calendar   {@link Calendar}
+     * @param field      字段，见{@link Calendar}
+     * @param modifyType {@link Fields.ModifyType}
+     */
+    private static void modifyField(Calendar calendar, int field, Fields.ModifyType modifyType) {
+        if (Calendar.HOUR == field) {
+            // 修正小时。HOUR为12小时制，上午的结束时间为12:00，此处改为HOUR_OF_DAY: 23:59
+            field = Calendar.HOUR_OF_DAY;
+        }
+
+        switch (modifyType) {
+            case TRUNCATE:
+                calendar.set(field, DateUtils.getBeginValue(calendar, field));
+                break;
+            case CEILING:
+                calendar.set(field, DateUtils.getEndValue(calendar, field));
+                break;
+            case ROUND:
+                int min = DateUtils.getBeginValue(calendar, field);
+                int max = DateUtils.getEndValue(calendar, field);
+                int href;
+                if (Calendar.DAY_OF_WEEK == field) {
+                    // 星期特殊处理，假设周一是第一天，中间的为周四
+                    href = (min + 3) % 7;
+                } else {
+                    href = (max - min) / 2 + 1;
+                }
+                int value = calendar.get(field);
+                calendar.set(field, (value < href) ? min : max);
+                break;
+        }
     }
 
     /**
@@ -2724,6 +3091,170 @@ public class DateUtils {
      */
     public static double nanosToSeconds(long duration) {
         return duration / 1_000_000_000.0;
+    }
+
+    /**
+     * Date对象转换为{@link Instant}对象
+     *
+     * @param date Date对象
+     * @return {@link Instant}对象
+     */
+    public static Instant toInstant(Date date) {
+        return null == date ? null : date.toInstant();
+    }
+
+    /**
+     * Calendar{@link Instant}对象
+     *
+     * @param calendar Date对象
+     * @return {@link Instant}对象
+     */
+    public static Instant toInstant(Calendar calendar) {
+        return null == calendar ? null : calendar.toInstant();
+    }
+
+    /**
+     * Date对象转换为{@link Instant}对象
+     *
+     * @param temporalAccessor Date对象
+     * @return {@link Instant}对象
+     */
+    public static Instant toInstant(TemporalAccessor temporalAccessor) {
+        if (null == temporalAccessor) {
+            return null;
+        }
+
+        Instant result;
+        if (temporalAccessor instanceof Instant) {
+            result = (Instant) temporalAccessor;
+        } else if (temporalAccessor instanceof LocalDateTime) {
+            result = ((LocalDateTime) temporalAccessor).atZone(ZoneId.systemDefault()).toInstant();
+        } else if (temporalAccessor instanceof ZonedDateTime) {
+            result = ((ZonedDateTime) temporalAccessor).toInstant();
+        } else if (temporalAccessor instanceof OffsetDateTime) {
+            result = ((OffsetDateTime) temporalAccessor).toInstant();
+        } else if (temporalAccessor instanceof LocalDate) {
+            result = ((LocalDate) temporalAccessor).atStartOfDay(ZoneId.systemDefault()).toInstant();
+        } else if (temporalAccessor instanceof LocalTime) {
+            // 指定本地时间转换 为Instant，取当天日期
+            result = ((LocalTime) temporalAccessor).atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant();
+        } else if (temporalAccessor instanceof OffsetTime) {
+            // 指定本地时间转换 为Instant，取当天日期
+            result = ((OffsetTime) temporalAccessor).atDate(LocalDate.now()).toInstant();
+        } else {
+            result = Instant.from(temporalAccessor);
+        }
+
+        return result;
+    }
+
+    /**
+     * {@link Instant} 转换为 {@link LocalDateTime}，使用系统默认时区
+     *
+     * @param instant {@link Instant}
+     * @return {@link LocalDateTime}
+     */
+    public static LocalDateTime toLocalDateTime(Instant instant) {
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+    }
+
+    /**
+     * {@link Calendar} 转换为 {@link LocalDateTime}，使用系统默认时区
+     *
+     * @param calendar {@link Calendar}
+     * @return {@link LocalDateTime}
+     */
+    public static LocalDateTime toLocalDateTime(Calendar calendar) {
+        return LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
+    }
+
+    /**
+     * {@link Date} 转换为 {@link LocalDateTime}，使用系统默认时区
+     *
+     * @param date {@link Calendar}
+     * @return {@link LocalDateTime}
+     */
+    public static LocalDateTime toLocalDateTime(Date date) {
+        final DateTime dateTime = date(date);
+        return LocalDateTime.ofInstant(dateTime.toInstant(), dateTime.getZoneId());
+    }
+
+    /**
+     * HH:mm:ss 时间格式字符串转为秒数
+     *
+     * @param timeStr 字符串时分秒(HH:mm:ss)格式
+     * @return 时分秒转换后的秒数
+     */
+    public static int timeToSecond(String timeStr) {
+        if (StringUtils.isEmpty(timeStr)) {
+            return 0;
+        }
+
+        final List<String> hms = StringUtils.splitTrim(timeStr, Symbol.COLON, 3, true);
+        int lastIndex = hms.size() - 1;
+
+        int result = 0;
+        for (int i = lastIndex; i >= 0; i--) {
+            result += Integer.parseInt(hms.get(i)) * Math.pow(60, (lastIndex - i));
+        }
+        return result;
+    }
+
+    /**
+     * 秒数转为时间格式(HH:mm:ss)
+     *
+     * @param seconds 需要转换的秒数
+     * @return 转换后的字符串
+     */
+    public static String secondToTime(int seconds) {
+        if (seconds < 0) {
+            throw new IllegalArgumentException("Seconds must be a positive number!");
+        }
+
+        int hour = seconds / 3600;
+        int other = seconds % 3600;
+        int minute = other / 60;
+        int second = other % 60;
+        final StringBuilder sb = new StringBuilder();
+        if (hour < 10) {
+            sb.append(Symbol.ZERO);
+        }
+        sb.append(hour);
+        sb.append(Symbol.COLON);
+        if (minute < 10) {
+            sb.append(Symbol.ZERO);
+        }
+        sb.append(minute);
+        sb.append(Symbol.COLON);
+        if (second < 10) {
+            sb.append(Symbol.ZERO);
+        }
+        sb.append(second);
+        return sb.toString();
+    }
+
+    /**
+     * 创建日期范围生成器
+     *
+     * @param start 起始日期时间
+     * @param end   结束日期时间
+     * @param unit  步进单位
+     * @return {@link Boundary}
+     */
+    public static Boundary range(Date start, Date end, final Fields.DateField unit) {
+        return new Boundary(start, end, unit);
+    }
+
+    /**
+     * 创建日期范围生成器
+     *
+     * @param start 起始日期时间
+     * @param end   结束日期时间
+     * @param unit  步进单位
+     * @return {@link Boundary}
+     */
+    public static List<DateTime> rangeToList(Date start, Date end, final Fields.DateField unit) {
+        return CollUtils.newArrayList((Iterable<DateTime>) range(start, end, unit));
     }
 
     /**
@@ -2754,10 +3285,10 @@ public class DateUtils {
      */
     public static String getYearName(int lunarYear) {
         StringBuilder sb = new StringBuilder();
-        sb.append(Fields.CN_YEAR[lunarYear / 1000 - 1]);
-        sb.append(Fields.CN_YEAR[lunarYear % 1000 / 100 - 1]);
-        sb.append(Fields.CN_YEAR[lunarYear % 100 / 10 - 1]);
-        sb.append(Fields.CN_YEAR[lunarYear % 10 - 1]);
+        sb.append(Fields.CN_YEAR[lunarYear / 1000]);
+        sb.append(Fields.CN_YEAR[lunarYear % 1000 / 100]);
+        sb.append(Fields.CN_YEAR[lunarYear % 100 / 10]);
+        sb.append(Fields.CN_YEAR[lunarYear % 10]);
         return sb.toString();
     }
 

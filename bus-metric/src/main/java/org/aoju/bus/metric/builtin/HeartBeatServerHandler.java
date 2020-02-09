@@ -7,7 +7,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.metric.builtin.ChannelContext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

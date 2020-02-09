@@ -584,7 +584,7 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * SM2算法模式<br>
+     * SM2算法模式
      * 在SM2算法中,C1C2C3为旧标准模式,C1C3C2为新标准模式
      */
     public enum SM2Mode {

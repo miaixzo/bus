@@ -90,7 +90,7 @@ public class EnumUtils {
     }
 
     /**
-     * 字符串转枚举，调用{@link Enum#valueOf(Class, String)}<br>
+     * 字符串转枚举，调用{@link Enum#valueOf(Class, String)}
      * 如果无枚举值，返回默认值
      *
      * @param <E>          枚举类型泛型
@@ -194,7 +194,7 @@ public class EnumUtils {
     }
 
     /**
-     * 获得枚举类中所有的字段名<br>
+     * 获得枚举类中所有的字段名
      * 除用户自定义的字段名，也包括“name”字段，例如：
      *
      * <pre>
@@ -222,7 +222,7 @@ public class EnumUtils {
     }
 
     /**
-     * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序<br>
+     * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序
      * 结果中键为枚举名，值为枚举对象
      *
      * @param <E>       枚举类型
@@ -239,7 +239,7 @@ public class EnumUtils {
     }
 
     /**
-     * 获得枚举名对应指定字段值的Map<br>
+     * 获得枚举名对应指定字段值的Map
      * 键为枚举名，值为字段值
      *
      * @param clazz     枚举类

@@ -30,15 +30,15 @@ import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.metric.annotation.MappingApi;
 import org.aoju.bus.metric.annotation.Service;
-import org.aoju.bus.metric.manual.docs.ApiDocBuilder;
-import org.aoju.bus.metric.manual.docs.ApiDocHolder;
-import org.aoju.bus.metric.manual.docs.ApiServiceDocCreator;
-import org.aoju.bus.metric.manual.docs.DocFileCreator;
 import org.aoju.bus.metric.builtin.HeartBeatProcessor;
 import org.aoju.bus.metric.consts.NettyMode;
 import org.aoju.bus.metric.manual.ApiDefinition;
 import org.aoju.bus.metric.manual.DefinitionHolder;
 import org.aoju.bus.metric.manual.ErrorFactory;
+import org.aoju.bus.metric.manual.docs.ApiDocBuilder;
+import org.aoju.bus.metric.manual.docs.ApiDocHolder;
+import org.aoju.bus.metric.manual.docs.ApiServiceDocCreator;
+import org.aoju.bus.metric.manual.docs.DocFileCreator;
 import org.aoju.bus.metric.register.RegistCallback;
 import org.aoju.bus.metric.register.SingleParameterContext;
 import org.springframework.context.ApplicationContext;
@@ -457,11 +457,10 @@ public class ApiRegister {
     }
 
     /**
-     * 返回定义类时的泛型参数的类型. <br>
-     * 如:定义一个BookManager类<br>
+     * 返回定义类时的泛型参数的类型
+     * 如:定义一个BookManager类
      * <code>{@literal public BookManager extends GenricManager<Book,Address>}{...} </code>
-     * <br>
-     * 调用getSuperClassGenricType(getClass(),0)将返回Book的Class类型<br>
+     * 调用getSuperClassGenricType(getClass(),0)将返回Book的Class类型
      * 调用getSuperClassGenricType(getClass(),1)将返回Address的Class类型
      *
      * @param clazz 从哪个类中获取

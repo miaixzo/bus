@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -565,26 +566,40 @@ public class ReflectUtils {
     public static void setFieldValue(Object obj, String fieldName, Object value) throws InstrumentException {
         Assert.notNull(obj);
         Assert.notBlank(fieldName);
-        setFieldValue(obj, getField(obj.getClass(), fieldName), value);
+
+        final Field field = getField(obj.getClass(), fieldName);
+        Assert.notNull(field, "Field [{}] is not exist in [{}]", fieldName, obj.getClass().getName());
+        setFieldValue(obj, field, value);
     }
 
     /**
      * 设置字段值
      *
-     * @param obj   对象
+     * @param obj   对象,如果是static字段，此参数为null
      * @param field 字段
      * @param value 值,值类型必须与字段类型匹配,不会自动转换对象类型
      * @throws InstrumentException UtilException 包装IllegalAccessException异常
      */
     public static void setFieldValue(Object obj, Field field, Object value) throws InstrumentException {
-        Assert.notNull(obj);
-        Assert.notNull(field);
-        field.setAccessible(true);
+        Assert.notNull(field, "Field in [{}] not exist !", obj.getClass().getName());
+
+        setAccessible(field);
+
+        if (null != value) {
+            Class<?> fieldType = field.getType();
+            if (false == fieldType.isAssignableFrom(value.getClass())) {
+                //对于类型不同的字段，尝试转换，转换失败则使用原对象类型
+                final Object targetValue = Convert.convert(fieldType, value);
+                if (null != targetValue) {
+                    value = targetValue;
+                }
+            }
+        }
 
         try {
             field.set(obj, value);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for " + obj.getClass() + Symbol.DOT + field.getName());
+            throw new InstrumentException("IllegalAccess for {}.{}", obj.getClass(), field.getName());
         }
     }
 
@@ -839,7 +854,7 @@ public class ReflectUtils {
     public static <T> T newInstanceIfPossible(Class<T> beanClass) {
         Assert.notNull(beanClass);
         try {
-            return beanClass.newInstance();
+            return newInstance(beanClass);
         } catch (Exception e) {
             // ignore
             // 默认构造不存在的情况下查找其它构造
@@ -852,11 +867,11 @@ public class ReflectUtils {
             if (0 == parameterTypes.length) {
                 continue;
             }
+            setAccessible(constructor);
             try {
-                constructor.newInstance(ClassUtils.getDefaultValues(parameterTypes));
-            } catch (Exception e) {
+                return constructor.newInstance(ClassUtils.getDefaultValues(parameterTypes));
+            } catch (Exception ignore) {
                 // 构造出错时继续尝试下一种构造方式
-                continue;
             }
         }
         return null;

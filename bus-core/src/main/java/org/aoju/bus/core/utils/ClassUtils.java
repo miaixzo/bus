@@ -357,9 +357,9 @@ public class ClassUtils {
     }
 
     /**
-     * 执行方法<br>
-     * 可执行Private方法,也可执行static方法<br>
-     * 执行非static方法时,必须满足对象有默认构造方法<br>
+     * 执行方法
+     * 可执行Private方法,也可执行static方法
+     * 执行非static方法时,必须满足对象有默认构造方法
      * 非单例模式,如果是非静态方法,每次创建一个新对象
      *
      * @param <T>                     对象类型
@@ -372,9 +372,9 @@ public class ClassUtils {
     }
 
     /**
-     * 执行方法<br>
-     * 可执行Private方法,也可执行static方法<br>
-     * 执行非static方法时,必须满足对象有默认构造方法<br>
+     * 执行方法
+     * 可执行Private方法,也可执行static方法
+     * 执行非static方法时,必须满足对象有默认构造方法
      *
      * @param <T>                     对象类型
      * @param classNameWithMethodName 类名和方法名表达式
@@ -402,9 +402,9 @@ public class ClassUtils {
     }
 
     /**
-     * 执行方法<br>
-     * 可执行Private方法,也可执行static方法<br>
-     * 执行非static方法时,必须满足对象有默认构造方法<br>
+     * 执行方法
+     * 可执行Private方法,也可执行static方法
+     * 执行非static方法时,必须满足对象有默认构造方法
      * 非单例模式,如果是非静态方法,每次创建一个新对象
      *
      * @param <T>        对象类型
@@ -418,9 +418,9 @@ public class ClassUtils {
     }
 
     /**
-     * 执行方法<br>
-     * 可执行Private方法,也可执行static方法<br>
-     * 执行非static方法时,必须满足对象有默认构造方法<br>
+     * 执行方法
+     * 可执行Private方法,也可执行static方法
+     * 执行非static方法时,必须满足对象有默认构造方法
      *
      * @param <T>         对象类型
      * @param className   类名,完整类路径
@@ -1428,35 +1428,19 @@ public class ClassUtils {
      * @return 没有包名或空字符串的类的类名
      */
     public static String getShortClassName(String className) {
-        if (StringUtils.isEmpty(className)) {
-            return Normal.EMPTY;
+        final List<String> packages = StringUtils.split(className, Symbol.C_DOT);
+        if (null == packages || packages.size() < 2) {
+            return className;
         }
 
-        final StringBuilder arrayPrefix = new StringBuilder();
-
-        // 处理数组编码
-        if (className.startsWith(Symbol.BRACKET_LEFT)) {
-            while (className.charAt(0) == Symbol.C_BRACKET_LEFT) {
-                className = className.substring(1);
-                arrayPrefix.append(Symbol.BRACKET);
-            }
-            if (className.charAt(0) == 'L' && className.charAt(className.length() - 1) == Symbol.C_SEMICOLON) {
-                className = className.substring(1, className.length() - 1);
-            }
-
-            if (primitiveWrapperMap.containsKey(className)) {
-                className = primitiveWrapperMap.get(className).toString();
-            }
+        final int size = packages.size();
+        final StringBuilder result = StringUtils.builder();
+        result.append(packages.get(0).charAt(0));
+        for (int i = 1; i < size - 1; i++) {
+            result.append(Symbol.C_DOT).append(packages.get(i).charAt(0));
         }
-
-        final int lastDotIdx = className.lastIndexOf(Symbol.C_DOT);
-        final int innerIdx = className.indexOf(
-                Symbol.C_DOLLAR, lastDotIdx == -1 ? 0 : lastDotIdx + 1);
-        String out = className.substring(lastDotIdx + 1);
-        if (innerIdx != -1) {
-            out = out.replace(Symbol.C_DOLLAR, Symbol.C_DOT);
-        }
-        return out + arrayPrefix;
+        result.append(Symbol.C_DOT).append(packages.get(size - 1));
+        return result.toString();
     }
 
     /**
@@ -2700,7 +2684,15 @@ public class ClassUtils {
      * @return 属性对象
      */
     public static Field getDeclaredField(final Class<?> clazz, final String fieldName) {
-        return getDeclaredField(clazz, fieldName, false);
+        if (null == clazz || StringUtils.isBlank(fieldName)) {
+            return null;
+        }
+        try {
+            return clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            // e.printStackTrace();
+        }
+        return null;
     }
 
     /**

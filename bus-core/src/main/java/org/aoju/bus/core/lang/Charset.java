@@ -51,7 +51,7 @@ public class Charset {
      * GBK UCS 转换格式
      */
     public static final String DEFAULT_GBK = "GBK";
-    public static final java.nio.charset.Charset CHARSET_GBK = java.nio.charset.Charset.forName(DEFAULT_GBK);
+    public static final java.nio.charset.Charset GBK = java.nio.charset.Charset.forName(DEFAULT_GBK);
     /**
      * 8位UCS转换格式
      */

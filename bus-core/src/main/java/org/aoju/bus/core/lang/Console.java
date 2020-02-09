@@ -63,32 +63,11 @@ public class Console {
     /**
      * 打印控制台日志
      *
-     * @param obj 要打印的对象
-     * @since 3.3.1
-     */
-    public static void print(Object obj) {
-        print(Symbol.DELIM, obj);
-    }
-
-    /**
-     * 打印控制台日志
-     *
      * @param template 文本模板,被替换的部分用 {} 表示
      * @param values   值
      */
     public static void log(String template, Object... values) {
         log(null, template, values);
-    }
-
-    /**
-     * 打印控制台日志
-     *
-     * @param template 文本模板,被替换的部分用 {} 表示
-     * @param values   值
-     * @since 3.3.1
-     */
-    public static void print(String template, Object... values) {
-        System.out.println(StringUtils.format(template, values));
     }
 
     /**
@@ -103,6 +82,49 @@ public class Console {
             t.printStackTrace();
             System.out.flush();
         }
+    }
+
+    /**
+     * 打印控制台日志
+     *
+     * @param obj 要打印的对象
+     * @since 3.3.1
+     */
+    public static void print(Object obj) {
+        print(Symbol.DELIM, obj);
+    }
+
+    /**
+     * 打印控制台日志
+     *
+     * @param template 文本模板,被替换的部分用 {} 表示
+     * @param values   值
+     * @since 3.3.1
+     */
+    public static void print(String template, Object... values) {
+        System.out.println(StringUtils.format(template, values));
+    }
+
+    /**
+     * 打印进度条
+     *
+     * @param showChar 进度条提示字符，例如“#”
+     * @param len      打印长度
+     */
+    public static void printProgress(char showChar, int len) {
+        print("{}{}", Symbol.CR, StringUtils.repeat(showChar, len));
+    }
+
+    /**
+     * 打印进度条
+     *
+     * @param showChar 进度条提示字符，例如“#”
+     * @param totalLen 总长度
+     * @param rate     总长度所占比取值0~1
+     */
+    public static void printProgress(char showChar, int totalLen, double rate) {
+        Assert.isTrue(rate >= 0 && rate <= 1, "Rate must between 0 and 1 (both include)");
+        printProgress(showChar, (int) (totalLen * rate));
     }
 
     /**
@@ -152,16 +174,6 @@ public class Console {
     }
 
     /**
-     * 创建从控制台读取内容的{@link Scanner}
-     *
-     * @return {@link Scanner}
-     * @since 3.3.1
-     */
-    public static Scanner scanner() {
-        return new Scanner(System.in);
-    }
-
-    /**
      * 读取用户输入的内容（在控制台敲回车前的内容）
      *
      * @return 用户输入的内容
@@ -169,6 +181,16 @@ public class Console {
      */
     public static String input() {
         return scanner().next();
+    }
+
+    /**
+     * 创建从控制台读取内容的{@link Scanner}
+     *
+     * @return {@link Scanner}
+     * @since 3.3.1
+     */
+    public static Scanner scanner() {
+        return new Scanner(System.in);
     }
 
 }

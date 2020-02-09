@@ -23,20 +23,6 @@
  */
 package org.aoju.bus.metric.support;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 /**
  * @author Kimi Liu
  * @version 5.5.5
@@ -47,7 +33,6 @@ public class RequestUtil {
     private static final String UNKOWN = "unknown";
     private static final String LOCAL_IP = "127.0.0.1";
     private static final int IP_LEN = 15;
-
 
 
 }

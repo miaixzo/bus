@@ -29,7 +29,6 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.metric.ApiContext;
-import org.aoju.bus.metric.builtin.ChannelMessage;
 import org.aoju.bus.metric.consts.NettyMode;
 
 /**

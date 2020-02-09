@@ -26,15 +26,21 @@ package org.aoju.bus.core.date;
 import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FastDateFormat;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.utils.StringUtils;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -56,7 +62,7 @@ public class DateTime extends Date {
      */
     private boolean mutable = true;
     /**
-     * 一周的第一天,默认是周一, 在设置或获得 WEEK_OF_MONTH 或 WEEK_OF_YEAR 字段时,Calendar 必须确定一个月或一年的第一个星期,以此作为参考点
+     * 一周的第一天，默认是周一， 在设置或获得 WEEK_OF_MONTH 或 WEEK_OF_YEAR 字段时，Calendar 必须确定一个月或一年的第一个星期，以此作为参考点。
      */
     private Fields.Week firstDayOfWeek = Fields.Week.MONDAY;
     /**
@@ -65,102 +71,13 @@ public class DateTime extends Date {
     private TimeZone timeZone;
 
     /**
-     * 当前时间
-     */
-    public DateTime() {
-        this(TimeZone.getDefault());
-    }
-
-    /**
-     * 当前时间
+     * 转换时间戳为 DateTime
      *
-     * @param timeZone 时区
+     * @param timeMillis 时间戳，毫秒数
+     * @return DateTime
      */
-    public DateTime(TimeZone timeZone) {
-        this(System.currentTimeMillis(), timeZone);
-    }
-
-    /**
-     * 给定日期的构造
-     *
-     * @param date 日期
-     */
-    public DateTime(Date date) {
-        this(date.getTime(), TimeZone.getDefault());
-    }
-
-    /**
-     * 给定日期的构造
-     *
-     * @param date     日期
-     * @param timeZone 时区
-     */
-    public DateTime(Date date, TimeZone timeZone) {
-        this(date.getTime(), timeZone);
-    }
-
-    /**
-     * 给定日期的构造
-     *
-     * @param calendar {@link Calendar}
-     */
-    public DateTime(Calendar calendar) {
-        this(calendar.getTime(), null);
-    }
-
-    /**
-     * 给定日期毫秒数的构造
-     *
-     * @param timeMillis 日期毫秒数
-     */
-    public DateTime(long timeMillis) {
-        this(timeMillis, null);
-    }
-
-    /**
-     * 给定日期毫秒数的构造
-     *
-     * @param timeMillis 日期毫秒数
-     * @param timeZone   时区
-     */
-    public DateTime(long timeMillis, TimeZone timeZone) {
-        super(timeMillis);
-        if (null != timeZone) {
-            this.timeZone = timeZone;
-        }
-    }
-
-    /**
-     * 构造
-     *
-     * @param dateStr Date字符串
-     * @param format  格式
-     * @see Fields
-     */
-    public DateTime(String dateStr, String format) {
-        this(dateStr, new SimpleDateFormat(format));
-    }
-
-    /**
-     * 构造
-     *
-     * @param dateStr    Date字符串
-     * @param dateFormat 格式化器 {@link SimpleDateFormat}
-     * @see Fields
-     */
-    public DateTime(String dateStr, DateFormat dateFormat) {
-        this(parse(dateStr, dateFormat), dateFormat.getTimeZone());
-    }
-
-    /**
-     * 构造
-     *
-     * @param dateStr    Date字符串
-     * @param dateParser 格式化器 {@link DateParser},可以使用 {@link FastDateFormat}
-     * @see Fields
-     */
-    public DateTime(String dateStr, DateParser dateParser) {
-        this(parse(dateStr, dateParser), dateParser.getTimeZone());
+    public static DateTime of(long timeMillis) {
+        return new DateTime(timeMillis);
     }
 
     /**
@@ -192,7 +109,6 @@ public class DateTime extends Date {
      * @param dateStr Date字符串
      * @param format  格式
      * @return {@link DateTime}
-     * @see Fields
      */
     public static DateTime of(String dateStr, String format) {
         return new DateTime(dateStr, format);
@@ -208,40 +124,191 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转换字符串为Date
-     *
-     * @param dateStr    日期字符串
-     * @param dateFormat {@link SimpleDateFormat}
-     * @return {@link Date}
+     * 当前时间
      */
-    private static Date parse(String dateStr, DateFormat dateFormat) {
-        try {
-            return dateFormat.parse(dateStr);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
+    public DateTime() {
+        this(TimeZone.getDefault());
     }
 
     /**
-     * 转换字符串为Date
+     * 当前时间
      *
-     * @param dateStr 日期字符串
-     * @param parser  {@link FastDateFormat}
-     * @return {@link Date}
+     * @param timeZone 时区
      */
-    private static Date parse(String dateStr, DateParser parser) {
-        try {
-            return parser.parse(dateStr);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
+    public DateTime(TimeZone timeZone) {
+        this(System.currentTimeMillis(), timeZone);
+    }
+
+    /**
+     * 给定日期的构造
+     *
+     * @param date 日期
+     */
+    public DateTime(Date date) {
+        this(
+                date.getTime(),
+                (date instanceof DateTime) ? ((DateTime) date).timeZone : TimeZone.getDefault()
+        );
+    }
+
+    /**
+     * 给定日期的构造
+     *
+     * @param date     日期
+     * @param timeZone 时区
+     */
+    public DateTime(Date date, TimeZone timeZone) {
+        this(date.getTime(), timeZone);
+    }
+
+    /**
+     * 给定日期的构造
+     *
+     * @param calendar {@link Calendar}
+     */
+    public DateTime(Calendar calendar) {
+        this(calendar.getTime(), calendar.getTimeZone());
+        this.setFirstDayOfWeek(Fields.Week.of(calendar.getFirstDayOfWeek()));
+    }
+
+    /**
+     * 给定日期Instant的构造
+     *
+     * @param instant {@link Instant} 对象
+     */
+    public DateTime(Instant instant) {
+        this(instant.toEpochMilli());
+    }
+
+    /**
+     * 给定日期Instant的构造
+     *
+     * @param instant {@link Instant} 对象
+     * @param zoneId  时区ID
+     */
+    public DateTime(Instant instant, ZoneId zoneId) {
+        this(instant.toEpochMilli(), TimeZone.getTimeZone(ObjectUtils.defaultIfNull(zoneId, ZoneId.systemDefault())));
+    }
+
+    /**
+     * 给定日期TemporalAccessor的构造
+     *
+     * @param temporalAccessor {@link TemporalAccessor} 对象
+     */
+    public DateTime(TemporalAccessor temporalAccessor) {
+        this(DateUtils.toInstant(temporalAccessor));
+    }
+
+    /**
+     * 给定日期ZonedDateTime的构造
+     *
+     * @param zonedDateTime {@link ZonedDateTime} 对象
+     */
+    public DateTime(ZonedDateTime zonedDateTime) {
+        this(zonedDateTime.toInstant(), zonedDateTime.getZone());
+    }
+
+    /**
+     * 给定日期毫秒数的构造
+     *
+     * @param timeMillis 日期毫秒数
+     */
+    public DateTime(long timeMillis) {
+        this(timeMillis, TimeZone.getDefault());
+    }
+
+    /**
+     * 给定日期毫秒数的构造
+     *
+     * @param timeMillis 日期毫秒数
+     * @param timeZone   时区
+     */
+    public DateTime(long timeMillis, TimeZone timeZone) {
+        super(timeMillis);
+        this.timeZone = ObjectUtils.defaultIfNull(timeZone, TimeZone.getDefault());
+    }
+
+    /**
+     * 构造
+     *
+     * @param dateStr Date字符串
+     * @param format  格式
+     */
+    public DateTime(CharSequence dateStr, String format) {
+        this(dateStr, new SimpleDateFormat(format));
+    }
+
+    /**
+     * 构造
+     *
+     * @param dateStr    Date字符串
+     * @param dateFormat 格式化器 {@link SimpleDateFormat}
+     */
+    public DateTime(CharSequence dateStr, DateFormat dateFormat) {
+        this(parse(dateStr, dateFormat), dateFormat.getTimeZone());
+    }
+
+    /**
+     * 构建DateTime对象
+     *
+     * @param dateStr   Date字符串
+     * @param formatter 格式化器,{@link DateTimeFormatter}
+     */
+    public DateTime(CharSequence dateStr, DateTimeFormatter formatter) {
+        this(Instant.from(formatter.parse(dateStr)), formatter.getZone());
+    }
+
+    /**
+     * 构造
+     *
+     * @param dateStr    Date字符串
+     * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FastDateFormat}
+     */
+    public DateTime(CharSequence dateStr, DateParser dateParser) {
+        this(parse(dateStr, dateParser), dateParser.getTimeZone());
+    }
+
+    /**
+     * 调整日期和时间
+     * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
+     *
+     * @param datePart 调整的部分 {@link Fields.DateField}
+     * @param offset   偏移量，正数为向后偏移，负数为向前偏移
+     * @return 如果此对象为可变对象，返回自身，否则返回新对象
+     */
+    public DateTime offset(Fields.DateField datePart, int offset) {
+        if (Fields.DateField.ERA == datePart) {
+            throw new IllegalArgumentException("ERA is not support offset!");
         }
+
+        final Calendar cal = toCalendar();
+        cal.add(datePart.getValue(), offset);
+
+        DateTime dt = mutable ? this : ObjectUtils.clone(this);
+        return dt.setTimeInternal(cal.getTimeInMillis());
+    }
+
+    /**
+     * 调整日期和时间
+     * 返回调整后的新{@link DateTime}，不影响原对象
+     *
+     * @param datePart 调整的部分 {@link Fields.DateField}
+     * @param offset   偏移量，正数为向后偏移，负数为向前偏移
+     * @return 如果此对象为可变对象，返回自身，否则返回新对象
+     */
+    public DateTime offsetNew(Fields.DateField datePart, int offset) {
+        final Calendar cal = toCalendar();
+        cal.add(datePart.getValue(), offset);
+
+        DateTime dt = ObjectUtils.clone(this);
+        return dt.setTimeInternal(cal.getTimeInMillis());
     }
 
     /**
      * 获得日期的某个部分
-     * 例如获得年的部分,则使用 getField(DatePart.YEAR)
+     * 例如获得年的部分,则使用 getField(Calendar.YEAR)
      *
-     * @param field 表示日期的哪个部分的枚举 {@link Fields}
+     * @param field 表示日期的哪个部分的枚举 {@link Fields.DateField}
      * @return 某个部分的值
      */
     public int getField(Fields.DateField field) {
@@ -250,7 +317,7 @@ public class DateTime extends Date {
 
     /**
      * 获得日期的某个部分
-     * 例如获得年的部分,则使用 getField(Calendar.YEAR)
+     * 例如获得年的部分，则使用 getField(Calendar.YEAR)
      *
      * @param field 表示日期的哪个部分的int值 {@link Calendar}
      * @return 某个部分的值
@@ -259,10 +326,43 @@ public class DateTime extends Date {
         return toCalendar().get(field);
     }
 
+    /**
+     * 设置日期的某个部分
+     * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
+     *
+     * @param field 表示日期的哪个部分的枚举 {@link Fields.DateField}
+     * @param value 值
+     * @return {@link DateTime}
+     */
+    public DateTime setField(Fields.DateField field, int value) {
+        return setField(field.getValue(), value);
+    }
+
+    /**
+     * 设置日期的某个部分
+     * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
+     *
+     * @param field 表示日期的哪个部分的int值 {@link Calendar}
+     * @param value 值
+     * @return {@link DateTime}
+     */
+    public DateTime setField(int field, int value) {
+        final Calendar calendar = toCalendar();
+        calendar.set(field, value);
+
+        DateTime dt = this;
+        if (false == mutable) {
+            dt = ObjectUtils.clone(this);
+        }
+        return dt.setTimeInternal(calendar.getTimeInMillis());
+    }
+
     @Override
     public void setTime(long time) {
         if (mutable) {
             super.setTime(time);
+        } else {
+            throw new InstrumentException("This is not a mutable object !");
         }
     }
 
@@ -278,7 +378,7 @@ public class DateTime extends Date {
     /**
      * 获得当前日期所属季度,从1开始计数
      *
-     * @return 第几个季度 {@link Fields}
+     * @return 第几个季度 {@link Fields.Quarter}
      */
     public int quarter() {
         return month() / 3 + 1;
@@ -287,7 +387,7 @@ public class DateTime extends Date {
     /**
      * 获得当前日期所属季度
      *
-     * @return 第几个季度 {@link Fields}
+     * @return 第几个季度 {@link Fields.Quarter}
      */
     public Fields.Quarter quarterEnum() {
         return Fields.Quarter.of(quarter());
@@ -303,7 +403,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得月份,从1开始计数
+     * 获得月份，从1开始计数
      * 由于{@link Calendar} 中的月份按照0开始计数,导致某些需求容易误解,因此如果想用1表示一月,2表示二月则调用此方法
      *
      * @return 月份
@@ -315,7 +415,7 @@ public class DateTime extends Date {
     /**
      * 获得月份
      *
-     * @return {@link Fields}
+     * @return {@link Fields.Month}
      */
     public Fields.Month monthEnum() {
         return Fields.Month.of(month());
@@ -375,7 +475,7 @@ public class DateTime extends Date {
     /**
      * 获得指定日期是星期几
      *
-     * @return week
+     * @return {@link Fields.Week}
      */
     public Fields.Week dayOfWeekEnum() {
         return Fields.Week.of(dayOfWeek());
@@ -435,6 +535,16 @@ public class DateTime extends Date {
      */
     public boolean isPM() {
         return Calendar.PM == getField(Fields.DateField.AM_PM);
+    }
+
+    /**
+     * 是否为周末，周末指周六或者周日
+     *
+     * @return 是否为周末，周末指周六或者周日
+     */
+    public boolean isWeekend() {
+        final int dayOfWeek = dayOfWeek();
+        return Calendar.SATURDAY == dayOfWeek || Calendar.SUNDAY == dayOfWeek;
     }
 
     /**
@@ -498,7 +608,6 @@ public class DateTime extends Date {
      * 考虑到很多框架（例如Hibernate）的兼容性,提供此方法返回JDK原生的Date对象
      *
      * @return {@link Date}
-     * @since 5.5.5
      */
     public Date toJdkDate() {
         return new Date(this.getTime());
@@ -526,7 +635,7 @@ public class DateTime extends Date {
      * 计算相差时长
      *
      * @param date 对比的日期
-     * @return between
+     * @return {@link  Between}
      */
     public Between between(Date date) {
         return new Between(this, date);
@@ -536,7 +645,7 @@ public class DateTime extends Date {
      * 计算相差时长
      *
      * @param date 对比的日期
-     * @param unit 单位
+     * @param unit 单位 {@link Fields.Unit}
      * @return 相差时长
      */
     public long between(Date date, Fields.Unit unit) {
@@ -547,7 +656,7 @@ public class DateTime extends Date {
      * 计算相差时长
      *
      * @param date        对比的日期
-     * @param unit        单位
+     * @param unit        单位 {@link  Fields.Unit}
      * @param formatLevel 格式化级别
      * @return 相差时长
      */
@@ -589,7 +698,6 @@ public class DateTime extends Date {
      *
      * @param date 日期
      * @return 是否在给定日期之前或与给定日期相等
-     * @since 3.1.9
      */
     public boolean isBeforeOrEquals(Date date) {
         if (null == date) {
@@ -616,7 +724,6 @@ public class DateTime extends Date {
      *
      * @param date 日期
      * @return 是否在给定日期之后或与给定日期相等
-     * @since 3.1.9
      */
     public boolean isAfterOrEquals(Date date) {
         if (null == date) {
@@ -627,8 +734,13 @@ public class DateTime extends Date {
 
     /**
      * 对象是否可变
-     * 如果为不可变对象,以下方法将返回新方法：
-     * 如果为不可变对象,{@link DateTime#setTime(long)}将抛出异常
+     * 如果为不可变对象，以下方法将返回新方法：
+     * <ul>
+     * <li>{@link DateTime#offset(Fields.DateField, int)}</li>
+     * <li>{@link DateTime#setField(Fields.DateField, int)}</li>
+     * <li>{@link DateTime#setField(int, int)}</li>
+     * </ul>
+     * 如果为不可变对象，{@link DateTime#setTime(long)}将抛出异常
      *
      * @return 对象是否可变
      */
@@ -637,8 +749,13 @@ public class DateTime extends Date {
     }
 
     /**
-     * 设置对象是否可变 如果为不可变对象,以下方法将返回新方法：
-     * 如果为不可变对象,{@link DateTime#setTime(long)}将抛出异常
+     * 设置对象是否可变 如果为不可变对象，以下方法将返回新方法：
+     * <ul>
+     * <li>{@link DateTime#offset(Fields.DateField, int)}</li>
+     * <li>{@link DateTime#setField(Fields.DateField, int)}</li>
+     * <li>{@link DateTime#setField(int, int)}</li>
+     * </ul>
+     * 如果为不可变对象，{@link DateTime#setTime(long)}将抛出异常
      *
      * @param mutable 是否可变
      * @return this
@@ -673,23 +790,21 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获取时区ID
-     *
-     * @return 时区ID
-     * @since 5.0.5
-     */
-    public ZoneId getZoneId() {
-        return this.timeZone.toZoneId();
-    }
-
-    /**
      * 获取时区
      *
      * @return 时区
-     * @since 5.0.5
      */
     public TimeZone getTimeZone() {
         return this.timeZone;
+    }
+
+    /**
+     * 获取时区ID
+     *
+     * @return 时区ID
+     */
+    public ZoneId getZoneId() {
+        return this.timeZone.toZoneId();
     }
 
     /**
@@ -697,26 +812,10 @@ public class DateTime extends Date {
      *
      * @param timeZone 时区
      * @return this
-     * @since 4.1.2
      */
     public DateTime setTimeZone(TimeZone timeZone) {
         this.timeZone = ObjectUtils.defaultIfNull(timeZone, TimeZone.getDefault());
         return this;
-    }
-
-    /**
-     * 转为"yyyy-MM-dd yyyy-MM-dd HH:mm:ss " 格式字符串
-     *
-     * @return "yyyy-MM-dd yyyy-MM-dd HH:mm:ss " 格式字符串
-     */
-    @Override
-    public String toString() {
-        if (null != this.timeZone) {
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Fields.NORM_DATETIME_PATTERN);
-            simpleDateFormat.setTimeZone(this.timeZone);
-            return toString(simpleDateFormat);
-        }
-        return toString(Fields.NORM_DATETIME_FORMAT);
     }
 
     /**
@@ -748,9 +847,43 @@ public class DateTime extends Date {
     }
 
     /**
+     * @return 输出精确到毫秒的标准日期形式
+     */
+    public String toMsStr() {
+        return toString(Fields.NORM_DATETIME_MS_FORMAT);
+    }
+
+    /**
+     * 转为"yyyy-MM-dd yyyy-MM-dd HH:mm:ss " 格式字符串
+     * 如果时区被设置，会转换为其时区对应的时间，否则转换为当前地点对应的时区
+     *
+     * @return "yyyy-MM-dd yyyy-MM-dd HH:mm:ss " 格式字符串
+     */
+    @Override
+    public String toString() {
+        return toString(this.timeZone);
+    }
+
+    /**
+     * 转为"yyyy-MM-dd yyyy-MM-dd HH:mm:ss " 格式字符串
+     * 如果时区不为{@code null}，会转换为其时区对应的时间，否则转换为当前时间对应的时区
+     *
+     * @param timeZone 时区
+     * @return "yyyy-MM-dd yyyy-MM-dd HH:mm:ss " 格式字符串
+     */
+    public String toString(TimeZone timeZone) {
+        if (null != timeZone) {
+            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Fields.NORM_DATETIME_PATTERN);
+            simpleDateFormat.setTimeZone(timeZone);
+            return toString(simpleDateFormat);
+        }
+        return toString(Fields.NORM_DATETIME_FORMAT);
+    }
+
+    /**
      * 转为字符串
      *
-     * @param format 日期格式,常用格式见： {@link Fields}
+     * @param format 日期格式，常用格式见： {@link Fields}
      * @return String
      */
     public String toString(String format) {
@@ -783,10 +916,42 @@ public class DateTime extends Date {
     }
 
     /**
-     * @return 输出精确到毫秒的标准日期形式
+     * 转换字符串为Date
+     *
+     * @param dateStr    日期字符串
+     * @param dateFormat {@link SimpleDateFormat}
+     * @return {@link Date}
      */
-    public String toMsStr() {
-        return toString(Fields.NORM_DATETIME_MS_FORMAT);
+    private static Date parse(CharSequence dateStr, DateFormat dateFormat) {
+        Assert.notBlank(dateStr, "Date String must be not blank !");
+        try {
+            return dateFormat.parse(dateStr.toString());
+        } catch (Exception e) {
+            String pattern;
+            if (dateFormat instanceof SimpleDateFormat) {
+                pattern = ((SimpleDateFormat) dateFormat).toPattern();
+            } else {
+                pattern = dateFormat.toString();
+            }
+            throw new InstrumentException(StringUtils.format("Parse [{}] with format [{}] error!", dateStr, pattern), e);
+        }
+    }
+
+    /**
+     * 转换字符串为Date
+     *
+     * @param dateStr 日期字符串
+     * @param parser  {@link FastDateFormat}
+     * @return {@link Date}
+     */
+    private static Date parse(CharSequence dateStr, DateParser parser) {
+        Assert.notNull(parser, "Parser or DateFromat must be not null !");
+        Assert.notBlank(dateStr, "Date String must be not blank !");
+        try {
+            return parser.parse(dateStr.toString());
+        } catch (Exception e) {
+            throw new InstrumentException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern(), e);
+        }
     }
 
     /**

@@ -24,6 +24,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.date.DateTime;
+import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -39,6 +40,8 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.time.*;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -64,10 +67,16 @@ public class ConverterRegistry {
     /**
      * 用户自定义类型转换器
      */
-    private Map<Type, Converter<?>> customConverterMap;
+    private volatile Map<Type, Converter<?>> customConverterMap;
 
-    public ConverterRegistry() {
-        defaultConverter();
+    /**
+     * 类级的内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例 没有绑定关系，而且只有被调用到才会装载，从而实现了延迟加载
+     */
+    private static class SingletonHolder {
+        /**
+         * 静态初始化器，由JVM来保证线程安全
+         */
+        private static ConverterRegistry instance = new ConverterRegistry();
     }
 
     /**
@@ -77,6 +86,10 @@ public class ConverterRegistry {
      */
     public static ConverterRegistry getInstance() {
         return SingletonHolder.instance;
+    }
+
+    public ConverterRegistry() {
+        defaultConverter();
     }
 
     /**
@@ -159,29 +172,27 @@ public class ConverterRegistry {
      * 转换值为指定类型
      *
      * @param <T>           转换的目标类型（转换器转换到的类型）
-     * @param type          类型
-     * @param value         值
+     * @param type          类型目标
+     * @param value         被转换值
      * @param defaultValue  默认值
      * @param isCustomFirst 是否自定义转换器优先
      * @return 转换后的值
      * @throws InstrumentException 转换器不存在
      */
     public <T> T convert(Type type, Object value, T defaultValue, boolean isCustomFirst) throws InstrumentException {
-        if (null == type && null == defaultValue) {
-            throw new NullPointerException("[type] and [defaultValue] are both null, we can not know what type to convert !");
+        if (TypeUtils.isUnknow(type) && null == defaultValue) {
+            // 对于用户不指定目标类型的情况，返回原值
+            return (T) value;
         }
         if (ObjectUtils.isNull(value)) {
             return defaultValue;
         }
-        if (null == type) {
+        if (TypeUtils.isUnknow(type)) {
             type = defaultValue.getClass();
         }
-        final Class<T> rowType = (Class<T>) TypeUtils.getClass(type);
 
-        // 特殊类型转换,包括Collection、Map、强转、Array等
-        final T result = convertSpecial(type, rowType, value, defaultValue);
-        if (null != result) {
-            return result;
+        if (type instanceof Types) {
+            type = ((Types<?>) type).getType();
         }
 
         // 标准转换器
@@ -190,9 +201,25 @@ public class ConverterRegistry {
             return converter.convert(value, defaultValue);
         }
 
+        Class<T> rowType = (Class<T>) TypeUtils.getClass(type);
+        if (null == rowType) {
+            if (null != defaultValue) {
+                rowType = (Class<T>) defaultValue.getClass();
+            } else {
+                // 无法识别的泛型类型，按照Object处理
+                return (T) value;
+            }
+        }
+
+        // 特殊类型转换，包括Collection、Map、强转、Array等
+        final T result = convertSpecial(type, rowType, value, defaultValue);
+        if (null != result) {
+            return result;
+        }
+
         // 尝试转Bean
         if (BeanUtils.isBean(rowType)) {
-            return new BeanConverter<>(rowType).convert(value, defaultValue);
+            return new BeanConverter<T>(type).convert(value, defaultValue);
         }
 
         // 无法转换
@@ -230,6 +257,7 @@ public class ConverterRegistry {
     /**
      * 特殊类型转换
      * 包括：
+     *
      * <pre>
      * Collection
      * Map
@@ -280,12 +308,7 @@ public class ConverterRegistry {
             }
         }
 
-        //枚举转换
-        if (rowType.isEnum()) {
-            return (T) new EnumConverter(rowType).convert(value, defaultValue);
-        }
-
-        //表示非需要特殊转换的对象
+        // 表示非需要特殊转换的对象
         return null;
     }
 
@@ -310,18 +333,19 @@ public class ConverterRegistry {
         // 包装类转换器
         defaultConverterMap.put(Number.class, new NumberConverter());
         defaultConverterMap.put(Integer.class, new NumberConverter(Integer.class));
-        defaultConverterMap.put(AtomicInteger.class, new NumberConverter(AtomicInteger.class));
+        defaultConverterMap.put(AtomicInteger.class, new NumberConverter(AtomicInteger.class));// since 3.0.8
         defaultConverterMap.put(Long.class, new NumberConverter(Long.class));
-        defaultConverterMap.put(AtomicLong.class, new NumberConverter(AtomicLong.class));
+        defaultConverterMap.put(AtomicLong.class, new NumberConverter(AtomicLong.class));// since 3.0.8
         defaultConverterMap.put(Byte.class, new NumberConverter(Byte.class));
         defaultConverterMap.put(Short.class, new NumberConverter(Short.class));
         defaultConverterMap.put(Float.class, new NumberConverter(Float.class));
         defaultConverterMap.put(Double.class, new NumberConverter(Double.class));
         defaultConverterMap.put(Character.class, new CharacterConverter());
         defaultConverterMap.put(Boolean.class, new BooleanConverter());
-        defaultConverterMap.put(AtomicBoolean.class, new AtomicBooleanConverter());
+        defaultConverterMap.put(AtomicBoolean.class, new AtomicBooleanConverter());// since 3.0.8
         defaultConverterMap.put(BigDecimal.class, new NumberConverter(BigDecimal.class));
         defaultConverterMap.put(BigInteger.class, new NumberConverter(BigInteger.class));
+        defaultConverterMap.put(CharSequence.class, new StringConverter());
         defaultConverterMap.put(String.class, new StringConverter());
 
         // URI and URL
@@ -336,6 +360,18 @@ public class ConverterRegistry {
         defaultConverterMap.put(java.sql.Time.class, new DateConverter(java.sql.Time.class));
         defaultConverterMap.put(java.sql.Timestamp.class, new DateConverter(java.sql.Timestamp.class));
 
+        // 日期时间 JDK8+(since 5.0.0)
+        defaultConverterMap.put(TemporalAccessor.class, new TemporalConverter(Instant.class));
+        defaultConverterMap.put(Instant.class, new TemporalConverter(Instant.class));
+        defaultConverterMap.put(LocalDateTime.class, new TemporalConverter(LocalDateTime.class));
+        defaultConverterMap.put(LocalDate.class, new TemporalConverter(LocalDate.class));
+        defaultConverterMap.put(LocalTime.class, new TemporalConverter(LocalTime.class));
+        defaultConverterMap.put(ZonedDateTime.class, new TemporalConverter(ZonedDateTime.class));
+        defaultConverterMap.put(OffsetDateTime.class, new TemporalConverter(OffsetDateTime.class));
+        defaultConverterMap.put(OffsetTime.class, new TemporalConverter(OffsetTime.class));
+        defaultConverterMap.put(Period.class, new PeriodConverter());
+        defaultConverterMap.put(Duration.class, new DurationConverter());
+
         // Reference
         defaultConverterMap.put(WeakReference.class, new ReferenceConverter(WeakReference.class));
         defaultConverterMap.put(SoftReference.class, new ReferenceConverter(SoftReference.class));
@@ -344,23 +380,15 @@ public class ConverterRegistry {
         // 其它类型
         defaultConverterMap.put(Class.class, new ClassConverter());
         defaultConverterMap.put(TimeZone.class, new TimeZoneConverter());
+        defaultConverterMap.put(Locale.class, new LocaleConverter());
         defaultConverterMap.put(Charset.class, new CharsetConverter());
         defaultConverterMap.put(Path.class, new PathConverter());
         defaultConverterMap.put(Currency.class, new CurrencyConverter());
         defaultConverterMap.put(UUID.class, new UUIDConverter());
+        defaultConverterMap.put(StackTraceElement.class, new StackTraceConverter());
+        defaultConverterMap.put(Optional.class, new OptionalConverter());
 
         return this;
-    }
-
-    /**
-     * 类级的内部类,也就是静态的成员式内部类,该内部类的实例与外部类的实例
-     * 没有绑定关系,而且只有被调用到才会装载,从而实现了延迟加载
-     */
-    private static class SingletonHolder {
-        /**
-         * 静态初始化器,由JVM来保证线程安全
-         */
-        private static ConverterRegistry instance = new ConverterRegistry();
     }
 
 }

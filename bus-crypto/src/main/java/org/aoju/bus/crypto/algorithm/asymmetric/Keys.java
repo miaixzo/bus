@@ -61,9 +61,7 @@ public class Keys<T extends Keys<T>> {
     protected Lock lock = new ReentrantLock();
 
     /**
-     * 构造
-     * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
@@ -76,8 +74,7 @@ public class Keys<T extends Keys<T>> {
     }
 
     /**
-     * 初始化<br>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥<br>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
      * @param algorithm  算法

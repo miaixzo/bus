@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
@@ -48,4 +47,5 @@ public class CastConverter<T> extends AbstractConverter<T> {
     public Class<T> getTargetType() {
         return this.targetType;
     }
+
 }

@@ -24,7 +24,6 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.collection.ArrayIterator;
-import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.collection.IteratorEnumeration;
 import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
@@ -32,6 +31,7 @@ import org.aoju.bus.core.convert.ConverterRegistry;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Matcher;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.Array;
@@ -53,6 +53,124 @@ import java.util.stream.Collectors;
  * @since JDK 1.8+
  */
 public class CollUtils {
+
+    /**
+     * 集合是否为空
+     *
+     * @param collection 集合
+     * @return 是否为空
+     */
+    public static boolean isEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
+    /**
+     * Map是否为空
+     *
+     * @param map 集合
+     * @return 是否为空
+     * @see MapUtils#isEmpty(Map)
+     */
+    public static boolean isEmpty(Map<?, ?> map) {
+        return MapUtils.isEmpty(map);
+    }
+
+    /**
+     * Iterable是否为空
+     *
+     * @param iterable Iterable对象
+     * @return 是否为空
+     * @see IterUtils#isEmpty(Iterable)
+     */
+    public static boolean isEmpty(Iterable<?> iterable) {
+        return IterUtils.isEmpty(iterable);
+    }
+
+    /**
+     * Iterator是否为空
+     *
+     * @param Iterator Iterator对象
+     * @return 是否为空
+     * @see IterUtils#isEmpty(Iterator)
+     */
+    public static boolean isEmpty(Iterator<?> Iterator) {
+        return IterUtils.isEmpty(Iterator);
+    }
+
+    /**
+     * Enumeration是否为空
+     *
+     * @param enumeration {@link Enumeration}
+     * @return 是否为空
+     */
+    public static boolean isEmpty(Enumeration<?> enumeration) {
+        return null == enumeration || false == enumeration.hasMoreElements();
+    }
+
+    /**
+     * 集合是否为非空
+     *
+     * @param collection 集合
+     * @return 是否为非空
+     */
+    public static boolean isNotEmpty(Collection<?> collection) {
+        return false == isEmpty(collection);
+    }
+
+    /**
+     * Map是否为非空
+     *
+     * @param map 集合
+     * @return 是否为非空
+     * @see MapUtils#isNotEmpty(Map)
+     */
+    public static boolean isNotEmpty(Map<?, ?> map) {
+        return MapUtils.isNotEmpty(map);
+    }
+
+    /**
+     * Iterable是否为空
+     *
+     * @param iterable Iterable对象
+     * @return 是否为空
+     * @see IterUtils#isNotEmpty(Iterable)
+     */
+    public static boolean isNotEmpty(Iterable<?> iterable) {
+        return IterUtils.isNotEmpty(iterable);
+    }
+
+    /**
+     * Iterator是否为空
+     *
+     * @param Iterator Iterator对象
+     * @return 是否为空
+     * @see IterUtils#isNotEmpty(Iterator)
+     */
+    public static boolean isNotEmpty(Iterator<?> Iterator) {
+        return IterUtils.isNotEmpty(Iterator);
+    }
+
+    /**
+     * Enumeration是否为空
+     *
+     * @param enumeration {@link Enumeration}
+     * @return 是否为空
+     */
+    public static boolean isNotEmpty(Enumeration<?> enumeration) {
+        return null != enumeration && enumeration.hasMoreElements();
+    }
+
+    /**
+     * 是否包含{@code null}元素
+     *
+     * @param iterable 被检查的Iterable对象,如果为{@code null} 返回false
+     * @return 是否包含{@code null}元素
+     * @see IterUtils#hasNull(Iterable)
+     * @since 3.0.7
+     */
+    public static boolean hasNull(Iterable<?> iterable) {
+        return IterUtils.hasNull(iterable);
+    }
 
     /**
      * 两个集合的并集
@@ -774,8 +892,9 @@ public class CollUtils {
      * @return 集合类型对应的实例
      */
     public static <T> Collection<T> create(Class<?> collectionType) {
-        Collection<T> list = null;
+        Collection<T> list;
         if (collectionType.isAssignableFrom(AbstractCollection.class)) {
+            // 抽象集合默认使用ArrayList
             list = new ArrayList<>();
         }
 
@@ -863,8 +982,12 @@ public class CollUtils {
      * @return 截取后的数组, 当开始位置超过最大时, 返回空的List
      */
     public static <T> List<T> sub(List<T> list, int start, int end, int step) {
-        if (list == null || list.isEmpty()) {
+        if (list == null) {
             return null;
+        }
+
+        if (list.isEmpty()) {
+            return new ArrayList<>(0);
         }
 
         final int size = list.size();
@@ -1014,60 +1137,53 @@ public class CollUtils {
     }
 
     /**
-     * 过滤
-     * 过滤过程通过传入的Filter实现来过滤返回需要的元素内容,这个Filter实现可以实现以下功能：
+     * 过滤集合，此方法在原集合上直接修改
+     * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象,{@link Filter#accept(Object)}方法返回true的对象将被加入结果集合中
+     * 1、过滤出需要的对象，{@link Filter#accept(Object)}方法返回false的对象将被使用{@link Iterator#remove()}方法移除
      * </pre>
      *
-     * @param <T>        集合元素类型
-     * @param collection 集合
-     * @param filter     过滤器
-     * @return 过滤后的数组
-     * @since 3.1.9
+     * @param <T>    集合类型
+     * @param <E>    集合元素类型
+     * @param iter   集合
+     * @param filter 过滤器接口
+     * @return 编辑后的集合
      */
-    public static <T> Collection<T> filter(Collection<T> collection, Filter<T> filter) {
-        Collection<T> collection2 = ObjectUtils.clone(collection);
-        try {
-            collection2.clear();
-        } catch (UnsupportedOperationException e) {
-            // 克隆后的对象不支持清空,说明为不可变集合对象,使用默认的ArrayList保存结果
-            collection2 = new ArrayList<>();
+    public static <T extends Iterable<E>, E> T filter(T iter, Filter<E> filter) {
+        if (null == iter) {
+            return null;
         }
 
-        for (T t : collection) {
-            if (filter.accept(t)) {
-                collection2.add(t);
-            }
-        }
-        return collection2;
+        filter(iter.iterator(), filter);
+
+        return iter;
     }
 
     /**
-     * 过滤
-     * 过滤过程通过传入的Filter实现来过滤返回需要的元素内容,这个Filter实现可以实现以下功能：
+     * 过滤集合，此方法在原集合上直接修改
+     * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象,{@link Filter#accept(Object)}方法返回true的对象将被加入结果集合中
+     * 1、过滤出需要的对象，{@link Filter#accept(Object)}方法返回false的对象将被使用{@link Iterator#remove()}方法移除
      * </pre>
      *
-     * @param <T>    集合元素类型
-     * @param list   集合
-     * @param filter 过滤器
-     * @return 过滤后的数组
+     * @param <E>    集合元素类型
+     * @param iter   集合
+     * @param filter 过滤器接口
+     * @return 编辑后的集合
      */
-    public static <T> List<T> filter(List<T> list, Filter<T> filter) {
-        if (null == list || null == filter) {
-            return list;
+    public static <E> Iterator<E> filter(Iterator<E> iter, Filter<E> filter) {
+        if (null == iter || null == filter) {
+            return iter;
         }
-        final List<T> list2 = (list instanceof LinkedList) ? new LinkedList<>() : new ArrayList<>(list.size());
-        for (T t : list) {
-            if (filter.accept(t)) {
-                list2.add(t);
+
+        while (iter.hasNext()) {
+            if (false == filter.accept(iter.next())) {
+                iter.remove();
             }
         }
-        return list2;
+        return iter;
     }
 
     /**
@@ -1079,10 +1195,7 @@ public class CollUtils {
      * @since 5.5.5
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
-        return filter(collection, (Editor<T>) t -> {
-            // 返回null便不加入集合
-            return t;
-        });
+        return filter(collection, Objects::nonNull);
     }
 
     /**
@@ -1266,124 +1379,6 @@ public class CollUtils {
             }
         }
         return count;
-    }
-
-    /**
-     * 集合是否为空
-     *
-     * @param collection 集合
-     * @return 是否为空
-     */
-    public static boolean isEmpty(Collection<?> collection) {
-        return collection == null || collection.isEmpty();
-    }
-
-    /**
-     * Map是否为空
-     *
-     * @param map 集合
-     * @return 是否为空
-     * @see MapUtils#isEmpty(Map)
-     */
-    public static boolean isEmpty(Map<?, ?> map) {
-        return MapUtils.isEmpty(map);
-    }
-
-    /**
-     * Iterable是否为空
-     *
-     * @param iterable Iterable对象
-     * @return 是否为空
-     * @see IterUtils#isEmpty(Iterable)
-     */
-    public static boolean isEmpty(Iterable<?> iterable) {
-        return IterUtils.isEmpty(iterable);
-    }
-
-    /**
-     * Iterator是否为空
-     *
-     * @param Iterator Iterator对象
-     * @return 是否为空
-     * @see IterUtils#isEmpty(Iterator)
-     */
-    public static boolean isEmpty(Iterator<?> Iterator) {
-        return IterUtils.isEmpty(Iterator);
-    }
-
-    /**
-     * Enumeration是否为空
-     *
-     * @param enumeration {@link Enumeration}
-     * @return 是否为空
-     */
-    public static boolean isEmpty(Enumeration<?> enumeration) {
-        return null == enumeration || false == enumeration.hasMoreElements();
-    }
-
-    /**
-     * 集合是否为非空
-     *
-     * @param collection 集合
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(Collection<?> collection) {
-        return false == isEmpty(collection);
-    }
-
-    /**
-     * Map是否为非空
-     *
-     * @param map 集合
-     * @return 是否为非空
-     * @see MapUtils#isNotEmpty(Map)
-     */
-    public static boolean isNotEmpty(Map<?, ?> map) {
-        return MapUtils.isNotEmpty(map);
-    }
-
-    /**
-     * Iterable是否为空
-     *
-     * @param iterable Iterable对象
-     * @return 是否为空
-     * @see IterUtils#isNotEmpty(Iterable)
-     */
-    public static boolean isNotEmpty(Iterable<?> iterable) {
-        return IterUtils.isNotEmpty(iterable);
-    }
-
-    /**
-     * Iterator是否为空
-     *
-     * @param Iterator Iterator对象
-     * @return 是否为空
-     * @see IterUtils#isNotEmpty(Iterator)
-     */
-    public static boolean isNotEmpty(Iterator<?> Iterator) {
-        return IterUtils.isNotEmpty(Iterator);
-    }
-
-    /**
-     * Enumeration是否为空
-     *
-     * @param enumeration {@link Enumeration}
-     * @return 是否为空
-     */
-    public static boolean isNotEmpty(Enumeration<?> enumeration) {
-        return null != enumeration && enumeration.hasMoreElements();
-    }
-
-    /**
-     * 是否包含{@code null}元素
-     *
-     * @param iterable 被检查的Iterable对象,如果为{@code null} 返回false
-     * @return 是否包含{@code null}元素
-     * @see IterUtils#hasNull(Iterable)
-     * @since 3.0.7
-     */
-    public static boolean hasNull(Iterable<?> iterable) {
-        return IterUtils.hasNull(iterable);
     }
 
     /**
@@ -1657,16 +1652,9 @@ public class CollUtils {
         if (null == collection || null == value) {
             return collection;
         }
-        if (null == elementType) {
-            // 元素类型为空时,使用Object类型来接纳所有类型
+        if (TypeUtils.isUnknow(elementType)) {
+            // 元素类型为空时，使用Object类型来接纳所有类型
             elementType = Object.class;
-        } else {
-            final Class<?> elementRowType = TypeUtils.getClass(elementType);
-            if (elementRowType.isInstance(value) && false == Iterable.class.isAssignableFrom(elementRowType)) {
-                //其它类型按照单一元素处理
-                collection.add((T) value);
-                return collection;
-            }
         }
 
         Iterator iter;
@@ -1675,20 +1663,21 @@ public class CollUtils {
         } else if (value instanceof Iterable) {
             iter = ((Iterable) value).iterator();
         } else if (value instanceof Enumeration) {
-            iter = new EnumerationIterator<>((Enumeration) value);
+            iter = new IterUtils.EnumerationIter<>((Enumeration) value);
         } else if (ArrayUtils.isArray(value)) {
             iter = new ArrayIterator<>(value);
+        } else if (value instanceof CharSequence) {
+            // String按照逗号分隔的列表对待
+            final String ArrayStr = StringUtils.unWrap((CharSequence) value, '[', ']');
+            iter = StringUtils.splitTrim(ArrayStr, Symbol.C_COMMA).iterator();
         } else {
-            throw new InstrumentException("Unsupport value type " + value.getClass() + " !");
+            // 其它类型按照单一元素处理
+            iter = CollUtils.newArrayList(value).iterator();
         }
 
         final ConverterRegistry convert = ConverterRegistry.getInstance();
         while (iter.hasNext()) {
-            try {
-                collection.add(convert.convert(elementType, iter.next()));
-            } catch (Exception e) {
-                throw new InstrumentException(e);
-            }
+            collection.add(convert.convert(elementType, iter.next()));
         }
 
         return collection;
@@ -1784,12 +1773,20 @@ public class CollUtils {
      * @return 元素值
      */
     public static <T> T get(Collection<T> collection, int index) {
+        if (null == collection) {
+            return null;
+        }
+
         final int size = collection.size();
+        if (0 == size) {
+            return null;
+        }
+
         if (index < 0) {
             index += size;
         }
 
-        //检查越界
+        // 检查越界
         if (index >= size) {
             return null;
         }
@@ -1954,29 +1951,6 @@ public class CollUtils {
     }
 
     /**
-     * 将多个集合排序并显示不同的段落（分页）
-     * 实现分页取局部
-     *
-     * @param <T>        集合元素类型
-     * @param pageNo     页码,从1开始计数,0和1效果相同
-     * @param pageSize   每页的条目数
-     * @param comparator 比较器
-     * @param colls      集合数组
-     * @return 分页后的段落内容
-     */
-    public static <T> List<T> sortPageAll(int pageNo, int pageSize, Comparator<T> comparator, Collection<T>... colls) {
-        final List<T> list = new ArrayList<>(pageNo * pageSize);
-        for (Collection<T> coll : colls) {
-            list.addAll(coll);
-        }
-        if (null != comparator) {
-            list.sort(comparator);
-        }
-
-        return page(pageNo, pageSize, list);
-    }
-
-    /**
      * 对指定List分页取值
      *
      * @param <T>      集合元素类型
@@ -2005,6 +1979,40 @@ public class CollUtils {
             startEnd[1] = resultSize;
         }
         return list.subList(startEnd[0], startEnd[1]);
+    }
+
+    /**
+     * 对2个对象按照指定属性名称进行排序
+     *
+     * @param name 属性名称
+     * @param asc  true升序,false降序
+     * @param a    对象
+     * @param b    对象
+     * @return the object
+     * @throws Exception 异常
+     */
+    private static <E> int sort(final String name, final boolean asc, E a, E b) throws Exception {
+
+        Object value1 = forceGetFieldValue(a, name);
+        Object value2 = forceGetFieldValue(b, name);
+        String str1 = value1.toString();
+        String str2 = value2.toString();
+        if (value1 instanceof Number && value2 instanceof Number) {
+            int maxlen = Math.max(str1.length(), str2.length());
+            str1 = NumberUtils.addZero((Number) value1, maxlen);
+            str2 = NumberUtils.addZero((Number) value2, maxlen);
+        } else if (value1 instanceof Date && value2 instanceof Date) {
+            long time1 = ((Date) value1).getTime();
+            long time2 = ((Date) value2).getTime();
+            int maxlen = Long.toString(Math.max(time1, time2)).length();
+            str1 = NumberUtils.addZero(time1, maxlen);
+            str2 = NumberUtils.addZero(time2, maxlen);
+        }
+        if (asc) {
+            return str1.compareTo(str2);
+        }
+        return str2.compareTo(str1);
+
     }
 
     /**
@@ -2049,6 +2057,83 @@ public class CollUtils {
         final TreeMap<K, V> result = new TreeMap<>(comparator);
         result.putAll(map);
         return result;
+    }
+
+    /**
+     * 对list的元素按照多个属性名称排序,
+     * list元素的属性可以是数字（byte、short、int、long、float、double等,支持正数、负数、0）、char、String、java.util.Date
+     *
+     * @param <E>  对象
+     * @param list 集合
+     * @param name list元素的属性名称
+     * @param asc  true升序,false降序
+     */
+    public static <E> void sort(List<E> list, final boolean asc, final String... name) {
+        Collections.sort(list, (a, b) -> {
+            int ret = 0;
+            try {
+                for (int i = 0; i < name.length; i++) {
+                    ret = sort(name[i], asc, a, b);
+                    if (0 != ret) {
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                throw new InstrumentException(e);
+            }
+            return ret;
+        });
+    }
+
+    /**
+     * 给list的每个属性都指定是升序还是降序
+     *
+     * @param <E>  对象
+     * @param list 集合
+     * @param name 参数数组
+     * @param type 每个属性对应的升降序数组, true升序,false降序
+     */
+    public static <E> void sort(List<E> list, final String[] name, final boolean[] type) {
+        if (name.length != type.length) {
+            throw new RuntimeException("属性数组元素个数和升降序数组元素个数不相等");
+        }
+        Collections.sort(list, (a, b) -> {
+            int ret = 0;
+            try {
+                for (int i = 0; i < name.length; i++) {
+                    ret = sort(name[i], type[i], a, b);
+                    if (0 != ret) {
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                throw new InstrumentException(e);
+            }
+            return ret;
+        });
+    }
+
+    /**
+     * 将多个集合排序并显示不同的段落（分页）
+     * 实现分页取局部
+     *
+     * @param <T>        集合元素类型
+     * @param pageNo     页码,从1开始计数,0和1效果相同
+     * @param pageSize   每页的条目数
+     * @param comparator 比较器
+     * @param colls      集合数组
+     * @return 分页后的段落内容
+     */
+    public static <T> List<T> sortPageAll(int pageNo, int pageSize, Comparator<T> comparator, Collection<T>... colls) {
+        final List<T> list = new ArrayList<>(pageNo * pageSize);
+        for (Collection<T> coll : colls) {
+            list.addAll(coll);
+        }
+        if (null != comparator) {
+            list.sort(comparator);
+        }
+
+        return page(pageNo, pageSize, list);
     }
 
     /**
@@ -2132,56 +2217,71 @@ public class CollUtils {
     }
 
     /**
-     * 对list的元素按照多个属性名称排序,
-     * list元素的属性可以是数字（byte、short、int、long、float、double等,支持正数、负数、0）、char、String、java.util.Date
+     * 分组,按照{@link Hash}接口定义的hash算法,集合中的元素放入hash值对应的子列表中
      *
-     * @param <E>  对象
-     * @param list 集合
-     * @param name list元素的属性名称
-     * @param asc  true升序,false降序
+     * @param <T>        元素类型
+     * @param collection 被分组的集合
+     * @param hash       Hash值算法,决定元素放在第几个分组的规则
+     * @return 分组后的集合
      */
-    public static <E> void sort(List<E> list, final boolean asc, final String... name) {
-        Collections.sort(list, (a, b) -> {
-            int ret = 0;
-            try {
-                for (int i = 0; i < name.length; i++) {
-                    ret = sort(name[i], asc, a, b);
-                    if (0 != ret) {
-                        break;
-                    }
+    public static <T> List<List<T>> group(Collection<T> collection, Hash<T> hash) {
+        final List<List<T>> result = new ArrayList<>();
+        if (isEmpty(collection)) {
+            return result;
+        }
+        if (null == hash) {
+            // 默认hash算法,按照元素的hashCode分组
+            hash = t -> null == t ? 0 : t.hashCode();
+        }
+
+        int index;
+        List<T> subList;
+        for (T t : collection) {
+            index = hash.hash(t);
+            if (result.size() - 1 < index) {
+                while (result.size() - 1 < index) {
+                    result.add(null);
                 }
-            } catch (Exception e) {
-                throw new InstrumentException(e);
+                result.set(index, newArrayList(t));
+            } else {
+                subList = result.get(index);
+                if (null == subList) {
+                    result.set(index, newArrayList(t));
+                } else {
+                    subList.add(t);
+                }
             }
-            return ret;
-        });
+        }
+        return result;
     }
 
     /**
-     * 给list的每个属性都指定是升序还是降序
+     * 根据元素的指定字段名分组，非Bean都放在第一个分组中
      *
-     * @param <E>  对象
-     * @param list 集合
-     * @param name 参数数组
-     * @param type 每个属性对应的升降序数组, true升序,false降序
+     * @param <T>        元素类型
+     * @param collection 集合
+     * @param fieldName  元素Bean中的字段名，非Bean都放在第一个分组中
+     * @return 分组列表
      */
-    public static <E> void sort(List<E> list, final String[] name, final boolean[] type) {
-        if (name.length != type.length) {
-            throw new RuntimeException("属性数组元素个数和升降序数组元素个数不相等");
-        }
-        Collections.sort(list, (a, b) -> {
-            int ret = 0;
-            try {
-                for (int i = 0; i < name.length; i++) {
-                    ret = sort(name[i], type[i], a, b);
-                    if (0 != ret) {
-                        break;
-                    }
+    public static <T> List<List<T>> groupByField(Collection<T> collection, final String fieldName) {
+        return group(collection, new Hash<T>() {
+            private final List<Object> fieldNameList = new ArrayList<>();
+
+            @Override
+            public int hash(T t) {
+                if (null == t || false == BeanUtils.isBean(t.getClass())) {
+                    // 非Bean放在同一子分组中
+                    return 0;
                 }
-            } catch (Exception e) {
-                throw new InstrumentException(e);
+                final Object value = ReflectUtils.getFieldValue(t, fieldName);
+                int hash = fieldNameList.indexOf(value);
+                if (hash < 0) {
+                    fieldNameList.add(value);
+                    return fieldNameList.size() - 1;
+                } else {
+                    return hash;
+                }
             }
-            return ret;
         });
     }
 
@@ -2232,72 +2332,6 @@ public class CollUtils {
     }
 
     /**
-     * 分组,按照{@link Hash}接口定义的hash算法,集合中的元素放入hash值对应的子列表中
-     *
-     * @param <T>        元素类型
-     * @param collection 被分组的集合
-     * @param hash       Hash值算法,决定元素放在第几个分组的规则
-     * @return 分组后的集合
-     */
-    public static <T> List<List<T>> group(Collection<T> collection, Hash<T> hash) {
-        final List<List<T>> result = new ArrayList<>();
-        if (isEmpty(collection)) {
-            return result;
-        }
-        if (null == hash) {
-            // 默认hash算法,按照元素的hashCode分组
-            hash = t -> null == t ? 0 : t.hashCode();
-        }
-
-        int index;
-        List<T> subList;
-        for (T t : collection) {
-            index = hash.hash(t);
-            if (result.size() - 1 < index) {
-                while (result.size() - 1 < index) {
-                    result.add(null);
-                }
-                result.set(index, newArrayList(t));
-            } else {
-                subList = result.get(index);
-                if (null == subList) {
-                    result.set(index, newArrayList(t));
-                } else {
-                    subList.add(t);
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Map的键和值互换
-     *
-     * @param <T> 对象
-     * @param map Map对象,键值类型必须一致
-     * @return 互换后的Map
-     */
-    public static <T> Map<T, T> reverse(Map<T, T> map) {
-        return filter(map, (Editor<Entry<T, T>>) t -> new Entry<T, T>() {
-
-            @Override
-            public T getKey() {
-                return t.getValue();
-            }
-
-            @Override
-            public T getValue() {
-                return t.getKey();
-            }
-
-            @Override
-            public T setValue(T value) {
-                throw new UnsupportedOperationException("Unsupported setValue method !");
-            }
-        });
-    }
-
-    /**
      * 反序给定List,会在原List基础上直接修改
      *
      * @param <T>  元素类型
@@ -2312,47 +2346,17 @@ public class CollUtils {
     /**
      * 反序给定List,会创建一个新的List,原List数据不变
      *
-     * @param <T>  元素类型
-     * @param list 被反转的List
+     * @param <T>   元素类型
+     * @param list  被反转的List
+     * @param clone 是否克隆
      * @return 反转后的List
      */
-    public static <T> List<T> reverseNew(List<T> list) {
+    public static <T> List<T> reverse(List<T> list, boolean clone) {
+        if (!clone) {
+            return reverse(list);
+        }
         final List<T> list2 = ObjectUtils.clone(list);
         return reverse(list2);
-    }
-
-    /**
-     * 对2个对象按照指定属性名称进行排序
-     *
-     * @param name 属性名称
-     * @param asc  true升序,false降序
-     * @param a    对象
-     * @param b    对象
-     * @return the object
-     * @throws Exception 异常
-     */
-    private static <E> int sort(final String name, final boolean asc, E a, E b) throws Exception {
-
-        Object value1 = forceGetFieldValue(a, name);
-        Object value2 = forceGetFieldValue(b, name);
-        String str1 = value1.toString();
-        String str2 = value2.toString();
-        if (value1 instanceof Number && value2 instanceof Number) {
-            int maxlen = Math.max(str1.length(), str2.length());
-            str1 = NumberUtils.addZero((Number) value1, maxlen);
-            str2 = NumberUtils.addZero((Number) value2, maxlen);
-        } else if (value1 instanceof Date && value2 instanceof Date) {
-            long time1 = ((Date) value1).getTime();
-            long time2 = ((Date) value2).getTime();
-            int maxlen = Long.toString(Math.max(time1, time2)).length();
-            str1 = NumberUtils.addZero(time1, maxlen);
-            str2 = NumberUtils.addZero(time2, maxlen);
-        }
-        if (asc) {
-            return str1.compareTo(str2);
-        }
-        return str2.compareTo(str1);
-
     }
 
     /**
@@ -2550,6 +2554,66 @@ public class CollUtils {
     public static <E> List<E> ofImmutableList(E... es) {
         Objects.requireNonNull(es, "args es is null.");
         return Arrays.stream(es).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取指定Map列表中所有的Key
+     *
+     * @param <K>           键类型
+     * @param mapCollection Map列表
+     * @return key集合
+     * @since 4.5.12
+     */
+    public static <K> Set<K> keySet(Collection<Map<K, ?>> mapCollection) {
+        if (isEmpty(mapCollection)) {
+            return new HashSet<>();
+        }
+        final HashSet<K> set = new HashSet<>(mapCollection.size() * 16);
+        for (Map<K, ?> map : mapCollection) {
+            set.addAll(map.keySet());
+        }
+
+        return set;
+    }
+
+    /**
+     * 获取指定Map列表中所有的Value
+     *
+     * @param <V>           值类型
+     * @param mapCollection Map列表
+     * @return Value集合
+     */
+    public static <V> List<V> values(Collection<Map<?, V>> mapCollection) {
+        final List<V> values = new ArrayList<>();
+        for (Map<?, V> map : mapCollection) {
+            values.addAll(map.values());
+        }
+
+        return values;
+    }
+
+    /**
+     * 取最大值
+     *
+     * @param <T>  元素类型
+     * @param coll 集合
+     * @return 最大值
+     * @see Collections#max(Collection)
+     */
+    public static <T extends Comparable<? super T>> T max(Collection<T> coll) {
+        return Collections.max(coll);
+    }
+
+    /**
+     * 取最大值
+     *
+     * @param <T>  元素类型
+     * @param coll 集合
+     * @return 最大值
+     * @see Collections#min(Collection)
+     */
+    public static <T extends Comparable<? super T>> T min(Collection<T> coll) {
+        return Collections.min(coll);
     }
 
     /**

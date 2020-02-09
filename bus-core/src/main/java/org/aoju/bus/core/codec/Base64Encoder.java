@@ -25,7 +25,6 @@ package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ByteUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.nio.charset.Charset;
@@ -40,7 +39,7 @@ import java.nio.charset.Charset;
 public class Base64Encoder {
 
     /**
-     * 编码为Base64,非URL安全的
+     * 编码为Base64，非URL安全的
      *
      * @param arr     被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
@@ -56,7 +55,6 @@ public class Base64Encoder {
      * @param arr     被编码的数组
      * @param lineSep 在76个char之后是CRLF还是EOF
      * @return 编码后的bytes
-     * @since 3.1.9
      */
     public static byte[] encodeUrlSafe(byte[] arr, boolean lineSep) {
         return encode(arr, lineSep, true);
@@ -68,18 +66,17 @@ public class Base64Encoder {
      * @param source 被编码的base64字符串
      * @return 被加密后的字符串
      */
-    public static String encode(String source) {
+    public static String encode(CharSequence source) {
         return encode(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
-     * base64编码,URL安全
+     * base64编码，URL安全
      *
      * @param source 被编码的base64字符串
      * @return 被加密后的字符串
-     * @since 3.1.9
      */
-    public static String encodeUrlSafe(String source) {
+    public static String encodeUrlSafe(CharSequence source) {
         return encodeUrlSafe(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
@@ -90,43 +87,19 @@ public class Base64Encoder {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(String source, String charset) {
-        return encode(StringUtils.bytes(source, charset), charset);
+    public static String encode(CharSequence source, Charset charset) {
+        return encode(StringUtils.bytes(source, charset));
     }
 
     /**
-     * base64编码,URL安全
-     *
-     * @param source  被编码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     * @since 3.1.9
-     */
-    public static String encodeUrlSafe(String source, String charset) {
-        return encodeUrlSafe(StringUtils.bytes(source, charset), charset);
-    }
-
-    /**
-     * base64编码
+     * base64编码，URL安全的
      *
      * @param source  被编码的base64字符串
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(String source, Charset charset) {
-        return encode(StringUtils.bytes(source, charset), charset);
-    }
-
-    /**
-     * base64编码,URL安全的
-     *
-     * @param source  被编码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     * @since 3.1.9
-     */
-    public static String encodeUrlSafe(String source, Charset charset) {
-        return encodeUrlSafe(StringUtils.bytes(source, charset), charset);
+    public static String encodeUrlSafe(CharSequence source, Charset charset) {
+        return encodeUrlSafe(StringUtils.bytes(source, charset));
     }
 
     /**
@@ -136,7 +109,7 @@ public class Base64Encoder {
      * @return 被加密后的字符串
      */
     public static String encode(byte[] source) {
-        return encode(source, org.aoju.bus.core.lang.Charset.UTF_8);
+        return StringUtils.str(encode(source, false), org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -144,100 +117,9 @@ public class Base64Encoder {
      *
      * @param source 被编码的base64字符串
      * @return 被加密后的字符串
-     * @since 3.1.9
      */
     public static String encodeUrlSafe(byte[] source) {
-        return encodeUrlSafe(source, org.aoju.bus.core.lang.Charset.UTF_8);
-    }
-
-    /**
-     * base64编码
-     *
-     * @param source  被编码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     */
-    public static String encode(byte[] source, String charset) {
-        return StringUtils.str(encode(source, false), charset);
-    }
-
-    /**
-     * base64编码,URL安全的
-     *
-     * @param source  被编码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     * @since 3.1.9
-     */
-    public static String encodeUrlSafe(byte[] source, String charset) {
-        return StringUtils.str(encodeUrlSafe(source, false), charset);
-    }
-
-    /**
-     * base64编码
-     *
-     * @param source  被编码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     */
-    public static String encode(byte[] source, Charset charset) {
-        return StringUtils.str(encode(source, false), charset);
-    }
-
-    /**
-     * base64编码,URL安全的
-     *
-     * @param source  被编码的base64字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     * @since 3.1.9
-     */
-    public static String encodeUrlSafe(byte[] source, Charset charset) {
-        return StringUtils.str(encodeUrlSafe(source, false), charset);
-    }
-
-    /**
-     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串
-     *
-     * @param buffer    被编码的数组
-     * @param charset   字符集
-     * @param isUrlSafe 是否使用URL安全字符,一般为<code>false</code>
-     * @return 编码后的字符串
-     */
-    public static String encodeBuffer(byte[] buffer, boolean isUrlSafe, Charset charset) {
-        return StringUtils.str(encode(buffer, true, isUrlSafe), charset);
-    }
-
-    /**
-     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串
-     *
-     * @param buffer    被编码的数组
-     * @param isUrlSafe 是否使用URL安全字符,一般为<code>false</code>
-     * @return 编码后的字符串
-     */
-    public static String encodeBuffer(byte[] buffer, boolean isUrlSafe) {
-        return encodeBuffer(buffer, isUrlSafe, org.aoju.bus.core.lang.Charset.UTF_8);
-    }
-
-    /**
-     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串
-     *
-     * @param buffer  被编码的数组
-     * @param charset 字符集
-     * @return 编码后的字符串
-     */
-    public static String encodeBuffer(byte[] buffer, Charset charset) {
-        return encodeBuffer(buffer, false, charset);
-    }
-
-    /**
-     * 只接受一个字节缓冲区并返回一个包含已编码缓冲区的字符串
-     *
-     * @param buffer 被编码的数组
-     * @return 编码后的字符串
-     */
-    public static String encodeBuffer(byte[] buffer) {
-        return encodeBuffer(buffer, false);
+        return StringUtils.str(encodeUrlSafe(source, false), org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -264,7 +146,7 @@ public class Base64Encoder {
         int destlen = cnt + (isMultiLine ? (cnt - 1) / 76 << 1 : 0);
         byte[] dest = new byte[destlen];
 
-        byte[] encodeTable = isUrlSafe ? Normal.URL_SAFE_ENCODE_TABLE : ByteUtils.getBytes(Normal.STANDARD_ENCODE_TABLE);
+        byte[] encodeTable = isUrlSafe ? Normal.ENCODE_URL_TABLE : Normal.ENCODE_64_TABLE;
 
         for (int s = 0, d = 0, cc = 0; s < evenlen; ) {
             int i = (arr[s++] & 0xff) << 16 | (arr[s++] & 0xff) << 8 | (arr[s++] & 0xff);

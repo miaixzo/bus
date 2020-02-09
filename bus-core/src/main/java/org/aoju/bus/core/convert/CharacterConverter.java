@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.utils.BooleanUtils;
 import org.aoju.bus.core.utils.StringUtils;
 

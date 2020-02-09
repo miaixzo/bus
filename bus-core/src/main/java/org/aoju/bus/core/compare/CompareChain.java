@@ -29,8 +29,8 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * 比较器链 此链包装了多个比较器,最终比较结果按照比较器顺序综合多个比较器结果 <br>
- * 按照比较器链的顺序分别比较,如果比较出相等则转向下一个比较器,否则直接返回<br>
+ * 比较器链 此链包装了多个比较器,最终比较结果按照比较器顺序综合多个比较器结果
+ * 按照比较器链的顺序分别比较,如果比较出相等则转向下一个比较器,否则直接返回
  * 此类copy from Apache-commons-collections
  *
  * @author Kimi Liu
@@ -96,7 +96,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 构造,使用已有的比较器列表和对应的BitSet<br>
+     * 构造,使用已有的比较器列表和对应的BitSet
      * BitSet中的boolean值需与list中的{@link Comparator}一一对应,true表示正序,false反序
      *
      * @param list {@link Comparator} 列表
@@ -219,7 +219,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 执行比较<br>
+     * 执行比较
      * 按照比较器链的顺序分别比较,如果比较出相等则转向下一个比较器,否则直接返回
      *
      * @param o1 第一个对象

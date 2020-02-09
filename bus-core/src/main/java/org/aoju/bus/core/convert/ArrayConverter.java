@@ -23,9 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
-import org.aoju.bus.core.convert.ConverterRegistry;
-import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.IterUtils;
@@ -62,11 +59,16 @@ public class ArrayConverter extends AbstractConverter<Object> {
         if (null == targetType) {
             // 默认Object数组
             targetType = Object[].class;
-        } else {
-            Assert.isTrue(targetType.isArray(), "Target type must be a array!");
         }
-        this.targetType = targetType;
-        this.targetComponentType = targetType.getComponentType();
+
+        if (targetType.isArray()) {
+            this.targetType = targetType;
+            this.targetComponentType = targetType.getComponentType();
+        } else {
+            //用户传入类为非数组时，按照数组元素类型对待
+            this.targetComponentType = targetType;
+            this.targetType = ArrayUtils.getArrayType(targetType);
+        }
     }
 
     @Override
@@ -120,7 +122,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
         }
 
         final ConverterRegistry converter = ConverterRegistry.getInstance();
-        Object result = null;
+        Object result;
         if (value instanceof List) {
             // List转数组
             final List<?> list = (List<?>) value;

@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
-
 import java.util.UUID;
 
 /**

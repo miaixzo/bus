@@ -26,6 +26,7 @@ package org.aoju.bus.core.lang;
 import org.aoju.bus.core.date.format.FastDateFormat;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -90,6 +91,15 @@ public class Fields {
      * 格式化通配符: {@link FastDateFormat} yyyy-MM-dd HH:mm:ss
      */
     public static final FastDateFormat NORM_DATETIME_FORMAT = FastDateFormat.getInstance(NORM_DATETIME_PATTERN);
+
+    /**
+     * 格式化通配符: yyyy-MM-dd hh:mm:ss
+     */
+    public static final String NORM_PART_DATETIME_PATTERN = "yyyy-MM-dd hh:mm:ss";
+    /**
+     * 格式化通配符: {@link FastDateFormat} yyyy-MM-dd hh:mm:ss
+     */
+    public static final FastDateFormat NORM_PART_DATETIME_FORMAT = FastDateFormat.getInstance(NORM_PART_DATETIME_PATTERN);
 
     /**
      * 格式化通配符: :yyyy-MM-dd HH:mm:ss.SSS
@@ -188,7 +198,7 @@ public class Fields {
     /**
      * HTTP头日期时间格式: {@link FastDateFormat} EEE, dd MMM yyyy HH:mm:ss z
      */
-    public static final FastDateFormat HTTP_DATETIME_FORMAT = FastDateFormat.getInstance(HTTP_DATETIME_PATTERN);
+    public static final FastDateFormat HTTP_DATETIME_FORMAT = FastDateFormat.getInstance(HTTP_DATETIME_PATTERN, TimeZone.getTimeZone("GMT"), Locale.US);
 
     /**
      * JDK日期时间格式: EEE MMM dd HH:mm:ss zzz yyyy
@@ -197,7 +207,7 @@ public class Fields {
     /**
      * JDK日期时间格式: {@link FastDateFormat} EEE MMM dd HH:mm:ss zzz yyyy
      */
-    public static final FastDateFormat JDK_DATETIME_FORMAT = FastDateFormat.getInstance(JDK_DATETIME_PATTERN);
+    public static final FastDateFormat JDK_DATETIME_FORMAT = FastDateFormat.getInstance(JDK_DATETIME_PATTERN, Locale.US);
 
     /**
      * 中文日期格式: yyyy年M月d日
@@ -261,6 +271,21 @@ public class Fields {
      * UTC时间: {@link FastDateFormat} yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
      */
     public static final FastDateFormat OUTPUT_MSEC_FORMAT = FastDateFormat.getInstance(OUTPUT_MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * UTC时间：yyyy-MM-dd'T'HH:mm:ssZ
+     */
+    public final static String WITH_ZONE_OFFSET_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
+    /**
+     * UTC时间{@link FastDateFormat}：yyyy-MM-dd'T'HH:mm:ssZ
+     */
+    public final static FastDateFormat WITH_ZONE_OFFSET_FORMAT = FastDateFormat.getInstance(WITH_ZONE_OFFSET_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    public final static String[] WTB = {
+            "sun", "mon", "tue", "wed", "thu", "fri", "sat",
+            "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",
+            "gmt", "ut", "utc", "est", "edt", "cst", "cdt", "mst", "mdt", "pst", "pdt"
+    };
 
     /**
      * 星座
@@ -644,6 +669,12 @@ public class Fields {
     public enum DateField {
 
         /**
+         * 世纪
+         *
+         * @see Calendar#ERA
+         */
+        ERA(Calendar.ERA),
+        /**
          * 年
          *
          * @see Calendar#YEAR
@@ -742,6 +773,8 @@ public class Fields {
          */
         public static DateField of(int calendarPartIntValue) {
             switch (calendarPartIntValue) {
+                case Calendar.ERA:
+                    return ERA;
                 case Calendar.YEAR:
                     return YEAR;
                 case Calendar.MONTH:
@@ -758,6 +791,12 @@ public class Fields {
                     return DAY_OF_WEEK;
                 case Calendar.DAY_OF_WEEK_IN_MONTH:
                     return DAY_OF_WEEK_IN_MONTH;
+                case Calendar.AM_PM:
+                    return AM_PM;
+                case Calendar.HOUR:
+                    return HOUR;
+                case Calendar.HOUR_OF_DAY:
+                    return HOUR_OF_DAY;
                 case Calendar.MINUTE:
                     return MINUTE;
                 case Calendar.SECOND:
@@ -1214,6 +1253,26 @@ public class Fields {
         public String getName() {
             return this.name;
         }
+    }
+
+    /**
+     * 修改类型
+     */
+    public enum ModifyType {
+        /**
+         * 取指定日期短的起始值.
+         */
+        TRUNCATE,
+
+        /**
+         * 指定日期属性按照四舍五入处理
+         */
+        ROUND,
+
+        /**
+         * 指定日期属性按照进一法处理
+         */
+        CEILING
     }
 
 }

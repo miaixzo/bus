@@ -47,7 +47,6 @@ public class ConcurrentHashSet<E> extends AbstractSet<E> implements java.io.Seri
     private final ConcurrentHashMap<E, Boolean> map;
 
     /**
-     * 构造
      * 触发因子为默认的0.75
      */
     public ConcurrentHashSet() {
@@ -55,7 +54,6 @@ public class ConcurrentHashSet<E> extends AbstractSet<E> implements java.io.Seri
     }
 
     /**
-     * 构造<br>
      * 触发因子为默认的0.75
      *
      * @param initialCapacity 初始大小

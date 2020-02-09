@@ -26,6 +26,7 @@ package org.aoju.bus.core.text.csv;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.io.File;
@@ -161,7 +162,7 @@ public final class CsvReader {
     }
 
     /**
-     * 从Reader中读取CSV数据
+     * 从Reader中读取CSV数据,读取后关闭Reader
      *
      * @param reader Reader
      * @return {@link CsvData},包含数据列表和行信息
@@ -169,15 +170,38 @@ public final class CsvReader {
      */
     public CsvData read(Reader reader) throws InstrumentException {
         final CsvParser csvParser = parse(reader);
-
         final List<CsvRow> rows = new ArrayList<>();
-        CsvRow csvRow;
-        while ((csvRow = csvParser.nextRow()) != null) {
-            rows.add(csvRow);
-        }
-
+        read(csvParser, rows::add);
         final List<String> header = config.containsHeader ? csvParser.getHeader() : null;
+
         return new CsvData(header, rows);
+    }
+
+    /**
+     * 从Reader中读取CSV数据，读取后关闭Reader
+     *
+     * @param reader     Reader
+     * @param rowHandler 行处理器，用于一行一行的处理数据
+     */
+    public void read(Reader reader, CsvHandler rowHandler) {
+        read(parse(reader), rowHandler);
+    }
+
+    /**
+     * 读取CSV数据，读取后关闭Parser
+     *
+     * @param csvParser  CSV解析器
+     * @param rowHandler 行处理器，用于一行一行的处理数据
+     */
+    private void read(CsvParser csvParser, CsvHandler rowHandler) {
+        try {
+            CsvRow csvRow;
+            while ((csvRow = csvParser.nextRow()) != null) {
+                rowHandler.handle(csvRow);
+            }
+        } finally {
+            IoUtils.close(csvParser);
+        }
     }
 
     /**

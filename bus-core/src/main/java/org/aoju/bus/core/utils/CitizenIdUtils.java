@@ -24,10 +24,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.Validator;
+import org.aoju.bus.core.lang.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -185,12 +182,12 @@ public class CitizenIdUtils {
         int length = idCard.length();
         switch (length) {
             case 18:// 18位身份证
-                return isvalidCard18(idCard);
+                return isValidCard18(idCard);
             case 15:// 15位身份证
-                return isvalidCard15(idCard);
-            case 10: {// 10位身份证,港澳台地区
-                String[] cardval = isValidCard10(idCard);
-                return null != cardval && cardval[2].equals("true");
+                return isValidCard15(idCard);
+            case 10: {// 10位身份证，港澳台地区
+                String[] cardVal = isValidCard10(idCard);
+                return null != cardVal && "true".equals(cardVal[2]);
             }
             default:
                 return false;
@@ -228,8 +225,13 @@ public class CitizenIdUtils {
      * @param idCard 待验证的身份证
      * @return 是否有效的18位身份证
      */
-    public static boolean isvalidCard18(String idCard) {
+    public static boolean isValidCard18(String idCard) {
         if (CHINA_ID_MAX_LENGTH != idCard.length()) {
+            return false;
+        }
+
+        //校验生日
+        if (false == Validator.isBirthday(idCard.substring(6, 14))) {
             return false;
         }
 
@@ -237,7 +239,7 @@ public class CitizenIdUtils {
         String code17 = idCard.substring(0, 17);
         // 第18位
         char code18 = Character.toLowerCase(idCard.charAt(17));
-        if (Validator.isNumber(code17)) {
+        if (PatternUtils.isMatch(RegEx.NUMBERS, code17)) {
             // 获取校验位
             char val = getCheckCode18(code17);
             return val == code18;
@@ -251,20 +253,19 @@ public class CitizenIdUtils {
      * @param idCard 身份编码
      * @return 是否合法
      */
-    public static boolean isvalidCard15(String idCard) {
+    public static boolean isValidCard15(String idCard) {
         if (CHINA_ID_MIN_LENGTH != idCard.length()) {
             return false;
         }
-        if (Validator.isNumber(idCard)) {
+        if (PatternUtils.isMatch(RegEx.NUMBERS, idCard)) {
             // 省份
             String proCode = idCard.substring(0, 2);
             if (null == cityCodes.get(proCode)) {
                 return false;
             }
 
-            // 生日
-            DateTime birthDate = DateUtils.parse(idCard.substring(6, 12), "yyMMdd");
-            return false != Validator.isBirthday(birthDate.year(), birthDate.month(), birthDate.dayOfMonth());
+            //校验生日（两位年份，补充为19XX）
+            return false != Validator.isBirthday("19" + idCard.substring(6, 12));
         } else {
             return false;
         }

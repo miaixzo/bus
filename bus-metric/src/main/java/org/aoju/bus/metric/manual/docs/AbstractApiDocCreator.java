@@ -24,8 +24,8 @@
 package org.aoju.bus.metric.manual.docs;
 
 import org.aoju.bus.metric.ApiRegister;
-import org.aoju.bus.metric.manual.docs.annotation.ApiDocMethod;
 import org.aoju.bus.metric.manual.Api;
+import org.aoju.bus.metric.manual.docs.annotation.ApiDocMethod;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;

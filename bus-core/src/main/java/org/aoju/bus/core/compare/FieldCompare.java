@@ -31,7 +31,7 @@ import java.lang.reflect.Field;
 import java.util.Comparator;
 
 /**
- * Bean字段排序器<br>
+ * Bean字段排序器
  * 参阅feilong-core中的PropertyComparator
  *
  * @param <T> 被比较的Bean

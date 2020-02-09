@@ -31,6 +31,7 @@ import com.aliyuncs.profile.DefaultProfile;
 import lombok.AllArgsConstructor;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
@@ -95,7 +96,7 @@ public class AliMailService {
 
             if (StringUtils.isEmpty(entity.getContent())) {
                 throw new InstrumentException("Email content cannot be empty");
-            } else if (StringUtils.isEmpty(entity.getToAddress())) {
+            } else if (CollUtils.isEmpty(entity.getToAddress())) {
                 throw new InstrumentException("Email address cannot be empty");
             } else if (StringUtils.isEmpty(entity.getSubject())) {
                 throw new InstrumentException("Email subject cannot be empty");
@@ -121,7 +122,6 @@ public class AliMailService {
             throw new InstrumentException(e.getMessage(), e);
         }
     }
-
 
     /**
      * 如果contentType为空，默认使用文本

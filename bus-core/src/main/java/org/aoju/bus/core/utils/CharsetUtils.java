@@ -143,7 +143,7 @@ public class CharsetUtils {
      * @since 3.1.9
      */
     public static Charset systemCharset() {
-        return FileUtils.isWindows() ? org.aoju.bus.core.lang.Charset.CHARSET_GBK : defaultCharset();
+        return FileUtils.isWindows() ? org.aoju.bus.core.lang.Charset.GBK : defaultCharset();
     }
 
 }

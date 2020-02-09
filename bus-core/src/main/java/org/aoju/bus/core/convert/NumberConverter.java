@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.utils.BooleanUtils;
 import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -99,18 +98,18 @@ public class NumberConverter extends AbstractConverter<Number> {
             return StringUtils.isBlank(valueStr) ? null : Integer.valueOf(NumberUtils.parseInt(valueStr));
 
         } else if (AtomicInteger.class == targetType) {
-            int intValue;
+            final AtomicInteger intValue = new AtomicInteger();
             if (value instanceof Number) {
-                intValue = ((Number) value).intValue();
+                intValue.set(((Number) value).intValue());
             } else if (value instanceof Boolean) {
-                intValue = BooleanUtils.toInt((Boolean) value);
+                intValue.set(BooleanUtils.toInt((Boolean) value));
             }
             final String valueStr = convertToStr(value);
             if (StringUtils.isBlank(valueStr)) {
                 return null;
             }
-            intValue = NumberUtils.parseInt(valueStr);
-            return new AtomicInteger(intValue);
+            intValue.set(NumberUtils.parseInt(valueStr));
+            return intValue;
         } else if (Long.class == targetType) {
             if (value instanceof Number) {
                 return Long.valueOf(((Number) value).longValue());
@@ -121,18 +120,18 @@ public class NumberConverter extends AbstractConverter<Number> {
             return StringUtils.isBlank(valueStr) ? null : Long.valueOf(NumberUtils.parseLong(valueStr));
 
         } else if (AtomicLong.class == targetType) {
-            long longValue;
+            final AtomicLong longValue = new AtomicLong();
             if (value instanceof Number) {
-                longValue = ((Number) value).longValue();
+                longValue.set(((Number) value).longValue());
             } else if (value instanceof Boolean) {
-                longValue = BooleanUtils.toLong((Boolean) value);
+                longValue.set(BooleanUtils.toLong((Boolean) value));
             }
             final String valueStr = convertToStr(value);
             if (StringUtils.isBlank(valueStr)) {
                 return null;
             }
-            longValue = NumberUtils.parseLong(valueStr);
-            return new AtomicLong(longValue);
+            longValue.set(NumberUtils.parseLong(valueStr));
+            return longValue;
 
         } else if (Float.class == targetType) {
             if (value instanceof Number) {

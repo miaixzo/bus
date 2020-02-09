@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.awt.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
@@ -84,7 +85,7 @@ public class RandomUtils {
     }
 
     /**
-     * 创建{@link SecureRandom},类提供加密的强随机数生成器 (RNG)<br>
+     * 创建{@link SecureRandom},类提供加密的强随机数生成器 (RNG)
      *
      * @param seed 自定义随机种子
      * @return {@link SecureRandom}
@@ -161,31 +162,64 @@ public class RandomUtils {
      * @param min 最小数（包含）
      * @param max 最大数（不包含）
      * @return 随机数
-     * @since 3.3.0
      */
     public static double randomDouble(double min, double max) {
         return getRandom().nextDouble(min, max);
     }
 
     /**
+     * 获得指定范围内的随机数
+     *
+     * @param min          最小数（包含）
+     * @param max          最大数（不包含）
+     * @param scale        保留小数位数
+     * @param roundingMode 保留小数的模式 {@link RoundingMode}
+     * @return 随机数
+     */
+    public static double randomDouble(double min, double max, int scale, RoundingMode roundingMode) {
+        return NumberUtils.round(randomDouble(min, max), scale, roundingMode).doubleValue();
+    }
+
+    /**
      * 获得随机数[0, 1)
      *
      * @return 随机数
-     * @since 3.3.0
      */
     public static double randomDouble() {
         return getRandom().nextDouble();
     }
 
     /**
+     * 获得指定范围内的随机数
+     *
+     * @param scale        保留小数位数
+     * @param roundingMode 保留小数的模式 {@link RoundingMode}
+     * @return 随机数
+     */
+    public static double randomDouble(int scale, RoundingMode roundingMode) {
+        return NumberUtils.round(randomDouble(), scale, roundingMode).doubleValue();
+    }
+
+    /**
      * 获得指定范围内的随机数 [0,limit)
      *
-     * @param limit 限制随机数的范围,不包括这个数
+     * @param limit 限制随机数的范围，不包括这个数
      * @return 随机数
-     * @since 3.3.0
      */
     public static double randomDouble(double limit) {
         return getRandom().nextDouble(limit);
+    }
+
+    /**
+     * 获得指定范围内的随机数
+     *
+     * @param limit        限制随机数的范围，不包括这个数
+     * @param scale        保留小数位数
+     * @param roundingMode 保留小数的模式 {@link RoundingMode}
+     * @return 随机数
+     */
+    public static double randomDouble(double limit, int scale, RoundingMode roundingMode) {
+        return NumberUtils.round(randomDouble(limit), scale, roundingMode).doubleValue();
     }
 
     /**
@@ -353,20 +387,23 @@ public class RandomUtils {
     /**
      * 获得一个随机的字符串
      *
-     * @param baseString 随机字符选取的样本
-     * @param length     字符串的长度
+     * @param str    随机字符选取的样本
+     * @param length 字符串的长度
      * @return 随机字符串
      */
-    public static String randomString(String baseString, int length) {
-        final StringBuilder sb = new StringBuilder();
+    public static String randomString(String str, int length) {
+        if (StringUtils.isEmpty(str)) {
+            return Normal.EMPTY;
+        }
+        final StringBuilder sb = new StringBuilder(length);
 
         if (length < 1) {
             length = 1;
         }
-        int baseLength = baseString.length();
+        int baseLength = str.length();
         for (int i = 0; i < length; i++) {
-            int number = getRandom().nextInt(baseLength);
-            sb.append(baseString.charAt(number));
+            int number = randomInt(baseLength);
+            sb.append(str.charAt(number));
         }
         return sb.toString();
     }
@@ -437,6 +474,15 @@ public class RandomUtils {
             baseDate = DateUtils.date();
         }
         return DateUtils.offset(baseDate, dateField, randomInt(min, max));
+    }
+
+    /**
+     * 获得随机Boolean值
+     *
+     * @return true or false
+     */
+    public static boolean randomBoolean() {
+        return 0 == randomInt(2);
     }
 
 }

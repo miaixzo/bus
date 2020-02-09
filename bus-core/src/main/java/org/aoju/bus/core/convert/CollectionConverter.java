@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.Converter;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.TypeUtils;
 
@@ -102,7 +101,7 @@ public class CollectionConverter implements Converter<Collection<?>> {
      * @return 转换后的集合对象
      */
     protected Collection<?> convertInternal(Object value) {
-        return CollUtils.addAll(CollUtils.create(TypeUtils.getClass(collectionType)), value, this.elementType);
+        return CollUtils.addAll(CollUtils.create(TypeUtils.getClass(this.collectionType)), value, this.elementType);
     }
 
 }

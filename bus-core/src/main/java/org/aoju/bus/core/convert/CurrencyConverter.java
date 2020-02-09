@@ -23,8 +23,6 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
-
 import java.util.Currency;
 
 /**
@@ -38,7 +36,7 @@ public class CurrencyConverter extends AbstractConverter<Currency> {
 
     @Override
     protected Currency convertInternal(Object value) {
-        return Currency.getInstance(value.toString());
+        return Currency.getInstance(convertToStr(value));
     }
 
 }

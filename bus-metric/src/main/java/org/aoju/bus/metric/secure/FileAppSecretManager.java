@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * appkey，secret文件管理，功能同CacheAppSecretManager，这个是将appKey，secret放在属性文件中<br>
+ * appkey，secret文件管理，功能同CacheAppSecretManager，这个是将appKey，secret放在属性文件中
  * key为appKey，value为secret
  *
  * @author Kimi Liu

@@ -23,11 +23,11 @@
  */
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.convert.AbstractConverter;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
+import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -86,25 +86,32 @@ public class DateConverter extends AbstractConverter<Date> {
 
     @Override
     protected Date convertInternal(Object value) {
-        long mills = -1;
+        Long mills = null;
         if (value instanceof Calendar) {
             // Handle Calendar
             mills = ((Calendar) value).getTimeInMillis();
-        } else if (value instanceof Long) {
-            // Handle Long
-            // 此处使用自动拆装箱
-            mills = (Long) value;
+        } else if (value instanceof Number) {
+            // Handle Number
+            mills = ((Number) value).longValue();
+        } else if (value instanceof TemporalAccessor) {
+            return DateUtils.date((TemporalAccessor) value);
         } else {
             // 统一按照字符串处理
             final String valueStr = convertToStr(value);
+            Date date = null;
             try {
-                mills = StringUtils.isBlank(format) ? DateUtils.parse(valueStr).getTime() : DateUtils.parse(valueStr, format).getTime();
+                date = StringUtils.isBlank(this.format)
+                        ? DateUtils.parse(valueStr)
+                        : DateUtils.parse(valueStr, this.format);
             } catch (Exception e) {
                 // Ignore Exception
             }
+            if (null != date) {
+                mills = date.getTime();
+            }
         }
 
-        if (mills < 0) {
+        if (null == mills) {
             return null;
         }
 

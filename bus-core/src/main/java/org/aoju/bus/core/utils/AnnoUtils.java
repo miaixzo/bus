@@ -92,7 +92,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 获取指定注解属性的值<br>
+     * 获取指定注解属性的值
      * 如果无指定的属性方法返回null
      *
      * @param <T>            注解值类型

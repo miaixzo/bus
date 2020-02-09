@@ -148,7 +148,7 @@ public class Murmur implements Serializable {
     }
 
     /**
-     * Murmur3 64-bit 算法<br>
+     * Murmur3 64-bit 算法
      * This is essentially MSB 8 bytes of Murmur3 128-bit variant.
      *
      * @param data 数据
@@ -159,7 +159,7 @@ public class Murmur implements Serializable {
     }
 
     /**
-     * Murmur3 64-bit 算法 <br>
+     * Murmur3 64-bit 算法
      * This is essentially MSB 8 bytes of Murmur3 128-bit variant.
      *
      * @param data   数据

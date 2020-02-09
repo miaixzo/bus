@@ -273,4 +273,5 @@ public final class CsvRow implements List<String> {
         sb.append(Symbol.C_BRACE_RIGHT);
         return sb.toString();
     }
+
 }

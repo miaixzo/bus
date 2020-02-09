@@ -345,9 +345,9 @@ public class QrCodeUtils {
         BufferedImage image = new BufferedImage(width, height, null == backColor ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if(matrix.get(x, y)) {
+                if (matrix.get(x, y)) {
                     image.setRGB(x, y, foreColor);
-                } else if(null != backColor){
+                } else if (null != backColor) {
                     image.setRGB(x, y, backColor);
                 }
             }

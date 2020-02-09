@@ -68,7 +68,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
     private Map<WatchKey, Path> watchKeyPathMap = new HashMap<>();
 
     /**
-     * 初始化<br>
+     * 初始化
      * 初始化包括：
      * <pre>
      * 1、解析传入的路径，判断其为目录还是文件

@@ -40,7 +40,7 @@ public interface DatePrinter extends DateBasic {
      *
      * @param millis 日期毫秒数
      * @return the formatted string
-     * @since 2.1.0
+     * @since 2.1
      */
     String format(long millis);
 
@@ -70,7 +70,7 @@ public interface DatePrinter extends DateBasic {
      *
      * @param millis the millisecond value to format
      * @param buf    the buffer to format into
-     * @param <B>    the Appendable class type, usually TextUtils or StringBuffer.
+     * @param <B>    the Appendable class type, usually StringBuilder or StringBuffer.
      * @return the specified string buffer
      */
     <B extends Appendable> B format(long millis, B buf);
@@ -82,7 +82,7 @@ public interface DatePrinter extends DateBasic {
      *
      * @param date the date to format
      * @param buf  the buffer to format into
-     * @param <B>  the Appendable class type, usually TextUtils or StringBuffer.
+     * @param <B>  the Appendable class type, usually StringBuilder or StringBuffer.
      * @return the specified string buffer
      */
     <B extends Appendable> B format(Date date, B buf);
@@ -95,7 +95,7 @@ public interface DatePrinter extends DateBasic {
      *
      * @param calendar the calendar to format
      * @param buf      the buffer to format into
-     * @param <B>      the Appendable class type, usually TextUtils or StringBuffer.
+     * @param <B>      the Appendable class type, usually StringBuilder or StringBuffer.
      * @return the specified string buffer
      */
     <B extends Appendable> B format(Calendar calendar, B buf);

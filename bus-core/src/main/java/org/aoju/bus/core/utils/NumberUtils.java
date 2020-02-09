@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -672,6 +673,45 @@ public class NumberUtils {
      * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =》 123.46
      *
+     * @param v     值
+     * @param scale 保留小数位数
+     * @return 新值
+     */
+    public static BigDecimal round(double v, int scale) {
+        return round(v, scale, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
+     * 例如保留2位小数：123.456789 =》 123.46
+     *
+     * @param v     值
+     * @param scale 保留小数位数
+     * @return 新值
+     */
+    public static String roundStr(double v, int scale) {
+        return round(v, scale).toString();
+    }
+
+    /**
+     * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
+     * 例如保留2位小数：123.456789 =》 123.46
+     *
+     * @param numberStr 数字值的字符串表现形式
+     * @param scale     保留小数位数
+     * @return 新值
+     */
+    public static BigDecimal round(String numberStr, int scale) {
+        return round(numberStr, scale, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
+     * 例如保留2位小数：123.456789 =》 123.46
+     *
      * @param number 数字值
      * @param scale  保留小数位数
      * @return 新值
@@ -682,11 +722,67 @@ public class NumberUtils {
 
     /**
      * 保留固定位数小数
+     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
+     * 例如保留2位小数：123.456789 =》 123.46
+     *
+     * @param numberStr 数字值的字符串表现形式
+     * @param scale     保留小数位数
+     * @return 新值
+     */
+    public static String roundStr(String numberStr, int scale) {
+        return round(numberStr, scale).toString();
+    }
+
+    /**
+     * 保留固定位数小数
+     * 例如保留四位小数：123.456789 =》 123.4567
+     *
+     * @param v            值
+     * @param scale        保留小数位数
+     * @param roundingMode 保留小数的模式 {@link RoundingMode}
+     * @return 新值
+     */
+    public static BigDecimal round(double v, int scale, RoundingMode roundingMode) {
+        return round(Double.toString(v), scale, roundingMode);
+    }
+
+    /**
+     * 保留固定位数小数
+     * 例如保留四位小数：123.456789 =》 123.4567
+     *
+     * @param v            值
+     * @param scale        保留小数位数
+     * @param roundingMode 保留小数的模式 {@link RoundingMode}
+     * @return 新值
+     */
+    public static String roundStr(double v, int scale, RoundingMode roundingMode) {
+        return round(v, scale, roundingMode).toString();
+    }
+
+    /**
+     * 保留固定位数小数
+     * 例如保留四位小数：123.456789 =》 123.4567
+     *
+     * @param numberStr    数字值的字符串表现形式
+     * @param scale        保留小数位数，如果传入小于0，则默认0
+     * @param roundingMode 保留小数的模式 {@link RoundingMode}，如果传入null则默认四舍五入
+     * @return 新值
+     */
+    public static BigDecimal round(String numberStr, int scale, RoundingMode roundingMode) {
+        Assert.notBlank(numberStr);
+        if (scale < 0) {
+            scale = 0;
+        }
+        return round(toBigDecimal(numberStr), scale, roundingMode);
+    }
+
+    /**
+     * 保留固定位数小数
      * 例如保留四位小数：123.456789 =》 123.4567
      *
      * @param number       数字值
-     * @param scale        保留小数位数,如果传入小于0,则默认0
-     * @param roundingMode 保留小数的模式 {@link RoundingMode},如果传入null则默认四舍五入
+     * @param scale        保留小数位数，如果传入小于0，则默认0
+     * @param roundingMode 保留小数的模式 {@link RoundingMode}，如果传入null则默认四舍五入
      * @return 新值
      */
     public static BigDecimal round(BigDecimal number, int scale, RoundingMode roundingMode) {
@@ -704,18 +800,31 @@ public class NumberUtils {
     }
 
     /**
+     * 保留固定位数小数
+     * 例如保留四位小数：123.456789 =》 123.4567
+     *
+     * @param numberStr    数字值的字符串表现形式
+     * @param scale        保留小数位数
+     * @param roundingMode 保留小数的模式 {@link RoundingMode}
+     * @return 新值
+     */
+    public static String roundStr(String numberStr, int scale, RoundingMode roundingMode) {
+        return round(numberStr, scale, roundingMode).toString();
+    }
+
+    /**
      * 四舍六入五成双计算法
      * <p>
-     * 四舍六入五成双是一种比较精确比较科学的计数保留法,是一种数字修约规则
+     * 四舍六入五成双是一种比较精确比较科学的计数保留法，是一种数字修约规则。
      * </p>
      *
      * <pre>
      * 算法规则:
-     * 四舍六入五考虑,
-     * 五后非零就进一,
-     * 五后皆零看奇偶,
-     * 五前为偶应舍去,
-     * 五前为奇要进一
+     * 四舍六入五考虑，
+     * 五后非零就进一，
+     * 五后皆零看奇偶，
+     * 五前为偶应舍去，
+     * 五前为奇要进一。
      * </pre>
      *
      * @param number 需要科学计算的数据
@@ -821,10 +930,9 @@ public class NumberUtils {
      *
      * @param value 金额
      * @return 格式化后的值
-     * @since 3.1.9
      */
     public static String decimalFormatMoney(double value) {
-        return decimalFormat(",###", value);
+        return decimalFormat(",##0.00", value);
     }
 
     /**
@@ -847,27 +955,27 @@ public class NumberUtils {
      * @param str 字符串值
      * @return 是否为数字
      */
-    public static boolean isNumber(String str) {
+    public static boolean isNumber(CharSequence str) {
         if (StringUtils.isBlank(str)) {
             return false;
         }
-        char[] chars = str.toCharArray();
+        char[] chars = str.toString().toCharArray();
         int sz = chars.length;
         boolean hasExp = false;
         boolean hasDecPoint = false;
         boolean allowSigns = false;
         boolean foundDigit = false;
         // deal with any possible sign up front
-        int start = (chars[0] == Symbol.C_HYPHEN) ? 1 : 0;
+        int start = (chars[0] == '-' || chars[0] == '+') ? 1 : 0;
         if (sz > start + 1) {
-            if (chars[start] == Symbol.C_ZERO && chars[start + 1] == 'x') {
+            if (chars[start] == '0' && (chars[start + 1] == 'x' || chars[start + 1] == 'X')) {
                 int i = start + 2;
                 if (i == sz) {
                     return false; // str == "0x"
                 }
                 // checking hex (it can't be anything else)
                 for (; i < chars.length; i++) {
-                    if ((chars[i] < Symbol.C_ZERO || chars[i] > Symbol.C_NINE) && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
+                    if ((chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
                         return false;
                     }
                 }
@@ -880,11 +988,11 @@ public class NumberUtils {
         // loop to the next to last char or to the last char if we need another digit to
         // make a valid number (e.g. chars[0..5] = "1234E")
         while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {
-            if (chars[i] >= Symbol.C_ZERO && chars[i] <= Symbol.C_NINE) {
+            if (chars[i] >= '0' && chars[i] <= '9') {
                 foundDigit = true;
                 allowSigns = false;
 
-            } else if (chars[i] == Symbol.C_DOT) {
+            } else if (chars[i] == '.') {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -896,12 +1004,12 @@ public class NumberUtils {
                     // two E's
                     return false;
                 }
-                if (!foundDigit) {
+                if (false == foundDigit) {
                     return false;
                 }
                 hasExp = true;
                 allowSigns = true;
-            } else if (chars[i] == Symbol.C_PLUS || chars[i] == Symbol.C_HYPHEN) {
+            } else if (chars[i] == '+' || chars[i] == '-') {
                 if (!allowSigns) {
                     return false;
                 }
@@ -913,7 +1021,7 @@ public class NumberUtils {
             i++;
         }
         if (i < chars.length) {
-            if (chars[i] >= Symbol.C_ZERO && chars[i] <= Symbol.C_NINE) {
+            if (chars[i] >= '0' && chars[i] <= '9') {
                 // no type qualifier, OK
                 return true;
             }
@@ -921,7 +1029,7 @@ public class NumberUtils {
                 // can't have an E at the last byte
                 return false;
             }
-            if (chars[i] == Symbol.C_DOT) {
+            if (chars[i] == '.') {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -941,7 +1049,7 @@ public class NumberUtils {
         }
         // allowSigns is true iff the val ends in 'E'
         // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass
-        return !allowSigns && foundDigit;
+        return false == allowSigns && foundDigit;
     }
 
     /**
@@ -1389,6 +1497,21 @@ public class NumberUtils {
     }
 
     /**
+     * 比较大小，值相等 返回true
+     * 此方法通过调用{@link BigDecimal#compareTo(BigDecimal)}方法来判断是否相等
+     * 此方法判断值相等时忽略精度的，即0.00 == 0
+     *
+     * @param bigNum1 数字1
+     * @param bigNum2 数字2
+     * @return 是否相等
+     */
+    public static boolean equals(BigDecimal bigNum1, BigDecimal bigNum2) {
+        Assert.notNull(bigNum1);
+        Assert.notNull(bigNum2);
+        return 0 == bigNum1.compareTo(bigNum2);
+    }
+
+    /**
      * 比较两个字符是否相同
      *
      * @param c1         字符1
@@ -1396,7 +1519,6 @@ public class NumberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 5.5.5
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1410,7 +1532,7 @@ public class NumberUtils {
      * @return 最小值
      * @see ArrayUtils#min(Comparable[])
      */
-    public static <T extends Comparable<? super T>> T min(T... numberArray) {
+    public static <T extends Comparable<? super T>> T min(T[] numberArray) {
         return ArrayUtils.min(numberArray);
     }
 
@@ -1474,7 +1596,7 @@ public class NumberUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 5.0.8
+     * @see ArrayUtils#min(Comparable[])
      */
     public static BigDecimal min(BigDecimal... numberArray) {
         return ArrayUtils.min(numberArray);
@@ -1488,7 +1610,7 @@ public class NumberUtils {
      * @return 最大值
      * @see ArrayUtils#max(Comparable[])
      */
-    public static <T extends Comparable<? super T>> T max(T... numberArray) {
+    public static <T extends Comparable<? super T>> T max(T[] numberArray) {
         return ArrayUtils.max(numberArray);
     }
 
@@ -1544,6 +1666,17 @@ public class NumberUtils {
      * @see ArrayUtils#max(float...)
      */
     public static float max(float... numberArray) {
+        return ArrayUtils.max(numberArray);
+    }
+
+    /**
+     * 取最大值
+     *
+     * @param numberArray 数字数组
+     * @return 最大值
+     * @see ArrayUtils#max(Comparable[])
+     */
+    public static BigDecimal max(BigDecimal... numberArray) {
         return ArrayUtils.max(numberArray);
     }
 
@@ -1779,14 +1912,19 @@ public class NumberUtils {
         if (StringUtils.isBlank(number)) {
             return 0;
         }
-        if (StringUtils.startWithIgnoreCase(number, "0x")) {
-            //0x04表示16进制数
-            return Integer.parseInt(number.substring(2), 16);
-        } else if (number.startsWith(Symbol.ZERO)) {
-            //04表示8进制数
-            return Integer.parseInt(number.substring(1), 8);
+
+        // 对于带小数转换为整数采取去掉小数的策略
+        number = StringUtils.subBefore(number, Symbol.C_DOT, false);
+        if (StringUtils.isEmpty(number)) {
+            return 0;
         }
-        return Integer.parseInt(number);
+
+        if (StringUtils.startWithIgnoreCase(number, "0x")) {
+            // 0x04表示16进制数
+            return Integer.parseInt(number.substring(2), 16);
+        }
+
+        return Integer.parseInt(removeNumberFlag(number));
     }
 
     /**
@@ -1803,16 +1941,36 @@ public class NumberUtils {
      */
     public static long parseLong(String number) {
         if (StringUtils.isBlank(number)) {
-            return 0L;
+            return 0;
         }
+
+        // 对于带小数转换为整数采取去掉小数的策略
+        number = StringUtils.subBefore(number, Symbol.C_DOT, false);
+        if (StringUtils.isEmpty(number)) {
+            return 0;
+        }
+
         if (number.startsWith("0x")) {
-            //0x04表示16进制数
+            // 0x04表示16进制数
             return Long.parseLong(number.substring(2), 16);
-        } else if (number.startsWith(Symbol.ZERO)) {
-            //04表示8进制数
-            return Long.parseLong(number.substring(1), 8);
         }
-        return Long.parseLong(number);
+
+        return Long.parseLong(removeNumberFlag(number));
+    }
+
+    /**
+     * 将指定字符串转换为{@link Number} 对象
+     *
+     * @param numberStr Number字符串
+     * @return Number对象
+     */
+    public static Number parseNumber(String numberStr) {
+        numberStr = removeNumberFlag(numberStr);
+        try {
+            return NumberFormat.getInstance().parse(numberStr);
+        } catch (ParseException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     private static int mathSubnode(int selectNum, int minNum) {
@@ -1828,21 +1986,6 @@ public class NumberUtils {
             return 1;
         } else {
             return selectNum * mathNode(selectNum - 1);
-        }
-    }
-
-    /**
-     * 将指定字符串转换为{@link Number} 对象
-     *
-     * @param numberStr Number字符串
-     * @return Number对象
-     */
-    public static Number parseNumber(String numberStr) {
-        numberStr = removeNumberFlag(numberStr);
-        try {
-            return NumberFormat.getInstance().parse(numberStr);
-        } catch (ParseException e) {
-            throw new InstrumentException(e);
         }
     }
 

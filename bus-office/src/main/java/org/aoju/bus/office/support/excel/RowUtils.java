@@ -75,7 +75,7 @@ public class RowUtils {
         boolean isAllNull = true;
         for (short i = 0; i < length; i++) {
             cellValue = CellUtils.getCellValue(row.getCell(i), cellEditor);
-            isAllNull &= StringUtils.isEmptyIfStr(cellValue);
+            isAllNull &= StringUtils.emptyIfStr(cellValue);
             cellValues.add(cellValue);
         }
 

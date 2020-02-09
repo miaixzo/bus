@@ -265,6 +265,7 @@ public class ZipUtils {
             addFile(file, subPath, out);
         }
     }
+
     /**
      * 对流中的数据加入到压缩文件,使用默认UTF-8编码
      *
@@ -930,7 +931,7 @@ public class ZipUtils {
     /**
      * 递归压缩文件夹
      * srcRootDir决定了路径截取的位置,例如：
-     * file的路径为d:/a/b/c/d.txt,srcRootDir为d:/a/b,则压缩后的文件与目录为结构为c/d.txt
+     * file的路径为/data/a/b/c/d.txt,srcRootDir为/data/a/b,则压缩后的文件与目录为结构为c/d.txt
      *
      * @param out        压缩文件存储对象
      * @param srcRootDir 被压缩的文件夹根目录

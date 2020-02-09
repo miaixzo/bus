@@ -38,7 +38,6 @@ import java.util.Map.Entry;
  */
 public class IterUtils {
 
-
     /**
      * Iterable是否为空
      *
@@ -543,7 +542,7 @@ public class IterUtils {
     }
 
     /**
-     * 过滤集合，此方法在原集合上直接修改<br>
+     * 过滤集合，此方法在原集合上直接修改
      * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
      *
      * <pre>
@@ -568,7 +567,7 @@ public class IterUtils {
     }
 
     /**
-     * 过滤集合，此方法在原集合上直接修改<br>
+     * 过滤集合，此方法在原集合上直接修改
      * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
      *
      * <pre>

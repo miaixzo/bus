@@ -77,5 +77,5 @@ public abstract class AbstractClientClientProcessor implements NettyClientProces
     protected boolean hasLock() {
         return true;
     }
-    
+
 }
