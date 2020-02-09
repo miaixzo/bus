@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 判断是否为固定电话
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 @Documented

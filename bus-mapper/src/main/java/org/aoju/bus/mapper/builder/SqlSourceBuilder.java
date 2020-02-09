@@ -37,7 +37,7 @@ import java.util.Set;
  * 拼常用SQL的工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class SqlSourceBuilder {

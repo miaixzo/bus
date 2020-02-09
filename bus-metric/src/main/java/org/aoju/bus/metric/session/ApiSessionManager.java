@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * session管理,默认存放的是{@link ApiHttpSession}。采用谷歌guava缓存实现。
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 public class ApiSessionManager implements SessionManager {

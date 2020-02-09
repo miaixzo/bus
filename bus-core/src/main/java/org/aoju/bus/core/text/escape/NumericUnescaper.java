@@ -38,7 +38,7 @@ import java.util.EnumSet;
  * Note that the semi-colon is optional.
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class NumericUnescaper extends CharSequenceTranslator {

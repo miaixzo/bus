@@ -42,7 +42,7 @@ import java.util.Map;
  * 配置类,所有配置相关都在这里.
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 @Data

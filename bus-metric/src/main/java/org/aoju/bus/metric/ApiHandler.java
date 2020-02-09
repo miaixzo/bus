@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  * 拦截器，原理同spring拦截器
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 public interface ApiHandler {

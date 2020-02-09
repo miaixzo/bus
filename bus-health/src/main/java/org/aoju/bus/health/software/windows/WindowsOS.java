@@ -62,7 +62,7 @@ import java.util.function.Supplier;
  * computers.
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class WindowsOS extends AbstractOS {
@@ -733,7 +733,7 @@ public class WindowsOS extends AbstractOS {
 
     // Properties to get from WMI if WTSEnumerateProcesses doesn't work
     enum ProcessXPProperty {
-        ProcessId, Name, KernelModeTime, UserModeTime, ThreadCount, PageFileUsage, HandleCount, ExecutablePath;
+        ProcessId, Name, KernelModeTime, UserModeTime, ThreadCount, PageFileUsage, HandleCount, ExecutablePath
     }
 
     enum ProcessPerformanceProperty implements PdhCounterWildcardProperty {

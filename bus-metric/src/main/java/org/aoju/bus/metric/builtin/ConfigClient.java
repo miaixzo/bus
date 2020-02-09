@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * 配置客户端
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8++
  */
 @Data

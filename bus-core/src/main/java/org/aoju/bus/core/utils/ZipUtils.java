@@ -39,7 +39,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class ZipUtils {
@@ -289,7 +289,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File zip(File zipFile, String path, String data, Charset charset) throws InstrumentException {
         return zip(zipFile, path, IoUtils.toStream(data, charset), charset);
@@ -319,7 +319,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File zip(File zipFile, String path, InputStream in, Charset charset) throws InstrumentException {
         return zip(zipFile, new String[]{path}, new InputStream[]{in}, charset);
@@ -390,7 +390,7 @@ public class ZipUtils {
      * @param charset     编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File unzip(String zipFilePath, Charset charset) throws InstrumentException {
         return unzip(FileUtils.file(zipFilePath), charset);
@@ -402,7 +402,7 @@ public class ZipUtils {
      * @param zipFile 压缩文件
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File unzip(File zipFile) throws InstrumentException {
         return unzip(zipFile, DEFAULT_CHARSET);
@@ -415,7 +415,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File unzip(File zipFile, Charset charset) throws InstrumentException {
         return unzip(zipFile, FileUtils.file(zipFile.getParentFile(), FileUtils.mainName(zipFile)), charset);
@@ -466,7 +466,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.5.5
+     * @since 5.5.6
      */
     public static File unzip(File zipFile, File outFile, Charset charset) throws InstrumentException {
         charset = (null == charset) ? DEFAULT_CHARSET : charset;

@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v5.5.5-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v5.5.6-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -89,21 +89,28 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.5.5</version>
+    <version>5.5.6</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:5.5.5'
+implementation 'org.aoju:bus-all:5.5.6'
 ```
 
-### Other
+### Downlad
 
 点击以下任一链接，下载`bus-*-x.x.x.jar`即可：
 
 - [Maven中央库①](https://repo1.maven.org/maven2/org/aoju)
 - [Maven中央库②](http://repo2.maven.org/maven2/org/aoju)
+
+### 测试&使用
+
+为确保项目编译效率及相关规则，本项目所有单元测试及使用请参考`abarth`项目：
+
+- 地址: [https://github.com/aoju/abarth](https://github.com/aoju/abarth) 
+
 
 > 注意
 > Bus项目支持JDK8+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。

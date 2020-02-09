@@ -53,7 +53,7 @@ import java.util.Map;
  * 代替{@link WebMvcStompEndpointRegistry}
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class StompEndpointRegistry extends WebMvcStompEndpointRegistry {

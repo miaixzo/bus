@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <a href="https://publicsuffix.org/">publicsuffix.org</a>.
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public final class SuffixDatabase {

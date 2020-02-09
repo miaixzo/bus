@@ -63,7 +63,7 @@ import java.util.Set;
  * 在Java和Httpd表示之间进行转换的方法
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public final class NetApiConvert {
@@ -418,7 +418,7 @@ public final class NetApiConvert {
         List<String> values = javaResponseHeaders.get(null);
         if (values == null || values.size() == 0) {
             throw new ProtocolException(
-                    "CacheResponse is missing a \'null\' header containing the status line. Headers="
+                    "CacheResponse is missing a null header containing the status line. Headers="
                             + javaResponseHeaders);
         }
         return values.get(0);

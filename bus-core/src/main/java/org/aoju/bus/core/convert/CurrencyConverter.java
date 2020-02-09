@@ -29,7 +29,7 @@ import java.util.Currency;
  * 货币{@link Currency} 转换器
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class CurrencyConverter extends AbstractConverter<Currency> {

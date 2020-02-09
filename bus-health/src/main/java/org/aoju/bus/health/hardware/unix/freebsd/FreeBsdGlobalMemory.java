@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * Memory obtained by sysctl vm.stats
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public class FreeBsdGlobalMemory extends AbstractGlobalMemory {

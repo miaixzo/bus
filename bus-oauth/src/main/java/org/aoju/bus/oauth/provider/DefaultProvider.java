@@ -59,7 +59,7 @@ import java.util.TreeMap;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 5.5.5
+ * @version 5.5.6
  * @since JDK 1.8+
  */
 public abstract class DefaultProvider implements Provider {
