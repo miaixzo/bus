@@ -2959,7 +2959,7 @@ public class DateUtils {
         final StringBuilder builder = StringUtils.builder();
 
         // 日期部分（"\"、"/"、"."、"年"、"月"都替换为"-"）
-        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", "-");
+        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", Symbol.HYPHEN);
         datePart = StringUtils.removeSuffix(datePart, "日");
         builder.append(datePart);
 

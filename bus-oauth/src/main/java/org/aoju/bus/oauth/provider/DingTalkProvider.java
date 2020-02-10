@@ -113,7 +113,7 @@ public class DingTalkProvider extends DefaultProvider {
     @Override
     protected String userInfoUrl(AccToken token) {
         // 根据timestamp, appSecret计算签名值
-        String timestamp = System.currentTimeMillis() + "";
+        String timestamp = System.currentTimeMillis() + Normal.EMPTY;
         String urlEncodeSignature = generateDingTalkSignature(context.getClientSecret(), timestamp);
 
         return Builder.fromBaseUrl(source.userInfo())

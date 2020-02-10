@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest.mac;
+package org.aoju.bus.crypto.digest.mac;
+
+import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.InputStream;
 
@@ -38,8 +40,9 @@ public interface MacEngine {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度
+     * @param bufferLength 缓存长度，不足1使用 {@link  IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      */
     byte[] digest(InputStream data, int bufferLength);
+
 }

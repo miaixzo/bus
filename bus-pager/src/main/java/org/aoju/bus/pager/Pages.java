@@ -358,7 +358,7 @@ public class Pages<T> extends PageSerializable<T> {
         } else {
             sb.append(Symbol.C_BRACKET_LEFT);
             for (int i = 0; i < navigatepageNums.length; ++i) {
-                sb.append(i == 0 ? "" : ", ").append(navigatepageNums[i]);
+                sb.append(i == 0 ? Normal.EMPTY : ", ").append(navigatepageNums[i]);
             }
             sb.append(Symbol.C_BRACKET_RIGHT);
         }

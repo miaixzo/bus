@@ -190,7 +190,7 @@ public class Base64 {
     }
 
     /**
-     * 编码为Base64<br>
+     * 编码为Base64
      * 如果isMultiLine为<code>true</code>，则每76个字符一个换行符，否则在一行显示
      *
      * @param arr         被编码的数组

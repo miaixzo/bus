@@ -56,38 +56,32 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     private final int century;
     private final int startYear;
 
-    // derived fields
+    // 导出字段
     private transient List<StrategyAndWidth> patterns;
 
-    // comparator used to sort regex alternatives
-    // alternatives should be ordered longer first, and shorter last. ('february' before 'feb')
-    // all entries must be lowercase by locale.
+    // 用来对正则表达式排序的比较器。('february' 在 'feb'之前)所有条目按区域设置必须是小写的
     private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
 
     /**
-     * <p>
-     * Constructs a new FastDateParser.
-     * </p>
-     * <p>
-     * Use {@link FastDateFormat#getInstance(String, TimeZone, Locale)} or another variation of the factory methods of {@link FastDateFormat} to get a cached FastDateParser instance.
+     * 构造一个新的FastDateParser
+     * 使用{@link FastDateFormat#getInstance(String, TimeZone, Locale)}
+     * 或{@link FastDateFormat}工厂方法的另一种变体来获取缓存的FastDateParser实例
      *
-     * @param pattern  non-null {@link java.text.SimpleDateFormat} compatible pattern
-     * @param timeZone non-null time zone to use
-     * @param locale   non-null locale
+     * @param pattern  非空{@link java.text.SimpleDateFormat} 兼容模式
+     * @param timeZone 非空时区
+     * @param locale   非空地区
      */
     protected FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale) {
         this(pattern, timeZone, locale, null);
     }
 
     /**
-     * <p>
-     * Constructs a new FastDateParser.
-     * </p>
+     * 构造一个新的FastDateParser
      *
-     * @param pattern      non-null {@link java.text.SimpleDateFormat} compatible pattern
-     * @param timeZone     non-null time zone to use
-     * @param locale       non-null locale
-     * @param centuryStart The start of the century for 2 digit year parsing
+     * @param pattern      非空{@link java.text.SimpleDateFormat} 兼容模式
+     * @param timeZone     非空时区
+     * @param locale       非空地区
+     * @param centuryStart 本世纪初为2位数年解析
      */
     protected FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
         super(pattern, timeZone, locale);
@@ -111,9 +105,9 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Initialize derived fields from defining fields. This is called from constructor and from readObject (de-serialization)
+     * 从定义字段初始化派生字段。这是从构造函数和readObject(反序列化)中调用的
      *
-     * @param definingCalendar the {@link java.util.Calendar} instance used to initialize this FastDateParser
+     * @param definingCalendar {@link java.util.Calendar} 用于初始化此FastDateParser的日历
      */
     private void init(final Calendar definingCalendar) {
         patterns = new ArrayList<>();
@@ -128,11 +122,8 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         }
     }
 
-    // helper classes to parse the format string
-    // -----------------------------------------------------------------------
-
     /**
-     * Holds strategy and field width
+     * 持有规则和宽度
      */
     private static class StrategyAndWidth {
         final Strategy strategy;
@@ -154,7 +145,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Parse format into Strategies
+     * 将格式解析为策略
      */
     private class StrategyParser {
         final private Calendar definingCalendar;
@@ -241,7 +232,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         final ParsePosition pp = new ParsePosition(0);
         final Date date = parse(source, pp);
         if (date == null) {
-            // Add a note re supported date range
             if (locale.equals(JAPANESE_IMPERIAL)) {
                 throw new ParseException("(The " + locale + " locale does not support dates before 1868 AD)\n" + "Unparseable date: \"" + source, pp.getErrorIndex());
             }
@@ -257,7 +247,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
 
     @Override
     public Date parse(final String source, final ParsePosition pos) {
-        // timing tests indicate getting new instance is 19% faster than cloning
+        // 时间测试表明获得新实例比克隆快19%
         final Calendar cal = Calendar.getInstance(timeZone, locale);
         cal.clear();
 
@@ -277,26 +267,23 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         return true;
     }
 
-    // Support for strategies
-    // -----------------------------------------------------------------------
-
     private static StringBuilder simpleQuote(final StringBuilder sb, final String value) {
         for (int i = 0; i < value.length(); ++i) {
             final char c = value.charAt(i);
             switch (c) {
-                case '\\':
-                case '^':
-                case '$':
-                case '.':
-                case '|':
-                case '?':
-                case '*':
-                case '+':
-                case '(':
-                case ')':
-                case '[':
-                case '{':
-                    sb.append('\\');
+                case Symbol.C_BACKSLASH:
+                case Symbol.C_CARET:
+                case Symbol.C_DOLLAR:
+                case Symbol.C_DOT:
+                case Symbol.C_OR:
+                case Symbol.C_QUESTION_MARK:
+                case Symbol.C_STAR:
+                case Symbol.C_PLUS:
+                case Symbol.C_PARENTHESE_LEFT:
+                case Symbol.C_PARENTHESE_RIGHT:
+                case Symbol.C_BRACKET_LEFT:
+                case Symbol.C_BRACE_LEFT:
+                    sb.append(Symbol.C_BACKSLASH);
                 default:
                     sb.append(c);
             }
@@ -305,13 +292,13 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * Get the short and long values displayed for a field
+     * 获取显示字段的短值和长值
      *
-     * @param cal    The calendar to obtain the short and long values
-     * @param locale The locale of display names
-     * @param field  The field of interest
-     * @param regex  The regular expression to build
-     * @return The map of string display names to field values
+     * @param cal    获取该日历的短值和长值
+     * @param locale 显示名称的区域设置
+     * @param field  字段信息
+     * @param regex  要构建的正则表达式
+     * @return 字符串的映射将名称显示为字段值
      */
     private static Map<String, Integer> appendDisplayNames(final Calendar cal, final Locale locale, final int field, final StringBuilder regex) {
         final Map<String, Integer> values = new HashMap<>();
@@ -334,7 +321,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
      * 使用当前的世纪调整两位数年份为四位数年份
      *
      * @param twoDigitYear 两位数年份
-     * @return A value between centuryStart(inclusive) to centuryStart+100(exclusive)
+     * @return 从centuryStart(inclusive)到centuryStart+100(exclusive)之间的值
      */
     private int adjustYear(final int twoDigitYear) {
         final int trial = century + twoDigitYear;
@@ -346,9 +333,9 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
      */
     private static abstract class Strategy {
         /**
-         * Is this field a number? The default implementation returns false.
+         * 这个字段是否为数组,默认实现返回false
          *
-         * @return true, if field is a number
+         * @return 如果字段是一个数字，则为真
          */
         boolean isNumber() {
             return false;
@@ -358,7 +345,7 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * A strategy to parse a single field from the parsing pattern
+     * 从解析模式解析单个字段的策略
      */
     private static abstract class PatternStrategy extends Strategy {
 
@@ -372,11 +359,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             this.pattern = Pattern.compile(regex);
         }
 
-        /**
-         * Is this field a number? The default implementation returns false.
-         *
-         * @return true, if field is a number
-         */
         @Override
         boolean isNumber() {
             return false;
@@ -452,20 +434,18 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
                 if (width == 2) {
                     return ISO8601TimeZoneStrategy.ISO_8601_3_STRATEGY;
                 }
-                //$FALL-THROUGH$
             case 'z':
                 return getLocaleSpecificStrategy(Calendar.ZONE_OFFSET, definingCalendar);
         }
     }
 
-    @SuppressWarnings("unchecked") // OK because we are creating an array with no entries
     private static final ConcurrentMap<Locale, Strategy>[] caches = new ConcurrentMap[Calendar.FIELD_COUNT];
 
     /**
-     * Get a cache of Strategies for a particular field
+     * 获取特定字段的策略缓存
      *
-     * @param field The Calendar field
-     * @return a cache of Locale to Strategy
+     * @param field 日历字段
+     * @return 区域设置到策略的缓存
      */
     private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
         synchronized (caches) {
@@ -497,24 +477,21 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     }
 
     /**
-     * A strategy that copies the static or quoted field in the parsing pattern
+     * 在解析模式中复制静态字段或带引号字段的策略
      */
     private static class CopyQuotedStrategy extends Strategy {
 
         final private String formatField;
 
         /**
-         * Construct a Strategy that ensures the formatField has literal text
+         * 构造一个确保formatField具有文本的策略
          *
-         * @param formatField The literal text to match
+         * @param formatField 要匹配的文字
          */
         CopyQuotedStrategy(final String formatField) {
             this.formatField = formatField;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         boolean isNumber() {
             return false;
@@ -677,13 +654,13 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             this.locale = locale;
 
             final StringBuilder sb = new StringBuilder();
-            sb.append("((?iu)" + RFC_822_TIME_ZONE + Symbol.OR + UTC_TIME_ZONE_WITH_OFFSET + "|" + GMT_OPTION);
+            sb.append("((?iu)" + RFC_822_TIME_ZONE + Symbol.OR + UTC_TIME_ZONE_WITH_OFFSET + Symbol.OR + GMT_OPTION);
 
             final Set<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
 
             final String[][] zones = DateFormatSymbols.getInstance(locale).getZoneStrings();
             for (final String[] zoneNames : zones) {
-                // offset 0 is the time zone ID and is not localized
+                // 偏移量0是时区ID，没有本地化
                 final String tzId = zoneNames[ID];
                 if ("GMT".equalsIgnoreCase(tzId)) {
                     continue;
@@ -693,36 +670,36 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
                 TzInfo tzInfo = standard;
                 for (int i = 1; i < zoneNames.length; ++i) {
                     switch (i) {
-                        case 3: // offset 3 is long daylight savings (or summertime) name
-                            // offset 4 is the short summertime name
+                        // 偏移量3是夏令时(或夏季)的名称
+                        // offset 4是较短的夏季时间名称
+                        case 3:
                             tzInfo = new TzInfo(tz, true);
                             break;
-                        case 5: // offset 5 starts additional names, probably standard time
+                        // 偏移量5开始额外的名称，可能是标准时间
+                        case 5:
                             tzInfo = standard;
                             break;
                     }
                     if (zoneNames[i] != null) {
                         final String key = zoneNames[i].toLowerCase(locale);
-                        // ignore the data associated with duplicates supplied in
-                        // the additional names
+                        // 忽略附加名称中提供的与重复项关联的数据
                         if (sorted.add(key)) {
                             tzNames.put(key, tzInfo);
                         }
                     }
                 }
             }
-            // order the regex alternatives with longer strings first, greedy
-            // match will ensure longest string will be consumed
+            // 将具有更长的字符串的regex替换排序，贪婪匹配将确保使用最长的字符串
             for (final String zoneName : sorted) {
-                simpleQuote(sb.append('|'), zoneName);
+                simpleQuote(sb.append(Symbol.C_OR), zoneName);
             }
-            sb.append(")");
+            sb.append(Symbol.PARENTHESE_RIGHT);
             createPattern(sb);
         }
 
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
-            if (value.charAt(0) == '+' || value.charAt(0) == '-') {
+            if (value.charAt(0) == Symbol.C_PLUS || value.charAt(0) == Symbol.C_HYPHEN) {
                 final TimeZone tz = TimeZone.getTimeZone("GMT" + value);
                 cal.setTimeZone(tz);
             } else if (value.regionMatches(true, 0, "GMT", 0, 3)) {

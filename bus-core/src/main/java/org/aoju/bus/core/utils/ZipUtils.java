@@ -555,7 +555,7 @@ public class ZipUtils {
             ZipEntry zipEntry;
             File outItemFile;
             while (null != (zipEntry = zipStream.getNextEntry())) {
-                // FileUtil.file会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+                // FileUtils.file会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
                 outItemFile = FileUtils.file(outFile, zipEntry.getName());
                 if (zipEntry.isDirectory()) {
                     // 目录

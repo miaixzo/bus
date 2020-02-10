@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.metric.register;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.ClassUtils;
 import org.aoju.bus.logger.Logger;
 import org.objectweb.asm.*;
@@ -80,7 +81,7 @@ public class SingleParameterContext {
     public static String getMethodParameterName(Class<?> clazz, final Method method, int index) {
         String[] names = getMethodParameterNamesByAsm(clazz, method);
         if (names.length == 0) {
-            return "";
+            return Normal.EMPTY;
         }
         return names[index];
     }

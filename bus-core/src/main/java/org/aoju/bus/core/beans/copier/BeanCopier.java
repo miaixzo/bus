@@ -108,7 +108,6 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T copy() {
         if (null != this.source) {
             if (this.source instanceof ValueProvider) {

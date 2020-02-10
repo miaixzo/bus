@@ -204,7 +204,7 @@ public class HuaweiProvider extends DefaultProvider {
      */
     private Normal.Gender getRealGender(JSONObject object) {
         int genderCodeInt = object.getIntValue("gender");
-        String genderCode = genderCodeInt == 1 ? Symbol.ZERO : (genderCodeInt == 0) ? Symbol.ONE : genderCodeInt + "";
+        String genderCode = genderCodeInt == 1 ? Symbol.ZERO : (genderCodeInt == 0) ? Symbol.ONE : genderCodeInt + Normal.EMPTY;
         return Normal.Gender.getGender(genderCode);
     }
 

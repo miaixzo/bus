@@ -51,8 +51,8 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
-import org.aoju.bus.crypto.algorithm.asymmetric.KeyType;
-import org.aoju.bus.crypto.algorithm.asymmetric.RSA;
+import org.aoju.bus.crypto.asymmetric.KeyType;
+import org.aoju.bus.crypto.asymmetric.RSA;
 
 /**
  * RSA 加密解密算法

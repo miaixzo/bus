@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.asymmetric;
+package org.aoju.bus.crypto.asymmetric;
 
+import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.io.FastByteArray;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.Builder;
@@ -39,11 +40,11 @@ import java.security.PublicKey;
  * 非对称加密算法
  *
  * <pre>
- * 1、签名：使用私钥加密,公钥解密
- * 用于让所有公钥所有者验证私钥所有者的身份并且用来防止私钥所有者发布的内容被篡改,但是不用来保证内容不被他人获得
+ * 1、签名：使用私钥加密，公钥解密。
+ * 用于让所有公钥所有者验证私钥所有者的身份并且用来防止私钥所有者发布的内容被篡改，但是不用来保证内容不被他人获得。
  *
- * 2、加密：用公钥加密,私钥解密
- * 用于向公钥所有者发布信息,这个信息可能被他人篡改,但是无法被他人获得
+ * 2、加密：用公钥加密，私钥解密。
+ * 用于向公钥所有者发布信息,这个信息可能被他人篡改,但是无法被他人获得。
  * </pre>
  *
  * @author Kimi Liu
@@ -67,7 +68,7 @@ public class Asymmetric extends Safety<Asymmetric> {
     protected int decryptBlockSize = -1;
 
     /**
-     * 构造,创建新的私钥公钥对
+     * 构造，创建新的私钥公钥对
      *
      * @param algorithm 算法
      */
@@ -77,19 +78,20 @@ public class Asymmetric extends Safety<Asymmetric> {
 
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param algorithm  算法
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
+     * @param algorithm  非对称加密算法
+     * @param privateKey 私钥Base64
+     * @param publicKey  公钥Base64
      */
     public Asymmetric(String algorithm, String privateKey, String publicKey) {
-        this(algorithm, Builder.decode(privateKey), Builder.decode(publicKey));
+        this(algorithm, Base64.decode(privateKey), Base64.decode(publicKey));
     }
 
     /**
+     * 构造
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -103,13 +105,14 @@ public class Asymmetric extends Safety<Asymmetric> {
     }
 
     /**
+     * 构造
+     * <p>
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥
      * @param publicKey  公钥
-     * @since 3.1.1
      */
     public Asymmetric(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
         super(algorithm, privateKey, publicKey);
@@ -214,7 +217,7 @@ public class Asymmetric extends Safety<Asymmetric> {
     }
 
     /**
-     * 初始化{@link Cipher},默认尝试加载BC库
+     * 初始化{@link Cipher}，默认尝试加载BC库
      */
     protected void initCipher() {
         this.cipher = Builder.createCipher(algorithm);
@@ -228,7 +231,7 @@ public class Asymmetric extends Safety<Asymmetric> {
      * @return 加密或解密后的数据
      * @throws IllegalBlockSizeException 分段异常
      * @throws BadPaddingException       padding错误异常
-     * @throws IOException               IO异常,不会被触发
+     * @throws IOException               IO异常，不会被触发
      */
     private byte[] doFinal(byte[] data, int maxBlockSize) throws IllegalBlockSizeException, BadPaddingException, IOException {
         // 模长
@@ -247,14 +250,15 @@ public class Asymmetric extends Safety<Asymmetric> {
      * 分段加密或解密
      *
      * @param data         数据
-     * @param maxBlockSize 最大分段的段大小,不能为小于1
+     * @param maxBlockSize 最大分段的段大小，不能为小于1
      * @return 加密或解密后的数据
      * @throws IllegalBlockSizeException 分段异常
      * @throws BadPaddingException       padding错误异常
-     * @throws IOException               IO异常,不会被触发
+     * @throws IOException               IO异常，不会被触发
      */
     private byte[] doFinalWithBlock(byte[] data, int maxBlockSize) throws IllegalBlockSizeException, BadPaddingException, IOException {
         final int dataLength = data.length;
+
         final FastByteArray out = new FastByteArray();
 
         int offSet = 0;
@@ -269,6 +273,7 @@ public class Asymmetric extends Safety<Asymmetric> {
             offSet += blockSize;
             remainLength = dataLength - offSet;
         }
+
         return out.toByteArray();
     }
 

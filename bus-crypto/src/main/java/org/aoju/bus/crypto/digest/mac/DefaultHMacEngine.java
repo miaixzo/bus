@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest.mac;
+package org.aoju.bus.crypto.digest.mac;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 默认的HMAC算法实现引擎,使用{@link Mac} 实现摘要
+ * 默认的HMAC算法实现引擎，使用{@link Mac} 实现摘要
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
@@ -82,6 +82,7 @@ public class DefaultHMacEngine implements MacEngine {
      * @param algorithm 算法
      * @param key       密钥 {@link SecretKey}
      * @return this
+     * @throws InstrumentException Cause by IOException
      */
     public DefaultHMacEngine init(String algorithm, SecretKey key) {
         try {

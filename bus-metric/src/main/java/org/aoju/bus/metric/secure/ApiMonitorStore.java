@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.metric.secure;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.metric.consts.MetricConsts;
 import org.aoju.bus.metric.manual.ApiParam;
 import org.aoju.bus.metric.manual.ApiSearch;
@@ -212,7 +213,7 @@ public class ApiMonitorStore implements MonitorStore {
 
     private String getKey(String name, String version) {
         if (version == null) {
-            version = "";
+            version = Normal.EMPTY;
         }
         return ApiParam.buildNameVersion(name, version);
     }

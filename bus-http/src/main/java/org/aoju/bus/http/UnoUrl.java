@@ -56,7 +56,7 @@ public final class UnoUrl {
     public static final String QUERY_COMPONENT_ENCODE_SET = " !\"#$&'(),/:;<=>?@[]\\^`{|}~";
     public static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
     public static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
-    public static final String FRAGMENT_ENCODE_SET = "";
+    public static final String FRAGMENT_ENCODE_SET = Normal.EMPTY;
     public static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
 
     /**
@@ -828,15 +828,15 @@ public final class UnoUrl {
         static final String INVALID_HOST = "Invalid URL host";
         final List<String> encodedPathSegments = new ArrayList<>();
         String scheme;
-        String encodedUsername = "";
-        String encodedPassword = "";
+        String encodedUsername = Normal.EMPTY;
+        String encodedPassword = Normal.EMPTY;
         String host;
         int port = -1;
         List<String> encodedQueryNamesAndValues;
         String encodedFragment;
 
         public Builder() {
-            encodedPathSegments.add("");
+            encodedPathSegments.add(Normal.EMPTY);
         }
 
         private static int schemeDelimiterOffset(String input, int pos, int limit) {
@@ -900,7 +900,7 @@ public final class UnoUrl {
 
         private static int parsePort(String input, int pos, int limit) {
             try {
-                String portString = canonicalize(input, pos, limit, "", false, false, false, true, null);
+                String portString = canonicalize(input, pos, limit, Normal.EMPTY, false, false, false, true, null);
                 int i = Integer.parseInt(portString);
                 if (i > 0 && i <= 65535) return i;
                 return -1;
@@ -1299,7 +1299,7 @@ public final class UnoUrl {
                             }
                             if (host == null) {
                                 throw new IllegalArgumentException(
-                                        INVALID_HOST + ": \"" + input.substring(pos, portColonOffset) + Symbol.C_DOUBLE_QUOTES);
+                                        INVALID_HOST + ": " + input.substring(pos, portColonOffset) + Symbol.C_DOUBLE_QUOTES);
                             }
                             pos = componentDelimiterOffset;
                             break authority;
@@ -1343,7 +1343,7 @@ public final class UnoUrl {
             char c = input.charAt(pos);
             if (c == Symbol.C_SLASH || c == Symbol.C_BACKSLASH) {
                 encodedPathSegments.clear();
-                encodedPathSegments.add("");
+                encodedPathSegments.add(Normal.EMPTY);
                 pos++;
             } else {
                 encodedPathSegments.set(encodedPathSegments.size() - 1, Normal.EMPTY);
@@ -1375,7 +1375,7 @@ public final class UnoUrl {
                 encodedPathSegments.add(segment);
             }
             if (addTrailingSlash) {
-                encodedPathSegments.add("");
+                encodedPathSegments.add(Normal.EMPTY);
             }
         }
 
@@ -1400,9 +1400,9 @@ public final class UnoUrl {
         private void pop() {
             String removed = encodedPathSegments.remove(encodedPathSegments.size() - 1);
             if (removed.isEmpty() && !encodedPathSegments.isEmpty()) {
-                encodedPathSegments.set(encodedPathSegments.size() - 1, "");
+                encodedPathSegments.set(encodedPathSegments.size() - 1, Normal.EMPTY);
             } else {
-                encodedPathSegments.add("");
+                encodedPathSegments.add(Normal.EMPTY);
             }
         }
     }

@@ -675,7 +675,7 @@ public class NetUtils {
 
                 for (String s : tem) {
                     String ip = fromIP.toString().replace("[*]",
-                            s.split(";")[0]) + "-" + endIP.toString().replace("[*]",
+                            s.split(";")[0]) + Symbol.HYPHEN + endIP.toString().replace("[*]",
                             s.split(";")[1]);
                     if (validate(ip)) {
                         ipList.add(ip);
@@ -704,9 +704,9 @@ public class NetUtils {
             return true;
         } else {
             for (String allow : ipList) {
-                if (allow.contains("-")) {
-                    String[] from = allow.split("-")[0].split("\\.");
-                    String[] end = allow.split("-")[1].split("\\.");
+                if (allow.contains(Symbol.HYPHEN)) {
+                    String[] from = allow.split(Symbol.HYPHEN)[0].split("\\.");
+                    String[] end = allow.split(Symbol.HYPHEN)[1].split("\\.");
                     String[] tag = ip.split("\\.");
 
                     // 对IP从左到右进行逐段匹配
@@ -787,7 +787,7 @@ public class NetUtils {
      * @return success true
      */
     private static boolean validate(String ip) {
-        for (String s : ip.split("-")) {
+        for (String s : ip.split(Symbol.HYPHEN)) {
             if (!RegEx.IPV4.matcher(s).matches()) {
                 return false;
             }

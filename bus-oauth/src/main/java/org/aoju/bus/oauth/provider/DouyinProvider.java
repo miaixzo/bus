@@ -94,7 +94,7 @@ public class DouyinProvider extends DefaultProvider {
         JSONObject data = object.getJSONObject("data");
         int errorCode = data.getIntValue("error_code");
         if ("error".equals(message) || errorCode != 0) {
-            throw new InstrumentException("" + errorCode, data.getString("description"));
+            throw new InstrumentException(Normal.EMPTY + errorCode, data.getString("description"));
         }
     }
 

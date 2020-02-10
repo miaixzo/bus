@@ -56,4 +56,5 @@ public interface Provider {
      * @return 解密结果
      */
     byte[] decrypt(String key, byte[] content);
+
 }

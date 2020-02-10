@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.metric.session;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.springframework.util.Assert;
 
 import javax.servlet.ServletContext;
@@ -81,7 +83,7 @@ public class ApiHttpSession implements HttpSession, Serializable {
     }
 
     protected String buildId(String id) {
-        return (id != null ? id : UUID.randomUUID().toString().replace("-", "").toUpperCase());
+        return (id != null ? id : UUID.randomUUID().toString().replace(Symbol.HYPHEN, Normal.EMPTY).toUpperCase());
     }
 
     @Override

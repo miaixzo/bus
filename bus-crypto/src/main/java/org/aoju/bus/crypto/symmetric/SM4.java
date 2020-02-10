@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.symmetric;
+package org.aoju.bus.crypto.symmetric;
 
-import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
@@ -33,39 +34,39 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 /**
- * DES加密算法实现
- * DES全称为Data Encryption Standard,即数据加密标准,是一种使用密钥加密的块算法
- * Java中默认实现为：DES/CBC/PKCS5Padding
+ * SM4实现
  *
  * @author Kimi Liu
  * @version 5.5.6
  * @since JDK 1.8+
  */
-public class DES extends Symmetric {
+public class SM4 extends Symmetric {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 构造,默认DES/CBC/PKCS5Padding,使用随机密钥
+     * 构造，使用随机密钥
      */
-    public DES() {
-        super(Algorithm.DES);
+    public SM4() {
+        super(Algorithm.SM4);
     }
 
     /**
-     * 构造,使用默认的DES/CBC/PKCS5Padding
+     * 构造
      *
      * @param key 密钥
      */
-    public DES(byte[] key) {
-        super(Algorithm.DES, key);
+    public SM4(byte[] key) {
+        super(Algorithm.SM4, key);
     }
 
     /**
-     * 构造,使用随机密钥
+     * 构造，使用随机密钥
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
      */
-    public DES(Mode mode, Padding padding) {
+    public SM4(Mode mode, Padding padding) {
         this(mode.name(), padding.name());
     }
 
@@ -74,9 +75,9 @@ public class DES extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥,长度：8的倍数
+     * @param key     密钥，支持三种密钥长度：128、192、256位
      */
-    public DES(Mode mode, Padding padding, byte[] key) {
+    public SM4(Mode mode, Padding padding, byte[] key) {
         this(mode, padding, key, null);
     }
 
@@ -85,10 +86,10 @@ public class DES extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥,长度：8的倍数
-     * @param iv      偏移向量,加盐
+     * @param key     密钥，支持三种密钥长度：128、192、256位
+     * @param iv      偏移向量，加盐
      */
-    public DES(Mode mode, Padding padding, byte[] key, byte[] iv) {
+    public SM4(Mode mode, Padding padding, byte[] key, byte[] iv) {
         this(mode.name(), padding.name(), key, iv);
     }
 
@@ -97,10 +98,10 @@ public class DES extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥,长度：8的倍数
+     * @param key     密钥，支持三种密钥长度：128、192、256位
      */
-    public DES(Mode mode, Padding padding, SecretKey key) {
-        this(mode, padding, key, null);
+    public SM4(Mode mode, Padding padding, SecretKey key) {
+        this(mode, padding, key, (IvParameterSpec) null);
     }
 
     /**
@@ -108,10 +109,22 @@ public class DES extends Symmetric {
      *
      * @param mode    模式{@link Mode}
      * @param padding {@link Padding}补码方式
-     * @param key     密钥,长度：8的倍数
-     * @param iv      偏移向量,加盐
+     * @param key     密钥，支持三种密钥长度：128、192、256位
+     * @param iv      偏移向量，加盐
      */
-    public DES(Mode mode, Padding padding, SecretKey key, IvParameterSpec iv) {
+    public SM4(Mode mode, Padding padding, SecretKey key, byte[] iv) {
+        this(mode, padding, key, ArrayUtils.isEmpty(iv) ? ((IvParameterSpec) null) : new IvParameterSpec(iv));
+    }
+
+    /**
+     * 构造
+     *
+     * @param mode    模式{@link Mode}
+     * @param padding {@link Padding}补码方式
+     * @param key     密钥，支持三种密钥长度：128、192、256位
+     * @param iv      偏移向量，加盐
+     */
+    public SM4(Mode mode, Padding padding, SecretKey key, IvParameterSpec iv) {
         this(mode.name(), padding.name(), key, iv);
     }
 
@@ -121,7 +134,7 @@ public class DES extends Symmetric {
      * @param mode    模式
      * @param padding 补码方式
      */
-    public DES(String mode, String padding) {
+    public SM4(String mode, String padding) {
         this(mode, padding, (byte[]) null);
     }
 
@@ -130,32 +143,9 @@ public class DES extends Symmetric {
      *
      * @param mode    模式
      * @param padding 补码方式
-     * @param key     密钥,长度：8的倍数
+     * @param key     密钥，支持三种密钥长度：128、192、256位
      */
-    public DES(String mode, String padding, byte[] key) {
-        this(mode, padding, Builder.generateKey("DES", key), null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥,长度：8的倍数
-     * @param iv      加盐
-     */
-    public DES(String mode, String padding, byte[] key, byte[] iv) {
-        this(mode, padding, Builder.generateKey("DES", key), null == iv ? null : new IvParameterSpec(iv));
-    }
-
-    /**
-     * 构造
-     *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥,长度：8的倍数
-     */
-    public DES(String mode, String padding, SecretKey key) {
+    public SM4(String mode, String padding, byte[] key) {
         this(mode, padding, key, null);
     }
 
@@ -164,33 +154,36 @@ public class DES extends Symmetric {
      *
      * @param mode    模式
      * @param padding 补码方式
-     * @param key     密钥,长度：8的倍数
+     * @param key     密钥，支持三种密钥长度：128、192、256位
      * @param iv      加盐
      */
-    public DES(String mode, String padding, SecretKey key, IvParameterSpec iv) {
-        super(StringUtils.format("DES/{}/{}", mode, padding), key, iv);
+    public SM4(String mode, String padding, byte[] key, byte[] iv) {
+        this(mode, padding,
+                Builder.generateKey(Algorithm.SM4, key),
+                ArrayUtils.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }
 
     /**
-     * 设置偏移向量
+     * 构造
      *
-     * @param iv {@link IvParameterSpec}偏移向量
-     * @return 自身
+     * @param mode    模式
+     * @param padding 补码方式
+     * @param key     密钥，支持三种密钥长度：128、192、256位
      */
-    public DES setIv(IvParameterSpec iv) {
-        super.setParams(iv);
-        return this;
+    public SM4(String mode, String padding, SecretKey key) {
+        this(mode, padding, key, null);
     }
 
     /**
-     * 设置偏移向量
+     * 构造
      *
-     * @param iv 偏移向量,加盐
-     * @return 自身
+     * @param mode    模式
+     * @param padding 补码方式
+     * @param key     密钥，支持三种密钥长度：128、192、256位
+     * @param iv      加盐
      */
-    public DES setIv(byte[] iv) {
-        setIv(new IvParameterSpec(iv));
-        return this;
+    public SM4(String mode, String padding, SecretKey key, IvParameterSpec iv) {
+        super(StringUtils.format("SM4/{}/{}", mode, padding), key, iv);
     }
 
 }

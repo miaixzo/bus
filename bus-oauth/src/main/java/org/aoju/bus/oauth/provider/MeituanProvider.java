@@ -135,7 +135,7 @@ public class MeituanProvider extends DefaultProvider {
                 .queryParam("app_id", context.getClientId())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
-                .queryParam("scope", "")
+                .queryParam("scope", Normal.EMPTY)
                 .build();
     }
 

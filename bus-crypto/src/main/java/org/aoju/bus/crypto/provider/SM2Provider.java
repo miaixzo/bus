@@ -51,8 +51,9 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
-import org.aoju.bus.crypto.algorithm.asymmetric.KeyType;
-import org.aoju.bus.crypto.algorithm.asymmetric.SM2;
+import org.aoju.bus.crypto.asymmetric.KeyType;
+import org.aoju.bus.crypto.asymmetric.SM2;
+import org.aoju.bus.crypto.asymmetric.SM2Engine;
 
 /**
  * RSA 加密解密算法
@@ -78,7 +79,7 @@ public class SM2Provider implements Provider {
         }
         String[] array = StringUtils.split(key, Symbol.COMMA);
         SM2 sm2 = Builder.sm2(array[0], array[1]);
-        sm2.setMode(SM2.SM2Mode.C1C3C2);
+        sm2.setMode(SM2Engine.SM2Mode.C1C3C2);
         return sm2.encrypt(content, KeyType.valueOf(array[2]));
     }
 
@@ -96,7 +97,7 @@ public class SM2Provider implements Provider {
         }
         String[] array = StringUtils.split(key, Symbol.COMMA);
         SM2 sm2 = Builder.sm2(array[0], array[1]);
-        sm2.setMode(SM2.SM2Mode.C1C3C2);
+        sm2.setMode(SM2Engine.SM2Mode.C1C3C2);
         return sm2.decrypt(content, KeyType.valueOf(array[2]));
     }
 

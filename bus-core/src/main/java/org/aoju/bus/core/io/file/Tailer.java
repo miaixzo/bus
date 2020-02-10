@@ -180,7 +180,7 @@ public class Tailer implements Serializable {
 
                 c = this.randomAccessFile.read();
                 if (c == Symbol.C_LF || c == Symbol.C_CR) {
-                    // FileUtil.readLine(this.randomAccessFile, this.charset, this.lineHandler);
+                    // FileUtils.readLine(this.randomAccessFile, this.charset, this.lineHandler);
                     final String line = FileUtils.readLine(this.randomAccessFile, this.charset);
                     if (null != line) {
                         stack.push(line);
@@ -192,7 +192,7 @@ public class Tailer implements Serializable {
                 this.randomAccessFile.seek(nextEnd);
                 if (nextEnd == 0) {
                     // 当文件指针退至文件开始处，输出第一行
-                    // FileUtil.readLine(this.randomAccessFile, this.charset, this.lineHandler);
+                    // FileUtils.readLine(this.randomAccessFile, this.charset, this.lineHandler);
                     final String line = FileUtils.readLine(this.randomAccessFile, this.charset);
                     if (null != line) {
                         stack.push(line);

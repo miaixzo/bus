@@ -21,43 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest;
+package org.aoju.bus.crypto.digest;
 
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.crypto.algorithm.digest.mac.MacEngine;
-import org.aoju.bus.crypto.algorithm.digest.mac.MacEngineFactory;
+import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.crypto.digest.mac.MacEngine;
+import org.aoju.bus.crypto.digest.mac.MacEngineFactory;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 
 /**
  * HMAC摘要算法
- * HMAC,全称为“Hash Message Authentication Code”,中文名“散列消息鉴别码”
- * 主要是利用哈希算法,以一个密钥和一个消息为输入,生成一个消息摘要作为输出
- * 一般的,消息鉴别码用于验证传输于两个共 同享有一个密钥的单位之间的消息
- * HMAC 可以与任何迭代散列函数捆绑使用 MD5 和 SHA-1 就是这种散列函数 HMAC 还可以使用一个用于计算和确认消息鉴别值的密钥
+ * HMAC，全称为“Hash Message Authentication Code”，中文名“散列消息鉴别码”
+ * 主要是利用哈希算法，以一个密钥和一个消息为输入，生成一个消息摘要作为输出。
+ * 一般的，消息鉴别码用于验证传输于两个共 同享有一个密钥的单位之间的消息。
+ * HMAC 可以与任何迭代散列函数捆绑使用。MD5 和 SHA-1 就是这种散列函数。HMAC 还可以使用一个用于计算和确认消息鉴别值的密钥。
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
  * @version 5.5.6
  * @since JDK 1.8+
  */
-public class HMac {
+public class HMac implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private MacEngine engine;
 
     /**
-     * 构造,自动生成密钥
+     * 构造，自动生成密钥
      *
-     * @param algorithm 算法
+     * @param algorithm 算法 {@link Algorithm}
      */
     public HMac(String algorithm) {
         this(algorithm, (SecretKey) null);
@@ -110,11 +113,11 @@ public class HMac {
      * @return 摘要
      */
     public byte[] digest(String data) {
-        return digest(data, Charset.DEFAULT_UTF_8);
+        return digest(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
-     * 生成文件摘要,并转为16进制字符串
+     * 生成文件摘要，并转为16进制字符串
      *
      * @param data    被摘要数据
      * @param charset 编码
@@ -131,12 +134,12 @@ public class HMac {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, Charset.DEFAULT_UTF_8);
+        return digestHex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
      * 生成文件摘要
-     * 使用默认缓存大小
+     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
      * @return 摘要bytes
@@ -153,8 +156,8 @@ public class HMac {
     }
 
     /**
-     * 生成文件摘要,并转为16进制字符串
-     * 使用默认缓存大小
+     * 生成文件摘要，并转为16进制字符串
+     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
      * @return 摘要
@@ -174,7 +177,7 @@ public class HMac {
     }
 
     /**
-     * 生成摘要,并转为16进制字符串
+     * 生成摘要，并转为16进制字符串
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -184,7 +187,7 @@ public class HMac {
     }
 
     /**
-     * 生成摘要,使用默认缓存大小
+     * 生成摘要，使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param data {@link InputStream} 数据流
      * @return 摘要bytes
@@ -194,8 +197,8 @@ public class HMac {
     }
 
     /**
-     * 生成摘要,并转为16进制字符串
-     * 使用默认缓存大小
+     * 生成摘要，并转为16进制字符串
+     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -208,7 +211,7 @@ public class HMac {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度
+     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      */
     public byte[] digest(InputStream data, int bufferLength) {
@@ -216,11 +219,11 @@ public class HMac {
     }
 
     /**
-     * 生成摘要,并转为16进制字符串
-     * 使用默认缓存大小
+     * 生成摘要，并转为16进制字符串
+     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param data         被摘要数据
-     * @param bufferLength 缓存长度
+     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要
      */
     public String digestHex(InputStream data, int bufferLength) {

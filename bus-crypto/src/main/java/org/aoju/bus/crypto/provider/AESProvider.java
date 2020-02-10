@@ -50,7 +50,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
-import org.aoju.bus.crypto.algorithm.symmetric.AES;
+import org.aoju.bus.crypto.symmetric.AES;
 
 /**
  * 高级加密标准,是下一代的加密算法标准,速度快,安全级别高；

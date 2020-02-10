@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.limiter.support.rate.redis;
 
+import org.aoju.bus.core.lang.Normal;
 import org.redisson.RedissonObject;
 import org.redisson.api.RFuture;
 import org.redisson.client.codec.Codec;
@@ -56,7 +57,7 @@ public class RedisRatelimiterObject extends RedissonObject {
     }
 
     private <T> RFuture<T> tryAcquireAsync(RedisCommand<T> command, long permits, double rate, long capacity) {
-        String hash = Objects.hash(rate, capacity) + "";
+        String hash = Objects.hash(rate, capacity) + Normal.EMPTY;
         return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, command,
                 "local capacity = tonumber(ARGV[1])\n" +
                         "local rate = tonumber(ARGV[2])\n" +

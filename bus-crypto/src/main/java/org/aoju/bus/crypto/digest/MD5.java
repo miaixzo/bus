@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest;
+package org.aoju.bus.crypto.digest;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.Builder;
@@ -38,6 +38,17 @@ import java.nio.charset.Charset;
  * @since JDK 1.8+
  */
 public class MD5 extends Digester {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 创建MD5实例
+     *
+     * @return MD5
+     */
+    public static MD5 create() {
+        return new MD5();
+    }
 
     /**
      * 构造
@@ -59,7 +70,7 @@ public class MD5 extends Digester {
      * 构造
      *
      * @param salt        盐值
-     * @param digestCount 摘要次数,当此值小于等于1,默认为1
+     * @param digestCount 摘要次数，当此值小于等于1,默认为1。
      */
     public MD5(byte[] salt, int digestCount) {
         this(salt, 0, digestCount);
@@ -69,23 +80,14 @@ public class MD5 extends Digester {
      * 构造
      *
      * @param salt         盐值
-     * @param saltPosition 加盐位置,既将盐值字符串放置在数据的index数,默认0
-     * @param digestCount  摘要次数,当此值小于等于1,默认为1
+     * @param saltPosition 加盐位置，即将盐值字符串放置在数据的index数，默认0
+     * @param digestCount  摘要次数，当此值小于等于1,默认为1。
      */
     public MD5(byte[] salt, int saltPosition, int digestCount) {
         this();
         this.salt = salt;
         this.saltPosition = saltPosition;
         this.digestCount = digestCount;
-    }
-
-    /**
-     * 创建MD5实例
-     *
-     * @return MD5
-     */
-    public static MD5 create() {
-        return new MD5();
     }
 
     /**

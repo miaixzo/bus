@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.symmetric;
+package org.aoju.bus.crypto.symmetric;
 
 /**
- * 维吉尼亚密码实现
- * 人们在恺撒移位密码的基础上扩展出多表密码,称为维吉尼亚密码
+ * 维吉尼亚密码实现。
+ * 人们在恺撒移位密码的基础上扩展出多表密码，称为维吉尼亚密码。
+ * 算法实现来自：https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption
  *
  * @author Kimi Liu
  * @version 5.5.6
