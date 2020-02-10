@@ -557,8 +557,10 @@ public class PatternUtils {
         }
 
         if (StringUtils.isEmpty(regex)) {
+            // 正则不存在则为全匹配
             return true;
         }
+
         final Pattern pattern = get(regex, Pattern.DOTALL);
         return isMatch(pattern, content);
     }

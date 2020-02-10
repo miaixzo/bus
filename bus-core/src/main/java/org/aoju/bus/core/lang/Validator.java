@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.ValidateException;
 import org.aoju.bus.core.utils.*;
 
 import java.net.MalformedURLException;
@@ -67,11 +67,11 @@ public class Validator {
      * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
      * @param params           模板中变量替换后的值
      * @return 检查过后的值
-     * @throws InstrumentException 检查不满足条件抛出的异常
+     * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static <T> T validateNotNull(T value, String errorMsgTemplate, Object... params) throws InstrumentException {
+    public static <T> T validateNotNull(T value, String errorMsgTemplate, Object... params) throws ValidateException {
         if (isNull(value)) {
-            throw new InstrumentException(errorMsgTemplate, params);
+            throw new ValidateException(errorMsgTemplate, params);
         }
         return value;
     }
@@ -104,12 +104,64 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateNotEmpty(Object value, String errorMsg) throws InstrumentException {
+    public static void validateNotEmpty(Object value, String errorMsg) throws ValidateException {
         if (isEmpty(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
+    }
+
+    /**
+     * 给定值是否为<code>true</code>
+     *
+     * @param value 值
+     * @return 是否为<code>true</code>
+     */
+    public static boolean isTrue(boolean value) {
+        return value;
+    }
+
+    /**
+     * 给定值是否不为<code>false</code>
+     *
+     * @param value 值
+     * @return 是否不为<code>false</code>
+     */
+    public static boolean isFalse(boolean value) {
+        return false == value;
+    }
+
+    /**
+     * 检查指定值是否为<code>true</code>
+     *
+     * @param value            值
+     * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
+     * @param params           模板中变量替换后的值
+     * @return 检查过后的值
+     * @throws ValidateException 检查不满足条件抛出的异常
+     */
+    public static boolean validateTrue(boolean value, String errorMsgTemplate, Object... params) throws ValidateException {
+        if (isFalse(value)) {
+            throw new ValidateException(errorMsgTemplate, params);
+        }
+        return value;
+    }
+
+    /**
+     * 检查指定值是否为<code>false</code>
+     *
+     * @param value            值
+     * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
+     * @param params           模板中变量替换后的值
+     * @return 检查过后的值
+     * @throws ValidateException 检查不满足条件抛出的异常
+     */
+    public static boolean validateFalse(boolean value, String errorMsgTemplate, Object... params) throws ValidateException {
+        if (isTrue(value)) {
+            throw new ValidateException(errorMsgTemplate, params);
+        }
+        return value;
     }
 
     /**
@@ -130,11 +182,11 @@ public class Validator {
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateEqual(Object t1, Object t2, String errorMsg) throws InstrumentException {
+    public static void validateEqual(Object t1, Object t2, String errorMsg) throws ValidateException {
         if (false == equal(t1, t2)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -144,11 +196,11 @@ public class Validator {
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateNotEqual(Object t1, Object t2, String errorMsg) throws InstrumentException {
+    public static void validateNotEqual(Object t1, Object t2, String errorMsg) throws ValidateException {
         if (equal(t1, t2)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -160,9 +212,9 @@ public class Validator {
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateNotEmptyAndEqual(Object t1, Object t2, String errorMsg) throws InstrumentException {
+    public static void validateNotEmptyAndEqual(Object t1, Object t2, String errorMsg) throws ValidateException {
         validateNotEmpty(t1, errorMsg);
         validateEqual(t1, t2, errorMsg);
     }
@@ -175,11 +227,22 @@ public class Validator {
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateNotEmptyAndNotEqual(Object t1, Object t2, String errorMsg) throws InstrumentException {
+    public static void validateNotEmptyAndNotEqual(Object t1, Object t2, String errorMsg) throws ValidateException {
         validateNotEmpty(t1, errorMsg);
         validateNotEqual(t1, t2, errorMsg);
+    }
+
+    /**
+     * 通过正则表达式验证
+     *
+     * @param pattern 正则模式
+     * @param value   值
+     * @return 是否匹配正则
+     */
+    public static boolean isMactchRegex(Pattern pattern, CharSequence value) {
+        return PatternUtils.isMatch(pattern, value);
     }
 
     /**
@@ -200,23 +263,12 @@ public class Validator {
      * @param regex    正则
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateMatchRegex(String regex, String value, String errorMsg) throws InstrumentException {
+    public static void validateMatchRegex(String regex, String value, String errorMsg) throws ValidateException {
         if (false == isMactchRegex(regex, value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
-    }
-
-    /**
-     * 通过正则表达式验证
-     *
-     * @param pattern 正则模式
-     * @param value   值
-     * @return 是否匹配正则
-     */
-    public static boolean isMactchRegex(Pattern pattern, String value) {
-        return PatternUtils.isMatch(pattern, value);
     }
 
     /**
@@ -234,11 +286,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateGeneral(String value, String errorMsg) throws InstrumentException {
+    public static void validateGeneral(String value, String errorMsg) throws ValidateException {
         if (false == isGeneral(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -268,11 +320,11 @@ public class Validator {
      * @param min      最小长度,负数自动识别为0
      * @param max      最大长度,0或负数表示不限制最大长度
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateGeneral(String value, int min, int max, String errorMsg) throws InstrumentException {
+    public static void validateGeneral(String value, int min, int max, String errorMsg) throws ValidateException {
         if (false == isGeneral(value, min, max)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -293,9 +345,9 @@ public class Validator {
      * @param value    值
      * @param min      最小长度,负数自动识别为0
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateGeneral(String value, int min, String errorMsg) throws InstrumentException {
+    public static void validateGeneral(String value, int min, String errorMsg) throws ValidateException {
         validateGeneral(value, min, 0, errorMsg);
     }
 
@@ -304,10 +356,9 @@ public class Validator {
      *
      * @param value 值
      * @return 是否全部为字母组成, 包括大写和小写字母和汉字
-     * @since 3.3.0
      */
     public static boolean isLetter(String value) {
-        return StringUtils.isAllCharMatch(value, t -> Character.isLetter(t));
+        return StringUtils.isAllCharMatch(value, Character::isLetter);
     }
 
     /**
@@ -315,12 +366,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
-     * @since 3.3.0
+     * @throws ValidateException 验证异常
      */
-    public static void validateLetter(String value, String errorMsg) throws InstrumentException {
+    public static void validateLetter(String value, String errorMsg) throws ValidateException {
         if (false == isLetter(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -329,10 +379,9 @@ public class Validator {
      *
      * @param value 值
      * @return 是否全部为大写字母
-     * @since 3.3.0
      */
     public static boolean isUpperCase(String value) {
-        return StringUtils.isAllCharMatch(value, t -> Character.isUpperCase(t));
+        return StringUtils.isAllCharMatch(value, Character::isUpperCase);
     }
 
     /**
@@ -340,12 +389,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
-     * @since 3.3.0
+     * @throws ValidateException 验证异常
      */
-    public static void validateUpperCase(String value, String errorMsg) throws InstrumentException {
+    public static void validateUpperCase(String value, String errorMsg) throws ValidateException {
         if (false == isUpperCase(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -354,7 +402,6 @@ public class Validator {
      *
      * @param value 值
      * @return 是否全部为小写字母
-     * @since 3.3.0
      */
     public static boolean isLowerCase(String value) {
         return StringUtils.isAllCharMatch(value, t -> Character.isLowerCase(t));
@@ -365,12 +412,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
-     * @since 3.3.0
+     * @throws ValidateException 验证异常
      */
-    public static void validateLowerCase(String value, String errorMsg) throws InstrumentException {
+    public static void validateLowerCase(String value, String errorMsg) throws ValidateException {
         if (false == isLowerCase(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -389,11 +435,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateNumber(String value, String errorMsg) throws InstrumentException {
+    public static void validateNumber(String value, String errorMsg) throws ValidateException {
         if (false == isNumber(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -412,11 +458,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateWord(String value, String errorMsg) throws InstrumentException {
+    public static void validateWord(String value, String errorMsg) throws ValidateException {
         if (false == isWord(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -435,11 +481,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateMoney(String value, String errorMsg) throws InstrumentException {
+    public static void validateMoney(String value, String errorMsg) throws ValidateException {
         if (false == isMoney(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -458,11 +504,11 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateZipCode(String value, String errorMsg) throws InstrumentException {
+    public static void validateZipCode(String value, String errorMsg) throws ValidateException {
         if (false == isZipCode(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -481,11 +527,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateEmail(String value, String errorMsg) throws InstrumentException {
+    public static void validateEmail(String value, String errorMsg) throws ValidateException {
         if (false == isEmail(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -514,11 +560,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateMobile(String value, String errorMsg) throws InstrumentException {
+    public static void validateMobile(String value, String errorMsg) throws ValidateException {
         if (false == isMobile(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -539,11 +585,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateCitizenIdNumber(String value, String errorMsg) throws InstrumentException {
+    public static void validateCitizenId(String value, String errorMsg) throws ValidateException {
         if (false == isCitizenId(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -571,11 +617,13 @@ public class Validator {
         if (day < 1 || day > 31) {
             return false;
         }
-        if ((month == 4 || month == 6 || month == 9 || month == 11) && day == 31) {
+        // 检查几个特殊月的最大天数
+        if (day == 31 && (month == 4 || month == 6 || month == 9 || month == 11)) {
             return false;
         }
         if (month == 2) {
-            return day <= 29 && (day != 29 || false != DateUtils.isLeapYear(year));
+            // 在2月，非闰年最大28，闰年最大29
+            return day < 29 || (day == 29 && DateUtils.isLeapYear(year));
         }
         return true;
     }
@@ -612,11 +660,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateBirthday(String value, String errorMsg) throws InstrumentException {
+    public static void validateBirthday(String value, String errorMsg) throws ValidateException {
         if (false == isBirthday(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -635,12 +683,38 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateIpv4(String value, String errorMsg) throws InstrumentException {
+    public static void validateIpv4(String value, String errorMsg) throws ValidateException {
         if (false == isIpv4(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
+    }
+
+    /**
+     * 验证是否为IPV6地址
+     *
+     * @param value 值
+     * @return 是否为IPV6地址
+     */
+    public static boolean isIpv6(CharSequence value) {
+        return isMactchRegex(RegEx.IPV6, value);
+    }
+
+    /**
+     * 验证是否为IPV6地址
+     *
+     * @param <T>      字符串类型
+     * @param value    值
+     * @param errorMsg 验证错误的信息
+     * @return 验证后的值
+     * @throws ValidateException 验证异常
+     */
+    public static <T extends CharSequence> T validateIpv6(T value, String errorMsg) throws ValidateException {
+        if (false == isIpv6(value)) {
+            throw new ValidateException(errorMsg);
+        }
+        return value;
     }
 
     /**
@@ -658,11 +732,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateMac(String value, String errorMsg) throws InstrumentException {
+    public static void validateMac(String value, String errorMsg) throws ValidateException {
         if (false == isMac(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -671,7 +745,6 @@ public class Validator {
      *
      * @param value 值
      * @return 是否为中国车牌号
-     * @since 3.1.9
      */
     public static boolean isPlateNumber(String value) {
         return isMactchRegex(RegEx.PLATE_NUMBER, value);
@@ -682,12 +755,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
-     * @since 3.1.9
+     * @throws ValidateException 验证异常
      */
-    public static void validatePlateNumber(String value, String errorMsg) throws InstrumentException {
+    public static void validatePlateNumber(String value, String errorMsg) throws ValidateException {
         if (false == isPlateNumber(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -711,11 +783,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateUrl(String value, String errorMsg) throws InstrumentException {
+    public static void validateUrl(String value, String errorMsg) throws ValidateException {
         if (false == isUrl(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -732,6 +804,20 @@ public class Validator {
     /**
      * 验证是否为汉字
      *
+     * @param value    表单值
+     * @param errorMsg 验证错误的信息
+     * @return 验证后的值
+     * @throws ValidateException 验证异常
+     */
+    public static void validateEnglish(String value, String errorMsg) throws ValidateException {
+        if (false == isEnglish(value)) {
+            throw new ValidateException(errorMsg);
+        }
+    }
+
+    /**
+     * 验证是否为英文
+     *
      * @param value 值
      * @return 是否为汉字
      */
@@ -746,11 +832,11 @@ public class Validator {
      * @param value    表单值
      * @param errorMsg 验证错误的信息
      * @return 验证后的值
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateChinese(T value, String errorMsg) throws InstrumentException {
+    public static <T extends CharSequence> T validateChinese(T value, String errorMsg) throws ValidateException {
         if (false == isChinese(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
         return value;
     }
@@ -770,11 +856,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateGeneralWithChinese(String value, String errorMsg) throws InstrumentException {
+    public static void validateGeneralWithChinese(String value, String errorMsg) throws ValidateException {
         if (false == isGeneralWithChinese(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -795,11 +881,11 @@ public class Validator {
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateUUID(String value, String errorMsg) throws InstrumentException {
+    public static void validateUUID(String value, String errorMsg) throws ValidateException {
         if (false == isUUID(value)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -826,11 +912,11 @@ public class Validator {
      * @param min      最小值（包含）
      * @param max      最大值（包含）
      * @param errorMsg 验证错误的信息
-     * @throws InstrumentException 验证异常
+     * @throws ValidateException 验证异常
      */
-    public static void validateBetween(Number value, Number min, Number max, String errorMsg) throws InstrumentException {
+    public static void validateBetween(Number value, Number min, Number max, String errorMsg) throws ValidateException {
         if (false == isBetween(value, min, max)) {
-            throw new InstrumentException(errorMsg);
+            throw new ValidateException(errorMsg);
         }
     }
 
@@ -841,7 +927,53 @@ public class Validator {
      * @return 是否为Hex（16进制）字符串
      */
     public static boolean isHex(CharSequence value) {
-        return isMactchRegex(RegEx.HEX, value.toString());
+        return isMactchRegex(RegEx.HEX, value);
+    }
+
+    /**
+     * 验证是否为Hex（16进制）字符串
+     *
+     * @param <T>      字符串类型
+     * @param value    值
+     * @param errorMsg 验证错误的信息
+     * @return 验证后的值
+     * @throws ValidateException 验证异常
+     */
+    public static <T extends CharSequence> T validateHex(T value, String errorMsg) throws ValidateException {
+        if (false == isHex(value)) {
+            throw new ValidateException(errorMsg);
+        }
+        return value;
+    }
+
+    /**
+     * 验证是否符合密码要求
+     *
+     * @param value 值
+     * @return 否符合密码要求
+     */
+    public static boolean isPassword(String value, boolean... weak) {
+        boolean result = false;
+        for (final boolean element : weak) {
+            result ^= element;
+        }
+        if (!result) {
+            return isMactchRegex(RegEx.PASSWORD_WEAK, value);
+        }
+        return isMactchRegex(RegEx.PASSWORD_STRONG, value);
+    }
+
+    /**
+     * 验证是是否符合密码要求
+     *
+     * @param value    值
+     * @param errorMsg 验证错误的信息
+     * @throws ValidateException 验证异常
+     */
+    public static void validatePassword(String value, String errorMsg, boolean... weak) throws ValidateException {
+        if (false == isPassword(value, weak)) {
+            throw new ValidateException(errorMsg);
+        }
     }
 
 }

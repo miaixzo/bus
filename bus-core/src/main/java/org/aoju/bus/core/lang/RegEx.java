@@ -43,13 +43,18 @@ public class RegEx {
     public static final String CHINESE_PATTERN = "[\u4E00-\u9FFF]";
     public static final Pattern CHINESE = Pattern.compile(CHINESE_PATTERN);
     /**
+     * 正则表达式匹配中文字符串
+     */
+    public final static String CHINESES_PATTERN = CHINESE_PATTERN + "+";
+    public static final Pattern CHINESES = Pattern.compile(CHINESES_PATTERN);
+    /**
      * 在XML中无效的字符 正则
      */
     public static final String INVALID_REGEX = "[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]";
     /**
-     * 英文字母 、数字和下划线
+     * 中文字、英文字母、数字和下划线
      */
-    public static final String GENERAL_PATTERN = "^\\w+$";
+    public static final String GENERAL_PATTERN = "^[\u4E00-\u9FFF\\w]+$";
     public static final Pattern GENERAL = Pattern.compile(GENERAL_PATTERN);
     /**
      * 字母
@@ -74,7 +79,7 @@ public class RegEx {
     /**
      * IP v6
      */
-    public static final String IPV6_PATTERN = "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))";
+    public static final String IPV6_PATTERN = "(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]+|::(ffff(:0{1,4})?:)?((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9]))";
     public static final Pattern IPV6 = Pattern.compile(IPV6_PATTERN);
     /**
      * 货币
@@ -85,7 +90,7 @@ public class RegEx {
     /**
      * 邮件,符合RFC 5322规范
      */
-    public static final String EMAIL_PATTERN = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+    public static final String EMAIL_PATTERN = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])";
     public static final Pattern EMAIL = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
     /**
      * 固定电话
@@ -100,7 +105,7 @@ public class RegEx {
     /**
      * 18位身份证号码
      */
-    public static final String CITIZEN_ID_PATTERN = "[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}(\\d|X|x)";
+    public static final String CITIZEN_ID_PATTERN = "[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([012]\\d)|3[0-1])\\d{3}(\\d|X|x)";
     public static final Pattern CITIZEN_ID = Pattern.compile(CITIZEN_ID_PATTERN);
     /**
      * 邮编
@@ -110,13 +115,13 @@ public class RegEx {
     /**
      * 生日
      */
-    public static final String BIRTHDAY_PATTERN = "^(\\d{2,4})([/\\-\\.年]?)(\\d{1,2})([/\\-\\.月]?)(\\d{1,2})日?$";
+    public static final String BIRTHDAY_PATTERN = "^(\\d{2,4})([/\\-.年]?)(\\d{1,2})([/\\-.月]?)(\\d{1,2})日?$";
     public static final Pattern BIRTHDAY = Pattern.compile(BIRTHDAY_PATTERN);
     /**
      * URL
      */
     public static final String URL_PATTERN = "[a-zA-z]+://[^\\s]*";
-    public static final Pattern URL = Pattern.compile("[a-zA-z]+://[^\\s]*");
+    public static final Pattern URL = Pattern.compile(URL_PATTERN);
     /**
      * Http URL
      */
@@ -158,11 +163,15 @@ public class RegEx {
     public static final String TIME_PATTERN = "\\d{1,2}:\\d{1,2}(:\\d{1,2})?";
     public static final Pattern TIME = Pattern.compile(TIME_PATTERN);
     /**
-     * 密码强度
+     * 密码规则 数字,英文,符号至少两种,最小长度8
      */
-    public static final String PASSWD_PATTERN = "(?=.*\\d)(?=.*[a-zA-Z])(?=.*[\\W])[\\da-zA-Z\\W]{8,}$";
-    public static final Pattern PASSWD = Pattern.compile(PASSWD_PATTERN);
-
+    public static final String PASSWORD_WEAK_PATTERN = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$";
+    public static final Pattern PASSWORD_WEAK = Pattern.compile(PASSWORD_WEAK_PATTERN);
+    /**
+     * 密码规则 数字,英文,符号全部包含,最小长度8
+     */
+    public static final String PASSWORD_STRONG_PATTERN = "^(?![0-9]+$)(?![^0-9]+$)(?![a-zA-Z]+$)(?![^a-zA-Z]+$)(?![a-zA-Z0-9]+$)[a-zA-Z0-9\\S]{8,}$";
+    public static final Pattern PASSWORD_STRONG = Pattern.compile(PASSWORD_STRONG_PATTERN);
     /**
      * 正则中需要被转义的关键字
      */
