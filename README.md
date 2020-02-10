@@ -9,7 +9,7 @@
 		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg">
 	</a>
 	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-2.1.9-brightgreen.svg">
+		<img src="https://img.shields.io/badge/Spring Boot-2.2.2-brightgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.mysql.com">
 		<img src="https://img.shields.io/badge/Mysql-5.7-blue.svg">
@@ -21,11 +21,16 @@
 		<img src="https://img.shields.io/badge/dubbo-2.7.3-yellow.svg">
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
-		<img src="https://img.shields.io/badge/poi-3.1.7-blue.svg">
+		<img src="https://img.shields.io/badge/poi-4.1.1-blue.svg">
 	</a>
 	<a target="_blank" href="https://www.mit-license.org">
 		<img src="https://img.shields.io/badge/license-MIT-green.svg">
 	</a>
+</p>
+
+<p align="center">
+	-- QQ群①：<a href="https://shang.qq.com/wpa/qunwpa?idkey=17fadd02891457034c6536c984f0d7db29b73ea14c9b86bba39ce18ed7a90e18">839128</a> --
+	-- QQ群②：<a href="https://shang.qq.com/wpa/qunwpa?idkey=c207666cbc107d03d368bde8fc15605bb883ebc482e28d440de149e3e2217460">839120</a> --
 </p>
 
 ---

@@ -345,7 +345,7 @@ public class RandomUtils {
             throw new IllegalArgumentException("Count is larger than collection distinct size !");
         }
 
-        final HashSet<T> result = new HashSet<>(count);
+        final Set<T> result = new LinkedHashSet<>(count);
         int limit = collection.size();
         while (result.size() < count) {
             result.add(randomEle(source, limit));
