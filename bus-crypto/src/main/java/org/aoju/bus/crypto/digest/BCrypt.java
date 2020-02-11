@@ -322,6 +322,129 @@ public class BCrypt {
     private int S[];
 
     /**
+     * 使用bcrypt稍微修改过的base64编码方案对字节数组进行编码。
+     * 注意，这与标准的MIME-base64编码不兼容
+     *
+     * @param d   要编码的字节数组
+     * @param len 要编码的字节数
+     * @throws IllegalArgumentException 如果长度无效
+     */
+    private static String encode_base64(byte d[], int len) throws IllegalArgumentException {
+        int off = 0;
+        StringBuffer rs = new StringBuffer();
+        int c1, c2;
+
+        if (len <= 0 || len > d.length)
+            throw new IllegalArgumentException("Invalid len");
+
+        while (off < len) {
+            c1 = d[off++] & 0xff;
+            rs.append(Normal.ENCODE_BCRYPT_TABLE[(c1 >> 2) & 0x3f]);
+            c1 = (c1 & 0x03) << 4;
+            if (off >= len) {
+                rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
+                break;
+            }
+            c2 = d[off++] & 0xff;
+            c1 |= (c2 >> 4) & 0x0f;
+            rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
+            c1 = (c2 & 0x0f) << 2;
+            if (off >= len) {
+                rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
+                break;
+            }
+            c2 = d[off++] & 0xff;
+            c1 |= (c2 >> 6) & 0x03;
+            rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
+            rs.append(Normal.ENCODE_BCRYPT_TABLE[c2 & 0x3f]);
+        }
+        return rs.toString();
+    }
+
+    /**
+     * 查找指定字符编码的3位base64，
+     * 对转换表进行范围检查
+     *
+     * @param x base64编码值
+     * @return 解码后的x值
+     */
+    private static byte char64(char x) {
+        if ((int) x < 0 || (int) x > Normal.DECODE_BCRYPT_TABLE.length)
+            return -1;
+        return Normal.DECODE_BCRYPT_TABLE[(int) x];
+    }
+
+    /**
+     * 将使用bcrypt的base64格式编码的字符串解码为字节数组。
+     * 注意，这与标准的MIME-base64编码不兼容.
+     *
+     * @param val     要解码的字符串
+     * @param maxolen 要解码的最大字节数
+     * @return 包含解码字节的数组
+     * @throws IllegalArgumentException 如果maxolen无效
+     */
+    private static byte[] decode_base64(String val, int maxolen) throws IllegalArgumentException {
+        StringBuffer rs = new StringBuffer();
+        int off = 0, slen = val.length(), olen = 0;
+        byte ret[];
+        byte c1, c2, c3, c4, o;
+
+        if (maxolen <= 0)
+            throw new IllegalArgumentException("Invalid maxolen");
+
+        while (off < slen - 1 && olen < maxolen) {
+            c1 = char64(val.charAt(off++));
+            c2 = char64(val.charAt(off++));
+            if (c1 == -1 || c2 == -1)
+                break;
+            o = (byte) (c1 << 2);
+            o |= (c2 & 0x30) >> 4;
+            rs.append((char) o);
+            if (++olen >= maxolen || off >= slen)
+                break;
+            c3 = char64(val.charAt(off++));
+            if (c3 == -1)
+                break;
+            o = (byte) ((c2 & 0x0f) << 4);
+            o |= (c3 & 0x3c) >> 2;
+            rs.append((char) o);
+            if (++olen >= maxolen || off >= slen)
+                break;
+            c4 = char64(val.charAt(off++));
+            o = (byte) ((c3 & 0x03) << 6);
+            o |= c4;
+            rs.append((char) o);
+            ++olen;
+        }
+
+        ret = new byte[olen];
+        for (off = 0; off < olen; off++)
+            ret[off] = (byte) rs.charAt(off);
+        return ret;
+    }
+
+    /**
+     * 循环提取关键材料的一个词
+     *
+     * @param data 要从中提取数据的字符串
+     * @param offp 指向数据中当前偏移量
+     * @return 正确和错误的下一个词的资料从数据作为int[2]
+     */
+    private static int streamtoword(byte data[], int offp[]) {
+        int i;
+        int word = 0;
+        int off = offp[0];
+
+        for (i = 0; i < 4; i++) {
+            word = (word << 8) | (data[off] & 0xff);
+            off = (off + 1) % data.length;
+        }
+
+        offp[0] = off;
+        return word;
+    }
+
+    /**
      * 生成密文,使用长度为10的加盐方式
      *
      * @param password 需要加密的明文
@@ -448,129 +571,6 @@ public class BCrypt {
         for (int i = 0; i < try_bytes.length; i++)
             ret |= hashed_bytes[i] ^ try_bytes[i];
         return ret == 0;
-    }
-
-    /**
-     * 使用bcrypt稍微修改过的base64编码方案对字节数组进行编码。
-     * 注意，这与标准的MIME-base64编码不兼容
-     *
-     * @param d   要编码的字节数组
-     * @param len 要编码的字节数
-     * @throws IllegalArgumentException 如果长度无效
-     */
-    private static String encode_base64(byte d[], int len) throws IllegalArgumentException {
-        int off = 0;
-        StringBuffer rs = new StringBuffer();
-        int c1, c2;
-
-        if (len <= 0 || len > d.length)
-            throw new IllegalArgumentException("Invalid len");
-
-        while (off < len) {
-            c1 = d[off++] & 0xff;
-            rs.append(Normal.ENCODE_BCRYPT_TABLE[(c1 >> 2) & 0x3f]);
-            c1 = (c1 & 0x03) << 4;
-            if (off >= len) {
-                rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
-                break;
-            }
-            c2 = d[off++] & 0xff;
-            c1 |= (c2 >> 4) & 0x0f;
-            rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
-            c1 = (c2 & 0x0f) << 2;
-            if (off >= len) {
-                rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
-                break;
-            }
-            c2 = d[off++] & 0xff;
-            c1 |= (c2 >> 6) & 0x03;
-            rs.append(Normal.ENCODE_BCRYPT_TABLE[c1 & 0x3f]);
-            rs.append(Normal.ENCODE_BCRYPT_TABLE[c2 & 0x3f]);
-        }
-        return rs.toString();
-    }
-
-    /**
-     * 查找指定字符编码的3位base64，
-     * 对转换表进行范围检查
-     *
-     * @param x base64编码值
-     * @return 解码后的x值
-     */
-    private static byte char64(char x) {
-        if ((int) x < 0 || (int) x > Normal.DECODE_BCRYPT_TABLE.length)
-            return -1;
-        return Normal.DECODE_BCRYPT_TABLE[(int) x];
-    }
-
-    /**
-     * 将使用bcrypt的base64格式编码的字符串解码为字节数组。
-     * 注意，这与标准的MIME-base64编码不兼容.
-     *
-     * @param val     要解码的字符串
-     * @param maxolen 要解码的最大字节数
-     * @return 包含解码字节的数组
-     * @throws IllegalArgumentException 如果maxolen无效
-     */
-    private static byte[] decode_base64(String val, int maxolen) throws IllegalArgumentException {
-        StringBuffer rs = new StringBuffer();
-        int off = 0, slen = val.length(), olen = 0;
-        byte ret[];
-        byte c1, c2, c3, c4, o;
-
-        if (maxolen <= 0)
-            throw new IllegalArgumentException("Invalid maxolen");
-
-        while (off < slen - 1 && olen < maxolen) {
-            c1 = char64(val.charAt(off++));
-            c2 = char64(val.charAt(off++));
-            if (c1 == -1 || c2 == -1)
-                break;
-            o = (byte) (c1 << 2);
-            o |= (c2 & 0x30) >> 4;
-            rs.append((char) o);
-            if (++olen >= maxolen || off >= slen)
-                break;
-            c3 = char64(val.charAt(off++));
-            if (c3 == -1)
-                break;
-            o = (byte) ((c2 & 0x0f) << 4);
-            o |= (c3 & 0x3c) >> 2;
-            rs.append((char) o);
-            if (++olen >= maxolen || off >= slen)
-                break;
-            c4 = char64(val.charAt(off++));
-            o = (byte) ((c3 & 0x03) << 6);
-            o |= c4;
-            rs.append((char) o);
-            ++olen;
-        }
-
-        ret = new byte[olen];
-        for (off = 0; off < olen; off++)
-            ret[off] = (byte) rs.charAt(off);
-        return ret;
-    }
-
-    /**
-     * 循环提取关键材料的一个词
-     *
-     * @param data 要从中提取数据的字符串
-     * @param offp 指向数据中当前偏移量
-     * @return 正确和错误的下一个词的资料从数据作为int[2]
-     */
-    private static int streamtoword(byte data[], int offp[]) {
-        int i;
-        int word = 0;
-        int off = offp[0];
-
-        for (i = 0; i < 4; i++) {
-            word = (word << 8) | (data[off] & 0xff);
-            off = (off + 1) % data.length;
-        }
-
-        offp[0] = off;
-        return word;
     }
 
     /**

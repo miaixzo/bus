@@ -121,6 +121,20 @@ public class Tailer implements Serializable {
     }
 
     /**
+     * 检查文件有效性
+     *
+     * @param file 文件
+     */
+    private static void checkFile(File file) {
+        if (false == file.exists()) {
+            throw new InstrumentException("File [{}] not exist !", file.getAbsolutePath());
+        }
+        if (false == file.isFile()) {
+            throw new InstrumentException("Path [{}] is not a file !", file.getAbsolutePath());
+        }
+    }
+
+    /**
      * 开始监听
      */
     public void start() {
@@ -212,20 +226,6 @@ public class Tailer implements Serializable {
             this.randomAccessFile.seek(len);
         } catch (IOException e) {
             throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 检查文件有效性
-     *
-     * @param file 文件
-     */
-    private static void checkFile(File file) {
-        if (false == file.exists()) {
-            throw new InstrumentException("File [{}] not exist !", file.getAbsolutePath());
-        }
-        if (false == file.isFile()) {
-            throw new InstrumentException("Path [{}] is not a file !", file.getAbsolutePath());
         }
     }
 

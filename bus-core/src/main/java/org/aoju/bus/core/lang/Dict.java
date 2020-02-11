@@ -118,6 +118,26 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
         this.caseInsensitive = caseInsensitive;
     }
 
+    /**
+     * 创建Dict
+     *
+     * @return Dict
+     */
+    public static Dict create() {
+        return new Dict();
+    }
+
+    /**
+     * 将PO对象转为Dict
+     *
+     * @param <T>  Bean类型
+     * @param bean Bean对象
+     * @return Vo
+     */
+    public static <T> Dict parse(T bean) {
+        return create().parseBean(bean);
+    }
+
     @Override
     public Object get(Object key) {
         return super.get(customKey((String) key));
@@ -233,26 +253,6 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      */
     public Number getNumber(String attr) {
         return get(attr, null);
-    }
-
-    /**
-     * 创建Dict
-     *
-     * @return Dict
-     */
-    public static Dict create() {
-        return new Dict();
-    }
-
-    /**
-     * 将PO对象转为Dict
-     *
-     * @param <T>  Bean类型
-     * @param bean Bean对象
-     * @return Vo
-     */
-    public static <T> Dict parse(T bean) {
-        return create().parseBean(bean);
     }
 
     /**

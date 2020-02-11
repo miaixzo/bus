@@ -50,9 +50,8 @@ public class RC4 implements Serializable {
      * 密钥最小长度
      */
     private static final int KEY_MIN_LENGTH = 5;
-    private int[] sbox;
-
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private int[] sbox;
 
     /**
      * 构造

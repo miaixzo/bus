@@ -23,12 +23,12 @@
  */
 package org.aoju.bus.crypto.digest;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngineFactory;
 

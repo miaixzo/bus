@@ -164,14 +164,6 @@ public class SM2Engine {
         return this;
     }
 
-    /**
-     * SM2算法模式
-     * 在SM2算法中，C1C2C3为旧标准模式，C1C3C2为新标准模式
-     */
-    public enum SM2Mode {
-        C1C2C3, C1C3C2
-    }
-
     protected ECMultiplier createBasePointMultiplier() {
         return new FixedPointCombMultiplier();
     }
@@ -366,6 +358,14 @@ public class SM2Engine {
     private void addFieldElement(ECFieldElement v) {
         final byte[] p = BigIntegers.asUnsignedByteArray(this.curveLength, v.toBigInteger());
         this.digest.update(p, 0, p.length);
+    }
+
+    /**
+     * SM2算法模式
+     * 在SM2算法中，C1C2C3为旧标准模式，C1C3C2为新标准模式
+     */
+    public enum SM2Mode {
+        C1C2C3, C1C3C2
     }
 
 }

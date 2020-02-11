@@ -46,21 +46,59 @@ import java.util.regex.Pattern;
  */
 class FastDateParser extends AbstractDateBasic implements DateParser {
 
-    private static final long serialVersionUID = -3199383897950947498L;
-
     static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
-
+    private static final long serialVersionUID = -3199383897950947498L;
+    // 用来对正则表达式排序的比较器。('february' 在 'feb'之前)所有条目按区域设置必须是小写的
+    private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
+    private static final ConcurrentMap<Locale, Strategy>[] caches = new ConcurrentMap[Calendar.FIELD_COUNT];
+    private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {
+        @Override
+        int modify(final FastDateParser parser, final int iValue) {
+            return iValue < 100 ? parser.adjustYear(iValue) : iValue;
+        }
+    };
+    private static final Strategy NUMBER_MONTH_STRATEGY = new NumberStrategy(Calendar.MONTH) {
+        @Override
+        int modify(final FastDateParser parser, final int iValue) {
+            return iValue - 1;
+        }
+    };
+    private static final Strategy LITERAL_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR);
+    private static final Strategy WEEK_OF_YEAR_STRATEGY = new NumberStrategy(Calendar.WEEK_OF_YEAR);
+    private static final Strategy WEEK_OF_MONTH_STRATEGY = new NumberStrategy(Calendar.WEEK_OF_MONTH);
+    private static final Strategy DAY_OF_YEAR_STRATEGY = new NumberStrategy(Calendar.DAY_OF_YEAR);
+    private static final Strategy DAY_OF_MONTH_STRATEGY = new NumberStrategy(Calendar.DAY_OF_MONTH);
+    private static final Strategy DAY_OF_WEEK_STRATEGY = new NumberStrategy(Calendar.DAY_OF_WEEK) {
+        @Override
+        int modify(final FastDateParser parser, final int iValue) {
+            return iValue != 7 ? iValue + 1 : Calendar.SUNDAY;
+        }
+    };
+    private static final Strategy DAY_OF_WEEK_IN_MONTH_STRATEGY = new NumberStrategy(Calendar.DAY_OF_WEEK_IN_MONTH);
+    private static final Strategy HOUR_OF_DAY_STRATEGY = new NumberStrategy(Calendar.HOUR_OF_DAY);
+    private static final Strategy HOUR24_OF_DAY_STRATEGY = new NumberStrategy(Calendar.HOUR_OF_DAY) {
+        @Override
+        int modify(final FastDateParser parser, final int iValue) {
+            return iValue == 24 ? 0 : iValue;
+        }
+    };
+    private static final Strategy HOUR12_STRATEGY = new NumberStrategy(Calendar.HOUR) {
+        @Override
+        int modify(final FastDateParser parser, final int iValue) {
+            return iValue == 12 ? 0 : iValue;
+        }
+    };
+    private static final Strategy HOUR_STRATEGY = new NumberStrategy(Calendar.HOUR);
+    private static final Strategy MINUTE_STRATEGY = new NumberStrategy(Calendar.MINUTE);
+    private static final Strategy SECOND_STRATEGY = new NumberStrategy(Calendar.SECOND);
+    private static final Strategy MILLISECOND_STRATEGY = new NumberStrategy(Calendar.MILLISECOND);
     /**
      * 世纪：2000年前为19， 之后为20
      */
     private final int century;
     private final int startYear;
-
     // 导出字段
     private transient List<StrategyAndWidth> patterns;
-
-    // 用来对正则表达式排序的比较器。('february' 在 'feb'之前)所有条目按区域设置必须是小写的
-    private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
 
     /**
      * 构造一个新的FastDateParser
@@ -104,6 +142,75 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         init(definingCalendar);
     }
 
+    private static boolean isFormatLetter(final char c) {
+        return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
+    }
+
+    private static StringBuilder simpleQuote(final StringBuilder sb, final String value) {
+        for (int i = 0; i < value.length(); ++i) {
+            final char c = value.charAt(i);
+            switch (c) {
+                case Symbol.C_BACKSLASH:
+                case Symbol.C_CARET:
+                case Symbol.C_DOLLAR:
+                case Symbol.C_DOT:
+                case Symbol.C_OR:
+                case Symbol.C_QUESTION_MARK:
+                case Symbol.C_STAR:
+                case Symbol.C_PLUS:
+                case Symbol.C_PARENTHESE_LEFT:
+                case Symbol.C_PARENTHESE_RIGHT:
+                case Symbol.C_BRACKET_LEFT:
+                case Symbol.C_BRACE_LEFT:
+                    sb.append(Symbol.C_BACKSLASH);
+                default:
+                    sb.append(c);
+            }
+        }
+        return sb;
+    }
+
+    /**
+     * 获取显示字段的短值和长值
+     *
+     * @param cal    获取该日历的短值和长值
+     * @param locale 显示名称的区域设置
+     * @param field  字段信息
+     * @param regex  要构建的正则表达式
+     * @return 字符串的映射将名称显示为字段值
+     */
+    private static Map<String, Integer> appendDisplayNames(final Calendar cal, final Locale locale, final int field, final StringBuilder regex) {
+        final Map<String, Integer> values = new HashMap<>();
+
+        final Map<String, Integer> displayNames = cal.getDisplayNames(field, Calendar.ALL_STYLES, locale);
+        final TreeSet<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
+        for (final Map.Entry<String, Integer> displayName : displayNames.entrySet()) {
+            final String key = displayName.getKey().toLowerCase(locale);
+            if (sorted.add(key)) {
+                values.put(key, displayName.getValue());
+            }
+        }
+        for (final String symbol : sorted) {
+            simpleQuote(regex, symbol).append('|');
+        }
+        return values;
+    }
+
+    /**
+     * 获取特定字段的策略缓存
+     *
+     * @param field 日历字段
+     * @return 区域设置到策略的缓存
+     */
+    private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
+        synchronized (caches) {
+            if (caches[field] == null) {
+                caches[field] = new ConcurrentHashMap<>(3);
+            }
+            return caches[field];
+        }
+    }
+
     /**
      * 从定义字段初始化派生字段。这是从构造函数和readObject(反序列化)中调用的
      *
@@ -120,92 +227,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             }
             patterns.add(field);
         }
-    }
-
-    /**
-     * 持有规则和宽度
-     */
-    private static class StrategyAndWidth {
-        final Strategy strategy;
-        final int width;
-
-        StrategyAndWidth(final Strategy strategy, final int width) {
-            this.strategy = strategy;
-            this.width = width;
-        }
-
-        int getMaxWidth(final ListIterator<StrategyAndWidth> lt) {
-            if (!strategy.isNumber() || !lt.hasNext()) {
-                return 0;
-            }
-            final Strategy nextStrategy = lt.next().strategy;
-            lt.previous();
-            return nextStrategy.isNumber() ? width : 0;
-        }
-    }
-
-    /**
-     * 将格式解析为策略
-     */
-    private class StrategyParser {
-        final private Calendar definingCalendar;
-        private int currentIdx;
-
-        StrategyParser(final Calendar definingCalendar) {
-            this.definingCalendar = definingCalendar;
-        }
-
-        StrategyAndWidth getNextStrategy() {
-            if (currentIdx >= pattern.length()) {
-                return null;
-            }
-
-            final char c = pattern.charAt(currentIdx);
-            if (isFormatLetter(c)) {
-                return letterPattern(c);
-            }
-            return literal();
-        }
-
-        private StrategyAndWidth letterPattern(final char c) {
-            final int begin = currentIdx;
-            while (++currentIdx < pattern.length()) {
-                if (pattern.charAt(currentIdx) != c) {
-                    break;
-                }
-            }
-
-            final int width = currentIdx - begin;
-            return new StrategyAndWidth(getStrategy(c, width, definingCalendar), width);
-        }
-
-        private StrategyAndWidth literal() {
-            boolean activeQuote = false;
-
-            final StringBuilder sb = new StringBuilder();
-            while (currentIdx < pattern.length()) {
-                final char c = pattern.charAt(currentIdx);
-                if (!activeQuote && isFormatLetter(c)) {
-                    break;
-                } else if (c == '\'' && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != '\'')) {
-                    activeQuote = !activeQuote;
-                    continue;
-                }
-                ++currentIdx;
-                sb.append(c);
-            }
-
-            if (activeQuote) {
-                throw new IllegalArgumentException("Unterminated quote");
-            }
-
-            final String formatField = sb.toString();
-            return new StrategyAndWidth(new CopyQuotedStrategy(formatField), formatField.length());
-        }
-    }
-
-    private static boolean isFormatLetter(final char c) {
-        return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
     }
 
     /**
@@ -267,56 +288,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         return true;
     }
 
-    private static StringBuilder simpleQuote(final StringBuilder sb, final String value) {
-        for (int i = 0; i < value.length(); ++i) {
-            final char c = value.charAt(i);
-            switch (c) {
-                case Symbol.C_BACKSLASH:
-                case Symbol.C_CARET:
-                case Symbol.C_DOLLAR:
-                case Symbol.C_DOT:
-                case Symbol.C_OR:
-                case Symbol.C_QUESTION_MARK:
-                case Symbol.C_STAR:
-                case Symbol.C_PLUS:
-                case Symbol.C_PARENTHESE_LEFT:
-                case Symbol.C_PARENTHESE_RIGHT:
-                case Symbol.C_BRACKET_LEFT:
-                case Symbol.C_BRACE_LEFT:
-                    sb.append(Symbol.C_BACKSLASH);
-                default:
-                    sb.append(c);
-            }
-        }
-        return sb;
-    }
-
-    /**
-     * 获取显示字段的短值和长值
-     *
-     * @param cal    获取该日历的短值和长值
-     * @param locale 显示名称的区域设置
-     * @param field  字段信息
-     * @param regex  要构建的正则表达式
-     * @return 字符串的映射将名称显示为字段值
-     */
-    private static Map<String, Integer> appendDisplayNames(final Calendar cal, final Locale locale, final int field, final StringBuilder regex) {
-        final Map<String, Integer> values = new HashMap<>();
-
-        final Map<String, Integer> displayNames = cal.getDisplayNames(field, Calendar.ALL_STYLES, locale);
-        final TreeSet<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
-        for (final Map.Entry<String, Integer> displayName : displayNames.entrySet()) {
-            final String key = displayName.getKey().toLowerCase(locale);
-            if (sorted.add(key)) {
-                values.put(key, displayName.getValue());
-            }
-        }
-        for (final String symbol : sorted) {
-            simpleQuote(regex, symbol).append('|');
-        }
-        return values;
-    }
-
     /**
      * 使用当前的世纪调整两位数年份为四位数年份
      *
@@ -326,57 +297,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
     private int adjustYear(final int twoDigitYear) {
         final int trial = century + twoDigitYear;
         return twoDigitYear >= startYear ? trial : trial + 100;
-    }
-
-    /**
-     * 单个日期字段的分析策略
-     */
-    private static abstract class Strategy {
-        /**
-         * 这个字段是否为数组,默认实现返回false
-         *
-         * @return 如果字段是一个数字，则为真
-         */
-        boolean isNumber() {
-            return false;
-        }
-
-        abstract boolean parse(FastDateParser parser, Calendar calendar, String source, ParsePosition pos, int maxWidth);
-    }
-
-    /**
-     * 从解析模式解析单个字段的策略
-     */
-    private static abstract class PatternStrategy extends Strategy {
-
-        private Pattern pattern;
-
-        void createPattern(final StringBuilder regex) {
-            createPattern(regex.toString());
-        }
-
-        void createPattern(final String regex) {
-            this.pattern = Pattern.compile(regex);
-        }
-
-        @Override
-        boolean isNumber() {
-            return false;
-        }
-
-        @Override
-        boolean parse(final FastDateParser parser, final Calendar calendar, final String source, final ParsePosition pos, final int maxWidth) {
-            final Matcher matcher = pattern.matcher(source.substring(pos.getIndex()));
-            if (!matcher.lookingAt()) {
-                pos.setErrorIndex(pos.getIndex());
-                return false;
-            }
-            pos.setIndex(pos.getIndex() + matcher.end(1));
-            setCalendar(parser, calendar, matcher.group(1));
-            return true;
-        }
-
-        abstract void setCalendar(FastDateParser parser, Calendar cal, String value);
     }
 
     /**
@@ -439,23 +359,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         }
     }
 
-    private static final ConcurrentMap<Locale, Strategy>[] caches = new ConcurrentMap[Calendar.FIELD_COUNT];
-
-    /**
-     * 获取特定字段的策略缓存
-     *
-     * @param field 日历字段
-     * @return 区域设置到策略的缓存
-     */
-    private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
-        synchronized (caches) {
-            if (caches[field] == null) {
-                caches[field] = new ConcurrentHashMap<>(3);
-            }
-            return caches[field];
-        }
-    }
-
     /**
      * 构建解析文本字段的策略
      *
@@ -474,6 +377,79 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
             }
         }
         return strategy;
+    }
+
+    /**
+     * 持有规则和宽度
+     */
+    private static class StrategyAndWidth {
+        final Strategy strategy;
+        final int width;
+
+        StrategyAndWidth(final Strategy strategy, final int width) {
+            this.strategy = strategy;
+            this.width = width;
+        }
+
+        int getMaxWidth(final ListIterator<StrategyAndWidth> lt) {
+            if (!strategy.isNumber() || !lt.hasNext()) {
+                return 0;
+            }
+            final Strategy nextStrategy = lt.next().strategy;
+            lt.previous();
+            return nextStrategy.isNumber() ? width : 0;
+        }
+    }
+
+    /**
+     * 单个日期字段的分析策略
+     */
+    private static abstract class Strategy {
+        /**
+         * 这个字段是否为数组,默认实现返回false
+         *
+         * @return 如果字段是一个数字，则为真
+         */
+        boolean isNumber() {
+            return false;
+        }
+
+        abstract boolean parse(FastDateParser parser, Calendar calendar, String source, ParsePosition pos, int maxWidth);
+    }
+
+    /**
+     * 从解析模式解析单个字段的策略
+     */
+    private static abstract class PatternStrategy extends Strategy {
+
+        private Pattern pattern;
+
+        void createPattern(final StringBuilder regex) {
+            createPattern(regex.toString());
+        }
+
+        void createPattern(final String regex) {
+            this.pattern = Pattern.compile(regex);
+        }
+
+        @Override
+        boolean isNumber() {
+            return false;
+        }
+
+        @Override
+        boolean parse(final FastDateParser parser, final Calendar calendar, final String source, final ParsePosition pos, final int maxWidth) {
+            final Matcher matcher = pattern.matcher(source.substring(pos.getIndex()));
+            if (!matcher.lookingAt()) {
+                pos.setErrorIndex(pos.getIndex());
+                return false;
+            }
+            pos.setIndex(pos.getIndex() + matcher.end(1));
+            setCalendar(parser, calendar, matcher.group(1));
+            return true;
+        }
+
+        abstract void setCalendar(FastDateParser parser, Calendar cal, String value);
     }
 
     /**
@@ -519,8 +495,8 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
      * 一种处理解析模式中的文本字段的策略
      */
     private static class CaseInsensitiveTextStrategy extends PatternStrategy {
-        private final int field;
         final Locale locale;
+        private final int field;
         private final Map<String, Integer> lKeyValues;
 
         /**
@@ -616,13 +592,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
 
     }
 
-    private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {
-        @Override
-        int modify(final FastDateParser parser, final int iValue) {
-            return iValue < 100 ? parser.adjustYear(iValue) : iValue;
-        }
-    };
-
     /**
      * 在解析模式中处理时区字段的策略
      */
@@ -634,16 +603,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
         private static final int ID = 0;
         private final Locale locale;
         private final Map<String, TzInfo> tzNames = new HashMap<>();
-
-        private static class TzInfo {
-            TimeZone zone;
-            int dstOffset;
-
-            TzInfo(final TimeZone tz, final boolean useDst) {
-                zone = tz;
-                dstOffset = useDst ? tz.getDSTSavings() : 0;
-            }
-        }
 
         /**
          * 构建一个解析时区的策略
@@ -711,6 +670,16 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
                 cal.set(Calendar.ZONE_OFFSET, tzInfo.zone.getRawOffset());
             }
         }
+
+        private static class TzInfo {
+            TimeZone zone;
+            int dstOffset;
+
+            TzInfo(final TimeZone tz, final boolean useDst) {
+                zone = tz;
+                dstOffset = useDst ? tz.getDSTSavings() : 0;
+            }
+        }
     }
 
     private static class ISO8601TimeZoneStrategy extends PatternStrategy {
@@ -726,15 +695,6 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
          */
         ISO8601TimeZoneStrategy(final String pattern) {
             createPattern(pattern);
-        }
-
-        @Override
-        void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
-            if (Objects.equals(value, "Z")) {
-                cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-            } else {
-                cal.setTimeZone(TimeZone.getTimeZone("GMT" + value));
-            }
         }
 
         /**
@@ -755,42 +715,75 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
                     throw new IllegalArgumentException("invalid number of X");
             }
         }
+
+        @Override
+        void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
+            if (Objects.equals(value, "Z")) {
+                cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+            } else {
+                cal.setTimeZone(TimeZone.getTimeZone("GMT" + value));
+            }
+        }
     }
 
-    private static final Strategy NUMBER_MONTH_STRATEGY = new NumberStrategy(Calendar.MONTH) {
-        @Override
-        int modify(final FastDateParser parser, final int iValue) {
-            return iValue - 1;
+    /**
+     * 将格式解析为策略
+     */
+    private class StrategyParser {
+        final private Calendar definingCalendar;
+        private int currentIdx;
+
+        StrategyParser(final Calendar definingCalendar) {
+            this.definingCalendar = definingCalendar;
         }
-    };
-    private static final Strategy LITERAL_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR);
-    private static final Strategy WEEK_OF_YEAR_STRATEGY = new NumberStrategy(Calendar.WEEK_OF_YEAR);
-    private static final Strategy WEEK_OF_MONTH_STRATEGY = new NumberStrategy(Calendar.WEEK_OF_MONTH);
-    private static final Strategy DAY_OF_YEAR_STRATEGY = new NumberStrategy(Calendar.DAY_OF_YEAR);
-    private static final Strategy DAY_OF_MONTH_STRATEGY = new NumberStrategy(Calendar.DAY_OF_MONTH);
-    private static final Strategy DAY_OF_WEEK_STRATEGY = new NumberStrategy(Calendar.DAY_OF_WEEK) {
-        @Override
-        int modify(final FastDateParser parser, final int iValue) {
-            return iValue != 7 ? iValue + 1 : Calendar.SUNDAY;
+
+        StrategyAndWidth getNextStrategy() {
+            if (currentIdx >= pattern.length()) {
+                return null;
+            }
+
+            final char c = pattern.charAt(currentIdx);
+            if (isFormatLetter(c)) {
+                return letterPattern(c);
+            }
+            return literal();
         }
-    };
-    private static final Strategy DAY_OF_WEEK_IN_MONTH_STRATEGY = new NumberStrategy(Calendar.DAY_OF_WEEK_IN_MONTH);
-    private static final Strategy HOUR_OF_DAY_STRATEGY = new NumberStrategy(Calendar.HOUR_OF_DAY);
-    private static final Strategy HOUR24_OF_DAY_STRATEGY = new NumberStrategy(Calendar.HOUR_OF_DAY) {
-        @Override
-        int modify(final FastDateParser parser, final int iValue) {
-            return iValue == 24 ? 0 : iValue;
+
+        private StrategyAndWidth letterPattern(final char c) {
+            final int begin = currentIdx;
+            while (++currentIdx < pattern.length()) {
+                if (pattern.charAt(currentIdx) != c) {
+                    break;
+                }
+            }
+
+            final int width = currentIdx - begin;
+            return new StrategyAndWidth(getStrategy(c, width, definingCalendar), width);
         }
-    };
-    private static final Strategy HOUR12_STRATEGY = new NumberStrategy(Calendar.HOUR) {
-        @Override
-        int modify(final FastDateParser parser, final int iValue) {
-            return iValue == 12 ? 0 : iValue;
+
+        private StrategyAndWidth literal() {
+            boolean activeQuote = false;
+
+            final StringBuilder sb = new StringBuilder();
+            while (currentIdx < pattern.length()) {
+                final char c = pattern.charAt(currentIdx);
+                if (!activeQuote && isFormatLetter(c)) {
+                    break;
+                } else if (c == '\'' && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != '\'')) {
+                    activeQuote = !activeQuote;
+                    continue;
+                }
+                ++currentIdx;
+                sb.append(c);
+            }
+
+            if (activeQuote) {
+                throw new IllegalArgumentException("Unterminated quote");
+            }
+
+            final String formatField = sb.toString();
+            return new StrategyAndWidth(new CopyQuotedStrategy(formatField), formatField.length());
         }
-    };
-    private static final Strategy HOUR_STRATEGY = new NumberStrategy(Calendar.HOUR);
-    private static final Strategy MINUTE_STRATEGY = new NumberStrategy(Calendar.MINUTE);
-    private static final Strategy SECOND_STRATEGY = new NumberStrategy(Calendar.SECOND);
-    private static final Strategy MILLISECOND_STRATEGY = new NumberStrategy(Calendar.MILLISECOND);
+    }
 
 }

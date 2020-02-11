@@ -75,35 +75,6 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     private int position;
 
     /**
-     * 创建字符串构建器
-     *
-     * @return {@link StrBuilder}
-     */
-    public static StrBuilder create() {
-        return new StrBuilder();
-    }
-
-    /**
-     * 创建字符串构建器
-     *
-     * @param initialCapacity 初始容量
-     * @return {@link StrBuilder}
-     */
-    public static StrBuilder create(int initialCapacity) {
-        return new StrBuilder(initialCapacity);
-    }
-
-    /**
-     * 创建字符串构建器
-     *
-     * @param strs 初始字符串
-     * @return {@link StrBuilder}
-     */
-    public static StrBuilder create(CharSequence... strs) {
-        return new StrBuilder(strs);
-    }
-
-    /**
      * 构造
      */
     public StrBuilder() {
@@ -148,6 +119,35 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         for (int i = 0; i < strs.length; i++) {
             append(strs[i]);
         }
+    }
+
+    /**
+     * 创建字符串构建器
+     *
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create() {
+        return new StrBuilder();
+    }
+
+    /**
+     * 创建字符串构建器
+     *
+     * @param initialCapacity 初始容量
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create(int initialCapacity) {
+        return new StrBuilder(initialCapacity);
+    }
+
+    /**
+     * 创建字符串构建器
+     *
+     * @param strs 初始字符串
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create(CharSequence... strs) {
+        return new StrBuilder(strs);
     }
 
     /**

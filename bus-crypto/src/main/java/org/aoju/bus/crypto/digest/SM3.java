@@ -37,15 +37,6 @@ public class SM3 extends Digester {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 创建SM3实例
-     *
-     * @return SM3
-     */
-    public static SM3 create() {
-        return new SM3();
-    }
-
-    /**
      * 构造
      */
     public SM3() {
@@ -83,6 +74,15 @@ public class SM3 extends Digester {
         this.salt = salt;
         this.saltPosition = saltPosition;
         this.digestCount = digestCount;
+    }
+
+    /**
+     * 创建SM3实例
+     *
+     * @return SM3
+     */
+    public static SM3 create() {
+        return new SM3();
     }
 
 }

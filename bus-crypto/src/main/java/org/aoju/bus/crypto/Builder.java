@@ -109,8 +109,6 @@ public final class Builder {
      * </pre>
      */
     public static final int DEFAULT_KEY_SIZE = 1024;
-    private final static int RS_LEN = 32;
-
     /**
      * SM2默认曲线
      *
@@ -119,6 +117,7 @@ public final class Builder {
      * </pre>
      */
     public static final String SM2_DEFAULT_CURVE = "sm2p256v1";
+    private final static int RS_LEN = 32;
 
     /**
      * 数据加密

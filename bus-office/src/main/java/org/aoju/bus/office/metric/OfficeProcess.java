@@ -210,7 +210,7 @@ public class OfficeProcess {
         return new File(
                 config.getWorkingDir(),
                 ".converter_"
-                        + unoUrl.getConnectionAndParametersAsString().replace(Symbol.C_COMMA, Symbol.C_UNDERLINE).replace(Symbol.C_EQUAL,  Symbol.C_HYPHEN));
+                        + unoUrl.getConnectionAndParametersAsString().replace(Symbol.C_COMMA, Symbol.C_UNDERLINE).replace(Symbol.C_EQUAL, Symbol.C_HYPHEN));
     }
 
     /**

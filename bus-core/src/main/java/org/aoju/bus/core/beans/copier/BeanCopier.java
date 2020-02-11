@@ -66,6 +66,21 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
     private final CopyOptions copyOptions;
 
     /**
+     * 构造
+     *
+     * @param source      来源对象，可以是Bean或者Map
+     * @param dest        目标Bean对象
+     * @param destType    目标的泛型类型，用于标注有泛型参数的Bean对象
+     * @param copyOptions 拷贝属性选项
+     */
+    public BeanCopier(Object source, T dest, Type destType, CopyOptions copyOptions) {
+        this.source = source;
+        this.dest = dest;
+        this.destType = destType;
+        this.copyOptions = copyOptions;
+    }
+
+    /**
      * 创建BeanCopier
      *
      * @param <T>         目标Bean类型
@@ -93,18 +108,17 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
     }
 
     /**
-     * 构造
+     * 获取指定字段名对应的映射值
      *
-     * @param source      来源对象，可以是Bean或者Map
-     * @param dest        目标Bean对象
-     * @param destType    目标的泛型类型，用于标注有泛型参数的Bean对象
-     * @param copyOptions 拷贝属性选项
+     * @param mapping   反向映射Map
+     * @param fieldName 字段名
+     * @return 映射值，无对应值返回字段名
      */
-    public BeanCopier(Object source, T dest, Type destType, CopyOptions copyOptions) {
-        this.source = source;
-        this.dest = dest;
-        this.destType = destType;
-        this.copyOptions = copyOptions;
+    private static String mappingKey(Map<String, String> mapping, String fieldName) {
+        if (MapUtils.isEmpty(mapping)) {
+            return fieldName;
+        }
+        return ObjectUtils.defaultIfNull(mapping.get(fieldName), fieldName);
     }
 
     @Override
@@ -306,20 +320,6 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                 // 忽略注入失败
             }
         }
-    }
-
-    /**
-     * 获取指定字段名对应的映射值
-     *
-     * @param mapping   反向映射Map
-     * @param fieldName 字段名
-     * @return 映射值，无对应值返回字段名
-     */
-    private static String mappingKey(Map<String, String> mapping, String fieldName) {
-        if (MapUtils.isEmpty(mapping)) {
-            return fieldName;
-        }
-        return ObjectUtils.defaultIfNull(mapping.get(fieldName), fieldName);
     }
 
 }

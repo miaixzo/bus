@@ -3400,6 +3400,42 @@ public class DateUtils {
     }
 
     /**
+     * 一个简单的二分查找，返回查找到的元素坐标，用于查找农历二维数组信息
+     *
+     * @param array 　数组
+     * @param n     　待查询数字
+     * @return 查到的坐标
+     */
+    private static int binSearch(int[] array, int n) {
+        if (null == array || array.length == 0) {
+            return -1;
+        }
+        int min = 0, max = array.length - 1;
+        if (n <= array[min]) {
+            return min;
+        } else if (n >= array[max]) {
+            return max;
+        }
+        while (max - min > 1) {
+            int newIndex = (max + min) / 2; // 二分
+            if (array[newIndex] > n) { // 取小区间
+                max = newIndex;
+            } else if (array[newIndex] < n) {// 取大区间
+                min = newIndex;
+            } else { // 相等，直接返回下标
+                return newIndex;
+            }
+        }
+        if (array[max] == n) {
+            return max;
+        } else if (array[min] == n) {
+            return min;
+        } else {
+            return min; // 返回 较小的一个
+        }
+    }
+
+    /**
      * 返回中国农历的全名
      *
      * @return String
@@ -3437,42 +3473,6 @@ public class DateUtils {
                     + getDayName(this.ldate);
         } else {
             return getMonthName(this.lmonth) + "月" + getDayName(this.ldate);
-        }
-    }
-
-    /**
-     * 一个简单的二分查找，返回查找到的元素坐标，用于查找农历二维数组信息
-     *
-     * @param array 　数组
-     * @param n     　待查询数字
-     * @return 查到的坐标
-     */
-    private static int binSearch(int[] array, int n) {
-        if (null == array || array.length == 0) {
-            return -1;
-        }
-        int min = 0, max = array.length - 1;
-        if (n <= array[min]) {
-            return min;
-        } else if (n >= array[max]) {
-            return max;
-        }
-        while (max - min > 1) {
-            int newIndex = (max + min) / 2; // 二分
-            if (array[newIndex] > n) { // 取小区间
-                max = newIndex;
-            } else if (array[newIndex] < n) {// 取大区间
-                min = newIndex;
-            } else { // 相等，直接返回下标
-                return newIndex;
-            }
-        }
-        if (array[max] == n) {
-            return max;
-        } else if (array[min] == n) {
-            return min;
-        } else {
-            return min; // 返回 较小的一个
         }
     }
 

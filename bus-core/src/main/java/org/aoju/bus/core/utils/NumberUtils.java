@@ -966,7 +966,7 @@ public class NumberUtils {
         boolean allowSigns = false;
         boolean foundDigit = false;
         // deal with any possible sign up front
-        int start = (chars[0] ==  Symbol.C_HYPHEN || chars[0] == Symbol.C_PLUS) ? 1 : 0;
+        int start = (chars[0] == Symbol.C_HYPHEN || chars[0] == Symbol.C_PLUS) ? 1 : 0;
         if (sz > start + 1) {
             if (chars[start] == '0' && (chars[start + 1] == 'x' || chars[start + 1] == 'X')) {
                 int i = start + 2;
@@ -1009,7 +1009,7 @@ public class NumberUtils {
                 }
                 hasExp = true;
                 allowSigns = true;
-            } else if (chars[i] == Symbol.C_PLUS || chars[i] ==  Symbol.C_HYPHEN) {
+            } else if (chars[i] == Symbol.C_PLUS || chars[i] == Symbol.C_HYPHEN) {
                 if (!allowSigns) {
                     return false;
                 }

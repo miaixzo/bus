@@ -47,8 +47,6 @@ import java.security.Provider;
 public class Digester implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private MessageDigest digest;
     /**
      * 盐值
      */
@@ -61,6 +59,7 @@ public class Digester implements Serializable {
      * 散列次数
      */
     protected int digestCount;
+    private MessageDigest digest;
 
     /**
      * 构造

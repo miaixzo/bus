@@ -42,15 +42,6 @@ public class MD5 extends Digester {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 创建MD5实例
-     *
-     * @return MD5
-     */
-    public static MD5 create() {
-        return new MD5();
-    }
-
-    /**
      * 构造
      */
     public MD5() {
@@ -88,6 +79,15 @@ public class MD5 extends Digester {
         this.salt = salt;
         this.saltPosition = saltPosition;
         this.digestCount = digestCount;
+    }
+
+    /**
+     * 创建MD5实例
+     *
+     * @return MD5
+     */
+    public static MD5 create() {
+        return new MD5();
     }
 
     /**

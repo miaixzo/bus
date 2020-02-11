@@ -44,6 +44,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Keys<T extends Keys<T>> {
 
     /**
+     * 锁
+     */
+    protected final Lock lock = new ReentrantLock();
+    /**
      * 算法
      */
     protected String algorithm;
@@ -55,10 +59,6 @@ public class Keys<T extends Keys<T>> {
      * 私钥
      */
     protected PrivateKey privateKey;
-    /**
-     * 锁
-     */
-    protected final Lock lock = new ReentrantLock();
 
     /**
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
@@ -119,16 +119,6 @@ public class Keys<T extends Keys<T>> {
     }
 
     /**
-     * 获得公钥
-     *
-     * @return 获得公钥
-     */
-    public String getPublicKeyBase64() {
-        final PublicKey publicKey = getPublicKey();
-        return (null == publicKey) ? null : Base64.encode(publicKey.getEncoded());
-    }
-
-    /**
      * 设置公钥
      *
      * @param publicKey 公钥
@@ -137,6 +127,16 @@ public class Keys<T extends Keys<T>> {
     public T setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;
         return (T) this;
+    }
+
+    /**
+     * 获得公钥
+     *
+     * @return 获得公钥
+     */
+    public String getPublicKeyBase64() {
+        final PublicKey publicKey = getPublicKey();
+        return (null == publicKey) ? null : Base64.encode(publicKey.getEncoded());
     }
 
     /**
@@ -149,15 +149,6 @@ public class Keys<T extends Keys<T>> {
     }
 
     /**
-     * 获得私钥
-     *
-     * @return 获得私钥
-     */
-    public String getPrivateKeyBase64() {
-        return Base64.encode(getPrivateKey().getEncoded());
-    }
-
-    /**
      * 设置私钥
      *
      * @param privateKey 私钥
@@ -166,6 +157,15 @@ public class Keys<T extends Keys<T>> {
     public T setPrivateKey(PrivateKey privateKey) {
         this.privateKey = privateKey;
         return (T) this;
+    }
+
+    /**
+     * 获得私钥
+     *
+     * @return 获得私钥
+     */
+    public String getPrivateKeyBase64() {
+        return Base64.encode(getPrivateKey().getEncoded());
     }
 
     /**

@@ -318,7 +318,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
         char firstChar = s.charAt(0);
         if (firstChar < '0') {
-            if (firstChar ==  Symbol.C_HYPHEN) {
+            if (firstChar == Symbol.C_HYPHEN) {
                 negative = true;
                 limit = Long.MIN_VALUE;
             } else if (firstChar != Symbol.C_PLUS) {

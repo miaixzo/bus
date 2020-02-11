@@ -71,59 +71,6 @@ public class DateTime extends Date {
     private TimeZone timeZone;
 
     /**
-     * 转换时间戳为 DateTime
-     *
-     * @param timeMillis 时间戳，毫秒数
-     * @return DateTime
-     */
-    public static DateTime of(long timeMillis) {
-        return new DateTime(timeMillis);
-    }
-
-    /**
-     * 转换JDK date为 DateTime
-     *
-     * @param date JDK Date
-     * @return DateTime
-     */
-    public static DateTime of(Date date) {
-        if (date instanceof DateTime) {
-            return (DateTime) date;
-        }
-        return new DateTime(date);
-    }
-
-    /**
-     * 转换 {@link Calendar} 为 DateTime
-     *
-     * @param calendar {@link Calendar}
-     * @return DateTime
-     */
-    public static DateTime of(Calendar calendar) {
-        return new DateTime(calendar);
-    }
-
-    /**
-     * 构造
-     *
-     * @param dateStr Date字符串
-     * @param format  格式
-     * @return {@link DateTime}
-     */
-    public static DateTime of(String dateStr, String format) {
-        return new DateTime(dateStr, format);
-    }
-
-    /**
-     * 现在的时间
-     *
-     * @return 现在的时间
-     */
-    public static DateTime now() {
-        return new DateTime();
-    }
-
-    /**
      * 当前时间
      */
     public DateTime() {
@@ -266,6 +213,98 @@ public class DateTime extends Date {
      */
     public DateTime(CharSequence dateStr, DateParser dateParser) {
         this(parse(dateStr, dateParser), dateParser.getTimeZone());
+    }
+
+    /**
+     * 转换时间戳为 DateTime
+     *
+     * @param timeMillis 时间戳，毫秒数
+     * @return DateTime
+     */
+    public static DateTime of(long timeMillis) {
+        return new DateTime(timeMillis);
+    }
+
+    /**
+     * 转换JDK date为 DateTime
+     *
+     * @param date JDK Date
+     * @return DateTime
+     */
+    public static DateTime of(Date date) {
+        if (date instanceof DateTime) {
+            return (DateTime) date;
+        }
+        return new DateTime(date);
+    }
+
+    /**
+     * 转换 {@link Calendar} 为 DateTime
+     *
+     * @param calendar {@link Calendar}
+     * @return DateTime
+     */
+    public static DateTime of(Calendar calendar) {
+        return new DateTime(calendar);
+    }
+
+    /**
+     * 构造
+     *
+     * @param dateStr Date字符串
+     * @param format  格式
+     * @return {@link DateTime}
+     */
+    public static DateTime of(String dateStr, String format) {
+        return new DateTime(dateStr, format);
+    }
+
+    /**
+     * 现在的时间
+     *
+     * @return 现在的时间
+     */
+    public static DateTime now() {
+        return new DateTime();
+    }
+
+    /**
+     * 转换字符串为Date
+     *
+     * @param dateStr    日期字符串
+     * @param dateFormat {@link SimpleDateFormat}
+     * @return {@link Date}
+     */
+    private static Date parse(CharSequence dateStr, DateFormat dateFormat) {
+        Assert.notBlank(dateStr, "Date String must be not blank !");
+        try {
+            return dateFormat.parse(dateStr.toString());
+        } catch (Exception e) {
+            String pattern;
+            if (dateFormat instanceof SimpleDateFormat) {
+                pattern = ((SimpleDateFormat) dateFormat).toPattern();
+            } else {
+                pattern = dateFormat.toString();
+            }
+            throw new InstrumentException(StringUtils.format("Parse [{}] with format [{}] error!", dateStr, pattern), e);
+        }
+    }
+
+    /**
+     * 转换字符串为Date
+     *
+     * @param dateStr 日期字符串
+     * @param parser  {@link FastDateFormat}
+     * @return {@link Date}
+     */
+    private static Date parse(CharSequence dateStr, DateParser parser) {
+        Assert.notNull(parser, "Parser or DateFromat must be not null !");
+        Assert.notBlank(dateStr, "Date String must be not blank !");
+        try {
+            return parser.parse(dateStr.toString());
+        } catch (Exception e) {
+            throw new InstrumentException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern(), e);
+        }
     }
 
     /**
@@ -799,15 +838,6 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获取时区ID
-     *
-     * @return 时区ID
-     */
-    public ZoneId getZoneId() {
-        return this.timeZone.toZoneId();
-    }
-
-    /**
      * 设置时区
      *
      * @param timeZone 时区
@@ -816,6 +846,15 @@ public class DateTime extends Date {
     public DateTime setTimeZone(TimeZone timeZone) {
         this.timeZone = ObjectUtils.defaultIfNull(timeZone, TimeZone.getDefault());
         return this;
+    }
+
+    /**
+     * 获取时区ID
+     *
+     * @return 时区ID
+     */
+    public ZoneId getZoneId() {
+        return this.timeZone.toZoneId();
     }
 
     /**
@@ -913,45 +952,6 @@ public class DateTime extends Date {
      */
     public String toString(DateFormat format) {
         return format.format(this);
-    }
-
-    /**
-     * 转换字符串为Date
-     *
-     * @param dateStr    日期字符串
-     * @param dateFormat {@link SimpleDateFormat}
-     * @return {@link Date}
-     */
-    private static Date parse(CharSequence dateStr, DateFormat dateFormat) {
-        Assert.notBlank(dateStr, "Date String must be not blank !");
-        try {
-            return dateFormat.parse(dateStr.toString());
-        } catch (Exception e) {
-            String pattern;
-            if (dateFormat instanceof SimpleDateFormat) {
-                pattern = ((SimpleDateFormat) dateFormat).toPattern();
-            } else {
-                pattern = dateFormat.toString();
-            }
-            throw new InstrumentException(StringUtils.format("Parse [{}] with format [{}] error!", dateStr, pattern), e);
-        }
-    }
-
-    /**
-     * 转换字符串为Date
-     *
-     * @param dateStr 日期字符串
-     * @param parser  {@link FastDateFormat}
-     * @return {@link Date}
-     */
-    private static Date parse(CharSequence dateStr, DateParser parser) {
-        Assert.notNull(parser, "Parser or DateFromat must be not null !");
-        Assert.notBlank(dateStr, "Date String must be not blank !");
-        try {
-            return parser.parse(dateStr.toString());
-        } catch (Exception e) {
-            throw new InstrumentException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern(), e);
-        }
     }
 
     /**
