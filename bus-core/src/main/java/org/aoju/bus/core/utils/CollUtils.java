@@ -163,10 +163,9 @@ public class CollUtils {
     /**
      * 是否包含{@code null}元素
      *
-     * @param iterable 被检查的Iterable对象,如果为{@code null} 返回false
+     * @param iterable 被检查的Iterable对象,如果为{@code null} 返回true
      * @return 是否包含{@code null}元素
      * @see IterUtils#hasNull(Iterable)
-     * @since 3.0.7
      */
     public static boolean hasNull(Iterable<?> iterable) {
         return IterUtils.hasNull(iterable);

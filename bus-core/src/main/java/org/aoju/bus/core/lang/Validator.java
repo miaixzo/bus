@@ -241,7 +241,7 @@ public class Validator {
      * @param value   值
      * @return 是否匹配正则
      */
-    public static boolean isMactchRegex(Pattern pattern, CharSequence value) {
+    public static boolean isMatchRegex(Pattern pattern, CharSequence value) {
         return PatternUtils.isMatch(pattern, value);
     }
 
@@ -252,7 +252,7 @@ public class Validator {
      * @param value 值
      * @return 是否匹配正则
      */
-    public static boolean isMactchRegex(String regex, CharSequence value) {
+    public static boolean isMatchRegex(String regex, CharSequence value) {
         return PatternUtils.isMatch(regex, value);
     }
 
@@ -266,7 +266,7 @@ public class Validator {
      * @throws ValidateException 验证异常
      */
     public static void validateMatchRegex(String regex, String value, String errorMsg) throws ValidateException {
-        if (false == isMactchRegex(regex, value)) {
+        if (false == isMatchRegex(regex, value)) {
             throw new ValidateException(errorMsg);
         }
     }
@@ -278,7 +278,7 @@ public class Validator {
      * @return 是否为英文字母 、数字和下划线
      */
     public static boolean isGeneral(String value) {
-        return isMactchRegex(RegEx.GENERAL, value);
+        return isMatchRegex(RegEx.GENERAL, value);
     }
 
     /**
@@ -310,7 +310,7 @@ public class Validator {
         if (max <= 0) {
             reg = "^\\w{" + min + ",}$";
         }
-        return isMactchRegex(reg, value);
+        return isMatchRegex(reg, value);
     }
 
     /**
@@ -450,7 +450,7 @@ public class Validator {
      * @return 是否是字母（包括大写和小写字母）
      */
     public static boolean isWord(String value) {
-        return isMactchRegex(RegEx.WORD, value);
+        return isMatchRegex(RegEx.WORD, value);
     }
 
     /**
@@ -473,7 +473,7 @@ public class Validator {
      * @return 是否为货币
      */
     public static boolean isMoney(String value) {
-        return isMactchRegex(RegEx.MONEY, value);
+        return isMatchRegex(RegEx.MONEY, value);
     }
 
     /**
@@ -496,7 +496,7 @@ public class Validator {
      * @return 是否为邮政编码（中国）
      */
     public static boolean isZipCode(String value) {
-        return isMactchRegex(RegEx.ZIP_CODE, value);
+        return isMatchRegex(RegEx.ZIP_CODE, value);
     }
 
     /**
@@ -519,7 +519,7 @@ public class Validator {
      * @return 否为可用邮箱地址
      */
     public static boolean isEmail(String value) {
-        return isMactchRegex(RegEx.EMAIL, value);
+        return isMatchRegex(RegEx.EMAIL, value);
     }
 
     /**
@@ -542,7 +542,7 @@ public class Validator {
      * @return 是否为手机号码（中国）
      */
     public static boolean isPhone(String value) {
-        return isMactchRegex(RegEx.PHONE, value);
+        return isMatchRegex(RegEx.PHONE, value);
     }
 
     /**
@@ -552,7 +552,7 @@ public class Validator {
      * @return 是否为手机号码（中国）
      */
     public static boolean isMobile(String value) {
-        return isMactchRegex(RegEx.MOBILE, value);
+        return isMatchRegex(RegEx.MOBILE, value);
     }
 
     /**
@@ -576,7 +576,7 @@ public class Validator {
      * @return 是否为身份证号码（18位中国）
      */
     public static boolean isCitizenId(String value) {
-        return isMactchRegex(RegEx.CITIZEN_ID, value);
+        return isMatchRegex(RegEx.CITIZEN_ID, value);
     }
 
     /**
@@ -643,7 +643,7 @@ public class Validator {
      * @return 是否为生日
      */
     public static boolean isBirthday(String value) {
-        if (isMactchRegex(RegEx.BIRTHDAY, value)) {
+        if (isMatchRegex(RegEx.BIRTHDAY, value)) {
             Matcher matcher = RegEx.BIRTHDAY.matcher(value);
             if (matcher.find()) {
                 int year = Integer.parseInt(matcher.group(1));
@@ -675,7 +675,7 @@ public class Validator {
      * @return 是否为IPV4地址
      */
     public static boolean isIpv4(String value) {
-        return isMactchRegex(RegEx.IPV4, value);
+        return isMatchRegex(RegEx.IPV4, value);
     }
 
     /**
@@ -698,7 +698,7 @@ public class Validator {
      * @return 是否为IPV6地址
      */
     public static boolean isIpv6(CharSequence value) {
-        return isMactchRegex(RegEx.IPV6, value);
+        return isMatchRegex(RegEx.IPV6, value);
     }
 
     /**
@@ -724,7 +724,7 @@ public class Validator {
      * @return 是否为MAC地址
      */
     public static boolean isMac(String value) {
-        return isMactchRegex(RegEx.MAC_ADDRESS, value);
+        return isMatchRegex(RegEx.MAC_ADDRESS, value);
     }
 
     /**
@@ -747,7 +747,7 @@ public class Validator {
      * @return 是否为中国车牌号
      */
     public static boolean isPlateNumber(String value) {
-        return isMactchRegex(RegEx.PLATE_NUMBER, value);
+        return isMatchRegex(RegEx.PLATE_NUMBER, value);
     }
 
     /**
@@ -798,7 +798,7 @@ public class Validator {
      * @return 是否为汉字
      */
     public static boolean isEnglish(String value) {
-        return isMactchRegex(Symbol.CARET + RegEx.WORD_PATTERN + "+$", value);
+        return isMatchRegex(Symbol.CARET + RegEx.WORD_PATTERN + "+$", value);
     }
 
     /**
@@ -821,7 +821,7 @@ public class Validator {
      * @return 是否为汉字
      */
     public static boolean isChinese(CharSequence value) {
-        return isMactchRegex(Symbol.CARET + RegEx.CHINESE_PATTERN + "+$", value);
+        return isMatchRegex(Symbol.CARET + RegEx.CHINESE_PATTERN + "+$", value);
     }
 
     /**
@@ -847,7 +847,7 @@ public class Validator {
      * @return 是否为中文字、英文字母、数字和下划线
      */
     public static boolean isGeneralWithChinese(String value) {
-        return isMactchRegex(RegEx.GENERAL_WITH_CHINESE, value);
+        return isMatchRegex(RegEx.GENERAL_WITH_CHINESE, value);
     }
 
     /**
@@ -871,7 +871,7 @@ public class Validator {
      * @return 是否为UUID
      */
     public static boolean isUUID(String value) {
-        return isMactchRegex(RegEx.UUID, value) || isMactchRegex(RegEx.UUID_SIMPLE, value);
+        return isMatchRegex(RegEx.UUID, value) || isMatchRegex(RegEx.UUID_SIMPLE, value);
     }
 
     /**
@@ -926,7 +926,7 @@ public class Validator {
      * @return 是否为Hex（16进制）字符串
      */
     public static boolean isHex(CharSequence value) {
-        return isMactchRegex(RegEx.HEX, value);
+        return isMatchRegex(RegEx.HEX, value);
     }
 
     /**
@@ -957,7 +957,7 @@ public class Validator {
         for (final boolean element : weak) {
             result ^= element;
         }
-        return result ? isMactchRegex(RegEx.PASSWORD_WEAK, value) : isMactchRegex(RegEx.PASSWORD_STRONG, value);
+        return result ? isMatchRegex(RegEx.PASSWORD_WEAK, value) : isMatchRegex(RegEx.PASSWORD_STRONG, value);
     }
 
     /**

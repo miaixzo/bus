@@ -81,7 +81,7 @@ public class IterUtils {
     /**
      * 是否包含{@code null}元素
      *
-     * @param iter 被检查的{@link Iterable}对象,如果为{@code null} 返回false
+     * @param iter 被检查的{@link Iterable}对象,如果为{@code null} 返回true
      * @return 是否包含{@code null}元素
      */
     public static boolean hasNull(Iterable<?> iter) {
@@ -91,7 +91,7 @@ public class IterUtils {
     /**
      * 是否包含{@code null}元素
      *
-     * @param iter 被检查的{@link Iterator}对象,如果为{@code null} 返回false
+     * @param iter 被检查的{@link Iterator}对象,如果为{@code null} 返回true
      * @return 是否包含{@code null}元素
      */
     public static boolean hasNull(Iterator<?> iter) {
