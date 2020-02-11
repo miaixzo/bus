@@ -29,7 +29,7 @@ package org.aoju.bus.health.hardware;
  * information to a disk or other storage device.
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public interface VirtualMemory {

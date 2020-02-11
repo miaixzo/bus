@@ -38,7 +38,7 @@ import java.util.Set;
  * 剪贴板监听
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {

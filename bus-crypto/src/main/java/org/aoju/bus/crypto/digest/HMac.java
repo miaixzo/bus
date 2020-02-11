@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class HMac implements Serializable {

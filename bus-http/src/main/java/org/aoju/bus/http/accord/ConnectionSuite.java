@@ -39,7 +39,7 @@ import java.util.List;
  * 将所有特性选择延迟到底层SSL套接字
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public final class ConnectionSuite {

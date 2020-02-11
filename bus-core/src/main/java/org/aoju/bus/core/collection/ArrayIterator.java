@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class ArrayIterator<E> implements ResettableIterator<E> {

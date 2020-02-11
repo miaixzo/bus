@@ -39,7 +39,7 @@ import javax.crypto.spec.IvParameterSpec;
  * Java中默认实现为：DESede/ECB/PKCS5Padding
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class DESede extends Symmetric {

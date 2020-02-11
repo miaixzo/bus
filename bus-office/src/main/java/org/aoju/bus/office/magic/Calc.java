@@ -31,7 +31,7 @@ import org.aoju.bus.office.Builder;
  * 使Office Calc文档(电子表格)更容易使用的实用函数集合.
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public final class Calc {

@@ -43,7 +43,7 @@ import java.util.Objects;
  * 人人登录
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class RenrenProvider extends DefaultProvider {
@@ -136,4 +136,5 @@ public class RenrenProvider extends DefaultProvider {
                 .queryParam("userId", token.getOpenId())
                 .build();
     }
+
 }

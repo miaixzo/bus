@@ -27,7 +27,7 @@ package org.aoju.bus.metric.manual;
  * 接口注册事件
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8++
  */
 public interface ApiRegistEvent {

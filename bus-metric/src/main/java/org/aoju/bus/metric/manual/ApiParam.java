@@ -35,7 +35,7 @@ import java.util.Map;
  * 客户端传来的参数放在这里.
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8++
  */
 public class ApiParam extends JSONObject implements Param {

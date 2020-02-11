@@ -36,7 +36,7 @@ import java.util.concurrent.*;
  * 这个抽象类从未将可用性设置为true 只有当管理器停止时，可用性才设置为false.
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public abstract class AbstractOfficeEntryManager implements OfficeManager {

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-socket</artifactId>
-    <version>5.5.6</version>
+    <version>5.5.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -29,8 +29,8 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>bus-logger</artifactId>
-            <version>5.5.6</version>
+            <artifactId>bus-extra</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>

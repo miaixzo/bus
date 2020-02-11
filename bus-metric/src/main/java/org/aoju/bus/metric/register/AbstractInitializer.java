@@ -32,7 +32,7 @@ import org.springframework.util.Assert;
  * 负责启动时的初始化工作
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8++
  */
 public abstract class AbstractInitializer implements Initializer, RegistCallback {

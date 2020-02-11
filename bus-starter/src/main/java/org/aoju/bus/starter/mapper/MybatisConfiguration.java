@@ -42,7 +42,7 @@ import java.io.FileNotFoundException;
  * mybatis 配置
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {MybatisProperties.class})

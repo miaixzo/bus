@@ -38,7 +38,7 @@ import java.util.function.Function;
  * 提供默认值的Map
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class TolerantMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Cloneable, Serializable {

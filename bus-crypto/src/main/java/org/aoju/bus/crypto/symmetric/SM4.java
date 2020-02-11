@@ -37,7 +37,7 @@ import javax.crypto.spec.IvParameterSpec;
  * SM4实现
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class SM4 extends Symmetric {

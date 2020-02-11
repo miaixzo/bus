@@ -30,7 +30,7 @@ import org.apache.ibatis.annotations.DeleteProvider;
  * 通用Mapper接口,删除
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public interface DeleteByPrimaryKeyMapper<T> {

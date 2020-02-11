@@ -50,7 +50,7 @@ import java.util.*;
  * 该类设计为一个独立的工具类,依赖jsqlparser,可以独立使用
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class SqlServerParser {

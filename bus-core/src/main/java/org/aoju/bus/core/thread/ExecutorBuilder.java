@@ -31,7 +31,7 @@ import java.util.concurrent.*;
  * {@link ThreadPoolExecutor} 建造者
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
