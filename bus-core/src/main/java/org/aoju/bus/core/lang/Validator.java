@@ -957,10 +957,7 @@ public class Validator {
         for (final boolean element : weak) {
             result ^= element;
         }
-        if (!result) {
-            return isMactchRegex(RegEx.PASSWORD_WEAK, value);
-        }
-        return isMactchRegex(RegEx.PASSWORD_STRONG, value);
+        return result ? isMactchRegex(RegEx.PASSWORD_WEAK, value) : isMactchRegex(RegEx.PASSWORD_STRONG, value);
     }
 
     /**
