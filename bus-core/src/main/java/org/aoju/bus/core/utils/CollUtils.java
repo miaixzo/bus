@@ -2562,7 +2562,6 @@ public class CollUtils {
      * @param <K>           键类型
      * @param mapCollection Map列表
      * @return key集合
-     * @since 4.5.12
      */
     public static <K> Set<K> keySet(Collection<Map<K, ?>> mapCollection) {
         if (isEmpty(mapCollection)) {

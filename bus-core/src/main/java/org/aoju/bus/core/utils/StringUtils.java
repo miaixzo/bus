@@ -470,7 +470,6 @@ public class StringUtils extends TextUtils {
      * @param str        要转换的字符串
      * @param defaultStr 默认字符串
      * @return 字符串本身或指定的默认字符串
-     * @since 4.1.0
      */
     public static String emptyToDefault(CharSequence str, String defaultStr) {
         return isEmpty(str) ? defaultStr : str.toString();
@@ -489,7 +488,6 @@ public class StringUtils extends TextUtils {
      * @param str        要转换的字符串
      * @param defaultStr 默认字符串
      * @return 字符串本身或指定的默认字符串
-     * @since 4.1.0
      */
     public static String blankToDefault(CharSequence str, String defaultStr) {
         return isBlank(str) ? defaultStr : str.toString();
@@ -2330,7 +2328,6 @@ public class StringUtils extends TextUtils {
      * @param str       被切分的字符串
      * @param separator 分隔符
      * @return 切分后long数组
-     * @since 4.0.6
      */
     public static long[] splitToLong(CharSequence str, char separator) {
         return Convert.convert(long[].class, splitTrim(str, separator));
@@ -2342,7 +2339,6 @@ public class StringUtils extends TextUtils {
      * @param str       被切分的字符串
      * @param separator 分隔符字符串
      * @return 切分后long数组
-     * @since 4.0.6
      */
     public static long[] splitToLong(CharSequence str, CharSequence separator) {
         return Convert.convert(long[].class, splitTrim(str, separator));
@@ -2354,7 +2350,6 @@ public class StringUtils extends TextUtils {
      * @param str       被切分的字符串
      * @param separator 分隔符
      * @return 切分后long数组
-     * @since 4.0.6
      */
     public static int[] splitToInt(CharSequence str, char separator) {
         return Convert.convert(int[].class, splitTrim(str, separator));
@@ -2366,7 +2361,6 @@ public class StringUtils extends TextUtils {
      * @param str       被切分的字符串
      * @param separator 分隔符字符串
      * @return 切分后long数组
-     * @since 4.0.6
      */
     public static int[] splitToInt(CharSequence str, CharSequence separator) {
         return Convert.convert(int[].class, splitTrim(str, separator));

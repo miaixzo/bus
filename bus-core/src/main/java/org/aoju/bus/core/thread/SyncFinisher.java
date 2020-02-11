@@ -136,7 +136,6 @@ public class SyncFinisher {
      * 开始工作
      *
      * @param sync 是否阻塞等待
-     * @since 4.5.8
      */
     public void start(boolean sync) {
         endLatch = new CountDownLatch(workers.size());

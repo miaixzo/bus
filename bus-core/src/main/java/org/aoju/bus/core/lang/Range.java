@@ -132,7 +132,6 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
      * 禁用锁，调用此方法后不在 使用锁保护
      *
      * @return this
-     * @since 4.3.1
      */
     public Range<T> disableLock() {
         this.lock = new AtomicNoLock();

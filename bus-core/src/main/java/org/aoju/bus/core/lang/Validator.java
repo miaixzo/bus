@@ -806,7 +806,6 @@ public class Validator {
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
-     * @return 验证后的值
      * @throws ValidateException 验证异常
      */
     public static void validateEnglish(String value, String errorMsg) throws ValidateException {
@@ -936,7 +935,6 @@ public class Validator {
      * @param <T>      字符串类型
      * @param value    值
      * @param errorMsg 验证错误的信息
-     * @return 验证后的值
      * @throws ValidateException 验证异常
      */
     public static <T extends CharSequence> T validateHex(T value, String errorMsg) throws ValidateException {
@@ -950,6 +948,7 @@ public class Validator {
      * 验证是否符合密码要求
      *
      * @param value 值
+     * @param weak  是否弱密码
      * @return 否符合密码要求
      */
     public static boolean isPassword(String value, boolean... weak) {

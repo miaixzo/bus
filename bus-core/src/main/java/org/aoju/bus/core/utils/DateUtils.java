@@ -3540,7 +3540,6 @@ public class DateUtils {
      * @param solarYear  公历年
      * @param solarMonth 公历月，0-11
      * @param solarDate  公历日
-     * @return void
      */
     private void lunar(final int solarYear, final int solarMonth, final int solarDate) {
         if (solarYear < MINI_YEAR && solarYear > MAX_YEAR) {

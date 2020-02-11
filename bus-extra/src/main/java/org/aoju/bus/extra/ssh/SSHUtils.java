@@ -129,7 +129,6 @@ public class SSHUtils {
      * @param sshUser 用户名，如果为null，默认root
      * @param sshPass 密码
      * @return SSH会话
-     * @since 4.5.2
      */
     public static Session createSession(String sshHost, int sshPort, String sshUser, String sshPass) {
         final JSch jsch = new JSch();

@@ -500,7 +500,6 @@ public class ZipUtils {
      * @param outFile 解压到的目录
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 4.5.8
      */
     public static File unzip(ZipFile zipFile, File outFile) {
         try {
@@ -532,7 +531,6 @@ public class ZipUtils {
      * @param outFile 解压到的目录
      * @param charset 编码
      * @return 解压的目录
-     * @since 4.5.8
      */
     public static File unzip(InputStream in, File outFile, Charset charset) {
         if (null == charset) {
@@ -548,7 +546,6 @@ public class ZipUtils {
      * @param zipStream zip文件流,包含编码信息
      * @param outFile   解压到的目录
      * @return 解压的目录
-     * @since 4.5.8
      */
     public static File unzip(ZipInputStream zipStream, File outFile) {
         try {
