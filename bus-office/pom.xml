@@ -25,6 +25,11 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>bus-extra</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>bus-health</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -37,10 +37,10 @@
         <mysql.version>8.0.18</mysql.version>
         <!--bus-core-->
         <lombok.version>1.18.10</lombok.version>
-        <fastjson.version>1.2.62</fastjson.version>
         <!--bus-crypto-->
         <bouncycastle.version>1.60</bouncycastle.version>
         <!--bus-extra-->
+        <fastjson.version>1.2.62</fastjson.version>
         <mail.version>1.6.2</mail.version>
         <jsch.version>0.1.54</jsch.version>
         <zxing.version>3.3.3</zxing.version>
@@ -279,11 +279,6 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
-        </dependency>
         <!--bus-crypto-->
         <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -291,6 +286,11 @@
             <version>${bouncycastle.version}</version>
         </dependency>
         <!--bus-extra-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>

@@ -1593,7 +1593,7 @@ public final class Builder {
      * @param hashed   hash值（加密后的值）
      * @return 是否匹配
      */
-    public static boolean bcryptCheck(String password, String hashed) {
+    public static boolean checkpw(String password, String hashed) {
         return new BCrypt().checkpw(password, hashed);
     }
 
