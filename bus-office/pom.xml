@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-office</artifactId>
-    <version>5.5.6</version>
+    <version>5.5.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -23,6 +23,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-extra</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-health</artifactId>

@@ -51,7 +51,7 @@ import java.util.Set;
  * 参数解析默认实现
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8++
  */
 public class ApiParamParser implements ParamParser {

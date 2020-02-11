@@ -38,7 +38,7 @@ import java.nio.charset.Charset;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class Base64 {
@@ -190,7 +190,7 @@ public class Base64 {
     }
 
     /**
-     * 编码为Base64<br>
+     * 编码为Base64
      * 如果isMultiLine为<code>true</code>，则每76个字符一个换行符，否则在一行显示
      *
      * @param arr         被编码的数组

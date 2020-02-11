@@ -4,7 +4,7 @@ package org.aoju.bus.starter;
  * 上下文等信息持有者
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class SpringHolder {

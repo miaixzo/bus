@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class XmlUtils {
@@ -264,7 +264,6 @@ public class XmlUtils {
      *
      * @param doc {@link Document} XML文档
      * @return 格式化后的XML字符串
-     * @since 4.4.5
      */
     public static String format(Document doc) {
         return toStr(doc, true);
@@ -275,7 +274,6 @@ public class XmlUtils {
      *
      * @param xmlStr XML字符串
      * @return 格式化后的XML字符串
-     * @since 4.4.5
      */
     public static String format(String xmlStr) {
         return format(parseXml(xmlStr));
@@ -350,7 +348,6 @@ public class XmlUtils {
      * @param out     写出的Writer，Writer决定了输出XML的编码
      * @param charset 编码
      * @param indent  格式化输出中缩进量，小于1表示不格式化输出
-     * @since 4.0.8
      */
     public static void write(Node node, OutputStream out, String charset, int indent) {
         transform(new DOMSource(node), new StreamResult(out), charset, indent);
@@ -377,7 +374,6 @@ public class XmlUtils {
      * @param result  目标
      * @param charset 编码
      * @param indent  格式化输出中缩进量，小于1表示不格式化输出
-     * @since 4.0.9
      */
     public static void transform(Source source, Result result, String charset, int indent) {
         transform(source, result, charset, indent, false);
@@ -577,7 +573,7 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 5.5.6
+     * @since 5.5.8
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -623,7 +619,7 @@ public class XmlUtils {
      * @param source     资源,可以是Docunent、Node节点等
      * @param returnType 返回类型,{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 5.5.6
+     * @since 5.5.8
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();

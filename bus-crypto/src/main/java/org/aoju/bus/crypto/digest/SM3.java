@@ -21,35 +21,68 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest.mac;
+package org.aoju.bus.crypto.digest;
 
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.crypto.Builder;
-
-import javax.crypto.SecretKey;
 
 /**
- * {@link MacEngine} 实现工厂类
+ * SM3算法
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
-public class MacEngineFactory {
+public class SM3 extends Digester {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 根据给定算法和密钥生成对应的{@link MacEngine}
+     * 创建SM3实例
      *
-     * @param algorithm 算法
-     * @param key       密钥
-     * @return {@link MacEngine}
+     * @return SM3
      */
-    public static MacEngine createEngine(String algorithm, SecretKey key) {
-        if (algorithm.equalsIgnoreCase(Algorithm.HmacSM3)) {
-            // HmacSM3算法是BC库实现的
-            return Builder.createHmacSm3Engine(key.getEncoded());
-        }
-        return new DefaultHMacEngine(algorithm, key);
+    public static SM3 create() {
+        return new SM3();
+    }
+
+    /**
+     * 构造
+     */
+    public SM3() {
+        super(Algorithm.SM3);
+    }
+
+    /**
+     * 构造
+     *
+     * @param salt 盐值
+     */
+    public SM3(byte[] salt) {
+        this(salt, 0, 1);
+    }
+
+    /**
+     * 构造
+     *
+     * @param salt        盐值
+     * @param digestCount 摘要次数，当此值小于等于1,默认为1。
+     */
+    public SM3(byte[] salt, int digestCount) {
+        this(salt, 0, digestCount);
+    }
+
+    /**
+     * 构造
+     *
+     * @param salt         盐值
+     * @param saltPosition 加盐位置，即将盐值字符串放置在数据的index数，默认0
+     * @param digestCount  摘要次数，当此值小于等于1,默认为1。
+     */
+    public SM3(byte[] salt, int saltPosition, int digestCount) {
+        this();
+        this.salt = salt;
+        this.saltPosition = saltPosition;
+        this.digestCount = digestCount;
     }
 
 }

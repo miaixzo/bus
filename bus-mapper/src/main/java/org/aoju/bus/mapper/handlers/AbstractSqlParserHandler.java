@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * SQL 解析处理器
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 @Data

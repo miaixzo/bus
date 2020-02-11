@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.symmetric;
+package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -37,31 +38,27 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * RC4加密解密算法实现
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
-public class RC4 {
+public class RC4 implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final int SBOX_LENGTH = 256;
     /**
      * 密钥最小长度
      */
     private static final int KEY_MIN_LENGTH = 5;
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    /**
-     * Key array
-     */
-    private byte[] key;
-    /**
-     * Sbox
-     */
     private int[] sbox;
+
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
      * 构造
      *
      * @param key 密钥
-     * @throws InstrumentException 异常
+     * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
     public RC4(String key) throws InstrumentException {
         setKey(key);
@@ -80,7 +77,7 @@ public class RC4 {
     }
 
     /**
-     * 加密,使用默认编码：UTF-8
+     * 加密，使用默认编码：UTF-8
      *
      * @param message 消息
      * @return 密文
@@ -145,7 +142,7 @@ public class RC4 {
     }
 
     /**
-     * 解密,使用默认编码UTF-8
+     * 解密，使用默认编码UTF-8
      *
      * @param message 消息
      * @return 明文
@@ -156,7 +153,7 @@ public class RC4 {
     }
 
     /**
-     * 加密或解密指定值,调用此方法前需初始化密钥
+     * 加密或解密指定值，调用此方法前需初始化密钥
      *
      * @param msg 要加密或解密的消息
      * @return 加密或解密后的值
@@ -198,8 +195,7 @@ public class RC4 {
         final WriteLock writeLock = this.lock.writeLock();
         writeLock.lock();
         try {
-            this.key = StringUtils.bytes(key);
-            this.sbox = initSBox(this.key);
+            this.sbox = initSBox(StringUtils.bytes(key));
         } finally {
             writeLock.unlock();
         }

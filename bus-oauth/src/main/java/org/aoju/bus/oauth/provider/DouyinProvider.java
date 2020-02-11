@@ -40,7 +40,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class DouyinProvider extends DefaultProvider {
@@ -94,7 +94,7 @@ public class DouyinProvider extends DefaultProvider {
         JSONObject data = object.getJSONObject("data");
         int errorCode = data.getIntValue("error_code");
         if ("error".equals(message) || errorCode != 0) {
-            throw new InstrumentException("" + errorCode, data.getString("description"));
+            throw new InstrumentException(Normal.EMPTY + errorCode, data.getString("description"));
         }
     }
 

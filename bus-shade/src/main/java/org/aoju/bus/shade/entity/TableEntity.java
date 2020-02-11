@@ -36,7 +36,7 @@ import java.util.List;
  * 自动生成需要的基本信息
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 @Data

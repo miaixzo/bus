@@ -32,7 +32,7 @@ import org.aoju.bus.mapper.common.basic.BasicUpdateMapper;
  * 通用Mapper接口,其他接口继承该接口
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public interface BasicMapper<T> extends

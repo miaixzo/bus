@@ -26,15 +26,10 @@ package org.aoju.bus.crypto;
 import java.security.Provider;
 
 /**
- * Provider对象生产法工厂类
- *
- * <pre>
- * 1. 调用{@link #createBouncyCastleProvider()}
- * 用于新建一个org.bouncycastle.jce.provider.BouncyCastleProvider对象
- * </pre>
+ * 全局单例的 org.bouncycastle.jce.provider.BouncyCastleProvider 对象
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class Holder {
@@ -45,20 +40,10 @@ public class Holder {
      * 创建Bouncy Castle 提供者
      * 如果用户未引入bouncycastle库,则此方法抛出{@link NoClassDefFoundError} 异常
      *
-     * @return {@link Provider}
+     * @return {@link  Provider}
      */
-    public static Provider createBouncyCastleProvider() {
+    public Provider createBouncyCastleProvider() {
         return new org.bouncycastle.jce.provider.BouncyCastleProvider();
-    }
-
-    /**
-     * 设置是否使用Bouncy Castle库
-     * 如果设置为false,表示强制关闭Bouncy Castle而使用JDK
-     *
-     * @param isUseBouncyCastle 是否自定义
-     */
-    public static void setUseBouncyCastle(boolean isUseBouncyCastle) {
-        useBouncyCastle = isUseBouncyCastle;
     }
 
     /**
@@ -68,6 +53,16 @@ public class Holder {
      */
     public Provider getProvider() {
         return useBouncyCastle ? createBouncyCastleProvider() : null;
+    }
+
+    /**
+     * 设置是否使用Bouncy Castle库
+     * 如果设置为false，表示强制关闭Bouncy Castle而使用JDK
+     *
+     * @param isUseBouncyCastle 是否使用BouncyCastle库
+     */
+    public static void setUseBouncyCastle(boolean isUseBouncyCastle) {
+        useBouncyCastle = isUseBouncyCastle;
     }
 
 }

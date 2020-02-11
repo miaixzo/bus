@@ -44,7 +44,7 @@ import java.util.Map;
  * 华为授权登录
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class HuaweiProvider extends DefaultProvider {
@@ -204,7 +204,7 @@ public class HuaweiProvider extends DefaultProvider {
      */
     private Normal.Gender getRealGender(JSONObject object) {
         int genderCodeInt = object.getIntValue("gender");
-        String genderCode = genderCodeInt == 1 ? Symbol.ZERO : (genderCodeInt == 0) ? Symbol.ONE : genderCodeInt + "";
+        String genderCode = genderCodeInt == 1 ? Symbol.ZERO : (genderCodeInt == 0) ? Symbol.ONE : genderCodeInt + Normal.EMPTY;
         return Normal.Gender.getGender(genderCode);
     }
 

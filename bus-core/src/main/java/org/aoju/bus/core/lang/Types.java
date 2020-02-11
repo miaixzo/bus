@@ -37,7 +37,7 @@ import java.lang.reflect.Type;
  *
  * @param <T> 需要自定义的参考类型
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public abstract class Types<T> implements Type {

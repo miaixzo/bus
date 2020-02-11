@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest;
+package org.aoju.bus.crypto.digest;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -34,7 +34,7 @@ import java.security.SecureRandom;
  * 它的口令必须是8至56个字符,并将在内部被转化为448位的密钥
  *
  * @author Kimi Liu
- * @version 5.3.3
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class BCrypt {

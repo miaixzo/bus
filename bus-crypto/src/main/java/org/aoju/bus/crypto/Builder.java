@@ -28,16 +28,13 @@ import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
-import org.aoju.bus.crypto.algorithm.asymmetric.RSA;
-import org.aoju.bus.crypto.algorithm.asymmetric.SM2;
-import org.aoju.bus.crypto.algorithm.asymmetric.Sign;
-import org.aoju.bus.crypto.algorithm.digest.BCrypt;
-import org.aoju.bus.crypto.algorithm.digest.Digester;
-import org.aoju.bus.crypto.algorithm.digest.HMac;
-import org.aoju.bus.crypto.algorithm.digest.MD5;
-import org.aoju.bus.crypto.algorithm.digest.mac.BCHMacEngine;
-import org.aoju.bus.crypto.algorithm.digest.mac.MacEngine;
-import org.aoju.bus.crypto.algorithm.symmetric.*;
+import org.aoju.bus.crypto.asymmetric.RSA;
+import org.aoju.bus.crypto.asymmetric.SM2;
+import org.aoju.bus.crypto.asymmetric.Sign;
+import org.aoju.bus.crypto.digest.*;
+import org.aoju.bus.crypto.digest.mac.BCHMacEngine;
+import org.aoju.bus.crypto.digest.mac.MacEngine;
+import org.aoju.bus.crypto.symmetric.*;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -75,17 +72,53 @@ import java.security.spec.*;
 import java.util.Map;
 
 /**
- * 安全相关工具类
+ * 加密解密模块，实现了对JDK中加密解密算法的封装
+ * 安全相关工具／密钥工具类
  * 加密分为三种：
- * 1、对称加密（symmetric）,例如：AES、DES等
- * 2、非对称加密（asymmetric）,例如：RSA、DSA等
- * 3、摘要加密（digest）,例如：MD5、SHA-1、SHA-256、HMAC等
+ * 1、对称加密（symmetric），例如：AES、DES等
+ * 2、非对称加密（asymmetric），例如：RSA、DSA等
+ * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
-public class Builder {
+public final class Builder {
+
+    /**
+     * Java密钥库(Java Key Store，JKS)KEY_STORE
+     */
+    public static final String KEY_TYPE_JKS = "JKS";
+
+    /**
+     * PKCS12是公钥加密标准，它规定了可包含所有私钥、公钥和证书。其以二进制格式存储，也称为 PFX 文件
+     */
+    public static final String KEY_TYPE_PKCS12 = "pkcs12";
+    /**
+     * Certification类型：X.509
+     */
+    public static final String CERT_TYPE_X509 = "X.509";
+
+    /**
+     * 默认密钥字节数
+     *
+     * <pre>
+     * RSA/DSA
+     * Default Keysize 1024
+     * Keysize must be a multiple of 64, ranging from 512 to 1024 (inclusive).
+     * </pre>
+     */
+    public static final int DEFAULT_KEY_SIZE = 1024;
+    private final static int RS_LEN = 32;
+
+    /**
+     * SM2默认曲线
+     *
+     * <pre>
+     * Default SM2 curve
+     * </pre>
+     */
+    public static final String SM2_DEFAULT_CURVE = "sm2p256v1";
 
     /**
      * 数据加密
@@ -139,8 +172,7 @@ public class Builder {
      * @return 解密结果
      */
     public static byte[] decrypt(String algorithm, String key, byte[] content) {
-        final Provider provider = Registry.require(algorithm);
-        return provider.decrypt(key, content);
+        return Registry.require(algorithm).decrypt(key, content);
     }
 
     /**
@@ -167,594 +199,13 @@ public class Builder {
      * @return 解密结果
      */
     public static InputStream decrypt(String algorithm, String key, InputStream inputStream) {
-        final Provider provider = Registry.require(algorithm);
-        return new ByteArrayInputStream(provider.decrypt(key, IoUtils.readBytes(inputStream)));
+        return new ByteArrayInputStream(Registry.require(algorithm).decrypt(key, IoUtils.readBytes(inputStream)));
     }
 
     /**
-     * 解码字符串密钥,可支持的编码如下：
+     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成
      *
-     * <pre>
-     * 1. Hex（16进制）编码
-     * 1. Base64编码
-     * </pre>
-     *
-     * @param key 被解码的密钥字符串
-     * @return 密钥
-     */
-    public static byte[] decode(String key) {
-        return Validator.isHex(key) ? HexUtils.decodeHex(key) : Base64.decode(key);
-    }
-
-    /**
-     * 解码恢复EC压缩公钥,支持Base64和Hex编码,（基于BouncyCastle）
-     *
-     * @param encode    压缩公钥
-     * @param curveName EC曲线名
-     * @return the key
-     */
-    public static PublicKey decodeECPoint(String encode, String curveName) {
-        return decodeECPoint(decode(encode), curveName);
-    }
-
-    /**
-     * 解码恢复EC压缩公钥,支持Base64和Hex编码,（基于BouncyCastle）
-     *
-     * @param encodeByte 压缩公钥
-     * @param curveName  EC曲线名
-     * @return the key
-     */
-    public static PublicKey decodeECPoint(byte[] encodeByte, String curveName) {
-        final ECNamedCurveParameterSpec namedSpec = ECNamedCurveTable.getParameterSpec(curveName);
-        final ECCurve curve = namedSpec.getCurve();
-        final EllipticCurve ecCurve = new EllipticCurve(
-                new ECFieldFp(curve.getField().getCharacteristic()),
-                curve.getA().toBigInteger(),
-                curve.getB().toBigInteger());
-        // 根据X恢复点Y
-        final ECPoint point = ECPointUtil.decodePoint(ecCurve, encodeByte);
-
-        // 根据曲线恢复公钥格式
-        ECParameterSpec ecSpec = new ECNamedCurveSpec(curveName, curve, namedSpec.getG(), namedSpec.getN());
-
-        final KeyFactory PubKeyGen = getKeyFactory("EC");
-        try {
-            return PubKeyGen.generatePublic(new ECPublicKeySpec(point, ecSpec));
-        } catch (GeneralSecurityException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 编码压缩EC公钥（基于BouncyCastle）
-     *
-     * @param publicKey {@link PublicKey}
-     * @return 压缩得到的X
-     */
-    public static byte[] encodeECPublicKey(PublicKey publicKey) {
-        return ((BCECPublicKey) publicKey).getQ().getEncoded(true);
-    }
-
-    /**
-     * 读取PEM格式的私钥
-     *
-     * @param pemStream pem流
-     * @return the key
-     */
-    public static PrivateKey readPrivateKey(InputStream pemStream) {
-        return generateRSAPrivateKey(readKeyBytes(pemStream));
-    }
-
-    /**
-     * 读取PEM格式的公钥
-     *
-     * @param pemStream pem流
-     * @return the key
-     */
-    public static PublicKey readPublicKey(InputStream pemStream) {
-        final Certificate certificate = readX509Certificate(pemStream);
-        if (null == certificate) {
-            return null;
-        }
-        return certificate.getPublicKey();
-    }
-
-    /**
-     * 从pem文件中读取公钥或私钥
-     * 根据类型返回{@link PublicKey} 或者 {@link PrivateKey}
-     *
-     * @param keyStream pem流
-     * @return the key
-     */
-    public static Key readKey(InputStream keyStream) {
-        final PemObject object = readPemObject(keyStream);
-        final String type = object.getType();
-        if (StringUtils.isNotBlank(type) && type.endsWith("PRIVATE KEY")) {
-            return generateRSAPrivateKey(object.getContent());
-        } else {
-            return readX509Certificate(keyStream).getPublicKey();
-        }
-    }
-
-    /**
-     * 从pem文件中读取公钥或私钥
-     *
-     * @param keyStream pem流
-     * @return the byte
-     */
-    public static byte[] readKeyBytes(InputStream keyStream) {
-        PemObject pemObject = readPemObject(keyStream);
-        if (null != pemObject) {
-            return pemObject.getContent();
-        }
-        return null;
-    }
-
-    /**
-     * 读取pem文件中的信息,包括类型、头信息和密钥内容
-     *
-     * @param keyStream pem流
-     * @return the object
-     */
-    public static PemObject readPemObject(InputStream keyStream) {
-        PemReader pemReader = null;
-        try {
-            pemReader = new PemReader(IoUtils.getReader(keyStream, org.aoju.bus.core.lang.Charset.UTF_8));
-            return pemReader.readPemObject();
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            IoUtils.close(pemReader);
-        }
-    }
-
-    /**
-     * 计算32位MD5摘要值
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要
-     */
-    public static byte[] md5(byte[] data) {
-        return new MD5().digest(data);
-    }
-
-    /**
-     * 计算32位MD5摘要值
-     *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return MD5摘要
-     */
-    public static byte[] md5(String data, String charset) {
-        return new MD5().digest(data, charset);
-    }
-
-    /**
-     * 计算32位MD5摘要值,使用UTF-8编码
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要
-     */
-    public static byte[] md5(String data) {
-        return md5(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
-    }
-
-    /**
-     * 计算32位MD5摘要值
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要
-     */
-    public static byte[] md5(InputStream data) {
-        return new MD5().digest(data);
-    }
-
-    /**
-     * 计算32位MD5摘要值
-     *
-     * @param file 被摘要文件
-     * @return MD5摘要
-     */
-    public static byte[] md5(File file) {
-        return new MD5().digest(file);
-    }
-
-    /**
-     * 计算32位MD5摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex(byte[] data) {
-        return new MD5().digestHex(data);
-    }
-
-    /**
-     * 计算32位MD5摘要值,并转为16进制字符串
-     *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex(String data, String charset) {
-        return new MD5().digestHex(data, charset);
-    }
-
-    /**
-     * 计算32位MD5摘要值,并转为16进制字符串
-     *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex(String data, Charset charset) {
-        return new MD5().digestHex(data, charset);
-    }
-
-    /**
-     * 计算32位MD5摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex(String data) {
-        return md5Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
-    }
-
-    /**
-     * 计算32位MD5摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex(InputStream data) {
-        return new MD5().digestHex(data);
-    }
-
-    /**
-     * 计算32位MD5摘要值,并转为16进制字符串
-     *
-     * @param file 被摘要文件
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex(File file) {
-        return new MD5().digestHex(file);
-    }
-
-    /**
-     * 计算16位MD5摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex16(byte[] data) {
-        return new MD5().digestHex16(data);
-    }
-
-    /**
-     * 计算16位MD5摘要值,并转为16进制字符串
-     *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex16(String data, Charset charset) {
-        return new MD5().digestHex16(data, charset);
-    }
-
-    /**
-     * 计算16位MD5摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex16(String data) {
-        return md5Hex16(data, org.aoju.bus.core.lang.Charset.UTF_8);
-    }
-
-    /**
-     * 计算16位MD5摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex16(InputStream data) {
-        return new MD5().digestHex16(data);
-    }
-
-    /**
-     * 计算16位MD5摘要值,并转为16进制字符串
-     *
-     * @param file 被摘要文件
-     * @return MD5摘要的16进制表示
-     */
-    public static String md5Hex16(File file) {
-        return new MD5().digestHex16(file);
-    }
-
-    /**
-     * 32位MD5转16位MD5
-     *
-     * @param md5Hex 32位MD5
-     * @return 16位MD5
-     */
-    public static String md5HexTo16(String md5Hex) {
-        return md5Hex.substring(8, 24);
-    }
-
-    /**
-     * 计算SHA-1摘要值
-     *
-     * @param data 被摘要数据
-     * @return SHA-1摘要
-     */
-    public static byte[] sha1(byte[] data) {
-        return new Digester(Algorithm.SHA1).digest(data);
-    }
-
-    /**
-     * 计算SHA-1摘要值
-     *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-1摘要
-     */
-    public static byte[] sha1(String data, String charset) {
-        return new Digester(Algorithm.SHA1).digest(data, charset);
-    }
-
-    /**
-     * 计算sha1摘要值,使用UTF-8编码
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要
-     */
-    public static byte[] sha1(String data) {
-        return sha1(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
-    }
-
-    /**
-     * 计算SHA-1摘要值
-     *
-     * @param data 被摘要数据
-     * @return SHA-1摘要
-     */
-    public static byte[] sha1(InputStream data) {
-        return new Digester(Algorithm.SHA1).digest(data);
-    }
-
-    /**
-     * 计算SHA-1摘要值
-     *
-     * @param file 被摘要文件
-     * @return SHA-1摘要
-     */
-    public static byte[] sha1(File file) {
-        return new Digester(Algorithm.SHA1).digest(file);
-    }
-
-    /**
-     * 计算SHA-1摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return SHA-1摘要的16进制表示
-     */
-    public static String sha1Hex(byte[] data) {
-        return new Digester(Algorithm.SHA1).digestHex(data);
-    }
-
-    /**
-     * 计算SHA-1摘要值,并转为16进制字符串
-     *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-1摘要的16进制表示
-     */
-    public static String sha1Hex(String data, String charset) {
-        return new Digester(Algorithm.SHA1).digestHex(data, charset);
-    }
-
-    /**
-     * 计算SHA-1摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return SHA-1摘要的16进制表示
-     */
-    public static String sha1Hex(String data) {
-        return sha1Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
-    }
-
-    /**
-     * 计算SHA-1摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return SHA-1摘要的16进制表示
-     */
-    public static String sha1Hex(InputStream data) {
-        return new Digester(Algorithm.SHA1).digestHex(data);
-    }
-
-    /**
-     * 计算SHA-1摘要值,并转为16进制字符串
-     *
-     * @param file 被摘要文件
-     * @return SHA-1摘要的16进制表示
-     */
-    public static String sha1Hex(File file) {
-        return new Digester(Algorithm.SHA1).digestHex(file);
-    }
-
-    /**
-     * 计算SHA-256摘要值
-     *
-     * @param data 被摘要数据
-     * @return SHA-256摘要
-     * @since 3.0.8
-     */
-    public static byte[] sha256(byte[] data) {
-        return new Digester(Algorithm.SHA256).digest(data);
-    }
-
-    /**
-     * 计算SHA-256摘要值
-     *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-256摘要
-     * @since 3.0.8
-     */
-    public static byte[] sha256(String data, String charset) {
-        return new Digester(Algorithm.SHA256).digest(data, charset);
-    }
-
-    /**
-     * 计算sha256摘要值,使用UTF-8编码
-     *
-     * @param data 被摘要数据
-     * @return MD5摘要
-     * @since 3.0.8
-     */
-    public static byte[] sha256(String data) {
-        return sha256(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
-    }
-
-    /**
-     * 计算SHA-256摘要值
-     *
-     * @param data 被摘要数据
-     * @return SHA-256摘要
-     * @since 3.0.8
-     */
-    public static byte[] sha256(InputStream data) {
-        return new Digester(Algorithm.SHA256).digest(data);
-    }
-
-    /**
-     * 计算SHA-256摘要值
-     *
-     * @param file 被摘要文件
-     * @return SHA-256摘要
-     * @since 3.0.8
-     */
-    public static byte[] sha256(File file) {
-        return new Digester(Algorithm.SHA256).digest(file);
-    }
-
-    /**
-     * 计算SHA-1摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
-     */
-    public static String sha256Hex(byte[] data) {
-        return new Digester(Algorithm.SHA256).digestHex(data);
-    }
-
-    /**
-     * 计算SHA-256摘要值,并转为16进制字符串
-     *
-     * @param data    被摘要数据
-     * @param charset 编码
-     * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
-     */
-    public static String sha256Hex(String data, String charset) {
-        return new Digester(Algorithm.SHA256).digestHex(data, charset);
-    }
-
-    /**
-     * 计算SHA-256摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
-     */
-    public static String sha256Hex(String data) {
-        return sha256Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
-    }
-
-    /**
-     * 计算SHA-256摘要值,并转为16进制字符串
-     *
-     * @param data 被摘要数据
-     * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
-     */
-    public static String sha256Hex(InputStream data) {
-        return new Digester(Algorithm.SHA256).digestHex(data);
-    }
-
-    /**
-     * 计算SHA-256摘要值,并转为16进制字符串
-     *
-     * @param file 被摘要文件
-     * @return SHA-256摘要的16进制表示
-     * @since 3.0.8
-     */
-    public static String sha256Hex(File file) {
-        return new Digester(Algorithm.SHA256).digestHex(file);
-    }
-
-    /**
-     * 创建HMac对象,调用digest方法可获得hmac值
-     *
-     * @param algorithm 算法
-     * @param key       密钥,如果为<code>null</code>生成随机密钥
-     * @return {@link HMac}
-     * @since 3.0.3
-     */
-    public static HMac hmac(String algorithm, byte[] key) {
-        return new HMac(algorithm, key);
-    }
-
-    /**
-     * 创建HMac对象,调用digest方法可获得hmac值
-     *
-     * @param algorithm 算法
-     * @param key       密钥{@link SecretKey}
-     * @return {@link HMac}
-     * @since 3.0.3
-     */
-    public static HMac hmac(String algorithm, SecretKey key) {
-        return new HMac(algorithm, key);
-    }
-
-    /**
-     * 新建摘要器
-     *
-     * @param algorithm 签名算法
-     * @return Digester
-     */
-    public static Digester digester(String algorithm) {
-        return new Digester(algorithm);
-    }
-
-    /**
-     * 生成Bcrypt加密后的密文
-     *
-     * @param password 明文密码
-     * @return 加密后的密文
-     */
-    public static String hashpw(String password) {
-        return new BCrypt().hashpw(password);
-    }
-
-    /**
-     * 验证密码是否与Bcrypt加密后的密文匹配
-     *
-     * @param password 明文密码
-     * @param hashed   密文
-     * @return 是否匹配
-     */
-    public static boolean checkpw(String password, String hashed) {
-        return new BCrypt().checkpw(password, hashed);
-    }
-
-    /**
-     * 生成 {@link SecretKey},仅用于对称加密和摘要算法密钥生成
-     *
-     * @param algorithm 算法,支持PBE算法
+     * @param algorithm 算法，支持PBE算法
      * @return {@link SecretKey}
      */
     public static SecretKey generateKey(String algorithm) {
@@ -762,12 +213,11 @@ public class Builder {
     }
 
     /**
-     * 生成 {@link SecretKey},仅用于对称加密和摘要算法密钥生成
+     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成
      *
-     * @param algorithm 算法,支持PBE算法
+     * @param algorithm 算法，支持PBE算法
      * @param keySize   密钥长度
      * @return {@link SecretKey}
-     * @since 3.1.2
      */
     public static SecretKey generateKey(String algorithm, int keySize) {
         algorithm = getMainAlgorithm(algorithm);
@@ -776,17 +226,17 @@ public class Builder {
         if (keySize > 0) {
             keyGenerator.init(keySize);
         } else if (Algorithm.AES.equals(algorithm)) {
-            // 对于AES的密钥,除非指定,否则强制使用128位
+            // 对于AES的密钥，除非指定，否则强制使用128位
             keyGenerator.init(128);
         }
         return keyGenerator.generateKey();
     }
 
     /**
-     * 生成 {@link SecretKey},仅用于对称加密和摘要算法密钥生成
+     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成
      *
      * @param algorithm 算法
-     * @param key       密钥,如果为{@code null} 自动生成随机密钥
+     * @param key       密钥，如果为{@code null} 自动生成随机密钥
      * @return {@link SecretKey}
      */
     public static SecretKey generateKey(String algorithm, byte[] key) {
@@ -808,7 +258,7 @@ public class Builder {
     /**
      * 生成 {@link SecretKey}
      *
-     * @param algorithm DES算法,包括DES、DESede等
+     * @param algorithm DES算法，包括DES、DESede等
      * @param key       密钥
      * @return {@link SecretKey}
      */
@@ -840,10 +290,7 @@ public class Builder {
     /**
      * 生成PBE {@link SecretKey}
      *
-     * @param algorithm PBE算法,包括
-     *                  PBEWithMD5AndDES、
-     *                  PBEWithSHA1AndDESede、
-     *                  PBEWithSHA1AndRC2_40
+     * @param algorithm PBE算法，包括：PBEWithMD5AndDES、PBEWithSHA1AndDESede、PBEWithSHA1AndRC2_40等
      * @param key       密钥
      * @return {@link SecretKey}
      */
@@ -860,7 +307,7 @@ public class Builder {
     }
 
     /**
-     * 生成 {@link SecretKey},仅用于对称加密和摘要算法
+     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法
      *
      * @param algorithm 算法
      * @param keySpec   {@link KeySpec}
@@ -876,10 +323,11 @@ public class Builder {
     }
 
     /**
-     * 生成RSA私钥,仅用于非对称加密
-     * 采用PKCS#8规范,此规范定义了私钥信息语法和加密私钥语法
+     * 生成RSA私钥，仅用于非对称加密
+     * 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法
+     * 算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory
      *
-     * @param key 密钥,必须为DER编码存储
+     * @param key 密钥，必须为DER编码存储
      * @return RSA私钥 {@link PrivateKey}
      */
     public static PrivateKey generateRSAPrivateKey(byte[] key) {
@@ -887,11 +335,12 @@ public class Builder {
     }
 
     /**
-     * 生成私钥,仅用于非对称加密
-     * 采用PKCS#8规范,此规范定义了私钥信息语法和加密私钥语法
+     * 生成私钥，仅用于非对称加密
+     * 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法
+     * 算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory
      *
      * @param algorithm 算法
-     * @param key       密钥,必须为DER编码存储
+     * @param key       密钥，必须为DER编码存储
      * @return 私钥 {@link PrivateKey}
      */
     public static PrivateKey generatePrivateKey(String algorithm, byte[] key) {
@@ -902,12 +351,12 @@ public class Builder {
     }
 
     /**
-     * 生成私钥,仅用于非对称加密
+     * 生成私钥，仅用于非对称加密
+     * 算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory
      *
      * @param algorithm 算法
      * @param keySpec   {@link KeySpec}
      * @return 私钥 {@link PrivateKey}
-     * @since 3.1.1
      */
     public static PrivateKey generatePrivateKey(String algorithm, KeySpec keySpec) {
         if (null == keySpec) {
@@ -922,7 +371,7 @@ public class Builder {
     }
 
     /**
-     * 生成私钥,仅用于非对称加密
+     * 生成私钥，仅用于非对称加密
      *
      * @param keyStore {@link KeyStore}
      * @param alias    别名
@@ -938,22 +387,12 @@ public class Builder {
     }
 
     /**
-     * 生成RSA公钥,仅用于非对称加密
+     * 生成公钥，仅用于非对称加密
      * 采用X509证书规范
-     *
-     * @param key 密钥,必须为DER编码存储
-     * @return 公钥 {@link PublicKey}
-     */
-    public static PublicKey generateRSAPublicKey(byte[] key) {
-        return generatePublicKey(Algorithm.RSA, key);
-    }
-
-    /**
-     * 生成公钥,仅用于非对称加密
-     * 采用X509证书规范
+     * 算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory
      *
      * @param algorithm 算法
-     * @param key       密钥,必须为DER编码存储
+     * @param key       密钥，必须为DER编码存储
      * @return 公钥 {@link PublicKey}
      */
     public static PublicKey generatePublicKey(String algorithm, byte[] key) {
@@ -964,12 +403,12 @@ public class Builder {
     }
 
     /**
-     * 生成公钥,仅用于非对称加密
+     * 生成公钥，仅用于非对称加密
+     * 算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory
      *
      * @param algorithm 算法
      * @param keySpec   {@link KeySpec}
      * @return 公钥 {@link PublicKey}
-     * @since 3.1.1
      */
     public static PublicKey generatePublicKey(String algorithm, KeySpec keySpec) {
         if (null == keySpec) {
@@ -984,17 +423,31 @@ public class Builder {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥,仅用于非对称加密
+     * 生成RSA公钥，仅用于非对称加密
+     * 采用X509证书规范
+     * 算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory
+     *
+     * @param key 密钥，必须为DER编码存储
+     * @return 公钥 {@link PublicKey}
+     */
+    public static PublicKey generateRSAPublicKey(byte[] key) {
+        return generatePublicKey(Algorithm.RSA, key);
+    }
+
+    /**
+     * 生成用于非对称加密的公钥和私钥，仅用于非对称加密
+     * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
      *
      * @param algorithm 非对称加密算法
      * @return {@link KeyPair}
      */
     public static KeyPair generateKeyPair(String algorithm) {
-        return generateKeyPair(algorithm, 1024);
+        return generateKeyPair(algorithm, DEFAULT_KEY_SIZE);
     }
 
     /**
      * 生成用于非对称加密的公钥和私钥
+     * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
      *
      * @param algorithm 非对称加密算法
      * @param keySize   密钥模（modulus ）长度
@@ -1006,6 +459,7 @@ public class Builder {
 
     /**
      * 生成用于非对称加密的公钥和私钥
+     * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
      *
      * @param algorithm 非对称加密算法
      * @param keySize   密钥模（modulus ）长度
@@ -1015,15 +469,15 @@ public class Builder {
     public static KeyPair generateKeyPair(String algorithm, int keySize, byte[] seed) {
         // SM2算法需要单独定义其曲线生成
         if ("SM2".equalsIgnoreCase(algorithm)) {
-            final ECGenParameterSpec sm2p256v1 = new ECGenParameterSpec("sm2p256v1");
+            final ECGenParameterSpec sm2p256v1 = new ECGenParameterSpec(SM2_DEFAULT_CURVE);
             return generateKeyPair(algorithm, keySize, seed, sm2p256v1);
         }
-
         return generateKeyPair(algorithm, keySize, seed, (AlgorithmParameterSpec[]) null);
     }
 
     /**
      * 生成用于非对称加密的公钥和私钥
+     * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
      *
      * @param algorithm 非对称加密算法
      * @param params    {@link AlgorithmParameterSpec}
@@ -1035,6 +489,7 @@ public class Builder {
 
     /**
      * 生成用于非对称加密的公钥和私钥
+     * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
      *
      * @param algorithm 非对称加密算法
      * @param param     {@link AlgorithmParameterSpec}
@@ -1042,13 +497,15 @@ public class Builder {
      * @return {@link KeyPair}
      */
     public static KeyPair generateKeyPair(String algorithm, byte[] seed, AlgorithmParameterSpec param) {
-        return generateKeyPair(algorithm, 1024, seed, param);
+        return generateKeyPair(algorithm, DEFAULT_KEY_SIZE, seed, param);
     }
 
     /**
      * 生成用于非对称加密的公钥和私钥
+     * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
+     *
      * <p>
-     * 对于非对称加密算法,密钥长度有严格限制,具体如下：
+     * 对于非对称加密算法，密钥长度有严格限制，具体如下：
      *
      * <p>
      * <b>RSA：</b>
@@ -1078,8 +535,10 @@ public class Builder {
 
     /**
      * 生成用于非对称加密的公钥和私钥
+     * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
+     *
      * <p>
-     * 对于非对称加密算法,密钥长度有严格限制,具体如下：
+     * 对于非对称加密算法，密钥长度有严格限制，具体如下：
      *
      * <p>
      * <b>RSA：</b>
@@ -1099,7 +558,7 @@ public class Builder {
      *
      * @param algorithm 非对称加密算法
      * @param keySize   密钥模（modulus ）长度（单位bit）
-     * @param random    {@link SecureRandom} 对象,创建时可选传入seed
+     * @param random    {@link SecureRandom} 对象，创建时可选传入seed
      * @param params    {@link AlgorithmParameterSpec}
      * @return {@link KeyPair}
      */
@@ -1111,7 +570,7 @@ public class Builder {
         if (keySize > 0) {
             // key长度适配修正
             if ("EC".equalsIgnoreCase(algorithm) && keySize > 256) {
-                // 对于EC（EllipticCurve）算法,密钥长度有限制,在此使用默认256
+                // 对于EC（EllipticCurve）算法，密钥长度有限制，在此使用默认256
                 keySize = 256;
             }
             if (null != random) {
@@ -1142,104 +601,10 @@ public class Builder {
     }
 
     /**
-     * 获取{@link KeyPairGenerator}
-     *
-     * @param algorithm 非对称加密算法
-     * @return {@link KeyPairGenerator}
-     */
-    public static KeyPairGenerator getKeyPairGenerator(String algorithm) {
-        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
-
-        KeyPairGenerator keyPairGen;
-        try {
-            keyPairGen = (null == provider) //
-                    ? KeyPairGenerator.getInstance(getMainAlgorithm(algorithm)) //
-                    : KeyPairGenerator.getInstance(getMainAlgorithm(algorithm), provider);//
-        } catch (NoSuchAlgorithmException e) {
-            throw new InstrumentException(e);
-        }
-        return keyPairGen;
-    }
-
-    /**
-     * 获取{@link KeyFactory}
-     *
-     * @param algorithm 非对称加密算法
-     * @return {@link KeyFactory}
-     */
-    public static KeyFactory getKeyFactory(String algorithm) {
-        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
-
-        KeyFactory keyFactory;
-        try {
-            keyFactory = (null == provider) //
-                    ? KeyFactory.getInstance(getMainAlgorithm(algorithm)) //
-                    : KeyFactory.getInstance(getMainAlgorithm(algorithm), provider);
-        } catch (NoSuchAlgorithmException e) {
-            throw new InstrumentException(e);
-        }
-        return keyFactory;
-    }
-
-    /**
-     * 获取{@link SecretKeyFactory}
-     *
-     * @param algorithm 对称加密算法
-     * @return {@link KeyFactory}
-     */
-    public static SecretKeyFactory getSecretKeyFactory(String algorithm) {
-        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
-
-        SecretKeyFactory keyFactory;
-        try {
-            keyFactory = (null == provider) //
-                    ? SecretKeyFactory.getInstance(getMainAlgorithm(algorithm)) //
-                    : SecretKeyFactory.getInstance(getMainAlgorithm(algorithm), provider);
-        } catch (NoSuchAlgorithmException e) {
-            throw new InstrumentException(e);
-        }
-        return keyFactory;
-    }
-
-    /**
-     * 获取{@link KeyGenerator}
-     *
-     * @param algorithm 对称加密算法
-     * @return {@link KeyGenerator}
-     */
-    public static KeyGenerator getKeyGenerator(String algorithm) {
-        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
-
-        KeyGenerator generator;
-        try {
-            generator = (null == provider) //
-                    ? KeyGenerator.getInstance(getMainAlgorithm(algorithm)) //
-                    : KeyGenerator.getInstance(getMainAlgorithm(algorithm), provider);
-        } catch (NoSuchAlgorithmException e) {
-            throw new InstrumentException(e);
-        }
-        return generator;
-    }
-
-    /**
-     * 获取主体算法名,例如RSA/ECB/PKCS1Padding的主体算法是RSA
-     *
-     * @param algorithm 算法
-     * @return 主体算法名
-     */
-    public static String getMainAlgorithm(String algorithm) {
-        final int slashIndex = algorithm.indexOf(Symbol.SLASH);
-        if (slashIndex > 0) {
-            return algorithm.substring(0, slashIndex);
-        }
-        return algorithm;
-    }
-
-    /**
      * 获取用于密钥生成的算法
-     * 获取XXXwithXXX算法的后半部分算法,如果为ECDSA或SM2,返回算法为EC
+     * 获取XXXwithXXX算法的后半部分算法，如果为ECDSA或SM2，返回算法为EC
      *
-     * @param algorithm 算法
+     * @param algorithm XXXwithXXX算法
      * @return 算法
      */
     public static String getAlgorithmAfterWith(String algorithm) {
@@ -1255,16 +620,42 @@ public class Builder {
     }
 
     /**
-     * 读取密钥库(Java Key Store,JKS) KeyStore文件
+     * 生成算法，格式为XXXwithXXX
+     *
+     * @param asymmetric 非对称算法
+     * @param digest     摘要算法
+     * @return 算法
+     */
+    public static String generateAlgorithm(String asymmetric, Algorithm digest) {
+        return StringUtils.format("{}with{}", (null == digest) ? "NONE" : digest, asymmetric);
+    }
+
+    /**
+     * 生成签名对象，仅用于非对称加密
+     *
+     * @param asymmetric {@link Algorithm} 非对称加密算法
+     * @param digest     {@link Algorithm} 摘要算法
+     * @return {@link Signature}
+     */
+    public static Signature generateSignature(String asymmetric, Algorithm digest) {
+        try {
+            return Signature.getInstance(generateAlgorithm(asymmetric, digest));
+        } catch (NoSuchAlgorithmException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 读取密钥库(Java Key Store，JKS) KeyStore文件
      * KeyStore文件用于数字证书的密钥对保存
      * see: http://snowolf.iteye.com/blog/391931
      *
-     * @param in       {@link InputStream}
+     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
      * @param password 密码
      * @return {@link KeyStore}
      */
     public static KeyStore readJKSKeyStore(InputStream in, char[] password) {
-        return readKeyStore("JKS", in, password);
+        return readKeyStore(KEY_TYPE_JKS, in, password);
     }
 
     /**
@@ -1273,8 +664,8 @@ public class Builder {
      * see: http://snowolf.iteye.com/blog/391931
      *
      * @param type     类型
-     * @param in       {@link InputStream}
-     * @param password 密码
+     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param password 密码，null表示无密码
      * @return {@link KeyStore}
      */
     public static KeyStore readKeyStore(String type, InputStream in, char[] password) {
@@ -1289,10 +680,261 @@ public class Builder {
     }
 
     /**
+     * 读取X.509 Certification文件
+     * Certification为证书文件
+     * see: http://snowolf.iteye.com/blog/391931
+     *
+     * @param in       {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param password 密码
+     * @param alias    别名
+     * @return {@link KeyStore}
+     */
+    public static Certificate readX509Certificate(InputStream in, char[] password, String alias) {
+        return readCertificate(CERT_TYPE_X509, in, password, alias);
+    }
+
+    /**
+     * 读取X.509 Certification文件
+     * Certification为证书文件
+     * see: http://snowolf.iteye.com/blog/391931
+     *
+     * @param in {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @return {@link KeyStore}
+     */
+    public static Certificate readX509Certificate(InputStream in) {
+        return readCertificate(CERT_TYPE_X509, in);
+    }
+
+    /**
+     * 读取Certification文件
+     * Certification为证书文件
+     * see: http://snowolf.iteye.com/blog/391931
+     *
+     * @param type     类型，例如X.509
+     * @param in       {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param password 密码
+     * @param alias    别名
+     * @return {@link KeyStore}
+     */
+    public static Certificate readCertificate(String type, InputStream in, char[] password, String alias) {
+        final KeyStore keyStore = readKeyStore(type, in, password);
+        try {
+            return keyStore.getCertificate(alias);
+        } catch (KeyStoreException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 读取Certification文件
+     * Certification为证书文件
+     * see: http://snowolf.iteye.com/blog/391931
+     *
+     * @param type 类型，例如X.509
+     * @param in   {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @return {@link Certificate}
+     */
+    public static Certificate readCertificate(String type, InputStream in) {
+        try {
+            return getCertificateFactory(type).generateCertificate(in);
+        } catch (CertificateException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+
+    /**
+     * 获取{@link KeyGenerator}
+     *
+     * @param algorithm 对称加密算法
+     * @return {@link KeyGenerator}
+     */
+    public static KeyGenerator getKeyGenerator(String algorithm) {
+        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
+
+        KeyGenerator generator;
+        try {
+            generator = (null == provider)
+                    ? KeyGenerator.getInstance(getMainAlgorithm(algorithm))
+                    : KeyGenerator.getInstance(getMainAlgorithm(algorithm), provider);
+        } catch (NoSuchAlgorithmException e) {
+            throw new InstrumentException(e);
+        }
+        return generator;
+    }
+
+
+    /**
+     * 获取{@link KeyFactory}
+     *
+     * @param algorithm 非对称加密算法
+     * @return {@link KeyFactory}
+     */
+    public static KeyFactory getKeyFactory(String algorithm) {
+        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
+
+        KeyFactory keyFactory;
+        try {
+            keyFactory = (null == provider) //
+                    ? KeyFactory.getInstance(getMainAlgorithm(algorithm))
+                    : KeyFactory.getInstance(getMainAlgorithm(algorithm), provider);
+        } catch (NoSuchAlgorithmException e) {
+            throw new InstrumentException(e);
+        }
+        return keyFactory;
+    }
+
+    /**
+     * 获取{@link KeyPairGenerator}
+     *
+     * @param algorithm 非对称加密算法
+     * @return {@link KeyPairGenerator}
+     */
+    public static KeyPairGenerator getKeyPairGenerator(String algorithm) {
+        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
+
+        KeyPairGenerator keyPairGen;
+        try {
+            keyPairGen = (null == provider)
+                    ? KeyPairGenerator.getInstance(getMainAlgorithm(algorithm))
+                    : KeyPairGenerator.getInstance(getMainAlgorithm(algorithm), provider);
+        } catch (NoSuchAlgorithmException e) {
+            throw new InstrumentException(e);
+        }
+        return keyPairGen;
+    }
+
+    /**
+     * 获取{@link SecretKeyFactory}
+     *
+     * @param algorithm 对称加密算法
+     * @return {@link KeyFactory}
+     */
+    public static SecretKeyFactory getSecretKeyFactory(String algorithm) {
+        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
+
+        SecretKeyFactory keyFactory;
+        try {
+            keyFactory = (null == provider)
+                    ? SecretKeyFactory.getInstance(getMainAlgorithm(algorithm))
+                    : SecretKeyFactory.getInstance(getMainAlgorithm(algorithm), provider);
+        } catch (NoSuchAlgorithmException e) {
+            throw new InstrumentException(e);
+        }
+        return keyFactory;
+    }
+
+    /**
+     * 获取主体算法名，例如RSA/ECB/PKCS1Padding的主体算法是RSA
+     *
+     * @param algorithm XXXwithXXX算法
+     * @return 主体算法名
+     */
+    public static String getMainAlgorithm(String algorithm) {
+        final int slashIndex = algorithm.indexOf(Symbol.SLASH);
+        if (slashIndex > 0) {
+            return algorithm.substring(0, slashIndex);
+        }
+        return algorithm;
+    }
+
+    /**
+     * 获得 Certification
+     *
+     * @param keyStore {@link KeyStore}
+     * @param alias    别名
+     * @return {@link Certificate}
+     */
+    public static Certificate getCertificate(KeyStore keyStore, String alias) {
+        try {
+            return keyStore.getCertificate(alias);
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 获取{@link CertificateFactory}
+     *
+     * @param type 类型，例如X.509
+     * @return {@link KeyPairGenerator}
+     */
+    public static CertificateFactory getCertificateFactory(String type) {
+        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
+
+        CertificateFactory factory;
+        try {
+            factory = (null == provider) ? CertificateFactory.getInstance(type) : CertificateFactory.getInstance(type, provider);
+        } catch (CertificateException e) {
+            throw new InstrumentException(e);
+        }
+        return factory;
+    }
+
+    /**
+     * 读取密钥库(Java Key Store，JKS) KeyStore文件
+     * KeyStore文件用于数字证书的密钥对保存
+     * see: http://snowolf.iteye.com/blog/391931
+     *
+     * @param keyFile  证书文件
+     * @param password 密码
+     * @return {@link KeyStore}
+     */
+    public static KeyStore readJKSKeyStore(File keyFile, char[] password) {
+        return readKeyStore(KEY_TYPE_JKS, keyFile, password);
+    }
+
+
+    /**
+     * 读取PKCS12 KeyStore文件
+     * KeyStore文件用于数字证书的密钥对保存
+     *
+     * @param keyFile  证书文件
+     * @param password 密码
+     * @return {@link KeyStore}
+     */
+    public static KeyStore readPKCS12KeyStore(File keyFile, char[] password) {
+        return readKeyStore(KEY_TYPE_PKCS12, keyFile, password);
+    }
+
+    /**
+     * 读取PKCS12 KeyStore文件
+     * KeyStore文件用于数字证书的密钥对保存
+     *
+     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param password 密码
+     * @return {@link KeyStore}
+     */
+    public static KeyStore readPKCS12KeyStore(InputStream in, char[] password) {
+        return readKeyStore(KEY_TYPE_PKCS12, in, password);
+    }
+
+    /**
+     * 读取KeyStore文件
+     * KeyStore文件用于数字证书的密钥对保存
+     * see: http://snowolf.iteye.com/blog/391931
+     *
+     * @param type     类型
+     * @param keyFile  证书文件
+     * @param password 密码，null表示无密码
+     * @return {@link KeyStore}
+     */
+    public static KeyStore readKeyStore(String type, File keyFile, char[] password) {
+        InputStream in = null;
+        try {
+            in = FileUtils.getInputStream(keyFile);
+            return readKeyStore(type, in, password);
+        } finally {
+            IoUtils.close(in);
+        }
+    }
+
+
+    /**
      * 从KeyStore中获取私钥公钥
      *
      * @param type     类型
-     * @param in       {@link InputStream}
+     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
      * @param password 密码
      * @param alias    别名
      * @return {@link KeyPair}
@@ -1322,26 +964,13 @@ public class Builder {
         return new KeyPair(publicKey, privateKey);
     }
 
-    /**
-     * 读取X.509 Certification文件
-     * Certification为证书文件
-     * see: http://snowolf.iteye.com/blog/391931
-     *
-     * @param in       {@link InputStream}
-     * @param password 密码
-     * @param alias    别名
-     * @return {@link KeyStore}
-     */
-    public static Certificate readX509Certificate(InputStream in, char[] password, String alias) {
-        return readCertificate("X.509", in, password, alias);
-    }
 
     /**
      * 读取X.509 Certification文件中的公钥
      * Certification为证书文件
      * see: https://www.cnblogs.com/yinliang/p/10115519.html
      *
-     * @param in {@link InputStream}
+     * @param in {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
      * @return {@link KeyStore}
      */
     public static PublicKey readPublicKeyFromCert(InputStream in) {
@@ -1353,117 +982,7 @@ public class Builder {
     }
 
     /**
-     * 读取X.509 Certification文件
-     * Certification为证书文件
-     * see: http://snowolf.iteye.com/blog/391931
-     *
-     * @param in {@link InputStream}
-     * @return {@link KeyStore}
-     */
-    public static Certificate readX509Certificate(InputStream in) {
-        return readCertificate("X.509", in);
-    }
-
-    /**
-     * 读取Certification文件
-     * Certification为证书文件
-     * see: http://snowolf.iteye.com/blog/391931
-     *
-     * @param type     类型,例如X.509
-     * @param in       {@link InputStream}
-     * @param password 密码
-     * @param alias    别名
-     * @return {@link KeyStore}
-     */
-    public static Certificate readCertificate(String type, InputStream in, char[] password, String alias) {
-        final KeyStore keyStore = readKeyStore(type, in, password);
-        try {
-            return keyStore.getCertificate(alias);
-        } catch (KeyStoreException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 读取Certification文件
-     * Certification为证书文件
-     * see: http://snowolf.iteye.com/blog/391931
-     *
-     * @param type 类型,例如X.509
-     * @param in   {@link InputStream}
-     * @return {@link Certificate}
-     */
-    public static Certificate readCertificate(String type, InputStream in) {
-        try {
-            return getCertificateFactory(type).generateCertificate(in);
-        } catch (CertificateException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 获得 Certification
-     *
-     * @param keyStore {@link KeyStore}
-     * @param alias    别名
-     * @return {@link Certificate}
-     */
-    public static Certificate getCertificate(KeyStore keyStore, String alias) {
-        try {
-            return keyStore.getCertificate(alias);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 获取{@link CertificateFactory}
-     *
-     * @param type 类型,例如X.509
-     * @return {@link KeyPairGenerator}
-     */
-    public static CertificateFactory getCertificateFactory(String type) {
-        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
-
-        CertificateFactory factory;
-        try {
-            factory = (null == provider) ? CertificateFactory.getInstance(type) : CertificateFactory.getInstance(type, provider);
-        } catch (CertificateException e) {
-            throw new InstrumentException(e);
-        }
-        return factory;
-    }
-
-
-    /**
-     * 生成算法,格式为XXXwithXXX
-     *
-     * @param asymmetricAlgorithm 非对称算法
-     * @param algorithm           摘要算法
-     * @return 算法
-     */
-    public static String generateAlgorithm(String asymmetricAlgorithm, String algorithm) {
-        final String digestPart = (null == algorithm) ? "NONE" : algorithm;
-        return StringUtils.format("{}with{}", digestPart, asymmetricAlgorithm);
-    }
-
-    /**
-     * 生成签名对象,仅用于非对称加密
-     *
-     * @param asymmetricAlgorithm 非对称加密算法
-     * @param algorithm           摘要算法
-     * @return {@link Signature}
-     */
-    public static Signature generateSignature(String asymmetricAlgorithm, String algorithm) {
-        try {
-            return Signature.getInstance(generateAlgorithm(asymmetricAlgorithm, algorithm));
-        } catch (NoSuchAlgorithmException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * AES加密,生成随机KEY 注意解密时必须使用相同 {@link AES}对象或者使用相同KEY
+     * AES加密，生成随机KEY。注意解密时必须使用相同 {@link AES}对象或者使用相同KEY
      * 例：
      *
      * <pre>
@@ -1494,7 +1013,7 @@ public class Builder {
     }
 
     /**
-     * DES加密,生成随机KEY 注意解密时必须使用相同 {@link DES}对象或者使用相同KEY
+     * DES加密，生成随机KEY。注意解密时必须使用相同 {@link DES}对象或者使用相同KEY
      * 例：
      *
      * <pre>
@@ -1525,7 +1044,7 @@ public class Builder {
     }
 
     /**
-     * DESede加密（又名3DES、TripleDES）,生成随机KEY 注意解密时必须使用相同 {@link DESede}对象或者使用相同KEY
+     * DESede加密（又名3DES、TripleDES），生成随机KEY。注意解密时必须使用相同 {@link DESede}对象或者使用相同KEY
      * Java中默认实现为：DESede/ECB/PKCS5Padding
      * 例：
      *
@@ -1535,7 +1054,6 @@ public class Builder {
      * </pre>
      *
      * @return {@link DESede}
-     * @since 3.3.0
      */
     public static DESede desede() {
         return new DESede();
@@ -1553,7 +1071,6 @@ public class Builder {
      *
      * @param key 密钥
      * @return {@link DESede}
-     * @since 3.3.0
      */
     public static DESede desede(byte[] key) {
         return new DESede(key);
@@ -1575,6 +1092,180 @@ public class Builder {
     }
 
     /**
+     * 计算32位MD5摘要值
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要
+     */
+    public static byte[] md5(byte[] data) {
+        return new MD5().digest(data);
+    }
+
+    /**
+     * 计算32位MD5摘要值
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return MD5摘要
+     */
+    public static byte[] md5(String data, String charset) {
+        return new MD5().digest(data, charset);
+    }
+
+    /**
+     * 计算32位MD5摘要值，使用UTF-8编码
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要
+     */
+    public static byte[] md5(String data) {
+        return md5(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算32位MD5摘要值
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要
+     */
+    public static byte[] md5(InputStream data) {
+        return new MD5().digest(data);
+    }
+
+    /**
+     * 计算32位MD5摘要值
+     *
+     * @param file 被摘要文件
+     * @return MD5摘要
+     */
+    public static byte[] md5(File file) {
+        return new MD5().digest(file);
+    }
+
+    /**
+     * 计算32位MD5摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex(byte[] data) {
+        return new MD5().digestHex(data);
+    }
+
+    /**
+     * 计算32位MD5摘要值，并转为16进制字符串
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex(String data, String charset) {
+        return new MD5().digestHex(data, charset);
+    }
+
+    /**
+     * 计算32位MD5摘要值，并转为16进制字符串
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex(String data, Charset charset) {
+        return new MD5().digestHex(data, charset);
+    }
+
+    /**
+     * 计算32位MD5摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex(String data) {
+        return md5Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算32位MD5摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex(InputStream data) {
+        return new MD5().digestHex(data);
+    }
+
+    /**
+     * 计算32位MD5摘要值，并转为16进制字符串
+     *
+     * @param file 被摘要文件
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex(File file) {
+        return new MD5().digestHex(file);
+    }
+
+    /**
+     * 计算16位MD5摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex16(byte[] data) {
+        return new MD5().digestHex16(data);
+    }
+
+    /**
+     * 计算16位MD5摘要值，并转为16进制字符串
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex16(String data, Charset charset) {
+        return new MD5().digestHex16(data, charset);
+    }
+
+    /**
+     * 计算16位MD5摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex16(String data) {
+        return md5Hex16(data, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
+     * 计算16位MD5摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex16(InputStream data) {
+        return new MD5().digestHex16(data);
+    }
+
+    /**
+     * 计算16位MD5摘要值，并转为16进制字符串
+     *
+     * @param file 被摘要文件
+     * @return MD5摘要的16进制表示
+     */
+    public static String md5Hex16(File file) {
+        return new MD5().digestHex16(file);
+    }
+
+    /**
+     * 32位MD5转16位MD5
+     *
+     * @param md5Hex 32位MD5
+     * @return 16位MD5
+     */
+    public static String md5HexTo16(String md5Hex) {
+        return md5Hex.substring(8, 24);
+    }
+
+    /**
      * SHA1加密
      * 例：
      * SHA1加密：sha1().digest(data)
@@ -1584,6 +1275,108 @@ public class Builder {
      */
     public static Digester sha1() {
         return new Digester(Algorithm.SHA1);
+    }
+
+    /**
+     * 计算SHA-1摘要值
+     *
+     * @param data 被摘要数据
+     * @return SHA-1摘要
+     */
+    public static byte[] sha1(byte[] data) {
+        return new Digester(Algorithm.SHA1).digest(data);
+    }
+
+    /**
+     * 计算SHA-1摘要值
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return SHA-1摘要
+     */
+    public static byte[] sha1(String data, String charset) {
+        return new Digester(Algorithm.SHA1).digest(data, charset);
+    }
+
+    /**
+     * 计算sha1摘要值，使用UTF-8编码
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要
+     */
+    public static byte[] sha1(String data) {
+        return sha1(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算SHA-1摘要值
+     *
+     * @param data 被摘要数据
+     * @return SHA-1摘要
+     */
+    public static byte[] sha1(InputStream data) {
+        return new Digester(Algorithm.SHA1).digest(data);
+    }
+
+    /**
+     * 计算SHA-1摘要值
+     *
+     * @param file 被摘要文件
+     * @return SHA-1摘要
+     */
+    public static byte[] sha1(File file) {
+        return new Digester(Algorithm.SHA1).digest(file);
+    }
+
+    /**
+     * 计算SHA-1摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-1摘要的16进制表示
+     */
+    public static String sha1Hex(byte[] data) {
+        return new Digester(Algorithm.SHA1).digestHex(data);
+    }
+
+    /**
+     * 计算SHA-1摘要值，并转为16进制字符串
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return SHA-1摘要的16进制表示
+     */
+    public static String sha1Hex(String data, String charset) {
+        return new Digester(Algorithm.SHA1).digestHex(data, charset);
+    }
+
+    /**
+     * 计算SHA-1摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-1摘要的16进制表示
+     */
+    public static String sha1Hex(String data) {
+        return sha1Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算SHA-1摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-1摘要的16进制表示
+     */
+    public static String sha1Hex(InputStream data) {
+        return new Digester(Algorithm.SHA1).digestHex(data);
+    }
+
+    /**
+     * 计算SHA-1摘要值，并转为16进制字符串
+     *
+     * @param file 被摘要文件
+     * @return SHA-1摘要的16进制表示
+     */
+    public static String sha1Hex(File file) {
+        return new Digester(Algorithm.SHA1).digestHex(file);
     }
 
     /**
@@ -1598,19 +1391,142 @@ public class Builder {
         return new Digester(Algorithm.SHA256);
     }
 
+    /**
+     * SHA256加密，生成16进制SHA256字符串
+     *
+     * @param data 数据
+     * @return SHA256字符串
+     */
+    public static String sha256(String data) {
+        return new Digester(Algorithm.SHA256).digestHex(data);
+    }
 
     /**
-     * 创建HMac对象,调用digest方法可获得hmac值
+     * SHA256加密，生成16进制SHA256字符串
      *
-     * @param algorithm 算法
-     * @param key       密钥,如果为<code>null</code>生成随机密钥
+     * @param data 数据
+     * @return SHA1字符串
+     */
+    public static String sha256(InputStream data) {
+        return new Digester(Algorithm.SHA256).digestHex(data);
+    }
+
+    /**
+     * SHA256加密文件，生成16进制SHA256字符串
+     *
+     * @param dataFile 被加密文件
+     * @return SHA256字符串
+     */
+    public static String sha256(File dataFile) {
+        return new Digester(Algorithm.SHA256).digestHex(dataFile);
+    }
+
+
+    /**
+     * 计算SHA-256摘要值
+     *
+     * @param data 被摘要数据
+     * @return SHA-256摘要
+     */
+    public static byte[] sha256(byte[] data) {
+        return new Digester(Algorithm.SHA256).digest(data);
+    }
+
+    /**
+     * 计算SHA-256摘要值
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return SHA-256摘要
+     */
+    public static byte[] sha256(String data, String charset) {
+        return new Digester(Algorithm.SHA256).digest(data, charset);
+    }
+
+    /**
+     * 计算SHA-1摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-256摘要的16进制表示
+     */
+    public static String sha256Hex(byte[] data) {
+        return new Digester(Algorithm.SHA256).digestHex(data);
+    }
+
+    /**
+     * 计算SHA-256摘要值，并转为16进制字符串
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return SHA-256摘要的16进制表示
+     */
+    public static String sha256Hex(String data, String charset) {
+        return new Digester(Algorithm.SHA256).digestHex(data, charset);
+    }
+
+    /**
+     * 计算SHA-256摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-256摘要的16进制表示
+     */
+    public static String sha256Hex(String data) {
+        return sha256Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算SHA-256摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-256摘要的16进制表示
+     */
+    public static String sha256Hex(InputStream data) {
+        return new Digester(Algorithm.SHA256).digestHex(data);
+    }
+
+    /**
+     * 计算SHA-256摘要值，并转为16进制字符串
+     *
+     * @param file 被摘要文件
+     * @return SHA-256摘要的16进制表示
+     */
+    public static String sha256Hex(File file) {
+        return new Digester(Algorithm.SHA256).digestHex(file);
+    }
+
+
+    /**
+     * 创建HMac对象，调用digest方法可获得hmac值
+     *
+     * @param algorithm {@link Algorithm}
+     * @param key       密钥，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
-     * @since 3.3.0
      */
     public static HMac hmac(String algorithm, String key) {
         return new HMac(algorithm, StringUtils.bytes(key));
     }
 
+    /**
+     * 创建HMac对象，调用digest方法可获得hmac值
+     *
+     * @param algorithm {@link Algorithm}
+     * @param key       密钥，如果为<code>null</code>生成随机密钥
+     * @return {@link HMac}
+     */
+    public static HMac hmac(String algorithm, byte[] key) {
+        return new HMac(algorithm, key);
+    }
+
+    /**
+     * 创建HMac对象，调用digest方法可获得hmac值
+     *
+     * @param algorithm {@link Algorithm}
+     * @param key       密钥{@link SecretKey}，如果为<code>null</code>生成随机密钥
+     * @return {@link HMac}
+     */
+    public static HMac hmac(String algorithm, SecretKey key) {
+        return new HMac(algorithm, key);
+    }
 
     /**
      * HmacMD5加密器
@@ -1620,7 +1536,6 @@ public class Builder {
      *
      * @param key 加密密钥,如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
-     * @since 3.3.0
      */
     public static HMac hmacMd5(String key) {
         return hmacMd5(StringUtils.bytes(key));
@@ -1652,6 +1567,37 @@ public class Builder {
     }
 
     /**
+     * 新建摘要器
+     *
+     * @param algorithm 签名算法
+     * @return Digester
+     */
+    public static Digester digester(String algorithm) {
+        return new Digester(algorithm);
+    }
+
+    /**
+     * 生成Bcrypt加密后的密文
+     *
+     * @param password 明文密码
+     * @return 加密后的密文
+     */
+    public static String hashpw(String password) {
+        return new BCrypt().hashpw(password);
+    }
+
+    /**
+     * 验证密码是否与Bcrypt加密后的密文匹配
+     *
+     * @param password 明文密码
+     * @param hashed   hash值（加密后的值）
+     * @return 是否匹配
+     */
+    public static boolean checkpw(String password, String hashed) {
+        return new BCrypt().checkpw(password, hashed);
+    }
+
+    /**
      * HmacSHA1加密器
      * 例：
      * HmacSHA1加密：hmacSha1(key).digest(data)
@@ -1659,7 +1605,6 @@ public class Builder {
      *
      * @param key 加密密钥,如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
-     * @since 3.3.0
      */
     public static HMac hmacSha1(String key) {
         return hmacSha1(StringUtils.bytes(key));
@@ -1671,7 +1616,7 @@ public class Builder {
      * HmacSHA1加密：hmacSha1(key).digest(data)
      * HmacSHA1加密并转为16进制字符串：hmacSha1(key).digestHex(data)
      *
-     * @param key 加密密钥,如果为<code>null</code>生成随机密钥
+     * @param key 加密密钥，如果为<code>null</code>生成随机密钥
      * @return {@link HMac}
      */
     public static HMac hmacSha1(byte[] key) {
@@ -1679,7 +1624,7 @@ public class Builder {
     }
 
     /**
-     * HmacSHA1加密器,生成随机KEY
+     * HmacSHA1加密器，生成随机KEY
      * 例：
      * HmacSHA1加密：hmacSha1().digest(data)
      * HmacSHA1加密并转为16进制字符串：hmacSha1().digestHex(data)
@@ -1695,7 +1640,6 @@ public class Builder {
      * 生成新的私钥公钥对
      *
      * @return {@link RSA}
-     * @since 3.0.5
      */
     public static RSA rsa() {
         return new RSA();
@@ -1709,7 +1653,6 @@ public class Builder {
      * @param privateKey 私钥Base64
      * @param publicKey  公钥Base64
      * @return {@link RSA}
-     * @since 3.0.5
      */
     public static RSA rsa(String privateKey, String publicKey) {
         return new RSA(privateKey, publicKey);
@@ -1718,12 +1661,11 @@ public class Builder {
     /**
      * 创建RSA算法对象
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
      * @return {@link RSA}
-     * @since 3.0.5
      */
     public static RSA rsa(byte[] privateKey, byte[] publicKey) {
         return new RSA(privateKey, publicKey);
@@ -1735,7 +1677,6 @@ public class Builder {
      *
      * @param algorithm 签名算法
      * @return {@link Sign}
-     * @since 3.3.0
      */
     public static Sign sign(String algorithm) {
         return new Sign(algorithm);
@@ -1750,7 +1691,6 @@ public class Builder {
      * @param privateKey 私钥Base64
      * @param publicKey  公钥Base64
      * @return {@link Sign}
-     * @since 3.3.0
      */
     public static Sign sign(String algorithm, String privateKey, String publicKey) {
         return new Sign(algorithm, privateKey, publicKey);
@@ -1759,9 +1699,9 @@ public class Builder {
     /**
      * 创建Sign算法对象
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm  算法
+     * @param algorithm  算法枚举
      * @param privateKey 私钥
      * @param publicKey  公钥
      * @return {@link Sign}
@@ -1772,83 +1712,86 @@ public class Builder {
 
     /**
      * 对参数做签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串,然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号,键值对之间无符号,忽略null值
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param crypto 对称加密算法
      * @param params 参数
+     * @param other  其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(Symmetric crypto, Map<?, ?> params) {
-        return signParams(crypto, params, Normal.EMPTY, Normal.EMPTY, true);
+    public static String signParams(Symmetric crypto, Map<?, ?> params, String... other) {
+        return signParams(crypto, params, Normal.EMPTY, Normal.EMPTY, true, other);
     }
 
     /**
      * 对参数做签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串,然后根据提供的签名算法生成签名字符串
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      *
      * @param crypto            对称加密算法
      * @param params            参数
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
      * @param isIgnoreNull      是否忽略null的键和值
+     * @param other             其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(Symmetric crypto, Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull) {
-        if (MapUtils.isEmpty(params)) {
-            return null;
-        }
-        String paramsStr = MapUtils.join(MapUtils.sort(params), separator, keyValueSeparator, isIgnoreNull);
-        return crypto.encryptHex(paramsStr);
+    public static String signParams(Symmetric crypto, Map<?, ?> params, String separator,
+                                    String keyValueSeparator, boolean isIgnoreNull, String... other) {
+        return crypto.encryptHex(MapUtils.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, other));
     }
 
     /**
      * 对参数做md5签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串,然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号,键值对之间无符号,忽略null值
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
+     * @param other  其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParamsMd5(Map<?, ?> params) {
-        return signParams(Algorithm.MD5, params);
+    public static String signParamsMd5(Map<?, ?> params, String... other) {
+        return signParams(Algorithm.MD5, params, other);
     }
 
     /**
      * 对参数做Sha1签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串,然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号,键值对之间无符号,忽略null值
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
+     * @param other  其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParamsSha1(Map<?, ?> params) {
-        return signParams(Algorithm.SHA1, params);
+    public static String signParamsSha1(Map<?, ?> params, String... other) {
+        return signParams(Algorithm.SHA1, params, other);
     }
 
     /**
      * 对参数做Sha256签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串,然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号,键值对之间无符号,忽略null值
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
+     * @param other  其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParamsSha256(Map<?, ?> params) {
-        return signParams(Algorithm.SHA256, params);
+    public static String signParamsSha256(Map<?, ?> params, String... other) {
+        return signParams(Algorithm.SHA256, params, other);
     }
 
     /**
      * 对参数做签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串,然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号,键值对之间无符号,忽略null值
+     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
-     * @param algorithm 摘要算法
-     * @param params    参数
+     * @param algorithm   摘要算法
+     * @param params      参数
+     * @param otherParams 其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(String algorithm, Map<?, ?> params) {
-        return signParams(algorithm, params, Normal.EMPTY, Normal.EMPTY, true);
+    public static String signParams(String algorithm, Map<?, ?> params, String... otherParams) {
+        return signParams(algorithm, params, Normal.EMPTY, Normal.EMPTY, true, otherParams);
     }
 
     /**
@@ -1860,14 +1803,12 @@ public class Builder {
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
      * @param isIgnoreNull      是否忽略null的键和值
+     * @param otherParams       其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(String algorithm, Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull) {
-        if (MapUtils.isEmpty(params)) {
-            return null;
-        }
-        final String paramsStr = MapUtils.join(MapUtils.sort(params), separator, keyValueSeparator, isIgnoreNull);
-        return new Digester(algorithm).digestHex(paramsStr);
+    public static String signParams(String algorithm, Map<?, ?> params, String separator,
+                                    String keyValueSeparator, boolean isIgnoreNull, String... otherParams) {
+        return new Digester(algorithm).digestHex(MapUtils.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
     }
 
     /**
@@ -1884,10 +1825,25 @@ public class Builder {
     }
 
     /**
+     * 解码字符串密钥，可支持的编码如下：
+     *
+     * <pre>
+     * 1. Hex（16进制）编码
+     * 1. Base64编码
+     * </pre>
+     *
+     * @param key 被解码的密钥字符串
+     * @return 密钥
+     */
+    public static byte[] decode(String key) {
+        return Validator.isHex(key) ? HexUtils.decodeHex(key) : Base64.decode(key);
+    }
+
+    /**
      * 创建{@link Cipher}
      *
      * @param algorithm 算法
-     * @return the cipher
+     * @return {@link Cipher}
      */
     public static Cipher createCipher(String algorithm) {
         final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
@@ -1936,6 +1892,7 @@ public class Builder {
         } catch (NoSuchAlgorithmException e) {
             throw new InstrumentException(e);
         }
+
         return mac;
     }
 
@@ -1953,7 +1910,132 @@ public class Builder {
      * 强制关闭Bouncy Castle库的使用,全局有效
      */
     public static void disableBouncyCastle() {
-        Instances.singletion(Holder.class).setUseBouncyCastle(false);
+        Holder.setUseBouncyCastle(false);
+    }
+
+    /**
+     * 编码压缩EC公钥（基于BouncyCastle）
+     * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
+     *
+     * @param publicKey {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey
+     * @return 压缩得到的X
+     */
+    public static byte[] encodeECPublicKey(PublicKey publicKey) {
+        return ((BCECPublicKey) publicKey).getQ().getEncoded(true);
+    }
+
+    /**
+     * 解码恢复EC压缩公钥,支持Base64和Hex编码,（基于BouncyCastle）
+     * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
+     *
+     * @param encode    压缩公钥
+     * @param curveName EC曲线名
+     * @return 公钥
+     */
+    public static PublicKey decodeECPoint(String encode, String curveName) {
+        return decodeECPoint(Builder.decode(encode), curveName);
+    }
+
+    /**
+     * 解码恢复EC压缩公钥,支持Base64和Hex编码,（基于BouncyCastle）
+     * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
+     *
+     * @param encodeByte 压缩公钥
+     * @param curveName  EC曲线名，例如{@link Builder#SM2_DEFAULT_CURVE}
+     * @return 公钥
+     */
+    public static PublicKey decodeECPoint(byte[] encodeByte, String curveName) {
+        final ECNamedCurveParameterSpec namedSpec = ECNamedCurveTable.getParameterSpec(curveName);
+        final ECCurve curve = namedSpec.getCurve();
+        final EllipticCurve ecCurve = new EllipticCurve(//
+                new ECFieldFp(curve.getField().getCharacteristic()), //
+                curve.getA().toBigInteger(), //
+                curve.getB().toBigInteger());
+        // 根据X恢复点Y
+        final ECPoint point = ECPointUtil.decodePoint(ecCurve, encodeByte);
+
+        // 根据曲线恢复公钥格式
+        ECParameterSpec ecSpec = new ECNamedCurveSpec(curveName, curve, namedSpec.getG(), namedSpec.getN());
+
+        final KeyFactory PubKeyGen = getKeyFactory("EC");
+        try {
+            return PubKeyGen.generatePublic(new ECPublicKeySpec(point, ecSpec));
+        } catch (GeneralSecurityException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 读取PEM格式的私钥
+     *
+     * @param pemStream pem流
+     * @return {@link PrivateKey}
+     */
+    public static PrivateKey readPrivateKey(InputStream pemStream) {
+        return generateRSAPrivateKey(readKeyBytes(pemStream));
+    }
+
+    /**
+     * 读取PEM格式的公钥
+     *
+     * @param pemStream pem流
+     * @return {@link PublicKey}
+     */
+    public static PublicKey readPublicKey(InputStream pemStream) {
+        final Certificate certificate = readX509Certificate(pemStream);
+        if (null == certificate) {
+            return null;
+        }
+        return certificate.getPublicKey();
+    }
+
+    /**
+     * 从pem文件中读取公钥或私钥
+     * 根据类型返回{@link PublicKey} 或者 {@link PrivateKey}
+     *
+     * @param keyStream pem流
+     * @return {@link Key}
+     */
+    public static Key readKey(InputStream keyStream) {
+        final PemObject object = readPemObject(keyStream);
+        final String type = object.getType();
+        if (StringUtils.isNotBlank(type) && type.endsWith("PRIVATE KEY")) {
+            return generateRSAPrivateKey(object.getContent());
+        } else {
+            return readX509Certificate(keyStream).getPublicKey();
+        }
+    }
+
+    /**
+     * 从pem文件中读取公钥或私钥
+     *
+     * @param keyStream pem流
+     * @return 密钥bytes
+     */
+    public static byte[] readKeyBytes(InputStream keyStream) {
+        PemObject pemObject = readPemObject(keyStream);
+        if (null != pemObject) {
+            return pemObject.getContent();
+        }
+        return null;
+    }
+
+    /**
+     * 读取pem文件中的信息，包括类型、头信息和密钥内容
+     *
+     * @param keyStream pem流
+     * @return {@link PemObject}
+     */
+    public static PemObject readPemObject(InputStream keyStream) {
+        PemReader pemReader = null;
+        try {
+            pemReader = new PemReader(IoUtils.getReader(keyStream, org.aoju.bus.core.lang.Charset.UTF_8));
+            return pemReader.readPemObject();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        } finally {
+            IoUtils.close(pemReader);
+        }
     }
 
 
@@ -1999,40 +2081,40 @@ public class Builder {
      * SM3加密：sm3().digest(data)
      * SM3加密并转为16进制字符串：sm3().digestHex(data)
      *
-     * @return {@link Digester}
+     * @return {@link SM3}
      */
-    public static Digester sm3() {
-        return new Digester(Algorithm.SM3);
+    public static SM3 sm3() {
+        return new SM3();
     }
 
     /**
-     * SM3加密,生成16进制SM3字符串
+     * SM3加密，生成16进制SM3字符串
      *
      * @param data 数据
      * @return SM3字符串
      */
     public static String sm3(String data) {
-        return new Digester(Algorithm.SM3).digestHex(data);
+        return sm3().digestHex(data);
     }
 
     /**
-     * SM3加密,生成16进制SM3字符串
+     * SM3加密，生成16进制SM3字符串
      *
      * @param data 数据
      * @return SM3字符串
      */
     public static String sm3(InputStream data) {
-        return new Digester(Algorithm.SM3).digestHex(data);
+        return sm3().digestHex(data);
     }
 
     /**
-     * SM3加密文件,生成16进制SM3字符串
+     * SM3加密文件，生成16进制SM3字符串
      *
      * @param dataFile 被加密文件
      * @return SM3字符串
      */
     public static String sm3(File dataFile) {
-        return new Digester(Algorithm.SM3).digestHex(dataFile);
+        return sm3().digestHex(dataFile);
     }
 
     /**
@@ -2046,8 +2128,8 @@ public class Builder {
      *
      * @return {@link Symmetric}
      */
-    public static Symmetric sm4() {
-        return new Symmetric(Algorithm.SM4);
+    public static SM4 sm4() {
+        return new SM4();
     }
 
     /**
@@ -2063,7 +2145,7 @@ public class Builder {
      * @return {@link Symmetric}
      */
     public static Symmetric sm4(byte[] key) {
-        return new Symmetric(Algorithm.SM4, key);
+        return new SM4(key);
     }
 
     /**
@@ -2089,10 +2171,10 @@ public class Builder {
      *
      * @param c1c3c2             加密后的bytes,顺序为C1C3C2
      * @param ecDomainParameters {@link ECDomainParameters}
-     * @return c1c2c3 加密后的bytes,顺序为C1C2C3
+     * @return c1c2c3 加密后的bytes，顺序为C1C2C3
      */
     public static byte[] changeC1C3C2ToC1C2C3(byte[] c1c3c2, ECDomainParameters ecDomainParameters) {
-        // sm2p256v1的这个固定65 可看GMNamedCurves、ECCurve代码
+        // sm2p256v1的这个固定65。可看GMNamedCurves、ECCurve代码。
         final int c1Len = (ecDomainParameters.getCurve().getFieldSize() + 7) / 8 * 2 + 1;
         final int c3Len = 32; // new SM3Digest().getDigestSize();
         byte[] result = new byte[c1c3c2.length];
@@ -2110,11 +2192,11 @@ public class Builder {
      */
     public static byte[] rsAsn1ToPlain(byte[] rsDer) {
         ASN1Sequence seq = ASN1Sequence.getInstance(rsDer);
-        byte[] r = bigIntToFixexLengthBytes(ASN1Integer.getInstance(seq.getObjectAt(0)).getValue());
-        byte[] s = bigIntToFixexLengthBytes(ASN1Integer.getInstance(seq.getObjectAt(1)).getValue());
-        byte[] result = new byte[32 * 2];
+        byte[] r = bigIntToFixedLengthBytes(ASN1Integer.getInstance(seq.getObjectAt(0)).getValue());
+        byte[] s = bigIntToFixedLengthBytes(ASN1Integer.getInstance(seq.getObjectAt(1)).getValue());
+        byte[] result = new byte[RS_LEN * 2];
         System.arraycopy(r, 0, result, 0, r.length);
-        System.arraycopy(s, 0, result, 32, s.length);
+        System.arraycopy(s, 0, result, RS_LEN, s.length);
         return result;
     }
 
@@ -2126,11 +2208,11 @@ public class Builder {
      * @return rs result in asn1 format
      */
     public static byte[] rsPlainToAsn1(byte[] sign) {
-        if (sign.length != 32 * 2) {
+        if (sign.length != RS_LEN * 2) {
             throw new InstrumentException("err rs. ");
         }
-        BigInteger r = new BigInteger(1, Arrays.copyOfRange(sign, 0, 32));
-        BigInteger s = new BigInteger(1, Arrays.copyOfRange(sign, 32, 32 * 2));
+        BigInteger r = new BigInteger(1, Arrays.copyOfRange(sign, 0, RS_LEN));
+        BigInteger s = new BigInteger(1, Arrays.copyOfRange(sign, RS_LEN, RS_LEN * 2));
         ASN1EncodableVector v = new ASN1EncodableVector();
         v.add(new ASN1Integer(r));
         v.add(new ASN1Integer(s));
@@ -2167,16 +2249,16 @@ public class Builder {
      * @param rOrS {@link BigInteger}
      * @return 固定长度bytes
      */
-    private static byte[] bigIntToFixexLengthBytes(BigInteger rOrS) {
+    private static byte[] bigIntToFixedLengthBytes(BigInteger rOrS) {
         byte[] rs = rOrS.toByteArray();
-        if (rs.length == 32) {
+        if (rs.length == RS_LEN) {
             return rs;
-        } else if (rs.length == 32 + 1 && rs[0] == 0) {
-            return Arrays.copyOfRange(rs, 1, 32 + 1);
-        } else if (rs.length < 32) {
-            byte[] result = new byte[32];
+        } else if (rs.length == RS_LEN + 1 && rs[0] == 0) {
+            return Arrays.copyOfRange(rs, 1, RS_LEN + 1);
+        } else if (rs.length < RS_LEN) {
+            byte[] result = new byte[RS_LEN];
             Arrays.fill(result, (byte) 0);
-            System.arraycopy(rs, 0, result, 32 - rs.length, rs.length);
+            System.arraycopy(rs, 0, result, RS_LEN - rs.length, rs.length);
             return result;
         } else {
             throw new InstrumentException("Error rs: {}", Hex.toHexString(rs));

@@ -25,7 +25,7 @@ package org.aoju.bus.crypto;
 
 /**
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public interface Provider {
@@ -56,4 +56,5 @@ public interface Provider {
      * @return 解密结果
      */
     byte[] decrypt(String key, byte[] content);
+
 }

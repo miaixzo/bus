@@ -21,25 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest.mac;
-
-import java.io.InputStream;
+package org.aoju.bus.crypto.asymmetric;
 
 /**
- * MAC（Message Authentication Code）算法引擎
+ * 密钥类型
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
-public interface MacEngine {
-
-    /**
-     * 生成摘要
-     *
-     * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度
-     * @return 摘要bytes
-     */
-    byte[] digest(InputStream data, int bufferLength);
+public enum KeyType {
+    PrivateKey, PublicKey
 }

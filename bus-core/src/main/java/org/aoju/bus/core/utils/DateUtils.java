@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class DateUtils {
@@ -2959,7 +2959,7 @@ public class DateUtils {
         final StringBuilder builder = StringUtils.builder();
 
         // 日期部分（"\"、"/"、"."、"年"、"月"都替换为"-"）
-        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", "-");
+        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", Symbol.HYPHEN);
         datePart = StringUtils.removeSuffix(datePart, "日");
         builder.append(datePart);
 
@@ -3540,7 +3540,6 @@ public class DateUtils {
      * @param solarYear  公历年
      * @param solarMonth 公历月，0-11
      * @param solarDate  公历日
-     * @return void
      */
     private void lunar(final int solarYear, final int solarMonth, final int solarDate) {
         if (solarYear < MINI_YEAR && solarYear > MAX_YEAR) {

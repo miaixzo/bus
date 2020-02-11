@@ -21,61 +21,79 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest.mac;
+package org.aoju.bus.crypto.digest.mac;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
-import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.Mac;
-import org.bouncycastle.crypto.macs.HMac;
-import org.bouncycastle.crypto.params.KeyParameter;
+import org.aoju.bus.crypto.Builder;
 
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * BouncyCastle的HMAC算法实现引擎,使用{@link Mac} 实现摘要
+ * 默认的HMAC算法实现引擎，使用{@link Mac} 实现摘要
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
-public class BCHMacEngine implements MacEngine {
+public class DefaultHMacEngine implements MacEngine {
 
     private Mac mac;
 
     /**
      * 构造
      *
-     * @param digest 摘要算法,为{@link Digest} 的接口实现
-     * @param key    密钥
+     * @param algorithm 算法
+     * @param key       密钥
      */
-    public BCHMacEngine(Digest digest, byte[] key) {
-        this(digest, new KeyParameter(key));
+    public DefaultHMacEngine(String algorithm, byte[] key) {
+        init(algorithm, key);
     }
 
     /**
      * 构造
      *
-     * @param digest 摘要算法
-     * @param params 参数,例如密钥可以用{@link KeyParameter}
+     * @param algorithm 算法
+     * @param key       密钥
      */
-    public BCHMacEngine(Digest digest, CipherParameters params) {
-        init(digest, params);
+    public DefaultHMacEngine(String algorithm, SecretKey key) {
+        init(algorithm, key);
     }
 
     /**
      * 初始化
      *
-     * @param digest 摘要算法
-     * @param params 参数,例如密钥可以用{@link KeyParameter}
+     * @param algorithm 算法
+     * @param key       密钥
      * @return this
      */
-    public BCHMacEngine init(Digest digest, CipherParameters params) {
-        mac = new HMac(digest);
-        mac.init(params);
+    public DefaultHMacEngine init(String algorithm, byte[] key) {
+        return init(algorithm, (null == key) ? null : new SecretKeySpec(key, algorithm));
+    }
+
+    /**
+     * 初始化
+     *
+     * @param algorithm 算法
+     * @param key       密钥 {@link SecretKey}
+     * @return this
+     * @throws InstrumentException Cause by IOException
+     */
+    public DefaultHMacEngine init(String algorithm, SecretKey key) {
+        try {
+            mac = Builder.createMac(algorithm);
+            if (null == key) {
+                key = Builder.generateKey(algorithm);
+            }
+            mac.init(key);
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
         return this;
     }
 
@@ -84,7 +102,7 @@ public class BCHMacEngine implements MacEngine {
         if (bufferLength < 1) {
             bufferLength = IoUtils.DEFAULT_BUFFER_SIZE;
         }
-        final byte[] buffer = new byte[bufferLength];
+        byte[] buffer = new byte[bufferLength];
 
         byte[] result;
         try {
@@ -94,8 +112,7 @@ public class BCHMacEngine implements MacEngine {
                 mac.update(buffer, 0, read);
                 read = data.read(buffer, 0, bufferLength);
             }
-            result = new byte[this.mac.getMacSize()];
-            mac.doFinal(result, 0);
+            result = mac.doFinal();
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {

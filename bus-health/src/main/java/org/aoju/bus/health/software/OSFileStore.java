@@ -37,7 +37,7 @@ import org.aoju.bus.logger.Logger;
  * for definitions as they apply to specific platforms.
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class OSFileStore {

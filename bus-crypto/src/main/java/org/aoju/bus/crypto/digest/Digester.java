@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.digest;
+package org.aoju.bus.crypto.digest;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
@@ -30,6 +30,7 @@ import org.aoju.bus.crypto.Builder;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -40,24 +41,26 @@ import java.security.Provider;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
-public class Digester {
+public class Digester implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    private MessageDigest digest;
     /**
      * 盐值
      */
     protected byte[] salt;
     /**
-     * 加盐位置,既将盐值字符串放置在数据的index数,默认0
+     * 加盐位置，即将盐值字符串放置在数据的index数，默认0
      */
     protected int saltPosition;
     /**
      * 散列次数
      */
     protected int digestCount;
-    private MessageDigest digest;
 
     /**
      * 构造
@@ -72,7 +75,7 @@ public class Digester {
      * 构造
      *
      * @param algorithm 算法
-     * @param provider  算法提供者,null表示JDK默认,可以引入Bouncy Castle等来提供更多算法支持
+     * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
      */
     public Digester(String algorithm, Provider provider) {
         init(algorithm, provider);
@@ -82,7 +85,7 @@ public class Digester {
      * 初始化
      *
      * @param algorithm 算法
-     * @param provider  算法提供者,null表示JDK默认,可以引入Bouncy Castle等来提供更多算法支持
+     * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
      * @return {@link Digester}
      * @throws InstrumentException Cause by IOException
      */
@@ -111,14 +114,14 @@ public class Digester {
     }
 
     /**
-     * 设置加盐的位置,只有盐值存在时有效
-     * 加盐的位置指盐位于数据byte数组中的位置,例如：
+     * 设置加盐的位置，只有盐值存在时有效
+     * 加盐的位置指盐位于数据byte数组中的位置，例如：
      *
      * <pre>
      * data: 0123456
      * </pre>
      * <p>
-     * 则当saltPosition = 2时,盐位于data的1和2中间,既第二个空隙,既：
+     * 则当saltPosition = 2时，盐位于data的1和2中间，即第二个空隙，即：
      *
      * <pre>
      * data: 01[salt]23456
@@ -186,7 +189,7 @@ public class Digester {
     }
 
     /**
-     * 生成文件摘要,并转为16进制字符串
+     * 生成文件摘要，并转为16进制字符串
      *
      * @param data        被摘要数据
      * @param charsetName 编码
@@ -197,7 +200,7 @@ public class Digester {
     }
 
     /**
-     * 生成文件摘要,并转为16进制字符串
+     * 生成文件摘要，并转为16进制字符串
      *
      * @param data    被摘要数据
      * @param charset 编码
@@ -214,12 +217,12 @@ public class Digester {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, org.aoju.bus.core.lang.Charset.UTF_8);
+        return digestHex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
     }
 
     /**
      * 生成文件摘要
-     * 使用默认缓存大小
+     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
      * @return 摘要bytes
@@ -236,8 +239,8 @@ public class Digester {
     }
 
     /**
-     * 生成文件摘要,并转为16进制字符串
-     * 使用默认缓存大小
+     * 生成文件摘要，并转为16进制字符串
+     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
      * @return 摘要
@@ -247,7 +250,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要,考虑加盐和重复摘要次数
+     * 生成摘要，考虑加盐和重复摘要次数
      *
      * @param data 数据bytes
      * @return 摘要bytes
@@ -255,10 +258,10 @@ public class Digester {
     public byte[] digest(byte[] data) {
         byte[] result;
         if (this.saltPosition <= 0) {
-            // 加盐在开头,自动忽略空盐值
+            // 加盐在开头，自动忽略空盐值
             result = doDigest(this.salt, data);
         } else if (this.saltPosition >= data.length) {
-            // 加盐在末尾,自动忽略空盐值
+            // 加盐在末尾，自动忽略空盐值
             result = doDigest(data, this.salt);
         } else if (ArrayUtils.isNotEmpty(this.salt)) {
             // 加盐在中间
@@ -275,7 +278,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要,并转为16进制字符串
+     * 生成摘要，并转为16进制字符串
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -285,7 +288,7 @@ public class Digester {
     }
 
     /**
-     * 生成摘要,使用默认缓存大小
+     * 生成摘要，使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param data {@link InputStream} 数据流
      * @return 摘要bytes
@@ -295,8 +298,8 @@ public class Digester {
     }
 
     /**
-     * 生成摘要,并转为16进制字符串
-     * 使用默认缓存大小
+     * 生成摘要，并转为16进制字符串
+     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -309,10 +312,11 @@ public class Digester {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度
+     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
+     * @throws InstrumentException IO异常
      */
-    public byte[] digest(InputStream data, int bufferLength) {
+    public byte[] digest(InputStream data, int bufferLength) throws InstrumentException {
         if (bufferLength < 1) {
             bufferLength = IoUtils.DEFAULT_BUFFER_SIZE;
         }
@@ -332,11 +336,11 @@ public class Digester {
     }
 
     /**
-     * 生成摘要,并转为16进制字符串
-     * 使用默认缓存大小
+     * 生成摘要，并转为16进制字符串
+     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
      *
      * @param data         被摘要数据
-     * @param bufferLength 缓存长度
+     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要
      */
     public String digestHex(InputStream data, int bufferLength) {
@@ -353,9 +357,9 @@ public class Digester {
     }
 
     /**
-     * 获取散列长度,0表示不支持此方法
+     * 获取散列长度，0表示不支持此方法
      *
-     * @return 散列长度, 0表示不支持此方法
+     * @return 散列长度，0表示不支持此方法
      */
     public int getDigestLength() {
         return this.digest.getDigestLength();
@@ -365,7 +369,7 @@ public class Digester {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度
+     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      * @throws IOException 从流中读取数据引发的IO异常
      */
@@ -382,7 +386,7 @@ public class Digester {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度
+     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      * @throws IOException 从流中读取数据引发的IO异常
      */
@@ -433,7 +437,7 @@ public class Digester {
     }
 
     /**
-     * 重复计算摘要,取决于{@link #digestCount} 值
+     * 重复计算摘要，取决于{@link #digestCount} 值
      * 每次计算摘要前都会重置{@link #digest}
      *
      * @param digestData 第一次摘要过的数据

@@ -43,7 +43,7 @@ import java.util.Map;
  * 钉钉登录
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class DingTalkProvider extends DefaultProvider {
@@ -113,7 +113,7 @@ public class DingTalkProvider extends DefaultProvider {
     @Override
     protected String userInfoUrl(AccToken token) {
         // 根据timestamp, appSecret计算签名值
-        String timestamp = System.currentTimeMillis() + "";
+        String timestamp = System.currentTimeMillis() + Normal.EMPTY;
         String urlEncodeSignature = generateDingTalkSignature(context.getClientSecret(), timestamp);
 
         return Builder.fromBaseUrl(source.userInfo())

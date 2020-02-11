@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.asymmetric;
+package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.BCD;
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -36,22 +37,23 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 /**
+ * 抽象的非对称加密对象，包装了加密和解密为Hex和Base64的封装
+ *
+ * @param <T> 返回自身类型
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public abstract class Safety<T extends Safety<T>> extends Keys<T> {
 
     /**
      * 构造
-     * <p>
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥
      * @param publicKey  公钥
-     * @since 3.1.1
      */
     public Safety(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
         super(algorithm, privateKey, publicKey);
@@ -113,7 +115,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 加密,使用UTF-8编码
+     * 加密，使用UTF-8编码
      *
      * @param data    被加密的字符串
      * @param keyType 私钥或公钥 {@link KeyType}
@@ -147,7 +149,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 编码为Base64字符串,使用UTF-8编码
+     * 编码为Base64字符串，使用UTF-8编码
      *
      * @param data    被加密的字符串
      * @param keyType 私钥或公钥 {@link KeyType}
@@ -161,7 +163,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * 编码为Base64字符串
      *
      * @param data    被加密的字符串
-     * @param charset 字符集
+     * @param charset 编码
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Base64字符串
      */
@@ -175,8 +177,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param data    被加密的数据流
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 加密后的bytes
+     * @throws InstrumentException IO异常
      */
-    public byte[] encrypt(InputStream data, KeyType keyType) {
+    public byte[] encrypt(InputStream data, KeyType keyType) throws InstrumentException {
         return encrypt(IoUtils.readBytes(data), keyType);
     }
 
@@ -208,6 +211,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param data    数据
      * @param keyType 密钥类型
      * @return 加密后的密文
+     * @throws InstrumentException 加密异常
      */
     public String encryptBcd(String data, KeyType keyType) {
         return encryptBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -220,6 +224,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 加密后的密文
+     * @throws InstrumentException 加密异常
      */
     public String encryptBcd(String data, KeyType keyType, Charset charset) {
         return BCD.bcdToStr(encrypt(data, charset, keyType));
@@ -240,13 +245,14 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param data    被解密的bytes
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 解密后的bytes
+     * @throws InstrumentException IO异常
      */
-    public byte[] decrypt(InputStream data, KeyType keyType) {
+    public byte[] decrypt(InputStream data, KeyType keyType) throws InstrumentException {
         return decrypt(IoUtils.readBytes(data), keyType);
     }
 
     /**
-     * 从Hex或Base64字符串解密,编码为UTF-8格式
+     * 从Hex或Base64字符串解密，编码为UTF-8格式
      *
      * @param data    Hex（16进制）或Base64字符串
      * @param keyType 私钥或公钥 {@link KeyType}
@@ -257,9 +263,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串,密文需为Hex（16进制）或Base64字符串
+     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
      *
-     * @param data    数据,Hex（16进制）或Base64字符串
+     * @param data    数据，Hex（16进制）或Base64字符串
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 解密后的密文
@@ -269,9 +275,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串,密文需为Hex（16进制）或Base64字符串
+     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
      *
-     * @param data    数据,Hex（16进制）或Base64字符串
+     * @param data    数据，Hex（16进制）或Base64字符串
      * @param keyType 密钥类型
      * @return 解密后的密文
      */
@@ -304,9 +310,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串,密文需为BCD格式
+     * 解密为字符串，密文需为BCD格式
      *
-     * @param data    数据,BCD格式
+     * @param data    数据，BCD格式
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 解密后的密文
@@ -316,9 +322,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串,密文需为BCD格式,编码为UTF-8格式
+     * 解密为字符串，密文需为BCD格式，编码为UTF-8格式
      *
-     * @param data    数据,BCD格式
+     * @param data    数据，BCD格式
      * @param keyType 密钥类型
      * @return 解密后的密文
      */

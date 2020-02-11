@@ -21,15 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.asymmetric;
+package org.aoju.bus.crypto.digest.mac;
+
+import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.crypto.Builder;
+
+import javax.crypto.SecretKey;
 
 /**
- * 密钥类型
+ * {@link MacEngine} 实现工厂类
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
-public enum KeyType {
-    PrivateKey, PublicKey
+public class MacEngineFactory {
+
+    /**
+     * 根据给定算法和密钥生成对应的{@link MacEngine}
+     *
+     * @param algorithm 算法，见{@link Algorithm}
+     * @param key       密钥
+     * @return {@link MacEngine}
+     */
+    public static MacEngine createEngine(String algorithm, SecretKey key) {
+        if (Algorithm.HmacSM3.equalsIgnoreCase(algorithm)) {
+            // HmacSM3算法是BC库实现的
+            return Builder.createHmacSm3Engine(key.getEncoded());
+        }
+        return new DefaultHMacEngine(algorithm, key);
+    }
+
 }

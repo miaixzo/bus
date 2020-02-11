@@ -37,7 +37,7 @@ import java.util.Objects;
  * int enum 校验
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class InEnumStrategy implements Matcher<Object, InEnum> {

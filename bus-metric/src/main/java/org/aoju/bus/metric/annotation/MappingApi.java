@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.metric.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.metric.ApiContext;
 
 import java.lang.annotation.*;
@@ -31,7 +32,7 @@ import java.lang.annotation.*;
  * 作用在service类的方法上，service类被@ApiService标记
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8++
  */
 @Documented
@@ -39,7 +40,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MappingApi {
 
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
      * @return 接口名，建议命名规则: <strong>业务.模块.名字.动词</strong>
@@ -52,7 +53,7 @@ public @interface MappingApi {
     /**
      * @return 接口版本号，默认""，建议命名规则：x.y，如1.0，1.1
      */
-    String version() default "";
+    String version() default Normal.EMPTY;
 
     /**
      * @return 忽略验证签名，默认false。为true接口不执行验签操作，但其它验证会执行。

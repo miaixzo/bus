@@ -43,7 +43,7 @@ import java.util.Map;
  * 美团登录
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class MeituanProvider extends DefaultProvider {
@@ -135,7 +135,7 @@ public class MeituanProvider extends DefaultProvider {
                 .queryParam("app_id", context.getClientId())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
-                .queryParam("scope", "")
+                .queryParam("scope", Normal.EMPTY)
                 .build();
     }
 

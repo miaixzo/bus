@@ -51,14 +51,14 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
-import org.aoju.bus.crypto.algorithm.asymmetric.KeyType;
-import org.aoju.bus.crypto.algorithm.asymmetric.RSA;
+import org.aoju.bus.crypto.asymmetric.KeyType;
+import org.aoju.bus.crypto.asymmetric.RSA;
 
 /**
  * RSA 加密解密算法
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class RSAProvider implements Provider {

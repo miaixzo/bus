@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.crypto.algorithm.asymmetric;
+package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -35,10 +35,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 非对称基础,提供锁、私钥和公钥的持有
+ * 非对称基础，提供锁、私钥和公钥的持有
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class Keys<T extends Keys<T>> {
@@ -58,16 +58,15 @@ public class Keys<T extends Keys<T>> {
     /**
      * 锁
      */
-    protected Lock lock = new ReentrantLock();
+    protected final Lock lock = new ReentrantLock();
 
     /**
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥
      * @param publicKey  公钥
-     * @since 3.1.1
      */
     public Keys(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
         init(algorithm, privateKey, publicKey);
@@ -75,7 +74,7 @@ public class Keys<T extends Keys<T>> {
 
     /**
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密（签名）或者解密（校验）
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -120,6 +119,16 @@ public class Keys<T extends Keys<T>> {
     }
 
     /**
+     * 获得公钥
+     *
+     * @return 获得公钥
+     */
+    public String getPublicKeyBase64() {
+        final PublicKey publicKey = getPublicKey();
+        return (null == publicKey) ? null : Base64.encode(publicKey.getEncoded());
+    }
+
+    /**
      * 设置公钥
      *
      * @param publicKey 公钥
@@ -128,16 +137,6 @@ public class Keys<T extends Keys<T>> {
     public T setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;
         return (T) this;
-    }
-
-    /**
-     * 获得公钥
-     *
-     * @return 获得公钥
-     */
-    public String getPublicKeyBase64() {
-        final PublicKey publicKey = getPublicKey();
-        return (null == publicKey) ? null : Base64.encode(publicKey.getEncoded());
     }
 
     /**
@@ -150,6 +149,15 @@ public class Keys<T extends Keys<T>> {
     }
 
     /**
+     * 获得私钥
+     *
+     * @return 获得私钥
+     */
+    public String getPrivateKeyBase64() {
+        return Base64.encode(getPrivateKey().getEncoded());
+    }
+
+    /**
      * 设置私钥
      *
      * @param privateKey 私钥
@@ -158,15 +166,6 @@ public class Keys<T extends Keys<T>> {
     public T setPrivateKey(PrivateKey privateKey) {
         this.privateKey = privateKey;
         return (T) this;
-    }
-
-    /**
-     * 获得私钥
-     *
-     * @return 获得私钥
-     */
-    public String getPrivateKeyBase64() {
-        return Base64.encode(getPrivateKey().getEncoded());
     }
 
     /**

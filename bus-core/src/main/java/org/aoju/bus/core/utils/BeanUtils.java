@@ -46,7 +46,7 @@ import java.util.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class BeanUtils {
@@ -631,7 +631,6 @@ public class BeanUtils {
      * @param bean             Bean对象
      * @param ignoreFiledNames 忽略检查的字段名
      * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
-     * @since 4.1.10
      */
     public static boolean isEmpty(Object bean, String... ignoreFiledNames) {
         if (null != bean) {
@@ -664,7 +663,6 @@ public class BeanUtils {
      * @param bean             Bean对象
      * @param ignoreFiledNames 忽略检查的字段名
      * @return 是否包含值为<code>null</code>的属性，<code>true</code> - 包含 / <code>false</code> - 不包含
-     * @since 4.1.10
      */
     public static boolean hasNullField(Object bean, String... ignoreFiledNames) {
         if (null == bean) {

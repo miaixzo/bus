@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class ZKShooting implements Shooting {

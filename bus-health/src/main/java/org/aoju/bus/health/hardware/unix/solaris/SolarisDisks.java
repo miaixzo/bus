@@ -25,6 +25,7 @@ package org.aoju.bus.health.hardware.unix.solaris;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Command;
@@ -44,7 +45,7 @@ import java.util.Map.Entry;
  * Solaris hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class SolarisDisks implements Disks {
@@ -122,7 +123,7 @@ public class SolarisDisks implements Disks {
         // Run lshal, if available, to get block device major (we'll use
         // partition # for minor)
         List<String> lshal = Command.runNative("lshal");
-        disk = "";
+        disk = Normal.EMPTY;
         for (String line : lshal) {
             if (line.startsWith("udi ")) {
                 String udi = Builder.getSingleQuoteStringValue(line);
@@ -138,11 +139,11 @@ public class SolarisDisks implements Disks {
         // Next, run iostat -Er to get model, etc.
         disks = Command.runNative("iostat -Er");
         // We'll use Model if available, otherwise Vendor+Product
-        disk = "";
-        String model = "";
-        String vendor = "";
-        String product = "";
-        String serial = "";
+        disk = Normal.EMPTY;
+        String model = Normal.EMPTY;
+        String vendor = Normal.EMPTY;
+        String product = Normal.EMPTY;
+        String serial = Normal.EMPTY;
         long size = 0;
         for (String line : disks) {
             // The -r switch enables comma delimited for easy parsing!
@@ -162,22 +163,22 @@ public class SolarisDisks implements Disks {
                     }
                     // Reset values for next iteration
                     disk = keyValue;
-                    model = "";
-                    vendor = "";
-                    product = "";
-                    serial = "";
+                    model = Normal.EMPTY;
+                    vendor = Normal.EMPTY;
+                    product = Normal.EMPTY;
+                    serial = Normal.EMPTY;
                     size = 0L;
                     continue;
                 }
                 // Otherwise update variables
                 if (keyValue.startsWith("Model:")) {
-                    model = keyValue.replace("Model:", "").trim();
+                    model = keyValue.replace("Model:", Normal.EMPTY).trim();
                 } else if (keyValue.startsWith("Serial No:")) {
-                    serial = keyValue.replace("Serial No:", "").trim();
+                    serial = keyValue.replace("Serial No:", Normal.EMPTY).trim();
                 } else if (keyValue.startsWith("Vendor:")) {
-                    vendor = keyValue.replace("Vendor:", "").trim();
+                    vendor = keyValue.replace("Vendor:", Normal.EMPTY).trim();
                 } else if (keyValue.startsWith("Product:")) {
-                    product = keyValue.replace("Product:", "").trim();
+                    product = keyValue.replace("Product:", Normal.EMPTY).trim();
                 } else if (keyValue.startsWith("Size:")) {
                     // Size: 1.23GB <1227563008 bytes>
                     String[] bytes = keyValue.split(Symbol.LT);

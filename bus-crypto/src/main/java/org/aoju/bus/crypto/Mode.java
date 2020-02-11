@@ -25,12 +25,11 @@ package org.aoju.bus.crypto;
 
 /**
  * 模式
- * <p>
  * 加密算法模式,是用来描述加密算法（此处特指分组密码,不包括流密码,）
  * 在加密时对明文分组的模式,它代表了不同的分组方式
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public enum Mode {

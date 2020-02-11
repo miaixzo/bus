@@ -29,7 +29,7 @@ import java.util.Map;
  * 负责秘钥管理
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8++
  */
 public interface AppSecretManager {

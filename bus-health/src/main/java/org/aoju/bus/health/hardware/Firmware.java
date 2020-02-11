@@ -27,7 +27,7 @@ package org.aoju.bus.health.hardware;
  * The Firmware represents the low level BIOS or equivalent.
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public interface Firmware {

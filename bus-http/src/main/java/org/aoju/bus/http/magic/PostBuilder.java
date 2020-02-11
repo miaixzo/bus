@@ -37,7 +37,7 @@ import java.util.List;
  * POST参数构造器
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class PostBuilder extends RequestBuilder<PostBuilder> {

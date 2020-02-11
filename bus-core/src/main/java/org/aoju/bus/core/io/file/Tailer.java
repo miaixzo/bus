@@ -42,7 +42,7 @@ import java.util.concurrent.*;
  * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class Tailer implements Serializable {
@@ -180,7 +180,7 @@ public class Tailer implements Serializable {
 
                 c = this.randomAccessFile.read();
                 if (c == Symbol.C_LF || c == Symbol.C_CR) {
-                    // FileUtil.readLine(this.randomAccessFile, this.charset, this.lineHandler);
+                    // FileUtils.readLine(this.randomAccessFile, this.charset, this.lineHandler);
                     final String line = FileUtils.readLine(this.randomAccessFile, this.charset);
                     if (null != line) {
                         stack.push(line);
@@ -192,7 +192,7 @@ public class Tailer implements Serializable {
                 this.randomAccessFile.seek(nextEnd);
                 if (nextEnd == 0) {
                     // 当文件指针退至文件开始处，输出第一行
-                    // FileUtil.readLine(this.randomAccessFile, this.charset, this.lineHandler);
+                    // FileUtils.readLine(this.randomAccessFile, this.charset, this.lineHandler);
                     final String line = FileUtils.readLine(this.randomAccessFile, this.charset);
                     if (null != line) {
                         stack.push(line);

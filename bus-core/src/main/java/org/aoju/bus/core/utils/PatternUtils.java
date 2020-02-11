@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class PatternUtils {
@@ -215,8 +215,8 @@ public class PatternUtils {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串<br>
-     * 例如：<br>
+     * 从content中匹配出多个值并根据template生成新的字符串
+     * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
      * @param pattern  匹配正则
@@ -247,9 +247,9 @@ public class PatternUtils {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串<br>
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）<br>
-     * 例如：<br>
+     * 从content中匹配出多个值并根据template生成新的字符串
+     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
+     * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
      * @param regex    匹配正则字符串
@@ -267,9 +267,9 @@ public class PatternUtils {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串<br>
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）<br>
-     * 例如：<br>
+     * 从content中匹配出多个值并根据template生成新的字符串
+     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
+     * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
      * @param pattern       匹配正则
@@ -298,8 +298,8 @@ public class PatternUtils {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串<br>
-     * 例如：<br>
+     * 从content中匹配出多个值并根据template生成新的字符串
+     * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
      * @param regex         匹配正则字符串
@@ -557,8 +557,10 @@ public class PatternUtils {
         }
 
         if (StringUtils.isEmpty(regex)) {
+            // 正则不存在则为全匹配
             return true;
         }
+
         final Pattern pattern = get(regex, Pattern.DOTALL);
         return isMatch(pattern, content);
     }

@@ -51,7 +51,7 @@ import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
-import org.aoju.bus.crypto.algorithm.symmetric.Symmetric;
+import org.aoju.bus.crypto.symmetric.Symmetric;
 
 /**
  * 高级加密标准,是下一代的加密算法标准,速度快,安全级别高；
@@ -61,7 +61,7 @@ import org.aoju.bus.crypto.algorithm.symmetric.Symmetric;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class SM4Provider implements Provider {
@@ -80,7 +80,6 @@ public class SM4Provider implements Provider {
         Symmetric sm4 = Builder.sm4(HexUtils.decodeHex(key));
         return sm4.encrypt(content);
     }
-
 
     /**
      * 解密

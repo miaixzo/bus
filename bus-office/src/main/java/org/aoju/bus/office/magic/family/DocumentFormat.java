@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * 包含处理特定文档格式所需的信息
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class DocumentFormat {

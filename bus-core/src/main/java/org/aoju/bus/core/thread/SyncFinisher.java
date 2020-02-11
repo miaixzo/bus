@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutorService;
  * 不能保证同时开始
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class SyncFinisher {
@@ -136,7 +136,6 @@ public class SyncFinisher {
      * 开始工作
      *
      * @param sync 是否阻塞等待
-     * @since 4.5.8
      */
     public void start(boolean sync) {
         endLatch = new CountDownLatch(workers.size());

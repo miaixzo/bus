@@ -27,6 +27,7 @@ import com.sun.jna.platform.win32.COM.Wbemcli;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Variant;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
@@ -36,7 +37,7 @@ import java.time.OffsetDateTime;
  * Helper class for WMI
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class WmiUtils {
@@ -108,7 +109,7 @@ public class WmiUtils {
         OffsetDateTime dateTime = getDateTime(result, property, index);
         // Null result returns the Epoch
         if (dateTime.equals(Builder.UNIX_EPOCH)) {
-            return "";
+            return Normal.EMPTY;
         }
         return dateTime.toLocalDate().toString();
     }
@@ -153,7 +154,7 @@ public class WmiUtils {
     private static <T extends Enum<T>> String getStr(WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
         if (o == null) {
-            return "";
+            return Normal.EMPTY;
         } else if (result.getVtType(property) == Variant.VT_BSTR) {
             return (String) o;
         }

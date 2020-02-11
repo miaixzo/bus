@@ -26,8 +26,8 @@ package org.aoju.bus.office.magic.family;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.JsonUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.extra.json.JsonUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ import java.util.Map;
  * 包含office支持的{@code DocumentFormat}集合，该集合已从JSON源加载.
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class JsonFormatRegistry extends SimpleFormatRegistry {

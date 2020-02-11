@@ -43,7 +43,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @param <T> 生成范围对象的类型
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
@@ -132,7 +132,6 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
      * 禁用锁，调用此方法后不在 使用锁保护
      *
      * @return this
-     * @since 4.3.1
      */
     public Range<T> disableLock() {
         this.lock = new AtomicNoLock();

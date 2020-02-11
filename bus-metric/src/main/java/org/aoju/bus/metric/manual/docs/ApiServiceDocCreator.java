@@ -29,7 +29,7 @@ import org.aoju.bus.metric.manual.Api;
 
 /**
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8++
  */
 public class ApiServiceDocCreator extends AbstractApiDocCreator<Service, MappingApi> {

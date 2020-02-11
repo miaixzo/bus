@@ -44,7 +44,7 @@ import java.util.Map;
  * qq登录
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class QqProvider extends DefaultProvider {
@@ -106,8 +106,8 @@ public class QqProvider extends DefaultProvider {
                 .queryParam("unionid", context.isUnionId() ? 1 : 0)
                 .build());
 
-        String removePrefix = StringUtils.replace(response, "callback(", "");
-        String removeSuffix = StringUtils.replace(removePrefix, ");", "");
+        String removePrefix = StringUtils.replace(response, "callback(", Normal.EMPTY);
+        String removeSuffix = StringUtils.replace(removePrefix, ");", Normal.EMPTY);
         String openId = StringUtils.trim(removeSuffix);
         JSONObject object = JSONObject.parseObject(openId);
         if (object.containsKey("error")) {

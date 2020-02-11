@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @param <T> 目标对象类型
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {
@@ -108,7 +108,6 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T copy() {
         if (null != this.source) {
             if (this.source instanceof ValueProvider) {

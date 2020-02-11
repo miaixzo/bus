@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 负责存储定义好的接口信息
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8++
  */
 public class DefinitionHolder {

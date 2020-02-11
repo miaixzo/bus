@@ -38,7 +38,7 @@ import java.util.*;
  * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
@@ -112,7 +112,6 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param initialCapacity 初始容量
      * @param loadFactor      容量增长因子，0~1，即达到容量的百分之多少时扩容
      * @param caseInsensitive 是否大小写不敏感
-     * @since 4.5.16
      */
     public Dict(int initialCapacity, float loadFactor, boolean caseInsensitive) {
         super(initialCapacity, loadFactor);
@@ -402,7 +401,6 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param <T>  值类型
      * @param attr 字段名
      * @return 字段值
-     * @since 4.6.3
      */
     public <T> T getBean(String attr) {
         return get(attr, null);

@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 5.5.6
+ * @version 5.5.8
  * @since JDK 1.8+
  */
 public class SSHUtils {
@@ -129,7 +129,6 @@ public class SSHUtils {
      * @param sshUser 用户名，如果为null，默认root
      * @param sshPass 密码
      * @return SSH会话
-     * @since 4.5.2
      */
     public static Session createSession(String sshHost, int sshPort, String sshUser, String sshPass) {
         final JSch jsch = new JSch();
