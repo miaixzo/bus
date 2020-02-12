@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.utils;
 
-
 import org.aoju.bus.core.lang.Assert;
 
 import java.lang.reflect.Field;

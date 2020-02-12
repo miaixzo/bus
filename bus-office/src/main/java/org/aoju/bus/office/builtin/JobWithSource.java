@@ -38,8 +38,8 @@ public interface JobWithSource {
     /**
      * 将当前转换配置为将结果写入指定的目标.
      *
-     * @param target 将写入转换结果的文件。现有文件将被覆盖.
-     *               如果文件被JVM或任何其他应用程序锁定或不可写，则会抛出异常.
+     * @param target 将写入转换结果的文件。现有文件将被覆盖
+     *               如果文件被JVM或任何其他应用程序锁定或不可写，则会抛出异常
      * @return 当前转换规范.
      */
     OptionalTarget to(File target);

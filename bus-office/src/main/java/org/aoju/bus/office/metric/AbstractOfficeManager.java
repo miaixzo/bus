@@ -34,7 +34,7 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 所有{@link OfficeManager}的基类.
+ * 所有{@link OfficeManager}的基类
  *
  * @author Kimi Liu
  * @version 5.5.8
@@ -47,7 +47,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
     private File tempDir;
 
     /**
-     * 使用指定的设置构造类的新实例.
+     * 使用指定的设置构造类的新实例
      *
      * @param config 配置信息
      */
@@ -58,10 +58,10 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
     }
 
     /**
-     * 在指定目录下创建临时目录.
+     * 在指定目录下创建临时目录
      *
-     * @param workingDir 要在其下创建临时目录的目录.
-     * @return 创建的目录.
+     * @param workingDir 要在其下创建临时目录的目录
+     * @return 创建的目录
      */
     protected static File makeTempDir(final File workingDir) {
         final File tempDir = new File(workingDir, "converter_" + ObjectID.id());
@@ -83,7 +83,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
     }
 
     /**
-     * 创建临时目录.
+     * 创建临时目录
      */
     protected void makeTempDir() {
         deleteTempDir();
@@ -91,7 +91,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
     }
 
     /**
-     * 删除临时目录.
+     * 删除临时目录
      */
     protected void deleteTempDir() {
         if (tempDir != null) {
@@ -105,7 +105,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
     }
 
     /**
-     * 构造{@link AbstractOfficeManager}的生成器.
+     * 构造{@link AbstractOfficeManager}的生成器
      */
     public abstract static class AbstractOfficeManagerBuilder<
             B extends AbstractOfficeManagerBuilder<B>> {
@@ -118,12 +118,12 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
         }
 
         /**
-         * 指定由该生成器创建的office管理器是否将随后设置{@link InstalledOfficeHolder}类的唯一实例。
+         * 指定由该生成器创建的office管理器是否将随后设置{@link InstalledOfficeHolder}类的唯一实例
          * 注意，如果{@code InstalledOfficeManagerHolder}类已经持有{@code OfficeManager}实例，
          * 则现有管理器的所有者负责停止它.
          * 默认: false
          *
-         * @return 当前实例信息.
+         * @return 当前实例信息
          */
         public B install() {
             this.install = true;
@@ -131,10 +131,10 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
         }
 
         /**
-         * 指定创建临时文件和目录的目录.
-         * 默认: 临时目录由<code>java.io.tmpdir</code>确定.
+         * 指定创建临时文件和目录的目录
+         * 默认: 临时目录由<code>java.io.tmpdir</code>确定
          *
-         * @param workingDir 要设置的新工作目录.
+         * @param workingDir 要设置的新工作目录
          * @return 当前实例信息.
          */
         public B workingDir(final File workingDir) {
@@ -143,10 +143,10 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
         }
 
         /**
-         * 指定创建临时文件和目录的目录.
-         * 默认: 临时目录由<code>java.io.tmpdir</code>确定.
+         * 指定创建临时文件和目录的目录
+         * 默认: 临时目录由<code>java.io.tmpdir</code>确定
          *
-         * @param workingDir 要设置的新工作目录.
+         * @param workingDir 要设置的新工作目录
          * @return 当前实例信息.
          */
         public B workingDir(final String workingDir) {
@@ -154,9 +154,9 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
         }
 
         /**
-         * 创建此生成器指定的管理器.
+         * 创建此生成器指定的管理器
          *
-         * @return 由该生成器指定的管理.
+         * @return 由该生成器指定的管理
          */
         protected abstract AbstractOfficeManager build();
     }

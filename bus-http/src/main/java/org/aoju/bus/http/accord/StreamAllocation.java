@@ -118,7 +118,7 @@ public final class StreamAllocation {
 
             // 如果这是一个全新的连接，可以跳过大量的健康检查
             synchronized (connectionPool) {
-                if (candidate.successCount == 0) {
+                if (candidate.successCount == 0 && !candidate.isMultiplexed()) {
                     return candidate;
                 }
             }

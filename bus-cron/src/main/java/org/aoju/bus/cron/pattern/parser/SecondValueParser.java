@@ -31,4 +31,5 @@ package org.aoju.bus.cron.pattern.parser;
  * @since JDK 1.8+
  */
 public class SecondValueParser extends MinuteValueParser {
+
 }

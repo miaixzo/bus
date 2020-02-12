@@ -46,7 +46,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
 /**
- * 集合相关工具类<p>
+ * 集合相关工具类
  *
  * @author Kimi Liu
  * @version 5.5.8

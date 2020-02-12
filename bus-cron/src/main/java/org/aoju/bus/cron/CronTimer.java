@@ -98,4 +98,5 @@ public class CronTimer extends Thread {
     private void spawnLauncher(final long millis) {
         this.scheduler.launcherManager.spawnLauncher(millis);
     }
+
 }

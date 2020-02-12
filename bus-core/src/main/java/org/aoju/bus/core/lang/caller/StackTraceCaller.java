@@ -46,7 +46,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException(className + " not found!");
+            throw new InstrumentException("[{}] not found!", className);
         }
     }
 
@@ -60,7 +60,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException(className + "not found!");
+            throw new InstrumentException("[{}] not found!", className);
         }
     }
 
@@ -74,7 +74,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException(className + " not found!");
+            throw new InstrumentException("[{}] not found!", className);
         }
     }
 

@@ -63,9 +63,9 @@ public class OfficeProcessManager {
     /**
      * 确保进程退出.
      *
-     * @param deleteInstanceProfileDir 如果{@code true}，实例配置文件目录将被删除。
+     * @param deleteInstanceProfileDir 如果{@code true}，实例配置文件目录将被删除
      *                                 我们并不总是希望在重新启动时删除实例配置文件目录，
-     * @throws InstrumentException 如果发生异常.
+     * @throws InstrumentException 如果发生异常
      */
     private void doEnsureProcessExited(final boolean deleteInstanceProfileDir)
             throws InstrumentException {
@@ -87,11 +87,11 @@ public class OfficeProcessManager {
     }
 
     /**
-     * 启动这个类管理的office进程并连接到该进程.
+     * 启动这个类管理的office进程并连接到该进程
      *
-     * @param restart 指示是重新启动还是重新启动.
+     * @param restart 指示是重新启动还是重新启动
      *                重新启动将假定实例配置文件目录已经创建. 要重新创建实例配置文件目录，
-     *                应该将{@code restart}设置为{@code false}.
+     *                应该将{@code restart}设置为{@code false}
      */
     private void doStartProcessAndConnect(final boolean restart) throws InstrumentException {
         process.start(restart);
@@ -109,10 +109,10 @@ public class OfficeProcessManager {
     }
 
     /**
-     * 停止由OfficeProcessManager管理的office进程.
+     * 停止由OfficeProcessManager管理的office进程
      *
-     * @param deleteInstanceProfileDir 如果{@code true}，实例配置文件目录将被删除.
-     *                                 我们并不总是希望在重新启动时删除实例配置文件目录.
+     * @param deleteInstanceProfileDir 如果{@code true}，实例配置文件目录将被删除
+     *                                 我们并不总是希望在重新启动时删除实例配置文件目录
      */
     private void doStopProcess(final boolean deleteInstanceProfileDir) throws InstrumentException {
         try {
@@ -137,9 +137,9 @@ public class OfficeProcessManager {
     }
 
     /**
-     * 确保进程退出.
+     * 确保进程退出
      *
-     * @throws InstrumentException 如果发生异常.
+     * @throws InstrumentException 如果发生异常
      */
     private void doTerminateProcess() throws InstrumentException {
         try {
@@ -153,18 +153,18 @@ public class OfficeProcessManager {
     }
 
     /**
-     * 获取此管理器的连接.
+     * 获取此管理器的连接
      *
-     * @return 这个管理器的{@link LocalConnect}.
+     * @return 这个管理器的{@link LocalConnect}
      */
     LocalOfficeBridgeFactory getLocalOffice() {
         return localOffice;
     }
 
     /**
-     * 新启动office进程，并等待连接到重新启动的进程。
+     * 新启动office进程，并等待连接到重新启动的进程
      *
-     * @throws InstrumentException 如果我们不能重新启动office进程.
+     * @throws InstrumentException 如果我们不能重新启动office进程
      */
     public void restartAndWait() throws InstrumentException {
         submitAndWait(
@@ -179,7 +179,7 @@ public class OfficeProcessManager {
     }
 
     /**
-     * 当连接丢失时，重新启动office进程.
+     * 当连接丢失时，重新启动office进程
      */
     public void restartDueToLostConnection() {
         Logger.info("Executing task 'Restart After Lost Connection'...");
@@ -195,7 +195,7 @@ public class OfficeProcessManager {
     }
 
     /**
-     * 在执行任务时出现超时时，重新启动office进程.
+     * 在执行任务时出现超时时，重新启动office进程
      */
     public void restartDueToTaskTimeout() {
         Logger.info("Executing task 'Restart After Timeout'...");
@@ -210,9 +210,9 @@ public class OfficeProcessManager {
     }
 
     /**
-     * 启动一个office进程，并等待连接到正在运行的进程.
+     * 启动一个office进程，并等待连接到正在运行的进程
      *
-     * @throws InstrumentException 如果不能启动并连接到office进程.
+     * @throws InstrumentException 如果不能启动并连接到office进程
      */
     public void startAndWait() throws InstrumentException {
         // 将启动任务提交给执行程序并等待
@@ -225,9 +225,9 @@ public class OfficeProcessManager {
     }
 
     /**
-     * 停止office进程并等待该进程停止.
+     * 停止office进程并等待该进程停止
      *
-     * @throws InstrumentException 如果我们不能停止office程序.
+     * @throws InstrumentException 如果我们不能停止office程序
      */
     public void stopAndWait() throws InstrumentException {
         // 将停止任务提交给执行程序并等待

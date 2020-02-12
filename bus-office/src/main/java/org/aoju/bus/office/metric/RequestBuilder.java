@@ -39,11 +39,11 @@ public class RequestBuilder {
     /**
      * 使用指定的参数构造新配置.
      *
-     * @param url            转换的URL.
-     * @param connectTimeout 超时时间(毫秒)，直到建立连接为止。0的超时值被解释为无限超时。负值被解释为未定义(系统默认值).
+     * @param url            转换的URL
+     * @param connectTimeout 超时时间(毫秒)，直到建立连接为止。0的超时值被解释为无限超时。负值被解释为未定义(系统默认值)
      * @param socketTimeout  套接字超时({@code SO_TIMEOUT})，以毫秒为单位，是等待数据的超时，换句话说，
-     *                       是两个连续数据包之间的最大不活动周期)。0的超时值被解释为无限超时。
-     *                       负值被解释为未定义(系统默认值).
+     *                       是两个连续数据包之间的最大不活动周期)。0的超时值被解释为无限超时
+     *                       负值被解释为未定义(系统默认值)
      */
     public RequestBuilder(final String url, final int connectTimeout, final int socketTimeout) {
         this.url = url;
@@ -52,19 +52,19 @@ public class RequestBuilder {
     }
 
     /**
-     * 获取可发送转换请求的URL.
+     * 获取可发送转换请求的URL
      *
-     * @return 发送转换请求的URL.
+     * @return 发送转换请求的URL
      */
     public String getUrl() {
         return url;
     }
 
     /**
-     * 获取超时时间(以毫秒为单位)，直到建立连接为止。0的超时值被解释为无限超时.
+     * 获取超时时间(以毫秒为单位)，直到建立连接为止。0的超时值被解释为无限超时
      * 默认值: {@code -1}
      *
-     * @return 连接超时时间.
+     * @return 连接超时时间
      */
     public int getConnectTimeout() {
         return connectTimeout;
@@ -72,10 +72,10 @@ public class RequestBuilder {
 
     /**
      * 获取套接字超时({@code SO_TIMEOUT})，以毫秒为单位，
-     * 这是等待数据的超时，换句话说，是两个连续数据包之间的最大不活动周期).
+     * 这是等待数据的超时，换句话说，是两个连续数据包之间的最大不活动周期)
      * 默认值: {@code -1}
      *
-     * @return socket 超时时间.
+     * @return socket 超时时间
      */
     public int getSocketTimeout() {
         return socketTimeout;

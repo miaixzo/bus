@@ -223,4 +223,5 @@ public class ValueMatcherBuilder {
     private static boolean isMatchAllStr(String value) {
         return (1 == value.length()) && (Symbol.STAR.equals(value) || Symbol.QUESTION_MARK.equals(value));
     }
+
 }

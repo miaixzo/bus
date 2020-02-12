@@ -36,4 +36,5 @@ public interface Task {
      * 执行作业
      */
     void execute();
+
 }

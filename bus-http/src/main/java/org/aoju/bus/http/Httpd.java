@@ -59,8 +59,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * 发送HTTP请求辅助类
  * 工厂的{@linkplain NewCall calls}，可以用来发送HTTP请求并读取它们的响应
- * 当您创建一个{@code Httpd}实例并将其用于所有HTTP调用时，体现Httpd的性能最佳。
- * 这是因为每个客户机都拥有自己的连接池和线程池。重用连接和线程可以减少延迟并节省内存。
+ * 当您创建一个{@code Httpd}实例并将其用于所有HTTP调用时，体现Httpd的性能最佳
+ * 这是因为每个客户机都拥有自己的连接池和线程池。重用连接和线程可以减少延迟并节省内存
  * 相反，为每个请求创建一个客户机会浪费空闲池上的资源
  * Httpd还为HTTP/2连接使用守护进程线程。如果它们保持空闲，就会自动退出
  *
@@ -496,7 +496,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置完成调用的默认超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         * 设置完成调用的默认超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
          *
          * @param timeout 超时时间
          * @param unit    计算单位
@@ -508,7 +508,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置完成调用的默认超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         * 设置完成调用的默认超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
          *
          * @param duration 持续时间
          * @return 构造器
@@ -519,7 +519,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认连接超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         * 设置新连接的默认连接超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
          *
          * @param timeout 超时时间
          * @param unit    计算单位
@@ -531,7 +531,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认连接超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         * 设置新连接的默认连接超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
          *
          * @param duration 持续时间
          * @return 构造器
@@ -542,7 +542,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认读取超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         * 设置新连接的默认读取超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
          *
          * @param timeout 超时时间
          * @param unit    计算单位
@@ -569,7 +569,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认写超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         * 设置新连接的默认写超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
          *
          * @param timeout 超时时间
          * @param unit    计算单位
@@ -582,7 +582,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认写超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间.
+         * 设置新连接的默认写超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
          *
          * @param duration 持续时间
          * @return 构造器
@@ -594,7 +594,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置此客户端发起的HTTP/2和web套接字ping之间的间隔。使用此命令可自动发送ping帧，直到连接失败或关闭。
+         * 设置此客户端发起的HTTP/2和web套接字ping之间的间隔。使用此命令可自动发送ping帧，直到连接失败或关闭
          * 这将保持连接处于活动状态，并可能检测到连接失败.
          *
          * @param interval 间隔时间
@@ -705,7 +705,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置用于保护HTTPS连接的套接字工厂。如果未设置，则使用系统默认值.
+         * 设置用于保护HTTPS连接的套接字工厂。如果未设置，则使用系统默认值
          *
          * @param sslSocketFactory socket工厂
          * @return 构造器

@@ -39,9 +39,9 @@ public class ExitCodeRetryable extends AbstractRetryable {
     private int exitCode;
 
     /**
-     * 为指定的进程创建类的新实例.
+     * 为指定的进程创建类的新实例
      *
-     * @param process 要检索其退出码的进程.
+     * @param process 要检索其退出码的进程
      */
     public ExitCodeRetryable(final Expense process) {
         super();
@@ -58,9 +58,9 @@ public class ExitCodeRetryable extends AbstractRetryable {
     }
 
     /**
-     * 进程的退出码.
+     * 进程的退出码
      *
-     * @return 进程的退出值。值0表示正常终止.
+     * @return 进程的退出值。值0表示正常终止
      */
     public int getExitCode() {
         return exitCode;

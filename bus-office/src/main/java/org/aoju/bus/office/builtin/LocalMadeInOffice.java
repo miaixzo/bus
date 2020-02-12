@@ -59,13 +59,13 @@ public class LocalMadeInOffice extends AbstractLocalOffice {
     /**
      * 创建从指定源到指定目标的新转换任务.
      *
-     * @param source          转换的源规范.
-     * @param target          转换的目标规范.
-     * @param loadProperties  加载文档时要应用的加载属性.
-     *                        这些属性是在{@code source}参数中指定的文档格式的加载属性之后添加的.
-     * @param filterChain     与此任务一起使用的筛选器链.
-     * @param storeProperties 存储文档时应用的存储属性.
-     *                        这些属性是在{@code target}参数中指定的文档格式的存储属性之后添加的.
+     * @param source          转换的源规范
+     * @param target          转换的目标规范
+     * @param loadProperties  加载文档时要应用的加载属性
+     *                        这些属性是在{@code source}参数中指定的文档格式的加载属性之后添加的
+     * @param filterChain     与此任务一起使用的筛选器链
+     * @param storeProperties 存储文档时应用的存储属性
+     *                        这些属性是在{@code target}参数中指定的文档格式的存储属性之后添加的
      */
     public LocalMadeInOffice(
             final SourceDocumentProvider source,
@@ -87,10 +87,10 @@ public class LocalMadeInOffice extends AbstractLocalOffice {
         final LocalOfficeContextAware localOfficeContextAware = (LocalOfficeContextAware) context;
 
         // 获取一个可以由office加载的源文件。如果源是一个输入流，
-        // 那么将从该流创建一个临时文件。一旦任务完成，临时文件将被删除.
+        // 那么将从该流创建一个临时文件。一旦任务完成，临时文件将被删除
         final File sourceFile = source.getFile();
         try {
-            // 获取目标文件(如果输出目标是输出流，则该文件是临时文件).
+            // 获取目标文件(如果输出目标是输出流，则该文件是临时文件)
             final File targetFile = target.getFile();
             XComponent document = null;
             try {
@@ -113,7 +113,7 @@ public class LocalMadeInOffice extends AbstractLocalOffice {
                 closeDocument(document);
             }
         } finally {
-            // 这里不再需要源文件，因此如果需要，我们可以删除任何已创建的临时文件.
+            // 这里不再需要源文件，因此如果需要，我们可以删除任何已创建的临时文件
             source.onConsumed(sourceFile);
         }
     }

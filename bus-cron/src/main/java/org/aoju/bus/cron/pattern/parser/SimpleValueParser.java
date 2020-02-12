@@ -76,4 +76,5 @@ public class SimpleValueParser implements ValueParser {
     public int getMax() {
         return this.max;
     }
+
 }

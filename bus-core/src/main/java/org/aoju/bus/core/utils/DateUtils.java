@@ -1707,7 +1707,7 @@ public class DateUtils {
      * 以商品为例，startDate即生产日期，endDate即保质期的截止日期，
      * checkDate表示在何时检查是否过期（一般为当前时间）
      * endDate和startDate的差值即为保质期（按照毫秒计）
-     * checkDate和startDate的差值即为实际经过的时长，实际时长大于保质期表示超时。
+     * checkDate和startDate的差值即为实际经过的时长，实际时长大于保质期表示超时
      * </p>
      *
      * @param startDate 开始时间
@@ -3020,7 +3020,7 @@ public class DateUtils {
                 continue;
             }
 
-            // 在计算本周的起始和结束日时，月相关的字段忽略。
+            // 在计算本周的起始和结束日时，月相关的字段忽略
             if (Calendar.WEEK_OF_MONTH == dateField || Calendar.WEEK_OF_YEAR == dateField) {
                 if (Calendar.DAY_OF_MONTH == i) {
                     continue;

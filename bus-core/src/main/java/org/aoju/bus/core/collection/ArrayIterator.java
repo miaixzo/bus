@@ -84,8 +84,8 @@ public class ArrayIterator<E> implements ResettableIterator<E> {
      * 构造
      *
      * @param array      数组
-     * @param startIndex 起始位置，当起始位置小于0或者大于结束位置，置为0。
-     * @param endIndex   结束位置，当结束位置小于0或者大于数组长度，置为数组长度。
+     * @param startIndex 起始位置，当起始位置小于0或者大于结束位置，置为0
+     * @param endIndex   结束位置，当结束位置小于0或者大于数组长度，置为数组长度
      * @throws IllegalArgumentException array对象不为数组抛出此异常
      * @throws NullPointerException     array对象为null
      */

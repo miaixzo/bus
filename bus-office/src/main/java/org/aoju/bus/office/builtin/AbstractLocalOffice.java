@@ -134,7 +134,7 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
                 try {
                     // 布尔参数deliverOwnership告诉否决关闭进程的对象，
                     // 如果它们通过抛出CloseVetoException来反对关闭进程，
-                    // 那么它们可以假定拥有该进程。这里我们放弃了所有权。
+                    // 那么它们可以假定拥有该进程。这里我们放弃了所有权
                     // 为了安全起见，还是要抓住可能出现的否决例外.
                     closeable.close(true);
                 } catch (CloseVetoException closeVetoEx) {

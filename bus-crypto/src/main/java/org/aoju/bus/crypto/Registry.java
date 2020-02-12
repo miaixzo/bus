@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 系统中内置的策略映射
- * 1. 注解和实现之间映射
+ * 注解和实现之间映射
  *
  * @author Kimi Liu
  * @version 5.5.8

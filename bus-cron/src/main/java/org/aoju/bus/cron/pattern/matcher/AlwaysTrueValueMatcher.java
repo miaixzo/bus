@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.cron.pattern.matcher;
 
-
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
