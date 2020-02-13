@@ -113,7 +113,7 @@ public final class RealSource implements BufferSource {
     }
 
     @Override
-    public int select(BufferOption options) throws IOException {
+    public int select(AbstractBlending options) throws IOException {
         if (closed) throw new IllegalStateException("closed");
 
         while (true) {

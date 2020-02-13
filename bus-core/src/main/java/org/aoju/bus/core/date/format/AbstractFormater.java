@@ -32,20 +32,20 @@ import java.util.TimeZone;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public abstract class AbstractDateBasic implements DateBasic, Serializable {
+public abstract class AbstractFormater implements Formatter, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * The pattern
+     * 匹配规则
      */
     protected final String pattern;
     /**
-     * The time zone.
+     * 时区
      */
     protected final TimeZone timeZone;
     /**
-     * The locale.
+     * 语言环境
      */
     protected final Locale locale;
 
@@ -56,7 +56,7 @@ public abstract class AbstractDateBasic implements DateBasic, Serializable {
      * @param timeZone 非空时区{@link TimeZone}
      * @param locale   非空{@link Locale} 日期地理位置
      */
-    protected AbstractDateBasic(final String pattern, final TimeZone timeZone, final Locale locale) {
+    protected AbstractFormater(final String pattern, final TimeZone timeZone, final Locale locale) {
         this.pattern = pattern;
         this.timeZone = timeZone;
         this.locale = locale;
@@ -82,7 +82,7 @@ public abstract class AbstractDateBasic implements DateBasic, Serializable {
         if (obj instanceof FastDatePrinter == false) {
             return false;
         }
-        final AbstractDateBasic other = (AbstractDateBasic) obj;
+        final AbstractFormater other = (AbstractFormater) obj;
         return pattern.equals(other.pattern) && timeZone.equals(other.timeZone) && locale.equals(other.locale);
     }
 

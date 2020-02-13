@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-class FastDateParser extends AbstractDateBasic implements DateParser {
+public class FastDateParser extends AbstractFormater implements DateParser {
 
     static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
     private static final long serialVersionUID = -3199383897950947498L;
@@ -102,8 +102,8 @@ class FastDateParser extends AbstractDateBasic implements DateParser {
 
     /**
      * 构造一个新的FastDateParser
-     * 使用{@link FastDateFormat#getInstance(String, TimeZone, Locale)}
-     * 或{@link FastDateFormat}工厂方法的另一种变体来获取缓存的FastDateParser实例
+     * 使用{@link FormatBuilder#getInstance(String, TimeZone, Locale)}
+     * 或{@link FormatBuilder}工厂方法的另一种变体来获取缓存的FastDateParser实例
      *
      * @param pattern  非空{@link java.text.SimpleDateFormat} 兼容模式
      * @param timeZone 非空时区

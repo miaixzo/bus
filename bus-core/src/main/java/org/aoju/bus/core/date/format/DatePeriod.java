@@ -33,7 +33,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public class BetweenFormat {
+public class DatePeriod {
 
     /**
      * 时长毫秒数
@@ -54,7 +54,7 @@ public class BetweenFormat {
      * @param betweenMs 日期间隔
      * @param level     级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
      */
-    public BetweenFormat(long betweenMs, Fields.Level level) {
+    public DatePeriod(long betweenMs, Fields.Level level) {
         this(betweenMs, level, 0);
     }
 
@@ -65,7 +65,7 @@ public class BetweenFormat {
      * @param level         级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
      * @param levelMaxCount 格式化级别的最大个数,假如级别个数为1,但是级别到秒,那只显示一个级别
      */
-    public BetweenFormat(long betweenMs, Fields.Level level, int levelMaxCount) {
+    public DatePeriod(long betweenMs, Fields.Level level, int levelMaxCount) {
         this.betweenMs = betweenMs;
         this.level = level;
         this.levelMaxCount = levelMaxCount;

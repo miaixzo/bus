@@ -47,7 +47,7 @@ import java.util.List;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
+public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
 
     static final int REPLACEMENT_CHARACTER = '\ufffd';
 
@@ -608,7 +608,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
     }
 
     @Override
-    public int select(BufferOption options) {
+    public int select(AbstractBlending options) {
         int index = selectPrefix(options, false);
         if (index == -1) return -1;
 
@@ -631,7 +631,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
      *                        请注意，由于选项是按优先顺序列出的，而且第一个选项可能是另一个选项的前缀，
      *                        这使得情况变得复杂。例如，如果缓冲区包含[ab]而选项是[abc, a]，则返回-2
      */
-    int selectPrefix(BufferOption options, boolean selectTruncated) {
+    int selectPrefix(AbstractBlending options, boolean selectTruncated) {
         Segment head = this.head;
         if (head == null) {
             if (selectTruncated) return -2;

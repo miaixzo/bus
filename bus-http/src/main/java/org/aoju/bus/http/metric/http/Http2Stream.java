@@ -593,7 +593,7 @@ public final class Http2Stream {
      * 如果超时到达，Okio超时监视器将调用{@link #timedOut}。
      * 在这种情况下，我们关闭(异步)流，它将通知正在等待的线程.
      */
-    class StreamTimeout extends Awaits {
+    class StreamTimeout extends AsyncTimeout {
         @Override
         protected void timedOut() {
             closeLater(ErrorCode.CANCEL);

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.Awaits;
+import org.aoju.bus.core.io.AsyncTimeout;
 import org.aoju.bus.core.io.Timeout;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.IoUtils;
@@ -64,7 +64,7 @@ public final class RealCall implements NewCall {
     public final boolean forWebSocket;
     final Httpd client;
     final RetryAndFollowUp retryAndFollowUp;
-    final Awaits timeout;
+    final AsyncTimeout timeout;
     /**
      * 在{@link NewCall}和{@link EventListener}之间存在一个循环，这使得
      * 这种情况很尴尬。这将在我们创建call实例之后设置，然后创建事件监听器实例
@@ -77,7 +77,7 @@ public final class RealCall implements NewCall {
         this.originalRequest = originalRequest;
         this.forWebSocket = forWebSocket;
         this.retryAndFollowUp = new RetryAndFollowUp(client, forWebSocket);
-        this.timeout = new Awaits() {
+        this.timeout = new AsyncTimeout() {
             @Override
             protected void timedOut() {
                 cancel();

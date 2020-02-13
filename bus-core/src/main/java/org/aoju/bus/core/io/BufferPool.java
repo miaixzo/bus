@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BufferPool {
 
     private static Timer timer = new Timer("BufferPoolClean", true);
-    private BufferPage[] bufferPageList;
+    private PageBuffer[] pageBufferList;
     /**
      * 内存页游标
      */
@@ -49,15 +49,15 @@ public class BufferPool {
      * @param isDirect 是否使用直接缓冲区
      */
     public BufferPool(final int pageSize, final int poolSize, final boolean isDirect) {
-        bufferPageList = new BufferPage[poolSize];
+        pageBufferList = new PageBuffer[poolSize];
         for (int i = 0; i < poolSize; i++) {
-            bufferPageList[i] = new BufferPage(pageSize, isDirect);
+            pageBufferList[i] = new PageBuffer(pageSize, isDirect);
         }
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                for (BufferPage bufferPage : bufferPageList) {
-                    bufferPage.tryClean();
+                for (PageBuffer pageBuffer : pageBufferList) {
+                    pageBuffer.tryClean();
                 }
             }
         }, 500, 1000);
@@ -68,8 +68,9 @@ public class BufferPool {
      *
      * @return 缓存页对象
      */
-    public BufferPage allocateBufferPage() {
+    public PageBuffer allocateBufferPage() {
         //轮训游标,均衡分配内存页
-        return bufferPageList[cursor.getAndIncrement() % bufferPageList.length];
+        return pageBufferList[cursor.getAndIncrement() % pageBufferList.length];
     }
+
 }

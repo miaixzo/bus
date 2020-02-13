@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public final class BufferPage {
+public class PageBuffer {
 
     /**
      * 当前空闲的虚拟Buffer
@@ -60,7 +60,7 @@ public final class BufferPage {
      * @param size   缓存页大小
      * @param direct 是否使用堆外内存
      */
-    BufferPage(int size, boolean direct) {
+    PageBuffer(int size, boolean direct) {
         availableBuffers = new LinkedList<>();
         this.buffer = allocate0(size, direct);
         availableBuffers.add(new VirtualBuffer(this, null, buffer.position(), buffer.limit()));

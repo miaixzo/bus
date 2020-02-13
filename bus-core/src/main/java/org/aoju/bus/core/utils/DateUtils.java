@@ -27,10 +27,10 @@ import org.aoju.bus.core.date.Between;
 import org.aoju.bus.core.date.Boundary;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.date.TimeInterval;
-import org.aoju.bus.core.date.format.BetweenFormat;
 import org.aoju.bus.core.date.format.DateParser;
+import org.aoju.bus.core.date.format.DatePeriod;
 import org.aoju.bus.core.date.format.DatePrinter;
-import org.aoju.bus.core.date.format.FastDateFormat;
+import org.aoju.bus.core.date.format.FormatBuilder;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -621,7 +621,7 @@ public class DateUtils {
      * 根据特定格式格式化日期
      *
      * @param date   被格式化的日期
-     * @param format {@link DatePrinter} 或 {@link FastDateFormat}
+     * @param format {@link DatePrinter} 或 {@link FormatBuilder}
      * @return 格式化后的字符串
      */
     public static String format(Date date, DatePrinter format) {
@@ -865,7 +865,7 @@ public class DateUtils {
      * 构建DateTime对象
      *
      * @param dateStr Date字符串
-     * @param parser  格式化器,{@link FastDateFormat}
+     * @param parser  格式化器,{@link FormatBuilder}
      * @return DateTime对象
      */
     public static DateTime parse(String dateStr, DateParser parser) {
@@ -976,7 +976,7 @@ public class DateUtils {
         } else {
             if (length == Fields.WITH_ZONE_OFFSET_PATTERN.length() + 2 || length == Fields.WITH_ZONE_OFFSET_PATTERN.length() + 3) {
                 // 格式类似：2020-01-15T05:32:30+0800 或 2020-01-15T05:32:30+08:00
-                return parse(utcString, FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC")));
+                return parse(utcString, FormatBuilder.getInstance("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC")));
             } else if (length == Fields.MSEC_PATTERN.length() + 2 || length == Fields.MSEC_PATTERN.length() + 3) {
                 // 格式类似：2020-01-15T05:32:30.999+0800 或 2020-01-15T05:32:30.999+08:00
                 return parse(utcString, Fields.MSEC_FORMAT);
@@ -1593,7 +1593,7 @@ public class DateUtils {
      * @return XX天XX小时XX分XX秒XX毫秒
      */
     public static String formatBetween(long betweenMs, Fields.Level level) {
-        return new BetweenFormat(betweenMs, level).format();
+        return new DatePeriod(betweenMs, level).format();
     }
 
     /**
@@ -1604,7 +1604,7 @@ public class DateUtils {
      * @since 3.0.1
      */
     public static String formatBetween(long betweenMs) {
-        return new BetweenFormat(betweenMs, Fields.Level.MILLSECOND).format();
+        return new DatePeriod(betweenMs, Fields.Level.MILLSECOND).format();
     }
 
     /**

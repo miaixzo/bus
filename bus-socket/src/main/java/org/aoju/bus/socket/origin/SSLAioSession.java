@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.origin.plugins.ssl.Handshake;
@@ -56,8 +56,8 @@ class SSLAioSession<T> extends TcpAioSession<T> {
      */
     private SSLService sslService;
 
-    SSLAioSession(AsynchronousSocketChannel channel, ServerConfig<T> config, TcpReadHandler<T> aioReadCompletionHandler, TcpWriteHandler<T> aioWriteCompletionHandler, SSLService sslService, BufferPage bufferPage) {
-        super(channel, config, aioReadCompletionHandler, aioWriteCompletionHandler, bufferPage);
+    SSLAioSession(AsynchronousSocketChannel channel, ServerConfig<T> config, TcpReadHandler<T> aioReadCompletionHandler, TcpWriteHandler<T> aioWriteCompletionHandler, SSLService sslService, PageBuffer pageBuffer) {
+        super(channel, config, aioReadCompletionHandler, aioWriteCompletionHandler, pageBuffer);
         this.handshakeModel = sslService.createSSLEngine(channel);
         this.sslService = sslService;
     }

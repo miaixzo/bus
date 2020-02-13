@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentMap;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
+public class FastDatePrinter extends AbstractFormater implements DatePrinter {
 
     private static final long serialVersionUID = 1L;
     private static final int MAX_DIGITS = 10; // log10(Integer.MAX_VALUE) ~= 9.3
@@ -67,10 +67,10 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * Appends two digits to the given buffer.
+     * 向给定缓冲区追加两个数字
      *
-     * @param buffer the buffer to append to.
-     * @param value  the value to append digits from.
+     * @param buffer 要追加的缓冲区
+     * @param value  要附加数字的值
      */
     private static void appendDigits(final Appendable buffer, final int value) throws IOException {
         buffer.append((char) (value / 10 + '0'));
@@ -78,17 +78,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * Appends all digits to the given buffer.
+     * 将所有数字追加到给定的缓冲区
      *
-     * @param buffer the buffer to append to.
-     * @param value  the value to append digits from.
+     * @param buffer 要追加的缓冲区
+     * @param value  要附加数字的值
      */
     private static void appendFullDigits(final Appendable buffer, int value, int minFieldWidth) throws IOException {
-        // specialized paths for 1 to 4 digits -> avoid the memory allocation from the temporary work array
-        // see LANG-1248
+        // 1到4位数字的专用路径——>避免从临时工作数组分配内存(参见LANG-1248)
         if (value < 10000) {
-            // less memory allocation path works for four digits or less
-
+            // 更少的内存分配路径适用于4位或更少的数字
             int nDigits = 4;
             if (value < 1000) {
                 --nDigits;
@@ -99,7 +97,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                     }
                 }
             }
-            // left zero pad
+            // 左零垫
             for (int i = minFieldWidth - nDigits; i > 0; --i) {
                 buffer.append('0');
             }
@@ -126,9 +124,8 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                     buffer.append((char) (value + '0'));
             }
         } else {
-            // more memory allocation path works for any digits
-
-            // build up decimal representation in reverse
+            // 更多的内存分配路径适用于任何数字
+            // 以相反的方式建立十进制表示法
             final char[] work = new char[MAX_DIGITS];
             int digit = 0;
             while (value != 0) {
@@ -136,13 +133,11 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                 value = value / 10;
             }
 
-            // pad with zeros
             while (digit < minFieldWidth) {
                 buffer.append('0');
                 --minFieldWidth;
             }
 
-            // reverse
             while (--digit >= 0) {
                 buffer.append(work[digit]);
             }
@@ -150,15 +145,13 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Gets the time zone display name, using a cache for performance.
-     * </p>
+     * 获取时区显示名称，使用缓存以获得性能
      *
-     * @param tz       the zone to query
-     * @param daylight true if daylight savings
-     * @param style    the style to use {@code TimeZone.LONG} or {@code TimeZone.SHORT}
-     * @param locale   the locale to use
-     * @return the textual name of the time zone
+     * @param tz       要查询的区域
+     * @param daylight 适用于夏时制
+     * @param style    使用{@code时区的样式。长}或{@code TimeZone.SHORT}
+     * @param locale   要使用的语言环境
+     * @return 时区的文本名称
      */
     static String getTimeZoneDisplay(final TimeZone tz, final boolean daylight, final int style, final Locale locale) {
         final TimeZoneDisplayKey key = new TimeZoneDisplayKey(tz, daylight, style, locale);
@@ -190,12 +183,10 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Returns a list of Rules given a pattern.
-     * </p>
+     * 返回给定模式的规则列表
      *
-     * @return a {@code List} of Rule objects
-     * @throws IllegalArgumentException if pattern is invalid
+     * @return 规则对象的{@code列表}
+     * @throws IllegalArgumentException 如果模式无效
      */
     protected List<Rule> parsePattern() {
         final DateFormatSymbols symbols = new DateFormatSymbols(locale);
@@ -225,11 +216,11 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             final char c = token.charAt(0);
 
             switch (c) {
-                case 'G': // era designator (text)
+                case 'G': // 时区 (文本)
                     rule = new TextField(Calendar.ERA, ERAs);
                     break;
-                case 'y': // year (number)
-                case 'Y': // week year
+                case 'y': // 年 (数字)
+                case 'Y': // 周年
                     if (tokenLen == 2) {
                         rule = TwoDigitYearField.INSTANCE;
                     } else {
@@ -239,7 +230,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                         rule = new WeekYear((NumberRule) rule);
                     }
                     break;
-                case 'M': // month in year (text and number)
+                case 'M': // 月年 (文本和数字)
                     if (tokenLen >= 4) {
                         rule = new TextField(Calendar.MONTH, months);
                     } else if (tokenLen == 3) {
@@ -250,62 +241,62 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                         rule = UnpaddedMonthField.INSTANCE;
                     }
                     break;
-                case 'd': // day in month (number)
+                case 'd': // 天月 (数字)
                     rule = selectNumberRule(Calendar.DAY_OF_MONTH, tokenLen);
                     break;
-                case 'h': // hour in am/pm (number, 1..12)
+                case 'h': // 小时 上午/下午 (数字, 1..12)
                     rule = new TwelveHourField(selectNumberRule(Calendar.HOUR, tokenLen));
                     break;
-                case 'H': // hour in day (number, 0..23)
+                case 'H': // 小时天 (数字, 0..23)
                     rule = selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen);
                     break;
-                case 'm': // minute in hour (number)
+                case 'm': // 分钟小时 (数字)
                     rule = selectNumberRule(Calendar.MINUTE, tokenLen);
                     break;
-                case 's': // second in minute (number)
+                case 's': // 秒分 (数字)
                     rule = selectNumberRule(Calendar.SECOND, tokenLen);
                     break;
-                case 'S': // millisecond (number)
+                case 'S': // 毫秒 (数字)
                     rule = selectNumberRule(Calendar.MILLISECOND, tokenLen);
                     break;
-                case 'E': // day in week (text)
+                case 'E': // 天周 (文本)
                     rule = new TextField(Calendar.DAY_OF_WEEK, tokenLen < 4 ? shortWeekdays : weekdays);
                     break;
-                case 'u': // day in week (number)
+                case 'u': // 天周 (数字)
                     rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
                     break;
-                case 'D': // day in year (number)
+                case 'D': // 天年 (数字)
                     rule = selectNumberRule(Calendar.DAY_OF_YEAR, tokenLen);
                     break;
-                case 'F': // day of week in month (number)
+                case 'F': // 天周月 (数字)
                     rule = selectNumberRule(Calendar.DAY_OF_WEEK_IN_MONTH, tokenLen);
                     break;
-                case 'w': // week in year (number)
+                case 'w': // 周年 (数字)
                     rule = selectNumberRule(Calendar.WEEK_OF_YEAR, tokenLen);
                     break;
-                case 'W': // week in month (number)
+                case 'W': // 周月 (数字)
                     rule = selectNumberRule(Calendar.WEEK_OF_MONTH, tokenLen);
                     break;
-                case 'a': // am/pm marker (text)
+                case 'a': // 上午/下午 (文本)
                     rule = new TextField(Calendar.AM_PM, AmPmStrings);
                     break;
-                case 'k': // hour in day (1..24)
+                case 'k': // 小时天 (1..24)
                     rule = new TwentyFourHourField(selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen));
                     break;
-                case 'K': // hour in am/pm (0..11)
+                case 'K': // 小时 上午/下午 (0..11)
                     rule = selectNumberRule(Calendar.HOUR, tokenLen);
                     break;
                 case 'X': // ISO 8601
                     rule = Iso8601_Rule.getRule(tokenLen);
                     break;
-                case 'z': // time zone (text)
+                case 'z': // 时区 (文本)
                     if (tokenLen >= 4) {
                         rule = new TimeZoneNameRule(timeZone, locale, TimeZone.LONG);
                     } else {
                         rule = new TimeZoneNameRule(timeZone, locale, TimeZone.SHORT);
                     }
                     break;
-                case 'Z': // time zone (value)
+                case 'Z': // 时区 (值)
                     if (tokenLen == 1) {
                         rule = TimeZoneNumberRule.INSTANCE_NO_COLON;
                     } else if (tokenLen == 2) {
@@ -314,7 +305,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                         rule = TimeZoneNumberRule.INSTANCE_COLON;
                     }
                     break;
-                case Symbol.C_SINGLE_QUOTE: // literal text
+                case Symbol.C_SINGLE_QUOTE:
                     final String sub = token.substring(1);
                     if (sub.length() == 1) {
                         rule = new CharacterLiteral(sub.charAt(0));
@@ -333,13 +324,11 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Performs the parsing of tokens.
-     * </p>
+     * 执行令牌解析
      *
-     * @param pattern  the pattern
-     * @param indexRef index references
-     * @return parsed token
+     * @param pattern  该模式
+     * @param indexRef 索引的引用
+     * @return 解析令牌
      */
     protected String parseToken(final String pattern, final int[] indexRef) {
         final StringBuilder buf = new StringBuilder();
@@ -349,8 +338,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
 
         char c = pattern.charAt(i);
         if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') {
-            // Scan a run of the same character, which indicates a time
-            // pattern.
+            // 扫描相同字符的运行，这表示时间模式
             buf.append(c);
 
             while (i + 1 < length) {
@@ -363,7 +351,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
                 }
             }
         } else {
-            // This will identify token as text.
+            // 这将标识令牌为文本
             buf.append(Symbol.C_SINGLE_QUOTE);
 
             boolean inLiteral = false;
@@ -373,7 +361,6 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
 
                 if (c == Symbol.C_SINGLE_QUOTE) {
                     if (i + 1 < length && pattern.charAt(i + 1) == Symbol.C_SINGLE_QUOTE) {
-                        // '' is treated as escaped '
                         i++;
                         buf.append(c);
                     } else {
@@ -393,13 +380,11 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Gets an appropriate rule for the padding required.
-     * </p>
+     * 获取所需填充的适当规则
      *
-     * @param field   the field to get a rule for
-     * @param padding the padding required
-     * @return a new rule with the correct padding
+     * @param field   得到一个字段的规则
+     * @param padding 所需的填充
+     * @return 一个正确填充的新规则
      */
     protected NumberRule selectNumberRule(final int field, final int padding) {
         switch (padding) {
@@ -413,12 +398,10 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Formats a {@code Date}, {@code Calendar} or {@code Long} (milliseconds) object.
-     * </p>
+     * 格式化一个{@code Date}、{@code Calendar}或{@code Long}(毫秒)对象
      *
-     * @param obj the object to format
-     * @return The formatted value.
+     * @param obj 要格式化的对象
+     * @return 格式化的值
      */
     String format(final Object obj) {
         if (obj instanceof Date) {
@@ -476,24 +459,22 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * Creates a String representation of the given Calendar by applying the rules of this printer to it.
+     * 通过应用此打印机的规则创建给定日历的字符串表示形式
      *
-     * @param c the Calender to apply the rules to.
-     * @return a String representation of the given Calendar.
+     * @param c 把这些规则应用到日历上的人
+     * @return 给定日历的字符串表示形式
      */
     private String applyRulesToString(final Calendar c) {
         return applyRules(c, new StringBuilder(mMaxLengthEstimate)).toString();
     }
 
     /**
-     * <p>
-     * Performs the formatting by applying the rules to the specified calendar.
-     * </p>
+     * 通过将规则应用于指定的日历来执行格式化
      *
-     * @param calendar the calendar to format
-     * @param buf      the buffer to format into
-     * @param <B>      the Appendable class type, usually StringBuilder or StringBuffer.
-     * @return the specified string buffer
+     * @param calendar 要格式化的日历
+     * @param buf      要格式化为的缓冲区
+     * @param <B>      附加类类型，通常是StringBuilder或StringBuffer
+     * @return 指定的字符串缓冲区
      */
     private <B extends Appendable> B applyRules(final Calendar calendar, final B buf) {
         try {
@@ -517,11 +498,11 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * Create the object after serialization. This implementation reinitializes the transient properties.
+     * 序列化后创建对象。此实现重新初始化瞬态属性
      *
-     * @param in ObjectInputStream from which the object is being deserialized.
-     * @throws IOException            if there is an IO issue.
-     * @throws ClassNotFoundException if a class cannot be found.
+     * @param in 对象被反序列化的ObjectInputStream
+     * @throws IOException            如果有IO问题
+     * @throws ClassNotFoundException 如果找不到类
      */
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -533,50 +514,46 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
      */
     private interface Rule {
         /**
-         * Returns the estimated length of the result.
+         * 返回结果的估计长度
          *
-         * @return the estimated length
+         * @return 估计的长度
          */
         int estimateLength();
 
         /**
-         * Appends the value of the specified calendar to the output buffer based on the rule implementation.
+         * 根据规则实现将指定日历的值附加到输出缓冲区
          *
-         * @param buf      the output buffer
-         * @param calendar calendar to be appended
-         * @throws IOException if an I/O error occurs
+         * @param buf      输出缓冲区
+         * @param calendar 日历追加
+         * @throws IOException 如果发生I/O错误
          */
         void appendTo(Appendable buf, Calendar calendar) throws IOException;
     }
 
     /**
-     * <p>
-     * Inner class defining a numeric rule.
-     * </p>
+     * 定义数字规则的内部类
      */
     private interface NumberRule extends Rule {
         /**
-         * Appends the specified value to the output buffer based on the rule implementation.
+         * 根据规则实现将指定的值附加到输出缓冲区
          *
-         * @param buffer the output buffer
-         * @param value  the value to be appended
-         * @throws IOException if an I/O error occurs
+         * @param buffer 输出缓冲区
+         * @param value  要追加的值
+         * @throws IOException 如果发生I/O错误
          */
         void appendTo(Appendable buffer, int value) throws IOException;
     }
 
     /**
-     * <p>
-     * Inner class to output a consts single character.
-     * </p>
+     * 内部类来输出一个常量单个字符
      */
     private static class CharacterLiteral implements Rule {
         private final char mValue;
 
         /**
-         * Constructs a new instance of {@code CharacterLiteral} to hold the specified value.
+         * 构造一个新的{@code CharacterLiteral}实例来保存指定的值
          *
-         * @param value the character literal
+         * @param value 字符文字
          */
         CharacterLiteral(final char value) {
             mValue = value;
@@ -594,28 +571,24 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output a consts string.
-     * </p>
+     * 内部类来输出consts字符串
      */
     private static class StringLiteral implements Rule {
         private final String mValue;
 
         /**
-         * Constructs a new instance of {@code StringLiteral} to hold the specified value.
+         * 构造一个新的{@code StringLiteral}实例来保存指定的值
          *
-         * @param value the string literal
+         * @param value 字符串文字
          */
         StringLiteral(final String value) {
             mValue = value;
         }
 
-
         @Override
         public int estimateLength() {
             return mValue.length();
         }
-
 
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -624,25 +597,22 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output one of a set of values.
-     * </p>
+     * 内部类来输出一组值中的一个
      */
     private static class TextField implements Rule {
         private final int mField;
         private final String[] mValues;
 
         /**
-         * Constructs an instance of {@code TextField} with the specified field and values.
+         * 使用指定的字段和值构造{@code TextField}的实例
          *
-         * @param field  the field
-         * @param values the field values
+         * @param field  字段
+         * @param values 字段值
          */
         TextField(final int field, final String[] values) {
             mField = field;
             mValues = values;
         }
-
 
         @Override
         public int estimateLength() {
@@ -656,7 +626,6 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
             return max;
         }
 
-
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             buffer.append(mValues[calendar.get(mField)]);
@@ -664,34 +633,29 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output an unpadded number.
-     * </p>
+     * 内部类来输出未填充的数字
      */
     private static class UnpaddedNumberField implements NumberRule {
         private final int mField;
 
         /**
-         * Constructs an instance of {@code UnpadedNumberField} with the specified field.
+         * 使用指定的字段构造{@code UnpadedNumberField}的实例
          *
-         * @param field the field
+         * @param field 字段
          */
         UnpaddedNumberField(final int field) {
             mField = field;
         }
-
 
         @Override
         public int estimateLength() {
             return 4;
         }
 
-
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             appendTo(buffer, calendar.get(mField));
         }
-
 
         @Override
         public final void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -706,9 +670,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output an unpadded month.
-     * </p>
+     * 内部类来输出未填充的月份
      */
     private static class UnpaddedMonthField implements NumberRule {
         static final UnpaddedMonthField INSTANCE = new UnpaddedMonthField();
@@ -738,23 +700,20 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output a padded number.
-     * </p>
+     * 内部类来输出填充后的数字
      */
     private static class PaddedNumberField implements NumberRule {
         private final int mField;
         private final int mSize;
 
         /**
-         * Constructs an instance of {@code PaddedNumberField}.
+         * 构造{@code PaddedNumberField}的实例
          *
-         * @param field the field
-         * @param size  size of the output field
+         * @param field 字段
+         * @param size  输出字段的大小
          */
         PaddedNumberField(final int field, final int size) {
             if (size < 3) {
-                // Should use UnpaddedNumberField or TwoDigitNumberField.
                 throw new IllegalArgumentException();
             }
             mField = field;
@@ -778,17 +737,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output a two digit number.
-     * </p>
+     * 内部类来输出两位数的数字
      */
     private static class TwoDigitNumberField implements NumberRule {
         private final int mField;
 
         /**
-         * Constructs an instance of {@code TwoDigitNumberField} with the specified field.
+         * 使用指定的字段构造{@code TwoDigitNumberField}的实例
          *
-         * @param field the field
+         * @param field 字段
          */
         TwoDigitNumberField(final int field) {
             mField = field;
@@ -815,15 +772,13 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output a two digit year.
-     * </p>
+     * 内部类来输出两位数的年份
      */
     private static class TwoDigitYearField implements NumberRule {
         static final TwoDigitYearField INSTANCE = new TwoDigitYearField();
 
         /**
-         * Constructs an instance of {@code TwoDigitYearField}.
+         * 构造一个{@code TwoDigitYearField}的实例
          */
         TwoDigitYearField() {
             super();
@@ -846,15 +801,13 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output a two digit month.
-     * </p>
+     * 内部类来输出两位数的月份
      */
     private static class TwoDigitMonthField implements NumberRule {
         static final TwoDigitMonthField INSTANCE = new TwoDigitMonthField();
 
         /**
-         * Constructs an instance of {@code TwoDigitMonthField}.
+         * 构造{@code TwoDigitMonthField}的实例
          */
         TwoDigitMonthField() {
             super();
@@ -877,17 +830,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output the twelve hour field.
-     * </p>
+     * 内部类来输出12小时字段
      */
     private static class TwelveHourField implements NumberRule {
         private final NumberRule mRule;
 
         /**
-         * Constructs an instance of {@code TwelveHourField} with the specified {@code NumberRule}.
+         * 使用指定的{@code NumberRule}构造{@code TwelveHourField}的实例
          *
-         * @param rule the rule
+         * @param rule 规则
          */
         TwelveHourField(final NumberRule rule) {
             mRule = rule;
@@ -914,17 +865,15 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output the twenty four hour field.
-     * </p>
+     * 内部类来输出24小时字段
      */
     private static class TwentyFourHourField implements NumberRule {
         private final NumberRule mRule;
 
         /**
-         * Constructs an instance of {@code TwentyFourHourField} with the specified {@code NumberRule}.
+         * 使用指定的{@code NumberRule}构造{@code TwentyFourHourField}的实例
          *
-         * @param rule the rule
+         * @param rule 规则
          */
         TwentyFourHourField(final NumberRule rule) {
             mRule = rule;
@@ -951,9 +900,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output the numeric day in week.
-     * </p>
+     * 内部类来输出以周为单位的数字天
      */
     private static class DayInWeekField implements NumberRule {
         private final NumberRule mRule;
@@ -980,9 +927,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output the numeric day in week.
-     * </p>
+     * 内部类来输出以周为单位的数字天
      */
     private static class WeekYear implements NumberRule {
         private final NumberRule mRule;
@@ -1008,9 +953,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output a time zone name.
-     * </p>
+     * 内部类来输出时区名称
      */
     private static class TimeZoneNameRule implements Rule {
         private final Locale mLocale;
@@ -1019,11 +962,11 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
         private final String mDaylight;
 
         /**
-         * Constructs an instance of {@code TimeZoneNameRule} with the specified properties.
+         * 使用指定的属性构造{@code TimeZoneNameRule}的实例
          *
-         * @param timeZone the time zone
-         * @param locale   the locale
-         * @param style    the style
+         * @param timeZone 时区
+         * @param locale   语言环境
+         * @param style    格式
          */
         TimeZoneNameRule(final TimeZone timeZone, final Locale locale, final int style) {
             mLocale = locale;
@@ -1035,9 +978,6 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
 
         @Override
         public int estimateLength() {
-            // We have no access to the Calendar object that will be passed to
-            // appendTo so base estimate on the TimeZone passed to the
-            // constructor
             return Math.max(mStandard.length(), mDaylight.length());
         }
 
@@ -1053,9 +993,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output a time zone as a number {@code +/-HHMM} or {@code +/-HH:MM}.
-     * </p>
+     * 内部类以数字{@code +/-HHMM}或{@code +/-HH:MM}的形式输出时区
      */
     private static class TimeZoneNumberRule implements Rule {
         static final TimeZoneNumberRule INSTANCE_COLON = new TimeZoneNumberRule(true);
@@ -1064,9 +1002,9 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
         final boolean mColon;
 
         /**
-         * Constructs an instance of {@code TimeZoneNumberRule} with the specified properties.
+         * 使用指定的属性构造{@code TimeZoneNumberRule}的实例
          *
-         * @param colon add colon between HH and MM in the output if {@code true}
+         * @param colon 如果{@code true}在输出中在HH和MM之间添加冒号
          */
         TimeZoneNumberRule(final boolean colon) {
             mColon = colon;
@@ -1102,34 +1040,30 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class to output a time zone as a number {@code +/-HHMM} or {@code +/-HH:MM}.
-     * </p>
+     * 内部类以数字{@code +/-HHMM}或{@code +/-HH:MM}的形式输出时区
      */
     private static class Iso8601_Rule implements Rule {
 
-        // Sign TwoDigitHours or Z
         static final Iso8601_Rule ISO8601_HOURS = new Iso8601_Rule(3);
-        // Sign TwoDigitHours Minutes or Z
         static final Iso8601_Rule ISO8601_HOURS_MINUTES = new Iso8601_Rule(5);
-        // Sign TwoDigitHours : Minutes or Z
         static final Iso8601_Rule ISO8601_HOURS_COLON_MINUTES = new Iso8601_Rule(6);
         final int length;
 
         /**
-         * Constructs an instance of {@code Iso8601_Rule} with the specified properties.
+         * 使用指定的属性构造{@code Iso8601_Rule}的实例
          *
-         * @param length The number of characters in output (unless Z is output)
+         * @param length 输出中的字符数
          */
         Iso8601_Rule(final int length) {
             this.length = length;
         }
 
         /**
-         * Factory method for Iso8601_Rules.
+         * 工厂方法的Iso8601_Rules
          *
-         * @param tokenLen a token indicating the length of the TimeZone String to be formatted.
-         * @return a Iso8601_Rule that can format TimeZone String of length {@code tokenLen}. If no such rule exists, an IllegalArgumentException will be thrown.
+         * @param tokenLen 表示要格式化的时区字符串长度的令牌
+         * @return 可以格式化长度为{@code tokenLen}的时区字符串的Iso8601_Rule
+         * 如果不存在这样的规则，则抛出IllegalArgumentException
          */
         static Iso8601_Rule getRule(final int tokenLen) {
             switch (tokenLen) {
@@ -1181,9 +1115,7 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
     }
 
     /**
-     * <p>
-     * Inner class that acts as a compound key for time zone names.
-     * </p>
+     * 作为时区名称的复合键的内部类
      */
     private static class TimeZoneDisplayKey {
         private final TimeZone mTimeZone;
@@ -1191,12 +1123,12 @@ class FastDatePrinter extends AbstractDateBasic implements DatePrinter {
         private final Locale mLocale;
 
         /**
-         * Constructs an instance of {@code TimeZoneDisplayKey} with the specified properties.
+         * 使用指定的属性构造{@code TimeZoneDisplayKey}的实例
          *
-         * @param timeZone the time zone
-         * @param daylight adjust the style for daylight saving time if {@code true}
-         * @param style    the timezone style
-         * @param locale   the timezone locale
+         * @param timeZone 时区
+         * @param daylight 如果{@code true}调整夏令时的样式
+         * @param style    时区的格式
+         * @param locale   时区的语言环境
          */
         TimeZoneDisplayKey(final TimeZone timeZone, final boolean daylight, final int style, final Locale locale) {
             mTimeZone = timeZone;

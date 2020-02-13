@@ -30,45 +30,40 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * <p>
- * FastDateFormat 是一个线程安全的 {@link java.text.SimpleDateFormat} 实现
- * </p>
- *
- * <p>
- * 通过以下静态方法获得此对象:
+ * FastDateFormat 是一个线程安全的 {@link java.text.SimpleDateFormat}
+ * 实现通过以下静态方法获得此对象:
  * {@link #getInstance(String, TimeZone, Locale)}
  * {@link #getDateInstance(int, TimeZone, Locale)}
  * {@link #getTimeInstance(int, TimeZone, Locale)}
  * {@link #getDateTimeInstance(int, int, TimeZone, Locale)}
- * </p>
  *
  * @author Kimi Liu
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public class FastDateFormat extends Format implements DateParser, DatePrinter {
+public class FormatBuilder extends Format implements DateParser, DatePrinter {
 
     /**
-     * FULL locale dependent date or time style.
+     * 完全地区相关的日期或时间样式
      */
     public static final int FULL = DateFormat.FULL;
     /**
-     * LONG locale dependent date or time style.
+     * 长地区相关的日期或时间样式
      */
     public static final int LONG = DateFormat.LONG;
     /**
-     * MEDIUM locale dependent date or time style.
+     * 中等地区相关的日期或时间样式
      */
     public static final int MEDIUM = DateFormat.MEDIUM;
     /**
-     * SHORT locale dependent date or time style.
+     * 短地区相关的日期或时间样式
      */
     public static final int SHORT = DateFormat.SHORT;
 
-    private static final FormatCache<FastDateFormat> cache = new FormatCache<FastDateFormat>() {
+    private static final FormatCache<FormatBuilder> cache = new FormatCache<FormatBuilder>() {
         @Override
-        protected FastDateFormat createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
-            return new FastDateFormat(pattern, timeZone, locale);
+        protected FormatBuilder createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
+            return new FormatBuilder(pattern, timeZone, locale);
         }
     };
 
@@ -81,9 +76,9 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
      * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone 非空时区 {@link TimeZone}
      * @param locale   {@link Locale} 日期地理位置
-     * @throws NullPointerException if pattern, timeZone, or locale is null.
+     * @throws NullPointerException 如果模式、时区或区域设置为空
      */
-    protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale) {
+    protected FormatBuilder(final String pattern, final TimeZone timeZone, final Locale locale) {
         this(pattern, timeZone, locale, null);
     }
 
@@ -93,220 +88,220 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
      * @param pattern      使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone     非空时区 {@link TimeZone}
      * @param locale       {@link Locale} 日期地理位置
-     * @param centuryStart The start of the 100 year period to use as the "default century" for 2 digit year parsing. If centuryStart is null, defaults to now - 80 years
-     * @throws NullPointerException if pattern, timeZone, or locale is null.
+     * @param centuryStart 使用100年周期的开始作为2位数年解析的“默认世纪”。如果centuryStart为空，则默认为- 80年
+     * @throws NullPointerException 如果模式、时区或地区为空.
      */
-    protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
+    protected FormatBuilder(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
         printer = new FastDatePrinter(pattern, timeZone, locale);
         parser = new FastDateParser(pattern, timeZone, locale, centuryStart);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例，使用默认格式和地区
+     * 获得 {@link FormatBuilder} 实例，使用默认格式和地区
      *
-     * @return {@link FastDateFormat}
+     * @return {@link FormatBuilder}
      */
-    public static FastDateFormat getInstance() {
+    public static FormatBuilder getInstance() {
         return cache.getInstance();
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例,使用默认地区
+     * 获得 {@link FormatBuilder} 实例,使用默认地区
      * 支持缓存
      *
      * @param pattern 使用{@link java.text.SimpleDateFormat} 相同的日期格式
-     * @return {@link FastDateFormat}
+     * @return {@link FormatBuilder}
      * @throws IllegalArgumentException 日期格式问题
      */
-    public static FastDateFormat getInstance(final String pattern) {
+    public static FormatBuilder getInstance(final String pattern) {
         return cache.getInstance(pattern, null, null);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
      * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone 时区{@link TimeZone}
-     * @return {@link FastDateFormat}
+     * @return {@link FormatBuilder}
      * @throws IllegalArgumentException 日期格式问题
      */
-    public static FastDateFormat getInstance(final String pattern, final TimeZone timeZone) {
+    public static FormatBuilder getInstance(final String pattern, final TimeZone timeZone) {
         return cache.getInstance(pattern, timeZone, null);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
      * @param pattern 使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param locale  {@link Locale} 日期地理位置
-     * @return {@link FastDateFormat}
+     * @return {@link FormatBuilder}
      * @throws IllegalArgumentException 日期格式问题
      */
-    public static FastDateFormat getInstance(final String pattern, final Locale locale) {
+    public static FormatBuilder getInstance(final String pattern, final Locale locale) {
         return cache.getInstance(pattern, null, locale);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
      * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone 时区{@link TimeZone}
      * @param locale   {@link Locale} 日期地理位置
-     * @return {@link FastDateFormat}
+     * @return {@link FormatBuilder}
      * @throws IllegalArgumentException 日期格式问题
      */
-    public static FastDateFormat getInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
+    public static FormatBuilder getInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
         return cache.getInstance(pattern, timeZone, locale);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param style date style: FULL, LONG, MEDIUM, or SHORT
-     * @return 本地化 {@link FastDateFormat}
+     * @param style 日期格式: FULL, LONG, MEDIUM, or SHORT
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getDateInstance(final int style) {
+    public static FormatBuilder getDateInstance(final int style) {
         return cache.getDateInstance(style, null, null);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param style  date style: FULL, LONG, MEDIUM, or SHORT
+     * @param style  日期格式: FULL, LONG, MEDIUM, or SHORT
      * @param locale {@link Locale} 日期地理位置
-     * @return 本地化 {@link FastDateFormat}
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getDateInstance(final int style, final Locale locale) {
+    public static FormatBuilder getDateInstance(final int style, final Locale locale) {
         return cache.getDateInstance(style, null, locale);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param style    date style: FULL, LONG, MEDIUM, or SHORT
+     * @param style    日期格式: FULL, LONG, MEDIUM, or SHORT
      * @param timeZone 时区{@link TimeZone}
-     * @return 本地化 {@link FastDateFormat}
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getDateInstance(final int style, final TimeZone timeZone) {
+    public static FormatBuilder getDateInstance(final int style, final TimeZone timeZone) {
         return cache.getDateInstance(style, timeZone, null);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param style    date style: FULL, LONG, MEDIUM, or SHORT
+     * @param style    日期格式: FULL, LONG, MEDIUM, or SHORT
      * @param timeZone 时区{@link TimeZone}
      * @param locale   {@link Locale} 日期地理位置
-     * @return 本地化 {@link FastDateFormat}
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getDateInstance(final int style, final TimeZone timeZone, final Locale locale) {
+    public static FormatBuilder getDateInstance(final int style, final TimeZone timeZone, final Locale locale) {
         return cache.getDateInstance(style, timeZone, locale);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param style time style: FULL, LONG, MEDIUM, or SHORT
-     * @return 本地化 {@link FastDateFormat}
+     * @param style 时间格式: FULL, LONG, MEDIUM, or SHORT
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getTimeInstance(final int style) {
+    public static FormatBuilder getTimeInstance(final int style) {
         return cache.getTimeInstance(style, null, null);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param style  time style: FULL, LONG, MEDIUM, or SHORT
+     * @param style  时间格式: FULL, LONG, MEDIUM, or SHORT
      * @param locale {@link Locale} 日期地理位置
-     * @return 本地化 {@link FastDateFormat}
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getTimeInstance(final int style, final Locale locale) {
+    public static FormatBuilder getTimeInstance(final int style, final Locale locale) {
         return cache.getTimeInstance(style, null, locale);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param style    time style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeZone optional time zone, overrides time zone of formatted time
-     * @return 本地化 {@link FastDateFormat}
+     * @param style    时间格式: FULL, LONG, MEDIUM, or SHORT
+     * @param timeZone 可选时区，覆盖格式化时间的时区
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getTimeInstance(final int style, final TimeZone timeZone) {
+    public static FormatBuilder getTimeInstance(final int style, final TimeZone timeZone) {
         return cache.getTimeInstance(style, timeZone, null);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param style    time style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeZone optional time zone, overrides time zone of formatted time
+     * @param style    时间格式: FULL, LONG, MEDIUM, or SHORT
+     * @param timeZone 可选时区，覆盖格式化时间的时区
      * @param locale   {@link Locale} 日期地理位置
-     * @return 本地化 {@link FastDateFormat}
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getTimeInstance(final int style, final TimeZone timeZone, final Locale locale) {
+    public static FormatBuilder getTimeInstance(final int style, final TimeZone timeZone, final Locale locale) {
         return cache.getTimeInstance(style, timeZone, locale);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
-     * @return 本地化 {@link FastDateFormat}
+     * @param dateStyle 日期格式: FULL, LONG, MEDIUM, or SHORT
+     * @param timeStyle 时间格式: FULL, LONG, MEDIUM, or SHORT
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getDateTimeInstance(final int dateStyle, final int timeStyle) {
+    public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle) {
         return cache.getDateTimeInstance(dateStyle, timeStyle, null, null);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
+     * @param dateStyle 日期格式: FULL, LONG, MEDIUM, or SHORT
+     * @param timeStyle 时间格式: FULL, LONG, MEDIUM, or SHORT
      * @param locale    {@link Locale} 日期地理位置
-     * @return 本地化 {@link FastDateFormat}
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getDateTimeInstance(final int dateStyle, final int timeStyle, final Locale locale) {
+    public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle, final Locale locale) {
         return cache.getDateTimeInstance(dateStyle, timeStyle, null, locale);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
+     * @param dateStyle 日期格式: FULL, LONG, MEDIUM, or SHORT
+     * @param timeStyle 时间格式: FULL, LONG, MEDIUM, or SHORT
      * @param timeZone  时区{@link TimeZone}
-     * @return 本地化 {@link FastDateFormat}
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone) {
+    public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone) {
         return getDateTimeInstance(dateStyle, timeStyle, timeZone, null);
     }
 
     /**
-     * 获得 {@link FastDateFormat} 实例
+     * 获得 {@link FormatBuilder} 实例
      * 支持缓存
      *
-     * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
+     * @param dateStyle 日期格式: FULL, LONG, MEDIUM, or SHORT
+     * @param timeStyle 时间格式: FULL, LONG, MEDIUM, or SHORT
      * @param timeZone  时区{@link TimeZone}
      * @param locale    {@link Locale} 日期地理位置
-     * @return 本地化 {@link FastDateFormat}
+     * @return 本地化 {@link FormatBuilder}
      */
-    public static FastDateFormat getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone, final Locale locale) {
+    public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone, final Locale locale) {
         return cache.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale);
     }
 
@@ -392,10 +387,10 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof FastDateFormat == false) {
+        if (obj instanceof FormatBuilder == false) {
             return false;
         }
-        final FastDateFormat other = (FastDateFormat) obj;
+        final FormatBuilder other = (FormatBuilder) obj;
         return printer.equals(other.printer);
     }
 

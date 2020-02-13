@@ -41,27 +41,21 @@ import java.util.concurrent.ConcurrentMap;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-abstract class FormatCache<F extends Format> {
+public abstract class FormatCache<F extends Format> {
 
-    /**
-     * No date or no time. Used in same parameters as DateFormat.SHORT or DateFormat.LONG
-     */
-    static final int NONE = -1;
+
     private static final ConcurrentMap<MultipartKey, String> cDateTimeInstanceCache = new ConcurrentHashMap<>(7);
     private final ConcurrentMap<MultipartKey, F> cInstanceCache = new ConcurrentHashMap<>(7);
 
     /**
-     * <p>
-     * Gets a date/time format for the specified styles and locale.
-     * </p>
+     * 获取指定样式和区域设置的日期/时间格式
      *
-     * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT, null indicates no date in format
-     * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT, null indicates no time in format
-     * @param locale    The non-null locale of the desired format
-     * @return a localized standard date/time format
-     * @throws IllegalArgumentException if the Locale has no date/time pattern defined
+     * @param dateStyle 日期样式:FULL、LONG、MEDIUM或SHORT, null表示没有日期格式
+     * @param timeStyle 时间样式:FULL、LONG、MEDIUM或SHORT, null表示格式中没有时间
+     * @param locale    所需格式的非空语言环境
+     * @return 本地化的标准日期/时间格式
+     * @throws IllegalArgumentException 如果区域设置没有定义日期/时间模式
      */
-    // package protected, for access from test code; do not make public or protected
     static String getPatternForStyle(final Integer dateStyle, final Integer timeStyle, final Locale locale) {
         final MultipartKey key = new MultipartKey(dateStyle, timeStyle, locale);
 
@@ -79,9 +73,6 @@ abstract class FormatCache<F extends Format> {
                 pattern = ((SimpleDateFormat) formatter).toPattern();
                 final String previous = cDateTimeInstanceCache.putIfAbsent(key, pattern);
                 if (previous != null) {
-                    // even though it doesn't matter if another thread put the pattern
-                    // it's still good practice to return the String instance that is
-                    // actually in the ConcurrentMap
                     pattern = previous;
                 }
             } catch (final ClassCastException ex) {
@@ -94,7 +85,7 @@ abstract class FormatCache<F extends Format> {
     /**
      * 使用默认的pattern、timezone和locale获得缓存中的实例
      *
-     * @return a date/time formatter
+     * @return 日期/时间格式器
      */
     public F getInstance() {
         return getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, TimeZone.getDefault(), Locale.getDefault());
@@ -123,8 +114,6 @@ abstract class FormatCache<F extends Format> {
             format = createInstance(pattern, timeZone, locale);
             final F previousValue = cInstanceCache.putIfAbsent(key, format);
             if (previousValue != null) {
-                // another thread snuck in and did the same work
-                // we should return the instance that is in ConcurrentMap
                 format = previousValue;
             }
         }
@@ -143,16 +132,14 @@ abstract class FormatCache<F extends Format> {
     abstract protected F createInstance(String pattern, TimeZone timeZone, Locale locale);
 
     /**
-     * <p>
-     * Gets a date/time formatter instance using the specified style, time zone and locale.
-     * </p>
+     * 获取使用指定样式、时区和区域设置的日期/时间格式化程序实例
      *
-     * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT, null indicates no date in format
-     * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT, null indicates no time in format
-     * @param timeZone  optional time zone, overrides time zone of formatted date, null means use default Locale
-     * @param locale    optional locale, overrides system locale
-     * @return a localized standard date/time formatter
-     * @throws IllegalArgumentException if the Locale has no date/time pattern defined
+     * @param dateStyle 日期格式: FULL, LONG, MEDIUM, or SHORT, null表示没有格式的日期
+     * @param timeStyle 时间格式: FULL, LONG, MEDIUM, or SHORT, null表示没有格式的时间
+     * @param timeZone  可选时区，覆盖格式化日期的时区，空表示使用默认地区
+     * @param locale    可选区域设置，覆盖系统区域设置
+     * @return 本地化的标准日期/时间格式化程序
+     * @throws IllegalArgumentException 如果区域设置没有定义日期/时间模式
      */
     private F getDateTimeInstance(final Integer dateStyle, final Integer timeStyle, final TimeZone timeZone, Locale locale) {
         if (locale == null) {
@@ -163,64 +150,56 @@ abstract class FormatCache<F extends Format> {
     }
 
     /**
-     * <p>
-     * Gets a date/time formatter instance using the specified style, time zone and locale.
-     * </p>
+     * 获取使用指定样式、时区和区域设置的日期/时间格式化程序实例
      *
-     * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeZone  optional time zone, overrides time zone of formatted date, null means use default Locale
-     * @param locale    optional locale, overrides system locale
-     * @return a localized standard date/time formatter
-     * @throws IllegalArgumentException if the Locale has no date/time pattern defined
+     * @param dateStyle 日期格式: FULL, LONG, MEDIUM, or SHORT, null表示没有格式的日期
+     * @param timeStyle 时间格式: FULL, LONG, MEDIUM, or SHORT, null表示没有格式的时间
+     * @param timeZone  可选时区，覆盖格式化日期的时区，空表示使用默认地区
+     * @param locale    可选区域设置，覆盖系统区域设置
+     * @return 本地化的标准日期/时间格式化程序
+     * @throws IllegalArgumentException 如果区域设置没有定义日期/时间模式
      */
     F getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone, final Locale locale) {
         return getDateTimeInstance(Integer.valueOf(dateStyle), Integer.valueOf(timeStyle), timeZone, locale);
     }
 
     /**
-     * <p>
-     * Gets a date formatter instance using the specified style, time zone and locale.
-     * </p>
+     * 获取使用指定样式、时区和区域设置的日期格式化程序实例
      *
-     * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeZone  optional time zone, overrides time zone of formatted date, null means use default Locale
-     * @param locale    optional locale, overrides system locale
-     * @return a localized standard date/time formatter
-     * @throws IllegalArgumentException if the Locale has no date/time pattern defined
+     * @param dateStyle 日期格式: FULL, LONG, MEDIUM, or SHORT, null表示没有格式的日期
+     * @param timeZone  可选时区，覆盖格式化日期的时区，空表示使用默认地区
+     * @param locale    可选区域设置，覆盖系统区域设置
+     * @return 本地化的标准日期/时间格式化程序
+     * @throws IllegalArgumentException 如果区域设置没有定义日期/时间模式
      */
     F getDateInstance(final int dateStyle, final TimeZone timeZone, final Locale locale) {
         return getDateTimeInstance(Integer.valueOf(dateStyle), null, timeZone, locale);
     }
 
     /**
-     * <p>
-     * Gets a time formatter instance using the specified style, time zone and locale.
-     * </p>
+     * 获取使用指定样式、时区和区域设置的时间格式化程序实例
      *
-     * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
-     * @param timeZone  optional time zone, overrides time zone of formatted date, null means use default Locale
-     * @param locale    optional locale, overrides system locale
-     * @return a localized standard date/time formatter
-     * @throws IllegalArgumentException if the Locale has no date/time pattern defined
+     * @param timeStyle 时间格式: FULL, LONG, MEDIUM, or SHORT, null表示没有格式的时间
+     * @param timeZone  可选时区，覆盖格式化日期的时区，空表示使用默认地区
+     * @param locale    可选区域设置，覆盖系统区域设置
+     * @return 本地化的标准日期/时间格式化程序
+     * @throws IllegalArgumentException 如果区域设置没有定义日期/时间模式
      */
     F getTimeInstance(final int timeStyle, final TimeZone timeZone, final Locale locale) {
         return getDateTimeInstance(null, Integer.valueOf(timeStyle), timeZone, locale);
     }
 
     /**
-     * <p>
-     * Helper class to hold multi-part Map keys
-     * </p>
+     * 帮助类来保存多部分映射键
      */
     private static class MultipartKey {
         private final Object[] keys;
         private int hashCode;
 
         /**
-         * Constructs an instance of <criteria>MultipartKey</criteria> to hold the specified objects.
+         * 构造一个MultipartKey的实例来保存指定的对象
          *
-         * @param keys the set of objects that make up the key. Each key may be null.
+         * @param keys 组成键的一组对象。每个键可以为空
          */
         public MultipartKey(final Object... keys) {
             this.keys = keys;

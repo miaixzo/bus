@@ -33,7 +33,7 @@ import java.util.TimeZone;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public interface DateBasic {
+public interface Formatter {
 
     /**
      * 获得日期格式化或者转换的格式

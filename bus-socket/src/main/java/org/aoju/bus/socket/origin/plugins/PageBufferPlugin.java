@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.socket.origin.plugins;
 
-import org.aoju.bus.core.io.BufferPage;
 import org.aoju.bus.core.io.BufferPool;
+import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public class BufferPagePlugin<T> extends AbstractPlugin {
+public class PageBufferPlugin<T> extends AbstractPlugin {
 
     /**
      * 任务执行频率
@@ -51,7 +51,7 @@ public class BufferPagePlugin<T> extends AbstractPlugin {
 
     private AioQuickServer<T> server;
 
-    public BufferPagePlugin(AioQuickServer<T> server, int seconds) {
+    public PageBufferPlugin(AioQuickServer<T> server, int seconds) {
         this.seconds = seconds;
         this.server = server;
         init();
@@ -77,9 +77,9 @@ public class BufferPagePlugin<T> extends AbstractPlugin {
                         }
                         Field field = BufferPool.class.getDeclaredField("bufferPageList");
                         field.setAccessible(true);
-                        BufferPage[] pages = (BufferPage[]) field.get(pagePool);
+                        PageBuffer[] pages = (PageBuffer[]) field.get(pagePool);
                         String logger = Normal.EMPTY;
-                        for (BufferPage page : pages) {
+                        for (PageBuffer page : pages) {
                             logger += Symbol.CRLF + page.toString();
                         }
                         Logger.info(logger);

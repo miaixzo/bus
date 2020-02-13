@@ -38,7 +38,7 @@ import java.util.zip.Deflater;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public final class DeflaterSink implements Sink {
+public class DeflaterSink implements Sink {
 
     private final BufferSink sink;
     private final Deflater deflater;

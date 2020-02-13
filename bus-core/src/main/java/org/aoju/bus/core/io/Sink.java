@@ -30,12 +30,8 @@ import java.io.IOException;
 /**
  * 接收一个字节流 使用这个接口可以在任何地方编写数据
  * 需要:到网络、存储器或内存中的缓冲区 水槽可以分层
- * 转换接收到的数据,如压缩、加密、节流或添加
- * 协议框架
- *
- *
- * <h3>Interop with OutputStream</h3>
- * {@link BufferSink#outputStream} to adapt a sink to an {@code OutputStream}.
+ * 转换接收到的数据,如压缩、加密、节流或添加协议框架
+ * {@link BufferSink#outputStream}使一个接收器适应{@code outputStream}
  *
  * @author Kimi Liu
  * @version 5.5.8

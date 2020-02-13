@@ -32,21 +32,23 @@ import java.util.*;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public final class BufferOption extends AbstractList<ByteString> implements RandomAccess {
+public class AbstractBlending extends AbstractList<ByteString> implements RandomAccess {
 
     final ByteString[] byteStrings;
     final int[] trie;
 
-    private BufferOption(ByteString[] byteStrings, int[] trie) {
+    private AbstractBlending(ByteString[] byteStrings, int[] trie) {
         this.byteStrings = byteStrings;
         this.trie = trie;
     }
 
-    public static BufferOption of(ByteString... byteStrings) {
+    public static AbstractBlending of(ByteString... byteStrings) {
         if (byteStrings.length == 0) {
-            return new BufferOption(new ByteString[0], new int[]{0, -1});
+            // 没有选择，我们必须总是返回-1，创建一个空集合
+            return new AbstractBlending(new ByteString[0], new int[]{0, -1});
         }
 
+        // 对在递归构建时需要的字节字符串排序。将排序后的索引映射到调用者的索引
         List<ByteString> list = new ArrayList<>(Arrays.asList(byteStrings));
         Collections.sort(list);
         List<Integer> indexes = new ArrayList<>();
@@ -60,7 +62,8 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
         if (list.get(0).size() == 0) {
             throw new IllegalArgumentException("the empty byte string is not a supported option");
         }
-
+        // 删除那些永远不会返回的元素，因为它们遵循自己的前缀。例如，
+        // 如果调用者提供["abc"， "abcde"]，我们将永远不会返回"abcde"，因为我们一遇到"abc"就返回
         for (int a = 0; a < list.size(); a++) {
             ByteString prefix = list.get(a);
             for (int b = a + 1; b < list.size(); ) {
@@ -89,9 +92,32 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
             throw new AssertionError();
         }
 
-        return new BufferOption(byteStrings.clone() /* Defensive copy. */, trie);
+        return new AbstractBlending(byteStrings.clone(), trie);
     }
 
+    /**
+     * 构建一个被编码为int数组的trie。trie中的节点有两种类型:SELECT和SCAN
+     * SELECT 节点编码为:
+     * - selectChoiceCount:可供选择的字节数(一个正整数)
+     * - prefixIndex:当前位置的结果索引，如果当前位置本身不是结果，则为-1
+     * - 已排序的selectChoiceCount字节列表，用于匹配输入字符串
+     * - 下一个节点的selectChoiceCount结果索引(>= 0)或偏移量(< 0)的异构列表。
+     * 此列表中的元素对应于前一个列表中的元素。偏移量为负，在使用前必须乘以-1。
+     * SCAN 节点编码为:
+     * - scanByteCount:按顺序匹配的字节数。此计数为负数，在使用之前必须乘以-1。
+     * - prefixIndex:当前位置的结果索引，如果当前位置本身不是结果，则为-1
+     * - 要匹配的scanByteCount字节的列表
+     * - nextStep:下一个节点的结果索引(>= 0)或偏移量(< 0)。偏移量为负，在使用前必须乘以-1。
+     * 当从选项列表中进行选择时，此结构用于改进局部性和性能
+     *
+     * @param nodeOffset       节点偏移量
+     * @param node             节点信息
+     * @param byteStringOffset 缓冲偏移量
+     * @param byteStrings      换取区信息
+     * @param fromIndex        前缀
+     * @param toIndex          查找索引
+     * @param indexes          索引信息
+     */
     private static void buildTrieRecursive(
             long nodeOffset,
             Buffer node,
@@ -109,6 +135,7 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
         ByteString to = byteStrings.get(toIndex - 1);
         int prefixIndex = -1;
 
+        // // 如果第一个元素已经匹配，那就是前缀
         if (byteStringOffset == from.size()) {
             prefixIndex = indexes.get(fromIndex);
             fromIndex++;
@@ -116,6 +143,7 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
         }
 
         if (from.getByte(byteStringOffset) != to.getByte(byteStringOffset)) {
+            // 如果有多个字节可供选择，则对SELECT节点进行编码
             int selectChoiceCount = 1;
             for (int i = fromIndex + 1; i < toIndex; i++) {
                 if (byteStrings.get(i - 1).getByte(byteStringOffset)
@@ -123,7 +151,7 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
                     selectChoiceCount++;
                 }
             }
-
+            // 计算当我们将它附加到node时，childNodes将得到的偏移量
             long childNodesOffset = nodeOffset + intCount(node) + 2 + (selectChoiceCount * 2);
 
             node.writeInt(selectChoiceCount);
@@ -150,8 +178,10 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
 
                 if (rangeStart + 1 == rangeEnd
                         && byteStringOffset + 1 == byteStrings.get(rangeStart).size()) {
+                    // 结果是一个单一的指数
                     node.writeInt(indexes.get(rangeStart));
                 } else {
+                    // 结果是另一个节点
                     node.writeInt((int) (-1 * (childNodesOffset + intCount(childNodes))));
                     buildTrieRecursive(
                             childNodesOffset,
@@ -169,6 +199,7 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
             node.write(childNodes, childNodes.size());
 
         } else {
+            // 如果所有字节都相同，则对扫描节点进行编码
             int scanByteCount = 0;
             for (int i = byteStringOffset, max = Math.min(from.size(), to.size()); i < max; i++) {
                 if (from.getByte(i) == to.getByte(i)) {
@@ -177,7 +208,7 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
                     break;
                 }
             }
-
+            // 计算当我们将它附加到node时，childNodes将得到的偏移量
             long childNodesOffset = nodeOffset + intCount(node) + 2 + scanByteCount + 1;
 
             node.writeInt(-scanByteCount);
@@ -188,11 +219,13 @@ public final class BufferOption extends AbstractList<ByteString> implements Rand
             }
 
             if (fromIndex + 1 == toIndex) {
+                // 结果是一个单一的指数
                 if (byteStringOffset + scanByteCount != byteStrings.get(fromIndex).size()) {
                     throw new AssertionError();
                 }
                 node.writeInt(indexes.get(fromIndex));
             } else {
+                // 结果是另一个节点
                 Buffer childNodes = new Buffer();
                 node.writeInt((int) (-1 * (childNodesOffset + intCount(childNodes))));
                 buildTrieRecursive(

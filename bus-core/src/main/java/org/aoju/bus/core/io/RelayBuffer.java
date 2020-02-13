@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.aoju.bus.http.cache;
+package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.File;
@@ -40,7 +39,7 @@ import java.io.RandomAccessFile;
  * @version 5.5.8
  * @since JDK 1.8+
  */
-final class Relay {
+final class RelayBuffer {
 
     static final ByteString PREFIX_CLEAN = ByteString.encodeUtf8("Httpd cache v1\n");
     static final ByteString PREFIX_DIRTY = ByteString.encodeUtf8("Httpd DIRTY :(\n");
@@ -89,8 +88,8 @@ final class Relay {
      */
     int sourceCount;
 
-    private Relay(RandomAccessFile file, Source upstream, long upstreamPos, ByteString metadata,
-                  long bufferMaxSize) {
+    private RelayBuffer(RandomAccessFile file, Source upstream, long upstreamPos, ByteString metadata,
+                        long bufferMaxSize) {
         this.file = file;
         this.upstream = upstream;
         this.complete = upstream == null;
@@ -109,10 +108,10 @@ final class Relay {
      * @return the relay
      * @throws IOException 异常
      */
-    public static Relay edit(
+    public static RelayBuffer edit(
             File file, Source upstream, ByteString metadata, long bufferMaxSize) throws IOException {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
-        Relay result = new Relay(randomAccessFile, upstream, 0L, metadata, bufferMaxSize);
+        RelayBuffer result = new RelayBuffer(randomAccessFile, upstream, 0L, metadata, bufferMaxSize);
 
         randomAccessFile.setLength(0L);
         result.writeHeader(PREFIX_DIRTY, -1L, -1L);
@@ -127,7 +126,7 @@ final class Relay {
      * @return the relay
      * @throws IOException 异常
      */
-    public static Relay read(File file) throws IOException {
+    public static RelayBuffer read(File file) throws IOException {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
         FileOperator fileOperator = new FileOperator(randomAccessFile.getChannel());
 
@@ -145,7 +144,7 @@ final class Relay {
         ByteString metadata = metadataBuffer.readByteString();
 
         // Return the result.
-        return new Relay(randomAccessFile, null, upstreamSize, metadata, 0L);
+        return new RelayBuffer(randomAccessFile, null, upstreamSize, metadata, 0L);
     }
 
     private void writeHeader(
@@ -176,7 +175,7 @@ final class Relay {
         writeHeader(PREFIX_CLEAN, upstreamSize, metadata.size());
         file.getChannel().force(false);
 
-        synchronized (Relay.this) {
+        synchronized (RelayBuffer.this) {
             complete = true;
         }
 
@@ -199,7 +198,7 @@ final class Relay {
      * @return 缓冲字节流
      */
     public Source newSource() {
-        synchronized (Relay.this) {
+        synchronized (RelayBuffer.this) {
             if (file == null) return null;
             sourceCount++;
         }
@@ -228,13 +227,13 @@ final class Relay {
             int source;
 
             selectSource:
-            synchronized (Relay.this) {
-                while (sourcePos == (upstreamPos = Relay.this.upstreamPos)) {
+            synchronized (RelayBuffer.this) {
+                while (sourcePos == (upstreamPos = RelayBuffer.this.upstreamPos)) {
                     if (complete) return -1L;
 
                     // 另一个线程已经读取，等待
                     if (upstreamReader != null) {
-                        timeout.waitUntilNotified(Relay.this);
+                        timeout.waitUntilNotified(RelayBuffer.this);
                         continue;
                     }
                     upstreamReader = Thread.currentThread();
@@ -282,7 +281,7 @@ final class Relay {
                 fileOperator.write(
                         FILE_HEADER_SIZE + upstreamPos, upstreamBuffer.clone(), upstreamBytesRead);
 
-                synchronized (Relay.this) {
+                synchronized (RelayBuffer.this) {
                     // 向缓冲区追加新的upstream
                     buffer.write(upstreamBuffer, upstreamBytesRead);
                     if (buffer.size() > bufferMaxSize) {
@@ -290,14 +289,14 @@ final class Relay {
                     }
 
                     // 既然文件和缓冲区都有，就调整upstreamPos
-                    Relay.this.upstreamPos += upstreamBytesRead;
+                    RelayBuffer.this.upstreamPos += upstreamBytesRead;
                 }
 
                 return bytesRead;
             } finally {
-                synchronized (Relay.this) {
+                synchronized (RelayBuffer.this) {
                     upstreamReader = null;
-                    Relay.this.notifyAll();
+                    RelayBuffer.this.notifyAll();
                 }
             }
         }
@@ -313,7 +312,7 @@ final class Relay {
             fileOperator = null;
 
             RandomAccessFile fileToClose = null;
-            synchronized (Relay.this) {
+            synchronized (RelayBuffer.this) {
                 sourceCount--;
                 if (sourceCount == 0) {
                     fileToClose = file;

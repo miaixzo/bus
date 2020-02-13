@@ -165,34 +165,34 @@ public class IoUtils {
     /**
      * 将Reader中的内容复制到Writer中
      *
-     * @param reader         Reader
-     * @param writer         Writer
-     * @param bufferSize     缓存大小
-     * @param streamProgress 进度处理器
+     * @param reader        Reader
+     * @param writer        Writer
+     * @param bufferSize    缓存大小
+     * @param streamProcess 进度处理器
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
+    public static long copy(Reader reader, Writer writer, int bufferSize, StreamProcess streamProcess) throws InstrumentException {
         char[] buffer = new char[bufferSize];
         long size = 0;
         int readSize;
-        if (null != streamProgress) {
-            streamProgress.start();
+        if (null != streamProcess) {
+            streamProcess.start();
         }
         try {
             while ((readSize = reader.read(buffer, 0, bufferSize)) != EOF) {
                 writer.write(buffer, 0, readSize);
                 size += readSize;
                 writer.flush();
-                if (null != streamProgress) {
-                    streamProgress.progress(size);
+                if (null != streamProcess) {
+                    streamProcess.progress(size);
                 }
             }
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
-        if (null != streamProgress) {
-            streamProgress.finish();
+        if (null != streamProcess) {
+            streamProcess.finish();
         }
         return size;
     }
@@ -225,14 +225,14 @@ public class IoUtils {
     /**
      * 拷贝流
      *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param streamProgress 进度条
+     * @param in            输入流
+     * @param out           输出流
+     * @param bufferSize    缓存大小
+     * @param streamProcess 进度条
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
+    public static long copy(InputStream in, OutputStream out, int bufferSize, StreamProcess streamProcess) throws InstrumentException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
         if (bufferSize <= 0) {
@@ -240,8 +240,8 @@ public class IoUtils {
         }
 
         byte[] buffer = new byte[bufferSize];
-        if (null != streamProgress) {
-            streamProgress.start();
+        if (null != streamProcess) {
+            streamProcess.start();
         }
         long size = 0;
         try {
@@ -249,15 +249,15 @@ public class IoUtils {
                 out.write(buffer, 0, readSize);
                 size += readSize;
                 out.flush();
-                if (null != streamProgress) {
-                    streamProgress.progress(size);
+                if (null != streamProcess) {
+                    streamProcess.progress(size);
                 }
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        if (null != streamProgress) {
-            streamProgress.finish();
+        if (null != streamProcess) {
+            streamProcess.finish();
         }
         return size;
     }
@@ -266,15 +266,15 @@ public class IoUtils {
      * 拷贝流 thanks to: https://github.com/venusdrogon/feilong-io/blob/master/src/main/java/com/feilong/io/IOWriteUtil.java
      * 本方法不会关闭流
      *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param streamProgress 进度条
+     * @param in            输入流
+     * @param out           输出流
+     * @param bufferSize    缓存大小
+     * @param streamProcess 进度条
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
-    public static long copyByNIO(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
-        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, streamProgress);
+    public static long copyByNIO(InputStream in, OutputStream out, int bufferSize, StreamProcess streamProcess) throws InstrumentException {
+        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, streamProcess);
     }
 
     /**
@@ -302,36 +302,36 @@ public class IoUtils {
     /**
      * 拷贝流,使用NIO,不会关闭流
      *
-     * @param in             {@link ReadableByteChannel}
-     * @param out            {@link WritableByteChannel}
-     * @param bufferSize     缓冲大小,如果小于等于0,使用默认
-     * @param streamProgress {@link StreamProgress}进度处理器
+     * @param in            {@link ReadableByteChannel}
+     * @param out           {@link WritableByteChannel}
+     * @param bufferSize    缓冲大小,如果小于等于0,使用默认
+     * @param streamProcess {@link StreamProcess}进度处理器
      * @return 拷贝的字节数
      * @throws InstrumentException 异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProcess streamProcess) throws InstrumentException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize <= 0 ? DEFAULT_BUFFER_SIZE : bufferSize);
         long size = 0;
-        if (null != streamProgress) {
-            streamProgress.start();
+        if (null != streamProcess) {
+            streamProcess.start();
         }
         try {
             while (in.read(byteBuffer) != EOF) {
                 byteBuffer.flip();// 写转读
                 size += out.write(byteBuffer);
                 byteBuffer.clear();
-                if (null != streamProgress) {
-                    streamProgress.progress(size);
+                if (null != streamProcess) {
+                    streamProcess.progress(size);
                 }
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        if (null != streamProgress) {
-            streamProgress.finish();
+        if (null != streamProcess) {
+            streamProcess.finish();
         }
 
         return size;
@@ -1194,7 +1194,7 @@ public class IoUtils {
     public static Sink sink(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getOutputStream() == null) throw new IOException("socket's output stream == null");
-        Awaits timeout = timeout(socket);
+        AsyncTimeout timeout = timeout(socket);
         Sink sink = sink(socket.getOutputStream(), timeout);
         return timeout.sink(sink);
     }
@@ -1294,13 +1294,13 @@ public class IoUtils {
     public static Source source(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getInputStream() == null) throw new IOException("socket's input stream == null");
-        Awaits timeout = timeout(socket);
+        AsyncTimeout timeout = timeout(socket);
         Source source = source(socket.getInputStream(), timeout);
         return timeout.source(source);
     }
 
-    private static Awaits timeout(final Socket socket) {
-        return new Awaits() {
+    private static AsyncTimeout timeout(final Socket socket) {
+        return new AsyncTimeout() {
             @Override
             protected IOException newTimeoutException(IOException cause) {
                 InterruptedIOException ioe = new SocketTimeoutException("timeout");

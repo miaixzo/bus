@@ -30,13 +30,12 @@ import java.util.Date;
 
 /**
  * 日期解析接口,用于解析日期字符串为 {@link Date} 对象
- * Thanks to Apache Commons Lang 3.5
  *
  * @author Kimi Liu
  * @version 5.5.8
  * @since JDK 1.8+
  */
-public interface DateParser extends DateBasic {
+public interface DateParser extends Formatter {
 
     /**
      * 将日期字符串解析并转换为  {@link Date} 对象
@@ -60,24 +59,23 @@ public interface DateParser extends DateBasic {
 
     /**
      * 根据给定格式转换日期字符串
-     * Updates the Calendar with parsed fields. Upon success, the ParsePosition index is updated to indicate how much of the source text was consumed.
-     * Not all source text needs to be consumed.
-     * Upon parse failure, ParsePosition error index is updated to the offset of the source text which does not match the supplied format.
+     * 使用解析的字段更新日历。成功之后，将更新ParsePosition索引，以指示消耗了多少源文本。并不是所有的源文本都需要使用
+     * 在解析失败时，ParsePosition错误索引将更新为源文本的偏移量，该偏移量与提供的格式不匹配
      *
      * @param source   被转换的日期字符串
      * @param pos      定义开始转换的位置,转换结束后更新转换到的位置
-     * @param calendar The calendar into which to set parsed fields.
-     * @return true, if source has been parsed (pos parsePosition is updated); otherwise false (and pos errorIndex is updated)
-     * @throws IllegalArgumentException when Calendar has been set to be not lenient, and a parsed field is out of range.
+     * @param calendar 用于设置已解析字段的日历
+     * @return 如果源已被解析(pos parsePosition 已更新);否则为false(并更新 pos errorIndex)
+     * @throws IllegalArgumentException 当日历被设置为不宽松，并且已解析字段超出范围时
      */
     boolean parse(String source, ParsePosition pos, Calendar calendar);
 
     /**
      * 将日期字符串解析并转换为  {@link Date} 对象
      *
-     * @param source A String whose beginning should be parsed.
-     * @return a java.utils.Date object
-     * @throws ParseException if the beginning of the specified string cannot be parsed.
+     * @param source 应该解析其开头的字符串
+     * @return 日期对象
+     * @throws ParseException 如果无法解析指定字符串的开头
      * @see java.text.DateFormat#parseObject(String)
      */
     Object parseObject(String source) throws ParseException;
@@ -85,9 +83,9 @@ public interface DateParser extends DateBasic {
     /**
      * 根据 {@link ParsePosition} 给定将日期字符串解析并转换为  {@link Date} 对象
      *
-     * @param source A String whose beginning should be parsed.
-     * @param pos    the parse position
-     * @return a java.utils.Date object
+     * @param source 应该解析其开头的字符串
+     * @param pos    解析的位置
+     * @return 日期对象
      * @see java.text.DateFormat#parseObject(String, ParsePosition)
      */
     Object parseObject(String source, ParsePosition pos);

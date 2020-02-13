@@ -25,7 +25,7 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePrinter;
-import org.aoju.bus.core.date.format.FastDateFormat;
+import org.aoju.bus.core.date.format.FormatBuilder;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -209,7 +209,7 @@ public class DateTime extends Date {
      * 构造
      *
      * @param dateStr    Date字符串
-     * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FastDateFormat}
+     * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FormatBuilder}
      */
     public DateTime(CharSequence dateStr, DateParser dateParser) {
         this(parse(dateStr, dateParser), dateParser.getTimeZone());
@@ -294,7 +294,7 @@ public class DateTime extends Date {
      * 转换字符串为Date
      *
      * @param dateStr 日期字符串
-     * @param parser  {@link FastDateFormat}
+     * @param parser  {@link FormatBuilder}
      * @return {@link Date}
      */
     private static Date parse(CharSequence dateStr, DateParser parser) {
@@ -931,13 +931,13 @@ public class DateTime extends Date {
             simpleDateFormat.setTimeZone(this.timeZone);
             return toString(simpleDateFormat);
         }
-        return toString(FastDateFormat.getInstance(format));
+        return toString(FormatBuilder.getInstance(format));
     }
 
     /**
      * 转为字符串
      *
-     * @param format {@link DatePrinter} 或 {@link FastDateFormat}
+     * @param format {@link DatePrinter} 或 {@link FormatBuilder}
      * @return String
      */
     public String toString(DatePrinter format) {

@@ -23,7 +23,7 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 
 import java.io.IOException;
@@ -59,7 +59,7 @@ public class WriteBuffer extends OutputStream {
     /**
      * 为当前 WriteBuffer 提供数据存放功能的缓存页
      */
-    private final BufferPage bufferPage;
+    private final PageBuffer pageBuffer;
     private final Function<WriteBuffer, Void> function;
     private volatile boolean isWaiting = false;
     /**
@@ -84,8 +84,8 @@ public class WriteBuffer extends OutputStream {
     private boolean closed = false;
     private byte[] cacheByte = new byte[8];
 
-    protected WriteBuffer(BufferPage bufferPage, Function<WriteBuffer, Void> flushFunction, int writeQueueSize) {
-        this.bufferPage = bufferPage;
+    protected WriteBuffer(PageBuffer pageBuffer, Function<WriteBuffer, Void> flushFunction, int writeQueueSize) {
+        this.pageBuffer = pageBuffer;
         this.function = flushFunction;
         this.items = new VirtualBuffer[writeQueueSize];
     }
@@ -109,7 +109,7 @@ public class WriteBuffer extends OutputStream {
 
     public void writeByte(byte b) {
         if (writeInBuf == null) {
-            writeInBuf = bufferPage.allocate(WRITE_CHUNK_SIZE);
+            writeInBuf = pageBuffer.allocate(WRITE_CHUNK_SIZE);
         }
         writeInBuf.buffer().put(b);
         if (writeInBuf.buffer().hasRemaining()) {
@@ -152,7 +152,7 @@ public class WriteBuffer extends OutputStream {
             waitPreWriteFinish();
             do {
                 if (writeInBuf == null) {
-                    writeInBuf = bufferPage.allocate(Math.max(WRITE_CHUNK_SIZE, len - off));
+                    writeInBuf = pageBuffer.allocate(Math.max(WRITE_CHUNK_SIZE, len - off));
                 }
                 ByteBuffer writeBuffer = writeInBuf.buffer();
                 int minSize = Math.min(writeBuffer.remaining(), len - off);

@@ -268,7 +268,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * @return the    int
      * @throws IOException {@link java.io.IOException} IOException.
      */
-    int select(BufferOption options) throws IOException;
+    int select(AbstractBlending options) throws IOException;
 
     /**
      * Removes all bytes from this and returns them as a byte array.

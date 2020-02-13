@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.socket.origin;
 
-import org.aoju.bus.core.io.BufferPage;
 import org.aoju.bus.core.io.EventFactory;
+import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.RingBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.core.lang.Normal;
@@ -48,7 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class UdpChannel<Request> {
 
-    private BufferPage bufferPage;
+    private PageBuffer pageBuffer;
     private int writeQueueCapacity;
     /**
      * 真实的UDP通道
@@ -74,7 +74,7 @@ public final class UdpChannel<Request> {
 
     private int writeBacklog = 2048;
 
-    UdpChannel(final DatagramChannel channel, SelectionKey selectionKey, int writeQueueCapacity, BufferPage bufferPage) {
+    UdpChannel(final DatagramChannel channel, SelectionKey selectionKey, int writeQueueCapacity, PageBuffer pageBuffer) {
         this.channel = channel;
         writeRingBuffer = new RingBuffer<>(writeBacklog, new EventFactory<UdpWriteEvent>() {
             @Override
@@ -90,7 +90,7 @@ public final class UdpChannel<Request> {
         });
         this.selectionKey = selectionKey;
         this.writeQueueCapacity = writeQueueCapacity;
-        this.bufferPage = bufferPage;
+        this.pageBuffer = pageBuffer;
     }
 
     private void write(VirtualBuffer virtualBuffer, SocketAddress remote) throws IOException, InterruptedException {
@@ -194,7 +194,7 @@ public final class UdpChannel<Request> {
                 }
                 return null;
             };
-            WriteBuffer writeBuffer = new WriteBuffer(bufferPage, function, writeQueueCapacity);
+            WriteBuffer writeBuffer = new WriteBuffer(pageBuffer, function, writeQueueCapacity);
             session = new UdpAioSession<>(this, remote, writeBuffer);
             udpAioSessionConcurrentHashMap.put(key, session);
         }
