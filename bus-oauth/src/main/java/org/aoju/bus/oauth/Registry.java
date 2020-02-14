@@ -716,6 +716,15 @@ public enum Registry implements Complex {
         public String userInfo() {
             return "https://api.twitter.com/1.1/users/show.json";
         }
+    };
+
+    public static Registry get(String name) {
+        for (Registry registry : Registry.values()) {
+            if (registry.name().equalsIgnoreCase(name)) {
+                return registry;
+            }
+        }
+        throw new IllegalArgumentException("not support");
     }
 
 }

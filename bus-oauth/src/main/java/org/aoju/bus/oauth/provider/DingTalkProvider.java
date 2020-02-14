@@ -25,6 +25,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Httpx;
@@ -64,9 +65,9 @@ public class DingTalkProvider extends DefaultProvider {
     @Override
     protected Object getUserInfo(AccToken oauthToken) {
         String code = oauthToken.getAccessCode();
-        Map param = new HashMap<>();
+        Map<String,Object> param = new HashMap<>();
         param.put("tmp_auth_code", code);
-        String response = Httpx.post(userInfoUrl(oauthToken), param);
+        String response = Httpx.post(userInfoUrl(oauthToken), JSON.toJSONString(param), MediaType.APPLICATION_JSON);
         JSONObject object = JSON.parseObject(response);
         if (object.getIntValue("errcode") != 0) {
             throw new InstrumentException(object.getString("errmsg"));
