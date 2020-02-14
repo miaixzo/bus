@@ -165,34 +165,34 @@ public class IoUtils {
     /**
      * 将Reader中的内容复制到Writer中
      *
-     * @param reader        Reader
-     * @param writer        Writer
-     * @param bufferSize    缓存大小
-     * @param streamProcess 进度处理器
+     * @param reader         Reader
+     * @param writer         Writer
+     * @param bufferSize     缓存大小
+     * @param streamProgress 进度处理器
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, StreamProcess streamProcess) throws InstrumentException {
+    public static long copy(Reader reader, Writer writer, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
         char[] buffer = new char[bufferSize];
         long size = 0;
         int readSize;
-        if (null != streamProcess) {
-            streamProcess.start();
+        if (null != streamProgress) {
+            streamProgress.start();
         }
         try {
             while ((readSize = reader.read(buffer, 0, bufferSize)) != EOF) {
                 writer.write(buffer, 0, readSize);
                 size += readSize;
                 writer.flush();
-                if (null != streamProcess) {
-                    streamProcess.progress(size);
+                if (null != streamProgress) {
+                    streamProgress.progress(size);
                 }
             }
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
-        if (null != streamProcess) {
-            streamProcess.finish();
+        if (null != streamProgress) {
+            streamProgress.finish();
         }
         return size;
     }
@@ -225,14 +225,14 @@ public class IoUtils {
     /**
      * 拷贝流
      *
-     * @param in            输入流
-     * @param out           输出流
-     * @param bufferSize    缓存大小
-     * @param streamProcess 进度条
+     * @param in             输入流
+     * @param out            输出流
+     * @param bufferSize     缓存大小
+     * @param streamProgress 进度条
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, StreamProcess streamProcess) throws InstrumentException {
+    public static long copy(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
         if (bufferSize <= 0) {
@@ -240,8 +240,8 @@ public class IoUtils {
         }
 
         byte[] buffer = new byte[bufferSize];
-        if (null != streamProcess) {
-            streamProcess.start();
+        if (null != streamProgress) {
+            streamProgress.start();
         }
         long size = 0;
         try {
@@ -249,15 +249,15 @@ public class IoUtils {
                 out.write(buffer, 0, readSize);
                 size += readSize;
                 out.flush();
-                if (null != streamProcess) {
-                    streamProcess.progress(size);
+                if (null != streamProgress) {
+                    streamProgress.progress(size);
                 }
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        if (null != streamProcess) {
-            streamProcess.finish();
+        if (null != streamProgress) {
+            streamProgress.finish();
         }
         return size;
     }
@@ -266,15 +266,15 @@ public class IoUtils {
      * 拷贝流 thanks to: https://github.com/venusdrogon/feilong-io/blob/master/src/main/java/com/feilong/io/IOWriteUtil.java
      * 本方法不会关闭流
      *
-     * @param in            输入流
-     * @param out           输出流
-     * @param bufferSize    缓存大小
-     * @param streamProcess 进度条
+     * @param in             输入流
+     * @param out            输出流
+     * @param bufferSize     缓存大小
+     * @param streamProgress 进度条
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
-    public static long copyByNIO(InputStream in, OutputStream out, int bufferSize, StreamProcess streamProcess) throws InstrumentException {
-        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, streamProcess);
+    public static long copyByNIO(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
+        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, streamProgress);
     }
 
     /**
@@ -302,36 +302,36 @@ public class IoUtils {
     /**
      * 拷贝流,使用NIO,不会关闭流
      *
-     * @param in            {@link ReadableByteChannel}
-     * @param out           {@link WritableByteChannel}
-     * @param bufferSize    缓冲大小,如果小于等于0,使用默认
-     * @param streamProcess {@link StreamProcess}进度处理器
+     * @param in             {@link ReadableByteChannel}
+     * @param out            {@link WritableByteChannel}
+     * @param bufferSize     缓冲大小,如果小于等于0,使用默认
+     * @param streamProgress {@link StreamProgress}进度处理器
      * @return 拷贝的字节数
      * @throws InstrumentException 异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProcess streamProcess) throws InstrumentException {
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
         Assert.notNull(in, "InputStream is null !");
         Assert.notNull(out, "OutputStream is null !");
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize <= 0 ? DEFAULT_BUFFER_SIZE : bufferSize);
         long size = 0;
-        if (null != streamProcess) {
-            streamProcess.start();
+        if (null != streamProgress) {
+            streamProgress.start();
         }
         try {
             while (in.read(byteBuffer) != EOF) {
                 byteBuffer.flip();// 写转读
                 size += out.write(byteBuffer);
                 byteBuffer.clear();
-                if (null != streamProcess) {
-                    streamProcess.progress(size);
+                if (null != streamProgress) {
+                    streamProgress.progress(size);
                 }
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        if (null != streamProcess) {
-            streamProcess.finish();
+        if (null != streamProgress) {
+            streamProgress.finish();
         }
 
         return size;
@@ -1333,12 +1333,10 @@ public class IoUtils {
     }
 
     /**
-     * Convert the specified string to an input stream, encoded as bytes
-     * using the default character encoding of the platform.
+     * 将指定的字符串转换为输入流，使用平台的默认字符编码编码为字节
      *
-     * @param input the string to convert
-     * @return an input stream
-     * @since Commons IO 1.1
+     * @param input 要转换的字符串
+     * @return 一个输入流
      */
     public static InputStream toInputStream(String input) {
         byte[] bytes = input.getBytes();
@@ -1346,15 +1344,12 @@ public class IoUtils {
     }
 
     /**
-     * Convert the specified string to an input stream, encoded as bytes
-     * using the specified character encoding.
-     * <p>
+     * 将指定的字符串转换为输入流，使用指定的字符编码编码为字节
      *
-     * @param input    the string to convert
-     * @param encoding the encoding to use, null means platform default
-     * @return an input stream
-     * @throws IOException if the encoding is invalid
-     * @since Commons IO 1.1
+     * @param input    要转换的字符串
+     * @param encoding 要使用的编码，null表示平台默认值
+     * @return 一个输入流
+     * @throws IOException 如果编码无效
      */
     public static InputStream toInputStream(String input, String encoding) throws IOException {
         byte[] bytes = encoding != null ? input.getBytes(encoding) : input.getBytes();
@@ -1362,20 +1357,14 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of an InputStream as a String
-     * using the specified character encoding.
-     * <p>
-     * Character encoding names can be found at
-     * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * BufferedInputStream.
+     * 使用指定的字符编码将InputStream的内容作为字符串获取
+     * 这个方法在内部缓冲输入，所以不需要使用BufferedInputStream
      *
-     * @param input    the InputStream to read from
-     * @param encoding the encoding to use, null means platform default
-     * @return the requested String
-     * @throws NullPointerException if the input is null
-     * @throws IOException          if an I/O error occurs
+     * @param input    要从中读取的InputStream
+     * @param encoding 要使用的编码，null表示平台默认值
+     * @return 所请求的字符串
+     * @throws NullPointerException 如果输入为空
+     * @throws IOException          如果发生I/O错误
      */
     public static String toString(InputStream input, String encoding)
             throws IOException {
@@ -1385,17 +1374,12 @@ public class IoUtils {
     }
 
     /**
-     * Copy bytes from an InputStream to chars on a
-     * Writer using the default character encoding of the platform.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * BufferedInputStream.
-     * <p>
-     * This method uses {@link InputStreamReader}.
+     * 使用平台的默认字符编码将字节从InputStream复制到写入器上的字符
+     * 该方法在内部缓冲输入，因此不需要使用 BufferedInputStream
+     * 方法使用 {@link InputStreamReader}
      *
-     * @param input  the InputStream to read from
-     * @param output the Writer to write to
-     * @since Commons IO 1.1
+     * @param input  要从中读取的InputStream
+     * @param output 要写入的输出者
      */
     public static void copy(InputStream input, Writer output) {
         InputStreamReader in = new InputStreamReader(input);
@@ -1403,23 +1387,15 @@ public class IoUtils {
     }
 
     /**
-     * Copy bytes from an InputStream to chars on a
-     * Writer using the specified character encoding.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * BufferedInputStream.
-     * <p>
-     * Character encoding names can be found at
-     * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
-     * <p>
-     * This method uses {@link InputStreamReader}.
+     * 使用指定的字符编码将字节从InputStream复制到写入器上的字符.
+     * 该方法在内部缓冲输入，因此不需要使用 BufferedInputStream
+     * 方法使用 {@link InputStreamReader}
      *
-     * @param input    the InputStream to read from
-     * @param output   the Writer to write to
-     * @param encoding the encoding to use, null means platform default
-     * @throws NullPointerException if the input or output is null
-     * @throws IOException          if an I/O error occurs
-     * @since Commons IO 1.1
+     * @param input    要从中读取的InputStream
+     * @param output   要写入的输出者
+     * @param encoding 要使用的编码，null表示平台默认值
+     * @throws NullPointerException 如果输入为空
+     * @throws IOException          如果发生I/O错误
      */
     public static void copy(InputStream input, Writer output, String encoding)
             throws IOException {
@@ -1432,13 +1408,10 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of a Reader as a String.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * BufferedReader.
+     * 以字符串的形式获取阅读器的内容
      *
-     * @param input the Reader to read from
-     * @return the requested String
+     * @param input 读取信息
+     * @return 所请求的字符串
      */
     public static String toString(Reader input) {
         StringWriter sw = new StringWriter();
@@ -1447,28 +1420,23 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of a byte[] as a String
-     * using the default character encoding of the platform.
+     * 使用平台的默认字符编码将byte[]的内容作为字符串获取
      *
-     * @param input the byte array to read from
-     * @return the requested String
+     * @param input 要从中读取的字节数组
+     * @return 所请求的字符串
      */
     public static String toString(byte[] input) {
         return new String(input);
     }
 
     /**
-     * Get the contents of a byte[] as a String
-     * using the specified character encoding.
-     * <p>
-     * Character encoding names can be found at
-     * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
+     * 使用指定的字符编码将字节[]的内容作为字符串获取
      *
-     * @param input    the byte array to read from
-     * @param encoding the encoding to use, null means platform default
-     * @return the requested String
-     * @throws NullPointerException if the input is null
-     * @throws IOException          if an I/O error occurs (never occurs)
+     * @param input    要从中读取的字节数组
+     * @param encoding 要使用的编码，null表示平台默认值
+     * @return 所请求的字符串
+     * @throws NullPointerException 如果输入为空
+     * @throws IOException          如果发生I/O错误(从未发生)
      */
     public static String toString(byte[] input, String encoding)
             throws IOException {

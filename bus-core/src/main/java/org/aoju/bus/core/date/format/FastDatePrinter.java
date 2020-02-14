@@ -185,7 +185,7 @@ public class FastDatePrinter extends AbstractFormater implements DatePrinter {
     /**
      * 返回给定模式的规则列表
      *
-     * @return 规则对象的{@code列表}
+     * @return 规则对象的{@code List}
      * @throws IllegalArgumentException 如果模式无效
      */
     protected List<Rule> parsePattern() {

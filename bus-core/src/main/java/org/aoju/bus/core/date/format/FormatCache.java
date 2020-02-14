@@ -98,7 +98,7 @@ public abstract class FormatCache<F extends Format> {
      * @param timeZone 时区,默认当前时区
      * @param locale   地区,默认使用当前地区
      * @return 格式化器
-     * @throws IllegalArgumentException pattern 无效或<criteria>null</criteria>
+     * @throws IllegalArgumentException pattern 无效或<code>null</code>
      */
     public F getInstance(final String pattern, TimeZone timeZone, Locale locale) {
         Assert.notBlank(pattern, "pattern must not be blank");
@@ -127,7 +127,7 @@ public abstract class FormatCache<F extends Format> {
      * @param timeZone 时区,默认当前时区
      * @param locale   地区,默认使用当前地区
      * @return 格式化器
-     * @throws IllegalArgumentException pattern 无效或<criteria>null</criteria>
+     * @throws IllegalArgumentException pattern 无效或<code>null</code>
      */
     abstract protected F createInstance(String pattern, TimeZone timeZone, Locale locale);
 
