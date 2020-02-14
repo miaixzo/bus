@@ -38,7 +38,7 @@ import java.util.Map;
  * Solaris Sound Card.
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class SolarisSoundCard extends AbstractSoundCard {

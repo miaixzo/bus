@@ -35,7 +35,7 @@ import org.aoju.bus.logger.Logger;
  * Provides access to sysctl calls on OS X
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class SysctlUtils {

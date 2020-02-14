@@ -33,7 +33,7 @@ import java.util.TimeZone;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class Fields {
@@ -663,7 +663,7 @@ public class Fields {
      * 与Calendar相应值对应
      *
      * @author Kimi Liu
-     * @version 5.5.8
+     * @version 5.5.9
      * @since JDK 1.8+
      */
     public enum DateField {
@@ -818,7 +818,7 @@ public class Fields {
      * 日期时间单位,每个单位都是以毫秒为基数
      *
      * @author Kimi Liu
-     * @version 5.5.8
+     * @version 5.5.9
      * @since JDK 1.8+
      */
     public enum Unit {
@@ -867,7 +867,7 @@ public class Fields {
      * 与Calendar中的月份int值对应
      *
      * @author Kimi Liu
-     * @version 5.5.8
+     * @version 5.5.9
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -1005,7 +1005,7 @@ public class Fields {
      * 季度枚举
      *
      * @author Kimi Liu
-     * @version 5.5.8
+     * @version 5.5.9
      * @since JDK 1.8+
      */
     public enum Quarter {
@@ -1068,7 +1068,7 @@ public class Fields {
      * 与Calendar中的星期int值对应
      *
      * @author Kimi Liu
-     * @version 5.5.8
+     * @version 5.5.9
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY

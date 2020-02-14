@@ -38,7 +38,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * Facebook登录
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class FacebookProvider extends DefaultProvider {
