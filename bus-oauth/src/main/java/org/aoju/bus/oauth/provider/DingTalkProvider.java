@@ -37,8 +37,6 @@ import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.StateCache;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 钉钉登录
@@ -65,9 +63,9 @@ public class DingTalkProvider extends DefaultProvider {
     @Override
     protected Object getUserInfo(AccToken oauthToken) {
         String code = oauthToken.getAccessCode();
-        Map<String,Object> param = new HashMap<>();
+        JSONObject param = new JSONObject();
         param.put("tmp_auth_code", code);
-        String response = Httpx.post(userInfoUrl(oauthToken), JSON.toJSONString(param), MediaType.APPLICATION_JSON);
+        String response = Httpx.post(userInfoUrl(oauthToken), param.toJSONString(), MediaType.APPLICATION_JSON);
         JSONObject object = JSON.parseObject(response);
         if (object.getIntValue("errcode") != 0) {
             throw new InstrumentException(object.getString("errmsg"));
