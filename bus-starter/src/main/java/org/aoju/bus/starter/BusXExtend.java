@@ -96,5 +96,9 @@ public class BusXExtend {
      * XSS/重复读取失效
      */
     public static final String WRAPPER = "extend.wrapper";
+    /**
+     * 工作/临时目录等
+     */
+    public static final String WORK = "extend.work";
 
 }
