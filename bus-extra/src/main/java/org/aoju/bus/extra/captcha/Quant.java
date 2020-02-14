@@ -25,7 +25,7 @@ package org.aoju.bus.extra.captcha;
 
 /**
  * @author Kimi Liu
- * @version 5.5.9
+ * @version 5.6.0
  * @since JDK 1.8+
  */
 public class Quant {
@@ -124,9 +124,9 @@ public class Quant {
     /**
      * 初始化网络的范围(0,0,0)到(255,255,255)，并设置参数
      *
-     * @param thepic
-     * @param len
-     * @param sample
+     * @param thepic 图片
+     * @param len    长度
+     * @param sample 样品
      */
     public Quant(byte[] thepic, int len, int sample) {
 
@@ -299,10 +299,10 @@ public class Quant {
     /**
      * 搜索BGR值0..255(经过净是无偏的)和返回颜色指数
      *
-     * @param b
-     * @param g
-     * @param r
-     * @return
+     * @param b 蓝
+     * @param g 绿
+     * @param r 红
+     * @return the int
      */
     public int map(int b, int g, int r) {
 
@@ -388,24 +388,24 @@ public class Quant {
      */
     public void unbiasnet() {
 
-        int i, j;
+        int i;
 
         for (i = 0; i < netsize; i++) {
             network[i][0] >>= netbiasshift;
             network[i][1] >>= netbiasshift;
             network[i][2] >>= netbiasshift;
-            network[i][3] = i; /* record colour no */
+            network[i][3] = i;
         }
     }
 
     /**
      * 通过radpower[|i-j|]中预先计算的alpha*(1-(((i-j)^2/[r]^2))移动相邻神经元
      *
-     * @param rad
-     * @param i
-     * @param b
-     * @param g
-     * @param r
+     * @param rad 弧度
+     * @param i   偏移量
+     * @param b   蓝
+     * @param g   绿
+     * @param r   红
      */
     protected void alterneigh(int rad, int i, int b, int g, int r) {
 
@@ -450,11 +450,11 @@ public class Quant {
     /**
      * 通过因子将神经元i向偏置(b,g,r)移动
      *
-     * @param alpha
-     * @param i
-     * @param b
-     * @param g
-     * @param r
+     * @param alpha 开端
+     * @param i     偏移量
+     * @param b     蓝
+     * @param g     绿
+     * @param r     红
      */
     protected void altersingle(int alpha, int i, int b, int g, int r) {
         int[] n = network[i];
@@ -466,10 +466,10 @@ public class Quant {
     /**
      * 搜索有偏差的BGR值
      *
-     * @param b
-     * @param g
-     * @param r
-     * @return
+     * @param b 蓝
+     * @param g 绿
+     * @param r 红
+     * @return BGR值
      */
     protected int contest(int b, int g, int r) {
 
