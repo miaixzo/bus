@@ -46,7 +46,7 @@ import java.util.List;
  * A network interface in the machine, including statistics
  *
  * @author Kimi Liu
- * @version 5.5.9
+ * @version 5.6.0
  * @since JDK 1.8+
  */
 public class NetworkIF {

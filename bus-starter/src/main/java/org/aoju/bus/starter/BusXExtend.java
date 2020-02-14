@@ -27,7 +27,7 @@ package org.aoju.bus.starter;
  * 全局扩展配置
  *
  * @author Kimi Liu
- * @version 5.5.9
+ * @version 5.6.0
  * @since JDK 1.8+
  */
 public class BusXExtend {
@@ -96,5 +96,9 @@ public class BusXExtend {
      * XSS/重复读取失效
      */
     public static final String WRAPPER = "extend.wrapper";
+    /**
+     * 工作/临时目录等
+     */
+    public static final String WORK = "extend.work";
 
 }

@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 启用 swagger
  *
  * @author Kimi Liu
- * @version 5.5.9
+ * @version 5.6.0
  * @since JDK 1.8+
  */
 @Inherited

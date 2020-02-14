@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 5.5.9
+ * @version 5.6.0
  * @since JDK 1.8+
  */
 public class ThreadUtils {

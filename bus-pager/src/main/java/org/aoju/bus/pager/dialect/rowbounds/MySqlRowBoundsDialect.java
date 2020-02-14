@@ -32,7 +32,7 @@ import org.apache.ibatis.session.RowBounds;
  * mysql 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 5.5.9
+ * @version 5.6.0
  * @since JDK 1.8+
  */
 public class MySqlRowBoundsDialect extends AbstractRowBoundsDialect {

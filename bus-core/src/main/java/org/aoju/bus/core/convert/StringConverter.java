@@ -27,7 +27,7 @@ package org.aoju.bus.core.convert;
  * 字符串转换器
  *
  * @author Kimi Liu
- * @version 5.5.9
+ * @version 5.6.0
  * @since JDK 1.8+
  */
 public class StringConverter extends AbstractConverter<String> {

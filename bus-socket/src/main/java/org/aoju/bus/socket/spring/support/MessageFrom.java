@@ -27,7 +27,7 @@ import lombok.Data;
 
 /**
  * @author Kimi Liu
- * @version 5.5.9
+ * @version 5.6.0
  * @since JDK 1.8+
  */
 @Data
