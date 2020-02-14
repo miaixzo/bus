@@ -23,6 +23,8 @@
  */
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Algorithm;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
@@ -68,23 +70,23 @@ public final class HashSource extends DelegateSource {
     }
 
     public static HashSource md5(Source source) {
-        return new HashSource(source, "MD5");
+        return new HashSource(source, Algorithm.MD5);
     }
 
     public static HashSource sha1(Source source) {
-        return new HashSource(source, "SHA-1");
+        return new HashSource(source, Algorithm.SHA1);
     }
 
     public static HashSource sha256(Source source) {
-        return new HashSource(source, "SHA-256");
+        return new HashSource(source,  Algorithm.SHA256);
     }
 
     public static HashSource hmacSha1(Source source, ByteString key) {
-        return new HashSource(source, key, "HmacSHA1");
+        return new HashSource(source, key, Algorithm.HmacSHA1);
     }
 
     public static HashSource hmacSha256(Source source, ByteString key) {
-        return new HashSource(source, key, "HmacSHA256");
+        return new HashSource(source, key, Algorithm.HmacSHA256);
     }
 
     @Override

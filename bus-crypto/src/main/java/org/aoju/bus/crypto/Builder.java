@@ -244,7 +244,7 @@ public final class Builder {
         if (algorithm.startsWith("PBE")) {
             // PBE密钥
             secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.str(key, org.aoju.bus.core.lang.Charset.UTF_8).toCharArray());
-        } else if (algorithm.startsWith("DES")) {
+        } else if (algorithm.startsWith(Algorithm.DES)) {
             // DES密钥
             secretKey = generateDESKey(algorithm, key);
         } else {
@@ -262,7 +262,7 @@ public final class Builder {
      * @return {@link SecretKey}
      */
     public static SecretKey generateDESKey(String algorithm, byte[] key) {
-        if (StringUtils.isBlank(algorithm) || false == algorithm.startsWith("DES")) {
+        if (StringUtils.isBlank(algorithm) || false == algorithm.startsWith(Algorithm.DES)) {
             throw new InstrumentException("Algorithm [{}] is not a DES algorithm!");
         }
 
@@ -272,7 +272,7 @@ public final class Builder {
         } else {
             KeySpec keySpec;
             try {
-                if (algorithm.startsWith("DESede")) {
+                if (algorithm.startsWith(Algorithm.DESede)) {
                     // DESede兼容
                     keySpec = new DESedeKeySpec(key);
                 } else {
@@ -467,7 +467,7 @@ public final class Builder {
      */
     public static KeyPair generateKeyPair(String algorithm, int keySize, byte[] seed) {
         // SM2算法需要单独定义其曲线生成
-        if ("SM2".equalsIgnoreCase(algorithm)) {
+        if (Algorithm.SM2.equalsIgnoreCase(algorithm)) {
             final ECGenParameterSpec sm2p256v1 = new ECGenParameterSpec(SM2_DEFAULT_CURVE);
             return generateKeyPair(algorithm, keySize, seed, sm2p256v1);
         }
@@ -568,7 +568,7 @@ public final class Builder {
         // 密钥模（modulus ）长度初始化定义
         if (keySize > 0) {
             // key长度适配修正
-            if ("EC".equalsIgnoreCase(algorithm) && keySize > 256) {
+            if (Algorithm.EC.equalsIgnoreCase(algorithm) && keySize > 256) {
                 // 对于EC（EllipticCurve）算法，密钥长度有限制，在此使用默认256
                 keySize = 256;
             }
@@ -612,8 +612,9 @@ public final class Builder {
         if (indexOfWith > 0) {
             algorithm = StringUtils.subSuf(algorithm, indexOfWith + "with".length());
         }
-        if ("ECDSA".equalsIgnoreCase(algorithm) || "SM2".equalsIgnoreCase(algorithm)) {
-            algorithm = "EC";
+        if (Algorithm.ECDSA.equalsIgnoreCase(algorithm)
+                || Algorithm.SM2.equalsIgnoreCase(algorithm)) {
+            algorithm = Algorithm.EC;
         }
         return algorithm;
     }
@@ -1956,7 +1957,7 @@ public final class Builder {
         // 根据曲线恢复公钥格式
         ECParameterSpec ecSpec = new ECNamedCurveSpec(curveName, curve, namedSpec.getG(), namedSpec.getN());
 
-        final KeyFactory PubKeyGen = getKeyFactory("EC");
+        final KeyFactory PubKeyGen = getKeyFactory(Algorithm.EC);
         try {
             return PubKeyGen.generatePublic(new ECPublicKeySpec(point, ecSpec));
         } catch (GeneralSecurityException e) {

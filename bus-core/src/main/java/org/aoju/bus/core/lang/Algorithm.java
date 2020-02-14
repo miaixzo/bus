@@ -41,6 +41,7 @@ public class Algorithm {
     public static final String RSA_None = "RSA/None/NoPadding";
     // EC（Elliptic Curve）算法
     public static final String EC = "EC";
+    public static final String ECDSA = "ECDSA";
 
     /***************************** 非对称-签名算法 *****************************/
     // The RSA signature algorithm
@@ -96,6 +97,7 @@ public class Algorithm {
     public static final String PBEWithMD5AndDES = "PBEWithMD5AndDES";
     public static final String PBEWithSHA1AndDESede = "PBEWithSHA1AndDESede";
     public static final String PBEWithSHA1AndRC2_40 = "PBEWithSHA1AndRC2_40";
+
     /******************************* 国密算法 *******************************/
     public static final String SM1 = "SM1";
     public static final String SM2 = "SM2";

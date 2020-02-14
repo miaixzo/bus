@@ -84,7 +84,7 @@ public class FieldCompare<T> implements Comparator<T>, Serializable {
         int result = ObjectUtils.compare(fieldValue1, fieldValue2);
         if (0 == result) {
             //避免TreeSet / TreeMap 过滤掉排序字段相同但是对象不相同的情况
-            result = CompareUtils.compare(o1, o2, true);
+            result = ObjectUtils.compare(o1, o2, true);
         }
         return result;
     }

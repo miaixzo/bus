@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.http.accord.platform;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
@@ -305,7 +306,7 @@ public class AndroidPlatform extends Platform {
             try {
                 X509Certificate[] certificates = chain.toArray(new X509Certificate[chain.size()]);
                 return (List<Certificate>) checkServerTrusted.invoke(
-                        x509TrustManagerExtensions, certificates, "RSA", hostname);
+                        x509TrustManagerExtensions, certificates, Algorithm.RSA, hostname);
             } catch (InvocationTargetException e) {
                 SSLPeerUnverifiedException exception = new SSLPeerUnverifiedException(e.getMessage());
                 exception.initCause(e);

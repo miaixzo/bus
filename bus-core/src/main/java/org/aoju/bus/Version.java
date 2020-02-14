@@ -24,7 +24,7 @@
 package org.aoju.bus;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.CompareUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
@@ -191,7 +191,7 @@ public class Version {
      * @return {int}
      */
     private int compare(String version) {
-        return CompareUtils.compare(get(), version, complete);
+        return ObjectUtils.compare(get(), version, complete);
     }
 
 }

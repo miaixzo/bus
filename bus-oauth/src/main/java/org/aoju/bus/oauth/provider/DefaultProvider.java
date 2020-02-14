@@ -26,6 +26,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSON;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.key.ObjectID;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -64,7 +65,6 @@ import java.util.TreeMap;
  */
 public abstract class DefaultProvider implements Provider {
 
-    private static final String ALGORITHM = "HmacSHA256";
     protected Context context;
     protected Complex source;
     protected StateCache stateCache;
@@ -105,11 +105,11 @@ public abstract class DefaultProvider implements Provider {
      */
     private static byte[] sign(byte[] key, byte[] data) {
         try {
-            Mac mac = Mac.getInstance(ALGORITHM);
-            mac.init(new SecretKeySpec(key, ALGORITHM));
+            Mac mac = Mac.getInstance(Algorithm.HmacSHA256);
+            mac.init(new SecretKeySpec(key, Algorithm.HmacSHA256));
             return mac.doFinal(data);
         } catch (NoSuchAlgorithmException ex) {
-            throw new InstrumentException("Unsupported algorithm: " + ALGORITHM, ex);
+            throw new InstrumentException("Unsupported algorithm: " + Algorithm.HmacSHA256, ex);
         } catch (InvalidKeyException ex) {
             throw new InstrumentException("Invalid key: " + Arrays.toString(key), ex);
         }
@@ -259,7 +259,7 @@ public abstract class DefaultProvider implements Provider {
         MessageDigest md;
         StringBuilder buffer = null;
         try {
-            md = MessageDigest.getInstance("MD5");
+            md = MessageDigest.getInstance(Algorithm.MD5);
             md.update(str.getBytes(StandardCharsets.UTF_8));
             byte[] byteData = md.digest();
             buffer = new StringBuilder();

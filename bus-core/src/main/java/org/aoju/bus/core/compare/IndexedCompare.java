@@ -24,7 +24,7 @@
 package org.aoju.bus.core.compare;
 
 import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.CompareUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.util.Comparator;
 
@@ -56,7 +56,7 @@ public class IndexedCompare<T> implements Comparator<T> {
         final int index2 = ArrayUtils.indexOf(array, o2);
         if (index1 == index2) {
             //位置相同使用自然排序
-            return CompareUtils.compare(o1, o2, true);
+            return ObjectUtils.compare(o1, o2, true);
         }
         return index1 < index2 ? -1 : 1;
     }

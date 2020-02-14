@@ -820,10 +820,10 @@ public class Convert {
      *
      * @param unicode Unicode符
      * @return String 字符串
-     * @see StringUtils#toUnicodeString(String)
+     * @see StringUtils#toUnicodeStr(String)
      */
-    public static String toUnicodeString(String unicode) {
-        return StringUtils.toUnicodeString(unicode);
+    public static String toUnicodeStr(String unicode) {
+        return StringUtils.toUnicodeStr(unicode);
     }
 
     /**

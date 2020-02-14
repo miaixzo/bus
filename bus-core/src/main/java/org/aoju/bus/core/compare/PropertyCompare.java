@@ -25,7 +25,6 @@ package org.aoju.bus.core.compare;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.BeanUtils;
-import org.aoju.bus.core.utils.CompareUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.io.Serializable;
@@ -92,7 +91,7 @@ public class PropertyCompare<T> implements Comparator<T>, Serializable {
     private int compare(T o1, T o2, java.lang.Comparable fieldValue1, java.lang.Comparable fieldValue2) {
         int result = ObjectUtils.compare(fieldValue1, fieldValue2, isNullGreater);
         if (0 == result) {
-            result = CompareUtils.compare(o1, o2, this.isNullGreater);
+            result = ObjectUtils.compare(o1, o2, this.isNullGreater);
         }
         return result;
     }

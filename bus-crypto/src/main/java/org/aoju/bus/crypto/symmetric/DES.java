@@ -135,7 +135,7 @@ public class DES extends Symmetric {
      * @param key     密钥，长度：8的倍数
      */
     public DES(String mode, String padding, byte[] key) {
-        this(mode, padding, Builder.generateKey("DES", key), null);
+        this(mode, padding, Builder.generateKey(Algorithm.DES, key), null);
     }
 
     /**
@@ -147,7 +147,7 @@ public class DES extends Symmetric {
      * @param iv      加盐
      */
     public DES(String mode, String padding, byte[] key, byte[] iv) {
-        this(mode, padding, Builder.generateKey("DES", key), null == iv ? null : new IvParameterSpec(iv));
+        this(mode, padding, Builder.generateKey(Algorithm.DES, key), null == iv ? null : new IvParameterSpec(iv));
     }
 
     /**

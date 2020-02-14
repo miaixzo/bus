@@ -30,26 +30,13 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * 字符串处理类
@@ -765,7 +752,7 @@ public class StringUtils extends TextUtils {
             if (str == null) {
                 return null;
             }
-            return new String(base64ToByte(str), StandardCharsets.UTF_8);
+            return new String(base64ToByte(str), org.aoju.bus.core.lang.Charset.UTF_8);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -785,54 +772,6 @@ public class StringUtils extends TextUtils {
                 return null;
             }
             return new String(base64ToByte(str), charset);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 将字节数据处理成base64字符串
-     *
-     * @param bts 字节数据
-     * @return base64编码后的字符串(用于传输)
-     */
-    public static String toBase64(byte[] bts) {
-        if (bts == null || bts.length == 0) {
-            return null;
-        }
-        return Base64.getEncoder().encodeToString(bts);
-    }
-
-    /**
-     * 将String处理成base64字符串
-     * (用默认的String编码集)
-     *
-     * @param oldStr 原字符串
-     * @return base64编码后的字符串(用于传输)
-     */
-    public static String toBase64(String oldStr) {
-        if (oldStr == null) {
-            return null;
-        }
-        byte[] bts = oldStr.getBytes();
-        return Base64.getEncoder().encodeToString(bts);
-    }
-
-    /**
-     * 将String处理成base64字符串
-     * (用默认的String编码集)
-     *
-     * @param oldStr  原字符串
-     * @param charset 字符编码
-     * @return base64编码后的字符串(用于传输)
-     */
-    public static String toBase64(String oldStr, String charset) {
-        try {
-            if (oldStr == null) {
-                return null;
-            }
-            byte[] bts = oldStr.getBytes(charset);
-            return Base64.getEncoder().encodeToString(bts);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -877,240 +816,6 @@ public class StringUtils extends TextUtils {
             bytes[i] = (byte) Integer.parseInt(subStr, 16);
         }
         return bytes;
-    }
-
-    /**
-     * 将byte转换为MD5
-     *
-     * @param data byte[]
-     * @return 字符串
-     */
-    public static String toMD5(byte[] data) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(data);
-            return byteArrayToHex(digest.digest());
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 将字符串转换为MD5
-     *
-     * @param data String
-     * @return 字符串
-     */
-    public static String toMD5(String data) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(data.getBytes());
-            return byteArrayToHex(digest.digest());
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 将字符串转换为MD5
-     *
-     * @param data    String
-     * @param charset 字符集
-     * @return 字符串
-     */
-    public static String toMD5(String data, String charset) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(data.getBytes(charset));
-            return byteArrayToHex(digest.digest());
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-
-    /**
-     * DES加密
-     *
-     * @param text    要加密的数据
-     * @param token   约定密串
-     * @param charset 原文的编码集
-     * @return 加密后的密文
-     */
-    public static String toDES(String text, String token, String charset) {
-        try {
-            Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-            byte[] btToken = charset == null ? token.getBytes() : token.getBytes(charset);
-            byte[] btText = charset == null ? text.getBytes() : text.getBytes(charset);
-            DESKeySpec desKeySpec = new DESKeySpec(btToken);
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-            SecretKey secretKey = keyFactory.generateSecret(desKeySpec);
-            IvParameterSpec iv = new IvParameterSpec(btToken);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
-            byte[] bts = cipher.doFinal(btText);
-            return toBase64(bts);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * DES加密
-     *
-     * @param text  要加密的数据
-     * @param token 约定密串
-     * @return 加密后的密文
-     */
-    public static String toDES(String text, String token) {
-        return toDES(text, token, null);
-    }
-
-    /**
-     * DES解密
-     *
-     * @param text    要加密的数据
-     * @param token   约定密串
-     * @param charset 原文的编码集
-     * @return 原文字符串
-     */
-    public static String toDESString(String text, String token, String charset) {
-        try {
-            byte[] bytesrc = base64ToByte(text);
-            Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-            byte[] btToken = charset == null ? token.getBytes() : token.getBytes(charset);
-            DESKeySpec desKeySpec = new DESKeySpec(btToken);
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-            SecretKey secretKey = keyFactory.generateSecret(desKeySpec);
-            IvParameterSpec iv = new IvParameterSpec(btToken);
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
-            byte[] retByte = cipher.doFinal(bytesrc);
-            return charset == null ? new String(retByte) : new String(retByte, charset);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * DES解密
-     *
-     * @param text  要加密的数据
-     * @param token 约定密串
-     * @return 原文字符串
-     */
-    public static String toDESString(String text, String token) {
-        return toDESString(text, token, null);
-    }
-
-    /**
-     * AES加密
-     *
-     * @param text    要加密的数据
-     * @param token   约定密串
-     * @param charset 原数据字符集
-     * @return 加密后的密文
-     */
-    public static String toAES(String text, String token, String charset) {
-        try {
-            KeyGenerator kgen = KeyGenerator.getInstance("AES");
-            kgen.init(128, new SecureRandom(charset == null ? token.getBytes() : token.getBytes(charset)));
-            SecretKey secretKey = kgen.generateKey();
-            byte[] enCodeFormat = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-            Cipher cipher = Cipher.getInstance("AES");// 创建密码器
-            byte[] btText = charset == null ? text.getBytes() : text.getBytes(charset);
-            cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
-            byte[] bts = cipher.doFinal(btText);
-            return toBase64(bts);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * AES加密
-     *
-     * @param text  要加密的数据
-     * @param token 约定密串
-     * @return 加密后的密文
-     */
-    public static String toAES(String text, String token) {
-        return toAES(text, token, null);
-    }
-
-    /**
-     * AES解密
-     *
-     * @param text    要加密的数据
-     * @param token   约定密串
-     * @param charset 原数据字符集
-     * @return 解密后的原文
-     */
-    public static String tooAESString(String text, String token, String charset) {
-        try {
-            byte[] btText = base64ToByte(text);
-            KeyGenerator kgen = KeyGenerator.getInstance("AES");
-            kgen.init(128, new SecureRandom(charset == null ? token.getBytes() : token.getBytes(charset)));
-            SecretKey secretKey = kgen.generateKey();
-            byte[] enCodeFormat = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-            Cipher cipher = Cipher.getInstance("AES");// 创建密码器
-            cipher.init(Cipher.DECRYPT_MODE, key);// 初始化
-            byte[] bts = cipher.doFinal(btText);
-            return charset == null ? new String(bts) : new String(bts, charset);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * AES解密
-     *
-     * @param text  要加密的数据
-     * @param token 约定密串
-     * @return 解密后的原文
-     */
-    public static String tooAESString(String text, String token) {
-        return tooAESString(text, token, null);
-    }
-
-    /**
-     * 转换为全角
-     *
-     * @param input 需要转换的字符串
-     * @return 全角字符串.
-     */
-    public static String toFullString(String input) {
-        char[] c = input.toCharArray();
-        for (int i = 0; i < c.length; i++) {
-            // 空格单独处理, 其余的偏移量为65248
-            if (c[i] == Symbol.C_SPACE) {
-                c[i] = '\u3000'; // 中文空格
-            } else if (c[i] < 128) {
-                c[i] = (char) (c[i] + 65248);
-            }
-        }
-        return new String(c);
-    }
-
-    /**
-     * 转换为半角
-     *
-     * @param input 需要转换的字符串
-     * @return 半角字符串
-     */
-    public static String toHalfString(String input) {
-        char[] c = input.toCharArray();
-        for (int i = 0; i < c.length; i++) {
-            // 是否是中文空格, 单独处理
-            if (c[i] == '\u3000') {
-                c[i] = Symbol.C_SPACE;
-            }
-            // 校验是否字符值是否在此数值之间
-            else if (c[i] > 65248 && c[i] < (128 + 65248)) {
-                c[i] = (char) (c[i] - 65248);
-            }
-        }
-        return new String(c);
     }
 
     /**
@@ -1166,7 +871,7 @@ public class StringUtils extends TextUtils {
      * @param input unicode编码的字符串
      * @return 原始字符串
      */
-    public static String toUnicodeString(String input) {
+    public static String toUnicodeStr(String input) {
         StringBuilder string = new StringBuilder();
         String[] hex = input.split("\\\\u");
         for (int i = 1; i < hex.length; i++) {
@@ -1187,7 +892,7 @@ public class StringUtils extends TextUtils {
      * @param isSkipAscii 是跳过Ascii
      * @return 普通字符串
      */
-    public static String toUnicodeString(String unicode, boolean isSkipAscii) {
+    public static String toUnicodeStr(String unicode, boolean isSkipAscii) {
         if (StringUtils.isBlank(unicode)) {
             return unicode;
         }
@@ -1222,256 +927,7 @@ public class StringUtils extends TextUtils {
             }
             return sb.toString();
         }
-        return toUnicodeString(unicode);
-    }
-
-    /**
-     * 将字符串转换为url参数形式(中文和特殊字符会以%xx表示)
-     *
-     * @param input 字符串
-     * @return 字符串
-     */
-    public static String toUrlStr(String input) {
-        return toUrlStr(input, "UTF-8");
-    }
-
-    /**
-     * 将字符串转换为url参数形式(中文和特殊字符会以%xx表示)
-     *
-     * @param input   字符串
-     * @param charset 编码
-     * @return 字符串
-     */
-    public static String toUrlStr(String input, String charset) {
-        try {
-            return URLEncoder.encode(input, charset);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 将url参数形式的字符串转换为原始字符串(中文和特殊字符会以%xx表示)
-     *
-     * @param input 字符串
-     * @return 字符串
-     */
-    public static String toUrlString(String input) {
-        return toUrlString(input, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
-    }
-
-    /**
-     * 将url参数形式的字符串转换为原始字符串(中文和特殊字符会以%xx表示)
-     *
-     * @param input   字符串
-     * @param charset 编码
-     * @return 字符串
-     */
-    public static String toUrlString(String input, String charset) {
-        try {
-            return URLDecoder.decode(input, charset);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 系统压缩(返回base64后的压缩数据)
-     *
-     * @param bytes 字节
-     * @return string
-     */
-    public static String compress(byte[] bytes) {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            GZIPOutputStream gzip = new GZIPOutputStream(out);
-            gzip.write(bytes);
-            gzip.close();
-            return StringUtils.toBase64(out.toByteArray());
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 系统压缩(返回base64后的压缩数据)
-     *
-     * @param val     字符
-     * @param charset 编码
-     * @return string
-     */
-    public static String compress(String val, String... charset) {
-        if (StringUtils.isEmpty(val)) {
-            return val;
-        }
-        try {
-            return compress(charset != null && charset.length > 0 ? val.getBytes(charset[0]) : val.getBytes());
-        } catch (UnsupportedEncodingException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 系统解压缩
-     *
-     * @param val     字符
-     * @param charset 编码
-     * @return string
-     */
-    public static String unCompress(String val, String... charset) {
-        try {
-            if (StringUtils.isEmpty(val)) {
-                return val;
-            }
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ByteArrayInputStream in = new ByteArrayInputStream(base64ToByte(val));
-            GZIPInputStream gzip = new GZIPInputStream(in);
-            byte[] buffer = new byte[256];
-            int n = 0;
-            while ((n = gzip.read(buffer)) >= 0) {
-                out.write(buffer, 0, n);
-            }
-            return charset != null && charset.length > 0 ? new String(out.toByteArray(), charset[0])
-                    : new String(out.toByteArray());
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 自定义二级压缩(最终显示为base64后的串)
-     *
-     * @param bts 原始字符串
-     * @return 压缩后的字符串
-     */
-    public static String compress2(byte[] bts) {
-        try {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            byte now = 0;
-            int count = 0;
-            for (int i = 0; i < bts.length; i++) {
-                if (count == 0) {
-                    now = bts[i];
-                    count++;
-                    continue;
-                }
-                if (now == bts[i] && count < 0xFF) {
-                    count++;
-                } else {
-                    bout.write(count);
-                    bout.write(now);
-                    count = 0;
-                    // 重新本次循环
-                    i--;
-                }
-            }
-            // 补全最后一次
-            bout.write(count);
-            bout.write(now);
-            count = 0;
-            bout.flush();
-
-            // 第二次处理
-            bts = bout.toByteArray();
-            ByteArrayOutputStream head = new ByteArrayOutputStream();
-            ByteArrayOutputStream body = new ByteArrayOutputStream();
-            for (int i = 0; i < bts.length; i += 2) {
-                if (count == 0) {
-                    now = bts[i];
-                    count = 1;
-                    body.write(bts[i + 1]);
-                    continue;
-                }
-                if (now == bts[i] && count < 0xFF) {
-                    count++;
-                    body.write(bts[i + 1]);
-                } else {
-                    head.write(count);
-                    head.write(now);
-                    count = 0;
-                    // 重新本次循环
-                    i -= 2;
-                }
-            }
-            // 补全最后一次
-            head.write(count);
-            head.write(now);
-            head.flush();
-            body.flush();
-            // 计算压缩头大小
-            int size = head.size();
-            // 合并
-            ByteArrayOutputStream all = new ByteArrayOutputStream();
-            all.write(size >> 24);
-            all.write(size >> 16);
-            all.write(size >> 8);
-            all.write(size);
-            all.write(head.toByteArray());
-            all.write(body.toByteArray());
-            all.flush();
-            return StringUtils.toBase64(all.toByteArray());
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 自定义二级压缩(最终显示为base64后的串)
-     *
-     * @param val     原始字符串
-     * @param charset 字符编码
-     * @return 压缩后的字符串
-     */
-    public static String compress2(String val, String... charset) {
-        if (StringUtils.isEmpty(val)) {
-            return val;
-        }
-        try {
-            return compress2(
-                    charset != null && charset.length > 0 ? val.getBytes(charset[0]) : val.getBytes());
-        } catch (UnsupportedEncodingException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 自定义二级解压缩
-     *
-     * @param val     base64后的压缩数据
-     * @param charset 字符编码
-     * @return 解压后的原数据
-     */
-    public static String unCompress2(String val, String... charset) {
-        try {
-            byte[] bts = StringUtils.base64ToByte(val);
-            int size = (bts[0] << 24) + (bts[1] << 16) + (bts[2] << 8) + bts[3];
-            ByteArrayOutputStream body = new ByteArrayOutputStream();
-            // 首次解压
-            int count = 4 + size;
-            for (int i = 4; i < 4 + size; i += 2) {
-                int k = bts[i];
-                byte bt = bts[i + 1];
-                for (int j = 0; j < k; j++) {
-                    body.write(bt);
-                    body.write(bts[count]);
-                    count++;
-                }
-            }
-            body.flush();
-            bts = body.toByteArray();
-            // 二次解压
-            ByteArrayOutputStream all = new ByteArrayOutputStream();
-            for (int i = 0; i < bts.length; i += 2) {
-                for (int j = 0; j < bts[i]; j++) {
-                    all.write(bts[i + 1]);
-                }
-            }
-            all.flush();
-            bts = all.toByteArray();
-            return charset != null && charset.length > 0 ? new String(bts, charset[0]) : new String(bts);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
+        return toUnicodeStr(unicode);
     }
 
     /**
@@ -1491,25 +947,6 @@ public class StringUtils extends TextUtils {
      */
     public static boolean equals(CharSequence str1, CharSequence str2) {
         return equals(str1, str2, false);
-    }
-
-    /**
-     * 比较两个字符串（大小写不敏感）
-     *
-     * <pre>
-     * equalsIgnoreCase(null, null)   = true
-     * equalsIgnoreCase(null, &quot;abc&quot;)  = false
-     * equalsIgnoreCase(&quot;abc&quot;, null)  = false
-     * equalsIgnoreCase(&quot;abc&quot;, &quot;abc&quot;) = true
-     * equalsIgnoreCase(&quot;abc&quot;, &quot;ABC&quot;) = true
-     * </pre>
-     *
-     * @param str1 要比较的字符串1
-     * @param str2 要比较的字符串2
-     * @return 如果两个字符串相同, 或者都是null, 则返回true
-     */
-    public static boolean equalsIgnoreCase(CharSequence str1, CharSequence str2) {
-        return equals(str1, str2, true);
     }
 
     /**
@@ -1537,6 +974,48 @@ public class StringUtils extends TextUtils {
             return str1.equals(str2);
         }
     }
+    
+    /**
+     * 比较两个字符串（大小写不敏感）
+     *
+     * <pre>
+     * equalsIgnoreCase(null, null)   = true
+     * equalsIgnoreCase(null, &quot;abc&quot;)  = false
+     * equalsIgnoreCase(&quot;abc&quot;, null)  = false
+     * equalsIgnoreCase(&quot;abc&quot;, &quot;abc&quot;) = true
+     * equalsIgnoreCase(&quot;abc&quot;, &quot;ABC&quot;) = true
+     * </pre>
+     *
+     * @param str1 要比较的字符串1
+     * @param str2 要比较的字符串2
+     * @return 如果两个字符串相同, 或者都是null, 则返回true
+     */
+    public static boolean equalsIgnoreCase(CharSequence str1, CharSequence str2) {
+        return equals(str1, str2, true);
+    }
+
+    /**
+     * 格式化文本, {} 表示占位符
+     * 此方法只是简单将占位符 {} 按照顺序替换为参数
+     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
+     * 例：
+     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b
+     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a
+     * 转义\： format("this is \\\\{} for {}", "a", "b") =》 this is \a for b
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param params   参数值
+     * @return 格式化后的文本
+     */
+    public static String format(CharSequence template, Object... params) {
+        if (null == template) {
+            return null;
+        }
+        if (ArrayUtils.isEmpty(params) || isBlank(template)) {
+            return template.toString();
+        }
+        return format(template.toString(), params);
+    }
 
     /**
      * 格式化字符串
@@ -1544,8 +1023,8 @@ public class StringUtils extends TextUtils {
      * 如果想输出 {} 使用 \\转义 { 即可,如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
      * 例：
      * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b
-     * 转义{}： 	format("this is \\{} for {}", "a", "b") =》 this is \{} for a
-     * 转义\：		format("this is \\\\{} for {}", "a", "b") =》 this is \a for b
+     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a
+     * 转义\：format("this is \\\\{} for {}", "a", "b") =》 this is \a for b
      *
      * @param val      字符串模板
      * @param argArray 参数列表
@@ -1576,7 +1055,7 @@ public class StringUtils extends TextUtils {
                     if (delimIndex > 1 && val.charAt(delimIndex - 2) == Symbol.C_BACKSLASH) {//双转义符
                         //转义符之前还有一个转义符,占位符依旧有效
                         sbuf.append(val, handledPosition, delimIndex - 1);
-                        sbuf.append(utf8Str(argArray[argIndex]));
+                        sbuf.append(str(argArray[argIndex]));
                         handledPosition = delimIndex + 2;
                     } else {
                         //占位符被转义
@@ -1587,7 +1066,7 @@ public class StringUtils extends TextUtils {
                     }
                 } else {//正常占位符
                     sbuf.append(val, handledPosition, delimIndex);
-                    sbuf.append(utf8Str(argArray[argIndex]));
+                    sbuf.append(str(argArray[argIndex]));
                     handledPosition = delimIndex + 2;
                 }
             }
@@ -1601,15 +1080,15 @@ public class StringUtils extends TextUtils {
 
     /**
      * 将对象转为字符串
-     * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组 2、对象数组会调用Arrays.toString方法
+     * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
+     * 2、对象数组会调用Arrays.toString方法
      *
      * @param obj 对象
      * @return 字符串
      */
-    public static String utf8Str(Object obj) {
-        return str(obj, StandardCharsets.UTF_8);
+    public static String str(Object obj) {
+        return str(obj, org.aoju.bus.core.lang.Charset.UTF_8);
     }
-
 
     /**
      * 将对象转为字符串
@@ -2289,7 +1768,8 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      * @since 5.6.0
      */
-    public static List<String> splitIgnoreCase(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+    public static List<String> splitIgnoreCase(String str, char separator, int limit, boolean isTrim,
+                                               boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, true);
     }
 
@@ -2304,7 +1784,8 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      * @since 5.6.0
      */
-    public static List<String> splitIgnoreCase(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+    public static List<String> splitIgnoreCase(String str, String separator, int limit, boolean isTrim,
+                                               boolean ignoreEmpty) {
         return split(str, separator, limit, isTrim, ignoreEmpty, true);
     }
 
@@ -2430,7 +1911,8 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty      是否忽略空串
      * @return 切分后的集合
      */
-    public static String[] splitToArray(String str, Pattern separatorPattern, int limit, boolean isTrim, boolean ignoreEmpty) {
+    public static String[] splitToArray(String str, Pattern separatorPattern, int limit, boolean isTrim,
+                                        boolean ignoreEmpty) {
         return toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
     }
 
@@ -2444,7 +1926,8 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty    是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitByRegex(String str, String separatorRegex, int limit, boolean isTrim, boolean ignoreEmpty) {
+    public static List<String> splitByRegex(String str, String separatorRegex, int limit, boolean isTrim,
+                                            boolean ignoreEmpty) {
         final Pattern pattern = PatternUtils.get(separatorRegex);
         return split(str, pattern, limit, isTrim, ignoreEmpty);
     }
@@ -2628,7 +2111,8 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(CharSequence str, CharSequence separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+    public static List<String> split(CharSequence str, CharSequence separator, int limit, boolean isTrim,
+                                     boolean ignoreEmpty) {
         if (null == str) {
             return new ArrayList<>(0);
         }
@@ -2675,7 +2159,8 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(CharSequence str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+    public static List<String> split(CharSequence str, char separator, int limit, boolean isTrim,
+                                     boolean ignoreEmpty) {
         if (null == str) {
             return new ArrayList<>(0);
         }
@@ -2731,7 +2216,8 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      * @since 5.6.0
      */
-    public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
+    public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty,
+                                     boolean ignoreCase) {
         if (StringUtils.isEmpty(str)) {
             return new ArrayList<>(0);
         }
@@ -2768,7 +2254,8 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      * @since 5.6.0
      */
-    public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
+    public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty,
+                                     boolean ignoreCase) {
         if (isEmpty(str)) {
             return new ArrayList<>(0);
         }
@@ -3037,7 +2524,8 @@ public class StringUtils extends TextUtils {
      * @return 位置
      * @since 5.6.0
      */
-    public static int lastIndexOf(final CharSequence str, final CharSequence searchStr, int fromIndex, boolean ignoreCase) {
+    public static int lastIndexOf(final CharSequence str, final CharSequence searchStr, int fromIndex,
+                                  boolean ignoreCase) {
         if (str == null || searchStr == null) {
             return INDEX_NOT_FOUND;
         }
@@ -3813,7 +3301,8 @@ public class StringUtils extends TextUtils {
      * @param max          要替换的值的最大数目，如果没有最大值，则为{@code -1}
      * @return 处理了任何替换的文本，{@code null}如果输入为空字符串
      */
-    public static String replace(final String text, final String searchString, final String replacement, final int max) {
+    public static String replace(final String text, final String searchString, final String replacement,
+                                 final int max) {
         return replace(text, searchString, replacement, max, false);
     }
 
@@ -3841,7 +3330,8 @@ public class StringUtils extends TextUtils {
      * @param ignoreCase   如果真替换不区分大小写，则为区分大小写
      * @return 处理了任何替换的文本，{@code null}如果输入为空字符串
      */
-    private static String replace(final String text, String searchString, final String replacement, int max, final boolean ignoreCase) {
+    private static String replace(final String text, String searchString, final String replacement, int max,
+                                  final boolean ignoreCase) {
         if (isEmpty(text) || isEmpty(searchString) || replacement == null || max == 0) {
             return text;
         }
@@ -3912,7 +3402,8 @@ public class StringUtils extends TextUtils {
      * @return 处理了任何替换的文本，{@code null}如果输入为空字符串
      * @since 3.5.0
      */
-    public static String replaceIgnoreCase(final String text, final String searchString, final String replacement, final int max) {
+    public static String replaceIgnoreCase(final String text, final String searchString, final String replacement,
+                                           final int max) {
         return replace(text, searchString, replacement, max, true);
     }
 
@@ -3964,7 +3455,8 @@ public class StringUtils extends TextUtils {
      * @throws IllegalStateException    如果搜索是重复的，并且由于一个的输出是另一个的输入而存在一个无限循环
      * @throws IllegalArgumentException 如果数组的长度不相同(可以为null，大小为0)
      */
-    public static String replaceEachRepeatedly(final String text, final String[] searchList, final String[] replacementList) {
+    public static String replaceEachRepeatedly(final String text, final String[] searchList,
+                                               final String[] replacementList) {
         final int timeToLive = searchList == null ? 0 : searchList.length;
         return replaceEach(text, searchList, replacementList, true, timeToLive);
     }
@@ -4208,7 +3700,8 @@ public class StringUtils extends TextUtils {
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence str, CharSequence searchStr, CharSequence replacement, boolean ignoreCase) {
+    public static String replace(CharSequence str, CharSequence searchStr, CharSequence replacement,
+                                 boolean ignoreCase) {
         return replace(str, 0, searchStr, replacement, ignoreCase);
     }
 
@@ -4222,7 +3715,8 @@ public class StringUtils extends TextUtils {
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence str, int fromIndex, CharSequence searchStr, CharSequence replacement, boolean ignoreCase) {
+    public static String replace(CharSequence str, int fromIndex, CharSequence searchStr, CharSequence replacement,
+                                 boolean ignoreCase) {
         if (isEmpty(str) || isEmpty(searchStr)) {
             return str(str);
         }
@@ -5836,7 +5330,8 @@ public class StringUtils extends TextUtils {
      * @param suffixes   有效终止符的附加后缀(可选).
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
      */
-    private static String appendIfMissing(final String str, final CharSequence suffix, final boolean ignoreCase, final CharSequence... suffixes) {
+    private static String appendIfMissing(final String str, final CharSequence suffix, final boolean ignoreCase,
+                                          final CharSequence... suffixes) {
         if (str == null || isEmpty(suffix) || endWith(str, suffix, ignoreCase)) {
             return str;
         }
@@ -5880,7 +5375,8 @@ public class StringUtils extends TextUtils {
      * @param suffixes 有效终止符的附加后缀(可选).
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
      */
-    public static String appendIfMissing(final String str, final CharSequence suffix, final CharSequence... suffixes) {
+    public static String appendIfMissing(final String str, final CharSequence suffix, final CharSequence...
+            suffixes) {
         return appendIfMissing(str, suffix, false, suffixes);
     }
 
@@ -5914,7 +5410,8 @@ public class StringUtils extends TextUtils {
      * @param suffixes 有效终止符的附加后缀(可选).
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
      */
-    public static String appendIfMissingIgnoreCase(final String str, final CharSequence suffix, final CharSequence... suffixes) {
+    public static String appendIfMissingIgnoreCase(final String str, final CharSequence suffix, final CharSequence...
+            suffixes) {
         return appendIfMissing(str, suffix, true, suffixes);
     }
 
@@ -5927,7 +5424,8 @@ public class StringUtils extends TextUtils {
      * @param prefixes   有效的附加前缀(可选).
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
      */
-    private static String prependIfMissing(final String str, final CharSequence prefix, final boolean ignoreCase, final CharSequence... prefixes) {
+    private static String prependIfMissing(final String str, final CharSequence prefix, final boolean ignoreCase,
+                                           final CharSequence... prefixes) {
         if (str == null || isEmpty(prefix) || startWith(str, prefix, ignoreCase)) {
             return str;
         }
@@ -5971,7 +5469,8 @@ public class StringUtils extends TextUtils {
      * @param prefixes 有效的附加前缀(可选).
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
      */
-    public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence... prefixes) {
+    public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence...
+            prefixes) {
         return prependIfMissing(str, prefix, false, prefixes);
     }
 
@@ -6005,7 +5504,8 @@ public class StringUtils extends TextUtils {
      * @param prefixes 有效的附加前缀(可选).
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
      */
-    public static String prependIfMissingIgnoreCase(final String str, final CharSequence prefix, final CharSequence... prefixes) {
+    public static String prependIfMissingIgnoreCase(final String str, final CharSequence prefix,
+                                                    final CharSequence... prefixes) {
         return prependIfMissing(str, prefix, true, prefixes);
     }
 
@@ -6227,6 +5727,25 @@ public class StringUtils extends TextUtils {
         }
 
         return str.toString().concat(repeatByLength(padStr, minLength - strLen));
+    }
+
+    /**
+     * 字符串指定位置的字符是否与给定字符相同
+     * 如果字符串为null，返回false
+     * 如果给定的位置大于字符串长度，返回false
+     * 如果给定的位置小于0，返回false
+     *
+     * @param str      字符串
+     * @param position 位置
+     * @param c        需要对比的字符
+     * @return 字符串指定位置的字符是否与给定字符相同
+     * @since 3.3.1
+     */
+    public static boolean equalsCharAt(CharSequence str, int position, char c) {
+        if (null == str || position < 0) {
+            return false;
+        }
+        return str.length() > position && c == str.charAt(position);
     }
 
     /**
