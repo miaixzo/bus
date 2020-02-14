@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 当调用{@link #execute(MadeInOffice)}函数时，池将使用第一个{@link OfficeProcessEntryManager}来执行给定的任务
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
@@ -53,7 +53,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     private OfficeManager[] entries;
 
     /**
-     * 使用指定的设置构造类的新实例.
+     * 使用指定的设置构造类的新实例
      *
      * @param poolSize 池的大小
      * @param config   配置项
@@ -67,9 +67,9 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     }
 
     /**
-     * 在池启动时创建池条目.
+     * 在池启动时创建池条目
      *
-     * @return 一个池条目数组.
+     * @return 一个池条目数组
      */
     protected abstract OfficeManager[] createPoolEntries();
 
@@ -132,10 +132,10 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     }
 
     /**
-     * 获取管理器，等待配置的超时以使某个条目可用.
+     * 获取管理器，等待配置的超时以使某个条目可用
      *
-     * @return 一个有空的office管理器.
-     * @throws InstrumentException 如果我们找不到管理器.
+     * @return 一个有空的office管理器
+     * @throws InstrumentException 如果我们找不到管理器
      */
     private OfficeManager acquireManager() throws InstrumentException {
         try {
@@ -153,10 +153,10 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     }
 
     /**
-     * 使给定的管理器可用于执行任务.
+     * 使给定的管理器可用于执行任务
      *
-     * @param manager office管理器.
-     * @throws InstrumentException 如果我们不能释放管理器.
+     * @param manager office管理器
+     * @throws InstrumentException 如果我们不能释放管理器
      */
     private void releaseManager(final OfficeManager manager) throws InstrumentException {
         try {
@@ -167,9 +167,9 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     }
 
     /**
-     * 允许基类在池启动时执行操作.
+     * 允许基类在池启动时执行操作
      *
-     * @throws InstrumentException 如果发生错误.
+     * @throws InstrumentException 如果发生错误
      */
     protected void doStart() throws InstrumentException {
         for (final OfficeManager manager : entries) {
@@ -201,7 +201,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     }
 
     /**
-     * 构造{@link AbstractOfficePoolManager}的生成器.
+     * 构造{@link AbstractOfficePoolManager}的生成器
      */
     public abstract static class AbstractOfficeManagerPoolBuilder<
             B extends AbstractOfficeManagerPoolBuilder<B>>
@@ -215,11 +215,11 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
         }
 
         /**
-         * 指定允许处理任务的最大时间。如果任务的处理时间长于此超时，则此任务将中止并处理下一个任务.
+         * 指定允许处理任务的最大时间。如果任务的处理时间长于此超时，则此任务将中止并处理下一个任务
          * 默认: 120000毫秒 (2 分钟)
          *
-         * @param taskExecutionTimeout T任务执行超时，以毫秒为单位.
-         * @return 当前实例信息.
+         * @param taskExecutionTimeout T任务执行超时，以毫秒为单位
+         * @return 当前实例信息
          */
         public B taskExecutionTimeout(final long taskExecutionTimeout) {
             Assert.notNull(
@@ -231,11 +231,11 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
         }
 
         /**
-         * 指定转换队列中任务的最大生存时间。如果等待时间长于此超时，则任务将从队列中删除.
+         * 指定转换队列中任务的最大生存时间。如果等待时间长于此超时，则任务将从队列中删除
          * 默认: 30000毫秒 (30秒)
          *
-         * @param taskQueueTimeout 任务队列超时，以毫秒为单位.
-         * @return 当前实例信息.
+         * @param taskQueueTimeout 任务队列超时，以毫秒为单位
+         * @return 当前实例信息
          */
         public B taskQueueTimeout(final long taskQueueTimeout) {
             this.taskQueueTimeout = taskQueueTimeout;
@@ -243,9 +243,9 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
         }
 
         /**
-         * 创建此生成器指定的管理器.
+         * 创建此生成器指定的管理器
          *
-         * @return 由该生成器指定的管理器.
+         * @return 由该生成器指定的管理器
          */
         protected abstract AbstractOfficePoolManager build();
     }

@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * 注释用于绑定的注释
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 @Target(ElementType.ANNOTATION_TYPE)

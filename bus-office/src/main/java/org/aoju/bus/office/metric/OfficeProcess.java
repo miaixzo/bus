@@ -47,7 +47,7 @@ import java.util.List;
  * 表示正在执行的office程序的实例.
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class OfficeProcess {
@@ -168,9 +168,9 @@ public class OfficeProcess {
     }
 
     /**
-     * 获取office进程的退出码.
+     * 获取office进程的退出码
      *
-     * @return 进程的退出值。值0表示正常终止。如果进程尚未终止，则返回{@code null}.
+     * @return 进程的退出值。值0表示正常终止。如果进程尚未终止，则返回{@code null}
      */
     public Integer getExitCode() {
         if (ObjectUtils.isEmpty(process)) {
@@ -180,12 +180,12 @@ public class OfficeProcess {
     }
 
     /**
-     * 获取office进程的退出码。我们将尝试获取退出代码，直到成功或达到指定的超时为止.
+     * 获取office进程的退出码。我们将尝试获取退出代码，直到成功或达到指定的超时为止
      *
-     * @param retryInterval 每次退出码检索尝试之间的间隔.
-     * @param retryTimeout  超时之后，我们将不再尝试检索退出码.
-     * @return 进程的退出值。值0表示正常终止.
-     * @throws InstrumentException 如果无法获得进程的退出码.
+     * @param retryInterval 每次退出码检索尝试之间的间隔
+     * @param retryTimeout  超时之后，我们将不再尝试检索退出码
+     * @return 进程的退出值。值0表示正常终止
+     * @throws InstrumentException 如果无法获得进程的退出码
      */
     public int getExitCode(final long retryInterval, final long retryTimeout)
             throws InstrumentException {
@@ -202,19 +202,19 @@ public class OfficeProcess {
     }
 
     /**
-     * 获取office进程的配置文件目录.
+     * 获取office进程的配置文件目录
      *
-     * @return 概要目录实例.
+     * @return 概要目录实例
      */
     private File getInstanceProfileDir() {
         return new File(
                 config.getWorkingDir(),
                 ".converter_"
-                        + unoUrl.getConnectionAndParametersAsString().replace(Symbol.C_COMMA, Symbol.C_UNDERLINE).replace(Symbol.C_EQUAL,  Symbol.C_HYPHEN));
+                        + unoUrl.getConnectionAndParametersAsString().replace(Symbol.C_COMMA, Symbol.C_UNDERLINE).replace(Symbol.C_EQUAL, Symbol.C_HYPHEN));
     }
 
     /**
-     * 获取office进程是否正在运行.
+     * 获取office进程是否正在运行
      *
      * @return {@code true} 是正在运行的office进程;{@code false 否则}
      */
@@ -223,9 +223,9 @@ public class OfficeProcess {
     }
 
     /**
-     * 准备office流程的概要目录.
+     * 准备office流程的概要目录
      *
-     * @throws InstrumentException 如果模板配置文件目录不能复制到新的实例配置文件目录.
+     * @throws InstrumentException 如果模板配置文件目录不能复制到新的实例配置文件目录
      */
     private void prepareInstanceProfileDir() throws InstrumentException {
         if (instanceProfileDir.exists()) {
@@ -242,10 +242,10 @@ public class OfficeProcess {
     }
 
     /**
-     * 准备用于启动office流程的ProcessBuilder.
+     * 准备用于启动office流程的ProcessBuilder
      *
-     * @param acceptString office进程的连接字符串(accept参数).
-     * @return 创建的ProcessBuilder.
+     * @param acceptString office进程的连接字符串(accept参数)
+     * @return 创建的ProcessBuilder
      */
     private ProcessBuilder prepareProcessBuilder(final String acceptString) {
         final List<String> command = new ArrayList<>();
@@ -271,20 +271,20 @@ public class OfficeProcess {
     }
 
     /**
-     * 启动office流程.
+     * 启动office流程
      *
-     * @throws InstrumentException 如果无法启动office进程.
+     * @throws InstrumentException 如果无法启动office进程
      */
     public void start() throws InstrumentException {
         start(false);
     }
 
     /**
-     * 启动office流程.
+     * 启动office流程
      *
      * @param restart 判断是否需要重新启动,重新启动将假定实例配置文件目录已经创建
      *                如果要重新创建实例配置文件目录,应该将{@code restart}设置为{@code false}
-     * @throws InstrumentException 如果无法启动office进程.
+     * @throws InstrumentException 如果无法启动office进程
      */
     public void start(final boolean restart) throws InstrumentException {
         final String acceptString =

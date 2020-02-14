@@ -39,7 +39,7 @@ import java.util.Objects;
  * 提供比StringBuffer更灵活和更强大的API.
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class StrBuilder implements CharSequence, Appendable, Serializable, Builder<String> {
@@ -73,35 +73,6 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * 当前指针位置，或者叫做已经加入的字符数，此位置总在最后一个字符之后
      */
     private int position;
-
-    /**
-     * 创建字符串构建器
-     *
-     * @return {@link StrBuilder}
-     */
-    public static StrBuilder create() {
-        return new StrBuilder();
-    }
-
-    /**
-     * 创建字符串构建器
-     *
-     * @param initialCapacity 初始容量
-     * @return {@link StrBuilder}
-     */
-    public static StrBuilder create(int initialCapacity) {
-        return new StrBuilder(initialCapacity);
-    }
-
-    /**
-     * 创建字符串构建器
-     *
-     * @param strs 初始字符串
-     * @return {@link StrBuilder}
-     */
-    public static StrBuilder create(CharSequence... strs) {
-        return new StrBuilder(strs);
-    }
 
     /**
      * 构造
@@ -148,6 +119,35 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         for (int i = 0; i < strs.length; i++) {
             append(strs[i]);
         }
+    }
+
+    /**
+     * 创建字符串构建器
+     *
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create() {
+        return new StrBuilder();
+    }
+
+    /**
+     * 创建字符串构建器
+     *
+     * @param initialCapacity 初始容量
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create(int initialCapacity) {
+        return new StrBuilder(initialCapacity);
+    }
+
+    /**
+     * 创建字符串构建器
+     *
+     * @param strs 初始字符串
+     * @return {@link StrBuilder}
+     */
+    public static StrBuilder create(CharSequence... strs) {
+        return new StrBuilder(strs);
     }
 
     /**

@@ -34,21 +34,12 @@ import java.nio.charset.Charset;
  * MD5算法
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class MD5 extends Digester {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 创建MD5实例
-     *
-     * @return MD5
-     */
-    public static MD5 create() {
-        return new MD5();
-    }
 
     /**
      * 构造
@@ -88,6 +79,15 @@ public class MD5 extends Digester {
         this.salt = salt;
         this.saltPosition = saltPosition;
         this.digestCount = digestCount;
+    }
+
+    /**
+     * 创建MD5实例
+     *
+     * @return MD5
+     */
+    public static MD5 create() {
+        return new MD5();
     }
 
     /**

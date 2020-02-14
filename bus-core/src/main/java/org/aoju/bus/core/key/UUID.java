@@ -59,7 +59,7 @@ import java.util.Random;
  * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -318,7 +318,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
 
         char firstChar = s.charAt(0);
         if (firstChar < '0') {
-            if (firstChar ==  Symbol.C_HYPHEN) {
+            if (firstChar == Symbol.C_HYPHEN) {
                 negative = true;
                 limit = Long.MIN_VALUE;
             } else if (firstChar != Symbol.C_PLUS) {

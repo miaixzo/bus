@@ -34,7 +34,7 @@ import java.lang.reflect.Type;
  * {@link ParameterizedType} 接口实现，用于重新定义泛型类型
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class Typed implements ParameterizedType, Serializable {
@@ -56,6 +56,37 @@ public class Typed implements ParameterizedType, Serializable {
         this.actualTypeArguments = actualTypeArguments;
         this.ownerType = ownerType;
         this.rawType = rawType;
+    }
+
+    /**
+     * 追加 {@code types} 到 @{code buf}，使用 {@code sep} 分隔
+     *
+     * @param buf   目标
+     * @param sep   分隔符
+     * @param types 加入的类型
+     * @return {@code buf}
+     */
+    private static StringBuilder appendAllTo(final StringBuilder buf, final String sep, final Type... types) {
+        if (ArrayUtils.isNotEmpty(types)) {
+            boolean isFirst = true;
+            for (Type type : types) {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    buf.append(sep);
+                }
+
+                String typeStr;
+                if (type instanceof Class) {
+                    typeStr = ((Class<?>) type).getName();
+                } else {
+                    typeStr = StringUtils.toString(type);
+                }
+
+                buf.append(typeStr);
+            }
+        }
+        return buf;
     }
 
     @Override
@@ -92,37 +123,6 @@ public class Typed implements ParameterizedType, Serializable {
 
         appendAllTo(buf.append('<'), ", ", this.actualTypeArguments).append('>');
         return buf.toString();
-    }
-
-    /**
-     * 追加 {@code types} 到 @{code buf}，使用 {@code sep} 分隔
-     *
-     * @param buf   目标
-     * @param sep   分隔符
-     * @param types 加入的类型
-     * @return {@code buf}
-     */
-    private static StringBuilder appendAllTo(final StringBuilder buf, final String sep, final Type... types) {
-        if (ArrayUtils.isNotEmpty(types)) {
-            boolean isFirst = true;
-            for (Type type : types) {
-                if (isFirst) {
-                    isFirst = false;
-                } else {
-                    buf.append(sep);
-                }
-
-                String typeStr;
-                if (type instanceof Class) {
-                    typeStr = ((Class<?>) type).getName();
-                } else {
-                    typeStr = StringUtils.toString(type);
-                }
-
-                buf.append(typeStr);
-            }
-        }
-        return buf;
     }
 
 }

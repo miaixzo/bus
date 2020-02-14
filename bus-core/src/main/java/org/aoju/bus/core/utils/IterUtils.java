@@ -33,7 +33,7 @@ import java.util.Map.Entry;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class IterUtils {
@@ -51,11 +51,11 @@ public class IterUtils {
     /**
      * Iterator是否为空
      *
-     * @param Iterator Iterator对象
+     * @param iterator Iterator对象
      * @return 是否为空
      */
-    public static boolean isEmpty(Iterator<?> Iterator) {
-        return null == Iterator || false == Iterator.hasNext();
+    public static boolean isEmpty(Iterator<?> iterator) {
+        return null == iterator || false == iterator.hasNext();
     }
 
     /**
@@ -71,35 +71,35 @@ public class IterUtils {
     /**
      * Iterator是否为空
      *
-     * @param Iterator Iterator对象
+     * @param iterator Iterator对象
      * @return 是否为空
      */
-    public static boolean isNotEmpty(Iterator<?> Iterator) {
-        return null != Iterator && Iterator.hasNext();
+    public static boolean isNotEmpty(Iterator<?> iterator) {
+        return null != iterator && iterator.hasNext();
     }
 
     /**
      * 是否包含{@code null}元素
      *
-     * @param iter 被检查的{@link Iterable}对象,如果为{@code null} 返回false
+     * @param iterable 被检查的{@link Iterable}对象,如果为{@code null} 返回true
      * @return 是否包含{@code null}元素
      */
-    public static boolean hasNull(Iterable<?> iter) {
-        return hasNull(null == iter ? null : iter.iterator());
+    public static boolean hasNull(Iterable<?> iterable) {
+        return hasNull(null == iterable ? null : iterable.iterator());
     }
 
     /**
      * 是否包含{@code null}元素
      *
-     * @param iter 被检查的{@link Iterator}对象,如果为{@code null} 返回false
+     * @param iterator 被检查的{@link Iterator}对象,如果为{@code null} 返回true
      * @return 是否包含{@code null}元素
      */
-    public static boolean hasNull(Iterator<?> iter) {
-        if (null == iter) {
+    public static boolean hasNull(Iterator<?> iterator) {
+        if (null == iterator) {
             return true;
         }
-        while (iter.hasNext()) {
-            if (null == iter.next()) {
+        while (iterator.hasNext()) {
+            if (null == iterator.next()) {
                 return true;
             }
         }
@@ -110,28 +110,28 @@ public class IterUtils {
     /**
      * 是否全部元素为null
      *
-     * @param iter iter 被检查的{@link Iterable}对象,如果为{@code null} 返回true
+     * @param iterable iter 被检查的{@link Iterable}对象,如果为{@code null} 返回true
      * @return 是否全部元素为null
      * @since 3.3.0
      */
-    public static boolean isAllNull(Iterable<?> iter) {
-        return isAllNull(null == iter ? null : iter.iterator());
+    public static boolean isAllNull(Iterable<?> iterable) {
+        return isAllNull(null == iterable ? null : iterable.iterator());
     }
 
     /**
      * 是否全部元素为null
      *
-     * @param iter iter 被检查的{@link Iterator}对象,如果为{@code null} 返回true
+     * @param iterator iter 被检查的{@link Iterator}对象,如果为{@code null} 返回true
      * @return 是否全部元素为null
      * @since 3.3.0
      */
-    public static boolean isAllNull(Iterator<?> iter) {
-        if (null == iter) {
+    public static boolean isAllNull(Iterator<?> iterator) {
+        if (null == iterator) {
             return true;
         }
 
-        while (iter.hasNext()) {
-            if (null != iter.next()) {
+        while (iterator.hasNext()) {
+            if (null != iterator.next()) {
                 return false;
             }
         }
@@ -146,12 +146,12 @@ public class IterUtils {
      * b: 1
      * c: 3
      *
-     * @param <T>  集合元素类型
-     * @param iter {@link Iterable},如果为null返回一个空的Map
+     * @param <T>      集合元素类型
+     * @param iterable {@link Iterable},如果为null返回一个空的Map
      * @return {@link Map}
      */
-    public static <T> Map<T, Integer> countMap(Iterable<T> iter) {
-        return countMap(null == iter ? null : iter.iterator());
+    public static <T> Map<T, Integer> countMap(Iterable<T> iterable) {
+        return countMap(null == iterable ? null : iterable.iterator());
     }
 
     /**
@@ -162,17 +162,17 @@ public class IterUtils {
      * b: 1
      * c: 3
      *
-     * @param <T>  集合元素类型
-     * @param iter {@link Iterator},如果为null返回一个空的Map
+     * @param <T>      集合元素类型
+     * @param iterator {@link Iterator},如果为null返回一个空的Map
      * @return {@link Map}
      */
-    public static <T> Map<T, Integer> countMap(Iterator<T> iter) {
+    public static <T> Map<T, Integer> countMap(Iterator<T> iterator) {
         final HashMap<T, Integer> countMap = new HashMap<>();
-        if (null != iter) {
+        if (null != iterator) {
             Integer count;
             T t;
-            while (iter.hasNext()) {
-                t = iter.next();
+            while (iterator.hasNext()) {
+                t = iterator.next();
                 count = countMap.get(t);
                 if (null == count) {
                     countMap.put(t, 1);
@@ -190,12 +190,12 @@ public class IterUtils {
      *
      * @param <K>       字段名对应值得类型,不确定请使用Object
      * @param <V>       对象类型
-     * @param iter      对象列表
+     * @param iterable  对象列表
      * @param fieldName 字段名（会通过反射获取其值）
      * @return 某个字段值与对象对应Map
      */
-    public static <K, V> Map<K, V> fieldValueMap(Iterable<V> iter, String fieldName) {
-        return fieldValueMap(null == iter ? null : iter.iterator(), fieldName);
+    public static <K, V> Map<K, V> fieldValueMap(Iterable<V> iterable, String fieldName) {
+        return fieldValueMap(null == iterable ? null : iterable.iterator(), fieldName);
     }
 
     /**
@@ -204,16 +204,16 @@ public class IterUtils {
      *
      * @param <K>       字段名对应值得类型,不确定请使用Object
      * @param <V>       对象类型
-     * @param iter      对象列表
+     * @param iterator  对象列表
      * @param fieldName 字段名（会通过反射获取其值）
      * @return 某个字段值与对象对应Map
      */
-    public static <K, V> Map<K, V> fieldValueMap(Iterator<V> iter, String fieldName) {
+    public static <K, V> Map<K, V> fieldValueMap(Iterator<V> iterator, String fieldName) {
         final Map<K, V> result = new HashMap<>();
-        if (null != iter) {
+        if (null != iterator) {
             V value;
-            while (iter.hasNext()) {
-                value = iter.next();
+            while (iterator.hasNext()) {
+                value = iterator.next();
                 result.put((K) ReflectUtils.getFieldValue(value, fieldName), value);
             }
         }
@@ -225,17 +225,17 @@ public class IterUtils {
      *
      * @param <K>               字段名对应值得类型,不确定请使用Object
      * @param <V>               值类型,不确定使用Object
-     * @param iter              对象列表
+     * @param iterator          对象列表
      * @param fieldNameForKey   做为键的字段名（会通过反射获取其值）
      * @param fieldNameForValue 做为值的字段名（会通过反射获取其值）
      * @return 某个字段值与对象对应Map
      */
-    public static <K, V> Map<K, V> fieldValueAsMap(Iterator<?> iter, String fieldNameForKey, String fieldNameForValue) {
+    public static <K, V> Map<K, V> fieldValueAsMap(Iterator<?> iterator, String fieldNameForKey, String fieldNameForValue) {
         final Map<K, V> result = new HashMap<>();
-        if (null != iter) {
+        if (null != iterator) {
             Object value;
-            while (iter.hasNext()) {
-                value = iter.next();
+            while (iterator.hasNext()) {
+                value = iterator.next();
                 result.put((K) ReflectUtils.getFieldValue(value, fieldNameForKey), (V) ReflectUtils.getFieldValue(value, fieldNameForValue));
             }
         }
@@ -246,16 +246,16 @@ public class IterUtils {
      * 获取指定Bean列表中某个字段,生成新的列表
      *
      * @param <V>       对象类型
-     * @param iter      对象列表
+     * @param iterator  对象列表
      * @param fieldName 字段名（会通过反射获取其值）
      * @return 某个字段值与对象对应Map
      */
-    public static <V> List<Object> fieldValueList(Iterator<V> iter, String fieldName) {
+    public static <V> List<Object> fieldValueList(Iterator<V> iterator, String fieldName) {
         final List<Object> result = new ArrayList<>();
-        if (null != iter) {
+        if (null != iterator) {
             V value;
-            while (iter.hasNext()) {
-                value = iter.next();
+            while (iterator.hasNext()) {
+                value = iterator.next();
                 result.add(ReflectUtils.getFieldValue(value, fieldName));
             }
         }
@@ -439,26 +439,26 @@ public class IterUtils {
      * Iterator转List
      * 不判断,直接生成新的List
      *
-     * @param <E>  元素类型
-     * @param iter {@link Iterator}
+     * @param <E>      元素类型
+     * @param iterable {@link Iterator}
      * @return List
      */
-    public static <E> List<E> toList(Iterable<E> iter) {
-        return toList(iter.iterator());
+    public static <E> List<E> toList(Iterable<E> iterable) {
+        return toList(iterable.iterator());
     }
 
     /**
      * Iterator转List
      * 不判断,直接生成新的List
      *
-     * @param <E>  元素类型
-     * @param iter {@link Iterator}
+     * @param <E>      元素类型
+     * @param iterator {@link Iterator}
      * @return List
      */
-    public static <E> List<E> toList(Iterator<E> iter) {
+    public static <E> List<E> toList(Iterator<E> iterator) {
         final List<E> list = new ArrayList<>();
-        while (iter.hasNext()) {
-            list.add(iter.next());
+        while (iterator.hasNext()) {
+            list.add(iterator.next());
         }
         return list;
     }
@@ -550,20 +550,20 @@ public class IterUtils {
      * 返回false的对象将被使用{@link Iterator#remove()}方法移除
      * </pre>
      *
-     * @param <T>    集合类型
-     * @param <E>    集合元素类型
-     * @param iter   集合
-     * @param filter 过滤器接口
+     * @param <T>      集合类型
+     * @param <E>      集合元素类型
+     * @param iterable 集合
+     * @param filter   过滤器接口
      * @return 编辑后的集合
      */
-    public static <T extends Iterable<E>, E> T filter(T iter, Filter<E> filter) {
-        if (null == iter) {
+    public static <T extends Iterable<E>, E> T filter(T iterable, Filter<E> filter) {
+        if (null == iterable) {
             return null;
         }
 
-        filter(iter.iterator(), filter);
+        filter(iterable.iterator(), filter);
 
-        return iter;
+        return iterable;
     }
 
     /**
@@ -575,22 +575,22 @@ public class IterUtils {
      * 返回false的对象将被使用{@link Iterator#remove()}方法移除
      * </pre>
      *
-     * @param <E>    集合元素类型
-     * @param iter   集合
-     * @param filter 过滤器接口
+     * @param <E>      集合元素类型
+     * @param iterator 集合
+     * @param filter   过滤器接口
      * @return 编辑后的集合
      */
-    public static <E> Iterator<E> filter(Iterator<E> iter, Filter<E> filter) {
-        if (null == iter || null == filter) {
-            return iter;
+    public static <E> Iterator<E> filter(Iterator<E> iterator, Filter<E> filter) {
+        if (null == iterator || null == filter) {
+            return iterator;
         }
 
-        while (iter.hasNext()) {
-            if (false == filter.accept(iter.next())) {
-                iter.remove();
+        while (iterator.hasNext()) {
+            if (false == filter.accept(iterator.next())) {
+                iterator.remove();
             }
         }
-        return iter;
+        return iterator;
     }
 
     /**

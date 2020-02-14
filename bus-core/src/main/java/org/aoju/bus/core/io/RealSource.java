@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public final class RealSource implements BufferSource {
@@ -113,7 +113,7 @@ public final class RealSource implements BufferSource {
     }
 
     @Override
-    public int select(BufferOption options) throws IOException {
+    public int select(AbstractBlending options) throws IOException {
         if (closed) throw new IllegalStateException("closed");
 
         while (true) {

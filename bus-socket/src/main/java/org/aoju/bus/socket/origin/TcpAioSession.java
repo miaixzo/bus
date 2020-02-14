@@ -24,7 +24,7 @@
 package org.aoju.bus.socket.origin;
 
 
-import org.aoju.bus.core.io.BufferPage;
+import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
 
@@ -60,7 +60,7 @@ import java.util.concurrent.TimeUnit;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 class TcpAioSession<T> extends AioSession<T> {
@@ -96,14 +96,14 @@ class TcpAioSession<T> extends AioSession<T> {
     private InputStream inputStream;
     private WriteBuffer byteBuf;
 
-    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig<T> config, TcpReadHandler<T> readCompletionHandler, TcpWriteHandler<T> writeCompletionHandler, BufferPage bufferPage) {
+    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig<T> config, TcpReadHandler<T> readCompletionHandler, TcpWriteHandler<T> writeCompletionHandler, PageBuffer pageBuffer) {
         this.channel = channel;
         this.readCompletionHandler = readCompletionHandler;
         this.writeCompletionHandler = writeCompletionHandler;
         this.ioServerConfig = config;
 
-        this.readBuffer = bufferPage.allocate(config.getReadBufferSize());
-        byteBuf = new WriteBuffer(bufferPage, var -> {
+        this.readBuffer = pageBuffer.allocate(config.getReadBufferSize());
+        byteBuf = new WriteBuffer(pageBuffer, var -> {
             if (!semaphore.tryAcquire()) {
                 return null;
             }

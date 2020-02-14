@@ -35,7 +35,7 @@ import java.util.Set;
  * 一个简单的索引，包含已加载到内存中的受信任根证书
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public final class BasicTrustRootIndex implements TrustRootIndex {

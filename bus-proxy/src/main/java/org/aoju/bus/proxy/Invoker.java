@@ -29,13 +29,14 @@ import java.lang.reflect.Method;
  * 调用程序负责处理方法调用
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public interface Invoker {
 
     /**
-     * 调用方法。如果在尝试调用方法时出现问题，实现应该抛出异常.
+     * 调用方法
+     * 如果在尝试调用方法时出现问题，实现应该抛出异常
      *
      * @param proxy     代理对象
      * @param method    被调用的方法

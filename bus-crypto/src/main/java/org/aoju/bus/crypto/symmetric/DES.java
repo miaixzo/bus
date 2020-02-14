@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.crypto.symmetric;
 
-import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
@@ -38,7 +38,7 @@ import javax.crypto.spec.IvParameterSpec;
  * Java中默认实现为：DES/CBC/PKCS5Padding
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class DES extends Symmetric {

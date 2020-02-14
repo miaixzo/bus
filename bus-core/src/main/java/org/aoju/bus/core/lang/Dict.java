@@ -38,7 +38,7 @@ import java.util.*;
  * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
@@ -116,6 +116,26 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     public Dict(int initialCapacity, float loadFactor, boolean caseInsensitive) {
         super(initialCapacity, loadFactor);
         this.caseInsensitive = caseInsensitive;
+    }
+
+    /**
+     * 创建Dict
+     *
+     * @return Dict
+     */
+    public static Dict create() {
+        return new Dict();
+    }
+
+    /**
+     * 将PO对象转为Dict
+     *
+     * @param <T>  Bean类型
+     * @param bean Bean对象
+     * @return Vo
+     */
+    public static <T> Dict parse(T bean) {
+        return create().parseBean(bean);
     }
 
     @Override
@@ -233,26 +253,6 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      */
     public Number getNumber(String attr) {
         return get(attr, null);
-    }
-
-    /**
-     * 创建Dict
-     *
-     * @return Dict
-     */
-    public static Dict create() {
-        return new Dict();
-    }
-
-    /**
-     * 将PO对象转为Dict
-     *
-     * @param <T>  Bean类型
-     * @param bean Bean对象
-     * @return Vo
-     */
-    public static <T> Dict parse(T bean) {
-        return create().parseBean(bean);
     }
 
     /**

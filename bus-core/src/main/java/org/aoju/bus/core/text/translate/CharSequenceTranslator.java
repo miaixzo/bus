@@ -33,7 +33,7 @@ import java.util.Locale;
  * 其核心用途是转义和反转义文本
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public abstract class CharSequenceTranslator {

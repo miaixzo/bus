@@ -42,7 +42,7 @@ import java.util.concurrent.*;
  * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class Tailer implements Serializable {
@@ -118,6 +118,20 @@ public class Tailer implements Serializable {
         this.initReadLine = initReadLine;
         this.randomAccessFile = FileUtils.createRandomAccessFile(file, FileMode.r);
         this.executorService = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    /**
+     * 检查文件有效性
+     *
+     * @param file 文件
+     */
+    private static void checkFile(File file) {
+        if (false == file.exists()) {
+            throw new InstrumentException("File [{}] not exist !", file.getAbsolutePath());
+        }
+        if (false == file.isFile()) {
+            throw new InstrumentException("Path [{}] is not a file !", file.getAbsolutePath());
+        }
     }
 
     /**
@@ -212,20 +226,6 @@ public class Tailer implements Serializable {
             this.randomAccessFile.seek(len);
         } catch (IOException e) {
             throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 检查文件有效性
-     *
-     * @param file 文件
-     */
-    private static void checkFile(File file) {
-        if (false == file.exists()) {
-            throw new InstrumentException("File [{}] not exist !", file.getAbsolutePath());
-        }
-        if (false == file.isFile()) {
-            throw new InstrumentException("Path [{}] is not a file !", file.getAbsolutePath());
         }
     }
 

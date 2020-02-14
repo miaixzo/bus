@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-limiter</artifactId>
-    <version>5.5.8</version>
+    <version>5.5.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

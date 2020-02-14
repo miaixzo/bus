@@ -41,14 +41,12 @@ import java.security.Provider;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class Digester implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private MessageDigest digest;
     /**
      * 盐值
      */
@@ -61,6 +59,7 @@ public class Digester implements Serializable {
      * 散列次数
      */
     protected int digestCount;
+    private MessageDigest digest;
 
     /**
      * 构造

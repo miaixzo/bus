@@ -33,7 +33,7 @@ import java.io.File;
  * 这个类包含{@link OfficeProcess}的配置.
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class OfficeProcessBuilder {
@@ -114,16 +114,16 @@ public class OfficeProcessBuilder {
     }
 
     /**
-     * 设置将与unix命令一起使用的sudo参数.
+     * 设置将与unix命令一起使用的sudo参数
      *
-     * @param runAsArgs unix操作系统的sudo参数.
+     * @param runAsArgs unix操作系统的sudo参数
      */
     public void setRunAsArgs(final String... runAsArgs) {
         this.runAsArgs = ArrayUtils.clone(runAsArgs);
     }
 
     /**
-     * 获取将在其中创建临时office配置文件目录的目录。每个启动的office进程都会创建一个office配置文件目录.
+     * 获取将在其中创建临时office配置文件目录的目录。每个启动的office进程都会创建一个office配置文件目录
      * 默认:  系统临时目录<code>java.io.tmpdir</code>系统属性确定
      *
      * @return 工作目录.
@@ -133,16 +133,16 @@ public class OfficeProcessBuilder {
     }
 
     /**
-     * 设置将在其中创建临时office配置文件目录的目录。每个启动的office进程都会创建一个office配置文件目录.
+     * 设置将在其中创建临时office配置文件目录的目录。每个启动的office进程都会创建一个office配置文件目录
      *
-     * @param workingDir 工作目录.
+     * @param workingDir 工作目录
      */
     public void setWorkingDir(final File workingDir) {
         this.workingDir = workingDir;
     }
 
     /**
-     * 获取要复制到要创建的临时office配置文件目录的目录.
+     * 获取要复制到要创建的临时office配置文件目录的目录
      *
      * @return 模板配置文件目录
      */
@@ -151,9 +151,9 @@ public class OfficeProcessBuilder {
     }
 
     /**
-     * 设置要复制到要创建的临时office配置文件目录的目录.
+     * 设置要复制到要创建的临时office配置文件目录的目录
      *
-     * @param templateProfileDir 模板配置文件目录.
+     * @param templateProfileDir 模板配置文件目录
      */
     public void setTemplateProfileDir(final File templateProfileDir) {
         this.templateProfileDir = templateProfileDir;
@@ -163,16 +163,16 @@ public class OfficeProcessBuilder {
      * 获取在为相同连接字符串启动新office进程时是否终止现有的office进程
      * 默认: true
      *
-     * @return {@code true} 杀死现有进程，{@code false}否则忽略.
+     * @return {@code true} 杀死现有进程，{@code false}否则忽略
      */
     public boolean isKillExistingProcess() {
         return killExistingProcess;
     }
 
     /**
-     * 设置在为相同连接字符串启动新office进程时是否终止现有的office进程.
+     * 设置在为相同连接字符串启动新office进程时是否终止现有的office进程
      *
-     * @param killExistingProcess {@code true} 杀死现有进程，{@code false}否则忽略.
+     * @param killExistingProcess {@code true} 杀死现有进程，{@code false}否则忽略
      */
     public void setKillExistingProcess(final boolean killExistingProcess) {
         this.killExistingProcess = killExistingProcess;

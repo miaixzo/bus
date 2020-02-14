@@ -38,7 +38,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * RC4加密解密算法实现
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class RC4 implements Serializable {
@@ -50,9 +50,8 @@ public class RC4 implements Serializable {
      * 密钥最小长度
      */
     private static final int KEY_MIN_LENGTH = 5;
-    private int[] sbox;
-
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private int[] sbox;
 
     /**
      * 构造

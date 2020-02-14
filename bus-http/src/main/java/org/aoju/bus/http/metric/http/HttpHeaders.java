@@ -40,7 +40,7 @@ import java.util.*;
  * Header实用工具
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public final class HttpHeaders {

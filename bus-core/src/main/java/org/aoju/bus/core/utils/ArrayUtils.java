@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.utils;
 
-
 import org.aoju.bus.core.builder.HashCodeBuilder;
 import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
@@ -41,7 +40,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class ArrayUtils {
@@ -4762,9 +4761,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove(["a"], 0)           = []
@@ -4783,9 +4782,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, "a")            = null
@@ -4809,9 +4808,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove([true], 0)              = []
@@ -4829,9 +4828,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, true)                = null
@@ -4854,9 +4853,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove([1], 0)          = []
@@ -4874,9 +4873,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1)        = null
@@ -4899,9 +4898,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove(['a'], 0)           = []
@@ -4919,9 +4918,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, 'a')            = null
@@ -4944,9 +4943,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove([1.1], 0)           = []
@@ -4964,9 +4963,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1.1)            = null
@@ -4989,9 +4988,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove([1.1], 0)           = []
@@ -5009,9 +5008,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1.1)            = null
@@ -5034,9 +5033,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove([1], 0)         = []
@@ -5054,9 +5053,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1)      = null
@@ -5079,9 +5078,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove([1], 0)         = []
@@ -5099,9 +5098,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1)      = null
@@ -5124,9 +5123,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.remove([1], 0)         = []
@@ -5144,9 +5143,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * <pre>
      * ArrayUtils.removeElement(null, 1)      = null
@@ -5169,9 +5168,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1).
-     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素.
-     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引.
+     * 从指定数组中移除指定位置的元素。所有后续元素都向左移动(从它们的索引中减去1)
+     * 此方法返回一个新数组，除了指定位置上的元素外，该数组具有与输入数组相同的元素
+     * 如果是{@code null}，则会抛出IndexOutOfBoundsException，无法指定有效的索引
      *
      * @param array 要从中移除元素的数组
      * @param index 要删除的元素的位置
@@ -5193,9 +5192,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll(["a", "b", "c"], 0, 2) = ["b"]
@@ -5212,9 +5211,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
-     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 除了删除现有的匹配项外，不会发生任何更改
      * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
@@ -5259,9 +5258,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5281,9 +5280,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
-     * 除了删除现有的匹配项外，不会发生任何更改.
+     * 除了删除现有的匹配项外，不会发生任何更改
      * 返回数组的组件类型始终与输入数组的组件类型相同.
      *
      * <pre>
@@ -5328,9 +5327,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5350,7 +5349,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
      * 除了删除现有的匹配项外，不会发生任何更改.
      * 返回数组的组件类型始终与输入数组的组件类型相同.
@@ -5397,9 +5396,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5421,8 +5420,8 @@ public class ArrayUtils {
     /**
      * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
-     * 除了删除现有的匹配项外，不会发生任何更改.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 除了删除现有的匹配项外，不会发生任何更改
+     * 返回数组的组件类型始终与输入数组的组件类型相同
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -5466,9 +5465,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5488,7 +5487,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
      * 除了删除现有的匹配项外，不会发生任何更改.
      * 返回数组的组件类型始终与输入数组的组件类型相同.
@@ -5535,9 +5534,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5557,10 +5556,10 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
-     * 除了删除现有的匹配项外，不会发生任何更改.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 除了删除现有的匹配项外，不会发生任何更改
+     * 返回数组的组件类型始终与输入数组的组件类型相同
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -5604,9 +5603,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5626,10 +5625,10 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
-     * 除了删除现有的匹配项外，不会发生任何更改.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
+     * 除了删除现有的匹配项外，不会发生任何更改
+     * 返回数组的组件类型始终与输入数组的组件类型相同
      *
      * <pre>
      * ArrayUtils.removeElements(null, 1, 2)      = null
@@ -5673,9 +5672,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll([1], 0)             = []
@@ -5695,7 +5694,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
      * 除了删除现有的匹配项外，不会发生任何更改.
      * 返回数组的组件类型始终与输入数组的组件类型相同.
@@ -5742,9 +5741,9 @@ public class ArrayUtils {
     }
 
     /**
-     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动.
-     * 返回数组的组件类型始终与输入数组的组件类型相同.
-     * 此方法返回一个新数组，该数组具有与输入数组相同的元素.
+     * 从指定数组中移除指定位置的元素。所有剩余的元素都向左移动
+     * 返回数组的组件类型始终与输入数组的组件类型相同
+     * 此方法返回一个新数组，该数组具有与输入数组相同的元素
      *
      * <pre>
      * ArrayUtils.removeAll([true, false, true], 0, 2) = [false]
@@ -5753,14 +5752,14 @@ public class ArrayUtils {
      *
      * @param array   要从中删除元素的数组可能不是{@code null}
      * @param indices 要删除的元素的位置
-     * @return 一个新数组，包含指定位置之外的现有元素.
+     * @return 一个新数组，包含指定位置之外的现有元素
      */
     public static boolean[] removeAll(final boolean[] array, final int... indices) {
         return (boolean[]) removeAll((Object) array, indices);
     }
 
     /**
-     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移.
+     * 从指定数组中移除指定数量*的指定元素。所有后续元素都左移
      * 对于指定的要删除的元素，其数量大于原始数组中包含的数量，
      * 除了删除现有的匹配项外，不会发生任何更改.
      * 返回数组的组件类型始终与输入数组的组件类型相同.
@@ -7067,7 +7066,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 5.5.8
+     * @since 5.5.9
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7078,7 +7077,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 5.5.8
+     * @since 5.5.9
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7090,7 +7089,7 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 5.5.8
+     * @since 5.5.9
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return Array.newInstance(componentType, 0).getClass();
@@ -8650,7 +8649,7 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口,用于定义过滤规则
      * @return 过滤后的数组
-     * @since 5.5.8
+     * @since 5.5.9
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<>(array.length);

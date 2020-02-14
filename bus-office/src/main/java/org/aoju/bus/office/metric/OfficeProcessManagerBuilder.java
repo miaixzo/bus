@@ -32,7 +32,7 @@ import java.io.File;
  * 这个类包含{@link OfficeProcessManager}的配置.
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class OfficeProcessManagerBuilder extends OfficeProcessBuilder {
@@ -130,20 +130,20 @@ public class OfficeProcessManagerBuilder extends OfficeProcessBuilder {
     }
 
     /**
-     * 获取启动新office进程时是否必须禁用OpenGL.
+     * 获取启动新office进程时是否必须禁用OpenGL
      *
-     * @return {@code true}禁用OpenGL, {@code false}禁用OpenGL.
+     * @return {@code true}禁用OpenGL, {@code false}禁用OpenGL
      */
     public boolean isDisableOpengl() {
         return disableOpengl;
     }
 
     /**
-     * 获取启动新office进程时是否必须禁用OpenGL。
+     * 获取启动新office进程时是否必须禁用OpenGL
      * 如果OpenGL已经根据office进程使用的用户配置文件被禁用，
-     * 则不会执行任何操作。如果选项更改，则必须重新启动office.
+     * 则不会执行任何操作。如果选项更改，则必须重新启动office
      *
-     * @param disableOpengl {@code true}禁用OpenGL, {@code false}禁用OpenGL.
+     * @param disableOpengl {@code true}禁用OpenGL, {@code false}禁用OpenGL
      */
     public void setDisableOpengl(final boolean disableOpengl) {
         this.disableOpengl = disableOpengl;

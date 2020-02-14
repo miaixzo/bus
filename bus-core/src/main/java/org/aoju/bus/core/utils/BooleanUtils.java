@@ -23,7 +23,6 @@
  */
 package org.aoju.bus.core.utils;
 
-
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Normal;
 
@@ -31,7 +30,7 @@ import org.aoju.bus.core.lang.Normal;
  * Boolean类型相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class BooleanUtils {

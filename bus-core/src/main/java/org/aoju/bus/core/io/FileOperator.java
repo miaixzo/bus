@@ -31,7 +31,7 @@ import java.nio.channels.FileChannel;
  * 读取和写入目标文件
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public final class FileOperator {
@@ -61,7 +61,7 @@ public final class FileOperator {
     }
 
     /**
-     * 将{@code byteCount}字节从文件{@code pos}复制到{@code source}。
+     * 将{@code byteCount}字节从文件{@code pos}复制到{@code source}
      * 调用者有责任确保有足够的字节来读取:如果没有，这个方法会抛出一个{@link EOFException}
      *
      * @param pos       写入大小

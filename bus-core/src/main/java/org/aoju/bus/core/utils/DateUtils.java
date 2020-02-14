@@ -27,10 +27,10 @@ import org.aoju.bus.core.date.Between;
 import org.aoju.bus.core.date.Boundary;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.date.TimeInterval;
-import org.aoju.bus.core.date.format.BetweenFormat;
 import org.aoju.bus.core.date.format.DateParser;
+import org.aoju.bus.core.date.format.DatePeriod;
 import org.aoju.bus.core.date.format.DatePrinter;
-import org.aoju.bus.core.date.format.FastDateFormat;
+import org.aoju.bus.core.date.format.FormatBuilder;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class DateUtils {
@@ -621,7 +621,7 @@ public class DateUtils {
      * 根据特定格式格式化日期
      *
      * @param date   被格式化的日期
-     * @param format {@link DatePrinter} 或 {@link FastDateFormat}
+     * @param format {@link DatePrinter} 或 {@link FormatBuilder}
      * @return 格式化后的字符串
      */
     public static String format(Date date, DatePrinter format) {
@@ -865,7 +865,7 @@ public class DateUtils {
      * 构建DateTime对象
      *
      * @param dateStr Date字符串
-     * @param parser  格式化器,{@link FastDateFormat}
+     * @param parser  格式化器,{@link FormatBuilder}
      * @return DateTime对象
      */
     public static DateTime parse(String dateStr, DateParser parser) {
@@ -976,7 +976,7 @@ public class DateUtils {
         } else {
             if (length == Fields.WITH_ZONE_OFFSET_PATTERN.length() + 2 || length == Fields.WITH_ZONE_OFFSET_PATTERN.length() + 3) {
                 // 格式类似：2020-01-15T05:32:30+0800 或 2020-01-15T05:32:30+08:00
-                return parse(utcString, FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC")));
+                return parse(utcString, FormatBuilder.getInstance("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC")));
             } else if (length == Fields.MSEC_PATTERN.length() + 2 || length == Fields.MSEC_PATTERN.length() + 3) {
                 // 格式类似：2020-01-15T05:32:30.999+0800 或 2020-01-15T05:32:30.999+08:00
                 return parse(utcString, Fields.MSEC_FORMAT);
@@ -1593,7 +1593,7 @@ public class DateUtils {
      * @return XX天XX小时XX分XX秒XX毫秒
      */
     public static String formatBetween(long betweenMs, Fields.Level level) {
-        return new BetweenFormat(betweenMs, level).format();
+        return new DatePeriod(betweenMs, level).format();
     }
 
     /**
@@ -1604,7 +1604,7 @@ public class DateUtils {
      * @since 3.0.1
      */
     public static String formatBetween(long betweenMs) {
-        return new BetweenFormat(betweenMs, Fields.Level.MILLSECOND).format();
+        return new DatePeriod(betweenMs, Fields.Level.MILLSECOND).format();
     }
 
     /**
@@ -1707,7 +1707,7 @@ public class DateUtils {
      * 以商品为例，startDate即生产日期，endDate即保质期的截止日期，
      * checkDate表示在何时检查是否过期（一般为当前时间）
      * endDate和startDate的差值即为保质期（按照毫秒计）
-     * checkDate和startDate的差值即为实际经过的时长，实际时长大于保质期表示超时。
+     * checkDate和startDate的差值即为实际经过的时长，实际时长大于保质期表示超时
      * </p>
      *
      * @param startDate 开始时间
@@ -3020,7 +3020,7 @@ public class DateUtils {
                 continue;
             }
 
-            // 在计算本周的起始和结束日时，月相关的字段忽略。
+            // 在计算本周的起始和结束日时，月相关的字段忽略
             if (Calendar.WEEK_OF_MONTH == dateField || Calendar.WEEK_OF_YEAR == dateField) {
                 if (Calendar.DAY_OF_MONTH == i) {
                     continue;
@@ -3400,6 +3400,42 @@ public class DateUtils {
     }
 
     /**
+     * 一个简单的二分查找，返回查找到的元素坐标，用于查找农历二维数组信息
+     *
+     * @param array 　数组
+     * @param n     　待查询数字
+     * @return 查到的坐标
+     */
+    private static int binSearch(int[] array, int n) {
+        if (null == array || array.length == 0) {
+            return -1;
+        }
+        int min = 0, max = array.length - 1;
+        if (n <= array[min]) {
+            return min;
+        } else if (n >= array[max]) {
+            return max;
+        }
+        while (max - min > 1) {
+            int newIndex = (max + min) / 2; // 二分
+            if (array[newIndex] > n) { // 取小区间
+                max = newIndex;
+            } else if (array[newIndex] < n) {// 取大区间
+                min = newIndex;
+            } else { // 相等，直接返回下标
+                return newIndex;
+            }
+        }
+        if (array[max] == n) {
+            return max;
+        } else if (array[min] == n) {
+            return min;
+        } else {
+            return min; // 返回 较小的一个
+        }
+    }
+
+    /**
      * 返回中国农历的全名
      *
      * @return String
@@ -3437,42 +3473,6 @@ public class DateUtils {
                     + getDayName(this.ldate);
         } else {
             return getMonthName(this.lmonth) + "月" + getDayName(this.ldate);
-        }
-    }
-
-    /**
-     * 一个简单的二分查找，返回查找到的元素坐标，用于查找农历二维数组信息
-     *
-     * @param array 　数组
-     * @param n     　待查询数字
-     * @return 查到的坐标
-     */
-    private static int binSearch(int[] array, int n) {
-        if (null == array || array.length == 0) {
-            return -1;
-        }
-        int min = 0, max = array.length - 1;
-        if (n <= array[min]) {
-            return min;
-        } else if (n >= array[max]) {
-            return max;
-        }
-        while (max - min > 1) {
-            int newIndex = (max + min) / 2; // 二分
-            if (array[newIndex] > n) { // 取小区间
-                max = newIndex;
-            } else if (array[newIndex] < n) {// 取大区间
-                min = newIndex;
-            } else { // 相等，直接返回下标
-                return newIndex;
-            }
-        }
-        if (array[max] == n) {
-            return max;
-        } else if (array[min] == n) {
-            return min;
-        } else {
-            return min; // 返回 较小的一个
         }
     }
 

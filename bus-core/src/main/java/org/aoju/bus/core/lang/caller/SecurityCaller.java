@@ -23,11 +23,13 @@
  */
 package org.aoju.bus.core.lang.caller;
 
+import org.aoju.bus.core.utils.ArrayUtils;
+
 /**
  * 方式获取调用者
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class SecurityCaller extends SecurityManager implements Caller {
@@ -37,7 +39,7 @@ public class SecurityCaller extends SecurityManager implements Caller {
     @Override
     public Class<?> getCaller() {
         final Class<?>[] context = getClassContext();
-        if ((OFFSET + 1) < context.length) {
+        if (null != context && (OFFSET + 1) < context.length) {
             return context[OFFSET + 1];
         }
         return null;
@@ -46,7 +48,7 @@ public class SecurityCaller extends SecurityManager implements Caller {
     @Override
     public Class<?> getCallers() {
         final Class<?>[] context = getClassContext();
-        if ((OFFSET + 2) < context.length) {
+        if (null != context && (OFFSET + 2) < context.length) {
             return context[OFFSET + 2];
         }
         return null;
@@ -55,7 +57,7 @@ public class SecurityCaller extends SecurityManager implements Caller {
     @Override
     public Class<?> getCaller(int depth) {
         final Class<?>[] context = getClassContext();
-        if ((OFFSET + depth) < context.length) {
+        if (null != context && (OFFSET + depth) < context.length) {
             return context[OFFSET + depth];
         }
         return null;
@@ -64,7 +66,7 @@ public class SecurityCaller extends SecurityManager implements Caller {
     @Override
     public boolean isCalledBy(Class<?> clazz) {
         final Class<?>[] classes = getClassContext();
-        if (null != classes) {
+        if (ArrayUtils.isNotEmpty(classes)) {
             for (Class<?> contextClass : classes) {
                 if (contextClass.equals(clazz)) {
                     return true;

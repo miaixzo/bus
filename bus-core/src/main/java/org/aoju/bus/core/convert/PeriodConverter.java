@@ -30,7 +30,7 @@ import java.time.temporal.TemporalAmount;
  * {@link Period}对象转换器
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class PeriodConverter extends AbstractConverter<Period> {

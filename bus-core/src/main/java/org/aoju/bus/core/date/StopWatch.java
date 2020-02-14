@@ -32,7 +32,6 @@ import org.aoju.bus.core.utils.StringUtils;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 秒表封装
@@ -57,7 +56,7 @@ import java.util.concurrent.TimeUnit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class StopWatch {
@@ -89,10 +88,6 @@ public class StopWatch {
      * 总运行时间
      */
     private long totalTimeNanos;
-    /**
-     * 时间单位(支持三种单位：纳秒、毫秒、秒)
-     */
-    private TimeUnit timeUnit = TimeUnit.NANOSECONDS;
 
     /**
      * 构造,不启动任何任务
@@ -361,7 +356,7 @@ public class StopWatch {
     public String toString() {
         final StringBuilder sb = new StringBuilder(shortSummary());
         if (null == this.taskList) {
-            for (TaskInfo task : getTaskInfo()) {
+            for (TaskInfo task : this.taskList) {
                 sb.append("; [").append(task.getTaskName()).append("] took ").append(task.getTimeNanos()).append(" ns");
                 long percent = Math.round(100.0 * task.getTimeNanos() / getTotalTimeNanos());
                 sb.append(" = ").append(percent).append(Symbol.PERCENT);
@@ -370,17 +365,6 @@ public class StopWatch {
             sb.append("; no task info kept");
         }
         return sb.toString();
-    }
-
-    /**
-     * 设置时间单位，不设置默认是纳秒
-     *
-     * @param timeUnit 时间单位
-     * @author 李显锋
-     * @since 5.1.1
-     */
-    public void setTimeUnit(TimeUnit timeUnit) {
-        this.timeUnit = timeUnit;
     }
 
     /**

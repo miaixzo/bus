@@ -30,7 +30,7 @@ import java.util.List;
  * 考虑每月的天数不同,切存在闰年情况,日匹配单独使用
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {
@@ -68,4 +68,5 @@ public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {
     public boolean match(int value, int month, boolean isLeapYear) {
         return (super.match(value) || (value > 27 && match(32) && isLastDayOfMonth(value, month, isLeapYear)));
     }
+
 }

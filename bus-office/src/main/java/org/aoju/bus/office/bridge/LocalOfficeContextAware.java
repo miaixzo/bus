@@ -32,7 +32,7 @@ import org.aoju.bus.office.Context;
  * 表示用于本地转换的office上下文
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public interface LocalOfficeContextAware extends Context {

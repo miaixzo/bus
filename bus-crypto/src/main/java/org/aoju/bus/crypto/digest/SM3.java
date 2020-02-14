@@ -29,21 +29,12 @@ import org.aoju.bus.core.lang.Algorithm;
  * SM3算法
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class SM3 extends Digester {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 创建SM3实例
-     *
-     * @return SM3
-     */
-    public static SM3 create() {
-        return new SM3();
-    }
 
     /**
      * 构造
@@ -83,6 +74,15 @@ public class SM3 extends Digester {
         this.salt = salt;
         this.saltPosition = saltPosition;
         this.digestCount = digestCount;
+    }
+
+    /**
+     * 创建SM3实例
+     *
+     * @return SM3
+     */
+    public static SM3 create() {
+        return new SM3();
     }
 
 }

@@ -46,10 +46,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
 /**
- * 集合相关工具类<p>
+ * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class CollUtils {
@@ -163,10 +163,9 @@ public class CollUtils {
     /**
      * 是否包含{@code null}元素
      *
-     * @param iterable 被检查的Iterable对象,如果为{@code null} 返回false
+     * @param iterable 被检查的Iterable对象,如果为{@code null} 返回true
      * @return 是否包含{@code null}元素
      * @see IterUtils#hasNull(Iterable)
-     * @since 3.0.7
      */
     public static boolean hasNull(Iterable<?> iterable) {
         return IterUtils.hasNull(iterable);
@@ -1192,7 +1191,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.5.8
+     * @since 5.5.9
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, Objects::nonNull);
@@ -1217,7 +1216,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.5.8
+     * @since 5.5.9
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, (Filter<T>) t -> false == StringUtils.isEmpty(t));
@@ -1229,7 +1228,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.5.8
+     * @since 5.5.9
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, (Filter<T>) t -> false == StringUtils.isBlank(t));
@@ -2653,7 +2652,7 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 5.5.8
+     * @since 5.5.9
      */
     public interface Hash<T> {
         /**

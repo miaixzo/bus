@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class PatternUtils {
@@ -760,6 +760,16 @@ public class PatternUtils {
     }
 
     /**
+     * 从字符串中获得第一个整数
+     *
+     * @param StringWithNumber 带数字的字符串
+     * @return 整数
+     */
+    public static Integer getFirstNumber(CharSequence StringWithNumber) {
+        return Convert.toInt(get(RegEx.NUMBERS, StringWithNumber, 0), null);
+    }
+
+    /**
      * 清空缓存池
      */
     public void clear() {
@@ -769,16 +779,6 @@ public class PatternUtils {
         } finally {
             writeLock.unlock();
         }
-    }
-
-    /**
-     * 从字符串中获得第一个整数
-     *
-     * @param StringWithNumber 带数字的字符串
-     * @return 整数
-     */
-    public static Integer getFirstNumber(CharSequence StringWithNumber) {
-        return Convert.toInt(get(RegEx.NUMBERS, StringWithNumber, 0), null);
     }
 
     /**

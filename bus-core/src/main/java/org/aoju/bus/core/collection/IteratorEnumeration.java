@@ -31,7 +31,7 @@ import java.util.Iterator;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class IteratorEnumeration<E> implements Enumeration<E> {
@@ -52,7 +52,7 @@ public class IteratorEnumeration<E> implements Enumeration<E> {
     }
 
     /**
-     * 如果底层迭代器有更多的元素，则返回true。
+     * 如果底层迭代器有更多的元素，则返回true
      *
      * @return 如果底层迭代器有更多的元素，则为true
      */

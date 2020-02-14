@@ -32,7 +32,7 @@ import java.io.IOException;
  * Httpd使用协议这个词来标识HTTP消息是如何构造的
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public enum Protocol {
@@ -49,13 +49,13 @@ public enum Protocol {
     HTTP_1_1("http/1.1"),
 
     /**
-     * Chromium的二进制框架协议，包括标头压缩、在同一个套接字上多路复用多个请求和服务器推送。
+     * Chromium的二进制框架协议，包括标头压缩、在同一个套接字上多路复用多个请求和服务器推送
      * HTTP/1.1语义在SPDY/3上分层.
      */
     SPDY_3("spdy/3.1"),
 
     /**
-     * IETF的二进制框架协议，包括头压缩、在同一个套接字上多路复用多个请求和服务器推送。
+     * IETF的二进制框架协议，包括头压缩、在同一个套接字上多路复用多个请求和服务器推送
      * HTTP/1.1语义是在HTTP/2上分层的.
      */
     HTTP_2("http/2.0"),

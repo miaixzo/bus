@@ -23,8 +23,8 @@
  */
 package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.Builder;
 
 import java.math.BigInteger;
@@ -48,32 +48,10 @@ import java.security.spec.RSAPublicKeySpec;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class RSA extends Asymmetric {
-
-    /**
-     * 生成RSA私钥
-     *
-     * @param modulus         N特征值
-     * @param privateExponent d特征值
-     * @return {@link PrivateKey}
-     */
-    public static PrivateKey generatePrivateKey(BigInteger modulus, BigInteger privateExponent) {
-        return Builder.generatePrivateKey(Algorithm.RSA_ECB_PKCS1, new RSAPrivateKeySpec(modulus, privateExponent));
-    }
-
-    /**
-     * 生成RSA公钥
-     *
-     * @param modulus        N特征值
-     * @param publicExponent e特征值
-     * @return {@link PublicKey}
-     */
-    public static PublicKey generatePublicKey(BigInteger modulus, BigInteger publicExponent) {
-        return Builder.generatePublicKey(Algorithm.RSA_ECB_PKCS1, new RSAPublicKeySpec(modulus, publicExponent));
-    }
 
     /**
      * 构造，生成新的私钥公钥对
@@ -164,6 +142,28 @@ public class RSA extends Asymmetric {
      */
     public RSA(String rsaAlgorithm, PrivateKey privateKey, PublicKey publicKey) {
         super(rsaAlgorithm, privateKey, publicKey);
+    }
+
+    /**
+     * 生成RSA私钥
+     *
+     * @param modulus         N特征值
+     * @param privateExponent d特征值
+     * @return {@link PrivateKey}
+     */
+    public static PrivateKey generatePrivateKey(BigInteger modulus, BigInteger privateExponent) {
+        return Builder.generatePrivateKey(Algorithm.RSA_ECB_PKCS1, new RSAPrivateKeySpec(modulus, privateExponent));
+    }
+
+    /**
+     * 生成RSA公钥
+     *
+     * @param modulus        N特征值
+     * @param publicExponent e特征值
+     * @return {@link PublicKey}
+     */
+    public static PublicKey generatePublicKey(BigInteger modulus, BigInteger publicExponent) {
+        return Builder.generatePublicKey(Algorithm.RSA_ECB_PKCS1, new RSAPublicKeySpec(modulus, publicExponent));
     }
 
     @Override

@@ -31,14 +31,14 @@ import java.io.IOException;
  * 异步回调信息
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public interface Callback {
 
     /**
-     * 当请求由于取消、连接问题或超时而无法执行时调用。
-     * 因为网络可能在交换期间失败，所以远程服务器可能在失败之前接受了请求.
+     * 当请求由于取消、连接问题或超时而无法执行时调用
+     * 因为网络可能在交换期间失败，所以远程服务器可能在失败之前接受了请求
      *
      * @param call 调用者信息
      * @param ex   异常信息

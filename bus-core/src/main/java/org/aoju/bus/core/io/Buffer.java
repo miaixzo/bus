@@ -44,10 +44,10 @@ import java.util.List;
  * 内存中字节的集合.
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
-public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
+public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
 
     static final int REPLACEMENT_CHARACTER = '\ufffd';
 
@@ -608,7 +608,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
     }
 
     @Override
-    public int select(BufferOption options) {
+    public int select(AbstractBlending options) {
         int index = selectPrefix(options, false);
         if (index == -1) return -1;
 
@@ -622,16 +622,16 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
     }
 
     /**
-     * 返回此缓冲区前缀的选项中的值的索引。如果没有找到值，则返回-1。
+     * 返回此缓冲区前缀的选项中的值的索引。如果没有找到值，则返回-1
      * 此方法执行两个同步迭代:迭代trie和迭代这个缓冲区。当它在trie中到达一个结果时，
-     * 当它在trie中不匹配时，以及当缓冲区耗尽时，它将返回.
+     * 当它在trie中不匹配时，以及当缓冲区耗尽时，它将返回
      *
-     * @param selectTruncated 如果可能的结果出现但被截断，则true返回-2。
-     *                        例如，如果缓冲区包含[ab]，并且选项是[abc, abd]，则返回-2。
+     * @param selectTruncated 如果可能的结果出现但被截断，则true返回-2
+     *                        例如，如果缓冲区包含[ab]，并且选项是[abc, abd]，则返回-2
      *                        请注意，由于选项是按优先顺序列出的，而且第一个选项可能是另一个选项的前缀，
-     *                        这使得情况变得复杂。例如，如果缓冲区包含[ab]而选项是[abc, a]，则返回-2.
+     *                        这使得情况变得复杂。例如，如果缓冲区包含[ab]而选项是[abc, a]，则返回-2
      */
-    int selectPrefix(BufferOption options, boolean selectTruncated) {
+    int selectPrefix(AbstractBlending options, boolean selectTruncated) {
         Segment head = this.head;
         if (head == null) {
             if (selectTruncated) return -2;
@@ -980,7 +980,7 @@ public final class Buffer implements BufferSource, BufferSink, Cloneable, ByteCh
     }
 
     /**
-     * 丢弃此缓冲区中的所有字节。在使用完缓冲区后调用此方法将把它的段返回到池中.
+     * 丢弃此缓冲区中的所有字节。在使用完缓冲区后调用此方法将把它的段返回到池中
      */
     public final void clear() {
         try {

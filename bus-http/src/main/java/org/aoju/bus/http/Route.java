@@ -27,12 +27,12 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 /**
- * 连接用于到达抽象源服务器的具体路由。
+ * 连接用于到达抽象源服务器的具体路由
  * 在创建连接时，客户机有许多选项
  * 每个路由都是这些选项的特定选择
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public final class Route {

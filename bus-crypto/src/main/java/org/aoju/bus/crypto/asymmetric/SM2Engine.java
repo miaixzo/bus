@@ -49,7 +49,7 @@ import java.util.Random;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class SM2Engine {
@@ -162,14 +162,6 @@ public class SM2Engine {
     public SM2Engine setMode(SM2Mode mode) {
         this.mode = mode;
         return this;
-    }
-
-    /**
-     * SM2算法模式
-     * 在SM2算法中，C1C2C3为旧标准模式，C1C3C2为新标准模式
-     */
-    public enum SM2Mode {
-        C1C2C3, C1C3C2
     }
 
     protected ECMultiplier createBasePointMultiplier() {
@@ -366,6 +358,14 @@ public class SM2Engine {
     private void addFieldElement(ECFieldElement v) {
         final byte[] p = BigIntegers.asUnsignedByteArray(this.curveLength, v.toBigInteger());
         this.digest.update(p, 0, p.length);
+    }
+
+    /**
+     * SM2算法模式
+     * 在SM2算法中，C1C2C3为旧标准模式，C1C3C2为新标准模式
+     */
+    public enum SM2Mode {
+        C1C2C3, C1C3C2
     }
 
 }

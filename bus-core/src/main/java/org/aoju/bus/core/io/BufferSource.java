@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
  * 它还允许客户端提前读取,在消费之前进行必要的缓冲输入
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public interface BufferSource extends Source, ReadableByteChannel {
@@ -268,7 +268,7 @@ public interface BufferSource extends Source, ReadableByteChannel {
      * @return the    int
      * @throws IOException {@link java.io.IOException} IOException.
      */
-    int select(BufferOption options) throws IOException;
+    int select(AbstractBlending options) throws IOException;
 
     /**
      * Removes all bytes from this and returns them as a byte array.

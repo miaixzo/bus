@@ -42,12 +42,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * OfficeProcessManagerPoolEntry负责执行通过{@link LocalOfficePoolManager}提交的任务。
+ * OfficeProcessManagerPoolEntry负责执行通过{@link LocalOfficePoolManager}提交的任务
  * 它将向其内部{@link OfficeProcessManager}提交任务，并等待任务完成或到达配置的任务执行超时.
  * OfficeProcessManagerPoolEntry还负责在达到每个进程的最大任务数时重新启动office进程.
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
@@ -60,7 +60,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
     private final AtomicBoolean disconnectExpected = new AtomicBoolean(false);
 
     /**
-     * 当连接建立或关闭/丢失/来自office实例时，将通知此连接事件侦听器.
+     * 当连接建立或关闭/丢失/来自office实例时，将通知此连接事件侦听器
      */
     private final OfficeConnectEventListener connectionEventListener =
             new OfficeConnectEventListener() {
@@ -96,19 +96,19 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
             };
 
     /**
-     * 使用默认配置为指定的office URL创建新的协议池.
+     * 使用默认配置为指定的office URL创建新的协议池
      *
-     * @param unoUrl 需要创建的URL.
+     * @param unoUrl 需要创建的URL
      */
     public OfficeProcessEntryManager(final UnoUrl unoUrl) {
         this(unoUrl, new OfficeProcessManagerEntryBuilder());
     }
 
     /**
-     * 使用指定的配置为指定的office URL创建新的协议池.
+     * 使用指定的配置为指定的office URL创建新的协议池
      *
-     * @param unoUrl 需要创建的URL.
-     * @param config 配置.
+     * @param unoUrl 需要创建的URL
+     * @param config 配置
      */
     public OfficeProcessEntryManager(
             final UnoUrl unoUrl, final OfficeProcessManagerEntryBuilder config) {
@@ -171,7 +171,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
 
     @Override
     public void doStop() throws InstrumentException {
-        // 从这里开始，任何原因导致与Office进程的断开都是可能的.
+        // 从这里开始，任何原因导致与Office进程的断开都是可能的
         disconnectExpected.set(true);
 
         // 现在可以停止运行的office进程

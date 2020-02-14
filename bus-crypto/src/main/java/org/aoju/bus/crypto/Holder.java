@@ -29,12 +29,22 @@ import java.security.Provider;
  * 全局单例的 org.bouncycastle.jce.provider.BouncyCastleProvider 对象
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class Holder {
 
     private static boolean useBouncyCastle = true;
+
+    /**
+     * 设置是否使用Bouncy Castle库
+     * 如果设置为false，表示强制关闭Bouncy Castle而使用JDK
+     *
+     * @param isUseBouncyCastle 是否使用BouncyCastle库
+     */
+    public static void setUseBouncyCastle(boolean isUseBouncyCastle) {
+        useBouncyCastle = isUseBouncyCastle;
+    }
 
     /**
      * 创建Bouncy Castle 提供者
@@ -53,16 +63,6 @@ public class Holder {
      */
     public Provider getProvider() {
         return useBouncyCastle ? createBouncyCastleProvider() : null;
-    }
-
-    /**
-     * 设置是否使用Bouncy Castle库
-     * 如果设置为false，表示强制关闭Bouncy Castle而使用JDK
-     *
-     * @param isUseBouncyCastle 是否使用BouncyCastle库
-     */
-    public static void setUseBouncyCastle(boolean isUseBouncyCastle) {
-        useBouncyCastle = isUseBouncyCastle;
     }
 
 }

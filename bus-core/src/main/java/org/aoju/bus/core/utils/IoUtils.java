@@ -55,7 +55,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class IoUtils {
@@ -1194,7 +1194,7 @@ public class IoUtils {
     public static Sink sink(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getOutputStream() == null) throw new IOException("socket's output stream == null");
-        Awaits timeout = timeout(socket);
+        AsyncTimeout timeout = timeout(socket);
         Sink sink = sink(socket.getOutputStream(), timeout);
         return timeout.sink(sink);
     }
@@ -1294,13 +1294,13 @@ public class IoUtils {
     public static Source source(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getInputStream() == null) throw new IOException("socket's input stream == null");
-        Awaits timeout = timeout(socket);
+        AsyncTimeout timeout = timeout(socket);
         Source source = source(socket.getInputStream(), timeout);
         return timeout.source(source);
     }
 
-    private static Awaits timeout(final Socket socket) {
-        return new Awaits() {
+    private static AsyncTimeout timeout(final Socket socket) {
+        return new AsyncTimeout() {
             @Override
             protected IOException newTimeoutException(IOException cause) {
                 InterruptedIOException ioe = new SocketTimeoutException("timeout");
@@ -1333,12 +1333,10 @@ public class IoUtils {
     }
 
     /**
-     * Convert the specified string to an input stream, encoded as bytes
-     * using the default character encoding of the platform.
+     * 将指定的字符串转换为输入流，使用平台的默认字符编码编码为字节
      *
-     * @param input the string to convert
-     * @return an input stream
-     * @since Commons IO 1.1
+     * @param input 要转换的字符串
+     * @return 一个输入流
      */
     public static InputStream toInputStream(String input) {
         byte[] bytes = input.getBytes();
@@ -1346,15 +1344,12 @@ public class IoUtils {
     }
 
     /**
-     * Convert the specified string to an input stream, encoded as bytes
-     * using the specified character encoding.
-     * <p>
+     * 将指定的字符串转换为输入流，使用指定的字符编码编码为字节
      *
-     * @param input    the string to convert
-     * @param encoding the encoding to use, null means platform default
-     * @return an input stream
-     * @throws IOException if the encoding is invalid
-     * @since Commons IO 1.1
+     * @param input    要转换的字符串
+     * @param encoding 要使用的编码，null表示平台默认值
+     * @return 一个输入流
+     * @throws IOException 如果编码无效
      */
     public static InputStream toInputStream(String input, String encoding) throws IOException {
         byte[] bytes = encoding != null ? input.getBytes(encoding) : input.getBytes();
@@ -1362,20 +1357,14 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of an InputStream as a String
-     * using the specified character encoding.
-     * <p>
-     * Character encoding names can be found at
-     * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * BufferedInputStream.
+     * 使用指定的字符编码将InputStream的内容作为字符串获取
+     * 这个方法在内部缓冲输入，所以不需要使用BufferedInputStream
      *
-     * @param input    the InputStream to read from
-     * @param encoding the encoding to use, null means platform default
-     * @return the requested String
-     * @throws NullPointerException if the input is null
-     * @throws IOException          if an I/O error occurs
+     * @param input    要从中读取的InputStream
+     * @param encoding 要使用的编码，null表示平台默认值
+     * @return 所请求的字符串
+     * @throws NullPointerException 如果输入为空
+     * @throws IOException          如果发生I/O错误
      */
     public static String toString(InputStream input, String encoding)
             throws IOException {
@@ -1385,17 +1374,12 @@ public class IoUtils {
     }
 
     /**
-     * Copy bytes from an InputStream to chars on a
-     * Writer using the default character encoding of the platform.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * BufferedInputStream.
-     * <p>
-     * This method uses {@link InputStreamReader}.
+     * 使用平台的默认字符编码将字节从InputStream复制到写入器上的字符
+     * 该方法在内部缓冲输入，因此不需要使用 BufferedInputStream
+     * 方法使用 {@link InputStreamReader}
      *
-     * @param input  the InputStream to read from
-     * @param output the Writer to write to
-     * @since Commons IO 1.1
+     * @param input  要从中读取的InputStream
+     * @param output 要写入的输出者
      */
     public static void copy(InputStream input, Writer output) {
         InputStreamReader in = new InputStreamReader(input);
@@ -1403,23 +1387,15 @@ public class IoUtils {
     }
 
     /**
-     * Copy bytes from an InputStream to chars on a
-     * Writer using the specified character encoding.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * BufferedInputStream.
-     * <p>
-     * Character encoding names can be found at
-     * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
-     * <p>
-     * This method uses {@link InputStreamReader}.
+     * 使用指定的字符编码将字节从InputStream复制到写入器上的字符.
+     * 该方法在内部缓冲输入，因此不需要使用 BufferedInputStream
+     * 方法使用 {@link InputStreamReader}
      *
-     * @param input    the InputStream to read from
-     * @param output   the Writer to write to
-     * @param encoding the encoding to use, null means platform default
-     * @throws NullPointerException if the input or output is null
-     * @throws IOException          if an I/O error occurs
-     * @since Commons IO 1.1
+     * @param input    要从中读取的InputStream
+     * @param output   要写入的输出者
+     * @param encoding 要使用的编码，null表示平台默认值
+     * @throws NullPointerException 如果输入为空
+     * @throws IOException          如果发生I/O错误
      */
     public static void copy(InputStream input, Writer output, String encoding)
             throws IOException {
@@ -1432,13 +1408,10 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of a Reader as a String.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * BufferedReader.
+     * 以字符串的形式获取阅读器的内容
      *
-     * @param input the Reader to read from
-     * @return the requested String
+     * @param input 读取信息
+     * @return 所请求的字符串
      */
     public static String toString(Reader input) {
         StringWriter sw = new StringWriter();
@@ -1447,28 +1420,23 @@ public class IoUtils {
     }
 
     /**
-     * Get the contents of a byte[] as a String
-     * using the default character encoding of the platform.
+     * 使用平台的默认字符编码将byte[]的内容作为字符串获取
      *
-     * @param input the byte array to read from
-     * @return the requested String
+     * @param input 要从中读取的字节数组
+     * @return 所请求的字符串
      */
     public static String toString(byte[] input) {
         return new String(input);
     }
 
     /**
-     * Get the contents of a byte[] as a String
-     * using the specified character encoding.
-     * <p>
-     * Character encoding names can be found at
-     * <a href="http://www.iana.org/assignments/character-sets">IANA</a>.
+     * 使用指定的字符编码将字节[]的内容作为字符串获取
      *
-     * @param input    the byte array to read from
-     * @param encoding the encoding to use, null means platform default
-     * @return the requested String
-     * @throws NullPointerException if the input is null
-     * @throws IOException          if an I/O error occurs (never occurs)
+     * @param input    要从中读取的字节数组
+     * @param encoding 要使用的编码，null表示平台默认值
+     * @return 所请求的字符串
+     * @throws NullPointerException 如果输入为空
+     * @throws IOException          如果发生I/O错误(从未发生)
      */
     public static String toString(byte[] input, String encoding)
             throws IOException {

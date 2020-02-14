@@ -23,12 +23,12 @@
  */
 package org.aoju.bus.crypto.digest;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngineFactory;
 
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class HMac implements Serializable {

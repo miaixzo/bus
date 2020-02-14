@@ -55,7 +55,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 转换器,默认转换器预定义的一些转换器,自定义转换器存放用户自定的转换器
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class ConverterRegistry {
@@ -69,14 +69,8 @@ public class ConverterRegistry {
      */
     private volatile Map<Type, Converter<?>> customConverterMap;
 
-    /**
-     * 类级的内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例 没有绑定关系，而且只有被调用到才会装载，从而实现了延迟加载
-     */
-    private static class SingletonHolder {
-        /**
-         * 静态初始化器，由JVM来保证线程安全
-         */
-        private static ConverterRegistry instance = new ConverterRegistry();
+    public ConverterRegistry() {
+        defaultConverter();
     }
 
     /**
@@ -86,10 +80,6 @@ public class ConverterRegistry {
      */
     public static ConverterRegistry getInstance() {
         return SingletonHolder.instance;
-    }
-
-    public ConverterRegistry() {
-        defaultConverter();
     }
 
     /**
@@ -389,6 +379,16 @@ public class ConverterRegistry {
         defaultConverterMap.put(Optional.class, new OptionalConverter());
 
         return this;
+    }
+
+    /**
+     * 类级的内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例 没有绑定关系，而且只有被调用到才会装载，从而实现了延迟加载
+     */
+    private static class SingletonHolder {
+        /**
+         * 静态初始化器，由JVM来保证线程安全
+         */
+        private static ConverterRegistry instance = new ConverterRegistry();
     }
 
 }

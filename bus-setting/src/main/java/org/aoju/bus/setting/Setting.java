@@ -59,7 +59,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class Setting extends AbsSetting implements Map<String, String> {
@@ -626,7 +626,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((charset == null) ? 0 : charset.hashCode());
-        result = prime * result + ((groupedMap == null) ? 0 : groupedMap.hashCode());
+        result = prime * result + groupedMap.hashCode();
         result = prime * result + (isUseVariable ? 1231 : 1237);
         result = prime * result + ((settingUrl == null) ? 0 : settingUrl.hashCode());
         return result;
@@ -648,27 +648,20 @@ public class Setting extends AbsSetting implements Map<String, String> {
             if (other.charset != null) {
                 return false;
             }
-        } else if (!charset.equals(other.charset)) {
+        } else if (false == charset.equals(other.charset)) {
             return false;
         }
-        if (groupedMap == null) {
-            if (other.groupedMap != null) {
-                return false;
-            }
-        } else if (!groupedMap.equals(other.groupedMap)) {
+        if (false == groupedMap.equals(other.groupedMap)) {
             return false;
         }
         if (isUseVariable != other.isUseVariable) {
             return false;
         }
         if (settingUrl == null) {
-            if (other.settingUrl != null) {
-                return false;
-            }
-        } else if (!settingUrl.equals(other.settingUrl)) {
-            return false;
+            return other.settingUrl == null;
+        } else {
+            return settingUrl.equals(other.settingUrl);
         }
-        return true;
     }
 
     @Override

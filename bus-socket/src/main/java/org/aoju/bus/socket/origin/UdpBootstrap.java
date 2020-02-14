@@ -42,7 +42,7 @@ import java.util.Set;
  * UDP服务启动类
  *
  * @author Kimi Liu
- * @version 5.5.8
+ * @version 5.5.9
  * @since JDK 1.8+
  */
 public class UdpBootstrap<Request> implements Runnable {
@@ -109,7 +109,7 @@ public class UdpBootstrap<Request> implements Runnable {
     };
 
 
-    private BufferPage bufferPage = new BufferPool(1024, 1, true).allocateBufferPage();
+    private PageBuffer pageBuffer = new BufferPool(1024, 1, true).allocateBufferPage();
 
     public UdpBootstrap(Protocol<Request> protocol, Message<Request> messageProcessor) {
         config.setProtocol(protocol);
@@ -164,7 +164,7 @@ public class UdpBootstrap<Request> implements Runnable {
             selector.wakeup();
         }
         SelectionKey selectionKey = channel.register(selector, SelectionKey.OP_READ);
-        UdpChannel<Request> udpChannel = new UdpChannel<>(channel, selectionKey, config.getWriteQueueCapacity(), bufferPage);
+        UdpChannel<Request> udpChannel = new UdpChannel<>(channel, selectionKey, config.getWriteQueueCapacity(), pageBuffer);
         selectionKey.attach(udpChannel);
 
         //启动线程服务
@@ -182,7 +182,7 @@ public class UdpBootstrap<Request> implements Runnable {
             }
             updateServiceStatus(STATUS_STARTING);
 
-            readBuffer = bufferPage.allocate(config.getReadBufferSize());
+            readBuffer = pageBuffer.allocate(config.getReadBufferSize());
             int uid = UdpBootstrap.uid++;
             Thread serverThread = new Thread(this, "UDP-Selector-" + uid);
             serverThread.start();
