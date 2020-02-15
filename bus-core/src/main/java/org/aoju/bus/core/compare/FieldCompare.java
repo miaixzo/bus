@@ -36,7 +36,7 @@ import java.util.Comparator;
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class FieldCompare<T> implements Comparator<T>, Serializable {
@@ -84,7 +84,7 @@ public class FieldCompare<T> implements Comparator<T>, Serializable {
         int result = ObjectUtils.compare(fieldValue1, fieldValue2);
         if (0 == result) {
             //避免TreeSet / TreeMap 过滤掉排序字段相同但是对象不相同的情况
-            result = CompareUtils.compare(o1, o2, true);
+            result = ObjectUtils.compare(o1, o2, true);
         }
         return result;
     }

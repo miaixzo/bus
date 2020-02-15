@@ -55,23 +55,23 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class IoUtils {
 
     /**
-     * 默认缓存大小
+     * 默认缓存大小 8192
      */
-    public static final int DEFAULT_BUFFER_SIZE = 1024;
+    public static final int DEFAULT_BUFFER_SIZE = 2 << 12;
     /**
-     * 默认中等缓存大小
+     * 默认中等缓存大小 16384
      */
-    public static final int DEFAULT_MIDDLE_BUFFER_SIZE = 4096;
+    public static final int DEFAULT_MIDDLE_BUFFER_SIZE = 2 << 13;
     /**
-     * 默认大缓存大小
+     * 默认大缓存大小 32768
      */
-    public static final int DEFAULT_LARGE_BUFFER_SIZE = 8192;
+    public static final int DEFAULT_LARGE_BUFFER_SIZE = 2 << 14;
 
     /**
      * 数据流末尾
@@ -763,16 +763,13 @@ public class IoUtils {
     }
 
     /**
-     * String 转为流
+     * String 转为UTF-8编码的字节流流
      *
-     * @param content 内容bytes
+     * @param content 内容
      * @return 字节流
      */
-    public static ByteArrayInputStream toStream(byte[] content) {
-        if (content == null) {
-            return null;
-        }
-        return new ByteArrayInputStream(content);
+    public static ByteArrayInputStream toStream(String content) {
+        return toStream(content, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -787,6 +784,19 @@ public class IoUtils {
         } catch (FileNotFoundException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * String 转为流
+     *
+     * @param content 内容bytes
+     * @return 字节流
+     */
+    public static ByteArrayInputStream toStream(byte[] content) {
+        if (content == null) {
+            return null;
+        }
+        return new ByteArrayInputStream(content);
     }
 
     /**
@@ -1132,18 +1142,47 @@ public class IoUtils {
         return checksum;
     }
 
+    /**
+     * 返回缓冲区从{@code source}读取的字节流
+     * 返回的源将对其内存缓冲区执行批量读取
+     *
+     * @param source 字节流
+     * @return 返回缓冲区
+     */
     public static BufferSource buffer(Source source) {
         return new RealSource(source);
     }
 
+    /**
+     * 返回一个新接收器，该接收器缓冲写{@code sink}
+     * 返回的接收器将批量写入{@code sink}
+     *
+     * @param sink 接收一个字节流
+     * @return 接收缓冲区
+     */
     public static BufferSink buffer(Sink sink) {
         return new RealSink(sink);
     }
 
+    /**
+     * 返回一个向{@code out}写入的接收器
+     *
+     * @param out 输出流
+     * @return 接收缓冲区
+     */
     public static Sink sink(OutputStream out) {
         return sink(out, new Timeout());
     }
 
+    /**
+     * 返回一个向{@code socket}写入的接收器。优先选择这个方法，
+     * 而不是{@link #sink(OutputStream)}，因为这个方法支持超时
+     * 当套接字写超时时，套接字将由看门狗线程异步关闭
+     *
+     * @param out     数据输出流
+     * @param timeout 超时信息
+     * @return 接收器
+     */
     private static Sink sink(final OutputStream out, final Timeout timeout) {
         if (out == null) throw new IllegalArgumentException("out == null");
         if (timeout == null) throw new IllegalArgumentException("timeout == null");
@@ -1191,6 +1230,15 @@ public class IoUtils {
         };
     }
 
+    /**
+     * 返回一个向{@code socket}写入的接收器。优先选择这个方法，
+     * 而不是{@link #sink(OutputStream)}，因为这个方法支持超时
+     * 当套接字写超时时，套接字将由任务线程异步关闭
+     *
+     * @param socket 套接字
+     * @return 接收器
+     * @throws IOException IO异常
+     */
     public static Sink sink(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getOutputStream() == null) throw new IOException("socket's output stream == null");
@@ -1199,10 +1247,23 @@ public class IoUtils {
         return timeout.sink(sink);
     }
 
+    /**
+     * 返回从{@code in}中读取的缓冲数据
+     *
+     * @param in 数据输入流
+     * @return 缓冲数据
+     */
     public static Source source(InputStream in) {
         return source(in, new Timeout());
     }
 
+    /**
+     * 返回从{@code in}中读取的缓冲数据
+     *
+     * @param in      数据输入流
+     * @param timeout 超时信息
+     * @return 缓冲数据
+     */
     private static Source source(final InputStream in, final Timeout timeout) {
         if (in == null) throw new IllegalArgumentException("in == null");
         if (timeout == null) throw new IllegalArgumentException("timeout == null");
@@ -1244,31 +1305,73 @@ public class IoUtils {
         };
     }
 
+    /**
+     * 返回从{@code file}读取的缓冲数据
+     *
+     * @param file 文件
+     * @return 缓冲数据
+     * @throws FileNotFoundException 文件未找到
+     */
     public static Source source(File file) throws FileNotFoundException {
         if (file == null) throw new IllegalArgumentException("file == null");
         return source(new FileInputStream(file));
     }
 
+    /**
+     * 返回从{@code path}读取的缓冲数据
+     *
+     * @param path    路径
+     * @param options 选项
+     * @return 缓冲数据
+     * @throws IOException IO异常
+     */
     public static Source source(Path path, OpenOption... options) throws IOException {
         if (path == null) throw new IllegalArgumentException("path == null");
         return source(Files.newInputStream(path, options));
     }
 
+    /**
+     * 返回一个向{@code file}写入的接收器
+     *
+     * @param file 文件
+     * @return 接收器
+     * @throws FileNotFoundException 文件未找到
+     */
     public static Sink sink(File file) throws FileNotFoundException {
         if (file == null) throw new IllegalArgumentException("file == null");
         return sink(new FileOutputStream(file));
     }
 
+    /**
+     * 返回一个附加到{@code file}的接收器
+     *
+     * @param file 文件
+     * @return 接收器
+     * @throws FileNotFoundException 文件未找到
+     */
     public static Sink appendingSink(File file) throws FileNotFoundException {
         if (file == null) throw new IllegalArgumentException("file == null");
         return sink(new FileOutputStream(file, true));
     }
 
+    /**
+     * 返回一个向{@code path}写入的接收器.
+     *
+     * @param path    路径
+     * @param options 属性
+     * @return 写入的数据的接收器
+     * @throws IOException IO异常
+     */
     public static Sink sink(Path path, OpenOption... options) throws IOException {
         if (path == null) throw new IllegalArgumentException("path == null");
         return sink(Files.newOutputStream(path, options));
     }
 
+    /**
+     * 返回一个都不写的接收器
+     *
+     * @return 接收器
+     */
     public static Sink blackhole() {
         return new Sink() {
             @Override
@@ -1291,6 +1394,14 @@ public class IoUtils {
         };
     }
 
+    /**
+     * 返回从{@code socket}读取的缓存信息。与{@link #source(InputStream)}相比，
+     * 更喜欢这个方法， 因为这个方法支持超时。当套接字读取超时时，套接字将由任务线程异步关闭
+     *
+     * @param socket 套接字
+     * @return 取的缓存信息
+     * @throws IOException IO异常
+     */
     public static Source source(Socket socket) throws IOException {
         if (socket == null) throw new IllegalArgumentException("socket == null");
         if (socket.getInputStream() == null) throw new IOException("socket's input stream == null");

@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.key;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.RandomUtils;
@@ -59,7 +60,7 @@ import java.util.Random;
  * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -233,7 +234,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     public static UUID nameUUIDFromBytes(byte[] name) {
         MessageDigest md;
         try {
-            md = MessageDigest.getInstance("MD5");
+            md = MessageDigest.getInstance(Algorithm.MD5);
         } catch (NoSuchAlgorithmException nsae) {
             throw new InternalError("MD5 not supported");
         }

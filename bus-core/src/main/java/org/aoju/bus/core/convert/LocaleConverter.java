@@ -33,7 +33,7 @@ import java.util.Locale;
  * 只提供String转换支持
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class LocaleConverter extends AbstractConverter<Locale> {

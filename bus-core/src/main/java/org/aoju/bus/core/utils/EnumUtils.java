@@ -32,15 +32,10 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class EnumUtils {
-
-    private static final String NULL_ELEMENTS_NOT_PERMITTED = "null elements not permitted";
-    private static final String CANNOT_STORE_S_S_VALUES_IN_S_BITS = "Cannot store %s %s values in %s bits";
-    private static final String S_DOES_NOT_SEEM_TO_BE_AN_ENUM_TYPE = "%s does not seem to be an Enum type";
-    private static final String ENUM_CLASS_MUST_BE_DEFINED = "EnumClass must be defined.";
 
     /**
      * 指定类是否为Enum类
@@ -216,6 +211,26 @@ public class EnumUtils {
     }
 
     /**
+     * 获得枚举名对应指定字段值的Map
+     * 键为枚举名，值为字段值
+     *
+     * @param clazz     枚举类
+     * @param fieldName 字段名，最终调用getXXX方法
+     * @return 枚举名对应指定字段值的Map
+     */
+    public static Map<String, Object> getFieldNames(Class<? extends Enum<?>> clazz, String fieldName) {
+        final Enum<?>[] enums = clazz.getEnumConstants();
+        if (null == enums) {
+            return null;
+        }
+        final Map<String, Object> map = MapUtils.newHashMap(enums.length);
+        for (Enum<?> e : enums) {
+            map.put(e.name(), ReflectUtils.getFieldValue(e, fieldName));
+        }
+        return map;
+    }
+
+    /**
      * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序
      * 结果中键为枚举名，值为枚举对象
      *
@@ -227,26 +242,6 @@ public class EnumUtils {
         final LinkedHashMap<String, E> map = new LinkedHashMap<>();
         for (final E e : enumClass.getEnumConstants()) {
             map.put(e.name(), e);
-        }
-        return map;
-    }
-
-    /**
-     * 获得枚举名对应指定字段值的Map
-     * 键为枚举名，值为字段值
-     *
-     * @param clazz     枚举类
-     * @param fieldName 字段名，最终调用getXXX方法
-     * @return 枚举名对应指定字段值的Map
-     */
-    public static Map<String, Object> getNameFieldMap(Class<? extends Enum<?>> clazz, String fieldName) {
-        final Enum<?>[] enums = clazz.getEnumConstants();
-        if (null == enums) {
-            return null;
-        }
-        final Map<String, Object> map = MapUtils.newHashMap(enums.length);
-        for (Enum<?> e : enums) {
-            map.put(e.name(), ReflectUtils.getFieldValue(e, fieldName));
         }
         return map;
     }
@@ -370,160 +365,5 @@ public class EnumUtils {
         }
         return null;
     }
-
-    /**
-     * 创建Enum的给定子集的长位向量表示
-     *
-     * @param enumClass 我们使用的enum类，而不是{@code null}
-     * @param values    long[]表示一组enum值，最右边是最不重要的数字，
-     *                  而不是{@code null}
-     * @param <E>       枚举的类型
-     * @return 一组枚举值
-     * @see #generateBitVectors(Class, Iterable)
-     * @since 3.0.1
-     */
-    public static <E extends Enum<E>> long generateBitVector(final Class<E> enumClass, final Iterable<? extends E> values) {
-        checkBitVectorable(enumClass);
-        Assert.notNull(values);
-        long total = 0;
-        for (final E constant : values) {
-            Assert.isTrue(constant != null, NULL_ELEMENTS_NOT_PERMITTED);
-            total |= 1L << constant.ordinal();
-        }
-        return total;
-    }
-
-    /**
-     * 根据需要使用任意数量的{@code long}创建Enum的给定子集的位向量表示
-     *
-     * @param enumClass 我们使用的enum类，而不是{@code null}
-     * @param values    long[]表示一组enum值，最右边是最不重要的数字，
-     *                  而不是{@code null}
-     * @param <E>       枚举的类型
-     * @return 一组枚举值
-     * @since 3.2.0
-     */
-    public static <E extends Enum<E>> long[] generateBitVectors(final Class<E> enumClass, final Iterable<? extends E> values) {
-        asEnum(enumClass);
-        Assert.notNull(values);
-        final EnumSet<E> condensed = EnumSet.noneOf(enumClass);
-        for (final E constant : values) {
-            Assert.isTrue(constant != null, NULL_ELEMENTS_NOT_PERMITTED);
-            condensed.add(constant);
-        }
-        final long[] result = new long[(enumClass.getEnumConstants().length - 1) / Long.SIZE + 1];
-        for (final E value : condensed) {
-            result[value.ordinal() / Long.SIZE] |= 1L << (value.ordinal() % Long.SIZE);
-        }
-        ArrayUtils.reverse(result);
-        return result;
-    }
-
-    /**
-     * 创建给定Enum值数组的长位向量表示
-     *
-     * @param enumClass 我们使用的enum类，而不是{@code null}
-     * @param values    long[]表示一组enum值，最右边是最不重要的数字，
-     *                  而不是{@code null}
-     * @param <E>       枚举的类型
-     * @return 一组枚举值
-     * @since 3.0.1
-     */
-    public static <E extends Enum<E>> long generateBitVector(final Class<E> enumClass, final E... values) {
-        Assert.noNullElements(values);
-        return generateBitVector(enumClass, Arrays.asList(values));
-    }
-
-    /**
-     * 根据需要使用任意数量的{@code long}创建Enum的给定子集的位向量表示
-     *
-     * @param enumClass 我们使用的enum类，而不是{@code null}
-     * @param values    long[]表示一组enum值，最右边是最不重要的数字，
-     *                  而不是{@code null}
-     * @param <E>       枚举的类型
-     * @return 一组枚举值
-     * @since 3.2.0
-     */
-    public static <E extends Enum<E>> long[] generateBitVectors(final Class<E> enumClass, final E... values) {
-        asEnum(enumClass);
-        Assert.noNullElements(values);
-        final EnumSet<E> condensed = EnumSet.noneOf(enumClass);
-        Collections.addAll(condensed, values);
-        final long[] result = new long[(enumClass.getEnumConstants().length - 1) / Long.SIZE + 1];
-        for (final E value : condensed) {
-            result[value.ordinal() / Long.SIZE] |= 1L << (value.ordinal() % Long.SIZE);
-        }
-        ArrayUtils.reverse(result);
-        return result;
-    }
-
-    /**
-     * 将{@link EnumUtils#generateBitVector}创建的长值转换为它所表示的enum值集
-     *
-     * @param enumClass 我们使用的enum类，而不是{@code null}
-     * @param value     long表示一组enum值，最右边是最不重要的数字，
-     *                  而不是{@code null}
-     * @param <E>       枚举的类型
-     * @return 一组枚举值
-     * @since 3.0.1
-     */
-    public static <E extends Enum<E>> EnumSet<E> processBitVector(final Class<E> enumClass, final long value) {
-        checkBitVectorable(enumClass).getEnumConstants();
-        return processBitVectors(enumClass, value);
-    }
-
-    /**
-     * 将{@link EnumUtils#generateBitVectors}
-     * 创建的{@code long[]}转换为它所表示的一组enum值
-     *
-     * @param enumClass 我们使用的enum类，而不是{@code null}
-     * @param values    long[]表示一组enum值，最右边是最不重要的数字，
-     *                  而不是{@code null}
-     * @param <E>       枚举的类型
-     * @return 一组枚举值
-     * @since 3.2.0
-     */
-    public static <E extends Enum<E>> EnumSet<E> processBitVectors(final Class<E> enumClass, final long... values) {
-        final EnumSet<E> results = EnumSet.noneOf(asEnum(enumClass));
-        final long[] lvalues = ArrayUtils.clone(Assert.notNull(values));
-        ArrayUtils.reverse(lvalues);
-        for (final E constant : enumClass.getEnumConstants()) {
-            final int block = constant.ordinal() / Long.SIZE;
-            if (block < lvalues.length && (lvalues[block] & 1L << (constant.ordinal() % Long.SIZE)) != 0) {
-                results.add(constant);
-            }
-        }
-        return results;
-    }
-
-    /**
-     * 验证{@code enumClass}与{@code long}中的注册的是否兼容.
-     *
-     * @param <E>       枚举的类型
-     * @param enumClass 检查
-     * @return {@code enumClass}
-     * @since 3.0.1
-     */
-    private static <E extends Enum<E>> Class<E> checkBitVectorable(final Class<E> enumClass) {
-        final E[] constants = asEnum(enumClass).getEnumConstants();
-        Assert.isTrue(constants.length <= Long.SIZE, CANNOT_STORE_S_S_VALUES_IN_S_BITS,
-                Integer.valueOf(constants.length), enumClass.getSimpleName(), Integer.valueOf(Long.SIZE));
-
-        return enumClass;
-    }
-
-    /**
-     * 验证(@code enumClass)
-     *
-     * @param <E>       枚举的类型
-     * @param enumClass 检查
-     * @return {@code enumClass}
-     * @since 3.2.0
-     */
-    private static <E extends Enum<E>> Class<E> asEnum(final Class<E> enumClass) {
-        Assert.notNull(enumClass, ENUM_CLASS_MUST_BE_DEFINED);
-        Assert.isTrue(enumClass.isEnum(), S_DOES_NOT_SEEM_TO_BE_AN_ENUM_TYPE, enumClass);
-        return enumClass;
-    }
-
+  
 }

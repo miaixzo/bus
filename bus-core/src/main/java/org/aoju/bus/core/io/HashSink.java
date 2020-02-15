@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.utils.IoUtils;
 
 import javax.crypto.Mac;
@@ -38,7 +39,7 @@ import java.security.NoSuchAlgorithmException;
  * {@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public final class HashSink extends DelegateSink {
@@ -70,31 +71,31 @@ public final class HashSink extends DelegateSink {
     }
 
     public static HashSink md5(Sink sink) {
-        return new HashSink(sink, "MD5");
+        return new HashSink(sink, Algorithm.MD5);
     }
 
     public static HashSink sha1(Sink sink) {
-        return new HashSink(sink, "SHA-1");
+        return new HashSink(sink, Algorithm.SHA1);
     }
 
     public static HashSink sha256(Sink sink) {
-        return new HashSink(sink, "SHA-256");
+        return new HashSink(sink, Algorithm.SHA256);
     }
 
     public static HashSink sha512(Sink sink) {
-        return new HashSink(sink, "SHA-512");
+        return new HashSink(sink, Algorithm.SHA512);
     }
 
     public static HashSink hmacSha1(Sink sink, ByteString key) {
-        return new HashSink(sink, key, "HmacSHA1");
+        return new HashSink(sink, key, Algorithm.HmacSHA1);
     }
 
     public static HashSink hmacSha256(Sink sink, ByteString key) {
-        return new HashSink(sink, key, "HmacSHA256");
+        return new HashSink(sink, key, Algorithm.HmacSHA256);
     }
 
     public static HashSink hmacSha512(Sink sink, ByteString key) {
-        return new HashSink(sink, key, "HmacSHA512");
+        return new HashSink(sink, key, Algorithm.HmacSHA512);
     }
 
     @Override

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.6.0</version>
+    <version>5.6.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -97,7 +97,7 @@
         <jd.oss.version>1.11.136</jd.oss.version>
         <minio.oss.version>3.0.12</minio.oss.version>
         <qiniu.oss.version>7.2.28</qiniu.oss.version>
-        <tencent.oss.version>5.6.0</tencent.oss.version>
+        <tencent.oss.version>5.6.1</tencent.oss.version>
         <upyun.oss.version>4.0.1</upyun.oss.version>
         <!--bus-tracer-->
         <cxf.version>2.7.18</cxf.version>

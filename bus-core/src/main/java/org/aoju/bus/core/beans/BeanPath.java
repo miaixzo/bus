@@ -49,7 +49,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class BeanPath implements Serializable {
@@ -122,7 +122,7 @@ public class BeanPath implements Serializable {
             if (bean instanceof Collection) {
                 return CollUtils.getAny((Collection<?>) bean, Convert.convert(int[].class, keys));
             } else if (ArrayUtils.isArray(bean)) {
-                return ArrayUtils.getAny(bean, Convert.convert(int[].class, keys));
+                return ArrayUtils.get(bean, Convert.convert(int[].class, keys));
             } else {
                 final String[] unwrapedKeys = new String[keys.size()];
                 for (int i = 0; i < unwrapedKeys.length; i++) {

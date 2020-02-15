@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.forest.boot.jar;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.forest.Builder;
 import org.aoju.bus.forest.Complex;
 import org.aoju.bus.forest.algorithm.Key;
@@ -37,7 +38,7 @@ import java.util.zip.Deflater;
  * 普通JAR包加解密工具类
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class Jar {
@@ -231,7 +232,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(String src, String dest, String password) throws Exception {
-        encrypt(src, dest, password, Builder.DEFAULT_ALGORITHM);
+        encrypt(src, dest, password, Algorithm.AES);
     }
 
     /**
@@ -285,7 +286,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, String password) throws Exception {
-        encrypt(src, dest, password, Builder.DEFAULT_ALGORITHM);
+        encrypt(src, dest, password, Algorithm.AES);
     }
 
     /**
@@ -344,7 +345,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, String password) throws Exception {
-        encrypt(in, out, password, Builder.DEFAULT_ALGORITHM);
+        encrypt(in, out, password, Algorithm.AES);
     }
 
     /**
@@ -401,7 +402,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        encrypt(src, dest, password, Builder.DEFAULT_ALGORITHM, filter);
+        encrypt(src, dest, password, Algorithm.AES, filter);
     }
 
     /**
@@ -459,7 +460,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        encrypt(src, dest, password, Builder.DEFAULT_ALGORITHM, filter);
+        encrypt(src, dest, password, Algorithm.AES, filter);
     }
 
     /**
@@ -522,7 +523,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        encrypt(in, out, password, Builder.DEFAULT_ALGORITHM, filter);
+        encrypt(in, out, password, Algorithm.AES, filter);
     }
 
     /**
@@ -668,7 +669,7 @@ public class Jar {
      * @throws Exception 解密异常
      */
     public static void decrypt(String src, String dest, String password) throws Exception {
-        decrypt(src, dest, password, Builder.DEFAULT_ALGORITHM);
+        decrypt(src, dest, password, Algorithm.AES);
     }
 
     /**
@@ -722,7 +723,7 @@ public class Jar {
      * @throws Exception 解密异常
      */
     public static void decrypt(File src, File dest, String password) throws Exception {
-        decrypt(src, dest, password, Builder.DEFAULT_ALGORITHM);
+        decrypt(src, dest, password, Algorithm.AES);
     }
 
     /**
@@ -781,7 +782,7 @@ public class Jar {
      * @throws Exception 解密异常
      */
     public static void decrypt(InputStream in, OutputStream out, String password) throws Exception {
-        decrypt(in, out, password, Builder.DEFAULT_ALGORITHM);
+        decrypt(in, out, password, Algorithm.AES);
     }
 
     /**
@@ -838,7 +839,7 @@ public class Jar {
      * @throws Exception 解密异常
      */
     public static void decrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        decrypt(src, dest, password, Builder.DEFAULT_ALGORITHM, filter);
+        decrypt(src, dest, password, Algorithm.AES, filter);
     }
 
     /**
@@ -896,7 +897,7 @@ public class Jar {
      * @throws Exception 解密异常
      */
     public static void decrypt(File src, File dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        decrypt(src, dest, password, Builder.DEFAULT_ALGORITHM, filter);
+        decrypt(src, dest, password, Algorithm.AES, filter);
     }
 
     /**
@@ -959,7 +960,7 @@ public class Jar {
      * @throws Exception 解密异常
      */
     public static void decrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        decrypt(in, out, password, Builder.DEFAULT_ALGORITHM, filter);
+        decrypt(in, out, password, Algorithm.AES, filter);
     }
 
     /**

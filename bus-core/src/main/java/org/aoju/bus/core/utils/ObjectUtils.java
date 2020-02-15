@@ -31,9 +31,6 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
@@ -42,7 +39,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class ObjectUtils {
@@ -111,31 +108,36 @@ public class ObjectUtils {
     }
 
     /**
-     * 判断对象是否Empty(null或元素为0)
-     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
+     * 判断指定对象是否为空，支持：
      *
-     * @param object 待检查对象
-     * @return boolean 返回的布尔值
+     * <pre>
+     * 1. CharSequence
+     * 2. Map
+     * 3. Iterable
+     * 4. Iterator
+     * 5. Array
+     * </pre>
+     *
+     * @param object 被判断的对象
+     * @return 是否为空，如果类型不支持，返回false
      */
-    public static final boolean isEmpty(Object... object) {
-        for (Object pObj : object) {
-            if (pObj == null || "".equals(pObj)) {
-                return true;
-            }
-            if (pObj instanceof String) {
-                if (((String) pObj).trim().length() == 0) {
-                    return true;
-                }
-            } else if (pObj instanceof Collection<?>) {
-                if (((Collection<?>) pObj).size() == 0) {
-                    return true;
-                }
-            } else if (pObj instanceof Map<?, ?>) {
-                if (((Map<?, ?>) pObj).size() == 0) {
-                    return true;
-                }
-            }
+    public static boolean isEmpty(Object object) {
+        if (null == object) {
+            return true;
         }
+
+        if (object instanceof CharSequence) {
+            return StringUtils.isEmpty((CharSequence) object);
+        } else if (object instanceof Map) {
+            return MapUtils.isEmpty((Map) object);
+        } else if (object instanceof Iterable) {
+            return IterUtils.isEmpty((Iterable) object);
+        } else if (object instanceof Iterator) {
+            return IterUtils.isEmpty((Iterator) object);
+        } else if (ArrayUtils.isArray(object)) {
+            return ArrayUtils.isEmpty(object);
+        }
+
         return false;
     }
 
@@ -389,39 +391,141 @@ public class ObjectUtils {
     }
 
     /**
-     * {@code null}安全的对象比较,{@code null}对象排在末尾
+     * {@code null}安全的对象比较，{@code null}对象小于任何对象
      *
      * @param <T> 被比较对象类型
-     * @param c1  对象1,可以为{@code null}
-     * @param c2  对象2,可以为{@code null}
-     * @return 比较结果, 如果c1 &lt; c2,返回数小于0,c1==c2返回0,c1 &gt; c2 大于0
-     * @see Comparator#compare(Object, Object)
-     * @since 3.0.7
+     * @param c1  对象1，可以为{@code null}
+     * @param c2  对象2，可以为{@code null}
+     * @return 比较结果，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
+     * @see java.util.Comparator#compare(Object, Object)
      */
     public static <T extends Comparable<? super T>> int compare(T c1, T c2) {
         return compare(c1, c2, false);
     }
 
     /**
+     * 比较2个版本号
+     *
+     * @param v1       版本1
+     * @param v2       版本2
+     * @param complete 是否完整的比较两个版本
+     * @return (v1 小于 v2) ? -1 : ((v1 等于 v2) ? 0 : 1)
+     */
+    public static int compare(String v1, String v2, boolean complete) {
+        // v1 null视为最小版本,排在前
+        if (v1 == v2) {
+            return 0;
+        } else if (v1 == null) {
+            return -1;
+        } else if (v2 == null) {
+            return 1;
+        }
+        // 去除空格
+        v1 = v1.trim();
+        v2 = v2.trim();
+        if (v1.equals(v2)) {
+            return 0;
+        }
+        String[] v1s = v1.split(Symbol.BACKSLASH + Symbol.DOT);
+        String[] v2s = v2.split(Symbol.BACKSLASH + Symbol.DOT);
+        int v1sLen = v1s.length;
+        int v2sLen = v2s.length;
+        int len = complete
+                ? Math.max(v1sLen, v2sLen)
+                : Math.min(v1sLen, v2sLen);
+
+        for (int i = 0; i < len; i++) {
+            String c1 = len > v1sLen || null == v1s[i] ? Normal.EMPTY : v1s[i];
+            String c2 = len > v2sLen || null == v2s[i] ? Normal.EMPTY : v2s[i];
+
+            int result = c1.compareTo(c2);
+            if (result != 0) {
+                return result;
+            }
+        }
+        return 0;
+    }
+
+    /**
      * {@code null}安全的对象比较
      *
-     * @param <T>         被比较对象类型
-     * @param c1          对象1,可以为{@code null}
-     * @param c2          对象2,可以为{@code null}
-     * @param nullGreater 当被比较对象为null时是否排在前面
-     * @return 比较结果, 如果c1 &lt; c2,返回数小于0,c1==c2返回0,c1 &gt; c2 大于0
-     * @see Comparator#compare(Object, Object)
-     * @since 3.0.7
+     * @param <T>           被比较对象类型（必须实现Comparable接口）
+     * @param c1            对象1，可以为{@code null}
+     * @param c2            对象2，可以为{@code null}
+     * @param isNullGreater 当被比较对象为null时是否排在前面，true表示null大于任何对象，false反之
+     * @return 比较结果，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
+     * @see java.util.Comparator#compare(Object, Object)
      */
-    public static <T extends Comparable<? super T>> int compare(T c1, T c2, boolean nullGreater) {
+    public static <T extends Comparable<? super T>> int compare(T c1, T c2, boolean isNullGreater) {
         if (c1 == c2) {
             return 0;
         } else if (c1 == null) {
-            return nullGreater ? 1 : -1;
+            return isNullGreater ? 1 : -1;
         } else if (c2 == null) {
-            return nullGreater ? -1 : 1;
+            return isNullGreater ? -1 : 1;
         }
         return c1.compareTo(c2);
+    }
+
+    /**
+     * 对象比较，比较结果取决于comparator，如果被比较对象为null，传入的comparator对象应处理此情况
+     * 如果传入comparator为null，则使用默认规则比较（此时被比较对象必须实现Comparable接口）
+     * 一般而言，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
+     *
+     * @param <T>        被比较对象类型
+     * @param c1         对象1
+     * @param c2         对象2
+     * @param comparator 比较器
+     * @return 比较结果
+     * @see java.util.Comparator#compare(Object, Object)
+     */
+    public static <T> int compare(T c1, T c2, Comparator<T> comparator) {
+        if (null == comparator) {
+            return compare((Comparable) c1, (Comparable) c2);
+        }
+        return comparator.compare(c1, c2);
+    }
+
+    /**
+     * 自然比较两个对象的大小，比较规则如下：
+     *
+     * <pre>
+     * 1、如果实现Comparable调用compareTo比较
+     * 2、o1.equals(o2)返回0
+     * 3、比较hashCode值
+     * 4、比较toString值
+     * </pre>
+     *
+     * @param <T>           被比较对象类型
+     * @param o1            对象1
+     * @param o2            对象2
+     * @param isNullGreater null值是否做为最大值
+     * @return 比较结果，如果o1 &lt; o2，返回数小于0，o1==o2返回0，o1 &gt; o2 大于0
+     */
+    public static <T> int compare(T o1, T o2, boolean isNullGreater) {
+        if (o1 == o2) {
+            return 0;
+        } else if (null == o1) {// null 排在后面
+            return isNullGreater ? 1 : -1;
+        } else if (null == o2) {
+            return isNullGreater ? -1 : 1;
+        }
+
+        if (o1 instanceof Comparable && o2 instanceof Comparable) {
+            //如果bean可比较，直接比较bean
+            return ((Comparable) o1).compareTo(o2);
+        }
+
+        if (o1.equals(o2)) {
+            return 0;
+        }
+
+        int result = Integer.compare(o1.hashCode(), o2.hashCode());
+        if (0 == result) {
+            result = compare(o1.toString(), o2.toString());
+        }
+
+        return result;
     }
 
     /**
@@ -442,77 +546,6 @@ public class ObjectUtils {
         Field[] fields = new Field[fieldList.size()];
         fieldList.toArray(fields);
         return fields;
-    }
-
-    public static void transMap2Bean(Map<String, Object> map, Object obj) {
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(obj.getClass());
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            for (PropertyDescriptor property : propertyDescriptors) {
-                String key = property.getName();
-                if (map.containsKey(key)) {
-                    Object value = map.get(key);
-                    // 得到property对应的setter方法
-                    Method setter = property.getWriteMethod();
-                    setter.invoke(obj, value);
-                }
-            }
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * @param <T>     对象
-     * @param oldBean 原对象
-     * @param newBean 新对象
-     * @return 对象
-     */
-    public static <T> T getDiff(T oldBean, T newBean) {
-        if (oldBean == null && newBean != null) {
-            return newBean;
-        } else if (newBean == null) {
-            return null;
-        } else {
-            Class<?> cls1 = oldBean.getClass();
-            try {
-                T object = (T) cls1.newInstance();
-                BeanInfo beanInfo = Introspector.getBeanInfo(cls1);
-                PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-                for (PropertyDescriptor property : propertyDescriptors) {
-                    String key = property.getName();
-                    // 过滤class属性
-                    if (!key.equals("class")) {
-                        // 得到property对应的getter方法
-                        Method getter = property.getReadMethod();
-                        // 得到property对应的setter方法
-                        Method setter = property.getWriteMethod();
-                        Object oldValue = getter.invoke(oldBean);
-                        Object newValue = getter.invoke(newBean);
-                        if (newValue != null) {
-                            if (oldValue == null) {
-                                setter.invoke(object, newValue);
-                            } else if (oldValue != null && !newValue.equals(oldValue)) {
-                                setter.invoke(object, newValue);
-                            }
-                        }
-                    }
-                }
-                return object;
-            } catch (Exception e) {
-                throw new InstrumentException(e);
-            }
-        }
-    }
-
-
-    /***
-     * 将对象序列化后进行base64处理
-     * @param obj    对象
-     * @return base64的序列化对象数据
-     */
-    public static String toBase64(Object obj) {
-        return StringUtils.toBase64(toByte(obj));
     }
 
     /**

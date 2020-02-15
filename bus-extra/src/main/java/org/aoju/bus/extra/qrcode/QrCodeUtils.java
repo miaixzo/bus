@@ -43,7 +43,7 @@ import java.util.HashMap;
  * 基于Zxing的二维码工具类
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class QrCodeUtils {

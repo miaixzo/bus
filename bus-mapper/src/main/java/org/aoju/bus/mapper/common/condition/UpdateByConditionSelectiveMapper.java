@@ -32,7 +32,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
  * 通用Mapper接口,Condition查询
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public interface UpdateByConditionSelectiveMapper<T> {

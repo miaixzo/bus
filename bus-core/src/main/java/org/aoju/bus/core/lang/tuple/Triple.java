@@ -41,7 +41,7 @@ import java.util.Objects;
  * @param <M> the middle element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Serializable {

@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class LockResourceMetadata extends AbstractLimitedResourceMetadata<LockResource> {

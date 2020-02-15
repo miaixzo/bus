@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 内置的各api需要的url, 用枚举类分平台类型管理
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public enum Registry implements Complex {
@@ -97,7 +97,7 @@ public enum Registry implements Complex {
     DINGTALK {
         @Override
         public String authorize() {
-            return "https://oapi.dingtalk.com/connect/qrconnect";
+            return "https://oapi.dingtalk.com/connect/oauth2/sns_authorize";
         }
 
         @Override
@@ -716,6 +716,15 @@ public enum Registry implements Complex {
         public String userInfo() {
             return "https://api.twitter.com/1.1/users/show.json";
         }
+    };
+
+    public static Registry get(String name) {
+        for (Registry registry : Registry.values()) {
+            if (registry.name().equalsIgnoreCase(name)) {
+                return registry;
+            }
+        }
+        throw new IllegalArgumentException("not support");
     }
 
 }

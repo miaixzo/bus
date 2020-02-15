@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.forest;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.provider.DecryptorProvider;
@@ -46,7 +47,7 @@ import java.util.jar.Manifest;
  * Spring-Boot 启动器
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class Launcher {
@@ -58,7 +59,7 @@ public class Launcher {
 
     public Launcher(String... args) throws Exception {
         this.args = args;
-        String algorithm = Builder.DEFAULT_ALGORITHM;
+        String algorithm = Algorithm.AES;
         int keysize = Builder.DEFAULT_KEYSIZE;
         int ivsize = Builder.DEFAULT_IVSIZE;
         String password = null;

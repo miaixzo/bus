@@ -60,7 +60,7 @@ import java.util.concurrent.TimeUnit;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 class TcpAioSession<T> extends AioSession<T> {

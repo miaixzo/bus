@@ -47,7 +47,7 @@ import java.util.List;
  * 因为 FastJSON 本身的转换问题,如果对象中存储的是集合对象列表,会导致显示不是信息本身
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilter {
@@ -115,7 +115,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             // 为数组类型
             Object[] arrays = (Object[]) value;
             if (ArrayUtils.isNotEmpty(arrays)) {
-                Object firstArrayEntry = ArrayUtils.firstNotNullElem(arrays).get();
+                Object firstArrayEntry = ArrayUtils.firstNotNull(arrays).get();
                 final Class entryFieldClass = firstArrayEntry.getClass();
 
                 if (isBaseType(entryFieldClass)) {

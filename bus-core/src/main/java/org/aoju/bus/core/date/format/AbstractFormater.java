@@ -29,7 +29,7 @@ import java.util.TimeZone;
 
 /**
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public abstract class AbstractFormater implements Formatter, Serializable {

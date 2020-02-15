@@ -39,7 +39,7 @@ import java.util.List;
  * 数组转换器,包括原始类型数组
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class ArrayConverter extends AbstractConverter<Object> {
@@ -94,7 +94,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
             return array;
         }
 
-        final int len = ArrayUtils.length(array);
+        final int len = ArrayUtils.getLength(array);
         final Object result = Array.newInstance(targetComponentType, len);
 
         final ConverterRegistry converter = ConverterRegistry.getInstance();

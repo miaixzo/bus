@@ -32,10 +32,50 @@ import java.nio.charset.UnsupportedCharsetException;
  * 字符集工具类
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class CharsetUtils {
+
+    /**
+     * 系统默认字符集编码
+     *
+     * @return 系统字符集编码
+     */
+    public static Charset defaultCharset() {
+        return Charset.defaultCharset();
+    }
+
+    /**
+     * 系统默认字符集编码
+     *
+     * @return 系统字符集编码
+     */
+    public static String defaultCharsetName() {
+        return defaultCharset().name();
+    }
+
+    /**
+     * 系统字符集编码,如果是Windows,则默认为GBK编码,否则取 {@link CharsetUtils#defaultCharsetName()}
+     *
+     * @return 系统字符集编码
+     * @see CharsetUtils#defaultCharsetName()
+     * @since 3.1.9
+     */
+    public static Charset systemCharset() {
+        return FileUtils.isWindows() ? org.aoju.bus.core.lang.Charset.GBK : defaultCharset();
+    }
+
+    /**
+     * 系统字符集编码,如果是Windows,则默认为GBK编码,否则取 {@link CharsetUtils#defaultCharsetName()}
+     *
+     * @return 系统字符集编码
+     * @see CharsetUtils#defaultCharsetName()
+     * @since 3.1.9
+     */
+    public static String systemCharsetName() {
+        return systemCharset().name();
+    }
 
     /**
      * 转换为Charset对象
@@ -103,47 +143,6 @@ public class CharsetUtils {
     public static File convert(File file, Charset srcCharset, Charset destCharset) {
         final String str = FileUtils.readString(file, srcCharset);
         return FileUtils.writeString(str, file, destCharset);
-    }
-
-    /**
-     * 系统默认字符集编码
-     *
-     * @return 系统字符集编码
-     */
-    public static String defaultCharsetName() {
-        return defaultCharset().name();
-    }
-
-    /**
-     * 系统默认字符集编码
-     *
-     * @return 系统字符集编码
-     */
-    public static Charset defaultCharset() {
-        return Charset.defaultCharset();
-    }
-
-
-    /**
-     * 系统字符集编码,如果是Windows,则默认为GBK编码,否则取 {@link CharsetUtils#defaultCharsetName()}
-     *
-     * @return 系统字符集编码
-     * @see CharsetUtils#defaultCharsetName()
-     * @since 3.1.9
-     */
-    public static String systemCharsetName() {
-        return systemCharset().name();
-    }
-
-    /**
-     * 系统字符集编码,如果是Windows,则默认为GBK编码,否则取 {@link CharsetUtils#defaultCharsetName()}
-     *
-     * @return 系统字符集编码
-     * @see CharsetUtils#defaultCharsetName()
-     * @since 3.1.9
-     */
-    public static Charset systemCharset() {
-        return FileUtils.isWindows() ? org.aoju.bus.core.lang.Charset.GBK : defaultCharset();
     }
 
 }

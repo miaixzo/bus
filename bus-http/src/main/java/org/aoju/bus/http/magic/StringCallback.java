@@ -31,7 +31,7 @@ import java.io.IOException;
  * 回调处理
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public abstract class StringCallback extends AbsCallback {

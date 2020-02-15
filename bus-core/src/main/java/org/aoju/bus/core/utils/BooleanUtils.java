@@ -30,33 +30,10 @@ import org.aoju.bus.core.lang.Normal;
  * Boolean类型相关工具类
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class BooleanUtils {
-
-    /**
-     * 取相反值
-     *
-     * @param bool Boolean值
-     * @return 相反的Boolean值
-     */
-    public static Boolean negate(Boolean bool) {
-        if (bool == null) {
-            return null;
-        }
-        return bool.booleanValue() ? Boolean.FALSE : Boolean.TRUE;
-    }
-
-    /**
-     * 取相反值
-     *
-     * @param bool Boolean值
-     * @return 相反的Boolean值
-     */
-    public static boolean negate(boolean bool) {
-        return !bool;
-    }
 
     /**
      * 给定类是否为Boolean或者boolean
@@ -462,6 +439,29 @@ public class BooleanUtils {
         }
         final boolean[] primitive = Convert.convert(boolean[].class, array);
         return Boolean.valueOf(xor(primitive));
+    }
+
+    /**
+     * 取相反值
+     *
+     * @param bool Boolean值
+     * @return 相反的Boolean值
+     */
+    public static Boolean negate(Boolean bool) {
+        if (bool == null) {
+            return null;
+        }
+        return bool.booleanValue() ? Boolean.FALSE : Boolean.TRUE;
+    }
+
+    /**
+     * 取相反值
+     *
+     * @param bool Boolean值
+     * @return 相反的Boolean值
+     */
+    public static boolean negate(boolean bool) {
+        return !bool;
     }
 
     /**

@@ -29,7 +29,7 @@ import com.sun.jna.win32.W32APIOptions;
 
 /**
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {

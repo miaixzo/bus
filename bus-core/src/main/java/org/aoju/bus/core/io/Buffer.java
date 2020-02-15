@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ByteUtils;
@@ -44,7 +45,7 @@ import java.util.List;
  * 内存中字节的集合.
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
@@ -1683,28 +1684,28 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 128-bit MD5 hash of this buffer.
      */
     public final ByteString md5() {
-        return digest("MD5");
+        return digest(Algorithm.MD5);
     }
 
     /**
      * @return the 160-bit SHA-1 hash of this buffer.
      */
     public final ByteString sha1() {
-        return digest("SHA-1");
+        return digest(Algorithm.SHA1);
     }
 
     /**
      * @return the 256-bit SHA-256 hash of this buffer.
      */
     public final ByteString sha256() {
-        return digest("SHA-256");
+        return digest(Algorithm.SHA256);
     }
 
     /**
      * @return the 512-bit SHA-512 hash of this buffer.
      */
     public final ByteString sha512() {
-        return digest("SHA-512");
+        return digest(Algorithm.SHA512);
     }
 
     private ByteString digest(String algorithm) {
@@ -1727,7 +1728,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 160-bit SHA-1 HMAC of this buffer.
      */
     public final ByteString hmacSha1(ByteString key) {
-        return hmac("HmacSHA1", key);
+        return hmac(Algorithm.HmacSHA1, key);
     }
 
     /**
@@ -1735,7 +1736,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 256-bit SHA-256 HMAC of this buffer.
      */
     public final ByteString hmacSha256(ByteString key) {
-        return hmac("HmacSHA256", key);
+        return hmac(Algorithm.HmacSHA256, key);
     }
 
     /**
@@ -1743,7 +1744,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 512-bit SHA-512 HMAC of this buffer.
      */
     public final ByteString hmacSha512(ByteString key) {
-        return hmac("HmacSHA512", key);
+        return hmac(Algorithm.HmacSHA512, key);
     }
 
     private ByteString hmac(String algorithm, ByteString key) {
@@ -1770,7 +1771,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         if (!(o instanceof Buffer)) return false;
         Buffer that = (Buffer) o;
         if (size != that.size) return false;
-        if (size == 0) return true; // Both buffers are empty.
+        if (size == 0) return true;
 
         Segment sa = this.head;
         Segment sb = that.head;
