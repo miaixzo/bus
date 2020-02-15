@@ -94,7 +94,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
             return array;
         }
 
-        final int len = ArrayUtils.length(array);
+        final int len = ArrayUtils.getLength(array);
         final Object result = Array.newInstance(targetComponentType, len);
 
         final ConverterRegistry converter = ConverterRegistry.getInstance();

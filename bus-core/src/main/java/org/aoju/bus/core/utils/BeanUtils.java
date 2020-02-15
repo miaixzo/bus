@@ -69,24 +69,34 @@ public class BeanUtils {
     }
 
     /**
-     * 创建动态Bean
+     * 判断Bean是否为空对象，空对象表示本身为<code>null</code>或者所有属性都为<code>null</code>
      *
-     * @param bean 普通Bean或Map
-     * @return {@link DynaBean}
-     * @since 3.0.7
+     * @param bean             Bean对象
+     * @param ignoreFiledNames 忽略检查的字段名
+     * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
      */
-    public static DynaBean createDynaBean(Object bean) {
-        return new DynaBean(bean);
+    public static boolean isEmpty(Object bean, String... ignoreFiledNames) {
+        if (null != bean) {
+            for (Field field : ReflectUtils.getFields(bean.getClass())) {
+                if ((false == ArrayUtils.contains(ignoreFiledNames, field.getName()))
+                        && null != ReflectUtils.getFieldValue(bean, field)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
-     * 查找类型转换器 {@link PropertyEditor}
+     * 判断Bean是否为非空对象，非空对象表示本身不为<code>null</code>或者含有非<code>null</code>属性的对象
      *
-     * @param type 需要转换的目标类型
-     * @return {@link PropertyEditor}
+     * @param bean             Bean对象
+     * @param ignoreFiledNames 忽略检查的字段名
+     * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
+     * @since 5.0.7
      */
-    public static PropertyEditor findEditor(Class<?> type) {
-        return PropertyEditorManager.findEditor(type);
+    public static boolean isNotEmpty(Object bean, String... ignoreFiledNames) {
+        return false == isEmpty(bean, ignoreFiledNames);
     }
 
     /**
@@ -111,6 +121,160 @@ public class BeanUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 判断是否有Setter方法
+     * 判定方法是是否存在只有一个参数的setXXX方法
+     *
+     * @param clazz 待测试类
+     * @return 是否为Bean对象
+     */
+    public static boolean hasSetter(Class<?> clazz) {
+        if (ClassUtils.isNormalClass(clazz)) {
+            final Method[] methods = clazz.getMethods();
+            for (Method method : methods) {
+                if (method.getParameterTypes().length == 1 && method.getName().startsWith("set")) {
+                    // 检测包含标准的setXXX方法即视为标准的JavaBean
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否为Bean对象
+     * 判定方法是是否存在只有一个参数的setXXX方法
+     *
+     * @param clazz 待测试类
+     * @return 是否为Bean对象
+     */
+    public static boolean hasGetter(Class<?> clazz) {
+        if (ClassUtils.isNormalClass(clazz)) {
+            for (Method method : clazz.getMethods()) {
+                if (method.getParameterTypes().length == 0) {
+                    if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 指定类中是否有public类型字段(static字段除外)
+     *
+     * @param clazz 待测试类
+     * @return 是否有public类型字段
+     */
+    public static boolean hasPublicField(Class<?> clazz) {
+        if (ClassUtils.isNormalClass(clazz)) {
+            for (Field field : clazz.getFields()) {
+                if (ModifierUtils.isPublic(field) && false == ModifierUtils.isStatic(field)) {
+                    //非static的public字段
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断Bean是否包含值为<code>null</code>的属性
+     * 对象本身为<code>null</code>也返回true
+     *
+     * @param bean             Bean对象
+     * @param ignoreFiledNames 忽略检查的字段名
+     * @return 是否包含值为<code>null</code>的属性，<code>true</code> - 包含 / <code>false</code> - 不包含
+     */
+    public static boolean hasNullField(Object bean, String... ignoreFiledNames) {
+        if (null == bean) {
+            return true;
+        }
+        for (Field field : ReflectUtils.getFields(bean.getClass())) {
+            if ((false == ArrayUtils.contains(ignoreFiledNames, field.getName()))//
+                    && null == ReflectUtils.getFieldValue(bean, field)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断Bean是否包含值为<code>null</code>的属性
+     * 对象本身为<code>null</code>也返回true
+     *
+     * @param bean Bean对象
+     * @return 是否包含值为<code>null</code>的属性,<code>true</code> - 包含 / <code>false</code> - 不包含
+     */
+    public static boolean hasNullField(Object bean) {
+        if (null == bean) {
+            return true;
+        }
+        for (Field field : ReflectUtils.getFields(bean.getClass())) {
+            if (null == ReflectUtils.getFieldValue(bean, field)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 把Bean里面的String属性做trim操作
+     * <p>
+     * 通常bean直接用来绑定页面的input,用户的输入可能首尾存在空格,通常保存数据库前需要把首尾空格去掉
+     *
+     * @param <T>         Bean类型
+     * @param bean        Bean对象
+     * @param ignoreField 不需要trim的Field名称列表（不区分大小写）
+     * @return the object
+     */
+    public static <T> T trimStrField(T bean, String... ignoreField) {
+        if (bean == null) {
+            return bean;
+        }
+
+        final Field[] fields = ReflectUtils.getFields(bean.getClass());
+        for (Field field : fields) {
+            if (ignoreField != null && ArrayUtils.containsIgnoreCase(ignoreField, field.getName())) {
+                // 不处理忽略的Fields
+                continue;
+            }
+            if (String.class.equals(field.getType())) {
+                // 只有String的Field才处理
+                final String val = (String) ReflectUtils.getFieldValue(bean, field);
+                if (null != val) {
+                    final String trimVal = StringUtils.trim(val);
+                    if (false == val.equals(trimVal)) {
+                        // Field Value不为null,且首尾有空格才处理
+                        ReflectUtils.setFieldValue(bean, field, trimVal);
+                    }
+                }
+            }
+        }
+        return bean;
+    }
+
+    /**
+     * 创建动态Bean
+     *
+     * @param bean 普通Bean或Map
+     * @return {@link DynaBean}
+     */
+    public static DynaBean create(Object bean) {
+        return new DynaBean(bean);
+    }
+
+    /**
+     * 查找类型转换器 {@link PropertyEditor}
+     *
+     * @param type 需要转换的目标类型
+     * @return {@link PropertyEditor}
+     */
+    public static PropertyEditor findEditor(Class<?> type) {
+        return PropertyEditorManager.findEditor(type);
     }
 
     /**
@@ -258,8 +422,7 @@ public class BeanUtils {
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @return Bean属性值
-     * @see BeanPath#get(Object)
-     * @since 3.0.7
+     * @see BeanPath#get(Object) 
      */
     public static Object getProperty(Object bean, String expression) {
         return BeanPath.create(expression).get(bean);
@@ -278,6 +441,33 @@ public class BeanUtils {
     }
 
     /**
+     * 对象或Map转Bean
+     *
+     * @param <T>    Bean类型
+     * @param source Bean对象或Map
+     * @param clazz  目标的Bean类型
+     * @return Bean对象
+     */
+    public static <T> T toBean(Object source, Class<T> clazz) {
+        final T target = ReflectUtils.newInstance(clazz);
+        copyProperties(source, target);
+        return target;
+    }
+
+    /**
+     * ServletRequest 参数转Bean
+     *
+     * @param <T>           Bean类型
+     * @param beanClass     Bean Class
+     * @param valueProvider 值提供者
+     * @param copyOptions   拷贝选项,见 {@link CopyOptions}
+     * @return Bean
+     */
+    public static <T> T toBean(Class<T> beanClass, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
+        return fillBean(ReflectUtils.newInstance(beanClass), valueProvider, copyOptions);
+    }
+
+    /**
      * Map转换为Bean对象
      *
      * @param <T>           Bean类型
@@ -288,6 +478,19 @@ public class BeanUtils {
      */
     public static <T> T mapToBean(Map<?, ?> map, Class<T> beanClass, boolean isIgnoreError) {
         return fillBeanWithMap(map, ReflectUtils.newInstance(beanClass), isIgnoreError);
+    }
+
+    /**
+     * Map转换为Bean对象
+     *
+     * @param <T>         Bean类型
+     * @param map         {@link Map}
+     * @param beanClass   Bean Class
+     * @param copyOptions 转Bean选项
+     * @return Bean
+     */
+    public static <T> T mapToBean(Map<?, ?> map, Class<T> beanClass, CopyOptions copyOptions) {
+        return fillBeanWithMap(map, ReflectUtils.newInstance(beanClass), copyOptions);
     }
 
     /**
@@ -305,16 +508,20 @@ public class BeanUtils {
     }
 
     /**
-     * Map转换为Bean对象
+     * 填充Bean的核心方法
      *
-     * @param <T>         Bean类型
-     * @param map         {@link Map}
-     * @param beanClass   Bean Class
-     * @param copyOptions 转Bean选项
+     * @param <T>           Bean类型
+     * @param bean          Bean
+     * @param valueProvider 值提供者
+     * @param copyOptions   拷贝选项,见 {@link CopyOptions}
      * @return Bean
      */
-    public static <T> T mapToBean(Map<?, ?> map, Class<T> beanClass, CopyOptions copyOptions) {
-        return fillBeanWithMap(map, ReflectUtils.newInstance(beanClass), copyOptions);
+    public static <T> T fillBean(T bean, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
+        if (null == valueProvider) {
+            return bean;
+        }
+
+        return BeanCopier.create(valueProvider, bean, copyOptions).copy();
     }
 
     /**
@@ -389,50 +596,6 @@ public class BeanUtils {
             map = MapUtils.toCamelCaseMap(map);
         }
         return BeanCopier.create(map, bean, copyOptions).copy();
-    }
-
-    /**
-     * 对象或Map转Bean
-     *
-     * @param <T>    Bean类型
-     * @param source Bean对象或Map
-     * @param clazz  目标的Bean类型
-     * @return Bean对象
-     */
-    public static <T> T toBean(Object source, Class<T> clazz) {
-        final T target = ReflectUtils.newInstance(clazz);
-        copyProperties(source, target);
-        return target;
-    }
-
-    /**
-     * ServletRequest 参数转Bean
-     *
-     * @param <T>           Bean类型
-     * @param beanClass     Bean Class
-     * @param valueProvider 值提供者
-     * @param copyOptions   拷贝选项,见 {@link CopyOptions}
-     * @return Bean
-     */
-    public static <T> T toBean(Class<T> beanClass, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
-        return fillBean(ReflectUtils.newInstance(beanClass), valueProvider, copyOptions);
-    }
-
-    /**
-     * 填充Bean的核心方法
-     *
-     * @param <T>           Bean类型
-     * @param bean          Bean
-     * @param valueProvider 值提供者
-     * @param copyOptions   拷贝选项,见 {@link CopyOptions}
-     * @return Bean
-     */
-    public static <T> T fillBean(T bean, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
-        if (null == valueProvider) {
-            return bean;
-        }
-
-        return BeanCopier.create(valueProvider, bean, copyOptions).copy();
     }
 
     /**
@@ -584,113 +747,6 @@ public class BeanUtils {
      */
     public static boolean isMatchName(Object bean, String beanClassName, boolean isSimple) {
         return ClassUtils.getClassName(bean, isSimple).equals(isSimple ? StringUtils.upperFirst(beanClassName) : beanClassName);
-    }
-
-    /**
-     * 把Bean里面的String属性做trim操作
-     * <p>
-     * 通常bean直接用来绑定页面的input,用户的输入可能首尾存在空格,通常保存数据库前需要把首尾空格去掉
-     *
-     * @param <T>          Bean类型
-     * @param bean         Bean对象
-     * @param ignoreFields 不需要trim的Field名称列表（不区分大小写）
-     * @return the object
-     */
-    public static <T> T trimStrFields(T bean, String... ignoreFields) {
-        if (bean == null) {
-            return bean;
-        }
-
-        final Field[] fields = ReflectUtils.getFields(bean.getClass());
-        for (Field field : fields) {
-            if (ignoreFields != null && ArrayUtils.containsIgnoreCase(ignoreFields, field.getName())) {
-                // 不处理忽略的Fields
-                continue;
-            }
-            if (String.class.equals(field.getType())) {
-                // 只有String的Field才处理
-                final String val = (String) ReflectUtils.getFieldValue(bean, field);
-                if (null != val) {
-                    final String trimVal = StringUtils.trim(val);
-                    if (false == val.equals(trimVal)) {
-                        // Field Value不为null,且首尾有空格才处理
-                        ReflectUtils.setFieldValue(bean, field, trimVal);
-                    }
-                }
-            }
-        }
-        return bean;
-    }
-
-    /**
-     * 判断Bean是否为空对象，空对象表示本身为<code>null</code>或者所有属性都为<code>null</code>
-     *
-     * @param bean             Bean对象
-     * @param ignoreFiledNames 忽略检查的字段名
-     * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
-     */
-    public static boolean isEmpty(Object bean, String... ignoreFiledNames) {
-        if (null != bean) {
-            for (Field field : ReflectUtils.getFields(bean.getClass())) {
-                if ((false == ArrayUtils.contains(ignoreFiledNames, field.getName()))
-                        && null != ReflectUtils.getFieldValue(bean, field)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 判断Bean是否为非空对象，非空对象表示本身不为<code>null</code>或者含有非<code>null</code>属性的对象
-     *
-     * @param bean             Bean对象
-     * @param ignoreFiledNames 忽略检查的字段名
-     * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
-     * @since 5.0.7
-     */
-    public static boolean isNotEmpty(Object bean, String... ignoreFiledNames) {
-        return false == isEmpty(bean, ignoreFiledNames);
-    }
-
-    /**
-     * 判断Bean是否包含值为<code>null</code>的属性
-     * 对象本身为<code>null</code>也返回true
-     *
-     * @param bean             Bean对象
-     * @param ignoreFiledNames 忽略检查的字段名
-     * @return 是否包含值为<code>null</code>的属性，<code>true</code> - 包含 / <code>false</code> - 不包含
-     */
-    public static boolean hasNullField(Object bean, String... ignoreFiledNames) {
-        if (null == bean) {
-            return true;
-        }
-        for (Field field : ReflectUtils.getFields(bean.getClass())) {
-            if ((false == ArrayUtils.contains(ignoreFiledNames, field.getName()))//
-                    && null == ReflectUtils.getFieldValue(bean, field)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 判断Bean是否包含值为<code>null</code>的属性
-     * 对象本身为<code>null</code>也返回true
-     *
-     * @param bean Bean对象
-     * @return 是否包含值为<code>null</code>的属性,<code>true</code> - 包含 / <code>false</code> - 不包含
-     */
-    public static boolean hasNullField(Object bean) {
-        if (null == bean) {
-            return true;
-        }
-        for (Field field : ReflectUtils.getFields(bean.getClass())) {
-            if (null == ReflectUtils.getFieldValue(bean, field)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

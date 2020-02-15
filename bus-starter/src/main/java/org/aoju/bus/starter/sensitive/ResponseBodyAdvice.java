@@ -159,7 +159,7 @@ public class ResponseBodyAdvice extends BaseAdvice
 
 
     private void beforeBodyWrite(Sensitive sensitive, Object object) {
-        if (ObjectUtils.isEmpty() || ObjectUtils.isEmpty(object)) {
+        if (ObjectUtils.isEmpty(object)) {
             return;
         }
         // 数据脱敏

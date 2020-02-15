@@ -73,59 +73,6 @@ public class FileUtils {
     }
 
     /**
-     * 读取文件
-     *
-     * @param file 文件
-     * @return 内容
-     */
-    public static String readFile(File file) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new java.io.FileReader(file));
-            String tempString;
-            String all = "";
-            // 一次读入一行,直到读入null为文件结束
-            while ((tempString = reader.readLine()) != null) {
-                // 显示行号
-                all += tempString;
-            }
-            reader.close();
-            return all;
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e1) {
-                    // ignore
-                }
-            }
-        }
-    }
-
-    /**
-     * 列出目录文件
-     * 给定的绝对路径不能是压缩包中的路径
-     *
-     * @param path 目录绝对路径或者相对路径
-     * @return 文件列表（包含目录）
-     */
-    public static File[] ls(String path) {
-        if (path == null) {
-            return null;
-        }
-
-        path = getAbsolutePath(path);
-
-        File file = file(path);
-        if (file.isDirectory()) {
-            return file.listFiles();
-        }
-        throw new InstrumentException(StringUtils.format("Path [{}] is not directory!", path));
-    }
-
-    /**
      * 文件是否为空
      * 目录：里面没有文件时为空 文件：文件大小为0时为空
      *
@@ -183,162 +130,95 @@ public class FileUtils {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供file为文件,直接返回过滤结果
+     * 列出目录文件
+     * 给定的绝对路径不能是压缩包中的路径
      *
-     * @param path       当前遍历文件或目录的路径
-     * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
-     * @return 文件列表
-     * @since 5.6.0
+     * @param path 目录绝对路径或者相对路径
+     * @return 文件列表（包含目录）
      */
-    public static List<File> loopFiles(String path, FileFilter fileFilter) {
-        return loopFiles(file(path), fileFilter);
-    }
-
-    /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供file为文件,直接返回过滤结果
-     *
-     * @param file       当前遍历文件或目录
-     * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
-     * @return 文件列表
-     */
-    public static List<File> loopFiles(File file, FileFilter fileFilter) {
-        List<File> fileList = new ArrayList<File>();
-        if (null == file) {
-            return fileList;
-        } else if (false == file.exists()) {
-            return fileList;
-        }
-
-        if (file.isDirectory()) {
-            final File[] subFiles = file.listFiles();
-            if (ArrayUtils.isNotEmpty(subFiles)) {
-                for (File tmp : subFiles) {
-                    fileList.addAll(loopFiles(tmp, fileFilter));
-                }
-            }
-        } else {
-            if (null == fileFilter || fileFilter.accept(file)) {
-                fileList.add(file);
-            }
-        }
-
-        return fileList;
-    }
-
-    /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供file为文件，直接返回过滤结果
-     *
-     * @param file       当前遍历文件或目录
-     * @param maxDepth   遍历最大深度，-1表示遍历到没有目录为止
-     * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
-     * @return 文件列表
-     */
-    public static List<File> loopFiles(File file, int maxDepth, final FileFilter fileFilter) {
-        final List<File> fileList = new ArrayList<>();
-        if (null == file || false == file.exists()) {
-            return fileList;
-        } else if (false == file.isDirectory()) {
-            if (null == fileFilter || fileFilter.accept(file)) {
-                fileList.add(file);
-            }
-            return fileList;
-        }
-
-        if (maxDepth < 0) {
-            maxDepth = Integer.MAX_VALUE;
-        }
-
-        try {
-            Files.walkFileTree(file.toPath(), EnumSet.noneOf(FileVisitOption.class), maxDepth, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                    final File file = path.toFile();
-                    if (null == fileFilter || fileFilter.accept(file)) {
-                        fileList.add(file);
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-
-        return fileList;
-    }
-
-    /**
-     * 递归遍历目录以及子目录中的所有文件
-     *
-     * @param path 当前遍历文件或目录的路径
-     * @return 文件列表
-     * @since 5.6.0
-     */
-    public static List<File> loopFiles(String path) {
-        return loopFiles(file(path));
-    }
-
-    /**
-     * 递归遍历目录以及子目录中的所有文件
-     *
-     * @param file 当前遍历文件
-     * @return 文件列表
-     */
-    public static List<File> loopFiles(File file) {
-        return loopFiles(file, null);
-    }
-
-    /**
-     * 获得指定目录下所有文件
-     * 不会扫描子目录
-     *
-     * @param path 相对ClassPath的目录或者绝对路径目录
-     * @return 文件路径列表（如果是jar中的文件,则给定类似.jar!/xxx/xxx的路径）
-     * @throws InstrumentException 异常
-     */
-    public static List<String> listFileNames(String path) throws InstrumentException {
+    public static File[] ls(String path) {
         if (path == null) {
-            return new ArrayList<>(0);
-        }
-        int index = path.lastIndexOf(FileType.JAR_PATH_EXT);
-        if (index < 0) {
-            // 普通目录
-            final List<String> paths = new ArrayList<>();
-            final File[] files = ls(path);
-            for (File file : files) {
-                if (file.isFile()) {
-                    paths.add(file.getName());
-                }
-            }
-            return paths;
+            return null;
         }
 
-        // jar文件
         path = getAbsolutePath(path);
-        // jar文件中的路径
-        index = index + FileType.JAR_PATH_EXT.length();
-        JarFile jarFile = null;
-        try {
-            jarFile = new JarFile(path.substring(0, index));
-            // 防止出现jar!/org/aoju/这类路径导致文件找不到
-            return ZipUtils.listFileNames(jarFile, StringUtils.removePrefix(path.substring(index + 1), "/"));
-        } catch (IOException e) {
-            throw new InstrumentException(StringUtils.format("Can not read file path of [{}]", path), e);
-        } finally {
-            IoUtils.close(jarFile);
+
+        File file = file(path);
+        if (file.isDirectory()) {
+            return file.listFiles();
         }
+        throw new InstrumentException(StringUtils.format("Path [{}] is not directory!", path));
     }
 
     /**
-     * 创建File对象,相当于调用new File(),不做任何处理
+     * 判断是否为文件,如果path为null,则返回false
      *
      * @param path 文件路径
-     * @return File
+     * @return 如果为文件true
      */
-    public static File newFile(String path) {
-        return new File(path);
+    public static boolean isFile(String path) {
+        return (path != null) && file(path).isFile();
+    }
+
+    /**
+     * 判断是否为文件,如果file为null,则返回false
+     *
+     * @param file 文件
+     * @return 如果为文件true
+     */
+    public static boolean isFile(File file) {
+        return (file != null) && file.isFile();
+    }
+
+    /**
+     * 判断是否为文件,如果file为null,则返回false
+     *
+     * @param path          文件
+     * @param isFollowLinks 是否跟踪软链（快捷方式）
+     * @return 如果为文件true
+     */
+    public static boolean isFile(Path path, boolean isFollowLinks) {
+        if (null == path) {
+            return false;
+        }
+        final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
+        return Files.isRegularFile(path, options);
+    }
+
+    /**
+     * 判断是否为目录,如果path为null,则返回false
+     *
+     * @param path 文件路径
+     * @return 如果为目录true
+     */
+    public static boolean isDirectory(String path) {
+        return (path != null) && file(path).isDirectory();
+    }
+
+    /**
+     * 判断是否为目录,如果file为null,则返回false
+     *
+     * @param file 文件
+     * @return 如果为目录true
+     */
+    public static boolean isDirectory(File file) {
+        return (file != null) && file.isDirectory();
+    }
+
+    /**
+     * 判断是否为目录,如果file为null,则返回false
+     *
+     * @param path          {@link Path}
+     * @param isFollowLinks 是否追踪到软链对应的真实地址
+     * @return 如果为目录true
+     * @since 3.1.9
+     */
+    public static boolean isDirectory(Path path, boolean isFollowLinks) {
+        if (null == path) {
+            return false;
+        }
+        final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
+        return Files.isDirectory(path, options);
     }
 
     /**
@@ -452,39 +332,111 @@ public class FileUtils {
     }
 
     /**
-     * 获取临时文件路径（绝对路径）
+     * 递归遍历目录以及子目录中的所有文件
+     * 如果提供file为文件,直接返回过滤结果
      *
-     * @return 临时文件路径
+     * @param path       当前遍历文件或目录的路径
+     * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
+     * @return 文件列表
+     * @since 5.6.0
      */
-    public static String getTmpDirPath() {
-        return System.getProperty("java.io.tmpdir");
+    public static List<File> loopFiles(String path, FileFilter fileFilter) {
+        return loopFiles(file(path), fileFilter);
     }
 
     /**
-     * 获取临时文件目录
+     * 递归遍历目录以及子目录中的所有文件
+     * 如果提供file为文件,直接返回过滤结果
      *
-     * @return 临时文件目录
+     * @param file       当前遍历文件或目录
+     * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
+     * @return 文件列表
      */
-    public static File getTmpDir() {
-        return file(getTmpDirPath());
+    public static List<File> loopFiles(File file, FileFilter fileFilter) {
+        List<File> fileList = new ArrayList<File>();
+        if (null == file) {
+            return fileList;
+        } else if (false == file.exists()) {
+            return fileList;
+        }
+
+        if (file.isDirectory()) {
+            final File[] subFiles = file.listFiles();
+            if (ArrayUtils.isNotEmpty(subFiles)) {
+                for (File tmp : subFiles) {
+                    fileList.addAll(loopFiles(tmp, fileFilter));
+                }
+            }
+        } else {
+            if (null == fileFilter || fileFilter.accept(file)) {
+                fileList.add(file);
+            }
+        }
+
+        return fileList;
     }
 
     /**
-     * 获取用户路径（绝对路径）
+     * 递归遍历目录以及子目录中的所有文件
+     * 如果提供file为文件，直接返回过滤结果
      *
-     * @return 用户路径
+     * @param file       当前遍历文件或目录
+     * @param maxDepth   遍历最大深度，-1表示遍历到没有目录为止
+     * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
+     * @return 文件列表
      */
-    public static String getUserHomePath() {
-        return System.getProperty("user.home");
+    public static List<File> loopFiles(File file, int maxDepth, final FileFilter fileFilter) {
+        final List<File> fileList = new ArrayList<>();
+        if (null == file || false == file.exists()) {
+            return fileList;
+        } else if (false == file.isDirectory()) {
+            if (null == fileFilter || fileFilter.accept(file)) {
+                fileList.add(file);
+            }
+            return fileList;
+        }
+
+        if (maxDepth < 0) {
+            maxDepth = Integer.MAX_VALUE;
+        }
+
+        try {
+            Files.walkFileTree(file.toPath(), EnumSet.noneOf(FileVisitOption.class), maxDepth, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+                    final File file = path.toFile();
+                    if (null == fileFilter || fileFilter.accept(file)) {
+                        fileList.add(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+
+        return fileList;
     }
 
     /**
-     * 获取用户目录
+     * 递归遍历目录以及子目录中的所有文件
      *
-     * @return 用户目录
+     * @param path 当前遍历文件或目录的路径
+     * @return 文件列表
+     * @since 5.6.0
      */
-    public static File getUserHomeDir() {
-        return file(getUserHomePath());
+    public static List<File> loopFiles(String path) {
+        return loopFiles(file(path));
+    }
+
+    /**
+     * 递归遍历目录以及子目录中的所有文件
+     *
+     * @param file 当前遍历文件
+     * @return 文件列表
+     */
+    public static List<File> loopFiles(File file) {
+        return loopFiles(file, null);
     }
 
     /**
@@ -532,121 +484,6 @@ public class FileUtils {
 
         }
         return false;
-    }
-
-    /**
-     * 获取文件名的扩展名.
-     * <p>
-     * 此方法返回文件名最后一个点之后的文本部分,点后面必须没有目录分隔符.
-     * <pre>
-     * foo.txt      -- "txt"
-     * a/b/c.jpg    -- "jpg"
-     * a/b.txt/c    -- ""
-     * a/b/c        -- ""
-     * </pre>
-     * <p>
-     * 不管运行代码的操作系统是什么，输出结果都是一样的.
-     *
-     * @param filename 检索的扩展名的文件名.
-     * @return 返回文件的扩展名或空字符串.
-     */
-    public static String getExtension(String filename) {
-        if (filename == null) {
-            return null;
-        }
-        int index = indexOfExtension(filename);
-        if (index == -1) {
-            return "";
-        } else {
-            return filename.substring(index + 1);
-        }
-    }
-
-    /**
-     * 返回最后一个扩展分隔符的索引点.
-     *
-     * @param filename 查找最后一个路径分隔符的文件名
-     * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
-     */
-    public static int indexOfExtension(String filename) {
-        if (filename == null) {
-            return -1;
-        }
-        int extensionPos = filename.lastIndexOf(Symbol.DOT);
-        int lastSeparator = indexOfLastSeparator(filename);
-        return lastSeparator > extensionPos ? -1 : extensionPos;
-    }
-
-    /**
-     * 返回最后一个目录分隔符的索引
-     * <p>
-     * 此方法将处理Unix或Windows格式的文件。
-     * 返回最后一个正斜杠或反斜杠的位置.
-     * </p>
-     *
-     * @param filename 查找最后一个路径分隔符的文件名
-     * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
-     */
-    public static int indexOfLastSeparator(String filename) {
-        if (filename == null) {
-            return -1;
-        }
-        int lastUnixPos = filename.lastIndexOf(Symbol.SLASH);
-        int lastWindowsPos = filename.lastIndexOf(Symbol.BACKSLASH);
-        return Math.max(lastUnixPos, lastWindowsPos);
-    }
-
-    /**
-     * 指定文件最后修改时间
-     *
-     * @param file 文件
-     * @return 最后修改时间
-     */
-    public static Date lastModifiedTime(File file) {
-        if (!exist(file)) {
-            return null;
-        }
-
-        return new Date(file.lastModified());
-    }
-
-    /**
-     * 指定路径文件最后修改时间
-     *
-     * @param path 绝对路径
-     * @return 最后修改时间
-     */
-    public static Date lastModifiedTime(String path) {
-        return lastModifiedTime(new File(path));
-    }
-
-    /**
-     * 计算目录或文件的总大小
-     * 当给定对象为文件时,直接调用 {@link File#length()}
-     * 当给定对象为目录时,遍历目录下的所有文件和目录,递归计算其大小,求和返回
-     *
-     * @param file 目录或文件
-     * @return 总大小, bytes长度
-     */
-    public static long size(File file) {
-        Assert.notNull(file, "file argument is null !");
-        if (false == file.exists()) {
-            throw new IllegalArgumentException(StringUtils.format("File [{}] not exist !", file.getAbsolutePath()));
-        }
-
-        if (file.isDirectory()) {
-            long size = 0L;
-            File[] subFiles = file.listFiles();
-            if (ArrayUtils.isEmpty(subFiles)) {
-                return 0L;// empty directory
-            }
-            for (int i = 0; i < subFiles.length; i++) {
-                size += size(subFiles[i]);
-            }
-            return size;
-        } else {
-            return file.length();
-        }
     }
 
     /**
@@ -1034,6 +871,42 @@ public class FileUtils {
     }
 
     /**
+     * 将字节从<code>File</code>复制到<code>OutputStream</code>
+     * 这个方法在内部缓冲输入，所以不需要使用 <code>BufferedInputStream</code>
+     *
+     * @param input  要读取的 <code>File</code>
+     * @param output 要写入的输出流 <code>OutputStream</code>
+     * @return 复制的字节数
+     * @throws NullPointerException 如果输入或输出为空
+     * @throws IOException          如果发生I/O错误
+     */
+    public static long copyFile(final File input, final OutputStream output) throws IOException {
+        try (FileInputStream fis = new FileInputStream(input)) {
+            return IoUtils.copy(fis, output);
+        }
+    }
+
+    /**
+     * 复制文件或目录
+     * 情况如下：
+     *
+     * <pre>
+     * 1、src和dest都为目录,则讲src下所有文件（包括子目录）拷贝到dest下
+     * 2、src和dest都为文件,直接复制,名字为dest
+     * 3、src为文件,dest为目录,将src拷贝到dest目录下
+     * </pre>
+     *
+     * @param src        源文件
+     * @param dest       目标文件或目录,目标不存在会自动创建（目录、文件都创建）
+     * @param isOverride 是否覆盖目标文件
+     * @return 目标目录或文件
+     * @throws InstrumentException 异常
+     */
+    public static File copyFile(File src, File dest, boolean isOverride) throws InstrumentException {
+        return FileCopier.create(src, dest).setCopyContentIfDir(true).setOnlyCopyFile(true).setOverride(isOverride).copy();
+    }
+
+    /**
      * 复制文件或目录
      * 如果目标文件为目录,则将源文件以相同文件名拷贝到目标目录
      *
@@ -1085,45 +958,6 @@ public class FileUtils {
      */
     public static File copyContent(File src, File dest, boolean isOverride) throws InstrumentException {
         return FileCopier.create(src, dest).setCopyContentIfDir(true).setOverride(isOverride).copy();
-    }
-
-    /**
-     * 复制文件或目录
-     * 情况如下：
-     *
-     * <pre>
-     * 1、src和dest都为目录,则讲src下所有文件（包括子目录）拷贝到dest下
-     * 2、src和dest都为文件,直接复制,名字为dest
-     * 3、src为文件,dest为目录,将src拷贝到dest目录下
-     * </pre>
-     *
-     * @param src        源文件
-     * @param dest       目标文件或目录,目标不存在会自动创建（目录、文件都创建）
-     * @param isOverride 是否覆盖目标文件
-     * @return 目标目录或文件
-     * @throws InstrumentException 异常
-     */
-    public static File copyFilesFromDir(File src, File dest, boolean isOverride) throws InstrumentException {
-        return FileCopier.create(src, dest).setCopyContentIfDir(true).setOnlyCopyFile(true).setOverride(isOverride).copy();
-    }
-
-    /**
-     * Copy bytes from a <code>File</code> to an <code>OutputStream</code>.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a <code>BufferedInputStream</code>.
-     * </p>
-     *
-     * @param input  the <code>File</code> to read from
-     * @param output the <code>OutputStream</code> to write to
-     * @return the number of bytes copied
-     * @throws NullPointerException if the input or output is null
-     * @throws IOException          if an I/O error occurs
-     * @since 2.1
-     */
-    public static long copyFile(final File input, final OutputStream output) throws IOException {
-        try (FileInputStream fis = new FileInputStream(input)) {
-            return IoUtils.copy(fis, output);
-        }
     }
 
     /**
@@ -1218,6 +1052,19 @@ public class FileUtils {
         }
     }
 
+
+    /**
+     * 获取绝对路径,相对于ClassPath的目录
+     * 如果给定就是绝对路径,则返回原路径,原路径把所有\替换为/
+     * 兼容Spring风格的路径表示,例如：classpath:config/example.setting也会被识别后转换
+     *
+     * @param path 相对路径
+     * @return 绝对路径
+     */
+    public static String getAbsolutePath(String path) {
+        return getAbsolutePath(path, null);
+    }
+
     /**
      * 获取绝对路径
      * 此方法不会判定给定路径是否有效（文件或目录存在）
@@ -1247,18 +1094,6 @@ public class FileUtils {
             return path;
         }
         return normalize(classPath.concat(path));
-    }
-
-    /**
-     * 获取绝对路径,相对于ClassPath的目录
-     * 如果给定就是绝对路径,则返回原路径,原路径把所有\替换为/
-     * 兼容Spring风格的路径表示,例如：classpath:config/example.setting也会被识别后转换
-     *
-     * @param path 相对路径
-     * @return 绝对路径
-     */
-    public static String getAbsolutePath(String path) {
-        return getAbsolutePath(path, null);
     }
 
     /**
@@ -1293,76 +1128,6 @@ public class FileUtils {
         return Symbol.C_SLASH == path.charAt(0) || path.matches("^[a-zA-Z]:[/\\\\].*");
     }
 
-    /**
-     * 判断是否为目录,如果path为null,则返回false
-     *
-     * @param path 文件路径
-     * @return 如果为目录true
-     */
-    public static boolean isDirectory(String path) {
-        return (path != null) && file(path).isDirectory();
-    }
-
-    /**
-     * 判断是否为目录,如果file为null,则返回false
-     *
-     * @param file 文件
-     * @return 如果为目录true
-     */
-    public static boolean isDirectory(File file) {
-        return (file != null) && file.isDirectory();
-    }
-
-    /**
-     * 判断是否为目录,如果file为null,则返回false
-     *
-     * @param path          {@link Path}
-     * @param isFollowLinks 是否追踪到软链对应的真实地址
-     * @return 如果为目录true
-     * @since 3.1.9
-     */
-    public static boolean isDirectory(Path path, boolean isFollowLinks) {
-        if (null == path) {
-            return false;
-        }
-        final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
-        return Files.isDirectory(path, options);
-    }
-
-    /**
-     * 判断是否为文件,如果path为null,则返回false
-     *
-     * @param path 文件路径
-     * @return 如果为文件true
-     */
-    public static boolean isFile(String path) {
-        return (path != null) && file(path).isFile();
-    }
-
-    /**
-     * 判断是否为文件,如果file为null,则返回false
-     *
-     * @param file 文件
-     * @return 如果为文件true
-     */
-    public static boolean isFile(File file) {
-        return (file != null) && file.isFile();
-    }
-
-    /**
-     * 判断是否为文件,如果file为null,则返回false
-     *
-     * @param path          文件
-     * @param isFollowLinks 是否跟踪软链（快捷方式）
-     * @return 如果为文件true
-     */
-    public static boolean isFile(Path path, boolean isFollowLinks) {
-        if (null == path) {
-            return false;
-        }
-        final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
-        return Files.isRegularFile(path, options);
-    }
 
     /**
      * 检查两个文件是否是同一个文件
@@ -1386,6 +1151,240 @@ public class FileUtils {
             return Files.isSameFile(file1.toPath(), file2.toPath());
         } catch (IOException e) {
             throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 读取文件
+     *
+     * @param file 文件
+     * @return 内容
+     */
+    public static String readFile(File file) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new java.io.FileReader(file));
+            String tempString;
+            String all = "";
+            // 一次读入一行,直到读入null为文件结束
+            while ((tempString = reader.readLine()) != null) {
+                // 显示行号
+                all += tempString;
+            }
+            reader.close();
+            return all;
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    // ignore
+                }
+            }
+        }
+    }
+
+    /**
+     * 获得指定目录下所有文件
+     * 不会扫描子目录
+     *
+     * @param path 相对ClassPath的目录或者绝对路径目录
+     * @return 文件路径列表（如果是jar中的文件,则给定类似.jar!/xxx/xxx的路径）
+     * @throws InstrumentException 异常
+     */
+    public static List<String> listFileNames(String path) throws InstrumentException {
+        if (path == null) {
+            return new ArrayList<>(0);
+        }
+        int index = path.lastIndexOf(FileType.JAR_PATH_EXT);
+        if (index < 0) {
+            // 普通目录
+            final List<String> paths = new ArrayList<>();
+            final File[] files = ls(path);
+            for (File file : files) {
+                if (file.isFile()) {
+                    paths.add(file.getName());
+                }
+            }
+            return paths;
+        }
+
+        // jar文件
+        path = getAbsolutePath(path);
+        // jar文件中的路径
+        index = index + FileType.JAR_PATH_EXT.length();
+        JarFile jarFile = null;
+        try {
+            jarFile = new JarFile(path.substring(0, index));
+            // 防止出现jar!/org/aoju/这类路径导致文件找不到
+            return ZipUtils.listFileNames(jarFile, StringUtils.removePrefix(path.substring(index + 1), "/"));
+        } catch (IOException e) {
+            throw new InstrumentException(StringUtils.format("Can not read file path of [{}]", path), e);
+        } finally {
+            IoUtils.close(jarFile);
+        }
+    }
+
+    /**
+     * 创建File对象,相当于调用new File(),不做任何处理
+     *
+     * @param path 文件路径
+     * @return File
+     */
+    public static File newFile(String path) {
+        return new File(path);
+    }
+
+    /**
+     * 获取临时文件路径（绝对路径）
+     *
+     * @return 临时文件路径
+     */
+    public static String getTmpDirPath() {
+        return System.getProperty("java.io.tmpdir");
+    }
+
+    /**
+     * 获取临时文件目录
+     *
+     * @return 临时文件目录
+     */
+    public static File getTmpDir() {
+        return file(getTmpDirPath());
+    }
+
+    /**
+     * 获取用户路径（绝对路径）
+     *
+     * @return 用户路径
+     */
+    public static String getUserHomePath() {
+        return System.getProperty("user.home");
+    }
+
+    /**
+     * 获取用户目录
+     *
+     * @return 用户目录
+     */
+    public static File getUserHomeDir() {
+        return file(getUserHomePath());
+    }
+
+    /**
+     * 获取文件名的扩展名.
+     * <p>
+     * 此方法返回文件名最后一个点之后的文本部分,点后面必须没有目录分隔符.
+     * <pre>
+     * foo.txt      -- "txt"
+     * a/b/c.jpg    -- "jpg"
+     * a/b.txt/c    -- ""
+     * a/b/c        -- ""
+     * </pre>
+     * <p>
+     * 不管运行代码的操作系统是什么，输出结果都是一样的.
+     *
+     * @param filename 检索的扩展名的文件名.
+     * @return 返回文件的扩展名或空字符串.
+     */
+    public static String getExtension(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        int index = indexOfExtension(filename);
+        if (index == -1) {
+            return "";
+        } else {
+            return filename.substring(index + 1);
+        }
+    }
+
+    /**
+     * 返回最后一个扩展分隔符的索引点.
+     *
+     * @param filename 查找最后一个路径分隔符的文件名
+     * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
+     */
+    public static int indexOfExtension(String filename) {
+        if (filename == null) {
+            return -1;
+        }
+        int extensionPos = filename.lastIndexOf(Symbol.DOT);
+        int lastSeparator = indexOfLastSeparator(filename);
+        return lastSeparator > extensionPos ? -1 : extensionPos;
+    }
+
+    /**
+     * 返回最后一个目录分隔符的索引
+     * <p>
+     * 此方法将处理Unix或Windows格式的文件。
+     * 返回最后一个正斜杠或反斜杠的位置.
+     * </p>
+     *
+     * @param filename 查找最后一个路径分隔符的文件名
+     * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
+     */
+    public static int indexOfLastSeparator(String filename) {
+        if (filename == null) {
+            return -1;
+        }
+        int lastUnixPos = filename.lastIndexOf(Symbol.SLASH);
+        int lastWindowsPos = filename.lastIndexOf(Symbol.BACKSLASH);
+        return Math.max(lastUnixPos, lastWindowsPos);
+    }
+
+    /**
+     * 指定文件最后修改时间
+     *
+     * @param file 文件
+     * @return 最后修改时间
+     */
+    public static Date lastModifiedTime(File file) {
+        if (!exist(file)) {
+            return null;
+        }
+
+        return new Date(file.lastModified());
+    }
+
+    /**
+     * 指定路径文件最后修改时间
+     *
+     * @param path 绝对路径
+     * @return 最后修改时间
+     */
+    public static Date lastModifiedTime(String path) {
+        return lastModifiedTime(new File(path));
+    }
+
+    /**
+     * 计算目录或文件的总大小
+     * 当给定对象为文件时,直接调用 {@link File#length()}
+     * 当给定对象为目录时,遍历目录下的所有文件和目录,递归计算其大小,求和返回
+     *
+     * @param file 目录或文件
+     * @return 总大小, bytes长度
+     */
+    public static long size(File file) {
+        Assert.notNull(file, "file argument is null !");
+        if (false == file.exists()) {
+            throw new IllegalArgumentException(StringUtils.format("File [{}] not exist !", file.getAbsolutePath()));
+        }
+
+        if (file.isDirectory()) {
+            long size = 0L;
+            File[] subFiles = file.listFiles();
+            if (ArrayUtils.isEmpty(subFiles)) {
+                return 0L;// empty directory
+            }
+            for (int i = 0; i < subFiles.length; i++) {
+                size += size(subFiles[i]);
+            }
+            return size;
+        } else {
+            return file.length();
         }
     }
 
