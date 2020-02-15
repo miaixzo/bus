@@ -97,7 +97,7 @@ public enum Registry implements Complex {
     DINGTALK {
         @Override
         public String authorize() {
-            return "https://oapi.dingtalk.com/connect/qrconnect";
+            return "https://oapi.dingtalk.com/connect/oauth2/sns_authorize";
         }
 
         @Override
