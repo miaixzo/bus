@@ -34,6 +34,7 @@ import java.nio.charset.Charset;
  */
 public class ByteUtils {
 
+
     public static int bytesToVR(byte[] bytes, int off) {
         return bytesToUShortBE(bytes, off);
     }
@@ -367,6 +368,34 @@ public class ByteUtils {
         b[0] = (byte) ((c & 0xFF00) >> 8);
         b[1] = (byte) (c & 0xFF);
         return b;
+    }
+
+    /**
+     * 拆分byte数组为几个等份（最后一份可能小于len）
+     *
+     * @param array 数组
+     * @param len   每个小节的长度
+     * @return 拆分后的数组
+     */
+    public static byte[][] split(byte[] array, int len) {
+        int x = array.length / len;
+        int y = array.length % len;
+        int z = 0;
+        if (y != 0) {
+            z = 1;
+        }
+        byte[][] arrays = new byte[x + z][];
+        byte[] arr;
+        for (int i = 0; i < x + z; i++) {
+            arr = new byte[len];
+            if (i == x + z - 1 && y != 0) {
+                System.arraycopy(array, i * len, arr, 0, y);
+            } else {
+                System.arraycopy(array, i * len, arr, 0, len);
+            }
+            arrays[i] = arr;
+        }
+        return arrays;
     }
 
 }

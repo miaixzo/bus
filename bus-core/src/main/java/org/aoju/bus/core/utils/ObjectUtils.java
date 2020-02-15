@@ -31,9 +31,6 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
@@ -111,31 +108,36 @@ public class ObjectUtils {
     }
 
     /**
-     * 判断对象是否Empty(null或元素为0)
-     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
+     * 判断指定对象是否为空，支持：
      *
-     * @param object 待检查对象
-     * @return boolean 返回的布尔值
+     * <pre>
+     * 1. CharSequence
+     * 2. Map
+     * 3. Iterable
+     * 4. Iterator
+     * 5. Array
+     * </pre>
+     *
+     * @param object 被判断的对象
+     * @return 是否为空，如果类型不支持，返回false
      */
-    public static final boolean isEmpty(Object... object) {
-        for (Object pObj : object) {
-            if (pObj == null || "".equals(pObj)) {
-                return true;
-            }
-            if (pObj instanceof String) {
-                if (((String) pObj).trim().length() == 0) {
-                    return true;
-                }
-            } else if (pObj instanceof Collection<?>) {
-                if (((Collection<?>) pObj).size() == 0) {
-                    return true;
-                }
-            } else if (pObj instanceof Map<?, ?>) {
-                if (((Map<?, ?>) pObj).size() == 0) {
-                    return true;
-                }
-            }
+    public static boolean isEmpty(Object object) {
+        if (null == object) {
+            return true;
         }
+
+        if (object instanceof CharSequence) {
+            return StringUtils.isEmpty((CharSequence) object);
+        } else if (object instanceof Map) {
+            return MapUtils.isEmpty((Map) object);
+        } else if (object instanceof Iterable) {
+            return IterUtils.isEmpty((Iterable) object);
+        } else if (object instanceof Iterator) {
+            return IterUtils.isEmpty((Iterator) object);
+        } else if (ArrayUtils.isArray(object)) {
+            return ArrayUtils.isEmpty(object);
+        }
+
         return false;
     }
 

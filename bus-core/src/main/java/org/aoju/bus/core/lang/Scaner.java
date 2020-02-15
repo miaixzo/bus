@@ -232,7 +232,7 @@ public class Scaner {
         if (file.isFile()) {
             final String fileName = file.getAbsolutePath();
             if (fileName.endsWith(FileType.CLASS)) {
-                final String className = fileName//
+                final String className = fileName
                         // 8为classes长度,fileName.length() - 6为".class"的长度
                         .substring(rootDir.length(), fileName.length() - 6)
                         .replace(File.separatorChar, Symbol.C_DOT);
@@ -267,9 +267,9 @@ public class Scaner {
             name = StringUtils.removePrefix(entry.getName(), Symbol.SLASH);
             if (name.startsWith(this.packagePath)) {
                 if (name.endsWith(FileType.CLASS) && false == entry.isDirectory()) {
-                    final String className = name//
-                            .substring(0, name.length() - 6)//
-                            .replace(Symbol.C_SLASH, Symbol.C_DOT);//
+                    final String className = name
+                            .substring(0, name.length() - 6)
+                            .replace(Symbol.C_SLASH, Symbol.C_DOT);
                     addIfAccept(loadClass(className));
                 }
             }

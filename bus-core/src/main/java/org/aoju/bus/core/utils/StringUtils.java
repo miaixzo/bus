@@ -1655,7 +1655,7 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      */
     public static String[] splitPathToArray(String str) {
-        return toArray(splitPath(str));
+        return ArrayUtils.toArray(splitPath(str));
     }
 
     /**
@@ -1666,7 +1666,7 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      */
     public static String[] splitPathToArray(String str, int limit) {
-        return toArray(splitPath(str, limit));
+        return ArrayUtils.toArray(splitPath(str, limit));
     }
 
     /**
@@ -1870,7 +1870,7 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, int limit) {
-        return toArray(split(str, limit));
+        return ArrayUtils.toArray(split(str, limit));
     }
 
     /**
@@ -1884,7 +1884,7 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
+        return ArrayUtils.toArray(split(str, separator, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -1898,7 +1898,7 @@ public class StringUtils extends TextUtils {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
+        return ArrayUtils.toArray(split(str, separator, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -1913,7 +1913,7 @@ public class StringUtils extends TextUtils {
      */
     public static String[] splitToArray(String str, Pattern separatorPattern, int limit, boolean isTrim,
                                         boolean ignoreEmpty) {
-        return toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
+        return ArrayUtils.toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -2043,7 +2043,7 @@ public class StringUtils extends TextUtils {
             return new ArrayList<>(0);
         }
         if (limit == 1) {
-            return addToList(new ArrayList<>(1), str, true, true);
+            return CollUtils.addAll(new ArrayList<>(1), str, true, true);
         }
 
         final ArrayList<String> list = new ArrayList<>();
@@ -2051,7 +2051,7 @@ public class StringUtils extends TextUtils {
         int start = 0;//切分后每个部分的起始
         for (int i = 0; i < len; i++) {
             if (CharUtils.isBlankChar(str.charAt(i))) {
-                addToList(list, str.substring(start, i), true, true);
+                CollUtils.addAll(list, str.substring(start, i), true, true);
                 start = i + 1;//i+1同时将start与i保持一致
 
                 //检查是否超出范围（最大允许limit-1个,剩下一个留给末尾字符串）
@@ -2060,7 +2060,7 @@ public class StringUtils extends TextUtils {
                 }
             }
         }
-        return addToList(list, str.substring(start, len), true, true);//收尾
+        return CollUtils.addAll(list, str.substring(start, len), true, true);//收尾
     }
 
     /**
@@ -2182,7 +2182,7 @@ public class StringUtils extends TextUtils {
             return new ArrayList<>(0);
         }
         if (limit == 1) {
-            return addToList(new ArrayList<>(1), str, isTrim, ignoreEmpty);
+            return CollUtils.addAll(new ArrayList<>(1), str, isTrim, ignoreEmpty);
         }
 
         if (null == separator) {//分隔符为空时按照空白符切分
@@ -2194,14 +2194,14 @@ public class StringUtils extends TextUtils {
         int len = str.length();
         int start = 0;
         while (matcher.find()) {
-            addToList(list, str.substring(start, matcher.start()), isTrim, ignoreEmpty);
+            CollUtils.addAll(list, str.substring(start, matcher.start()), isTrim, ignoreEmpty);
             start = matcher.end();
 
             if (limit > 0 && list.size() > limit - 2) {
                 break;
             }
         }
-        return addToList(list, str.substring(start, len), isTrim, ignoreEmpty);
+        return CollUtils.addAll(list, str.substring(start, len), isTrim, ignoreEmpty);
     }
 
     /**
@@ -2222,7 +2222,7 @@ public class StringUtils extends TextUtils {
             return new ArrayList<>(0);
         }
         if (limit == 1) {
-            return addToList(new ArrayList<>(1), str, isTrim, ignoreEmpty);
+            return CollUtils.addAll(new ArrayList<>(1), str, isTrim, ignoreEmpty);
         }
 
         final ArrayList<String> list = new ArrayList<>(limit > 0 ? limit : 16);
@@ -2230,7 +2230,7 @@ public class StringUtils extends TextUtils {
         int start = 0;//切分后每个部分的起始
         for (int i = 0; i < len; i++) {
             if (NumberUtils.equals(separator, str.charAt(i), ignoreCase)) {
-                addToList(list, str.substring(start, i), isTrim, ignoreEmpty);
+                CollUtils.addAll(list, str.substring(start, i), isTrim, ignoreEmpty);
                 start = i + 1;//i+1同时将start与i保持一致
 
                 //检查是否超出范围（最大允许limit-1个，剩下一个留给末尾字符串）
@@ -2239,7 +2239,7 @@ public class StringUtils extends TextUtils {
                 }
             }
         }
-        return addToList(list, str.substring(start, len), isTrim, ignoreEmpty);//收尾
+        return CollUtils.addAll(list, str.substring(start, len), isTrim, ignoreEmpty);//收尾
     }
 
     /**
@@ -2260,7 +2260,7 @@ public class StringUtils extends TextUtils {
             return new ArrayList<>(0);
         }
         if (limit == 1) {
-            return addToList(new ArrayList<>(1), str, isTrim, ignoreEmpty);
+            return CollUtils.addAll(new ArrayList<>(1), str, isTrim, ignoreEmpty);
         }
 
         if (isEmpty(separator)) {//分隔符为空时按照空白符切分
@@ -2277,7 +2277,7 @@ public class StringUtils extends TextUtils {
         while (i < len) {
             i = indexOf(str, separator, start, ignoreCase);
             if (i > -1) {
-                addToList(list, str.substring(start, i), isTrim, ignoreEmpty);
+                CollUtils.addAll(list, str.substring(start, i), isTrim, ignoreEmpty);
                 start = i + separatorLen;
 
                 //检查是否超出范围（最大允许limit-1个,剩下一个留给末尾字符串）
@@ -2288,7 +2288,7 @@ public class StringUtils extends TextUtils {
                 break;
             }
         }
-        return addToList(list, str.substring(start, len), isTrim, ignoreEmpty);
+        return CollUtils.addAll(list, str.substring(start, len), isTrim, ignoreEmpty);
     }
 
     /**
@@ -5746,35 +5746,6 @@ public class StringUtils extends TextUtils {
             return false;
         }
         return str.length() > position && c == str.charAt(position);
-    }
-
-    /**
-     * 将字符串加入List中
-     *
-     * @param list        列表
-     * @param part        被加入的部分
-     * @param isTrim      是否去除两端空白符
-     * @param ignoreEmpty 是否略过空字符串（空字符串不做为一个元素）
-     * @return 列表
-     */
-    private static List<String> addToList(List<String> list, String part, boolean isTrim, boolean ignoreEmpty) {
-        if (isTrim) {
-            part = trim(part);
-        }
-        if (false == ignoreEmpty || false == part.isEmpty()) {
-            list.add(part);
-        }
-        return list;
-    }
-
-    /**
-     * 将集合转数组
-     *
-     * @param list 需要转换的集合信息
-     * @return 转换后的数组
-     */
-    private static String[] toArray(List<String> list) {
-        return list.toArray(new String[list.size()]);
     }
 
 }

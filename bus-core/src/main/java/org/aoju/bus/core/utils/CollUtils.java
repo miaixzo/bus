@@ -1746,6 +1746,25 @@ public class CollUtils {
     }
 
     /**
+     * 将字符串加入List中
+     *
+     * @param list        列表
+     * @param part        被加入的部分
+     * @param isTrim      是否去除两端空白符
+     * @param ignoreEmpty 是否略过空字符串（空字符串不做为一个元素）
+     * @return 列表
+     */
+    public static List<String> addAll(List<String> list, String part, boolean isTrim, boolean ignoreEmpty) {
+        if (isTrim) {
+            part = StringUtils.trim(part);
+        }
+        if (false == ignoreEmpty || false == part.isEmpty()) {
+            list.add(part);
+        }
+        return list;
+    }
+
+    /**
      * 将另一个列表中的元素加入到列表中,如果列表中已经存在此元素则忽略之
      *
      * @param <T>       集合元素类型

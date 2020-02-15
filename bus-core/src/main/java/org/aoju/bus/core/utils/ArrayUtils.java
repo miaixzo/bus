@@ -52,284 +52,257 @@ public class ArrayUtils {
     public static final int INDEX_NOT_FOUND = -1;
 
     /**
-     * 数组或集合转String
+     * 对象是否为数组对象
      *
-     * @param obj 集合或数组对象
-     * @return 数组字符串, 与集合转字符串格式相同
+     * @param obj 对象
+     * @return 是否为数组对象, 如果为{@code null} 返回false
      */
-    public static String toString(final Object obj) {
+    public static boolean isArray(Object obj) {
         if (null == obj) {
-            return null;
+            return false;
         }
-
-        if (obj instanceof long[]) {
-            return Arrays.toString((long[]) obj);
-        } else if (obj instanceof int[]) {
-            return Arrays.toString((int[]) obj);
-        } else if (obj instanceof short[]) {
-            return Arrays.toString((short[]) obj);
-        } else if (obj instanceof char[]) {
-            return Arrays.toString((char[]) obj);
-        } else if (obj instanceof byte[]) {
-            return Arrays.toString((byte[]) obj);
-        } else if (obj instanceof boolean[]) {
-            return Arrays.toString((boolean[]) obj);
-        } else if (obj instanceof float[]) {
-            return Arrays.toString((float[]) obj);
-        } else if (obj instanceof double[]) {
-            return Arrays.toString((double[]) obj);
-        } else if (ArrayUtils.isArray(obj)) {
-            // 对象数组
-            try {
-                return Arrays.deepToString((Object[]) obj);
-            } catch (Exception ignore) {
-                //ignore
-            }
-        }
-
-        return obj.toString();
+        return obj.getClass().isArray();
     }
 
     /**
-     * 数组或集合转String
-     *
-     * @param array        集合或数组对象
-     * @param stringIfNull 是否null
-     * @return 数组字符串, 与集合转字符串格式相同
-     */
-    public static String toString(final Object array, final String stringIfNull) {
-        if (array == null) {
-            return stringIfNull;
-        }
-        return new ToStringBuilder(array, ToStringStyle.SIMPLE_STYLE).append(array).toString();
-    }
-
-    /**
-     * 获得一个数组哈希码,用于正确处理多维数组
-     * 多维基元数组也可以用该方法正确处理
+     * 数组是否为空
+     * 此方法会匹配单一对象,如果此对象为{@code null}则返回true
+     * 如果此对象为非数组,理解为此对象为数组的第一个元素,则返回false
+     * 如果此对象为数组对象,数组长度大于0情况下返回false,否则返回true
      *
      * @param array 数组
-     * @return 返回数组的哈希码
+     * @return 是否为空
      */
-    public static int hashCode(final Object array) {
-        return new HashCodeBuilder().append(array).toHashCode();
+    public static boolean isEmpty(Object array) {
+        if (null == array) {
+            return true;
+        } else if (isArray(array)) {
+            return 0 == Array.getLength(array);
+        }
+        throw new InstrumentException("Object to provide is not a Array !");
     }
 
     /**
-     * 将给定数组转换为{@link Map}
-     * 数组的每个元素必须是{@link Map} 或数组,其中至少包含两个
-     * 元素,其中第一个元素用作键,第二个元素用作值
-     * <pre>
-     * Map colorMap = ArrayUtils.toMap(new String[][] {
-     *     {"RED", "#FF0000"},
-     *     {"GREEN", "#00FF00"},
-     *     {"BLUE", "#0000FF"}});
-     * </pre>
+     * 数组是否为空
+     *
+     * @param <T>   数组元素类型
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static <T> boolean isEmpty(T[] array) {
+        return array == null || array.length == 0;
+    }
+
+    /**
+     * 数组是否为空
      *
      * @param array 数组
-     * @return {@link Map}
+     * @return 是否为空
      */
-    public static Map<Object, Object> toMap(final Object[] array) {
-        if (array == null) {
-            return null;
-        }
-        final Map<Object, Object> map = new HashMap<>((int) (array.length * 1.5));
-        for (int i = 0; i < array.length; i++) {
-            final Object object = array[i];
-            if (object instanceof Map.Entry<?, ?>) {
-                final Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;
-                map.put(entry.getKey(), entry.getValue());
-            } else if (object instanceof Object[]) {
-                final Object[] entry = (Object[]) object;
-                if (entry.length < 2) {
-                    throw new IllegalArgumentException("Array element " + i + ", '"
-                            + object
-                            + "', has a length less than 2");
-                }
-                map.put(entry[0], entry[1]);
-            } else {
-                throw new IllegalArgumentException("Array element " + i + ", '"
-                        + object
-                        + "', is neither of type Map.Entry nor an Array");
-            }
-        }
-        return map;
+    public static boolean isEmpty(final long[] array) {
+        return getLength(array) == 0;
     }
 
     /**
-     * 该方法通常用于调用者本身使用泛型类型的场景
-     * 必须组合成数组
-     * <p>
-     * 注意,此方法只适用于提供相同类型的参数,以便
-     * 编译器可以推断数组本身的类型 虽然可以选择
-     * 显式输入like in
-     * <code>Number[] array = ArrayUtils.toArray(Integer.valueOf(42),Double.valueOf(Math.PI))</code>
-     * 与……相比没有什么真正的优势
-     * <code>new Number[]{整数.valueof(42),Double.valueOf(Math.PI)}</code>
+     * 数组是否为空
+     *
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static boolean isEmpty(final int[] array) {
+        return getLength(array) == 0;
+    }
+
+    /**
+     * 数组是否为空
+     *
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static boolean isEmpty(final short[] array) {
+        return getLength(array) == 0;
+    }
+
+    /**
+     * 数组是否为空
+     *
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static boolean isEmpty(final char[] array) {
+        return getLength(array) == 0;
+    }
+
+    /**
+     * 数组是否为空
+     *
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static boolean isEmpty(final byte[] array) {
+        return getLength(array) == 0;
+    }
+
+    /**
+     * 数组是否为空
+     *
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static boolean isEmpty(final double[] array) {
+        return getLength(array) == 0;
+    }
+
+    /**
+     * 数组是否为空
+     *
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static boolean isEmpty(final float[] array) {
+        return getLength(array) == 0;
+    }
+
+    /**
+     * 数组是否为空
+     *
+     * @param array 数组
+     * @return 是否为空
+     */
+    public static boolean isEmpty(final boolean[] array) {
+        return getLength(array) == 0;
+    }
+
+    /**
+     * 数组是否为非空
+     * 此方法会匹配单一对象,如果此对象为{@code null}则返回false
+     * 如果此对象为非数组,理解为此对象为数组的第一个元素,则返回true
+     * 如果此对象为数组对象,数组长度大于0情况下返回true,否则返回false
      *
      * @param <T>   对象
-     * @param items 数组
-     * @return 返回数组, 除非传入一个空数组, 否则不为空
+     * @param array 数组
+     * @return 是否为非空
      */
-    public static <T> T[] toArray(final T... items) {
-        return items;
+    public static <T> boolean isNotEmpty(final T[] array) {
+        return !isEmpty(array);
     }
 
     /**
-     * 克隆数组
+     * 数组是否为非空
      *
-     * @param <T>   对象
-     * @param array 被克隆的数组
-     * @return 新数组
+     * @param array 数组
+     * @return 是否为非空
      */
-    public static <T> T[] clone(final T[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
+    public static boolean isNotEmpty(final long[] array) {
+        return !isEmpty(array);
     }
 
     /**
-     * 克隆数组,如果非数组返回null
+     * 数组是否为非空
      *
-     * @param <T> 数组元素类型
-     * @param obj 数组对象
-     * @return 克隆后的数组对象
+     * @param array 数组
+     * @return 是否为非空
      */
-    public static <T> T clone(T obj) {
-        if (null == obj) {
-            return null;
-        }
-        if (isArray(obj)) {
-            final Object result;
-            final Class<?> componentType = obj.getClass().getComponentType();
-            if (componentType.isPrimitive()) {// 原始类型
-                int length = Array.getLength(obj);
-                result = Array.newInstance(componentType, length);
-                while (length-- > 0) {
-                    Array.set(result, length, Array.get(obj, length));
+    public static boolean isNotEmpty(final int[] array) {
+        return !isEmpty(array);
+    }
+
+    /**
+     * 数组是否为非空
+     *
+     * @param array 数组
+     * @return 是否为非空
+     */
+    public static boolean isNotEmpty(final short[] array) {
+        return !isEmpty(array);
+    }
+
+    /**
+     * 数组是否为非空
+     *
+     * @param array 数组
+     * @return 是否为非空
+     */
+    public static boolean isNotEmpty(final char[] array) {
+        return !isEmpty(array);
+    }
+
+    /**
+     * 数组是否为非空
+     *
+     * @param array 数组
+     * @return 是否为非空
+     */
+    public static boolean isNotEmpty(final byte[] array) {
+        return !isEmpty(array);
+    }
+
+    /**
+     * 数组是否为非空
+     *
+     * @param array 数组
+     * @return 是否为非空
+     */
+    public static boolean isNotEmpty(final double[] array) {
+        return !isEmpty(array);
+    }
+
+    /**
+     * 数组是否为非空
+     *
+     * @param array 数组
+     * @return 是否为非空
+     */
+    public static boolean isNotEmpty(final float[] array) {
+        return !isEmpty(array);
+    }
+
+    /**
+     * 数组是否为非空
+     *
+     * @param array 数组
+     * @return 是否为非空
+     */
+    public static boolean isNotEmpty(final boolean[] array) {
+        return !isEmpty(array);
+    }
+
+    /**
+     * 是否存都为{@code null}或空对象，通过{@link ObjectUtils#isEmpty(Object)} 判断元素
+     *
+     * @param args 被检查的对象,一个或者多个
+     * @return 是否都为空
+     */
+    public static boolean isAllEmpty(Object... args) {
+        int count = 0;
+        if (isNotEmpty(args)) {
+            for (Object element : args) {
+                if (ObjectUtils.isEmpty(element)) {
+                    count++;
                 }
-            } else {
-                result = ((Object[]) obj).clone();
             }
-            return (T) result;
         }
-        return null;
+        return count == args.length;
     }
 
     /**
-     * 克隆数组
+     * 是否存都不为{@code null}或空对象，通过{@link ObjectUtils#isEmpty(Object)} 判断元素
      *
-     * @param array 被克隆的数组
-     * @return 新数组
+     * @param args 被检查的对象,一个或者多个
+     * @return 是否都不为空
      */
-    public static long[] clone(final long[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
+    public static boolean isAllNotEmpty(Object... args) {
+        return false == hasEmpty(args);
     }
-
-    /**
-     * 克隆数组
-     *
-     * @param array 被克隆的数组
-     * @return 新数组
-     */
-    public static int[] clone(final int[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
-    }
-
-    /**
-     * 克隆数组
-     *
-     * @param array 被克隆的数组
-     * @return 新数组
-     */
-    public static short[] clone(final short[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
-    }
-
-    /**
-     * 克隆数组
-     *
-     * @param array 被克隆的数组
-     * @return 新数组
-     */
-    public static char[] clone(final char[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
-    }
-
-    /**
-     * 克隆数组
-     *
-     * @param array 被克隆的数组
-     * @return 新数组
-     */
-    public static byte[] clone(final byte[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
-    }
-
-    /**
-     * 克隆数组
-     *
-     * @param array 被克隆的数组
-     * @return 新数组
-     */
-    public static double[] clone(final double[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
-    }
-
-    /**
-     * 克隆数组
-     *
-     * @param array 被克隆的数组
-     * @return 新数组
-     */
-    public static float[] clone(final float[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
-    }
-
-    /**
-     * 克隆数组
-     *
-     * @param array 被克隆的数组
-     * @return 新数组
-     */
-    public static boolean[] clone(final boolean[] array) {
-        if (array == null) {
-            return null;
-        }
-        return array.clone();
-    }
-
 
     /**
      * 输入数组返回一个空数组或原始数组
      *
-     * @param array the array to check for {@code null} or empty
-     * @param type  the class representation of the desired array
-     * @param <T>   the class type
-     * @return the same array, {@code public static} empty array if {@code null}
-     * @throws IllegalArgumentException if the type argument is null
+     * @param array 要检查{@code null}或为空的数组
+     * @param type  所需数组的类表示形式
+     * @param <T>   class 类型
+     * @return 如果{@code null}
+     * @throws IllegalArgumentException 如果类型参数为空
      * @since 3.5.0
      */
     public static <T> T[] nullToEmpty(final T[] array, final Class<T[]> type) {
@@ -589,6 +562,369 @@ public class ArrayUtils {
             return Normal.EMPTY_BOOLEAN_OBJECT_ARRAY;
         }
         return array;
+    }
+
+    /**
+     * 是否存在{@code null}或空对象，通过{@link ObjectUtils#isEmpty(Object)} 判断元素
+     *
+     * @param args 被检查对象
+     * @return 是否存在
+     */
+    public static boolean hasEmpty(Object... args) {
+        if (isNotEmpty(args)) {
+            for (Object element : args) {
+                if (ObjectUtils.isEmpty(element)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否包含{@code null}元素
+     *
+     * @param <T>   数组元素类型
+     * @param array 被检查的数组
+     * @return 是否包含null元素
+     */
+
+    public static <T> boolean hasNull(T... array) {
+        if (isNotEmpty(array)) {
+            for (T element : array) {
+                if (null == element) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 返回数组中第一个非空元素
+     *
+     * @param <T>   数组元素类型
+     * @param array 数组
+     * @return 非空元素, 如果不存在非空元素或数组为空, 返回{@code null}
+     */
+
+    public static <T> T firstNonNull(T... array) {
+        if (isNotEmpty(array)) {
+            for (final T val : array) {
+                if (null != val) {
+                    return val;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 找到第一个不为 null 的元素
+     *
+     * @param objects 对象
+     * @return 不为 null 的元素
+     */
+    public static Optional<Object> firstNotNull(Object[] objects) {
+        if (isEmpty(objects)) {
+            return Optional.empty();
+        }
+
+        for (Object elem : objects) {
+            if (ObjectUtils.isNotNull(elem)) {
+                return Optional.of(elem);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 数组或集合转String
+     *
+     * @param obj 集合或数组对象
+     * @return 数组字符串, 与集合转字符串格式相同
+     */
+    public static String toString(final Object obj) {
+        if (null == obj) {
+            return null;
+        }
+
+        if (obj instanceof long[]) {
+            return Arrays.toString((long[]) obj);
+        } else if (obj instanceof int[]) {
+            return Arrays.toString((int[]) obj);
+        } else if (obj instanceof short[]) {
+            return Arrays.toString((short[]) obj);
+        } else if (obj instanceof char[]) {
+            return Arrays.toString((char[]) obj);
+        } else if (obj instanceof byte[]) {
+            return Arrays.toString((byte[]) obj);
+        } else if (obj instanceof boolean[]) {
+            return Arrays.toString((boolean[]) obj);
+        } else if (obj instanceof float[]) {
+            return Arrays.toString((float[]) obj);
+        } else if (obj instanceof double[]) {
+            return Arrays.toString((double[]) obj);
+        } else if (ArrayUtils.isArray(obj)) {
+            // 对象数组
+            try {
+                return Arrays.deepToString((Object[]) obj);
+            } catch (Exception ignore) {
+                //ignore
+            }
+        }
+
+        return obj.toString();
+    }
+
+    /**
+     * 数组或集合转String
+     *
+     * @param array        集合或数组对象
+     * @param stringIfNull 是否null
+     * @return 数组字符串, 与集合转字符串格式相同
+     */
+    public static String toString(final Object array, final String stringIfNull) {
+        if (array == null) {
+            return stringIfNull;
+        }
+        return new ToStringBuilder(array, ToStringStyle.SIMPLE_STYLE).append(array).toString();
+    }
+
+    /**
+     * 将集合转数组
+     *
+     * @param list 需要转换的集合信息
+     * @return 转换后的数组
+     */
+    public static String[] toArray(List<String> list) {
+        return list.toArray(new String[list.size()]);
+    }
+
+    /**
+     * {@link ByteBuffer} 转byte数组
+     *
+     * @param bytebuffer {@link ByteBuffer}
+     * @return byte数组
+     * @since 3.0.1
+     */
+    public static byte[] toArray(ByteBuffer bytebuffer) {
+        if (false == bytebuffer.hasArray()) {
+            int oldPosition = bytebuffer.position();
+            bytebuffer.position(0);
+            int size = bytebuffer.limit();
+            byte[] buffers = new byte[size];
+            bytebuffer.get(buffers);
+            bytebuffer.position(oldPosition);
+            return buffers;
+        } else {
+            return Arrays.copyOfRange(bytebuffer.array(), bytebuffer.position(), bytebuffer.limit());
+        }
+    }
+
+    /**
+     * 将集合转为数组
+     *
+     * @param <T>           数组元素类型
+     * @param iterator      {@link Iterator}
+     * @param componentType 集合元素类型
+     * @return 数组
+     * @since 3.0.9
+     */
+    public static <T> T[] toArray(Iterator<T> iterator, Class<T> componentType) {
+        return toArray(CollUtils.newArrayList(iterator), componentType);
+    }
+
+    /**
+     * 将集合转为数组
+     *
+     * @param <T>           数组元素类型
+     * @param iterable      {@link Iterable}
+     * @param componentType 集合元素类型
+     * @return 数组
+     * @since 3.0.9
+     */
+    public static <T> T[] toArray(Iterable<T> iterable, Class<T> componentType) {
+        return toArray(CollUtils.toCollection(iterable), componentType);
+    }
+
+    /**
+     * 将集合转为数组
+     *
+     * @param <T>           数组元素类型
+     * @param collection    集合
+     * @param componentType 集合元素类型
+     * @return 数组
+     * @since 3.0.9
+     */
+    public static <T> T[] toArray(Collection<T> collection, Class<T> componentType) {
+        final T[] array = newArray(componentType, collection.size());
+        return collection.toArray(array);
+    }
+
+    /**
+     * 返回比参数大1的给定数组的副本
+     * 数组的最后一个值保留为默认值
+     *
+     * @param array                 被克隆的数组{@code null}
+     * @param newArrayComponentType 如果{@code array}是{@code null}，
+     *                              则创建此类型的大小为1的数组
+     * @return 比输入大1的数组的新副本
+     */
+    private static Object clone(final Object array, final Class<?> newArrayComponentType) {
+        if (array != null) {
+            final int arrayLength = Array.getLength(array);
+            final Object newArray = Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
+            System.arraycopy(array, 0, newArray, 0, arrayLength);
+            return newArray;
+        }
+        return Array.newInstance(newArrayComponentType, 1);
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param <T>   对象
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static <T> T[] clone(final T[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
+
+    /**
+     * 克隆数组,如果非数组返回null
+     *
+     * @param <T> 数组元素类型
+     * @param obj 数组对象
+     * @return 克隆后的数组对象
+     */
+    public static <T> T clone(T obj) {
+        if (null == obj) {
+            return null;
+        }
+        if (isArray(obj)) {
+            final Object result;
+            final Class<?> componentType = obj.getClass().getComponentType();
+            if (componentType.isPrimitive()) {// 原始类型
+                int length = Array.getLength(obj);
+                result = Array.newInstance(componentType, length);
+                while (length-- > 0) {
+                    Array.set(result, length, Array.get(obj, length));
+                }
+            } else {
+                result = ((Object[]) obj).clone();
+            }
+            return (T) result;
+        }
+        return null;
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static long[] clone(final long[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static int[] clone(final int[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static short[] clone(final short[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static char[] clone(final char[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static byte[] clone(final byte[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static double[] clone(final double[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static float[] clone(final float[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
+    }
+
+    /**
+     * 克隆数组
+     *
+     * @param array 被克隆的数组
+     * @return 新数组
+     */
+    public static boolean[] clone(final boolean[] array) {
+        if (array == null) {
+            return null;
+        }
+        return array.clone();
     }
 
     /**
@@ -951,45 +1287,6 @@ public class ArrayUtils {
      */
     public static boolean isSameLength(final boolean[] array1, final boolean[] array2) {
         return getLength(array1) == getLength(array2);
-    }
-
-    /**
-     * 返回指定数组的长度
-     *
-     * <pre>
-     * ArrayUtils.getLength(null)            = 0
-     * ArrayUtils.getLength([])              = 0
-     * ArrayUtils.getLength([null])          = 1
-     * ArrayUtils.getLength([true, false])   = 2
-     * ArrayUtils.getLength([1, 2, 3])       = 3
-     * ArrayUtils.getLength(["a", "b", "c"]) = 3
-     * </pre>
-     *
-     * @param array the array to retrieve the length from, may be null
-     * @return The length of the array, or {@code 0} if the array is {@code null}
-     * @throws IllegalArgumentException if the object argument is not an array.
-     * @since 2.1.0
-     */
-    public static int getLength(final Object array) {
-        if (array == null) {
-            return 0;
-        }
-        return Array.getLength(array);
-    }
-
-    /**
-     * 检查两个数组是否为同一类型
-     *
-     * @param array1 the first array, must not be {@code null}
-     * @param array2 the second array, must not be {@code null}
-     * @return {@code true} if type of arrays matches
-     * @throws IllegalArgumentException if either array is {@code null}
-     */
-    public static boolean isSameType(final Object array1, final Object array2) {
-        if (array1 == null || array2 == null) {
-            throw new IllegalArgumentException("The Array must not be null");
-        }
-        return array1.getClass().getName().equals(array2.getClass().getName());
     }
 
     /**
@@ -2409,7 +2706,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final Object[] array, final Object value) {
         return indexOf(array, value, 0);
@@ -2422,7 +2718,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final Object[] array, final Object value, int index) {
         if (array == null) {
@@ -2453,7 +2748,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final Object[] array, final Object value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -2466,7 +2760,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final Object[] array, final Object value, int index) {
         if (array == null) {
@@ -2511,7 +2804,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final long[] array, final long value) {
         return indexOf(array, value, 0);
@@ -2524,7 +2816,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final long[] array, final long value, int index) {
         if (array == null) {
@@ -2547,7 +2838,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final long[] array, final long value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -2560,7 +2850,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final long[] array, final long value, int index) {
         if (array == null) {
@@ -2596,7 +2885,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final int[] array, final int value) {
         return indexOf(array, value, 0);
@@ -2609,7 +2897,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final int[] array, final int value, int index) {
         if (array == null) {
@@ -2632,7 +2919,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final int[] array, final int value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -2645,7 +2931,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final int[] array, final int value, int index) {
         if (array == null) {
@@ -2682,7 +2967,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final short[] array, final short value) {
         return indexOf(array, value, 0);
@@ -2695,7 +2979,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final short[] array, final short value, int index) {
         if (array == null) {
@@ -2718,7 +3001,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final short[] array, final short value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -2731,7 +3013,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final short[] array, final short value, int index) {
         if (array == null) {
@@ -2768,7 +3049,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final char[] array, final char value) {
         return indexOf(array, value, 0);
@@ -2781,7 +3061,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final char[] array, final char value, int index) {
         if (array == null) {
@@ -2804,7 +3083,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final char[] array, final char value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -2817,7 +3095,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final char[] array, final char value, int index) {
         if (array == null) {
@@ -2853,7 +3130,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final byte[] array, final byte value) {
         return indexOf(array, value, 0);
@@ -2866,7 +3142,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final byte[] array, final byte value, int index) {
         if (array == null) {
@@ -2889,7 +3164,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final byte[] array, final byte value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -2902,7 +3176,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final byte[] array, final byte value, int index) {
         if (array == null) {
@@ -2938,7 +3211,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final double[] array, final double value) {
         return indexOf(array, value, 0);
@@ -2951,7 +3223,6 @@ public class ArrayUtils {
      * @param value     被检查的元素
      * @param tolerance 容差
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final double[] array, final double value, final double tolerance) {
         return indexOf(array, value, 0, tolerance);
@@ -2964,7 +3235,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final double[] array, final double value, int index) {
         if (isEmpty(array)) {
@@ -2989,7 +3259,6 @@ public class ArrayUtils {
      * @param index     索引
      * @param tolerance 容差
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final double[] array, final double value, int index, final double tolerance) {
         if (isEmpty(array)) {
@@ -3014,7 +3283,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final double[] array, final double value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -3027,7 +3295,6 @@ public class ArrayUtils {
      * @param value     被检查的元素
      * @param tolerance 容差
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final double[] array, final double value, final double tolerance) {
         return lastIndexOf(array, value, Integer.MAX_VALUE, tolerance);
@@ -3040,7 +3307,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final double[] array, final double value, int index) {
         if (isEmpty(array)) {
@@ -3067,7 +3333,6 @@ public class ArrayUtils {
      * @param index     索引
      * @param tolerance 容差
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final double[] array, final double value, int index, final double tolerance) {
         if (isEmpty(array)) {
@@ -3106,7 +3371,6 @@ public class ArrayUtils {
      * @param value     被检查的元素
      * @param tolerance 容差
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static boolean contains(final double[] array, final double value, final double tolerance) {
         return indexOf(array, value, 0, tolerance) != INDEX_NOT_FOUND;
@@ -3118,7 +3382,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final float[] array, final float value) {
         return indexOf(array, value, 0);
@@ -3131,7 +3394,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final float[] array, final float value, int index) {
         if (isEmpty(array)) {
@@ -3154,7 +3416,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final float[] array, final float value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -3167,7 +3428,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final float[] array, final float value, int index) {
         if (isEmpty(array)) {
@@ -3203,7 +3463,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final boolean[] array, final boolean value) {
         return indexOf(array, value, 0);
@@ -3216,7 +3475,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int indexOf(final boolean[] array, final boolean value, int index) {
         if (isEmpty(array)) {
@@ -3239,7 +3497,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final boolean[] array, final boolean value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
@@ -3252,7 +3509,6 @@ public class ArrayUtils {
      * @param value 被检查的元素
      * @param index 索引
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.0.7
      */
     public static int lastIndexOf(final boolean[] array, final boolean value, int index) {
         if (isEmpty(array)) {
@@ -3283,13 +3539,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Characters to primitives.
+     * 将对象Character数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code Character} array, may be {@code null}
-     * @return a {@code char} array, {@code null} if null array input
-     * @throws NullPointerException if array content is {@code null}
+     * @param array {@code Character}数组，可以是{@code null}
+     * @return {@code char}数组，{@code null}如果为空数组输入
+     * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static char[] toPrimitive(final Character[] array) {
         if (array == null) {
@@ -3305,13 +3560,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Character to primitives handling {@code null}.
+     * 将对象Character数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array        a {@code Character} array, may be {@code null}
-     * @param valueForNull the value to insert if {@code null} found
-     * @return a {@code char} array, {@code null} if null array input
+     * @param array        {@code Character}数组，可以是{@code null}
+     * @param valueForNull 找到{@code null}时要插入的值
+     * @return {@code Character}数组，{@code null}如果为空数组输入
      */
     public static char[] toPrimitive(final Character[] array, final char valueForNull) {
         if (array == null) {
@@ -3328,12 +3582,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of primitive chars to objects.
+     * 将对象char数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code char} array
-     * @return a {@code Character} array, {@code null} if null array input
+     * @param array {@code char}数组，可以是{@code null}
+     * @return {@code Character}数组，{@code null}如果为空数组输入
      */
     public static Character[] toObject(final char[] array) {
         if (array == null) {
@@ -3349,12 +3602,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Longs to primitives.
+     * 将对象Long数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code Long} array, may be {@code null}
-     * @return a {@code long} array, {@code null} if null array input
+     * @param array {@code Long}数组，可以是{@code null}
+     * @return {@code long}数组，{@code null}如果为空数组输入
      */
     public static long[] toPrimitive(final Long[] array) {
         if (array == null) {
@@ -3370,13 +3622,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Long to primitives handling {@code null}.
+     * 将对象Long数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array        a {@code Long} array, may be {@code null}
-     * @param valueForNull the value to insert if {@code null} found
-     * @return a {@code long} array, {@code null} if null array input
+     * @param array        {@code Long}数组，可以是{@code null}
+     * @param valueForNull 找到{@code null}时要插入的值
+     * @return {@code Long}数组，{@code null}如果为空数组输入
      */
     public static long[] toPrimitive(final Long[] array, final long valueForNull) {
         if (array == null) {
@@ -3393,12 +3644,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of primitive longs to objects.
+     * 将对象long数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code long} array
-     * @return a {@code Long} array, {@code null} if null array input
+     * @param array {@code long}数组，可以是{@code null}
+     * @return {@code Long}数组，{@code null}如果为空数组输入
      */
     public static Long[] toObject(final long[] array) {
         if (array == null) {
@@ -3414,13 +3664,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Integers to primitives.
+     * 将对象Integer数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code Integer} array, may be {@code null}
-     * @return an {@code int} array, {@code null} if null array input
-     * @throws NullPointerException if array content is {@code null}
+     * @param array {@code Integer}数组，可以是{@code null}
+     * @return {@code int}数组，{@code null}如果为空数组输入
+     * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static int[] toPrimitive(final Integer[] array) {
         if (array == null) {
@@ -3436,13 +3685,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Integer to primitives handling {@code null}.
+     * 将对象Integer数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array        a {@code Integer} array, may be {@code null}
-     * @param valueForNull the value to insert if {@code null} found
-     * @return an {@code int} array, {@code null} if null array input
+     * @param array        {@code Integer}数组，可以是{@code null}
+     * @param valueForNull 找到{@code null}时要插入的值
+     * @return {@code Integer}数组，{@code null}如果为空数组输入
      */
     public static int[] toPrimitive(final Integer[] array, final int valueForNull) {
         if (array == null) {
@@ -3459,12 +3707,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of primitive ints to objects.
+     * 将对象int数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array an {@code int} array
-     * @return an {@code Integer} array, {@code null} if null array input
+     * @param array {@code int}数组，可以是{@code null}
+     * @return {@code Integer}数组，{@code null}如果为空数组输入
      */
     public static Integer[] toObject(final int[] array) {
         if (array == null) {
@@ -3480,13 +3727,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Shorts to primitives.
+     * 将对象Short数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code Short} array, may be {@code null}
-     * @return a {@code byte} array, {@code null} if null array input
-     * @throws NullPointerException if array content is {@code null}
+     * @param array {@code Short}数组，可以是{@code null}
+     * @return {@code short}数组，{@code null}如果为空数组输入
      */
     public static short[] toPrimitive(final Short[] array) {
         if (array == null) {
@@ -3502,13 +3747,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Short to primitives handling {@code null}.
+     * 将对象Short数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array        a {@code Short} array, may be {@code null}
-     * @param valueForNull the value to insert if {@code null} found
-     * @return a {@code byte} array, {@code null} if null array input
+     * @param array        {@code Short}数组，可以是{@code null}
+     * @param valueForNull 找到{@code null}时要插入的值
+     * @return {@code Short}数组，{@code null}如果为空数组输入
      */
     public static short[] toPrimitive(final Short[] array, final short valueForNull) {
         if (array == null) {
@@ -3525,12 +3769,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of primitive shorts to objects.
+     * 将对象short数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code short} array
-     * @return a {@code Short} array, {@code null} if null array input
+     * @param array {@code short}数组，可以是{@code null}
+     * @return {@code Short}数组，{@code null}如果为空数组输入
      */
     public static Short[] toObject(final short[] array) {
         if (array == null) {
@@ -3546,13 +3789,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Bytes to primitives.
+     * 将对象Byte数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code Byte} array, may be {@code null}
-     * @return a {@code byte} array, {@code null} if null array input
-     * @throws NullPointerException if array content is {@code null}
+     * @param array {@code Byte}数组，可以是{@code null}
+     * @return {@code byte}数组，{@code null}如果为空数组输入
+     * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static byte[] toPrimitive(final Byte[] array) {
         if (array == null) {
@@ -3568,13 +3810,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Bytes to primitives handling {@code null}.
+     * 将对象Byte数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array        a {@code Byte} array, may be {@code null}
-     * @param valueForNull the value to insert if {@code null} found
-     * @return a {@code byte} array, {@code null} if null array input
+     * @param array        {@code Byte}数组，可以是{@code null}
+     * @param valueForNull 找到{@code null}时要插入的值
+     * @return {@code Byte}数组，{@code null}如果为空数组输入
      */
     public static byte[] toPrimitive(final Byte[] array, final byte valueForNull) {
         if (array == null) {
@@ -3591,12 +3832,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of primitive bytes to objects.
+     * 将对象byte数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code byte} array
-     * @return a {@code Byte} array, {@code null} if null array input
+     * @param array {@code byte}数组，可以是{@code null}
+     * @return {@code Byte}数组，{@code null}如果为空数组输入
      */
     public static Byte[] toObject(final byte[] array) {
         if (array == null) {
@@ -3612,13 +3852,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Doubles to primitives.
+     * 将对象Double数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code Double} array, may be {@code null}
-     * @return a {@code double} array, {@code null} if null array input
-     * @throws NullPointerException if array content is {@code null}
+     * @param array {@code Double}数组，可以是{@code null}
+     * @return {@code double}数组，{@code null}如果为空数组输入
+     * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static double[] toPrimitive(final Double[] array) {
         if (array == null) {
@@ -3634,13 +3873,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Doubles to primitives handling {@code null}.
+     * 将对象Double数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array        a {@code Double} array, may be {@code null}
-     * @param valueForNull the value to insert if {@code null} found
-     * @return a {@code double} array, {@code null} if null array input
+     * @param array        {@code Double}数组，可以是{@code null}
+     * @param valueForNull 找到{@code null}时要插入的值
+     * @return {@code Double}数组，{@code null}如果为空数组输入
      */
     public static double[] toPrimitive(final Double[] array, final double valueForNull) {
         if (array == null) {
@@ -3657,12 +3895,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of primitive doubles to objects.
+     * 将对象double数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code double} array
-     * @return a {@code Double} array, {@code null} if null array input
+     * @param array {@code double}数组，可以是{@code null}
+     * @return {@code double}数组，{@code null}如果为空数组输入
      */
     public static Double[] toObject(final double[] array) {
         if (array == null) {
@@ -3678,13 +3915,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Floats to primitives.
+     * 将对象Float数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code Float} array, may be {@code null}
-     * @return a {@code float} array, {@code null} if null array input
-     * @throws NullPointerException if array content is {@code null}
+     * @param array {@code Float}数组，可以是{@code null}
+     * @return {@code float}数组，{@code null}如果为空数组输入
+     * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static float[] toPrimitive(final Float[] array) {
         if (array == null) {
@@ -3700,13 +3936,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Floats to primitives handling {@code null}.
+     * 将对象Float数组转换为处理{@code null}的原始对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array        a {@code Float} array, may be {@code null}
-     * @param valueForNull the value to insert if {@code null} found
-     * @return a {@code float} array, {@code null} if null array input
+     * @param array        {@code Float}数组，可以是{@code null}
+     * @param valueForNull 找到{@code null}时要插入的值
+     * @return {@code float}数组，{@code null}如果为空数组输入
      */
     public static float[] toPrimitive(final Float[] array, final float valueForNull) {
         if (array == null) {
@@ -3723,12 +3958,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of primitive floats to objects.
+     * 将基元float组转换为对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code float} array
-     * @return a {@code Float} array, {@code null} if null array input
+     * @param array {@code float}数组
+     * @return {@code Float}数组，{@code null}如果为空数组输入
      */
     public static Float[] toObject(final float[] array) {
         if (array == null) {
@@ -3744,12 +3978,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Create an array of primitive type from an array of wrapper types.
+     * 从包装器类型数组创建基元类型数组
+     * 该方法为一个{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array an array of wrapper object
-     * @return an array of the corresponding primitive type, or the original array
+     * @param array 包装器对象的数组
+     * @return 对应基元类型的数组，或原始数组
      * @since 3.5.0
      */
     public static Object toPrimitive(final Object array) {
@@ -3777,13 +4010,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Booleans to primitives.
+     * 将对象布尔值数组转换为处理{@code null}的原始的类型
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code Boolean} array, may be {@code null}
-     * @return a {@code boolean} array, {@code null} if null array input
-     * @throws NullPointerException if array content is {@code null}
+     * @param array {@code Boolean}数组，可以是{@code null}
+     * @return 返回{@code boolean}数组, 如果输入为null则为{@code null}
+     * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static boolean[] toPrimitive(final Boolean[] array) {
         if (array == null) {
@@ -3799,13 +4031,12 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of object Booleans to primitives handling {@code null}.
+     * 将对象布尔值数组转换为处理{@code null}的原始的类型
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array        a {@code Boolean} array, may be {@code null}
-     * @param valueForNull the value to insert if {@code null} found
-     * @return a {@code boolean} array, {@code null} if null array input
+     * @param array        {@code Boolean}数组，可以是{@code null}
+     * @param valueForNull 找到{@code null}时要插入的值
+     * @return 返回{@code boolean}数组, 如果输入为null则为{@code null}
      */
     public static boolean[] toPrimitive(final Boolean[] array, final boolean valueForNull) {
         if (array == null) {
@@ -3822,12 +4053,11 @@ public class ArrayUtils {
     }
 
     /**
-     * <p>Converts an array of primitive booleans to objects.
+     * 将原始布尔值数组转换为对象
+     * 此方法为{@code null}输入数组返回{@code null}
      *
-     * <p>This method returns {@code null} for a {@code null} input array.
-     *
-     * @param array a {@code boolean} array
-     * @return a {@code Boolean} array, {@code null} if null array input
+     * @param array {@code boolean}数组
+     * @return 返回{@code boolean}数组, 如果输入为null则为{@code null}
      */
     public static Boolean[] toObject(final boolean[] array) {
         if (array == null) {
@@ -3843,208 +4073,65 @@ public class ArrayUtils {
     }
 
     /**
-     * 数组是否为空
-     * 此方法会匹配单一对象,如果此对象为{@code null}则返回true
-     * 如果此对象为非数组,理解为此对象为数组的第一个元素,则返回false
-     * 如果此对象为数组对象,数组长度大于0情况下返回false,否则返回true
+     * 将多个数组合并在一起
+     * 忽略null的数组
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param <T>    数组元素类型
+     * @param arrays 数组集合
+     * @return 合并后的数组
      */
-    public static boolean isEmpty(Object array) {
-        if (null == array) {
-            return true;
-        } else if (isArray(array)) {
-            return 0 == Array.getLength(array);
+    public static <T> T[] addAll(T[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
         }
-        throw new InstrumentException("Object to provide is not a Array !");
+
+        int length = 0;
+        for (T[] array : arrays) {
+            if (null != array) {
+                length += array.length;
+            }
+        }
+        T[] result = newArray(arrays.getClass().getComponentType().getComponentType(), length);
+
+        length = 0;
+        for (T[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
+        }
+        return result;
     }
 
     /**
-     * 数组是否为空
-     * 此方法会匹配单一对象,如果此对象为{@code null}则返回true
-     * 如果此对象为非数组,理解为此对象为数组的第一个元素,则返回false
-     * 如果此对象为数组对象,数组长度大于0情况下返回false,否则返回true
+     * 将多个数组合并在一起
+     * 忽略null的数组
      *
-     * @param array 数组
-     * @return 是否为空
+     * @param arrays 数组集合
+     * @return 合并后的数组
      */
-    public static boolean isEmpty(final Object[] array) {
-        return getLength(array) == 0;
-    }
+    public static byte[] addAll(byte[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
+        }
 
-    /**
-     * 数组是否为空
-     *
-     * @param array 数组
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final long[] array) {
-        return getLength(array) == 0;
-    }
+        // 计算总长度
+        int length = 0;
+        for (byte[] array : arrays) {
+            if (null != array) {
+                length += array.length;
+            }
+        }
 
-    /**
-     * 数组是否为空
-     *
-     * @param array 数组
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final int[] array) {
-        return getLength(array) == 0;
-    }
-
-    /**
-     * 数组是否为空
-     *
-     * @param array 数组
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final short[] array) {
-        return getLength(array) == 0;
-    }
-
-    /**
-     * 数组是否为空
-     *
-     * @param array 数组
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final char[] array) {
-        return getLength(array) == 0;
-    }
-
-    /**
-     * 数组是否为空
-     *
-     * @param array 数组
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final byte[] array) {
-        return getLength(array) == 0;
-    }
-
-    /**
-     * 数组是否为空
-     *
-     * @param array 数组
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final double[] array) {
-        return getLength(array) == 0;
-    }
-
-    /**
-     * 数组是否为空
-     *
-     * @param array 数组
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final float[] array) {
-        return getLength(array) == 0;
-    }
-
-    /**
-     * 数组是否为空
-     *
-     * @param array 数组
-     * @return 是否为空
-     */
-    public static boolean isEmpty(final boolean[] array) {
-        return getLength(array) == 0;
-    }
-
-    /**
-     * 数组是否为非空
-     * 此方法会匹配单一对象,如果此对象为{@code null}则返回false
-     * 如果此对象为非数组,理解为此对象为数组的第一个元素,则返回true
-     * 如果此对象为数组对象,数组长度大于0情况下返回true,否则返回false
-     *
-     * @param <T>   对象
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static <T> boolean isNotEmpty(final T[] array) {
-        return !isEmpty(array);
-    }
-
-    /**
-     * 数组是否为非空
-     *
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final long[] array) {
-        return !isEmpty(array);
-    }
-
-    /**
-     * 数组是否为非空
-     *
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final int[] array) {
-        return !isEmpty(array);
-    }
-
-    /**
-     * 数组是否为非空
-     *
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final short[] array) {
-        return !isEmpty(array);
-    }
-
-    /**
-     * 数组是否为非空
-     *
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final char[] array) {
-        return !isEmpty(array);
-    }
-
-    /**
-     * 数组是否为非空
-     *
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final byte[] array) {
-        return !isEmpty(array);
-    }
-
-    /**
-     * 数组是否为非空
-     *
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final double[] array) {
-        return !isEmpty(array);
-    }
-
-    /**
-     * 数组是否为非空
-     *
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final float[] array) {
-        return !isEmpty(array);
-    }
-
-    /**
-     * 数组是否为非空
-     *
-     * @param array 数组
-     * @return 是否为非空
-     */
-    public static boolean isNotEmpty(final boolean[] array) {
-        return !isEmpty(array);
+        final byte[] result = new byte[length];
+        length = 0;
+        for (byte[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
+        }
+        return result;
     }
 
     /**
@@ -4336,7 +4423,7 @@ public class ArrayUtils {
         } else {
             throw new IllegalArgumentException("Arguments cannot both be null");
         }
-        final T[] newArray = (T[]) copyArrayGrow1(array, type);
+        final T[] newArray = (T[]) clone(array, type);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -4357,7 +4444,7 @@ public class ArrayUtils {
      * @return 包含现有元素和新元素的新数组
      */
     public static boolean[] add(final boolean[] array, final boolean element) {
-        final boolean[] newArray = (boolean[]) copyArrayGrow1(array, Boolean.TYPE);
+        final boolean[] newArray = (boolean[]) clone(array, Boolean.TYPE);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -4378,7 +4465,7 @@ public class ArrayUtils {
      * @return 包含现有元素和新元素的新数组
      */
     public static byte[] add(final byte[] array, final byte element) {
-        final byte[] newArray = (byte[]) copyArrayGrow1(array, Byte.TYPE);
+        final byte[] newArray = (byte[]) clone(array, Byte.TYPE);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -4399,7 +4486,7 @@ public class ArrayUtils {
      * @return 包含现有元素和新元素的新数组
      */
     public static char[] add(final char[] array, final char element) {
-        final char[] newArray = (char[]) copyArrayGrow1(array, Character.TYPE);
+        final char[] newArray = (char[]) clone(array, Character.TYPE);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -4420,7 +4507,7 @@ public class ArrayUtils {
      * @return 包含现有元素和新元素的新数组
      */
     public static double[] add(final double[] array, final double element) {
-        final double[] newArray = (double[]) copyArrayGrow1(array, Double.TYPE);
+        final double[] newArray = (double[]) clone(array, Double.TYPE);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -4441,7 +4528,7 @@ public class ArrayUtils {
      * @return 包含现有元素和新元素的新数组
      */
     public static float[] add(final float[] array, final float element) {
-        final float[] newArray = (float[]) copyArrayGrow1(array, Float.TYPE);
+        final float[] newArray = (float[]) clone(array, Float.TYPE);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -4462,7 +4549,7 @@ public class ArrayUtils {
      * @return 包含现有元素和新元素的新数组
      */
     public static int[] add(final int[] array, final int element) {
-        final int[] newArray = (int[]) copyArrayGrow1(array, Integer.TYPE);
+        final int[] newArray = (int[]) clone(array, Integer.TYPE);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -4483,7 +4570,7 @@ public class ArrayUtils {
      * @return 包含现有元素和新元素的新数组
      */
     public static long[] add(final long[] array, final long element) {
-        final long[] newArray = (long[]) copyArrayGrow1(array, Long.TYPE);
+        final long[] newArray = (long[]) clone(array, Long.TYPE);
         newArray[newArray.length - 1] = element;
         return newArray;
     }
@@ -4504,28 +4591,9 @@ public class ArrayUtils {
      * @return 包含现有元素和新元素的新数组
      */
     public static short[] add(final short[] array, final short element) {
-        final short[] newArray = (short[]) copyArrayGrow1(array, Short.TYPE);
+        final short[] newArray = (short[]) clone(array, Short.TYPE);
         newArray[newArray.length - 1] = element;
         return newArray;
-    }
-
-    /**
-     * 返回比参数大1的给定数组的副本.
-     * 数组的最后一个值保留为默认值.
-     *
-     * @param array                 要复制的数组不能是{@code null}.
-     * @param newArrayComponentType 如果{@code array}是{@code null}，
-     *                              则创建此类型的大小为1的数组.
-     * @return 比输入大1的数组的新副本.
-     */
-    private static Object copyArrayGrow1(final Object array, final Class<?> newArrayComponentType) {
-        if (array != null) {
-            final int arrayLength = Array.getLength(array);
-            final Object newArray = Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
-            System.arraycopy(array, 0, newArray, 0, arrayLength);
-            return newArray;
-        }
-        return Array.newInstance(newArrayComponentType, 1);
     }
 
     /**
@@ -4758,6 +4826,24 @@ public class ArrayUtils {
             System.arraycopy(array, index, result, index + 1, length - index);
         }
         return result;
+    }
+
+    /**
+     * 去重数组中的元素，去重后生成新的数组，原数组不变
+     * 此方法通过{@link LinkedHashSet} 去重
+     *
+     * @param <T>   数组元素类型
+     * @param array 数组
+     * @return 去重后的数组
+     */
+    public static <T> T[] remove(T[] array) {
+        if (isEmpty(array)) {
+            return array;
+        }
+
+        final Set<T> set = new LinkedHashSet<>(array.length, 1);
+        Collections.addAll(set, array);
+        return toArray(set, (Class<T>) getComponentType(array));
     }
 
     /**
@@ -5867,7 +5953,7 @@ public class ArrayUtils {
      */
     static Object removeAll(final Object array, final BitSet indices) {
         final int srcLength = getLength(array);
-        final int removals = indices.cardinality(); // true bits are items to remove
+        final int removals = indices.cardinality();
         final Object result = Array.newInstance(array.getClass().getComponentType(), srcLength - removals);
         int srcIndex = 0;
         int destIndex = 0;
@@ -6414,16 +6500,30 @@ public class ArrayUtils {
 
     /**
      * 将新元素插入到到已有数组中的某个位置
-     * 添加新元素会生成一个新的数组,不影响原数组
-     * 如果插入位置为为负数,从原数组从后向前计数,若大于原数组长度,则空白处用null填充
+     * 添加新元素会生成一个新的数组，不影响原数组
+     * 如果插入位置为为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
      *
      * @param <T>         数组元素类型
-     * @param array       已有数组
-     * @param index       插入位置,此位置为对应此位置元素之前的空档
+     * @param buffer      已有数组
+     * @param index       插入位置，此位置为对应此位置元素之前的空档
      * @param newElements 新元素
      * @return 新数组
      */
+    public static <T> T[] insert(T[] buffer, int index, T... newElements) {
+        return (T[]) insert((Object) buffer, index, newElements);
+    }
 
+    /**
+     * 将新元素插入到到已有数组中的某个位置
+     * 添加新元素会生成一个新的数组，不影响原数组
+     * 如果插入位置为为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
+     *
+     * @param <T>         数组元素类型
+     * @param array       已有数组
+     * @param index       插入位置，此位置为对应此位置元素之前的空档
+     * @param newElements 新元素
+     * @return 新数组
+     */
     public static <T> Object insert(Object array, int index, T... newElements) {
         if (isEmpty(newElements)) {
             return array;
@@ -6432,7 +6532,7 @@ public class ArrayUtils {
             return newElements;
         }
 
-        final int len = length(array);
+        final int len = getLength(array);
         if (index < 0) {
             index = (index % len) + len;
         }
@@ -6980,62 +7080,6 @@ public class ArrayUtils {
     }
 
     /**
-     * 返回是否可以在给定索引处安全地访问给定数组.
-     *
-     * @param <T>   数组的组件类型
-     * @param array 要检查的数组可能为空
-     * @param index 要检查的数组的索引
-     * @return 给定索引在给定数组中是否可安全访问
-     */
-    public static <T> boolean isArrayIndexValid(T[] array, int index) {
-        if (getLength(array) == 0 || array.length <= index) {
-            return false;
-        }
-
-        return index >= 0;
-    }
-
-    /**
-     * 是否包含{@code null}元素
-     *
-     * @param <T>   数组元素类型
-     * @param array 被检查的数组
-     * @return 是否包含null元素
-     * @since 3.0.7
-     */
-
-    public static <T> boolean hasNull(T... array) {
-        if (isNotEmpty(array)) {
-            for (T element : array) {
-                if (null == element) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 返回数组中第一个非空元素
-     *
-     * @param <T>   数组元素类型
-     * @param array 数组
-     * @return 非空元素, 如果不存在非空元素或数组为空, 返回{@code null}
-     * @since 3.0.7
-     */
-
-    public static <T> T firstNonNull(T... array) {
-        if (isNotEmpty(array)) {
-            for (final T val : array) {
-                if (null != val) {
-                    return val;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * 新建一个空数组
      *
      * @param <T>           数组元素类型
@@ -7059,6 +7103,35 @@ public class ArrayUtils {
 
     public static <T> T[] newArray(int newSize) {
         return (T[]) new Object[newSize];
+    }
+
+    /**
+     * 强转数组类型
+     * 强制转换的前提是数组元素类型可被强制转换
+     * 强制转换后会生成一个新数组
+     *
+     * @param type     数组类型或数组元素类型
+     * @param arrayObj 原数组
+     * @return 转换后的数组类型
+     * @throws NullPointerException     提供参数为空
+     * @throws IllegalArgumentException 参数arrayObj不是数组
+     */
+    public static Object[] newArray(Class<?> type, Object arrayObj) {
+        if (null == arrayObj) {
+            throw new NullPointerException("Argument [arrayObj] is null !");
+        }
+        if (false == arrayObj.getClass().isArray()) {
+            throw new IllegalArgumentException("Argument [arrayObj] is not array !");
+        }
+        if (null == type) {
+            return (Object[]) arrayObj;
+        }
+
+        final Class<?> componentType = type.isArray() ? type.getComponentType() : type;
+        final Object[] array = (Object[]) arrayObj;
+        final Object[] result = newArray(componentType, array.length);
+        System.arraycopy(array, 0, result, 0, array.length);
+        return result;
     }
 
     /**
@@ -7096,38 +7169,8 @@ public class ArrayUtils {
     }
 
     /**
-     * 强转数组类型
-     * 强制转换的前提是数组元素类型可被强制转换
-     * 强制转换后会生成一个新数组
-     *
-     * @param type     数组类型或数组元素类型
-     * @param arrayObj 原数组
-     * @return 转换后的数组类型
-     * @throws NullPointerException     提供参数为空
-     * @throws IllegalArgumentException 参数arrayObj不是数组
-     * @since 3.1.9
-     */
-    public static Object[] cast(Class<?> type, Object arrayObj) throws NullPointerException, IllegalArgumentException {
-        if (null == arrayObj) {
-            throw new NullPointerException("Argument [arrayObj] is null !");
-        }
-        if (false == arrayObj.getClass().isArray()) {
-            throw new IllegalArgumentException("Argument [arrayObj] is not array !");
-        }
-        if (null == type) {
-            return (Object[]) arrayObj;
-        }
-
-        final Class<?> componentType = type.isArray() ? type.getComponentType() : type;
-        final Object[] array = (Object[]) arrayObj;
-        final Object[] result = newArray(componentType, array.length);
-        System.arraycopy(array, 0, result, 0, array.length);
-        return result;
-    }
-
-    /**
      * 将新元素添加到已有数组中
-     * 添加新元素会生成一个新的数组,不影响原数组
+     * 添加新元素会生成一个新的数组，不影响原数组
      *
      * @param <T>         数组元素类型
      * @param buffer      已有数组
@@ -7143,7 +7186,7 @@ public class ArrayUtils {
 
     /**
      * 将新元素添加到已有数组中
-     * 添加新元素会生成一个新的数组,不影响原数组
+     * 添加新元素会生成一个新的数组，不影响原数组
      *
      * @param <T>         数组元素类型
      * @param array       已有数组
@@ -7154,7 +7197,7 @@ public class ArrayUtils {
         if (isEmpty(array)) {
             return newElements;
         }
-        return insert(array, length(array), newElements);
+        return insert(array, getLength(array), newElements);
     }
 
     /**
@@ -7196,34 +7239,12 @@ public class ArrayUtils {
      * @return 新数组或原有数组
      */
     public static Object setOrAppend(Object array, int index, Object value) {
-        if (index < length(array)) {
+        if (index < getLength(array)) {
             Array.set(array, index, value);
             return array;
         } else {
             return append(array, value);
         }
-    }
-
-    public static <T> T[] insert(T[] array, int index, T... newElements) {
-        if (isEmpty(newElements)) {
-            return array;
-        }
-        if (isEmpty(array)) {
-            return newElements;
-        }
-
-        final int len = length(array);
-        if (index < 0) {
-            index = (index % len) + len;
-        }
-
-        final T[] result = newArray(array.getClass().getComponentType(), Math.max(len, index) + newElements.length);
-        System.arraycopy(array, 0, result, 0, Math.min(len, index));
-        System.arraycopy(newElements, 0, result, index, newElements.length);
-        if (index < len) {
-            System.arraycopy(array, index, result, index + newElements.length, len - index);
-        }
-        return result;
     }
 
     /**
@@ -7274,39 +7295,6 @@ public class ArrayUtils {
             System.arraycopy(bytes, 0, newArray, 0, Math.min(bytes.length, newSize));
         }
         return newArray;
-    }
-
-    /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
-     *
-     * @param <T>    数组元素类型
-     * @param arrays 数组集合
-     * @return 合并后的数组
-     */
-    public static <T> T[] addAll(T[]... arrays) {
-        if (arrays.length == 1) {
-            return arrays[0];
-        }
-
-        int length = 0;
-        for (T[] array : arrays) {
-            if (array == null) {
-                continue;
-            }
-            length += array.length;
-        }
-        T[] result = newArray(arrays.getClass().getComponentType().getComponentType(), length);
-
-        length = 0;
-        for (T[] array : arrays) {
-            if (array == null) {
-                continue;
-            }
-            System.arraycopy(array, 0, result, length, array.length);
-            length += array.length;
-        }
-        return result;
     }
 
     /**
@@ -7395,54 +7383,6 @@ public class ArrayUtils {
         }
         return range;
     }
-
-    /**
-     * 拆分byte数组为几个等份（最后一份可能小于len）
-     *
-     * @param array 数组
-     * @param len   每个小节的长度
-     * @return 拆分后的数组
-     */
-    public static byte[][] split(byte[] array, int len) {
-        int x = array.length / len;
-        int y = array.length % len;
-        int z = 0;
-        if (y != 0) {
-            z = 1;
-        }
-        byte[][] arrays = new byte[x + z][];
-        byte[] arr;
-        for (int i = 0; i < x + z; i++) {
-            arr = new byte[len];
-            if (i == x + z - 1 && y != 0) {
-                System.arraycopy(array, i * len, arr, 0, y);
-            } else {
-                System.arraycopy(array, i * len, arr, 0, len);
-            }
-            arrays[i] = arr;
-        }
-        return arrays;
-    }
-
-    /**
-     * 返回数组中指定元素所在位置,忽略大小写,未找到返回{@link #INDEX_NOT_FOUND}
-     *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.1.9
-     */
-    public static int indexOfIgnoreCase(CharSequence[] array, CharSequence value) {
-        if (null != array) {
-            for (int i = 0; i < array.length; i++) {
-                if (StringUtils.equalsIgnoreCase(array[i], value)) {
-                    return i;
-                }
-            }
-        }
-        return INDEX_NOT_FOUND;
-    }
-
 
     /**
      * 包装类数组转为原始类型数组
@@ -7816,19 +7756,6 @@ public class ArrayUtils {
     }
 
     /**
-     * 对象是否为数组对象
-     *
-     * @param obj 对象
-     * @return 是否为数组对象, 如果为{@code null} 返回false
-     */
-    public static boolean isArray(Object obj) {
-        if (null == obj) {
-            return false;
-        }
-        return obj.getClass().isArray();
-    }
-
-    /**
      * 获取数组对象中指定index的值,支持负数,例如-1表示倒数第一个值
      *
      * @param <T>   数组元素类型
@@ -7851,7 +7778,7 @@ public class ArrayUtils {
      * @param indexes 下标列表
      * @return 结果
      */
-    public static <T> T[] getAny(Object array, int... indexes) {
+    public static <T> T[] get(Object array, int... indexes) {
         T[] result = newArray(indexes.length);
         for (int i : indexes) {
             result[i] = get(array, i);
@@ -7881,7 +7808,7 @@ public class ArrayUtils {
      * @return 新的数组
      */
     public static Object[] sub(Object array, int start, int end, int step) {
-        int length = length(array);
+        int length = getLength(array);
         if (start < 0) {
             start += length;
         }
@@ -7915,57 +7842,6 @@ public class ArrayUtils {
         return list.toArray();
     }
 
-
-    /**
-     * 获取数组长度
-     * 如果参数为{@code null},返回0
-     *
-     * <pre>
-     * ArrayUtils.length(null)            = 0
-     * ArrayUtils.length([])              = 0
-     * ArrayUtils.length([null])          = 1
-     * ArrayUtils.length([true, false])   = 2
-     * ArrayUtils.length([1, 2, 3])       = 3
-     * ArrayUtils.length(["a", "b", "c"]) = 3
-     * </pre>
-     *
-     * @param array 数组对象
-     * @return 数组长度
-     * @throws IllegalArgumentException 如果参数不为数组,抛出此异常
-     * @see Array#getLength(Object)
-     */
-    public static int length(Object array) throws IllegalArgumentException {
-        if (null == array) {
-            return 0;
-        }
-        return Array.getLength(array);
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(long[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (long item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
-    }
-
     /**
      * 以 conjunction 为分隔符将数组转换为字符串
      *
@@ -7984,8 +7860,8 @@ public class ArrayUtils {
      * @param <T>         被处理的集合
      * @param array       数组
      * @param conjunction 分隔符
-     * @param prefix      每个元素添加的前缀,null表示不添加
-     * @param suffix      每个元素添加的后缀,null表示不添加
+     * @param prefix      每个元素添加的前缀，null表示不添加
+     * @param suffix      每个元素添加的后缀，null表示不添加
      * @return 连接后的字符串
      */
     public static <T> String join(T[] array, CharSequence conjunction, String prefix, String suffix) {
@@ -8021,12 +7897,37 @@ public class ArrayUtils {
      * @param conjunction 分隔符
      * @return 连接后的字符串
      */
+    public static String join(long[] array, CharSequence conjunction) {
+        if (null == array) {
+            return null;
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        for (long item : array) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append(conjunction);
+            }
+            sb.append(item);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 以 conjunction 为分隔符将数组转换为字符串
+     *
+     * @param array       数组
+     * @param conjunction 分隔符
+     * @return 连接后的字符串
+     */
     public static String join(int[] array, CharSequence conjunction) {
         if (null == array) {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (int item : array) {
             if (isFirst) {
@@ -8051,7 +7952,7 @@ public class ArrayUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (short item : array) {
             if (isFirst) {
@@ -8076,7 +7977,7 @@ public class ArrayUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (char item : array) {
             if (isFirst) {
@@ -8101,7 +8002,7 @@ public class ArrayUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (byte item : array) {
             if (isFirst) {
@@ -8126,7 +8027,7 @@ public class ArrayUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (boolean item : array) {
             if (isFirst) {
@@ -8151,7 +8052,7 @@ public class ArrayUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (float item : array) {
             if (isFirst) {
@@ -8176,7 +8077,7 @@ public class ArrayUtils {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         for (double item : array) {
             if (isFirst) {
@@ -8198,9 +8099,9 @@ public class ArrayUtils {
      */
     public static String join(Object array, CharSequence conjunction) {
         if (isArray(array)) {
-            Class<?> componentType = array.getClass().getComponentType();
+            final Class<?> componentType = array.getClass().getComponentType();
             if (componentType.isPrimitive()) {
-                String componentTypeName = componentType.getName();
+                final String componentTypeName = componentType.getName();
                 switch (componentTypeName) {
                     case "long":
                         return join((long[]) array, conjunction);
@@ -8219,48 +8120,13 @@ public class ArrayUtils {
                     case "double":
                         return join((double[]) array, conjunction);
                     default:
-                        throw new InstrumentException("Unknown primitive type:" + componentTypeName);
+                        throw new InstrumentException("Unknown primitive type: [{}]", componentTypeName);
                 }
             } else {
-                return join(array, conjunction);
+                return join((Object[]) array, conjunction);
             }
         }
-        throw new InstrumentException("is not a Array!");
-    }
-
-    /**
-     * {@link ByteBuffer} 转byte数组
-     *
-     * @param bytebuffer {@link ByteBuffer}
-     * @return byte数组
-     * @since 3.0.1
-     */
-    public static byte[] toArray(ByteBuffer bytebuffer) {
-        if (false == bytebuffer.hasArray()) {
-            int oldPosition = bytebuffer.position();
-            bytebuffer.position(0);
-            int size = bytebuffer.limit();
-            byte[] buffers = new byte[size];
-            bytebuffer.get(buffers);
-            bytebuffer.position(oldPosition);
-            return buffers;
-        } else {
-            return Arrays.copyOfRange(bytebuffer.array(), bytebuffer.position(), bytebuffer.limit());
-        }
-    }
-
-    /**
-     * 将集合转为数组
-     *
-     * @param <T>           数组元素类型
-     * @param collection    集合
-     * @param componentType 集合元素类型
-     * @return 数组
-     * @since 3.1.9
-     */
-    public static <T> T[] toArray(Collection<T> collection, Class<T> componentType) {
-        T[] array = newArray(componentType, collection.size());
-        return collection.toArray(array);
+        throw new InstrumentException(StringUtils.format("[{}] is not a Array!", array.getClass()));
     }
 
     /**
@@ -8586,36 +8452,6 @@ public class ArrayUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
-     * 例如：
-     * keys = [a,b,c,d]
-     * values = [1,2,3,4]
-     * 则得到的Map是 {a=1, b=2, c=3, d=4}
-     * 如果两个数组长度不同,则只对应最短部分
-     *
-     * @param <K>     Key类型
-     * @param <V>     Value类型
-     * @param keys    键列表
-     * @param values  值列表
-     * @param isOrder 是否有序
-     * @return Map
-     * @since 3.0.4
-     */
-    public static <K, V> Map<K, V> zip(K[] keys, V[] values, boolean isOrder) {
-        if (isEmpty(keys) || isEmpty(values)) {
-            return null;
-        }
-
-        int size = Math.min(keys.length, values.length);
-        Map<K, V> map = CollUtils.newHashMap(size, isOrder);
-        for (int i = 0; i < size; i++) {
-            map.put(keys[i], values[i]);
-        }
-
-        return map;
-    }
-
-    /**
      * 过滤
      * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
      *
@@ -8664,6 +8500,103 @@ public class ArrayUtils {
     }
 
     /**
+     * 映射键值（参考Python的zip()函数），返回Map无序
+     * 例如：
+     * keys = [a,b,c,d]
+     * values = [1,2,3,4]
+     * 则得到的Map是 {a=1, b=2, c=3, d=4}
+     * 如果两个数组长度不同，则只对应最短部分
+     *
+     * @param <K>    Key类型
+     * @param <V>    Value类型
+     * @param keys   键列表
+     * @param values 值列表
+     * @return Map
+     */
+    public static <K, V> Map<K, V> zip(K[] keys, V[] values) {
+        return zip(keys, values, false);
+    }
+
+    /**
+     * 映射键值（参考Python的zip()函数）
+     * 例如：
+     * keys = [a,b,c,d]
+     * values = [1,2,3,4]
+     * 则得到的Map是 {a=1, b=2, c=3, d=4}
+     * 如果两个数组长度不同,则只对应最短部分
+     *
+     * @param <K>     Key类型
+     * @param <V>     Value类型
+     * @param keys    键列表
+     * @param values  值列表
+     * @param isOrder 是否有序
+     * @return Map
+     */
+    public static <K, V> Map<K, V> zip(K[] keys, V[] values, boolean isOrder) {
+        if (isEmpty(keys) || isEmpty(values)) {
+            return null;
+        }
+
+        int size = Math.min(keys.length, values.length);
+        Map<K, V> map = CollUtils.newHashMap(size, isOrder);
+        for (int i = 0; i < size; i++) {
+            map.put(keys[i], values[i]);
+        }
+
+        return map;
+    }
+
+    /**
+     * 检查两个数组是否为同一类型
+     *
+     * @param array1 第1个数组不能是{@code null}
+     * @param array2 第2个数组不能是{@code null}
+     * @return 如果数组类型匹配，则为{@code true}
+     * @throws IllegalArgumentException 如果其中一个数组是{@code null}
+     */
+    public static boolean isSameType(final Object array1, final Object array2) {
+        if (array1 == null || array2 == null) {
+            throw new IllegalArgumentException("The Array must not be null");
+        }
+        return array1.getClass().getName().equals(array2.getClass().getName());
+    }
+
+    /**
+     * 返回数组中指定元素所在位置,忽略大小写,未找到返回{@link #INDEX_NOT_FOUND}
+     *
+     * @param array 数组
+     * @param value 被检查的元素
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
+     * @since 3.1.9
+     */
+    public static int indexOfIgnoreCase(CharSequence[] array, CharSequence value) {
+        if (null != array) {
+            for (int i = 0; i < array.length; i++) {
+                if (StringUtils.equalsIgnoreCase(array[i], value)) {
+                    return i;
+                }
+            }
+        }
+        return INDEX_NOT_FOUND;
+    }
+
+    /**
+     * 返回是否可以在给定索引处安全地访问给定数组
+     *
+     * @param <T>   数组的组件类型
+     * @param array 要检查的数组可能为空
+     * @param index 要检查的数组的索引
+     * @return 给定索引在给定数组中是否可安全访问
+     */
+    public static <T> boolean isArrayIndexValid(T[] array, int index) {
+        if (getLength(array) == 0 || array.length <= index) {
+            return false;
+        }
+
+        return index >= 0;
+    }
+
+    /**
      * 数组中是否包含元素,忽略大小写
      *
      * @param array 数组
@@ -8676,40 +8609,67 @@ public class ArrayUtils {
     }
 
     /**
-     * 找到第一个不为 null 的元素
+     * 返回指定数组的长度
      *
-     * @param objects 对象
-     * @return 不为 null 的元素
+     * <pre>
+     * ArrayUtils.getLength(null)            = 0
+     * ArrayUtils.getLength([])              = 0
+     * ArrayUtils.getLength([null])          = 1
+     * ArrayUtils.getLength([true, false])   = 2
+     * ArrayUtils.getLength([1, 2, 3])       = 3
+     * ArrayUtils.getLength(["a", "b", "c"]) = 3
+     * </pre>
+     *
+     * @param array 要从中检索长度的数组可以为空
+     * @return 数组的长度，如果数组是{@code null}，则为{@code 0}
+     * @throws IllegalArgumentException 如果对象参数不是数组
      */
-    public static Optional<Object> firstNotNullElem(Object[] objects) {
-        if (isEmpty(objects)) {
-            return Optional.empty();
+    public static int getLength(final Object array) {
+        if (array == null) {
+            return 0;
         }
-
-        for (Object elem : objects) {
-            if (ObjectUtils.isNotNull(elem)) {
-                return Optional.of(elem);
-            }
-        }
-        return Optional.empty();
+        return Array.getLength(array);
     }
 
     /**
-     * 去重数组中的元素，去重后生成新的数组，原数组不变
-     * 此方法通过{@link LinkedHashSet} 去重
+     * 获得一个数组哈希码,用于正确处理多维数组
+     * 多维基元数组也可以用该方法正确处理
      *
-     * @param <T>   数组元素类型
      * @param array 数组
-     * @return 去重后的数组
+     * @return 返回数组的哈希码
      */
-    public static <T> T[] distinct(T[] array) {
-        if (isEmpty(array)) {
-            return array;
+    public static int hashCode(final Object array) {
+        return new HashCodeBuilder().append(array).toHashCode();
+    }
+
+    /**
+     * 强转数组类型
+     * 强制转换的前提是数组元素类型可被强制转换
+     * 强制转换后会生成一个新数组
+     *
+     * @param type     数组类型或数组元素类型
+     * @param arrayObj 原数组
+     * @return 转换后的数组类型
+     * @throws NullPointerException     提供参数为空
+     * @throws IllegalArgumentException 参数arrayObj不是数组
+     * @since 3.1.9
+     */
+    public static Object[] cast(Class<?> type, Object arrayObj) throws NullPointerException, IllegalArgumentException {
+        if (null == arrayObj) {
+            throw new NullPointerException("Argument [arrayObj] is null !");
+        }
+        if (false == arrayObj.getClass().isArray()) {
+            throw new IllegalArgumentException("Argument [arrayObj] is not array !");
+        }
+        if (null == type) {
+            return (Object[]) arrayObj;
         }
 
-        final Set<T> set = new LinkedHashSet<>(array.length, 1);
-        Collections.addAll(set, array);
-        return toArray(set, (Class<T>) getComponentType(array));
+        final Class<?> componentType = type.isArray() ? type.getComponentType() : type;
+        final Object[] array = (Object[]) arrayObj;
+        final Object[] result = newArray(componentType, array.length);
+        System.arraycopy(array, 0, result, 0, array.length);
+        return result;
     }
 
 }
