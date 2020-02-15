@@ -115,7 +115,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             // 为数组类型
             Object[] arrays = (Object[]) value;
             if (ArrayUtils.isNotEmpty(arrays)) {
-                Object firstArrayEntry = ArrayUtils.firstNotNullElem(arrays).get();
+                Object firstArrayEntry = ArrayUtils.firstNotNull(arrays).get();
                 final Class entryFieldClass = firstArrayEntry.getClass();
 
                 if (isBaseType(entryFieldClass)) {
