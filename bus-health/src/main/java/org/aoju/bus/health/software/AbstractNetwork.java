@@ -38,7 +38,7 @@ import java.util.List;
  * Common NetworkParams implementation.
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public abstract class AbstractNetwork implements NetworkParams {

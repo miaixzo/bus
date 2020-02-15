@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
-    <version>5.6.0</version>
+    <version>5.6.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

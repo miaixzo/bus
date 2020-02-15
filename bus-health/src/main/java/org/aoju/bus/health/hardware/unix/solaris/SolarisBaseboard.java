@@ -29,7 +29,7 @@ import org.aoju.bus.health.hardware.AbstractBaseboard;
  * Baseboard data obtained by smbios
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 final class SolarisBaseboard extends AbstractBaseboard {

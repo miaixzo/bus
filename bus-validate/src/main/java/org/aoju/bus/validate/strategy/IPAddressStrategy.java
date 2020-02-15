@@ -33,7 +33,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * IP地址校验
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class IPAddressStrategy implements Matcher<Object, IPAddress> {

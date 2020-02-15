@@ -39,7 +39,7 @@ import org.aoju.bus.logger.Logger;
  * allow applications to easily add, query, and remove counters.
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public final class PerfDataUtils {

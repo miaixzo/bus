@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from sysfs.
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 final class LinuxComputerSystem extends AbstractComputerSystem {

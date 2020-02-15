@@ -31,7 +31,7 @@ import java.nio.file.WatchEvent;
  * 用户继承此类后实现需要监听的方法
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class IgnoreWatcher implements Watcher {

@@ -36,7 +36,7 @@ import java.lang.reflect.Proxy;
  * {@link  CglibFactory}或 {@link  JavassistFactory}代替
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class Factory {

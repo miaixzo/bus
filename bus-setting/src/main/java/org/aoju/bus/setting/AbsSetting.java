@@ -39,7 +39,7 @@ import java.lang.reflect.Type;
  * Setting抽象类
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public abstract class AbsSetting implements OptNullString<String>, Serializable {

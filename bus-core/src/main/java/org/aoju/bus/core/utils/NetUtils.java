@@ -41,7 +41,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class NetUtils {

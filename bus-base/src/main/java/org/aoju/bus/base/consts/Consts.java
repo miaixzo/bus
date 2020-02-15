@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Symbol;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class Consts extends Normal {

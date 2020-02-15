@@ -48,7 +48,7 @@ import java.security.PublicKey;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class Asymmetric extends Safety<Asymmetric> {

@@ -31,7 +31,7 @@ import java.util.*;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.6.0
+ * @version 5.6.1
  * @since JDK 1.8+
  */
 public class SetValueMap<K, V> extends CollectionValueMap<K, V> {
