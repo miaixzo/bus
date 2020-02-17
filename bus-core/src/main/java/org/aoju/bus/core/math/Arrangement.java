@@ -34,7 +34,7 @@ import java.util.List;
  * 排列组合相关类
  *
  * @author Kimi Liu
- * @version 5.6.1
+ * @version 5.6.2
  * @since JDK 1.8+
  */
 public class Arrangement {

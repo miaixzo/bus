@@ -55,7 +55,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.6.1
+ * @version 5.6.2
  * @since JDK 1.8+
  */
 public class NumberUtils {
@@ -1786,7 +1786,7 @@ public class NumberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 5.6.1
+     * @since 5.6.2
      */
     public static BigInteger newBigInteger(String str) {
         if (null == str) {

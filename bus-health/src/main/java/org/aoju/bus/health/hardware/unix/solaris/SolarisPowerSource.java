@@ -36,7 +36,7 @@ import java.time.LocalDate;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 5.6.1
+ * @version 5.6.2
  * @since JDK 1.8+
  */
 public class SolarisPowerSource extends AbstractPowerSource {
