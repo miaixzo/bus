@@ -29,7 +29,7 @@ package org.aoju.bus.health.software;
  * more file stores.
  *
  * @author Kimi Liu
- * @version 5.6.1
+ * @version 5.6.2
  * @since JDK 1.8+
  */
 public interface FileSystem {

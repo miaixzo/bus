@@ -29,7 +29,7 @@ import java.io.InputStream;
  * 将子进程的标准输出和错误复制到行列表中.
  *
  * @author Kimi Liu
- * @version 5.6.1
+ * @version 5.6.2
  * @since JDK 1.8+
  */
 public class LinesPumpStreamHandler extends PumpStreamHandler {

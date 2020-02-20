@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>5.6.1</version>
+    <version>5.6.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -25,7 +25,7 @@
         <project.compiler.version>1.8</project.compiler.version>
         <mysql.version>8.0.18</mysql.version>
         <druid.version>1.1.20</druid.version>
-        <dubbo.version>2.7.3</dubbo.version>
+        <dubbo.version>2.7.5</dubbo.version>
     </properties>
 
     <dependencies>

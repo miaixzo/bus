@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v5.6.1-blue.svg?label=Maven%20Central" ></img>
+		<img src="https://img.shields.io/badge/maven--central-v5.6.2-blue.svg?label=Maven%20Central" ></img>
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -18,7 +18,7 @@
 		<img src="https://img.shields.io/badge/swagger-2.9.2-brightgreen.svg">
 	</a>
 	<a target="_blank" href="http://dubbo.apache.org">
-		<img src="https://img.shields.io/badge/dubbo-2.7.3-yellow.svg">
+		<img src="https://img.shields.io/badge/dubbo-2.7.5-yellow.svg">
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
 		<img src="https://img.shields.io/badge/poi-4.1.1-blue.svg">
@@ -94,13 +94,13 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.6.1</version>
+    <version>5.6.2</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:5.6.1'
+implementation 'org.aoju:bus-all:5.6.2'
 ```
 
 ### Downlad

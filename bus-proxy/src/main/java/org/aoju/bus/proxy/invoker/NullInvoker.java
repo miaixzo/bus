@@ -34,7 +34,7 @@ import java.util.Map;
  * 这个类对于需要“空对象”设计模式的场景非常有用
  *
  * @author Kimi Liu
- * @version 5.6.1
+ * @version 5.6.2
  * @since JDK 1.8+
  */
 public class NullInvoker implements Invoker {

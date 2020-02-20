@@ -39,7 +39,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.6.1
+ * @version 5.6.2
  * @since JDK 1.8+
  */
 public class ObjectUtils {
@@ -139,6 +139,44 @@ public class ObjectUtils {
         }
 
         return false;
+    }
+
+    /**
+     * 判断对象是否Empty(null或元素为0)
+     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
+     *
+     * @param object 待检查对象
+     * @return boolean 返回的布尔值
+     */
+    public static final boolean isEmpty(Object... object) {
+        for (Object obj : object) {
+            if (null == obj || Normal.EMPTY.equals(obj)) {
+                return true;
+            }
+            if (obj instanceof CharSequence) {
+                return StringUtils.isEmpty((CharSequence) obj);
+            } else if (obj instanceof Map) {
+                return MapUtils.isEmpty((Map) obj);
+            } else if (obj instanceof Iterable) {
+                return IterUtils.isEmpty((Iterable) obj);
+            } else if (obj instanceof Iterator) {
+                return IterUtils.isEmpty((Iterator) obj);
+            } else if (ArrayUtils.isArray(obj)) {
+                return ArrayUtils.isEmpty(obj);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断对象是否为NotEmpty(!null或元素大于0)
+     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
+     *
+     * @param object 待检查对象
+     * @return boolean 返回的布尔值
+     */
+    public static final boolean isNotEmpty(Object object) {
+        return !isEmpty(object);
     }
 
     /**

@@ -27,7 +27,7 @@ import java.awt.*;
 
 /**
  * @author Kimi Liu
- * @version 5.6.1
+ * @version 5.6.2
  * @since JDK 1.8+
  */
 public abstract class AbstractChineseCaptcha extends AbstractCaptcha {
