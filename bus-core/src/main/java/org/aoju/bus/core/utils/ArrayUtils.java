@@ -758,8 +758,7 @@ public class ArrayUtils {
      * @since 3.0.9
      */
     public static <T> T[] toArray(Collection<T> collection, Class<T> componentType) {
-        final T[] array = newArray(componentType, collection.size());
-        return collection.toArray(array);
+        return collection.toArray(newArray(componentType, 0));
     }
 
     /**

@@ -26,12 +26,22 @@ package org.aoju.bus.office.support.excel;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.office.support.excel.sax.CellDataType;
+import org.apache.poi.ooxml.util.SAXHelper;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Sax方式读取Excel相关工具类
@@ -180,4 +190,33 @@ public class ExcelSaxUtils {
         }
         return numValue;
     }
+
+    /**
+     * 从Excel的XML文档中读取内容，并使用{@link ContentHandler}处理
+     *
+     * @param xmlDocStream Excel的XML文档流
+     * @param handler      文档内容处理接口，实现此接口用于回调处理数据
+     * @throws InstrumentException POI异常，包装了SAXException
+     */
+    public static void readFrom(InputStream xmlDocStream, ContentHandler handler) {
+        XMLReader xmlReader;
+        try {
+            xmlReader = SAXHelper.newXMLReader();
+        } catch (SAXException | ParserConfigurationException e) {
+            if (e.getMessage().contains("org.apache.xerces.parsers.SAXParser")) {
+                throw new InstrumentException("You need to add 'xerces:xercesImpl' to your project and version >= 2.11.0");
+            } else {
+                throw new InstrumentException(e);
+            }
+        }
+        xmlReader.setContentHandler(handler);
+        try {
+            xmlReader.parse(new InputSource(xmlDocStream));
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        } catch (SAXException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
 }

@@ -18,7 +18,7 @@
 		<img src="https://img.shields.io/badge/swagger-2.9.2-brightgreen.svg">
 	</a>
 	<a target="_blank" href="http://dubbo.apache.org">
-		<img src="https://img.shields.io/badge/dubbo-2.7.3-yellow.svg">
+		<img src="https://img.shields.io/badge/dubbo-2.7.5-yellow.svg">
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
 		<img src="https://img.shields.io/badge/poi-4.1.1-blue.svg">

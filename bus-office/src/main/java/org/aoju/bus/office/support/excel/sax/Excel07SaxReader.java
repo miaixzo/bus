@@ -89,7 +89,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     // 当前列
     private int curCell;
     // 上一次的内容
-    private String lastContent;
+    private StringBuilder lastContent = new StringBuilder(64);
     // 单元数据类型
     private CellDataType cellDataType;
     // 当前列坐标, 如A1,B5
@@ -173,7 +173,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                 this.sheetIndex = rid;
                 // 根据 rId# 或 rSheet# 查找sheet
                 sheetInputStream = xssfReader.getSheet(RID_PREFIX + (rid + 1));
-                parse(sheetInputStream);
+                ExcelSaxUtils.readFrom(sheetInputStream, this);
             } else {
                 this.sheetIndex = -1;
                 // 遍历所有sheet
@@ -183,7 +183,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                     curRow = 0;
                     this.sheetIndex++;
                     sheetInputStream = sheetInputStreams.next();
-                    parse(sheetInputStream);
+                    ExcelSaxUtils.readFrom(sheetInputStream, this);
                 }
             }
         } catch (InstrumentException e) {
@@ -204,7 +204,6 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         // 单元格元素
         if (C_ELEMENT.equals(qName)) {
-
             // 获取当前列坐标
             String tempCurCoordinate = attributes.getValue(R_ATTR);
             if (preCoordinate == null) {
@@ -219,7 +218,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
             setCellType(attributes);
         }
 
-        lastContent = Normal.EMPTY;
+        lastContent.setLength(0);
     }
 
     /**
@@ -228,20 +227,19 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      * @param attribute 属性
      */
     private void setCellType(Attributes attribute) {
-        // 重置numFmtIndex,numFmtString的值
-        numFmtIndex = 0;
+        // numFmtString的值
         numFmtString = Normal.EMPTY;
         this.cellDataType = CellDataType.of(attribute.getValue(T_ATTR_VALUE));
 
-        // 获取单元格的xf索引,对应style.xml中cellXfs的子元素xf
+        // 获取单元格的xf索引，对应style.xml中cellXfs的子元素xf
         if (null != this.stylesTable) {
             final String xfIndexStr = attribute.getValue(S_ATTR_VALUE);
             if (null != xfIndexStr) {
                 int xfIndex = Integer.parseInt(xfIndexStr);
-                XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(xfIndex);
-                numFmtIndex = xssfCellStyle.getDataFormat();
+                final XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(xfIndex);
                 numFmtString = xssfCellStyle.getDataFormatString();
-
+                // 单元格存储格式的索引，对应style.xml中的numFmts元素的子元素索引
+                int numFmtIndex = xssfCellStyle.getDataFormat();
                 if (numFmtString == null) {
                     numFmtString = BuiltinFormats.getBuiltinFormat(numFmtIndex);
                 } else if (CellDataType.NUMBER == this.cellDataType && org.apache.poi.ss.usermodel.DateUtil.isADateFormat(numFmtIndex, numFmtString)) {
@@ -258,16 +256,13 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     public void endElement(String uri, String localName, String qName) {
         final String contentStr = StringUtils.trim(lastContent);
 
-        if (T_ELEMENT.equals(qName)) {
-            // type标签
-            // rowCellList.add(curCell++, contentStr);
-        } else if (C_ELEMENT.equals(qName)) {
+        if (C_ELEMENT.equals(localName)) {
             // cell标签
             Object value = ExcelSaxUtils.getDataValue(this.cellDataType, contentStr, this.sharedStringsTable, this.numFmtString);
             // 补全单元格之间的空格
             fillBlankCell(preCoordinate, curCoordinate, false);
             rowCellList.add(curCell++, value);
-        } else if (ROW_ELEMENT.equals(qName)) {
+        } else if (ROW_ELEMENT.equals(localName)) {
             // 如果是row标签,说明已经到了一行的结尾
             // 最大列坐标以第一行的为准
             if (curRow == 0) {
@@ -300,7 +295,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     @Override
     public void characters(char[] ch, int start, int length) {
         // 得到单元格内容的值
-        lastContent = lastContent.concat(new String(ch, start, length));
+        lastContent.append(ch, start, length);
     }
 
     @Override

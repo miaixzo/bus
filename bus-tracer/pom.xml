@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <dubbo.version>2.7.3</dubbo.version>
+        <dubbo.version>2.7.5</dubbo.version>
         <servlet.version>4.0.1</servlet.version>
         <cxf.version>2.7.18</cxf.version>
         <httpclient.version>4.5.2</httpclient.version>
