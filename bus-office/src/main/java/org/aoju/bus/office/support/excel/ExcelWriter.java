@@ -26,6 +26,7 @@ package org.aoju.bus.office.support.excel;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
+import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.style.Align;
 import org.apache.poi.ss.usermodel.*;
 
@@ -46,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -81,7 +82,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
      *
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public ExcelWriter() {
         this(false);
@@ -93,7 +94,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 若写出到文件,需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx 是否为xlsx格式
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public ExcelWriter(boolean isXlsx) {
         this(BookUtils.createBook(isXlsx), null);
@@ -379,7 +380,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      *
      * @param headerAlias 标题别名
      * @return this
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public ExcelWriter setHeaderAlias(Map<String, String> headerAlias) {
         this.headerAlias = headerAlias;
@@ -757,6 +758,50 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
+     * 给指定单元格赋值，使用默认单元格样式
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @param value       值
+     * @return this
+     */
+    public ExcelWriter writeCellValue(String locationRef, Object value) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return writeCellValue(cellLocation.getX(), cellLocation.getY(), value);
+    }
+
+    /**
+     * 设置某个单元格的样式
+     * 此方法用于多个单元格共享样式的情况
+     * 可以调用{@link #getOrCreateCellStyle(int, int)} 方法创建或取得一个样式对象
+     * 需要注意的是，共享样式会共享同一个{@link CellStyle}，一个单元格样式改变，全部改变
+     *
+     * @param style 单元格样式
+     * @param x     X坐标，从0计数，即列号
+     * @param y     Y坐标，从0计数，即行号
+     * @return this
+     */
+    public ExcelWriter setStyle(CellStyle style, int x, int y) {
+        final Cell cell = getOrCreateCell(x, y);
+        cell.setCellStyle(style);
+        return this;
+    }
+
+    /**
+     * 设置某个单元格的样式
+     * 此方法用于多个单元格共享样式的情况
+     * 可以调用{@link #getOrCreateCellStyle(int, int)} 方法创建或取得一个样式对象
+     * 需要注意的是，共享样式会共享同一个{@link CellStyle}，一个单元格样式改变，全部改变
+     *
+     * @param style       单元格样式
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return this
+     */
+    public ExcelWriter setStyle(CellStyle style, String locationRef) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return setStyle(style, cellLocation.getX(), cellLocation.getY());
+    }
+
+    /**
      * 创建字体
      *
      * @return 字体
@@ -876,7 +921,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 获取单例的别名比较器,比较器的顺序为别名加入的顺序
      *
-     * @return Comparator
+     * @return Comparator 比较器
      */
     private Comparator<String> getInitedAliasComparator() {
         if (MapUtils.isEmpty(this.headerAlias)) {

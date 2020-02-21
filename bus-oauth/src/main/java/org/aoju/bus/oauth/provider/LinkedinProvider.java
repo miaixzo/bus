@@ -47,7 +47,7 @@ import java.util.Map;
  * 领英登录
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class LinkedinProvider extends DefaultProvider {

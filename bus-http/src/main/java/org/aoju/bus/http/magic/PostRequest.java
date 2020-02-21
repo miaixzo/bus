@@ -47,7 +47,7 @@ import java.util.Map;
  * POST请求处理
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class PostRequest extends HttpRequest {

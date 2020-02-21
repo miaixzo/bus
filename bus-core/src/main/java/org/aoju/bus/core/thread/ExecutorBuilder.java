@@ -24,6 +24,7 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.builder.Builder;
+import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.util.concurrent.*;
 
@@ -31,56 +32,42 @@ import java.util.concurrent.*;
  * {@link ThreadPoolExecutor} 建造者
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 
+    /**
+     * 初始池大小
+     */
     private int corePoolSize;
+    /**
+     * 最大池大小（允许同时执行的最大线程数）
+     */
     private int maxPoolSize = Integer.MAX_VALUE;
+    /**
+     * 线程存活时间，即当池中线程多于初始大小时，多出的线程保留的时长
+     */
     private long keepAliveTime = TimeUnit.SECONDS.toNanos(60);
+    /**
+     * 队列，用于存在未执行的线程
+     */
     private BlockingQueue<Runnable> workQueue;
+    /**
+     * 线程工厂，用于自定义线程创建
+     */
     private ThreadFactory threadFactory;
+    /**
+     * 当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
+     */
     private RejectedExecutionHandler handler;
-
     /**
-     * 创建ExecutorBuilder,开始构建
-     *
-     * @return {@link ExecutorBuilder}
+     * 线程执行超时后是否回收线程
      */
-    public static ExecutorBuilder create() {
-        return new ExecutorBuilder();
-    }
+    private Boolean allowCoreThreadTimeOut;
 
     /**
-     * 构建ThreadPoolExecutor
-     *
-     * @param builder {@link ExecutorBuilder}
-     * @return {@link ThreadPoolExecutor}
-     */
-    private static ThreadPoolExecutor build(ExecutorBuilder builder) {
-        final int corePoolSize = builder.corePoolSize;
-        final int maxPoolSize = builder.maxPoolSize;
-        final long keepAliveTime = builder.keepAliveTime;
-        final BlockingQueue<Runnable> workQueue;
-        if (null != builder.workQueue) {
-            workQueue = builder.workQueue;
-        } else {
-            //corePoolSize为0则要使用SynchronousQueue避免无限阻塞
-            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>();
-        }
-        final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
-        final RejectedExecutionHandler handler = builder.handler;
-
-        if (null == handler) {
-            return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.NANOSECONDS, workQueue, threadFactory);
-        } else {
-            return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.NANOSECONDS, workQueue, threadFactory, handler);
-        }
-    }
-
-    /**
-     * 设置初始池大小,默认0
+     * 设置初始池大小，默认0
      *
      * @param corePoolSize 初始池大小
      * @return this
@@ -141,16 +128,28 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 使用{@link SynchronousQueue} 做为等待队列
+     * 使用{@link SynchronousQueue} 做为等待队列（非公平策略）
+     * 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      *
      * @return this
      */
     public ExecutorBuilder useSynchronousQueue() {
-        return setWorkQueue(new SynchronousQueue<>());
+        return useSynchronousQueue(false);
     }
 
     /**
-     * 设置线程工厂,用于自定义线程创建
+     * 使用{@link SynchronousQueue} 做为等待队列
+     * 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     *
+     * @param fair 是否使用公平访问策略
+     * @return this
+     */
+    public ExecutorBuilder useSynchronousQueue(boolean fair) {
+        return setWorkQueue(new SynchronousQueue<>(fair));
+    }
+
+    /**
+     * 设置线程工厂，用于自定义线程创建
      *
      * @param threadFactory 线程工厂
      * @return this
@@ -162,9 +161,8 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置当线程阻塞（block）时的异常处理器,所谓线程阻塞既线程池和等待队列已满,无法处理线程时采取的策略
-     * <p>
-     * 此处可以使用JDK预定义的几种策略,见{@link RejectPolicy}枚举
+     * 设置当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
+     * 此处可以使用JDK预定义的几种策略，见{@link RejectPolicy}枚举
      *
      * @param handler {@link RejectedExecutionHandler}
      * @return this
@@ -176,11 +174,65 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
+     * 设置线程执行超时后是否回收线程
+     *
+     * @param allowCoreThreadTimeOut 线程执行超时后是否回收线程
+     * @return this
+     */
+    public ExecutorBuilder setAllowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
+        this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
+        return this;
+    }
+
+    /**
+     * 创建ExecutorBuilder，开始构建
+     *
+     * @return {@link ExecutorBuilder}
+     */
+    public static ExecutorBuilder create() {
+        return new ExecutorBuilder();
+    }
+
+    /**
      * 构建ThreadPoolExecutor
      */
     @Override
     public ThreadPoolExecutor build() {
         return build(this);
+    }
+
+    /**
+     * 构建ThreadPoolExecutor
+     *
+     * @param builder {@link ExecutorBuilder}
+     * @return {@link ThreadPoolExecutor}
+     */
+    private static ThreadPoolExecutor build(ExecutorBuilder builder) {
+        final int corePoolSize = builder.corePoolSize;
+        final int maxPoolSize = builder.maxPoolSize;
+        final long keepAliveTime = builder.keepAliveTime;
+        final BlockingQueue<Runnable> workQueue;
+        if (null != builder.workQueue) {
+            workQueue = builder.workQueue;
+        } else {
+            // corePoolSize为0则要使用SynchronousQueue避免无限阻塞
+            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>();
+        }
+        final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
+        RejectedExecutionHandler handler = ObjectUtils.defaultIfNull(builder.handler, new ThreadPoolExecutor.AbortPolicy());
+
+        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+                corePoolSize,
+                maxPoolSize,
+                keepAliveTime, TimeUnit.NANOSECONDS,
+                workQueue,
+                threadFactory,
+                handler
+        );
+        if (null != builder.allowCoreThreadTimeOut) {
+            threadPoolExecutor.allowCoreThreadTimeOut(builder.allowCoreThreadTimeOut);
+        }
+        return threadPoolExecutor;
     }
 
 }

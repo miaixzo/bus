@@ -25,6 +25,7 @@ package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.Closeable;
@@ -36,7 +37,7 @@ import java.util.List;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
@@ -166,6 +167,17 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
+     * 获取指定坐标单元格，单元格不存在时返回<code>null</code>
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return {@link Cell}
+     */
+    public Cell getCell(String locationRef) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return getCell(cellLocation.getX(), cellLocation.getY());
+    }
+
+    /**
      * 获取或创建指定坐标单元格
      *
      * @param x X坐标,从0计数,既列号
@@ -174,6 +186,17 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      */
     public Cell getOrCreateCell(int x, int y) {
         return getCell(x, y, true);
+    }
+
+    /**
+     * 获取或创建指定坐标单元格
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return {@link Cell}
+     */
+    public Cell getOrCreateCell(String locationRef) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return getOrCreateCell(cellLocation.getX(), cellLocation.getY());
     }
 
     /**
@@ -190,6 +213,18 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
             return isCreateIfNotExist ? CellUtils.getOrCreateCell(row, x) : row.getCell(x);
         }
         return null;
+    }
+
+    /**
+     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回<code>null</code>
+     *
+     * @param locationRef        单元格地址标识符，例如A11，B5
+     * @param isCreateIfNotExist 单元格不存在时是否创建
+     * @return {@link Cell}
+     */
+    public Cell getCell(String locationRef, boolean isCreateIfNotExist) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return getCell(cellLocation.getX(), cellLocation.getY(), isCreateIfNotExist);
     }
 
     /**
@@ -236,6 +271,17 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
+     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return {@link CellStyle}
+     */
+    public CellStyle getOrCreateCellStyle(String locationRef) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return getOrCreateCellStyle(cellLocation.getX(), cellLocation.getY());
+    }
+
+    /**
      * 获取或创建某一行的样式,返回样式后可以设置样式内容
      *
      * @param x X坐标,从0计数,既列号
@@ -248,6 +294,31 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
             this.sheet.setDefaultColumnStyle(x, columnStyle);
         }
         return columnStyle;
+    }
+
+    /**
+     * 为指定单元格创建样式，返回样式后可以设置样式内容
+     *
+     * @param x X坐标，从0计数，即列号
+     * @param y Y坐标，从0计数，即行号
+     * @return {@link CellStyle}
+     */
+    public CellStyle createCellStyle(int x, int y) {
+        final Cell cell = getOrCreateCell(x, y);
+        final CellStyle cellStyle = this.workbook.createCellStyle();
+        cell.setCellStyle(cellStyle);
+        return cellStyle;
+    }
+
+    /**
+     * 为指定单元格创建样式，返回样式后可以设置样式内容
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return {@link CellStyle}
+     */
+    public CellStyle createCellStyle(String locationRef) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return createCellStyle(cellLocation.getX(), cellLocation.getY());
     }
 
     /**

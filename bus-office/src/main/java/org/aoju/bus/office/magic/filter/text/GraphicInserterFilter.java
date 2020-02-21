@@ -58,7 +58,7 @@ import java.util.UUID;
  * 此筛选器用于将图形插入到文档中.
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class GraphicInserterFilter extends AbstractTextContentInserterFilter {

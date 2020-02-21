@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
  * 虚拟ByteBuffer缓冲区
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public final class VirtualBuffer {

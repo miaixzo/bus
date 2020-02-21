@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  * in the /Volumes directory.
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class MacFileSystem implements FileSystem {

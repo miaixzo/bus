@@ -32,7 +32,7 @@ import java.util.Date;
  * 日期解析接口,用于解析日期字符串为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public interface DateParser extends Formatter {

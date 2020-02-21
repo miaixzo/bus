@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 判断是否为日期
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 @Documented
