@@ -34,7 +34,7 @@ import java.util.*;
  * 此类copy from Apache-commons-collections
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, Comparator<E>, Serializable {

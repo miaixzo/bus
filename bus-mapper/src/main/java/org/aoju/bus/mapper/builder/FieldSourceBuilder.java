@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * 类字段工具类
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class FieldSourceBuilder {

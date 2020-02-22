@@ -24,6 +24,7 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.builder.Builder;
+import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.util.concurrent.*;
 
@@ -31,56 +32,46 @@ import java.util.concurrent.*;
  * {@link ThreadPoolExecutor} 建造者
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 
+    /**
+     * 默认的等待队列容量
+     */
+    public static final int DEFAULT_QUEUE_CAPACITY = 1024;
+    /**
+     * 初始池大小
+     */
     private int corePoolSize;
+    /**
+     * 最大池大小（允许同时执行的最大线程数）
+     */
     private int maxPoolSize = Integer.MAX_VALUE;
+    /**
+     * 线程存活时间，即当池中线程多于初始大小时，多出的线程保留的时长
+     */
     private long keepAliveTime = TimeUnit.SECONDS.toNanos(60);
+    /**
+     * 队列，用于存在未执行的线程
+     */
     private BlockingQueue<Runnable> workQueue;
+    /**
+     * 线程工厂，用于自定义线程创建
+     */
     private ThreadFactory threadFactory;
+    /**
+     * 当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
+     */
     private RejectedExecutionHandler handler;
-
     /**
-     * 创建ExecutorBuilder,开始构建
-     *
-     * @return {@link ExecutorBuilder}
+     * 线程执行超时后是否回收线程
      */
-    public static ExecutorBuilder create() {
-        return new ExecutorBuilder();
-    }
+    private Boolean allowCoreThreadTimeOut;
 
     /**
-     * 构建ThreadPoolExecutor
-     *
-     * @param builder {@link ExecutorBuilder}
-     * @return {@link ThreadPoolExecutor}
-     */
-    private static ThreadPoolExecutor build(ExecutorBuilder builder) {
-        final int corePoolSize = builder.corePoolSize;
-        final int maxPoolSize = builder.maxPoolSize;
-        final long keepAliveTime = builder.keepAliveTime;
-        final BlockingQueue<Runnable> workQueue;
-        if (null != builder.workQueue) {
-            workQueue = builder.workQueue;
-        } else {
-            //corePoolSize为0则要使用SynchronousQueue避免无限阻塞
-            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>();
-        }
-        final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
-        final RejectedExecutionHandler handler = builder.handler;
-
-        if (null == handler) {
-            return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.NANOSECONDS, workQueue, threadFactory);
-        } else {
-            return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.NANOSECONDS, workQueue, threadFactory, handler);
-        }
-    }
-
-    /**
-     * 设置初始池大小,默认0
+     * 设置初始池大小，默认0
      *
      * @param corePoolSize 初始池大小
      * @return this
@@ -102,7 +93,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置线程存活时间,既当池中线程多于初始大小时,多出的线程保留的时长
+     * 设置线程存活时间，即当池中线程多于初始大小时，多出的线程保留的时长
      *
      * @param keepAliveTime 线程存活时间
      * @param unit          单位
@@ -113,9 +104,9 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置线程存活时间,既当池中线程多于初始大小时,多出的线程保留的时长,单位纳秒
+     * 设置线程存活时间，即当池中线程多于初始大小时，多出的线程保留的时长，单位纳秒
      *
-     * @param keepAliveTime 线程存活时间,单位纳秒
+     * @param keepAliveTime 线程存活时间，单位纳秒
      * @return this
      */
     public ExecutorBuilder setKeepAliveTime(long keepAliveTime) {
@@ -124,12 +115,14 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置队列,用于存在未执行的线程
+     * 设置队列，用于存在未执行的线程
      * 可选队列有：
+     *
      * <pre>
-     * 1. SynchronousQueue    它将任务直接提交给线程而不保持它们 当运行线程小于maxPoolSize时会创建新线程
-     * 2. LinkedBlockingQueue 无界队列,当运行线程大于corePoolSize时始终放入此队列,此时maximumPoolSize无效
-     * 3. ArrayBlockingQueue  有界队列,相对无界队列有利于控制队列大小,队列满时,运行线程小于maxPoolSize时会创建新线程,否则触发异常策略
+     * 1. {@link SynchronousQueue}    它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 2. {@link LinkedBlockingQueue} 默认无界队列，当运行线程大于corePoolSize时始终放入此队列，此时maximumPoolSize无效。
+     *                        当构造LinkedBlockingQueue对象时传入参数，变为有界队列，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 3. {@link ArrayBlockingQueue}  有界队列，相对无界队列有利于控制队列大小，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      * </pre>
      *
      * @param workQueue 队列
@@ -141,16 +134,39 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 使用{@link SynchronousQueue} 做为等待队列
+     * 使用{@link ArrayBlockingQueue} 做为等待队列
+     * 有界队列，相对无界队列有利于控制队列大小，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     *
+     * @param capacity 队列容量
+     * @return this
+     */
+    public ExecutorBuilder useArrayBlockingQueue(int capacity) {
+        return setWorkQueue(new ArrayBlockingQueue<>(capacity));
+    }
+
+    /**
+     * 使用{@link SynchronousQueue} 做为等待队列（非公平策略）
+     * 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      *
      * @return this
      */
     public ExecutorBuilder useSynchronousQueue() {
-        return setWorkQueue(new SynchronousQueue<>());
+        return useSynchronousQueue(false);
     }
 
     /**
-     * 设置线程工厂,用于自定义线程创建
+     * 使用{@link SynchronousQueue} 做为等待队列
+     * 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     *
+     * @param fair 是否使用公平访问策略
+     * @return this
+     */
+    public ExecutorBuilder useSynchronousQueue(boolean fair) {
+        return setWorkQueue(new SynchronousQueue<>(fair));
+    }
+
+    /**
+     * 设置线程工厂，用于自定义线程创建
      *
      * @param threadFactory 线程工厂
      * @return this
@@ -162,9 +178,9 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置当线程阻塞（block）时的异常处理器,所谓线程阻塞既线程池和等待队列已满,无法处理线程时采取的策略
+     * 设置当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
      * <p>
-     * 此处可以使用JDK预定义的几种策略,见{@link RejectPolicy}枚举
+     * 此处可以使用JDK预定义的几种策略，见{@link RejectPolicy}枚举
      *
      * @param handler {@link RejectedExecutionHandler}
      * @return this
@@ -176,11 +192,74 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
+     * 设置线程执行超时后是否回收线程
+     *
+     * @param allowCoreThreadTimeOut 线程执行超时后是否回收线程
+     * @return this
+     */
+    public ExecutorBuilder setAllowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
+        this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
+        return this;
+    }
+
+    /**
+     * 创建ExecutorBuilder，开始构建
+     *
+     * @return {@link ExecutorBuilder}
+     */
+    public static ExecutorBuilder create() {
+        return new ExecutorBuilder();
+    }
+
+    /**
      * 构建ThreadPoolExecutor
      */
     @Override
     public ThreadPoolExecutor build() {
         return build(this);
+    }
+
+    /**
+     * 创建有回收关闭功能的ExecutorService
+     *
+     * @return 创建有回收关闭功能的ExecutorService
+     */
+    public ExecutorService buildFinalizable() {
+        return new ExecutorService(build());
+    }
+
+    /**
+     * 构建ThreadPoolExecutor
+     *
+     * @param builder {@link ExecutorBuilder}
+     * @return {@link ThreadPoolExecutor}
+     */
+    private static ThreadPoolExecutor build(ExecutorBuilder builder) {
+        final int corePoolSize = builder.corePoolSize;
+        final int maxPoolSize = builder.maxPoolSize;
+        final long keepAliveTime = builder.keepAliveTime;
+        final BlockingQueue<Runnable> workQueue;
+        if (null != builder.workQueue) {
+            workQueue = builder.workQueue;
+        } else {
+            // corePoolSize为0则要使用SynchronousQueue避免无限阻塞
+            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
+        }
+        final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
+        RejectedExecutionHandler handler = ObjectUtils.defaultIfNull(builder.handler, new ThreadPoolExecutor.AbortPolicy());
+
+        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(//
+                corePoolSize,
+                maxPoolSize,
+                keepAliveTime, TimeUnit.NANOSECONDS,
+                workQueue,
+                threadFactory,
+                handler
+        );
+        if (null != builder.allowCoreThreadTimeOut) {
+            threadPoolExecutor.allowCoreThreadTimeOut(builder.allowCoreThreadTimeOut);
+        }
+        return threadPoolExecutor;
     }
 
 }

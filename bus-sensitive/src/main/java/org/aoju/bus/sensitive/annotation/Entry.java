@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 3. 如果是普通字段/MAP,则不做处理
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 @Documented

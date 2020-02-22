@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class ThreadUtils {
@@ -65,7 +65,11 @@ public class ThreadUtils {
      * @return ExecutorService
      */
     public static ExecutorService newSingleExecutor() {
-        return Executors.newSingleThreadExecutor();
+        return ExecutorBuilder.create()
+                .setCorePoolSize(1)
+                .setMaxPoolSize(1)
+                .setKeepAliveTime(0)
+                .buildFinalizable();
     }
 
     /**

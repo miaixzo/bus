@@ -36,7 +36,7 @@ import java.io.IOException;
  * 例如加密)
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public interface FileSystem {

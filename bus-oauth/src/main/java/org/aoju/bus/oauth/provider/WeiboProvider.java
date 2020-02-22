@@ -46,7 +46,7 @@ import java.util.Map;
  * 微博登录
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class WeiboProvider extends DefaultProvider {

@@ -26,8 +26,10 @@ package org.aoju.bus.office.support.excel;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.utils.PatternUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.office.support.PoiChecker;
+import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.sax.Excel03SaxReader;
 import org.aoju.bus.office.support.excel.sax.Excel07SaxReader;
 import org.aoju.bus.office.support.excel.sax.RowHandler;
@@ -41,7 +43,7 @@ import java.io.OutputStream;
  * Excel工具类
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 public class ExcelUtils {
@@ -52,7 +54,7 @@ public class ExcelUtils {
      * @param path       Excel文件路径
      * @param sheetIndex sheet序号
      * @param rowHandler 行处理器
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static void readBySax(String path, int sheetIndex, RowHandler rowHandler) {
         BufferedInputStream in = null;
@@ -70,7 +72,7 @@ public class ExcelUtils {
      * @param file       Excel文件
      * @param sheetIndex sheet序号
      * @param rowHandler 行处理器
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static void readBySax(File file, int sheetIndex, RowHandler rowHandler) {
         BufferedInputStream in = null;
@@ -88,7 +90,7 @@ public class ExcelUtils {
      * @param in         Excel流
      * @param sheetIndex sheet序号
      * @param rowHandler 行处理器
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static void readBySax(InputStream in, int sheetIndex, RowHandler rowHandler) {
         in = IoUtils.toMarkSupportStream(in);
@@ -106,7 +108,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static Excel07SaxReader read07BySax(InputStream in, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -123,7 +125,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static Excel07SaxReader read07BySax(File file, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -140,7 +142,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static Excel07SaxReader read07BySax(String path, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -157,7 +159,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel07SaxReader}
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static Excel03SaxReader read03BySax(InputStream in, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -174,7 +176,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel03SaxReader}
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static Excel03SaxReader read03BySax(File file, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -191,7 +193,7 @@ public class ExcelUtils {
      * @param sheetIndex Sheet索引,-1表示全部Sheet, 0表示第一个Sheet
      * @param rowHandler 行处理器
      * @return {@link Excel03SaxReader}
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static Excel03SaxReader read03BySax(String path, int sheetIndex, RowHandler rowHandler) {
         try {
@@ -367,7 +369,7 @@ public class ExcelUtils {
      * 若写出到文件,还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件,然后调用{@link ExcelWriter#flush()}方法写出到文件
      *
      * @return {@link ExcelWriter}
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static ExcelWriter getWriter() {
         try {
@@ -384,7 +386,7 @@ public class ExcelUtils {
      *
      * @param isXlsx 是否为xlsx格式
      * @return {@link ExcelWriter}
-     * @since 5.6.2
+     * @since 5.6.3
      */
     public static ExcelWriter getWriter(boolean isXlsx) {
         try {
@@ -581,6 +583,19 @@ public class ExcelUtils {
             index = (index + 1) * 26 + (int) c - 'A';
         }
         return index;
+    }
+
+    /**
+     * 将Excel中地址标识符（例如A11，B5）等转换为行列表示<br>
+     * 例如：A11 -》 x:0,y:10，B5-》x:1,y:4
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return 坐标点，x表示行，从0开始，y表示列，从0开始
+     */
+    public static CellLocation toLocation(String locationRef){
+        final int x = colNameToIndex(locationRef);
+        final int y = PatternUtils.getFirstNumber(locationRef) -1;
+        return new CellLocation(x, y);
     }
 
 }

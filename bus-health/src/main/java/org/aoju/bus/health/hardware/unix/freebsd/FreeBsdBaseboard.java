@@ -29,7 +29,7 @@ import org.aoju.bus.health.hardware.AbstractBaseboard;
  * Baseboard data obtained by dmidecode
  *
  * @author Kimi Liu
- * @version 5.6.2
+ * @version 5.6.3
  * @since JDK 1.8+
  */
 final class FreeBsdBaseboard extends AbstractBaseboard {
