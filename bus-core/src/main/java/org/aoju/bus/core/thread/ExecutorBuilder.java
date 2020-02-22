@@ -38,6 +38,10 @@ import java.util.concurrent.*;
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 
     /**
+     * 默认的等待队列容量
+     */
+    public static final int DEFAULT_QUEUE_CAPACITY = 1024;
+    /**
      * 初始池大小
      */
     private int corePoolSize;
@@ -89,7 +93,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置线程存活时间,既当池中线程多于初始大小时,多出的线程保留的时长
+     * 设置线程存活时间，即当池中线程多于初始大小时，多出的线程保留的时长
      *
      * @param keepAliveTime 线程存活时间
      * @param unit          单位
@@ -100,9 +104,9 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置线程存活时间,既当池中线程多于初始大小时,多出的线程保留的时长,单位纳秒
+     * 设置线程存活时间，即当池中线程多于初始大小时，多出的线程保留的时长，单位纳秒
      *
-     * @param keepAliveTime 线程存活时间,单位纳秒
+     * @param keepAliveTime 线程存活时间，单位纳秒
      * @return this
      */
     public ExecutorBuilder setKeepAliveTime(long keepAliveTime) {
@@ -111,12 +115,14 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置队列,用于存在未执行的线程
+     * 设置队列，用于存在未执行的线程
      * 可选队列有：
+     *
      * <pre>
-     * 1. SynchronousQueue    它将任务直接提交给线程而不保持它们 当运行线程小于maxPoolSize时会创建新线程
-     * 2. LinkedBlockingQueue 无界队列,当运行线程大于corePoolSize时始终放入此队列,此时maximumPoolSize无效
-     * 3. ArrayBlockingQueue  有界队列,相对无界队列有利于控制队列大小,队列满时,运行线程小于maxPoolSize时会创建新线程,否则触发异常策略
+     * 1. {@link SynchronousQueue}    它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 2. {@link LinkedBlockingQueue} 默认无界队列，当运行线程大于corePoolSize时始终放入此队列，此时maximumPoolSize无效。
+     *                        当构造LinkedBlockingQueue对象时传入参数，变为有界队列，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 3. {@link ArrayBlockingQueue}  有界队列，相对无界队列有利于控制队列大小，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      * </pre>
      *
      * @param workQueue 队列
@@ -125,6 +131,17 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     public ExecutorBuilder setWorkQueue(BlockingQueue<Runnable> workQueue) {
         this.workQueue = workQueue;
         return this;
+    }
+
+    /**
+     * 使用{@link ArrayBlockingQueue} 做为等待队列
+     * 有界队列，相对无界队列有利于控制队列大小，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     *
+     * @param capacity 队列容量
+     * @return this
+     */
+    public ExecutorBuilder useArrayBlockingQueue(int capacity) {
+        return setWorkQueue(new ArrayBlockingQueue<>(capacity));
     }
 
     /**
@@ -162,6 +179,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
 
     /**
      * 设置当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
+     * <p>
      * 此处可以使用JDK预定义的几种策略，见{@link RejectPolicy}枚举
      *
      * @param handler {@link RejectedExecutionHandler}
@@ -202,6 +220,15 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
+     * 创建有回收关闭功能的ExecutorService
+     *
+     * @return 创建有回收关闭功能的ExecutorService
+     */
+    public ExecutorService buildFinalizable() {
+        return new ExecutorService(build());
+    }
+
+    /**
      * 构建ThreadPoolExecutor
      *
      * @param builder {@link ExecutorBuilder}
@@ -216,12 +243,12 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
             workQueue = builder.workQueue;
         } else {
             // corePoolSize为0则要使用SynchronousQueue避免无限阻塞
-            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>();
+            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
         }
         final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
         RejectedExecutionHandler handler = ObjectUtils.defaultIfNull(builder.handler, new ThreadPoolExecutor.AbortPolicy());
 
-        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(//
                 corePoolSize,
                 maxPoolSize,
                 keepAliveTime, TimeUnit.NANOSECONDS,

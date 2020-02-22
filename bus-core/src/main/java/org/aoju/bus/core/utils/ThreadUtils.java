@@ -65,7 +65,11 @@ public class ThreadUtils {
      * @return ExecutorService
      */
     public static ExecutorService newSingleExecutor() {
-        return Executors.newSingleThreadExecutor();
+        return ExecutorBuilder.create()
+                .setCorePoolSize(1)
+                .setMaxPoolSize(1)
+                .setKeepAliveTime(0)
+                .buildFinalizable();
     }
 
     /**

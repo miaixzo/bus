@@ -393,7 +393,6 @@ public class FileType {
             put(".flv", "video/x-flv");
             put(".3gp", "video/3gpp");
             put(".avi", "video/x-msvideo");
-            put(".mp4", "video/mp4");
             put(".3g2", "video/3gpp2");
             put(".3gp2", "video/3gpp2");
             put(".3gpp", "video/3gpp");
@@ -415,6 +414,7 @@ public class FileType {
             put(".m2ts", "video/vnd.dlna.mpeg-tts");
             put(".m2v", "video/mpeg");
             put(".m4v", "video/x-m4v");
+            put(".mp4", "video/mp4");
             put(".mp4v", "video/mp4");
             put(".mpa", "video/mpeg");
             put(".mpe", "video/mpeg");
@@ -772,7 +772,8 @@ public class FileType {
             put("2e524d46000000120001", "rmvb");
             // flv与f4v相同
             put("464c5601050000000900", "flv");
-            put("00000020667479706d70", "mp4");
+            put("00000020667479706", "mp4");
+            put("00000018667479706D70", "mp4");
             put("49443303000000002176", "mp3");
             put("000001ba210001000180", "mpg");
             put("3026b2758e66cf11a6d9", "wmv");
