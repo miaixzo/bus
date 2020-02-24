@@ -27,11 +27,14 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
+import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.cell.FormulaCellValue;
 import org.aoju.bus.office.support.excel.editors.TrimEditor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.ss.util.RegionUtil;
+import org.apache.poi.ss.util.SheetUtil;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -40,6 +43,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Excel表格中单元格工具类
@@ -49,6 +53,16 @@ import java.util.Date;
  * @since JDK 1.8+
  */
 public class CellUtils {
+
+    /**
+     * 获取单元格值
+     *
+     * @param cell {@link Cell}单元格
+     * @return 值，类型可能为：Date、Double、Boolean、String
+     */
+    public static Object getCellValue(Cell cell) {
+        return getCellValue(cell, false);
+    }
 
     /**
      * 获取单元格值
@@ -104,6 +118,12 @@ public class CellUtils {
             return null;
         }
         if (null == cellType) {
+            cellType = cell.getCellType();
+        }
+
+        if (CellType.BLANK == cellType) {
+            // 空白单元格可能为合并单元格
+            cell = getMergedRegionCell(cell);
             cellType = cell.getCellType();
         }
 
@@ -241,17 +261,42 @@ public class CellUtils {
     /**
      * 判断指定的单元格是否是合并单元格
      *
-     * @param sheet  {@link Sheet}
-     * @param row    行号
-     * @param column 列号
+     * @param sheet       {@link Sheet}
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return 是否是合并单元格
+     * @since 5.6.3
+     */
+    public static boolean isMergedRegion(Sheet sheet, String locationRef) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return isMergedRegion(sheet, cellLocation.getX(), cellLocation.getY());
+    }
+
+    /**
+     * 判断指定的单元格是否是合并单元格
+     *
+     * @param cell {@link Cell}
+     * @return 是否是合并单元格
+     * @since 5.6.3
+     */
+    public static boolean isMergedRegion(Cell cell) {
+        return isMergedRegion(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());
+    }
+
+    /**
+     * 判断指定的单元格是否是合并单元格
+     *
+     * @param sheet {@link Sheet}
+     * @param x     列号，从0开始
+     * @param y     行号，从0开始
      * @return 是否是合并单元格
      */
-    public static boolean isMergedRegion(Sheet sheet, int row, int column) {
+    public static boolean isMergedRegion(Sheet sheet, int x, int y) {
         final int sheetMergeCount = sheet.getNumMergedRegions();
         CellRangeAddress ca;
         for (int i = 0; i < sheetMergeCount; i++) {
             ca = sheet.getMergedRegion(i);
-            if (row >= ca.getFirstRow() && row <= ca.getLastRow() && column >= ca.getFirstColumn() && column <= ca.getLastColumn()) {
+            if (y >= ca.getFirstRow() && y <= ca.getLastRow()
+                    && x >= ca.getFirstColumn() && x <= ca.getLastColumn()) {
                 return true;
             }
         }
@@ -270,7 +315,7 @@ public class CellUtils {
      * @return 合并后的单元格号
      */
     public static int mergingCells(Sheet sheet, int firstRow, int lastRow, int firstColumn, int lastColumn, CellStyle cellStyle) {
-        final CellRangeAddress cellRangeAddress = new CellRangeAddress(//
+        final CellRangeAddress cellRangeAddress = new CellRangeAddress(
                 firstRow, // first row (0-based)
                 lastRow, // last row (0-based)
                 firstColumn, // first column (0-based)
@@ -287,6 +332,77 @@ public class CellUtils {
     }
 
     /**
+     * 获取合并单元格的值
+     * 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     *
+     * @param sheet       {@link Sheet}
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return 合并单元格的值
+     */
+    public static Object getMergedRegionValue(Sheet sheet, String locationRef) {
+        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        return getMergedRegionValue(sheet, cellLocation.getX(), cellLocation.getY());
+    }
+
+    /**
+     * 获取合并单元格的值
+     * 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     *
+     * @param sheet {@link Sheet}
+     * @param x     列号，从0开始，可以是合并单元格范围中的任意一列
+     * @param y     行号，从0开始，可以是合并单元格范围中的任意一行
+     * @return 合并单元格的值
+     */
+    public static Object getMergedRegionValue(Sheet sheet, int x, int y) {
+        return getCellValue(getMergedRegionCell(sheet, x, y));
+    }
+
+    /**
+     * 获取合并单元格
+     * 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     *
+     * @param cell {@link Cell}
+     * @return 合并单元格
+     * @since 5.1.5
+     */
+    public static Cell getMergedRegionCell(Cell cell) {
+        return getMergedRegionCell(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());
+    }
+
+    /**
+     * 获取合并单元格
+     * 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     *
+     * @param sheet {@link Sheet}
+     * @param x     列号，从0开始，可以是合并单元格范围中的任意一列
+     * @param y     行号，从0开始，可以是合并单元格范围中的任意一行
+     * @return 合并单元格，如果非合并单元格，返回坐标对应的单元格
+     * @since 5.1.5
+     */
+    public static Cell getMergedRegionCell(Sheet sheet, int x, int y) {
+        final List<CellRangeAddress> addrs = sheet.getMergedRegions();
+
+        int firstColumn;
+        int lastColumn;
+        int firstRow;
+        int lastRow;
+        for (CellRangeAddress ca : addrs) {
+            firstColumn = ca.getFirstColumn();
+            lastColumn = ca.getLastColumn();
+            firstRow = ca.getFirstRow();
+            lastRow = ca.getLastRow();
+
+            if (y >= firstRow && y <= lastRow) {
+                if (x >= firstColumn && x <= lastColumn) {
+                    return SheetUtil.getCell(sheet, firstRow, firstColumn);
+                }
+            }
+        }
+
+        return SheetUtil.getCell(sheet, y, x);
+    }
+
+    /**
      * 获取数字类型的单元格值
      *
      * @param cell 单元格
@@ -296,26 +412,26 @@ public class CellUtils {
         final double value = cell.getNumericCellValue();
 
         final CellStyle style = cell.getCellStyle();
-        if (null == style) {
-            return value;
-        }
+        if (null != style) {
+            final short formatIndex = style.getDataFormat();
+            // 判断是否为日期
+            if (isDateType(cell, formatIndex)) {
+                return DateUtils.date(cell.getDateCellValue());
+            }
 
-        final short formatIndex = style.getDataFormat();
-        // 判断是否为日期
-        if (isDateType(cell, formatIndex)) {
-            return DateUtils.date(cell.getDateCellValue());
-        }
-
-        final String format = style.getDataFormatString();
-        // 普通数字
-        if (null != format && format.indexOf(Symbol.C_DOT) < 0) {
-            final long longPart = (long) value;
-            if (longPart == value) {
-                // 对于无小数部分的数字类型,转为Long
-                return longPart;
+            final String format = style.getDataFormatString();
+            // 普通数字
+            if (null != format && format.indexOf(Symbol.C_DOT) < 0) {
+                final long longPart = (long) value;
+                if (((double) longPart) == value) {
+                    // 对于无小数部分的数字类型，转为Long
+                    return longPart;
+                }
             }
         }
-        return value;
+
+        // 某些Excel单元格值为double计算结果，可能导致精度问题，通过转换解决精度问题。
+        return Double.parseDouble(NumberToTextConverter.toText(value));
     }
 
     /**
@@ -332,15 +448,17 @@ public class CellUtils {
      * @return 是否为日期格式
      */
     private static boolean isDateType(Cell cell, int formatIndex) {
+        // yyyy-MM-dd----- 14
+        // yyyy年m月d日---- 31
+        // yyyy年m月------- 57
+        // m月d日 --------- 58
+        // HH:mm---------- 20
+        // h时mm分 -------- 32
         if (formatIndex == 14 || formatIndex == 31 || formatIndex == 57 || formatIndex == 58 || formatIndex == 20 || formatIndex == 32) {
             return true;
         }
 
-        if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
-            return true;
-        }
-
-        return false;
+        return org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell);
     }
 
 }
