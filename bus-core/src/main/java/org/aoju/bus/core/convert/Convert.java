@@ -481,6 +481,19 @@ public class Convert {
     }
 
     /**
+     * LocalDateTime
+     * 如果给定的值为空，或者转换失败，返回默认值
+     * 转换失败不会报错
+     *
+     * @param value        被转换的值
+     * @param defaultValue 转换错误时的默认值
+     * @return 结果
+     */
+    public static LocalDateTime toLocalDateTime(Object value, LocalDateTime defaultValue) {
+        return convertQuietly(LocalDateTime.class, value, defaultValue);
+    }
+
+    /**
      * 如果给定的值为空，或者转换失败，返回默认值
      * 转换失败不会报错
      *

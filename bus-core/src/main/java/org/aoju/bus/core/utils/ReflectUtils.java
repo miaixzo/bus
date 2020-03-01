@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -465,7 +466,7 @@ public class ReflectUtils {
             return allFields;
         }
 
-        allFields = getFieldsDirectly(beanClass, true);
+        allFields = getFields(beanClass, true);
         return FIELDS_CACHE.put(beanClass, allFields);
     }
 
@@ -477,7 +478,7 @@ public class ReflectUtils {
      * @return 字段列表
      * @throws SecurityException 安全检查异常
      */
-    public static Field[] getFieldsDirectly(Class<?> beanClass, boolean withSuperClassFieds) throws SecurityException {
+    public static Field[] getFields(Class<?> beanClass, boolean withSuperClassFieds) throws SecurityException {
         Assert.notNull(beanClass);
 
         Field[] allFields = null;
@@ -494,6 +495,25 @@ public class ReflectUtils {
         }
 
         return allFields;
+    }
+
+    /**
+     * 获取字段名，如果存在{@link Alias}注解，读取注解的值作为名称
+     *
+     * @param field 字段信息
+     * @return 字段名
+     */
+    public static String getFieldsName(Field field) {
+        if (null == field) {
+            return null;
+        }
+
+        final Alias alias = field.getAnnotation(Alias.class);
+        if (null != alias) {
+            return alias.value();
+        }
+
+        return field.getName();
     }
 
     /**
@@ -558,16 +578,16 @@ public class ReflectUtils {
     /**
      * 设置字段值
      *
-     * @param obj       对象
+     * @param obj       对象,static字段则此处传Class
      * @param fieldName 字段名
-     * @param value     值,值类型必须与字段类型匹配,不会自动转换对象类型
+     * @param value     值，值类型必须与字段类型匹配，不会自动转换对象类型
      * @throws InstrumentException 包装IllegalAccessException异常
      */
     public static void setFieldValue(Object obj, String fieldName, Object value) throws InstrumentException {
         Assert.notNull(obj);
         Assert.notBlank(fieldName);
 
-        final Field field = getField(obj.getClass(), fieldName);
+        final Field field = getField((obj instanceof Class) ? (Class<?>) obj : obj.getClass(), fieldName);
         Assert.notNull(field, "Field [{}] is not exist in [{}]", fieldName, obj.getClass().getName());
         setFieldValue(obj, field, value);
     }
@@ -575,15 +595,13 @@ public class ReflectUtils {
     /**
      * 设置字段值
      *
-     * @param obj   对象,如果是static字段，此参数为null
+     * @param obj   对象，如果是static字段，此参数为null
      * @param field 字段
-     * @param value 值,值类型必须与字段类型匹配,不会自动转换对象类型
+     * @param value 值，值类型必须与字段类型匹配，不会自动转换对象类型
      * @throws InstrumentException UtilException 包装IllegalAccessException异常
      */
     public static void setFieldValue(Object obj, Field field, Object value) throws InstrumentException {
-        Assert.notNull(field, "Field in [{}] not exist !", obj.getClass().getName());
-
-        setAccessible(field);
+        Assert.notNull(field, "Field in [{}] not exist !", obj);
 
         if (null != value) {
             Class<?> fieldType = field.getType();
@@ -596,10 +614,11 @@ public class ReflectUtils {
             }
         }
 
+        setAccessible(field);
         try {
-            field.set(obj, value);
+            field.set(obj instanceof Class ? null : obj, value);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for {}.{}", obj.getClass(), field.getName());
+            throw new InstrumentException("IllegalAccess for {}.{}", obj, field.getName());
         }
     }
 

@@ -41,6 +41,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -715,6 +716,32 @@ public class DateUtils {
     }
 
     /**
+     * 格式化日期时间
+     * 格式 yyyy-MM-dd HH:mm:ss
+     *
+     * @param localDateTime 被格式化的日期
+     * @return 格式化后的字符串
+     */
+    public static String format(LocalDateTime localDateTime) {
+        return format(localDateTime, Fields.NORM_DATETIME_PATTERN);
+    }
+
+    /**
+     * 根据特定格式格式化日期
+     *
+     * @param localDateTime 被格式化的日期
+     * @param format        日期格式，常用格式见： {@link Fields}
+     * @return 格式化后的字符串
+     */
+    public static String format(LocalDateTime localDateTime, String format) {
+        if (null == localDateTime || StringUtils.isBlank(format)) {
+            return null;
+        }
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+        return localDateTime.format(df);
+    }
+
+    /**
      * 格式化日期部分（不包括时间）
      * 格式 yyyy-MM-dd
      *
@@ -849,6 +876,19 @@ public class DateUtils {
         throw new InstrumentException("No format fit for date String [{}] !", dateStr);
     }
 
+    /**
+     * 构建LocalDateTime对象
+     *
+     * @param dateStr 时间字符串（带格式）
+     * @param format  使用{@link Fields}定义的格式
+     * @return LocalDateTime对象
+     */
+    public static LocalDateTime parse(CharSequence dateStr, String format) {
+        dateStr = normalize(dateStr);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+        LocalDateTime ldt = LocalDateTime.parse(dateStr, df);
+        return ldt;
+    }
 
     /**
      * 构建DateTime对象
@@ -1608,23 +1648,6 @@ public class DateUtils {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
-     *
-     * @param date      被检查的日期
-     * @param beginDate 起始日期
-     * @param endDate   结束日期
-     * @return 是否在范围内
-     */
-    public static boolean isIn(Date date, Date beginDate, Date endDate) {
-        if (date instanceof DateTime) {
-            return ((DateTime) date).isIn(beginDate, endDate);
-        } else {
-            return new DateTime(date).isIn(beginDate, endDate);
-        }
-    }
-
-    /**
      * 计时,常用于记录某段代码的执行时间,单位：纳秒
      *
      * @param preTime 之前记录的时间
@@ -1701,22 +1724,21 @@ public class DateUtils {
     }
 
     /**
-     * 判定在指定检查时间是否过期。
+     * 判定在指定检查时间是否过期
+     * 当前日期是否在日期指定范围内
+     * 起始日期和结束日期可以互换
      *
-     * <p>
-     * 以商品为例，startDate即生产日期，endDate即保质期的截止日期，
-     * checkDate表示在何时检查是否过期（一般为当前时间）
-     * endDate和startDate的差值即为保质期（按照毫秒计）
-     * checkDate和startDate的差值即为实际经过的时长，实际时长大于保质期表示超时
-     * </p>
-     *
-     * @param startDate 开始时间
-     * @param endDate   被比较的时间，即有效期的截止时间。如果经过时长后的时间晚于被检查的时间，就表示过期
-     * @param checkDate 检查时间，可以是当前时间
-     * @return 是否过期
+     * @param date      被检查的日期
+     * @param beginDate 起始日期
+     * @param endDate   结束日期
+     * @return 是否在范围内
      */
-    public static boolean isExpired(Date startDate, Date endDate, Date checkDate) {
-        return betweenMs(startDate, checkDate) > betweenMs(startDate, endDate);
+    public static boolean isIn(Date date, Date beginDate, Date endDate) {
+        if (date instanceof DateTime) {
+            return ((DateTime) date).isIn(beginDate, endDate);
+        } else {
+            return new DateTime(date).isIn(beginDate, endDate);
+        }
     }
 
     /**

@@ -360,7 +360,7 @@ public class IoUtils {
             return null;
         }
 
-        InputStreamReader reader = null;
+        InputStreamReader reader;
         if (null == charset) {
             reader = new InputStreamReader(in);
         } else {
