@@ -32,7 +32,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 将浮点数类型的number转换成英语的表达方式
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class NumberWord {

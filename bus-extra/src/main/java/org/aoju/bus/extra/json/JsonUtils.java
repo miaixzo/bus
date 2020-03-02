@@ -44,7 +44,7 @@ import java.util.Map;
  * fastjson工具类
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class JsonUtils {

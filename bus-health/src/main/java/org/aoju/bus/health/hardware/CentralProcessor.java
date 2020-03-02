@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * the Operating System sees, which may include hyperthreaded cores.)
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public interface CentralProcessor {

@@ -27,7 +27,7 @@ package org.aoju.bus.health.hardware;
  * Networks refers to network interfaces installed in the machine.
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public interface Networks {

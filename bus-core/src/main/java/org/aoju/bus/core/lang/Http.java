@@ -27,7 +27,7 @@ package org.aoju.bus.core.lang;
  * HTTP 相关常量
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class Http {

@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.DateUtils;
  * 计算某个过程花费的时间,精确到毫秒
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class TimeInterval {

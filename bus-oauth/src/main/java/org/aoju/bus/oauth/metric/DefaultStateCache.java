@@ -27,7 +27,7 @@ package org.aoju.bus.oauth.metric;
  * 默认的state缓存实现
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public enum DefaultStateCache implements StateCache {

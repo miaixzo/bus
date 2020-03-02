@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 开启 Request/Response 多次读取
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 @Inherited

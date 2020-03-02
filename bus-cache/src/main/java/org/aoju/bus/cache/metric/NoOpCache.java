@@ -33,7 +33,7 @@ import java.util.Map;
  * 无缓存实现,用于快速关闭缓存
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class NoOpCache implements CacheX {

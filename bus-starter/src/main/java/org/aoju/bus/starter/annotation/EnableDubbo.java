@@ -35,7 +35,7 @@ import java.lang.annotation.*;
  * Dubbo 支持
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 @Inherited

@@ -29,7 +29,7 @@ package org.aoju.bus.health.hardware;
  * in a recursive fashion.
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public interface UsbDevice extends Comparable<UsbDevice> {

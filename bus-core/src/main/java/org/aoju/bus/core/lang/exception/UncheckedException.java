@@ -33,7 +33,7 @@ import java.lang.reflect.InvocationTargetException;
  * 自定义异常: 未受检异常
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 @Data

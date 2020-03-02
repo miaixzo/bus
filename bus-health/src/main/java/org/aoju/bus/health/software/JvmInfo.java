@@ -30,7 +30,7 @@ import org.aoju.bus.health.Systemd;
  * 代表Java Virtual Machine Implementation的信息
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class JvmInfo {

@@ -32,7 +32,7 @@ import org.apache.ibatis.type.TypeHandler;
  * 数据库表对应的列
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class EntityColumn {
