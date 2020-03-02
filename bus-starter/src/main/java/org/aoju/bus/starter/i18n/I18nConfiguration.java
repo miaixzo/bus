@@ -37,7 +37,7 @@ import javax.validation.Validator;
  * 国际化配置
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {I18nProperties.class})

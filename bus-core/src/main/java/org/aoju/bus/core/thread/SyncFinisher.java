@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutorService;
  * 不能保证同时开始
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class SyncFinisher {

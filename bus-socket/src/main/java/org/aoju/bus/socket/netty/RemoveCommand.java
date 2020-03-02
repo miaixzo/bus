@@ -27,7 +27,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 /**
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class RemoveCommand implements Runnable {

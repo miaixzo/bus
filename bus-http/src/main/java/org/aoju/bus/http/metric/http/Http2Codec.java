@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * 使用HTTP/2帧对请求和响应进行编码.
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public final class Http2Codec implements HttpCodec {

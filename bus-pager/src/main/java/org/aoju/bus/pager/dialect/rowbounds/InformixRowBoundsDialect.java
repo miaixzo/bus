@@ -31,7 +31,7 @@ import org.apache.ibatis.session.RowBounds;
  * informix 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class InformixRowBoundsDialect extends AbstractRowBoundsDialect {

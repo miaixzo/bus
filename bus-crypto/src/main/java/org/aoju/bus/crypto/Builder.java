@@ -50,17 +50,16 @@ import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.util.Arrays;
 import org.bouncycastle.util.encoders.Hex;
 import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemObjectGenerator;
 import org.bouncycastle.util.io.pem.PemReader;
+import org.bouncycastle.util.io.pem.PemWriter;
 
 import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.System;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -80,7 +79,7 @@ import java.util.Map;
  * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -1965,6 +1964,7 @@ public final class Builder {
         }
     }
 
+
     /**
      * 读取PEM格式的私钥
      *
@@ -1972,7 +1972,7 @@ public final class Builder {
      * @return {@link PrivateKey}
      */
     public static PrivateKey readPrivateKey(InputStream pemStream) {
-        return generateRSAPrivateKey(readKeyBytes(pemStream));
+        return (PrivateKey) readPemKey(pemStream);
     }
 
     /**
@@ -1982,11 +1982,7 @@ public final class Builder {
      * @return {@link PublicKey}
      */
     public static PublicKey readPublicKey(InputStream pemStream) {
-        final Certificate certificate = readX509Certificate(pemStream);
-        if (null == certificate) {
-            return null;
-        }
-        return certificate.getPublicKey();
+        return (PublicKey) readPemKey(pemStream);
     }
 
     /**
@@ -1994,16 +1990,21 @@ public final class Builder {
      * 根据类型返回{@link PublicKey} 或者 {@link PrivateKey}
      *
      * @param keyStream pem流
-     * @return {@link Key}
+     * @return {@link Key}，null表示无法识别的密钥类型
      */
-    public static Key readKey(InputStream keyStream) {
+    public static Key readPemKey(InputStream keyStream) {
         final PemObject object = readPemObject(keyStream);
         final String type = object.getType();
-        if (StringUtils.isNotBlank(type) && type.endsWith("PRIVATE KEY")) {
-            return generateRSAPrivateKey(object.getContent());
-        } else {
-            return readX509Certificate(keyStream).getPublicKey();
+        if (StringUtils.isNotBlank(type)) {
+            if (type.endsWith("PRIVATE KEY")) {
+                return generateRSAPrivateKey(object.getContent());
+            } else if (type.endsWith("PUBLIC KEY")) {
+                return generateRSAPublicKey(object.getContent());
+            } else if (type.endsWith("CERTIFICATE")) {
+                return readPublicKeyFromCert(IoUtils.toStream(object.getContent()));
+            }
         }
+        return null;
     }
 
     /**
@@ -2021,15 +2022,39 @@ public final class Builder {
     }
 
     /**
+     * 从pem流中读取公钥或私钥
+     *
+     * @param keyStream pem流
+     * @return 密钥bytes
+     */
+    public static byte[] readPem(InputStream keyStream) {
+        PemObject pemObject = readPemObject(keyStream);
+        if (null != pemObject) {
+            return pemObject.getContent();
+        }
+        return null;
+    }
+
+    /**
      * 读取pem文件中的信息，包括类型、头信息和密钥内容
      *
      * @param keyStream pem流
      * @return {@link PemObject}
      */
     public static PemObject readPemObject(InputStream keyStream) {
+        return readPemObject(IoUtils.getReader(keyStream, org.aoju.bus.core.lang.Charset.UTF_8));
+    }
+
+    /**
+     * 读取pem文件中的信息，包括类型、头信息和密钥内容
+     *
+     * @param reader pem Reader
+     * @return {@link PemObject}
+     */
+    public static PemObject readPemObject(Reader reader) {
         PemReader pemReader = null;
         try {
-            pemReader = new PemReader(IoUtils.getReader(keyStream, org.aoju.bus.core.lang.Charset.UTF_8));
+            pemReader = new PemReader(reader);
             return pemReader.readPemObject();
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -2038,6 +2063,34 @@ public final class Builder {
         }
     }
 
+    /**
+     * 写出pem密钥（私钥、公钥、证书）
+     *
+     * @param type      密钥类型（私钥、公钥、证书）
+     * @param content   密钥内容
+     * @param keyStream pem流
+     */
+    public static void writePemObject(String type, byte[] content, OutputStream keyStream) {
+        writePemObject(new PemObject(type, content), keyStream);
+    }
+
+    /**
+     * 写出pem密钥（私钥、公钥、证书）
+     *
+     * @param pemObject pem对象，包括密钥和密钥类型等信息
+     * @param keyStream pem流
+     */
+    public static void writePemObject(PemObjectGenerator pemObject, OutputStream keyStream) {
+        PemWriter writer = null;
+        try {
+            writer = new PemWriter(IoUtils.getWriter(keyStream, org.aoju.bus.core.lang.Charset.UTF_8));
+            writer.writeObject(pemObject);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        } finally {
+            IoUtils.close(writer);
+        }
+    }
 
     /**
      * 创建SM2算法对象

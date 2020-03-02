@@ -29,7 +29,7 @@ import java.util.UUID;
  * UUID对象转换器转换器
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class UUIDConverter extends AbstractConverter<UUID> {

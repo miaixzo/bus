@@ -49,7 +49,7 @@ import java.util.Random;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class SM2Engine {
@@ -204,12 +204,11 @@ public class SM2Engine {
         this.digest.doFinal(c3, 0);
 
         // 按照对应模式输出结果
-        switch (mode) {
-            case C1C3C2:
-                return Arrays.concatenate(c1, c3, c2);
-            default:
-                return Arrays.concatenate(c1, c2, c3);
+        // 按照对应模式输出结果
+        if (mode == SM2Mode.C1C3C2) {
+            return Arrays.concatenate(c1, c3, c2);
         }
+        return Arrays.concatenate(c1, c2, c3);
     }
 
     /**

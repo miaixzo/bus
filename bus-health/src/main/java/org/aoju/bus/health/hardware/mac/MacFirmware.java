@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * Firmware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 final class MacFirmware extends AbstractFirmware {

@@ -55,7 +55,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class IoUtils {
@@ -360,7 +360,7 @@ public class IoUtils {
             return null;
         }
 
-        InputStreamReader reader = null;
+        InputStreamReader reader;
         if (null == charset) {
             reader = new InputStreamReader(in);
         } else {

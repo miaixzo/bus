@@ -31,7 +31,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 不脱敏
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class NoneStrategy extends AbstractProvider {

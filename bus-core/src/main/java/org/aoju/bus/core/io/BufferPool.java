@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * ByteBuffer内存池
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class BufferPool {

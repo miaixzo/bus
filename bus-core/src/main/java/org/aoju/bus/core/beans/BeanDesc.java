@@ -23,6 +23,7 @@
  */
 package org.aoju.bus.core.beans;
 
+import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 import org.aoju.bus.core.utils.*;
@@ -47,7 +48,7 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class BeanDesc implements Serializable {
@@ -345,12 +346,12 @@ public class BeanDesc implements Serializable {
         }
 
         /**
-         * 获取字段名
+         * 获取字段名，如果存在{@link Alias}注解，读取注解的值作为名称
          *
          * @return 字段名
          */
         public String getFieldName() {
-            return null == this.field ? null : this.field.getName();
+            return ReflectUtils.getFieldsName(this.field);
         }
 
         /**

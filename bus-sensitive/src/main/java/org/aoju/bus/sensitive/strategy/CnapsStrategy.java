@@ -34,7 +34,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 前四位明文,后面脱敏
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class CnapsStrategy extends AbstractProvider {

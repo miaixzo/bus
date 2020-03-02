@@ -32,7 +32,7 @@ import java.net.InetSocketAddress;
  * HTTP代理配置
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public class HttpProxy {

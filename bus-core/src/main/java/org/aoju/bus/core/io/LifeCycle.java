@@ -28,7 +28,7 @@ package org.aoju.bus.core.io;
  * 这个池是一个线程安全的静态单例
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 public final class LifeCycle {

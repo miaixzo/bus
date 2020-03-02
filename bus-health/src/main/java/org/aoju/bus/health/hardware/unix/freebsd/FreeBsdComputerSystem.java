@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from dmidecode.
  *
  * @author Kimi Liu
- * @version 5.6.3
+ * @version 5.6.5
  * @since JDK 1.8+
  */
 final class FreeBsdComputerSystem extends AbstractComputerSystem {
