@@ -1,31 +1,34 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
+import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.Builder;
+import org.aoju.bus.crypto.Holder;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -48,7 +51,7 @@ import java.security.spec.RSAPublicKeySpec;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.6.5
+ * @version 5.6.6
  * @since JDK 1.8+
  */
 public class RSA extends Asymmetric {
@@ -168,7 +171,8 @@ public class RSA extends Asymmetric {
 
     @Override
     public byte[] encrypt(byte[] data, KeyType keyType) {
-        if (this.encryptBlockSize < 0) {
+        // 在非使用BC库情况下，blockSize使用默认的算法
+        if (this.encryptBlockSize < 0 && null == Instances.singletion(Holder.class).getProvider()) {
             // 加密数据长度 <= 模长-11
             this.encryptBlockSize = ((RSAKey) getKeyByType(keyType)).getModulus().bitLength() / 8 - 11;
         }
@@ -177,7 +181,8 @@ public class RSA extends Asymmetric {
 
     @Override
     public byte[] decrypt(byte[] bytes, KeyType keyType) {
-        if (this.decryptBlockSize < 0) {
+        // 在非使用BC库情况下，blockSize使用默认的算法
+        if (this.decryptBlockSize < 0 && null == Instances.singletion(Holder.class).getProvider()) {
             // 加密数据长度 <= 模长-11
             this.decryptBlockSize = ((RSAKey) getKeyByType(keyType)).getModulus().bitLength() / 8;
         }

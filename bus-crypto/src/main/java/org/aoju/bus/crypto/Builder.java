@@ -1,26 +1,27 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.crypto;
 
 import org.aoju.bus.core.codec.Base64;
@@ -39,9 +40,16 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.gm.GMNamedCurves;
+import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.digests.SM3Digest;
+import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.ECPointUtil;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
@@ -79,7 +87,7 @@ import java.util.Map;
  * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 5.6.5
+ * @version 5.6.6
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -117,6 +125,7 @@ public final class Builder {
      */
     public static final String SM2_DEFAULT_CURVE = "sm2p256v1";
     private final static int RS_LEN = 32;
+    public static final ECDomainParameters SM2_DOMAIN_PARAMS = toDomainParams(GMNamedCurves.getByName(SM2_DEFAULT_CURVE));
 
     /**
      * 数据加密
@@ -1913,6 +1922,16 @@ public final class Builder {
     }
 
     /**
+     * 只获取私钥里的d，32字节
+     *
+     * @param privateKey {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey
+     * @return 压缩得到的X
+     */
+    public static byte[] encodeECPrivateKey(PrivateKey privateKey) {
+        return ((BCECPrivateKey) privateKey).getD().toByteArray();
+    }
+
+    /**
      * 编码压缩EC公钥（基于BouncyCastle）
      * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
      *
@@ -1964,6 +1983,285 @@ public final class Builder {
         }
     }
 
+    /**
+     * 构建ECDomainParameters对象
+     *
+     * @param parameterSpec ECParameterSpec
+     * @return {@link ECDomainParameters}
+     */
+    public static ECDomainParameters toDomainParams(org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+        return new ECDomainParameters(
+                parameterSpec.getCurve(),
+                parameterSpec.getG(),
+                parameterSpec.getN(),
+                parameterSpec.getH());
+    }
+
+    /**
+     * 构建ECDomainParameters对象
+     *
+     * @param curveName Curve名称
+     * @return {@link ECDomainParameters}
+     */
+    public static ECDomainParameters toDomainParams(String curveName) {
+        return toDomainParams(ECUtil.getNamedCurveByName(curveName));
+    }
+
+    /**
+     * 构建ECDomainParameters对象
+     *
+     * @param x9ECParameters {@link X9ECParameters}
+     * @return {@link ECDomainParameters}
+     */
+    public static ECDomainParameters toDomainParams(X9ECParameters x9ECParameters) {
+        return new ECDomainParameters(
+                x9ECParameters.getCurve(),
+                x9ECParameters.getG(),
+                x9ECParameters.getN(),
+                x9ECParameters.getH()
+        );
+    }
+
+    /**
+     * 密钥转换为AsymmetricKeyParameter
+     *
+     * @param key PrivateKey或者PublicKey
+     * @return ECPrivateKeyParameters或者ECPublicKeyParameters
+     */
+    public static AsymmetricKeyParameter toParams(Key key) {
+        try {
+            if (key instanceof PrivateKey) {
+                return ECUtil.generatePrivateKeyParameter((PrivateKey) key);
+            } else if (key instanceof PublicKey) {
+                return ECUtil.generatePublicKeyParameter((PublicKey) key);
+            }
+        } catch (InvalidKeyException e) {
+            throw new InstrumentException(e);
+        }
+
+        return null;
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param dHex 私钥d值16进制字符串
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toSm2Params(String dHex) {
+        return toSm2Params(HexUtils.toBigInteger(dHex));
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param dHex             私钥d值16进制字符串
+     * @param domainParameters ECDomainParameters
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toParams(String dHex, ECDomainParameters domainParameters) {
+        return toParams(new BigInteger(dHex, 16), domainParameters);
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d 私钥d值
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toSm2Params(byte[] d) {
+        return toSm2Params(new BigInteger(d));
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d                私钥d值
+     * @param domainParameters ECDomainParameters
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toParams(byte[] d, ECDomainParameters domainParameters) {
+        return toParams(new BigInteger(d), domainParameters);
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d 私钥d值
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toSm2Params(BigInteger d) {
+        return toParams(d, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d                私钥d值
+     * @param domainParameters ECDomainParameters
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toParams(BigInteger d, ECDomainParameters domainParameters) {
+        if (null == d) {
+            return null;
+        }
+        return new ECPrivateKeyParameters(d, domainParameters);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param x                公钥X
+     * @param y                公钥Y
+     * @param domainParameters ECDomainParameters
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toParams(BigInteger x, BigInteger y, ECDomainParameters domainParameters) {
+        if (null == x || null == y) {
+            return null;
+        }
+        return toParams(x.toByteArray(), y.toByteArray(), domainParameters);
+    }
+
+    /**
+     * 转换为SM2的ECPublicKeyParameters
+     *
+     * @param xHex 公钥X
+     * @param yHex 公钥Y
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toSm2Params(String xHex, String yHex) {
+        return toParams(xHex, yHex, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param xHex             公钥X
+     * @param yHex             公钥Y
+     * @param domainParameters ECDomainParameters
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toParams(String xHex, String yHex, ECDomainParameters domainParameters) {
+        return toParams(HexUtils.decodeHex(xHex), HexUtils.decodeHex(yHex), domainParameters);
+    }
+
+    /**
+     * 转换为SM2的ECPublicKeyParameters
+     *
+     * @param xBytes 公钥X
+     * @param yBytes 公钥Y
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toSm2Params(byte[] xBytes, byte[] yBytes) {
+        return toParams(xBytes, yBytes, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param xBytes           公钥X
+     * @param yBytes           公钥Y
+     * @param domainParameters ECDomainParameters
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toParams(byte[] xBytes, byte[] yBytes, ECDomainParameters domainParameters) {
+        if (null == xBytes || null == yBytes) {
+            return null;
+        }
+        final ECCurve curve = domainParameters.getCurve();
+        final int curveLength = getCurveLength(curve);
+        final byte[] encodedPubKey = encodePoint(xBytes, yBytes, curveLength);
+        return new ECPublicKeyParameters(curve.decodePoint(encodedPubKey), domainParameters);
+    }
+
+    /**
+     * 公钥转换为 {@link ECPublicKeyParameters}
+     *
+     * @param publicKey 公钥，传入null返回null
+     * @return {@link ECPublicKeyParameters}或null
+     */
+    public static ECPublicKeyParameters toParams(PublicKey publicKey) {
+        if (null == publicKey) {
+            return null;
+        }
+        try {
+            return (ECPublicKeyParameters) ECUtil.generatePublicKeyParameter(publicKey);
+        } catch (InvalidKeyException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 私钥转换为 {@link ECPrivateKeyParameters}
+     *
+     * @param privateKey 私钥，传入null返回null
+     * @return {@link ECPrivateKeyParameters}或null
+     */
+    public static ECPrivateKeyParameters toParams(PrivateKey privateKey) {
+        if (null == privateKey) {
+            return null;
+        }
+        try {
+            return (ECPrivateKeyParameters) ECUtil.generatePrivateKeyParameter(privateKey);
+        } catch (InvalidKeyException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 将X，Y曲线点编码为bytes
+     *
+     * @param xBytes      X坐标bytes
+     * @param yBytes      Y坐标bytes
+     * @param curveLength 曲线编码后的长度
+     * @return 编码bytes
+     */
+    private static byte[] encodePoint(byte[] xBytes, byte[] yBytes, int curveLength) {
+        xBytes = fixLength(curveLength, xBytes);
+        yBytes = fixLength(curveLength, yBytes);
+        final byte[] encodedPubKey = new byte[1 + xBytes.length + yBytes.length];
+
+        // 压缩类型：无压缩
+        encodedPubKey[0] = 0x04;
+        System.arraycopy(xBytes, 0, encodedPubKey, 1, xBytes.length);
+        System.arraycopy(yBytes, 0, encodedPubKey, 1 + xBytes.length, yBytes.length);
+
+        return encodedPubKey;
+    }
+
+    /**
+     * 获取Curve长度
+     *
+     * @param curve {@link ECCurve}
+     * @return Curve长度
+     */
+    private static int getCurveLength(ECCurve curve) {
+        return (curve.getFieldSize() + 7) / 8;
+    }
+
+    /**
+     * 修正长度
+     *
+     * @param curveLength 修正后的长度
+     * @param src         bytes
+     * @return 修正后的bytes
+     */
+    private static byte[] fixLength(int curveLength, byte[] src) {
+        if (src.length == curveLength) {
+            return src;
+        }
+
+        byte[] result = new byte[curveLength];
+        if (src.length > curveLength) {
+            // 裁剪末尾的指定长度
+            System.arraycopy(src, src.length - result.length, result, 0, result.length);
+        } else {
+            // 放置于末尾
+            System.arraycopy(src, 0, result, result.length - src.length, src.length);
+        }
+        return result;
+    }
 
     /**
      * 读取PEM格式的私钥

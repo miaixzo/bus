@@ -1,26 +1,27 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.Assert;
@@ -43,7 +44,7 @@ import java.util.Set;
  * 数字工具类
  *
  * @author Kimi Liu
- * @version 5.6.5
+ * @version 5.6.6
  * @since JDK 1.8+
  */
 abstract class MemberUtils {
@@ -747,7 +748,7 @@ abstract class MemberUtils {
      * @param numberStr 数字值的字符串表现形式
      * @param scale     保留小数位数
      * @return 新值
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String roundStr(String numberStr, int scale) {
         return round(numberStr, scale).toString();
@@ -774,7 +775,7 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String roundStr(double v, int scale, RoundingMode roundingMode) {
         return round(v, scale, roundingMode).toString();
@@ -828,7 +829,7 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String roundStr(String numberStr, int scale, RoundingMode roundingMode) {
         return round(numberStr, scale, roundingMode).toString();
@@ -1602,7 +1603,7 @@ abstract class MemberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1848,7 +1849,7 @@ abstract class MemberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static BigInteger newBigInteger(String str) {
         str = StringUtils.trimToNull(str);

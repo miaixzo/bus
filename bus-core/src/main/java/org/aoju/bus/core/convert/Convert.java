@@ -1,26 +1,27 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Assert;
@@ -45,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 5.6.5
+ * @version 5.6.6
  * @since JDK 1.8+
  */
 public class Convert {
@@ -80,7 +81,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return String数组
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String[] toStrArray(Object value) {
         return convert(String[].class, value);
@@ -116,7 +117,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Character数组
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static Character[] toCharArray(Object value) {
         return convert(Character[].class, value);
@@ -152,7 +153,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Byte数组
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static Byte[] toByteArray(Object value) {
         return convert(Byte[].class, value);
@@ -188,7 +189,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Short数组
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static Short[] toShortArray(Object value) {
         return convert(Short[].class, value);
@@ -224,7 +225,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Number数组
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static Number[] toNumberArray(Object value) {
         return convert(Number[].class, value);
@@ -529,7 +530,7 @@ public class Convert {
      * @return Enum
      */
     public static <E extends Enum<E>> E toEnum(Class<E> clazz, Object value, E defaultValue) {
-        return (new GenericEnumConverter<>(clazz)).convertQuietly(value, defaultValue);
+        return (E) (new EnumConverter(clazz)).convertQuietly(value, defaultValue);
     }
 
     /**
@@ -937,7 +938,7 @@ public class Convert {
      *
      * @param intValue int值
      * @return byte值
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static byte intToByte(int intValue) {
         return (byte) intValue;
@@ -948,7 +949,7 @@ public class Convert {
      *
      * @param byteValue byte值
      * @return 无符号int值
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static int byteToUnsignedInt(byte byteValue) {
         // Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值
@@ -960,7 +961,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return short值
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static short bytesToShort(byte[] bytes) {
         return (short) (bytes[1] & 0xff | (bytes[0] & 0xff) << 8);
@@ -971,7 +972,7 @@ public class Convert {
      *
      * @param shortValue short值
      * @return byte数组
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static byte[] shortToBytes(short shortValue) {
         byte[] b = new byte[2];
@@ -985,7 +986,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return int值
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static int bytesToInt(byte[] bytes) {
         return bytes[3] & 0xFF | //
@@ -999,7 +1000,7 @@ public class Convert {
      *
      * @param intValue int值
      * @return byte数组
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static byte[] intToBytes(int intValue) {
         return new byte[]{
@@ -1015,7 +1016,7 @@ public class Convert {
      *
      * @param longValue long值
      * @return byte数组
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static byte[] longToBytes(long longValue) {
         final byte[] result = new byte[8];
@@ -1031,7 +1032,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return long值
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static long bytesToLong(byte[] bytes) {
         long values = 0;

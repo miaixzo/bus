@@ -1,30 +1,32 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.utils.CharUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.nio.charset.Charset;
@@ -33,7 +35,7 @@ import java.nio.charset.Charset;
  * Base64编码
  *
  * @author Kimi Liu
- * @version 5.6.5
+ * @version 5.6.6
  * @since JDK 1.8+
  */
 public class Base64Encoder {
@@ -186,6 +188,48 @@ public class Base64Encoder {
             }
         }
         return dest;
+    }
+
+    /**
+     * 编码为Base64
+     *
+     * @param src     源字符信息
+     * @param srcPos  开始位置
+     * @param srcLen  长度
+     * @param dest    字符信息
+     * @param destPos 开始位置
+     */
+    public static void encode(byte[] src, int srcPos, int srcLen, char[] dest,
+                              int destPos) {
+        if (srcPos < 0 || srcLen < 0 || srcLen > src.length - srcPos)
+            throw new IndexOutOfBoundsException();
+        int destLen = (srcLen * 4 / 3 + 3) & ~3;
+        if (destPos < 0 || destLen > dest.length - destPos)
+            throw new IndexOutOfBoundsException();
+        byte b1, b2, b3;
+        int n = srcLen / 3;
+        int r = srcLen - 3 * n;
+        while (n-- > 0) {
+            dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+            dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
+                    | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
+            dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b2 & 0x0F) << 2)
+                    | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
+            dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[b3 & 0x3F];
+        }
+        if (r > 0)
+            if (r == 1) {
+                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos]) >>> 2) & 0x3F];
+                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)];
+                dest[destPos++] = Symbol.C_EQUAL;
+                dest[destPos++] = Symbol.C_EQUAL;
+            } else {
+                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
+                        | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
+                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[(b2 & 0x0F) << 2];
+                dest[destPos++] = Symbol.C_EQUAL;
+            }
     }
 
 }

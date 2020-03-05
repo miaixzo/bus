@@ -1,26 +1,27 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
@@ -43,7 +44,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 5.6.5
+ * @version 5.6.6
  * @since JDK 1.8+
  */
 public class StringUtils extends TextUtils {
@@ -568,7 +569,7 @@ public class StringUtils extends TextUtils {
      * @param length     截取长度
      * @param ignoreCase 是否忽略大小写
      * @return 子串是否相同
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static boolean isSubEquals(CharSequence str1, int start1, CharSequence str2, int start2, int length, boolean ignoreCase) {
         if (null == str1 || null == str2) {
@@ -956,7 +957,7 @@ public class StringUtils extends TextUtils {
      * @param str2       要比较的字符串2
      * @param ignoreCase 是否忽略大小写
      * @return 如果两个字符串相同, 或者都是null, 则返回true
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static boolean equals(CharSequence str1, CharSequence str2, boolean ignoreCase) {
         if (null == str1) {
@@ -1711,7 +1712,7 @@ public class StringUtils extends TextUtils {
      * @param separator   分隔符字符
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static List<String> splitTrim(String str, char separator, boolean ignoreEmpty) {
         return split(str, separator, 0, true, ignoreEmpty);
@@ -1724,7 +1725,7 @@ public class StringUtils extends TextUtils {
      * @param separator   分隔符字符串
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static List<String> splitTrim(String str, String separator, boolean ignoreEmpty) {
         return split(str, separator, true, ignoreEmpty);
@@ -1751,7 +1752,7 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static List<String> splitTrim(String str, String separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty);
@@ -1766,7 +1767,7 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static List<String> splitIgnoreCase(String str, char separator, int limit, boolean isTrim,
                                                boolean ignoreEmpty) {
@@ -1782,7 +1783,7 @@ public class StringUtils extends TextUtils {
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static List<String> splitIgnoreCase(String str, String separator, int limit, boolean isTrim,
                                                boolean ignoreEmpty) {
@@ -1797,7 +1798,7 @@ public class StringUtils extends TextUtils {
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static List<String> splitTrimIgnoreCase(String str, String separator, int limit, boolean ignoreEmpty) {
         return split(str, separator, limit, true, ignoreEmpty, true);
@@ -2214,7 +2215,7 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty,
                                      boolean ignoreCase) {
@@ -2252,7 +2253,7 @@ public class StringUtils extends TextUtils {
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty,
                                      boolean ignoreCase) {
@@ -2417,7 +2418,7 @@ public class StringUtils extends TextUtils {
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
         return indexOfIgnoreCase(str, searchStr, 0);
@@ -2444,7 +2445,7 @@ public class StringUtils extends TextUtils {
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置
      * @return 位置
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
         return indexOf(str, searchStr, fromIndex, true);
@@ -2458,7 +2459,7 @@ public class StringUtils extends TextUtils {
      * @param fromIndex  起始位置
      * @param ignoreCase 是否忽略大小写
      * @return 位置
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
         if (str == null || searchStr == null) {
@@ -2495,7 +2496,7 @@ public class StringUtils extends TextUtils {
      * @param str       字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
         return lastIndexOfIgnoreCase(str, searchStr, str.length());
@@ -2508,7 +2509,7 @@ public class StringUtils extends TextUtils {
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置,从后往前计数
      * @return 位置
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
         return lastIndexOf(str, searchStr, fromIndex, true);
@@ -2522,7 +2523,7 @@ public class StringUtils extends TextUtils {
      * @param fromIndex  起始位置,从后往前计数
      * @param ignoreCase 是否忽略大小写
      * @return 位置
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static int lastIndexOf(final CharSequence str, final CharSequence searchStr, int fromIndex,
                                   boolean ignoreCase) {
@@ -3760,7 +3761,7 @@ public class StringUtils extends TextUtils {
      * @param endExclude   结束位置（不包含）
      * @param replacedChar 被替换的字符
      * @return 替换后的字符串
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String replace(CharSequence str, int startInclude, int endExclude, char replacedChar) {
         if (isEmpty(str)) {
@@ -3809,7 +3810,7 @@ public class StringUtils extends TextUtils {
      * @param chars       需要替换的字符列表,用一个字符串表示这个字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String replaceChars(CharSequence str, String chars, CharSequence replacedStr) {
         if (isEmpty(str) || isEmpty(chars)) {
@@ -3825,7 +3826,7 @@ public class StringUtils extends TextUtils {
      * @param chars       需要替换的字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String replaceChars(CharSequence str, char[] chars, CharSequence replacedStr) {
         if (isEmpty(str) || ArrayUtils.isEmpty(chars)) {
@@ -4197,7 +4198,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static boolean containsAny(CharSequence str, CharSequence... testStrs) {
         return null != getContainsStr(str, testStrs);
@@ -4271,7 +4272,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String getContainsStr(CharSequence str, CharSequence... testStrs) {
         if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {
@@ -4307,7 +4308,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static boolean containsAnyIgnoreCase(CharSequence str, CharSequence... testStrs) {
         return null != getContainsStrIgnoreCase(str, testStrs);
@@ -4320,7 +4321,7 @@ public class StringUtils extends TextUtils {
      * @param str      指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
-     * @since 5.6.5
+     * @since 5.6.6
      */
     public static String getContainsStrIgnoreCase(CharSequence str, CharSequence... testStrs) {
         if (isEmpty(str) || ArrayUtils.isEmpty(testStrs)) {

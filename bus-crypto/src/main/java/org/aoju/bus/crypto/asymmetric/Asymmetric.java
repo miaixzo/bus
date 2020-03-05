@@ -1,26 +1,27 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
@@ -48,7 +49,7 @@ import java.security.PublicKey;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.6.5
+ * @version 5.6.6
  * @since JDK 1.8+
  */
 public class Asymmetric extends Safety<Asymmetric> {
@@ -171,12 +172,18 @@ public class Asymmetric extends Safety<Asymmetric> {
     @Override
     public byte[] encrypt(byte[] data, KeyType keyType) {
         final Key key = getKeyByType(keyType);
-        final int maxBlockSize = this.encryptBlockSize < 0 ? data.length : this.encryptBlockSize;
-
         lock.lock();
         try {
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            return doFinal(data, maxBlockSize);
+
+            if (this.encryptBlockSize < 0) {
+                // 在引入BC库情况下，自动获取块大小
+                final int blockSize = this.cipher.getBlockSize();
+                if (blockSize > 0) {
+                    this.encryptBlockSize = blockSize;
+                }
+            }
+            return doFinal(data, this.encryptBlockSize < 0 ? data.length : this.encryptBlockSize);
         } catch (Exception e) {
             throw new InstrumentException(e);
         } finally {
@@ -194,12 +201,19 @@ public class Asymmetric extends Safety<Asymmetric> {
     @Override
     public byte[] decrypt(byte[] data, KeyType keyType) {
         final Key key = getKeyByType(keyType);
-        final int maxBlockSize = this.decryptBlockSize < 0 ? data.length : this.decryptBlockSize;
-
         lock.lock();
         try {
             cipher.init(Cipher.DECRYPT_MODE, key);
-            return doFinal(data, maxBlockSize);
+
+            if(this.decryptBlockSize < 0){
+                // 在引入BC库情况下，自动获取块大小
+                final int blockSize = this.cipher.getBlockSize();
+                if(blockSize > 0){
+                    this.decryptBlockSize = blockSize;
+                }
+            }
+
+            return doFinal(data, this.decryptBlockSize < 0 ? data.length : this.decryptBlockSize);
         } catch (Exception e) {
             throw new InstrumentException(e);
         } finally {
