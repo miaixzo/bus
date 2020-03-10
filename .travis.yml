@@ -16,10 +16,10 @@ script:
   - cd ../bus-logger && mvn install -DskipTests=true
   - cd ../bus-setting && mvn install -DskipTests=true
   - cd ../bus-proxy && mvn install -DskipTests=true
+  - cd ../bus-extra && mvn install -DskipTests=true
   - cd ../bus-cache && mvn install -DskipTests=true
   - cd ../bus-cron && mvn install -DskipTests=true
   - cd ../bus-crypto && mvn install -DskipTests=true
-  - cd ../bus-extra && mvn install -DskipTests=true
   - cd ../bus-health && mvn install -DskipTests=true
   - cd ../bus-http && mvn install -DskipTests=true
   - cd ../bus-limiter && mvn install -DskipTests=true
@@ -29,6 +29,6 @@ script:
   - cd ../bus-pager && mvn install -DskipTests=true
   - cd ../bus-sensitive && mvn install -DskipTests=true
   - cd ../bus-socket && mvn install -DskipTests=true
-  - cd ../bus-validate && mvn install -DskipTests=true
   - cd ../bus-tracer && mvn install -DskipTests=true
+  - cd ../bus-validate && mvn install -DskipTests=true
   - cd ../bus-base && mvn install -DskipTests=true

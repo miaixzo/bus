@@ -1,26 +1,27 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2015-2020 aoju.org All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.lang.Algorithm;
@@ -43,7 +44,7 @@ import java.security.PublicKey;
  * SM2算法只支持公钥加密，私钥解密
  *
  * @author Kimi Liu
- * @version 5.6.5
+ * @version 5.6.6
  * @since JDK 1.8+
  */
 public class SM2 extends Safety<SM2> {
@@ -51,7 +52,7 @@ public class SM2 extends Safety<SM2> {
     protected SM2Engine engine;
     protected SM2Signer signer;
 
-    private SM2Engine.SM2Mode mode;
+    private SM2Engine.SM2Mode mode = SM2Engine.SM2Mode.C1C3C2;
     private ECPublicKeyParameters publicKeyParams;
     private ECPrivateKeyParameters privateKeyParams;
 
@@ -98,7 +99,54 @@ public class SM2 extends Safety<SM2> {
      * @param publicKey  公钥
      */
     public SM2(PrivateKey privateKey, PublicKey publicKey) {
-        super(Algorithm.SM2, privateKey, publicKey);
+        this(Builder.toParams(privateKey), Builder.toParams(publicKey));
+        if (null != privateKey) {
+            this.privateKey = privateKey;
+        }
+        if (null != publicKey) {
+            this.publicKey = publicKey;
+        }
+    }
+
+    /**
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param privateKeyHex      私钥16进制
+     * @param publicKeyPointXHex 公钥X16进制
+     * @param publicKeyPointYHex 公钥Y16进制
+     */
+    public SM2(String privateKeyHex, String publicKeyPointXHex, String publicKeyPointYHex) {
+        this(Builder.toSm2Params(privateKeyHex), Builder.toSm2Params(publicKeyPointXHex, publicKeyPointYHex));
+    }
+
+    /**
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param privateKey      私钥
+     * @param publicKeyPointX 公钥X
+     * @param publicKeyPointY 公钥Y
+     */
+    public SM2(byte[] privateKey, byte[] publicKeyPointX, byte[] publicKeyPointY) {
+        this(Builder.toSm2Params(privateKey), Builder.toSm2Params(publicKeyPointX, publicKeyPointY));
+    }
+
+    /**
+     * 构造
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param privateKeyParams 私钥
+     * @param publicKeyParams  公钥
+     */
+    public SM2(ECPrivateKeyParameters privateKeyParams, ECPublicKeyParameters publicKeyParams) {
+        super(Algorithm.SM2, null, null);
+        this.privateKeyParams = privateKeyParams;
+        this.publicKeyParams = publicKeyParams;
+        this.init();
     }
 
     /**
@@ -106,18 +154,22 @@ public class SM2 extends Safety<SM2> {
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
-     * @param privateKey 私钥
-     * @param publicKey  公钥
      * @return this
      */
-    public SM2 init(PrivateKey privateKey, PublicKey publicKey) {
-        return this.init(Algorithm.SM2, privateKey, publicKey);
+    public SM2 init() {
+        if (null == this.privateKeyParams && null == this.publicKeyParams) {
+            super.initKeys();
+            this.privateKeyParams = Builder.toParams(this.privateKey);
+            this.publicKeyParams = Builder.toParams(this.publicKey);
+        }
+        return this;
     }
 
     @Override
-    protected SM2 init(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
-        super.init(algorithm, privateKey, publicKey);
-        return initCipherParams();
+    public SM2 initKeys() {
+        // 阻断父类中自动生成密钥对的操作，此操作由本类中进行。
+        // 由于用户可能传入Params而非key，因此此时key必定为null，故此不再生成
+        return this;
     }
 
     /**
