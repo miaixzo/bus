@@ -123,7 +123,7 @@ public class SendMessageHandler {
 # Spring
 
 ## 介绍
-基于spring-boot_2.2.2.RELEASE，对spring框架的WebSocket扩展，支持细粒度控制
+基于spring-boot_2.2.5.RELEASE，对spring框架的WebSocket扩展，支持细粒度控制
 ## StompSubProtocolHandler 阅读源码可以发现spring原生的消息处理类不支持自定义拦截器
 
 ## interceptable-websocket
