@@ -31,7 +31,7 @@ import java.util.function.Supplier;
  * 持有一个计算延迟的值
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class Lazy<T> implements Supplier<T>, Serializable {

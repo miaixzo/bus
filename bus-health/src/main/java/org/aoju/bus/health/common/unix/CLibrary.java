@@ -37,7 +37,7 @@ import com.sun.jna.ptr.PointerByReference;
  * incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public interface CLibrary extends LibCAPI, Library {

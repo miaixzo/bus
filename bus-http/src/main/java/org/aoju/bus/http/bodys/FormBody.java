@@ -38,7 +38,7 @@ import java.util.List;
  * Form请求体内容
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public final class FormBody extends RequestBody {

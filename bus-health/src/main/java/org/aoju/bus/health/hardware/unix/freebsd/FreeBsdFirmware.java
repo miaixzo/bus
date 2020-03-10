@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 
 /**
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 final class FreeBsdFirmware extends AbstractFirmware {

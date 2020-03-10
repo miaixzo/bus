@@ -34,7 +34,7 @@ import java.util.*;
  * 按值替换字符串中的变量.
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class Substitute {

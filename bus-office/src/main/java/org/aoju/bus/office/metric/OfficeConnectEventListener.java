@@ -30,7 +30,7 @@ import java.util.EventListener;
  * office连接事件侦听器
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public interface OfficeConnectEventListener extends EventListener {

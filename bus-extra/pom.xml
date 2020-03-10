@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-extra</artifactId>
-    <version>5.6.6</version>
+    <version>5.6.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -33,11 +33,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bus-logger</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-setting</artifactId>

@@ -38,7 +38,7 @@ import java.time.OffsetDateTime;
  * Helper class for WMI
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class WmiUtils {

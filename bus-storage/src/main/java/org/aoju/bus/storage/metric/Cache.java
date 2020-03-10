@@ -28,7 +28,7 @@ package org.aoju.bus.storage.metric;
  * 缓存,用来缓存State
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public interface Cache {
