@@ -43,6 +43,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -887,8 +888,12 @@ public class DateUtils {
     public static LocalDateTime parse(CharSequence dateStr, String format) {
         dateStr = normalize(dateStr);
         DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
-        LocalDateTime ldt = LocalDateTime.parse(dateStr, df);
-        return ldt;
+        try {
+            return LocalDateTime.parse(dateStr, df);
+        } catch (DateTimeParseException e) {
+            // 在给定日期字符串没有时间部分时，LocalDateTime会报错，此时使用LocalDate中转转换
+            return LocalDate.parse(dateStr, df).atStartOfDay();
+        }
     }
 
     /**

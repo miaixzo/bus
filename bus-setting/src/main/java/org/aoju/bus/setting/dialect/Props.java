@@ -34,8 +34,10 @@ import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.watchers.SimpleWatcher;
 import org.aoju.bus.core.io.watchers.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.*;
+import org.aoju.bus.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -467,6 +469,86 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     @Override
     public Date getDate(String key) {
         return getDate(key, null);
+    }
+
+    /**
+     * 将配置文件转换为Bean，支持嵌套Bean
+     * 支持的表达式：
+     *
+     * <pre>
+     * persion
+     * persion.name
+     * persons[3]
+     * person.friends[5].name
+     * ['person']['friends'][5]['name']
+     * </pre>
+     *
+     * @param <T>       Bean类型
+     * @param beanClass Bean类
+     * @return Bean对象
+     */
+    public <T> T toBean(Class<T> beanClass) {
+        return toBean(beanClass, null);
+    }
+
+    /**
+     * 将配置文件转换为Bean，支持嵌套Bean
+     * 支持的表达式：
+     *
+     * <pre>
+     * persion
+     * persion.name
+     * persons[3]
+     * person.friends[5].name
+     * ['person']['friends'][5]['name']
+     * </pre>
+     *
+     * @param <T>       Bean类型
+     * @param beanClass Bean类
+     * @param prefix    公共前缀，不指定前缀传null，当指定前缀后非此前缀的属性被忽略
+     * @return Bean对象
+     */
+    public <T> T toBean(Class<T> beanClass, String prefix) {
+        final T bean = ReflectUtils.newInstanceIfPossible(beanClass);
+        return fillBean(bean, prefix);
+    }
+
+    /**
+     * 将配置文件转换为Bean，支持嵌套Bean
+     * 支持的表达式：
+     *
+     * <pre>
+     * persion
+     * persion.name
+     * persons[3]
+     * person.friends[5].name
+     * ['person']['friends'][5]['name']
+     * </pre>
+     *
+     * @param <T>    Bean类型
+     * @param bean   Bean对象
+     * @param prefix 公共前缀，不指定前缀传null，当指定前缀后非此前缀的属性被忽略
+     * @return Bean对象
+     */
+    public <T> T fillBean(T bean, String prefix) {
+        prefix = StringUtils.nullToEmpty(StringUtils.addSuffixIfNot(prefix, Symbol.DOT));
+
+        String key;
+        for (java.util.Map.Entry<Object, Object> entry : this.entrySet()) {
+            key = (String) entry.getKey();
+            if (false == StringUtils.startWith(key, prefix)) {
+                // 非指定开头的属性忽略掉
+                continue;
+            }
+            try {
+                BeanUtils.setProperty(bean, StringUtils.subSuf(key, prefix.length()), entry.getValue());
+            } catch (Exception e) {
+                // 忽略注入失败的字段（这些字段可能用于其它配置）
+                Logger.debug("Ignore property: [{}]", key);
+            }
+        }
+
+        return bean;
     }
 
     /**

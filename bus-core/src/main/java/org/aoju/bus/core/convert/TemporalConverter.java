@@ -33,6 +33,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * JDK8中新加入的java.time包对象解析转换器
@@ -130,7 +131,7 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
             zoneId = formatter.getZone();
         } else {
             final DateTime dateTime = DateUtils.parse(value);
-            instant = dateTime.toInstant();
+            instant = Objects.requireNonNull(dateTime).toInstant();
             zoneId = dateTime.getZoneId();
         }
         return parseFromInstant(instant, zoneId);

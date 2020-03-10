@@ -668,7 +668,7 @@ public class FastDateParser extends AbstractFormater implements DateParser {
             } else {
                 final TzInfo tzInfo = tzNames.get(value.toLowerCase(locale));
                 cal.set(Calendar.DST_OFFSET, tzInfo.dstOffset);
-                cal.set(Calendar.ZONE_OFFSET, tzInfo.zone.getRawOffset());
+                cal.set(Calendar.ZONE_OFFSET, parser.getTimeZone().getRawOffset());
             }
         }
 

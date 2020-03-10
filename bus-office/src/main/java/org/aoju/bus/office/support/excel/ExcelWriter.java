@@ -684,10 +684,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         if (rowBean instanceof Iterable) {
             return writeRow((Iterable<?>) rowBean);
         }
-        Map rowMap = null;
+        Map rowMap;
         if (rowBean instanceof Map) {
             if (MapUtils.isNotEmpty(this.headerAlias)) {
-                rowMap = MapUtils.newTreeMap((Map) rowBean, getInitedAliasComparator());
+                rowMap = MapUtils.newTreeMap((Map) rowBean, getCachedAliasComparator());
             } else {
                 rowMap = (Map) rowBean;
             }
@@ -696,7 +696,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 rowMap = BeanUtils.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
             } else {
                 // 别名存在情况下按照别名的添加顺序排序Bean数据
-                rowMap = BeanUtils.beanToMap(rowBean, new TreeMap<>(getInitedAliasComparator()), false, false);
+                rowMap = BeanUtils.beanToMap(rowBean, new TreeMap<>(getCachedAliasComparator()), false, false);
             }
         } else {
             // 其它转为字符串默认输出
@@ -904,7 +904,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             return rowMap;
         }
 
-        final Map<Object, Object> filteredMap = new LinkedHashMap<>();
+        final Map<Object, Object> filteredMap =  MapUtils.newHashMap(rowMap.size(), true);
         String aliasName;
         for (Entry<?, ?> entry : rowMap.entrySet()) {
             aliasName = this.headerAlias.get(entry.getKey());
@@ -924,7 +924,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      *
      * @return Comparator 比较器
      */
-    private Comparator<String> getInitedAliasComparator() {
+    private Comparator<String> getCachedAliasComparator() {
         if (MapUtils.isEmpty(this.headerAlias)) {
             return null;
         }
