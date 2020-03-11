@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * 在校验注解内部提供的方法上标记该注解,表示可以在校验注解的errmsg中使用该字符串插值
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 @Documented

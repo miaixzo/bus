@@ -40,7 +40,7 @@ import java.util.regex.PatternSyntaxException;
  * The default property chain may be obtained by the {@link #loadPropertyChain()} method.
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public final class PropertiesBasedTraceFilterConfiguration implements TraceFilterConfiguration {

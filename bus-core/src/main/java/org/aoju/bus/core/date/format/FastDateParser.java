@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * 用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class FastDateParser extends AbstractFormater implements DateParser {
@@ -668,7 +668,7 @@ public class FastDateParser extends AbstractFormater implements DateParser {
             } else {
                 final TzInfo tzInfo = tzNames.get(value.toLowerCase(locale));
                 cal.set(Calendar.DST_OFFSET, tzInfo.dstOffset);
-                cal.set(Calendar.ZONE_OFFSET, tzInfo.zone.getRawOffset());
+                cal.set(Calendar.ZONE_OFFSET, parser.getTimeZone().getRawOffset());
             }
         }
 

@@ -41,7 +41,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class ArrayUtils {
@@ -7139,7 +7139,7 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 5.6.6
+     * @since 5.6.8
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7150,7 +7150,7 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 5.6.6
+     * @since 5.6.8
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7162,7 +7162,7 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 5.6.6
+     * @since 5.6.8
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return Array.newInstance(componentType, 0).getClass();
@@ -7784,6 +7784,313 @@ public class ArrayUtils {
             result[i] = get(array, i);
         }
         return result;
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param <T> 数组元素类型
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static <T> T[] sub(T[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return newArray(array.getClass().getComponentType(), 0);
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return newArray(array.getClass().getComponentType(), 0);
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static byte[] sub(byte[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return new byte[0];
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return new byte[0];
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static int[] sub(int[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return new int[0];
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return new int[0];
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static long[] sub(long[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return new long[0];
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return new long[0];
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static short[] sub(short[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return new short[0];
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return new short[0];
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static char[] sub(char[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return new char[0];
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return new char[0];
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static double[] sub(double[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return new double[0];
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return new double[0];
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static float[] sub(float[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return new float[0];
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return new float[0];
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
+    }
+
+    /**
+     * 获取子数组
+     *
+     * @param array 数组
+     * @param start 开始位置（包括）
+     * @param end 结束位置（不包括）
+     * @return 新的数组
+     * @see Arrays#copyOfRange(Object[], int, int)
+     */
+    public static boolean[] sub(boolean[] array, int start, int end) {
+        int length = getLength(array);
+        if (start < 0) {
+            start += length;
+        }
+        if (end < 0) {
+            end += length;
+        }
+        if (start == length) {
+            return new boolean[0];
+        }
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
+        if (end > length) {
+            if (start >= length) {
+                return new boolean[0];
+            }
+            end = length;
+        }
+        return Arrays.copyOfRange(array, start, end);
     }
 
     /**
@@ -8485,7 +8792,7 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口,用于定义过滤规则
      * @return 过滤后的数组
-     * @since 5.6.6
+     * @since 5.6.8
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<>(array.length);

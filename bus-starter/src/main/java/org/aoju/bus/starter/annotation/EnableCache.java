@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 启用缓存
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 @Inherited

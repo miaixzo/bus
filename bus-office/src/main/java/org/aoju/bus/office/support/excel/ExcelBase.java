@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
@@ -123,36 +123,35 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 自定义需要读取或写出的Sheet,如果给定的sheet不存在,创建之
-     * 在读取中,此方法用于切换读取的sheet,在写出时,此方法用于新建或者切换sheet
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之。<br>
+     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet。
      *
      * @param sheetName sheet名
      * @return this
      */
     public T setSheet(String sheetName) {
-        this.sheet = this.workbook.getSheet(sheetName);
-        if (null == this.sheet) {
-            this.sheet = this.workbook.createSheet(sheetName);
-        }
-        return (T) this;
+        return setSheet(BookUtils.getOrCreateSheet(this.workbook, sheetName));
     }
 
     /**
-     * 自定义需要读取或写出的Sheet,如果给定的sheet不存在,创建之（命名为默认）
-     * 在读取中,此方法用于切换读取的sheet,在写出时,此方法用于新建或者切换sheet
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）<br>
+     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
      *
-     * @param sheetIndex sheet序号,从0开始计数
+     * @param sheetIndex sheet序号，从0开始计数
      * @return this
      */
     public T setSheet(int sheetIndex) {
-        try {
-            this.sheet = this.workbook.getSheetAt(sheetIndex);
-        } catch (IllegalArgumentException e) {
-            this.sheet = this.workbook.createSheet();
-        }
-        if (null == this.sheet) {
-            this.sheet = this.workbook.createSheet();
-        }
+        return setSheet(BookUtils.getOrCreateSheet(this.workbook, sheetIndex));
+    }
+
+    /**
+     * 设置自定义Sheet
+     *
+     * @param sheet 自定义sheet，可以通过{@link BookUtils#getOrCreateSheet(Workbook, String)} 创建
+     * @return this
+     */
+    public T setSheet(Sheet sheet) {
+        this.sheet = sheet;
         return (T) this;
     }
 

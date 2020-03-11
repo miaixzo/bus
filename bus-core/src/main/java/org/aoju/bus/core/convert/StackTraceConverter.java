@@ -34,7 +34,7 @@ import java.util.Map;
  * 只支持Map方式转换
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class StackTraceConverter extends AbstractConverter<StackTraceElement> {

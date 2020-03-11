@@ -42,7 +42,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class NetUtils {
@@ -113,12 +113,21 @@ public class NetUtils {
             // 给定的IP未在指定端口范围中
             return false;
         }
-        try {
-            ServerSocketFactory.getDefault().createServerSocket(port, 1, InetAddress.getByName(LOCAL_IP)).close();
-            return true;
-        } catch (Exception e) {
+
+        // 绑定非127.0.0.1的端口无法被检测到
+        try (ServerSocket ss = new ServerSocket(port)) {
+            ss.setReuseAddress(true);
+        } catch (IOException ignored) {
             return false;
         }
+
+        try (DatagramSocket ds = new DatagramSocket(port)) {
+            ds.setReuseAddress(true);
+        } catch (IOException ignored) {
+            return false;
+        }
+
+        return false;
     }
 
     /**

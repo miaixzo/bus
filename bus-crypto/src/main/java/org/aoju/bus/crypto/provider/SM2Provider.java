@@ -61,7 +61,7 @@ import org.aoju.bus.crypto.asymmetric.SM2Engine;
  * RSA 加密解密算法
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class SM2Provider implements Provider {

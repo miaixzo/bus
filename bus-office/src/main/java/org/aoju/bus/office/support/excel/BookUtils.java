@@ -43,7 +43,7 @@ import java.io.OutputStream;
  * Excel工作簿{@link Workbook}相关工具类
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class BookUtils {
@@ -210,7 +210,7 @@ public class BookUtils {
      * @param book {@link Workbook}
      * @param out  输出流
      * @throws InstrumentException IO异常
-     * @since 5.6.6
+     * @since 5.6.8
      */
     public static void writeBook(Workbook book, OutputStream out) throws InstrumentException {
         try {
@@ -222,7 +222,7 @@ public class BookUtils {
 
     /**
      * 获取或者创建sheet表
-     * 如果sheet表在Workbook中已经存在,则获取之,否则创建之
+     * 如果sheet表在Workbook中已经存在，则获取之，否则创建之
      *
      * @param book      工作簿{@link Workbook}
      * @param sheetName 工作表名
@@ -236,6 +236,28 @@ public class BookUtils {
         Sheet sheet = book.getSheet(sheetName);
         if (null == sheet) {
             sheet = book.createSheet(sheetName);
+        }
+        return sheet;
+    }
+
+    /**
+     * 获取或者创建sheet表
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）
+     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
+     *
+     * @param book       工作簿{@link Workbook}
+     * @param sheetIndex 工作表序号
+     * @return 工作表{@link Sheet}
+     */
+    public static Sheet getOrCreateSheet(Workbook book, int sheetIndex) {
+        Sheet sheet = null;
+        try {
+            sheet = book.getSheetAt(sheetIndex);
+        } catch (IllegalArgumentException ignore) {
+            //ignore
+        }
+        if (null == sheet) {
+            sheet = book.createSheet();
         }
         return sheet;
     }

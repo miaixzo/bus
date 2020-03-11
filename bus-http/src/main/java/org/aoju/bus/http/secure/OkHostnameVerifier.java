@@ -39,7 +39,7 @@ import java.util.*;
  * 一个与RFC 2818一致的HostnameVerifier
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public final class OkHostnameVerifier implements HostnameVerifier {

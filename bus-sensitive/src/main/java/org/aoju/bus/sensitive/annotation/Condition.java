@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 用于自定义策略生效条件的注解
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 @Documented

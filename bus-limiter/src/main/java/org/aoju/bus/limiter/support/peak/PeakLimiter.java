@@ -31,7 +31,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public abstract class PeakLimiter implements Limiter<Peak> {

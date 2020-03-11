@@ -42,7 +42,7 @@ import java.util.Date;
  * (由数据中心ID和机器ID作区分),并且效率较高,经测试,SnowFlake每秒能够产生26万ID左右
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class Snowflake implements Serializable {
@@ -54,9 +54,7 @@ public class Snowflake implements Serializable {
     private final long dataCenterIdBits = 5L;
     //// 最大支持机器节点数0~31，一共32个
     // 最大支持数据中心节点数0~31，一共32个
-    @SuppressWarnings({"PointlessBitwiseExpression", "FieldCanBeLocal"})
     private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
-    @SuppressWarnings({"PointlessBitwiseExpression", "FieldCanBeLocal"})
     private final long maxDataCenterId = -1L ^ (-1L << dataCenterIdBits);
     // 序列号12位
     private final long sequenceBits = 12L;
@@ -66,7 +64,6 @@ public class Snowflake implements Serializable {
     private final long dataCenterIdShift = sequenceBits + workerIdBits;
     // 时间毫秒数左移22位
     private final long timestampLeftShift = sequenceBits + workerIdBits + dataCenterIdBits;
-    @SuppressWarnings({"PointlessBitwiseExpression", "FieldCanBeLocal"})
     private final long sequenceMask = -1L ^ (-1L << sequenceBits);// 4095
 
     private long workerId;

@@ -45,7 +45,7 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.6.6
+ * @version 5.6.8
  * @since JDK 1.8+
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
