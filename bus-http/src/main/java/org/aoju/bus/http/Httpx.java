@@ -31,6 +31,7 @@ import org.aoju.bus.core.utils.MapUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.accord.ConnectionPool;
+import org.aoju.bus.http.bodys.FormBody;
 import org.aoju.bus.http.bodys.MultipartBody;
 import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.http.magic.HttpProxy;
@@ -491,9 +492,9 @@ public class Httpx extends Httpd {
      * 通用同步执行方法
      *
      * @param builder Builder
-     * @return String
+     * @return Request 信息
      */
-    private static String execute(final Builder builder) {
+    private static Request.Builder builder(final Builder builder) {
         if (StringUtils.isBlank(builder.requestCharset)) {
             builder.requestCharset = Charset.DEFAULT_UTF_8;
         }
@@ -509,41 +510,56 @@ public class Httpx extends Httpd {
         if (builder.tracer) {
             Logger.info(">>>>>>>>Builder[{}]<<<<<<<<", builder.toString());
         }
-        String url = builder.url;
+
         Request.Builder request = new Request.Builder();
 
-        if (MapUtils.isNotEmpty(builder.queryMap)) {
-            String queryParams = builder.queryMap.entrySet().stream()
-                    .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-                    .collect(Collectors.joining(Symbol.AND));
-            url = String.format("%s%s%s", url, url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, queryParams);
-        }
-        request.url(url);
         if (MapUtils.isNotEmpty(builder.headerMap)) {
             builder.headerMap.forEach(request::addHeader);
         }
         String method = builder.method.toUpperCase();
         String mediaType = String.format("%s;charset=%s", builder.mediaType, builder.requestCharset);
         if (StringUtils.equals(method, Http.GET)) {
+            if (MapUtils.isNotEmpty(builder.queryMap)) {
+                String queryParams = builder.queryMap.entrySet().stream()
+                        .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+                        .collect(Collectors.joining(Symbol.AND));
+                builder.url = String.format("%s%s%s", builder.url, builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, queryParams);
+            }
             request.get();
         } else if (ArrayUtils.contains(new String[]{Http.POST, Http.PUT, Http.DELETE, Http.PATCH}, method)) {
-            String data = StringUtils.isEmpty(builder.data) ? builder.queryMap.toString() : builder.data;
-            RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), data);
-            request.method(method, requestBody);
+            if (StringUtils.isNotEmpty(builder.data)) {
+                RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), builder.data);
+                request.method(method, requestBody);
+            }
+            if (MapUtils.isNotEmpty(builder.queryMap)) {
+                FormBody.Builder form = new FormBody.Builder(Charset.UTF_8);
+                builder.queryMap.forEach((key, value) -> form.add(key, (String) value));
+                request.method(method, form.build());
+            }
         } else {
-            throw new InstrumentException(String.format(">>>>>>>>request method not found [%s]<<<<<<<<", method));
+            throw new InstrumentException(String.format(">>>>>>>>request method not found[%s]<<<<<<<<", method));
         }
+        return request;
+    }
 
+    /**
+     * 通用同步执行方法
+     *
+     * @param builder Builder
+     * @return String 执行结果
+     */
+    private static String execute(final Builder builder) {
+        Request.Builder request = builder(builder);
         String result = Normal.EMPTY;
         try {
-            Response response = httpd.newCall(request.build()).execute();
+            Response response = httpd.newCall(request.url(builder.url).build()).execute();
             if (response.isSuccessful()) {
                 assert response.body() != null;
                 byte[] bytes = response.body().bytes();
                 result = new String(bytes, builder.responseCharset);
             }
             if (builder.tracer) {
-                Logger.info(">>>>>>>>Url[{}],response[{}]<<<<<<<<", url, result);
+                Logger.info(">>>>>>>>Url[{}],response[{}]<<<<<<<<", builder.url, result);
             }
         } catch (Exception e) {
             Logger.error(">>>>>>>>Builder[{}] error<<<<<<<<", builder.toString(), e);
@@ -555,57 +571,16 @@ public class Httpx extends Httpd {
      * 通用异步执行方法
      *
      * @param builder Builder
-     * @return String
+     * @return String 执行结果
      */
     private static String enqueue(final Builder builder) {
-        if (StringUtils.isBlank(builder.requestCharset)) {
-            builder.requestCharset = Charset.DEFAULT_UTF_8;
-        }
-        if (StringUtils.isBlank(builder.responseCharset)) {
-            builder.responseCharset = Charset.DEFAULT_UTF_8;
-        }
-        if (StringUtils.isBlank(builder.method)) {
-            builder.method = Http.GET;
-        }
-        if (StringUtils.isBlank(builder.mediaType)) {
-            builder.mediaType = MediaType.APPLICATION_FORM_URLENCODED;
-        }
-        if (builder.tracer) {
-            Logger.info(">>>>>>>>Builder[{}]<<<<<<<<", builder.toString());
-        }
-        String url = builder.url;
-        Request.Builder request = new Request.Builder();
-
-        if (MapUtils.isNotEmpty(builder.queryMap)) {
-            String queryParams = builder.queryMap.entrySet().stream()
-                    .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-                    .collect(Collectors.joining(Symbol.AND));
-            url = String.format("%s%s%s", url, url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, queryParams);
-        }
-
-        request.url(url);
-        if (MapUtils.isNotEmpty(builder.headerMap)) {
-            builder.headerMap.forEach(request::addHeader);
-        }
-        String method = builder.method.toUpperCase();
-        String mediaType = String.format("%s;charset=%s", builder.mediaType, builder.requestCharset);
-        if (StringUtils.equals(method, Http.GET)) {
-            request.get();
-        } else if (ArrayUtils.contains(new String[]{Http.POST, Http.PUT, Http.DELETE, Http.PATCH}, method)) {
-            String data = StringUtils.isEmpty(builder.data) ? builder.queryMap.toString() : builder.data;
-            RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), data);
-            request.method(method, requestBody);
-        } else {
-            throw new InstrumentException(String.format(">>>>>>>>request method not found[%s]<<<<<<<<", method));
-        }
+        Request.Builder request = builder(builder);
+        NewCall call = httpd.newCall(request.url(builder.url).build());
         String[] result = {Normal.EMPTY};
-
-        String finalUrl = url;
-        NewCall call = httpd.newCall(request.build());
         call.enqueue(new Callback() {
             @Override
             public void onFailure(NewCall call, IOException e) {
-                Logger.info(String.format(">>>>>>>>Url[%s]failure<<<<<<<<", finalUrl));
+                Logger.info(String.format(">>>>>>>>Url[%s]failure<<<<<<<<", builder.url));
             }
 
             @Override
@@ -615,7 +590,7 @@ public class Httpx extends Httpd {
                     byte[] bytes = response.body().bytes();
                     result[0] = new String(bytes, builder.responseCharset);
                     if (builder.tracer) {
-                        Logger.info(">>>>>>>>Url[{}],response[{}]<<<<<<<<", finalUrl, result[0]);
+                        Logger.info(">>>>>>>>Url[{}],response[{}]<<<<<<<<", builder.url, result[0]);
                     }
                 }
             }
