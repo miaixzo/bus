@@ -65,13 +65,6 @@ public class MacSoundCard extends AbstractSoundCard {
     public static List<MacSoundCard> getSoundCards() {
         List<MacSoundCard> soundCards = new ArrayList<>();
 
-        // /System/Library/Extensions/AppleHDA.kext/Contents/Info.plist
-
-        // ..... snip ....
-        // <dict>
-        // <key>com.apple.driver.AppleHDAController</key>
-        // <string>1.7.2a1</string>
-
         String manufacturer = APPLE;
         String kernelVersion = "AppleHDAController";
         String codec = "AppleHDACodec";
