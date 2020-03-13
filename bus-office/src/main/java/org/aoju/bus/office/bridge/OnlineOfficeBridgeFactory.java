@@ -31,7 +31,7 @@ import org.aoju.bus.office.metric.RequestBuilder;
  * 保存与LibreOffice在线服务器通信的请求配置.
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class OnlineOfficeBridgeFactory implements OnlineOfficeContextAware {

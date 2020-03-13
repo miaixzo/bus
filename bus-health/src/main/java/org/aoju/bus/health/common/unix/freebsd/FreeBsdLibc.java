@@ -36,7 +36,7 @@ import org.aoju.bus.health.common.unix.CLibrary;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public interface FreeBsdLibc extends CLibrary {

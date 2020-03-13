@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 值匹配,始终返回<code>true</code>
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class AlwaysTrueValueMatcher implements ValueMatcher {

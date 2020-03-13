@@ -43,7 +43,7 @@ import java.util.Objects;
  * Pinterest登录
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class PinterestProvider extends DefaultProvider {

@@ -52,7 +52,7 @@ import java.util.Map;
  * represented by a drive letter, e.g., "A:\" and "C:\"
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class WindowsFileSystem implements FileSystem {

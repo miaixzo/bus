@@ -28,7 +28,7 @@ import org.aoju.bus.tracer.Backend;
 
 /**
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public interface TraceBackendProvider {

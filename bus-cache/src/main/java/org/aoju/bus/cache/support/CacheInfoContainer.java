@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentMap;
  * 定位: 将@Cached、@Invalid、@CachedGet、(@CachedPut未来)以及将@CacheKey整体融合到一起
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class CacheInfoContainer {

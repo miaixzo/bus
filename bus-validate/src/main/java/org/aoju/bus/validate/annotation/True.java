@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * boolean校验, 当校验值为true时通过校验
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 @Documented

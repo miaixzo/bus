@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
  * HTTP授权工厂
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public final class Credentials {

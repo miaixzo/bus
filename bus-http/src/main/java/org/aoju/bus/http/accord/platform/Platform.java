@@ -59,7 +59,7 @@ import java.util.List;
  * 支持Android 6.0+ {@code NetworkSecurityPolicy}
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class Platform {

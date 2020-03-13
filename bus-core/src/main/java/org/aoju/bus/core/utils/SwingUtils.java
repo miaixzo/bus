@@ -43,7 +43,7 @@ import java.net.URI;
  * 显示器等相关工具
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class SwingUtils {

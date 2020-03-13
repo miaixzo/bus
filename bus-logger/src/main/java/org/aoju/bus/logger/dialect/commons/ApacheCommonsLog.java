@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Apache Commons Logging
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class ApacheCommonsLog extends AbstractAware {

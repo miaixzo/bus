@@ -34,7 +34,7 @@ import java.net.MalformedURLException;
  * Hessian 服务提供
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class HessianProvider implements Provider {

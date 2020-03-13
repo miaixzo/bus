@@ -38,7 +38,7 @@ import java.util.concurrent.*;
  * OfficeProcessManager负责管理一个office流程以及到这个office流程的连接(桥接).
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class OfficeProcessManager {

@@ -29,6 +29,7 @@ import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
+import org.apache.hc.core5.http.EntityDetails;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.HttpResponseInterceptor;
@@ -40,7 +41,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
@@ -64,7 +65,7 @@ public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
     }
 
     @Override
-    public final void process(HttpResponse response, HttpContext context) {
+    public final void process(final HttpResponse response, final EntityDetails entityDetails, final HttpContext httpContext) {
         final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
         final Iterator<Header> headerIterator = response.headerIterator(TraceConsts.TPIC_HEADER);
         if (headerIterator != null && headerIterator.hasNext()
