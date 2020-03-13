@@ -35,7 +35,7 @@ import java.io.OutputStream;
  * 包装的解密器
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public abstract class WrappedDecryptorProvider implements DecryptorProvider {

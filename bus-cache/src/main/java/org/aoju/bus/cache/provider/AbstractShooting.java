@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public abstract class AbstractShooting implements Shooting {

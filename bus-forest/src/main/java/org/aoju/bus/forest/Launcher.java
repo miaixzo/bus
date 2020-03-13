@@ -48,7 +48,7 @@ import java.util.jar.Manifest;
  * Spring-Boot 启动器
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class Launcher {

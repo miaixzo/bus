@@ -40,7 +40,7 @@ import java.util.Map;
  * FreeBSD soundcard.
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class FreeBsdSoundCard extends AbstractSoundCard {

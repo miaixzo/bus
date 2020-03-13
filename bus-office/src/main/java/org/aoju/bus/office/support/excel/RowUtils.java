@@ -37,7 +37,7 @@ import java.util.List;
  * Excel中的行{@link Row}封装工具类
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class RowUtils {

@@ -44,7 +44,7 @@ import java.nio.file.*;
  * 递归监听目录时,并不会监听新创建的目录
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class WatchMonitor extends WatchServer {

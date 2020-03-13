@@ -38,7 +38,7 @@ import java.util.Objects;
  * {@link Map} 转换器
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class MapConverter extends AbstractConverter<Map<?, ?>> {

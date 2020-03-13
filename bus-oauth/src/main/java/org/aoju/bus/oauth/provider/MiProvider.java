@@ -44,7 +44,7 @@ import java.text.MessageFormat;
  * 小米登录
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class MiProvider extends DefaultProvider {

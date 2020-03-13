@@ -39,7 +39,7 @@ import java.util.TimeZone;
  * {@link #getDateTimeInstance(int, int, TimeZone, Locale)}
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class FormatBuilder extends Format implements DateParser, DatePrinter {

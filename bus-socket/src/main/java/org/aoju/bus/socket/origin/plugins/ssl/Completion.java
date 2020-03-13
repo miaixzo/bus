@@ -32,7 +32,7 @@ import java.nio.channels.CompletionHandler;
 
 /**
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 class Completion implements CompletionHandler<Integer, Handshake> {

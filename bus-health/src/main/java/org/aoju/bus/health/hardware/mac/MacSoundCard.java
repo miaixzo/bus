@@ -35,7 +35,7 @@ import java.util.List;
  * Sound card data obtained via system_profiler
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class MacSoundCard extends AbstractSoundCard {
@@ -64,13 +64,6 @@ public class MacSoundCard extends AbstractSoundCard {
      */
     public static List<MacSoundCard> getSoundCards() {
         List<MacSoundCard> soundCards = new ArrayList<>();
-
-        // /System/Library/Extensions/AppleHDA.kext/Contents/Info.plist
-
-        // ..... snip ....
-        // <dict>
-        // <key>com.apple.driver.AppleHDAController</key>
-        // <string>1.7.2a1</string>
 
         String manufacturer = APPLE;
         String kernelVersion = "AppleHDAController";

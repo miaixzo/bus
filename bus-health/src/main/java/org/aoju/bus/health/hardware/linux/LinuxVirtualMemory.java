@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * Memory obtained by /proc/meminfo and /proc/vmstat
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class LinuxVirtualMemory extends AbstractVirtualMemory {

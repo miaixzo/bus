@@ -50,7 +50,7 @@ import java.nio.file.Path;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class Image implements Serializable {
@@ -543,7 +543,7 @@ public class Image implements Serializable {
      *
      * @param degree 旋转角度
      * @return 旋转后的图片
-     * @since 5.6.8
+     * @since 5.6.9
      */
     public Image rotate(int degree) {
         final java.awt.Image image = getValidSrcImg();

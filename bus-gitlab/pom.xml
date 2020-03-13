@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-gitlab</artifactId>
-    <version>5.6.8</version>
+    <version>5.6.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

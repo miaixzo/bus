@@ -32,7 +32,7 @@ import org.aoju.bus.health.Systemd;
  * 代表当前运行的JRE的信息
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class JavaRuntime {

@@ -30,7 +30,7 @@ import org.aoju.bus.forest.Complex;
  * 记录可过滤的加密器
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public abstract class EntryEncryptorProvider<E> extends WrappedEncryptorProvider implements EncryptorProvider, Complex<E> {

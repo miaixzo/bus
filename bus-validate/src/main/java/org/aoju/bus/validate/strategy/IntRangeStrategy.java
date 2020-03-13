@@ -39,7 +39,7 @@ import java.util.Set;
  * INT RANGE 校验
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class IntRangeStrategy implements Matcher<Object, IntRange> {

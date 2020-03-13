@@ -29,6 +29,7 @@ import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.config.TraceFilterConfiguration;
 import org.aoju.bus.tracer.consts.TraceConsts;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
+import org.apache.hc.core5.http.EntityDetails;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.HttpRequestInterceptor;
 import org.apache.hc.core5.http.protocol.HttpContext;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class TraceHttpRequestInterceptor implements HttpRequestInterceptor {
@@ -61,7 +62,7 @@ public class TraceHttpRequestInterceptor implements HttpRequestInterceptor {
     }
 
     @Override
-    public final void process(final HttpRequest httpRequest, final HttpContext httpContext) {
+    public final void process(final HttpRequest httpRequest, final EntityDetails entityDetails, final HttpContext httpContext) {
         final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
         if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(TraceFilterConfiguration.Channel.OutgoingRequest)) {
             final Map<String, String> filteredParams = filterConfiguration.filterDeniedParams(backend.copyToMap(),

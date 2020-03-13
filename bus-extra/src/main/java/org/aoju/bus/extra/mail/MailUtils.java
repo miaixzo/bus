@@ -36,7 +36,7 @@ import java.util.List;
  * 邮件工具类,基于javax.mail封装
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class MailUtils {
@@ -49,7 +49,7 @@ public class MailUtils {
      * @param subject 标题
      * @param content 正文
      * @param files   附件列表
-     * @since 5.6.8
+     * @since 5.6.9
      */
     public static void sendText(String to, String subject, String content, File... files) {
         send(to, subject, content, false, files);
@@ -63,7 +63,7 @@ public class MailUtils {
      * @param subject 标题
      * @param content 正文
      * @param files   附件列表
-     * @since 5.6.8
+     * @since 5.6.9
      */
     public static void sendHtml(String to, String subject, String content, File... files) {
         send(to, subject, content, true, files);
@@ -118,7 +118,7 @@ public class MailUtils {
      * @param subject 标题
      * @param content 正文
      * @param files   附件列表
-     * @since 5.6.8
+     * @since 5.6.9
      */
     public static void sendHtml(Collection<String> tos, String subject, String content, File... files) {
         send(tos, subject, content, true, files);
@@ -161,7 +161,7 @@ public class MailUtils {
      * @param content     正文
      * @param isHtml      是否为HTML格式
      * @param files       附件列表
-     * @since 5.6.8
+     * @since 5.6.9
      */
     public static void send(MailAccount mailAccount, String to, String subject, String content, boolean isHtml, File... files) {
         send(mailAccount, splitAddress(to), subject, content, isHtml, files);

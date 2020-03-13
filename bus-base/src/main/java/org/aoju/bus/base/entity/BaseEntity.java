@@ -27,21 +27,20 @@ package org.aoju.bus.base.entity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.aoju.bus.base.consts.Consts;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.DateUtils;
-import org.aoju.bus.core.utils.ReflectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.utils.*;
 
 import javax.persistence.Transient;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * <p>
  * Entity 基本信息.
- * </p>
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 @Data
@@ -151,6 +150,69 @@ public class BaseEntity extends Tracer {
             String field = fields[i];
             if (ReflectUtils.hasField(entity, field)) {
                 ReflectUtils.invokeSetter(entity, field, value[i]);
+            }
+        }
+    }
+
+    /**
+     * 设置访问信息
+     *
+     * @param <T>    对象泛型
+     * @param source 源始实体
+     * @param target 目标实体
+     */
+    public static <T extends BaseEntity> void setAccess(T source, T target) {
+        if (Objects.isNull(source) || Objects.isNull(target)) {
+            return;
+        }
+        target.setX_org_id(source.getX_org_id());
+        target.setX_user_id(source.getX_user_id());
+    }
+
+    /**
+     * 设置访问信息
+     *
+     * @param <T>    对象泛型
+     * @param source 源始实体
+     * @param target 目标实体
+     */
+    public static <T extends BaseEntity> void setAccess(T source, T... target) {
+        if (Objects.isNull(source) || ArrayUtils.isEmpty(target)) {
+            return;
+        }
+        for (T targetEntity : target) {
+            setAccess(source, targetEntity);
+        }
+    }
+
+    /**
+     * 设置访问信息
+     *
+     * @param <S>    源对象泛型
+     * @param <E>    集合元素对象泛型
+     * @param source 源始实体
+     * @param target 目标实体
+     */
+    public static <S extends BaseEntity, E extends BaseEntity> void setAccess(S source, List<E> target) {
+        if (Objects.isNull(source) || CollUtils.isEmpty(target)) {
+            return;
+        }
+        target.forEach(targetEntity -> setAccess(source, targetEntity));
+    }
+
+    /**
+     * 重置数字型字符串为null，防止插入数据库表异常
+     *
+     * @param <T>    对象泛型
+     * @param entity 实体对象
+     * @param fields 数字型字符串属性数组
+     * @param values 值数据
+     */
+    public static <T extends BaseEntity> void resetIntField(T entity, String[] fields, String[] values) {
+        for (int i = 0; i < fields.length; i++) {
+            String field = fields[i];
+            if (Consts.EMPTY.equals(values[i]) && ReflectUtils.hasField(entity, field)) {
+                ReflectUtils.invokeSetter(entity, field, null);
             }
         }
     }

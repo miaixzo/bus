@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>5.6.8</version>
+    <version>5.6.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <mysql.version>8.0.18</mysql.version>
+        <mysql.version>8.0.19</mysql.version>
         <druid.version>1.1.20</druid.version>
         <dubbo.version>2.7.5</dubbo.version>
     </properties>

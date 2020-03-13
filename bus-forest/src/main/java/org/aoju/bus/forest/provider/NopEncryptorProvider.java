@@ -33,7 +33,7 @@ import java.io.*;
  * 无操作加密器
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public class NopEncryptorProvider implements EncryptorProvider {

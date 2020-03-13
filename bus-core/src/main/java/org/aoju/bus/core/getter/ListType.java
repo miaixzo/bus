@@ -32,7 +32,7 @@ import java.util.List;
  * 列表类型的Get接口
  *
  * @author Kimi Liu
- * @version 5.6.8
+ * @version 5.6.9
  * @since JDK 1.8+
  */
 public interface ListType {
