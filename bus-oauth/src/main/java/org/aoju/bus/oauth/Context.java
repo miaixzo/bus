@@ -48,7 +48,7 @@ public class Context {
     private String appKey;
 
     /**
-     *  对应各平台的appSecret
+     * 对应各平台的appSecret
      */
     private String appSecret;
 

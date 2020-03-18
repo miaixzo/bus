@@ -904,7 +904,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             return rowMap;
         }
 
-        final Map<Object, Object> filteredMap =  MapUtils.newHashMap(rowMap.size(), true);
+        final Map<Object, Object> filteredMap = MapUtils.newHashMap(rowMap.size(), true);
         String aliasName;
         for (Entry<?, ?> entry : rowMap.entrySet()) {
             aliasName = this.headerAlias.get(entry.getKey());

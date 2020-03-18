@@ -72,6 +72,19 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
+     * 设置父节点
+     *
+     * @param parent 父节点
+     */
+    public TreeMap<T> setParent(TreeMap<T> parent) {
+        this.parent = parent;
+        if (null != parent) {
+            this.setParentId(parent.getId());
+        }
+        return this;
+    }
+
+    /**
      * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。
      * 此方法只查找此节点及子节点，采用广度优先遍历。
      *
@@ -105,19 +118,6 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
      */
     public List<CharSequence> getParentsName(boolean includeCurrentNode) {
         return TreeUtils.getParentsName(this, includeCurrentNode);
-    }
-
-    /**
-     * 设置父节点
-     *
-     * @param parent 父节点
-     */
-    public TreeMap<T> setParent(TreeMap<T> parent) {
-        this.parent = parent;
-        if (null != parent) {
-            this.setParentId(parent.getId());
-        }
-        return this;
     }
 
     @Override

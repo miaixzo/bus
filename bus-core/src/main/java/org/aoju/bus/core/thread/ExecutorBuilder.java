@@ -72,6 +72,49 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     private Boolean allowCoreThreadTimeOut;
 
     /**
+     * 创建ExecutorBuilder，开始构建
+     *
+     * @return {@link ExecutorBuilder}
+     */
+    public static ExecutorBuilder create() {
+        return new ExecutorBuilder();
+    }
+
+    /**
+     * 构建ThreadPoolExecutor
+     *
+     * @param builder {@link ExecutorBuilder}
+     * @return {@link ThreadPoolExecutor}
+     */
+    private static ThreadPoolExecutor build(ExecutorBuilder builder) {
+        final int corePoolSize = builder.corePoolSize;
+        final int maxPoolSize = builder.maxPoolSize;
+        final long keepAliveTime = builder.keepAliveTime;
+        final BlockingQueue<Runnable> workQueue;
+        if (null != builder.workQueue) {
+            workQueue = builder.workQueue;
+        } else {
+            // corePoolSize为0则要使用SynchronousQueue避免无限阻塞
+            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
+        }
+        final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
+        RejectedExecutionHandler handler = ObjectUtils.defaultIfNull(builder.handler, new ThreadPoolExecutor.AbortPolicy());
+
+        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(//
+                corePoolSize,
+                maxPoolSize,
+                keepAliveTime, TimeUnit.NANOSECONDS,
+                workQueue,
+                threadFactory,
+                handler
+        );
+        if (null != builder.allowCoreThreadTimeOut) {
+            threadPoolExecutor.allowCoreThreadTimeOut(builder.allowCoreThreadTimeOut);
+        }
+        return threadPoolExecutor;
+    }
+
+    /**
      * 设置初始池大小，默认0
      *
      * @param corePoolSize 初始池大小
@@ -204,15 +247,6 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 创建ExecutorBuilder，开始构建
-     *
-     * @return {@link ExecutorBuilder}
-     */
-    public static ExecutorBuilder create() {
-        return new ExecutorBuilder();
-    }
-
-    /**
      * 构建ThreadPoolExecutor
      */
     @Override
@@ -227,40 +261,6 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      */
     public ExecutorService buildFinalizable() {
         return new ExecutorService(build());
-    }
-
-    /**
-     * 构建ThreadPoolExecutor
-     *
-     * @param builder {@link ExecutorBuilder}
-     * @return {@link ThreadPoolExecutor}
-     */
-    private static ThreadPoolExecutor build(ExecutorBuilder builder) {
-        final int corePoolSize = builder.corePoolSize;
-        final int maxPoolSize = builder.maxPoolSize;
-        final long keepAliveTime = builder.keepAliveTime;
-        final BlockingQueue<Runnable> workQueue;
-        if (null != builder.workQueue) {
-            workQueue = builder.workQueue;
-        } else {
-            // corePoolSize为0则要使用SynchronousQueue避免无限阻塞
-            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
-        }
-        final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
-        RejectedExecutionHandler handler = ObjectUtils.defaultIfNull(builder.handler, new ThreadPoolExecutor.AbortPolicy());
-
-        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(//
-                corePoolSize,
-                maxPoolSize,
-                keepAliveTime, TimeUnit.NANOSECONDS,
-                workQueue,
-                threadFactory,
-                handler
-        );
-        if (null != builder.allowCoreThreadTimeOut) {
-            threadPoolExecutor.allowCoreThreadTimeOut(builder.allowCoreThreadTimeOut);
-        }
-        return threadPoolExecutor;
     }
 
 }

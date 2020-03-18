@@ -593,9 +593,9 @@ public class ExcelUtils {
      * @param locationRef 单元格地址标识符，例如A11，B5
      * @return 坐标点，x表示行，从0开始，y表示列，从0开始
      */
-    public static CellLocation toLocation(String locationRef){
+    public static CellLocation toLocation(String locationRef) {
         final int x = colNameToIndex(locationRef);
-        final int y = PatternUtils.getFirstNumber(locationRef) -1;
+        final int y = PatternUtils.getFirstNumber(locationRef) - 1;
         return new CellLocation(x, y);
     }
 

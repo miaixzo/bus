@@ -312,6 +312,74 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
+     * MD5加密饿了么请求的Signature
+     * <p>
+     * 代码copy并修改自：https://coding.net/u/napos_openapi/p/eleme-openapi-java-sdk/git/blob/master/src/main/java/eleme/openapi/sdk/utils/SignatureUtil.java
+     *
+     * @param str 饿了么请求的Signature
+     * @return md5 str
+     */
+    private static String md5(String str) {
+        MessageDigest md;
+        StringBuilder buffer = null;
+        try {
+            md = MessageDigest.getInstance(Algorithm.MD5);
+            md.update(str.getBytes(StandardCharsets.UTF_8));
+            byte[] byteData = md.digest();
+            buffer = new StringBuilder();
+            for (byte byteDatum : byteData) {
+                buffer.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
+            }
+        } catch (Exception ignored) {
+        }
+
+        return null == buffer ? Normal.EMPTY : buffer.toString();
+    }
+
+    /**
+     * 检查配置合法性 针对部分平台, 对redirect uri有特定要求 一般来说redirect uri都是http://,而对于facebook平台, redirect uri 必须是https的链接
+     *
+     * @param context context
+     * @param source  source
+     * @since 1.6.2
+     */
+    public static void checkcontext(Context context, Complex source) {
+        String redirectUri = context.getRedirectUri();
+        if (!isHttpProtocol(redirectUri) && !isHttpsProtocol(redirectUri)) {
+            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+        }
+        // facebook的回调地址必须为https的链接
+        if (Registry.FACEBOOK == source && !isHttpsProtocol(redirectUri)) {
+            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+        }
+        // 支付宝在创建回调地址时,不允许使用localhost或者127.0.0.1
+        if (Registry.ALIPAY == source && isLocalHost(redirectUri)) {
+            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+        }
+    }
+
+    /**
+     * 校验回调传回的code
+     * <p>
+     * {@code v1.10.0}版本中改为传入{@code source}和{@code callback},对于不同平台使用不同参数接受code的情况统一做处理
+     *
+     * @param complex  当前授权平台
+     * @param callback 从第三方授权回调回来时传入的参数集合
+     * @since 1.8.0
+     */
+    public static void checkCode(Complex complex, Callback callback) {
+        String code = callback.getCode();
+        if (complex == Registry.ALIPAY) {
+            code = callback.getAuth_code();
+        } else if (complex == Registry.HUAWEI) {
+            code = callback.getAuthorization_code();
+        }
+        if (StringUtils.isEmpty(code)) {
+            throw new InstrumentException(Builder.Status.ILLEGAL_CODE.getCode());
+        }
+    }
+
+    /**
      * 字符串转map，字符串格式为 {@code xxx=xxx&xxx=xxx}
      *
      * @param str    待转换的字符串
@@ -388,31 +456,6 @@ public abstract class DefaultProvider implements Provider {
         return params;
     }
 
-    /**
-     * MD5加密饿了么请求的Signature
-     * <p>
-     * 代码copy并修改自：https://coding.net/u/napos_openapi/p/eleme-openapi-java-sdk/git/blob/master/src/main/java/eleme/openapi/sdk/utils/SignatureUtil.java
-     *
-     * @param str 饿了么请求的Signature
-     * @return md5 str
-     */
-    private static String md5(String str) {
-        MessageDigest md;
-        StringBuilder buffer = null;
-        try {
-            md = MessageDigest.getInstance(Algorithm.MD5);
-            md.update(str.getBytes(StandardCharsets.UTF_8));
-            byte[] byteData = md.digest();
-            buffer = new StringBuilder();
-            for (byte byteDatum : byteData) {
-                buffer.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
-            }
-        } catch (Exception ignored) {
-        }
-
-        return null == buffer ? Normal.EMPTY : buffer.toString();
-    }
-
     private void addParam(Map<String, String> params, String key, String value, boolean decode) {
         key = decode ? urlDecode(key) : key;
         value = decode ? urlDecode(value) : value;
@@ -420,49 +463,6 @@ public abstract class DefaultProvider implements Provider {
             params.put(key, params.get(key) + "," + value);
         } else {
             params.put(key, value);
-        }
-    }
-
-    /**
-     * 检查配置合法性 针对部分平台, 对redirect uri有特定要求 一般来说redirect uri都是http://,而对于facebook平台, redirect uri 必须是https的链接
-     *
-     * @param context context
-     * @param source  source
-     * @since 1.6.2
-     */
-    public static void checkcontext(Context context, Complex source) {
-        String redirectUri = context.getRedirectUri();
-        if (!isHttpProtocol(redirectUri) && !isHttpsProtocol(redirectUri)) {
-            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
-        }
-        // facebook的回调地址必须为https的链接
-        if (Registry.FACEBOOK == source && !isHttpsProtocol(redirectUri)) {
-            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
-        }
-        // 支付宝在创建回调地址时,不允许使用localhost或者127.0.0.1
-        if (Registry.ALIPAY == source && isLocalHost(redirectUri)) {
-            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
-        }
-    }
-
-    /**
-     * 校验回调传回的code
-     * <p>
-     * {@code v1.10.0}版本中改为传入{@code source}和{@code callback},对于不同平台使用不同参数接受code的情况统一做处理
-     *
-     * @param complex  当前授权平台
-     * @param callback 从第三方授权回调回来时传入的参数集合
-     * @since 1.8.0
-     */
-    public static void checkCode(Complex complex, Callback callback) {
-        String code = callback.getCode();
-        if (complex == Registry.ALIPAY) {
-            code = callback.getAuth_code();
-        } else if (complex == Registry.HUAWEI) {
-            code = callback.getAuthorization_code();
-        }
-        if (StringUtils.isEmpty(code)) {
-            throw new InstrumentException(Builder.Status.ILLEGAL_CODE.getCode());
         }
     }
 

@@ -124,8 +124,8 @@ public final class Builder {
      * </pre>
      */
     public static final String SM2_DEFAULT_CURVE = "sm2p256v1";
-    private final static int RS_LEN = 32;
     public static final ECDomainParameters SM2_DOMAIN_PARAMS = toDomainParams(GMNamedCurves.getByName(SM2_DEFAULT_CURVE));
+    private final static int RS_LEN = 32;
 
     /**
      * 数据加密

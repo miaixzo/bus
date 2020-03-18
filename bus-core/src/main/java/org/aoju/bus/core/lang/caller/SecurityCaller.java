@@ -67,7 +67,7 @@ public class SecurityCaller extends SecurityManager implements Caller {
     @Override
     public boolean isCalledBy(Class<?> clazz) {
         final Class<?>[] classes = getClassContext();
-        if(ArrayUtils.isNotEmpty(classes)) {
+        if (ArrayUtils.isNotEmpty(classes)) {
             for (Class<?> contextClass : classes) {
                 if (contextClass.equals(clazz)) {
                     return true;

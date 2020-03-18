@@ -37,7 +37,7 @@ import org.aoju.bus.core.lang.tree.TreeMap;
 public interface NodeParser<T, E> {
 
     /**
-     * @param object   源数据实体
+     * @param object      源数据实体
      * @param treeMapNode 树节点实体
      */
     void parse(T object, TreeMap<E> treeMapNode);
