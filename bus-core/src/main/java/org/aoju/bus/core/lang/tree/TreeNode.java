@@ -33,7 +33,7 @@ package org.aoju.bus.core.lang.tree;
  * @version 5.6.9
  * @since JDK 1.8+
  */
-public class TreeNode<T> implements Comparable<TreeMap<T>> {
+public class TreeNode<T> implements Node<T> {
 
     /**
      * ID
@@ -80,92 +80,48 @@ public class TreeNode<T> implements Comparable<TreeMap<T>> {
 
     }
 
-    /**
-     * 获取ID
-     *
-     * @return ID
-     */
+    @Override
     public T getId() {
         return id;
     }
 
-    /**
-     * 设置ID
-     *
-     * @param id ID
-     */
-    public void setId(T id) {
+    @Override
+    public TreeNode<T> setId(T id) {
         this.id = id;
+        return this;
     }
 
-    /**
-     * 获取父节点ID
-     *
-     * @return 父节点ID
-     */
+    @Override
     public T getParentId() {
         return this.parentId;
     }
 
-    /**
-     * 设置父节点ID
-     *
-     * @param parentId 父节点ID
-     * @return 父节点ID
-     */
+    @Override
     public TreeNode<T> setParentId(T parentId) {
         this.parentId = parentId;
         return this;
     }
 
-    /**
-     * 获取节点标签名称
-     *
-     * @return 节点标签名称
-     */
+    @Override
     public CharSequence getName() {
         return name;
     }
 
-    /**
-     * 设置节点标签名称
-     *
-     * @param name 节点标签名称
-     * @return this
-     */
+    @Override
     public TreeNode<T> setName(CharSequence name) {
         this.name = name;
         return this;
     }
 
-    /**
-     * 获取权重
-     *
-     * @return 权重
-     */
+    @Override
     public Comparable<?> getWeight() {
         return weight;
     }
 
-    /**
-     * 设置权重
-     *
-     * @param weight 权重
-     * @return this
-     */
+    @Override
     public TreeNode<T> setWeight(Comparable<?> weight) {
         this.weight = weight;
         return this;
-    }
-
-    @Override
-    public int compareTo(TreeMap treeMap) {
-        final Comparable weight = this.getWeight();
-        if (null != weight) {
-            final Comparable weightOther = treeMap.getWeight();
-            return weight.compareTo(weightOther);
-        }
-        return 0;
     }
 
 }

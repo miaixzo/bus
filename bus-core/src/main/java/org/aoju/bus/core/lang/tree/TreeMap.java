@@ -26,6 +26,7 @@ package org.aoju.bus.core.lang.tree;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.utils.TreeUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,11 +39,11 @@ import java.util.List;
  * @version 5.6.9
  * @since JDK 1.8+
  */
-public class TreeMap<T> extends LinkedHashMap<String, Object> implements Comparable<TreeMap<T>> {
+public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T> {
 
     private static final long serialVersionUID = 1L;
 
-    private TreeEntity treeEntity;
+    private TreeEntity TreeEntity;
     private TreeMap<T> parent;
 
     public TreeMap() {
@@ -52,28 +53,64 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Compara
     /**
      * 构造
      *
-     * @param treeEntity TreeNode配置
+     * @param TreeEntity TreeNode配置
      */
-    public TreeMap(TreeEntity treeEntity) {
+    public TreeMap(TreeEntity TreeEntity) {
         super();
-        this.treeEntity = ObjectUtils.defaultIfNull(
-                treeEntity, TreeEntity.DEFAULT);
+        this.TreeEntity = ObjectUtils.defaultIfNull(
+                TreeEntity, TreeEntity.DEFAULT);
     }
 
     /**
      * 获取父节点
      *
      * @return 父节点
+     * @since 5.2.4
      */
     public TreeMap<T> getParent() {
         return parent;
     }
 
     /**
+     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。
+     * 此方法只查找此节点及子节点，采用广度优先遍历。
+     *
+     * @param id ID
+     * @return 节点
+     */
+    public TreeMap<T> getNode(T id) {
+        return TreeUtils.getNode(this, id);
+    }
+
+    /**
+     * 获取所有父节点名称列表
+     * 比如有员工在研发一部，上级部门为研发部，接着上面有技术中心
+     * 返回结果就是：[研发一部, 研发中心, 技术中心]
+     *
+     * @param id                 节点ID
+     * @param includeCurrentNode 是否包含当前节点的名称
+     * @return 所有父节点名称列表
+     */
+    public List<CharSequence> getParentsName(T id, boolean includeCurrentNode) {
+        return TreeUtils.getParentsName(getNode(id), includeCurrentNode);
+    }
+
+    /**
+     * 获取所有父节点名称列表
+     * 比如有员工在研发一部，上级部门为研发部，接着上面有技术中心
+     * 返回结果就是：[研发一部, 研发中心, 技术中心]
+     *
+     * @param includeCurrentNode 是否包含当前节点的名称
+     * @return 所有父节点名称列表
+     */
+    public List<CharSequence> getParentsName(boolean includeCurrentNode) {
+        return TreeUtils.getParentsName(this, includeCurrentNode);
+    }
+
+    /**
      * 设置父节点
      *
      * @param parent 父节点
-     * @return 节点信息
      */
     public TreeMap<T> setParent(TreeMap<T> parent) {
         this.parent = parent;
@@ -83,64 +120,56 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Compara
         return this;
     }
 
-    /**
-     * 获取节点ID
-     *
-     * @return 节点ID
-     */
+    @Override
     public T getId() {
-        return (T) this.get(treeEntity.getIdKey());
+        return (T) this.get(TreeEntity.getIdKey());
     }
 
-    /**
-     * 设置节点ID
-     *
-     * @param id 节点ID
-     * @return this
-     */
+    @Override
     public TreeMap<T> setId(T id) {
-        this.put(treeEntity.getIdKey(), id);
+        this.put(TreeEntity.getIdKey(), id);
         return this;
     }
 
-    /**
-     * 获取父节点ID
-     *
-     * @return 父节点ID
-     */
+    @Override
     public T getParentId() {
-        return (T) this.get(treeEntity.getParentIdKey());
+        return (T) this.get(TreeEntity.getParentIdKey());
     }
 
+    @Override
     public TreeMap<T> setParentId(T parentId) {
-        this.put(treeEntity.getParentIdKey(), parentId);
+        this.put(TreeEntity.getParentIdKey(), parentId);
         return this;
     }
 
-    public T getName() {
-        return (T) this.get(treeEntity.getNameKey());
+    @Override
+    public CharSequence getName() {
+        return (CharSequence) this.get(TreeEntity.getNameKey());
     }
 
-    public TreeMap<T> setName(Object name) {
-        this.put(treeEntity.getNameKey(), name);
+    @Override
+    public TreeMap<T> setName(CharSequence name) {
+        this.put(TreeEntity.getNameKey(), name);
         return this;
     }
 
+    @Override
     public Comparable<?> getWeight() {
-        return (Comparable<?>) this.get(treeEntity.getWeightKey());
+        return (Comparable<?>) this.get(TreeEntity.getWeightKey());
     }
 
+    @Override
     public TreeMap<T> setWeight(Comparable<?> weight) {
-        this.put(treeEntity.getWeightKey(), weight);
+        this.put(TreeEntity.getWeightKey(), weight);
         return this;
     }
 
     public List<TreeMap<T>> getChildren() {
-        return (List<TreeMap<T>>) this.get(treeEntity.getChildrenKey());
+        return (List<TreeMap<T>>) this.get(TreeEntity.getChildrenKey());
     }
 
     public void setChildren(List<TreeMap<T>> children) {
-        this.put(treeEntity.getChildrenKey(), children);
+        this.put(TreeEntity.getChildrenKey(), children);
     }
 
     /**
@@ -152,16 +181,6 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Compara
     public void putExtra(String key, Object value) {
         Assert.notEmpty(key, "Key must be not empty !");
         this.put(key, value);
-    }
-
-    @Override
-    public int compareTo(TreeMap<T> treeMap) {
-        final Comparable weight = this.getWeight();
-        if (null != weight) {
-            final Comparable weightOther = treeMap.getWeight();
-            return weight.compareTo(weightOther);
-        }
-        return 0;
     }
 
 }
