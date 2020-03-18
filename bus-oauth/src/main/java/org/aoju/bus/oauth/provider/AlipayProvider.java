@@ -55,14 +55,14 @@ public class AlipayProvider extends DefaultProvider {
 
     public AlipayProvider(Context context) {
         super(context, Registry.ALIPAY);
-        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getClientId(), context.getClientSecret(), "json", "UTF-8", context
-                .getAlipayPublicKey(), "RSA2");
+        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(), "json", "UTF-8", context
+                .getPublicKey(), "RSA2");
     }
 
     public AlipayProvider(Context context, StateCache stateCache) {
         super(context, Registry.ALIPAY, stateCache);
-        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getClientId(), context.getClientSecret(), "json", "UTF-8", context
-                .getAlipayPublicKey(), "RSA2");
+        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(), "json", "UTF-8", context
+                .getPublicKey(), "RSA2");
     }
 
     @Override
@@ -126,7 +126,7 @@ public class AlipayProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
-                .queryParam("app_id", context.getClientId())
+                .queryParam("app_id", context.getAppKey())
                 .queryParam("scope", "auth_user")
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))

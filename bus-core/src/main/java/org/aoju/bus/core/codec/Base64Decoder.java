@@ -61,7 +61,7 @@ public class Base64Decoder {
      * @return 被加密后的字符串
      */
     public static String decodeStr(CharSequence source, Charset charset) {
-        return StringUtils.str(decode(source), charset);
+        return StringUtils.toString(decode(source), charset);
     }
 
     /**

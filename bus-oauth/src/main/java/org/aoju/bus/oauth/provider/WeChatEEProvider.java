@@ -124,7 +124,7 @@ public class WeChatEEProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
-                .queryParam("appid", context.getClientId())
+                .queryParam("appid", context.getAppKey())
                 .queryParam("agentid", context.getAgentId())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
@@ -140,8 +140,8 @@ public class WeChatEEProvider extends DefaultProvider {
     @Override
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
-                .queryParam("corpid", context.getClientId())
-                .queryParam("corpsecret", context.getClientSecret())
+                .queryParam("corpid", context.getAppKey())
+                .queryParam("corpsecret", context.getAppSecret())
                 .build();
     }
 

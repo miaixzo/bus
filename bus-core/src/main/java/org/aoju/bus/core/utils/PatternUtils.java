@@ -648,7 +648,7 @@ public class PatternUtils {
      */
     public static String replaceAll(CharSequence content, Pattern pattern, String replacementTemplate) {
         if (StringUtils.isEmpty(content)) {
-            return StringUtils.str(content);
+            return StringUtils.toString(content);
         }
 
         final Matcher matcher = pattern.matcher(content);
@@ -668,7 +668,7 @@ public class PatternUtils {
             matcher.appendTail(sb);
             return sb.toString();
         }
-        return StringUtils.str(content);
+        return StringUtils.toString(content);
     }
 
     /**

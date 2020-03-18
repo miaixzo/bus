@@ -50,7 +50,7 @@ public class ArrayUtils {
      * 列表或数组中没有找到元素时的索引值 : {@code -1}.
      * 此值由该类中的方法返回,也可用于与所返回的值进行比较{@link java.util.List}.
      */
-    public static final int INDEX_NOT_FOUND = -1;
+    private static final int INDEX_NOT_FOUND = -1;
 
     /**
      * 对象是否为数组对象

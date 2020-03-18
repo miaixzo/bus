@@ -105,7 +105,7 @@ public class MiProvider extends DefaultProvider {
 
         // 获取用户邮箱手机号等信息
         String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}", "https://open.account.xiaomi.com/user/phoneAndEmail", context
-                .getClientId(), token.getAccessToken());
+                .getAppKey(), token.getAccessToken());
 
         JSONObject userEmailPhone = JSONObject.parseObject(Httpx.get(emailPhoneUrl));
         if (!"error".equalsIgnoreCase(userEmailPhone.getString("result"))) {
@@ -141,7 +141,7 @@ public class MiProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "user/profile%20user/openIdV2%20user/phoneAndEmail")
                 .queryParam("skip_confirm", "false")
@@ -158,8 +158,9 @@ public class MiProvider extends DefaultProvider {
     @Override
     protected String userInfoUrl(AccToken token) {
         return Builder.fromBaseUrl(source.userInfo())
-                .queryParam("clientId", context.getClientId())
+                .queryParam("clientId", context.getAppKey())
                 .queryParam("token", token.getAccessToken())
                 .build();
     }
+
 }

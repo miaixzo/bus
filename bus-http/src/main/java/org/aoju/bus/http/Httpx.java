@@ -533,7 +533,7 @@ public class Httpx extends Httpd {
             }
             if (MapUtils.isNotEmpty(builder.queryMap)) {
                 FormBody.Builder form = new FormBody.Builder(Charset.UTF_8);
-                builder.queryMap.forEach((key, value) -> form.add(key, (String) value));
+                builder.queryMap.forEach((key, value) -> form.add(key, StringUtils.toString(value)));
                 request.method(method, form.build());
             }
         } else {

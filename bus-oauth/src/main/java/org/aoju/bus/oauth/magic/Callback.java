@@ -55,8 +55,17 @@ public class Callback {
 
     /**
      * 华为授权登录接受code的参数名
-     *
-     * @since 2.0.0
      */
     private String authorization_code;
+
+    /**
+     * Twitter回调后返回的oauth_token
+     */
+    private String oauthToken;
+
+    /**
+     * Twitter回调后返回的oauth_verifier
+     */
+    private String oauthVerifier;
+
 }

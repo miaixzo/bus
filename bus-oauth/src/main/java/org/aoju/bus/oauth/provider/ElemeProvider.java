@@ -65,7 +65,7 @@ public class ElemeProvider extends DefaultProvider {
     @Override
     protected AccToken getAccessToken(Callback Callback) {
         Map<String, String> header = new HashMap<>();
-        header.put("client_id", context.getClientId());
+        header.put("client_id", context.getAppKey());
         header.put("redirect_uri", context.getRedirectUri());
         header.put("code", Callback.getCode());
         header.put("grant_type", "authorization_code");
@@ -95,9 +95,9 @@ public class ElemeProvider extends DefaultProvider {
         final long timestamp = System.currentTimeMillis();
         // 公共参数
         Map<String, String> metasHashMap = new HashMap<>();
-        metasHashMap.put("app_key", context.getClientId());
+        metasHashMap.put("app_key", context.getAppKey());
         metasHashMap.put("timestamp", Normal.EMPTY + timestamp);
-        String signature = generateElemeSignature(context.getClientId(), context.getClientSecret(), timestamp, action, token.getAccessToken(), parameters);
+        String signature = generateElemeSignature(context.getAppKey(), context.getAppSecret(), timestamp, action, token.getAccessToken(), parameters);
 
         String requestId = this.getRequestId();
 
@@ -174,7 +174,7 @@ public class ElemeProvider extends DefaultProvider {
 
     private void setHeader(Map<String, String> header) {
         setHeader(header, "application/x-www-form-urlencoded;charset=UTF-8", getRequestId());
-        header.put("Authorization", this.getBasic(context.getClientId(), context.getClientSecret()));
+        header.put("Authorization", this.getBasic(context.getAppKey(), context.getAppSecret()));
     }
 
     private void setHeader(Map<String, String> header, String contentType, String requestId) {

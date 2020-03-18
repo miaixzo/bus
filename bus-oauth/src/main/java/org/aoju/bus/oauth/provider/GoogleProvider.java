@@ -103,7 +103,7 @@ public class GoogleProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("scope", "openid%20email%20profile")
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))

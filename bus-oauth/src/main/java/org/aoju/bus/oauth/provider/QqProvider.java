@@ -131,7 +131,7 @@ public class QqProvider extends DefaultProvider {
     protected String userInfoUrl(AccToken token) {
         return Builder.fromBaseUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
-                .queryParam("oauth_consumer_key", context.getClientId())
+                .queryParam("oauth_consumer_key", context.getAppKey())
                 .queryParam("openid", token.getOpenId())
                 .build();
     }

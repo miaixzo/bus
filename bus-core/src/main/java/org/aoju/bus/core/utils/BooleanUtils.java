@@ -109,7 +109,7 @@ public class BooleanUtils {
      * @return Integer值
      */
     public static Integer toInteger(boolean value) {
-        return Integer.valueOf(toInt(value));
+        return toInt(value);
     }
 
     /**
@@ -129,7 +129,7 @@ public class BooleanUtils {
      * @return Character值
      */
     public static Character toCharacter(boolean value) {
-        return Character.valueOf(toChar(value));
+        return toChar(value);
     }
 
     /**
@@ -149,7 +149,7 @@ public class BooleanUtils {
      * @return Byte值
      */
     public static Byte toByteObj(boolean value) {
-        return Byte.valueOf(toByte(value));
+        return toByte(value);
     }
 
     /**
@@ -169,7 +169,7 @@ public class BooleanUtils {
      * @return Long值
      */
     public static Long toLongObj(boolean value) {
-        return Long.valueOf(toLong(value));
+        return toLong(value);
     }
 
     /**
@@ -189,7 +189,7 @@ public class BooleanUtils {
      * @return Short值
      */
     public static Short toShortObj(boolean value) {
-        return Short.valueOf(toShort(value));
+        return toShort(value);
     }
 
     /**
@@ -209,7 +209,7 @@ public class BooleanUtils {
      * @return float值
      */
     public static Float toFloatObj(boolean value) {
-        return Float.valueOf(toFloat(value));
+        return toFloat(value);
     }
 
     /**
@@ -229,7 +229,7 @@ public class BooleanUtils {
      * @return double值
      */
     public static Double toDoubleObj(boolean value) {
-        return Double.valueOf(toDouble(value));
+        return toDouble(value);
     }
 
     /**
@@ -340,7 +340,7 @@ public class BooleanUtils {
             throw new IllegalArgumentException("The Array must not be empty !");
         }
         final boolean[] primitive = Convert.convert(boolean[].class, array);
-        return Boolean.valueOf(and(primitive));
+        return and(primitive);
     }
 
     /**
@@ -452,7 +452,7 @@ public class BooleanUtils {
         if (bool == null) {
             return null;
         }
-        return bool.booleanValue() ? Boolean.FALSE : Boolean.TRUE;
+        return bool ? Boolean.FALSE : Boolean.TRUE;
     }
 
     /**

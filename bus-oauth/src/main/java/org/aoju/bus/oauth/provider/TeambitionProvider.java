@@ -64,8 +64,8 @@ public class TeambitionProvider extends DefaultProvider {
     @Override
     protected AccToken getAccessToken(Callback Callback) {
         Map<String, Object> params = new HashMap<>();
-        params.put("client_id", context.getClientId());
-        params.put("client_secret", context.getClientSecret());
+        params.put("client_id", context.getAppKey());
+        params.put("client_secret", context.getAppSecret());
         params.put("code", Callback.getCode());
         params.put("grant_type", "code");
 

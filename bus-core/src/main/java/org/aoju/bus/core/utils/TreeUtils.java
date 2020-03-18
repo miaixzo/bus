@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.lang.tree.TreeMap;
 import org.aoju.bus.core.lang.tree.TreeEntity;
+import org.aoju.bus.core.lang.tree.TreeMap;
 import org.aoju.bus.core.lang.tree.TreeNode;
 import org.aoju.bus.core.lang.tree.parser.DefaultNodeParser;
 import org.aoju.bus.core.lang.tree.parser.NodeParser;
@@ -98,17 +98,18 @@ public class TreeUtils {
      */
     public static <T, E> List<TreeMap<E>> build(List<T> list, E parentId, TreeEntity treeEntity, NodeParser<T, E> nodeParser) {
         List<TreeMap<E>> treeMapNodes = CollUtils.newArrayList();
+        TreeMap<E> treeMap;
         for (T obj : list) {
-            TreeMap<E> treeMapNode = new TreeMap<>(treeEntity);
-            nodeParser.parse(obj, treeMapNode);
-            treeMapNodes.add(treeMapNode);
+            treeMap = new TreeMap<>(treeEntity);
+            nodeParser.parse(obj, treeMap);
+            treeMapNodes.add(treeMap);
         }
 
         List<TreeMap<E>> finalTreeMapNodes = CollUtils.newArrayList();
-        for (TreeMap<E> treeMapNode : treeMapNodes) {
-            if (parentId.equals(treeMapNode.getParentId())) {
-                finalTreeMapNodes.add(treeMapNode);
-                innerBuild(treeMapNodes, treeMapNode, 0, treeEntity.getDeep());
+        for (TreeMap<E> node : treeMapNodes) {
+            if (parentId.equals(node.getParentId())) {
+                finalTreeMapNodes.add(node);
+                innerBuild(treeMapNodes, node, 0, treeEntity.getDeep());
             }
         }
         // 内存每层已经排过了 这是最外层排序
@@ -119,10 +120,10 @@ public class TreeUtils {
     /**
      * 递归处理
      *
-     * @param treeMapNodes  数据集合
-     * @param parentNode 当前节点
-     * @param deep       已递归深度
-     * @param maxDeep    最大递归深度 可能为null即不限制
+     * @param treeMapNodes 数据集合
+     * @param parentNode   当前节点
+     * @param deep         已递归深度
+     * @param maxDeep      最大递归深度 可能为null即不限制
      */
     private static <T> void innerBuild(List<TreeMap<T>> treeMapNodes, TreeMap<T> parentNode, int deep, Integer maxDeep) {
 
@@ -144,7 +145,7 @@ public class TreeUtils {
                     parentNode.setChildren(children);
                 }
                 children.add(childNode);
-                childNode.setParentId(parentNode.getId());
+                childNode.setParent(parentNode);
                 innerBuild(treeMapNodes, childNode, deep + 1, maxDeep);
             }
         }

@@ -229,7 +229,7 @@ public class LinkedinProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "r_liteprofile%20r_emailaddress%20w_member_social")
                 .queryParam("state", getRealState(state))

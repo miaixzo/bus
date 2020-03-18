@@ -138,7 +138,7 @@ public class RC4 implements Serializable {
      * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
     public String decrypt(byte[] message, Charset charset) throws InstrumentException {
-        return StringUtils.str(crypt(message), charset);
+        return StringUtils.toString(crypt(message), charset);
     }
 
     /**

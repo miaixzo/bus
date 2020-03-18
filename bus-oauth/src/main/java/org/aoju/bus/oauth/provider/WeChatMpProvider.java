@@ -140,7 +140,7 @@ public class WeChatMpProvider extends DefaultProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
-                .queryParam("appid", context.getClientId())
+                .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("response_type", "code")
                 .queryParam("scope", "snsapi_userinfo")
@@ -157,8 +157,8 @@ public class WeChatMpProvider extends DefaultProvider {
     @Override
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
-                .queryParam("appid", context.getClientId())
-                .queryParam("secret", context.getClientSecret())
+                .queryParam("appid", context.getAppKey())
+                .queryParam("secret", context.getAppSecret())
                 .queryParam("code", code)
                 .queryParam("grant_type", "authorization_code")
                 .build();
@@ -188,7 +188,7 @@ public class WeChatMpProvider extends DefaultProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromBaseUrl(source.refresh())
-                .queryParam("appid", context.getClientId())
+                .queryParam("appid", context.getAppKey())
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("refresh_token", refreshToken)
                 .build();

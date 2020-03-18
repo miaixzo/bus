@@ -48,11 +48,11 @@ import org.aoju.bus.oauth.metric.StateCache;
 public class WeChatOPProvider extends DefaultProvider {
 
     public WeChatOPProvider(Context context) {
-        super(context, Registry.WECHAT_OPEN);
+        super(context, Registry.WECHAT_OP);
     }
 
     public WeChatOPProvider(Context context, StateCache stateCache) {
-        super(context, Registry.WECHAT_OPEN, stateCache);
+        super(context, Registry.WECHAT_OP, stateCache);
     }
 
     /**
@@ -140,7 +140,7 @@ public class WeChatOPProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("appid", context.getClientId())
+                .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "snsapi_login")
                 .queryParam("state", getRealState(state))
@@ -157,8 +157,8 @@ public class WeChatOPProvider extends DefaultProvider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("appid", context.getClientId())
-                .queryParam("secret", context.getClientSecret())
+                .queryParam("appid", context.getAppKey())
+                .queryParam("secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -187,7 +187,7 @@ public class WeChatOPProvider extends DefaultProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromBaseUrl(source.refresh())
-                .queryParam("appid", context.getClientId())
+                .queryParam("appid", context.getAppKey())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();

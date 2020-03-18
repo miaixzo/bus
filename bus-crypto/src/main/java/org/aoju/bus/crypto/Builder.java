@@ -251,7 +251,7 @@ public final class Builder {
         SecretKey secretKey;
         if (algorithm.startsWith("PBE")) {
             // PBE密钥
-            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.str(key, org.aoju.bus.core.lang.Charset.UTF_8).toCharArray());
+            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.toString(key, org.aoju.bus.core.lang.Charset.UTF_8).toCharArray());
         } else if (algorithm.startsWith(Algorithm.DES)) {
             // DES密钥
             secretKey = generateDESKey(algorithm, key);

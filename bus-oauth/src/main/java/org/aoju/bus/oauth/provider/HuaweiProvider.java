@@ -70,8 +70,8 @@ public class HuaweiProvider extends DefaultProvider {
         Map<String, Object> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("code", Callback.getAuthorization_code());
-        params.put("client_id", context.getClientId());
-        params.put("client_secret", context.getClientSecret());
+        params.put("client_id", context.getAppKey());
+        params.put("client_secret", context.getAppSecret());
         params.put("redirect_uri", context.getRedirectUri());
 
         Httpx.post(source.accessToken(), params);
@@ -121,8 +121,8 @@ public class HuaweiProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         Map<String, Object> params = new HashMap<>();
-        params.put("client_id", context.getClientId());
-        params.put("client_secret", context.getClientSecret());
+        params.put("client_id", context.getAppKey());
+        params.put("client_secret", context.getAppSecret());
         params.put("refresh_token", token.getRefreshToken());
         params.put("grant_type", "refresh_token");
         Httpx.post(source.accessToken(), params);
@@ -156,7 +156,7 @@ public class HuaweiProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("access_type", "offline")
                 .queryParam("scope", "https%3A%2F%2Fwww.huawei.com%2Fauth%2Faccount%2Fbase.profile")
@@ -175,8 +175,8 @@ public class HuaweiProvider extends DefaultProvider {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("code", code)
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
@@ -222,4 +222,5 @@ public class HuaweiProvider extends DefaultProvider {
             throw new InstrumentException(object.getString("sub_error") + Symbol.COLON + object.getString("error_description"));
         }
     }
+
 }

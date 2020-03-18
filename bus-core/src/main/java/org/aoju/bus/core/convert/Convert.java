@@ -815,7 +815,7 @@ public class Convert {
      * @return 对应的字符串
      * @see HexUtils#decodeHexStr(String, Charset)
      */
-    public static String hexToStr(String hexStr, Charset charset) {
+    public static String hexToString(String hexStr, Charset charset) {
         return HexUtils.decodeHexStr(hexStr, charset);
     }
 
@@ -834,10 +834,10 @@ public class Convert {
      *
      * @param unicode Unicode符
      * @return String 字符串
-     * @see StringUtils#toUnicodeStr(String)
+     * @see StringUtils#toUnicodeString(String)
      */
-    public static String toUnicodeStr(String unicode) {
-        return StringUtils.toUnicodeStr(unicode);
+    public static String toUnicodeString(String unicode) {
+        return StringUtils.toUnicodeString(unicode);
     }
 
     /**

@@ -97,7 +97,7 @@ public class DingTalkProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("appid", context.getClientId())
+                .queryParam("appid", context.getAppKey())
                 .queryParam("scope", "snsapi_login")
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
@@ -114,12 +114,12 @@ public class DingTalkProvider extends DefaultProvider {
     protected String userInfoUrl(AccToken token) {
         // 根据timestamp, appSecret计算签名值
         String timestamp = System.currentTimeMillis() + Normal.EMPTY;
-        String urlEncodeSignature = generateDingTalkSignature(context.getClientSecret(), timestamp);
+        String urlEncodeSignature = generateDingTalkSignature(context.getAppSecret(), timestamp);
 
         return Builder.fromBaseUrl(source.userInfo())
                 .queryParam("signature", urlEncodeSignature)
                 .queryParam("timestamp", timestamp)
-                .queryParam("accessKey", context.getClientId())
+                .queryParam("accessKey", context.getAppKey())
                 .build();
     }
 

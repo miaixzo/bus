@@ -96,8 +96,8 @@ public class BaiduProvider extends DefaultProvider {
         String refreshUrl = Builder.fromBaseUrl(this.source.refresh())
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("refresh_token", token.getRefreshToken())
-                .queryParam("client_id", this.context.getClientId())
-                .queryParam("client_secret", this.context.getClientSecret())
+                .queryParam("client_id", this.context.getAppKey())
+                .queryParam("client_secret", this.context.getAppSecret())
                 .build();
         return Message.builder()
                 .errcode(Builder.Status.SUCCESS.getCode())
@@ -116,7 +116,7 @@ public class BaiduProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("display", "popup")
                 .queryParam("state", getRealState(state))

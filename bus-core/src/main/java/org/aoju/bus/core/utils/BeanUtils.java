@@ -423,7 +423,7 @@ public class BeanUtils {
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @return Bean属性值
-     * @see BeanPath#get(Object) 
+     * @see BeanPath#get(Object)
      */
     public static Object getProperty(Object bean, String expression) {
         return BeanPath.create(expression).get(bean);
@@ -686,6 +686,20 @@ public class BeanUtils {
             }
         }
         return targetMap;
+    }
+
+    /**
+     * 创建对应的Class对象并复制Bean对象属性
+     *
+     * @param <T>    对象
+     * @param source 源Bean对象
+     * @param tClass 目标Class
+     * @return 新对象信息
+     */
+    public static <T> T copyProperties(Object source, Class<T> tClass) {
+        T target = ReflectUtils.newInstance(tClass);
+        copyProperties(source, target, CopyOptions.create());
+        return target;
     }
 
     /**

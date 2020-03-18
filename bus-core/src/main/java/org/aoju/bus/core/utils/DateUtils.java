@@ -62,7 +62,7 @@ public class DateUtils {
     /**
      * 支持的最小年份
      */
-    public final static int MINI_YEAR = 1850;
+    public final static int MIN_YEAR = 1850;
     /**
      * 支持的最大年份
      */
@@ -2969,7 +2969,7 @@ public class DateUtils {
      */
     private static String normalize(CharSequence dateStr) {
         if (StringUtils.isBlank(dateStr)) {
-            return StringUtils.str(dateStr);
+            return StringUtils.toString(dateStr);
         }
 
         // 日期时间分开处理
@@ -2977,7 +2977,7 @@ public class DateUtils {
         final int size = dateAndTime.size();
         if (size < 1 || size > 2) {
             // 非可被标准处理的格式
-            return StringUtils.str(dateStr);
+            return StringUtils.toString(dateStr);
         }
 
         final StringBuilder builder = StringUtils.builder();
@@ -3508,10 +3508,10 @@ public class DateUtils {
      * @return 公历日历编码
      */
     private int[] builder(int solarYear) {
-        if (solarYear < MINI_YEAR && solarYear > MAX_YEAR) {
+        if (solarYear < MIN_YEAR && solarYear > MAX_YEAR) {
             throw new InstrumentException("Illegal solar year: " + solarYear);
         }
-        int lunarIndex = solarYear - MINI_YEAR;
+        int lunarIndex = solarYear - MIN_YEAR;
         int[] solarCodes = new int[Fields.CN_LUNAR[lunarIndex].length];
         for (int i = 0; i < solarCodes.length; i++) {
             if (0 == i) { // 第一个数表示闰月，不用更改
@@ -3539,18 +3539,18 @@ public class DateUtils {
      * @param isleapMonth 　是否为闰月
      */
     private void lunar(final int lunarYear, final int lunarMonth, final int lunarDate, final boolean isleapMonth) {
-        if (lunarYear < MINI_YEAR && lunarYear > MAX_YEAR) {
-            throw new InstrumentException("LunarYear must in (" + MINI_YEAR + "," + MAX_YEAR + ")");
+        if (lunarYear < MIN_YEAR && lunarYear > MAX_YEAR) {
+            throw new InstrumentException("LunarYear must in (" + MIN_YEAR + "," + MAX_YEAR + ")");
         }
         this.lyear = lunarYear;
         this.lmonth = lunarMonth;
         this.ldate = lunarDate;
-        int solarMontDate = Fields.CN_LUNAR[lunarYear - MINI_YEAR][lunarMonth];
-        this.leapMonth = Fields.CN_LUNAR[lunarYear - MINI_YEAR][0];
+        int solarMontDate = Fields.CN_LUNAR[lunarYear - MIN_YEAR][lunarMonth];
+        this.leapMonth = Fields.CN_LUNAR[lunarYear - MIN_YEAR][0];
         if (this.leapMonth != 0 && (lunarMonth > this.leapMonth || (lunarMonth == this.leapMonth && isleapMonth))) {
             // 闰月，且当前农历月大于闰月月份，取下一个月的LunarInfo码
             // 闰月，且当前农历月等于闰月月份，并且此农历月为闰月，取下一个月的LunarInfo码
-            solarMontDate = Fields.CN_LUNAR[lunarYear - MINI_YEAR][lunarMonth + 1];
+            solarMontDate = Fields.CN_LUNAR[lunarYear - MIN_YEAR][lunarMonth + 1];
         }
         this.solar.set(Calendar.YEAR, lunarYear);
         this.solar.set(Calendar.MONTH, (solarMontDate / 100) - 1);
@@ -3566,11 +3566,11 @@ public class DateUtils {
      * @param solarDate  公历日
      */
     private void lunar(final int solarYear, final int solarMonth, final int solarDate) {
-        if (solarYear < MINI_YEAR && solarYear > MAX_YEAR) {
+        if (solarYear < MIN_YEAR && solarYear > MAX_YEAR) {
             throw new InstrumentException("Illegal solar year: " + solarYear);
         }
         int solarCode = solarYear * 10000 + 100 * (1 + solarMonth) + solarDate; // 公历码
-        this.leapMonth = Fields.CN_LUNAR[solarYear - MINI_YEAR][0];
+        this.leapMonth = Fields.CN_LUNAR[solarYear - MIN_YEAR][0];
         int[] solarCodes = builder(solarYear);
         int newMonth = binSearch(solarCodes, solarCode);
         if (-1 == newMonth) {
@@ -3579,7 +3579,7 @@ public class DateUtils {
         int xdate = Long.valueOf(solarDiff(solarCode, solarCodes[newMonth], Calendar.DATE)).intValue();
         if (0 == newMonth) {// 在上一年
             int preYear = solarYear - 1;
-            short[] preSolarCodes = Fields.CN_LUNAR[preYear - MINI_YEAR];
+            short[] preSolarCodes = Fields.CN_LUNAR[preYear - MIN_YEAR];
             // 取上年农历12月1号公历日期码
             int nearSolarCode = preSolarCodes[preSolarCodes.length - 1]; // 上一年12月1号
             // 下一年公历1月表示为了13月，这里做翻译，并计算出日期码
@@ -3603,7 +3603,7 @@ public class DateUtils {
         } else if (solarCodes.length == newMonth + 1 && xdate >= 30) {// 在下一年(公历12月只有30天)
             newMonth = 1; // 农历肯定是1月
             // 取下一年的公历日期码
-            short[] nextSolarCodes = Fields.CN_LUNAR[solarYear + 1 - MINI_YEAR];
+            short[] nextSolarCodes = Fields.CN_LUNAR[solarYear + 1 - MIN_YEAR];
             // 取下一年农历1月1号公历日期码
             int nearSolarCode = solarYear * 10000 + nextSolarCodes[1]; // 下一年农历1月1号公历日期码
             xdate = Long.valueOf(solarDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
@@ -3634,7 +3634,7 @@ public class DateUtils {
 
     @Override
     public String toString() {
-        if (this.lyear < MINI_YEAR || this.lyear > MAX_YEAR || this.lmonth < 1 || this.lmonth > 12 || this.ldate < 1
+        if (this.lyear < MIN_YEAR || this.lyear > MAX_YEAR || this.lmonth < 1 || this.lmonth > 12 || this.ldate < 1
                 || this.ldate > 30) {
             return "Wrong lunar date: " + lyear + " " + lmonth + " " + ldate;
         }

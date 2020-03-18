@@ -102,7 +102,7 @@ public class ToutiaoProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_key", context.getClientId())
+                .queryParam("client_key", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("auth_only", 1)
                 .queryParam("display", 0)
@@ -120,8 +120,8 @@ public class ToutiaoProvider extends DefaultProvider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_key", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_key", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -135,7 +135,7 @@ public class ToutiaoProvider extends DefaultProvider {
     @Override
     protected String userInfoUrl(AccToken token) {
         return Builder.fromBaseUrl(source.userInfo())
-                .queryParam("client_key", context.getClientId())
+                .queryParam("client_key", context.getAppKey())
                 .queryParam("access_token", token.getAccessToken())
                 .build();
     }

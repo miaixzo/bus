@@ -52,10 +52,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * 默认的request处理类
@@ -93,24 +90,25 @@ public abstract class DefaultProvider implements Provider {
      * @return Signature
      */
     public static String generateDingTalkSignature(String secretKey, String timestamp) {
-        byte[] signData = sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8));
+        byte[] signData = sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HmacSHA256);
         return urlEncode(new String(Base64.encode(signData, false)));
     }
 
     /**
      * 签名
      *
-     * @param key  key
-     * @param data data
+     * @param key       key
+     * @param data      data
+     * @param algorithm algorithm
      * @return byte[]
      */
-    private static byte[] sign(byte[] key, byte[] data) {
+    private static byte[] sign(byte[] key, byte[] data, String algorithm) {
         try {
-            Mac mac = Mac.getInstance(Algorithm.HmacSHA256);
-            mac.init(new SecretKeySpec(key, Algorithm.HmacSHA256));
+            Mac mac = Mac.getInstance(algorithm);
+            mac.init(new SecretKeySpec(key, algorithm));
             return mac.doFinal(data);
         } catch (NoSuchAlgorithmException ex) {
-            throw new InstrumentException("Unsupported algorithm: " + Algorithm.HmacSHA256, ex);
+            throw new InstrumentException("Unsupported algorithm: " + algorithm, ex);
         } catch (InvalidKeyException ex) {
             throw new InstrumentException("Invalid key: " + Arrays.toString(key), ex);
         }
@@ -172,6 +170,49 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
+     * map转字符串，转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param params 待转换的map
+     * @param encode 是否转码
+     * @return str
+     */
+    public static String parseMapToString(Map<String, String> params, boolean encode) {
+        List<String> paramList = new ArrayList<>();
+        params.forEach((k, v) -> {
+            if (null == v) {
+                paramList.add(k + "=");
+            } else {
+                paramList.add(k + "=" + (encode ? urlEncode(v) : v));
+            }
+        });
+        return String.join("&", paramList);
+    }
+
+    /**
+     * Generate Twitter signature
+     * https://developer.twitter.com/en/docs/basics/authentication/guides/creating-a-signature
+     *
+     * @param params      parameters including: oauth headers, query params, body params
+     * @param method      HTTP method
+     * @param baseUrl     base url
+     * @param apiSecret   api key secret can be found in the developer portal by viewing the app details page
+     * @param tokenSecret oauth token secret
+     * @return BASE64 encoded signature string
+     */
+    public static String generateTwitterSignature(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
+        TreeMap<String, String> map = new TreeMap<>();
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            map.put(urlEncode(e.getKey()), e.getValue());
+        }
+        String str = parseMapToString(map, true);
+        String baseStr = method.toUpperCase() + "&" + urlEncode(baseUrl) + "&" + urlEncode(str);
+        String signKey = apiSecret + "&" + (StringUtils.isEmpty(tokenSecret) ? "" : tokenSecret);
+        byte[] signature = sign(signKey.getBytes(Charset.DEFAULT), baseStr.getBytes(Charset.DEFAULT), Algorithm.HmacSHA1);
+
+        return new String(Base64.encode(signature, false));
+    }
+
+    /**
      * 将url的参数列表转换成map
      *
      * @param url 待转换的url
@@ -181,6 +222,28 @@ public abstract class DefaultProvider implements Provider {
         Map<String, Object> paramMap = new HashMap<>();
         UriUtils.decodeVal(url, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
         return paramMap;
+    }
+
+    /**
+     * 是否支持第三方登录
+     *
+     * @param context context
+     * @param source  source
+     * @return true or false
+     * @since 1.6.2
+     */
+    public static boolean isSupportedAuth(Context context, Complex source) {
+        boolean isSupported = StringUtils.isNotEmpty(context.getAppKey()) && StringUtils.isNotEmpty(context.getAppSecret()) && StringUtils.isNotEmpty(context.getRedirectUri());
+        if (isSupported && Registry.ALIPAY == source) {
+            isSupported = StringUtils.isNotEmpty(context.getPublicKey());
+        }
+        if (isSupported && Registry.STACKOVERFLOW == source) {
+            isSupported = StringUtils.isNotEmpty(context.getOverflowKey());
+        }
+        if (isSupported && Registry.WECHAT_EE == source) {
+            isSupported = StringUtils.isNotEmpty(context.getAgentId());
+        }
+        return isSupported;
     }
 
     /**
@@ -249,6 +312,83 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
+     * 字符串转map，字符串格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param str    待转换的字符串
+     * @param decode 是否解码
+     * @return map
+     */
+    public Map<String, String> parseStringToMap(String str, boolean decode) {
+        if (StringUtils.isNotEmpty(str)) {
+            // 去除 URL 路径信息
+            int beginPos = str.indexOf("?");
+            if (beginPos > -1) {
+                str = str.substring(beginPos + 1);
+            }
+
+            // 去除 # 后面的内容
+            int endPos = str.indexOf("#");
+            if (endPos > -1) {
+                str = str.substring(0, endPos);
+            }
+        }
+
+        Map<String, String> params = new HashMap<>(16);
+        if (StringUtils.isEmpty(str)) {
+            return params;
+        }
+
+        if (!str.contains("&")) {
+            params.put(decode ? urlDecode(str) : str, Normal.EMPTY);
+            return params;
+        }
+
+        final int len = str.length();
+        String name = null;
+        // 未处理字符开始位置
+        int pos = 0;
+        // 未处理字符结束位置
+        int i;
+        // 当前字符
+        char c;
+        for (i = 0; i < len; i++) {
+            c = str.charAt(i);
+            // 键值对的分界点
+            if (c == '=') {
+                if (null == name) {
+                    // name可以是""
+                    name = str.substring(pos, i);
+                }
+                pos = i + 1;
+            }
+            // 参数对的分界点
+            else if (c == '&') {
+                if (null == name && pos != i) {
+                    // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                    addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
+                } else if (name != null) {
+                    addParam(params, name, str.substring(pos, i), decode);
+                    name = null;
+                }
+                pos = i + 1;
+            }
+        }
+
+        // 处理结尾
+        if (pos != i) {
+            if (name == null) {
+                addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
+            } else {
+                addParam(params, name, str.substring(pos, i), decode);
+            }
+        } else if (name != null) {
+            addParam(params, name, Normal.EMPTY, decode);
+        }
+
+        return params;
+    }
+
+    /**
      * MD5加密饿了么请求的Signature
      * <p>
      * 代码copy并修改自：https://coding.net/u/napos_openapi/p/eleme-openapi-java-sdk/git/blob/master/src/main/java/eleme/openapi/sdk/utils/SignatureUtil.java
@@ -273,26 +413,14 @@ public abstract class DefaultProvider implements Provider {
         return null == buffer ? Normal.EMPTY : buffer.toString();
     }
 
-    /**
-     * 是否支持第三方登录
-     *
-     * @param context context
-     * @param source  source
-     * @return true or false
-     * @since 1.6.2
-     */
-    public static boolean isSupportedAuth(Context context, Complex source) {
-        boolean isSupported = StringUtils.isNotEmpty(context.getClientId()) && StringUtils.isNotEmpty(context.getClientSecret()) && StringUtils.isNotEmpty(context.getRedirectUri());
-        if (isSupported && Registry.ALIPAY == source) {
-            isSupported = StringUtils.isNotEmpty(context.getAlipayPublicKey());
+    private void addParam(Map<String, String> params, String key, String value, boolean decode) {
+        key = decode ? urlDecode(key) : key;
+        value = decode ? urlDecode(value) : value;
+        if (params.containsKey(key)) {
+            params.put(key, params.get(key) + "," + value);
+        } else {
+            params.put(key, value);
         }
-        if (isSupported && Registry.STACK == source) {
-            isSupported = StringUtils.isNotEmpty(context.getStackOverflowKey());
-        }
-        if (isSupported && Registry.WECHAT_EE == source) {
-            isSupported = StringUtils.isNotEmpty(context.getAgentId());
-        }
-        return isSupported;
     }
 
     /**
@@ -402,7 +530,7 @@ public abstract class DefaultProvider implements Provider {
     public String authorize(String state) {
         return Builder.fromBaseUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .build();
@@ -417,8 +545,8 @@ public abstract class DefaultProvider implements Provider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
@@ -432,8 +560,8 @@ public abstract class DefaultProvider implements Provider {
      */
     protected String refreshTokenUrl(String refreshToken) {
         return Builder.fromBaseUrl(source.refresh())
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("redirect_uri", context.getRedirectUri())

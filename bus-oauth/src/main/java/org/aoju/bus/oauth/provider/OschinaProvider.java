@@ -92,8 +92,8 @@ public class OschinaProvider extends DefaultProvider {
     protected String accessTokenUrl(String code) {
         return Builder.fromBaseUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("dataType", "json")

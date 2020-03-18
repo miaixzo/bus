@@ -53,6 +53,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since JDK 1.8+
  */
 public class Symmetric implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -381,7 +382,7 @@ public class Symmetric implements Serializable {
      * @return 解密后的String
      */
     public String decryptStr(byte[] bytes, Charset charset) {
-        return StringUtils.str(decrypt(bytes), charset);
+        return StringUtils.toString(decrypt(bytes), charset);
     }
 
     /**
@@ -412,7 +413,7 @@ public class Symmetric implements Serializable {
      * @return 解密后的String
      */
     public String decryptStr(String data, Charset charset) {
-        return StringUtils.str(decrypt(data), charset);
+        return StringUtils.toString(decrypt(data), charset);
     }
 
     /**
@@ -444,7 +445,7 @@ public class Symmetric implements Serializable {
      * @return 解密后的String
      */
     public String decryptStr(InputStream data, Charset charset) {
-        return StringUtils.str(decrypt(data), charset);
+        return StringUtils.toString(decrypt(data), charset);
     }
 
     /**

@@ -92,7 +92,7 @@ public class AliSmsService {
      */
     public AliSmsResult send(AliSmsEntity entity) throws InstrumentException {
         try {
-            IClientProfile profile = DefaultProfile.getProfile(StringUtils.defaultString(this.profile, "default"), this.accessKey, this.accessSecret);
+            IClientProfile profile = DefaultProfile.getProfile(StringUtils.toString(this.profile, "default"), this.accessKey, this.accessSecret);
             DefaultProfile.addEndpoint(this.profile, ALIYUN_PRODUCT, ALIYUN_PRODUCT_DOMAIN);
             IAcsClient acsClient = new DefaultAcsClient(profile);
 

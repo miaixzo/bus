@@ -162,7 +162,7 @@ public class HexUtils {
      * @return 字符串
      */
     public static String decodeHexStr(char[] hexData, Charset charset) {
-        return StringUtils.str(decodeHex(hexData), charset);
+        return StringUtils.toString(decodeHex(hexData), charset);
     }
 
     /**
