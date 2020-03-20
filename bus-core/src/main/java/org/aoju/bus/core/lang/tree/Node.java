@@ -45,6 +45,7 @@ public interface Node<T> extends Comparable<Node<T>> {
      * 设置ID
      *
      * @param id ID
+     * @return 节点ID
      */
     Node<T> setId(T id);
 

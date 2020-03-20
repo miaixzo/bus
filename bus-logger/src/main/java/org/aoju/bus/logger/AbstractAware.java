@@ -46,15 +46,15 @@ public abstract class AbstractAware implements Log, Serializable {
     public boolean isEnabled(Level level) {
         switch (level) {
             case TRACE:
-                return isTraceEnabled();
+                return isTrace();
             case DEBUG:
-                return isDebugEnabled();
+                return isDebug();
             case INFO:
-                return isInfoEnabled();
+                return isInfo();
             case WARN:
-                return isWarnEnabled();
+                return isWarn();
             case ERROR:
-                return isErrorEnabled();
+                return isError();
             default:
                 throw new Error(StringUtils.format("Can not identify level: {}", level));
         }

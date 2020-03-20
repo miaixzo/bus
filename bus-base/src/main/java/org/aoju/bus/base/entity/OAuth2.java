@@ -31,9 +31,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.Transient;
 
 /**
- * <p>
  * 授权公用类
- * </p>
  *
  * @author Kimi Liu
  * @version 5.6.9

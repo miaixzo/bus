@@ -156,7 +156,9 @@ public class TreeUtils {
      * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个
      * 此方法只查找此节点及子节点，采用广度优先遍历。
      *
-     * @param id ID
+     * @param <T>  对象
+     * @param id   节点ID
+     * @param node 节点信息
      * @return 节点
      */
     public static <T> TreeMap<T> getNode(TreeMap<T> node, T id) {

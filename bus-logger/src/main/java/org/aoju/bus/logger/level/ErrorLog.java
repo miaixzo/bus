@@ -36,7 +36,7 @@ public interface ErrorLog {
     /**
      * @return ERROR 等级是否开启
      */
-    boolean isErrorEnabled();
+    boolean isError();
 
     /**
      * 打印 ERROR 等级的日志

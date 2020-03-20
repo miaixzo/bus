@@ -36,7 +36,7 @@ public interface DebugLog {
     /**
      * @return DEBUG 等级是否开启
      */
-    boolean isDebugEnabled();
+    boolean isDebug();
 
     /**
      * 打印 DEBUG 等级的日志

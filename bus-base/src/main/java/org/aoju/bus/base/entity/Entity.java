@@ -31,9 +31,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
- * <p>
  * Entity 实体
- * </p>
  *
  * @author Kimi Liu
  * @version 5.6.9

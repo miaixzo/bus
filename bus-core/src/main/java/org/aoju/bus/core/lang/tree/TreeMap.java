@@ -75,6 +75,7 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
      * 设置父节点
      *
      * @param parent 父节点
+     * @return 节点信息
      */
     public TreeMap<T> setParent(TreeMap<T> parent) {
         this.parent = parent;

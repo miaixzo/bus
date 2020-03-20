@@ -40,9 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
  * BaseService 接口实现
- * </p>
  *
  * @author Kimi Liu
  * @version 5.6.9

@@ -36,7 +36,7 @@ public interface InfoLog {
     /**
      * @return INFO 等级是否开启
      */
-    boolean isInfoEnabled();
+    boolean isInfo();
 
     /**
      * 打印 INFO 等级的日志
