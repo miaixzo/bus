@@ -1213,6 +1213,17 @@ public class ImageUtils {
     }
 
     /**
+     * 将图片对象转换为InputStream形式
+     *
+     * @param image     图片对象
+     * @param imageType 图片类型
+     * @return Base64的字符串表现形式
+     */
+    public static ByteArrayInputStream toStream(java.awt.Image image, String imageType) {
+        return IoUtils.toStream(toBytes(image, imageType));
+    }
+
+    /**
      * 将图片对象转换为Base64形式
      *
      * @param image     图片对象
@@ -1220,9 +1231,20 @@ public class ImageUtils {
      * @return Base64的字符串表现形式
      */
     public static String toBase64(java.awt.Image image, String imageType) {
+        return Base64.encode(toBytes(image, imageType));
+    }
+
+    /**
+     * 将图片对象转换为bytes形式
+     *
+     * @param image     图片对象
+     * @param imageType 图片类型
+     * @return Base64的字符串表现形式
+     */
+    public static byte[] toBytes(java.awt.Image image, String imageType) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         write(image, imageType, out);
-        return Base64.encode(out.toByteArray());
+        return out.toByteArray();
     }
 
     /**
