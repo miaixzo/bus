@@ -40,7 +40,7 @@
         <!--bus-crypto-->
         <bouncycastle.version>1.60</bouncycastle.version>
         <!--bus-extra-->
-        <fastjson.version>1.2.62</fastjson.version>
+        <fastjson.version>1.2.67</fastjson.version>
         <mail.version>1.6.2</mail.version>
         <jsch.version>0.1.54</jsch.version>
         <zxing.version>3.3.3</zxing.version>
@@ -76,7 +76,7 @@
         <!--bus-pager-->
         <jsqlparser.version>3.1</jsqlparser.version>
         <!--bus-office-->
-        <poi.version>4.1.1</poi.version>
+        <poi.version>4.1.2</poi.version>
         <xerces.version>2.12.0</xerces.version>
         <office.version>4.1.2</office.version>
         <!--bus-proxy-->

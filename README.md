@@ -21,7 +21,7 @@
 		<img src="https://img.shields.io/badge/dubbo-2.7.5-yellow.svg">
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
-		<img src="https://img.shields.io/badge/poi-4.1.1-blue.svg">
+		<img src="https://img.shields.io/badge/poi-4.1.2-blue.svg">
 	</a>
 	<a target="_blank" href="https://www.mit-license.org">
 		<img src="https://img.shields.io/badge/license-MIT-green.svg">

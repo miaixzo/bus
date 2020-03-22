@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <poi.version>4.1.1</poi.version>
+        <poi.version>4.1.2</poi.version>
         <xerces.version>2.12.0</xerces.version>
         <office.version>4.1.2</office.version>
     </properties>
