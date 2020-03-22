@@ -27,7 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -101,7 +101,7 @@ public class GoogleProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("scope", "openid%20email%20profile")
@@ -118,7 +118,7 @@ public class GoogleProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo()).queryParam("access_token", token.getAccessToken()).build();
+        return Builder.fromUrl(source.userInfo()).queryParam("access_token", token.getAccessToken()).build();
     }
 
     /**
@@ -128,7 +128,7 @@ public class GoogleProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error") || object.containsKey("error_description")) {
-            throw new InstrumentException(object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
+            throw new AuthorizedException(object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
         }
     }
 }

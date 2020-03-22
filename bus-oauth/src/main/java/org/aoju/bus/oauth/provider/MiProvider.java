@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -67,7 +67,7 @@ public class MiProvider extends DefaultProvider {
         JSONObject object = JSONObject.parseObject(StringUtils.replace(response, "&&&START&&&", Normal.EMPTY));
 
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error_description"));
+            throw new AuthorizedException(object.getString("error_description"));
         }
 
         return AccToken.builder()
@@ -87,7 +87,7 @@ public class MiProvider extends DefaultProvider {
         // 获取用户信息
         JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
         if ("error".equalsIgnoreCase(object.getString("result"))) {
-            throw new InstrumentException(object.getString("description"));
+            throw new AuthorizedException(object.getString("description"));
         }
 
         JSONObject user = object.getJSONObject("data");
@@ -139,7 +139,7 @@ public class MiProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -157,7 +157,7 @@ public class MiProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("clientId", context.getAppKey())
                 .queryParam("token", token.getAccessToken())
                 .build();

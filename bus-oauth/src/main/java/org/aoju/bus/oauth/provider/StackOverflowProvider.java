@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -69,7 +69,7 @@ public class StackOverflowProvider extends DefaultProvider {
 
     @Override
     protected Property getUserInfo(AccToken token) {
-        String userInfoUrl = Builder.fromBaseUrl(this.source.userInfo())
+        String userInfoUrl = Builder.fromUrl(this.source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getOverflowKey())
@@ -99,7 +99,7 @@ public class StackOverflowProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -115,7 +115,7 @@ public class StackOverflowProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error_description"));
+            throw new AuthorizedException(object.getString("error_description"));
         }
     }
 

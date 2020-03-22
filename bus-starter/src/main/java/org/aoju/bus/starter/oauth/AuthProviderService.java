@@ -82,6 +82,8 @@ public class AuthProviderService {
             return new GoogleProvider(context, stateCache);
         } else if (Registry.HUAWEI.equals(type)) {
             return new HuaweiProvider(context, stateCache);
+        } else if (Registry.JD.equals(type)) {
+            return new JdProvider(context, stateCache);
         } else if (Registry.KUJIALE.equals(type)) {
             return new KujialeProvider(context, stateCache);
         } else if (Registry.LINKEDIN.equals(type)) {
@@ -106,8 +108,8 @@ public class AuthProviderService {
             return new TaobaoProvider(context, stateCache);
         } else if (Registry.TEAMBITION.equals(type)) {
             return new TeambitionProvider(context, stateCache);
-        } else if (Registry.TENCENT_CLOUD.equals(type)) {
-            return new TencentCloudProvider(context, stateCache);
+        } else if (Registry.TENCENT.equals(type)) {
+            return new TencentProvider(context, stateCache);
         } else if (Registry.TOUTIAO.equals(type)) {
             return new ToutiaoProvider(context, stateCache);
         } else if (Registry.TWITTER.equals(type)) {

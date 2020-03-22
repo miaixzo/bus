@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -80,7 +80,7 @@ public class WeChatEEProvider extends DefaultProvider {
 
         // 返回 OpenId 或其他,均代表非当前企业用户,不支持
         if (!object.containsKey("UserId")) {
-            throw new InstrumentException(Builder.Status.UNIDENTIFIED_PLATFORM.getCode());
+            throw new AuthorizedException(Builder.Status.UNIDENTIFIED_PLATFORM.getCode());
         }
         String userId = object.getString("UserId");
         String userDetailResponse = getUserDetail(token.getAccessToken(), userId);
@@ -109,7 +109,7 @@ public class WeChatEEProvider extends DefaultProvider {
         JSONObject object = JSONObject.parseObject(response);
 
         if (object.containsKey("errcode") && object.getIntValue("errcode") != 0) {
-            throw new InstrumentException(StringUtils.toString(object.getIntValue("errcode")), object.getString("errmsg"));
+            throw new AuthorizedException(StringUtils.toString(object.getIntValue("errcode")), object.getString("errmsg"));
         }
         return object;
     }
@@ -123,7 +123,7 @@ public class WeChatEEProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("agentid", context.getAgentId())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -139,7 +139,7 @@ public class WeChatEEProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(source.accessToken())
+        return Builder.fromUrl(source.accessToken())
                 .queryParam("corpid", context.getAppKey())
                 .queryParam("corpsecret", context.getAppSecret())
                 .build();
@@ -153,7 +153,7 @@ public class WeChatEEProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("code", token.getCode())
                 .build();
@@ -167,7 +167,7 @@ public class WeChatEEProvider extends DefaultProvider {
      * @return 用户详情
      */
     private String getUserDetail(String accessToken, String userId) {
-        String userDetailUrl = Builder.fromBaseUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
+        String userDetailUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
                 .queryParam("access_token", accessToken)
                 .queryParam("userid", userId)
                 .build();

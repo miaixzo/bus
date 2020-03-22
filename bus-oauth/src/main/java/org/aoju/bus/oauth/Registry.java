@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.oauth;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 
 /**
  * 内置的各api需要的url, 用枚举类分平台类型管理
@@ -132,7 +132,7 @@ public enum Registry implements Complex {
 
         @Override
         public String accessToken() {
-            throw new InstrumentException(Builder.Status.UNSUPPORTED.getCode());
+            throw new AuthorizedException(Builder.Status.UNSUPPORTED.getCode());
         }
 
         @Override
@@ -330,6 +330,30 @@ public enum Registry implements Complex {
         @Override
         public String refresh() {
             return "https://oauth-login.cloud.huawei.com/oauth2/v2/token";
+        }
+    },
+    /**
+     * 京东
+     */
+    JD {
+        @Override
+        public String authorize() {
+            return "https://open-oauth.jd.com/oauth2/to_login";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://open-oauth.jd.com/oauth2/access_token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://api.jd.com/routerjson";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://open-oauth.jd.com/oauth2/refresh_token";
         }
     },
     /**
@@ -573,7 +597,7 @@ public enum Registry implements Complex {
 
         @Override
         public String userInfo() {
-            throw new InstrumentException(Builder.Status.UNSUPPORTED.getCode());
+            throw new AuthorizedException(Builder.Status.UNSUPPORTED.getCode());
         }
     },
     /**
@@ -603,7 +627,7 @@ public enum Registry implements Complex {
     /**
      * 腾讯云开发者平台
      */
-    TENCENT_CLOUD {
+    TENCENT {
         @Override
         public String authorize() {
             return "https://dev.tencent.com/oauth_authorize.html";

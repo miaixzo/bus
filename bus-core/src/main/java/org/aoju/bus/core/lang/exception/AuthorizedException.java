@@ -25,7 +25,7 @@
 package org.aoju.bus.core.lang.exception;
 
 /**
- * 自定义异常: 未认证异常
+ * 自定义异常: 认证异常
  *
  * @author Kimi Liu
  * @version 5.6.9

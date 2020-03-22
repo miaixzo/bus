@@ -29,7 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -176,7 +176,7 @@ public class LinkedinProvider extends DefaultProvider {
     public Message refresh(AccToken oldToken) {
         String refreshToken = oldToken.getRefreshToken();
         if (StringUtils.isEmpty(refreshToken)) {
-            throw new InstrumentException(Builder.Status.UNSUPPORTED.getCode());
+            throw new AuthorizedException(Builder.Status.UNSUPPORTED.getCode());
         }
         String refreshTokenUrl = refreshTokenUrl(refreshToken);
         return Message.builder()
@@ -192,7 +192,7 @@ public class LinkedinProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error_description"));
+            throw new AuthorizedException(object.getString("error_description"));
         }
     }
 
@@ -227,7 +227,7 @@ public class LinkedinProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -244,7 +244,7 @@ public class LinkedinProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
                 .build();
     }

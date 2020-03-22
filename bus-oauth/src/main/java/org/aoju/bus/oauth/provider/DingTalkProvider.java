@@ -26,9 +26,12 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -69,7 +72,7 @@ public class DingTalkProvider extends DefaultProvider {
         String response = Httpx.post(userInfoUrl(oauthToken), param.toJSONString(), MediaType.APPLICATION_JSON);
         JSONObject object = JSON.parseObject(response);
         if (object.getIntValue("errcode") != 0) {
-            throw new InstrumentException(object.getString("errmsg"));
+            throw new AuthorizedException(object.getString("errmsg"));
         }
         object = object.getJSONObject("user_info");
         AccToken token = AccToken.builder()
@@ -95,7 +98,7 @@ public class DingTalkProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("appid", context.getAppKey())
                 .queryParam("scope", "snsapi_login")
@@ -114,9 +117,11 @@ public class DingTalkProvider extends DefaultProvider {
     protected String userInfoUrl(AccToken token) {
         // 根据timestamp, appSecret计算签名值
         String timestamp = System.currentTimeMillis() + Normal.EMPTY;
-        String urlEncodeSignature = generateDingTalkSignature(context.getAppSecret(), timestamp);
 
-        return Builder.fromBaseUrl(source.userInfo())
+        byte[] signData = sign(context.getAppSecret().getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HmacSHA256);
+        String urlEncodeSignature = urlEncode(new String(Base64.encode(signData, false)));
+
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("signature", urlEncodeSignature)
                 .queryParam("timestamp", timestamp)
                 .queryParam("accessKey", context.getAppKey())

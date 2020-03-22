@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -106,7 +106,7 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("errcode")) {
-            throw new InstrumentException(StringUtils.toString(object.getIntValue("errcode")), object.getString("errmsg"));
+            throw new AuthorizedException(StringUtils.toString(object.getIntValue("errcode")), object.getString("errmsg"));
         }
     }
 
@@ -139,7 +139,7 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("response_type", "code")
@@ -156,7 +156,7 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(source.accessToken())
+        return Builder.fromUrl(source.accessToken())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("secret", context.getAppSecret())
                 .queryParam("code", code)
@@ -172,7 +172,7 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("openid", accToken.getOpenId())
                 .queryParam("lang", "zh_CN")
@@ -187,7 +187,7 @@ public class WeChatMpProvider extends DefaultProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(source.refresh())
+        return Builder.fromUrl(source.refresh())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("refresh_token", refreshToken)

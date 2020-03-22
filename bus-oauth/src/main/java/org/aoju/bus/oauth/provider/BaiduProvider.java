@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -93,7 +93,7 @@ public class BaiduProvider extends DefaultProvider {
 
     @Override
     public Message refresh(AccToken token) {
-        String refreshUrl = Builder.fromBaseUrl(this.source.refresh())
+        String refreshUrl = Builder.fromUrl(this.source.refresh())
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("refresh_token", token.getRefreshToken())
                 .queryParam("client_id", this.context.getAppKey())
@@ -114,7 +114,7 @@ public class BaiduProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -131,7 +131,7 @@ public class BaiduProvider extends DefaultProvider {
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error") || object.containsKey("error_code")) {
             String msg = object.containsKey("error_description") ? object.getString("error_description") : object.getString("error_msg");
-            throw new InstrumentException(msg);
+            throw new AuthorizedException(msg);
         }
     }
 

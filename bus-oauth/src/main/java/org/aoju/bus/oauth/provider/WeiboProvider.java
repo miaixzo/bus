@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -73,7 +73,7 @@ public class WeiboProvider extends DefaultProvider {
     protected AccToken getAccessToken(Callback Callback) {
         JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(Callback.getCode()));
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error_description"));
+            throw new AuthorizedException(object.getString("error_description"));
         }
         return AccToken.builder()
                 .accessToken(object.getString("access_token"))
@@ -94,7 +94,7 @@ public class WeiboProvider extends DefaultProvider {
         JSONObject object = JSONObject.parseObject(response);
 
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error"));
+            throw new AuthorizedException(object.getString("error"));
         }
         return Property.builder()
                 .uuid(object.getString("id"))
@@ -119,7 +119,7 @@ public class WeiboProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("uid", token.getUid())
                 .build();

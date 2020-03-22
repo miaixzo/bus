@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -125,13 +125,13 @@ public class MeituanProvider extends DefaultProvider {
 
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error_code")) {
-            throw new InstrumentException(object.getString("erroe_msg"));
+            throw new AuthorizedException(object.getString("erroe_msg"));
         }
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("app_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())

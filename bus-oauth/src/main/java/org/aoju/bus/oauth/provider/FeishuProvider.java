@@ -27,7 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -121,7 +121,7 @@ public class FeishuProvider extends DefaultProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("app_id", context.getAppKey())
                 .queryParam("redirect_uri", urlEncode(context.getRedirectUri()))
                 .queryParam("state", getRealState(state))
@@ -135,7 +135,7 @@ public class FeishuProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject jsonObject) {
         if (jsonObject.getIntValue("code") != 0) {
-            throw new InstrumentException(jsonObject.getString("message"));
+            throw new AuthorizedException(jsonObject.getString("message"));
         }
     }
 

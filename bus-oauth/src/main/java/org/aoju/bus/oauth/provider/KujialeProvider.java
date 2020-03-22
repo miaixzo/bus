@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -77,7 +77,7 @@ public class KujialeProvider extends DefaultProvider {
      * @return authorize url
      */
     public String authorize(String state, String scopeStr) {
-        Builder builder = Builder.fromBaseUrl(source.authorize())
+        Builder builder = Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -106,7 +106,7 @@ public class KujialeProvider extends DefaultProvider {
     private JSONObject checkResponse(String response) {
         JSONObject object = JSONObject.parseObject(response);
         if (!Symbol.ZERO.equals(object.getString("c"))) {
-            throw new InstrumentException(object.getString("m"));
+            throw new AuthorizedException(object.getString("m"));
         }
         return object;
     }
@@ -114,13 +114,13 @@ public class KujialeProvider extends DefaultProvider {
     @Override
     public Property getUserInfo(AccToken token) {
         String openId = this.getOpenId(token);
-        String response = Httpx.get(Builder.fromBaseUrl(source.userInfo())
+        String response = Httpx.get(Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("open_id", openId)
                 .build());
         JSONObject object = JSONObject.parseObject(response);
         if (!Symbol.ZERO.equals(object.getString("c"))) {
-            throw new InstrumentException(object.getString("m"));
+            throw new AuthorizedException(object.getString("m"));
         }
         JSONObject resultObject = object.getJSONObject("d");
 
@@ -141,7 +141,7 @@ public class KujialeProvider extends DefaultProvider {
      * @return openId
      */
     private String getOpenId(AccToken token) {
-        String response = Httpx.get(Builder.fromBaseUrl("https://oauth.kujiale.com/oauth2/auth/user")
+        String response = Httpx.get(Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
                 .queryParam("access_token", token.getAccessToken())
                 .build());
         JSONObject accessTokenObject = checkResponse(response);

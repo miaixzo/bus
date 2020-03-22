@@ -27,7 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -74,7 +74,7 @@ public class QqProvider extends DefaultProvider {
         String openId = this.getOpenId(token);
         JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
         if (object.getIntValue("ret") != 0) {
-            throw new InstrumentException(object.getString("msg"));
+            throw new AuthorizedException(object.getString("msg"));
         }
         String avatar = object.getString("figureurl_qq_2");
         if (StringUtils.isEmpty(avatar)) {
@@ -102,7 +102,7 @@ public class QqProvider extends DefaultProvider {
      * @return openId
      */
     private String getOpenId(AccToken token) {
-        String response = Httpx.get(Builder.fromBaseUrl("https://graph.qq.com/oauth2.0/me")
+        String response = Httpx.get(Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("unionid", context.isUnionId() ? 1 : 0)
                 .build());
@@ -112,7 +112,7 @@ public class QqProvider extends DefaultProvider {
         String openId = StringUtils.trim(removeSuffix);
         JSONObject object = JSONObject.parseObject(openId);
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.get("error") + Symbol.COLON + object.get("error_description"));
+            throw new AuthorizedException(object.get("error") + Symbol.COLON + object.get("error_description"));
         }
         token.setOpenId(object.getString("openid"));
         if (object.containsKey("unionid")) {
@@ -129,7 +129,7 @@ public class QqProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("oauth_consumer_key", context.getAppKey())
                 .queryParam("openid", token.getOpenId())
@@ -139,7 +139,7 @@ public class QqProvider extends DefaultProvider {
     private AccToken getAuthToken(String response) {
         Map<String, String> accessTokenObject = parseStringToMap(response);
         if (!accessTokenObject.containsKey("access_token") || accessTokenObject.containsKey("code")) {
-            throw new InstrumentException(accessTokenObject.get("msg"));
+            throw new AuthorizedException(accessTokenObject.get("msg"));
         }
         return AccToken.builder()
                 .accessToken(accessTokenObject.get("access_token"))

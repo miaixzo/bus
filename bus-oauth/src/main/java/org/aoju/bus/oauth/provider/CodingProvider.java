@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -86,17 +86,6 @@ public class CodingProvider extends DefaultProvider {
     }
 
     /**
-     * 检查响应内容是否正确
-     *
-     * @param object 请求响应内容
-     */
-    private void checkResponse(JSONObject object) {
-        if (object.getIntValue("code") != 0) {
-            throw new InstrumentException(object.getString("msg"));
-        }
-    }
-
-    /**
      * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
      *
      * @param state state 验证授权流程的参数,可以防止csrf
@@ -105,13 +94,25 @@ public class CodingProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "user")
                 .queryParam("state", getRealState(state))
                 .build();
+    }
+
+
+    /**
+     * 检查响应内容是否正确
+     *
+     * @param object 请求响应内容
+     */
+    private void checkResponse(JSONObject object) {
+        if (object.getIntValue("code") != 0) {
+            throw new AuthorizedException(object.getString("msg"));
+        }
     }
 
 }

@@ -25,7 +25,11 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -38,6 +42,7 @@ import org.aoju.bus.oauth.metric.StateCache;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 /**
  * 今日头条登录
@@ -64,7 +69,7 @@ public class TwitterProvider extends DefaultProvider {
      * @param len length
      * @return nonce string
      */
-    public static String generateNonce(int len) {
+    private static String generateNonce(int len) {
         String s = "0123456789QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm";
         Random rng = new Random();
         StringBuilder sb = new StringBuilder();
@@ -76,29 +81,35 @@ public class TwitterProvider extends DefaultProvider {
     }
 
     /**
-     * Obtaining a request token
-     * https://developer.twitter.com/en/docs/twitter-for-websites/log-in-with-twitter/guides/implementing-sign-in-with-twitter
+     * Generate Twitter signature
+     * https://developer.twitter.com/en/docs/basics/authentication/guides/creating-a-signature
      *
-     * @return request token
+     * @param params      parameters including: oauth headers, query params, body params
+     * @param method      HTTP method
+     * @param baseUrl     base url
+     * @param apiSecret   api key secret can be found in the developer portal by viewing the app details page
+     * @param tokenSecret oauth token secret
+     * @return BASE64 encoded signature string
      */
-    public AccToken getRequestToken() {
-        String baseUrl = "https://api.twitter.com/oauth/request_token";
+    private static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
+        TreeMap<String, Object> map = new TreeMap<>();
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            map.put(urlEncode(e.getKey()), e.getValue());
+        }
+        String str = parseMapToString(map, true);
+        String baseStr = method.toUpperCase() + "&" + urlEncode(baseUrl) + "&" + urlEncode(str);
+        String signKey = apiSecret + "&" + (StringUtils.isEmpty(tokenSecret) ? "" : tokenSecret);
+        byte[] signature = sign(signKey.getBytes(Charset.DEFAULT), baseStr.getBytes(Charset.DEFAULT), Algorithm.HmacSHA1);
 
-        Map<String, String> oauthParams = buildOauthParams();
-        oauthParams.put("oauth_callback", context.getRedirectUri());
-        oauthParams.put("oauth_signature", generateTwitterSignature(oauthParams, "POST", baseUrl, context.getAppSecret(), null));
+        return new String(Base64.encode(signature, false));
+    }
 
-        Map<String, String> header = new HashMap<>();
-        header.put("Authorization", buildHeader(oauthParams));
-
-        String requestToken = Httpx.post(baseUrl, null, header);
-
-        Map<String, String> res = parseStringToMap(requestToken, false);
-
-        return AccToken.builder()
-                .oauthToken(res.get("oauth_token"))
-                .oauthTokenSecret(res.get("oauth_token_secret"))
-                .oauthCallbackConfirmed(Boolean.valueOf(res.get("oauth_callback_confirmed")))
+    @Override
+    protected String userInfoUrl(AccToken authToken) {
+        return Builder.fromUrl(source.userInfo())
+                .queryParam("user_id", authToken.getUserId())
+                .queryParam("screen_name", authToken.getScreenName())
+                .queryParam("include_entities", true)
                 .build();
     }
 
@@ -113,7 +124,7 @@ public class TwitterProvider extends DefaultProvider {
         Map<String, String> oauthParams = buildOauthParams();
         oauthParams.put("oauth_token", authCallback.getOauthToken());
         oauthParams.put("oauth_verifier", authCallback.getOauthVerifier());
-        oauthParams.put("oauth_signature", generateTwitterSignature(oauthParams, "POST", source.accessToken(), context.getAppSecret(), authCallback
+        oauthParams.put("oauth_signature", sign(oauthParams, "POST", source.accessToken(), context.getAppSecret(), authCallback
                 .getOauthToken()));
 
         Map<String, String> header = new HashMap<>();
@@ -147,7 +158,7 @@ public class TwitterProvider extends DefaultProvider {
 
         Map<String, String> params = new HashMap<>(oauthParams);
         params.putAll(queryParams);
-        oauthParams.put("oauth_signature", generateTwitterSignature(params, "GET", source.userInfo(), context.getAppSecret(), authToken
+        oauthParams.put("oauth_signature", sign(params, "GET", source.userInfo(), context.getAppSecret(), authToken
                 .getOauthTokenSecret()));
         String header = buildHeader(oauthParams);
 
@@ -166,15 +177,6 @@ public class TwitterProvider extends DefaultProvider {
                 .location(userInfo.getString("location"))
                 .source(source.toString())
                 .token(authToken)
-                .build();
-    }
-
-    @Override
-    protected String userInfoUrl(AccToken authToken) {
-        return Builder.fromBaseUrl(source.userInfo())
-                .queryParam("user_id", authToken.getUserId())
-                .queryParam("screen_name", authToken.getScreenName())
-                .queryParam("include_entities", true)
                 .build();
     }
 
@@ -199,6 +201,33 @@ public class TwitterProvider extends DefaultProvider {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Obtaining a request token
+     * https://developer.twitter.com/en/docs/twitter-for-websites/log-in-with-twitter/guides/implementing-sign-in-with-twitter
+     *
+     * @return request token
+     */
+    private AccToken getRequestToken() {
+        String baseUrl = "https://api.twitter.com/oauth/request_token";
+
+        Map<String, String> oauthParams = buildOauthParams();
+        oauthParams.put("oauth_callback", context.getRedirectUri());
+        oauthParams.put("oauth_signature", sign(oauthParams, "POST", baseUrl, context.getAppSecret(), null));
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", buildHeader(oauthParams));
+
+        String requestToken = Httpx.post(baseUrl, null, header);
+
+        Map<String, String> res = parseStringToMap(requestToken, false);
+
+        return AccToken.builder()
+                .oauthToken(res.get("oauth_token"))
+                .oauthTokenSecret(res.get("oauth_token_secret"))
+                .oauthCallbackConfirmed(Boolean.valueOf(res.get("oauth_callback_confirmed")))
+                .build();
     }
 
 }

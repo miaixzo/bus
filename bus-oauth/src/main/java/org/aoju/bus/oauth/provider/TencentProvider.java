@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -42,14 +42,14 @@ import org.aoju.bus.oauth.metric.StateCache;
  * @version 5.6.9
  * @since JDK 1.8+
  */
-public class TencentCloudProvider extends DefaultProvider {
+public class TencentProvider extends DefaultProvider {
 
-    public TencentCloudProvider(Context context) {
-        super(context, Registry.TENCENT_CLOUD);
+    public TencentProvider(Context context) {
+        super(context, Registry.TENCENT);
     }
 
-    public TencentCloudProvider(Context context, StateCache stateCache) {
-        super(context, Registry.TENCENT_CLOUD, stateCache);
+    public TencentProvider(Context context, StateCache stateCache) {
+        super(context, Registry.TENCENT, stateCache);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class TencentCloudProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.getIntValue("code") != 0) {
-            throw new InstrumentException(object.getString("msg"));
+            throw new AuthorizedException(object.getString("msg"));
         }
     }
 
@@ -105,7 +105,7 @@ public class TencentCloudProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
