@@ -234,6 +234,77 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
+     * 如果给定字符串{@code str}中不包含{@code appendStr},则在{@code str}后追加{@code appendStr}；
+     * 如果已包含{@code appendStr},则在{@code str}后追加{@code otherwise}
+     *
+     * @param str       给定的字符串
+     * @param appendStr 需要追加的内容
+     * @param otherwise 当{@code appendStr}不满足时追加到{@code str}后的内容
+     * @return 追加后的字符串
+     */
+    public static String appendIfNotContain(String str, String appendStr, String otherwise) {
+        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(appendStr)) {
+            return str;
+        }
+        if (str.contains(appendStr)) {
+            return str.concat(otherwise);
+        }
+        return str.concat(appendStr);
+    }
+
+    /**
+     * string字符串转map,str格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param accessTokenStr 待转换的字符串
+     * @return map
+     */
+    public static Map<String, String> parseStringToMap(String accessTokenStr) {
+        Map<String, String> res = new HashMap<>();
+        if (accessTokenStr.contains(Symbol.AND)) {
+            String[] fields = accessTokenStr.split(Symbol.AND);
+            for (String field : fields) {
+                if (field.contains(Symbol.EQUAL)) {
+                    String[] keyValue = field.split(Symbol.EQUAL);
+                    res.put(urlDecode(keyValue[0]), keyValue.length == 2 ? urlDecode(keyValue[1]) : null);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * map转字符串,转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param params 待转换的map
+     * @param encode 是否转码
+     * @return str
+     */
+    public static String parseMapToString(Map<String, Object> params, boolean encode) {
+        List<String> paramList = new ArrayList<>();
+        params.forEach((k, v) -> {
+            if (ObjectUtils.isNull(v)) {
+                paramList.add(k + Symbol.EQUAL);
+            } else {
+                String valueString = v.toString();
+                paramList.add(k + Symbol.EQUAL + (encode ? urlEncode(valueString) : valueString));
+            }
+        });
+        return CollUtils.join(paramList, Symbol.AND);
+    }
+
+    /**
+     * 将url的参数列表转换成map
+     *
+     * @param url 待转换的url
+     * @return map
+     */
+    public static Map<String, Object> parseQueryToMap(String url) {
+        Map<String, Object> paramMap = new HashMap<>();
+        UriUtils.decodeVal(url, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
+        return paramMap;
+    }
+
+    /**
      * 统一的登录入口 当通过{@link DefaultProvider#authorize(String)}授权成功后,会跳转到调用方的相关回调方法中
      * 方法的入参可以使用{@code AuthCallback},{@code AuthCallback}类中封装好了OAuth2授权回调所需要的参数
      *
@@ -389,78 +460,6 @@ public abstract class DefaultProvider implements Provider {
      */
     protected String doGetAuthorizationCode(String code) {
         return Httpx.get(accessTokenUrl(code));
-    }
-
-
-    /**
-     * 如果给定字符串{@code str}中不包含{@code appendStr},则在{@code str}后追加{@code appendStr}；
-     * 如果已包含{@code appendStr},则在{@code str}后追加{@code otherwise}
-     *
-     * @param str       给定的字符串
-     * @param appendStr 需要追加的内容
-     * @param otherwise 当{@code appendStr}不满足时追加到{@code str}后的内容
-     * @return 追加后的字符串
-     */
-    public static String appendIfNotContain(String str, String appendStr, String otherwise) {
-        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(appendStr)) {
-            return str;
-        }
-        if (str.contains(appendStr)) {
-            return str.concat(otherwise);
-        }
-        return str.concat(appendStr);
-    }
-
-    /**
-     * string字符串转map,str格式为 {@code xxx=xxx&xxx=xxx}
-     *
-     * @param accessTokenStr 待转换的字符串
-     * @return map
-     */
-    public static Map<String, String> parseStringToMap(String accessTokenStr) {
-        Map<String, String> res = new HashMap<>();
-        if (accessTokenStr.contains(Symbol.AND)) {
-            String[] fields = accessTokenStr.split(Symbol.AND);
-            for (String field : fields) {
-                if (field.contains(Symbol.EQUAL)) {
-                    String[] keyValue = field.split(Symbol.EQUAL);
-                    res.put(urlDecode(keyValue[0]), keyValue.length == 2 ? urlDecode(keyValue[1]) : null);
-                }
-            }
-        }
-        return res;
-    }
-
-    /**
-     * map转字符串,转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
-     *
-     * @param params 待转换的map
-     * @param encode 是否转码
-     * @return str
-     */
-    public static String parseMapToString(Map<String, Object> params, boolean encode) {
-        List<String> paramList = new ArrayList<>();
-        params.forEach((k, v) -> {
-            if (ObjectUtils.isNull(v)) {
-                paramList.add(k + Symbol.EQUAL);
-            } else {
-                String valueString = v.toString();
-                paramList.add(k + Symbol.EQUAL + (encode ? urlEncode(valueString) : valueString));
-            }
-        });
-        return CollUtils.join(paramList, Symbol.AND);
-    }
-    
-    /**
-     * 将url的参数列表转换成map
-     *
-     * @param url 待转换的url
-     * @return map
-     */
-    public static Map<String, Object> parseQueryToMap(String url) {
-        Map<String, Object> paramMap = new HashMap<>();
-        UriUtils.decodeVal(url, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
-        return paramMap;
     }
 
     /**

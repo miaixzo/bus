@@ -67,30 +67,6 @@ public class ElemeProvider extends DefaultProvider {
         super(context, Registry.ELEME, stateCache);
     }
 
-    @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        Map<String, String> header = new HashMap<>();
-        header.put("client_id", context.getAppKey());
-        header.put("redirect_uri", context.getRedirectUri());
-        header.put("code", Callback.getCode());
-        header.put("grant_type", "authorization_code");
-
-        // 设置header
-        this.setHeader(header);
-
-        String response = Httpx.post(source.accessToken(), null, header);
-        JSONObject object = JSONObject.parseObject(response);
-
-        this.checkResponse(object);
-
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .refreshToken(object.getString("refresh_token"))
-                .tokenType(object.getString("token_type"))
-                .expireIn(object.getIntValue("expires_in"))
-                .build();
-    }
-
     /**
      * 生成饿了么请求的Signature
      * <p>
@@ -118,6 +94,53 @@ public class ElemeProvider extends DefaultProvider {
         String splice = String.format("%s%s%s%s", action, token, string, secret);
         String calculatedSignature = md5(splice);
         return calculatedSignature.toUpperCase();
+    }
+
+    /**
+     * MD5加密饿了么请求的Signature
+     * <p>
+     * 代码copy并修改自：https://coding.net/u/napos_openapi/p/eleme-openapi-java-sdk/git/blob/master/src/main/java/eleme/openapi/sdk/utils/SignatureUtil.java
+     *
+     * @param str 饿了么请求的Signature
+     * @return md5 str
+     */
+    private static String md5(String str) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(Algorithm.MD5);
+            md.update(str.getBytes(Charset.UTF_8));
+            byte[] byteData = md.digest();
+            StringBuilder buffer = new StringBuilder();
+            for (byte byteDatum : byteData) {
+                buffer.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
+            }
+            return null == buffer ? Normal.EMPTY : buffer.toString();
+        } catch (Exception ignored) {
+            throw new AuthorizedException(ignored.getMessage());
+        }
+    }
+
+    @Override
+    protected AccToken getAccessToken(Callback Callback) {
+        Map<String, String> header = new HashMap<>();
+        header.put("client_id", context.getAppKey());
+        header.put("redirect_uri", context.getRedirectUri());
+        header.put("code", Callback.getCode());
+        header.put("grant_type", "authorization_code");
+
+        // 设置header
+        this.setHeader(header);
+
+        String response = Httpx.post(source.accessToken(), null, header);
+        JSONObject object = JSONObject.parseObject(response);
+
+        this.checkResponse(object);
+
+        return AccToken.builder()
+                .accessToken(object.getString("access_token"))
+                .refreshToken(object.getString("refresh_token"))
+                .tokenType(object.getString("token_type"))
+                .expireIn(object.getIntValue("expires_in"))
+                .build();
     }
 
     @Override
@@ -171,29 +194,6 @@ public class ElemeProvider extends DefaultProvider {
 
     private String getRequestId() {
         return (ObjectID.id() + Symbol.OR + System.currentTimeMillis()).toUpperCase();
-    }
-
-    /**
-     * MD5加密饿了么请求的Signature
-     * <p>
-     * 代码copy并修改自：https://coding.net/u/napos_openapi/p/eleme-openapi-java-sdk/git/blob/master/src/main/java/eleme/openapi/sdk/utils/SignatureUtil.java
-     *
-     * @param str 饿了么请求的Signature
-     * @return md5 str
-     */
-    private static String md5(String str) {
-        try {
-            MessageDigest md = MessageDigest.getInstance(Algorithm.MD5);
-            md.update(str.getBytes(Charset.UTF_8));
-            byte[] byteData = md.digest();
-            StringBuilder buffer = new StringBuilder();
-            for (byte byteDatum : byteData) {
-                buffer.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
-            }
-            return null == buffer ? Normal.EMPTY : buffer.toString();
-        } catch (Exception ignored) {
-            throw new AuthorizedException(ignored.getMessage());
-        }
     }
 
     @Override

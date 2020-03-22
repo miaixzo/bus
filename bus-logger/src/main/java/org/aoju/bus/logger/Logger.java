@@ -44,15 +44,6 @@ public final class Logger {
     }
 
     /**
-     * Trace 等级日志否开启
-     *
-     * @return the true/false
-     */
-    public boolean isTrace() {
-        return LogFactory.get(CallerUtils.getCallers()).isTrace();
-    }
-
-    /**
      * Trace等级日志,小于debug
      * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
@@ -72,15 +63,6 @@ public final class Logger {
      */
     public static void trace(Log log, String format, Object... arguments) {
         log.trace(FQCN, null, format, arguments);
-    }
-
-    /**
-     * Debug 等级日志否开启
-     *
-     * @return the true/false
-     */
-    public boolean isDebug() {
-        return LogFactory.get(CallerUtils.getCallers()).isDebug();
     }
 
     /**
@@ -106,15 +88,6 @@ public final class Logger {
     }
 
     /**
-     * Info 等级日志否开启
-     *
-     * @return the true/false
-     */
-    public boolean isInfo() {
-        return LogFactory.get(CallerUtils.getCallers()).isInfo();
-    }
-
-    /**
      * Info等级日志,小于Warn
      * 由于动态获取Log,效率较低,建议在非频繁调用的情况下使用！！
      *
@@ -134,15 +107,6 @@ public final class Logger {
      */
     public static void info(Log log, String format, Object... arguments) {
         log.info(FQCN, null, format, arguments);
-    }
-
-    /**
-     * Warn 等级日志否开启
-     *
-     * @return the true/false
-     */
-    public boolean isWarn() {
-        return LogFactory.get(CallerUtils.getCallers()).isWarn();
     }
 
     /**
@@ -189,15 +153,6 @@ public final class Logger {
      */
     public static void warn(Log log, Throwable e, String format, Object... arguments) {
         log.warn(FQCN, e, format, arguments);
-    }
-
-    /**
-     * Error 等级日志否开启
-     *
-     * @return the true/false
-     */
-    public boolean isError() {
-        return LogFactory.get(CallerUtils.getCallers()).isError();
     }
 
     /**
@@ -303,6 +258,51 @@ public final class Logger {
      */
     public static Log get() {
         return LogFactory.get(CallerUtils.getCallers());
+    }
+
+    /**
+     * Trace 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isTrace() {
+        return LogFactory.get(CallerUtils.getCallers()).isTrace();
+    }
+
+    /**
+     * Debug 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isDebug() {
+        return LogFactory.get(CallerUtils.getCallers()).isDebug();
+    }
+
+    /**
+     * Info 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isInfo() {
+        return LogFactory.get(CallerUtils.getCallers()).isInfo();
+    }
+
+    /**
+     * Warn 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isWarn() {
+        return LogFactory.get(CallerUtils.getCallers()).isWarn();
+    }
+
+    /**
+     * Error 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isError() {
+        return LogFactory.get(CallerUtils.getCallers()).isError();
     }
 
 }
