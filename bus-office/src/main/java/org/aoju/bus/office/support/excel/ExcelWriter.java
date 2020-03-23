@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -77,6 +78,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 样式集,定义不同类型数据样式
      */
     private StyleSet styleSet;
+    /**
+     * 标题项对应列号缓存，每次写标题更新此缓存
+     */
+    private Map<String, Integer> headLocationCache;
 
     /**
      * 构造,默认生成xls格式的Excel文件
@@ -203,6 +208,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     public ExcelWriter reset() {
         resetRow();
         this.aliasComparator = null;
+        this.headLocationCache = null;
         return this;
     }
 
@@ -661,7 +667,16 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter writeHeadRow(Iterable<?> rowData) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
-        RowUtils.writeRow(this.sheet.createRow(this.currentRow.getAndIncrement()), rowData, this.styleSet, true);
+        this.headLocationCache = new ConcurrentHashMap<>();
+        final Row row = this.sheet.createRow(this.currentRow.getAndIncrement());
+        int i = 0;
+        Cell cell;
+        for (Object value : rowData) {
+            cell = row.createCell(i);
+            CellUtils.setCellValue(cell, value, this.styleSet, true);
+            this.headLocationCache.put(StringUtils.toString(value), i);
+            i++;
+        }
         return this;
     }
 
@@ -716,7 +731,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     public ExcelWriter writeRow(Map<?, ?> rowMap, boolean isWriteKeyAsHead) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         if (MapUtils.isEmpty(rowMap)) {
-            // 如果写出数据为null或空,跳过当前行
+            // 如果写出数据为null或空，跳过当前行
             return passCurrentRow();
         }
 
@@ -725,7 +740,20 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         if (isWriteKeyAsHead) {
             writeHeadRow(aliasMap.keySet());
         }
-        writeRow(aliasMap.values());
+
+        // 如果已经写出标题行，根据标题行找对应的值写入
+        if (MapUtils.isNotEmpty(this.headLocationCache)) {
+            final Row row = RowUtils.getOrCreateRow(this.sheet, this.currentRow.getAndIncrement());
+            Integer location;
+            for (Entry<?, ?> entry : aliasMap.entrySet()) {
+                location = this.headLocationCache.get(StringUtils.toString(entry.getKey()));
+                if (null != location) {
+                    CellUtils.setCellValue(CellUtils.getOrCreateCell(row, location), entry.getValue(), this.styleSet, false);
+                }
+            }
+        } else {
+            writeRow(aliasMap.values());
+        }
         return this;
     }
 
