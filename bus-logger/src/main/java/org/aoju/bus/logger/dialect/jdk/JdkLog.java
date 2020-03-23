@@ -87,7 +87,7 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public boolean isTraceEnabled() {
+    public boolean isTrace() {
         return logger.isLoggable(Level.FINEST);
     }
 
@@ -97,7 +97,7 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public boolean isDebugEnabled() {
+    public boolean isDebug() {
         return logger.isLoggable(Level.FINE);
     }
 
@@ -107,7 +107,7 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public boolean isInfoEnabled() {
+    public boolean isInfo() {
         return logger.isLoggable(Level.INFO);
     }
 
@@ -117,7 +117,7 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public boolean isWarnEnabled() {
+    public boolean isWarn() {
         return logger.isLoggable(Level.WARNING);
     }
 
@@ -127,7 +127,7 @@ public class JdkLog extends AbstractAware {
     }
 
     @Override
-    public boolean isErrorEnabled() {
+    public boolean isError() {
         return logger.isLoggable(Level.SEVERE);
     }
 

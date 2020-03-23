@@ -527,7 +527,7 @@ public class IoUtils {
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        return StringUtils.str(buffer, charset);
+        return StringUtils.toString(buffer, charset);
     }
 
     /**

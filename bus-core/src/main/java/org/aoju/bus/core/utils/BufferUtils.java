@@ -206,7 +206,7 @@ public class BufferUtils {
 
         if (endPosition > startPosition) {
             byte[] bs = readBytes(buffer, startPosition, endPosition);
-            return StringUtils.str(bs, charset);
+            return StringUtils.toString(bs, charset);
         } else if (endPosition == startPosition) {
             return Normal.EMPTY;
         }

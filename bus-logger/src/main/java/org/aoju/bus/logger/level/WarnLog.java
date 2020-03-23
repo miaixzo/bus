@@ -36,7 +36,7 @@ public interface WarnLog {
     /**
      * @return WARN 等级是否开启
      */
-    boolean isWarnEnabled();
+    boolean isWarn();
 
     /**
      * 打印 WARN 等级的日志

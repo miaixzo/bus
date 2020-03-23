@@ -27,7 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -94,7 +94,7 @@ public class MicrosoftProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error_description"));
+            throw new AuthorizedException(object.getString("error_description"));
         }
     }
 
@@ -146,9 +146,9 @@ public class MicrosoftProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("response_mode", "query")
                 .queryParam("scope", "offline_access%20user.read%20mail.read")
@@ -164,10 +164,10 @@ public class MicrosoftProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(source.accessToken())
+        return Builder.fromUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("scope", "user.read%20mail.read")
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -182,7 +182,7 @@ public class MicrosoftProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo()).build();
+        return Builder.fromUrl(source.userInfo()).build();
     }
 
     /**
@@ -193,13 +193,14 @@ public class MicrosoftProvider extends DefaultProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(source.refresh())
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+        return Builder.fromUrl(source.refresh())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("scope", "user.read%20mail.read")
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
+
 }

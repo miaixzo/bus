@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.oauth;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.magic.Callback;
 
 /**
@@ -73,7 +73,7 @@ public interface Complex {
      * @return url
      */
     default String revoke() {
-        throw new InstrumentException(Builder.Status.UNSUPPORTED.getCode());
+        throw new AuthorizedException(Builder.Status.UNSUPPORTED.getCode());
     }
 
     /**
@@ -82,7 +82,7 @@ public interface Complex {
      * @return url
      */
     default String refresh() {
-        throw new InstrumentException(Builder.Status.UNSUPPORTED.getCode());
+        throw new AuthorizedException(Builder.Status.UNSUPPORTED.getCode());
     }
 
 }

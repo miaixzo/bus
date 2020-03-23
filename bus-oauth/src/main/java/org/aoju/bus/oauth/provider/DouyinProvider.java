@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -95,7 +95,7 @@ public class DouyinProvider extends DefaultProvider {
         JSONObject data = object.getJSONObject("data");
         int errorCode = data.getIntValue("error_code");
         if ("error".equals(message) || errorCode != 0) {
-            throw new InstrumentException(Normal.EMPTY + errorCode, data.getString("description"));
+            throw new AuthorizedException(Normal.EMPTY + errorCode, data.getString("description"));
         }
     }
 
@@ -127,9 +127,9 @@ public class DouyinProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_key", context.getClientId())
+                .queryParam("client_key", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "user_info")
                 .queryParam("state", getRealState(state))
@@ -144,10 +144,10 @@ public class DouyinProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(source.accessToken())
+        return Builder.fromUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_key", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_key", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -160,7 +160,7 @@ public class DouyinProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("open_id", token.getOpenId())
                 .build();
@@ -174,8 +174,8 @@ public class DouyinProvider extends DefaultProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(source.refresh())
-                .queryParam("client_key", context.getClientId())
+        return Builder.fromUrl(source.refresh())
+                .queryParam("client_key", context.getAppKey())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();

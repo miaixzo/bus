@@ -89,7 +89,7 @@ public class BytesResource implements Resource {
 
     @Override
     public String readStr(Charset charset) throws InstrumentException {
-        return StringUtils.str(this.bytes, charset);
+        return StringUtils.toString(this.bytes, charset);
     }
 
     @Override

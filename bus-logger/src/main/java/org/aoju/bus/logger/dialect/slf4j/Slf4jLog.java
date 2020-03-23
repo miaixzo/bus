@@ -77,13 +77,13 @@ public class Slf4jLog extends AbstractAware {
     }
 
     @Override
-    public boolean isTraceEnabled() {
+    public boolean isTrace() {
         return logger.isTraceEnabled();
     }
 
     @Override
     public void trace(String fqcn, Throwable t, String format, Object... arguments) {
-        if (isTraceEnabled()) {
+        if (isTrace()) {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.TRACE_INT, t, format, arguments);
             } else {
@@ -93,13 +93,13 @@ public class Slf4jLog extends AbstractAware {
     }
 
     @Override
-    public boolean isDebugEnabled() {
+    public boolean isDebug() {
         return logger.isDebugEnabled();
     }
 
     @Override
     public void debug(String fqcn, Throwable t, String format, Object... arguments) {
-        if (isDebugEnabled()) {
+        if (isDebug()) {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.DEBUG_INT, t, format, arguments);
             } else {
@@ -109,13 +109,13 @@ public class Slf4jLog extends AbstractAware {
     }
 
     @Override
-    public boolean isInfoEnabled() {
+    public boolean isInfo() {
         return logger.isInfoEnabled();
     }
 
     @Override
     public void info(String fqcn, Throwable t, String format, Object... arguments) {
-        if (isInfoEnabled()) {
+        if (isInfo()) {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.INFO_INT, t, format, arguments);
             } else {
@@ -125,13 +125,13 @@ public class Slf4jLog extends AbstractAware {
     }
 
     @Override
-    public boolean isWarnEnabled() {
+    public boolean isWarn() {
         return logger.isWarnEnabled();
     }
 
     @Override
     public void warn(String fqcn, Throwable t, String format, Object... arguments) {
-        if (isWarnEnabled()) {
+        if (isWarn()) {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.WARN_INT, t, format, arguments);
             } else {
@@ -141,13 +141,13 @@ public class Slf4jLog extends AbstractAware {
     }
 
     @Override
-    public boolean isErrorEnabled() {
+    public boolean isError() {
         return logger.isErrorEnabled();
     }
 
     @Override
     public void error(String fqcn, Throwable t, String format, Object... arguments) {
-        if (isErrorEnabled()) {
+        if (isError()) {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.ERROR_INT, t, format, arguments);
             } else {

@@ -184,7 +184,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String decodeStr(String source, String charset) {
-        return StringUtils.str(decode(source), charset);
+        return StringUtils.toString(decode(source), charset);
     }
 
     /**
@@ -195,7 +195,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String decodeStr(String source, Charset charset) {
-        return StringUtils.str(decode(source), charset);
+        return StringUtils.toString(decode(source), charset);
     }
 
 }

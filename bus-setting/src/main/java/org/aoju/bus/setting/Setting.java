@@ -34,19 +34,17 @@ import org.aoju.bus.core.io.watchers.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.ResourceUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.utils.*;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.setting.dialect.Props;
 
 import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * 设置工具类  用于支持设置（配置）文件
@@ -197,22 +195,36 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param autoReload 是否自动加载
      */
     public void autoLoad(boolean autoReload) {
+        autoLoad(autoReload, null);
+    }
+
+    /**
+     * 在配置文件变更时自动加载
+     *
+     * @param callback   加载完成回调
+     * @param autoReload 是否自动加载
+     */
+    public void autoLoad(boolean autoReload, Consumer<Boolean> callback) {
         if (autoReload) {
+            Assert.notNull(this.settingUrl, "Setting URL is null !");
             if (null != this.watchMonitor) {
+                // 先关闭之前的监听
                 this.watchMonitor.close();
             }
-            try {
-                watchMonitor = WatchMonitor.create(this.settingUrl, StandardWatchEventKinds.ENTRY_MODIFY);
-                watchMonitor.setWatcher(new SimpleWatcher() {
-                    @Override
-                    public void onModify(WatchEvent<?> event, Path currentPath) {
-                        load();
+            this.watchMonitor = WatchUtils.createModify(this.settingUrl, new SimpleWatcher() {
+                @Override
+                public void onModify(WatchEvent<?> event, Path currentPath) {
+                    boolean success = load();
+                    // 如果有回调，加载完毕则执行回调
+                    if (callback != null) {
+                        callback.accept(success);
                     }
-                }).start();
-            } catch (Exception e) {
-                throw new InstrumentException("Setting auto load not support url: [{}]", this.settingUrl);
-            }
+                }
+            });
+            this.watchMonitor.start();
+            Logger.debug("Auto load for [{}] listenning...", this.settingUrl);
         } else {
+            IoUtils.close(this.watchMonitor);
             this.watchMonitor = null;
         }
     }

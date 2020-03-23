@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -60,8 +60,8 @@ public class MeituanProvider extends DefaultProvider {
     @Override
     protected AccToken getAccessToken(Callback Callback) {
         Map<String, Object> params = new HashMap<>();
-        params.put("app_id", context.getClientId());
-        params.put("secret", context.getClientSecret());
+        params.put("app_id", context.getAppKey());
+        params.put("secret", context.getAppSecret());
         params.put("code", Callback.getCode());
         params.put("grant_type", "authorization_code");
 
@@ -80,8 +80,8 @@ public class MeituanProvider extends DefaultProvider {
     @Override
     protected Property getUserInfo(AccToken token) {
         Map<String, Object> params = new HashMap<>();
-        params.put("app_id", context.getClientId());
-        params.put("secret", context.getClientSecret());
+        params.put("app_id", context.getAppKey());
+        params.put("secret", context.getAppSecret());
         params.put("access_token", token.getAccessToken());
 
         String response = Httpx.post(source.refresh(), params);
@@ -103,8 +103,8 @@ public class MeituanProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken oldToken) {
         Map<String, Object> params = new HashMap<>();
-        params.put("app_id", context.getClientId());
-        params.put("secret", context.getClientSecret());
+        params.put("app_id", context.getAppKey());
+        params.put("secret", context.getAppSecret());
         params.put("refresh_token", oldToken.getRefreshToken());
         params.put("grant_type", "refresh_token");
 
@@ -125,15 +125,15 @@ public class MeituanProvider extends DefaultProvider {
 
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error_code")) {
-            throw new InstrumentException(object.getString("erroe_msg"));
+            throw new AuthorizedException(object.getString("erroe_msg"));
         }
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("app_id", context.getClientId())
+                .queryParam("app_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))
                 .queryParam("scope", Normal.EMPTY)

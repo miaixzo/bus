@@ -738,6 +738,18 @@ public class XmlUtils {
     }
 
     /**
+     * XML转Java Bean
+     *
+     * @param <T>  bean类型
+     * @param node XML节点
+     * @param bean bean类
+     * @return bean
+     */
+    public static <T> T xmlToBean(Node node, Class<T> bean) {
+        return BeanUtils.toBean(xmlToMap(node), bean);
+    }
+
+    /**
      * 将Map转换为XML
      *
      * @param data     Map类型数据

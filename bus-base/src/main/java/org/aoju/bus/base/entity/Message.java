@@ -28,9 +28,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * <p>
  * 返回值公用类
- * </p>
  *
  * @author Kimi Liu
  * @version 5.6.9
@@ -41,7 +39,7 @@ import lombok.Data;
 public class Message {
 
     /**
-     * 请求返回码,错误为具体返回码,正确为 0
+     * 请求返回码
      */
     public String errcode;
 
@@ -51,19 +49,8 @@ public class Message {
     public String errmsg;
 
     /**
-     * 请求返回数据 JSON
+     * 请求返回数据
      */
     public Object data;
-
-    public Message(String errcode, String errmsg) {
-        this.errmsg = errmsg;
-        this.errcode = errcode;
-    }
-
-    public Message(String errcode, String errmsg, Object data) {
-        this.errmsg = errmsg;
-        this.errcode = errcode;
-        this.data = data;
-    }
 
 }

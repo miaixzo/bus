@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.base.spring;
 
-
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.utils.StringUtils;
@@ -68,9 +67,16 @@ public class Controller {
     public static Object write(String errcode, Object data) {
         String errmsg = ErrorCode.require(errcode);
         if (StringUtils.isNotEmpty(errmsg)) {
-            return new Message(errcode, errmsg, data);
+            return Message.builder()
+                    .errcode(errcode)
+                    .errmsg(errmsg)
+                    .data(data)
+                    .build();
         }
-        return new Message(ErrorCode.EM_FAILURE, ErrorCode.require(ErrorCode.EM_FAILURE));
+        return Message.builder()
+                .errcode(ErrorCode.EM_FAILURE)
+                .errmsg(ErrorCode.require(ErrorCode.EM_FAILURE))
+                .build();
     }
 
     /**
@@ -83,9 +89,15 @@ public class Controller {
     public static Object write(String errcode, String errmsg) {
         String error = ErrorCode.require(errcode);
         if (StringUtils.isNotEmpty(error)) {
-            return new Message(errcode, errmsg);
+            return Message.builder()
+                    .errcode(errcode)
+                    .errmsg(errmsg)
+                    .build();
         }
-        return new Message(ErrorCode.EM_FAILURE, ErrorCode.require(ErrorCode.EM_FAILURE));
+        return Message.builder()
+                .errcode(ErrorCode.EM_FAILURE)
+                .errmsg(ErrorCode.require(ErrorCode.EM_FAILURE))
+                .build();
     }
 
 }

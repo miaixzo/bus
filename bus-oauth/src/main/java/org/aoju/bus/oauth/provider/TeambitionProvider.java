@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -64,8 +64,8 @@ public class TeambitionProvider extends DefaultProvider {
     @Override
     protected AccToken getAccessToken(Callback Callback) {
         Map<String, Object> params = new HashMap<>();
-        params.put("client_id", context.getClientId());
-        params.put("client_secret", context.getClientSecret());
+        params.put("client_id", context.getAppKey());
+        params.put("client_secret", context.getAppSecret());
         params.put("code", Callback.getCode());
         params.put("grant_type", "code");
 
@@ -133,7 +133,7 @@ public class TeambitionProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if ((object.containsKey("message") && object.containsKey("name"))) {
-            throw new InstrumentException(object.getString("name") + ", " + object.getString("message"));
+            throw new AuthorizedException(object.getString("name") + ", " + object.getString("message"));
         }
     }
 

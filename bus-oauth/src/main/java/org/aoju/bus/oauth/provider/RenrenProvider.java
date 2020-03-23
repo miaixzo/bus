@@ -27,7 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -88,7 +88,7 @@ public class RenrenProvider extends DefaultProvider {
     private AccToken getToken(String url) {
         JSONObject object = JSONObject.parseObject(Httpx.post(url));
         if (object.containsKey("error")) {
-            throw new InstrumentException("Failed to get token from Renren: " + object);
+            throw new AuthorizedException("Failed to get token from Renren: " + object);
         }
 
         return AccToken.builder()
@@ -132,7 +132,7 @@ public class RenrenProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("userId", token.getOpenId())
                 .build();

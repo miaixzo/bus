@@ -40,7 +40,7 @@ public class StackTraceCaller implements Caller {
     @Override
     public Class<?> getCaller() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (null == stackTrace || (OFFSET + 1) >= stackTrace.length) {
+        if (OFFSET + 1 >= stackTrace.length) {
             return null;
         }
         final String className = stackTrace[OFFSET + 1].getClassName();
@@ -54,7 +54,7 @@ public class StackTraceCaller implements Caller {
     @Override
     public Class<?> getCallers() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (null == stackTrace || (OFFSET + 2) >= stackTrace.length) {
+        if (OFFSET + 2 >= stackTrace.length) {
             return null;
         }
         final String className = stackTrace[OFFSET + 2].getClassName();
@@ -68,7 +68,7 @@ public class StackTraceCaller implements Caller {
     @Override
     public Class<?> getCaller(int depth) {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (null == stackTrace || (OFFSET + depth) >= stackTrace.length) {
+        if (OFFSET + depth >= stackTrace.length) {
             return null;
         }
         final String className = stackTrace[OFFSET + depth].getClassName();
@@ -82,11 +82,9 @@ public class StackTraceCaller implements Caller {
     @Override
     public boolean isCalledBy(Class<?> clazz) {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (null != stackTrace) {
-            for (final StackTraceElement element : stackTrace) {
-                if (element.getClassName().equals(clazz.getName())) {
-                    return true;
-                }
+        for (final StackTraceElement element : stackTrace) {
+            if (element.getClassName().equals(clazz.getName())) {
+                return true;
             }
         }
         return false;

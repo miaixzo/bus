@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -100,9 +100,9 @@ public class ToutiaoProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_key", context.getClientId())
+                .queryParam("client_key", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("auth_only", 1)
                 .queryParam("display", 0)
@@ -118,10 +118,10 @@ public class ToutiaoProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(source.accessToken())
+        return Builder.fromUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_key", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_key", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -134,8 +134,8 @@ public class ToutiaoProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
-                .queryParam("client_key", context.getClientId())
+        return Builder.fromUrl(source.userInfo())
+                .queryParam("client_key", context.getAppKey())
                 .queryParam("access_token", token.getAccessToken())
                 .build();
     }
@@ -147,7 +147,7 @@ public class ToutiaoProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error_code")) {
-            throw new InstrumentException(Error.getErrorCode(object.getString("error_code")).getDesc());
+            throw new AuthorizedException(Error.getErrorCode(object.getString("error_code")).getDesc());
         }
     }
 

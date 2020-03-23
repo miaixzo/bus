@@ -205,10 +205,10 @@ public class Asymmetric extends Safety<Asymmetric> {
         try {
             cipher.init(Cipher.DECRYPT_MODE, key);
 
-            if(this.decryptBlockSize < 0){
+            if (this.decryptBlockSize < 0) {
                 // 在引入BC库情况下，自动获取块大小
                 final int blockSize = this.cipher.getBlockSize();
-                if(blockSize > 0){
+                if (blockSize > 0) {
                     this.decryptBlockSize = blockSize;
                 }
             }

@@ -32,9 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <p>
  * 返回结果公用
- * </p>
  *
  * @author Kimi Liu
  * @version 5.6.9

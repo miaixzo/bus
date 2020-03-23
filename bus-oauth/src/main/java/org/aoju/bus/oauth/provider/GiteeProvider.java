@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
@@ -91,7 +91,7 @@ public class GiteeProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error_description"));
+            throw new AuthorizedException(object.getString("error_description"));
         }
     }
 

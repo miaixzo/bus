@@ -32,7 +32,7 @@ import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -55,14 +55,14 @@ public class AlipayProvider extends DefaultProvider {
 
     public AlipayProvider(Context context) {
         super(context, Registry.ALIPAY);
-        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getClientId(), context.getClientSecret(), "json", "UTF-8", context
-                .getAlipayPublicKey(), "RSA2");
+        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(), "json", "UTF-8", context
+                .getPublicKey(), "RSA2");
     }
 
     public AlipayProvider(Context context, StateCache stateCache) {
         super(context, Registry.ALIPAY, stateCache);
-        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getClientId(), context.getClientSecret(), "json", "UTF-8", context
-                .getAlipayPublicKey(), "RSA2");
+        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(), "json", "UTF-8", context
+                .getPublicKey(), "RSA2");
     }
 
     @Override
@@ -74,10 +74,10 @@ public class AlipayProvider extends DefaultProvider {
         try {
             response = this.alipayClient.execute(request);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new AuthorizedException(e);
         }
         if (!response.isSuccess()) {
-            throw new InstrumentException(response.getSubMsg());
+            throw new AuthorizedException(response.getSubMsg());
         }
         return AccToken.builder()
                 .accessToken(response.getAccessToken())
@@ -95,10 +95,10 @@ public class AlipayProvider extends DefaultProvider {
         try {
             response = this.alipayClient.execute(request, accessToken);
         } catch (AlipayApiException e) {
-            throw new InstrumentException(e.getErrMsg(), e);
+            throw new AuthorizedException(e.getErrMsg(), e);
         }
         if (!response.isSuccess()) {
-            throw new InstrumentException(response.getSubMsg());
+            throw new AuthorizedException(response.getSubMsg());
         }
 
         String province = response.getProvince(), city = response.getCity();
@@ -125,8 +125,8 @@ public class AlipayProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
-                .queryParam("app_id", context.getClientId())
+        return Builder.fromUrl(source.authorize())
+                .queryParam("app_id", context.getAppKey())
                 .queryParam("scope", "auth_user")
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state))

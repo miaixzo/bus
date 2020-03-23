@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -92,11 +92,11 @@ public class GitlabProvider extends DefaultProvider {
     private void checkResponse(JSONObject object) {
         // oauth/token 验证异常
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error_description"));
+            throw new AuthorizedException(object.getString("error_description"));
         }
         // user 验证异常
         if (object.containsKey("message")) {
-            throw new InstrumentException(object.getString("message"));
+            throw new AuthorizedException(object.getString("message"));
         }
     }
 
@@ -109,7 +109,7 @@ public class GitlabProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(super.authorize(state))
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", "read_user+openid+profile+email")
                 .build();
     }

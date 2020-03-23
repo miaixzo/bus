@@ -50,7 +50,7 @@ public class ArrayUtils {
      * 列表或数组中没有找到元素时的索引值 : {@code -1}.
      * 此值由该类中的方法返回,也可用于与所返回的值进行比较{@link java.util.List}.
      */
-    public static final int INDEX_NOT_FOUND = -1;
+    private static final int INDEX_NOT_FOUND = -1;
 
     /**
      * 对象是否为数组对象
@@ -7789,10 +7789,10 @@ public class ArrayUtils {
     /**
      * 获取子数组
      *
-     * @param <T> 数组元素类型
+     * @param <T>   数组元素类型
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7826,7 +7826,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7860,7 +7860,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7894,7 +7894,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7928,7 +7928,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7962,7 +7962,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7996,7 +7996,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -8030,7 +8030,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -8064,7 +8064,7 @@ public class ArrayUtils {
      *
      * @param array 数组
      * @param start 开始位置（包括）
-     * @param end 结束位置（不包括）
+     * @param end   结束位置（不包括）
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */

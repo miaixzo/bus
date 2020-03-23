@@ -40,6 +40,10 @@ public class Lazy<T> implements Supplier<T>, Serializable {
 
     private T value;
 
+    private Lazy(final Supplier<T> supplier) {
+        this.supplier = supplier;
+    }
+
     /**
      * 创建惰性的新实例
      *
@@ -49,10 +53,6 @@ public class Lazy<T> implements Supplier<T>, Serializable {
      */
     public static <T> Lazy<T> of(final Supplier<T> supplier) {
         return new Lazy<>(supplier);
-    }
-
-    private Lazy(final Supplier<T> supplier) {
-        this.supplier = supplier;
     }
 
     /**

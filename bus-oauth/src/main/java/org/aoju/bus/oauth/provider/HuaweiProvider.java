@@ -25,9 +25,8 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -70,8 +69,8 @@ public class HuaweiProvider extends DefaultProvider {
         Map<String, Object> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("code", Callback.getAuthorization_code());
-        params.put("client_id", context.getClientId());
-        params.put("client_secret", context.getClientSecret());
+        params.put("client_id", context.getAppKey());
+        params.put("client_secret", context.getAppSecret());
         params.put("redirect_uri", context.getRedirectUri());
 
         Httpx.post(source.accessToken(), params);
@@ -82,15 +81,15 @@ public class HuaweiProvider extends DefaultProvider {
     /**
      * 使用token换取用户信息
      *
-     * @param token token信息
+     * @param accToken token信息
      * @return 用户信息
      * @see DefaultProvider#getAccessToken(Callback)
      */
     @Override
-    protected Property getUserInfo(AccToken token) {
+    protected Property getUserInfo(AccToken accToken) {
         Map<String, Object> params = new HashMap<>();
         params.put("nsp_ts", System.currentTimeMillis());
-        params.put("access_token", token.getAccessToken());
+        params.put("access_token", accToken.getAccessToken());
         params.put("nsp_fmt", "JS");
         params.put("nsp_svc", "OpenUP.User.getInfo");
 
@@ -99,15 +98,13 @@ public class HuaweiProvider extends DefaultProvider {
 
         this.checkResponse(object);
 
-        Normal.Gender gender = getRealGender(object);
-
         return Property.builder()
                 .uuid(object.getString("userID"))
                 .username(object.getString("userName"))
                 .nickname(object.getString("userName"))
-                .gender(gender)
+                .gender(getRealGender(object))
                 .avatar(object.getString("headPictureURL"))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
@@ -121,27 +118,14 @@ public class HuaweiProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         Map<String, Object> params = new HashMap<>();
-        params.put("client_id", context.getClientId());
-        params.put("client_secret", context.getClientSecret());
+        params.put("client_id", context.getAppKey());
+        params.put("client_secret", context.getAppSecret());
         params.put("refresh_token", token.getRefreshToken());
         params.put("grant_type", "refresh_token");
         Httpx.post(source.accessToken(), params);
         return Message.builder()
                 .errcode(Builder.Status.SUCCESS.getCode())
                 .data(getAuthToken(params))
-                .build();
-    }
-
-    private AccToken getAuthToken(Map<String, Object> params) {
-        String response = Httpx.post(source.accessToken(), params);
-        JSONObject object = JSONObject.parseObject(response);
-
-        this.checkResponse(object);
-
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in"))
-                .refreshToken(object.getString("refresh_token"))
                 .build();
     }
 
@@ -154,9 +138,9 @@ public class HuaweiProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("access_type", "offline")
                 .queryParam("scope", "https%3A%2F%2Fwww.huawei.com%2Fauth%2Faccount%2Fbase.profile")
@@ -172,11 +156,11 @@ public class HuaweiProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(source.accessToken())
+        return Builder.fromUrl(source.accessToken())
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("code", code)
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
@@ -189,24 +173,12 @@ public class HuaweiProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("nsp_ts", System.currentTimeMillis())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("nsp_fmt", "JS")
                 .queryParam("nsp_svc", "OpenUP.User.getInfo")
                 .build();
-    }
-
-    /**
-     * 获取用户的实际性别 华为系统中,用户的性别：1表示女,0表示男
-     *
-     * @param object obj
-     * @return AuthUserGender
-     */
-    private Normal.Gender getRealGender(JSONObject object) {
-        int genderCodeInt = object.getIntValue("gender");
-        String genderCode = genderCodeInt == 1 ? Symbol.ZERO : (genderCodeInt == 0) ? Symbol.ONE : genderCodeInt + Normal.EMPTY;
-        return Normal.Gender.getGender(genderCode);
     }
 
     /**
@@ -216,10 +188,24 @@ public class HuaweiProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("NSP_STATUS")) {
-            throw new InstrumentException(object.getString("error"));
+            throw new AuthorizedException(object.getString("error"));
         }
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("sub_error") + Symbol.COLON + object.getString("error_description"));
+            throw new AuthorizedException(object.getString("sub_error") + Symbol.COLON + object.getString("error_description"));
         }
     }
+
+    private AccToken getAuthToken(Map<String, Object> params) {
+        String response = Httpx.post(source.accessToken(), params);
+        JSONObject object = JSONObject.parseObject(response);
+
+        this.checkResponse(object);
+
+        return AccToken.builder()
+                .accessToken(object.getString("access_token"))
+                .expireIn(object.getIntValue("expires_in"))
+                .refreshToken(object.getString("refresh_token"))
+                .build();
+    }
+
 }

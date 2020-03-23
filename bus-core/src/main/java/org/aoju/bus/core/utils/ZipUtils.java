@@ -718,7 +718,7 @@ public class ZipUtils {
      * @throws InstrumentException IO异常
      */
     public static String unGzip(byte[] buf, String charset) throws InstrumentException {
-        return StringUtils.str(unGzip(buf), charset);
+        return StringUtils.toString(unGzip(buf), charset);
     }
 
     /**
@@ -840,7 +840,7 @@ public class ZipUtils {
      * @return 解压后的字符串
      */
     public static String unZlib(byte[] buf, String charset) {
-        return StringUtils.str(unZlib(buf), charset);
+        return StringUtils.toString(unZlib(buf), charset);
     }
 
     /**

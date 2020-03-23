@@ -79,7 +79,7 @@ public final class HashSource extends DelegateSource {
     }
 
     public static HashSource sha256(Source source) {
-        return new HashSource(source,  Algorithm.SHA256);
+        return new HashSource(source, Algorithm.SHA256);
     }
 
     public static HashSource hmacSha1(Source source, ByteString key) {

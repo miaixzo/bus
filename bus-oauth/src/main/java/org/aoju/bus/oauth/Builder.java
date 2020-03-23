@@ -29,20 +29,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
 import org.aoju.bus.core.utils.MapUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.oauth.provider.DefaultProvider;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,68 +57,12 @@ public class Builder {
      * @param baseUrl 基础路径
      * @return the new {@code UrlBuilder}
      */
-    public static Builder fromBaseUrl(String baseUrl) {
+    public static Builder fromUrl(String baseUrl) {
         Builder builder = new Builder();
         builder.setBaseUrl(baseUrl);
         return builder;
     }
 
-    /**
-     * 如果给定字符串{@code str}中不包含{@code appendStr},则在{@code str}后追加{@code appendStr}；
-     * 如果已包含{@code appendStr},则在{@code str}后追加{@code otherwise}
-     *
-     * @param str       给定的字符串
-     * @param appendStr 需要追加的内容
-     * @param otherwise 当{@code appendStr}不满足时追加到{@code str}后的内容
-     * @return 追加后的字符串
-     */
-    public static String appendIfNotContain(String str, String appendStr, String otherwise) {
-        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(appendStr)) {
-            return str;
-        }
-        if (str.contains(appendStr)) {
-            return str.concat(otherwise);
-        }
-        return str.concat(appendStr);
-    }
-
-    /**
-     * map转字符串,转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
-     *
-     * @param params 待转换的map
-     * @param encode 是否转码
-     * @return str
-     */
-    public static String parseMapToString(Map<String, Object> params, boolean encode) {
-        List<String> paramList = new ArrayList<>();
-        params.forEach((k, v) -> {
-            if (ObjectUtils.isNull(v)) {
-                paramList.add(k + Symbol.EQUAL);
-            } else {
-                String valueString = v.toString();
-                paramList.add(k + Symbol.EQUAL + (encode ? encode(valueString) : valueString));
-            }
-        });
-        return CollUtils.join(paramList, Symbol.AND);
-    }
-
-    /**
-     * 编码
-     *
-     * @param value str
-     * @return encode str
-     */
-    public static String encode(String value) {
-        if (value == null) {
-            return Normal.EMPTY;
-        }
-        try {
-            String encoded = URLEncoder.encode(value, Charset.UTF_8.displayName());
-            return encoded.replace("+", "%20").replace(Symbol.STAR, "%2A").replace(Symbol.TILDE, "%7E").replace(Symbol.SLASH, "%2F");
-        } catch (UnsupportedEncodingException e) {
-            throw new InstrumentException("Failed To Encode Uri", e);
-        }
-    }
 
     /**
      * 添加参数
@@ -141,6 +76,16 @@ public class Builder {
         String valueAsString = (value != null ? value.toString() : null);
         this.params.put(key, valueAsString);
         return this;
+    }
+
+    /**
+     * 只读的 Map, clone 内部实现也是 putAll
+     * HashMap#putAll 可实现对 基本类型 和 String 类型的深度复制
+     *
+     * @return Map
+     */
+    public Map<String, Object> getReadParams() {
+        return (Map<String, Object>) ((LinkedHashMap<String, Object>) params).clone();
     }
 
     /**
@@ -162,8 +107,8 @@ public class Builder {
         if (MapUtils.isEmpty(this.params)) {
             return this.baseUrl;
         }
-        String baseUrl = appendIfNotContain(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);
-        String paramString = parseMapToString(this.params, encode);
+        String baseUrl = DefaultProvider.appendIfNotContain(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);
+        String paramString = DefaultProvider.parseMapToString(this.params, encode);
         return baseUrl + paramString;
     }
 

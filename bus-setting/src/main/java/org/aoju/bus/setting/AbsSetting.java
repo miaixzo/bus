@@ -31,6 +31,7 @@ import org.aoju.bus.core.getter.OptNullString;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.BeanUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.io.Serializable;
@@ -56,14 +57,22 @@ public abstract class AbsSetting implements OptNullString<String>, Serializable 
      * @param key          KEY
      * @param group        分组
      * @param defaultValue 默认值
-     * @return 值或默认值
+     * @return 值，如果字符串为{@code null}返回默认值
      */
     public String getStr(String key, String group, String defaultValue) {
-        final String value = getByGroup(key, group);
-        if (StringUtils.isBlank(value)) {
-            return defaultValue;
-        }
-        return value;
+        return ObjectUtils.defaultIfNull(getByGroup(key, group), defaultValue);
+    }
+
+    /**
+     * 获得字符串类型值，如果字符串为{@code null}或者""返回默认值
+     *
+     * @param key          KEY
+     * @param group        分组
+     * @param defaultValue 默认值
+     * @return 值，如果字符串为{@code null}或者""返回默认值
+     */
+    public String getStrNotEmpty(String key, String group, String defaultValue) {
+        return ObjectUtils.defaultIfEmpty(getByGroup(key, group), defaultValue);
     }
 
     /**

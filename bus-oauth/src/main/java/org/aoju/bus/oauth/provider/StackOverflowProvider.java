@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -46,11 +46,11 @@ import org.aoju.bus.oauth.metric.StateCache;
 public class StackOverflowProvider extends DefaultProvider {
 
     public StackOverflowProvider(Context context) {
-        super(context, Registry.STACK);
+        super(context, Registry.STACKOVERFLOW);
     }
 
     public StackOverflowProvider(Context context, StateCache stateCache) {
-        super(context, Registry.STACK, stateCache);
+        super(context, Registry.STACKOVERFLOW, stateCache);
     }
 
     @Override
@@ -69,10 +69,10 @@ public class StackOverflowProvider extends DefaultProvider {
 
     @Override
     protected Property getUserInfo(AccToken token) {
-        String userInfoUrl = Builder.fromBaseUrl(this.source.userInfo())
+        String userInfoUrl = Builder.fromUrl(this.source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("site", "stackoverflow")
-                .queryParam("key", this.context.getStackOverflowKey())
+                .queryParam("key", this.context.getOverflowKey())
                 .build();
         JSONObject object = JSONObject.parseObject(Httpx.get(userInfoUrl));
         this.checkResponse(object);
@@ -99,9 +99,9 @@ public class StackOverflowProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
+                .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "read_inbox")
                 .queryParam("state", getRealState(state))
@@ -115,7 +115,7 @@ public class StackOverflowProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getString("error_description"));
+            throw new AuthorizedException(object.getString("error_description"));
         }
     }
 

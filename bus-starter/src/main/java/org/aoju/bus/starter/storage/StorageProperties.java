@@ -36,6 +36,8 @@ import java.util.Map;
 
 /**
  * 存储配置信息
+ * 1. 默认读取配置文件信息
+ * 2. 通过set形式设置(动态/DB等)
  *
  * @author Kimi Liu
  * @version 5.6.9

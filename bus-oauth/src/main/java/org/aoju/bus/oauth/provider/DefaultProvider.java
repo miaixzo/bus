@@ -24,14 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.oauth.provider;
 
-import com.alibaba.fastjson.JSON;
-import org.aoju.bus.core.codec.Base64;
+import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.key.ObjectID;
-import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
+import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.core.utils.UriUtils;
 import org.aoju.bus.http.Httpx;
@@ -48,14 +48,9 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * 默认的request处理类
@@ -79,108 +74,31 @@ public abstract class DefaultProvider implements Provider {
         this.source = source;
         this.stateCache = stateCache;
         if (!isSupportedAuth(context, source)) {
-            throw new InstrumentException(Builder.Status.PARAMETER_INCOMPLETE.getCode());
+            throw new AuthorizedException(Builder.Status.PARAMETER_INCOMPLETE.getCode());
         }
         // 校验配置合法性
-        checkcontext(context, source);
+        checkContext(context, source);
     }
 
     /**
-     * 生成钉钉请求的Signature
+     * 是否支持第三方登录
      *
-     * @param secretKey 平台应用的授权密钥
-     * @param timestamp 时间戳
-     * @return Signature
+     * @param context context
+     * @param source  source
+     * @return true or false
      */
-    public static String generateDingTalkSignature(String secretKey, String timestamp) {
-        byte[] signData = sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8));
-        return urlEncode(new String(Base64.encode(signData, false)));
-    }
-
-    /**
-     * 签名
-     *
-     * @param key  key
-     * @param data data
-     * @return byte[]
-     */
-    private static byte[] sign(byte[] key, byte[] data) {
-        try {
-            Mac mac = Mac.getInstance(Algorithm.HmacSHA256);
-            mac.init(new SecretKeySpec(key, Algorithm.HmacSHA256));
-            return mac.doFinal(data);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new InstrumentException("Unsupported algorithm: " + Algorithm.HmacSHA256, ex);
-        } catch (InvalidKeyException ex) {
-            throw new InstrumentException("Invalid key: " + Arrays.toString(key), ex);
+    public static boolean isSupportedAuth(Context context, Complex source) {
+        boolean isSupported = StringUtils.isNotEmpty(context.getAppKey()) && StringUtils.isNotEmpty(context.getAppSecret()) && StringUtils.isNotEmpty(context.getRedirectUri());
+        if (isSupported && Registry.ALIPAY == source) {
+            isSupported = StringUtils.isNotEmpty(context.getPublicKey());
         }
-    }
-
-    /**
-     * 编码
-     *
-     * @param value str
-     * @return encode str
-     */
-    public static String urlEncode(String value) {
-        if (value == null) {
-            return Normal.EMPTY;
+        if (isSupported && Registry.STACKOVERFLOW == source) {
+            isSupported = StringUtils.isNotEmpty(context.getOverflowKey());
         }
-        try {
-            String encoded = URLEncoder.encode(value, Charset.UTF_8.displayName());
-            return encoded.replace(Symbol.PLUS, "%20").replace(Symbol.STAR, "%2A").replace(Symbol.TILDE, "%7E").replace(Symbol.SLASH, "%2F");
-        } catch (UnsupportedEncodingException e) {
-            throw new InstrumentException("Failed To Encode Uri", e);
+        if (isSupported && Registry.WECHAT_EE == source) {
+            isSupported = StringUtils.isNotEmpty(context.getAgentId());
         }
-    }
-
-    /**
-     * 解码
-     *
-     * @param value str
-     * @return decode str
-     */
-    public static String urlDecode(String value) {
-        if (value == null) {
-            return Normal.EMPTY;
-        }
-        try {
-            return URLDecoder.decode(value, Charset.UTF_8.displayName());
-        } catch (UnsupportedEncodingException e) {
-            throw new InstrumentException("Failed To Decode Uri", e);
-        }
-    }
-
-    /**
-     * string字符串转map,str格式为 {@code xxx=xxx&xxx=xxx}
-     *
-     * @param accessTokenStr 待转换的字符串
-     * @return map
-     */
-    public static Map<String, String> parseStringToMap(String accessTokenStr) {
-        Map<String, String> res = new HashMap<>();
-        if (accessTokenStr.contains(Symbol.AND)) {
-            String[] fields = accessTokenStr.split(Symbol.AND);
-            for (String field : fields) {
-                if (field.contains(Symbol.EQUAL)) {
-                    String[] keyValue = field.split(Symbol.EQUAL);
-                    res.put(urlDecode(keyValue[0]), keyValue.length == 2 ? urlDecode(keyValue[1]) : null);
-                }
-            }
-        }
-        return res;
-    }
-
-    /**
-     * 将url的参数列表转换成map
-     *
-     * @param url 待转换的url
-     * @return map
-     */
-    public static Map<String, Object> parseQueryToMap(String url) {
-        Map<String, Object> paramMap = new HashMap<>();
-        UriUtils.decodeVal(url, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
-        return paramMap;
+        return isSupported;
     }
 
     /**
@@ -220,79 +138,58 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
-     * 生成饿了么请求的Signature
-     * <p>
-     * 代码copy并修改自：https://coding.net/u/napos_openapi/p/eleme-openapi-java-sdk/git/blob/master/src/main/java/eleme/openapi/sdk/utils/SignatureUtil.java
+     * 编码
      *
-     * @param appKey     平台应用的授权key
-     * @param secret     平台应用的授权密钥
-     * @param timestamp  时间戳,单位秒 API服务端允许客户端请求最大时间误差为正负5分钟
-     * @param action     饿了么请求的api方法
-     * @param token      用户授权的token
-     * @param parameters 加密参数
-     * @return Signature
+     * @param value str
+     * @return encode str
      */
-    public static String generateElemeSignature(String appKey, String secret, long timestamp, String action, String token, Map<String, Object> parameters) {
-        final Map<String, Object> sorted = new TreeMap<>();
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            sorted.put(entry.getKey(), entry.getValue());
+    public static String urlEncode(String value) {
+        if (value == null) {
+            return Normal.EMPTY;
         }
-        sorted.put("app_key", appKey);
-        sorted.put("timestamp", timestamp);
-        StringBuffer string = new StringBuffer();
-        for (Map.Entry<String, Object> entry : sorted.entrySet()) {
-            string.append(entry.getKey()).append(Symbol.EQUAL).append(JSON.toJSONString(entry.getValue()));
-        }
-        String splice = String.format("%s%s%s%s", action, token, string, secret);
-        String calculatedSignature = md5(splice);
-        return calculatedSignature.toUpperCase();
-    }
-
-    /**
-     * MD5加密饿了么请求的Signature
-     * <p>
-     * 代码copy并修改自：https://coding.net/u/napos_openapi/p/eleme-openapi-java-sdk/git/blob/master/src/main/java/eleme/openapi/sdk/utils/SignatureUtil.java
-     *
-     * @param str 饿了么请求的Signature
-     * @return md5 str
-     */
-    private static String md5(String str) {
-        MessageDigest md;
-        StringBuilder buffer = null;
         try {
-            md = MessageDigest.getInstance(Algorithm.MD5);
-            md.update(str.getBytes(StandardCharsets.UTF_8));
-            byte[] byteData = md.digest();
-            buffer = new StringBuilder();
-            for (byte byteDatum : byteData) {
-                buffer.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
-            }
-        } catch (Exception ignored) {
+            String encoded = URLEncoder.encode(value, Charset.UTF_8.displayName());
+            return encoded.replace(Symbol.PLUS, "%20").replace(Symbol.STAR, "%2A").replace(Symbol.TILDE, "%7E").replace(Symbol.SLASH, "%2F");
+        } catch (UnsupportedEncodingException e) {
+            throw new AuthorizedException("Failed To Encode Uri", e);
         }
-
-        return null == buffer ? Normal.EMPTY : buffer.toString();
     }
 
     /**
-     * 是否支持第三方登录
+     * 解码
      *
-     * @param context context
-     * @param source  source
-     * @return true or false
-     * @since 1.6.2
+     * @param value str
+     * @return decode str
      */
-    public static boolean isSupportedAuth(Context context, Complex source) {
-        boolean isSupported = StringUtils.isNotEmpty(context.getClientId()) && StringUtils.isNotEmpty(context.getClientSecret()) && StringUtils.isNotEmpty(context.getRedirectUri());
-        if (isSupported && Registry.ALIPAY == source) {
-            isSupported = StringUtils.isNotEmpty(context.getAlipayPublicKey());
+    public static String urlDecode(String value) {
+        if (value == null) {
+            return Normal.EMPTY;
         }
-        if (isSupported && Registry.STACK == source) {
-            isSupported = StringUtils.isNotEmpty(context.getStackOverflowKey());
+        try {
+            return URLDecoder.decode(value, Charset.UTF_8.displayName());
+        } catch (UnsupportedEncodingException e) {
+            throw new AuthorizedException("Failed To Decode Uri", e);
         }
-        if (isSupported && Registry.WECHAT_EE == source) {
-            isSupported = StringUtils.isNotEmpty(context.getAgentId());
+    }
+
+    /**
+     * 签名
+     *
+     * @param key       key
+     * @param data      data
+     * @param algorithm algorithm
+     * @return byte[]
+     */
+    public static byte[] sign(byte[] key, byte[] data, String algorithm) {
+        try {
+            Mac mac = Mac.getInstance(algorithm);
+            mac.init(new SecretKeySpec(key, algorithm));
+            return mac.doFinal(data);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new AuthorizedException("Unsupported algorithm: " + algorithm, ex);
+        } catch (InvalidKeyException ex) {
+            throw new AuthorizedException("Invalid key: " + Arrays.toString(key), ex);
         }
-        return isSupported;
     }
 
     /**
@@ -300,20 +197,19 @@ public abstract class DefaultProvider implements Provider {
      *
      * @param context context
      * @param source  source
-     * @since 1.6.2
      */
-    public static void checkcontext(Context context, Complex source) {
+    public static void checkContext(Context context, Complex source) {
         String redirectUri = context.getRedirectUri();
         if (!isHttpProtocol(redirectUri) && !isHttpsProtocol(redirectUri)) {
-            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+            throw new AuthorizedException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
         }
         // facebook的回调地址必须为https的链接
         if (Registry.FACEBOOK == source && !isHttpsProtocol(redirectUri)) {
-            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+            throw new AuthorizedException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
         }
         // 支付宝在创建回调地址时,不允许使用localhost或者127.0.0.1
         if (Registry.ALIPAY == source && isLocalHost(redirectUri)) {
-            throw new InstrumentException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+            throw new AuthorizedException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
         }
     }
 
@@ -324,7 +220,6 @@ public abstract class DefaultProvider implements Provider {
      *
      * @param complex  当前授权平台
      * @param callback 从第三方授权回调回来时传入的参数集合
-     * @since 1.8.0
      */
     public static void checkCode(Complex complex, Callback callback) {
         String code = callback.getCode();
@@ -334,8 +229,120 @@ public abstract class DefaultProvider implements Provider {
             code = callback.getAuthorization_code();
         }
         if (StringUtils.isEmpty(code)) {
-            throw new InstrumentException(Builder.Status.ILLEGAL_CODE.getCode());
+            throw new AuthorizedException(Builder.Status.ILLEGAL_CODE.getCode());
         }
+    }
+
+    /**
+     * 如果给定字符串{@code str}中不包含{@code appendStr},则在{@code str}后追加{@code appendStr}；
+     * 如果已包含{@code appendStr},则在{@code str}后追加{@code otherwise}
+     *
+     * @param str       给定的字符串
+     * @param appendStr 需要追加的内容
+     * @param otherwise 当{@code appendStr}不满足时追加到{@code str}后的内容
+     * @return 追加后的字符串
+     */
+    public static String appendIfNotContain(String str, String appendStr, String otherwise) {
+        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(appendStr)) {
+            return str;
+        }
+        if (str.contains(appendStr)) {
+            return str.concat(otherwise);
+        }
+        return str.concat(appendStr);
+    }
+
+    /**
+     * string字符串转map,str格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param accessTokenStr 待转换的字符串
+     * @return map
+     */
+    public static Map<String, String> parseStringToMap(String accessTokenStr) {
+        Map<String, String> res = new HashMap<>();
+        if (accessTokenStr.contains(Symbol.AND)) {
+            String[] fields = accessTokenStr.split(Symbol.AND);
+            for (String field : fields) {
+                if (field.contains(Symbol.EQUAL)) {
+                    String[] keyValue = field.split(Symbol.EQUAL);
+                    res.put(urlDecode(keyValue[0]), keyValue.length == 2 ? urlDecode(keyValue[1]) : null);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * map转字符串,转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param params 待转换的map
+     * @param encode 是否转码
+     * @return str
+     */
+    public static String parseMapToString(Map<String, Object> params, boolean encode) {
+        List<String> paramList = new ArrayList<>();
+        params.forEach((k, v) -> {
+            if (ObjectUtils.isNull(v)) {
+                paramList.add(k + Symbol.EQUAL);
+            } else {
+                String valueString = v.toString();
+                paramList.add(k + Symbol.EQUAL + (encode ? urlEncode(valueString) : valueString));
+            }
+        });
+        return CollUtils.join(paramList, Symbol.AND);
+    }
+
+    /**
+     * 将url的参数列表转换成map
+     *
+     * @param url 待转换的url
+     * @return map
+     */
+    public static Map<String, Object> parseQueryToMap(String url) {
+        Map<String, Object> paramMap = new HashMap<>();
+        UriUtils.decodeVal(url, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
+        return paramMap;
+    }
+
+    /**
+     * 统一的登录入口 当通过{@link DefaultProvider#authorize(String)}授权成功后,会跳转到调用方的相关回调方法中
+     * 方法的入参可以使用{@code AuthCallback},{@code AuthCallback}类中封装好了OAuth2授权回调所需要的参数
+     *
+     * @param Callback 用于接收回调参数的实体
+     * @return the Message
+     */
+    @Override
+    public Message login(Callback Callback) {
+        try {
+            this.checkCode(source, Callback);
+            this.checkState(Callback.getState());
+
+            AccToken token = this.getAccessToken(Callback);
+            Property user = (Property) this.getUserInfo(token);
+            return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(user).build();
+        } catch (Exception e) {
+            String errorCode = Normal.EMPTY + Builder.Status.FAILURE.getCode();
+            if (e instanceof AuthorizedException) {
+                errorCode = ((AuthorizedException) e).getErrcode();
+            }
+            return Message.builder().errcode(errorCode).errmsg(e.getMessage()).build();
+        }
+    }
+
+    /**
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
+     *
+     * @param state state 验证授权流程的参数,可以防止csrf
+     * @return 返回授权地址
+     */
+    @Override
+    public String authorize(String state) {
+        return Builder.fromUrl(source.authorize())
+                .queryParam("response_type", "code")
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("state", getRealState(state))
+                .build();
     }
 
     /**
@@ -357,55 +364,15 @@ public abstract class DefaultProvider implements Provider {
     protected abstract Object getUserInfo(AccToken token);
 
     /**
-     * 统一的登录入口 当通过{@link DefaultProvider#authorize(String)}授权成功后,会跳转到调用方的相关回调方法中
-     * 方法的入参可以使用{@code AuthCallback},{@code AuthCallback}类中封装好了OAuth2授权回调所需要的参数
+     * 获取用户的实际性别 华为系统中,用户的性别：1表示女,0表示男
      *
-     * @param Callback 用于接收回调参数的实体
-     * @return AuthResponse
+     * @param object obj
+     * @return AuthUserGender
      */
-    @Override
-    public Message login(Callback Callback) {
-        try {
-            this.checkCode(source, Callback);
-            this.checkState(Callback.getState());
-
-            AccToken token = this.getAccessToken(Callback);
-            Property user = (Property) this.getUserInfo(token);
-            return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(user).build();
-        } catch (Exception e) {
-            return this.responseError(e);
-        }
-    }
-
-    /**
-     * 处理{@link DefaultProvider#login(Callback)} 发生异常的情况,统一响应参数
-     *
-     * @param e 具体的异常
-     * @return AuthResponse
-     */
-    private Message responseError(Exception e) {
-        String errorCode = Normal.EMPTY + Builder.Status.FAILURE.getCode();
-        if (e instanceof InstrumentException) {
-            errorCode = ((InstrumentException) e).getErrcode();
-        }
-        return Message.builder().errcode(errorCode).errmsg(e.getMessage()).build();
-    }
-
-    /**
-     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
-     *
-     * @param state state 验证授权流程的参数,可以防止csrf
-     * @return 返回授权地址
-     * @since 1.9.3
-     */
-    @Override
-    public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getClientId())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state))
-                .build();
+    protected Normal.Gender getRealGender(JSONObject object) {
+        int genderCodeInt = object.getIntValue("gender");
+        String genderCode = genderCodeInt == 1 ? Symbol.ZERO : (genderCodeInt == 0) ? Symbol.ONE : genderCodeInt + Normal.EMPTY;
+        return Normal.Gender.getGender(genderCode);
     }
 
     /**
@@ -415,10 +382,10 @@ public abstract class DefaultProvider implements Provider {
      * @return 返回获取accessToken的url
      */
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(source.accessToken())
+        return Builder.fromUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
@@ -431,9 +398,9 @@ public abstract class DefaultProvider implements Provider {
      * @return 返回获取accessToken的url
      */
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(source.refresh())
-                .queryParam("client_id", context.getClientId())
-                .queryParam("client_secret", context.getClientSecret())
+        return Builder.fromUrl(source.refresh())
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -447,7 +414,7 @@ public abstract class DefaultProvider implements Provider {
      * @return 返回获取userInfo的url
      */
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo()).queryParam("access_token", token.getAccessToken()).build();
+        return Builder.fromUrl(source.userInfo()).queryParam("access_token", token.getAccessToken()).build();
     }
 
     /**
@@ -457,7 +424,7 @@ public abstract class DefaultProvider implements Provider {
      * @return 返回获取revoke authorization的url
      */
     protected String revokeUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.revoke()).queryParam("access_token", token.getAccessToken()).build();
+        return Builder.fromUrl(source.revoke()).queryParam("access_token", token.getAccessToken()).build();
     }
 
     /**
@@ -522,7 +489,94 @@ public abstract class DefaultProvider implements Provider {
      */
     protected void checkState(String state) {
         if (StringUtils.isEmpty(state) || !stateCache.containsKey(state)) {
-            throw new InstrumentException(Normal.EMPTY + Builder.Status.ILLEGAL_REQUEST);
+            throw new AuthorizedException(Normal.EMPTY + Builder.Status.ILLEGAL_REQUEST);
+        }
+    }
+
+    /**
+     * 字符串转map，字符串格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param str    待转换的字符串
+     * @param decode 是否解码
+     * @return map
+     */
+    public Map<String, String> parseStringToMap(String str, boolean decode) {
+        if (StringUtils.isNotEmpty(str)) {
+            // 去除 URL 路径信息
+            int beginPos = str.indexOf("?");
+            if (beginPos > -1) {
+                str = str.substring(beginPos + 1);
+            }
+
+            // 去除 # 后面的内容
+            int endPos = str.indexOf("#");
+            if (endPos > -1) {
+                str = str.substring(0, endPos);
+            }
+        }
+
+        Map<String, String> params = new HashMap<>(16);
+        if (StringUtils.isEmpty(str)) {
+            return params;
+        }
+
+        if (!str.contains("&")) {
+            params.put(decode ? urlDecode(str) : str, Normal.EMPTY);
+            return params;
+        }
+
+        final int len = str.length();
+        String name = null;
+        // 未处理字符开始位置
+        int pos = 0;
+        // 未处理字符结束位置
+        int i;
+        // 当前字符
+        char c;
+        for (i = 0; i < len; i++) {
+            c = str.charAt(i);
+            // 键值对的分界点
+            if (c == '=') {
+                if (null == name) {
+                    // name可以是""
+                    name = str.substring(pos, i);
+                }
+                pos = i + 1;
+            }
+            // 参数对的分界点
+            else if (c == '&') {
+                if (null == name && pos != i) {
+                    // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                    addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
+                } else if (name != null) {
+                    addParam(params, name, str.substring(pos, i), decode);
+                    name = null;
+                }
+                pos = i + 1;
+            }
+        }
+
+        // 处理结尾
+        if (pos != i) {
+            if (name == null) {
+                addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
+            } else {
+                addParam(params, name, str.substring(pos, i), decode);
+            }
+        } else if (name != null) {
+            addParam(params, name, Normal.EMPTY, decode);
+        }
+
+        return params;
+    }
+
+    private void addParam(Map<String, String> params, String key, String value, boolean decode) {
+        key = decode ? urlDecode(key) : key;
+        value = decode ? urlDecode(value) : value;
+        if (params.containsKey(key)) {
+            params.put(key, params.get(key) + "," + value);
+        } else {
+            params.put(key, value);
         }
     }
 

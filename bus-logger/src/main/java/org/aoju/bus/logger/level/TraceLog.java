@@ -36,7 +36,7 @@ public interface TraceLog {
     /**
      * @return TRACE 等级是否开启
      */
-    boolean isTraceEnabled();
+    boolean isTrace();
 
     /**
      * 打印 TRACE 等级的日志

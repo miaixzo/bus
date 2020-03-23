@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -100,7 +100,7 @@ public class FacebookProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("fields", "id,name,birthday,gender,hometown,email,devices,picture.width(400)")
                 .build();
@@ -113,7 +113,7 @@ public class FacebookProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error")) {
-            throw new InstrumentException(object.getJSONObject("error").getString("message"));
+            throw new AuthorizedException(object.getJSONObject("error").getString("message"));
         }
     }
 

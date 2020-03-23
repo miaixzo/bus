@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
@@ -80,7 +80,7 @@ public class CsdnProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error_code")) {
-            throw new InstrumentException(object.getString("error"));
+            throw new AuthorizedException(object.getString("error"));
         }
     }
 

@@ -26,7 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -48,11 +48,11 @@ import org.aoju.bus.oauth.metric.StateCache;
 public class WeChatOPProvider extends DefaultProvider {
 
     public WeChatOPProvider(Context context) {
-        super(context, Registry.WECHAT_OPEN);
+        super(context, Registry.WECHAT_OP);
     }
 
     public WeChatOPProvider(Context context, StateCache stateCache) {
-        super(context, Registry.WECHAT_OPEN, stateCache);
+        super(context, Registry.WECHAT_OP, stateCache);
     }
 
     /**
@@ -106,7 +106,7 @@ public class WeChatOPProvider extends DefaultProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("errcode")) {
-            throw new InstrumentException(StringUtils.toString(object.getIntValue("errcode")), object.getString("errmsg"));
+            throw new AuthorizedException(StringUtils.toString(object.getIntValue("errcode")), object.getString("errmsg"));
         }
     }
 
@@ -138,9 +138,9 @@ public class WeChatOPProvider extends DefaultProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromBaseUrl(source.authorize())
+        return Builder.fromUrl(source.authorize())
                 .queryParam("response_type", "code")
-                .queryParam("appid", context.getClientId())
+                .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", "snsapi_login")
                 .queryParam("state", getRealState(state))
@@ -155,10 +155,10 @@ public class WeChatOPProvider extends DefaultProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromBaseUrl(source.accessToken())
+        return Builder.fromUrl(source.accessToken())
                 .queryParam("code", code)
-                .queryParam("appid", context.getClientId())
-                .queryParam("secret", context.getClientSecret())
+                .queryParam("appid", context.getAppKey())
+                .queryParam("secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
                 .build();
     }
@@ -171,7 +171,7 @@ public class WeChatOPProvider extends DefaultProvider {
      */
     @Override
     protected String userInfoUrl(AccToken token) {
-        return Builder.fromBaseUrl(source.userInfo())
+        return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("openid", token.getOpenId())
                 .queryParam("lang", "zh_CN")
@@ -186,8 +186,8 @@ public class WeChatOPProvider extends DefaultProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromBaseUrl(source.refresh())
-                .queryParam("appid", context.getClientId())
+        return Builder.fromUrl(source.refresh())
+                .queryParam("appid", context.getAppKey())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
                 .build();

@@ -260,4 +260,49 @@ public final class Logger {
         return LogFactory.get(CallerUtils.getCallers());
     }
 
+    /**
+     * Trace 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isTrace() {
+        return LogFactory.get(CallerUtils.getCallers()).isTrace();
+    }
+
+    /**
+     * Debug 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isDebug() {
+        return LogFactory.get(CallerUtils.getCallers()).isDebug();
+    }
+
+    /**
+     * Info 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isInfo() {
+        return LogFactory.get(CallerUtils.getCallers()).isInfo();
+    }
+
+    /**
+     * Warn 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isWarn() {
+        return LogFactory.get(CallerUtils.getCallers()).isWarn();
+    }
+
+    /**
+     * Error 等级日志否开启
+     *
+     * @return the true/false
+     */
+    public boolean isError() {
+        return LogFactory.get(CallerUtils.getCallers()).isError();
+    }
+
 }

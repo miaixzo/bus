@@ -272,7 +272,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 解密后的密文
      */
     public String decryptStr(String data, KeyType keyType, Charset charset) {
-        return StringUtils.str(decrypt(data, keyType), charset);
+        return StringUtils.toString(decrypt(data, keyType), charset);
     }
 
     /**
@@ -319,7 +319,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 解密后的密文
      */
     public String decryptStrFromBcd(String data, KeyType keyType, Charset charset) {
-        return StringUtils.str(decryptFromBcd(data, keyType, charset), charset);
+        return StringUtils.toString(decryptFromBcd(data, keyType, charset), charset);
     }
 
     /**

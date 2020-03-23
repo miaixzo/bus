@@ -124,8 +124,8 @@ public final class Builder {
      * </pre>
      */
     public static final String SM2_DEFAULT_CURVE = "sm2p256v1";
-    private final static int RS_LEN = 32;
     public static final ECDomainParameters SM2_DOMAIN_PARAMS = toDomainParams(GMNamedCurves.getByName(SM2_DEFAULT_CURVE));
+    private final static int RS_LEN = 32;
 
     /**
      * 数据加密
@@ -251,7 +251,7 @@ public final class Builder {
         SecretKey secretKey;
         if (algorithm.startsWith("PBE")) {
             // PBE密钥
-            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.str(key, org.aoju.bus.core.lang.Charset.UTF_8).toCharArray());
+            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.toString(key, org.aoju.bus.core.lang.Charset.UTF_8).toCharArray());
         } else if (algorithm.startsWith(Algorithm.DES)) {
             // DES密钥
             secretKey = generateDESKey(algorithm, key);

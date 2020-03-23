@@ -60,7 +60,7 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public boolean isTraceEnabled() {
+    public boolean isTrace() {
         return logger.isTraceEnabled();
     }
 
@@ -70,7 +70,7 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public boolean isDebugEnabled() {
+    public boolean isDebug() {
         return logger.isDebugEnabled();
     }
 
@@ -85,7 +85,7 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public boolean isInfoEnabled() {
+    public boolean isInfo() {
         return logger.isInfoEnabled();
     }
 
@@ -95,7 +95,7 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public boolean isWarnEnabled() {
+    public boolean isWarn() {
         return logger.isWarnEnabled();
     }
 
@@ -105,7 +105,7 @@ public class Log4j2Log extends AbstractAware {
     }
 
     @Override
-    public boolean isErrorEnabled() {
+    public boolean isError() {
         return logger.isErrorEnabled();
     }
 

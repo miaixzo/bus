@@ -25,9 +25,7 @@
 package org.aoju.bus.base.mapper;
 
 /**
- * <p>
  * CoreMapper 接口
- * </p>
  *
  * @author Kimi Liu
  * @version 5.6.9

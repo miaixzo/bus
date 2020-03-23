@@ -66,4 +66,13 @@ public class AccToken {
      */
     private String code;
 
+    /**
+     * Twitter附带属性
+     */
+    private String oauthToken;
+    private String oauthTokenSecret;
+    private String userId;
+    private String screenName;
+    private Boolean oauthCallbackConfirmed;
+
 }
