@@ -25,7 +25,7 @@
 package org.aoju.bus.notify;
 
 
-import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Response;
 import org.aoju.bus.notify.metric.Template;
 
 import java.util.Map;
@@ -47,7 +47,7 @@ public interface Provider<T extends Template> {
      * @param context    内容
      * @return 结果
      */
-    Message send(String templateId, Map<String, String> context);
+    Response send(String templateId, Map<String, String> context);
 
     /**
      * 指定模版{@link Template}并发送.
@@ -55,9 +55,8 @@ public interface Provider<T extends Template> {
      * 注意:不同等服务商使用的模版实现不同.
      *
      * @param template 模版
-     * @param context  内容
      * @return 结果
      */
-    Message send(T template, Map<String, String> context);
+    Response send(T template);
 
 }

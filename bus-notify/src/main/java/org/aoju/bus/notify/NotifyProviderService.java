@@ -72,7 +72,7 @@ public class NotifyProviderService {
      * @param registry {@link Registry}
      * @return {@link Provider}
      */
-    public Provider get(Registry registry) {
+    public static Provider get(Registry registry) {
         if (Registry.ALIYUN_SMS.equals(registry)) {
             return new AliyunSmsProvider((AliyunSmsProperties) NOTIFY_CACHE.get(registry));
         } else if (Registry.ALIYUN_VMS.equals(registry)) {

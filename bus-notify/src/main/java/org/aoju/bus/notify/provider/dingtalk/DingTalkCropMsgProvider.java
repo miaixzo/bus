@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.notify.AbstractProvider;
-import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Response;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -60,10 +60,10 @@ public class DingTalkCropMsgProvider extends AbstractProvider<DingTalkCropMsgTem
     }
 
     @Override
-    public Message send(DingTalkCropMsgTemplate template, Map<String, String> context) {
-        String token = getToken();
+    public Response send(DingTalkCropMsgTemplate template) {
+        //   String token = getToken();
         Map<String, Object> param = new HashMap<>();
-        param.put("access_token", token);
+        param.put("access_token", template.getToken());
         param.put("agent_id", template.getAgentId());
         param.put("msg", template.getMsg());
         if (StringUtils.isNotBlank(template.getUserIdList())) {
@@ -75,7 +75,7 @@ public class DingTalkCropMsgProvider extends AbstractProvider<DingTalkCropMsgTem
         param.put("to_all_user", template.isToAllUser());
         String response = Httpx.post(NOTIFY_API, param);
         JSONObject object = JSON.parseObject(response);
-        return Message.builder()
+        return Response.builder()
                 .result(SUCCESS_RESULT.equals(object.getString("errcode")))
                 .desc(object.getString("errmsg"))
                 .build();

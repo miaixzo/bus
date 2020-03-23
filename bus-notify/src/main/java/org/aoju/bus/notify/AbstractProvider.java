@@ -25,7 +25,7 @@
 package org.aoju.bus.notify;
 
 import lombok.AllArgsConstructor;
-import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Response;
 import org.aoju.bus.notify.metric.Properties;
 import org.aoju.bus.notify.metric.Template;
 
@@ -44,12 +44,12 @@ public abstract class AbstractProvider<T extends Template, K extends Properties>
     protected K properties;
 
     @Override
-    public Message send(String templateId, Map<String, String> context) {
+    public Response send(String templateId, Map<String, String> context) {
         return null;
     }
 
     @Override
-    public Message send(T template, Map<String, String> context) {
+    public Response send(T template) {
         return null;
     }
 

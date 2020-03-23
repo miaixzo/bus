@@ -26,7 +26,7 @@ package org.aoju.bus.notify.provider.netease;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class NeteaseMsgProvider extends AbstractNeteaseProvider {
     }
 
     @Override
-    public Message send(NeteaseMsgTemplate template, Map<String, String> context) {
+    public Response send(NeteaseMsgTemplate template) {
         //构造payload
         Map<String, Object> payload = new HashMap<>();
         payload.put("content", template.getContent());
@@ -54,7 +54,7 @@ public class NeteaseMsgProvider extends AbstractNeteaseProvider {
         aps.put("mutable-content", "1");
         Map<String, Object> alert = new HashMap<>();
         alert.put("title", template.getTitle());
-        alert.put("body", template.getMessage());
+        alert.put("body", template.getBody());
         aps.put("alert", alert);
         payload.put("apsField", aps);
 

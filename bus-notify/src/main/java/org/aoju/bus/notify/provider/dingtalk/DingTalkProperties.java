@@ -26,6 +26,7 @@ package org.aoju.bus.notify.provider.dingtalk;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.metric.Properties;
 
 /**
@@ -37,6 +38,7 @@ import org.aoju.bus.notify.metric.Properties;
  */
 @Getter
 @Setter
+@SuperBuilder
 public class DingTalkProperties extends Properties {
 
     private String agentId;
@@ -44,5 +46,4 @@ public class DingTalkProperties extends Properties {
     private String corpId;
 
     private String whiteList;
-
 }

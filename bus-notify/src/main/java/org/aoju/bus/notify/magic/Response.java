@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.notify.magic;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 返回消息
@@ -34,9 +34,9 @@ import lombok.Getter;
  * @version 5.6.9
  * @since JDK1.8+
  */
-@Getter
-@Builder
-public class Message {
+@Data
+@SuperBuilder
+public class Response {
 
     /**
      * 结果

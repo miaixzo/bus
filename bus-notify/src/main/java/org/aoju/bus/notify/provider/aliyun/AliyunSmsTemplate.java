@@ -26,6 +26,7 @@ package org.aoju.bus.notify.provider.aliyun;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.metric.Template;
 
 /**
@@ -37,6 +38,7 @@ import org.aoju.bus.notify.metric.Template;
  */
 @Getter
 @Setter
+@SuperBuilder
 public class AliyunSmsTemplate extends Template {
 
     /**
@@ -49,10 +51,5 @@ public class AliyunSmsTemplate extends Template {
      * 模版id
      */
     String tempCode;
-
-    /**
-     * 短信签名
-     */
-    String smsSign;
 
 }

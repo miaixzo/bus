@@ -29,7 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.notify.AbstractProvider;
-import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Response;
 import org.aoju.bus.notify.metric.Properties;
 import org.aoju.bus.notify.metric.Template;
 
@@ -40,6 +40,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -82,11 +83,10 @@ public class AbstractAliyunProvider<T extends Template, K extends Properties> ex
     /**
      * 构造签名
      *
-     * @param params    参数
-     * @param appSecret 密钥
+     * @param params 参数
      * @return 签名值
      */
-    protected String getSign(Map<String, String> params, String appSecret) {
+    protected String getSign(Map<String, String> params) {
         // 4. 参数KEY排序
         TreeMap<String, String> sortParas = new TreeMap<>(params);
         // 5. 构造待签名的字符串
@@ -115,20 +115,19 @@ public class AbstractAliyunProvider<T extends Template, K extends Properties> ex
      * @return 签名后字符串
      */
     protected String sign(String stringToSign) {
-
         try {
             Mac mac = Mac.getInstance("HmacSHA1");
             mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(StandardCharsets.UTF_8), "HmacSHA1"));
             byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
-            return new sun.misc.BASE64Encoder().encode(signData);
+            return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new InstrumentException("aliyun specialUrlEncode error");
         }
     }
 
-    protected Message checkResponse(String response) {
+    protected Response checkResponse(String response) {
         JSONObject object = JSON.parseObject(response);
-        return Message.builder()
+        return Response.builder()
                 .result(SUCCESS_RESULT.equals(object.getString("code")))
                 .desc(object.getString("code")).build();
     }

@@ -25,6 +25,8 @@
 package org.aoju.bus.notify.provider.aliyun;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.metric.Properties;
 
 /**
@@ -35,11 +37,13 @@ import org.aoju.bus.notify.metric.Properties;
  * @since JDK1.8+
  */
 @Getter
+@Setter
+@SuperBuilder
 public class AliyunVmsProperties extends Properties {
 
     /**
      * 主叫号码
      */
-    String showNumber;
+    private String showNumber;
 
 }

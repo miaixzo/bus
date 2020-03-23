@@ -26,6 +26,7 @@ package org.aoju.bus.notify.provider.dingtalk;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.metric.Template;
 
 /**
@@ -37,6 +38,7 @@ import org.aoju.bus.notify.metric.Template;
  */
 @Getter
 @Setter
+@SuperBuilder
 public class DingTalkCropMsgTemplate extends Template {
 
     /**
@@ -60,5 +62,10 @@ public class DingTalkCropMsgTemplate extends Template {
      * json字符串
      */
     private String msg;
+
+    /**
+     * 钉钉token
+     */
+    private String token;
 
 }

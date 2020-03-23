@@ -29,7 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.notify.AbstractProvider;
-import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Response;
 
 import java.security.MessageDigest;
 import java.util.Date;
@@ -87,18 +87,18 @@ public abstract class AbstractNeteaseProvider extends AbstractProvider<NeteaseMs
         map.put("AppKey", properties.getAppKey());
         map.put("Nonce", properties.getAppNonce());
         map.put("CurTime", curTime);
-        map.put("CheckSum", getCheckSum(properties.getAppNonce(), curTime));
+        map.put("CheckSum", getCheckSum(curTime));
         return map;
     }
 
-    public Message post(String routerUrl, Map<String, Object> map) {
+    public Response post(String routerUrl, Map<String, Object> map) {
 
         Map<String, String> header = getPostHeader();
         Logger.debug("netease send：{}", map);
         String response = Httpx.post(routerUrl, map, header);
         Logger.debug("netease result：{}", response);
         JSONObject object = JSON.parseObject(response);
-        return Message.builder()
+        return Response.builder()
                 .result(SUCCESS_RESULT.equals(object.getString("code")))
                 .desc(object.getString("desc")).build();
     }
@@ -106,12 +106,11 @@ public abstract class AbstractNeteaseProvider extends AbstractProvider<NeteaseMs
     /**
      * CheckSum
      *
-     * @param nonce   APP_NONCE
      * @param curTime 时间
      * @return 结果
      */
-    private String getCheckSum(String nonce, String curTime) {
-        return encode(properties.getAppNonce() + nonce + curTime);
+    private String getCheckSum(String curTime) {
+        return encode(properties.getAppSecret() + properties.getAppNonce() + curTime);
     }
 
 }

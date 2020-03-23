@@ -26,6 +26,7 @@ package org.aoju.bus.notify.metric;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 消息模版
@@ -36,6 +37,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@SuperBuilder
 public class Template {
 
     /**
