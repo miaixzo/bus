@@ -24,8 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.base.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 返回值公用类
@@ -36,6 +38,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Message {
 
     /**
