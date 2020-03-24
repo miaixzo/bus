@@ -128,8 +128,8 @@ public class AbstractAliyunProvider<T extends Template, K extends Properties> ex
     protected Response checkResponse(String response) {
         JSONObject object = JSON.parseObject(response);
         return Response.builder()
-                .result(SUCCESS_RESULT.equals(object.getString("code")))
-                .desc(object.getString("code")).build();
+                .result(SUCCESS_RESULT.equals(object.getString("Code")))
+                .desc(object.getString("Code")).build();
     }
 
 }
