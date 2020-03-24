@@ -28,7 +28,7 @@ package org.aoju.bus.proxy;
  * 为委托代理提供对象
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public interface Provider {

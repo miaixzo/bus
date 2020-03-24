@@ -30,7 +30,7 @@ import java.security.Provider;
  * 全局单例的 org.bouncycastle.jce.provider.BouncyCastleProvider 对象
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class Holder {

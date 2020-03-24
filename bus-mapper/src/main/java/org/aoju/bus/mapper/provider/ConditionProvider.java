@@ -33,7 +33,7 @@ import org.apache.ibatis.mapping.MappedStatement;
  * ConditionProvider实现类,基础方法实现类
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class ConditionProvider extends MapperTemplate {

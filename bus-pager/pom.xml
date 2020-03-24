@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>5.6.9</version>
+    <version>5.8.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

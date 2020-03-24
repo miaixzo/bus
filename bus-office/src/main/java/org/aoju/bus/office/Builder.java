@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * 为office提供辅助功能.
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public final class Builder {

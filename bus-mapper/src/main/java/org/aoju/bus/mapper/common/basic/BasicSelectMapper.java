@@ -30,7 +30,7 @@ import org.aoju.bus.mapper.common.basic.select.*;
  * 通用Mapper接口,基础查询
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public interface BasicSelectMapper<T> extends

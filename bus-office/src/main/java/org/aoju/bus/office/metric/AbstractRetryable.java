@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 该对象将尝试执行任务，直到任务成功或达到特定超时为止.
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public abstract class AbstractRetryable {

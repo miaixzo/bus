@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.*;
  * Excel样式工具类
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class StyleUtils {

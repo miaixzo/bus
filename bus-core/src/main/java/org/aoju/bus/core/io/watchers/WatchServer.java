@@ -41,7 +41,7 @@ import java.util.Map;
  * 文件监听服务，此服务可以同时监听多个路径
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class WatchServer extends Thread implements Closeable, Serializable {

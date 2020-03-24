@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 令牌过期
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class TokenExpiredException extends UncheckedException {

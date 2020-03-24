@@ -30,7 +30,7 @@ package org.aoju.bus.core.thread;
  *
  * @param <T> 值类型
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class NamedThread<T> extends InheritableThreadLocal<T> {

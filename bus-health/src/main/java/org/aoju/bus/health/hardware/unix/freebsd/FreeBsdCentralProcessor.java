@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * A CPU
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class FreeBsdCentralProcessor extends AbstractCentralProcessor {

@@ -55,7 +55,7 @@ import java.security.cert.X509Certificate;
  * 它将向LibreOffice在线服务器发送转换请求，并等待任务完成或达到配置的任务执行超时.
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {

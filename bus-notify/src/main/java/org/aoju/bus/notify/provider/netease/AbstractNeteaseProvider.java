@@ -40,7 +40,7 @@ import java.util.Map;
  * 云信抽象类
  *
  * @author Justubborn
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK1.8+
  */
 public abstract class AbstractNeteaseProvider extends AbstractProvider<NeteaseMsgTemplate, NeteaseProperties> {

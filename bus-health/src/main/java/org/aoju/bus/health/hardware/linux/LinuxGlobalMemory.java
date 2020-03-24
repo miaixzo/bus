@@ -41,7 +41,7 @@ import java.util.function.Supplier;
  * Memory obtained by /proc/meminfo and sysinfo.totalram
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class LinuxGlobalMemory extends AbstractGlobalMemory {

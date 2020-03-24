@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
  * 封装字段和方法,统一调用某些方法
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public class EntityField {

@@ -36,7 +36,7 @@ import java.util.List;
  * 选择IPv6地址、选择IPv4地址或强制使用特定的已知IP地址
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public interface DnsX {

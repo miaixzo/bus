@@ -31,7 +31,7 @@ import java.math.BigInteger;
  * 数组类型的Get接口
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 public interface ArrayType {

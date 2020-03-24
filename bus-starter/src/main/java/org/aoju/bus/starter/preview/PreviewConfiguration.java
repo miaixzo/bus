@@ -46,7 +46,7 @@ import java.util.stream.Stream;
  * 文档在线预览配置
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.0
  * @since JDK 1.8+
  */
 @ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
