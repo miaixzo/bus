@@ -169,7 +169,7 @@ public class Normal {
      * 英文数字10-19
      */
     public static final String[] NUMBER_TEEN = new String[]{
-            "TEN", "ELEVEN", "TWELEVE", "THIRTEEN", "FOURTEEN", "FIFTEEN",
+            "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN",
             "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"
     };
     /**
