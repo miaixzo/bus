@@ -30,6 +30,8 @@ import org.aoju.bus.core.utils.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.style.Align;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 
 import java.io.File;
 import java.io.IOException;
@@ -895,6 +897,55 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 IoUtils.close(out);
             }
         }
+        return this;
+    }
+
+
+    /**
+     * 增加下拉列表
+     *
+     * @param x          x坐标，列号，从0开始
+     * @param y          y坐标，行号，从0开始
+     * @param selectList 下拉列表
+     * @return this
+     */
+    public ExcelWriter addSelect(int x, int y, String... selectList) {
+        return addSelect(new CellRangeAddressList(y, y, x, x), selectList);
+    }
+
+    /**
+     * 增加下拉列表
+     *
+     * @param regions    {@link CellRangeAddressList} 指定下拉列表所占的单元格范围
+     * @param selectList 下拉列表内容
+     * @return this
+     */
+    public ExcelWriter addSelect(CellRangeAddressList regions, String... selectList) {
+        final DataValidationHelper validationHelper = this.sheet.getDataValidationHelper();
+        final DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(selectList);
+
+        //设置下拉框数据
+        final DataValidation dataValidation = validationHelper.createValidation(constraint, regions);
+
+        //处理Excel兼容性问题
+        if (dataValidation instanceof XSSFDataValidation) {
+            dataValidation.setSuppressDropDownArrow(true);
+            dataValidation.setShowErrorBox(true);
+        } else {
+            dataValidation.setSuppressDropDownArrow(false);
+        }
+
+        return addValidationData(dataValidation);
+    }
+
+    /**
+     * 增加单元格控制，比如下拉列表、日期验证、数字范围验证等
+     *
+     * @param dataValidation {@link DataValidation}
+     * @return this
+     */
+    public ExcelWriter addValidationData(DataValidation dataValidation) {
+        this.sheet.addValidationData(dataValidation);
         return this;
     }
 
