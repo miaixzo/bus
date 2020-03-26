@@ -1986,7 +1986,7 @@ public class CollUtils {
         int resultSize = list.size();
         // 每页条目数大于总数直接返回所有
         if (resultSize <= pageSize) {
-            if (pageNo < 1) {
+            if (pageNo <= 1) {
                 return Collections.unmodifiableList(list);
             } else {
                 // 越界直接返回空
@@ -2031,7 +2031,6 @@ public class CollUtils {
             return str1.compareTo(str2);
         }
         return str2.compareTo(str1);
-
     }
 
     /**
@@ -2468,8 +2467,7 @@ public class CollUtils {
      * @return 分页条
      */
     public static int[] rainbow(int currentPage, int pageCount, int displayCount) {
-        boolean isEven = true;
-        isEven = displayCount % 2 == 0;
+        boolean isEven = displayCount % 2 == 0;
         int left = displayCount / 2;
         int right = displayCount / 2;
 
