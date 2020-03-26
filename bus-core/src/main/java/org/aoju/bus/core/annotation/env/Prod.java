@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * 表示当前方法性能安全性各方面达标,可以用于生产环境
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 @Inherited

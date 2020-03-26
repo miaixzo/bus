@@ -43,7 +43,7 @@ import java.util.concurrent.TimeoutException;
  * Memcached 缓存支持
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class MemcachedCache implements CacheX {

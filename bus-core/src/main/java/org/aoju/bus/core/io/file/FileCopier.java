@@ -46,7 +46,7 @@ import java.util.ArrayList;
  * 4、目录下的文件和目录复制到另一个目录
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class FileCopier extends Duplicate<File, FileCopier> {

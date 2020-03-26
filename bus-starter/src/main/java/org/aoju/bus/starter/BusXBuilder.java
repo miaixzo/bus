@@ -28,7 +28,7 @@ package org.aoju.bus.starter;
  * 全局常量配置
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class BusXBuilder {

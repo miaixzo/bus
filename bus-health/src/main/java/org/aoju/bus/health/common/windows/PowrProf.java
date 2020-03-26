@@ -34,7 +34,7 @@ import com.sun.jna.Structure.FieldOrder;
  * removed if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {

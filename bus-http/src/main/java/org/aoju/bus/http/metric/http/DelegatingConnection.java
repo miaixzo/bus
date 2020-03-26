@@ -45,7 +45,7 @@ import java.util.Map;
  * 实现HTTPS连接的方法是，除了特定于HTTP的内容外，所有内容都委托给HTTP连接
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public abstract class DelegatingConnection extends HttpsURLConnection {

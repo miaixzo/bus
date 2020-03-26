@@ -34,7 +34,7 @@ import java.nio.charset.StandardCharsets;
  * 文件包装器,扩展文件对象
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class FileWrapper {

@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * ASCII艺术产生的图像文件
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class ImageBanner {

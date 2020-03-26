@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.tree.TreeMap;
  *
  * @param <T> 转换的实体 为数据源里的对象类型
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public interface NodeParser<T, E> {

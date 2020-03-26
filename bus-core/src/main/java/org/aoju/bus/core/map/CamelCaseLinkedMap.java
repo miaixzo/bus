@@ -34,7 +34,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class CamelCaseLinkedMap<K, V> extends CamelCaseMap<K, V> {

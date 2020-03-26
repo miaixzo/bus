@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>short</code> 类型
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @see Short
  * @since JDK 1.8+
  */

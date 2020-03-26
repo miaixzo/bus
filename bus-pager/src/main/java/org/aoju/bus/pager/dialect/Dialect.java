@@ -36,7 +36,7 @@ import java.util.Properties;
  * 数据库方言,针对不同数据库进行实现
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public interface Dialect {

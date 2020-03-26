@@ -40,7 +40,7 @@ import java.util.Map;
  * 2. 通过set形式设置(动态/DB等)
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 @Data

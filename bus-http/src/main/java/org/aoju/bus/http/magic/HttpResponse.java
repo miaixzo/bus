@@ -39,7 +39,7 @@ import java.util.List;
  * HTTP响应处理
  *
  * @author Kimi Liu
- * @version 5.8.0
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class HttpResponse {
