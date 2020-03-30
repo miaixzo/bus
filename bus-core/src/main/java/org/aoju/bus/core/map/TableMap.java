@@ -26,6 +26,7 @@ package org.aoju.bus.core.map;
 
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.utils.ObjectUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -143,6 +144,32 @@ public class TableMap<K, V> implements Map<K, V>, Serializable {
             hashSet.add(new Entry<>(keys.get(i), values.get(i)));
         }
         return hashSet;
+    }
+
+    /**
+     * 获取指定key对应的所有值
+     *
+     * @param key 键
+     * @return 值列表
+     */
+    public List<V> getValues(K key) {
+        return CollUtils.getAny(
+                this.values,
+                CollUtils.indexOfAll(this.keys, (ele) -> ObjectUtils.equal(ele, key))
+        );
+    }
+
+    /**
+     * 获取指定value对应的所有key
+     *
+     * @param value 值
+     * @return 值列表
+     */
+    public List<K> getKeys(V value) {
+        return CollUtils.getAny(
+                this.keys,
+                CollUtils.indexOfAll(this.values, (ele) -> ObjectUtils.equal(ele, value))
+        );
     }
 
     private static class Entry<K, V> implements Map.Entry<K, V> {
