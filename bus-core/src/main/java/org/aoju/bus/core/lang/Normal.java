@@ -33,7 +33,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class Normal {
@@ -169,7 +169,7 @@ public class Normal {
      * 英文数字10-19
      */
     public static final String[] NUMBER_TEEN = new String[]{
-            "TEN", "ELEVEN", "TWELEVE", "THIRTEEN", "FOURTEEN", "FIFTEEN",
+            "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN",
             "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"
     };
     /**

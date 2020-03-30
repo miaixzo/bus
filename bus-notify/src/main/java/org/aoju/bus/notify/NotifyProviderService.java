@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通知提供服务
  *
  * @author Justubborn
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK1.8+
  */
 public class NotifyProviderService {
@@ -72,7 +72,7 @@ public class NotifyProviderService {
      * @param registry {@link Registry}
      * @return {@link Provider}
      */
-    public Provider get(Registry registry) {
+    public static Provider get(Registry registry) {
         if (Registry.ALIYUN_SMS.equals(registry)) {
             return new AliyunSmsProvider((AliyunSmsProperties) NOTIFY_CACHE.get(registry));
         } else if (Registry.ALIYUN_VMS.equals(registry)) {

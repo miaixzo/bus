@@ -30,6 +30,8 @@ import org.aoju.bus.core.utils.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.style.Align;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -88,7 +90,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
      *
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public ExcelWriter() {
         this(false);
@@ -100,7 +102,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 若写出到文件,需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx 是否为xlsx格式
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public ExcelWriter(boolean isXlsx) {
         this(BookUtils.createBook(isXlsx), null);
@@ -387,7 +389,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      *
      * @param headerAlias 标题别名
      * @return this
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public ExcelWriter setHeaderAlias(Map<String, String> headerAlias) {
         this.headerAlias = headerAlias;
@@ -429,6 +431,28 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         }
         this.headerAlias = headerAlias;
         headerAlias.put(name, alias);
+        return this;
+    }
+
+    /**
+     * 设置窗口冻结，之前冻结的窗口会被覆盖，如果rowSplit为0表示取消冻结
+     *
+     * @param rowSplit 冻结的行及行数，2表示前两行
+     * @return this
+     */
+    public ExcelWriter setFreezePane(int rowSplit) {
+        return setFreezePane(0, rowSplit);
+    }
+
+    /**
+     * 设置窗口冻结，之前冻结的窗口会被覆盖，如果colSplit和rowSplit为0表示取消冻结
+     *
+     * @param colSplit 冻结的列及列数，2表示前两列
+     * @param rowSplit 冻结的行及行数，2表示前两行
+     * @return this
+     */
+    public ExcelWriter setFreezePane(int colSplit, int rowSplit) {
+        getSheet().createFreezePane(colSplit, rowSplit);
         return this;
     }
 
@@ -895,6 +919,55 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 IoUtils.close(out);
             }
         }
+        return this;
+    }
+
+
+    /**
+     * 增加下拉列表
+     *
+     * @param x          x坐标，列号，从0开始
+     * @param y          y坐标，行号，从0开始
+     * @param selectList 下拉列表
+     * @return this
+     */
+    public ExcelWriter addSelect(int x, int y, String... selectList) {
+        return addSelect(new CellRangeAddressList(y, y, x, x), selectList);
+    }
+
+    /**
+     * 增加下拉列表
+     *
+     * @param regions    {@link CellRangeAddressList} 指定下拉列表所占的单元格范围
+     * @param selectList 下拉列表内容
+     * @return this
+     */
+    public ExcelWriter addSelect(CellRangeAddressList regions, String... selectList) {
+        final DataValidationHelper validationHelper = this.sheet.getDataValidationHelper();
+        final DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(selectList);
+
+        //设置下拉框数据
+        final DataValidation dataValidation = validationHelper.createValidation(constraint, regions);
+
+        //处理Excel兼容性问题
+        if (dataValidation instanceof XSSFDataValidation) {
+            dataValidation.setSuppressDropDownArrow(true);
+            dataValidation.setShowErrorBox(true);
+        } else {
+            dataValidation.setSuppressDropDownArrow(false);
+        }
+
+        return addValidationData(dataValidation);
+    }
+
+    /**
+     * 增加单元格控制，比如下拉列表、日期验证、数字范围验证等
+     *
+     * @param dataValidation {@link DataValidation}
+     * @return this
+     */
+    public ExcelWriter addValidationData(DataValidation dataValidation) {
+        this.sheet.addValidationData(dataValidation);
         return this;
     }
 

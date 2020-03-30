@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.netease;
 
-import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ import java.util.Map;
  * 云信通知
  *
  * @author Justubborn
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK1.8+
  */
 public class NeteaseAttachMsgProvider extends AbstractNeteaseProvider {
@@ -45,7 +45,7 @@ public class NeteaseAttachMsgProvider extends AbstractNeteaseProvider {
     }
 
     @Override
-    public Message send(NeteaseMsgTemplate template, Map<String, String> context) {
+    public Response send(NeteaseMsgTemplate template) {
         Map<String, Object> param = new HashMap<>();
         param.put("from", template.getSender());
         param.put("msgtype", "0");

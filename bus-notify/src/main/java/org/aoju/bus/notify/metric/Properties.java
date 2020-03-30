@@ -24,16 +24,20 @@
  ********************************************************************************/
 package org.aoju.bus.notify.metric;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 配置
  *
  * @author Justubborn
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK1.8+
  */
-@Data
+@Getter
+@Setter
+@SuperBuilder
 public class Properties {
 
     private String appKey;

@@ -22,30 +22,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.magic;
+package org.aoju.bus.tracer;
 
-import lombok.Builder;
-import lombok.Getter;
+import java.lang.annotation.*;
 
 /**
- * 返回消息
+ * 操作日志记录注解
  *
- * @author Justubborn
- * @version 5.6.9
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.1
+ * @since JDK 1.8+
  */
-@Getter
-@Builder
-public class Message {
+@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Tracer {
 
     /**
-     * 结果
+     * @return 标题
      */
-    boolean result;
+    String value() default "";
 
     /**
-     * 描述
+     * @return 模块
      */
-    String desc;
+    String module() default "";
+
+    /**
+     * @return 功能
+     */
+    String business() default "";
+
+    /**
+     * @return 操作人类别
+     */
+    String operator() default "";
+
+    /**
+     * @return 是否保存请求的参数
+     */
+    boolean isSaveRequestData() default true;
 
 }

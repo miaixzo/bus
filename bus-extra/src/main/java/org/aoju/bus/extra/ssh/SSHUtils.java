@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class SSHUtils {
@@ -340,7 +340,7 @@ public class SSHUtils {
     }
 
     /**
-     * 执行Shell命令
+     * 执行Shell命令（使用EXEC方式）
      *
      * @param session Session会话
      * @param cmd     命令
@@ -353,6 +353,7 @@ public class SSHUtils {
 
     /**
      * 执行Shell命令
+     * 此方法单次发送一个命令到服务端，不读取环境变量，执行结束后自动关闭channel，不会产生阻塞
      *
      * @param session   Session会话
      * @param cmd       命令
@@ -381,6 +382,41 @@ public class SSHUtils {
             IoUtils.close(in);
             close(channel);
         }
+    }
+
+    /**
+     * 执行Shell命令
+     * 此方法单次发送一个命令到服务端，自动读取环境变量，执行结束后自动关闭channel，不会产生阻塞
+     *
+     * @param session Session会话
+     * @param cmd     命令
+     * @param charset 发送和读取内容的编码
+     * @return {@link ChannelExec}
+     */
+    public static String execByShell(Session session, String cmd, Charset charset) {
+        final ChannelShell shell = openShell(session);
+        shell.setPty(true);
+        OutputStream out = null;
+        InputStream in = null;
+        final StringBuilder result = StringUtils.builder();
+        try {
+            out = shell.getOutputStream();
+            in = shell.getInputStream();
+
+            out.write(StringUtils.bytes(cmd, charset));
+            out.flush();
+
+            while (in.available() > 0) {
+                result.append(IoUtils.read(in, charset));
+            }
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        } finally {
+            IoUtils.close(out);
+            IoUtils.close(in);
+            close(shell);
+        }
+        return result.toString();
     }
 
     /**

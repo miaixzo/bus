@@ -26,17 +26,19 @@ package org.aoju.bus.notify.provider.dingtalk;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.metric.Template;
 
 /**
  * 钉钉通知模版
  *
  * @author Justubborn
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK1.8+
  */
 @Getter
 @Setter
+@SuperBuilder
 public class DingTalkCropMsgTemplate extends Template {
 
     /**
@@ -60,5 +62,10 @@ public class DingTalkCropMsgTemplate extends Template {
      * json字符串
      */
     private String msg;
+
+    /**
+     * 钉钉token
+     */
+    private String token;
 
 }

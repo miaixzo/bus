@@ -40,7 +40,7 @@ import java.util.Set;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class ReflectUtils {
@@ -604,8 +604,8 @@ public class ReflectUtils {
     public static void setFieldValue(Object obj, Field field, Object value) throws InstrumentException {
         Assert.notNull(field, "Field in [{}] not exist !", obj);
 
+        final Class<?> fieldType = field.getType();
         if (null != value) {
-            Class<?> fieldType = field.getType();
             if (false == fieldType.isAssignableFrom(value.getClass())) {
                 //对于类型不同的字段，尝试转换，转换失败则使用原对象类型
                 final Object targetValue = Convert.convert(fieldType, value);
@@ -613,6 +613,9 @@ public class ReflectUtils {
                     value = targetValue;
                 }
             }
+        } else {
+            // 获取null对应默认值，防止原始类型造成空指针问题
+            value = ClassUtils.getDefaultValue(fieldType);
         }
 
         setAccessible(field);
@@ -647,7 +650,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public static Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>... paramTypes) throws SecurityException {
         return getMethod(clazz, true, methodName, paramTypes);
@@ -675,7 +678,7 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public static Method getMethod(Class<?> clazz, boolean ignoreCase, String methodName, Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringUtils.isBlank(methodName)) {
@@ -951,15 +954,36 @@ public class ReflectUtils {
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
-     * @throws InstrumentException 一些列异常的包装
      */
-    public static <T> T invoke(Object obj, Method method, Object... args) throws InstrumentException {
-        if (false == method.isAccessible()) {
-            method.setAccessible(true);
+    public static <T> T invoke(Object obj, Method method, Object... args) {
+        setAccessible(method);
+
+        // 检查用户传入参数：
+        // 1、忽略多余的参数
+        // 2、参数不够补齐默认值
+        // 3、传入参数为null，但是目标参数类型为原始类型，做转换
+        // 4、传入参数类型不对应，尝试转换类型
+        final Class<?>[] parameterTypes = method.getParameterTypes();
+        final Object[] actualArgs = new Object[parameterTypes.length];
+        if (null != args) {
+            for (int i = 0; i < actualArgs.length; i++) {
+                if (i >= args.length || null == args[i]) {
+                    // 越界或者空值
+                    actualArgs[i] = ClassUtils.getDefaultValue(parameterTypes[i]);
+                } else if (false == parameterTypes[i].isAssignableFrom(args[i].getClass())) {
+                    //对于类型不同的字段，尝试转换，转换失败则使用原对象类型
+                    final Object targetValue = Convert.convert(parameterTypes[i], args[i]);
+                    if (null != targetValue) {
+                        actualArgs[i] = targetValue;
+                    }
+                } else {
+                    actualArgs[i] = args[i];
+                }
+            }
         }
 
         try {
-            return (T) method.invoke(ClassUtils.isStatic(method) ? null : obj, args);
+            return (T) method.invoke(ClassUtils.isStatic(method) ? null : obj, actualArgs);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -973,10 +997,8 @@ public class ReflectUtils {
      * @param methodName 方法名
      * @param args       参数列表
      * @return 执行结果
-     * @throws InstrumentException IllegalAccessException包装
-     * @since 3.1.9
      */
-    public static <T> T invoke(Object obj, String methodName, Object... args) throws InstrumentException {
+    public static <T> T invoke(Object obj, String methodName, Object... args) {
         final Method method = getMethodOfObj(obj, methodName, args);
         if (null == method) {
             throw new InstrumentException(StringUtils.format("No such method: [{}]", methodName));

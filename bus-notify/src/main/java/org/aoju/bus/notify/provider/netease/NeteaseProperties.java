@@ -25,22 +25,22 @@
 package org.aoju.bus.notify.provider.netease;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.metric.Properties;
 
 /**
  * 云信配置
  *
  * @author Justubborn
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK1.8+
  */
 @Getter
+@Setter
+@SuperBuilder
 public class NeteaseProperties extends Properties {
 
     private String appNonce;
-
-    public NeteaseProperties(String appNonce) {
-        this.appNonce = appNonce;
-    }
 
 }

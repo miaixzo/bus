@@ -44,7 +44,7 @@ import java.util.Map;
  *
  * @param <T> 目标对象类型
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {
@@ -312,7 +312,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                     ReflectUtils.setFieldValue(bean, field, value);
                 } else {
                     // 执行set方法注入值
-                    setterMethod.invoke(bean, value);
+                    ReflectUtils.invoke(bean, setterMethod, value);
                 }
             } catch (Exception e) {
                 if (false == copyOptions.ignoreError) {

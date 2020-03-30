@@ -24,8 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.aliyun;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.http.Httpx;
-import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Response;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,7 +35,7 @@ import java.util.*;
  * 阿里云短信
  *
  * @author Justubborn
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK1.8+
  */
 public class AliyunSmsProvider extends AbstractAliyunProvider<AliyunSmsTemplate, AliyunSmsProperties> {
@@ -49,7 +50,7 @@ public class AliyunSmsProvider extends AbstractAliyunProvider<AliyunSmsTemplate,
     }
 
     @Override
-    public Message send(AliyunSmsTemplate template, Map<String, String> context) {
+    public Response send(AliyunSmsTemplate template) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         // 这里一定要设置GMT时区
         df.setTimeZone(new SimpleTimeZone(0, "GMT"));
@@ -70,13 +71,13 @@ public class AliyunSmsProvider extends AbstractAliyunProvider<AliyunSmsTemplate,
         paras.put("TemplateParam", template.getTemplateParam());
         paras.put("TemplateCode", template.getTempCode());
 
-        paras.put("Signature", getSign(paras, properties.getAppSecret()));
+        paras.put("Signature", getSign(paras));
 
         Map<String, Object> map = new HashMap<>();
         for (String str : paras.keySet()) {
             map.put(specialUrlEncode(str), specialUrlEncode(paras.get(str)));
         }
-        return checkResponse(Httpx.get(ALIYUN_PRODUCT_DOMAIN, map));
+        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_PRODUCT_DOMAIN, map));
     }
 
 }

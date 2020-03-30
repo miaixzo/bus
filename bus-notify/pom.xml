@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-notify</artifactId>
-    <version>5.6.9</version>
+    <version>5.8.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -30,11 +30,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-http</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bus-logger</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

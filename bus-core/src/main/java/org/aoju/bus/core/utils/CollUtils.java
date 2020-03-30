@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class CollUtils {
@@ -1192,7 +1192,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, Objects::nonNull);
@@ -1217,7 +1217,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, (Filter<T>) t -> false == StringUtils.isEmpty(t));
@@ -1229,7 +1229,7 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, (Filter<T>) t -> false == StringUtils.isBlank(t));
@@ -2031,7 +2031,6 @@ public class CollUtils {
             return str1.compareTo(str2);
         }
         return str2.compareTo(str1);
-
     }
 
     /**
@@ -2468,8 +2467,7 @@ public class CollUtils {
      * @return 分页条
      */
     public static int[] rainbow(int currentPage, int pageCount, int displayCount) {
-        boolean isEven = true;
-        isEven = displayCount % 2 == 0;
+        boolean isEven = displayCount % 2 == 0;
         int left = displayCount / 2;
         int right = displayCount / 2;
 
@@ -2635,6 +2633,29 @@ public class CollUtils {
     }
 
     /**
+     * 获取匹配规则定义中匹配到元素的所有位置
+     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准
+     *
+     * @param <T>        元素类型
+     * @param collection 集合
+     * @param matcher    匹配器，为空则全部匹配
+     * @return 位置数组
+     */
+    public static <T> int[] indexOfAll(Collection<T> collection, Matcher<T> matcher) {
+        final List<Integer> indexList = new ArrayList<>();
+        if (null != collection) {
+            int index = 0;
+            for (T t : collection) {
+                if (null == matcher || matcher.match(t)) {
+                    indexList.add(index);
+                }
+                index++;
+            }
+        }
+        return Convert.convert(int[].class, indexList);
+    }
+
+    /**
      * 针对一个参数做相应的操作
      *
      * @param <T> 处理参数类型
@@ -2672,7 +2693,7 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 5.6.9
+     * @since 5.8.1
      */
     public interface Hash<T> {
         /**

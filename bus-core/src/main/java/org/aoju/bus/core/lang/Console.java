@@ -34,7 +34,7 @@ import java.util.Scanner;
  * 此类主要针对{@link java.lang.System#out} 和 {@link java.lang.System#err} 做封装
  *
  * @author Kimi Liu
- * @version 5.6.9
+ * @version 5.8.1
  * @since JDK 1.8+
  */
 public class Console {
@@ -192,6 +192,29 @@ public class Console {
      */
     public static Scanner scanner() {
         return new Scanner(System.in);
+    }
+
+    /**
+     * 返回当前位置+行号 (不支持Lambda、内部类、递归内使用)
+     *
+     * @return 返回当前行号
+     */
+    public static String where() {
+        final StackTraceElement stackTraceElement = new Throwable().getStackTrace()[1];
+        final String className = stackTraceElement.getClassName();
+        final String methodName = stackTraceElement.getMethodName();
+        final String fileName = stackTraceElement.getFileName();
+        final Integer lineNumber = stackTraceElement.getLineNumber();
+        return String.format("%s.%s(%s:%s)", className, methodName, fileName, lineNumber);
+    }
+
+    /**
+     * 返回当前行号 (不支持Lambda、内部类、递归内使用)
+     *
+     * @return 返回当前行号
+     */
+    public static Integer lineNumber() {
+        return new Throwable().getStackTrace()[1].getLineNumber();
     }
 
 }
