@@ -2633,6 +2633,29 @@ public class CollUtils {
     }
 
     /**
+     * 获取匹配规则定义中匹配到元素的所有位置
+     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准
+     *
+     * @param <T>        元素类型
+     * @param collection 集合
+     * @param matcher    匹配器，为空则全部匹配
+     * @return 位置数组
+     */
+    public static <T> int[] indexOfAll(Collection<T> collection, Matcher<T> matcher) {
+        final List<Integer> indexList = new ArrayList<>();
+        if (null != collection) {
+            int index = 0;
+            for (T t : collection) {
+                if (null == matcher || matcher.match(t)) {
+                    indexList.add(index);
+                }
+                index++;
+            }
+        }
+        return Convert.convert(int[].class, indexList);
+    }
+
+    /**
      * 针对一个参数做相应的操作
      *
      * @param <T> 处理参数类型

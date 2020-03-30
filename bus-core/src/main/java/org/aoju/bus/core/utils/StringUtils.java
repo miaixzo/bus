@@ -1601,50 +1601,25 @@ public class StringUtils extends TextUtils {
      * subBetweenAll("[yabc[zy]abcz]", "[", "]");   = ["zy"]           重叠时只截取内部，
      * </pre>
      *
-     * @param str         被切割的字符串
-     * @param regexBefore 截取开始的字符串标识
-     * @param regexAfter  截取到的字符串标识
+     * @param str    被切割的字符串
+     * @param prefix 截取开始的字符串标识
+     * @param suffix 截取到的字符串标识
      * @return 截取后的字符串
      */
-    public static String[] subBetweenAll(CharSequence str, CharSequence regexBefore, CharSequence regexAfter) {
-        if (str == null || regexBefore == null || regexAfter == null || str.length() < 1 || regexBefore.length() < 1 || regexAfter.length() < 1) {
+    public static String[] subBetweenAll(CharSequence str, CharSequence prefix, CharSequence suffix) {
+        if (hasEmpty(str, prefix, suffix)) {
             return new String[0];
         }
 
-        final String before = regexBefore.toString().replace("\\", "");
-        final String after = regexAfter.toString().replace("\\", "");
-        final Integer beforeNumber = count(str, before);
-        final Integer afterNumber = count(str, after);
-        if (beforeNumber < 1 || afterNumber < 1) {
-            return new String[0];
-        }
-
-        LinkedList<String> betweenList = new LinkedList<>();
-        if (beforeNumber.compareTo(afterNumber) > 0) {
-            String[] fragments = str.toString().split(regexAfter.toString());
-            for (int i = 0; i < fragments.length - 1; i++) {
-                String fragment = fragments[i];
-                if (fragment.contains(before)) {
-                    int beforeIndex = lastIndexOf(fragment, before, 0, false);
-                    String between = fragment.substring(beforeIndex);
-                    if (between.length() > 0)
-                        betweenList.add(between);
-                }
-            }
-        } else {
-            String[] fragments = str.toString().split(regexBefore.toString());
-            for (int i = 1; i < fragments.length; i++) {
-                String fragment = fragments[i];
-                if (fragment.contains(after)) {
-                    int afterIndex = indexOf(fragment, after, 0, false);
-                    String between = fragment.substring(0, afterIndex);
-                    if (between.length() > 0)
-                        betweenList.add(between);
-                }
+        final List<String> result = new LinkedList<>();
+        for (String fragment : split(str, prefix)) {
+            int suffixIndex = fragment.indexOf(suffix.toString());
+            if (suffixIndex > 0) {
+                result.add(fragment.substring(0, suffixIndex));
             }
         }
 
-        return betweenList.toArray(new String[0]);
+        return result.toArray(new String[0]);
     }
 
     /**
