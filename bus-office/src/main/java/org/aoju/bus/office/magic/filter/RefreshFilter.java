@@ -34,7 +34,7 @@ import org.aoju.bus.office.magic.Lo;
  * 此筛选器用于刷新文档.
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class RefreshFilter implements Filter {

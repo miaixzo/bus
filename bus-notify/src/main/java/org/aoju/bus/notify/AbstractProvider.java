@@ -35,7 +35,7 @@ import java.util.Map;
  * 抽象类
  *
  * @author Justubborn
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK1.8+
  */
 @AllArgsConstructor

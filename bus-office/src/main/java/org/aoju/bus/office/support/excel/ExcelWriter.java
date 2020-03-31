@@ -51,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -90,7 +90,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
      *
-     * @since 5.8.1
+     * @since 5.8.2
      */
     public ExcelWriter() {
         this(false);
@@ -102,7 +102,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 若写出到文件,需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx 是否为xlsx格式
-     * @since 5.8.1
+     * @since 5.8.2
      */
     public ExcelWriter(boolean isXlsx) {
         this(BookUtils.createBook(isXlsx), null);
@@ -389,7 +389,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      *
      * @param headerAlias 标题别名
      * @return this
-     * @since 5.8.1
+     * @since 5.8.2
      */
     public ExcelWriter setHeaderAlias(Map<String, String> headerAlias) {
         this.headerAlias = headerAlias;

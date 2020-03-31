@@ -56,7 +56,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 转换器,默认转换器预定义的一些转换器,自定义转换器存放用户自定的转换器
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class ConverterRegistry {

@@ -44,7 +44,7 @@ import java.util.Properties;
  * Mybatis - 通用分页拦截器
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class PageContext extends PageMethod implements Dialect {

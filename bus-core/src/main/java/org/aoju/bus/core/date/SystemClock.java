@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * 后台定时更新时钟,JVM退出时,线程自动回收
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class SystemClock {

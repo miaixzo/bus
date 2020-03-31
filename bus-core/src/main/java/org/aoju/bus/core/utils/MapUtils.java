@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class MapUtils {
@@ -718,7 +718,7 @@ public class MapUtils {
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
-     * @since 5.8.1
+     * @since 5.8.2
      */
     public static MapProxy createProxy(Map<?, ?> map) {
         return MapProxy.create(map);

@@ -37,7 +37,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<V>> {

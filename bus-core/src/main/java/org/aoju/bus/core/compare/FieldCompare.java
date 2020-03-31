@@ -40,7 +40,7 @@ import java.util.Comparator;
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class FieldCompare<T> implements Comparator<T>, Serializable {

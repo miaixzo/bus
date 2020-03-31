@@ -38,7 +38,7 @@ import java.util.Map;
  * 分页参数对象工具类
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public abstract class PageFromObject {

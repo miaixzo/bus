@@ -36,7 +36,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 例子：北京市海淀区****
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class AddressStrategy extends AbstractProvider {

@@ -39,7 +39,7 @@ import org.aoju.bus.oauth.metric.StateCache;
  * 腾讯云登录
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class TencentProvider extends DefaultProvider {

@@ -28,7 +28,7 @@ package org.aoju.bus.office.support.excel.cell;
  * 抽象的单元格值接口,用于判断不同类型的单元格值
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public interface CellValue<T> {

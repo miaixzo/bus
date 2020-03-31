@@ -34,7 +34,7 @@ import java.nio.file.Paths;
  * 字符串转换器
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 public class PathConverter extends AbstractConverter<Path> {

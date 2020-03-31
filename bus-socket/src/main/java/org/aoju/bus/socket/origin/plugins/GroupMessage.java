@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK 1.8+
  */
 abstract class GroupMessage<T> implements Message<T> {

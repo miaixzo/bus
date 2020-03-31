@@ -33,7 +33,7 @@ import java.util.Map;
  * 云信通知
  *
  * @author Justubborn
- * @version 5.8.1
+ * @version 5.8.2
  * @since JDK1.8+
  */
 public class NeteaseAttachMsgProvider extends AbstractNeteaseProvider {
