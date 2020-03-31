@@ -147,8 +147,15 @@ public class BaseEntity extends Tracer {
      */
     public <T> void setCreateInfo(T entity) {
         String id = ObjectID.id();
-        String[] fields = {"id", "creator", "created"};
-        Object[] value = new Object[]{id, getValue(entity, "x_user_id"), StringUtils.toString(DateUtils.timestamp())};
+        String timestamp = StringUtils.toString(DateUtils.timestamp());
+        String[] fields = {"id", "created"};
+        Object[] value = new Object[]{id, timestamp};
+        if (ObjectUtils.isEmpty(getValue(entity, "creator"))) {
+            fields = new String[]{"id", "creator", "created"};
+            value = new Object[]{id,
+                    ObjectUtils.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
+                    timestamp};
+        }
         setValue(entity, fields, value);
     }
 
@@ -159,8 +166,15 @@ public class BaseEntity extends Tracer {
      * @param entity 反射对象
      */
     public <T> void setUpdatedInfo(T entity) {
-        String[] fields = {"modifier", "modified"};
-        Object[] value = new Object[]{getValue(entity, "x_user_id"), StringUtils.toString(DateUtils.timestamp())};
+        String timestamp = StringUtils.toString(DateUtils.timestamp());
+        String[] fields = {"modified"};
+        Object[] value = new Object[]{timestamp};
+        if (ObjectUtils.isEmpty(getValue(entity, "modifier"))) {
+            fields = new String[]{"modifier", "modified"};
+            value = new Object[]{ObjectUtils.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
+                    timestamp};
+        }
+
         setValue(entity, fields, value);
     }
 
