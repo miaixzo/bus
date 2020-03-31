@@ -19,7 +19,7 @@
         <project.compiler.version>1.8</project.compiler.version>
         <project.compiler.version>1.8</project.compiler.version>
         <compress.version>1.19</compress.version>
-        <loader.version>2.2.5.RELEASE</loader.version>
+        <loader.version>2.2.6.RELEASE</loader.version>
     </properties>
 
     <dependencies>
