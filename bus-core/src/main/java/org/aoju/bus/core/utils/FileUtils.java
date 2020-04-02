@@ -3204,10 +3204,10 @@ public class FileUtils {
      *
      * @param file 文件
      * @param out  流
-     * @return 目标文件
+     * @return 写出的流byte数
      * @throws InstrumentException 异常
      */
-    public static File writeToStream(File file, OutputStream out) throws InstrumentException {
+    public static long writeToStream(File file, OutputStream out) throws InstrumentException {
         return FileReader.create(file).writeToStream(out);
     }
 
@@ -3216,10 +3216,11 @@ public class FileUtils {
      *
      * @param fullFilePath 文件绝对路径
      * @param out          输出流
+     * @return 写出的流byte数
      * @throws InstrumentException 异常
      */
-    public static void writeToStream(String fullFilePath, OutputStream out) throws InstrumentException {
-        writeToStream(touch(fullFilePath), out);
+    public static long writeToStream(String fullFilePath, OutputStream out) throws InstrumentException {
+        return writeToStream(touch(fullFilePath), out);
     }
 
     /**

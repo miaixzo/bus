@@ -1064,6 +1064,9 @@ public class CollUtils {
      */
     public static <T> List<List<T>> split(Collection<T> collection, int size) {
         final List<List<T>> result = new ArrayList<>();
+        if (CollUtils.isEmpty(collection)) {
+            return result;
+        }
 
         ArrayList<T> subList = new ArrayList<>(size);
         for (T t : collection) {

@@ -277,17 +277,12 @@ public class FileReader extends FileWrapper {
      * @return File
      * @throws InstrumentException 异常
      */
-    public File writeToStream(OutputStream out) throws InstrumentException {
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream(file);
-            IoUtils.copy(in, out);
-        } catch (IOException e) {
+    public long writeToStream(OutputStream out) throws InstrumentException {
+        try (FileInputStream in = new FileInputStream(this.file)){
+            return IoUtils.copy(in, out);
+        }catch (IOException e) {
             throw new InstrumentException(e);
-        } finally {
-            IoUtils.close(in);
         }
-        return this.file;
     }
 
     /**
