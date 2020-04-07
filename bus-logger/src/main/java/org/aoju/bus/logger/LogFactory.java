@@ -26,14 +26,8 @@ package org.aoju.bus.logger;
 
 import org.aoju.bus.core.utils.CallerUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
-import org.aoju.bus.logger.dialect.commons.ApacheCommonsLogFactory;
 import org.aoju.bus.logger.dialect.console.ConsoleLogFactory;
-import org.aoju.bus.logger.dialect.jboss.JbossLogFactory;
 import org.aoju.bus.logger.dialect.jdk.JdkLogFactory;
-import org.aoju.bus.logger.dialect.log4j.Log4jLogFactory;
-import org.aoju.bus.logger.dialect.log4j2.Log4j2LogFactory;
-import org.aoju.bus.logger.dialect.slf4j.Slf4jLogFactory;
-import org.aoju.bus.logger.dialect.tinylog.TinyLogFactory;
 
 import java.net.URL;
 import java.util.Map;
@@ -71,18 +65,11 @@ public abstract class LogFactory {
 
     /**
      * 决定日志实现
-     * <p>
-     * 依次按照顺序检查日志库的jar是否被引入,如果未引入任何日志库,则检查ClassPath下的logging.properties,存在则使用JdkLogFactory,否则使用ConsoleLogFactory
+     * 依次按照顺序检查日志库的jar是否被引入,如果未引入任何日志库,
+     * 则检查ClassPath下的logging.properties,存在则使用JdkLogFactory,
+     * 否则使用ConsoleLogFactory
      *
      * @return 日志实现类
-     * @see Slf4jLogFactory
-     * @see Log4j2LogFactory
-     * @see Log4jLogFactory
-     * @see ApacheCommonsLogFactory
-     * @see TinyLogFactory
-     * @see JbossLogFactory
-     * @see ConsoleLogFactory
-     * @see JdkLogFactory
      */
     public static LogFactory create() {
         final LogFactory factory = doCreate();
@@ -96,14 +83,6 @@ public abstract class LogFactory {
      * 依次按照顺序检查日志库的jar是否被引入,如果未引入任何日志库,则检查ClassPath下的logging.properties,存在则使用JdkLogFactory,否则使用ConsoleLogFactory
      *
      * @return 日志实现类
-     * @see Slf4jLogFactory
-     * @see Log4j2LogFactory
-     * @see Log4jLogFactory
-     * @see ApacheCommonsLogFactory
-     * @see TinyLogFactory
-     * @see JbossLogFactory
-     * @see ConsoleLogFactory
-     * @see JdkLogFactory
      */
     private static LogFactory doCreate() {
         final ServiceLoader<LogFactory> factories = ServiceLoader.load(LogFactory.class);
@@ -132,14 +111,6 @@ public abstract class LogFactory {
      *
      * @param logFactoryClass 日志工厂类
      * @return 自定义的日志工厂类
-     * @see Slf4jLogFactory
-     * @see Log4j2LogFactory
-     * @see Log4jLogFactory
-     * @see ApacheCommonsLogFactory
-     * @see TinyLogFactory
-     * @see JbossLogFactory
-     * @see ConsoleLogFactory
-     * @see JdkLogFactory
      */
     public static LogFactory setCurrentLogFactory(Class<? extends LogFactory> logFactoryClass) {
         return GlobalFactory.set(logFactoryClass);
@@ -150,14 +121,6 @@ public abstract class LogFactory {
      *
      * @param logFactory 日志工厂类对象
      * @return 自定义的日志工厂类
-     * @see Slf4jLogFactory
-     * @see Log4j2LogFactory
-     * @see Log4jLogFactory
-     * @see ApacheCommonsLogFactory
-     * @see TinyLogFactory
-     * @see JbossLogFactory
-     * @see ConsoleLogFactory
-     * @see JdkLogFactory
      */
     public static LogFactory setCurrentLogFactory(LogFactory logFactory) {
         return GlobalFactory.set(logFactory);
