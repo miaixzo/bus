@@ -438,11 +438,10 @@ public class XmlUtils {
      * @param rootElementName 根节点名称
      * @param namespace       命名空间，无则传null
      * @return XML文档
-     * @since 5.0.4
      */
     public static Document createXml(String rootElementName, String namespace) {
         final Document doc = createXml();
-        doc.appendChild(null == namespace ? doc.createElement(rootElementName) : doc.createElementNS(rootElementName, namespace));
+        doc.appendChild(null == namespace ? doc.createElement(rootElementName) : doc.createElementNS(namespace, rootElementName));
         return doc;
     }
 
