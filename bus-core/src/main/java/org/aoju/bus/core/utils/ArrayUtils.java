@@ -8187,7 +8187,7 @@ public class ArrayUtils {
             if (ArrayUtils.isArray(item)) {
                 sb.append(join(ArrayUtils.wrap(item), conjunction, prefix, suffix));
             } else if (item instanceof Iterable<?>) {
-                sb.append(IterUtils.join((Iterable<?>) item, conjunction, prefix, suffix));
+                sb.append(CollUtils.join((Iterable<?>) item, conjunction, prefix, suffix));
             } else if (item instanceof Iterator<?>) {
                 sb.append(IterUtils.join((Iterator<?>) item, conjunction, prefix, suffix));
             } else {

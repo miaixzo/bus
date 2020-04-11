@@ -44,9 +44,9 @@ import java.nio.file.WatchEvent;
  */
 public class LineReadWatcher extends SimpleWatcher implements Runnable {
 
-    private RandomAccessFile randomAccessFile;
-    private Charset charset;
-    private LineHandler lineHandler;
+    private final RandomAccessFile randomAccessFile;
+    private final Charset charset;
+    private final LineHandler lineHandler;
 
     /**
      * 构造

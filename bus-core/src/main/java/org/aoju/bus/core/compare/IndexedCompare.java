@@ -40,7 +40,7 @@ import java.util.Comparator;
  */
 public class IndexedCompare<T> implements Comparator<T> {
 
-    private T[] array;
+    private final T[] array;
 
     /**
      * 构造

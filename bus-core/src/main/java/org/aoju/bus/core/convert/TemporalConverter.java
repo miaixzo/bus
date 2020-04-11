@@ -55,7 +55,7 @@ import java.util.Objects;
  */
 public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
 
-    private Class<?> targetType;
+    private final Class<?> targetType;
     /**
      * 日期格式化
      */

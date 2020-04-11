@@ -49,7 +49,7 @@ import org.aoju.bus.core.utils.StringUtils;
  */
 public class PrimitiveConverter extends AbstractConverter<Object> {
 
-    private Class<?> targetType;
+    private final Class<?> targetType;
 
     /**
      * 构造

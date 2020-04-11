@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class NumberConverter extends AbstractConverter<Number> {
 
-    private Class<? extends Number> targetType;
+    private final Class<? extends Number> targetType;
 
     public NumberConverter() {
         this.targetType = Number.class;
@@ -73,7 +73,7 @@ public class NumberConverter extends AbstractConverter<Number> {
         final Class<?> targetType = this.targetType;
         if (Byte.class == targetType) {
             if (value instanceof Number) {
-                return Byte.valueOf(((Number) value).byteValue());
+                return ((Number) value).byteValue();
             } else if (value instanceof Boolean) {
                 return BooleanUtils.toByteObj((Boolean) value);
             }
@@ -82,7 +82,7 @@ public class NumberConverter extends AbstractConverter<Number> {
 
         } else if (Short.class == targetType) {
             if (value instanceof Number) {
-                return Short.valueOf(((Number) value).shortValue());
+                return ((Number) value).shortValue();
             } else if (value instanceof Boolean) {
                 return BooleanUtils.toShortObj((Boolean) value);
             }
@@ -91,12 +91,12 @@ public class NumberConverter extends AbstractConverter<Number> {
 
         } else if (Integer.class == targetType) {
             if (value instanceof Number) {
-                return Integer.valueOf(((Number) value).intValue());
+                return ((Number) value).intValue();
             } else if (value instanceof Boolean) {
                 return BooleanUtils.toInteger((Boolean) value);
             }
             final String valueStr = convertToStr(value);
-            return StringUtils.isBlank(valueStr) ? null : Integer.valueOf(NumberUtils.parseInt(valueStr));
+            return StringUtils.isBlank(valueStr) ? null : NumberUtils.parseInt(valueStr);
 
         } else if (AtomicInteger.class == targetType) {
             final AtomicInteger intValue = new AtomicInteger();
@@ -113,12 +113,12 @@ public class NumberConverter extends AbstractConverter<Number> {
             return intValue;
         } else if (Long.class == targetType) {
             if (value instanceof Number) {
-                return Long.valueOf(((Number) value).longValue());
+                return ((Number) value).longValue();
             } else if (value instanceof Boolean) {
                 return BooleanUtils.toLongObj((Boolean) value);
             }
             final String valueStr = convertToStr(value);
-            return StringUtils.isBlank(valueStr) ? null : Long.valueOf(NumberUtils.parseLong(valueStr));
+            return StringUtils.isBlank(valueStr) ? null : NumberUtils.parseLong(valueStr);
 
         } else if (AtomicLong.class == targetType) {
             final AtomicLong longValue = new AtomicLong();
@@ -136,7 +136,7 @@ public class NumberConverter extends AbstractConverter<Number> {
 
         } else if (Float.class == targetType) {
             if (value instanceof Number) {
-                return Float.valueOf(((Number) value).floatValue());
+                return ((Number) value).floatValue();
             } else if (value instanceof Boolean) {
                 return BooleanUtils.toFloatObj((Boolean) value);
             }
@@ -145,7 +145,7 @@ public class NumberConverter extends AbstractConverter<Number> {
 
         } else if (Double.class == targetType) {
             if (value instanceof Number) {
-                return Double.valueOf(((Number) value).doubleValue());
+                return ((Number) value).doubleValue();
             } else if (value instanceof Boolean) {
                 return BooleanUtils.toDoubleObj((Boolean) value);
             }

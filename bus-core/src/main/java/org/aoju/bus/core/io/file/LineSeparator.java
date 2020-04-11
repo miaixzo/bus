@@ -57,7 +57,7 @@ public enum LineSeparator {
      */
     WINDOWS(Symbol.CRLF);
 
-    private String value;
+    private final String value;
 
     LineSeparator(String lineSeparator) {
         this.value = lineSeparator;

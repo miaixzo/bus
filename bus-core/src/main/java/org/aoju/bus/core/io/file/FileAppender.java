@@ -43,16 +43,16 @@ import java.util.List;
  */
 public class FileAppender implements Serializable {
 
-    private FileWriter writer;
+    private final FileWriter writer;
     /**
      * 内存中持有的字符串数
      */
-    private int capacity;
+    private final int capacity;
     /**
      * 追加内容是否为新行
      */
-    private boolean isNewLineMode;
-    private List<String> list = new ArrayList<>(100);
+    private final boolean isNewLineMode;
+    private final List<String> list = new ArrayList<>(100);
 
     /**
      * 构造

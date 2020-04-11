@@ -42,8 +42,8 @@ import java.nio.charset.Charset;
  */
 public class InputStreamResource implements Resource {
 
-    private InputStream in;
-    private String name;
+    private final InputStream in;
+    private final String name;
 
     /**
      * 构造

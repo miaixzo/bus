@@ -47,7 +47,7 @@ public class CopiedIter<E> implements Iterator<E>, Iterable<E>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Iterator<E> listIterator;
+    private final Iterator<E> listIterator;
 
     /**
      * 构造

@@ -50,7 +50,7 @@ public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, S
      */
     protected static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
 
-    private Map<K, V> raw;
+    private final Map<K, V> raw;
 
     /**
      * 构造

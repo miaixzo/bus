@@ -33,7 +33,7 @@ package org.aoju.bus.core.convert;
  */
 public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E> {
 
-    private Class<E> enumClass;
+    private final Class<E> enumClass;
 
     /**
      * 构造

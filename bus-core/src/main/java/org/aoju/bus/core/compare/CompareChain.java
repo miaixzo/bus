@@ -49,7 +49,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     /**
      * 对应比较器位置是否反序.
      */
-    private BitSet orderingBits;
+    private final BitSet orderingBits;
     /**
      * 比较器是否被锁定 锁定的比较器链不能再添加新的比较器 比较器会在开始比较时开始加锁
      */
@@ -273,10 +273,11 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
         if (null == object) {
             return false;
         }
+
         if (object.getClass().equals(this.getClass())) {
             final CompareChain<?> otherChain = (CompareChain<?>) object;
-            return (null == orderingBits ? null == otherChain.orderingBits : this.orderingBits.equals(otherChain.orderingBits)) //
-                    && (null == otherChain ? null == otherChain.chain : this.chain.equals(otherChain.chain));
+            return Objects.equals(this.orderingBits, otherChain.orderingBits)
+                    && this.chain.equals(otherChain.chain);
         }
         return false;
     }

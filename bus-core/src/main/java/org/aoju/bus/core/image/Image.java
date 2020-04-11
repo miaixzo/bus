@@ -57,7 +57,7 @@ public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private BufferedImage srcImage;
+    private final BufferedImage srcImage;
     private java.awt.Image targetImage;
     /**
      * 目标图片文件格式,用于写出

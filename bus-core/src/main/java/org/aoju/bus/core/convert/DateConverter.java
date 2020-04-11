@@ -41,7 +41,7 @@ import java.util.Date;
  */
 public class DateConverter extends AbstractConverter<Date> {
 
-    private Class<? extends Date> targetType;
+    private final Class<? extends Date> targetType;
     /**
      * 日期格式化
      */

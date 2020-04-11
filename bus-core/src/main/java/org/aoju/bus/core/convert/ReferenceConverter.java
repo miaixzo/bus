@@ -41,7 +41,7 @@ import java.lang.reflect.Type;
  */
 public class ReferenceConverter extends AbstractConverter<Reference> {
 
-    private Class<? extends Reference> targetType;
+    private final Class<? extends Reference> targetType;
 
     /**
      * 构造

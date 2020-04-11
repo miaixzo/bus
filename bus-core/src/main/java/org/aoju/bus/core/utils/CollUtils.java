@@ -474,6 +474,23 @@ public class CollUtils {
     }
 
     /**
+     * 以 conjunction 为分隔符将集合转换为字符串
+     *
+     * @param <T>         集合元素类型
+     * @param iterable    {@link Iterable}
+     * @param conjunction 分隔符
+     * @param prefix      每个元素添加的前缀，null表示不添加
+     * @param suffix      每个元素添加的后缀，null表示不添加
+     * @return 连接后的字符串
+     */
+    public static <T> String join(Iterable<T> iterable, CharSequence conjunction, String prefix, String suffix) {
+        if (null == iterable) {
+            return null;
+        }
+        return IterUtils.join(iterable.iterator(), conjunction, prefix, suffix);
+    }
+
+    /**
      * 切取部分数据
      * 切取后的栈将减少这些元素
      *

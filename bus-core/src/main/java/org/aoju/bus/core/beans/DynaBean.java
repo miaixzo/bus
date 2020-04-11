@@ -47,8 +47,8 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Class<?> beanClass;
-    private Object bean;
+    private final Class<?> beanClass;
+    private final Object bean;
 
     /**
      * 构造

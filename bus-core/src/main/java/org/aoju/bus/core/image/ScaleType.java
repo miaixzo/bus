@@ -56,7 +56,7 @@ public enum ScaleType {
      */
     AREA_AVERAGING(Image.SCALE_AREA_AVERAGING);
 
-    private int value;
+    private final int value;
 
     /**
      * 构造

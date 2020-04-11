@@ -82,7 +82,7 @@ public class UriResource implements Resource {
     @Override
     public InputStream getStream() {
         if (null == this.url) {
-            throw new InstrumentException("Resource [{" + this.url + "}] not exist!");
+            throw new InstrumentException("Resource URL is null!");
         }
         return UriUtils.getStream(url);
     }

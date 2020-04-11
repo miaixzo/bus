@@ -43,9 +43,9 @@ import java.nio.charset.Charset;
  */
 public class StringResource implements Resource {
 
-    private String data;
-    private String name;
-    private Charset charset;
+    private final String data;
+    private final String name;
+    private final Charset charset;
 
     /**
      * 构造,使用UTF8编码

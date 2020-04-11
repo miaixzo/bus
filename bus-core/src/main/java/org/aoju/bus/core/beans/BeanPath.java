@@ -269,11 +269,6 @@ public class BeanPath implements Serializable {
                         throw new IllegalArgumentException(StringUtils.format("Bad expression '{}':{}, we find ']' but no '[' !", expression, i));
                     }
                     isNumStart = false;
-                    // 中括号结束加入下标
-                    if (builder.length() > 0) {
-                        localPatternParts.add(unWrapIfPossible(builder));
-                    }
-                    builder.reset();
                 } else {
                     if (isNumStart) {
                         // 非结束中括号情况下发现起始中括号报错（中括号未关闭）
@@ -282,12 +277,12 @@ public class BeanPath implements Serializable {
                         // 数字下标开始
                         isNumStart = true;
                     }
-                    // 每一个边界符之前的表达式是一个完整的KEY,开始处理KEY
-                    if (builder.length() > 0) {
-                        localPatternParts.add(unWrapIfPossible(builder));
-                    }
-                    builder.reset();
                 }
+                // 每一个边界符之前的表达式是一个完整的KEY,开始处理KEY
+                if (builder.length() > 0) {
+                    localPatternParts.add(unWrapIfPossible(builder));
+                }
+                builder.reset();
             } else {
                 // 非边界符号,追加字符
                 builder.append(c);

@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource> {
 
-    private List<Resource> resources;
+    private final List<Resource> resources;
     private int cursor;
 
     /**

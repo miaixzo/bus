@@ -43,11 +43,11 @@ public class Between {
     /**
      * 开始日期
      */
-    private Date begin;
+    private final Date begin;
     /**
      * 结束日期
      */
-    private Date end;
+    private final Date end;
 
     /**
      * 构造
