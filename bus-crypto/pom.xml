@@ -30,6 +30,7 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>${bouncycastle.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

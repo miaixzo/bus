@@ -13,16 +13,12 @@
     <description>Bus Cache</description>
     <url>https://github.com/aoju/bus</url>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.5.RELEASE</version>
-    </parent>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
+        <lombok.version>1.18.12</lombok.version>
+        <fastjson.version>1.2.67</fastjson.version>
         <guice.version>4.2.0</guice.version>
         <jedis.version>2.9.0</jedis.version>
         <memcached.version>2.0.0</memcached.version>
@@ -32,6 +28,7 @@
         <yaml.version>1.25</yaml.version>
         <hession.version>4.0.38</hession.version>
         <druid.version>1.1.20</druid.version>
+        <mysql.version>8.0.19</mysql.version>
     </properties>
 
     <dependencies>
@@ -41,19 +38,28 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bus-extra</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>aopalliance</groupId>
@@ -65,7 +71,7 @@
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>${yaml.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <!-- jedis -->
         <dependency>
@@ -141,10 +147,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+            <version>2.2.5.RELEASE</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.2.5.RELEASE</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

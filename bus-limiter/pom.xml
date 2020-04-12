@@ -13,18 +13,13 @@
     <description>Bus Limiter</description>
     <url>https://github.com/aoju/bus</url>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.5.RELEASE</version>
-    </parent>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <curator.version>4.2.0</curator.version>
         <redisson.version>3.11.2</redisson.version>
+        <guava.version>28.0-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -34,9 +29,16 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>${redisson.version}</version>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>io.netty</groupId>
@@ -68,6 +70,7 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
             <version>${curator.version}</version>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
@@ -86,6 +89,8 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.2.5.RELEASE</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

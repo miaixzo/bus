@@ -42,6 +42,11 @@ import org.springframework.stereotype.Component;
 public class SocketHandlerBeanPostProcessor implements BeanPostProcessor {
 
     @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
+    @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         Class<?> clazz = AopUtils.getTargetClass(bean);
         WebSocket annotation = clazz.getAnnotation(WebSocket.class);

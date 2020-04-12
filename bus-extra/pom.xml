@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
+        <lombok.version>1.18.12</lombok.version>
         <fastjson.version>1.2.67</fastjson.version>
         <mail.version>1.6.2</mail.version>
         <jsch.version>0.1.54</jsch.version>
@@ -38,92 +39,89 @@
             <artifactId>bus-setting</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- fastjson -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
+            <optional>true</optional>
         </dependency>
-        <!-- 邮件 -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>${mail.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- SSH安全连接所使用的类库 -->
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- 二维码 -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
             <version>${zxing.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- FTP工具 -->
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>${net.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- Emoji工具依赖 -->
         <dependency>
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
             <version>${emoji.java.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- 阿里云核心包 -->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
             <version>${aliyun.sdk.core.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- 阿里云短信 -->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
             <version>${aliyun.sdk.sms.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- 阿里云邮件 -->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-dm</artifactId>
             <version>${aliyun.sdk.dm.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
-        <!-- 数据压缩 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>${compress.vetsion}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.anarres.lzo</groupId>
             <artifactId>lzo-core</artifactId>
             <version>${lzo.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.jpountz.lz4</groupId>
             <artifactId>lz4</artifactId>
             <version>${lz4.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <version>${snappy.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

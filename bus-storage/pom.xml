@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
+        <lombok.version>1.18.12</lombok.version>
         <aliyun.oss.version>3.4.2</aliyun.oss.version>
         <baidu.bos.version>0.10.48</baidu.bos.version>
         <huawei.oss.version>3.0.2</huawei.oss.version>
@@ -33,7 +34,12 @@
             <artifactId>bus-logger</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- 阿里云 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
@@ -46,7 +52,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 百度云 -->
         <dependency>
             <groupId>com.baidubce</groupId>
             <artifactId>bce-java-sdk</artifactId>
@@ -63,7 +68,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 华为云 -->
         <dependency>
             <groupId>com.huawei.storage</groupId>
             <artifactId>esdk-obs-java</artifactId>
@@ -80,28 +84,24 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 京东云 -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
             <version>${jd.oss.version}</version>
             <optional>true</optional>
         </dependency>
-        <!-- MinIO -->
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>${minio.oss.version}</version>
             <optional>true</optional>
         </dependency>
-        <!-- 七牛云 -->
         <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
             <version>${qiniu.oss.version}</version>
             <optional>true</optional>
         </dependency>
-        <!-- 腾讯云 -->
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
@@ -114,7 +114,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- 又拍云 -->
         <dependency>
             <groupId>com.upyun</groupId>
             <artifactId>java-sdk</artifactId>
