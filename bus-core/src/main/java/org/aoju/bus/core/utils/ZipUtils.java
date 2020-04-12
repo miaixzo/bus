@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -695,7 +695,7 @@ public class ZipUtils {
      * @throws InstrumentException IO异常
      */
     public static byte[] gzip(InputStream in, int length) throws InstrumentException {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
+        final java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream(length);
         GZIPOutputStream gos = null;
         try {
             gos = new GZIPOutputStream(bos);
@@ -753,10 +753,10 @@ public class ZipUtils {
      */
     public static byte[] unGzip(InputStream in, int length) throws InstrumentException {
         GZIPInputStream gzi = null;
-        FastByteArray bos;
+        ByteArrayOutputStream bos;
         try {
             gzi = (in instanceof GZIPInputStream) ? (GZIPInputStream) in : new GZIPInputStream(in);
-            bos = new FastByteArray(length);
+            bos = new ByteArrayOutputStream(length);
             IoUtils.copy(gzi, bos);
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -827,7 +827,7 @@ public class ZipUtils {
      * @return 压缩后的bytes
      */
     public static byte[] zlib(InputStream in, int level, int length) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
+        final java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(length);
         deflater(in, out, level);
         return out.toByteArray();
     }
@@ -871,7 +871,7 @@ public class ZipUtils {
      * @return 解压后的bytes
      */
     public static byte[] unZlib(InputStream in, int length) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
+        final java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(length);
         inflater(in, out);
         return out.toByteArray();
     }

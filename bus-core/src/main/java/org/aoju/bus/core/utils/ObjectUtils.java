@@ -25,7 +25,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -455,7 +455,7 @@ public class ObjectUtils {
         if (null == obj || false == (obj instanceof Serializable)) {
             return null;
         }
-        final FastByteArray byteOut = new FastByteArray();
+        final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         ObjectOutputStream out = null;
         try {
             out = new ObjectOutputStream(byteOut);
@@ -634,7 +634,7 @@ public class ObjectUtils {
      */
     public static byte[] toByte(Object obj) {
         try {
-            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            java.io.ByteArrayOutputStream byteOut = new java.io.ByteArrayOutputStream();
             ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
             objOut.writeObject(obj);
             return byteOut.toByteArray();
@@ -1012,7 +1012,7 @@ public class ObjectUtils {
      * @return byte数据
      */
     public static byte[] parseObjForByte(Object obj) {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        java.io.ByteArrayOutputStream byteOut = new java.io.ByteArrayOutputStream();
         ObjectOutputStream objOut = null;
         try {
             objOut = new ObjectOutputStream(byteOut);
@@ -1432,7 +1432,7 @@ public class ObjectUtils {
             return null;
         }
 
-        FastByteArray out = new FastByteArray();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         ObjectOutputStream os = null;
         try {
             os = new ObjectOutputStream(out);

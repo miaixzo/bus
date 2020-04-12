@@ -22,8 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.core.io;
+package org.aoju.bus.core.io.streams;
 
+import org.aoju.bus.core.io.FastByteBuffer;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CharsetUtils;
 
@@ -40,11 +41,11 @@ import java.nio.charset.Charset;
  * @version 5.8.3
  * @since JDK 1.8+
  */
-public class FastByteArray extends OutputStream {
+public class ByteArrayOutputStream extends OutputStream {
 
     private final FastByteBuffer buffer;
 
-    public FastByteArray() {
+    public ByteArrayOutputStream() {
         this(1024);
     }
 
@@ -53,7 +54,7 @@ public class FastByteArray extends OutputStream {
      *
      * @param size 预估大小
      */
-    public FastByteArray(int size) {
+    public ByteArrayOutputStream(int size) {
         buffer = new FastByteBuffer(size);
     }
 
