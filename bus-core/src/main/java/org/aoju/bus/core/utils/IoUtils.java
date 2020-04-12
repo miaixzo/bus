@@ -26,8 +26,6 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.*;
-import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
-import org.aoju.bus.core.io.streams.NullOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -58,7 +56,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class IoUtils {
@@ -441,7 +439,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static String read(InputStream in, String charsetName) throws InstrumentException {
-        ByteArrayOutputStream out = read(in);
+        FastByteArray out = read(in);
         return StringUtils.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
     }
 
@@ -454,7 +452,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static String read(InputStream in, Charset charset) throws InstrumentException {
-        ByteArrayOutputStream out = read(in);
+        FastByteArray out = read(in);
         return null == charset ? out.toString() : out.toString(charset);
     }
 
@@ -465,8 +463,8 @@ public class IoUtils {
      * @return 输出流
      * @throws InstrumentException 异常
      */
-    public static ByteArrayOutputStream read(InputStream in) throws InstrumentException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    public static FastByteArray read(InputStream in) throws InstrumentException {
+        final FastByteArray out = new FastByteArray();
         copy(in, out);
         return out;
     }
@@ -540,7 +538,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static byte[] readBytes(InputStream in) throws InstrumentException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final FastByteArray out = new FastByteArray();
         copy(in, out);
         return out.toByteArray();
     }

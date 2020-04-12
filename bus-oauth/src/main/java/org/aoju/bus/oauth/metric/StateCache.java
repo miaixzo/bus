@@ -22,58 +22,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.core.io.streams;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+package org.aoju.bus.oauth.metric;
 
 /**
+ * State缓存接口,方便用户扩展
+ *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
-public class RandomFileInputStream extends InputStream {
+public interface StateCache {
 
-    private RandomAccessFile raf;
+    /**
+     * 存入缓存
+     *
+     * @param key   缓存key
+     * @param value 缓存内容
+     */
+    void cache(String key, String value);
 
-    public RandomFileInputStream(RandomAccessFile raf) {
-        this.raf = raf;
-    }
+    /**
+     * 存入缓存
+     *
+     * @param key     缓存key
+     * @param value   缓存内容
+     * @param timeout 指定缓存过期时间（毫秒）
+     */
+    void cache(String key, String value, long timeout);
 
-    @Override
-    public int read() throws IOException {
-        return raf.read();
-    }
+    /**
+     * 获取缓存内容
+     *
+     * @param key 缓存key
+     * @return 缓存内容
+     */
+    String get(String key);
 
-    @Override
-    public int read(byte[] b, int off, int len) throws IOException {
-        return raf.read(b, off, len);
-    }
-
-    @Override
-    public long skip(long n) throws IOException {
-        return raf.skipBytes((int) n);
-    }
-
-    @Override
-    public void close() throws IOException {
-        raf.close();
-    }
-
-    @Override
-    public synchronized void reset() throws IOException {
-        raf.seek(0);
-    }
-
-    @Override
-    public int read(byte[] b) throws IOException {
-        return super.read(b);
-    }
-
-    @Override
-    public int available() throws IOException {
-        return (int) (raf.length() - raf.getFilePointer());
-    }
+    /**
+     * 是否存在key,如果对应key的value值已过期,也返回false
+     *
+     * @param key 缓存key
+     * @return true：存在key,并且value没过期；false：key不存在或者已过期
+     */
+    boolean containsKey(String key);
 
 }

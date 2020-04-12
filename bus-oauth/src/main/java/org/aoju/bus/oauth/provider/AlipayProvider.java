@@ -31,7 +31,6 @@ import com.alipay.api.request.AlipaySystemOauthTokenRequest;
 import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
-import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
@@ -41,12 +40,13 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.StateCache;
 
 /**
  * 支付宝登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class AlipayProvider extends DefaultProvider {
@@ -59,8 +59,8 @@ public class AlipayProvider extends DefaultProvider {
                 .getPublicKey(), "RSA2");
     }
 
-    public AlipayProvider(Context context, ExtendCache extendCache) {
-        super(context, Registry.ALIPAY, extendCache);
+    public AlipayProvider(Context context, StateCache stateCache) {
+        super(context, Registry.ALIPAY, stateCache);
         this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(), "json", "UTF-8", context
                 .getPublicKey(), "RSA2");
     }

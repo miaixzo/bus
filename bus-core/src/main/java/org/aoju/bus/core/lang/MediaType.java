@@ -28,7 +28,6 @@ import lombok.Data;
 import org.aoju.bus.core.utils.MapUtils;
 
 import java.nio.charset.Charset;
-import java.util.Locale;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -38,7 +37,7 @@ import java.util.regex.Pattern;
  * HTTP 媒体类型
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 @Data

@@ -25,7 +25,6 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
-import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
@@ -37,12 +36,13 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.StateCache;
 
 /**
  * 酷家乐授权登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class KujialeProvider extends DefaultProvider {
@@ -51,8 +51,8 @@ public class KujialeProvider extends DefaultProvider {
         super(context, Registry.KUJIALE);
     }
 
-    public KujialeProvider(Context context, ExtendCache extendCache) {
-        super(context, Registry.KUJIALE, extendCache);
+    public KujialeProvider(Context context, StateCache stateCache) {
+        super(context, Registry.KUJIALE, stateCache);
     }
 
     /**

@@ -22,70 +22,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.core.io.streams;
+package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.lang.Charset;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
+ * 此OutputStream写出数据到<b>/dev/null</b>,既忽略所有数据
+ * 来自 Apache Commons io
+ *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
-public class StringOutputStream extends OutputStream {
+public class NullOutputStream extends OutputStream {
 
-    private StringBuilder sb;
-    private ByteArrayOutputStream baos;
-    private String charset;
-
-    public StringOutputStream(StringBuilder sb) {
-        this(sb, Charset.DEFAULT_UTF_8);
-    }
-
-    public StringOutputStream(StringBuilder sb, String charset) {
-        this.sb = sb;
-        baos = new ByteArrayOutputStream();
-        this.charset = charset;
-    }
+    private boolean closed = false;
 
     /**
-     * 完成本方法后,确认字符串已经完成写入后,务必调用flash方法!
+     * 什么也不做,写出到 <code>/dev/null</code>.
+     *
+     * @param b 写出的数据
      */
     @Override
     public void write(int b) throws IOException {
-        if (null == baos)
-            throw new IOException("Stream is closed");
-        baos.write(b);
+        if (this.closed) _throwClosed();
     }
 
     /**
-     * 使用StringBuilder前,务必调用
+     * 什么也不做,写出到 <code>/dev/null</code>.
+     *
+     * @param b 写出的数据
+     * @throws IOException 不抛出
      */
     @Override
-    public void flush() throws IOException {
-        if (null != baos) {
-            baos.flush();
-            if (baos.size() > 0) {
-                if (charset == null)
-                    sb.append(new String(baos.toByteArray()));
-                else
-                    sb.append(new String(baos.toByteArray(), charset));
-                baos.reset();
-            }
-        }
+    public void write(byte[] b) throws IOException {
+        if (this.closed) _throwClosed();
     }
 
+    /**
+     * 什么也不做,写出到<code>/dev/null</code>.
+     *
+     * @param b   写出的数据
+     * @param off 开始位置
+     * @param len 长度
+     */
     @Override
-    public void close() throws IOException {
-        flush();
-        baos = null;
+    public void write(byte[] b, int off, int len) throws IOException {
+        if (this.closed) _throwClosed();
     }
 
-    public StringBuilder getStringBuilder() {
-        return sb;
+    private void _throwClosed() throws IOException {
+        throw new IOException("This OutputStream has been closed");
+    }
+
+    public void close() {
+        this.closed = true;
     }
 
 }

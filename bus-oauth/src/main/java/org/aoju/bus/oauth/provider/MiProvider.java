@@ -25,7 +25,6 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
-import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
@@ -37,6 +36,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.StateCache;
 
 import java.text.MessageFormat;
 
@@ -44,7 +44,7 @@ import java.text.MessageFormat;
  * 小米登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class MiProvider extends DefaultProvider {
@@ -53,8 +53,8 @@ public class MiProvider extends DefaultProvider {
         super(context, Registry.MI);
     }
 
-    public MiProvider(Context context, ExtendCache extendCache) {
-        super(context, Registry.MI, extendCache);
+    public MiProvider(Context context, StateCache stateCache) {
+        super(context, Registry.MI, stateCache);
     }
 
     @Override

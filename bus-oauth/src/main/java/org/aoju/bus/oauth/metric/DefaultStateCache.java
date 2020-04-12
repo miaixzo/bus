@@ -22,16 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.cache.metric;
+package org.aoju.bus.oauth.metric;
 
 /**
- * State缓存接口,方便用户扩展
+ * 默认的state缓存实现
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
-public interface ExtendCache {
+public enum DefaultStateCache implements StateCache {
+
+    /**
+     * 当前实例
+     */
+    INSTANCE;
+
+    private Cache cache;
+
+    DefaultStateCache() {
+        cache = new DefaultCache();
+    }
 
     /**
      * 存入缓存
@@ -39,7 +50,10 @@ public interface ExtendCache {
      * @param key   缓存key
      * @param value 缓存内容
      */
-    void cache(String key, String value);
+    @Override
+    public void cache(String key, String value) {
+        cache.set(key, value);
+    }
 
     /**
      * 存入缓存
@@ -48,7 +62,10 @@ public interface ExtendCache {
      * @param value   缓存内容
      * @param timeout 指定缓存过期时间（毫秒）
      */
-    void cache(String key, String value, long timeout);
+    @Override
+    public void cache(String key, String value, long timeout) {
+        cache.set(key, value, timeout);
+    }
 
     /**
      * 获取缓存内容
@@ -56,6 +73,20 @@ public interface ExtendCache {
      * @param key 缓存key
      * @return 缓存内容
      */
-    Object get(String key);
+    @Override
+    public String get(String key) {
+        return cache.get(key);
+    }
+
+    /**
+     * 是否存在key,如果对应key的value值已过期,也返回false
+     *
+     * @param key 缓存key
+     * @return true：存在key,并且value没过期；false：key不存在或者已过期
+     */
+    @Override
+    public boolean containsKey(String key) {
+        return cache.containsKey(key);
+    }
 
 }

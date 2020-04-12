@@ -22,9 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.core.io.streams;
+package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.io.FastByteBuffer;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.CharsetUtils;
 
@@ -38,14 +37,14 @@ import java.nio.charset.Charset;
  * 避免重新分配内存块而是分配新增的缓冲区,缓冲区不会被GC,数据也不会被拷贝到其他缓冲区
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.3
  * @since JDK 1.8+
  */
-public class ByteArrayOutputStream extends OutputStream {
+public class FastByteArray extends OutputStream {
 
     private final FastByteBuffer buffer;
 
-    public ByteArrayOutputStream() {
+    public FastByteArray() {
         this(1024);
     }
 
@@ -54,7 +53,7 @@ public class ByteArrayOutputStream extends OutputStream {
      *
      * @param size 预估大小
      */
-    public ByteArrayOutputStream(int size) {
+    public FastByteArray(int size) {
         buffer = new FastByteBuffer(size);
     }
 
