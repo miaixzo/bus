@@ -31,7 +31,7 @@ import org.apache.ibatis.annotations.DeleteProvider;
  * 通用Mapper接口,Condition查询
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public interface DeleteByConditionMapper<T> {

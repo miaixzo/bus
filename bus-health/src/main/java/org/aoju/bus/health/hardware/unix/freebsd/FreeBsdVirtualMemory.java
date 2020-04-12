@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * Memory obtained by swapinfo
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class FreeBsdVirtualMemory extends AbstractVirtualMemory {

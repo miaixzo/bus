@@ -41,7 +41,7 @@ import java.util.zip.Deflater;
  * ZIP压缩包加密器
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class ZipEncryptorProvider extends EntryEncryptorProvider<ZipArchiveEntry> implements EncryptorProvider {

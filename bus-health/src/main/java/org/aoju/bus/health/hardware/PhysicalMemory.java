@@ -31,7 +31,7 @@ import org.aoju.bus.health.Builder;
  * computer system and available to the operating system.
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class PhysicalMemory {

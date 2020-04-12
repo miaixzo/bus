@@ -56,7 +56,7 @@ import java.util.*;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public abstract class DefaultProvider implements Provider {

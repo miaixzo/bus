@@ -34,7 +34,7 @@ import java.util.Map;
  * 通知器,用于发送通知,如: 短信,邮件,语音,微信等s
  *
  * @author Justubborn
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK1.8+
  */
 public interface Provider<T extends Template> {

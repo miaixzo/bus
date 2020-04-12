@@ -34,7 +34,7 @@ import java.util.Collection;
 
 /**
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class PeakLimiterResource extends AbstractLimitedResource {

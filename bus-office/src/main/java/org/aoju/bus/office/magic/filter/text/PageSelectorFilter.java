@@ -40,7 +40,7 @@ import org.aoju.bus.office.magic.filter.FilterChain;
  * 此筛选器用于从文档中选择特定页面，以便仅转换所选页面.
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class PageSelectorFilter implements Filter {

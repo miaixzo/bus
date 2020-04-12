@@ -56,7 +56,7 @@ import java.util.TimeZone;
  * 设置相关系统参数信息.
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 @Component

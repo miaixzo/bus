@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * 存储服务-华为云
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class HuaweiObsProvider extends AbstractProvider {

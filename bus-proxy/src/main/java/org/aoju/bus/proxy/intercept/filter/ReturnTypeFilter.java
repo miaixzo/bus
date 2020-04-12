@@ -36,7 +36,7 @@ import java.util.Set;
  * 基于返回类型的筛选器方法
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class ReturnTypeFilter implements MethodFilter {

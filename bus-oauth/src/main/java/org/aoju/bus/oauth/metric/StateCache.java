@@ -28,7 +28,7 @@ package org.aoju.bus.oauth.metric;
  * State缓存接口,方便用户扩展
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public interface StateCache {

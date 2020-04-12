@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * Provides access to some /proc filesystem info on Linux
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class ProcUtils {

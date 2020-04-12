@@ -32,7 +32,7 @@ import org.aoju.bus.office.metric.RequestBuilder;
  * 表示用于在线转换的office环境.
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public interface OnlineOfficeContextAware extends Context {

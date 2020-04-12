@@ -31,7 +31,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 /**
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 @Sharable

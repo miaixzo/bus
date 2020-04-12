@@ -39,7 +39,7 @@ import java.util.*;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class LinuxCentralProcessor extends AbstractCentralProcessor {

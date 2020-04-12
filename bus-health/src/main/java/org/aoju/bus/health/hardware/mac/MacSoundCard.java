@@ -35,7 +35,7 @@ import java.util.List;
  * Sound card data obtained via system_profiler
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class MacSoundCard extends AbstractSoundCard {

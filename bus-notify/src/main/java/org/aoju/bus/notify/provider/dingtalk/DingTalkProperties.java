@@ -33,7 +33,7 @@ import org.aoju.bus.notify.metric.Properties;
  * 钉钉配置
  *
  * @author Justubborn
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK1.8+
  */
 @Getter

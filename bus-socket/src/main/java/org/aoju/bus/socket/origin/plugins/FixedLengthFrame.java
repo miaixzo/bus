@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
  * 指定长度的解码器
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class FixedLengthFrame implements SmartDecoder {

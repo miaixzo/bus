@@ -33,7 +33,7 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class JdkGzipSerializer extends AbstractSerializer {

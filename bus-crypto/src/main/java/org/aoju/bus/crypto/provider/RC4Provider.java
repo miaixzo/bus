@@ -62,7 +62,7 @@ import org.aoju.bus.crypto.symmetric.RC4;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class RC4Provider implements Provider {

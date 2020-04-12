@@ -39,7 +39,7 @@ import org.aoju.bus.logger.Logger;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class FreeBsdNetwork extends AbstractNetwork {

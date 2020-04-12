@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
  * Windows hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class WindowsDisks implements Disks {

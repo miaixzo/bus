@@ -28,7 +28,7 @@ package org.aoju.bus.http.magic;
  * 进度监听
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public interface ProgressListener {

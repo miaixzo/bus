@@ -31,7 +31,7 @@ import org.aoju.bus.logger.LogFactory;
  * Apache Commons Logging
  *
  * @author Kimi Liu
- * @version 5.8.2
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class ApacheCommonsLogFactory extends LogFactory {
