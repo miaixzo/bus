@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.Version;
+import org.aoju.bus.core.Version;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.http.*;

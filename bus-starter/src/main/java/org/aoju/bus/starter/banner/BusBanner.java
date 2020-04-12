@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.banner;
 
-import org.aoju.bus.Version;
+import org.aoju.bus.core.Version;
 import org.aoju.bus.starter.BusXBuilder;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringBootVersion;

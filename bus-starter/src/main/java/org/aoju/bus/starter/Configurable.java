@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
-import org.aoju.bus.Version;
+import org.aoju.bus.core.Version;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
