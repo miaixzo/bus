@@ -28,6 +28,7 @@ import lombok.Data;
 import org.aoju.bus.core.utils.MapUtils;
 
 import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;

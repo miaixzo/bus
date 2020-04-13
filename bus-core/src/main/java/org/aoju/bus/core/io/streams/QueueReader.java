@@ -214,7 +214,7 @@ public class QueueReader extends Reader {
     /**
      * 是否以 start 开始
      *
-     * @param start
+     * @param start 开始位置
      * @return true, 如果的确以指定字符串开始
      * @throws IOException 异常
      */

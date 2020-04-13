@@ -150,7 +150,7 @@ public class QueueInputStream extends InputStream {
      * 访问上次peekNext访问的下个位置的字节, 未访问过则访问索引0, poll, peek后归零, 不删除
      *
      * @return 下一个位置的字节
-     * @throws IOException
+     * @throws IOException 异常
      */
     public int peekNext() throws IOException {
         return peek(peekindex++);
@@ -202,7 +202,7 @@ public class QueueInputStream extends InputStream {
     /**
      * 是否以 start 开始
      *
-     * @param start
+     * @param start 开始位置
      * @return true, 如果的确以指定字符串开始
      * @throws IOException 异常
      */

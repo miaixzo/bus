@@ -38,7 +38,7 @@ import org.aoju.bus.core.Version;
  * </p>
  *
  * <p>
- * 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 bugs 的报告
+ * 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 代码的改进，问题和 bugs 的报告
  * </p>
  *
  * @author Kimi Liu
