@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-health</artifactId>
-    <version>5.8.1</version>
+    <version>5.8.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -30,11 +30,13 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>${jna.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>${jna.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

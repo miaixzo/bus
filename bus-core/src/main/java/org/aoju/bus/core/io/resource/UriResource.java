@@ -41,7 +41,7 @@ import java.nio.charset.Charset;
  * URL资源访问类
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class UriResource implements Resource {
@@ -82,7 +82,7 @@ public class UriResource implements Resource {
     @Override
     public InputStream getStream() {
         if (null == this.url) {
-            throw new InstrumentException("Resource [{" + this.url + "}] not exist!");
+            throw new InstrumentException("Resource URL is null!");
         }
         return UriUtils.getStream(url);
     }

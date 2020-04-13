@@ -35,7 +35,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class Between {
@@ -43,11 +43,11 @@ public class Between {
     /**
      * 开始日期
      */
-    private Date begin;
+    private final Date begin;
     /**
      * 结束日期
      */
-    private Date end;
+    private final Date end;
 
     /**
      * 构造

@@ -39,14 +39,14 @@ import java.nio.file.WatchEvent;
  * 行处理的Watcher实现
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class LineReadWatcher extends SimpleWatcher implements Runnable {
 
-    private RandomAccessFile randomAccessFile;
-    private Charset charset;
-    private LineHandler lineHandler;
+    private final RandomAccessFile randomAccessFile;
+    private final Charset charset;
+    private final LineHandler lineHandler;
 
     /**
      * 构造

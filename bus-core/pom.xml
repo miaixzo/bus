@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-core</artifactId>
-    <version>5.8.1</version>
+    <version>5.8.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -25,6 +25,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

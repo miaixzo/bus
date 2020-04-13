@@ -24,11 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.io.BOMInputStream;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
 import org.aoju.bus.core.io.file.*;
+import org.aoju.bus.core.io.streams.BOMInputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.Normal;
@@ -53,7 +53,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class FileUtils {
@@ -61,7 +61,7 @@ public class FileUtils {
     /**
      * Windows下文件名中的无效字符
      */
-    private static Pattern FILE_NAME_INVALID_PATTERN_WIN = Pattern.compile("[\\\\/:*?\"<>|]");
+    private static final Pattern FILE_NAME_INVALID_PATTERN_WIN = Pattern.compile("[\\\\/:*?\"<>|]");
 
     /**
      * 是否为Windows环境
@@ -339,7 +339,7 @@ public class FileUtils {
      * @param path       当前遍历文件或目录的路径
      * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
-     * @since 5.8.1
+     * @since 5.8.3
      */
     public static List<File> loopFiles(String path, FileFilter fileFilter) {
         return loopFiles(file(path), fileFilter);
@@ -424,7 +424,7 @@ public class FileUtils {
      *
      * @param path 当前遍历文件或目录的路径
      * @return 文件列表
-     * @since 5.8.1
+     * @since 5.8.3
      */
     public static List<File> loopFiles(String path) {
         return loopFiles(file(path));
@@ -2099,7 +2099,7 @@ public class FileUtils {
      * @param filePath 文件路径
      * @return 字节码
      * @throws InstrumentException 异常
-     * @since 5.8.1
+     * @since 5.8.3
      */
     public static byte[] readBytes(String filePath) throws InstrumentException {
         return readBytes(file(filePath));
@@ -2885,7 +2885,7 @@ public class FileUtils {
      * @param path 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.8.1
+     * @since 5.8.3
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
         return writeLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2899,7 +2899,7 @@ public class FileUtils {
      * @param file 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.8.1
+     * @since 5.8.3
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
         return writeLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -3204,10 +3204,10 @@ public class FileUtils {
      *
      * @param file 文件
      * @param out  流
-     * @return 目标文件
+     * @return 写出的流byte数
      * @throws InstrumentException 异常
      */
-    public static File writeToStream(File file, OutputStream out) throws InstrumentException {
+    public static long writeToStream(File file, OutputStream out) throws InstrumentException {
         return FileReader.create(file).writeToStream(out);
     }
 
@@ -3216,10 +3216,11 @@ public class FileUtils {
      *
      * @param fullFilePath 文件绝对路径
      * @param out          输出流
+     * @return 写出的流byte数
      * @throws InstrumentException 异常
      */
-    public static void writeToStream(String fullFilePath, OutputStream out) throws InstrumentException {
-        writeToStream(touch(fullFilePath), out);
+    public static long writeToStream(String fullFilePath, OutputStream out) throws InstrumentException {
+        return writeToStream(touch(fullFilePath), out);
     }
 
     /**

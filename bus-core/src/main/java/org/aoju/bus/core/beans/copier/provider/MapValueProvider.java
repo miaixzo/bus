@@ -36,12 +36,12 @@ import java.util.Map;
  * Map值提供者
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class MapValueProvider implements ValueProvider<String> {
 
-    private Map<?, ?> map;
+    private final Map<?, ?> map;
 
     /**
      * 构造

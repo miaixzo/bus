@@ -35,12 +35,12 @@ import java.util.Comparator;
  *
  * @param <T> 被排序元素类型
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class IndexedCompare<T> implements Comparator<T> {
 
-    private T[] array;
+    private final T[] array;
 
     /**
      * 构造

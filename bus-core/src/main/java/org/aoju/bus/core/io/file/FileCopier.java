@@ -27,6 +27,7 @@ package org.aoju.bus.core.io.file;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.copier.Duplicate;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -46,7 +47,7 @@ import java.util.ArrayList;
  * 4、目录下的文件和目录复制到另一个目录
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class FileCopier extends Duplicate<File, FileCopier> {
@@ -246,16 +247,18 @@ public class FileCopier extends Duplicate<File, FileCopier> {
         }
 
         final String[] files = src.list();
-        File srcFile;
-        File destFile;
-        for (String file : files) {
-            srcFile = new File(src, file);
-            destFile = this.isOnlyCopyFile ? dest : new File(dest, file);
-            // 递归复制
-            if (srcFile.isDirectory()) {
-                internalCopyDirContent(srcFile, destFile);
-            } else {
-                internalCopyFile(srcFile, destFile);
+        if (ArrayUtils.isNotEmpty(files)) {
+            File srcFile;
+            File destFile;
+            for (String file : files) {
+                srcFile = new File(src, file);
+                destFile = this.isOnlyCopyFile ? dest : new File(dest, file);
+                // 递归复制
+                if (srcFile.isDirectory()) {
+                    internalCopyDirContent(srcFile, destFile);
+                } else {
+                    internalCopyFile(srcFile, destFile);
+                }
             }
         }
     }
@@ -303,7 +306,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
         }
 
         try {
-            Files.copy(src.toPath(), dest.toPath(), optionList.toArray(new CopyOption[optionList.size()]));
+            Files.copy(src.toPath(), dest.toPath(), optionList.toArray(new CopyOption[0]));
         } catch (IOException e) {
             throw new InstrumentException(e);
         }

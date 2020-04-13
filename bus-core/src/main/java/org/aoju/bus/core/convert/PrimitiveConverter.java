@@ -44,12 +44,12 @@ import org.aoju.bus.core.utils.StringUtils;
  * </ul>
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class PrimitiveConverter extends AbstractConverter<Object> {
 
-    private Class<?> targetType;
+    private final Class<?> targetType;
 
     /**
      * 构造

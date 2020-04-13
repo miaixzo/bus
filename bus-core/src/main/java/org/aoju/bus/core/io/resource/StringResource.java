@@ -38,14 +38,14 @@ import java.nio.charset.Charset;
  * 字符串资源,字符串做为资源
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class StringResource implements Resource {
 
-    private String data;
-    private String name;
-    private Charset charset;
+    private final String data;
+    private final String name;
+    private final Charset charset;
 
     /**
      * 构造,使用UTF8编码

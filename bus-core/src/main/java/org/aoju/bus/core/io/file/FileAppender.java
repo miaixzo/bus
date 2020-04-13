@@ -38,21 +38,21 @@ import java.util.List;
  * 在调用append方法后会缓存于内存,只有超过容量后才会一次性写入文件,因此内存中随时有剩余未写入文件的内容,在最后必须调用flush方法将剩余内容刷入文件
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class FileAppender implements Serializable {
 
-    private FileWriter writer;
+    private final FileWriter writer;
     /**
      * 内存中持有的字符串数
      */
-    private int capacity;
+    private final int capacity;
     /**
      * 追加内容是否为新行
      */
-    private boolean isNewLineMode;
-    private List<String> list = new ArrayList<>(100);
+    private final boolean isNewLineMode;
+    private final List<String> list = new ArrayList<>(100);
 
     /**
      * 构造

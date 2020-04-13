@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class XmlUtils {
@@ -438,11 +438,10 @@ public class XmlUtils {
      * @param rootElementName 根节点名称
      * @param namespace       命名空间，无则传null
      * @return XML文档
-     * @since 5.0.4
      */
     public static Document createXml(String rootElementName, String namespace) {
         final Document doc = createXml();
-        doc.appendChild(null == namespace ? doc.createElement(rootElementName) : doc.createElementNS(rootElementName, namespace));
+        doc.appendChild(null == namespace ? doc.createElement(rootElementName) : doc.createElementNS(namespace, rootElementName));
         return doc;
     }
 
@@ -574,7 +573,7 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 5.8.1
+     * @since 5.8.3
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -620,7 +619,7 @@ public class XmlUtils {
      * @param source     资源,可以是Docunent、Node节点等
      * @param returnType 返回类型,{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 5.8.1
+     * @since 5.8.3
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();

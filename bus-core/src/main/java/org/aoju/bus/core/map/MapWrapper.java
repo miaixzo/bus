@@ -36,7 +36,7 @@ import java.util.Set;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Serializable, Cloneable {
@@ -50,7 +50,7 @@ public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, S
      */
     protected static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
 
-    private Map<K, V> raw;
+    private final Map<K, V> raw;
 
     /**
      * 构造

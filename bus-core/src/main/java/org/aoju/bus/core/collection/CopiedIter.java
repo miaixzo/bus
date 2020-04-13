@@ -40,14 +40,14 @@ import java.util.List;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class CopiedIter<E> implements Iterator<E>, Iterable<E>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Iterator<E> listIterator;
+    private final Iterator<E> listIterator;
 
     /**
      * 构造

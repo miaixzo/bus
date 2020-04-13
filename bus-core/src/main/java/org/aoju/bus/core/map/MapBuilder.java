@@ -35,7 +35,7 @@ import java.util.Map;
  * @param <K> Key类型
  * @param <V> Value类型
  * @author Kimi Liu
- * @version 5.8.1
+ * @version 5.8.3
  * @since JDK 1.8+
  */
 public class MapBuilder<K, V> implements Serializable {
@@ -49,6 +49,29 @@ public class MapBuilder<K, V> implements Serializable {
      */
     public MapBuilder(Map<K, V> map) {
         this.map = map;
+    }
+
+    /**
+     * 创建Builder，默认HashMap实现
+     *
+     * @param <K> Key类型
+     * @param <V> Value类型
+     * @return MapBuilder
+     */
+    public static <K, V> MapBuilder<K, V> create() {
+        return create(false);
+    }
+
+    /**
+     * 创建Builder
+     *
+     * @param <K>      Key类型
+     * @param <V>      Value类型
+     * @param isLinked true创建LinkedHashMap，false创建HashMap
+     * @return MapBuilder
+     */
+    public static <K, V> MapBuilder<K, V> create(boolean isLinked) {
+        return create(MapUtils.newHashMap(isLinked));
     }
 
     /**
