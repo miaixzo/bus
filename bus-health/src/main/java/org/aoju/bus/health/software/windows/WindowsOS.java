@@ -261,7 +261,7 @@ public class WindowsOS extends AbstractOS {
         WinNT.LUID luid = new WinNT.LUID();
         success = Advapi32.INSTANCE.LookupPrivilegeValue(null, WinNT.SE_DEBUG_NAME, luid);
         if (!success) {
-            Logger.error("LookupprivilegeValue failed. Error: {}", Native.getLastError());
+            Logger.error("LookupPrivilegeValue failed. Error: {}", Native.getLastError());
             org.aoju.bus.health.common.windows.Kernel32.INSTANCE.CloseHandle(hToken.getValue());
             return;
         }

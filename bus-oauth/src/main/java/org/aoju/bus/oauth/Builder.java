@@ -142,7 +142,7 @@ public class Builder {
     @ToString
     public enum Type {
         /**
-         * 使用JustAuth内置的缓存
+         * 使用内置的缓存
          */
         DEFAULT,
         /**

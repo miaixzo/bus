@@ -26,6 +26,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
@@ -36,7 +37,6 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.StateCache;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,8 +54,8 @@ public class FeishuProvider extends DefaultProvider {
         super(context, Registry.FEISHU);
     }
 
-    public FeishuProvider(Context context, StateCache stateCache) {
-        super(context, Registry.FEISHU, stateCache);
+    public FeishuProvider(Context context, ExtendCache extendCache) {
+        super(context, Registry.FEISHU, extendCache);
     }
 
     @Override

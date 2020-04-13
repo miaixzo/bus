@@ -28,7 +28,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * JustAuth统一授权响应类
+ * 统一授权响应类
  *
  * @author Kimi Liu
  * @version 5.8.3

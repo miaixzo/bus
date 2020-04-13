@@ -25,6 +25,7 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -40,8 +41,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.DefaultStateCache;
-import org.aoju.bus.oauth.metric.StateCache;
+import org.aoju.bus.oauth.metric.OauthCache;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -63,16 +63,16 @@ public abstract class DefaultProvider implements Provider {
 
     protected Context context;
     protected Complex source;
-    protected StateCache stateCache;
+    protected ExtendCache extendCache;
 
     public DefaultProvider(Context context, Complex source) {
-        this(context, source, DefaultStateCache.INSTANCE);
+        this(context, source, OauthCache.INSTANCE);
     }
 
-    public DefaultProvider(Context context, Complex source, StateCache stateCache) {
+    public DefaultProvider(Context context, Complex source, ExtendCache extendCache) {
         this.context = context;
         this.source = source;
-        this.stateCache = stateCache;
+        this.extendCache = extendCache;
         if (!isSupportedAuth(context, source)) {
             throw new AuthorizedException(Builder.Status.PARAMETER_INCOMPLETE.getCode());
         }
@@ -438,7 +438,7 @@ public abstract class DefaultProvider implements Provider {
             state = ObjectID.id();
         }
         // 缓存state
-        stateCache.cache(state, state);
+        extendCache.cache(state, state);
         return state;
     }
 
@@ -488,7 +488,7 @@ public abstract class DefaultProvider implements Provider {
      * @param state {@code state}一定不为空
      */
     protected void checkState(String state) {
-        if (StringUtils.isEmpty(state) || !stateCache.containsKey(state)) {
+        if (StringUtils.isEmpty(state) || ObjectUtils.isEmpty(extendCache.get(state))) {
             throw new AuthorizedException(Normal.EMPTY + Builder.Status.ILLEGAL_REQUEST);
         }
     }

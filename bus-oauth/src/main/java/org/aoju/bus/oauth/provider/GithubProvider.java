@@ -25,6 +25,7 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Context;
@@ -32,7 +33,6 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.StateCache;
 
 import java.util.Map;
 
@@ -49,8 +49,8 @@ public class GithubProvider extends DefaultProvider {
         super(context, Registry.GITHUB);
     }
 
-    public GithubProvider(Context context, StateCache stateCache) {
-        super(context, Registry.GITHUB, stateCache);
+    public GithubProvider(Context context, ExtendCache extendCache) {
+        super(context, Registry.GITHUB, extendCache);
     }
 
     @Override

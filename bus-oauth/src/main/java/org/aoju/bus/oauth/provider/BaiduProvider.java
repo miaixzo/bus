@@ -25,6 +25,7 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.utils.StringUtils;
@@ -36,7 +37,6 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.StateCache;
 
 /**
  * 百度账号登录
@@ -51,8 +51,8 @@ public class BaiduProvider extends DefaultProvider {
         super(context, Registry.BAIDU);
     }
 
-    public BaiduProvider(Context context, StateCache stateCache) {
-        super(context, Registry.BAIDU, stateCache);
+    public BaiduProvider(Context context, ExtendCache extendCache) {
+        super(context, Registry.BAIDU, extendCache);
     }
 
     @Override

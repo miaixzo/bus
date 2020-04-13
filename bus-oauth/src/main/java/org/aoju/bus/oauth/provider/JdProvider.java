@@ -25,6 +25,7 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -39,7 +40,6 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.StateCache;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -60,8 +60,8 @@ public class JdProvider extends DefaultProvider {
         super(context, Registry.JD);
     }
 
-    public JdProvider(Context context, StateCache stateCache) {
-        super(context, Registry.JD, stateCache);
+    public JdProvider(Context context, ExtendCache extendCache) {
+        super(context, Registry.JD, extendCache);
     }
 
     /**

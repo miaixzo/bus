@@ -25,12 +25,12 @@
 package org.aoju.bus.starter.oauth;
 
 import lombok.RequiredArgsConstructor;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Provider;
 import org.aoju.bus.oauth.Registry;
-import org.aoju.bus.oauth.metric.StateCache;
 import org.aoju.bus.oauth.provider.*;
 
 /**
@@ -44,7 +44,7 @@ import org.aoju.bus.oauth.provider.*;
 public class AuthProviderService {
 
     public final AuthProperties properties;
-    public final StateCache stateCache;
+    public final ExtendCache extendCache;
 
     /**
      * 返回type对象
@@ -55,73 +55,73 @@ public class AuthProviderService {
     public Provider get(Registry type) {
         Context context = properties.getType().get(type);
         if (Registry.ALIPAY.equals(type)) {
-            return new AlipayProvider(context, stateCache);
+            return new AlipayProvider(context, extendCache);
         } else if (Registry.BAIDU.equals(type)) {
-            return new BaiduProvider(context, stateCache);
+            return new BaiduProvider(context, extendCache);
         } else if (Registry.CODING.equals(type)) {
-            return new CodingProvider(context, stateCache);
+            return new CodingProvider(context, extendCache);
         } else if (Registry.CSDN.equals(type)) {
-            return new CsdnProvider(context, stateCache);
+            return new CsdnProvider(context, extendCache);
         } else if (Registry.DINGTALK.equals(type)) {
-            return new DingTalkProvider(context, stateCache);
+            return new DingTalkProvider(context, extendCache);
         } else if (Registry.DOUYIN.equals(type)) {
-            return new DouyinProvider(context, stateCache);
+            return new DouyinProvider(context, extendCache);
         } else if (Registry.ELEME.equals(type)) {
-            return new ElemeProvider(context, stateCache);
+            return new ElemeProvider(context, extendCache);
         } else if (Registry.FACEBOOK.equals(type)) {
-            return new FacebookProvider(context, stateCache);
+            return new FacebookProvider(context, extendCache);
         } else if (Registry.FEISHU.equals(type)) {
-            return new FeishuProvider(context, stateCache);
+            return new FeishuProvider(context, extendCache);
         } else if (Registry.GITEE.equals(type)) {
-            return new GiteeProvider(context, stateCache);
+            return new GiteeProvider(context, extendCache);
         } else if (Registry.GITHUB.equals(type)) {
-            return new GithubProvider(context, stateCache);
+            return new GithubProvider(context, extendCache);
         } else if (Registry.GITLAB.equals(type)) {
-            return new GitlabProvider(context, stateCache);
+            return new GitlabProvider(context, extendCache);
         } else if (Registry.GOOGLE.equals(type)) {
-            return new GoogleProvider(context, stateCache);
+            return new GoogleProvider(context, extendCache);
         } else if (Registry.HUAWEI.equals(type)) {
-            return new HuaweiProvider(context, stateCache);
+            return new HuaweiProvider(context, extendCache);
         } else if (Registry.JD.equals(type)) {
-            return new JdProvider(context, stateCache);
+            return new JdProvider(context, extendCache);
         } else if (Registry.KUJIALE.equals(type)) {
-            return new KujialeProvider(context, stateCache);
+            return new KujialeProvider(context, extendCache);
         } else if (Registry.LINKEDIN.equals(type)) {
-            return new LinkedinProvider(context, stateCache);
+            return new LinkedinProvider(context, extendCache);
         } else if (Registry.MEITUAN.equals(type)) {
-            return new MeituanProvider(context, stateCache);
+            return new MeituanProvider(context, extendCache);
         } else if (Registry.MICROSOFT.equals(type)) {
-            return new MicrosoftProvider(context, stateCache);
+            return new MicrosoftProvider(context, extendCache);
         } else if (Registry.MI.equals(type)) {
-            return new MiProvider(context, stateCache);
+            return new MiProvider(context, extendCache);
         } else if (Registry.OSCHINA.equals(type)) {
-            return new OschinaProvider(context, stateCache);
+            return new OschinaProvider(context, extendCache);
         } else if (Registry.PINTEREST.equals(type)) {
-            return new PinterestProvider(context, stateCache);
+            return new PinterestProvider(context, extendCache);
         } else if (Registry.QQ.equals(type)) {
-            return new QqProvider(context, stateCache);
+            return new QqProvider(context, extendCache);
         } else if (Registry.RENREN.equals(type)) {
-            return new RenrenProvider(context, stateCache);
+            return new RenrenProvider(context, extendCache);
         } else if (Registry.STACKOVERFLOW.equals(type)) {
-            return new StackOverflowProvider(context, stateCache);
+            return new StackOverflowProvider(context, extendCache);
         } else if (Registry.TAOBAO.equals(type)) {
-            return new TaobaoProvider(context, stateCache);
+            return new TaobaoProvider(context, extendCache);
         } else if (Registry.TEAMBITION.equals(type)) {
-            return new TeambitionProvider(context, stateCache);
+            return new TeambitionProvider(context, extendCache);
         } else if (Registry.TENCENT.equals(type)) {
-            return new TencentProvider(context, stateCache);
+            return new TencentProvider(context, extendCache);
         } else if (Registry.TOUTIAO.equals(type)) {
-            return new ToutiaoProvider(context, stateCache);
+            return new ToutiaoProvider(context, extendCache);
         } else if (Registry.TWITTER.equals(type)) {
-            return new TwitterProvider(context, stateCache);
+            return new TwitterProvider(context, extendCache);
         } else if (Registry.WECHAT_EE.equals(type)) {
-            return new WeChatEEProvider(context, stateCache);
+            return new WeChatEEProvider(context, extendCache);
         } else if (Registry.WECHAT_MP.equals(type)) {
-            return new WeChatMpProvider(context, stateCache);
+            return new WeChatMpProvider(context, extendCache);
         } else if (Registry.WECHAT_OP.equals(type)) {
-            return new WeChatOPProvider(context, stateCache);
+            return new WeChatOPProvider(context, extendCache);
         } else if (Registry.WEIBO.equals(type)) {
-            return new WeiboProvider(context, stateCache);
+            return new WeiboProvider(context, extendCache);
         }
         throw new InstrumentException(Builder.Status.UNSUPPORTED.getCode());
     }
