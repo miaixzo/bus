@@ -34,7 +34,7 @@ import org.aoju.bus.logger.Logger;
  * Windows OS native system information.
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class SystemInfo {

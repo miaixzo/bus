@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class MemoryShooting implements Shooting {

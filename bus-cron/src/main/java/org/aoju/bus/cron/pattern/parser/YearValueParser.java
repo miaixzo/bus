@@ -28,7 +28,7 @@ package org.aoju.bus.cron.pattern.parser;
  * 年值处理
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class YearValueParser extends SimpleValueParser {

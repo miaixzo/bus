@@ -31,7 +31,7 @@ import org.aoju.bus.health.Systemd;
  * 代表Java Virutal Machine Specification的信息
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class JvmSpecInfo {

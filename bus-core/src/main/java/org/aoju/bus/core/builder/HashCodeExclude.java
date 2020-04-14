@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 上的各种reflectionHashcode方法使用.
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

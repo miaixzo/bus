@@ -31,7 +31,7 @@ import org.apache.ibatis.annotations.SelectProvider;
  * 通用Mapper接口,Condition查询
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public interface SelectCountByConditionMapper<T> {

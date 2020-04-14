@@ -31,7 +31,7 @@ import lombok.Data;
  * 发送短信时响应实体
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 @Data

@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通知提供服务
  *
  * @author Justubborn
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
 @RequiredArgsConstructor
@@ -75,7 +75,7 @@ public class NotifyProviderService {
      * @param registry {@link Registry}
      * @return {@link Provider}
      */
-    public Provider get(Registry registry) {
+    public Provider require(Registry registry) {
         Context context = NOTIFY_CACHE.get(registry);
         if (ObjectUtils.isEmpty(context)) {
             context = properties.getType().get(registry);

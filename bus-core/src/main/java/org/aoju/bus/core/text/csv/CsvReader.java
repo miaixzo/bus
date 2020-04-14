@@ -43,7 +43,7 @@ import java.util.Objects;
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public final class CsvReader {

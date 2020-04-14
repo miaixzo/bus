@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * 当您希望仅对该绑定的所有注入重用一个实例时,将此应用于实现类
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 @Scope

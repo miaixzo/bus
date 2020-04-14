@@ -33,7 +33,7 @@ import org.aoju.bus.health.common.unix.CLibrary;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public interface LinuxLibc extends LibC, CLibrary {

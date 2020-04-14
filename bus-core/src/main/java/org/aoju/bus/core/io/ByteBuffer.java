@@ -37,7 +37,7 @@ import java.util.Arrays;
  * 两个半部分,描述段如何组成这个字节字符串
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class ByteBuffer extends ByteString {

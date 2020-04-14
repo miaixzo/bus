@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 存储服务提供
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
@@ -65,7 +65,7 @@ public class StorageProviderService {
         STORAGE_CACHE.putIfAbsent(type, context);
     }
 
-    public Provider get(Registry type) {
+    public Provider require(Registry type) {
         Context context = STORAGE_CACHE.get(type);
         if (ObjectUtils.isEmpty(context)) {
             context = properties.getType().get(type);

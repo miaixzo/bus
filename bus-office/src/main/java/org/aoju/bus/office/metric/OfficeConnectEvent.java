@@ -32,7 +32,7 @@ import java.util.EventObject;
  * office连接打开或关闭时引发的事件.
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class OfficeConnectEvent extends EventObject {
