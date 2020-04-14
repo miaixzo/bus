@@ -66,7 +66,7 @@ public class QqProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         String response = Httpx.get(refreshTokenUrl(token.getRefreshToken()));
-        return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(getAuthToken(response)).build();
+        return Message.builder().errcode(Builder.ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
     @Override

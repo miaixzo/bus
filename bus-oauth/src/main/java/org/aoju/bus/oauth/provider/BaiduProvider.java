@@ -87,7 +87,7 @@ public class BaiduProvider extends DefaultProvider {
         JSONObject object = JSONObject.parseObject(doGetRevoke(token));
         this.checkResponse(object);
         // 返回1表示取消授权成功,否则失败
-        Builder.Status status = object.getIntValue("result") == 1 ? Builder.Status.SUCCESS : Builder.Status.FAILURE;
+        Builder.ErrorCode status = object.getIntValue("result") == 1 ? Builder.ErrorCode.SUCCESS : Builder.ErrorCode.FAILURE;
         return Message.builder().errcode(status.getCode()).errmsg(status.getMsg()).build();
     }
 
@@ -100,7 +100,7 @@ public class BaiduProvider extends DefaultProvider {
                 .queryParam("client_secret", this.context.getAppSecret())
                 .build();
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(this.getAuthToken(Httpx.get(refreshUrl)))
                 .build();
     }

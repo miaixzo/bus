@@ -132,7 +132,7 @@ public class MicrosoftProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(getToken(refreshTokenUrl(token.getRefreshToken())))
                 .build();
     }

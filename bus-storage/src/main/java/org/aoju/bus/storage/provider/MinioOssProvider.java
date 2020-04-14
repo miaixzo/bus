@@ -37,7 +37,7 @@ import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
-import org.aoju.bus.storage.magic.Readers;
+import org.aoju.bus.storage.magic.Message;
 import org.apache.http.entity.ContentType;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -91,24 +91,31 @@ public class MinioOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String fileName) {
+    public Message download(String fileName) {
         return download(this.context.getBucket(), fileName);
     }
 
     @Override
-    public Readers download(String bucket, String fileName) {
+    public Message download(String bucket, String fileName) {
         try {
             InputStream inputStream = this.client.getObject(bucket, fileName);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            return new Readers(bufferedReader);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .data(bufferedReader)
+                    .build();
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String bucket, String fileName, File file) {
+    public Message download(String bucket, String fileName, File file) {
         try {
             InputStream inputStream = this.client.getObject(bucket, fileName);
             OutputStream outputStream = new FileOutputStream(file);
@@ -116,105 +123,137 @@ public class MinioOssProvider extends AbstractProvider {
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String fileName, File file) {
+    public Message download(String fileName, File file) {
         return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
-    public Readers list() {
+    public Message list() {
         try {
             Iterable<Result<Item>> iterable = this.client.listObjects(this.context.getBucket());
-            return new Readers(StreamSupport
-                    .stream(iterable.spliterator(), true)
-                    .map(itemResult -> {
-                        try {
-                            Attachs storageItem = new Attachs();
-                            Item item = itemResult.get();
-                            storageItem.setName(item.objectName());
-                            storageItem.setSize(StringUtils.toString(item.objectSize()));
-                            Map<String, Object> extend = Maps.newHashMap();
-                            extend.put("tag", item.etag());
-                            extend.put("storageClass", item.storageClass());
-                            extend.put("lastModified", item.lastModified());
-                            storageItem.setExtend(extend);
-                            return storageItem;
-                        } catch (InvalidBucketNameException |
-                                NoSuchAlgorithmException |
-                                InsufficientDataException |
-                                IOException |
-                                InvalidKeyException |
-                                NoResponseException |
-                                XmlPullParserException |
-                                ErrorResponseException |
-                                InternalException e) {
-                            return new Readers(Builder.FAILURE);
-                        }
-                    })
-                    .collect(Collectors.toList()));
+
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .data(StreamSupport
+                            .stream(iterable.spliterator(), true)
+                            .map(itemResult -> {
+                                try {
+                                    Attachs storageItem = new Attachs();
+                                    Item item = itemResult.get();
+                                    storageItem.setName(item.objectName());
+                                    storageItem.setSize(StringUtils.toString(item.objectSize()));
+                                    Map<String, Object> extend = Maps.newHashMap();
+                                    extend.put("tag", item.etag());
+                                    extend.put("storageClass", item.storageClass());
+                                    extend.put("lastModified", item.lastModified());
+                                    storageItem.setExtend(extend);
+                                    return storageItem;
+                                } catch (InvalidBucketNameException |
+                                        NoSuchAlgorithmException |
+                                        InsufficientDataException |
+                                        IOException |
+                                        InvalidKeyException |
+                                        NoResponseException |
+                                        XmlPullParserException |
+                                        ErrorResponseException |
+                                        InternalException e) {
+                                    return Message.builder()
+                                            .errcode(Builder.ErrorCode.FAILURE.getCode())
+                                            .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                                            .build();
+                                }
+                            })
+                            .collect(Collectors.toList()))
+                    .build();
         } catch (XmlPullParserException e) {
             Logger.error("file list failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers rename(String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String bucket, String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers upload(String bucket, byte[] content) {
+    public Message upload(String bucket, byte[] content) {
         InputStream stream = new ByteArrayInputStream(content);
         return upload(this.context.getBucket(), bucket, stream);
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, InputStream content) {
+    public Message upload(String bucket, String fileName, InputStream content) {
         try {
             this.client.putObject(bucket, fileName, content, content.available(),
                     ContentType.APPLICATION_OCTET_STREAM.getMimeType());
-            return new Readers(Attachs.builder()
-                    .name(fileName)
-                    .path(this.context.getPrefix() + fileName)
-                    .build());
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .data(Attachs.builder()
+                            .name(fileName)
+                            .path(this.context.getPrefix() + fileName))
+                    .build();
         } catch (Exception e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, byte[] content) {
+    public Message upload(String bucket, String fileName, byte[] content) {
         return upload(bucket, fileName, new ByteArrayInputStream(content));
     }
 
     @Override
-    public Readers remove(String fileName) {
+    public Message remove(String fileName) {
         return remove(this.context.getBucket(), fileName);
     }
 
     @Override
-    public Readers remove(String bucket, String fileName) {
+    public Message remove(String bucket, String fileName) {
         try {
             this.client.removeObject(bucket, fileName);
-            return new Readers(Builder.SUCCESS);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .build();
         } catch (Exception e) {
             Logger.error("file remove failed ", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers remove(String bucket, Path path) {
+    public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString());
     }
 

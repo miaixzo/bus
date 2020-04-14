@@ -94,7 +94,7 @@ public class WeChatMpProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(this.getToken(refreshTokenUrl(token.getRefreshToken())))
                 .build();
     }

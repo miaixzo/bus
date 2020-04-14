@@ -25,7 +25,7 @@
 package org.aoju.bus.oauth.magic;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * 统一授权响应类
@@ -34,7 +34,7 @@ import lombok.Getter;
  * @version 5.8.5
  * @since JDK 1.8+
  */
-@Getter
+@Data
 @Builder
 public class Message {
 
@@ -52,14 +52,5 @@ public class Message {
      * 请求返回数据 JSON
      */
     Object data;
-
-    /**
-     * 是否请求成功
-     *
-     * @return true or false
-     */
-    public boolean ok() {
-        return this.errcode == org.aoju.bus.oauth.Builder.Status.SUCCESS.getCode();
-    }
 
 }

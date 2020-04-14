@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.storage;
 
-import org.aoju.bus.storage.magic.Readers;
+import org.aoju.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.InputStream;
@@ -43,18 +43,18 @@ public interface Provider {
      * 文件下载（流式下载）
      *
      * @param fileName 文件名
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers download(String fileName);
+    Message download(String fileName);
 
     /**
      * 文件下载（流式下载）
      *
      * @param bucket   存储桶名
      * @param fileName 文件名
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers download(String bucket, String fileName);
+    Message download(String bucket, String fileName);
 
     /**
      * 文件下载（文件下载到本地）
@@ -62,34 +62,34 @@ public interface Provider {
      * @param bucket   存储桶名
      * @param fileName 文件名
      * @param file     保存的本地文件路径
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers download(String bucket, String fileName, File file);
+    Message download(String bucket, String fileName, File file);
 
     /**
      * 文件下载（文件下载到本地）
      *
      * @param fileName 文件名
      * @param file     保存的本地文件路径
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers download(String fileName, File file);
+    Message download(String fileName, File file);
 
     /**
      * 文件列表
      *
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers list();
+    Message list();
 
     /**
      * 重命名
      *
      * @param oldName 原始名称
      * @param newName 新名称
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers rename(String oldName, String newName);
+    Message rename(String oldName, String newName);
 
     /**
      * 重命名
@@ -97,28 +97,18 @@ public interface Provider {
      * @param bucket  存储桶名
      * @param oldName 原始名称
      * @param newName 新名称
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers rename(String bucket, String oldName, String newName);
+    Message rename(String bucket, String oldName, String newName);
 
     /**
      * 上传文件到指定的 bucket
      *
      * @param fileName 文件名字
      * @param content  文件内容
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers upload(String fileName, byte[] content);
-
-    /**
-     * 上传文件到指定的 bucket
-     *
-     * @param bucket   存储桶名
-     * @param fileName 文件名字
-     * @param content  文件内容
-     * @return 处理结果 {@link Readers}
-     */
-    Readers upload(String bucket, String fileName, InputStream content);
+    Message upload(String fileName, byte[] content);
 
     /**
      * 上传文件到指定的 bucket
@@ -126,34 +116,44 @@ public interface Provider {
      * @param bucket   存储桶名
      * @param fileName 文件名字
      * @param content  文件内容
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers upload(String bucket, String fileName, byte[] content);
+    Message upload(String bucket, String fileName, InputStream content);
+
+    /**
+     * 上传文件到指定的 bucket
+     *
+     * @param bucket   存储桶名
+     * @param fileName 文件名字
+     * @param content  文件内容
+     * @return 处理结果 {@link Message}
+     */
+    Message upload(String bucket, String fileName, byte[] content);
 
     /**
      * 删除文件
      *
      * @param fileName 文件名
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers remove(String fileName);
+    Message remove(String fileName);
 
     /**
      * 删除文件
      *
      * @param bucket   存储桶名
      * @param fileName 文件名
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers remove(String bucket, String fileName);
+    Message remove(String bucket, String fileName);
 
     /**
      * 删除文件
      *
      * @param bucket 存储桶名
      * @param path   文件路径
-     * @return 处理结果 {@link Readers}
+     * @return 处理结果 {@link Message}
      */
-    Readers remove(String bucket, Path path);
+    Message remove(String bucket, Path path);
 
 }

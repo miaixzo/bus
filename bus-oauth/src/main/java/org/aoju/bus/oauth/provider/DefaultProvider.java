@@ -74,7 +74,7 @@ public abstract class DefaultProvider implements Provider {
         this.source = source;
         this.extendCache = extendCache;
         if (!isSupportedAuth(context, source)) {
-            throw new AuthorizedException(Builder.Status.PARAMETER_INCOMPLETE.getCode());
+            throw new AuthorizedException(Builder.ErrorCode.PARAMETER_INCOMPLETE.getCode());
         }
         // 校验配置合法性
         checkContext(context, source);
@@ -201,15 +201,15 @@ public abstract class DefaultProvider implements Provider {
     public static void checkContext(Context context, Complex source) {
         String redirectUri = context.getRedirectUri();
         if (!isHttpProtocol(redirectUri) && !isHttpsProtocol(redirectUri)) {
-            throw new AuthorizedException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+            throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
         // facebook的回调地址必须为https的链接
         if (Registry.FACEBOOK == source && !isHttpsProtocol(redirectUri)) {
-            throw new AuthorizedException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+            throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
         // 支付宝在创建回调地址时,不允许使用localhost或者127.0.0.1
         if (Registry.ALIPAY == source && isLocalHost(redirectUri)) {
-            throw new AuthorizedException(Builder.Status.ILLEGAL_REDIRECT_URI.getCode());
+            throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
     }
 
@@ -229,7 +229,7 @@ public abstract class DefaultProvider implements Provider {
             code = callback.getAuthorization_code();
         }
         if (StringUtils.isEmpty(code)) {
-            throw new AuthorizedException(Builder.Status.ILLEGAL_CODE.getCode());
+            throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_CODE.getCode());
         }
     }
 
@@ -319,9 +319,9 @@ public abstract class DefaultProvider implements Provider {
 
             AccToken token = this.getAccessToken(Callback);
             Property user = (Property) this.getUserInfo(token);
-            return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(user).build();
+            return Message.builder().errcode(Builder.ErrorCode.SUCCESS.getCode()).data(user).build();
         } catch (Exception e) {
-            String errorCode = Normal.EMPTY + Builder.Status.FAILURE.getCode();
+            String errorCode = Normal.EMPTY + Builder.ErrorCode.FAILURE.getCode();
             if (e instanceof AuthorizedException) {
                 errorCode = ((AuthorizedException) e).getErrcode();
             }
@@ -489,7 +489,7 @@ public abstract class DefaultProvider implements Provider {
      */
     protected void checkState(String state) {
         if (StringUtils.isEmpty(state) || ObjectUtils.isEmpty(extendCache.get(state))) {
-            throw new AuthorizedException(Normal.EMPTY + Builder.Status.ILLEGAL_REQUEST);
+            throw new AuthorizedException(Normal.EMPTY + Builder.ErrorCode.ILLEGAL_REQUEST);
         }
     }
 

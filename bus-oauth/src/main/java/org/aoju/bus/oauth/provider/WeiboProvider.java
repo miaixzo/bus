@@ -129,10 +129,10 @@ public class WeiboProvider extends DefaultProvider {
     public Message revoke(AccToken token) {
         JSONObject object = JSONObject.parseObject(doGetRevoke(token));
         if (object.containsKey("error")) {
-            return Message.builder().errcode(Builder.Status.FAILURE.getCode()).errmsg(object.getString("error")).build();
+            return Message.builder().errcode(Builder.ErrorCode.FAILURE.getCode()).errmsg(object.getString("error")).build();
         }
         // 返回 result = true 表示取消授权成功，否则失败
-        Builder.Status status = object.getBooleanValue("result") ? Builder.Status.SUCCESS : Builder.Status.FAILURE;
+        Builder.ErrorCode status = object.getBooleanValue("result") ? Builder.ErrorCode.SUCCESS : Builder.ErrorCode.FAILURE;
         return Message.builder().errcode(status.getCode()).errmsg(status.getMsg()).build();
     }
 

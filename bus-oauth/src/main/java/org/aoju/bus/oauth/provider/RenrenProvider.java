@@ -80,7 +80,7 @@ public class RenrenProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(getToken(this.refreshTokenUrl(token.getRefreshToken())))
                 .build();
     }

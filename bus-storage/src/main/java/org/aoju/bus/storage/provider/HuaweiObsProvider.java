@@ -34,7 +34,7 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
-import org.aoju.bus.storage.magic.Readers;
+import org.aoju.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.InputStream;
@@ -64,84 +64,104 @@ public class HuaweiObsProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String fileName) {
+    public Message download(String fileName) {
         return download(this.context.getBucket(), fileName);
     }
 
     @Override
-    public Readers download(String bucket, String fileName) {
-        return new Readers(Builder.FAILURE);
+    public Message download(String bucket, String fileName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
     }
 
     @Override
-    public Readers download(String fileName, File file) {
+    public Message download(String fileName, File file) {
         return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
-    public Readers download(String bucket, String fileName, File file) {
-        return new Readers(this.client.downloadFile(new DownloadFileRequest(bucket, this.context.getAccessKey(), fileName)));
+    public Message download(String bucket, String fileName, File file) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .data(this.client.downloadFile(new DownloadFileRequest(bucket, this.context.getAccessKey(), fileName)))
+                .build();
     }
 
     @Override
-    public Readers list() {
+    public Message list() {
         ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
         ObjectListing objectListing = client.listObjects(request);
-
-        return new Readers(objectListing.getObjects().stream().map(item -> {
-            Attachs storageItem = new Attachs();
-            storageItem.setName(item.getObjectKey());
-            storageItem.setOwner(item.getOwner().getId());
-            storageItem.setType(item.getMetadata().getContentType());
-            storageItem.setSize(StringUtils.toString(item.getMetadata().getContentLength()));
-            Map<String, Object> extended = Maps.newHashMap();
-            extended.put("tag", item.getMetadata().getEtag());
-            extended.put("storageClass", item.getMetadata().getObjectStorageClass());
-            extended.put("lastModified", item.getMetadata().getLastModified());
-            storageItem.setExtend(extended);
-            return storageItem;
-        }).collect(Collectors.toList()));
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .data(objectListing.getObjects().stream().map(item -> {
+                    Attachs storageItem = new Attachs();
+                    storageItem.setName(item.getObjectKey());
+                    storageItem.setOwner(item.getOwner().getId());
+                    storageItem.setType(item.getMetadata().getContentType());
+                    storageItem.setSize(StringUtils.toString(item.getMetadata().getContentLength()));
+                    Map<String, Object> extended = Maps.newHashMap();
+                    extended.put("tag", item.getMetadata().getEtag());
+                    extended.put("storageClass", item.getMetadata().getObjectStorageClass());
+                    extended.put("lastModified", item.getMetadata().getLastModified());
+                    storageItem.setExtend(extended);
+                    return storageItem;
+                }).collect(Collectors.toList()))
+                .build();
     }
 
     @Override
-    public Readers rename(String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
     }
 
     @Override
-    public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String bucket, String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
     }
 
     @Override
-    public Readers upload(String fileName, byte[] content) {
+    public Message upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, InputStream content) {
+    public Message upload(String bucket, String fileName, InputStream content) {
         client.putObject(bucket, fileName, content);
-        return new Readers(Builder.SUCCESS);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, byte[] content) {
-        return new Readers(Builder.FAILURE);
+    public Message upload(String bucket, String fileName, byte[] content) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
     }
 
     @Override
-    public Readers remove(String fileName) {
+    public Message remove(String fileName) {
         return remove(this.context.getBucket(), fileName);
     }
 
     @Override
-    public Readers remove(String bucket, String fileName) {
+    public Message remove(String bucket, String fileName) {
         this.client.deleteObject(bucket, fileName);
-        return new Readers(Builder.SUCCESS);
+
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
     }
 
     @Override
-    public Readers remove(String bucket, Path path) {
+    public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString());
     }
 

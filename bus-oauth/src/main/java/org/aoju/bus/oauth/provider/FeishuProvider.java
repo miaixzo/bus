@@ -107,7 +107,7 @@ public class FeishuProvider extends DefaultProvider {
         JSONObject jsonObject = JSON.parseObject(response);
         this.checkResponse(jsonObject);
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(AccToken.builder()
                         .accessToken(jsonObject.getString("access_token"))
                         .refreshToken(jsonObject.getString("refresh_token"))

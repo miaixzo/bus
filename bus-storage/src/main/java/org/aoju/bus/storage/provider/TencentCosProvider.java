@@ -38,7 +38,7 @@ import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
-import org.aoju.bus.storage.magic.Readers;
+import org.aoju.bus.storage.magic.Message;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -72,49 +72,67 @@ public class TencentCosProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String fileName) {
+    public Message download(String fileName) {
         return null;
     }
 
     @Override
-    public Readers download(String bucket, String fileName) {
+    public Message download(String bucket, String fileName) {
         this.client.getObjectMetadata(bucket, fileName);
-        return new Readers(Builder.SUCCESS);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String bucket, String fileName, File file) {
+    public Message download(String bucket, String fileName, File file) {
         this.client.getObject(new GetObjectRequest(bucket, fileName), file);
-        return new Readers(Builder.SUCCESS);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String fileName, File file) {
-        return new Readers(Builder.FAILURE);
+    public Message download(String fileName, File file) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers list() {
-        return new Readers(Builder.FAILURE);
+    public Message list() {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers rename(String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String bucket, String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers upload(String fileName, byte[] content) {
+    public Message upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, InputStream content) {
+    public Message upload(String bucket, String fileName, InputStream content) {
         if (!fileName.startsWith(File.separator)) {
             fileName = File.separator + fileName;
         }
@@ -124,20 +142,30 @@ public class TencentCosProvider extends AbstractProvider {
             PutObjectRequest request = new PutObjectRequest(this.context.getBucket(), fileName, content, objectMetadata);
             PutObjectResult result = this.client.putObject(request);
             if (StringUtils.isEmpty(result.getETag())) {
-                return new Readers(Builder.FAILURE);
+                return Message.builder()
+                        .errcode(Builder.ErrorCode.FAILURE.getCode())
+                        .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                        .build();
             }
-            return new Readers(Attachs.builder()
-                    .path(this.context.getPrefix() + fileName)
-                    .name(fileName)
-                    .build());
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .data(Attachs.builder()
+                            .path(this.context.getPrefix() + fileName)
+                            .name(fileName))
+                    .build();
+
         } catch (IOException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, byte[] content) {
+    public Message upload(String bucket, String fileName, byte[] content) {
         if (!fileName.startsWith(File.separator)) {
             fileName = File.separator + fileName;
         }
@@ -148,28 +176,46 @@ public class TencentCosProvider extends AbstractProvider {
                 new ByteArrayInputStream(content), objectMetadata);
         PutObjectResult result = this.client.putObject(request);
         if (StringUtils.isEmpty(result.getETag())) {
-            return new Readers(Builder.FAILURE);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.FAILURE.getCode())
+                    .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                    .build();
         }
-        return new Readers(Attachs.builder()
-                .name(fileName)
-                .path(this.context.getPrefix() + fileName)
-                .build());
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .data(Attachs.builder()
+                        .name(fileName)
+                        .path(this.context.getPrefix() + fileName))
+                .build();
     }
 
     @Override
-    public Readers remove(String fileName) {
-        return new Readers(Builder.FAILURE);
+    public Message remove(String fileName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers remove(String bucket, String fileName) {
+    public Message remove(String bucket, String fileName) {
         this.client.deleteObject(bucket, fileName);
-        return new Readers(Builder.SUCCESS);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .data(Attachs.builder()
+                        .name(fileName)
+                        .path(this.context.getPrefix() + fileName))
+                .build();
     }
 
     @Override
-    public Readers remove(String bucket, Path path) {
-        return new Readers(Builder.FAILURE);
+    public Message remove(String bucket, Path path) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
 }

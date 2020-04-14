@@ -151,7 +151,7 @@ public class KujialeProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         String response = Httpx.post(refreshTokenUrl(token.getRefreshToken()));
-        return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(getAuthToken(response)).build();
+        return Message.builder().errcode(Builder.ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
 }

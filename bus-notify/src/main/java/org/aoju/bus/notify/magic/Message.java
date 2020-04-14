@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.notify.magic;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 
 /**
  * 返回消息
@@ -35,18 +35,8 @@ import lombok.experimental.SuperBuilder;
  * @since JDK1.8+
  */
 @Data
-@SuperBuilder
+@Builder
 public class Message {
-
-    /**
-     * 结果
-     */
-    boolean result;
-
-    /**
-     * 描述
-     */
-    String desc;
 
     /**
      * 请求返回码,错误为具体返回码,正确为 0

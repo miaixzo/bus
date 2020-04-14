@@ -124,7 +124,7 @@ public class HuaweiProvider extends DefaultProvider {
         params.put("grant_type", "refresh_token");
         Httpx.post(source.accessToken(), params);
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(getAuthToken(params))
                 .build();
     }

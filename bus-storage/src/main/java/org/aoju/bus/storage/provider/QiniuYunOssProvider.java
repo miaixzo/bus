@@ -39,7 +39,7 @@ import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
-import org.aoju.bus.storage.magic.Readers;
+import org.aoju.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.InputStream;
@@ -78,7 +78,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String fileKey) {
+    public Message download(String fileKey) {
         String path = getFullPath(fileKey);
         if (this.context.isSecure()) {
             path = this.auth.privateDownloadUrl(path, 3600);
@@ -86,111 +86,167 @@ public class QiniuYunOssProvider extends AbstractProvider {
         try {
             String encodedFileName = URLEncoder.encode(fileKey, "utf-8");
             String format = String.format("%s/%s", path, encodedFileName);
-            return new Readers(Builder.SUCCESS);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .build();
         } catch (UnsupportedEncodingException e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String bucket, String fileName) {
-        return new Readers(Builder.FAILURE);
+    public Message download(String bucket, String fileName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String bucket, String fileName, File file) {
-        return new Readers(Builder.FAILURE);
+    public Message download(String bucket, String fileName, File file) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String fileName, File file) {
-        return new Readers(Builder.FAILURE);
+    public Message download(String fileName, File file) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers list() {
-        return new Readers(Builder.FAILURE);
+    public Message list() {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers rename(String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String bucket, String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers upload(String fileName, byte[] content) {
+    public Message upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, InputStream content) {
+    public Message upload(String bucket, String fileName, InputStream content) {
         try {
             String upToken = auth.uploadToken(bucket);
             Response response = uploadManager.put(content, fileName, upToken, null, null);
             if (!response.isOK()) {
-                return new Readers(Builder.FAILURE);
+                return Message.builder()
+                        .errcode(Builder.ErrorCode.FAILURE.getCode())
+                        .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                        .build();
             }
-            return new Readers(Attachs.builder()
-                    .name(fileName)
-                    .size(StringUtils.toString(response.body().length))
-                    .path(response.url()).build());
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .data(Attachs.builder()
+                            .name(fileName)
+                            .size(StringUtils.toString(response.body().length))
+                            .path(response.url()))
+                    .build();
         } catch (QiniuException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, byte[] content) {
+    public Message upload(String bucket, String fileName, byte[] content) {
         try {
             String upToken = auth.uploadToken(bucket, fileName);
             Response response = uploadManager.put(content, fileName, upToken);
             if (!response.isOK()) {
-                return new Readers(Builder.FAILURE);
+                return Message.builder()
+                        .errcode(Builder.ErrorCode.FAILURE.getCode())
+                        .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                        .build();
             }
-            return new Readers(Attachs.builder()
-                    .size(StringUtils.toString(response.body().length))
-                    .name(fileName)
-                    .path(response.url()).build());
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .data(Attachs.builder()
+                            .size(StringUtils.toString(response.body().length))
+                            .name(fileName)
+                            .path(response.url()))
+                    .build();
         } catch (QiniuException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers remove(String fileKey) {
+    public Message remove(String fileKey) {
         try {
             if (fileKey.contains(Symbol.SLASH)) {
                 fileKey = fileKey.replace(this.context.getPrefix(), Normal.EMPTY);
             }
             bucketManager.delete(this.context.getBucket(), fileKey);
-            return new Readers(Builder.SUCCESS);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .build();
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers remove(String bucket, String fileName) {
+    public Message remove(String bucket, String fileName) {
         try {
             bucketManager.delete(bucket, fileName);
-            return new Readers(Builder.SUCCESS);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .build();
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers remove(String bucket, Path path) {
+    public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString());
     }
 

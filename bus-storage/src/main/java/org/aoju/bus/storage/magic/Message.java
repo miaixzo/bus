@@ -24,9 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.storage.magic;
 
-
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import lombok.Builder;
+import lombok.Getter;
 
 /**
  * 响应结果
@@ -35,7 +34,9 @@ import org.aoju.bus.core.utils.StringUtils;
  * @version 5.8.5
  * @since JDK 1.8+
  */
-public class Readers {
+@Getter
+@Builder
+public class Message {
 
     /**
      * 请求返回码,正确为 0
@@ -51,23 +52,5 @@ public class Readers {
      * 请求返回数据
      */
     public Object data;
-
-    public Readers(String data) {
-        this(Symbol.ZERO, data, null);
-    }
-
-    public Readers(Object data) {
-        this(Symbol.ZERO, "", data);
-    }
-
-    public Readers(String errcode, String errmsg) {
-        this(errcode, StringUtils.isEmpty(errcode) ? "-1" : errmsg, null);
-    }
-
-    public Readers(String errcode, String errmsg, Object data) {
-        this.errmsg = errmsg;
-        this.errcode = errcode;
-        this.data = data;
-    }
 
 }

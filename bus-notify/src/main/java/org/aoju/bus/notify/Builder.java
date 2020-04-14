@@ -28,6 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.aoju.bus.core.lang.Symbol;
 
 /**
  * 构造信息
@@ -38,23 +39,18 @@ import lombok.ToString;
  */
 @Setter
 public class Builder {
-
-
-    private Builder() {
-
-    }
-
+    
     @Getter
     @AllArgsConstructor
-    public enum Status {
+    public enum ErrorCode {
 
-        SUCCESS("0", "Success"),
+        SUCCESS(Symbol.ZERO, "Success"),
         FAILURE("-1", "Failure");
 
         private String code;
         private String msg;
 
-        }
+    }
 
     /**
      * 缓存类型

@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Readers;
+import org.aoju.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,83 +54,93 @@ public class LocalFileProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String fileName) {
-        return new Readers(new File(context.getRegion() + Symbol.SLASH + fileName));
+    public Message download(String fileName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .data(new File(context.getRegion() + Symbol.SLASH + fileName))
+                .build();
     }
 
     @Override
-    public Readers download(String bucket, String fileName) {
+    public Message download(String bucket, String fileName) {
         return download(context.getRegion() + Symbol.SLASH + bucket + Symbol.SLASH + fileName);
     }
 
     @Override
-    public Readers download(String bucket, String fileName, File file) {
+    public Message download(String bucket, String fileName, File file) {
         return null;
     }
 
     @Override
-    public Readers download(String fileName, File file) {
+    public Message download(String fileName, File file) {
         return null;
     }
 
     @Override
-    public Readers list() {
+    public Message list() {
         return null;
     }
 
     @Override
-    public Readers rename(String oldName, String newName) {
+    public Message rename(String oldName, String newName) {
         return null;
     }
 
     @Override
-    public Readers rename(String bucket, String oldName, String newName) {
+    public Message rename(String bucket, String oldName, String newName) {
         return null;
     }
 
     @Override
-    public Readers upload(String fileName, byte[] content) {
+    public Message upload(String fileName, byte[] content) {
         return null;
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, InputStream content) {
+    public Message upload(String bucket, String fileName, InputStream content) {
         try {
             File dest = new File(context.getRegion() + Symbol.SLASH + bucket + Symbol.SLASH, fileName);
             if (!new File(dest.getParent()).exists()) {
                 boolean result = new File(dest.getParent()).mkdirs();
                 if (!result) {
-                    return new Readers(Builder.FAILURE);
+                    return Message.builder()
+                            .errcode(Builder.ErrorCode.FAILURE.getCode())
+                            .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
                 }
             }
             OutputStream out = Files.newOutputStream(dest.toPath());
             StreamUtils.copy(content, out);
             content.close();
             out.close();
-            return new Readers(Builder.SUCCESS);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
         } catch (IOException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, byte[] content) {
+    public Message upload(String bucket, String fileName, byte[] content) {
         return null;
     }
 
     @Override
-    public Readers remove(String fileName) {
+    public Message remove(String fileName) {
         return null;
     }
 
     @Override
-    public Readers remove(String bucket, String fileName) {
+    public Message remove(String bucket, String fileName) {
         return null;
     }
 
     @Override
-    public Readers remove(String bucket, Path path) {
+    public Message remove(String bucket, Path path) {
         return null;
     }
 

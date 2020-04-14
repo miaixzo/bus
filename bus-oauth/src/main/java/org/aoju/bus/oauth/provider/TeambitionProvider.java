@@ -118,7 +118,7 @@ public class TeambitionProvider extends DefaultProvider {
         this.checkResponse(object);
 
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(AccToken.builder()
                         .accessToken(object.getString("access_token"))
                         .refreshToken(object.getString("refresh_token"))

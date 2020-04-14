@@ -33,7 +33,7 @@ import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
-import org.aoju.bus.storage.magic.Readers;
+import org.aoju.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,91 +65,131 @@ public class UpaiYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String fileName) {
+    public Message download(String fileName) {
         return download(this.context.getBucket(), fileName);
     }
 
     @Override
-    public Readers download(String bucket, String fileName) {
-        return new Readers(Builder.FAILURE);
+    public Message download(String bucket, String fileName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String fileName, File file) {
+    public Message download(String fileName, File file) {
         try {
             this.client.writeFile(fileName, file);
-            return new Readers(Builder.SUCCESS);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .build();
         } catch (IOException | UpException e) {
             Logger.error("file download failed" + e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers download(String bucket, String fileName, File file) {
-        return new Readers(Builder.FAILURE);
+    public Message download(String bucket, String fileName, File file) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers list() {
+    public Message list() {
         try {
             List<UpYun.FolderItem> list = client.readDir(this.context.getPrefix());
-            return new Readers(list.stream().map(item -> {
-                Attachs storageItem = new Attachs();
-                storageItem.setName(item.name);
-                storageItem.setType(item.type);
-                storageItem.setSize(StringUtils.toString(item.size));
-                return storageItem;
-            }).collect(Collectors.toList()));
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .data(list.stream().map(item -> {
+                        Attachs storageItem = new Attachs();
+                        storageItem.setName(item.name);
+                        storageItem.setType(item.type);
+                        storageItem.setSize(StringUtils.toString(item.size));
+                        return storageItem;
+                    }).collect(Collectors.toList()))
+                    .build();
         } catch (IOException | UpException e) {
             Logger.error("file list failed" + e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers rename(String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers rename(String bucket, String oldName, String newName) {
-        return new Readers(Builder.FAILURE);
+    public Message rename(String bucket, String oldName, String newName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers upload(String fileName, byte[] content) {
+    public Message upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, InputStream content) {
-        return new Readers(Builder.FAILURE);
+    public Message upload(String bucket, String fileName, InputStream content) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, byte[] content) {
-        return new Readers(Builder.FAILURE);
+    public Message upload(String bucket, String fileName, byte[] content) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers remove(String fileName) {
+    public Message remove(String fileName) {
         try {
             client.deleteFile(Symbol.C_SLASH + fileName);
-            return new Readers(Builder.SUCCESS);
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .build();
         } catch (IOException | UpException e) {
             Logger.error("file remove failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers remove(String bucket, String fileName) {
-        return new Readers(Builder.FAILURE);
+    public Message remove(String bucket, String fileName) {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
     }
 
     @Override
-    public Readers remove(String bucket, Path path) {
+    public Message remove(String bucket, Path path) {
         return remove(bucket, path.toString());
     }
 

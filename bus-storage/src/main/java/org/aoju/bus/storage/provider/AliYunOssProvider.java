@@ -35,7 +35,7 @@ import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
-import org.aoju.bus.storage.magic.Readers;
+import org.aoju.bus.storage.magic.Message;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -73,12 +73,12 @@ public class AliYunOssProvider extends AbstractProvider {
     }
 
     @Override
-    public Readers download(String fileName) {
+    public Message download(String fileName) {
         return download(this.context.getBucket(), fileName);
     }
 
     @Override
-    public Readers download(String bucket, String fileName) {
+    public Message download(String bucket, String fileName) {
         // ossObject包含文件所在的存储空间名称、文件名称、文件元信息以及一个输入流
         OSSObject ossObject = this.client.getObject(bucket, fileName);
         // 读取文件内容
@@ -89,48 +89,55 @@ public class AliYunOssProvider extends AbstractProvider {
                     break;
                 }
             }
-            return new Readers(reader);
+            return Message.builder().data(reader).build();
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
     }
 
     @Override
-    public Readers download(String fileName, File file) {
+    public Message download(String fileName, File file) {
         return download(this.context.getBucket(), fileName, file);
     }
 
     @Override
-    public Readers download(String bucket, String fileName, File file) {
+    public Message download(String bucket, String fileName, File file) {
         this.client.getObject(new GetObjectRequest(bucket, fileName), file);
-        return new Readers(Builder.SUCCESS);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
     }
 
     @Override
-    public Readers list() {
+    public Message list() {
         ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
         ObjectListing objectListing = client.listObjects(request);
-        return new Readers(objectListing.getObjectSummaries().stream().map(item -> {
-            Attachs storageItem = new Attachs();
-            storageItem.setName(item.getKey());
-            storageItem.setSize(StringUtils.toString(item.getSize()));
-            Map<String, Object> extend = Maps.newHashMap();
-            extend.put("tag", item.getETag());
-            extend.put("storageClass", item.getStorageClass());
-            extend.put("lastModified", item.getLastModified());
-            storageItem.setExtend(extend);
-            return storageItem;
-        }).collect(Collectors.toList()));
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                .data(objectListing.getObjectSummaries().stream().map(item -> {
+                    Attachs storageItem = new Attachs();
+                    storageItem.setName(item.getKey());
+                    storageItem.setSize(StringUtils.toString(item.getSize()));
+                    Map<String, Object> extend = Maps.newHashMap();
+                    extend.put("tag", item.getETag());
+                    extend.put("storageClass", item.getStorageClass());
+                    extend.put("lastModified", item.getLastModified());
+                    storageItem.setExtend(extend);
+                    return storageItem;
+                }).collect(Collectors.toList())).build();
     }
 
     @Override
-    public Readers rename(String oldName, String newName) {
+    public Message rename(String oldName, String newName) {
         return rename(this.context.getBucket(), oldName, newName);
     }
 
     @Override
-    public Readers rename(String bucket, String oldName, String newName) {
+    public Message rename(String bucket, String oldName, String newName) {
         boolean keyExists = true;
         try {
             this.client.getObjectMetadata(bucket, oldName);
@@ -140,60 +147,75 @@ public class AliYunOssProvider extends AbstractProvider {
         if (keyExists) {
             this.client.copyObject(bucket, oldName, bucket, newName);
         }
-        return new Readers(Builder.SUCCESS);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
     }
 
     @Override
-    public Readers upload(String fileName, byte[] content) {
+    public Message upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), fileName, content);
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, InputStream content) {
+    public Message upload(String bucket, String fileName, InputStream content) {
         try {
             byte[] bytes = new byte[content.available()];
             return upload(this.context.getBucket(), fileName, bytes);
         } catch (IOException e) {
             Logger.error("file upload failed ", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
     }
 
     @Override
-    public Readers upload(String bucket, String fileName, byte[] content) {
+    public Message upload(String bucket, String fileName, byte[] content) {
         ByteArrayInputStream bis = new ByteArrayInputStream(content);
         try {
             PutObjectResult objectResult = this.client.putObject(bucket, fileName, bis);
             ResponseMessage response = objectResult.getResponse();
             if (!response.isSuccessful()) {
-                return new Readers(null, response.getErrorResponseAsString());
+                return Message.builder()
+                        .errcode(Builder.ErrorCode.FAILURE.getCode())
+                        .errmsg(response.getErrorResponseAsString()).build();
             }
-            return new Readers(Attachs.builder().name(fileName)
-                    .size("" + response.getContentLength())
-                    .path(response.getUri())
-                    .build());
+
+            return Message.builder()
+                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
+                    .data(Attachs.builder().name(fileName).size("" + response.getContentLength()).path(response.getUri()))
+                    .build();
+
         } catch (Exception e) {
             this.client.putObject(bucket, fileName, bis);
             Logger.error("file upload failed ", e.getMessage());
         }
-        return new Readers(Builder.FAILURE);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg()).build();
     }
 
     @Override
-    public Readers remove(String fileName) {
+    public Message remove(String fileName) {
         return remove(this.context.getBucket(), fileName);
     }
 
     @Override
-    public Readers remove(String bucket, String fileName) {
+    public Message remove(String bucket, String fileName) {
         this.client.deleteObject(bucket, fileName);
-        return new Readers(Builder.SUCCESS);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
     }
 
     @Override
-    public Readers remove(String bucket, Path path) {
+    public Message remove(String bucket, Path path) {
         remove(bucket, path.toString());
-        return new Readers(Builder.SUCCESS);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .errmsg(Builder.ErrorCode.SUCCESS.getMsg()).build();
     }
 
 }

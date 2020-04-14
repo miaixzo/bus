@@ -114,13 +114,9 @@ public class Builder {
 
     @Getter
     @AllArgsConstructor
-    public enum Status {
-        /**
-         * 2000：正常；
-         * other：调用异常,具体异常内容见{@code msg}
-         */
-        SUCCESS("2000", "Success"),
-        FAILURE("5000", "Failure"),
+    public enum ErrorCode {
+        SUCCESS("0", "Success"),
+        FAILURE("-1", "Failure"),
         NOT_IMPLEMENTED("5001", "Not Implemented"),
         PARAMETER_INCOMPLETE("5002", "Parameter incomplete"),
         UNSUPPORTED("5003", "Unsupported operation"),

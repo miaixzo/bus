@@ -80,7 +80,7 @@ public class WeChatEEProvider extends DefaultProvider {
 
         // 返回 OpenId 或其他,均代表非当前企业用户,不支持
         if (!object.containsKey("UserId")) {
-            throw new AuthorizedException(Builder.Status.UNIDENTIFIED_PLATFORM.getCode());
+            throw new AuthorizedException(Builder.ErrorCode.UNIDENTIFIED_PLATFORM.getCode());
         }
         String userId = object.getString("UserId");
         String userDetailResponse = getUserDetail(token.getAccessToken(), userId);

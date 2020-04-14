@@ -80,7 +80,7 @@ public class DouyinProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken oldToken) {
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(getToken(refreshTokenUrl(oldToken.getRefreshToken())))
                 .build();
     }
