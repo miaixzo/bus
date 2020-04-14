@@ -32,7 +32,7 @@ import java.util.Map;
  * Quickly服务端/客户端配置信息 T:解码后生成的对象类型
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 final class ServerConfig<T> {

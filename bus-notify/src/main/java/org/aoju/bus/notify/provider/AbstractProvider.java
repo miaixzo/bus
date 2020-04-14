@@ -22,9 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify;
+package org.aoju.bus.notify.provider;
 
 import lombok.AllArgsConstructor;
+import org.aoju.bus.notify.Provider;
 import org.aoju.bus.notify.magic.Response;
 import org.aoju.bus.notify.metric.Properties;
 import org.aoju.bus.notify.metric.Template;
@@ -35,7 +36,7 @@ import java.util.Map;
  * 抽象类
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
 @AllArgsConstructor

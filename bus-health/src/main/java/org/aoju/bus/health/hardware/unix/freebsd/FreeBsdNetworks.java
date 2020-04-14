@@ -35,7 +35,7 @@ import org.aoju.bus.health.hardware.NetworkIF;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class FreeBsdNetworks extends AbstractNetworks {

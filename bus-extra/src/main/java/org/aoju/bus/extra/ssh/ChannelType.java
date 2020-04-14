@@ -28,7 +28,7 @@ package org.aoju.bus.extra.ssh;
  * Jsch支持的Channel类型
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public enum ChannelType {

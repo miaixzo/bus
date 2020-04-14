@@ -32,7 +32,7 @@ import org.aoju.bus.cache.metric.MemoryCache;
  * 默认的state缓存实现
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public enum OauthCache implements ExtendCache {
