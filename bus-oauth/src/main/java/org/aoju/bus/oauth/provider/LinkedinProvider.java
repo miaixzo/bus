@@ -48,7 +48,7 @@ import java.util.Map;
  * 领英登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class LinkedinProvider extends DefaultProvider {
@@ -176,11 +176,11 @@ public class LinkedinProvider extends DefaultProvider {
     public Message refresh(AccToken oldToken) {
         String refreshToken = oldToken.getRefreshToken();
         if (StringUtils.isEmpty(refreshToken)) {
-            throw new AuthorizedException(Builder.Status.UNSUPPORTED.getCode());
+            throw new AuthorizedException(Builder.ErrorCode.UNSUPPORTED.getCode());
         }
         String refreshTokenUrl = refreshTokenUrl(refreshToken);
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(this.getToken(refreshTokenUrl))
                 .build();
     }

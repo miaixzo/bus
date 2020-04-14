@@ -22,36 +22,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.notify;
 
-import org.aoju.bus.notify.magic.Response;
-
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Builder;
+import lombok.Data;
 
 /**
- * 云信通知
+ * 配置信息
  *
  * @author Justubborn
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
-public class NeteaseAttachMsgProvider extends AbstractNeteaseProvider {
+@Data
+@Builder
+public class Context {
 
-    private static final String API = "https://api.netease.im/nimserver/msg/sendAttachMsg.action";
+    /**
+     * 对应各平台的appKey
+     */
+    private String appKey;
 
-    public NeteaseAttachMsgProvider(NeteaseProperties properties) {
-        super(properties);
-    }
+    /**
+     * 对应各平台的appSecret
+     */
+    private String appSecret;
 
-    @Override
-    public Response send(NeteaseMsgTemplate template) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("from", template.getSender());
-        param.put("msgtype", "0");
-        param.put("to", template.getReceive());
-        param.put("attach", template.getContent());
-        return post(API, param);
-    }
+    /**
+     * 短信签名
+     */
+    private String signName;
+
+    /**
+     * 主叫号码
+     */
+    private String showNumber;
+
+    /**
+     * 授权方的网页应用ID
+     */
+    private String agentId;
+    /**
+     * 企业ID
+     */
+    private String corpId;
+
+    /**
+     * 黑名单列表
+     */
+    private String whiteList;
+
+    private String appNonce;
 
 }

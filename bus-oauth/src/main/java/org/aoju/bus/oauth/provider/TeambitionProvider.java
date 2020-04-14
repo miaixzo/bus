@@ -44,7 +44,7 @@ import java.util.Map;
  * Teambition授权登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class TeambitionProvider extends DefaultProvider {
@@ -118,7 +118,7 @@ public class TeambitionProvider extends DefaultProvider {
         this.checkResponse(object);
 
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(AccToken.builder()
                         .accessToken(object.getString("access_token"))
                         .refreshToken(object.getString("refresh_token"))

@@ -41,7 +41,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class DouyinProvider extends DefaultProvider {
@@ -80,7 +80,7 @@ public class DouyinProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken oldToken) {
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(getToken(refreshTokenUrl(oldToken.getRefreshToken())))
                 .build();
     }

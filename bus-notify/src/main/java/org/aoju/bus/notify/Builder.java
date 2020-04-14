@@ -22,30 +22,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.notify;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Template;
+import lombok.ToString;
+import org.aoju.bus.core.lang.Symbol;
 
 /**
- * 云信消息
+ * 构造信息
  *
- * @author Justubborn
- * @version 5.8.5
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.6
+ * @since JDK 1.8+
  */
-
-@Getter
 @Setter
-@SuperBuilder
-public class NeteaseMsgTemplate extends Template {
+public class Builder {
 
-    String title;
+    @Getter
+    @AllArgsConstructor
+    public enum ErrorCode {
 
-    String body;
+        SUCCESS(Symbol.ZERO, "Success"),
+        FAILURE("-1", "Failure"),
+        UNSUPPORTED("5003", "Unsupported operation");
 
-    String content;
+        private String code;
+        private String msg;
+
+    }
+
+    /**
+     * 缓存类型
+     */
+    @Getter
+    @ToString
+    public enum Type {
+        /**
+         * 使用内置的缓存
+         */
+        DEFAULT,
+        /**
+         * 使用Redis缓存
+         */
+        REDIS,
+        /**
+         * 自定义缓存
+         */
+        CUSTOM
+    }
 
 }

@@ -22,28 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.dingtalk;
+package org.aoju.bus.notify.provider.netease;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Properties;
+import org.aoju.bus.notify.metric.Template;
 
 /**
- * 钉钉配置
+ * 云信消息
  *
  * @author Justubborn
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
+
 @Getter
 @Setter
 @SuperBuilder
-public class DingTalkProperties extends Properties {
+public class NeteaseTemplate extends Template {
 
-    private String agentId;
+    String title;
 
-    private String corpId;
+    String body;
 
-    private String whiteList;
+    String content;
+
 }

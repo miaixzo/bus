@@ -22,28 +22,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.notify.provider.netease;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Properties;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 阿里云语音配置
+ * 云信通知
  *
  * @author Justubborn
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class AliyunVmsProperties extends Properties {
+public class NeteaseAttachProvider extends NeteaseProvider {
 
-    /**
-     * 主叫号码
-     */
-    private String showNumber;
+    private static final String API = "https://api.netease.im/nimserver/msg/sendAttachMsg.action";
+
+    public NeteaseAttachProvider(Context properties) {
+        super(properties);
+    }
+
+    @Override
+    public Message send(NeteaseTemplate template) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("from", template.getSender());
+        param.put("msgtype", "0");
+        param.put("to", template.getReceive());
+        param.put("attach", template.getContent());
+        return post(API, param);
+    }
 
 }

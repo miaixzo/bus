@@ -57,7 +57,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
 <dependency>
     <groupId>org.aoju.bus</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>5.8.5</version>
+    <version>5.8.6</version>
 </dependency>
 ```
 - XML注册

@@ -44,7 +44,7 @@ import java.util.Objects;
  * 人人登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class RenrenProvider extends DefaultProvider {
@@ -80,7 +80,7 @@ public class RenrenProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(getToken(this.refreshTokenUrl(token.getRefreshToken())))
                 .build();
     }

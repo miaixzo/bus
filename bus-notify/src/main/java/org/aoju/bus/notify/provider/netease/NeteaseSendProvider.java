@@ -22,52 +22,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.storage.magic;
+package org.aoju.bus.notify.provider.netease;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
 
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 响应结果
+ * 云信消息
  *
- * @author Kimi Liu
- * @version 5.8.5
- * @since JDK 1.8+
+ * @author wubenhui
+ * @version 5.8.6
+ * @since 2020/3/19
  */
-public class Readers {
+public class NeteaseSendProvider extends NeteaseProvider {
 
-    /**
-     * 请求返回码,正确为 0
-     */
-    public String errcode;
+    private static final String API = "https://api.netease.im/nimserver/msg/sendMsg.action";
 
-    /**
-     * 请求返回消息
-     */
-    public String errmsg;
-
-    /**
-     * 请求返回数据
-     */
-    public Object data;
-
-    public Readers(String data) {
-        this(Symbol.ZERO, data, null);
+    public NeteaseSendProvider(Context properties) {
+        super(properties);
     }
 
-    public Readers(Object data) {
-        this(Symbol.ZERO, "", data);
-    }
+    @Override
+    public Message send(NeteaseTemplate template) {
+        //构造payload
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("content", template.getContent());
+        Map<String, Object> aps = new HashMap<>();
+        aps.put("mutable-content", "1");
+        Map<String, Object> alert = new HashMap<>();
+        alert.put("title", template.getTitle());
+        alert.put("body", template.getBody());
+        aps.put("alert", alert);
+        payload.put("apsField", aps);
 
-    public Readers(String errcode, String errmsg) {
-        this(errcode, StringUtils.isEmpty(errcode) ? "-1" : errmsg, null);
-    }
+        //构造请求参数
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("from", template.getSender());
+        param.put("to", template.getReceive());
+        param.put("ope", "0");
+        param.put("type", "100");
+        param.put("body", template.getContent());
+        param.put("payload", JSONObject.toJSONString(payload));
 
-    public Readers(String errcode, String errmsg, Object data) {
-        this.errmsg = errmsg;
-        this.errcode = errcode;
-        this.data = data;
+        Map<String, Object> option = new HashMap<>();
+        option.put("needPushNick", "false");
+        option.put("sendersync", "false");
+        param.put("option", JSON.toJSONString(option));
+        return post(API, param);
     }
 
 }

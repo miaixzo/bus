@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class ConcurrentHashSet<E> extends AbstractSet<E> implements java.io.Serializable {

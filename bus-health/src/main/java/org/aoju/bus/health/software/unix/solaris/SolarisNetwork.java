@@ -32,7 +32,7 @@ import org.aoju.bus.health.software.AbstractNetwork;
 
 /**
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
 public class SolarisNetwork extends AbstractNetwork {

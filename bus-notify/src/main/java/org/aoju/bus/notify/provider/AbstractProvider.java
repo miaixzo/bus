@@ -25,9 +25,9 @@
 package org.aoju.bus.notify.provider;
 
 import lombok.AllArgsConstructor;
+import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.Provider;
-import org.aoju.bus.notify.magic.Response;
-import org.aoju.bus.notify.metric.Properties;
+import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.metric.Template;
 
 import java.util.Map;
@@ -36,21 +36,21 @@ import java.util.Map;
  * 抽象类
  *
  * @author Justubborn
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
 @AllArgsConstructor
-public abstract class AbstractProvider<T extends Template, K extends Properties> implements Provider<T> {
+public abstract class AbstractProvider<T extends Template, K extends Context> implements Provider<T> {
 
     protected K properties;
 
     @Override
-    public Response send(String templateId, Map<String, String> context) {
+    public Message send(String templateId, Map<String, String> context) {
         return null;
     }
 
     @Override
-    public Response send(T template) {
+    public Message send(T template) {
         return null;
     }
 

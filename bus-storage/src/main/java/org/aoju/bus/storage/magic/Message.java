@@ -22,26 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.metric;
+package org.aoju.bus.storage.magic;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 /**
- * 配置
+ * 响应结果
  *
- * @author Justubborn
- * @version 5.8.5
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.6
+ * @since JDK 1.8+
  */
 @Getter
-@Setter
-@SuperBuilder
-public class Properties {
+@Builder
+public class Message {
 
-    private String appKey;
+    /**
+     * 请求返回码,正确为 0
+     */
+    public String errcode;
 
-    private String appSecret;
+    /**
+     * 请求返回消息
+     */
+    public String errmsg;
+
+    /**
+     * 请求返回数据
+     */
+    public Object data;
 
 }

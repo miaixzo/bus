@@ -44,7 +44,7 @@ import java.util.Map;
  * 华为授权登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class HuaweiProvider extends DefaultProvider {
@@ -124,7 +124,7 @@ public class HuaweiProvider extends DefaultProvider {
         params.put("grant_type", "refresh_token");
         Httpx.post(source.accessToken(), params);
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(getAuthToken(params))
                 .build();
     }

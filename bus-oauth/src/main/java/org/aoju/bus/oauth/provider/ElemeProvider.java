@@ -54,7 +54,7 @@ import java.util.TreeMap;
  * 注：集成的是正式环境,非沙箱环境
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class ElemeProvider extends DefaultProvider {
@@ -155,7 +155,7 @@ public class ElemeProvider extends DefaultProvider {
         this.checkResponse(object);
 
         return Message.builder()
-                .errcode(Builder.Status.SUCCESS.getCode())
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(AccToken.builder()
                         .accessToken(object.getString("access_token"))
                         .refreshToken(object.getString("refresh_token"))

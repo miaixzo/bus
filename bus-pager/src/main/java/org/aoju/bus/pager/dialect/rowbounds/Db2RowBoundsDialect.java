@@ -32,7 +32,7 @@ import org.apache.ibatis.session.RowBounds;
  * db2 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class Db2RowBoundsDialect extends AbstractRowBoundsDialect {

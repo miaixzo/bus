@@ -32,7 +32,7 @@ import org.aoju.bus.health.hardware.*;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class MacHardwareLayer extends AbstractHardwareLayer {

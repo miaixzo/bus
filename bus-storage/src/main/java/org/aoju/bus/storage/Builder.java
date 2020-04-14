@@ -24,18 +24,51 @@
  ********************************************************************************/
 package org.aoju.bus.storage;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import org.aoju.bus.core.lang.Symbol;
 
 /**
  * 框架内预定义的存储信息
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class Builder {
 
-    public static final String SUCCESS = Symbol.ZERO;
-    public static final String FAILURE = "-1";
+    @Getter
+    @AllArgsConstructor
+    public enum ErrorCode {
+
+        SUCCESS(Symbol.ZERO, "Success"),
+        FAILURE("-1", "Failure"),
+        UNSUPPORTED("5003", "Unsupported operation");
+
+        private String code;
+        private String msg;
+
+    }
+
+    /**
+     * 缓存类型
+     */
+    @Getter
+    @ToString
+    public enum Type {
+        /**
+         * 使用内置的缓存
+         */
+        DEFAULT,
+        /**
+         * 使用Redis缓存
+         */
+        REDIS,
+        /**
+         * 自定义缓存
+         */
+        CUSTOM
+    }
 
 }

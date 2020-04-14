@@ -26,7 +26,7 @@ package org.aoju.bus.mapper.version;
 
 /**
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class VersionException extends RuntimeException {

@@ -32,7 +32,7 @@ import java.util.List;
  * BaseService 接口
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public interface BaseService<T> extends Service {

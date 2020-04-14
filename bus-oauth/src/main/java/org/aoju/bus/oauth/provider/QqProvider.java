@@ -45,7 +45,7 @@ import java.util.Map;
  * qq登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class QqProvider extends DefaultProvider {
@@ -66,7 +66,7 @@ public class QqProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken token) {
         String response = Httpx.get(refreshTokenUrl(token.getRefreshToken()));
-        return Message.builder().errcode(Builder.Status.SUCCESS.getCode()).data(getAuthToken(response)).build();
+        return Message.builder().errcode(Builder.ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
     @Override

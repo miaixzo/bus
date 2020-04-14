@@ -30,7 +30,9 @@ import lombok.Setter;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.notify.magic.Response;
+import org.aoju.bus.notify.Builder;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
 import java.time.Duration;
@@ -42,11 +44,11 @@ import java.util.concurrent.atomic.AtomicReference;
  * 钉钉通知
  *
  * @author Justubborn
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
 @Setter
-public class DingTalkCropMsgProvider extends AbstractProvider<DingTalkCropMsgTemplate, DingTalkProperties> {
+public class DingTalkProvider extends AbstractProvider<DingTalkTemplate, Context> {
 
     private static final String SUCCESS_RESULT = "200";
     private static final String TOKEN_API = "https://oapi.dingtalk.com/gettoken";
@@ -55,12 +57,12 @@ public class DingTalkCropMsgProvider extends AbstractProvider<DingTalkCropMsgTem
     private long refreshTokenTime;
     private long tokenTimeOut = Duration.ofSeconds(7000).toMillis();
 
-    public DingTalkCropMsgProvider(DingTalkProperties properties) {
+    public DingTalkProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Response send(DingTalkCropMsgTemplate template) {
+    public Message send(DingTalkTemplate template) {
         //   String token = getToken();
         Map<String, Object> param = new HashMap<>();
         param.put("access_token", template.getToken());
@@ -75,9 +77,9 @@ public class DingTalkCropMsgProvider extends AbstractProvider<DingTalkCropMsgTem
         param.put("to_all_user", template.isToAllUser());
         String response = Httpx.post(NOTIFY_API, param);
         JSONObject object = JSON.parseObject(response);
-        return Response.builder()
-                .result(SUCCESS_RESULT.equals(object.getString("errcode")))
-                .desc(object.getString("errmsg"))
+        return Message.builder()
+                .errcode(SUCCESS_RESULT.equals(object.getString("errcode")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("errcode"))
+                .errmsg(object.getString("errmsg"))
                 .build();
     }
 

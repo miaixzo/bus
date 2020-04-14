@@ -41,7 +41,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class WeChatEEProvider extends DefaultProvider {
@@ -80,7 +80,7 @@ public class WeChatEEProvider extends DefaultProvider {
 
         // 返回 OpenId 或其他,均代表非当前企业用户,不支持
         if (!object.containsKey("UserId")) {
-            throw new AuthorizedException(Builder.Status.UNIDENTIFIED_PLATFORM.getCode());
+            throw new AuthorizedException(Builder.ErrorCode.UNIDENTIFIED_PLATFORM.getCode());
         }
         String userId = object.getString("UserId");
         String userDetailResponse = getUserDetail(token.getAccessToken(), userId);

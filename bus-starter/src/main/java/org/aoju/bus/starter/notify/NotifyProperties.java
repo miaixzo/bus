@@ -25,8 +25,8 @@
 package org.aoju.bus.starter.notify;
 
 import lombok.Data;
-import org.aoju.bus.notify.metric.Properties;
-import org.aoju.bus.oauth.Registry;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.Registry;
 import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -38,7 +38,7 @@ import java.util.Map;
  * 2. 通过set形式设置(动态/DB等)
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 @Data
@@ -48,6 +48,6 @@ public class NotifyProperties {
     /**
      * 基础配置
      */
-    private Map<Registry, Properties> type;
+    private Map<Registry, Context> type;
 
 }

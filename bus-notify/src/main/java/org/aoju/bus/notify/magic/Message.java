@@ -24,28 +24,33 @@
  ********************************************************************************/
 package org.aoju.bus.notify.magic;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 
 /**
  * 返回消息
  *
  * @author Justubborn
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
 @Data
-@SuperBuilder
-public class Response {
+@Builder
+public class Message {
 
     /**
-     * 结果
+     * 请求返回码,错误为具体返回码,正确为 0
      */
-    boolean result;
+    String errcode;
 
     /**
-     * 描述
+     * 请求返回消息
      */
-    String desc;
+    String errmsg;
+
+    /**
+     * 请求返回数据 JSON
+     */
+    Object data;
 
 }

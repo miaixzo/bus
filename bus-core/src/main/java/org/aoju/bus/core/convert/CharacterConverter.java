@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 字符转换器
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public class CharacterConverter extends AbstractConverter<Character> {

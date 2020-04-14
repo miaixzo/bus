@@ -22,25 +22,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.notify.provider.dingtalk;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Properties;
+import org.aoju.bus.notify.metric.Template;
 
 /**
- * 云信配置
+ * 钉钉通知模版
  *
  * @author Justubborn
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK1.8+
  */
 @Getter
 @Setter
 @SuperBuilder
-public class NeteaseProperties extends Properties {
+public class DingTalkTemplate extends Template {
 
-    private String appNonce;
+    /**
+     * 应用agentId
+     */
+    private String agentId;
+    /**
+     * 接收者的用户userId列表，最大列表长度：100
+     */
+    private String userIdList;
+    /**
+     * 接收者的部门id列表，最大列表长度：20,  接收者是部门id下(包括子部门下)的所有用户
+     */
+    private String deptIdList;
+    /**
+     * 是否发送给企业全部用户 true,false
+     */
+    private boolean toAllUser = false;
+
+    /**
+     * json字符串
+     */
+    private String msg;
+
+    /**
+     * 钉钉token
+     */
+    private String token;
 
 }

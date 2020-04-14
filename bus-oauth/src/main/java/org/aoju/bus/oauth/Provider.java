@@ -37,7 +37,7 @@ import org.aoju.bus.oauth.magic.Message;
  * {@link Provider#refresh(AccToken)}
  *
  * @author Kimi Liu
- * @version 5.8.5
+ * @version 5.8.6
  * @since JDK 1.8+
  */
 public interface Provider {
@@ -49,7 +49,7 @@ public interface Provider {
      * @return 返回授权地址
      */
     default String authorize(String state) {
-        throw new AuthorizedException(Builder.Status.NOT_IMPLEMENTED.getCode());
+        throw new AuthorizedException(Builder.ErrorCode.NOT_IMPLEMENTED.getCode());
     }
 
     /**
@@ -59,7 +59,7 @@ public interface Provider {
      * @return 返回登录成功后的用户信息
      */
     default Message login(Callback callback) {
-        throw new AuthorizedException(Builder.Status.NOT_IMPLEMENTED.getCode());
+        throw new AuthorizedException(Builder.ErrorCode.NOT_IMPLEMENTED.getCode());
     }
 
     /**
@@ -69,7 +69,7 @@ public interface Provider {
      * @return AuthResponse
      */
     default Message revoke(AccToken token) {
-        throw new AuthorizedException(Builder.Status.NOT_IMPLEMENTED.getCode());
+        throw new AuthorizedException(Builder.ErrorCode.NOT_IMPLEMENTED.getCode());
     }
 
     /**
@@ -79,7 +79,7 @@ public interface Provider {
      * @return AuthResponse
      */
     default Message refresh(AccToken token) {
-        throw new AuthorizedException(Builder.Status.NOT_IMPLEMENTED.getCode());
+        throw new AuthorizedException(Builder.ErrorCode.NOT_IMPLEMENTED.getCode());
     }
 
 }
