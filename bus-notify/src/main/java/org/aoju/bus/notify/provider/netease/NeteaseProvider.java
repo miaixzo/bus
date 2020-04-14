@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.provider.AbstractProvider;
@@ -100,14 +101,15 @@ public abstract class NeteaseProvider extends AbstractProvider<NeteaseTemplate, 
         Logger.debug("netease result：{}", response);
         JSONObject object = JSON.parseObject(response);
         return Message.builder()
-                .result(SUCCESS_RESULT.equals(object.getString("code")))
-                .desc(object.getString("desc")).build();
+                .errcode(SUCCESS_RESULT.equals(object.getString("code")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("code"))
+                .errmsg(object.getString("desc")).build();
     }
 
     /**
      * CheckSum
      *
      * @param curTime 时间
+     *
      * @return 结果
      */
     private String getCheckSum(String curTime) {

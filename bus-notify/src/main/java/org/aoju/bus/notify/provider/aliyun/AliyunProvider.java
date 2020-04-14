@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.metric.Template;
@@ -69,6 +70,7 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      * pop编码
      *
      * @param value 原值
+     *
      * @return 编码值
      */
     protected String specialUrlEncode(String value) {
@@ -86,6 +88,7 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      * 构造签名
      *
      * @param params 参数
+     *
      * @return 签名值
      */
     protected String getSign(Map<String, String> params) {
@@ -114,6 +117,7 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      * 密钥签名
      *
      * @param stringToSign 代签名字符串
+     *
      * @return 签名后字符串
      */
     protected String sign(String stringToSign) {
@@ -129,9 +133,10 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
 
     protected Message checkResponse(String response) {
         JSONObject object = JSON.parseObject(response);
+
         return Message.builder()
-                .result(SUCCESS_RESULT.equals(object.getString("Code")))
-                .desc(object.getString("Code")).build();
+                .errcode(SUCCESS_RESULT.equals(object.getString("Code")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("Code"))
+                .errmsg(object.getString("Code")).build();
     }
 
 }

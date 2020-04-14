@@ -30,6 +30,7 @@ import lombok.Setter;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.provider.AbstractProvider;
@@ -77,8 +78,8 @@ public class DingTalkProvider extends AbstractProvider<DingTalkTemplate, Context
         String response = Httpx.post(NOTIFY_API, param);
         JSONObject object = JSON.parseObject(response);
         return Message.builder()
-                .result(SUCCESS_RESULT.equals(object.getString("errcode")))
-                .desc(object.getString("errmsg"))
+                .errcode(SUCCESS_RESULT.equals(object.getString("errcode")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("errcode"))
+                .errmsg(object.getString("errmsg"))
                 .build();
     }
 
