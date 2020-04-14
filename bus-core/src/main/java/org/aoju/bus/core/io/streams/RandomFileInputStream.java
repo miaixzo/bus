@@ -22,62 +22,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.core.io;
+package org.aoju.bus.core.io.streams;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
 
 /**
- * 此OutputStream写出数据到<b>/dev/null</b>,既忽略所有数据
- * 来自 Apache Commons io
- *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
-public class NullOutputStream extends OutputStream {
+public class RandomFileInputStream extends InputStream {
 
-    private boolean closed = false;
+    private RandomAccessFile raf;
 
-    /**
-     * 什么也不做,写出到 <code>/dev/null</code>.
-     *
-     * @param b 写出的数据
-     */
+    public RandomFileInputStream(RandomAccessFile raf) {
+        this.raf = raf;
+    }
+
     @Override
-    public void write(int b) throws IOException {
-        if (this.closed) _throwClosed();
+    public int read() throws IOException {
+        return raf.read();
     }
 
-    /**
-     * 什么也不做,写出到 <code>/dev/null</code>.
-     *
-     * @param b 写出的数据
-     * @throws IOException 不抛出
-     */
     @Override
-    public void write(byte[] b) throws IOException {
-        if (this.closed) _throwClosed();
+    public int read(byte[] b, int off, int len) throws IOException {
+        return raf.read(b, off, len);
     }
 
-    /**
-     * 什么也不做,写出到<code>/dev/null</code>.
-     *
-     * @param b   写出的数据
-     * @param off 开始位置
-     * @param len 长度
-     */
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
-        if (this.closed) _throwClosed();
+    public long skip(long n) throws IOException {
+        return raf.skipBytes((int) n);
     }
 
-    private void _throwClosed() throws IOException {
-        throw new IOException("This OutputStream has been closed");
+    @Override
+    public void close() throws IOException {
+        raf.close();
     }
 
-    public void close() {
-        this.closed = true;
+    @Override
+    public synchronized void reset() throws IOException {
+        raf.seek(0);
+    }
+
+    @Override
+    public int read(byte[] b) throws IOException {
+        return super.read(b);
+    }
+
+    @Override
+    public int available() throws IOException {
+        return (int) (raf.length() - raf.getFilePointer());
     }
 
 }

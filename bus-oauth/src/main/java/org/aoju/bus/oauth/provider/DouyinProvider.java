@@ -25,6 +25,7 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
@@ -35,13 +36,12 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.StateCache;
 
 /**
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class DouyinProvider extends DefaultProvider {
@@ -50,8 +50,8 @@ public class DouyinProvider extends DefaultProvider {
         super(context, Registry.DOUYIN);
     }
 
-    public DouyinProvider(Context context, StateCache stateCache) {
-        super(context, Registry.DOUYIN, stateCache);
+    public DouyinProvider(Context context, ExtendCache extendCache) {
+        super(context, Registry.DOUYIN, extendCache);
     }
 
     @Override

@@ -26,6 +26,8 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
+import org.aoju.bus.core.io.streams.NullOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -56,7 +58,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class IoUtils {
@@ -439,7 +441,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static String read(InputStream in, String charsetName) throws InstrumentException {
-        FastByteArray out = read(in);
+        ByteArrayOutputStream out = read(in);
         return StringUtils.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
     }
 
@@ -452,7 +454,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static String read(InputStream in, Charset charset) throws InstrumentException {
-        FastByteArray out = read(in);
+        ByteArrayOutputStream out = read(in);
         return null == charset ? out.toString() : out.toString(charset);
     }
 
@@ -463,8 +465,8 @@ public class IoUtils {
      * @return 输出流
      * @throws InstrumentException 异常
      */
-    public static FastByteArray read(InputStream in) throws InstrumentException {
-        final FastByteArray out = new FastByteArray();
+    public static ByteArrayOutputStream read(InputStream in) throws InstrumentException {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
         copy(in, out);
         return out;
     }
@@ -538,7 +540,7 @@ public class IoUtils {
      * @throws InstrumentException 异常
      */
     public static byte[] readBytes(InputStream in) throws InstrumentException {
-        final FastByteArray out = new FastByteArray();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
         copy(in, out);
         return out.toByteArray();
     }

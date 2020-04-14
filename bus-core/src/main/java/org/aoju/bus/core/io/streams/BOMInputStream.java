@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.core.io;
+package org.aoju.bus.core.io.streams;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -49,7 +49,7 @@ import java.io.PushbackInputStream;
  * </code>
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class BOMInputStream extends InputStream {

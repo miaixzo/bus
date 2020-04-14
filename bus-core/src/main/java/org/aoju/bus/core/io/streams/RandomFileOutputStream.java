@@ -22,28 +22,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.core.io.streams;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Properties;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 
 /**
- * 阿里云语音配置
- *
- * @author Justubborn
- * @version 5.8.3
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.5
+ * @since JDK 1.8+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class AliyunVmsProperties extends Properties {
+public class RandomFileOutputStream extends OutputStream {
 
-    /**
-     * 主叫号码
-     */
-    private String showNumber;
+    private RandomAccessFile raf;
+
+    public RandomFileOutputStream(RandomAccessFile raf) {
+        this.raf = raf;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+        raf.write(b);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+        raf.write(b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        raf.write(b, off, len);
+    }
+
+    @Override
+    public void flush() {
+    }
+
+    @Override
+    public void close() throws IOException {
+        raf.close();
+    }
 
 }

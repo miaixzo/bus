@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -40,7 +40,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class ZipUtils {
@@ -290,7 +290,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.8.3
+     * @since 5.8.5
      */
     public static File zip(File zipFile, String path, String data, Charset charset) throws InstrumentException {
         return zip(zipFile, path, IoUtils.toStream(data, charset), charset);
@@ -320,7 +320,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.8.3
+     * @since 5.8.5
      */
     public static File zip(File zipFile, String path, InputStream in, Charset charset) throws InstrumentException {
         return zip(zipFile, new String[]{path}, new InputStream[]{in}, charset);
@@ -391,7 +391,7 @@ public class ZipUtils {
      * @param charset     编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.8.3
+     * @since 5.8.5
      */
     public static File unzip(String zipFilePath, Charset charset) throws InstrumentException {
         return unzip(FileUtils.file(zipFilePath), charset);
@@ -403,7 +403,7 @@ public class ZipUtils {
      * @param zipFile 压缩文件
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.8.3
+     * @since 5.8.5
      */
     public static File unzip(File zipFile) throws InstrumentException {
         return unzip(zipFile, DEFAULT_CHARSET);
@@ -416,7 +416,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.8.3
+     * @since 5.8.5
      */
     public static File unzip(File zipFile, Charset charset) throws InstrumentException {
         return unzip(zipFile, FileUtils.file(zipFile.getParentFile(), FileUtils.mainName(zipFile)), charset);
@@ -467,7 +467,7 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.8.3
+     * @since 5.8.5
      */
     public static File unzip(File zipFile, File outFile, Charset charset) throws InstrumentException {
         charset = (null == charset) ? DEFAULT_CHARSET : charset;
@@ -695,7 +695,7 @@ public class ZipUtils {
      * @throws InstrumentException IO异常
      */
     public static byte[] gzip(InputStream in, int length) throws InstrumentException {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
+        final java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream(length);
         GZIPOutputStream gos = null;
         try {
             gos = new GZIPOutputStream(bos);
@@ -753,10 +753,10 @@ public class ZipUtils {
      */
     public static byte[] unGzip(InputStream in, int length) throws InstrumentException {
         GZIPInputStream gzi = null;
-        FastByteArray bos;
+        ByteArrayOutputStream bos;
         try {
             gzi = (in instanceof GZIPInputStream) ? (GZIPInputStream) in : new GZIPInputStream(in);
-            bos = new FastByteArray(length);
+            bos = new ByteArrayOutputStream(length);
             IoUtils.copy(gzi, bos);
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -827,7 +827,7 @@ public class ZipUtils {
      * @return 压缩后的bytes
      */
     public static byte[] zlib(InputStream in, int level, int length) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
+        final java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(length);
         deflater(in, out, level);
         return out.toByteArray();
     }
@@ -871,7 +871,7 @@ public class ZipUtils {
      * @return 解压后的bytes
      */
     public static byte[] unZlib(InputStream in, int length) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
+        final java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(length);
         inflater(in, out);
         return out.toByteArray();
     }

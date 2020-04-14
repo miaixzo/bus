@@ -14,7 +14,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>5.8.3</version>
+    <version>5.8.5</version>
 </dependency>
 ```
 - 调用api
@@ -95,9 +95,9 @@ shooting.revoke(AccToken.builder().accessToken(token).build());
 |  pinterest| [PinterestProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/PinterestProvider.java) | <a href="https://developers.pinterest.com/docs/api/overview" target="_blank">参考文档</a> |
 |  stackoverflow| [StackOverflowProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/StackOverflowProvider.java) | <a href="https://api.stackexchange.com/docs/authentication" target="_blank">参考文档</a> |
 |  huawei| [HuaweiProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/HuaweiProvider.java) | <a href="https://developer.huawei.com/consumer/cn/devservice/doc/30101" target="_blank">参考文档</a> |
-|  微信开放平台 |  [WeChatOPProvider](https://gitee.com/yadong.zhang/JustAuth/blob/master/src/main/java/me/zhyd/oauth/request/WeChatOPProvider.java)  |  <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN" target="_blank">参考文档</a>  |
-|  微信公众平台 | [WeChatMpProvider](https://gitee.com/yadong.zhang/JustAuth/blob/master/src/main/java/me/zhyd/oauth/request/WeChatMpProvider.java) | <a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html" target="_blank">参考文档</a> |
-|  企业微信 | [WeChatEEProvider](https://gitee.com/yadong.zhang/JustAuth/blob/master/src/main/java/me/zhyd/oauth/request/WeChatEEProvider.java) | <a href="https://open.work.weixin.qq.com/api/doc#90000/90135/90664" target="_blank">参考文档</a> |
+|  微信开放平台 |  [WeChatOPProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/WeChatOPProvider.java)  |  <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN" target="_blank">参考文档</a>  |
+|  微信公众平台 | [WeChatMpProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/WeChatMpProvider.java) | <a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html" target="_blank">参考文档</a> |
+|  企业微信 | [WeChatEEProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/WeChatEEProvider.java) | <a href="https://open.work.weixin.qq.com/api/doc#90000/90135/90664" target="_blank">参考文档</a> |
 |  kujiale| [KujialeProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/KujialeProvider.java)  |  <a href="https://open.kujiale.com/open/apps/2/docs?doc_id=95" target="_blank">参考文档</a> |
 |  gitlab| [GitlabProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/GitlabProvider.java)  |  <a href="https://docs.gitlab.com/ee/api/oauth2.html" target="_blank">参考文档</a> |
 |  meituan| [MeituanProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/MeituanProvider.java)  |  <a href="http://open.waimai.meituan.com/openapi_docs/oauth/" target="_blank">参考文档</a> |

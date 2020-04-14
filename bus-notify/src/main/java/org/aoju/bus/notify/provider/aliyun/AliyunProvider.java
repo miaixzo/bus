@@ -28,10 +28,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.notify.AbstractProvider;
-import org.aoju.bus.notify.magic.Response;
-import org.aoju.bus.notify.metric.Properties;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.metric.Template;
+import org.aoju.bus.notify.provider.AbstractProvider;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -49,17 +49,17 @@ import java.util.TreeMap;
  * 阿里云抽象类提供者
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
-public class AbstractAliyunProvider<T extends Template, K extends Properties> extends AbstractProvider<T, K> {
+public class AliyunProvider<T extends Template, K extends Context> extends AbstractProvider<T, K> {
 
     /**
      * 发送成功后返回code
      */
     private static final String SUCCESS_RESULT = "OK";
 
-    public AbstractAliyunProvider(K properties) {
+    public AliyunProvider(K properties) {
         super(properties);
     }
 
@@ -125,9 +125,9 @@ public class AbstractAliyunProvider<T extends Template, K extends Properties> ex
         }
     }
 
-    protected Response checkResponse(String response) {
+    protected Message checkResponse(String response) {
         JSONObject object = JSON.parseObject(response);
-        return Response.builder()
+        return Message.builder()
                 .result(SUCCESS_RESULT.equals(object.getString("Code")))
                 .desc(object.getString("Code")).build();
     }

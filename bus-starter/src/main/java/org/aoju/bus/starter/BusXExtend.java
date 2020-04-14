@@ -28,7 +28,7 @@ package org.aoju.bus.starter;
  * 全局扩展配置
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class BusXExtend {
@@ -69,6 +69,10 @@ public class BusXExtend {
      * API网关
      */
     public static final String METRIC = "extend.metric";
+    /**
+     * 消息通知
+     */
+    public static final String NOTIFY = "extend.notify";
     /**
      * 授权登陆
      */

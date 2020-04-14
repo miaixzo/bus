@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>5.8.3</version>
+    <version>5.8.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -23,6 +23,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-cache</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-http</artifactId>

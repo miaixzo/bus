@@ -28,8 +28,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.notify.AbstractProvider;
-import org.aoju.bus.notify.magic.Response;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.provider.AbstractProvider;
 
 import java.security.MessageDigest;
 import java.util.Date;
@@ -40,10 +41,10 @@ import java.util.Map;
  * 云信抽象类
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
-public abstract class AbstractNeteaseProvider extends AbstractProvider<NeteaseMsgTemplate, NeteaseProperties> {
+public abstract class NeteaseProvider extends AbstractProvider<NeteaseTemplate, Context> {
 
     /**
      * 发送成功后返回code
@@ -53,7 +54,7 @@ public abstract class AbstractNeteaseProvider extends AbstractProvider<NeteaseMs
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-    public AbstractNeteaseProvider(NeteaseProperties properties) {
+    public NeteaseProvider(Context properties) {
         super(properties);
     }
 
@@ -91,14 +92,14 @@ public abstract class AbstractNeteaseProvider extends AbstractProvider<NeteaseMs
         return map;
     }
 
-    public Response post(String routerUrl, Map<String, Object> map) {
+    public Message post(String routerUrl, Map<String, Object> map) {
 
         Map<String, String> header = getPostHeader();
         Logger.debug("netease send：{}", map);
         String response = Httpx.post(routerUrl, map, header);
         Logger.debug("netease result：{}", response);
         JSONObject object = JSON.parseObject(response);
-        return Response.builder()
+        return Message.builder()
                 .result(SUCCESS_RESULT.equals(object.getString("code")))
                 .desc(object.getString("desc")).build();
     }

@@ -25,7 +25,7 @@
 package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.crypto.Builder;
 
@@ -49,7 +49,7 @@ import java.security.PublicKey;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class Asymmetric extends Safety<Asymmetric> {
@@ -273,7 +273,7 @@ public class Asymmetric extends Safety<Asymmetric> {
     private byte[] doFinalWithBlock(byte[] data, int maxBlockSize) throws IllegalBlockSizeException, BadPaddingException, IOException {
         final int dataLength = data.length;
 
-        final FastByteArray out = new FastByteArray();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         int offSet = 0;
         // 剩余长度

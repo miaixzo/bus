@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.Version;
+import org.aoju.bus.core.Version;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.Source;
@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit;
  * 连接提供
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {

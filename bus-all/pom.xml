@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.8.3</version>
+    <version>5.8.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -95,6 +95,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-mapper</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-notify</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>
@@ -216,28 +222,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>true</createSourcesJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <artifactSet>
-                                <includes>
-                                    <include>${project.groupId}:*:*</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -268,6 +252,28 @@
                                 <goals>
                                     <goal>jar-no-fork</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                                    <createSourcesJar>true</createSourcesJar>
+                                    <artifactSet>
+                                        <includes>
+                                            <include>${project.groupId}:*:*</include>
+                                        </includes>
+                                    </artifactSet>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

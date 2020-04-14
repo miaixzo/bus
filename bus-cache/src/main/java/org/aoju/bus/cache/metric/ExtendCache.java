@@ -22,50 +22,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.dingtalk;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Template;
+package org.aoju.bus.cache.metric;
 
 /**
- * 钉钉通知模版
+ * State缓存接口,方便用户扩展
  *
- * @author Justubborn
- * @version 5.8.3
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.5
+ * @since JDK 1.8+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class DingTalkCropMsgTemplate extends Template {
+public interface ExtendCache {
 
     /**
-     * 应用agentId
+     * 存入缓存
+     *
+     * @param key   缓存key
+     * @param value 缓存内容
      */
-    private String agentId;
-    /**
-     * 接收者的用户userId列表，最大列表长度：100
-     */
-    private String userIdList;
-    /**
-     * 接收者的部门id列表，最大列表长度：20,  接收者是部门id下(包括子部门下)的所有用户
-     */
-    private String deptIdList;
-    /**
-     * 是否发送给企业全部用户 true,false
-     */
-    private boolean toAllUser = false;
+    void cache(String key, String value);
 
     /**
-     * json字符串
+     * 存入缓存
+     *
+     * @param key     缓存key
+     * @param value   缓存内容
+     * @param timeout 指定缓存过期时间（毫秒）
      */
-    private String msg;
+    void cache(String key, String value, long timeout);
 
     /**
-     * 钉钉token
+     * 获取缓存内容
+     *
+     * @param key 缓存key
+     * @return 缓存内容
      */
-    private String token;
+    Object get(String key);
 
 }

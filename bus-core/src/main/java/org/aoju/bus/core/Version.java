@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus;
+package org.aoju.bus.core;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -33,7 +33,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class Version {
@@ -61,7 +61,7 @@ public class Version {
      */
 
     public static String get() {
-        return "5.8.3.RELEASE";
+        return "5.8.5.RELEASE";
     }
 
     /**

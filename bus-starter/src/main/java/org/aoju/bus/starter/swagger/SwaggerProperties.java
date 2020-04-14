@@ -32,7 +32,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * swagger配置项
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 @Data

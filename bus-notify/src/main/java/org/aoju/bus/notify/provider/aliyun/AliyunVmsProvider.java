@@ -26,7 +26,8 @@ package org.aoju.bus.notify.provider.aliyun;
 
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.http.Httpx;
-import org.aoju.bus.notify.magic.Response;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -35,22 +36,22 @@ import java.util.*;
  * 阿里云语音通知
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
-public class AliyunVmsProvider extends AbstractAliyunProvider<AliyunVmsTemplate, AliyunVmsProperties> {
+public class AliyunVmsProvider extends AliyunProvider<AliyunVmsTemplate, Context> {
 
     /**
      * 阿里云短信产品域名
      */
     private static final String ALIYUN_PRODUCT_DOMAIN = "dyvmsapi.aliyuncs.com";
 
-    public AliyunVmsProvider(AliyunVmsProperties properties) {
+    public AliyunVmsProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Response send(AliyunVmsTemplate template) {
+    public Message send(AliyunVmsTemplate template) {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         // 这里一定要设置UTC时区

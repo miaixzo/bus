@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>5.8.3</version>
+    <version>5.8.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -56,6 +56,18 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${yaml.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
@@ -67,20 +79,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>${yaml.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <!-- jedis -->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>${jedis.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <!-- Memcached -->
         <dependency>
             <groupId>com.googlecode.xmemcached</groupId>
             <artifactId>xmemcached</artifactId>
@@ -114,13 +112,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.caucho</groupId>
-            <artifactId>hessian</artifactId>
-            <version>${hession.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <!-- EhCache -->
-        <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>${ehcache.version}</version>
@@ -131,6 +122,12 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>${hession.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

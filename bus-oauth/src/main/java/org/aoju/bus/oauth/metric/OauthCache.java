@@ -24,53 +24,62 @@
  ********************************************************************************/
 package org.aoju.bus.oauth.metric;
 
+import org.aoju.bus.cache.CacheX;
+import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.cache.metric.MemoryCache;
+
 /**
- * 缓存,用来缓存State
+ * 默认的state缓存实现
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
-public interface Cache {
+public enum OauthCache implements ExtendCache {
 
     /**
-     * 设置缓存
+     * 当前实例
+     */
+    INSTANCE;
+
+    private CacheX cache;
+
+    OauthCache() {
+        cache = new MemoryCache();
+    }
+
+    /**
+     * 存入缓存
      *
-     * @param key   缓存KEY
+     * @param key   缓存key
      * @param value 缓存内容
      */
-    void set(String key, String value);
+    @Override
+    public void cache(String key, String value) {
+        cache.write(key, value, 3 * 60 * 1000);
+    }
 
     /**
-     * 设置缓存,指定过期时间
+     * 存入缓存
      *
-     * @param key     缓存KEY
+     * @param key     缓存key
      * @param value   缓存内容
      * @param timeout 指定缓存过期时间（毫秒）
      */
-    void set(String key, String value, long timeout);
+    @Override
+    public void cache(String key, String value, long timeout) {
+        cache.write(key, value, timeout);
+    }
 
     /**
-     * 获取缓存
+     * 获取缓存内容
      *
-     * @param key 缓存KEY
+     * @param key 缓存key
      * @return 缓存内容
      */
-    String get(String key);
-
-    /**
-     * 是否存在key,如果对应key的value值已过期,也返回false
-     *
-     * @param key 缓存KEY
-     * @return true：存在key,并且value没过期；false：key不存在或者已过期
-     */
-    boolean containsKey(String key);
-
-    /**
-     * 清理过期的缓存
-     */
-    default void pruneCache() {
-
+    @Override
+    public Object get(String key) {
+        return cache.read(key);
     }
 
 }

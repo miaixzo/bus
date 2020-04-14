@@ -22,27 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.starter.annotation;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Properties;
+import org.aoju.bus.starter.notify.NotifyConfiguration;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
- * 阿里云短信配置
+ * 启用消息通知
  *
- * @author Justubborn
- * @version 5.8.3
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.5
+ * @since JDK 1.8+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class AliyunSmsProperties extends Properties {
+@Inherited
+@Documented
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Import({NotifyConfiguration.class})
+public @interface EnableNotify {
 
-    /**
-     * 短信签名
-     */
-    private String signName;
 }

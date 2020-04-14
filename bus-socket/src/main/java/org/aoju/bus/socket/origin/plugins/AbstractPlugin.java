@@ -31,7 +31,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public abstract class AbstractPlugin<T> implements Plugin<T> {

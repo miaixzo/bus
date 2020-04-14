@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.io.FastByteArray;
+import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -46,7 +46,7 @@ import java.util.Map;
  * 用于执行系统命令的工具
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class RuntimeUtils {
@@ -451,7 +451,7 @@ public class RuntimeUtils {
      * @return 堆栈转为的字符串
      */
     public static String getStackTrace(Throwable throwable, int limit, Map<Character, String> replaceCharToStrMap) {
-        final FastByteArray baos = new FastByteArray();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         throwable.printStackTrace(new PrintStream(baos));
         String exceptionStr = baos.toString();
         int length = exceptionStr.length();

@@ -22,35 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify;
+package org.aoju.bus.notify.provider.netease;
 
-import lombok.AllArgsConstructor;
-import org.aoju.bus.notify.magic.Response;
-import org.aoju.bus.notify.metric.Properties;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.metric.Template;
 
-import java.util.Map;
-
 /**
- * 抽象类
+ * 云信消息
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
-@AllArgsConstructor
-public abstract class AbstractProvider<T extends Template, K extends Properties> implements Provider<T> {
 
-    protected K properties;
+@Getter
+@Setter
+@SuperBuilder
+public class NeteaseTemplate extends Template {
 
-    @Override
-    public Response send(String templateId, Map<String, String> context) {
-        return null;
-    }
+    String title;
 
-    @Override
-    public Response send(T template) {
-        return null;
-    }
+    String body;
+
+    String content;
 
 }

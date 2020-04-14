@@ -42,7 +42,7 @@ import java.util.List;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class MacPowerSource extends AbstractPowerSource {

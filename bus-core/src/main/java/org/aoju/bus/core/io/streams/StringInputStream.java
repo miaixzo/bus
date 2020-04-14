@@ -22,25 +22,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.core.io.streams;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Properties;
+import org.aoju.bus.core.lang.Lang;
+
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
- * 云信配置
- *
- * @author Justubborn
- * @version 5.8.3
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.5
+ * @since JDK 1.8+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class NeteaseProperties extends Properties {
+public class StringInputStream extends ByteArrayInputStream {
 
-    private String appNonce;
+    public StringInputStream(CharSequence s, Charset charset) {
+        super(toBytes(s, charset));
+    }
+
+    public StringInputStream(CharSequence s) {
+        super(toBytes(s, org.aoju.bus.core.lang.Charset.UTF_8));
+    }
+
+    protected static byte[] toBytes(CharSequence str, Charset charset) {
+        if (str == null)
+            return new byte[0];
+        if (charset == null)
+            charset = org.aoju.bus.core.lang.Charset.UTF_8;
+        try {
+            return str.toString().getBytes(charset.name());
+        } catch (UnsupportedEncodingException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 
 }

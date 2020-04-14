@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.banner;
 
-import org.aoju.bus.Version;
+import org.aoju.bus.core.Version;
 import org.aoju.bus.starter.BusXBuilder;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringBootVersion;
@@ -38,7 +38,7 @@ import java.io.PrintStream;
  * 旗标生成器
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class BusBanner implements Banner {

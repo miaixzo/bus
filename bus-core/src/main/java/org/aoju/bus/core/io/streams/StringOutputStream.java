@@ -22,30 +22,70 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.magic;
+package org.aoju.bus.core.io.streams;
 
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import org.aoju.bus.core.lang.Charset;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * 返回消息
- *
- * @author Justubborn
- * @version 5.8.3
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.5
+ * @since JDK 1.8+
  */
-@Data
-@SuperBuilder
-public class Response {
+public class StringOutputStream extends OutputStream {
+
+    private StringBuilder sb;
+    private ByteArrayOutputStream baos;
+    private String charset;
+
+    public StringOutputStream(StringBuilder sb) {
+        this(sb, Charset.DEFAULT_UTF_8);
+    }
+
+    public StringOutputStream(StringBuilder sb, String charset) {
+        this.sb = sb;
+        baos = new ByteArrayOutputStream();
+        this.charset = charset;
+    }
 
     /**
-     * 结果
+     * 完成本方法后,确认字符串已经完成写入后,务必调用flash方法!
      */
-    boolean result;
+    @Override
+    public void write(int b) throws IOException {
+        if (null == baos)
+            throw new IOException("Stream is closed");
+        baos.write(b);
+    }
 
     /**
-     * 描述
+     * 使用StringBuilder前,务必调用
      */
-    String desc;
+    @Override
+    public void flush() throws IOException {
+        if (null != baos) {
+            baos.flush();
+            if (baos.size() > 0) {
+                if (charset == null)
+                    sb.append(new String(baos.toByteArray()));
+                else
+                    sb.append(new String(baos.toByteArray(), charset));
+                baos.reset();
+            }
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        flush();
+        baos = null;
+    }
+
+    public StringBuilder getStringBuilder() {
+        return sb;
+    }
 
 }

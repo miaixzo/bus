@@ -22,28 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.dingtalk;
+package org.aoju.bus.core.io.streams;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Properties;
+import java.io.IOException;
+import java.io.Writer;
 
 /**
- * 钉钉配置
- *
- * @author Justubborn
- * @version 5.8.3
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.5
+ * @since JDK 1.8+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class DingTalkProperties extends Properties {
+public class StringWriter extends Writer {
 
-    private String agentId;
+    private StringBuilder sb;
 
-    private String corpId;
+    public StringWriter(StringBuilder sb) {
+        this.sb = sb;
+    }
 
-    private String whiteList;
+    @Override
+    public void close() throws IOException {
+    }
+
+    @Override
+    public void flush() throws IOException {
+    }
+
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException {
+        for (int i = off; i < (off + len); i++) {
+            sb.append(cbuf[i]);
+        }
+    }
+
+    public StringBuilder getStringBuilder() {
+        return sb;
+    }
+
 }

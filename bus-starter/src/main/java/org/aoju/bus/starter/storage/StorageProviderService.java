@@ -25,26 +25,26 @@
 package org.aoju.bus.starter.storage;
 
 import lombok.RequiredArgsConstructor;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.Provider;
 import org.aoju.bus.storage.Registry;
-import org.aoju.bus.storage.metric.StorageCache;
 import org.aoju.bus.storage.provider.*;
 
 /**
  * 存储服务提供
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
 public class StorageProviderService {
 
     public final StorageProperties properties;
-    public final StorageCache storageCache;
+    public final ExtendCache storageCache;
 
     public Provider get(Registry type) {
         Context context = properties.getType().get(type);

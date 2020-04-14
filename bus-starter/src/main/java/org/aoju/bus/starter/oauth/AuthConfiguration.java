@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.starter.oauth;
 
-import org.aoju.bus.oauth.metric.DefaultStateCache;
-import org.aoju.bus.oauth.metric.StateCache;
+import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.oauth.metric.OauthCache;
 import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -36,22 +36,22 @@ import org.springframework.context.annotation.Bean;
  * 授权配置
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {AuthProperties.class})
 public class AuthConfiguration {
 
     @Bean
-    public AuthProviderService authProviderFactory(AuthProperties properties, StateCache stateCache) {
-        return new AuthProviderService(properties, stateCache);
+    public AuthProviderService authProviderFactory(AuthProperties properties, ExtendCache extendCache) {
+        return new AuthProviderService(properties, extendCache);
     }
 
     @Bean
-    @ConditionalOnMissingBean(StateCache.class)
+    @ConditionalOnMissingBean(ExtendCache.class)
     @ConditionalOnProperty(name = BusXExtend.OAUTH + ".cache.type", havingValue = "default", matchIfMissing = true)
-    public StateCache stateCache() {
-        return DefaultStateCache.INSTANCE;
+    public ExtendCache stateCache() {
+        return OauthCache.INSTANCE;
     }
 
 }

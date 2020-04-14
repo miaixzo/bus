@@ -35,7 +35,7 @@ import java.util.Set;
  * 一个简单的方法筛选器实现，如果方法的名称在一组可接受的名称中，则该实现仅返回true
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class SimpleFilter implements MethodFilter {
