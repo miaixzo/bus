@@ -22,30 +22,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-/*********************************************************************************
- *                                                                               *
- * The MIT License                                                               *
- *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- ********************************************************************************/
 package org.aoju.bus.crypto.provider;
 
 import org.aoju.bus.core.lang.Symbol;
@@ -55,7 +31,7 @@ import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.asymmetric.KeyType;
 import org.aoju.bus.crypto.asymmetric.SM2;
-import org.aoju.bus.crypto.asymmetric.SM2Engine;
+import org.bouncycastle.crypto.engines.SM2Engine;
 
 /**
  * RSA 加密解密算法
@@ -81,7 +57,7 @@ public class SM2Provider implements Provider {
         }
         String[] array = StringUtils.split(key, Symbol.COMMA);
         SM2 sm2 = Builder.sm2(array[0], array[1]);
-        sm2.setMode(SM2Engine.SM2Mode.C1C3C2);
+        sm2.setMode(SM2Engine.Mode.C1C3C2);
         return sm2.encrypt(content, KeyType.valueOf(array[2]));
     }
 
@@ -99,7 +75,7 @@ public class SM2Provider implements Provider {
         }
         String[] array = StringUtils.split(key, Symbol.COMMA);
         SM2 sm2 = Builder.sm2(array[0], array[1]);
-        sm2.setMode(SM2Engine.SM2Mode.C1C3C2);
+        sm2.setMode(SM2Engine.Mode.C1C3C2);
         return sm2.decrypt(content, KeyType.valueOf(array[2]));
     }
 
