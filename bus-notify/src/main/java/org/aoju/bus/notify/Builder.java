@@ -39,13 +39,14 @@ import org.aoju.bus.core.lang.Symbol;
  */
 @Setter
 public class Builder {
-    
+
     @Getter
     @AllArgsConstructor
     public enum ErrorCode {
 
         SUCCESS(Symbol.ZERO, "Success"),
-        FAILURE("-1", "Failure");
+        FAILURE("-1", "Failure"),
+        UNSUPPORTED("5003", "Unsupported operation");
 
         private String code;
         private String msg;

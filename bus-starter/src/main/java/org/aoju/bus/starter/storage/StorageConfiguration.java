@@ -24,11 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.storage;
 
-import org.aoju.bus.cache.metric.ExtendCache;
-import org.aoju.bus.starter.BusXExtend;
-import org.aoju.bus.storage.metric.StorageCache;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -43,15 +38,8 @@ import org.springframework.context.annotation.Bean;
 public class StorageConfiguration {
 
     @Bean
-    public StorageProviderService storageProviderFactory(StorageProperties properties, ExtendCache storageCache) {
-        return new StorageProviderService(properties, storageCache);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(ExtendCache.class)
-    @ConditionalOnProperty(name = BusXExtend.STORAGE + ".cache.type", havingValue = "default", matchIfMissing = true)
-    public ExtendCache storageCache() {
-        return StorageCache.INSTANCE;
+    public StorageProviderService storageProviderFactory(StorageProperties properties) {
+        return new StorageProviderService(properties);
     }
 
 }

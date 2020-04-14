@@ -26,7 +26,7 @@ package org.aoju.bus.starter.notify;
 
 import lombok.Data;
 import org.aoju.bus.notify.Context;
-import org.aoju.bus.oauth.Registry;
+import org.aoju.bus.notify.Registry;
 import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

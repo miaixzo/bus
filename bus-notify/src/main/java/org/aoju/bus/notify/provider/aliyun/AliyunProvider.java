@@ -70,7 +70,6 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      * pop编码
      *
      * @param value 原值
-     *
      * @return 编码值
      */
     protected String specialUrlEncode(String value) {
@@ -88,7 +87,6 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      * 构造签名
      *
      * @param params 参数
-     *
      * @return 签名值
      */
     protected String getSign(Map<String, String> params) {
@@ -117,7 +115,6 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      * 密钥签名
      *
      * @param stringToSign 代签名字符串
-     *
      * @return 签名后字符串
      */
     protected String sign(String stringToSign) {

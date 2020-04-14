@@ -43,7 +43,8 @@ public class Builder {
     public enum ErrorCode {
 
         SUCCESS(Symbol.ZERO, "Success"),
-        FAILURE("-1", "Failure");
+        FAILURE("-1", "Failure"),
+        UNSUPPORTED("5003", "Unsupported operation");
 
         private String code;
         private String msg;
@@ -69,5 +70,5 @@ public class Builder {
          */
         CUSTOM
     }
-    
+
 }

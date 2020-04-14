@@ -109,7 +109,6 @@ public abstract class NeteaseProvider extends AbstractProvider<NeteaseTemplate, 
      * CheckSum
      *
      * @param curTime 时间
-     *
      * @return 结果
      */
     private String getCheckSum(String curTime) {

@@ -28,9 +28,7 @@ import lombok.Data;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.starter.BusXExtend;
-import org.aoju.bus.starter.cache.CacheProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.Map;
 
@@ -51,11 +49,5 @@ public class AuthProperties {
      * 基础配置
      */
     private Map<Registry, Context> type;
-
-    /**
-     * 缓存配置
-     */
-    @NestedConfigurationProperty
-    private CacheProperties cache;
 
 }

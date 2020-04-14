@@ -26,6 +26,8 @@ package org.aoju.bus.starter.notify;
 
 import lombok.RequiredArgsConstructor;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.Provider;
 import org.aoju.bus.notify.Registry;
@@ -73,19 +75,23 @@ public class NotifyProviderService {
      * @param registry {@link Registry}
      * @return {@link Provider}
      */
-    public static Provider get(Registry registry) {
-        if (Registry.ALIYUN_SMS.equals(registry)) {
-            return new AliyunSmsProvider(NOTIFY_CACHE.get(registry));
-        } else if (Registry.ALIYUN_VMS.equals(registry)) {
-            return new AliyunVmsProvider(NOTIFY_CACHE.get(registry));
-        } else if (Registry.DINGTALK_CORP_MSG.equals(registry)) {
-            return new DingTalkProvider(NOTIFY_CACHE.get(registry));
-        } else if (Registry.NETEASE_ATTACH_MSG.equals(registry)) {
-            return new NeteaseAttachProvider(NOTIFY_CACHE.get(registry));
-        } else if (Registry.NETEASE_MSG.equals(registry)) {
-            return new NeteaseSendProvider(NOTIFY_CACHE.get(registry));
+    public Provider get(Registry registry) {
+        Context context = NOTIFY_CACHE.get(registry);
+        if (ObjectUtils.isEmpty(context)) {
+            context = properties.getType().get(registry);
         }
-        return null;
+        if (Registry.ALIYUN_SMS.equals(registry)) {
+            return new AliyunSmsProvider(context);
+        } else if (Registry.ALIYUN_VMS.equals(registry)) {
+            return new AliyunVmsProvider(context);
+        } else if (Registry.DINGTALK_CORP_MSG.equals(registry)) {
+            return new DingTalkProvider(context);
+        } else if (Registry.NETEASE_ATTACH_MSG.equals(registry)) {
+            return new NeteaseAttachProvider(context);
+        } else if (Registry.NETEASE_MSG.equals(registry)) {
+            return new NeteaseSendProvider(context);
+        }
+        throw new InstrumentException(Builder.ErrorCode.UNSUPPORTED.getMsg());
     }
 
 }

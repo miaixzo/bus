@@ -25,13 +25,16 @@
 package org.aoju.bus.starter.storage;
 
 import lombok.RequiredArgsConstructor;
-import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.Provider;
 import org.aoju.bus.storage.Registry;
 import org.aoju.bus.storage.provider.*;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 存储服务提供
@@ -43,11 +46,30 @@ import org.aoju.bus.storage.provider.*;
 @RequiredArgsConstructor
 public class StorageProviderService {
 
+    /**
+     * 组件配置
+     */
+    private static Map<Registry, Context> STORAGE_CACHE = new ConcurrentHashMap<>();
     public final StorageProperties properties;
-    public final ExtendCache storageCache;
+
+    /**
+     * 注册组件
+     *
+     * @param type    组件名称
+     * @param context 组件对象
+     */
+    public static void register(Registry type, Context context) {
+        if (STORAGE_CACHE.containsKey(type)) {
+            throw new InstrumentException("重复注册同名称的组件：" + type.name());
+        }
+        STORAGE_CACHE.putIfAbsent(type, context);
+    }
 
     public Provider get(Registry type) {
-        Context context = properties.getType().get(type);
+        Context context = STORAGE_CACHE.get(type);
+        if (ObjectUtils.isEmpty(context)) {
+            context = properties.getType().get(type);
+        }
         if (Registry.ALIYUN.equals(type)) {
             return new AliYunOssProvider(context);
         } else if (Registry.BAIDU.equals(type)) {
@@ -67,7 +89,7 @@ public class StorageProviderService {
         } else if (Registry.LOCAL.equals(type)) {
             return new LocalFileProvider(context);
         }
-        throw new InstrumentException(Builder.FAILURE);
+        throw new InstrumentException(Builder.ErrorCode.UNSUPPORTED.getMsg());
     }
 
 }
