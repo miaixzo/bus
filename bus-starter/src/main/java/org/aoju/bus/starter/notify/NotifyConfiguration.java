@@ -38,7 +38,7 @@ import org.springframework.context.annotation.Bean;
 public class NotifyConfiguration {
 
     @Bean
-    public NotifyProviderService authProviderFactory(NotifyProperties properties) {
+    public NotifyProviderService notifyProviderFactory(NotifyProperties properties) {
         return new NotifyProviderService(properties);
     }
 
