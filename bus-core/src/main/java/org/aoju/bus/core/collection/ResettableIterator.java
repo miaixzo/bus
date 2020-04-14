@@ -31,7 +31,7 @@ import java.util.Iterator;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public interface ResettableIterator<E> extends Iterator<E> {

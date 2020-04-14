@@ -22,9 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify;
+package org.aoju.bus.starter.notify;
 
+import lombok.RequiredArgsConstructor;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.notify.Provider;
+import org.aoju.bus.notify.Registry;
 import org.aoju.bus.notify.metric.Properties;
 import org.aoju.bus.notify.provider.aliyun.AliyunSmsProperties;
 import org.aoju.bus.notify.provider.aliyun.AliyunSmsProvider;
@@ -43,10 +46,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通知提供服务
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
+@RequiredArgsConstructor
 public class NotifyProviderService {
+
+    public final NotifyProperties properties;
 
     /**
      * 通知器配置
@@ -61,7 +67,7 @@ public class NotifyProviderService {
      */
     public static void register(Registry registry, Properties properties) {
         if (NOTIFY_CACHE.containsKey(registry)) {
-            throw new InstrumentException("重复注册同名称的校验器：" + registry.name());
+            throw new InstrumentException("重复注册同名称的组件：" + registry.name());
         }
         NOTIFY_CACHE.putIfAbsent(registry, properties);
     }

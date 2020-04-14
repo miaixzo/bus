@@ -27,6 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -39,7 +40,6 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.StateCache;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +48,7 @@ import java.util.Map;
  * 领英登录
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class LinkedinProvider extends DefaultProvider {
@@ -57,8 +57,8 @@ public class LinkedinProvider extends DefaultProvider {
         super(context, Registry.LINKEDIN);
     }
 
-    public LinkedinProvider(Context context, StateCache stateCache) {
-        super(context, Registry.LINKEDIN, stateCache);
+    public LinkedinProvider(Context context, ExtendCache extendCache) {
+        super(context, Registry.LINKEDIN, extendCache);
     }
 
     @Override

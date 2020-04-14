@@ -28,7 +28,7 @@ package org.aoju.bus.health.hardware;
  * Disks refers to hard drives installed in the machine.
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public interface Disks {

@@ -44,7 +44,7 @@ import org.aoju.bus.logger.Logger;
  * its File Stores.
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class HWDiskStore implements Comparable<HWDiskStore> {

@@ -35,7 +35,7 @@ package org.aoju.bus.core.lang;
  *
  * @param <T> 被编辑对象类型
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public interface Editor<T> {

@@ -40,7 +40,7 @@ import java.util.Map;
  * 构造URL
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 @Setter
@@ -142,7 +142,7 @@ public class Builder {
     @ToString
     public enum Type {
         /**
-         * 使用JustAuth内置的缓存
+         * 使用内置的缓存
          */
         DEFAULT,
         /**

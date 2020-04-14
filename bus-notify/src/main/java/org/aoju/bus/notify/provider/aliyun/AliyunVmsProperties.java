@@ -33,7 +33,7 @@ import org.aoju.bus.notify.metric.Properties;
  * 阿里云语音配置
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
 @Getter

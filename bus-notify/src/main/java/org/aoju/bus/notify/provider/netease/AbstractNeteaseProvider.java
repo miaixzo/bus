@@ -28,8 +28,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.notify.AbstractProvider;
 import org.aoju.bus.notify.magic.Response;
+import org.aoju.bus.notify.provider.AbstractProvider;
 
 import java.security.MessageDigest;
 import java.util.Date;
@@ -40,7 +40,7 @@ import java.util.Map;
  * 云信抽象类
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
 public abstract class AbstractNeteaseProvider extends AbstractProvider<NeteaseMsgTemplate, NeteaseProperties> {

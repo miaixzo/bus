@@ -33,7 +33,7 @@ import java.math.BigInteger;
  * 如果值不存在或获取错误,返回默认值
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public interface OptArrayType {

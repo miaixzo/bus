@@ -22,55 +22,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.oauth.metric;
+package org.aoju.bus.starter.notify;
+
+import lombok.Data;
+import org.aoju.bus.notify.metric.Properties;
+import org.aoju.bus.oauth.Registry;
+import org.aoju.bus.starter.BusXExtend;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.util.Map;
 
 /**
- * 缓存,用来缓存State
+ * 消息通知
+ * 1. 默认读取配置文件信息
+ * 2. 通过set形式设置(动态/DB等)
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
-public interface Cache {
+@Data
+@ConfigurationProperties(prefix = BusXExtend.NOTIFY)
+public class NotifyProperties {
 
     /**
-     * 设置缓存
-     *
-     * @param key   缓存KEY
-     * @param value 缓存内容
+     * 基础配置
      */
-    void set(String key, String value);
-
-    /**
-     * 设置缓存,指定过期时间
-     *
-     * @param key     缓存KEY
-     * @param value   缓存内容
-     * @param timeout 指定缓存过期时间（毫秒）
-     */
-    void set(String key, String value, long timeout);
-
-    /**
-     * 获取缓存
-     *
-     * @param key 缓存KEY
-     * @return 缓存内容
-     */
-    String get(String key);
-
-    /**
-     * 是否存在key,如果对应key的value值已过期,也返回false
-     *
-     * @param key 缓存KEY
-     * @return true：存在key,并且value没过期；false：key不存在或者已过期
-     */
-    boolean containsKey(String key);
-
-    /**
-     * 清理过期的缓存
-     */
-    default void pruneCache() {
-
-    }
+    private Map<Registry, Properties> type;
 
 }

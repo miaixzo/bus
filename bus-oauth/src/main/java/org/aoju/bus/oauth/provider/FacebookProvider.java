@@ -25,6 +25,7 @@
 package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
@@ -33,13 +34,12 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.StateCache;
 
 /**
  * Facebook登录
  *
  * @author Kimi Liu
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK 1.8+
  */
 public class FacebookProvider extends DefaultProvider {
@@ -48,8 +48,8 @@ public class FacebookProvider extends DefaultProvider {
         super(context, Registry.FACEBOOK);
     }
 
-    public FacebookProvider(Context context, StateCache stateCache) {
-        super(context, Registry.FACEBOOK, stateCache);
+    public FacebookProvider(Context context, ExtendCache extendCache) {
+        super(context, Registry.FACEBOOK, extendCache);
     }
 
     @Override

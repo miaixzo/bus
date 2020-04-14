@@ -22,35 +22,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify;
-
-import lombok.AllArgsConstructor;
-import org.aoju.bus.notify.magic.Response;
-import org.aoju.bus.notify.metric.Properties;
-import org.aoju.bus.notify.metric.Template;
-
-import java.util.Map;
+package org.aoju.bus.cache.metric;
 
 /**
- * 抽象类
+ * State缓存接口,方便用户扩展
  *
- * @author Justubborn
- * @version 5.8.3
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.5
+ * @since JDK 1.8+
  */
-@AllArgsConstructor
-public abstract class AbstractProvider<T extends Template, K extends Properties> implements Provider<T> {
+public interface ExtendCache {
 
-    protected K properties;
+    /**
+     * 存入缓存
+     *
+     * @param key   缓存key
+     * @param value 缓存内容
+     */
+    void cache(String key, String value);
 
-    @Override
-    public Response send(String templateId, Map<String, String> context) {
-        return null;
-    }
+    /**
+     * 存入缓存
+     *
+     * @param key     缓存key
+     * @param value   缓存内容
+     * @param timeout 指定缓存过期时间（毫秒）
+     */
+    void cache(String key, String value, long timeout);
 
-    @Override
-    public Response send(T template) {
-        return null;
-    }
+    /**
+     * 获取缓存内容
+     *
+     * @param key 缓存key
+     * @return 缓存内容
+     */
+    Object get(String key);
 
 }

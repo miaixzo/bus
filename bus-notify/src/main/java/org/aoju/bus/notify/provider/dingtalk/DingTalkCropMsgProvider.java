@@ -30,8 +30,8 @@ import lombok.Setter;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.notify.AbstractProvider;
 import org.aoju.bus.notify.magic.Response;
+import org.aoju.bus.notify.provider.AbstractProvider;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 钉钉通知
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
 @Setter

@@ -33,7 +33,7 @@ import org.aoju.bus.notify.metric.Template;
  * 钉钉通知模版
  *
  * @author Justubborn
- * @version 5.8.3
+ * @version 5.8.5
  * @since JDK1.8+
  */
 @Getter
