@@ -26,6 +26,8 @@ package org.aoju.bus.notify.provider.aliyun;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.notify.Context;
@@ -71,7 +73,7 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      */
     protected String specialUrlEncode(String value) {
         try {
-            return URLEncoder.encode(value, "UTF-8")
+            return URLEncoder.encode(value, Charset.DEFAULT_UTF_8)
                     .replace("+", "%20")
                     .replace("*", "%2A")
                     .replace("%7E", "~");
@@ -116,8 +118,8 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      */
     protected String sign(String stringToSign) {
         try {
-            Mac mac = Mac.getInstance("HmacSHA1");
-            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(StandardCharsets.UTF_8), "HmacSHA1"));
+            Mac mac = Mac.getInstance(Algorithm.HmacSHA1);
+            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(StandardCharsets.UTF_8), Algorithm.HmacSHA1));
             byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
