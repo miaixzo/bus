@@ -5982,9 +5982,4 @@ public class StringUtils extends TextUtils {
         return String.valueOf(strArray);
     }
 
-    public static void main(String[] args) {
-        String str = "df1432sa";
-        System.out.println(sort(str, true));
-    }
-
 }
