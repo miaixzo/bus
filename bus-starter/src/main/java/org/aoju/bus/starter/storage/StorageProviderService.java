@@ -25,6 +25,7 @@
 package org.aoju.bus.starter.storage;
 
 import lombok.RequiredArgsConstructor;
+import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.storage.Builder;
@@ -51,6 +52,7 @@ public class StorageProviderService {
      */
     private static Map<Registry, Context> STORAGE_CACHE = new ConcurrentHashMap<>();
     public final StorageProperties properties;
+    public final ExtendCache storageCache;
 
     /**
      * 注册组件

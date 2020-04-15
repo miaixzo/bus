@@ -5964,15 +5964,15 @@ public class StringUtils extends TextUtils {
 
 
     /**
-     * <p>@title: sort</p>
-     * <p>@description: 字符串按照字符排序方法</p>
+     * 字符串按照字符排序方法
      *
      * @param str 排序字段
      * @return {@link String}
-     * @since 1.0 by sixawn.zheng created on 2020-04-15
+     * @author sixawn.zheng
+     * @since 5.8.8
      */
     public static String sort(String str) {
-        if (null == str || "".equalsIgnoreCase(str)) {
+        if (isEmpty(str) || Normal.EMPTY.equalsIgnoreCase(str)) {
             return null;
         }
         char[] strArray = str.toCharArray();

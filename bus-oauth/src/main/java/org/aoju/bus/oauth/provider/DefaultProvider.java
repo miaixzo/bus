@@ -88,7 +88,7 @@ public abstract class DefaultProvider implements Provider {
      * @return true or false
      */
     public static boolean isSupportedAuth(Context context, Complex source) {
-        boolean isSupported = StringUtils.isNotEmpty(context.getAppKey()) && StringUtils.isNotEmpty(context.getAppSecret()) && StringUtils.isNotEmpty(context.getRedirectUri());
+        boolean isSupported = StringUtils.isNotEmpty(context.getAppKey()) && StringUtils.isNotEmpty(context.getAppSecret());
         if (isSupported && Registry.ALIPAY == source) {
             isSupported = StringUtils.isNotEmpty(context.getPublicKey());
         }
