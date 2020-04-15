@@ -1017,7 +1017,7 @@ public class XmlUtils {
             String key = it.next();
             Object value = null != map.get(key) ? map.get(key) : Symbol.SPACE;
             if (!"sign".equals(key)) {
-                sb.append(Symbol.LT + key + Symbol.GT + value + Symbol.LT + Symbol.C_SLASH + key + Symbol.LT);
+                sb.append(Symbol.LT + key + Symbol.GT + value + Symbol.LT + Symbol.C_SLASH + key + Symbol.GT);
             }
         }
         return sb.toString();
