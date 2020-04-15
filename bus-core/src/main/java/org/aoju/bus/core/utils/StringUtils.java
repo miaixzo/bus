@@ -5962,4 +5962,29 @@ public class StringUtils extends TextUtils {
         return str.length() > position && c == str.charAt(position);
     }
 
+
+    /**
+     * <p>@title: sort</p>
+     * <p>@description: 字符串按照字符排序方法</p>
+     *
+     * @param str 排序字段
+     * @return {@link String}
+     * @since 1.0 by sixawn.zheng created on 2020-04-15
+     */
+    public static String sort(String str) {
+        if (null == str || "".equalsIgnoreCase(str)) {
+            return null;
+        }
+        char[] strArray = str.toCharArray();
+
+        Arrays.sort(strArray);
+
+        return String.valueOf(strArray);
+    }
+
+    public static void main(String[] args) {
+        String str = "df1432sa";
+        System.out.println(sort(str, true));
+    }
+
 }
