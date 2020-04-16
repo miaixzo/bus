@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 正则匹配校验
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class RegexStrategy implements Matcher<String, Regex> {

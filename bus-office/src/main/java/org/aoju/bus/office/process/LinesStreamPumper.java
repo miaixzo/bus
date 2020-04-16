@@ -32,7 +32,7 @@ import java.util.List;
  * 从输入流中读取所有行.
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class LinesStreamPumper extends StreamPumper {

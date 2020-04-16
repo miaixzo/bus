@@ -36,7 +36,7 @@ import org.aoju.bus.core.lang.Symbol;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS

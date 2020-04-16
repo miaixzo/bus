@@ -34,7 +34,7 @@ import java.io.File;
  * 这个类包含{@link OfficeProcess}的配置.
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class OfficeProcessBuilder {

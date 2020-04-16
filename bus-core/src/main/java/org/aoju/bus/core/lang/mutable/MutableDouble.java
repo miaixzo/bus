@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>double</code> 类型
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @see Double
  * @since JDK 1.8+
  */

@@ -47,7 +47,7 @@ import java.util.concurrent.CountDownLatch;
  * DNS over HTTPS实施
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class DnsOverHttps implements DnsX {

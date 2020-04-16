@@ -50,7 +50,7 @@ import java.util.*;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class ClassUtils {
@@ -761,7 +761,7 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();

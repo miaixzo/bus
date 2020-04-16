@@ -28,7 +28,7 @@ package org.aoju.bus.health.hardware;
  * Baseboard data
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public abstract class AbstractBaseboard implements Baseboard {

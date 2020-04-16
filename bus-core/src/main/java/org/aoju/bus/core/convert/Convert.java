@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class Convert {
@@ -81,7 +81,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return String数组
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static String[] toStrArray(Object value) {
         return convert(String[].class, value);
@@ -117,7 +117,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Character数组
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static Character[] toCharArray(Object value) {
         return convert(Character[].class, value);
@@ -153,7 +153,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Byte数组
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static Byte[] toByteArray(Object value) {
         return convert(Byte[].class, value);
@@ -189,7 +189,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Short数组
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static Short[] toShortArray(Object value) {
         return convert(Short[].class, value);
@@ -225,7 +225,7 @@ public class Convert {
      *
      * @param value 被转换的值
      * @return Number数组
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static Number[] toNumberArray(Object value) {
         return convert(Number[].class, value);
@@ -938,7 +938,7 @@ public class Convert {
      *
      * @param intValue int值
      * @return byte值
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static byte intToByte(int intValue) {
         return (byte) intValue;
@@ -949,7 +949,7 @@ public class Convert {
      *
      * @param byteValue byte值
      * @return 无符号int值
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static int byteToUnsignedInt(byte byteValue) {
         // Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值
@@ -961,7 +961,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return short值
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static short bytesToShort(byte[] bytes) {
         return (short) (bytes[1] & 0xff | (bytes[0] & 0xff) << 8);
@@ -972,7 +972,7 @@ public class Convert {
      *
      * @param shortValue short值
      * @return byte数组
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static byte[] shortToBytes(short shortValue) {
         byte[] b = new byte[2];
@@ -986,7 +986,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return int值
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static int bytesToInt(byte[] bytes) {
         return bytes[3] & 0xFF | //
@@ -1000,7 +1000,7 @@ public class Convert {
      *
      * @param intValue int值
      * @return byte数组
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static byte[] intToBytes(int intValue) {
         return new byte[]{
@@ -1016,7 +1016,7 @@ public class Convert {
      *
      * @param longValue long值
      * @return byte数组
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static byte[] longToBytes(long longValue) {
         final byte[] result = new byte[8];
@@ -1032,7 +1032,7 @@ public class Convert {
      *
      * @param bytes byte数组
      * @return long值
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static long bytesToLong(byte[] bytes) {
         long values = 0;

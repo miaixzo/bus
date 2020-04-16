@@ -52,7 +52,7 @@ import java.util.TreeMap;
  * 阿里云抽象类提供者
  *
  * @author Justubborn
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK1.8+
  */
 public class AliyunProvider<T extends Template, K extends Context> extends AbstractProvider<T, K> {

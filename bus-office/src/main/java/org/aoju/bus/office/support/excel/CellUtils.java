@@ -50,7 +50,7 @@ import java.util.List;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class CellUtils {
@@ -265,7 +265,7 @@ public class CellUtils {
      * @param sheet       {@link Sheet}
      * @param locationRef 单元格地址标识符，例如A11，B5
      * @return 是否是合并单元格
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static boolean isMergedRegion(Sheet sheet, String locationRef) {
         final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
@@ -277,7 +277,7 @@ public class CellUtils {
      *
      * @param cell {@link Cell}
      * @return 是否是合并单元格
-     * @since 5.8.6
+     * @since 5.8.8
      */
     public static boolean isMergedRegion(Cell cell) {
         return isMergedRegion(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());

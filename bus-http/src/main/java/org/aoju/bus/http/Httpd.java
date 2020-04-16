@@ -66,7 +66,7 @@ import java.util.concurrent.TimeUnit;
  * Httpd还为HTTP/2连接使用守护进程线程。如果它们保持空闲，就会自动退出
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
