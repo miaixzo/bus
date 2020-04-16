@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.Provider;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.metric.Template;
+import org.aoju.bus.notify.magic.Template;
 
 import java.util.Map;
 

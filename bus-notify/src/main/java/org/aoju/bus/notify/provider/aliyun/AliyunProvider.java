@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.metric.Template;
+import org.aoju.bus.notify.magic.Template;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
 import javax.crypto.Mac;

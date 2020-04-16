@@ -25,7 +25,7 @@
 package org.aoju.bus.notify;
 
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.metric.Template;
+import org.aoju.bus.notify.magic.Template;
 
 import java.util.Map;
 

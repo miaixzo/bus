@@ -29,7 +29,7 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.cache.metric.MemoryCache;
 
 /**
- * 默认的state缓存实现
+ * 默认缓存实现
  *
  * @author Kimi Liu
  * @version 5.8.8

@@ -27,7 +27,7 @@ package org.aoju.bus.notify.provider.netease;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Template;
+import org.aoju.bus.notify.magic.Template;
 
 /**
  * 云信消息
