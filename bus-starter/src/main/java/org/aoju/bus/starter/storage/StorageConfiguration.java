@@ -43,8 +43,8 @@ import org.springframework.context.annotation.Bean;
 public class StorageConfiguration {
 
     @Bean
-    public StorageProviderService storageProviderFactory(StorageProperties properties, ExtendCache storageCache) {
-        return new StorageProviderService(properties, storageCache);
+    public StorageProviderService storageProviderFactory(StorageProperties properties, ExtendCache extendCache) {
+        return new StorageProviderService(properties, extendCache);
     }
 
     @Bean

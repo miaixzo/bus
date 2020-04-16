@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.notify;
 
-import lombok.RequiredArgsConstructor;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.notify.Builder;
@@ -47,14 +46,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 5.8.6
  * @since JDK1.8+
  */
-@RequiredArgsConstructor
 public class NotifyProviderService {
 
     /**
      * 通知器配置
      */
-    private static Map<Registry, Context> NOTIFY_CACHE = new ConcurrentHashMap<>();
-    public final NotifyProperties properties;
+    private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    public NotifyProperties properties;
+
+    NotifyProviderService(NotifyProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * 注册组件
@@ -63,10 +65,10 @@ public class NotifyProviderService {
      * @param context  组件对象
      */
     public static void register(Registry registry, Context context) {
-        if (NOTIFY_CACHE.containsKey(registry)) {
+        if (CACHE.containsKey(registry)) {
             throw new InstrumentException("重复注册同名称的组件：" + registry.name());
         }
-        NOTIFY_CACHE.putIfAbsent(registry, context);
+        CACHE.putIfAbsent(registry, context);
     }
 
     /**
@@ -76,7 +78,7 @@ public class NotifyProviderService {
      * @return {@link Provider}
      */
     public Provider require(Registry registry) {
-        Context context = NOTIFY_CACHE.get(registry);
+        Context context = CACHE.get(registry);
         if (ObjectUtils.isEmpty(context)) {
             context = properties.getType().get(registry);
         }

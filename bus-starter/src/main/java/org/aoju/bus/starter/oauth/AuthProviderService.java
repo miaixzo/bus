@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.oauth;
 
-import lombok.RequiredArgsConstructor;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
@@ -32,6 +31,7 @@ import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Provider;
 import org.aoju.bus.oauth.Registry;
+import org.aoju.bus.oauth.metric.OauthCache;
 import org.aoju.bus.oauth.provider.*;
 
 import java.util.Map;
@@ -44,15 +44,23 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 5.8.5
  * @since JDK 1.8+
  */
-@RequiredArgsConstructor
 public class AuthProviderService {
-    
+
     /**
      * 组件配置
      */
-    private static Map<Registry, Context> AUTH_CACHE = new ConcurrentHashMap<>();
-    public final AuthProperties properties;
-    public final ExtendCache extendCache;
+    private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    public AuthProperties properties;
+    public ExtendCache extendCache;
+
+    AuthProviderService(AuthProperties properties) {
+        this(properties, OauthCache.INSTANCE);
+    }
+
+    AuthProviderService(AuthProperties properties, ExtendCache extendCache) {
+        this.properties = properties;
+        this.extendCache = extendCache;
+    }
 
     /**
      * 注册组件
@@ -61,10 +69,10 @@ public class AuthProviderService {
      * @param context 组件对象
      */
     public static void register(Registry type, Context context) {
-        if (AUTH_CACHE.containsKey(type)) {
+        if (CACHE.containsKey(type)) {
             throw new InstrumentException("重复注册同名称的组件：" + type.name());
         }
-        AUTH_CACHE.putIfAbsent(type, context);
+        CACHE.putIfAbsent(type, context);
     }
 
     /**
@@ -75,7 +83,7 @@ public class AuthProviderService {
      */
 
     public Provider require(Registry type) {
-        Context context = AUTH_CACHE.get(type);
+        Context context = CACHE.get(type);
         if (ObjectUtils.isEmpty(context)) {
             context = properties.getType().get(type);
         }
