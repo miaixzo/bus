@@ -51,7 +51,7 @@ public class AuthProperties {
      * 基础配置
      */
     private Map<Registry, Context> type;
-    
+
     /**
      * 缓存配置
      */

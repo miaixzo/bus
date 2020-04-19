@@ -26,6 +26,7 @@ package org.aoju.bus.cron;
 
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.utils.ThreadUtils;
+import org.aoju.bus.logger.Logger;
 
 /**
  * 定时任务计时器
@@ -40,17 +41,16 @@ public class CronTimer extends Thread {
     /**
      * 定时单元：秒
      */
-    private long TIMER_UNIT_SECOND = Fields.Unit.SECOND.getMillis();
+    private final long TIMER_UNIT_SECOND = Fields.Unit.SECOND.getMillis();
     /**
      * 定时单元：分
      */
-    private long TIMER_UNIT_MINUTE = Fields.Unit.MINUTE.getMillis();
-
+    private final long TIMER_UNIT_MINUTE = Fields.Unit.MINUTE.getMillis();
+    private final Scheduler scheduler;
     /**
      * 定时任务是否已经被强制关闭
      */
-    private boolean isStoped;
-    private Scheduler scheduler;
+    private boolean isStop;
 
     /**
      * 构造
@@ -61,6 +61,23 @@ public class CronTimer extends Thread {
         this.scheduler = scheduler;
     }
 
+    /**
+     * 检查是否为有效的sleep毫秒数，包括：
+     * <pre>
+     *     1. 是否&gt;0，防止用户向未来调整时间
+     *     1. 是否&lt;两倍的间隔单位，防止用户向历史调整时间
+     * </pre>
+     *
+     * @param millis    毫秒数
+     * @param timerUnit 定时单位，为秒或者分的毫秒值
+     * @return 是否为有效的sleep毫秒数
+     */
+    private static boolean isValidSleepMillis(long millis, long timerUnit) {
+        return millis > 0 &&
+                // 防止用户向前调整时间导致的长时间sleep
+                millis < (2 * timerUnit);
+    }
+
     @Override
     public void run() {
         final long timerUnit = this.scheduler.matchSecond ? TIMER_UNIT_SECOND : TIMER_UNIT_MINUTE;
@@ -68,27 +85,30 @@ public class CronTimer extends Thread {
         long thisTime = System.currentTimeMillis();
         long nextTime;
         long sleep;
-        while (false == isStoped) {
+        while (false == isStop) {
             //下一时间计算是按照上一个执行点开始时间计算的
+            //此处除以定时单位是为了清零单位以下部分，例如单位是分则秒和毫秒清零
             nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
             sleep = nextTime - System.currentTimeMillis();
-            if (sleep > 0 && false == ThreadUtils.safeSleep(sleep)) {
-                //等待直到下一个时间点,如果被中断直接退出Timer
-                break;
+            if (isValidSleepMillis(sleep, timerUnit)) {
+                if (false == ThreadUtils.safeSleep(sleep)) {
+                    //等待直到下一个时间点，如果被中断直接退出Timer
+                    break;
+                }
+                //执行点，时间记录为执行开始的时间，而非结束时间
+                thisTime = System.currentTimeMillis();
+                spawnLauncher(thisTime);
             }
-
-            //执行点,时间记录为执行开始的时间,而非结束时间
-            thisTime = System.currentTimeMillis();
-            spawnLauncher(thisTime);
         }
+        Logger.debug("Cron timer stoped.");
     }
 
     /**
      * 关闭定时器
      */
     synchronized public void stopTimer() {
-        this.isStoped = true;
-        ThreadUtils.interupt(this, true);
+        this.isStop = true;
+        ThreadUtils.interrupt(this, true);
     }
 
     /**

@@ -31,13 +31,18 @@ import org.aoju.bus.core.utils.HexUtils;
 import org.aoju.bus.crypto.Builder;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.CryptoException;
+import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.InvalidCipherTextException;
+import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.crypto.engines.SM2Engine;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.params.ParametersWithID;
 import org.bouncycastle.crypto.params.ParametersWithRandom;
+import org.bouncycastle.crypto.signers.DSAEncoding;
+import org.bouncycastle.crypto.signers.PlainDSAEncoding;
 import org.bouncycastle.crypto.signers.SM2Signer;
+import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -58,6 +63,8 @@ public class SM2 extends Safety<SM2> {
     private SM2Engine.Mode mode = SM2Engine.Mode.C1C3C2;
     private ECPrivateKeyParameters privateKeyParams;
     private ECPublicKeyParameters publicKeyParams;
+    private DSAEncoding encoding = StandardDSAEncoding.INSTANCE;
+    private Digest digest = new SM3Digest();
 
     /**
      * 构造，生成新的私钥公钥对
@@ -396,9 +403,7 @@ public class SM2 extends Safety<SM2> {
      */
     public SM2 setMode(SM2Engine.Mode mode) {
         this.mode = mode;
-        if (null != this.engine) {
-            this.engine = null;
-        }
+        this.engine = null;
         return this;
     }
 
@@ -428,7 +433,7 @@ public class SM2 extends Safety<SM2> {
      */
     private SM2Engine getEngine() {
         if (null == this.engine) {
-            this.engine = new SM2Engine(this.mode);
+            this.engine = new SM2Engine(this.digest, this.mode);
         }
         return this.engine;
     }
@@ -440,9 +445,43 @@ public class SM2 extends Safety<SM2> {
      */
     private SM2Signer getSigner() {
         if (null == this.signer) {
-            this.signer = new SM2Signer();
+            this.signer = new SM2Signer(this.encoding, this.digest);
         }
         return this.signer;
+    }
+
+    /**
+     * 设置DSA signatures的编码为PlainDSAEncoding
+     *
+     * @return this
+     */
+    public SM2 setEncoding() {
+        return setEncoding(PlainDSAEncoding.INSTANCE);
+    }
+
+    /**
+     * 设置DSA signatures的编码
+     *
+     * @param encoding {@link DSAEncoding}实现
+     * @return this
+     */
+    public SM2 setEncoding(DSAEncoding encoding) {
+        this.encoding = encoding;
+        this.signer = null;
+        return this;
+    }
+
+    /**
+     * 设置Hash算法
+     *
+     * @param digest {@link Digest}实现
+     * @return this
+     */
+    public SM2 setDigest(Digest digest) {
+        this.digest = digest;
+        this.engine = null;
+        this.signer = null;
+        return this;
     }
 
 }
