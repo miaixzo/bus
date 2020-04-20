@@ -32,7 +32,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * 2. 当前类出于测试阶段
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public interface Instance {

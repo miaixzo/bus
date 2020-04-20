@@ -46,7 +46,7 @@ import java.util.Map;
  * PUT请求处理
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class PutRequest extends HttpRequest {

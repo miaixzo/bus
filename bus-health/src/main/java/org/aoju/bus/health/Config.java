@@ -38,7 +38,7 @@ import java.util.Properties;
  * {@code src/main/resources/oshi.properties} for default values.
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public final class Config {

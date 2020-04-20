@@ -33,7 +33,7 @@ import java.util.concurrent.*;
  * ExecutorService 代理
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class DelegatedService extends AbstractExecutorService {

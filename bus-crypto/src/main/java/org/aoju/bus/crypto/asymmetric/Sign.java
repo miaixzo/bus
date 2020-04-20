@@ -39,7 +39,7 @@ import java.util.Set;
  * 签名包装，{@link Signature} 包装类
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class Sign extends Keys<Sign> {
@@ -199,19 +199,17 @@ public class Sign extends Keys<Sign> {
      * @return this
      */
     public Sign setCertificate(Certificate certificate) {
-        // If the certificate is of type X509Certificate,
-        // we should check whether it has a Key Usage
-        // extension marked as critical.
+        // 如果证书的类型是X509Certificate，
+        // 我们应该检查它是否有一个被标记为critical的密钥使用扩展名
         if (certificate instanceof X509Certificate) {
-            // Check whether the cert has a key usage extension
-            // marked as a critical extension.
-            // The OID for KeyUsage extension is 2.5.29.15.
+            // 检查cert是否将密钥使用扩展标记为关键扩展.
+            // 密钥使用扩展的OID是2.5.29.15
             final X509Certificate cert = (X509Certificate) certificate;
             final Set<String> critSet = cert.getCriticalExtensionOIDs();
 
             if (CollUtils.isNotEmpty(critSet) && critSet.contains("2.5.29.15")) {
                 final boolean[] keyUsageInfo = cert.getKeyUsage();
-                // keyUsageInfo[0] is for digitalSignature.
+                // keyUsageInfo[0] 是数字签名
                 if ((keyUsageInfo != null) && (keyUsageInfo[0] == false)) {
                     throw new InstrumentException("Wrong key usage");
                 }

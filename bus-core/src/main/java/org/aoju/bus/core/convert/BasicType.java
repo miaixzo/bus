@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 基本类型枚举包括原始类型和包装类型
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public enum BasicType {

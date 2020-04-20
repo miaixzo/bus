@@ -39,7 +39,7 @@ import java.util.Map;
  * Sound card data obtained via /proc/asound directory
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class LinuxSoundCard extends AbstractSoundCard {

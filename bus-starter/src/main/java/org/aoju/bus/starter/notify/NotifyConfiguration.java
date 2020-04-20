@@ -31,14 +31,14 @@ import org.springframework.context.annotation.Bean;
  * 消息通知配置
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {NotifyProperties.class})
 public class NotifyConfiguration {
 
     @Bean
-    public NotifyProviderService authProviderFactory(NotifyProperties properties) {
+    public NotifyProviderService notifyProviderFactory(NotifyProperties properties) {
         return new NotifyProviderService(properties);
     }
 

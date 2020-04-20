@@ -22,25 +22,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.annotation;
+package org.aoju.bus.notify.magic;
 
-import org.aoju.bus.starter.oauth.AuthConfiguration;
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
- * 启用第三方授权
+ * 消息模版
  *
- * @author Kimi Liu
- * @version 5.8.6
- * @since JDK 1.8+
+ * @author Justubborn
+ * @version 5.8.8
+ * @since JDK1.8+
  */
-@Inherited
-@Documented
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Import({AuthConfiguration.class})
-public @interface EnableThirdAuth {
+@Getter
+@Setter
+@SuperBuilder
+public class Template {
+
+    /**
+     * 发送者
+     */
+    protected String sender;
+
+    /**
+     * 接收者
+     */
+    protected String receive;
 
 }

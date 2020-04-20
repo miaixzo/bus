@@ -44,7 +44,7 @@ import java.lang.reflect.Method;
  * Javassist 3.0或更高版本
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class JavassistFactory extends AbstractFactory {

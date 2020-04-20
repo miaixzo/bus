@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 钉钉通知
  *
  * @author Justubborn
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK1.8+
  */
 @Setter

@@ -56,7 +56,7 @@ import java.util.*;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public abstract class DefaultProvider implements Provider {
@@ -88,7 +88,7 @@ public abstract class DefaultProvider implements Provider {
      * @return true or false
      */
     public static boolean isSupportedAuth(Context context, Complex source) {
-        boolean isSupported = StringUtils.isNotEmpty(context.getAppKey()) && StringUtils.isNotEmpty(context.getAppSecret()) && StringUtils.isNotEmpty(context.getRedirectUri());
+        boolean isSupported = StringUtils.isNotEmpty(context.getAppKey()) && StringUtils.isNotEmpty(context.getAppSecret());
         if (isSupported && Registry.ALIPAY == source) {
             isSupported = StringUtils.isNotEmpty(context.getPublicKey());
         }

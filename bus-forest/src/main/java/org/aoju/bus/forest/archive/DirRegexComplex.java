@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 文件记录正则表达式规则
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class DirRegexComplex extends RegexComplex<File> implements Complex<File> {

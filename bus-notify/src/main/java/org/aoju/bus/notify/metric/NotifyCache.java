@@ -24,30 +24,62 @@
  ********************************************************************************/
 package org.aoju.bus.notify.metric;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import org.aoju.bus.cache.CacheX;
+import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.cache.metric.MemoryCache;
 
 /**
- * 消息模版
+ * 默认缓存实现
  *
- * @author Justubborn
- * @version 5.8.6
- * @since JDK1.8+
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class Template {
+public enum NotifyCache implements ExtendCache {
 
     /**
-     * 发送者
+     * 当前实例
      */
-    protected String sender;
+    INSTANCE;
+
+    private CacheX cache;
+
+    NotifyCache() {
+        cache = new MemoryCache();
+    }
 
     /**
-     * 接收者
+     * 存入缓存
+     *
+     * @param key   缓存key
+     * @param value 缓存内容
      */
-    protected String receive;
+    @Override
+    public void cache(String key, String value) {
+        cache.write(key, value, 3 * 60 * 1000);
+    }
+
+    /**
+     * 存入缓存
+     *
+     * @param key     缓存key
+     * @param value   缓存内容
+     * @param timeout 指定缓存过期时间（毫秒）
+     */
+    @Override
+    public void cache(String key, String value, long timeout) {
+        cache.write(key, value, timeout);
+    }
+
+    /**
+     * 获取缓存内容
+     *
+     * @param key 缓存key
+     * @return 缓存内容
+     */
+    @Override
+    public Object get(String key) {
+        return cache.read(key);
+    }
 
 }

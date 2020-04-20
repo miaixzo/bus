@@ -34,7 +34,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 构造信息
  *
  * @author Kimi Liu
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @Setter

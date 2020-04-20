@@ -27,13 +27,13 @@ package org.aoju.bus.notify.provider.aliyun;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.metric.Template;
+import org.aoju.bus.notify.magic.Template;
 
 /**
  * 阿里云语音通知模版
  *
  * @author Justubborn
- * @version 5.8.6
+ * @version 5.8.8
  * @since JDK1.8+
  */
 
