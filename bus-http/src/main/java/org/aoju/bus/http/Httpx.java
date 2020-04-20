@@ -483,7 +483,7 @@ public class Httpx extends Httpd {
                 result = new String(bytes, Charset.DEFAULT_UTF_8);
             }
         } catch (Exception e) {
-            Logger.error(">>>>>>>>error requesting HTTP upload file form request<<<<<<<<", e);
+            Logger.error(">>>>>>>>Requesting HTTP Error [%s]<<<<<<<<", e);
         }
         return result;
     }
@@ -537,7 +537,7 @@ public class Httpx extends Httpd {
                 request.method(method, form.build());
             }
         } else {
-            throw new InstrumentException(String.format(">>>>>>>>request method not found[%s]<<<<<<<<", method));
+            throw new InstrumentException(String.format(">>>>>>>>Request Method Not found[%s]<<<<<<<<", method));
         }
         return request;
     }
@@ -559,10 +559,10 @@ public class Httpx extends Httpd {
                 result = new String(bytes, builder.responseCharset);
             }
             if (builder.tracer) {
-                Logger.info(">>>>>>>>Url[{}],response[{}]<<<<<<<<", builder.url, result);
+                Logger.info(">>>>>>>>Url[{}],Response[{}]<<<<<<<<", builder.url, result);
             }
         } catch (Exception e) {
-            Logger.error(">>>>>>>>Builder[{}] error<<<<<<<<", builder.toString(), e);
+            Logger.error(">>>>>>>>Builder[{}] Error<<<<<<<<", builder.toString(), e);
         }
         return result;
     }
@@ -580,7 +580,7 @@ public class Httpx extends Httpd {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(NewCall call, IOException e) {
-                Logger.info(String.format(">>>>>>>>Url[%s]failure<<<<<<<<", builder.url));
+                Logger.info(String.format(">>>>>>>>Url[%s] Failure<<<<<<<<", builder.url));
             }
 
             @Override
@@ -590,7 +590,7 @@ public class Httpx extends Httpd {
                     byte[] bytes = response.body().bytes();
                     result[0] = new String(bytes, builder.responseCharset);
                     if (builder.tracer) {
-                        Logger.info(">>>>>>>>Url[{}],response[{}]<<<<<<<<", builder.url, result[0]);
+                        Logger.info(">>>>>>>>Url[{}],Response[{}]<<<<<<<<", builder.url, result[0]);
                     }
                 }
             }
