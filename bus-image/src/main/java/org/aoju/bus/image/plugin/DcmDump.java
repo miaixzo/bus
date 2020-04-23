@@ -1,0 +1,201 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
+package org.aoju.bus.image.plugin;
+
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.image.Tag;
+import org.aoju.bus.image.galaxy.data.*;
+import org.aoju.bus.image.galaxy.io.DicomInputHandler;
+import org.aoju.bus.image.galaxy.io.DicomInputStream;
+
+import java.io.IOException;
+import java.util.List;
+
+/**
+ * @author Kimi Liu
+ * @version 5.0.8
+ * @since JDK 1.8+
+ */
+public class DcmDump implements DicomInputHandler {
+
+    /**
+     * default number of characters per line
+     */
+    private static final int DEFAULT_WIDTH = 78;
+    private int width = DEFAULT_WIDTH;
+
+    private static String fname(List<String> argList) throws InstrumentException {
+        int numArgs = argList.size();
+        if (numArgs == 0)
+            throw new InstrumentException("missing");
+        if (numArgs > 1)
+            throw new InstrumentException("too-many");
+        return argList.get(0);
+    }
+
+
+    public final int getWidth() {
+        return width;
+    }
+
+    public final void setWidth(int width) {
+        if (width < 40)
+            throw new IllegalArgumentException();
+        this.width = width;
+    }
+
+    public void parse(DicomInputStream dis) throws IOException {
+        dis.setDicomInputHandler(this);
+        dis.readDataset(-1, -1);
+    }
+
+    @Override
+    public void startDataset(DicomInputStream dis) {
+        promptPreamble(dis.getPreamble());
+    }
+
+    @Override
+    public void endDataset(DicomInputStream dis) {
+    }
+
+    @Override
+    public void readValue(DicomInputStream dis, Attributes attrs)
+            throws IOException {
+        StringBuilder line = new StringBuilder(width + 30);
+        appendPrefix(dis, line);
+        appendHeader(dis, line);
+        VR vr = dis.vr();
+        int vallen = dis.length();
+        boolean undeflen = vallen == -1;
+        if (vr == VR.SQ || undeflen) {
+            appendKeyword(dis, line);
+            dis.readValue(dis, attrs);
+            if (undeflen) {
+                line.setLength(0);
+                appendPrefix(dis, line);
+                appendHeader(dis, line);
+                appendKeyword(dis, line);
+            }
+            return;
+        }
+        int tag = dis.tag();
+        byte[] b = dis.readValue();
+        line.append(" [");
+        if (vr.prompt(b, dis.bigEndian(),
+                attrs.getSpecificCharacterSet(),
+                width - line.length() - 1, line)) {
+            line.append(']');
+            appendKeyword(dis, line);
+        }
+        if (tag == Tag.FileMetaInformationGroupLength)
+            dis.setFileMetaInformationGroupLength(b);
+        else if (tag == Tag.TransferSyntaxUID
+                || tag == Tag.SpecificCharacterSet
+                || Tag.isPrivateCreator(tag))
+            attrs.setBytes(tag, vr, b);
+    }
+
+    @Override
+    public void readValue(DicomInputStream dis, Sequence seq)
+            throws IOException {
+        StringBuilder line = new StringBuilder(width);
+        appendPrefix(dis, line);
+        appendHeader(dis, line);
+        appendKeyword(dis, line);
+        appendNumber(seq.size() + 1, line);
+        boolean undeflen = dis.length() == -1;
+        dis.readValue(dis, seq);
+        if (undeflen) {
+            line.setLength(0);
+            appendPrefix(dis, line);
+            appendHeader(dis, line);
+            appendKeyword(dis, line);
+        }
+    }
+
+    @Override
+    public void readValue(DicomInputStream dis, Fragments frags)
+            throws IOException {
+        StringBuilder line = new StringBuilder(width + 20);
+        appendPrefix(dis, line);
+        appendHeader(dis, line);
+        appendFragment(line, dis, frags.vr());
+    }
+
+    private void appendPrefix(DicomInputStream dis, StringBuilder line) {
+        line.append(dis.getTagPosition()).append(": ");
+        int level = dis.level();
+        while (level-- > 0)
+            line.append('>');
+    }
+
+    private void appendHeader(DicomInputStream dis, StringBuilder line) {
+        line.append(Tag.toString(dis.tag())).append(' ');
+        VR vr = dis.vr();
+        if (vr != null)
+            line.append(vr).append(' ');
+        line.append('#').append(dis.length());
+    }
+
+    private void appendKeyword(DicomInputStream dis, StringBuilder line) {
+        if (line.length() < width) {
+            line.append(" ");
+            line.append(ElementDictionary.keywordOf(dis.tag(), null));
+            if (line.length() > width)
+                line.setLength(width);
+        }
+    }
+
+    private void appendNumber(int number, StringBuilder line) {
+        if (line.length() < width) {
+            line.append(" #");
+            line.append(number);
+            if (line.length() > width)
+                line.setLength(width);
+        }
+    }
+
+    private void appendFragment(StringBuilder line, DicomInputStream dis,
+                                VR vr) throws IOException {
+        byte[] b = dis.readValue();
+        line.append(" [");
+        if (vr.prompt(b, dis.bigEndian(), null,
+                width - line.length() - 1, line)) {
+            line.append(']');
+            appendKeyword(dis, line);
+        }
+    }
+
+    private void promptPreamble(byte[] preamble) {
+        if (preamble == null)
+            return;
+
+        StringBuilder line = new StringBuilder(width);
+        line.append("0: [");
+        if (VR.OB.prompt(preamble, false, null, width - 5, line))
+            line.append(']');
+    }
+
+}

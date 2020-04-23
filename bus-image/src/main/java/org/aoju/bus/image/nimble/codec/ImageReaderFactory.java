@@ -1,0 +1,266 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
+package org.aoju.bus.image.nimble.codec;
+
+import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.utils.ResourceUtils;
+import org.aoju.bus.image.galaxy.Property;
+import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
+import org.aoju.bus.logger.Logger;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.spi.ImageReaderSpi;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.Map.Entry;
+
+/**
+ * @author Kimi Liu
+ * @version 5.0.8
+ * @since JDK 1.8+
+ */
+public class ImageReaderFactory implements Serializable {
+
+    private static volatile ImageReaderFactory defaultFactory;
+    private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
+
+    private static String nullify(String s) {
+        return s == null || s.isEmpty() || s.equals("*") ? null : s;
+    }
+
+    public static ImageReaderFactory getDefault() {
+        if (defaultFactory == null)
+            defaultFactory = initDefault();
+
+        return defaultFactory;
+    }
+
+    public static void setDefault(ImageReaderFactory factory) {
+        if (factory == null)
+            throw new NullPointerException();
+
+        defaultFactory = factory;
+    }
+
+    public static void resetDefault() {
+        defaultFactory = null;
+    }
+
+    private static ImageReaderFactory initDefault() {
+        ImageReaderFactory factory = new ImageReaderFactory();
+        String name = System.getProperty(ImageReaderFactory.class.getName(),
+                "org/aoju/bus/image/nimble/codec/ImageReaderFactory.properties");
+        try {
+            factory.load(name);
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Failed to load Image Reader Factory configuration from: "
+                            + name, e);
+        }
+        return factory;
+    }
+
+    public static ImageReaderParam getImageReaderParam(String tsuid) {
+        return getDefault().get(tsuid);
+    }
+
+    public static boolean canDecompress(String tsuid) {
+        return getDefault().contains(tsuid);
+    }
+
+    public static ImageReader getImageReader(ImageReaderParam param) {
+        return Boolean.getBoolean("org.aoju.bus.image.nimble.codec.useServiceLoader")
+                ? getImageReaderFromServiceLoader(param)
+                : getImageReaderFromImageIOServiceRegistry(param);
+    }
+
+    public static ImageReader getImageReaderFromImageIOServiceRegistry(ImageReaderParam param) {
+        Iterator<ImageReader> iter = ImageIO.getImageReadersByFormatName(param.formatName);
+        if (!iter.hasNext())
+            throw new RuntimeException("No Reader for format: " + param.formatName + " registered");
+
+        ImageReader reader = iter.next();
+        if (param.className != null) {
+            while (!param.className.equals(reader.getClass().getName())) {
+                if (iter.hasNext())
+                    reader = iter.next();
+                else {
+                    Logger.warn("No preferred Reader {} for format: {} - use {}",
+                            param.className, param.formatName, reader.getClass().getName());
+                    break;
+                }
+            }
+        }
+        return reader;
+    }
+
+    public static ImageReader getImageReaderFromServiceLoader(ImageReaderParam param) {
+        try {
+            return getImageReaderSpi(param).createReaderInstance();
+        } catch (IOException e) {
+            throw new RuntimeException("Error instantiating Reader for format: " + param.formatName, e);
+        }
+    }
+
+    private static ImageReaderSpi getImageReaderSpi(ImageReaderParam param) {
+        Iterator<ImageReaderSpi> iter = new FormatNameFilterIterator<ImageReaderSpi>(
+                ServiceLoader.load(ImageReaderSpi.class).iterator(), param.formatName);
+        if (!iter.hasNext())
+            throw new RuntimeException("No Reader for format: " + param.formatName + " registered");
+
+        ImageReaderSpi spi = iter.next();
+        if (param.className != null) {
+            while (!param.className.equals(spi.getPluginClassName())) {
+                if (iter.hasNext())
+                    spi = iter.next();
+                else {
+                    Logger.warn("No preferred Reader {} for format: {} - use {}",
+                            param.className, param.formatName, spi.getPluginClassName());
+                    break;
+                }
+            }
+        }
+        return spi;
+    }
+
+    public void load(String name) throws IOException {
+        URL url;
+        try {
+            url = new URL(name);
+        } catch (MalformedURLException e) {
+            url = ResourceUtils.getResource(name, this.getClass());
+            if (url == null)
+                throw new IOException("No such resource: " + name);
+        }
+        InputStream in = url.openStream();
+        try {
+            load(in);
+        } finally {
+            IoUtils.close(in);
+        }
+    }
+
+    public void load(InputStream in) throws IOException {
+        Properties props = new Properties();
+        props.load(in);
+        for (Map.Entry<Object, Object> entry : props.entrySet()) {
+            String[] ss = Property.split((String) entry.getValue(), ':');
+            map.put((String) entry.getKey(), new ImageReaderParam(ss[0], ss[1], ss[2],
+                    ss.length > 3 ? Property.split(ss[3], ';') : Property.EMPTY_STRING));
+        }
+    }
+
+    public ImageReaderParam get(String tsuid) {
+        return map.get(tsuid);
+    }
+
+    public boolean contains(String tsuid) {
+        return map.containsKey(tsuid);
+    }
+
+    public ImageReaderParam put(String tsuid, ImageReaderParam param) {
+        return map.put(tsuid, param);
+    }
+
+    public ImageReaderParam remove(String tsuid) {
+        return map.remove(tsuid);
+    }
+
+    public Set<Entry<String, ImageReaderParam>> getEntries() {
+        return Collections.unmodifiableMap(map).entrySet();
+    }
+
+    public void clear() {
+        map.clear();
+    }
+
+    public static class ImageReaderParam implements Serializable {
+
+        public final String formatName;
+        public final String className;
+        public final PatchJPEGLS patchJPEGLS;
+        public final Property[] imageReadParams;
+
+        public ImageReaderParam(String formatName, String className,
+                                PatchJPEGLS patchJPEGLS, Property[] imageReadParams) {
+            this.formatName = formatName;
+            this.className = nullify(className);
+            this.patchJPEGLS = patchJPEGLS;
+            this.imageReadParams = imageReadParams;
+        }
+
+        public ImageReaderParam(String formatName, String className,
+                                String patchJPEGLS, String... imageWriteParams) {
+            this(formatName, className,
+                    patchJPEGLS != null && !patchJPEGLS.isEmpty()
+                            ? PatchJPEGLS.valueOf(patchJPEGLS)
+                            : null,
+                    Property.valueOf(imageWriteParams));
+        }
+
+        public Property[] getImageReadParams() {
+            return imageReadParams;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ImageReaderParam that = (ImageReaderParam) o;
+
+            if (!formatName.equals(that.formatName)) return false;
+            if (className != null ? !className.equals(that.className) : that.className != null) return false;
+            if (patchJPEGLS != that.patchJPEGLS) return false;
+            return Arrays.equals(imageReadParams, that.imageReadParams);
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = formatName.hashCode();
+            result = 31 * result + (className != null ? className.hashCode() : 0);
+            result = 31 * result + (patchJPEGLS != null ? patchJPEGLS.hashCode() : 0);
+            result = 31 * result + Arrays.hashCode(imageReadParams);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "ImageWriterParam{" +
+                    "formatName='" + formatName + '\'' +
+                    ", className='" + className + '\'' +
+                    ", patchJPEGLS=" + patchJPEGLS +
+                    ", imageReadParams=" + Arrays.toString(imageReadParams) +
+                    '}';
+        }
+    }
+
+}

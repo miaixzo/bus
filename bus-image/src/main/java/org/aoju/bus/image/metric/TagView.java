@@ -1,0 +1,78 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
+package org.aoju.bus.image.metric;
+
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.utils.StringUtils;
+
+/**
+ * @author Kimi Liu
+ * @version 5.0.8
+ * @since JDK 1.8+
+ */
+public class TagView {
+
+    private final TagCamel[] tag;
+    private final String format;
+
+    public TagView(TagCamel... tag) {
+        this(null, tag);
+    }
+
+    public TagView(String format, TagCamel... tag) {
+        this.tag = tag;
+        this.format = format;
+    }
+
+    public TagCamel[] getTag() {
+        return tag;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public boolean containsTag(TagCamel tag) {
+        for (TagCamel tagW : this.tag) {
+            if (tagW.equals(tag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getFormattedText(boolean anonymize, Readable... tagable) {
+        for (TagCamel t : this.tag) {
+            if (!anonymize || t.getAnonymizationType() != 1) {
+                String str = t.getFormattedTagValue(TagValue.getTagValue(t, tagable), format);
+                if (StringUtils.hasText(str)) {
+                    return str;
+                }
+            }
+        }
+        return Normal.EMPTY;
+    }
+
+}
