@@ -33,7 +33,7 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class DeIdentifier {
@@ -499,26 +499,26 @@ public class DeIdentifier {
 
     public enum Option {
         BasicApplicationConfidentialityProfile(DeIdentificationMethod.BasicApplicationConfidentialityProfile),
-     /*
-        CleanPixelDataOption(DeIdentificationMethod.CleanPixelDataOption),
-        CleanRecognizableVisualFeaturesOption(DeIdentificationMethod.CleanRecognizableVisualFeaturesOption),
-        CleanGraphicsOption(DeIdentificationMethod.CleanGraphicsOption),
-        CleanStructuredContentOption(DeIdentificationMethod.CleanStructuredContentOption),
-        CleanDescriptorsOption(DeIdentificationMethod.CleanDescriptorsOption),
-     */
+        /*
+           CleanPixelDataOption(DeIdentificationMethod.CleanPixelDataOption),
+           CleanRecognizableVisualFeaturesOption(DeIdentificationMethod.CleanRecognizableVisualFeaturesOption),
+           CleanGraphicsOption(DeIdentificationMethod.CleanGraphicsOption),
+           CleanStructuredContentOption(DeIdentificationMethod.CleanStructuredContentOption),
+           CleanDescriptorsOption(DeIdentificationMethod.CleanDescriptorsOption),
+        */
         RetainLongitudinalTemporalInformationFullDatesOption(
                 DeIdentificationMethod.RetainLongitudinalTemporalInformationFullDatesOption),
-    /*
-        RetainLongitudinalTemporalInformationModifiedDatesOption(
-        DeIdentificationMethod.RetainLongitudinalTemporalInformationModifiedDatesOption),
-        RetainPatientCharacteristicsOption(DeIdentificationMethod.RetainPatientCharacteristicsOption),
-    */
+        /*
+            RetainLongitudinalTemporalInformationModifiedDatesOption(
+            DeIdentificationMethod.RetainLongitudinalTemporalInformationModifiedDatesOption),
+            RetainPatientCharacteristicsOption(DeIdentificationMethod.RetainPatientCharacteristicsOption),
+        */
         RetainDeviceIdentityOption(DeIdentificationMethod.RetainDeviceIdentityOption),
         RetainInstitutionIdentityOption(DeIdentificationMethod.RetainInstitutionIdentityOption),
         RetainUIDsOption(DeIdentificationMethod.RetainUIDsOption);
-     /*
-        RetainSafePrivateOption(DeIdentificationMethod.RetainSafePrivateOption);
-     */
+        /*
+           RetainSafePrivateOption(DeIdentificationMethod.RetainSafePrivateOption);
+        */
         private final Code code;
 
         Option(Code code) {

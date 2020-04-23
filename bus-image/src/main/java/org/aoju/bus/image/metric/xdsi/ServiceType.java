@@ -33,12 +33,12 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ServiceType", propOrder = {"serviceBinding"})
-public class ServiceType  extends RegistryObjectType {
+public class ServiceType extends RegistryObjectType {
 
     @XmlElement(name = "ServiceBinding")
     protected List<ServiceBindingType> serviceBinding;

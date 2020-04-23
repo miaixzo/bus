@@ -28,6 +28,11 @@ import org.aoju.bus.image.metric.Connection;
 
 import java.net.Socket;
 
+/**
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
 public interface HL7MessageListener {
 
     UnparsedHL7Message onMessage(HL7Application hl7App, Connection conn, Socket s, UnparsedHL7Message msg)

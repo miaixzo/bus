@@ -24,6 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.image.builtin;
 
+/**
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
 public class ArchiveTag {
 
     public static final String PrivateCreator = "Image Archive 5";

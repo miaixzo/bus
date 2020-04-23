@@ -32,8 +32,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.osgi.OpenCVNativeLoader;
-import org.weasis.opencv.data.ImageCV;
-import org.weasis.opencv.op.ImageConversion;
 
 import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
@@ -45,7 +43,7 @@ import java.nio.ByteOrder;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class NativeJLSImageWriter extends ImageWriter {

@@ -33,12 +33,12 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InternationalStringBranchType", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0", propOrder = {"localizedStringFilter"})
-public class InternationalStringBranchType  extends BranchType {
+public class InternationalStringBranchType extends BranchType {
 
     @XmlElement(name = "LocalizedStringFilter")
     protected List<FilterType> localizedStringFilter;

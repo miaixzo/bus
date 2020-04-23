@@ -33,12 +33,12 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ClassificationNodeQueryType", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0", propOrder = {"parentQuery", "childrenQuery"})
-public class ClassificationNodeQueryType  extends RegistryObjectQueryType {
+public class ClassificationNodeQueryType extends RegistryObjectQueryType {
 
     @XmlElement(name = "ParentQuery")
     protected RegistryObjectQueryType parentQuery;

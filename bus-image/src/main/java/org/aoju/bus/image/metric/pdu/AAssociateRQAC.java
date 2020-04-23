@@ -34,16 +34,16 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public abstract class AAssociateRQAC {
 
-    protected final ArrayList<PresentationContext>  pcs = new ArrayList<>();
+    protected final ArrayList<PresentationContext> pcs = new ArrayList<>();
     protected final Capacity<PresentationContext> pcidMap = new Capacity<>();
-    protected final LinkedHashMap<String, RoleSelection>  roleSelMap = new LinkedHashMap<>();
+    protected final LinkedHashMap<String, RoleSelection> roleSelMap = new LinkedHashMap<>();
     protected final LinkedHashMap<String, ExtendedNegotiation> extNegMap = new LinkedHashMap<>();
-    protected final LinkedHashMap<String, CommonExtended>  commonExtNegMap = new LinkedHashMap<>();
+    protected final LinkedHashMap<String, CommonExtended> commonExtNegMap = new LinkedHashMap<>();
     protected byte[] reservedBytes = new byte[32];
     protected int protocolVersion = 1;
     protected int maxPDULength = Connection.DEF_MAX_PDU_LENGTH;

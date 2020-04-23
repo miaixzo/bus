@@ -33,12 +33,12 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SubscriptionType", propOrder = {"action"})
-public class SubscriptionType  extends RegistryObjectType {
+public class SubscriptionType extends RegistryObjectType {
 
     @XmlElementRef(name = "Action", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0", type = JAXBElement.class, required = false)
     protected List<JAXBElement<? extends ActionType>> action;

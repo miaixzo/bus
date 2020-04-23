@@ -27,6 +27,11 @@ package org.aoju.bus.image.builtin;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
 
+/**
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
 public class ArchiveElementDictionary extends ElementDictionary {
 
     public ArchiveElementDictionary() {

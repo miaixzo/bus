@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class UID {
@@ -1885,11 +1885,11 @@ public class UID {
     /**
      * Private Philips MR Cardio Storage (Retired),
      */
-    public static final String PrivatePhilipsMRCardioStorageRetired = "1.3.46.670589.5.0.8";
+    public static final String PrivatePhilipsMRCardioStorageRetired = "1.3.46.670589.5.8.8";
     /**
      * Private Philips MR Cardio Storage,
      */
-    public static final String PrivatePhilipsMRCardioStorage = "1.3.46.670589.5.0.8.1";
+    public static final String PrivatePhilipsMRCardioStorage = "1.3.46.670589.5.8.8.1";
     /**
      * Private Philips CT Synthetic Image Storage,
      */
@@ -2413,8 +2413,8 @@ public class UID {
         map.put("1.3.46.670589.5.0.3.1", "Private Philips Surface Storage");
         map.put("1.3.46.670589.5.0.4", "Private Philips Composite Object Storage");
         map.put("1.3.46.670589.5.0.7", "Private Philips MR Cardio Profile Storage");
-        map.put("1.3.46.670589.5.0.8", "Private Philips MR Cardio Storage (Retired)");
-        map.put("1.3.46.670589.5.0.8.1", "Private Philips MR Cardio Storage");
+        map.put("1.3.46.670589.5.8.8", "Private Philips MR Cardio Storage (Retired)");
+        map.put("1.3.46.670589.5.8.8.1", "Private Philips MR Cardio Storage");
         map.put("1.3.46.670589.5.0.9", "Private Philips CT Synthetic Image Storage");
         map.put("1.3.46.670589.5.0.10", "Private Philips MR Synthetic Image Storage");
         map.put("1.3.46.670589.5.0.11", "Private Philips MR Cardio Analysis Storage (Retired)");

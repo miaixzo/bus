@@ -28,7 +28,7 @@ import org.aoju.bus.image.metric.hl7.HL7MessageListener;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public interface HL7Service extends HL7MessageListener {

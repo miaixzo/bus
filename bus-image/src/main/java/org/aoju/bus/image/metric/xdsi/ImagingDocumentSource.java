@@ -35,17 +35,17 @@ import java.util.logging.Logger;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @WebServiceClient(name = "ImagingDocumentSource", wsdlLocation = "/wsdl/XDS-I.b_ImagingDocumentSource.wsdl", targetNamespace = "urn:ihe:rad:xdsi-b:2009")
 public class ImagingDocumentSource extends Service {
 
     public static final URL WSDL_LOCATION;
-     public static final QName SERVICE = new QName("urn:ihe:rad:xdsi-b:2009", "ImagingDocumentSource");
-       public static final QName ImagingDocumentSourcePortSoap12 = new QName("urn:ihe:rad:xdsi-b:2009", "ImagingDocumentSource_Port_Soap12");
+    public static final QName SERVICE = new QName("urn:ihe:rad:xdsi-b:2009", "ImagingDocumentSource");
+    public static final QName ImagingDocumentSourcePortSoap12 = new QName("urn:ihe:rad:xdsi-b:2009", "ImagingDocumentSource_Port_Soap12");
 
-        static {
+    static {
         URL url = ImagingDocumentSource.class.getResource("/wsdl/XDS-I.b_ImagingDocumentSource.wsdl");
         if (url == null) {
             url = ImagingDocumentSource.class.getClassLoader().getResource("/wsdl/XDS-I.b_ImagingDocumentSource.wsdl");

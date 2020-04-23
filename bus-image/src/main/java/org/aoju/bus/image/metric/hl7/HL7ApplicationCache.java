@@ -29,7 +29,7 @@ import org.aoju.bus.image.galaxy.ConfigurationCache;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL7Application>

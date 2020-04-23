@@ -49,8 +49,9 @@ import java.util.stream.Stream;
 /**
  * Common DICOM tags used by the application. The role of these tags is to provide a high level accessibility of common
  * tags (DICOM and non DICOM).
+ *
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class TagCamel implements Serializable {

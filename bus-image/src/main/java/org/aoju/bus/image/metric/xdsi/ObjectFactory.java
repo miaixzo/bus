@@ -34,7 +34,7 @@ import javax.xml.namespace.QName;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlRegistry

@@ -30,12 +30,12 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "UserQueryType", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0")
-public class UserQueryType  extends PersonQueryType {
+public class UserQueryType extends PersonQueryType {
 
 }
 

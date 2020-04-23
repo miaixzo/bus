@@ -28,6 +28,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.stream.Stream;
 
+/**
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
 public class ScheduleExpression {
 
     private String dayOfWeek = "*";

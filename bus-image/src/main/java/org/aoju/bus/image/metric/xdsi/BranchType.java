@@ -31,12 +31,12 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BranchType", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0")
 @XmlSeeAlso({InternationalStringBranchType.class, SlotBranchType.class, QueryExpressionBranchType.class})
-public abstract class BranchType  extends FilterQueryType {
+public abstract class BranchType extends FilterQueryType {
 
 }

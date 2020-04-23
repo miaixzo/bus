@@ -42,6 +42,11 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
 public class AttributesFormat extends Format {
 
     private static final long serialVersionUID = 1L;

@@ -28,13 +28,13 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {"adhocQuery", "objectRefList"})
 @XmlRootElement(name = "DeprecateObjectsRequest", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0")
-public class DeprecateObjectsRequest  extends RegistryRequestType {
+public class DeprecateObjectsRequest extends RegistryRequestType {
 
     @XmlElement(name = "AdhocQuery")
     protected AdhocQueryType adhocQuery;

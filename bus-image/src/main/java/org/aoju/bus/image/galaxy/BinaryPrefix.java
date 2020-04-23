@@ -24,6 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+/**
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
 public enum BinaryPrefix {
     K(1000, 1),
     k(1000, 1),

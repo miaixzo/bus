@@ -27,6 +27,11 @@ package org.aoju.bus.image.galaxy;
 import java.time.Period;
 import java.util.Calendar;
 
+/**
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
 public class RetentionPeriod implements Comparable<RetentionPeriod> {
 
     private final String value;

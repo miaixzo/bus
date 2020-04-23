@@ -30,13 +30,13 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RegistryObjectQueryType", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0", propOrder = {"slotBranch", "nameBranch", "descriptionBranch", "versionInfoFilter", "classificationQuery", "externalIdentifierQuery", "objectTypeQuery", "statusQuery", "sourceAssociationQuery", "targetAssociationQuery"})
 @XmlSeeAlso({AssociationQueryType.class, AuditableEventQueryType.class, ClassificationQueryType.class, ClassificationNodeQueryType.class, ClassificationSchemeQueryType.class, ExternalIdentifierQueryType.class, ExternalLinkQueryType.class, ExtrinsicObjectQueryType.class, OrganizationQueryType.class, RegistryPackageQueryType.class, ServiceQueryType.class, ServiceBindingQueryType.class, SpecificationLinkQueryType.class, PersonQueryType.class, RegistryQueryType.class, FederationQueryType.class, AdhocQueryQueryType.class, NotificationQueryType.class, SubscriptionQueryType.class})
-public class RegistryObjectQueryType  extends FilterQueryType {
+public class RegistryObjectQueryType extends FilterQueryType {
 
     @XmlElement(name = "SlotBranch")
     protected List<SlotBranchType> slotBranch;

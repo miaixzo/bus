@@ -28,12 +28,12 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NotificationType", propOrder = {"registryObjectList"})
-public class NotificationType  extends RegistryObjectType {
+public class NotificationType extends RegistryObjectType {
 
     @XmlElement(name = "RegistryObjectList", required = true)
     protected RegistryObjectListType registryObjectList;

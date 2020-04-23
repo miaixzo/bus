@@ -26,7 +26,11 @@ package org.aoju.bus.image.metric.xdsi;
 
 import javax.xml.bind.annotation.*;
 
-
+/**
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {"adhocQuery", "objectRefList"})
 @XmlRootElement(name = "ApproveObjectsRequest", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0")

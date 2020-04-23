@@ -32,12 +32,12 @@ import javax.xml.datatype.Duration;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FederationType")
-public class FederationType  extends RegistryObjectType {
+public class FederationType extends RegistryObjectType {
 
     @XmlAttribute(name = "replicationSyncLatency")
     protected Duration replicationSyncLatency;

@@ -28,11 +28,10 @@ import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
 import java.net.*;
-import java.security.GeneralSecurityException;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 class UDPListener implements Listener {

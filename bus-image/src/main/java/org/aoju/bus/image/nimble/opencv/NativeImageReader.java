@@ -31,9 +31,6 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.weasis.opencv.data.ImageCV;
-import org.weasis.opencv.data.PlanarImage;
-import org.weasis.opencv.op.ImageConversion;
 
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
@@ -53,7 +50,7 @@ import java.util.Iterator;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class NativeImageReader extends ImageReader implements Closeable {

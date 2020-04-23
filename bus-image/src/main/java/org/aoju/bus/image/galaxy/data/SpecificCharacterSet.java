@@ -37,7 +37,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 public class SpecificCharacterSet {

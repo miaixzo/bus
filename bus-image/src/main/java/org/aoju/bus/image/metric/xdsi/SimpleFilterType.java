@@ -30,13 +30,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SimpleFilterType", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0")
 @XmlSeeAlso({BooleanFilterType.class, IntegerFilterType.class, FloatFilterType.class, DateTimeFilterType.class, StringFilterType.class})
-public abstract class SimpleFilterType    extends FilterType {
+public abstract class SimpleFilterType extends FilterType {
 
     @XmlAttribute(name = "domainAttribute", required = true)
     protected String domainAttribute;

@@ -28,13 +28,13 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.0.8
+ * @version 5.8.8
  * @since JDK 1.8+
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExtrinsicObjectType", propOrder = {"contentVersionInfo"})
-public class ExtrinsicObjectType  extends RegistryObjectType {
+public class ExtrinsicObjectType extends RegistryObjectType {
 
     @XmlElement(name = "ContentVersionInfo")
     protected VersionInfoType contentVersionInfo;
