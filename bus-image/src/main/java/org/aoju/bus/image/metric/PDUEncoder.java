@@ -30,7 +30,7 @@ import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.DicomOutputStream;
-import org.aoju.bus.image.metric.pdu.*;
+import org.aoju.bus.image.metric.internal.pdu.*;
 import org.aoju.bus.logger.Logger;
 
 import java.io.EOFException;

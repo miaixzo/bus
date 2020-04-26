@@ -40,7 +40,7 @@ public class ArchiveElementDictionary extends ElementDictionary {
 
     @Override
     public String keywordOf(int tag) {
-        return ArchiveKeyword.valueOf(tag);
+        return ArchiveKey.valueOf(tag);
     }
 
     @Override

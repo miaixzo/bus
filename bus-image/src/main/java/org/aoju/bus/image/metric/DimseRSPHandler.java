@@ -27,7 +27,7 @@ package org.aoju.bus.image.metric;
 import org.aoju.bus.image.Status;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 

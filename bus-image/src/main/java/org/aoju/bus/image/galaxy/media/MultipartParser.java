@@ -61,8 +61,8 @@ public class MultipartParser {
         }
     }
 
-
     public interface Handler {
         void bodyPart(int partNumber, MultipartInputStream in) throws IOException;
     }
+
 }

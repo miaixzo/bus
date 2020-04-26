@@ -25,9 +25,9 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.image.metric.hl7.HL7Charset;
-import org.aoju.bus.image.metric.hl7.HL7Parser;
-import org.aoju.bus.image.metric.hl7.HL7Segment;
+import org.aoju.bus.image.metric.internal.hl7.HL7Charset;
+import org.aoju.bus.image.metric.internal.hl7.HL7Parser;
+import org.aoju.bus.image.metric.internal.hl7.HL7Segment;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.OutputKeys;

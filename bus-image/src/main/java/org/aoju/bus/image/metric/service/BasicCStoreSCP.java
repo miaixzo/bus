@@ -30,7 +30,7 @@ import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
 import org.aoju.bus.image.metric.PDVInputStream;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ import java.io.IOException;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class BasicCStoreSCP extends AbstractDicomService {
+public class BasicCStoreSCP extends AbstractService {
 
     public BasicCStoreSCP() {
         super("*");
@@ -50,10 +50,13 @@ public class BasicCStoreSCP extends AbstractDicomService {
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                          Attributes rq, PDVInputStream data) throws IOException {
+    public void onDimse(Association as,
+                        PresentationContext pc,
+                        Dimse dimse,
+                        Attributes rq,
+                        PDVInputStream data) throws IOException {
         if (dimse != Dimse.C_STORE_RQ)
-            throw new DicomServiceException(Status.UnrecognizedOperation);
+            throw new ServiceException(Status.UnrecognizedOperation);
 
         Attributes rsp = Commands.mkCStoreRSP(rq, Status.Success);
         store(as, pc, rq, data, rsp);
@@ -62,12 +65,14 @@ public class BasicCStoreSCP extends AbstractDicomService {
 
     protected void store(Association as, PresentationContext pc, Attributes rq,
                          PDVInputStream data, Attributes rsp) throws IOException {
-        //NOOP
     }
 
     @Override
-    protected void onDimseRQ(Association as, PresentationContext pc,
-                             Dimse dimse, Attributes cmd, Attributes data) {
+    protected void onDimse(Association as,
+                           PresentationContext pc,
+                           Dimse dimse,
+                           Attributes cmd,
+                           Attributes data) {
         throw new UnsupportedOperationException();
     }
 

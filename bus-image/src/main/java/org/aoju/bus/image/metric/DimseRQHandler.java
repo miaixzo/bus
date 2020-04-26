@@ -26,7 +26,7 @@ package org.aoju.bus.image.metric;
 
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -37,8 +37,11 @@ import java.io.IOException;
  */
 public interface DimseRQHandler {
 
-    void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                   Attributes cmd, PDVInputStream data) throws IOException;
+    void onDimse(Association as,
+                 PresentationContext pc,
+                 Dimse dimse,
+                 Attributes cmd,
+                 PDVInputStream data) throws IOException;
 
     void onClose(Association as);
 

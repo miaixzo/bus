@@ -38,9 +38,9 @@ import org.aoju.bus.image.galaxy.io.DicomOutputStream;
 import org.aoju.bus.image.galaxy.io.SAXReader;
 import org.aoju.bus.image.galaxy.io.SAXWriter;
 import org.aoju.bus.image.metric.*;
-import org.aoju.bus.image.metric.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.pdu.ExtendedNegotiation;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Templates;

@@ -27,7 +27,7 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.galaxy.io.SAXTransformer;
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.hl7.*;
+import org.aoju.bus.image.metric.internal.hl7.*;
 import org.aoju.bus.logger.Logger;
 
 import javax.xml.transform.Templates;

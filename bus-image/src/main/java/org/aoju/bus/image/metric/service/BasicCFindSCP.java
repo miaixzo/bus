@@ -28,7 +28,7 @@ import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.Status;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -37,25 +37,30 @@ import java.io.IOException;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class BasicCFindSCP extends AbstractDicomService {
+public class BasicCFindSCP extends AbstractService {
 
     public BasicCFindSCP(String... sopClasses) {
         super(sopClasses);
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                          Attributes rq, Attributes keys) throws IOException {
+    public void onDimse(Association as,
+                        PresentationContext pc,
+                        Dimse dimse,
+                        Attributes rq,
+                        Attributes keys) throws IOException {
         if (dimse != Dimse.C_FIND_RQ)
-            throw new DicomServiceException(Status.UnrecognizedOperation);
+            throw new ServiceException(Status.UnrecognizedOperation);
 
-        QueryTask queryTask = calculateMatches(as, pc, rq, keys);
-        as.getApplicationEntity().getDevice().execute(queryTask);
+        Query query = calculateMatches(as, pc, rq, keys);
+        as.getApplicationEntity().getDevice().execute(query);
     }
 
-    protected QueryTask calculateMatches(Association as, PresentationContext pc,
-                                         Attributes rq, Attributes keys) {
-        return new BasicQueryTask(as, pc, rq, keys);
+    protected Query calculateMatches(Association as,
+                                     PresentationContext pc,
+                                     Attributes rq,
+                                     Attributes keys) {
+        return new BasicQuery(as, pc, rq, keys);
     }
 
 }

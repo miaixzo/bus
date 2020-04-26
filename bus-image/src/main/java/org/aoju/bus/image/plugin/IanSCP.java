@@ -32,7 +32,7 @@ import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 import org.aoju.bus.image.metric.service.*;
 import org.aoju.bus.logger.Logger;
 
@@ -52,27 +52,27 @@ public class IanSCP extends Device {
     private int status;
 
     private final DicomService ianSCP =
-            new AbstractDicomService(UID.InstanceAvailabilityNotificationSOPClass) {
+            new AbstractService(UID.InstanceAvailabilityNotificationSOPClass) {
 
                 @Override
-                public void onDimseRQ(Association as, PresentationContext pc,
-                                      Dimse dimse, Attributes cmd, Attributes data)
+                public void onDimse(Association as, PresentationContext pc,
+                                    Dimse dimse, Attributes cmd, Attributes data)
                         throws IOException {
                     if (dimse != Dimse.N_CREATE_RQ)
-                        throw new DicomServiceException(Status.UnrecognizedOperation);
+                        throw new ServiceException(Status.UnrecognizedOperation);
                     Attributes rsp = Commands.mkNCreateRSP(cmd, status);
                     Attributes rspAttrs = IanSCP.this.create(as, cmd, data);
                     as.tryWriteDimseRSP(pc, rsp, rspAttrs);
                 }
             };
 
-    public IanSCP() throws IOException {
+    public IanSCP() {
         super("ianscp");
         addConnection(conn);
         addApplicationEntity(ae);
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
-        DicomServiceRegistry serviceRegistry = new DicomServiceRegistry();
+        ServiceRegistry serviceRegistry = new ServiceRegistry();
         serviceRegistry.addDicomService(new BasicCEchoSCP());
         serviceRegistry.addDicomService(ianSCP);
         ae.setDimseRQHandler(serviceRegistry);
@@ -93,14 +93,14 @@ public class IanSCP extends Device {
     }
 
     private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
-            throws DicomServiceException {
+            throws ServiceException {
         if (storageDir == null)
             return null;
         String cuid = rq.getString(Tag.AffectedSOPClassUID);
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (file.exists())
-            throw new DicomServiceException(Status.DuplicateSOPinstance).
+            throw new ServiceException(Status.DuplicateSOPinstance).
                     setUID(Tag.AffectedSOPInstanceUID, iuid);
         DicomOutputStream out = null;
         Logger.info("{}: M-WRITE {}", as, file);
@@ -112,7 +112,7 @@ public class IanSCP extends Device {
                     rqAttrs);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store Instance Available Notification:", e);
-            throw new DicomServiceException(Status.ProcessingFailure, e);
+            throw new ServiceException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(out);
         }

@@ -30,7 +30,7 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -39,21 +39,21 @@ import java.io.IOException;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class BasicMPPSSCP extends AbstractDicomService {
+public class BasicMPPSSCP extends AbstractService {
 
     public BasicMPPSSCP() {
         super(UID.ModalityPerformedProcedureStepSOPClass);
     }
 
-    public static void mayNoLongerBeUpdated() throws DicomServiceException {
-        throw new DicomServiceException(Status.ProcessingFailure,
+    public static void mayNoLongerBeUpdated() throws ServiceException {
+        throw new ServiceException(Status.ProcessingFailure,
                 "Performed Procedure Step Object may no longer be updated")
                 .setErrorID(0xA710);
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                          Attributes rq, Attributes rqAttrs) throws IOException {
+    public void onDimse(Association as, PresentationContext pc, Dimse dimse,
+                        Attributes rq, Attributes rqAttrs) throws IOException {
         switch (dimse) {
             case N_CREATE_RQ:
                 onNCreateRQ(as, pc, rq, rqAttrs);
@@ -62,7 +62,7 @@ public class BasicMPPSSCP extends AbstractDicomService {
                 onNSetRQ(as, pc, rq, rqAttrs);
                 break;
             default:
-                throw new DicomServiceException(Status.UnrecognizedOperation);
+                throw new ServiceException(Status.UnrecognizedOperation);
         }
     }
 
@@ -74,7 +74,7 @@ public class BasicMPPSSCP extends AbstractDicomService {
     }
 
     protected Attributes create(Association as, Attributes rq,
-                                Attributes rqAttrs, Attributes rsp) throws DicomServiceException {
+                                Attributes rqAttrs, Attributes rsp) throws ServiceException {
         return null;
     }
 
@@ -86,7 +86,7 @@ public class BasicMPPSSCP extends AbstractDicomService {
     }
 
     protected Attributes set(Association as, Attributes rq, Attributes rqAttrs,
-                             Attributes rsp) throws DicomServiceException {
+                             Attributes rsp) throws ServiceException {
         return null;
     }
 

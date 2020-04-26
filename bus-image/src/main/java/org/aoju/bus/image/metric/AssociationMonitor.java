@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
-import org.aoju.bus.image.metric.pdu.AAssociateRJ;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRJ;
 
 /**
  * @author Kimi Liu

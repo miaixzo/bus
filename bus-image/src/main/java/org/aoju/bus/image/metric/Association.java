@@ -30,7 +30,7 @@ import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.Capacity;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.metric.pdu.*;
+import org.aoju.bus.image.metric.internal.pdu.*;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;

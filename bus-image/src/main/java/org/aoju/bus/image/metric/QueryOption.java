@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
-import org.aoju.bus.image.metric.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
 
 import java.util.EnumSet;
 

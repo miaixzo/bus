@@ -30,7 +30,7 @@ import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.metric.pdu.*;
+import org.aoju.bus.image.metric.internal.pdu.*;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -431,7 +431,7 @@ public class ApplicationEntity implements Serializable {
             Logger.error("DimseRQHandler not initalized");
             throw new AAbort();
         }
-        tmp.onDimseRQ(as, pc, cmd, cmdAttrs, data);
+        tmp.onDimse(as, pc, cmd, cmdAttrs, data);
     }
 
     public void addConnection(Connection conn) {

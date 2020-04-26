@@ -39,8 +39,8 @@ import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.service.BasicCEchoSCP;
 import org.aoju.bus.image.metric.service.BasicMPPSSCP;
-import org.aoju.bus.image.metric.service.DicomServiceException;
-import org.aoju.bus.image.metric.service.DicomServiceRegistry;
+import org.aoju.bus.image.metric.service.ServiceException;
+import org.aoju.bus.image.metric.service.ServiceRegistry;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -64,13 +64,13 @@ public class MppsSCP {
 
         @Override
         protected Attributes create(Association as, Attributes rq,
-                                    Attributes rqAttrs, Attributes rsp) throws DicomServiceException {
+                                    Attributes rqAttrs, Attributes rsp) throws ServiceException {
             return MppsSCP.this.create(as, rq, rqAttrs);
         }
 
         @Override
         protected Attributes set(Association as, Attributes rq, Attributes rqAttrs,
-                                 Attributes rsp) throws DicomServiceException {
+                                 Attributes rsp) throws ServiceException {
             return MppsSCP.this.set(as, rq, rqAttrs);
         }
     };
@@ -80,7 +80,7 @@ public class MppsSCP {
         device.addApplicationEntity(ae);
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
-        DicomServiceRegistry serviceRegistry = new DicomServiceRegistry();
+        ServiceRegistry serviceRegistry = new ServiceRegistry();
         serviceRegistry.addDicomService(new BasicCEchoSCP());
         serviceRegistry.addDicomService(mppsSCP);
         ae.setDimseRQHandler(serviceRegistry);
@@ -105,11 +105,11 @@ public class MppsSCP {
     }
 
     private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
-            throws DicomServiceException {
+            throws ServiceException {
         if (mppsNCreateIOD != null) {
             ValidationResult result = rqAttrs.validate(mppsNCreateIOD);
             if (!result.isValid())
-                throw DicomServiceException.valueOf(result, rqAttrs);
+                throw ServiceException.valueOf(result, rqAttrs);
         }
         if (storageDir == null)
             return null;
@@ -117,7 +117,7 @@ public class MppsSCP {
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (file.exists())
-            throw new DicomServiceException(Status.DuplicateSOPinstance).
+            throw new ServiceException(Status.DuplicateSOPinstance).
                     setUID(Tag.AffectedSOPInstanceUID, iuid);
         DicomOutputStream out = null;
         Logger.info("{}: M-WRITE {}", as, file);
@@ -129,7 +129,7 @@ public class MppsSCP {
                     rqAttrs);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store MPPS:", e);
-            throw new DicomServiceException(Status.ProcessingFailure, e);
+            throw new ServiceException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(out);
         }
@@ -137,11 +137,11 @@ public class MppsSCP {
     }
 
     private Attributes set(Association as, Attributes rq, Attributes rqAttrs)
-            throws DicomServiceException {
+            throws ServiceException {
         if (mppsNSetIOD != null) {
             ValidationResult result = rqAttrs.validate(mppsNSetIOD);
             if (!result.isValid())
-                throw DicomServiceException.valueOf(result, rqAttrs);
+                throw ServiceException.valueOf(result, rqAttrs);
         }
         if (storageDir == null)
             return null;
@@ -149,7 +149,7 @@ public class MppsSCP {
         String iuid = rq.getString(Tag.RequestedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (!file.exists())
-            throw new DicomServiceException(Status.NoSuchObjectInstance).
+            throw new ServiceException(Status.NoSuchObjectInstance).
                     setUID(Tag.AffectedSOPInstanceUID, iuid);
         Logger.info("{}: M-UPDATE {}", as, file);
         Attributes data;
@@ -159,7 +159,7 @@ public class MppsSCP {
             data = in.readDataset(-1, -1);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to read MPPS:", e);
-            throw new DicomServiceException(Status.ProcessingFailure, e);
+            throw new ServiceException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(in);
         }
@@ -175,7 +175,7 @@ public class MppsSCP {
                     data);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to update MPPS:", e);
-            throw new DicomServiceException(Status.ProcessingFailure, e);
+            throw new ServiceException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(out);
         }

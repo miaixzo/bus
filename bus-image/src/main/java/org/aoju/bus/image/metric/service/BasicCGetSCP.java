@@ -29,7 +29,7 @@ import org.aoju.bus.image.Status;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -38,27 +38,32 @@ import java.io.IOException;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class BasicCGetSCP extends AbstractDicomService {
+public class BasicCGetSCP extends AbstractService {
 
     public BasicCGetSCP(String... sopClasses) {
         super(sopClasses);
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                          Attributes cmd, Attributes keys) throws IOException {
+    public void onDimse(Association as,
+                        PresentationContext pc,
+                        Dimse dimse,
+                        Attributes cmd,
+                        Attributes keys) throws IOException {
         if (dimse != Dimse.C_GET_RQ)
-            throw new DicomServiceException(Status.UnrecognizedOperation);
+            throw new ServiceException(Status.UnrecognizedOperation);
 
-        RetrieveTask retrieveTask = calculateMatches(as, pc, cmd, keys);
-        if (retrieveTask != null)
-            as.getApplicationEntity().getDevice().execute(retrieveTask);
+        Retrieve retrieve = calculateMatches(as, pc, cmd, keys);
+        if (retrieve != null)
+            as.getApplicationEntity().getDevice().execute(retrieve);
         else
             as.tryWriteDimseRSP(pc, Commands.mkCGetRSP(cmd, Status.Success));
     }
 
-    protected RetrieveTask calculateMatches(Association as, PresentationContext pc,
-                                            Attributes rq, Attributes keys) {
+    protected Retrieve calculateMatches(Association as,
+                                        PresentationContext pc,
+                                        Attributes rq,
+                                        Attributes keys) {
         return null;
     }
 

@@ -26,7 +26,6 @@ package org.aoju.bus.image.nimble.opencv;
 
 import org.aoju.bus.logger.Logger;
 import org.opencv.core.*;
-import org.opencv.core.Point;
 import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;

@@ -30,7 +30,7 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ import java.io.IOException;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class BasicCEchoSCP extends AbstractDicomService {
+public class BasicCEchoSCP extends AbstractService {
 
     public BasicCEchoSCP() {
         super(UID.VerificationSOPClass);
@@ -50,10 +50,13 @@ public class BasicCEchoSCP extends AbstractDicomService {
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc,
-                          Dimse dimse, Attributes cmd, Attributes data) throws IOException {
+    public void onDimse(Association as,
+                        PresentationContext pc,
+                        Dimse dimse,
+                        Attributes cmd,
+                        Attributes data) throws IOException {
         if (dimse != Dimse.C_ECHO_RQ)
-            throw new DicomServiceException(Status.UnrecognizedOperation);
+            throw new ServiceException(Status.UnrecognizedOperation);
 
         as.tryWriteDimseRSP(pc, Commands.mkEchoRSP(cmd, Status.Success));
     }

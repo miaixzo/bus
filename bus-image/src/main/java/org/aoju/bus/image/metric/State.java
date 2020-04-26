@@ -25,10 +25,10 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.image.metric.pdu.AAbort;
-import org.aoju.bus.image.metric.pdu.AAssociateAC;
-import org.aoju.bus.image.metric.pdu.AAssociateRJ;
-import org.aoju.bus.image.metric.pdu.AAssociateRQ;
+import org.aoju.bus.image.metric.internal.pdu.AAbort;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateAC;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRJ;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 
 import java.io.IOException;
 

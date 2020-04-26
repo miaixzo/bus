@@ -25,7 +25,7 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.image.UID;
-import org.aoju.bus.image.metric.pdu.*;
+import org.aoju.bus.image.metric.internal.pdu.*;
 
 import java.io.IOException;
 

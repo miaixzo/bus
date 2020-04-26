@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
-import org.aoju.bus.image.metric.pdu.AAssociateRJ;
-import org.aoju.bus.image.metric.pdu.UserIdentityAC;
-import org.aoju.bus.image.metric.pdu.UserIdentityRQ;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRJ;
+import org.aoju.bus.image.metric.internal.pdu.UserIdentityAC;
+import org.aoju.bus.image.metric.internal.pdu.UserIdentityRQ;
 
 /**
  * @author Kimi Liu

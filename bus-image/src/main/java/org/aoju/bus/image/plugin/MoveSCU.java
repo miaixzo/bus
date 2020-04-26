@@ -37,9 +37,9 @@ import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.DimseRSPHandler;
-import org.aoju.bus.image.metric.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.pdu.ExtendedNegotiation;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.File;
 import java.io.IOException;

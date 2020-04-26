@@ -28,7 +28,7 @@ import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Code;
 import org.aoju.bus.image.galaxy.data.Issuer;
 import org.aoju.bus.image.metric.*;
-import org.aoju.bus.image.metric.pdu.AAssociateRQ;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
@@ -1367,4 +1367,5 @@ public class Device implements Serializable {
                     + " configured for Device: " + deviceName);
         return devExt;
     }
+
 }

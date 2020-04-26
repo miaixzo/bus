@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.image.metric.hl7.HL7ContentHandler;
+import org.aoju.bus.image.metric.internal.hl7.HL7ContentHandler;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;

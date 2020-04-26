@@ -36,13 +36,13 @@ import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.DicomInputStream;
 import org.aoju.bus.image.galaxy.io.DicomOutputStream;
 import org.aoju.bus.image.metric.*;
-import org.aoju.bus.image.metric.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.pdu.ExtendedNegotiation;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
-import org.aoju.bus.image.metric.pdu.RoleSelection;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.RoleSelection;
 import org.aoju.bus.image.metric.service.BasicCStoreSCP;
-import org.aoju.bus.image.metric.service.DicomServiceException;
-import org.aoju.bus.image.metric.service.DicomServiceRegistry;
+import org.aoju.bus.image.metric.service.ServiceException;
+import org.aoju.bus.image.metric.service.ServiceRegistry;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -89,7 +89,7 @@ public class GetSCU {
                 storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid),
                         data, file);
             } catch (Exception e) {
-                throw new DicomServiceException(Status.ProcessingFailure, e);
+                throw new ServiceException(Status.ProcessingFailure, e);
             }
 
         }
@@ -142,8 +142,8 @@ public class GetSCU {
         }
     }
 
-    private DicomServiceRegistry createServiceRegistry() {
-        DicomServiceRegistry serviceRegistry = new DicomServiceRegistry();
+    private ServiceRegistry createServiceRegistry() {
+        ServiceRegistry serviceRegistry = new ServiceRegistry();
         serviceRegistry.addDicomService(storageSCP);
         return serviceRegistry;
     }

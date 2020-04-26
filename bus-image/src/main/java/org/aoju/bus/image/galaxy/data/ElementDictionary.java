@@ -44,7 +44,7 @@ public abstract class ElementDictionary {
     }
 
     public static ElementDictionary getStandardElementDictionary() {
-        return StandardElementDictionary.INSTANCE;
+        return StandardDictionary.INSTANCE;
     }
 
     public static ElementDictionary getElementDictionary(

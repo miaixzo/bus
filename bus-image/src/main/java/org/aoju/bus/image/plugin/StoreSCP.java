@@ -37,11 +37,11 @@ import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.PDVInputStream;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 import org.aoju.bus.image.metric.service.BasicCEchoSCP;
 import org.aoju.bus.image.metric.service.BasicCStoreSCP;
-import org.aoju.bus.image.metric.service.DicomServiceException;
-import org.aoju.bus.image.metric.service.DicomServiceRegistry;
+import org.aoju.bus.image.metric.service.ServiceException;
+import org.aoju.bus.image.metric.service.ServiceRegistry;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -86,7 +86,7 @@ public class StoreSCP {
                                     : filePathFormat.format(parse(file))));
                 } catch (Exception e) {
                     deleteFile(as, file);
-                    throw new DicomServiceException(Status.ProcessingFailure, e);
+                    throw new ServiceException(Status.ProcessingFailure, e);
                 }
             } finally {
                 if (responseDelay > 0)
@@ -146,8 +146,8 @@ public class StoreSCP {
         }
     }
 
-    private DicomServiceRegistry createServiceRegistry() {
-        DicomServiceRegistry serviceRegistry = new DicomServiceRegistry();
+    private ServiceRegistry createServiceRegistry() {
+        ServiceRegistry serviceRegistry = new ServiceRegistry();
         serviceRegistry.addDicomService(new BasicCEchoSCP());
         serviceRegistry.addDicomService(cstoreSCP);
         return serviceRegistry;

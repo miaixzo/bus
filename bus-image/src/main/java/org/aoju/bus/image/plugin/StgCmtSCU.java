@@ -35,8 +35,8 @@ import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.DicomOutputStream;
 import org.aoju.bus.image.metric.*;
-import org.aoju.bus.image.metric.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 import org.aoju.bus.image.metric.service.*;
 import org.aoju.bus.logger.Logger;
 
@@ -66,18 +66,18 @@ public class StgCmtSCU {
     private int splitTag;
     private int status;
     private final DicomService stgcmtResultHandler =
-            new AbstractDicomService(UID.StorageCommitmentPushModelSOPClass) {
+            new AbstractService(UID.StorageCommitmentPushModelSOPClass) {
 
                 @Override
-                public void onDimseRQ(Association as, PresentationContext pc,
-                                      Dimse dimse, Attributes cmd, Attributes data)
+                public void onDimse(Association as, PresentationContext pc,
+                                    Dimse dimse, Attributes cmd, Attributes data)
                         throws IOException {
                     if (dimse != Dimse.N_EVENT_REPORT_RQ)
-                        throw new DicomServiceException(Status.UnrecognizedOperation);
+                        throw new ServiceException(Status.UnrecognizedOperation);
 
                     int eventTypeID = cmd.getInt(Tag.EventTypeID, 0);
                     if (eventTypeID != 1 && eventTypeID != 2)
-                        throw new DicomServiceException(Status.NoSuchEventType)
+                        throw new ServiceException(Status.NoSuchEventType)
                                 .setEventTypeID(eventTypeID);
                     String tuid = data.getString(Tag.TransactionUID);
                     try {
@@ -97,7 +97,7 @@ public class StgCmtSCU {
     public StgCmtSCU(ApplicationEntity ae) {
         this.remote = new Connection();
         this.ae = ae;
-        DicomServiceRegistry serviceRegistry = new DicomServiceRegistry();
+        ServiceRegistry serviceRegistry = new ServiceRegistry();
         serviceRegistry.addDicomService(new BasicCEchoSCP());
         serviceRegistry.addDicomService(stgcmtResultHandler);
         ae.setDimseRQHandler(serviceRegistry);
@@ -260,7 +260,7 @@ public class StgCmtSCU {
     }
 
     private Attributes eventRecord(Association as, Attributes cmd, Attributes eventInfo)
-            throws DicomServiceException {
+            throws ServiceException {
         if (storageDir == null)
             return null;
 
@@ -278,7 +278,7 @@ public class StgCmtSCU {
                     eventInfo);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store Storage Commitment Result:", e);
-            throw new DicomServiceException(Status.ProcessingFailure, e);
+            throw new ServiceException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(out);
         }

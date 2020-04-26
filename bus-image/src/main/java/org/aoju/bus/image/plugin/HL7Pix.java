@@ -27,9 +27,9 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.hl7.HL7Message;
-import org.aoju.bus.image.metric.hl7.HL7Segment;
-import org.aoju.bus.image.metric.hl7.MLLPConnection;
+import org.aoju.bus.image.metric.internal.hl7.HL7Message;
+import org.aoju.bus.image.metric.internal.hl7.HL7Segment;
+import org.aoju.bus.image.metric.internal.hl7.MLLPConnection;
 
 import java.io.IOException;
 import java.net.Socket;

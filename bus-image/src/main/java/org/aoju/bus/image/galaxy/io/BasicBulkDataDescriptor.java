@@ -26,7 +26,7 @@ package org.aoju.bus.image.galaxy.io;
 
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
-import org.aoju.bus.image.galaxy.data.AttributeSelector;
+import org.aoju.bus.image.galaxy.data.AttributesSelector;
 import org.aoju.bus.image.galaxy.data.ItemPointer;
 import org.aoju.bus.image.galaxy.data.VR;
 
@@ -39,7 +39,7 @@ import java.util.*;
  */
 public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
-    private final List<AttributeSelector> selectors = new ArrayList<>();
+    private final List<AttributesSelector> selectors = new ArrayList<>();
     private final EnumMap<VR, Integer> lengthsThresholdByVR = new EnumMap<>(VR.class);
     private String bulkDataDescriptorID;
     private boolean excludeDefaults;
@@ -108,21 +108,21 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         return this;
     }
 
-    public BasicBulkDataDescriptor addAttributeSelector(AttributeSelector... selectors) {
-        for (AttributeSelector selector : selectors) {
+    public BasicBulkDataDescriptor addAttributeSelector(AttributesSelector... selectors) {
+        for (AttributesSelector selector : selectors) {
             this.selectors.add(Objects.requireNonNull(selector));
         }
         return this;
     }
 
-    public AttributeSelector[] getAttributeSelectors() {
-        return selectors.toArray(new AttributeSelector[0]);
+    public AttributesSelector[] getAttributeSelectors() {
+        return selectors.toArray(new AttributesSelector[0]);
     }
 
     public void setAttributeSelectorsFromStrings(String[] ss) {
-        List<AttributeSelector> tmp = new ArrayList<>(ss.length);
+        List<AttributesSelector> tmp = new ArrayList<>(ss.length);
         for (String s : ss) {
-            tmp.add(AttributeSelector.valueOf(s));
+            tmp.add(AttributesSelector.valueOf(s));
         }
         selectors.clear();
         selectors.addAll(tmp);
@@ -130,7 +130,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
     public BasicBulkDataDescriptor addTag(int... tags) {
         for (int tag : tags) {
-            this.selectors.add(new AttributeSelector(tag));
+            this.selectors.add(new AttributesSelector(tag));
         }
         return this;
     }
@@ -139,7 +139,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         if (tagPaths.length == 0)
             throw new IllegalArgumentException("tagPaths.length == 0");
         this.selectors.add(
-                new AttributeSelector(tagPaths[tagPaths.length - 1], null, toItemPointers(tagPaths)));
+                new AttributesSelector(tagPaths[tagPaths.length - 1], null, toItemPointers(tagPaths)));
         return this;
     }
 
@@ -204,7 +204,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     }
 
     private boolean selected(List<ItemPointer> itemPointers, String privateCreator, int tag) {
-        for (AttributeSelector selector : selectors) {
+        for (AttributesSelector selector : selectors) {
             if (selector.matches(itemPointers, privateCreator, tag))
                 return true;
         }

@@ -29,7 +29,7 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.hl7.MLLPConnection;
+import org.aoju.bus.image.metric.internal.hl7.MLLPConnection;
 
 import java.io.*;
 import java.net.Socket;
