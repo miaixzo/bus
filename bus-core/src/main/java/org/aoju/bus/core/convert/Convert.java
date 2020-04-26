@@ -671,7 +671,7 @@ public class Convert {
      * @throws InstrumentException 转换器不存在
      */
     public static <T> T convert(Type type, Object value, T defaultValue) throws InstrumentException {
-        return ConverterRegistry.getInstance().convert(type, value, defaultValue);
+        return convertWithCheck(type, value, defaultValue, false);
     }
 
     /**
@@ -698,10 +698,29 @@ public class Convert {
      * @return 转换后的值
      */
     public static <T> T convertQuietly(Type type, Object value, T defaultValue) {
+        return convertWithCheck(type, value, defaultValue, true);
+    }
+
+    /**
+     * 转换值为指定类型，可选是否不抛异常转换<br>
+     * 当转换失败时返回默认值
+     *
+     * @param <T>          目标类型
+     * @param type         目标类型
+     * @param value        值
+     * @param defaultValue 默认值
+     * @param quietly      是否静默转换，true不抛异常
+     * @return 转换后的值
+     */
+    public static <T> T convertWithCheck(Type type, Object value, T defaultValue, boolean quietly) {
+        final ConverterRegistry registry = ConverterRegistry.getInstance();
         try {
-            return convert(type, value, defaultValue);
+            return registry.convert(type, value, defaultValue);
         } catch (Exception e) {
-            return defaultValue;
+            if (quietly) {
+                return defaultValue;
+            }
+            throw e;
         }
     }
 

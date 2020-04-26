@@ -255,7 +255,9 @@ public class Sftp extends AbstractFtp {
                 return LsEntrySelector.CONTINUE;
             });
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            if (false == StringUtils.startWithIgnoreCase(e.getMessage(), "No such file")) {
+                throw new InstrumentException(e);
+            }
         }
         return fileNames;
     }

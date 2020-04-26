@@ -1025,7 +1025,10 @@ public class FileUtils {
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
-            newName = newName.concat(Symbol.DOT).concat(FileUtils.extName(file));
+            final String extName = FileUtils.extName(file);
+            if (StringUtils.isNotBlank(extName)) {
+                newName = newName.concat(Symbol.DOT).concat(extName);
+            }
         }
         final Path path = file.toPath();
         final CopyOption[] options = isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{};
@@ -1369,9 +1372,8 @@ public class FileUtils {
      * @return 总大小, bytes长度
      */
     public static long size(File file) {
-        Assert.notNull(file, "file argument is null !");
-        if (false == file.exists()) {
-            throw new IllegalArgumentException(StringUtils.format("File [{}] not exist !", file.getAbsolutePath()));
+        if (null == file || false == file.exists()) {
+            return 0;
         }
 
         if (file.isDirectory()) {

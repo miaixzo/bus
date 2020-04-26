@@ -43,7 +43,7 @@ public interface ValueProvider<T> {
      * 获取值
      *
      * @param key       Bean对象中参数名
-     * @param valueType 被注入的值得类型
+     * @param valueType 被注入的值的类型
      * @return 对应参数名的值
      */
     Object value(T key, Type valueType);
