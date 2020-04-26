@@ -35,11 +35,9 @@ import java.util.Iterator;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class CompressionRules
-        implements Iterable<CompressionRule>, Serializable {
+public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
-    private final ArrayList<CompressionRule> list =
-            new ArrayList<CompressionRule>();
+    private final ArrayList<CompressionRule> list = new ArrayList<>();
 
     public void add(CompressionRule rule) {
         if (findByCommonName(rule.getCommonName()) != null)

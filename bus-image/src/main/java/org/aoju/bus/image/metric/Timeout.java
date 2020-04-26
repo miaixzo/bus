@@ -41,7 +41,9 @@ public class Timeout implements Runnable {
     private final String cancelMsg;
     private final ScheduledFuture<?> future;
 
-    private Timeout(Association as, String expiredMsg, String cancelMsg,
+    private Timeout(Association as,
+                    String expiredMsg,
+                    String cancelMsg,
                     int timeout) {
         this.as = as;
         this.expiredMsg = expiredMsg;
@@ -50,8 +52,11 @@ public class Timeout implements Runnable {
                 .schedule(this, timeout, TimeUnit.MILLISECONDS);
     }
 
-    public static Timeout start(Association as, String startMsg,
-                                String expiredMsg, String cancelMsg, int timeout) {
+    public static Timeout start(Association as,
+                                String startMsg,
+                                String expiredMsg,
+                                String cancelMsg,
+                                int timeout) {
         Logger.debug(startMsg, as, timeout);
         return new Timeout(as, expiredMsg, cancelMsg, timeout);
     }

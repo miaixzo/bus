@@ -25,7 +25,7 @@
 package org.aoju.bus.image.metric.internal.hl7;
 
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.DeviceExtension;
+import org.aoju.bus.image.metric.acquire.DeviceExtension;
 
 import java.net.Socket;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class HL7DeviceExtension extends DeviceExtension {
 
     static {
         Connection.registerTCPProtocolHandler(
-                Connection.Protocol.HL7, HL7ProtocolHandler.INSTANCE);
+                Connection.Protocol.HL7, HL7Handler.INSTANCE);
     }
 
     private final LinkedHashMap<String, HL7Application> hl7apps =

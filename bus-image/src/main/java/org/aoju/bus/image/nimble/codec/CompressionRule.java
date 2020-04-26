@@ -25,7 +25,7 @@
 package org.aoju.bus.image.nimble.codec;
 
 import org.aoju.bus.image.galaxy.Property;
-import org.aoju.bus.image.nimble.PhotometricInterpretation;
+import org.aoju.bus.image.nimble.Photometric;
 
 import java.io.Serializable;
 import java.util.EnumSet;
@@ -58,7 +58,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         return commonName;
     }
 
-    public PhotometricInterpretation[] getPhotometricInterpretations() {
+    public Photometric[] getPhotometricInterpretations() {
         return condition.getPhotometricInterpretations();
     }
 
@@ -101,7 +101,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
 
     private static class Condition implements Comparable<Condition>, Serializable {
 
-        final EnumSet<PhotometricInterpretation> pmis;
+        final EnumSet<Photometric> pmis;
         final int bitsStoredMask;
         final int pixelRepresentation = -1;
         final String[] aeTitles;
@@ -111,9 +111,9 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
 
         Condition(String[] pmis, int[] bitsStored, int pixelRepresentation,
                   String[] aeTitles, String[] sopClasses, String[] bodyPartExamined) {
-            this.pmis = EnumSet.noneOf(PhotometricInterpretation.class);
+            this.pmis = EnumSet.noneOf(Photometric.class);
             for (String pmi : pmis)
-                this.pmis.add(PhotometricInterpretation.fromString(pmi));
+                this.pmis.add(Photometric.fromString(pmi));
 
             this.bitsStoredMask = toBitsStoredMask(bitsStored);
             this.aeTitles = aeTitles;
@@ -143,8 +143,8 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
             return mask;
         }
 
-        PhotometricInterpretation[] getPhotometricInterpretations() {
-            return pmis.toArray(new PhotometricInterpretation[pmis.size()]);
+        Photometric[] getPhotometricInterpretations() {
+            return pmis.toArray(new Photometric[pmis.size()]);
         }
 
         int[] getBitsStored() {
@@ -167,7 +167,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         }
 
         public boolean matches(String aeTitle, ImageDescriptor imageDescriptor) {
-            return pmis.contains(imageDescriptor.getPhotometricInterpretation())
+            return pmis.contains(imageDescriptor.getPhotometric())
                     && matchBitStored(imageDescriptor.getBitsStored())
                     && matchPixelRepresentation(imageDescriptor.getPixelRepresentation())
                     && isEmptyOrContains(this.aeTitles, aeTitle)

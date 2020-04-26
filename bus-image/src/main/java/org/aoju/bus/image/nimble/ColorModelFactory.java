@@ -79,11 +79,12 @@ public class ColorModelFactory {
                 dataType);
     }
 
-    public static ColorModel createYBRColorModel(int bits, int dataType,
-                                                 Attributes ds, YBR ybr, ColorSubsampling subsampling) {
-        return new SampledColorModel(
-                new YBRColorSpace(createRGBColorSpace(ds), ybr),
-                subsampling);
+    public static ColorModel createYBRColorModel(int bits,
+                                                 int dataType,
+                                                 Attributes ds,
+                                                 YBR ybr,
+                                                 ColorSubsampling subsampling) {
+        return new SampledColorModel(new YBRColorSpace(createRGBColorSpace(ds), ybr), subsampling);
     }
 
     private static ColorSpace createRGBColorSpace(Attributes ds) {

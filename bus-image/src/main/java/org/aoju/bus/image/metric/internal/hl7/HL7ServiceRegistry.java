@@ -35,7 +35,7 @@ import java.util.HashMap;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class HL7ServiceRegistry extends DefaultHL7MessageListener {
+public class HL7ServiceRegistry extends DefaultHL7Listener {
 
     private final ArrayList<HL7Service> services = new ArrayList<>();
     private final HashMap<String, HL7MessageListener> listeners =

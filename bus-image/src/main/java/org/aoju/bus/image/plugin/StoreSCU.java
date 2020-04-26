@@ -256,7 +256,7 @@ public class StoreSCU {
                 FileInputStream in = new FileInputStream(f);
                 try {
                     in.skip(fmiEndPos);
-                    InputStreamDataWriter data = new InputStreamDataWriter(in);
+                    InputStreamWriter data = new InputStreamWriter(in);
                     as.cstore(cuid, iuid, priority, data, ts,
                             rspHandlerFactory.createDimseRSPHandler(f));
                 } finally {

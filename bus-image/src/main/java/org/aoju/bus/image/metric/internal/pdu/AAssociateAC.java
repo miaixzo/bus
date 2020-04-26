@@ -32,7 +32,7 @@ package org.aoju.bus.image.metric.internal.pdu;
 public class AAssociateAC extends AAssociateRQAC {
 
     @Override
-    public void setUserIdentityRQ(UserIdentityRQ userIdentityRQ) {
+    public void setIdentityRQ(IdentityRQ identityRQ) {
         throw new UnsupportedOperationException();
     }
 

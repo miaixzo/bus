@@ -29,7 +29,7 @@ package org.aoju.bus.image.metric.internal.hl7;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class DefaultHL7Service extends DefaultHL7MessageListener
+public class DefaultHL7Service extends DefaultHL7Listener
         implements HL7Service {
 
     private final String[] messageTypes;

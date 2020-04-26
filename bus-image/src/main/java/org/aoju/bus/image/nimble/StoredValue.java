@@ -98,4 +98,5 @@ public abstract class StoredValue {
             return (1 << (bitsStored - 1)) - 1;
         }
     }
+
 }

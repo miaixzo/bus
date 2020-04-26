@@ -32,15 +32,15 @@ import org.aoju.bus.image.metric.WebApplication;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class WebApplicationCache extends ConfigurationCache<DicomConfiguration, WebApplication>
-        implements IWebApplicationCache {
+public class WebApplicationCache extends ConfigurationCache<Configuration, WebApplication>
+        implements ApplicationCache {
 
-    public WebApplicationCache(DicomConfiguration conf) {
+    public WebApplicationCache(Configuration conf) {
         super(conf);
     }
 
     @Override
-    protected WebApplication find(DicomConfiguration conf, String key) throws InstrumentException {
+    protected WebApplication find(Configuration conf, String key) throws InstrumentException {
         return conf.findWebApplication(key);
     }
 

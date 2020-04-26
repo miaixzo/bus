@@ -28,6 +28,7 @@ import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Code;
 import org.aoju.bus.image.galaxy.data.Issuer;
 import org.aoju.bus.image.metric.*;
+import org.aoju.bus.image.metric.acquire.DeviceExtension;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 
 import javax.net.ssl.KeyManager;
@@ -99,13 +100,14 @@ public class Device implements Serializable {
     private TimeZone timeZoneOfDevice;
     private transient AssociationHandler associationHandler = new AssociationHandler();
     private transient DimseRQHandler dimseRQHandler;
-    private transient ConnectionMonitor connectionMonitor;
+    private transient Monitoring monitoring;
     private transient AssociationMonitor associationMonitor;
     private transient Executor executor;
     private transient ScheduledExecutorService scheduledExecutor;
     private transient volatile SSLContext sslContext;
     private transient volatile KeyManager km;
     private transient volatile TrustManager tm;
+    private Boolean arcDevExt;
 
     public Device() {
     }
@@ -682,12 +684,12 @@ public class Device implements Serializable {
         this.associationHandler = associationHandler;
     }
 
-    public ConnectionMonitor getConnectionMonitor() {
-        return connectionMonitor;
+    public Monitoring getMonitoring() {
+        return monitoring;
     }
 
-    public void setConnectionMonitor(ConnectionMonitor connectionMonitor) {
-        this.connectionMonitor = connectionMonitor;
+    public void setMonitoring(Monitoring monitoring) {
+        this.monitoring = monitoring;
     }
 
     public AssociationMonitor getAssociationMonitor() {
@@ -1366,6 +1368,14 @@ public class Device implements Serializable {
             throw new IllegalStateException("No " + clazz.getName()
                     + " configured for Device: " + deviceName);
         return devExt;
+    }
+
+    public Boolean getArcDevExt() {
+        return arcDevExt;
+    }
+
+    public void setArcDevExt(Boolean arcDevExt) {
+        this.arcDevExt = arcDevExt;
     }
 
 }

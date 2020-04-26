@@ -26,7 +26,7 @@ package org.aoju.bus.image.metric.internal.hl7;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Device;
-import org.aoju.bus.image.metric.CompatibleConnection;
+import org.aoju.bus.image.metric.Compatible;
 import org.aoju.bus.image.metric.Connection;
 
 import java.io.IOException;
@@ -42,14 +42,11 @@ import java.util.*;
  */
 public class HL7Application implements Serializable {
 
-    private final LinkedHashSet<String> acceptedSendingApplications =
-            new LinkedHashSet<String>();
+    private final LinkedHashSet<String> acceptedSendingApplications = new LinkedHashSet<>();
     private final LinkedHashSet<String> otherApplicationNames = new LinkedHashSet<>();
-    private final LinkedHashSet<String> acceptedMessageTypes =
-            new LinkedHashSet<String>();
+    private final LinkedHashSet<String> acceptedMessageTypes = new LinkedHashSet<>();
     private final List<Connection> conns = new ArrayList<>(1);
-    private final Map<Class<? extends HL7ApplicationExtension>, HL7ApplicationExtension> extensions =
-            new HashMap<Class<? extends HL7ApplicationExtension>, HL7ApplicationExtension>();
+    private final Map<Class<? extends HL7ApplicationExtension>, HL7ApplicationExtension> extensions = new HashMap<>();
     private Device device;
     private String name;
     private String hl7DefaultCharacterSet = "ASCII";
@@ -265,7 +262,7 @@ public class HL7Application implements Serializable {
 
     public MLLPConnection connect(HL7Application remote)
             throws IOException, InstrumentException, GeneralSecurityException {
-        CompatibleConnection cc = findCompatibleConnection(remote);
+        Compatible cc = findCompatibleConnection(remote);
         return connect(cc.getLocalConnection(), cc.getRemoteConnection());
     }
 
@@ -293,13 +290,13 @@ public class HL7Application implements Serializable {
         return new HL7Connection(this, connect(local, remote));
     }
 
-    public CompatibleConnection findCompatibleConnection(HL7Application remote)
+    public Compatible findCompatibleConnection(HL7Application remote)
             throws InstrumentException {
         for (Connection remoteConn : remote.conns)
             if (remoteConn.isInstalled() && remoteConn.isServer())
                 for (Connection conn : conns)
                     if (conn.isInstalled() && conn.isCompatible(remoteConn))
-                        return new CompatibleConnection(conn, remoteConn);
+                        return new Compatible(conn, remoteConn);
         throw new InstrumentException(
                 "No compatible connection to " + remote.getApplicationName() + " available on " + name);
     }

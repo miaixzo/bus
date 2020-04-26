@@ -26,6 +26,7 @@ package org.aoju.bus.image.metric;
 
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.metric.internal.pdv.PDVOutputStream;
 
 import java.io.IOException;
 

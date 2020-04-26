@@ -117,4 +117,5 @@ public class ShortLookupTable extends LookupTable {
         this.outBits = other.outBits;
         return this;
     }
+
 }

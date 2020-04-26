@@ -26,71 +26,19 @@ package org.aoju.bus.image.metric;
 
 import org.aoju.bus.image.Device;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 /**
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class DeviceService implements DeviceServiceInterface {
+public interface DeviceService {
 
-    protected Device device;
-    protected ExecutorService executor;
-    protected ScheduledExecutorService scheduledExecutor;
+    Device getDevice();
 
-    protected void init(Device device) {
-        setDevice(device);
-    }
+    boolean isRunning();
 
-    public Device getDevice() {
-        return device;
-    }
+    void start() throws Exception;
 
-    public void setDevice(Device device) {
-        this.device = device;
-    }
-
-    public boolean isRunning() {
-        return executor != null;
-    }
-
-    public void start() throws Exception {
-        if (device == null)
-            throw new IllegalStateException("Not initialized");
-        if (executor != null)
-            throw new IllegalStateException("Already started");
-        executor = executerService();
-        scheduledExecutor = scheduledExecuterService();
-        try {
-            device.setExecutor(executor);
-            device.setScheduledExecutor(scheduledExecutor);
-            device.bindConnections();
-        } catch (Exception e) {
-            stop();
-            throw e;
-        }
-    }
-
-    public void stop() {
-        if (device != null)
-            device.unbindConnections();
-        if (scheduledExecutor != null)
-            scheduledExecutor.shutdown();
-        if (executor != null)
-            executor.shutdown();
-        executor = null;
-        scheduledExecutor = null;
-    }
-
-    protected ExecutorService executerService() {
-        return Executors.newCachedThreadPool();
-    }
-
-    protected ScheduledExecutorService scheduledExecuterService() {
-        return Executors.newSingleThreadScheduledExecutor();
-    }
+    void stop();
 
 }

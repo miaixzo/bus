@@ -35,11 +35,15 @@ import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.DicomInputStream;
 import org.aoju.bus.image.galaxy.io.DicomOutputStream;
-import org.aoju.bus.image.metric.*;
+import org.aoju.bus.image.metric.ApplicationEntity;
+import org.aoju.bus.image.metric.Association;
+import org.aoju.bus.image.metric.Connection;
+import org.aoju.bus.image.metric.DimseRSPHandler;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
 import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 import org.aoju.bus.image.metric.internal.pdu.RoleSelection;
+import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
 import org.aoju.bus.image.metric.service.BasicCStoreSCP;
 import org.aoju.bus.image.metric.service.ServiceException;
 import org.aoju.bus.image.metric.service.ServiceRegistry;
@@ -164,7 +168,7 @@ public class GetSCU {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational)
-            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[]{1}));
+            rq.addExtendedNegotiation(new ExtendedNegotiate(model.cuid, new byte[]{1}));
         if (model.level != null)
             addLevel(model.level);
     }

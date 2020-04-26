@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
-import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
 
 import java.util.EnumSet;
 
@@ -49,7 +49,7 @@ public enum QueryOption {
         return info;
     }
 
-    public static EnumSet<QueryOption> toOptions(ExtendedNegotiation extNeg) {
+    public static EnumSet<QueryOption> toOptions(ExtendedNegotiate extNeg) {
         EnumSet<QueryOption> opts = EnumSet.noneOf(QueryOption.class);
         if (extNeg != null) {
             toOption(extNeg, QueryOption.RELATIONAL, opts);
@@ -60,7 +60,7 @@ public enum QueryOption {
         return opts;
     }
 
-    private static void toOption(ExtendedNegotiation extNeg,
+    private static void toOption(ExtendedNegotiate extNeg,
                                  QueryOption opt, EnumSet<QueryOption> opts) {
         if (extNeg.getField(opt.ordinal(), (byte) 0) == 1)
             opts.add(opt);

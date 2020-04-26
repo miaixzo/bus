@@ -30,7 +30,9 @@ import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Attributes;
+import org.aoju.bus.image.metric.acquire.AEExtension;
 import org.aoju.bus.image.metric.internal.pdu.*;
+import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -508,7 +510,7 @@ public class ApplicationEntity implements Serializable {
 
         byte[] info = negotiate(rq.getExtNegotiationFor(as), tc);
         if (info != null)
-            ac.addExtendedNegotiation(new ExtendedNegotiation(as, info));
+            ac.addExtendedNegotiation(new ExtendedNegotiate(as, info));
         return new PresentationContext(pcid,
                 PresentationContext.ACCEPTANCE, ts);
     }
@@ -555,7 +557,7 @@ public class ApplicationEntity implements Serializable {
         return tcs.get("*");
     }
 
-    private byte[] negotiate(ExtendedNegotiation exneg, TransferCapability tc) {
+    private byte[] negotiate(ExtendedNegotiate exneg, TransferCapability tc) {
         if (exneg == null)
             return null;
 
@@ -587,7 +589,7 @@ public class ApplicationEntity implements Serializable {
         try {
             as = new Association(this, local, sock);
             as.write(rq);
-            as.waitForLeaving(State.Sta5);
+            as.waitForLeaving(Association.State.Sta5);
             if (monitor != null)
                 monitor.onAssociationEstablished(as);
             return as;
@@ -613,20 +615,20 @@ public class ApplicationEntity implements Serializable {
                 "No compatible connection to " + remoteConn + " available on " + aet);
     }
 
-    public CompatibleConnection findCompatibleConnection(ApplicationEntity remote)
+    public Compatible findCompatibleConnection(ApplicationEntity remote)
             throws InstrumentException {
         for (Connection remoteConn : remote.conns)
             if (remoteConn.isInstalled() && remoteConn.isServer())
                 for (Connection conn : conns)
                     if (conn.isInstalled() && conn.isCompatible(remoteConn))
-                        return new CompatibleConnection(conn, remoteConn);
+                        return new Compatible(conn, remoteConn);
         throw new InstrumentException(
                 "No compatible connection to " + remote.getAETitle() + " available on " + aet);
     }
 
     public Association connect(ApplicationEntity remote, AAssociateRQ rq)
             throws IOException, InterruptedException, InstrumentException, GeneralSecurityException {
-        CompatibleConnection cc = findCompatibleConnection(remote);
+        Compatible cc = findCompatibleConnection(remote);
         if (rq.getCalledAET() == null)
             rq.setCalledAET(remote.getAETitle());
         return connect(cc.getLocalConnection(), cc.getRemoteConnection(), rq);

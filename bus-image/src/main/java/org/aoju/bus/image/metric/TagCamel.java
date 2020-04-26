@@ -494,7 +494,7 @@ public class TagCamel implements Serializable {
         STRING(String.class), TEXT(String.class), URI(String.class), DATE(LocalDate.class),
         DATETIME(LocalDateTime.class), TIME(LocalTime.class), BOOLEAN(Boolean.class), BYTE(Byte.class),
         INTEGER(Integer.class), FLOAT(Float.class), DOUBLE(Double.class), COLOR(Color.class),
-        THUMBNAIL(Thumbnailable.class), LIST(List.class), OBJECT(Object.class), DICOM_DATE(LocalDate.class),
+        THUMBNAIL(org.aoju.bus.image.metric.Thumbnail.class), LIST(List.class), OBJECT(Object.class), DICOM_DATE(LocalDate.class),
         DICOM_DATETIME(LocalDateTime.class), DICOM_TIME(LocalTime.class), DICOM_PERIOD(String.class),
         DICOM_PERSON_NAME(String.class), DICOM_SEQUENCE(Object.class), DICOM_SEX(String.class);
 

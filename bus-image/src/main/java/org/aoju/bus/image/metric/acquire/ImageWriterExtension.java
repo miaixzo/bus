@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.acquire;
 
-import org.aoju.bus.image.metric.DeviceExtension;
 import org.aoju.bus.image.nimble.codec.ImageWriterFactory;
 
 /**

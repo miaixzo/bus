@@ -27,6 +27,7 @@ package org.aoju.bus.image.metric;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
 
 import java.io.IOException;
 

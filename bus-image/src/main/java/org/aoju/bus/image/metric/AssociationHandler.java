@@ -36,13 +36,13 @@ import java.io.IOException;
  */
 public class AssociationHandler {
 
-    private UserIdentityNegotiator userIdNegotiator;
+    private IdentityNegotiator userIdNegotiator;
 
-    public UserIdentityNegotiator getUserIdNegotiator() {
+    public IdentityNegotiator getUserIdNegotiator() {
         return userIdNegotiator;
     }
 
-    public void setUserIdNegotiator(UserIdentityNegotiator userIdNegotiator) {
+    public void setUserIdNegotiator(IdentityNegotiator userIdNegotiator) {
         this.userIdNegotiator = userIdNegotiator;
     }
 
@@ -67,8 +67,8 @@ public class AssociationHandler {
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
                     AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_CALLING_AET_NOT_RECOGNIZED);
-        UserIdentityAC userIdentity = getUserIdNegotiator() != null
-                ? getUserIdNegotiator().negotiate(as, rq.getUserIdentityRQ())
+        IdentityAC userIdentity = getUserIdNegotiator() != null
+                ? getUserIdNegotiator().negotiate(as, rq.getIdentityRQ())
                 : null;
         if (ae.getDevice().isLimitOfAssociationsExceeded(rq))
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_TRANSIENT,
@@ -78,7 +78,7 @@ public class AssociationHandler {
     }
 
     protected AAssociateAC makeAAssociateAC(Association as, AAssociateRQ rq,
-                                            UserIdentityAC userIdentity) {
+                                            IdentityAC userIdentity) {
         AAssociateAC ac = new AAssociateAC();
         ac.setCalledAET(rq.getCalledAET());
         ac.setCallingAET(rq.getCallingAET());
@@ -88,7 +88,7 @@ public class AssociationHandler {
                 conn.getMaxOpsPerformed()));
         ac.setMaxOpsPerformed(Association.minZeroAsMax(rq.getMaxOpsPerformed(),
                 conn.getMaxOpsInvoked()));
-        ac.setUserIdentityAC(userIdentity);
+        ac.setIdentityAC(userIdentity);
         ApplicationEntity ae = as.getApplicationEntity();
         for (PresentationContext rqpc : rq.getPresentationContexts())
             ac.addPresentationContext(ae.negotiate(rq, ac, rqpc));

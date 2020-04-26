@@ -42,7 +42,7 @@ public abstract class AAssociateRQAC {
     protected final ArrayList<PresentationContext> pcs = new ArrayList<>();
     protected final Capacity<PresentationContext> pcidMap = new Capacity<>();
     protected final LinkedHashMap<String, RoleSelection> roleSelMap = new LinkedHashMap<>();
-    protected final LinkedHashMap<String, ExtendedNegotiation> extNegMap = new LinkedHashMap<>();
+    protected final LinkedHashMap<String, ExtendedNegotiate> extNegMap = new LinkedHashMap<>();
     protected final LinkedHashMap<String, CommonExtended> commonExtNegMap = new LinkedHashMap<>();
     protected byte[] reservedBytes = new byte[32];
     protected int protocolVersion = 1;
@@ -54,8 +54,8 @@ public abstract class AAssociateRQAC {
     protected String applicationContext = UID.DICOMApplicationContextName;
     protected String implClassUID = Implementation.getClassUID();
     protected String implVersionName = Implementation.getVersionName();
-    protected UserIdentityRQ userIdentityRQ;
-    protected UserIdentityAC userIdentityAC;
+    protected IdentityRQ identityRQ;
+    protected IdentityAC identityAC;
 
     public void checkCallingAET() {
         if (callingAET == null)
@@ -164,20 +164,20 @@ public abstract class AAssociateRQAC {
         this.implVersionName = implVersionName;
     }
 
-    public final UserIdentityRQ getUserIdentityRQ() {
-        return userIdentityRQ;
+    public final IdentityRQ getIdentityRQ() {
+        return identityRQ;
     }
 
-    public void setUserIdentityRQ(UserIdentityRQ userIdentityRQ) {
-        this.userIdentityRQ = userIdentityRQ;
+    public void setIdentityRQ(IdentityRQ identityRQ) {
+        this.identityRQ = identityRQ;
     }
 
-    public final UserIdentityAC getUserIdentityAC() {
-        return userIdentityAC;
+    public final IdentityAC getIdentityAC() {
+        return identityAC;
     }
 
-    public void setUserIdentityAC(UserIdentityAC userIdentityAC) {
-        this.userIdentityAC = userIdentityAC;
+    public void setIdentityAC(IdentityAC identityAC) {
+        this.identityAC = identityAC;
     }
 
     public List<PresentationContext> getPresentationContexts() {
@@ -226,19 +226,19 @@ public abstract class AAssociateRQAC {
         return roleSelMap.remove(cuid);
     }
 
-    public Collection<ExtendedNegotiation> getExtendedNegotiations() {
+    public Collection<ExtendedNegotiate> getExtendedNegotiations() {
         return Collections.unmodifiableCollection(extNegMap.values());
     }
 
-    public ExtendedNegotiation getExtNegotiationFor(String cuid) {
+    public ExtendedNegotiate getExtNegotiationFor(String cuid) {
         return extNegMap.get(cuid);
     }
 
-    public ExtendedNegotiation addExtendedNegotiation(ExtendedNegotiation extNeg) {
+    public ExtendedNegotiate addExtendedNegotiation(ExtendedNegotiate extNeg) {
         return extNegMap.put(extNeg.getSOPClassUID(), extNeg);
     }
 
-    public ExtendedNegotiation removeExtendedNegotiationFor(String cuid) {
+    public ExtendedNegotiate removeExtendedNegotiationFor(String cuid) {
         return extNegMap.remove(cuid);
     }
 
@@ -280,16 +280,16 @@ public abstract class AAssociateRQAC {
         }
         if (implVersionName != null)
             len += 4 + implVersionName.length();
-        for (ExtendedNegotiation en : extNegMap.values()) {
+        for (ExtendedNegotiate en : extNegMap.values()) {
             len += 4 + en.length();
         }
         for (CommonExtended cen : commonExtNegMap.values()) {
             len += 4 + cen.length();
         }
-        if (userIdentityRQ != null)
-            len += 4 + userIdentityRQ.length();
-        if (userIdentityAC != null)
-            len += 4 + userIdentityAC.length();
+        if (identityRQ != null)
+            len += 4 + identityRQ.length();
+        if (identityAC != null)
+            len += 4 + identityAC.length();
         return len;
     }
 
@@ -312,15 +312,15 @@ public abstract class AAssociateRQAC {
                 .append("  maxOpsInvoked/maxOpsPerformed: ")
                 .append(maxOpsInvoked).append("/").append(maxOpsPerformed)
                 .append(Property.LINE_SEPARATOR);
-        if (userIdentityRQ != null)
-            userIdentityRQ.promptTo(sb).append(Property.LINE_SEPARATOR);
-        if (userIdentityAC != null)
-            userIdentityAC.promptTo(sb).append(Property.LINE_SEPARATOR);
+        if (identityRQ != null)
+            identityRQ.promptTo(sb).append(Property.LINE_SEPARATOR);
+        if (identityAC != null)
+            identityAC.promptTo(sb).append(Property.LINE_SEPARATOR);
         for (PresentationContext pc : pcs)
             pc.promptTo(sb).append(Property.LINE_SEPARATOR);
         for (RoleSelection rs : roleSelMap.values())
             rs.promptTo(sb).append(Property.LINE_SEPARATOR);
-        for (ExtendedNegotiation extNeg : extNegMap.values())
+        for (ExtendedNegotiate extNeg : extNegMap.values())
             extNeg.promptTo(sb).append(Property.LINE_SEPARATOR);
         for (CommonExtended extNeg : commonExtNegMap.values())
             extNeg.promptTo(sb).append(Property.LINE_SEPARATOR);

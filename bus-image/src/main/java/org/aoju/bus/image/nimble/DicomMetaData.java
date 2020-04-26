@@ -28,7 +28,6 @@ import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.w3c.dom.Node;
 
-import javax.imageio.metadata.IIOInvalidTreeException;
 import javax.imageio.metadata.IIOMetadata;
 
 /**
@@ -65,8 +64,7 @@ public class DicomMetaData extends IIOMetadata {
     }
 
     @Override
-    public void mergeTree(String formatName, Node root)
-            throws IIOInvalidTreeException {
+    public void mergeTree(String formatName, Node root) {
         throw new UnsupportedOperationException();
     }
 
@@ -82,4 +80,5 @@ public class DicomMetaData extends IIOMetadata {
     public boolean bigEndian() {
         return getAttributes().bigEndian();
     }
+
 }

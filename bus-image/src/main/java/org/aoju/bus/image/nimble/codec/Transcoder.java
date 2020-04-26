@@ -35,7 +35,7 @@ import org.aoju.bus.image.galaxy.io.*;
 import org.aoju.bus.image.nimble.BufferedImages;
 import org.aoju.bus.image.nimble.Overlays;
 import org.aoju.bus.image.nimble.PaletteColorModel;
-import org.aoju.bus.image.nimble.PhotometricInterpretation;
+import org.aoju.bus.image.nimble.Photometric;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLSImageInputStream;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLSImageOutputStream;
 import org.aoju.bus.image.nimble.stream.ImagePixelInputStream;
@@ -446,29 +446,29 @@ public class Transcoder implements Closeable {
     }
 
     private void adjustDataset() {
-        PhotometricInterpretation pmi = imageDescriptor.getPhotometricInterpretation();
+        Photometric pmi = imageDescriptor.getPhotometric();
         if (decompressor != null && imageDescriptor.getSamples() == 3) {
             if (pmi.isYBR() && TransferSyntaxType.isYBRCompression(srcTransferSyntax)) {
-                pmi = PhotometricInterpretation.RGB;
+                pmi = Photometric.RGB;
                 dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmi.toString());
             }
             dataset.setInt(Tag.PlanarConfiguration, VR.US, srcTransferSyntaxType.getPlanarConfiguration());
         }
         if (compressor != null) {
-            if (pmi == PhotometricInterpretation.PALETTE_COLOR && lossyCompression) {
+            if (pmi == Photometric.PALETTE_COLOR && lossyCompression) {
                 palette2rgb = true;
                 dataset.removeSelected(cmTags);
                 dataset.setInt(Tag.SamplesPerPixel, VR.US, 3);
                 dataset.setInt(Tag.BitsAllocated, VR.US, 8);
                 dataset.setInt(Tag.BitsStored, VR.US, 8);
                 dataset.setInt(Tag.HighBit, VR.US, 7);
-                pmi = PhotometricInterpretation.RGB;
+                pmi = Photometric.RGB;
                 Logger.warn("Converting PALETTE_COLOR model into a lossy format is not recommended, prefer a lossless format");
             } else if ((pmi.isSubSampled() && srcTransferSyntaxType == TransferSyntaxType.NATIVE)
-                    || (pmi == PhotometricInterpretation.YBR_FULL
+                    || (pmi == Photometric.YBR_FULL
                     && TransferSyntaxType.isYBRCompression(destTransferSyntax))) {
                 ybr2rgb = true;
-                pmi = PhotometricInterpretation.RGB;
+                pmi = Photometric.RGB;
                 Logger.debug("Conversion to an RGB color model is required before compression.");
             }
             dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmiForCompression(pmi).toString());
@@ -483,9 +483,9 @@ public class Transcoder implements Closeable {
         }
     }
 
-    private PhotometricInterpretation pmiForCompression(PhotometricInterpretation pmi) {
+    private Photometric pmiForCompression(Photometric pmi) {
         return pmi.isYBR() && destTransferSyntaxType == TransferSyntaxType.JPEG_LOSSLESS
-                ? PhotometricInterpretation.RGB
+                ? Photometric.RGB
                 : pmi;
     }
 
@@ -543,8 +543,8 @@ public class Transcoder implements Closeable {
     }
 
     private BufferedImage adjustColorModel(BufferedImage bi) {
-        PhotometricInterpretation pmi = imageDescriptor.getPhotometricInterpretation();
-        if (pmi == PhotometricInterpretation.PALETTE_COLOR
+        Photometric pmi = imageDescriptor.getPhotometric();
+        if (pmi == Photometric.PALETTE_COLOR
                 && !(bi.getColorModel() instanceof PaletteColorModel)) {
             ColorModel cm;
             if (originalBi != null) {
@@ -751,7 +751,7 @@ public class Transcoder implements Closeable {
         int bitsStored = Math.min(imageDescriptor.getBitsStored(), destTransferSyntaxType.getMaxBitsStored());
         boolean signed = imageDescriptor.isSigned() && destTransferSyntaxType.canEncodeSigned();
         boolean banded = imageDescriptor.isBanded() || srcTransferSyntaxType == TransferSyntaxType.RLE;
-        PhotometricInterpretation pmi = imageDescriptor.getPhotometricInterpretation();
+        Photometric pmi = imageDescriptor.getPhotometric();
         int dataType = bitsAllocated > 8
                 ? (signed ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_USHORT)
                 : DataBuffer.TYPE_BYTE;

@@ -61,4 +61,5 @@ public final class YBRColorSpace extends ColorSpace {
     public float[] fromCIEXYZ(float[] xyzvalue) {
         return fromRGB(csRGB.fromCIEXYZ(xyzvalue));
     }
+
 }

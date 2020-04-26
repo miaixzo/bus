@@ -31,6 +31,7 @@ import org.aoju.bus.image.galaxy.Capacity;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.metric.internal.pdu.*;
+import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -136,7 +137,7 @@ public class Association {
         return dimseCounters.get(23 + dimse.ordinal());
     }
 
-    void incSentCount(Dimse dimse) {
+    public void incSentCount(Dimse dimse) {
         dimseCounters.getAndIncrement(dimse.ordinal());
     }
 
@@ -285,11 +286,11 @@ public class Association {
         return (requestor ? rq : ac).getImplClassUID();
     }
 
-    final int getMaxPDULengthSend() {
+    public final int getMaxPDULengthSend() {
         return maxPDULength;
     }
 
-    boolean isPackPDV() {
+    public boolean isPackPDV() {
         return conn.isPackPDV();
     }
 
@@ -340,7 +341,7 @@ public class Association {
             closeSocket();
     }
 
-    synchronized void onIOException(IOException e) {
+    public synchronized void onIOException(IOException e) {
         if (ex != null)
             return;
 
@@ -539,7 +540,7 @@ public class Association {
             listener.onClose(this);
     }
 
-    void onAAssociateRQ(AAssociateRQ rq) throws IOException {
+    public void onAAssociateRQ(AAssociateRQ rq) throws IOException {
         name = rq.getCalledAET() + delim() + rq.getCallingAET() + '(' + serialNo + ')';
         Logger.info("{} >> A-ASSOCIATE-RQ", name);
         Logger.debug("{}", rq);
@@ -567,7 +568,7 @@ public class Association {
         }
     }
 
-    void onAAssociateAC(AAssociateAC ac) throws IOException {
+    public void onAAssociateAC(AAssociateAC ac) throws IOException {
         Logger.info("{} >> A-ASSOCIATE-AC", name);
         Logger.debug("{}", ac);
         stopTimeout();
@@ -584,7 +585,7 @@ public class Association {
         startIdleTimeout();
     }
 
-    void onAAssociateRJ(AAssociateRJ rj) throws IOException {
+    public void onAAssociateRJ(AAssociateRJ rj) throws IOException {
         Logger.info("{} >> {}", name, rj);
         state.onAAssociateRJ(this, rj);
     }
@@ -594,7 +595,7 @@ public class Association {
         closeSocket();
     }
 
-    void onAReleaseRQ() throws IOException {
+    public void onAReleaseRQ() throws IOException {
         Logger.info("{} >> A-RELEASE-RQ", name);
         stopTimeout();
         state.onAReleaseRQ(this);
@@ -634,7 +635,7 @@ public class Association {
         }
     }
 
-    void onAReleaseRP() throws IOException {
+    public void onAReleaseRP() throws IOException {
         Logger.info("{} >> A-RELEASE-RP", name);
         stopTimeout();
         state.onAReleaseRP(this);
@@ -651,7 +652,7 @@ public class Association {
         closeSocketDelayed();
     }
 
-    void onAAbort(AAbort aa) {
+    public void onAAbort(AAbort aa) {
         Logger.info("{} >> {}", name, aa);
         stopTimeout();
         ex = aa;
@@ -664,7 +665,7 @@ public class Association {
         throw new AAbort(AAbort.UL_SERIVE_PROVIDER, AAbort.UNEXPECTED_PDU);
     }
 
-    void onPDataTF() throws IOException {
+    public void onPDataTF() throws IOException {
         state.onPDataTF(this);
     }
 
@@ -672,7 +673,7 @@ public class Association {
         decoder.decodeDIMSE();
     }
 
-    void writePDataTF() throws IOException {
+    public void writePDataTF() throws IOException {
         checkException();
         state.writePDataTF(this);
     }
@@ -681,8 +682,8 @@ public class Association {
         encoder.writePDataTF();
     }
 
-    void onDimseRQ(PresentationContext pc, Dimse dimse, Attributes cmd,
-                   PDVInputStream data) throws IOException {
+    public void onDimseRQ(PresentationContext pc, Dimse dimse, Attributes cmd,
+                          PDVInputStream data) throws IOException {
         stopTimeout();
         incPerforming();
         incReceivedCount(dimse);
@@ -698,7 +699,7 @@ public class Association {
         notifyAll();
     }
 
-    void onDimseRSP(Dimse dimse, Attributes cmd, Attributes data) throws AAbort {
+    public void onDimseRSP(Dimse dimse, Attributes cmd, Attributes data) throws AAbort {
         int msgId = cmd.getInt(Tag.MessageIDBeingRespondedTo, -1);
         int status = cmd.getInt(Tag.Status, 0);
         boolean pending = Status.isPending(status);
@@ -794,7 +795,7 @@ public class Association {
         }
     }
 
-    void onCancelRQ(Attributes cmd) throws IOException {
+    public void onCancelRQ(Attributes cmd) {
         incReceivedCount(Dimse.C_CANCEL_RQ);
         int msgId = cmd.getInt(Tag.MessageIDBeingRespondedTo, -1);
         CancelRQHandler handler = removeCancelRQHandler(msgId);
@@ -828,7 +829,7 @@ public class Association {
     private HashMap<String, PresentationContext> initTSMap(String as) {
         HashMap<String, PresentationContext> tsMap = pcMap.get(as);
         if (tsMap == null)
-            pcMap.put(as, tsMap = new HashMap<String, PresentationContext>());
+            pcMap.put(as, tsMap = new HashMap<>());
         return tsMap;
     }
 
@@ -852,7 +853,7 @@ public class Association {
         return Collections.unmodifiableSet(tsMap.keySet());
     }
 
-    PresentationContext getPresentationContext(int pcid) {
+    public PresentationContext getPresentationContext(int pcid) {
         return ac.getPresentationContext(pcid);
     }
 
@@ -1237,5 +1238,188 @@ public class Association {
     public EnumSet<QueryOption> getQueryOptionsFor(String cuid) {
         return QueryOption.toOptions(ac.getExtNegotiationFor(cuid));
     }
+
+    public enum State {
+        Sta1("Sta1 - Idle") {
+            @Override
+            void write(Association as, AAbort aa) {
+                // NO OP
+            }
+
+            @Override
+            void closeSocket(Association as) {
+                // NO OP
+            }
+
+            @Override
+            void closeSocketDelayed(Association as) {
+                // NO OP
+            }
+        },
+        Sta2("Sta2 - Transport connection open") {
+            @Override
+            void onAAssociateRQ(Association as, AAssociateRQ rq)
+                    throws IOException {
+                as.handle(rq);
+            }
+        },
+        Sta3("Sta3 - Awaiting local A-ASSOCIATE response primitive"),
+        Sta4("Sta4 - Awaiting transport connection opening to complete"),
+        Sta5("Sta5 - Awaiting A-ASSOCIATE-AC or A-ASSOCIATE-RJ PDU") {
+            @Override
+            void onAAssociateAC(Association as, AAssociateAC ac)
+                    throws IOException {
+                as.handle(ac);
+            }
+
+            @Override
+            void onAAssociateRJ(Association as, AAssociateRJ rj)
+                    throws IOException {
+                as.handle(rj);
+            }
+        },
+        Sta6("Sta6 - Association established and ready for data transfer") {
+            @Override
+            void onAReleaseRQ(Association as) throws IOException {
+                as.handleAReleaseRQ();
+            }
+
+            @Override
+            void onPDataTF(Association as) throws IOException {
+                as.handlePDataTF();
+            }
+
+            @Override
+            void writeAReleaseRQ(Association as) throws IOException {
+                as.writeAReleaseRQ();
+            }
+
+            @Override
+            public void writePDataTF(Association as) throws IOException {
+                as.doWritePDataTF();
+            }
+        },
+        Sta7("Sta7 - Awaiting A-RELEASE-RP PDU") {
+            @Override
+            public void onAReleaseRP(Association as) throws IOException {
+                as.handleAReleaseRP();
+            }
+
+            @Override
+            void onAReleaseRQ(Association as) throws IOException {
+                as.handleAReleaseRQCollision();
+            }
+
+            @Override
+            void onPDataTF(Association as) throws IOException {
+                as.handlePDataTF();
+            }
+        },
+        Sta8("Sta8 - Awaiting local A-RELEASE response primitive") {
+            @Override
+            public void writePDataTF(Association as) throws IOException {
+                as.doWritePDataTF();
+            }
+        },
+        Sta9("Sta9 - Release collision requestor side; awaiting A-RELEASE response"),
+        Sta10("Sta10 - Release collision acceptor side; awaiting A-RELEASE-RP PDU") {
+            @Override
+            void onAReleaseRP(Association as) throws IOException {
+                as.handleAReleaseRPCollision();
+            }
+        },
+        Sta11("Sta11 - Release collision requestor side; awaiting A-RELEASE-RP PDU") {
+            @Override
+            void onAReleaseRP(Association as) throws IOException {
+                as.handleAReleaseRP();
+            }
+        },
+        Sta12("Sta12 - Release collision acceptor side; awaiting A-RELEASE response primitive"),
+        Sta13("Sta13 - Awaiting Transport Connection Close Indication") {
+            @Override
+            public void onAReleaseRP(Association as) throws IOException {
+                // NO OP
+            }
+
+            @Override
+            void onAReleaseRQ(Association as) throws IOException {
+                // NO OP
+            }
+
+            @Override
+            void onPDataTF(Association as) throws IOException {
+                // NO OP
+            }
+
+            @Override
+            void write(Association as, AAbort aa) {
+                // NO OP
+            }
+
+            @Override
+            void closeSocketDelayed(Association as) {
+                // NO OP
+            }
+        };
+
+        private String name;
+
+        State(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        void onAAssociateRQ(Association as, AAssociateRQ rq)
+                throws IOException {
+            as.unexpectedPDU("A-ASSOCIATE-RQ");
+        }
+
+        void onAAssociateAC(Association as, AAssociateAC ac)
+                throws IOException {
+            as.unexpectedPDU("A-ASSOCIATE-AC");
+        }
+
+        void onAAssociateRJ(Association as, AAssociateRJ rj)
+                throws IOException {
+            as.unexpectedPDU("A-ASSOCIATE-RJ");
+        }
+
+        void onPDataTF(Association as) throws IOException {
+            as.unexpectedPDU("P-DATA-TF");
+        }
+
+        void onAReleaseRQ(Association as) throws IOException {
+            as.unexpectedPDU("A-RELEASE-RQ");
+        }
+
+        void onAReleaseRP(Association as) throws IOException {
+            as.unexpectedPDU("A-RELEASE-RP");
+        }
+
+        void writeAReleaseRQ(Association as) throws IOException {
+            throw new InstrumentException(this.toString());
+        }
+
+        void write(Association as, AAbort aa) throws IOException {
+            as.write(aa);
+        }
+
+        public void writePDataTF(Association as) throws IOException {
+            throw new InstrumentException(this.toString());
+        }
+
+        void closeSocket(Association as) {
+            as.doCloseSocket();
+        }
+
+        void closeSocketDelayed(Association as) {
+            as.doCloseSocketDelayed();
+        }
+    }
+
 }
 

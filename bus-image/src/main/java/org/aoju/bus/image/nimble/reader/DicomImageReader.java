@@ -113,8 +113,8 @@ public class DicomImageReader extends ImageReader implements Closeable {
 
     private int frameLength;
 
-    private PhotometricInterpretation pmi;
-    private PhotometricInterpretation pmiAfterDecompression;
+    private Photometric pmi;
+    private Photometric pmiAfterDecompression;
     private ImageDescriptor imageDescriptor;
 
     public DicomImageReader(ImageReaderSpi originatingProvider) {
@@ -720,7 +720,7 @@ public class DicomImageReader extends ImageReader implements Closeable {
             bitsStored = ds.getInt(Tag.BitsStored, bitsAllocated);
             dataType = bitsAllocated <= 8 ? DataBuffer.TYPE_BYTE
                     : DataBuffer.TYPE_USHORT;
-            pmi = PhotometricInterpretation.fromString(
+            pmi = Photometric.fromString(
                     ds.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
             if (pixelDataLength != -1) {
                 pmiAfterDecompression = pmi;
@@ -736,7 +736,7 @@ public class DicomImageReader extends ImageReader implements Closeable {
                 if (param == null)
                     throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
                 pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid)
-                        ? PhotometricInterpretation.RGB
+                        ? Photometric.RGB
                         : pmi;
                 this.rle = tsuid.equals(UID.RLELossless);
                 this.decompressor = ImageReaderFactory.getImageReader(param);

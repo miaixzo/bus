@@ -27,7 +27,7 @@ package org.aoju.bus.image.nimble.codec;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.nimble.Overlays;
-import org.aoju.bus.image.nimble.PhotometricInterpretation;
+import org.aoju.bus.image.nimble.Photometric;
 
 /**
  * @author Kimi Liu
@@ -39,7 +39,7 @@ public final class ImageDescriptor {
     private final int rows;
     private final int columns;
     private final int samples;
-    private final PhotometricInterpretation photometricInterpretation;
+    private final Photometric photometric;
     private final int bitsAllocated;
     private final int bitsStored;
     private final int bitsCompressed;
@@ -58,7 +58,7 @@ public final class ImageDescriptor {
         this.rows = attrs.getInt(Tag.Rows, 0);
         this.columns = attrs.getInt(Tag.Columns, 0);
         this.samples = attrs.getInt(Tag.SamplesPerPixel, 0);
-        this.photometricInterpretation = PhotometricInterpretation.fromString(
+        this.photometric = Photometric.fromString(
                 attrs.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
         this.bitsAllocated = attrs.getInt(Tag.BitsAllocated, 8);
         this.bitsStored = attrs.getInt(Tag.BitsStored, bitsAllocated);
@@ -84,8 +84,8 @@ public final class ImageDescriptor {
         return samples;
     }
 
-    public PhotometricInterpretation getPhotometricInterpretation() {
-        return photometricInterpretation;
+    public Photometric getPhotometric() {
+        return photometric;
     }
 
     public int getBitsAllocated() {

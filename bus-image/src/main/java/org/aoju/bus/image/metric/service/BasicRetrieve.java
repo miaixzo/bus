@@ -244,7 +244,7 @@ public class BasicRetrieve<T extends Instance> implements Retrieve {
     protected DataWriter createDataWriter(T inst, String tsuid) throws Exception {
         DicomInputStream in = new DicomInputStream(inst.getFile());
         in.readFileMetaInformation();
-        return new InputStreamDataWriter(in);
+        return new InputStreamWriter(in);
     }
 
     public void writePendingRSP() {

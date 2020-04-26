@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
-import org.aoju.bus.image.nimble.PhotometricInterpretation;
+import org.aoju.bus.image.nimble.Photometric;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.aoju.bus.logger.Logger;
 import org.opencv.core.CvType;
@@ -317,7 +317,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return bufferedImage;
     }
 
-    private boolean ybr2rgb(PhotometricInterpretation pmi) {
+    private boolean ybr2rgb(Photometric pmi) {
         // Preserve YBR for JPEG Lossless (1.2.840.10008.1.2.4.57, 1.2.840.10008.1.2.4.70)
         if (params.getJpegMarker() == 0xffc3) {
             return false;
@@ -339,7 +339,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
 
         int dcmFlags =
                 (canEncodeSigned && desc.isSigned()) ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
-        if (ybr2rgb(desc.getPhotometricInterpretation())) {
+        if (ybr2rgb(desc.getPhotometric())) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_YBR;
         }
 

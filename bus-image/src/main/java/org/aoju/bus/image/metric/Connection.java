@@ -29,6 +29,10 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.galaxy.Property;
+import org.aoju.bus.image.metric.internal.net.TCPHandler;
+import org.aoju.bus.image.metric.internal.net.TCPListener;
+import org.aoju.bus.image.metric.internal.net.UDPHandler;
+import org.aoju.bus.image.metric.internal.net.UDPListener;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.SSLContext;
@@ -62,13 +66,13 @@ public class Connection implements Serializable {
     // to fit into SunJSSE TLS Application Data Length 16408
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
     public static final String[] DEFAULT_TLS_PROTOCOLS = {"TLSv1.2", "TLSv1.1", "TLSv1"};
-    private static final EnumMap<Protocol, TCPProtocolHandler> tcpHandlers =
-            new EnumMap<Protocol, TCPProtocolHandler>(Protocol.class);
-    private static final EnumMap<Protocol, UDPProtocolHandler> udpHandlers =
-            new EnumMap<Protocol, UDPProtocolHandler>(Protocol.class);
+    private static final EnumMap<Protocol, TCPHandler> tcpHandlers =
+            new EnumMap<Protocol, TCPHandler>(Protocol.class);
+    private static final EnumMap<Protocol, UDPHandler> udpHandlers =
+            new EnumMap<Protocol, UDPHandler>(Protocol.class);
 
     static {
-        registerTCPProtocolHandler(Protocol.DICOM, DicomProtocolHandler.INSTANCE);
+        registerTCPProtocolHandler(Protocol.DICOM, DicomHandler.INSTANCE);
     }
 
     private Device device;
@@ -122,22 +126,22 @@ public class Connection implements Serializable {
         this.port = port;
     }
 
-    public static TCPProtocolHandler registerTCPProtocolHandler(
-            Protocol protocol, TCPProtocolHandler handler) {
+    public static TCPHandler registerTCPProtocolHandler(
+            Protocol protocol, TCPHandler handler) {
         return tcpHandlers.put(protocol, handler);
     }
 
-    public static TCPProtocolHandler unregisterTCPProtocolHandler(
+    public static TCPHandler unregisterTCPProtocolHandler(
             Protocol protocol) {
         return tcpHandlers.remove(protocol);
     }
 
-    public static UDPProtocolHandler registerUDPProtocolHandler(
-            Protocol protocol, UDPProtocolHandler handler) {
+    public static UDPHandler registerUDPProtocolHandler(
+            Protocol protocol, UDPHandler handler) {
         return udpHandlers.put(protocol, handler);
     }
 
-    public static UDPProtocolHandler unregisterUDPProtocolHandler(
+    public static UDPHandler unregisterUDPProtocolHandler(
             Protocol protocol) {
         return udpHandlers.remove(protocol);
     }
@@ -565,7 +569,7 @@ public class Connection implements Serializable {
         }
     }
 
-    void setReceiveBufferSize(ServerSocket ss) throws SocketException {
+    public void setReceiveBufferSize(ServerSocket ss) throws SocketException {
         int size = ss.getReceiveBufferSize();
         if (receiveBufferSize == 0) {
             receiveBufferSize = size;
@@ -745,7 +749,7 @@ public class Connection implements Serializable {
         return sb.append(indent).append(']');
     }
 
-    void setSocketSendOptions(Socket s) throws SocketException {
+    public void setSocketSendOptions(Socket s) throws SocketException {
         int size = s.getSendBufferSize();
         if (sendBufferSize == 0) {
             sendBufferSize = size;
@@ -839,14 +843,14 @@ public class Connection implements Serializable {
         if (isListening())
             throw new IllegalStateException("Already listening - " + listener);
         if (protocol.isTCP()) {
-            TCPProtocolHandler handler = tcpHandlers.get(protocol);
+            TCPHandler handler = tcpHandlers.get(protocol);
             if (handler == null) {
                 Logger.info("No TCP Protocol Handler for protocol {}", protocol);
                 return false;
             }
             listener = new TCPListener(this, handler);
         } else {
-            UDPProtocolHandler handler = udpHandlers.get(protocol);
+            UDPHandler handler = udpHandlers.get(protocol);
             if (handler == null) {
                 Logger.info("No UDP Protocol Handler for protocol {}", protocol);
                 return false;
@@ -889,8 +893,8 @@ public class Connection implements Serializable {
         Logger.info("Initiate connection from {} to {}:{}",
                 bindPoint, remoteHostname, remotePort);
         Socket s = new Socket();
-        ConnectionMonitor monitor = device != null
-                ? device.getConnectionMonitor()
+        Monitoring monitor = device != null
+                ? device.getMonitoring()
                 : null;
         try {
             s.bind(bindPoint);

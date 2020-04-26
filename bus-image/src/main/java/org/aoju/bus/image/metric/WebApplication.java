@@ -50,6 +50,7 @@ public class WebApplication {
     private EnumSet<ServiceClass> serviceClasses = EnumSet.noneOf(ServiceClass.class);
 
     public WebApplication() {
+
     }
 
     public WebApplication(String applicationName) {
@@ -221,6 +222,14 @@ public class WebApplication {
                 + ']';
     }
 
-    public enum ServiceClass {WADO_URI, WADO_RS, STOW_RS, QIDO_RS, UPS_RS, AOJU_ARC, AOJU_ARC_AET}
+    public enum ServiceClass {
+        WADO_URI,
+        WADO_RS,
+        STOW_RS,
+        QIDO_RS,
+        UPS_RS,
+        AOJU_ARC,
+        AOJU_ARC_AET
+    }
 
 }

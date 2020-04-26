@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
-import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
 
 import java.io.Serializable;
 
@@ -55,7 +55,7 @@ public class StorageOptions implements Serializable {
         this.elementCoercion = getElementCoercion;
     }
 
-    public static StorageOptions valueOf(ExtendedNegotiation extNeg) {
+    public static StorageOptions valueOf(ExtendedNegotiate extNeg) {
         return new StorageOptions(
                 LevelOfSupport.valueOf(extNeg.getField(0, (byte) 3)),
                 DigitalSignatureSupport.valueOf(extNeg.getField(2, (byte) 0)),

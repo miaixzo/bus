@@ -28,7 +28,7 @@ import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.*;
 import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
 import org.aoju.bus.image.galaxy.io.DicomOutputStream;
-import org.aoju.bus.image.nimble.PhotometricInterpretation;
+import org.aoju.bus.image.nimble.Photometric;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLSImageInputStream;
 import org.aoju.bus.image.nimble.stream.SegmentedImageStream;
@@ -61,8 +61,8 @@ public class Decompressor {
     protected int rows;
     protected int cols;
     protected int samples;
-    protected PhotometricInterpretation pmi;
-    protected PhotometricInterpretation pmiAfterDecompression;
+    protected Photometric pmi;
+    protected Photometric pmiAfterDecompression;
     protected int bitsAllocated;
     protected int bitsStored;
     protected boolean banded;
@@ -92,7 +92,7 @@ public class Decompressor {
         this.rows = dataset.getInt(Tag.Rows, 0);
         this.cols = dataset.getInt(Tag.Columns, 0);
         this.samples = dataset.getInt(Tag.SamplesPerPixel, 0);
-        this.pmi = PhotometricInterpretation.fromString(
+        this.pmi = Photometric.fromString(
                 dataset.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
         this.pmiAfterDecompression = pmi;
         this.bitsAllocated = dataset.getInt(Tag.BitsAllocated, 8);
@@ -129,7 +129,7 @@ public class Decompressor {
             this.readParam = decompressor.getDefaultReadParam();
             this.patchJpegLS = param.patchJPEGLS;
             this.pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid)
-                    ? PhotometricInterpretation.RGB
+                    ? Photometric.RGB
                     : pmi;
         } else {
             this.file = ((BulkData) pixeldata).getFile();

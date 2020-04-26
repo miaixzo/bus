@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
-import org.aoju.bus.image.nimble.PhotometricInterpretation;
+import org.aoju.bus.image.nimble.Photometric;
 import org.aoju.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.opencv.core.CvType;
@@ -56,18 +56,18 @@ public class NativeJPEGImageWriter extends ImageWriter {
         super(originatingProvider);
     }
 
-    private static int getCodecColorSpace(PhotometricInterpretation pi) {
-        if (PhotometricInterpretation.MONOCHROME1 == pi) {
+    private static int getCodecColorSpace(Photometric pi) {
+        if (Photometric.MONOCHROME1 == pi) {
             return Imgcodecs.EPI_Monochrome1;
-        } else if (PhotometricInterpretation.MONOCHROME2 == pi) {
+        } else if (Photometric.MONOCHROME2 == pi) {
             return Imgcodecs.EPI_Monochrome2;
-        } else if (PhotometricInterpretation.RGB == pi) {
+        } else if (Photometric.RGB == pi) {
             return Imgcodecs.EPI_RGB;
-        } else if (PhotometricInterpretation.YBR_FULL == pi) {
+        } else if (Photometric.YBR_FULL == pi) {
             return Imgcodecs.EPI_YBR_Full;
-        } else if (PhotometricInterpretation.YBR_FULL_422 == pi) {
+        } else if (Photometric.YBR_FULL_422 == pi) {
             return Imgcodecs.EPI_YBR_Full_422;
-        } else if (PhotometricInterpretation.YBR_PARTIAL_422 == pi) {
+        } else if (Photometric.YBR_PARTIAL_422 == pi) {
             return Imgcodecs.EPI_YBR_Partial_422;
         } else { // Palette, HSV, ARGB, CMYK
             return Imgcodecs.EPI_Unknown;
@@ -97,11 +97,11 @@ public class NativeJPEGImageWriter extends ImageWriter {
             throw new IllegalArgumentException("stream does not implement BytesWithImageImageDescriptor!");
         }
         ImageDescriptor desc = ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
-        PhotometricInterpretation pi = desc.getPhotometricInterpretation();
+        Photometric pi = desc.getPhotometric();
 
-        if (jpegParams.isCompressionLossless() && (PhotometricInterpretation.YBR_FULL_422 == pi
-                || PhotometricInterpretation.YBR_PARTIAL_422 == pi || PhotometricInterpretation.YBR_PARTIAL_420 == pi
-                || PhotometricInterpretation.YBR_ICT == pi || PhotometricInterpretation.YBR_RCT == pi)) {
+        if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi
+                || Photometric.YBR_PARTIAL_422 == pi || Photometric.YBR_PARTIAL_420 == pi
+                || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
             throw new IllegalArgumentException(
                     "True lossless encoder: Photometric interpretation is not supported: " + pi);
         }

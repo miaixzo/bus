@@ -39,7 +39,7 @@ import org.aoju.bus.image.galaxy.io.SAXReader;
 import org.aoju.bus.image.galaxy.io.SAXWriter;
 import org.aoju.bus.image.metric.*;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
 import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import javax.xml.transform.OutputKeys;
@@ -113,7 +113,7 @@ public class FindSCU {
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (!queryOptions.isEmpty()) {
             model.adjustQueryOptions(queryOptions);
-            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid,
+            rq.addExtendedNegotiation(new ExtendedNegotiate(model.cuid,
                     QueryOption.toExtendedNegotiationInformation(queryOptions)));
         }
         if (model.level != null)

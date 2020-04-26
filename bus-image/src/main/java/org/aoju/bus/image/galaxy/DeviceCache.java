@@ -32,15 +32,15 @@ import org.aoju.bus.image.Device;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class DeviceCache extends ConfigurationCache<DicomConfiguration, Device>
+public class DeviceCache extends ConfigurationCache<Configuration, Device>
         implements IDeviceCache {
 
-    public DeviceCache(DicomConfiguration conf) {
+    public DeviceCache(Configuration conf) {
         super(conf);
     }
 
     @Override
-    protected Device find(DicomConfiguration conf, String key) throws InstrumentException {
+    protected Device find(Configuration conf, String key) throws InstrumentException {
         return conf.findDevice(key);
     }
 

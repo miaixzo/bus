@@ -44,7 +44,6 @@ public class LookupTableFactory {
     private LookupTable modalityLUT;
     private float windowCenter;
     private float windowWidth;
-    private String voiLUTFunction; // not yet implemented
     private LookupTable voiLUT;
     private LookupTable presentationLUT;
     private boolean inverse;

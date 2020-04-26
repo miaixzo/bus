@@ -38,7 +38,7 @@ import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.DimseRSPHandler;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiation;
+import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
 import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.File;
@@ -84,7 +84,7 @@ public class MoveSCU extends Device {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational)
-            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[]{1}));
+            rq.addExtendedNegotiation(new ExtendedNegotiate(model.cuid, new byte[]{1}));
         if (model.level != null)
             addLevel(model.level);
     }
