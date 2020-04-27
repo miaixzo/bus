@@ -27,7 +27,7 @@ package org.aoju.bus.starter.image;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 文档在线预览服务提供
+ * DICOM解析服务
  *
  * @author Kimi Liu
  * @version 5.8.8
